@@ -226,32 +226,6 @@ function isReadonlyProp(object: any, prop: string): boolean {
   );
 }
 
-function getSlots(object?: Object): Array<string> {
-  const slots = {};
-  if (!object) {
-    return [];
-  }
-
-  let parent = Object.getPrototypeOf(object);
-  do {
-    if (object === Object.getPrototypeOf(Function)) {
-      break;
-    }
-    const ownNames = Object.getOwnPropertyNames(object);
-    for (let i = 0; i < ownNames.length; i++) {
-      const prop = ownNames[i];
-      if (!isReadonlyProp(object, prop)) {
-        const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-        if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
-          slots[prop] = true;
-        }
-      }
-    }
-    object = parent;
-  } while (object && (parent = Object.getPrototypeOf(object)) !== null);
-  return Object.keys(slots);
-}
-
 class ModuleMockerClass {
   _environmentGlobal: Global;
   _mockState: WeakMap<Function, MockFunctionState>;
@@ -272,6 +246,53 @@ class ModuleMockerClass {
     this._spyState = new Set();
     this.ModuleMocker = ModuleMockerClass;
     this._invocationCallCounter = 1;
+  }
+
+  _getSlots(object?: Object): Array<string> {
+    if (!object) {
+      return [];
+    }
+
+    const slots = new Set();
+    const EnvObjectProto = this._environmentGlobal.Object.prototype;
+    const EnvFunctionProto = this._environmentGlobal.Function.prototype;
+    const EnvRegExpProto = this._environmentGlobal.RegExp.prototype;
+
+    // Also check the builtins in the current context as they leak through
+    // core node modules.
+    const ObjectProto = Object.prototype;
+    const FunctionProto = Function.prototype;
+    const RegExpProto = RegExp.prototype;
+
+    // Properties of Object.prototype, Function.prototype and RegExp.prototype
+    // are never reported as slots
+    while (
+      object != null &&
+      object !== EnvObjectProto &&
+      object !== EnvFunctionProto &&
+      object !== EnvRegExpProto &&
+      object !== ObjectProto &&
+      object !== FunctionProto &&
+      object !== RegExpProto
+    ) {
+      const ownNames = Object.getOwnPropertyNames(object);
+
+      for (let i = 0; i < ownNames.length; i++) {
+        const prop = ownNames[i];
+
+        if (!isReadonlyProp(object, prop)) {
+          const propDesc = Object.getOwnPropertyDescriptor(object, prop);
+
+          if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
+            slots.add(prop);
+          }
+        }
+      }
+
+      object = Object.getPrototypeOf(object);
+    }
+
+    return Array.from(slots);
   }
 
   _ensureMockConfig(f: Mock): MockFunctionConfig {
@@ -336,7 +357,7 @@ class ModuleMockerClass {
           metadata.members.prototype &&
           metadata.members.prototype.members) ||
         {};
-      const prototypeSlots = getSlots(prototype);
+      const prototypeSlots = this._getSlots(prototype);
       const mocker = this;
       const mockConstructor = matchArity(function() {
         const mockState = mocker._ensureMockState(f);
@@ -606,7 +627,7 @@ class ModuleMockerClass {
       refs[metadata.refID] = mock;
     }
 
-    getSlots(metadata.members).forEach(slot => {
+    this._getSlots(metadata.members).forEach(slot => {
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
       if (slotMetadata.ref != null) {
         callbacks.push(() => (mock[slot] = refs[slotMetadata.ref]));
@@ -678,7 +699,7 @@ class ModuleMockerClass {
     // Leave arrays alone
     if (type !== 'array') {
       if (type !== 'undefined') {
-        getSlots(component).forEach(slot => {
+        this._getSlots(component).forEach(slot => {
           if (
             type === 'function' &&
             component._isMockFunction &&
@@ -687,31 +708,14 @@ class ModuleMockerClass {
             return;
           }
 
-          if (
-            (!component.hasOwnProperty && component[slot] !== undefined) ||
-            (component.hasOwnProperty && component.hasOwnProperty(slot)) ||
-            (type === 'object' && component[slot] != Object.prototype[slot])
-          ) {
-            const slotMetadata = this.getMetadata(component[slot], refs);
-            if (slotMetadata) {
-              if (!members) {
-                members = {};
-              }
-              members[slot] = slotMetadata;
+          const slotMetadata = this.getMetadata(component[slot], refs);
+          if (slotMetadata) {
+            if (!members) {
+              members = {};
             }
+            members[slot] = slotMetadata;
           }
         });
-      }
-
-      // If component is native code function, prototype might be undefined
-      if (type === 'function' && component.prototype) {
-        const prototype = this.getMetadata(component.prototype, refs);
-        if (prototype && prototype.members) {
-          if (!members) {
-            members = {};
-          }
-          members.prototype = prototype;
-        }
       }
     }
 
