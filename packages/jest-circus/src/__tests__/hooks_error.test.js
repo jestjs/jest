@@ -12,7 +12,7 @@
 const circus = require('../index.js');
 
 describe('hooks error throwing', () => {
-  test.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'])(
+  test.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
     '%s throws an error when the first argument is not a function',
     fn => {
       expect(() => {
