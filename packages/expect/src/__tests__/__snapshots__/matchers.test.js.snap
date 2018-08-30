@@ -1082,7 +1082,7 @@ exports[`.toBeInstanceOf() failing null and [Function String] 1`] = `
 "<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
 
 Expected constructor: <green>String</>
-Received constructor:
+Received constructor: 
 Received value: <red>null</>"
 `;
 
@@ -1098,7 +1098,7 @@ exports[`.toBeInstanceOf() failing undefined and [Function String] 1`] = `
 "<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
 
 Expected constructor: <green>String</>
-Received constructor:
+Received constructor: 
 Received value: <red>undefined</>"
 `;
 
