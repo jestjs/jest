@@ -183,7 +183,7 @@ const matchers: MatchersObject = {
             constructor.name || String(constructor),
           )}\n` +
           `Received constructor: ${RECEIVED_COLOR(
-            received !== undefined && received !== null
+            received != null
               ? received.constructor && received.constructor.name
               : '',
           )}\n` +
