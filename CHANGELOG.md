@@ -8,8 +8,8 @@
 
 - `[jest-resolve]` Only resolve realpath once in try-catch ([#6925](https://github.com/facebook/jest/pull/6925))
 - `[expect]` Fix TypeError in `toBeInstanceOf` on `null` or `undefined` ([#6912](https://github.com/facebook/jest/pull/6912))
-- `[jest-jasmine2]` Throw a descriptive error if the first argument supplied to a hook was not a function ([#6917](https://github.com/facebook/jest/pull/6917))
-- `[jest-circus]` Throw a descriptive error if the first argument supplied to a hook was not a function ([#6917](https://github.com/facebook/jest/pull/6917))
+- `[jest-jasmine2]` Throw a descriptive error if the first argument supplied to a hook was not a function ([#6917](https://github.com/facebook/jest/pull/6917)) and ([#6931](https://github.com/facebook/jest/pull/6931))
+- `[jest-circus]` Throw a descriptive error if the first argument supplied to a hook was not a function ([#6917](https://github.com/facebook/jest/pull/6917)) and ([#6931](https://github.com/facebook/jest/pull/6931))
 - `[expect]` Fix variadic custom asymmetric matchers ([#6898](https://github.com/facebook/jest/pull/6898))
 - `[jest-cli]` Fix incorrect `testEnvironmentOptions` warning ([#6852](https://github.com/facebook/jest/pull/6852))
 - `[jest-each]` Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
