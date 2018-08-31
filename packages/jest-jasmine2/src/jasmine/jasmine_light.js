@@ -95,7 +95,7 @@ exports.interface = function(jasmine: Jasmine, env: any) {
     beforeEach() {
       if (typeof arguments[0] !== 'function') {
         throw new Error(
-          `Invalid first argument. It must be a callback function.`,
+          'Invalid first argument. It must be a callback function.',
         );
       }
       return env.beforeEach.apply(env, arguments);
@@ -104,7 +104,7 @@ exports.interface = function(jasmine: Jasmine, env: any) {
     afterEach() {
       if (typeof arguments[0] !== 'function') {
         throw new Error(
-          `Invalid first argument. It must be a callback function.`,
+          'Invalid first argument. It must be a callback function.',
         );
       }
       return env.afterEach.apply(env, arguments);
@@ -113,7 +113,7 @@ exports.interface = function(jasmine: Jasmine, env: any) {
     beforeAll() {
       if (typeof arguments[0] !== 'function') {
         throw new Error(
-          `Invalid first argument. It must be a callback function.`,
+          'Invalid first argument. It must be a callback function.',
         );
       }
       return env.beforeAll.apply(env, arguments);
@@ -122,7 +122,7 @@ exports.interface = function(jasmine: Jasmine, env: any) {
     afterAll() {
       if (typeof arguments[0] !== 'function') {
         throw new Error(
-          `Invalid first argument. It must be a callback function.`,
+          'Invalid first argument. It must be a callback function.',
         );
       }
       return env.afterAll.apply(env, arguments);
