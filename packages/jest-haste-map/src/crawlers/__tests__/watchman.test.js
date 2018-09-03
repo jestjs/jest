@@ -42,6 +42,7 @@ const STRAWBERRY = path.join(FRUITS, 'strawberry.js');
 const KIWI = path.join(FRUITS, 'kiwi.js');
 const TOMATO = path.join(FRUITS, 'tomato.js');
 const MELON = path.join(VEGETABLES, 'melon.json');
+const DURIAN = path.join(VEGETABLES, 'durian.zip');
 const WATCH_PROJECT_MOCK = {
   [FRUITS]: {
     relative_path: 'fruits',
@@ -88,6 +89,11 @@ describe('watchman watch', () => {
               exists: true,
               mtime_ms: {toNumber: () => 33},
               name: 'vegetables/melon.json',
+            },
+            {
+              exists: true,
+              mtime_ms: {toNumber: () => 33},
+              name: 'vegetables/durian.zip',
             },
           ],
           is_fresh_instance: true,
@@ -155,6 +161,28 @@ describe('watchman watch', () => {
       expect(data.files).toEqual(mockFiles);
 
       expect(client.end).toBeCalled();
+    }));
+
+  test('applies the mapper when needed', async () =>
+    watchmanCrawl({
+      data: {
+        clocks: Object.create(null),
+        files: Object.create(null),
+      },
+      extensions: ['js', 'json', 'zip'],
+      mapper: n =>
+        n.endsWith('.zip')
+          ? [path.join(n, 'foo.1.js'), path.join(n, 'foo.2.js')]
+          : null,
+      ignore: pearMatcher,
+      roots: ROOTS,
+    }).then(data => {
+      expect(data.files).toEqual(
+        Object.assign({}, mockFiles, {
+          [path.join(DURIAN, 'foo.1.js')]: ['', 33, 0, [], null],
+          [path.join(DURIAN, 'foo.2.js')]: ['', 33, 0, [], null],
+        }),
+      );
     }));
 
   test('updates the file object when the clock is given', () => {
