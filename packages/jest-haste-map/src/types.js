@@ -32,7 +32,7 @@ export type CrawlerOptions = {|
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   ignore: IgnoreMatcher,
-  mapper: ?Mapper,
+  mapper?: ?Mapper,
   roots: Array<string>,
 |};
 
