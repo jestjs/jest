@@ -288,7 +288,7 @@ No, as of Jest 20, snapshots in Jest are not automatically written when Jest is 
 
 ### Should snapshot files be committed?
 
-Yes, all snapshot files should be committed alongside the modules they are covering and their tests. They should be considered  part of a test, similar to the value of any other assertion in Jest. In fact, snapshots represent the state of the source modules at any given point in time. In this way, when the source modules are modified, Jest can tell what changed from the previous version. It can also provide a lot of additional context during code review in which reviewers can study your changes better.
+Yes, all snapshot files should be committed alongside the modules they are covering and their tests. They should be considered part of a test, similar to the value of any other assertion in Jest. In fact, snapshots represent the state of the source modules at any given point in time. In this way, when the source modules are modified, Jest can tell what changed from the previous version. It can also provide a lot of additional context during code review in which reviewers can study your changes better.
 
 ### Does snapshot testing only work with React components?
 
