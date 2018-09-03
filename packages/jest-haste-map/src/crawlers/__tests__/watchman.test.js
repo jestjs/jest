@@ -170,11 +170,11 @@ describe('watchman watch', () => {
         files: Object.create(null),
       },
       extensions: ['js', 'json', 'zip'],
+      ignore: pearMatcher,
       mapper: n =>
         n.endsWith('.zip')
           ? [path.join(n, 'foo.1.js'), path.join(n, 'foo.2.js')]
           : null,
-      ignore: pearMatcher,
       roots: ROOTS,
     }).then(data => {
       expect(data.files).toEqual(

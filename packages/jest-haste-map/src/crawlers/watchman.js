@@ -185,7 +185,7 @@ module.exports = async function watchmanCrawl(
           nextData = ['', mtime, 0, [], sha1hex];
         }
 
-        const mappings = options.mapper ? options.mapper(name) : nullo;
+        const mappings = options.mapper ? options.mapper(name) : null;
 
         if (mappings) {
           for (const name of mappings) {
