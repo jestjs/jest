@@ -10,9 +10,10 @@
 'use strict';
 
 jest.mock('child_process');
-
+jest.mock('wsl-path');
 import {createProcess} from '../Process';
 import {spawn} from 'child_process';
+import * as wslPath from 'wsl-path';
 
 describe('createProcess', () => {
   afterEach(() => {
@@ -20,7 +21,9 @@ describe('createProcess', () => {
   });
 
   it('spawns the process', () => {
-    const workspace: any = {pathToJest: ''};
+    const workspace: any = {
+      pathToJest: '',
+    };
     const args = [];
     createProcess(workspace, args);
 
@@ -28,7 +31,9 @@ describe('createProcess', () => {
   });
 
   it('spawns the command from workspace.pathToJest', () => {
-    const workspace: any = {pathToJest: 'jest'};
+    const workspace: any = {
+      pathToJest: 'jest',
+    };
     const args = [];
     createProcess(workspace, args);
 
@@ -37,7 +42,9 @@ describe('createProcess', () => {
   });
 
   it('spawns the first arg from workspace.pathToJest split on " "', () => {
-    const workspace: any = {pathToJest: 'npm test --'};
+    const workspace: any = {
+      pathToJest: 'npm test --',
+    };
     const args = [];
     createProcess(workspace, args);
 
@@ -60,7 +67,9 @@ describe('createProcess', () => {
   });
 
   it('appends args', () => {
-    const workspace: any = {pathToJest: 'npm test --'};
+    const workspace: any = {
+      pathToJest: 'npm test --',
+    };
     const args = ['--option', 'value', '--another'];
     createProcess(workspace, args);
 
@@ -86,9 +95,13 @@ describe('createProcess', () => {
   });
 
   it('defines the "CI" environment variable', () => {
-    const expected = Object.assign({}, process.env, {CI: 'true'});
+    const expected = Object.assign({}, process.env, {
+      CI: 'true',
+    });
 
-    const workspace: any = {pathToJest: ''};
+    const workspace: any = {
+      pathToJest: '',
+    };
     const args = [];
     createProcess(workspace, args);
 
@@ -107,7 +120,9 @@ describe('createProcess', () => {
   });
 
   it('should not set the "shell" property when "options" are not provided', () => {
-    const workspace: any = {pathToJest: ''};
+    const workspace: any = {
+      pathToJest: '',
+    };
     const args = [];
     createProcess(workspace, args);
 
@@ -116,11 +131,61 @@ describe('createProcess', () => {
 
   it('should set the "shell" property when "options" are provided', () => {
     const expected = {};
-    const workspace: any = {pathToJest: ''};
+    const workspace: any = {
+      pathToJest: '',
+    };
     const args = [];
-    const options: any = {shell: expected};
+    const options: any = {
+      shell: expected,
+    };
     createProcess(workspace, args, options);
 
     expect(spawn.mock.calls[0][2].shell).toBe(expected);
+  });
+
+  it('should prepend wsl when useWsl is set in the ProjectWorkspace', () => {
+    const workspace: any = {
+      pathToJest: 'npm run jest',
+      useWsl: true,
+    };
+    const args = [];
+    const options: any = {
+      shell: true,
+    };
+    createProcess(workspace, args, options);
+
+    expect(spawn.mock.calls[0][0]).toEqual('wsl');
+  });
+
+  it('should keep the original command in the spawn arguments when using wsl', () => {
+    const expected = ['npm', 'run', 'jest'];
+    const workspace: any = {
+      pathToJest: expected.join(' '),
+      useWsl: true,
+    };
+    const args = [];
+    const options: any = {
+      shell: true,
+    };
+    createProcess(workspace, args, options);
+
+    expect(spawn.mock.calls[0][1]).toEqual(expected);
+  });
+
+  it('should translate file paths in the spawn command into the wsl context', () => {
+    const expected = ['npm', 'run', '/mnt/c/Users/Bob/path'];
+    wslPath.windowsToWslSync = jest.fn(() => expected[2]);
+
+    const workspace: any = {
+      pathToJest: 'npm run C:\\Users\\Bob\\path',
+      useWsl: true,
+    };
+    const args = [];
+    const options: any = {
+      shell: true,
+    };
+    createProcess(workspace, args, options);
+
+    expect(spawn.mock.calls[0][1]).toEqual(expected);
   });
 });

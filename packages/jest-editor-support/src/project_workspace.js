@@ -60,6 +60,8 @@ export default class ProjectWorkspace {
    */
   debug: ?boolean;
 
+  useWsl: ?boolean;
+
   constructor(
     rootPath: string,
     pathToJest: string,
@@ -67,6 +69,7 @@ export default class ProjectWorkspace {
     localJestMajorVersion: number,
     collectCoverage: ?boolean,
     debug: ?boolean,
+    useWsl: ?boolean,
   ) {
     this.rootPath = rootPath;
     this.pathToJest = pathToJest;
@@ -74,5 +77,6 @@ export default class ProjectWorkspace {
     this.localJestMajorVersion = localJestMajorVersion;
     this.collectCoverage = collectCoverage;
     this.debug = debug;
+    this.useWsl = useWsl;
   }
 }

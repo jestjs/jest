@@ -22,6 +22,7 @@ export interface Options {
   testNamePattern?: string;
   testFileNamePattern?: string;
   shell?: boolean;
+  useWsl?: boolean;
 }
 
 export class Runner extends EventEmitter {
@@ -38,8 +39,8 @@ export class Settings extends EventEmitter {
   getConfig(completed: Function): void;
   jestVersionMajor: number | null;
   settings: {
-    testRegex: string,
-    testMatch: string[],
+    testRegex: string;
+    testMatch: string[];
   };
 }
 
@@ -51,6 +52,7 @@ export class ProjectWorkspace {
     localJestMajorVersin: number,
     collectCoverage?: boolean,
     debug?: boolean,
+    useWsl?: boolean,
   );
   pathToJest: string;
   pathToConfig: string;
@@ -58,6 +60,7 @@ export class ProjectWorkspace {
   localJestMajorVersion: number;
   collectCoverage?: boolean;
   debug?: boolean;
+  useWsl?: boolean;
 }
 
 export interface IParseResults {
@@ -188,9 +191,9 @@ export class Snapshot {
 }
 
 type FormattedTestResults = {
-  testResults: TestResult[]
-}
+  testResults: TestResult[];
+};
 
 type TestResult = {
-  name: string
-}
+  name: string;
+};

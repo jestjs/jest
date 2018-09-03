@@ -9,6 +9,7 @@
 
 import {ChildProcess, spawn} from 'child_process';
 import ProjectWorkspace from './project_workspace';
+import {windowsToWslSync} from 'wsl-path';
 import type {SpawnOptions} from './types';
 
 /**
@@ -27,14 +28,19 @@ export const createProcess = (
   // any other bits into the args
   const runtimeExecutable = workspace.pathToJest;
   const parameters = runtimeExecutable.split(' ');
-  const command = parameters[0];
   const initialArgs = parameters.slice(1);
-  const runtimeArgs = [].concat(initialArgs, args);
+  let command = parameters[0];
+  let runtimeArgs = [].concat(initialArgs, args);
 
   // If a path to configuration file was defined, push it to runtimeArgs
   if (workspace.pathToConfig) {
     runtimeArgs.push('--config');
     runtimeArgs.push(workspace.pathToConfig);
+  }
+
+  if (workspace.useWsl) {
+    runtimeArgs = [command, ...runtimeArgs.map(convertWslPath)];
+    command = 'wsl';
   }
 
   // To use our own commands in create-react, we need to tell the command that
@@ -55,4 +61,21 @@ export const createProcess = (
   }
 
   return spawn(command, runtimeArgs, spawnOptions);
+};
+
+const convertWslPath = (maybePath: string): string => {
+  if (!/^\w:\\/.test(maybePath)) {
+    return maybePath;
+  }
+  // not every string containing a windows delimiter needs to be a
+  // path, but if it starts with C:\ or similar the chances are very high
+  try {
+    return windowsToWslSync(maybePath);
+  } catch (exception) {
+    console.log(
+      `Tried to translate ${maybePath} but received exception`,
+      exception,
+    );
+    return maybePath;
+  }
 };
