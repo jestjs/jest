@@ -32,6 +32,7 @@ import WatchmanWatcher from './lib/watchman_watcher';
 import Worker from 'jest-worker';
 
 import type {Console} from 'console';
+import type {Mapper} from './types';
 import type {Path} from 'types/Config';
 import type {
   HasteMap as HasteMapObject,
@@ -53,6 +54,7 @@ type Options = {
   forceNodeFilesystemAPI?: boolean,
   hasteImplModulePath?: string,
   ignorePattern: HasteRegExp,
+  mapper?: ?Mapper,
   maxWorkers: number,
   mocksPattern?: string,
   name: string,
@@ -74,6 +76,7 @@ type InternalOptions = {
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
   ignorePattern: HasteRegExp,
+  mapper?: ?Mapper,
   maxWorkers: number,
   mocksPattern: ?RegExp,
   name: string,
@@ -623,6 +626,7 @@ class HasteMap extends EventEmitter {
           extensions: options.extensions,
           forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
           ignore,
+          mapper: options.mapper,
           roots: options.roots,
         }).catch(e => {
           throw new Error(
