@@ -90,11 +90,6 @@ describe('watchman watch', () => {
               mtime_ms: {toNumber: () => 33},
               name: 'vegetables/melon.json',
             },
-            {
-              exists: true,
-              mtime_ms: {toNumber: () => 33},
-              name: 'vegetables/durian.zip',
-            },
           ],
           is_fresh_instance: true,
           version: '4.5.0',
@@ -163,8 +158,31 @@ describe('watchman watch', () => {
       expect(client.end).toBeCalled();
     }));
 
-  test('applies the mapper when needed', async () =>
-    watchmanCrawl({
+  test('applies the mapper when needed', () => {
+    mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
+      query: {
+        [ROOT_MOCK]: {
+          clock: 'c:fake-clock:1',
+          files: [
+            {
+              exists: true,
+              mtime_ms: {toNumber: () => 33},
+              name: 'vegetables/durian.zip',
+            },
+          ],
+          is_fresh_instance: true,
+          version: '4.5.0',
+        },
+      },
+      'watch-project': WATCH_PROJECT_MOCK,
+    };
+
+    return watchmanCrawl({
       data: {
         clocks: Object.create(null),
         files: Object.create(null),
@@ -177,13 +195,12 @@ describe('watchman watch', () => {
           : null,
       roots: ROOTS,
     }).then(data => {
-      expect(data.files).toEqual(
-        Object.assign({}, mockFiles, {
-          [path.join(DURIAN, 'foo.1.js')]: ['', 33, 0, [], null],
-          [path.join(DURIAN, 'foo.2.js')]: ['', 33, 0, [], null],
-        }),
-      );
-    }));
+      expect(data.files).toEqual({
+        [path.join(DURIAN, 'foo.1.js')]: ['', 33, 0, [], null],
+        [path.join(DURIAN, 'foo.2.js')]: ['', 33, 0, [], null],
+      });
+    });
+  });
 
   test('updates the file object when the clock is given', () => {
     mockResponse = {
