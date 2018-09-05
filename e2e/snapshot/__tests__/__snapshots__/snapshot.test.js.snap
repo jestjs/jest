@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot is not influenced by previous counter 1`] = `
+Object {
+  "a": 43,
+  "b": "43",
+  "c": "fourtythree",
+}
+`;
+
+exports[`snapshot works with \\r\\n 1`] = `
+"<div>
+</div>"
+`;
+
+exports[`snapshot works with plain objects and the title has \`escape\` characters 1`] = `
+Object {
+  "a": 1,
+  "b": "2",
+  "c": "three\`",
+}
+`;
+
+exports[`snapshot works with plain objects and the title has \`escape\` characters 2`] = `
+Object {
+  "a": 1,
+  "b": "2",
+  "c": "three\`",
+  "d": "4",
+}
+`;
