@@ -21,16 +21,16 @@ const babelEs5Options = Object.assign(
   {
     babelrc: false,
     exclude: 'node_modules/!(ansi-styles|chalk|ansi-regex|slash)/**',
-    plugins: [
-      'syntax-trailing-function-commas',
-      'transform-flow-strip-types',
-      'transform-es2015-destructuring',
-      'transform-es2015-parameters',
-      'transform-async-to-generator',
-      'transform-strict-mode',
-      'external-helpers',
-      'transform-runtime',
-    ],
+    // plugins: [
+    //   'syntax-trailing-function-commas',
+    //   'transform-flow-strip-types',
+    //   'transform-es2015-destructuring',
+    //   'transform-es2015-parameters',
+    //   'transform-async-to-generator',
+    //   'transform-strict-mode',
+    //   'external-helpers',
+    //   'transform-runtime',
+    // ],
     presets: [
       [
         'env',

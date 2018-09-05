@@ -13,9 +13,9 @@
     "babel-preset-jest": "^23.2.0"
   },
   "devDependencies": {
-    "babel-core": "^6.0.0"
+    "@babel/core": "^7.0.0"
   },
   "peerDependencies": {
-    "babel-core": "^6.0.0 || ^7.0.0-0"
+    "@babel/core": "^7.0.0"
   }
 }

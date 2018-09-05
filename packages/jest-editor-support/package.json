@@ -8,8 +8,8 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "babel-traverse": "^6.14.1",
-    "babylon": "^6.14.1",
+    "@babel/parser": "^7.0.0",
+    "@babel/traverse": "^7.0.0",
     "jest-snapshot": "^23.6.0"
   },
   "typings": "index.d.ts"

@@ -13,7 +13,7 @@ jest.mock('prettier');
 const fs = require('fs');
 const path = require('path');
 const prettier = require('prettier');
-const babelTraverse = require('babel-traverse').default;
+const babelTraverse = require('@babel/traverse').default;
 
 const {saveInlineSnapshots} = require('../inline_snapshots');
 
