@@ -170,7 +170,7 @@ describe('ScriptTransformer', () => {
     fs.unlinkSync = jest.fn();
     fs.statSync = jest.fn(path => ({
       isFile: () => !!mockFs[path],
-      mtime: {getTime: () => 42},
+      mtime: {getTime: () => 42, toString: () => '42'},
     }));
 
     fs.existsSync = jest.fn(path => !!mockFs[path]);

@@ -28,7 +28,6 @@ export const getASTfor = (file: string): BabylonFile => {
 export const parse = (file: string): BabylonParserResult => {
   const itBlocks: ItBlock[] = [];
   const expects: Expect[] = [];
-
   const ast = getASTfor(file);
 
   // An `it`/`test` was found in the AST
