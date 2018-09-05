@@ -168,7 +168,7 @@ main();
 ### File `worker.js`
 
 ```javascript
-import babel from 'babel-core';
+import babel from '@babel/core';
 
 const cache = Object.create(null);
 

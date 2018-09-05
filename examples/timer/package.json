@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "name": "example-timer",
   "devDependencies": {
-    "babel-preset-env": "*",
+    "@babel/preset-env": "*",
     "jest": "*"
   },
   "scripts": {

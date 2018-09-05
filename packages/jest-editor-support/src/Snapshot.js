@@ -10,7 +10,7 @@
 
 'use strict';
 
-import traverse from 'babel-traverse';
+import traverse from '@babel/traverse';
 import {getASTfor} from './parsers/babylon_parser';
 import {utils} from 'jest-snapshot';
 

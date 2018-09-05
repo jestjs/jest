@@ -6,7 +6,7 @@
  */
 
 const jestPreset = require('babel-preset-jest');
-const babelTransform = require('babel-core').transform;
+const babelTransform = require('@babel/core').transform;
 const babelIstanbulPlugin = require('babel-plugin-istanbul').default;
 
 const options = {

@@ -25,7 +25,7 @@ const path = require('path');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
 
-const babel = require('babel-core');
+const babel = require('@babel/core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
 const prettier = require('prettier');
@@ -43,10 +43,13 @@ const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
 const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
-const transformOptions = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
-);
+const transformOptions = require(path.resolve(
+  __dirname,
+  '..',
+  'babel.config.js'
+));
 transformOptions.babelrc = false;
+
 const prettierConfig = prettier.resolveConfig.sync(__filename);
 prettierConfig.trailingComma = 'none';
 prettierConfig.parser = 'babylon';
@@ -145,24 +148,24 @@ function buildFile(file, silent) {
       );
   } else {
     const options = Object.assign({}, transformOptions);
-    options.plugins = options.plugins.slice();
+    options.plugins = [];
 
-    if (!INLINE_REQUIRE_BLACKLIST.test(file)) {
-      // Remove normal plugin.
-      options.plugins = options.plugins.filter(
-        plugin =>
-          !(
-            Array.isArray(plugin) &&
-            plugin[0] === 'transform-es2015-modules-commonjs'
-          )
-      );
-      options.plugins.push([
-        'transform-inline-imports-commonjs',
-        {
-          allowTopLevelThis: true,
-        },
-      ]);
-    }
+    // if (!INLINE_REQUIRE_BLACKLIST.test(file)) {
+    //   // Remove normal plugin.
+    //   options.plugins = options.plugins.filter(
+    //     plugin =>
+    //       !(
+    //         Array.isArray(plugin) &&
+    //         plugin[0] === 'transform-es2015-modules-commonjs'
+    //       )
+    //   );
+    //   options.plugins.push([
+    //     'transform-inline-imports-commonjs',
+    //     {
+    //       allowTopLevelThis: true,
+    //     },
+    //   ]);
+    // }
 
     const transformed = babel.transformFileSync(file, options).code;
     const prettyCode = prettier.format(transformed, prettierConfig);
