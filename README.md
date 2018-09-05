@@ -100,7 +100,11 @@ If you'd like to learn more about running `jest` through the command line, take 
 
 ### Using Babel
 
-[Babel](http://babeljs.io/) is automatically handled by Jest using `babel-jest`. You don't need install anything extra for using Babel.
+To use [Babel](http://babeljs.io/), install the `babel-jest` and `@babel/core` packages:
+
+```bash
+yarn add --dev babel-jest @babel/core
+```
 
 Don't forget to add a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and [`@babel/preset-react`](https://babeljs.io/docs/en/babel-preset-react) presets:
 

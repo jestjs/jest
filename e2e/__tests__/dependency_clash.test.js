@@ -53,8 +53,8 @@ test('fails with syntax error on flow types', () => {
   writeFiles(tempDir, {
     '.babelrc': `
       {
-        "plugins": [
-          "${require.resolve('babel-plugin-transform-flow-strip-types')}"
+        "presets": [
+          "${require.resolve('@babel/preset-flow')}"
         ]
       }
     `,

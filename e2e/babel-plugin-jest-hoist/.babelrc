@@ -1,12 +1,5 @@
 {
-  "presets": [
-    "es2015",
-    {
-      "plugins": [
-        "jest-hoist",
-        "transform-flow-strip-types"
-      ]
-    }
-  ],
+  "presets": ["@babel/preset-env", "@babel/preset-flow"],
+  "plugins": ["jest-hoist"],
   "retainLines": true
 }
