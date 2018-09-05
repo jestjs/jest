@@ -11,7 +11,8 @@ import {readFileSync} from 'fs';
 
 import {parse as babylonParse} from '@babel/parser';
 import {Expect, ItBlock} from './parser_nodes';
-import type {File as BabylonFile} from '@babel-parser';
+// TODO: Change import to @babel/parser once types exist
+import type {File as BabylonFile} from 'babylon';
 
 export type BabylonParserResult = {
   expects: Array<Expect>,
