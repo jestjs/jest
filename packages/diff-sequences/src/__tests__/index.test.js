@@ -157,7 +157,7 @@ const countDifferences = (
   isCommon,
 ): number => {
   const dMax = aLength + bLength;
-  const aIndexes = [-1]; // see below for common items at beginning: aFirst + 1 and bFirst + 1
+  const aIndexes = [-1]; // initialize for aLast + 1 in loop when d = 0
 
   for (let d = 0; d <= dMax; d += 1) {
     let aIndexPrev1 = 0; // that is, not yet set
