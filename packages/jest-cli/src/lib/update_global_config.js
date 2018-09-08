@@ -71,7 +71,7 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
   }
 
   if (options.changedSince !== undefined) {
-    newConfig.changedSince = options.changedSince || false;
+    newConfig.changedSince = options.changedSince;
   }
 
   if (options.collectCoverage !== undefined) {

@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-ci]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
 - `[babel-jest]` Add support for `babel.config.js` added in Babel 7.0.0 ([#6911](https://github.com/facebook/jest/pull/6911))
 
 ### Fixes
