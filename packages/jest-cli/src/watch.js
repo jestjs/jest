@@ -82,6 +82,7 @@ export default function watch(
 
   const updateConfigAndRun = ({
     bail,
+    changedSince,
     collectCoverage,
     collectCoverageFrom,
     collectCoverageOnlyFrom,
@@ -100,6 +101,7 @@ export default function watch(
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
     globalConfig = updateGlobalConfig(globalConfig, {
       bail,
+      changedSince,
       collectCoverage,
       collectCoverageFrom,
       collectCoverageOnlyFrom,

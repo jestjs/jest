@@ -13,6 +13,7 @@ import type {GlobalConfig} from 'types/Config';
 
 export type Options = {
   bail?: $PropertyType<GlobalConfig, 'bail'>,
+  changedSince?: $PropertyType<GlobalConfig, 'changedSince'>,
   collectCoverage?: $PropertyType<GlobalConfig, 'collectCoverage'>,
   collectCoverageFrom?: $PropertyType<GlobalConfig, 'collectCoverageFrom'>,
   collectCoverageOnlyFrom?: $PropertyType<
@@ -67,6 +68,10 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
 
   if (options.bail !== undefined) {
     newConfig.bail = options.bail || false;
+  }
+
+  if (options.changedSince !== undefined) {
+    newConfig.changedSince = options.changedSince;
   }
 
   if (options.collectCoverage !== undefined) {
