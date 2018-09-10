@@ -1125,9 +1125,9 @@ acorn-walk@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-6.0.1.tgz#c7827bdbb8e21aa97b609adfa225400d9ae348ba"
 
-acorn@^5.0.0, acorn@^5.0.3, acorn@^5.5.3, acorn@^5.6.0, acorn@^5.7.1, acorn@^5.7.3:
-  version "5.7.3"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.7.3.tgz#67aa231bf8812974b85235a96771eb6bd07ea279"
+acorn@^5.0.0, acorn@^5.3.0, acorn@^5.4.1, acorn@^5.5.0:
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.6.2.tgz#b1da1d7be2ac1b4a327fb9eab851702c5045b4e7"
 
 acorn@^6.0.1:
   version "6.0.1"
@@ -1980,13 +1980,6 @@ babel-plugin-transform-flow-strip-types@^6.21.0, babel-plugin-transform-flow-str
     babel-plugin-syntax-flow "^6.18.0"
     babel-runtime "^6.22.0"
 
-babel-plugin-transform-inline-imports-commonjs@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-transform-inline-imports-commonjs/-/babel-plugin-transform-inline-imports-commonjs-1.2.0.tgz#20c7d192bafc54c8727386e3387d8ee4ef19e6a5"
-  dependencies:
-    babel-plugin-transform-strict-mode "^6.8.0"
-    builtin-modules "^1.1.1"
-
 babel-plugin-transform-object-assign@^6.5.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-object-assign/-/babel-plugin-transform-object-assign-6.22.0.tgz#f99d2f66f1a0b0d498e346c5359684740caa20ba"
@@ -2034,7 +2027,7 @@ babel-plugin-transform-regenerator@^6.22.0, babel-plugin-transform-regenerator@^
   dependencies:
     regenerator-transform "^0.10.0"
 
-babel-plugin-transform-strict-mode@^6.24.1, babel-plugin-transform-strict-mode@^6.8.0:
+babel-plugin-transform-strict-mode@^6.24.1:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-strict-mode/-/babel-plugin-transform-strict-mode-6.24.1.tgz#d5faf7aa578a65bbe591cf5edae04a0c67020758"
   dependencies:
@@ -2772,7 +2765,19 @@ buffer@^5.0.2:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
 
-builtin-modules@^1.0.0, builtin-modules@^1.1.1:
+buildmail@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/buildmail/-/buildmail-4.0.1.tgz#877f7738b78729871c9a105e3b837d2be11a7a72"
+  dependencies:
+    addressparser "1.0.1"
+    libbase64 "0.1.0"
+    libmime "3.0.0"
+    libqp "1.1.0"
+    nodemailer-fetch "1.6.0"
+    nodemailer-shared "1.1.0"
+    punycode "1.4.1"
+
+builtin-modules@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
 
@@ -10394,8 +10399,8 @@ rollup-plugin-babel@^4.0.0:
     rollup-pluginutils "^2.3.0"
 
 rollup-plugin-commonjs@^9.1.6:
-  version "9.1.8"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-commonjs/-/rollup-plugin-commonjs-9.1.8.tgz#4113ed94e6054b5f8a3501d8811f934cadde3246"
+  version "9.1.6"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-commonjs/-/rollup-plugin-commonjs-9.1.6.tgz#ad553813c922b71467152794b98f2fd0f195b8a5"
   dependencies:
     estree-walker "^0.5.1"
     magic-string "^0.22.4"
@@ -10409,11 +10414,11 @@ rollup-plugin-flow@^1.1.1:
     flow-remove-types "^1.1.0"
     rollup-pluginutils "^1.5.1"
 
-rollup-plugin-json@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-json/-/rollup-plugin-json-3.1.0.tgz#7c1daf60c46bc21021ea016bd00863561a03321b"
+rollup-plugin-json@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-json/-/rollup-plugin-json-3.0.0.tgz#aeed2ff36e6c4fd0c60c4a8fc3d0884479e9dfce"
   dependencies:
-    rollup-pluginutils "^2.3.1"
+    rollup-pluginutils "^2.2.0"
 
 rollup-plugin-node-builtins@^2.1.1:
   version "2.1.2"
@@ -10424,9 +10429,9 @@ rollup-plugin-node-builtins@^2.1.1:
     crypto-browserify "^3.11.0"
     process-es6 "^0.11.2"
 
-rollup-plugin-node-globals@^1.1.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-node-globals/-/rollup-plugin-node-globals-1.4.0.tgz#5e1f24a9bb97c0ef51249f625e16c7e61b7c020b"
+rollup-plugin-node-globals@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-node-globals/-/rollup-plugin-node-globals-1.3.0.tgz#ee277271d199f3c2d73b80c46b0e53a07463db99"
   dependencies:
     acorn "^5.7.3"
     buffer-es6 "^4.9.3"
@@ -10435,7 +10440,7 @@ rollup-plugin-node-globals@^1.1.0:
     process-es6 "^0.11.6"
     rollup-pluginutils "^2.3.1"
 
-rollup-plugin-node-resolve@^3.0.0:
+rollup-plugin-node-resolve@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/rollup-plugin-node-resolve/-/rollup-plugin-node-resolve-3.4.0.tgz#908585eda12e393caac7498715a01e08606abc89"
   dependencies:
@@ -10457,7 +10462,7 @@ rollup-pluginutils@^2.0.1, rollup-pluginutils@^2.3.1:
     estree-walker "^0.5.2"
     micromatch "^2.3.11"
 
-rollup-pluginutils@^2.3.0:
+rollup-pluginutils@^2.2.0, rollup-pluginutils@^2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/rollup-pluginutils/-/rollup-pluginutils-2.3.1.tgz#760d185ccc237dedc12d7ae48c6bcd127b4892d0"
   dependencies:

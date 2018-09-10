@@ -155,6 +155,7 @@ export default class ScriptTransformer {
     return babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
+      caller: {name: 'jest-runtime'},
       filename,
       plugins: [
         [
