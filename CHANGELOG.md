@@ -1,5 +1,7 @@
 ## master
 
+## 23.6.0
+
 ### Features
 
 - `[jest-ci]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
