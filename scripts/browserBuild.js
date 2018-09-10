@@ -19,16 +19,20 @@ const rollupFlow = require('rollup-plugin-flow');
 const babelEs5Options = Object.assign(
   {},
   {
+    // Dont load other config files
     babelrc: false,
+    configFile: false,
     exclude: 'node_modules/!(ansi-styles|chalk|ansi-regex|slash)/**',
     plugins: ['@babel/plugin-transform-runtime'],
     presets: [
       [
         '@babel/preset-env',
         {
+          // Required for ES5 builds
+          forceAllTransforms: true,
+          // Required for Rollup
           modules: false,
           shippedProposals: true,
-          targets: 'IE 10',
           useBuiltIns: 'usage',
         },
       ],
