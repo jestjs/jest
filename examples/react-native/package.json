@@ -13,8 +13,8 @@
   "devDependencies": {
     "@babel/preset-env": "*",
     "babel-jest": "*",
-    "babel-preset-react-native": "^5.0.2",
     "jest": "*",
+    "metro-react-native-babel-preset": "*",
     "react-test-renderer": "*"
   },
   "jest": {
