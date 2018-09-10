@@ -146,14 +146,16 @@ function buildFile(file, silent) {
     const options = Object.assign({}, transformOptions);
 
     if (!INLINE_REQUIRE_BLACKLIST.test(file)) {
-      // Remove normal plugin to disable `lazy`
-      options.plugins = options.plugins.filter(
-        plugin =>
-          !(
-            Array.isArray(plugin) &&
-            plugin[0] === '@babel/plugin-transform-modules-commonjs'
-          )
-      );
+      options.plugins = options.plugins.map(plugin => {
+        if (
+          Array.isArray(plugin) &&
+          plugin[0] === '@babel/plugin-transform-modules-commonjs'
+        ) {
+          return [plugin[0], Object.assign({}, plugin[1], {lazy: true})];
+        }
+
+        return plugin;
+      });
     }
 
     const transformed = babel.transformFileSync(file, options).code;
