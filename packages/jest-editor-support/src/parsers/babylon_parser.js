@@ -21,7 +21,25 @@ export type BabylonParserResult = {
 
 export const getASTfor = (file: string): BabylonFile => {
   const data = readFileSync(file).toString();
-  const config = {plugins: ['*'], sourceType: 'module'};
+  const config = {
+    // https://babeljs.io/docs/en/babel-parser#plugins
+    plugins: [
+      'asyncGenerators',
+      'classProperties',
+      'dynamicImport',
+      'exportDefaultFrom',
+      'exportNamespaceFrom',
+      'flow',
+      'flowComments',
+      'jsx',
+      'objectRestSpread',
+      'optionalCatchBinding',
+      'optionalChaining',
+      'throwExpressions',
+    ],
+    sourceFilename: file,
+    sourceType: 'module',
+  };
   return babylonParse(data, config);
 };
 
