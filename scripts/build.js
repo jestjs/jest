@@ -43,9 +43,6 @@ const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
 // const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
-// const transformOptions = require('../babel.config.js');
-// transformOptions.babelrc = false;
-
 const transformOptions = {
   babelrc: false,
   cwd: path.resolve(__dirname, '..'),

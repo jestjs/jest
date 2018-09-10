@@ -18,74 +18,33 @@ import type {
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import {transform as babelTransform, util as babelUtil} from '@babel/core';
+import {
+  transform as babelTransform,
+  util as babelUtil,
+  loadPartialConfig,
+} from '@babel/core';
 import jestPreset from 'babel-preset-jest';
 import babelIstanbulPlugin from 'babel-plugin-istanbul';
 
-const BABELRC_FILENAME = '.babelrc';
-const BABELRC_JS_FILENAME = '.babelrc.js';
-const BABEL_CONFIG_JS_FILENAME = 'babel.config.js';
-const BABEL_CONFIG_KEY = 'babel';
-const PACKAGE_JSON = 'package.json';
 const THIS_FILE = fs.readFileSync(__filename);
 
 const createTransformer = (options: any): Transformer => {
-  const cache = Object.create(null);
-
-  const getBabelRC = filename => {
-    const paths = [];
-    let directory = filename;
-    while (directory !== (directory = path.dirname(directory))) {
-      if (cache[directory]) {
-        break;
-      }
-
-      paths.push(directory);
-      const configFilePath = path.join(directory, BABELRC_FILENAME);
-      if (fs.existsSync(configFilePath)) {
-        cache[directory] = fs.readFileSync(configFilePath, 'utf8');
-        break;
-      }
-      let configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
-      if (fs.existsSync(configJsFilePath)) {
-        // $FlowFixMe
-        cache[directory] = JSON.stringify(require(configJsFilePath));
-        break;
-      }
-      configJsFilePath = path.join(directory, BABEL_CONFIG_JS_FILENAME);
-      if (fs.existsSync(configJsFilePath)) {
-        // $FlowFixMe
-        cache[directory] = JSON.stringify(require(configJsFilePath));
-        break;
-      }
-      const resolvedJsonFilePath = path.join(directory, PACKAGE_JSON);
-      const packageJsonFilePath =
-        resolvedJsonFilePath === PACKAGE_JSON
-          ? path.resolve(directory, PACKAGE_JSON)
-          : resolvedJsonFilePath;
-      if (fs.existsSync(packageJsonFilePath)) {
-        // $FlowFixMe
-        const packageJsonFileContents = require(packageJsonFilePath);
-        if (packageJsonFileContents[BABEL_CONFIG_KEY]) {
-          cache[directory] = JSON.stringify(
-            packageJsonFileContents[BABEL_CONFIG_KEY],
-          );
-          break;
-        }
-      }
-    }
-    paths.forEach(directoryPath => (cache[directoryPath] = cache[directory]));
-    return cache[directory] || '';
-  };
-
   options = Object.assign({}, options, {
     compact: false,
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat([jestPreset]),
     sourceMaps: 'both',
   });
+
   delete options.cacheDirectory;
   delete options.filename;
+
+  const loadBabelOptions = filename =>
+    loadPartialConfig({
+      ...options,
+      caller: {name: 'babel-jest'},
+      filename,
+    });
 
   return {
     canInstrument: true,
@@ -95,11 +54,14 @@ const createTransformer = (options: any): Transformer => {
       configString: string,
       {instrument, rootDir}: CacheKeyOptions,
     ): string {
+      const babelOptions = loadBabelOptions(filename);
+      const configPath = babelOptions.config || babelOptions.babelrc || '';
+
       return crypto
         .createHash('md5')
         .update(THIS_FILE)
         .update('\0', 'utf8')
-        .update(JSON.stringify(options))
+        .update(JSON.stringify(babelOptions.options))
         .update('\0', 'utf8')
         .update(fileData)
         .update('\0', 'utf8')
@@ -107,7 +69,7 @@ const createTransformer = (options: any): Transformer => {
         .update('\0', 'utf8')
         .update(configString)
         .update('\0', 'utf8')
-        .update(getBabelRC(filename))
+        .update(configPath)
         .update('\0', 'utf8')
         .update(instrument ? 'instrument' : '')
         .digest('hex');
@@ -121,22 +83,17 @@ const createTransformer = (options: any): Transformer => {
       const altExts = config.moduleFileExtensions.map(
         extension => '.' + extension,
       );
+
       if (babelUtil && !babelUtil.canCompile(filename, altExts)) {
         return src;
       }
 
-      const theseOptions = Object.assign(
-        {
-          caller: {name: 'babel-jest'},
-          filename,
-        },
-        options,
-      );
+      const babelOptions = {...loadBabelOptions(filename).options};
 
       if (transformOptions && transformOptions.instrument) {
-        theseOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
+        babelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
         // Copied from jest-runtime transform.js
-        theseOptions.plugins = theseOptions.plugins.concat([
+        babelOptions.plugins = babelOptions.plugins.concat([
           [
             babelIstanbulPlugin,
             {
@@ -149,7 +106,7 @@ const createTransformer = (options: any): Transformer => {
       }
 
       // babel v7 might return null in the case when the file has been ignored.
-      const transformResult = babelTransform(src, theseOptions);
+      const transformResult = babelTransform(src, babelOptions);
 
       return transformResult || src;
     },
