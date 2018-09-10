@@ -28,11 +28,11 @@ const babelEs5Options = Object.assign(
       [
         '@babel/preset-env',
         {
-          // Required for ES5 builds
-          forceAllTransforms: true,
           // Required for Rollup
           modules: false,
           shippedProposals: true,
+          // Target ES5
+          targets: 'IE 8',
           useBuiltIns: 'usage',
         },
       ],
