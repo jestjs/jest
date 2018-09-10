@@ -152,7 +152,7 @@ export default class ScriptTransformer {
   }
 
   _instrumentFile(filename: Path, content: string): string {
-    return babelTransform(content, {
+    const result = babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
       caller: {name: 'jest-runtime'},
@@ -169,7 +169,9 @@ export default class ScriptTransformer {
           },
         ],
       ],
-    }).code;
+    });
+
+    return result ? result.code : content;
   }
 
   _getRealPath(filepath: Path): Path {
