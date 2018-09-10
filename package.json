@@ -66,6 +66,9 @@
     "typescript": "^2.2.2",
     "watchify": "^3.9.0"
   },
+  "resolutions": {
+    "babel-core": "7.0.0-bridge.0"
+  },
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
     "build": "node ./scripts/build.js",

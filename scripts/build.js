@@ -41,12 +41,10 @@ const JS_FILES_PATTERN = '**/*.js';
 const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
-// const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
+const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
-const transformOptions = {
-  babelrc: false,
-  cwd: path.resolve(__dirname, '..'),
-};
+const transformOptions = require('../babel.config.js');
+transformOptions.babelrc = false;
 
 const prettierConfig = prettier.resolveConfig.sync(__filename);
 prettierConfig.trailingComma = 'none';
@@ -146,6 +144,18 @@ function buildFile(file, silent) {
       );
   } else {
     const options = Object.assign({}, transformOptions);
+
+    if (!INLINE_REQUIRE_BLACKLIST.test(file)) {
+      // Remove normal plugin to disable `lazy`
+      options.plugins = options.plugins.filter(
+        plugin =>
+          !(
+            Array.isArray(plugin) &&
+            plugin[0] === '@babel/plugin-transform-modules-commonjs'
+          )
+      );
+    }
+
     const transformed = babel.transformFileSync(file, options).code;
     const prettyCode = prettier.format(transformed, prettierConfig);
 
