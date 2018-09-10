@@ -43,12 +43,13 @@ const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
 // const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
-const transformOptions = require(path.resolve(
-  __dirname,
-  '..',
-  'babel.config.js'
-));
-transformOptions.babelrc = false;
+// const transformOptions = require('../babel.config.js');
+// transformOptions.babelrc = false;
+
+const transformOptions = {
+  babelrc: false,
+  cwd: path.resolve(__dirname, '..'),
+};
 
 const prettierConfig = prettier.resolveConfig.sync(__filename);
 prettierConfig.trailingComma = 'none';
@@ -148,28 +149,11 @@ function buildFile(file, silent) {
       );
   } else {
     const options = Object.assign({}, transformOptions);
-    options.plugins = [];
-
-    // if (!INLINE_REQUIRE_BLACKLIST.test(file)) {
-    //   // Remove normal plugin.
-    //   options.plugins = options.plugins.filter(
-    //     plugin =>
-    //       !(
-    //         Array.isArray(plugin) &&
-    //         plugin[0] === 'transform-es2015-modules-commonjs'
-    //       )
-    //   );
-    //   options.plugins.push([
-    //     'transform-inline-imports-commonjs',
-    //     {
-    //       allowTopLevelThis: true,
-    //     },
-    //   ]);
-    // }
-
     const transformed = babel.transformFileSync(file, options).code;
     const prettyCode = prettier.format(transformed, prettierConfig);
+
     fs.writeFileSync(destPath, prettyCode);
+
     silent ||
       process.stdout.write(
         chalk.green('  \u2022 ') +

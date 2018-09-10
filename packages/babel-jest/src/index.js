@@ -125,7 +125,14 @@ const createTransformer = (options: any): Transformer => {
         return src;
       }
 
-      const theseOptions = Object.assign({filename}, options);
+      const theseOptions = Object.assign(
+        {
+          caller: {name: 'babel-jest'},
+          filename,
+        },
+        options,
+      );
+
       if (transformOptions && transformOptions.instrument) {
         theseOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
         // Copied from jest-runtime transform.js

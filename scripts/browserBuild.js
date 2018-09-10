@@ -32,7 +32,7 @@ const babelEs5Options = Object.assign(
         },
       ],
     ],
-    runtimeHelpers: true,
+    // runtimeHelpers: true,
   }
 );
 

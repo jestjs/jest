@@ -1,6 +1,9 @@
 module.exports = {
   plugins: [
-    ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
+    [
+      '@babel/plugin-transform-modules-commonjs',
+      {allowTopLevelThis: true, lazy: true},
+    ],
   ],
   presets: [
     [
