@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "react": "^16.4.0",
-    "react-native": "^0.56.1"
+    "react-native": "0.57.0-rc.4"
   },
   "devDependencies": {
     "@babel/preset-env": "*",
