@@ -23,7 +23,7 @@ const babelEs5Options = Object.assign(
     babelrc: false,
     configFile: false,
     exclude: 'node_modules/!(ansi-styles|chalk|ansi-regex|slash)/**',
-    plugins: ['@babel/plugin-transform-runtime'],
+    plugins: [],
     presets: [
       [
         '@babel/preset-env',
