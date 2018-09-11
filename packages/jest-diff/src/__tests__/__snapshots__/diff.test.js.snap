@@ -76,9 +76,9 @@ exports[`collapses big diffs to patch format 1`] = `
 <dim>      6,</>
 <dim>      7,</>
 <dim>      8,</>
-<red>+     10,</>
-<dim>      9,</>
-<green>-     10,</>
+<green>-     9,</>
+<dim>      10,</>
+<red>+     9,</>
 <dim>    ],</>
 <dim>  }</>"
 `;
@@ -109,9 +109,9 @@ exports[`context number of lines: -1 (5 default) 1`] = `
 <dim>      6,</>
 <dim>      7,</>
 <dim>      8,</>
-<red>+     10,</>
-<dim>      9,</>
-<green>-     10,</>
+<green>-     9,</>
+<dim>      10,</>
+<red>+     9,</>
 <dim>    ],</>
 <dim>  }</>"
 `;
@@ -120,10 +120,10 @@ exports[`context number of lines: 0  1`] = `
 "<green>- Expected</>
 <red>+ Received</>
 
-<yellow>@@ -11,0 +11,1 @@</>
-<red>+     10,</>
-<yellow>@@ -12,1 +13,0 @@</>
-<green>-     10,</>"
+<yellow>@@ -11,1 +11,0 @@</>
+<green>-     9,</>
+<yellow>@@ -13,0 +12,1 @@</>
+<red>+     9,</>"
 `;
 
 exports[`context number of lines: 1  1`] = `
@@ -132,9 +132,9 @@ exports[`context number of lines: 1  1`] = `
 
 <yellow>@@ -10,4 +10,4 @@</>
 <dim>      8,</>
-<red>+     10,</>
-<dim>      9,</>
-<green>-     10,</>
+<green>-     9,</>
+<dim>      10,</>
+<red>+     9,</>
 <dim>    ],</>"
 `;
 
@@ -145,9 +145,9 @@ exports[`context number of lines: 2  1`] = `
 <yellow>@@ -9,6 +9,6 @@</>
 <dim>      7,</>
 <dim>      8,</>
-<red>+     10,</>
-<dim>      9,</>
-<green>-     10,</>
+<green>-     9,</>
+<dim>      10,</>
+<red>+     9,</>
 <dim>    ],</>
 <dim>  }</>"
 `;
@@ -162,9 +162,9 @@ exports[`context number of lines: null (5 default) 1`] = `
 <dim>      6,</>
 <dim>      7,</>
 <dim>      8,</>
-<red>+     10,</>
-<dim>      9,</>
-<green>-     10,</>
+<green>-     9,</>
+<dim>      10,</>
+<red>+     9,</>
 <dim>    ],</>
 <dim>  }</>"
 `;
