@@ -12,5 +12,7 @@ module.exports = {
       },
     ],
     '@babel/preset-flow',
+    // Some tests contain JSX
+    '@babel/preset-react',
   ],
 };
