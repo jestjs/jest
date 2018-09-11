@@ -53,7 +53,7 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
 }
 </code></pre>
 <p>To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.</p>
-<pre><code class="hljs css languages- javascript"><span class="hljs-keyword">const</span> mockCallback = jest.fn();
+<pre><code class="hljs css languages- javascript"><span class="hljs-keyword">const</span> mockCallback = jest.fn(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-number">42</span> + x);
 forEach([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], mockCallback);
 
 <span class="hljs-comment">// The mock function is called twice</span>
