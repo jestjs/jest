@@ -13,19 +13,20 @@ import type {Path} from 'types/Config';
 export type HasteFS = FS;
 export type ModuleMap = _ModuleMap;
 
-export type FileData = {[filepath: Path]: FileMetaData, __proto__: null};
-export type MockData = {[id: string]: Path, __proto__: null};
-export type ModuleMapData = {[id: string]: ModuleMapItem, __proto__: null};
-export type WatchmanClocks = {[filepath: Path]: string, __proto__: null};
+export type FileData = Map<Path, FileMetaData>;
+export type MockData = Map<string, Path>;
+export type ModuleMapData = Map<string, ModuleMapItem>;
+export type WatchmanClocks = Map<Path, string>;
 export type HasteRegExp = RegExp | ((str: string) => boolean);
 
 export type DuplicatesSet = {
   [filePath: string]: /* type */ number,
   __proto__: null,
 };
-export type DuplicatesIndex = {
-  [id: string]: {[platform: string]: DuplicatesSet, __proto__: null},
-};
+export type DuplicatesIndex = Map<
+  string,
+  {[platform: string]: DuplicatesSet, __proto__: null},
+>;
 
 export type InternalHasteMap = {|
   clocks: WatchmanClocks,
@@ -55,7 +56,7 @@ export type FileMetaData = [
   /* sha1 */ ?string,
 ];
 
-type ModuleMapItem = {[platform: string]: ModuleMetaData};
+type ModuleMapItem = {[platform: string]: ModuleMetaData, __proto__: null};
 export type ModuleMetaData = [Path, /* type */ number];
 
 export type HType = {|

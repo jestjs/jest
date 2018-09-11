@@ -112,9 +112,9 @@ module.exports = async function watchmanCrawl(
             }
           }
 
-          const query = clocks[root]
+          const query = clocks.has(root)
             ? // Use the `since` generator if we have a clock available
-              {expression, fields, since: clocks[root]}
+              {expression, fields, since: clocks.get(root)}
             : // Otherwise use the `glob` filter
               {expression, fields, glob};
 
@@ -145,7 +145,7 @@ module.exports = async function watchmanCrawl(
     // Reset the file map if watchman was restarted and sends us a list of
     // files.
     if (watchmanFileResults.isFresh) {
-      files = Object.create(null);
+      files = new Map();
     }
 
     watchmanFiles = watchmanFileResults.files;
@@ -159,20 +159,19 @@ module.exports = async function watchmanCrawl(
 
   for (const [watchRoot, response] of watchmanFiles) {
     const fsRoot = normalizePathSep(watchRoot);
-    clocks[fsRoot] = response.clock;
+    clocks.set(fsRoot, response.clock);
     for (const fileData of response.files) {
       const name = fsRoot + path.sep + normalizePathSep(fileData.name);
       if (!fileData.exists) {
-        delete files[name];
+        files.delete(name);
       } else if (!ignore(name)) {
         const mtime =
           typeof fileData.mtime_ms === 'number'
             ? fileData.mtime_ms
             : fileData.mtime_ms.toNumber();
-        const existingFileData = data.files[name];
-        const isOld = existingFileData && existingFileData[H.MTIME] === mtime;
-        if (isOld) {
-          files[name] = existingFileData;
+        const existingFileData = data.files.get(name);
+        if (existingFileData && existingFileData[H.MTIME] === mtime) {
+          files.set(name, existingFileData);
         } else {
           let sha1hex = fileData['content.sha1hex'];
 
@@ -181,7 +180,7 @@ module.exports = async function watchmanCrawl(
           }
 
           // See ../constants.js
-          files[name] = ['', mtime, 0, [], sha1hex];
+          files.set(name, ['', mtime, 0, [], sha1hex]);
         }
       }
     }

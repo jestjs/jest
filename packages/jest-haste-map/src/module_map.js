@@ -56,7 +56,7 @@ export default class ModuleMap {
   }
 
   getMockModule(name: string): ?Path {
-    return this._raw.mocks[name] || this._raw.mocks[name + '/index'];
+    return this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
   }
 
   getRawModuleMap(): RawModuleMap {
@@ -80,8 +80,8 @@ export default class ModuleMap {
     platform: ?string,
     supportsNativePlatform: boolean,
   ): ?ModuleMetaData {
-    const map = this._raw.map[name] || EMPTY_MAP;
-    const dupMap = this._raw.duplicates[name] || EMPTY_MAP;
+    const map = this._raw.map.get(name) || EMPTY_MAP;
+    const dupMap = this._raw.duplicates.get(name) || EMPTY_MAP;
     if (platform != null) {
       this._assertNoDuplicates(
         name,
@@ -131,6 +131,14 @@ export default class ModuleMap {
       supportsNativePlatform,
       set,
     );
+  }
+
+  static createEmpty() {
+    return new ModuleMap({
+      duplicates: new Map(),
+      map: new Map(),
+      mocks: new Map(),
+    });
   }
 }
 
