@@ -134,8 +134,9 @@ describe('resolveModule', () => {
     const resolver = new Resolver(moduleMap, {
       extensions: ['.js'],
     });
-    const src = require.resolve(
-      '../../src/__mocks__/bar/node_modules/foo/index.js',
+    const src = path.join(
+      path.resolve(__dirname, '../../src/__mocks__/bar/node_modules/'),
+      'foo/index.js',
     );
     const resolved = resolver.resolveModule(src, 'dep');
     expect(resolved).toBe(

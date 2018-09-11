@@ -11,15 +11,27 @@
 
 const circus = require('../index.js');
 
-describe('hooks error throwing', () => {
-  test.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
-    '%s throws an error when the first argument is not a function',
-    fn => {
-      expect(() => {
-        circus[fn]('param');
-      }).toThrowError(
-        'Invalid first argument, param. It must be a callback function.',
-      );
-    },
-  );
-});
+describe.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
+  '%s hooks error throwing',
+  fn => {
+    test.each([
+      ['String'],
+      [1],
+      [[]],
+      [{}],
+      [Symbol('hello')],
+      [true],
+      [null],
+      [undefined],
+    ])(
+      `${fn} throws an error when %p is provided as a first argument to it`,
+      el => {
+        expect(() => {
+          circus[fn](el);
+        }).toThrowError(
+          'Invalid first argument. It must be a callback function.',
+        );
+      },
+    );
+  },
+);

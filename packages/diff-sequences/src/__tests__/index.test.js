@@ -149,34 +149,84 @@ const assertCommonItems = (
   }
 };
 
+// Given lengths of sequences and input function to compare items at indexes,
+// return number of differences according to baseline greedy forward algorithm.
+const countDifferences = (
+  aLength: number,
+  bLength: number,
+  isCommon,
+): number => {
+  const dMax = aLength + bLength;
+  const aIndexes = [-1]; // initialize for aLast + 1 in loop when d = 0
+
+  for (let d = 0; d <= dMax; d += 1) {
+    let aIndexPrev1 = 0; // that is, not yet set
+
+    for (let iF = 0, kF = -d; iF <= d; iF += 1, kF += 2) {
+      const aFirst =
+        iF === 0 || (iF !== d && aIndexPrev1 < aIndexes[iF])
+          ? aIndexes[iF] // vertical to insert from b
+          : aIndexPrev1 + 1; // horizontal to delete from a
+
+      // To get last point of path segment, move along diagonal of common items.
+      let aLast = aFirst;
+      let bLast = aFirst - kF;
+      while (
+        aLast + 1 < aLength &&
+        bLast + 1 < bLength &&
+        isCommon(aLast + 1, bLast + 1)
+      ) {
+        aLast += 1;
+        bLast += 1;
+      }
+
+      aIndexPrev1 = aIndexes[iF];
+      aIndexes[iF] = aLast;
+
+      if (aLast === aLength - 1 && bLast === bLength - 1) {
+        return d;
+      }
+    }
+  }
+  throw new Error(`countDifferences did not return a number`);
+};
+
 // Return array of items in a longest common subsequence of array-like objects.
 const findCommonItems = (
   a: Array<any> | string,
   b: Array<any> | string,
 ): Array<any> => {
+  const aLength = a.length;
+  const bLength = b.length;
+  const isCommon = (aIndex: number, bIndex: number) => {
+    assertMin('input aIndex', aIndex, 0);
+    assertEnd('input aIndex', aIndex, aLength);
+    assertMin('input bIndex', bIndex, 0);
+    assertEnd('input bIndex', bIndex, bLength);
+    return a[aIndex] === b[bIndex];
+  };
+
   const array = [];
   diff(
-    a.length,
-    b.length,
-    (aIndex: number, bIndex: number) => {
-      assertMin('input aIndex', aIndex, 0);
-      assertEnd('input aIndex', aIndex, a.length);
-      assertMin('input bIndex', bIndex, 0);
-      assertEnd('input bIndex', bIndex, b.length);
-      return a[aIndex] === b[bIndex];
-    },
+    aLength,
+    bLength,
+    isCommon,
     (nCommon: number, aCommon: number, bCommon: number) => {
       assertMin('output nCommon', nCommon, 1);
       assertMin('output aCommon', aCommon, 0);
-      assertMax('output aCommon + nCommon', aCommon + nCommon, a.length);
+      assertMax('output aCommon + nCommon', aCommon + nCommon, aLength);
       assertMin('output bCommon', bCommon, 0);
-      assertMax('output bCommon + nCommon', bCommon + nCommon, b.length);
+      assertMax('output bCommon + nCommon', bCommon + nCommon, bLength);
       assertCommonItems(a, b, nCommon, aCommon, bCommon);
       for (; nCommon !== 0; nCommon -= 1, aCommon += 1) {
         array.push(a[aCommon]);
       }
     },
   );
+
+  const nDifferences = countDifferences(aLength, bLength, isCommon);
+  expect(aLength + bLength - 2 * array.length).toBe(nDifferences);
+
   return array;
 };
 

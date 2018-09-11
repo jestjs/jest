@@ -1,6 +1,7 @@
 ---
-id: snapshot-testing
+id: version-23.6-snapshot-testing
 title: Snapshot Testing
+original_id: snapshot-testing
 ---
 
 Snapshot tests are a very useful tool whenever you want to make sure your UI does not change unexpectedly.
