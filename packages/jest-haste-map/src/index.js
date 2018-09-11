@@ -41,6 +41,7 @@ import type {
   HasteRegExp,
   MockData,
 } from 'types/HasteMap';
+import type {SerializableModuleMap as HasteSerializableModuleMap} from './module_map';
 
 type HType = typeof H;
 
@@ -93,6 +94,7 @@ type Watcher = {
 type WorkerInterface = {worker: typeof worker, getSha1: typeof getSha1};
 
 export type ModuleMap = HasteModuleMap;
+export type SerializableModuleMap = HasteSerializableModuleMap;
 export type FS = HasteFS;
 
 const CHANGE_INTERVAL = 30;

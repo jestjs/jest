@@ -13,11 +13,24 @@ import type {
   HTypeValue,
   ModuleMetaData,
   RawModuleMap,
+  ModuleMapData,
+  DuplicatesIndex,
+  MockData,
 } from 'types/HasteMap';
 
 import H from './constants';
 
 const EMPTY_MAP = {};
+
+export opaque type SerializableModuleMap = {
+  // There isn't an easy way to extract the type of the entries of a Map
+  duplicates: $Call<
+    typeof Array.from,
+    $Call<$PropertyType<DuplicatesIndex, 'entries'>>,
+  >,
+  map: $Call<typeof Array.from, $Call<$PropertyType<ModuleMapData, 'entries'>>>,
+  mocks: $Call<typeof Array.from, $Call<$PropertyType<MockData, 'entries'>>>,
+};
 
 export default class ModuleMap {
   _raw: RawModuleMap;
@@ -65,6 +78,22 @@ export default class ModuleMap {
       map: this._raw.map,
       mocks: this._raw.mocks,
     };
+  }
+
+  toJSON(): SerializableModuleMap {
+    return {
+      duplicates: Array.from(this._raw.duplicates),
+      map: Array.from(this._raw.map),
+      mocks: Array.from(this._raw.mocks),
+    };
+  }
+
+  static fromJSON(serializableModuleMap: SerializableModuleMap) {
+    return new ModuleMap({
+      duplicates: new Map(serializableModuleMap.duplicates),
+      map: new Map(serializableModuleMap.map),
+      mocks: new Map(serializableModuleMap.mocks),
+    });
   }
 
   /**

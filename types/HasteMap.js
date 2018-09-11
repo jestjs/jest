@@ -7,11 +7,16 @@
  * @flow
  */
 
-import type {ModuleMap as _ModuleMap, FS} from 'jest-haste-map';
+import type {
+  ModuleMap as _ModuleMap,
+  SerializableModuleMap as _SerializableModuleMap,
+  FS,
+} from 'jest-haste-map';
 import type {Path} from 'types/Config';
 
 export type HasteFS = FS;
 export type ModuleMap = _ModuleMap;
+export type SerializableModuleMap = _SerializableModuleMap;
 
 export type FileData = Map<Path, FileMetaData>;
 export type MockData = Map<string, Path>;
