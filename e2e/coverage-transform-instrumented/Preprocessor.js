@@ -19,6 +19,7 @@ module.exports = {
   canInstrument: true,
   process(src, filename, config, transformOptions) {
     options.filename = filename;
+
     if (transformOptions && transformOptions.instrument) {
       options.auxiliaryCommentBefore = ' istanbul ignore next ';
       options.plugins = [
@@ -34,10 +35,6 @@ module.exports = {
 
     const transformResult = babelTransform(src, options);
 
-    if (!transformResult) {
-      return src;
-    }
-
-    return transformResult.code;
+    return transformResult ? transformResult.code : src;
   },
 };

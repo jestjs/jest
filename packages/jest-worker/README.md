@@ -179,14 +179,8 @@ export function transform(filename) {
 
   // jest-worker can handle both immediate results and thenables. If a
   // thenable is returned, it will be await'ed until it resolves.
-  return new Promise((resolve, reject) => {
-    babel.transformFile(filename, (err, result) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve((cache[filename] = result));
-      }
-    });
+  return babel.transformFileAsync(filename).then(result => {
+    cache[filename] = result;
   });
 }
 ```

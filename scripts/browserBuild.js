@@ -32,7 +32,7 @@ const babelEs5Options = Object.assign(
           modules: false,
           shippedProposals: true,
           // Target ES5
-          targets: 'IE 8',
+          targets: 'IE 10',
           useBuiltIns: 'usage',
         },
       ],

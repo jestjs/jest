@@ -42,7 +42,10 @@ const createTransformer = (options: any): Transformer => {
   const loadBabelOptions = filename =>
     loadPartialConfig({
       ...options,
-      caller: {name: 'babel-jest'},
+      caller: {
+        name: 'babel-jest',
+        supportsStaticESM: false,
+      },
       filename,
     });
 
@@ -55,7 +58,10 @@ const createTransformer = (options: any): Transformer => {
       {instrument, rootDir}: CacheKeyOptions,
     ): string {
       const babelOptions = loadBabelOptions(filename);
-      const configPath = babelOptions.config || babelOptions.babelrc || '';
+      const configPath = [
+        babelOptions.config || '',
+        babelOptions.babelrc || '',
+      ];
 
       return crypto
         .createHash('md5')
@@ -69,7 +75,7 @@ const createTransformer = (options: any): Transformer => {
         .update('\0', 'utf8')
         .update(configString)
         .update('\0', 'utf8')
-        .update(configPath)
+        .update(configPath.join(''))
         .update('\0', 'utf8')
         .update(instrument ? 'instrument' : '')
         .digest('hex');
@@ -105,7 +111,6 @@ const createTransformer = (options: any): Transformer => {
         ]);
       }
 
-      // babel v7 might return null in the case when the file has been ignored.
       const transformResult = babelTransform(src, babelOptions);
 
       return transformResult || src;

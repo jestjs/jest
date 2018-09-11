@@ -7,9 +7,8 @@
  * @flow
  */
 
-import {readFileSync} from 'fs';
-
-import {parse as babylonParse} from '@babel/parser';
+import fs from 'fs';
+import {parse as babelParse} from '@babel/core';
 import {Expect, ItBlock} from './parser_nodes';
 // TODO: Change import to @babel/parser once types exist
 import type {File as BabylonFile} from 'babylon';
@@ -19,28 +18,15 @@ export type BabylonParserResult = {
   itBlocks: Array<ItBlock>,
 };
 
-export const getASTfor = (file: string): BabylonFile => {
-  const data = readFileSync(file).toString();
-  const config = {
-    // https://babeljs.io/docs/en/babel-parser#plugins
-    plugins: [
-      'asyncGenerators',
-      'classProperties',
-      'dynamicImport',
-      'exportDefaultFrom',
-      'exportNamespaceFrom',
-      'flow',
-      'flowComments',
-      'jsx',
-      'objectRestSpread',
-      'optionalCatchBinding',
-      'optionalChaining',
-      'throwExpressions',
-    ],
-    sourceFilename: file,
+export const getASTfor = (file: string): ?BabylonFile => {
+  const data = fs.readFileSync(file).toString();
+
+  return babelParse(data, {
+    babelrc: true,
+    filename: file,
+    sourceFileName: file,
     sourceType: 'module',
-  };
-  return babylonParse(data, config);
+  });
 };
 
 export const parse = (file: string): BabylonParserResult => {
@@ -180,7 +166,9 @@ export const parse = (file: string): BabylonParserResult => {
     }
   };
 
-  searchNodes(ast['program'], file);
+  if (ast) {
+    searchNodes(ast.program, file);
+  }
 
   return {
     expects,

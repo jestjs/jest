@@ -1,3 +1,4 @@
 {
+  "plugins": ["@babel/plugin-proposal-class-properties"],
   "presets": ["@babel/preset-env", "metro-react-native-babel-preset"]
 }

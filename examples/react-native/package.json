@@ -11,6 +11,7 @@
     "react-native": "0.57.0-rc.4"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "*",
     "@babel/preset-env": "*",
     "babel-jest": "*",
     "jest": "*",

@@ -284,10 +284,12 @@ const jestPreset = require('babel-preset-jest');
 
 module.exports = {
   process(src, filename) {
-    return transform(src, {
+    const result = transform(src, {
       filename,
       presets: [jestPreset],
     });
+
+    return result ? result.code : src;
   },
 };
 ```
