@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[jest-diff]` Replace `diff` with `diff-sequences` package ([#6961](https://github.com/facebook/jest/pull/6961))
+
 ## 23.6.0
 
 ### Features
