@@ -18,11 +18,7 @@ import type {
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import {
-  transform as babelTransform,
-  util as babelUtil,
-  loadPartialConfig,
-} from '@babel/core';
+import {transformSync as babelTransform, loadPartialConfig} from '@babel/core';
 import jestPreset from 'babel-preset-jest';
 import babelIstanbulPlugin from 'babel-plugin-istanbul';
 
@@ -86,14 +82,6 @@ const createTransformer = (options: any): Transformer => {
       config: ProjectConfig,
       transformOptions?: TransformOptions,
     ): string | TransformedSource {
-      const altExts = config.moduleFileExtensions.map(
-        extension => '.' + extension,
-      );
-
-      if (babelUtil && !babelUtil.canCompile(filename, altExts)) {
-        return src;
-      }
-
       const babelOptions = {...loadBabelOptions(filename).options};
 
       if (transformOptions && transformOptions.instrument) {
