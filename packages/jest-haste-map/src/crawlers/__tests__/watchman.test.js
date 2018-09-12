@@ -53,7 +53,7 @@ const WATCH_PROJECT_MOCK = {
   },
 };
 
-const objectToMap = obj => new Map(Object.entries(obj));
+const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
 describe('watchman watch', () => {
   beforeEach(() => {
@@ -99,7 +99,7 @@ describe('watchman watch', () => {
       'watch-project': WATCH_PROJECT_MOCK,
     };
 
-    mockFiles = objectToMap({
+    mockFiles = createMap({
       [MELON]: ['', 33, 0, [], null],
       [STRAWBERRY]: ['', 30, 0, [], null],
       [TOMATO]: ['', 31, 0, [], null],
@@ -151,7 +151,7 @@ describe('watchman watch', () => {
       ]);
 
       expect(data.clocks).toEqual(
-        objectToMap({
+        createMap({
           [ROOT_MOCK]: 'c:fake-clock:1',
         }),
       );
@@ -190,7 +190,7 @@ describe('watchman watch', () => {
       'watch-project': WATCH_PROJECT_MOCK,
     };
 
-    const clocks = objectToMap({
+    const clocks = createMap({
       [ROOT_MOCK]: 'c:fake-clock:1',
     });
 
@@ -207,13 +207,13 @@ describe('watchman watch', () => {
       expect(data.files).toBe(mockFiles);
 
       expect(data.clocks).toEqual(
-        objectToMap({
+        createMap({
           [ROOT_MOCK]: 'c:fake-clock:2',
         }),
       );
 
       expect(data.files).toEqual(
-        objectToMap({
+        createMap({
           [KIWI]: ['', 42, 0, [], null],
           [MELON]: ['', 33, 0, [], null],
           [STRAWBERRY]: ['', 30, 0, [], null],
@@ -259,7 +259,7 @@ describe('watchman watch', () => {
     const mockMetadata = ['Banana', 41, 1, ['Raspberry'], null];
     mockFiles.set(BANANA, mockMetadata);
 
-    const clocks = objectToMap({
+    const clocks = createMap({
       [ROOT_MOCK]: 'c:fake-clock:1',
     });
 
@@ -276,14 +276,14 @@ describe('watchman watch', () => {
       expect(data.files).not.toBe(mockFiles);
 
       expect(data.clocks).toEqual(
-        objectToMap({
+        createMap({
           [ROOT_MOCK]: 'c:fake-clock:3',
         }),
       );
 
       // /fruits/strawberry.js was removed from the file list.
       expect(data.files).toEqual(
-        objectToMap({
+        createMap({
           [BANANA]: mockMetadata,
           [KIWI]: ['', 42, 0, [], null],
           [TOMATO]: mockFiles.get(TOMATO),
@@ -341,7 +341,7 @@ describe('watchman watch', () => {
       },
     };
 
-    const clocks = objectToMap({
+    const clocks = createMap({
       [FRUITS]: 'c:fake-clock:1',
       [VEGETABLES]: 'c:fake-clock:2',
     });
@@ -356,14 +356,14 @@ describe('watchman watch', () => {
       roots: ROOTS,
     }).then(data => {
       expect(data.clocks).toEqual(
-        objectToMap({
+        createMap({
           [FRUITS]: 'c:fake-clock:3',
           [VEGETABLES]: 'c:fake-clock:4',
         }),
       );
 
       expect(data.files).toEqual(
-        objectToMap({
+        createMap({
           [KIWI]: ['', 42, 0, [], null],
           [MELON]: ['', 33, 0, [], null],
         }),
@@ -436,12 +436,12 @@ describe('watchman watch', () => {
       expect(query[2].glob).toEqual(['**/*.js', '**/*.json']);
 
       expect(data.clocks).toEqual(
-        objectToMap({
+        createMap({
           [ROOT_MOCK]: 'c:fake-clock:1',
         }),
       );
 
-      expect(data.files).toEqual(objectToMap({}));
+      expect(data.files).toEqual(createMap({}));
 
       expect(client.end).toBeCalled();
     });

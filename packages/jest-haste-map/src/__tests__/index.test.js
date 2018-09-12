@@ -103,7 +103,7 @@ const ConditionalTest = require('../../../../scripts/ConditionalTest');
 
 const cacheFilePath = '/cache-file';
 const object = data => Object.assign(Object.create(null), data);
-const createMap = obj => new Map(Object.entries(obj));
+const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
 // Jest toEqual does not match Map instances from different contexts
 const normalizePersisted = hasteMap => ({

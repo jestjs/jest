@@ -68,7 +68,7 @@ jest.mock('fs', () => {
 });
 
 const pearMatcher = path => /pear/.test(path);
-const createMap = obj => new Map(Object.entries(obj));
+const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
 let mockResponse;
 let nodeCrawl;
