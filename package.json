@@ -40,7 +40,7 @@
     "karma-mocha": "^1.3.0",
     "left-pad": "^1.1.1",
     "lerna": "3.4.0",
-    "metro-react-native-babel-preset": "^0.45.1",
+    "metro-react-native-babel-preset": "^0.45.2",
     "micromatch": "^2.3.11",
     "mkdirp": "^0.5.1",
     "mocha": "^5.0.1",
