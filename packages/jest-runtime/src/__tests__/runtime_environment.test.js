@@ -42,11 +42,11 @@ describe('Runtime', () => {
           hasThrown = true;
           if (process.platform === 'win32') {
             expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\throwing_fn.js:11:9/,
+              /^Error: throwing fn\s+at sum.+\\__tests__\\test_root\\throwing_fn\.js/,
             );
           } else {
             expect(err.stack).toMatch(
-              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/throwing_fn.js:11:9/,
+              /^Error: throwing fn\s+at sum.+\/__tests__\/test_root\/throwing_fn\.js/,
             );
           }
         }
