@@ -23,7 +23,7 @@ import H from './constants';
 const EMPTY_MAP = {};
 
 export opaque type SerializableModuleMap = {
-  // There isn't an easy way to extract the type of the entries of a Map
+  // There is no easier way to extract the type of the entries of a Map
   duplicates: $Call<
     typeof Array.from,
     $Call<$PropertyType<DuplicatesIndex, 'entries'>>,
@@ -162,7 +162,7 @@ export default class ModuleMap {
     );
   }
 
-  static createEmpty() {
+  static create() {
     return new ModuleMap({
       duplicates: new Map(),
       map: new Map(),

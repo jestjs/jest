@@ -23,7 +23,7 @@ beforeEach(() => {
 
 describe('isCoreModule', () => {
   it('returns false if `hasCoreModules` is false.', () => {
-    const moduleMap = ModuleMap.createEmpty();
+    const moduleMap = ModuleMap.create();
     const resolver = new Resolver(moduleMap, {
       hasCoreModules: false,
     });
@@ -32,14 +32,14 @@ describe('isCoreModule', () => {
   });
 
   it('returns true if `hasCoreModules` is true and `moduleName` is a core module.', () => {
-    const moduleMap = ModuleMap.createEmpty();
+    const moduleMap = ModuleMap.create();
     const resolver = new Resolver(moduleMap, {});
     const isCore = resolver.isCoreModule('assert');
     expect(isCore).toEqual(true);
   });
 
   it('returns false if `hasCoreModules` is true and `moduleName` is not a core module.', () => {
-    const moduleMap = ModuleMap.createEmpty();
+    const moduleMap = ModuleMap.create();
     const resolver = new Resolver(moduleMap, {});
     const isCore = resolver.isCoreModule('not-a-core-module');
     expect(isCore).toEqual(false);
@@ -82,7 +82,7 @@ describe('findNodeModule', () => {
 describe('resolveModule', () => {
   let moduleMap;
   beforeEach(() => {
-    moduleMap = ModuleMap.createEmpty();
+    moduleMap = ModuleMap.create();
   });
 
   it('is possible to resolve node modules', () => {
@@ -159,7 +159,7 @@ describe('getMockModule', () => {
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', () => {
     userResolver.mockImplementation(() => 'module');
 
-    const moduleMap = ModuleMap.createEmpty();
+    const moduleMap = ModuleMap.create();
     const resolver = new Resolver(moduleMap, {
       moduleNameMapper: [
         {
@@ -196,7 +196,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   beforeEach(() => {
     jest.resetModules();
 
-    moduleMap = ModuleMap.createEmpty();
+    moduleMap = ModuleMap.create();
 
     // Mocking realpath to function the old way, where it just looks at
     // pathstrings instead of actually trying to access the physical directory.

@@ -417,8 +417,9 @@ class HasteMap extends EventEmitter {
 
     const fileMetadata = hasteMap.files.get(filePath);
     if (!fileMetadata) {
-      // Should never happen
-      throw new Error('File to process was not found in the haste map');
+      throw new Error(
+        'jest-haste-map: File to process was not found in the haste map.',
+      );
     }
 
     const moduleMetadata = hasteMap.map.get(fileMetadata[H.ID]);
