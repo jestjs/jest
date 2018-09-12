@@ -4,3 +4,8 @@ exports[`FakePromises runAllPromises warns if promise rejection is not handled 1
 "UnhandledPromiseRejectionWarning: Unhandled promise rejection.
 "
 `;
+
+exports[`FakePromises useFakePromises warns if babel-jest is not being used 1`] = `
+"Fake promises are being used without babel-jest. All promises created implicitly with async-await syntax will not be converted to fake promises. Fake promises may work with transpiler plugins that compile from async-await syntax to syntax that uses explicit ES6 Promises. However, these are outside the scope of the jest project, and have not been tested against.
+"
+`;

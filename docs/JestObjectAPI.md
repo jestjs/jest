@@ -421,7 +421,7 @@ Instructs Jest to use fake versions of the standard Promise API (`Promise.resolv
 
 Returns the `jest` object for chaining.
 
-_Note: using fake promises will not mock promises created using the [`async-await` syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function), unless they are transpiled into explicit Promises (e.g. using Babel) before running the tests._
+_Note: this feature depends on babel-jest to transpile implicit promises created using the [`async-await` syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)._
 
 ### `jest.useFakeTimers()`
 

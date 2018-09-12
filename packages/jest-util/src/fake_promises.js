@@ -11,6 +11,7 @@ import type {ProjectConfig} from 'types/Config';
 import type {Global} from 'types/Global';
 
 import {formatStackTrace} from 'jest-message-util';
+import path from 'path';
 import setGlobal from './set_global';
 
 /**
@@ -286,6 +287,7 @@ export default class FakePromises {
   }
 
   useFakePromises() {
+    this._checkWillConvertAsyncToFakePromise();
     setGlobal(this._global, 'Promise', this._fakePromise);
   }
 
@@ -338,6 +340,30 @@ export default class FakePromises {
           `\`"promises": "fake"\` in ` +
           `the configuration file. Fake promises will also be used by default ` +
           `if you use fake timers.\n\n` +
+          `Stack Trace:\n` +
+          formatStackTrace(new Error().stack, this._config, {
+            noStackTrace: false,
+          }),
+      );
+    }
+  }
+
+  _checkWillConvertAsyncToFakePromise() {
+    let hasBabelJest = false;
+    this._config.transform.forEach(([pattern, transformer]) => {
+      hasBabelJest =
+        hasBabelJest ||
+        transformer.endsWith(path.join('babel-jest', 'build', 'index.js'));
+    });
+
+    if (!hasBabelJest) {
+      this._global.console.warn(
+        `Fake promises are being used without babel-jest. All promises created ` +
+          `implicitly with async-await syntax will not be converted to fake ` +
+          `promises. Fake promises may work with transpiler plugins that ` +
+          `compile from async-await syntax to syntax that uses explicit ES6 ` +
+          `Promises. However, these are outside the scope of the jest project, ` +
+          `and have not been tested against.\n\n` +
           `Stack Trace:\n` +
           formatStackTrace(new Error().stack, this._config, {
             noStackTrace: false,
@@ -541,11 +567,6 @@ class _Promise {
   }
 
   dangerouslyClearNode() {
-    delete this._node.children;
-    delete this._node.parent;
-    delete this._node.onFulfilled;
-    delete this._node.onRejected;
-    delete this._node.output;
     delete this._node;
   }
 

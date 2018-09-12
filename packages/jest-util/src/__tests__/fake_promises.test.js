@@ -8,17 +8,25 @@
 
 'use strict';
 
+const path = require('path');
+
 describe('FakePromises', () => {
-  let FakePromises;
+  let FakePromises, config;
 
   beforeEach(() => {
     FakePromises = require('../fake_promises').default;
+    const configTransform = [
+      ['*', path.join('babel-jest', 'build', 'index.js')],
+    ];
+    config = {
+      transform: configTransform,
+    };
   });
 
   describe('construction', () => {
     it('installs global.Promise mock', () => {
       const global = {};
-      const promises = new FakePromises({global});
+      const promises = new FakePromises({config, global});
       promises.useFakePromises();
       expect(global.Promise).not.toBe(undefined);
     });
@@ -28,6 +36,7 @@ describe('FakePromises', () => {
     it('runs all promises', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -44,6 +53,7 @@ describe('FakePromises', () => {
     it("traverses all promises with identical parent in order in which they're scheduled", () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -67,6 +77,7 @@ describe('FakePromises', () => {
     it('traverses promise trees in-order', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -101,6 +112,7 @@ describe('FakePromises', () => {
     it('schedules promises with completed parents immediately', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -130,10 +142,9 @@ describe('FakePromises', () => {
     it('warns if promise rejection is not handled', () => {
       const consoleWarn = console.warn;
       console.warn = jest.fn();
+      config.rootDir = __dirname;
       const promises = new FakePromises({
-        config: {
-          rootDir: __dirname,
-        },
+        config,
         global,
       });
       promises.useFakePromises();
@@ -149,6 +160,7 @@ describe('FakePromises', () => {
     it('propagates errors to the first onRejected callback', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -168,12 +180,74 @@ describe('FakePromises', () => {
       expect(mock1.mock.calls.length).toBe(1);
       expect(mock2.mock.calls.length).toBe(0);
     });
+
+    it('synchronizes implicit promises created with async-await syntax', () => {
+      const global = {};
+      const promises = new FakePromises({
+        config,
+        global,
+      });
+      promises.useFakePromises();
+
+      async function test() {
+        return await 5;
+      }
+
+      const mock1 = jest.fn(() => {});
+      test().then(mock1);
+
+      expect(mock1.mock.calls.length).toBe(0);
+
+      promises.runAllPromises();
+
+      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1.mock.calls[0][0]).toBe(5);
+    });
+  });
+
+  describe('useFakePromises', () => {
+    it('warns if babel-jest is not being used', () => {
+      const consoleWarn = console.warn;
+      console.warn = jest.fn();
+      config.rootDir = __dirname;
+      config.transform = [];
+      const promises = new FakePromises({
+        config,
+        global,
+      });
+      promises.useFakePromises();
+
+      expect(
+        console.warn.mock.calls[0][0].split('\nStack Trace')[0],
+      ).toMatchSnapshot();
+      console.warn = consoleWarn;
+    });
+  });
+
+  describe('useRealPromises', () => {
+    it('resets native timer APIs', () => {
+      const nativePromise = jest.fn();
+      global.Promise = nativePromise;
+
+      const promises = new FakePromises({
+        config,
+        global,
+      });
+      promises.useFakePromises();
+
+      expect(global.Promise).not.toBe(nativePromise);
+
+      promises.useRealPromises();
+
+      expect(global.Promise).toBe(nativePromise);
+    });
   });
 
   describe('_Promise.constructor()', () => {
     it('passes resolved value as input to child onResolve callbacks', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -193,6 +267,7 @@ describe('FakePromises', () => {
     it('passes rejected reason as input to child onRejected callbacks', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -212,6 +287,7 @@ describe('FakePromises', () => {
     it('returns a forever pending promise if callback neither rejects nor resolves', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -237,6 +313,7 @@ describe('FakePromises', () => {
     it('passes resolved value as input to child onResolve callbacks', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -262,6 +339,7 @@ describe('FakePromises', () => {
     it('returns the resolved promise instead of creating a new promise if resolved value is a promise', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -283,6 +361,7 @@ describe('FakePromises', () => {
     it("reschedules the callback to the end of the promise's children queue if resolved value is a promise", () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -313,6 +392,7 @@ describe('FakePromises', () => {
 
         const global = {};
         const promises = new FakePromises({
+          config,
           global,
         });
         promises.useFakePromises();
@@ -337,6 +417,7 @@ describe('FakePromises', () => {
       it('returns a resolved promise if thenable callback resolves', () => {
         const global = {};
         const promises = new FakePromises({
+          config,
           global,
         });
         promises.useFakePromises();
@@ -361,6 +442,7 @@ describe('FakePromises', () => {
       it('returns a rejected promise if thenable callback rejects', () => {
         const global = {};
         const promises = new FakePromises({
+          config,
           global,
         });
         promises.useFakePromises();
@@ -385,6 +467,7 @@ describe('FakePromises', () => {
       it('returns a pending promise if thenable callback neither resolves nor rejects', () => {
         const global = {};
         const promises = new FakePromises({
+          config,
           global,
         });
         promises.useFakePromises();
@@ -405,6 +488,7 @@ describe('FakePromises', () => {
       it('calls thenable callback once, even if parallel child promises are scheduled', () => {
         const global = {};
         const promises = new FakePromises({
+          config,
           global,
         });
         promises.useFakePromises();
@@ -437,6 +521,7 @@ describe('FakePromises', () => {
       it('adds one more promise to the promise chain than a normal resolved value', () => {
         const global = {};
         const promises = new FakePromises({
+          config,
           global,
         });
         promises.useFakePromises();
@@ -467,6 +552,7 @@ describe('FakePromises', () => {
     it('passes rejected reason as input to child onRejected callbacks', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -486,6 +572,7 @@ describe('FakePromises', () => {
     it("doesn't convert a thenables to promises", () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -517,6 +604,7 @@ describe('FakePromises', () => {
     it("passes the onResolved callback's return value as an input to the next onResolved callback", () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -541,6 +629,7 @@ describe('FakePromises', () => {
     it('passes errors thrown in the onResolved callback as a reason to the next onRejected callback', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -568,6 +657,7 @@ describe('FakePromises', () => {
     it('schedules promises even if the parent is a completed promise', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -596,6 +686,7 @@ describe('FakePromises', () => {
     it("if output is promise then children are appended to the end of output promise's tree", () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -629,10 +720,9 @@ describe('FakePromises', () => {
     });
 
     it("doesn't catch errors that occur in the onFulfilled callback if onRejected callback is provided", () => {
+      config.rootDir = __dirname;
       const promises = new FakePromises({
-        config: {
-          rootDir: __dirname,
-        },
+        config,
         global,
       });
       promises.useFakePromises();
@@ -661,6 +751,7 @@ describe('FakePromises', () => {
     it('catches errors that occur  further upstream if onRejected callback is provided', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -684,6 +775,7 @@ describe('FakePromises', () => {
     it("catches errors that occur in parent's callback", () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -701,6 +793,7 @@ describe('FakePromises', () => {
     it('catches errors from further upstream (rejections that occur before immediate parent)', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -723,6 +816,7 @@ describe('FakePromises', () => {
     it('passes the value returned by the onRejected callback as input to the next onResolved callback', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -746,6 +840,7 @@ describe('FakePromises', () => {
     it('passes errors that occur in the onRejected callback downstream', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -769,6 +864,7 @@ describe('FakePromises', () => {
     it("completes catch callbacks in order in which they're scheduled", () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -794,6 +890,7 @@ describe('FakePromises', () => {
     it('catches errors that occur further upstream', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -812,6 +909,7 @@ describe('FakePromises', () => {
     it("it doesn't pass an argument to its callback", () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -831,6 +929,7 @@ describe('FakePromises', () => {
     it('passes resolved value to children', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -855,6 +954,7 @@ describe('FakePromises', () => {
     it('passes rejected value to children', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -881,6 +981,7 @@ describe('FakePromises', () => {
     it('resolves with an empty array if an empty array is passed to it', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -900,6 +1001,7 @@ describe('FakePromises', () => {
     it('throws an error if argument is not an array', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -909,6 +1011,7 @@ describe('FakePromises', () => {
     it('resolves with an array that includes any non-promise value from the input array', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -927,6 +1030,7 @@ describe('FakePromises', () => {
     it('converts thenable input array entries to promises', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -946,6 +1050,7 @@ describe('FakePromises', () => {
     it('includes resolved values of input promises according to their order in input promise', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -966,6 +1071,7 @@ describe('FakePromises', () => {
     it('includes resolved values of input promises in order', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -986,6 +1092,7 @@ describe('FakePromises', () => {
     it('rejects when a promise amongst its values rejects', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -1010,6 +1117,7 @@ describe('FakePromises', () => {
     it('never resolves if an empty array is passed', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -1028,6 +1136,7 @@ describe('FakePromises', () => {
     it('returns first promise to resolve', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -1048,6 +1157,7 @@ describe('FakePromises', () => {
     it('resolves non-promise values and races them against other input values', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -1066,6 +1176,7 @@ describe('FakePromises', () => {
     it('converts thenables to promises and races them against other input values', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -1085,6 +1196,7 @@ describe('FakePromises', () => {
     it('rejects if the first promise to complete is a rejection', () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -1105,6 +1217,7 @@ describe('FakePromises', () => {
     it("doens't prioritize rejections over resolutions", () => {
       const global = {};
       const promises = new FakePromises({
+        config,
         global,
       });
       promises.useFakePromises();
@@ -1126,14 +1239,14 @@ describe('FakePromises', () => {
   describe('isUsingFakePromises', () => {
     it('indicates when using fake promises', () => {
       const global = {};
-      const promises = new FakePromises({global});
+      const promises = new FakePromises({config, global});
       promises.useFakePromises();
       expect(promises.isUsingFakePromises()).toBe(true);
     });
 
     it('indicates when not using fake promises', () => {
       const global = {};
-      const promises = new FakePromises({global});
+      const promises = new FakePromises({config, global});
       promises.useRealPromises();
       expect(promises.isUsingFakePromises()).toBe(false);
     });
@@ -1142,14 +1255,14 @@ describe('FakePromises', () => {
   describe('hasQueuedPromises', () => {
     it('indicates when no promises are queued', () => {
       const global = {};
-      const promises = new FakePromises({global});
+      const promises = new FakePromises({config, global});
       promises.useFakePromises();
       expect(promises.hasQueuedPromises()).toBe(false);
     });
 
     it('indicates when promises are queued', () => {
       const global = {};
-      const promises = new FakePromises({global});
+      const promises = new FakePromises({config, global});
       promises.useFakePromises();
       global.Promise.resolve(0);
       expect(promises.hasQueuedPromises()).toBe(true);

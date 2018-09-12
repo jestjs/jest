@@ -871,7 +871,7 @@ class Runtime {
       return jestObject;
     };
     const useRealPromises = () => {
-      this._environment.fakePromises.useFakePromises();
+      this._environment.fakePromises.useRealPromises();
       return jestObject;
     };
     const useFakeTimers = () => {
