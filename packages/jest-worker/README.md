@@ -181,6 +181,8 @@ export function transform(filename) {
   // thenable is returned, it will be await'ed until it resolves.
   return babel.transformFileAsync(filename).then(result => {
     cache[filename] = result;
+
+    return result;
   });
 }
 ```
