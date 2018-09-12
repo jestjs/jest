@@ -27,13 +27,13 @@ jest.mock('jest-worker', () =>
 
 jest.mock('../test_worker', () => {});
 
-test('injects the rawModuleMap into each worker in watch mode', () => {
+test('injects the serializable module map into each worker in watch mode', () => {
   const globalConfig = {maxWorkers: 2, watch: true};
   const config = {rootDir: '/path/'};
-  const rawModuleMap = jest.fn();
+  const serializableModuleMap = jest.fn();
   const context = {
     config,
-    moduleMap: {getRawModuleMap: () => rawModuleMap},
+    moduleMap: {toJSON: () => serializableModuleMap},
   };
   return new TestRunner(globalConfig)
     .runTests(
@@ -46,13 +46,20 @@ test('injects the rawModuleMap into each worker in watch mode', () => {
     )
     .then(() => {
       expect(mockWorkerFarm.worker.mock.calls).toEqual([
-        [{config, globalConfig, path: './file.test.js', rawModuleMap}],
-        [{config, globalConfig, path: './file2.test.js', rawModuleMap}],
+        [{config, globalConfig, path: './file.test.js', serializableModuleMap}],
+        [
+          {
+            config,
+            globalConfig,
+            path: './file2.test.js',
+            serializableModuleMap,
+          },
+        ],
       ]);
     });
 });
 
-test('does not inject the rawModuleMap in serial mode', () => {
+test('does not inject the serializable module map in serial mode', () => {
   const globalConfig = {maxWorkers: 1, watch: false};
   const config = {rootDir: '/path/'};
   const context = {config};
@@ -73,7 +80,7 @@ test('does not inject the rawModuleMap in serial mode', () => {
             config,
             globalConfig,
             path: './file.test.js',
-            rawModuleMap: null,
+            serializableModuleMap: null,
           },
         ],
         [
@@ -81,7 +88,7 @@ test('does not inject the rawModuleMap in serial mode', () => {
             config,
             globalConfig,
             path: './file2.test.js',
-            rawModuleMap: null,
+            serializableModuleMap: null,
           },
         ],
       ]);

@@ -6,6 +6,7 @@
 
 - `[jest-ci]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
 - `[babel-jest]` Add support for `babel.config.js` added in Babel 7.0.0 ([#6911](https://github.com/facebook/jest/pull/6911))
+- `[jest-haste-map]` [**BREAKING**] Replaced internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
 
 ### Fixes
 
