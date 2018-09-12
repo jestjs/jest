@@ -537,8 +537,8 @@ Don't use `.toBe` with floating-point numbers. For example, due to rounding, in 
 
 Although the `.toBe` matcher **checks** shallow equality, it **reports** a deep comparison of values if the assertion fails. If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the `expect` function. For example, to assert whether or not elements are the same instance:
 
-* rewrite `expect(received).toBe(expected)` as `expect(Object.is(received, expected)).toBe(true)`
-* rewrite `expect(received).not.toBe(expected)` as `expect(Object.is(received, expected)).toBe(false)`
+- rewrite `expect(received).toBe(expected)` as `expect(Object.is(received, expected)).toBe(true)`
+- rewrite `expect(received).not.toBe(expected)` as `expect(Object.is(received, expected)).toBe(false)`
 
 ### `.toHaveBeenCalled()`
 
@@ -939,8 +939,8 @@ describe('the La Croix cans on my desk', () => {
 
 If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the `expect` function. For example, use `equals` method of `Buffer` class to assert whether or not buffers contain the same content:
 
-* rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
-* rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
+- rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
+- rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
 
 ### `.toHaveLength(number)`
 
