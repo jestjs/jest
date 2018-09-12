@@ -34,7 +34,14 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 2.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for running development scripts. If you haven't already done so, please [install yarn](https://yarnpkg.com/en/docs/install).
 
-3.  Run `yarn install`. On Windows: To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may need to download either node.js or Chocolatey<br />
+3.  Make sure you have `python` installed (v2.7 is recommended, v3.x.x is not supported). Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
+
+    To check your version of Python and ensure it's installed you can type:
+    ```
+    python --version
+    ```
+
+4.  Run `yarn install`. On Windows: To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may need to download either node.js or Chocolatey<br />
 
     ```sh
     yarn install
@@ -46,23 +53,23 @@ _Before_ submitting a pull request, please make sure the following is done…
     yarn --version
     ```
 
-4.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
+5.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
 
     ```sh
     # in the background
     yarn run watch
     ```
 
-5.  If you've changed APIs, update the documentation.
+6.  If you've changed APIs, update the documentation.
 
-6.  Ensure the test suite passes via `yarn test`. To run the test suite you may need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On macOS, this can be done using [homebrew](http://brew.sh/): `brew install hg`.
+7.  Ensure the test suite passes via `yarn test`. To run the test suite you may need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On macOS, this can be done using [homebrew](http://brew.sh/): `brew install hg`.
 
     ```sh
     brew install hg # maybe
     yarn test
     ```
 
-7.  If you haven't already, complete the CLA.
+8.  If you haven't already, complete the CLA.
 
 #### Additional Workflow for any changes made to website or docs
 
