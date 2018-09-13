@@ -18,12 +18,13 @@
 - `[examples]` add example using Babel 7 ([#6983](https://github.com/facebook/jest/pull/6983))
 - `[docs]` Replace shallow equality with referential identity in `ExpectAPI.md` ([#6991](https://github.com/facebook/jest/pull/6991))
 - `[jest-changed-files]` Refactor to use `execa` over `child_process` ([#6987](https://github.com/facebook/jest/pull/6987))
+- `[*]` Bump dated dependencies ([#6978](https://github.com/facebook/jest/pull/6978))
 
 ## 23.6.0
 
 ### Features
 
-- `[jest-ci]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
+- `[jest-cli]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
 - `[babel-jest]` Add support for `babel.config.js` added in Babel 7.0.0 ([#6911](https://github.com/facebook/jest/pull/6911))
 
 ### Fixes
