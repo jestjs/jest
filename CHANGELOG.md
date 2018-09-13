@@ -28,8 +28,7 @@
 - `[docs]` Correct `failure-change` notification mode ([#6878](https://github.com/facebook/jest/pull/6878))
 - `[scripts]` Don’t remove node_modules from subdirectories of presets in e2e tests ([#6948](https://github.com/facebook/jest/pull/6948))
 - `[diff-sequences]` Double-check number of differences in tests ([#6953](https://github.com/facebook/jest/pull/6953))
-- `[docs]` Add documentation for promise mocks, and clarify how micro-tasks behave when using timer mocks
-([#6876](https://github.com/facebook/jest/pull/6876))
+- `[docs]` Add documentation for promise mocks, and clarify how micro-tasks behave when using timer mocks ([#6876](https://github.com/facebook/jest/pull/6876))
 
 ## 23.5.0
 
