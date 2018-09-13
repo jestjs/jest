@@ -1,5 +1,9 @@
 ## master
 
+### Fixes
+
+- `[jest-haste-map]` [**BREAKING**] Replaced internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
+
 ### Chore & Maintenance
 
 - `[docs]` Explain how to rewrite assertions to avoid large irrelevant diff ([#6971](https://github.com/facebook/jest/pull/6971))

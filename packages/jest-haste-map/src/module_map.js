@@ -13,11 +13,24 @@ import type {
   HTypeValue,
   ModuleMetaData,
   RawModuleMap,
+  ModuleMapData,
+  DuplicatesIndex,
+  MockData,
 } from 'types/HasteMap';
 
 import H from './constants';
 
 const EMPTY_MAP = {};
+
+export opaque type SerializableModuleMap = {
+  // There is no easier way to extract the type of the entries of a Map
+  duplicates: $Call<
+    typeof Array.from,
+    $Call<$PropertyType<DuplicatesIndex, 'entries'>>,
+  >,
+  map: $Call<typeof Array.from, $Call<$PropertyType<ModuleMapData, 'entries'>>>,
+  mocks: $Call<typeof Array.from, $Call<$PropertyType<MockData, 'entries'>>>,
+};
 
 export default class ModuleMap {
   _raw: RawModuleMap;
@@ -56,7 +69,7 @@ export default class ModuleMap {
   }
 
   getMockModule(name: string): ?Path {
-    return this._raw.mocks[name] || this._raw.mocks[name + '/index'];
+    return this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
   }
 
   getRawModuleMap(): RawModuleMap {
@@ -65,6 +78,22 @@ export default class ModuleMap {
       map: this._raw.map,
       mocks: this._raw.mocks,
     };
+  }
+
+  toJSON(): SerializableModuleMap {
+    return {
+      duplicates: Array.from(this._raw.duplicates),
+      map: Array.from(this._raw.map),
+      mocks: Array.from(this._raw.mocks),
+    };
+  }
+
+  static fromJSON(serializableModuleMap: SerializableModuleMap) {
+    return new ModuleMap({
+      duplicates: new Map(serializableModuleMap.duplicates),
+      map: new Map(serializableModuleMap.map),
+      mocks: new Map(serializableModuleMap.mocks),
+    });
   }
 
   /**
@@ -80,8 +109,8 @@ export default class ModuleMap {
     platform: ?string,
     supportsNativePlatform: boolean,
   ): ?ModuleMetaData {
-    const map = this._raw.map[name] || EMPTY_MAP;
-    const dupMap = this._raw.duplicates[name] || EMPTY_MAP;
+    const map = this._raw.map.get(name) || EMPTY_MAP;
+    const dupMap = this._raw.duplicates.get(name) || EMPTY_MAP;
     if (platform != null) {
       this._assertNoDuplicates(
         name,
@@ -131,6 +160,14 @@ export default class ModuleMap {
       supportsNativePlatform,
       set,
     );
+  }
+
+  static create() {
+    return new ModuleMap({
+      duplicates: new Map(),
+      map: new Map(),
+      mocks: new Map(),
+    });
   }
 }
 

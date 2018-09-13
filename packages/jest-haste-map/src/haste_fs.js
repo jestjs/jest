@@ -22,23 +22,26 @@ export default class HasteFS {
   }
 
   getModuleName(file: Path): ?string {
-    return (this._files[file] && this._files[file][H.ID]) || null;
+    const fileMetadata = this._files.get(file);
+    return (fileMetadata && fileMetadata[H.ID]) || null;
   }
 
   getDependencies(file: Path): ?Array<string> {
-    return (this._files[file] && this._files[file][H.DEPENDENCIES]) || null;
+    const fileMetadata = this._files.get(file);
+    return (fileMetadata && fileMetadata[H.DEPENDENCIES]) || null;
   }
 
   getSha1(file: Path): ?string {
-    return (this._files[file] && this._files[file][H.SHA1]) || null;
+    const fileMetadata = this._files.get(file);
+    return (fileMetadata && fileMetadata[H.SHA1]) || null;
   }
 
   exists(file: Path): boolean {
-    return !!this._files[file];
+    return this._files.has(file);
   }
 
   getAllFiles(): Array<string> {
-    return Object.keys(this._files);
+    return Array.from(this._files.keys());
   }
 
   matchFiles(pattern: RegExp | string): Array<Path> {
@@ -46,7 +49,7 @@ export default class HasteFS {
       pattern = new RegExp(pattern);
     }
     const files = [];
-    for (const file in this._files) {
+    for (const file of this._files.keys()) {
       if (pattern.test(file)) {
         files.push(file);
       }
@@ -56,7 +59,7 @@ export default class HasteFS {
 
   matchFilesWithGlob(globs: Array<Glob>, root: ?Path): Set<Path> {
     const files = new Set();
-    for (const file in this._files) {
+    for (const file of this._files.keys()) {
       const filePath = root ? path.relative(root, file) : file;
       if (micromatch([filePath], globs).length) {
         files.add(file);
