@@ -10,5 +10,6 @@ module.exports = {
     // Cannot be `import` as this file is not compiled
     require('babel-plugin-jest-hoist'),
     require('babel-plugin-syntax-object-rest-spread'),
+    require('babel-plugin-transform-async-to-generator'),
   ],
 };
