@@ -114,11 +114,14 @@ const escapePathSeparator = string =>
 
 const getWhiteList = (list: ?Array<string>): ?RegExp => {
   if (list && list.length) {
+    const newList = list.map(item =>
+      escapePathSeparator(item.replace(/(\/)/g, path.sep)),
+    );
     return new RegExp(
       '(' +
         escapePathSeparator(NODE_MODULES) +
         '(?:' +
-        list.join('|') +
+        newList.join('|') +
         ')(?=$|' +
         escapePathSeparator(path.sep) +
         '))',
