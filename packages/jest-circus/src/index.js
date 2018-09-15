@@ -40,6 +40,10 @@ const _dispatchDescribe = (blockFn, blockName, mode?: BlockMode) => {
 };
 
 const _addHook = (fn: HookFn, hookType: HookType, hookFn, timeout: ?number) => {
+  if (typeof fn !== 'function') {
+    throw new Error('Invalid first argument. It must be a callback function.');
+  }
+
   const asyncError = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(asyncError, hookFn);
@@ -121,9 +125,9 @@ test.each = bindEach(test);
 test.only.each = bindEach(test.only);
 test.skip.each = bindEach(test.skip);
 
-describe.each = bindEach(describe);
-describe.only.each = bindEach(describe.only);
-describe.skip.each = bindEach(describe.skip);
+describe.each = bindEach(describe, false);
+describe.only.each = bindEach(describe.only, false);
+describe.skip.each = bindEach(describe.skip, false);
 
 module.exports = {
   afterAll,

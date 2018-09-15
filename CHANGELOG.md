@@ -1,8 +1,41 @@
 ## master
 
-## Fixes
+### Fixes
 
+- `[jest-haste-map]` [**BREAKING**] Replaced internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
 - `[expect]` Add empty string check to `toThrow` matcher ([#6836](https://github.com/facebook/jest/pull/6836))
+
+### Chore & Maintenance
+
+- `[docs]` Fix babel-core installation instructions ([#6745](https://github.com/facebook/jest/pull/6745))
+
+## 23.6.0
+
+### Features
+
+- `[jest-ci]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
+- `[babel-jest]` Add support for `babel.config.js` added in Babel 7.0.0 ([#6911](https://github.com/facebook/jest/pull/6911))
+
+### Fixes
+
+- `[jest-resolve]` Only resolve realpath once in try-catch ([#6925](https://github.com/facebook/jest/pull/6925))
+- `[expect]` Fix TypeError in `toBeInstanceOf` on `null` or `undefined` ([#6912](https://github.com/facebook/jest/pull/6912))
+- `[jest-jasmine2]` Throw a descriptive error if the first argument supplied to a hook was not a function ([#6917](https://github.com/facebook/jest/pull/6917)) and ([#6931](https://github.com/facebook/jest/pull/6931))
+- `[jest-circus]` Throw a descriptive error if the first argument supplied to a hook was not a function ([#6917](https://github.com/facebook/jest/pull/6917)) and ([#6931](https://github.com/facebook/jest/pull/6931))
+- `[expect]` Fix variadic custom asymmetric matchers ([#6898](https://github.com/facebook/jest/pull/6898))
+- `[jest-cli]` Fix incorrect `testEnvironmentOptions` warning ([#6852](https://github.com/facebook/jest/pull/6852))
+- `[jest-each]` Prevent done callback being supplied to describe ([#6843](https://github.com/facebook/jest/pull/6843))
+- `[jest-config]` Better error message for a case when a preset module was found, but no `jest-preset.js` or `jest-preset.json` at the root ([#6863](https://github.com/facebook/jest/pull/6863))
+- `[jest-haste-map]` Catch crawler error when unsuccessfully reading directories ([#6761](https://github.com/facebook/jest/pull/6761))
+
+### Chore & Maintenance
+
+- `[docs]` Add custom toMatchSnapshot matcher docs ([#6837](https://github.com/facebook/jest/pull/6837))
+- `[docs]` Improve the documentation regarding preset configuration ([#6864](https://github.com/facebook/jest/issues/6864))
+- `[docs]` Clarify usage of `--projects` CLI option ([#6872](https://github.com/facebook/jest/pull/6872))
+- `[docs]` Correct `failure-change` notification mode ([#6878](https://github.com/facebook/jest/pull/6878))
+- `[scripts]` Don’t remove node_modules from subdirectories of presets in e2e tests ([#6948](https://github.com/facebook/jest/pull/6948))
+- `[diff-sequences]` Double-check number of differences in tests ([#6953](https://github.com/facebook/jest/pull/6953))
 
 ## 23.5.0
 
@@ -17,7 +50,7 @@
 
 ### Fixes
 
-- `[jest-snapshot` Mark snapshots as obsolete when moved to an inline snapshot ([#6773](https://github.com/facebook/jest/pull/6773))
+- `[jest-snapshot]` Mark snapshots as obsolete when moved to an inline snapshot ([#6773](https://github.com/facebook/jest/pull/6773))
 - `[jest-config]` Fix `--coverage` with `--findRelatedTests` overwriting `collectCoverageFrom` options ([#6736](https://github.com/facebook/jest/pull/6736))
 - `[jest-config]` Update default config for testURL from 'about:blank' to 'http://localhost' to address latest JSDOM security warning. ([#6792](https://github.com/facebook/jest/pull/6792))
 - `[jest-cli]` Fix `testMatch` not working with negations ([#6648](https://github.com/facebook/jest/pull/6648))
@@ -61,6 +94,10 @@
 ### Fixes
 
 - `[jest-haste-map]` Optimize watchman crawler by using `glob` on initial query ([#6689](https://github.com/facebook/jest/pull/6689))
+
+### Fixes
+
+- `[pretty-format]` Fix formatting of invalid Date objects ([#6635](https://github.com/facebook/jest/pull/6635))
 
 ## 23.4.0
 
@@ -111,6 +148,7 @@
 
 ### Fixes
 
+- `[docs]` Fixed error in documentation for expect.not.arrayContaining(array). ([#6491](https://github.com/facebook/jest/pull/6491))
 - `[jest-cli]` Add check to make sure one or more tests have run before notifying when using `--notify` ([#6495](https://github.com/facebook/jest/pull/6495))
 - `[jest-cli]` Pass `globalConfig` as a parameter to `globalSetup` and `globalTeardown` functions ([#6486](https://github.com/facebook/jest/pull/6486))
 - `[jest-config]` Add missing options to the `defaults` object ([#6428](https://github.com/facebook/jest/pull/6428))
@@ -118,6 +156,7 @@
 - `[expect]` `toEqual` no longer tries to compare non-enumerable symbolic properties, to be consistent with non-symbolic properties. ([#6398](https://github.com/facebook/jest/pull/6398))
 - `[jest-util]` `console.timeEnd` now properly log elapsed time in milliseconds. ([#6456](https://github.com/facebook/jest/pull/6456))
 - `[jest-mock]` Fix `MockNativeMethods` access in react-native `jest.mock()` ([#6505](https://github.com/facebook/jest/pull/6505))
+- `[jest-cli]` Fix `reporters` for `moduleName` = `'default'` ([#6542](https://github.com/facebook/jest/pull/6542))
 
 ### Chore & Maintenance
 

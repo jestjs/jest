@@ -90,6 +90,19 @@ const setupPreset = (
         `  Preset ${chalk.bold(presetPath)} is invalid:\n  ${error.message}`,
       );
     }
+
+    const preset = Resolver.findNodeModule(presetPath, {
+      basedir: options.rootDir,
+    });
+
+    if (preset) {
+      throw createConfigError(
+        `  Module ${chalk.bold(
+          presetPath,
+        )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
+      );
+    }
+
     throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
@@ -342,6 +355,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       'coverageThreshold',
       'globals',
       'moduleNameMapper',
+      'testEnvironmentOptions',
       'transform',
     ],
   });

@@ -23,7 +23,7 @@ beforeEach(() => {
 
 describe('isCoreModule', () => {
   it('returns false if `hasCoreModules` is false.', () => {
-    const moduleMap = new ModuleMap();
+    const moduleMap = ModuleMap.create();
     const resolver = new Resolver(moduleMap, {
       hasCoreModules: false,
     });
@@ -32,14 +32,14 @@ describe('isCoreModule', () => {
   });
 
   it('returns true if `hasCoreModules` is true and `moduleName` is a core module.', () => {
-    const moduleMap = new ModuleMap();
+    const moduleMap = ModuleMap.create();
     const resolver = new Resolver(moduleMap, {});
     const isCore = resolver.isCoreModule('assert');
     expect(isCore).toEqual(true);
   });
 
   it('returns false if `hasCoreModules` is true and `moduleName` is not a core module.', () => {
-    const moduleMap = new ModuleMap();
+    const moduleMap = ModuleMap.create();
     const resolver = new Resolver(moduleMap, {});
     const isCore = resolver.isCoreModule('not-a-core-module');
     expect(isCore).toEqual(false);
@@ -82,11 +82,7 @@ describe('findNodeModule', () => {
 describe('resolveModule', () => {
   let moduleMap;
   beforeEach(() => {
-    moduleMap = new ModuleMap({
-      duplicates: [],
-      map: [],
-      mocks: [],
-    });
+    moduleMap = ModuleMap.create();
   });
 
   it('is possible to resolve node modules', () => {
@@ -134,8 +130,9 @@ describe('resolveModule', () => {
     const resolver = new Resolver(moduleMap, {
       extensions: ['.js'],
     });
-    const src = require.resolve(
-      '../../src/__mocks__/bar/node_modules/foo/index.js',
+    const src = path.join(
+      path.resolve(__dirname, '../../src/__mocks__/bar/node_modules/'),
+      'foo/index.js',
     );
     const resolved = resolver.resolveModule(src, 'dep');
     expect(resolved).toBe(
@@ -162,11 +159,7 @@ describe('getMockModule', () => {
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', () => {
     userResolver.mockImplementation(() => 'module');
 
-    const moduleMap = new ModuleMap({
-      duplicates: [],
-      map: [],
-      mocks: [],
-    });
+    const moduleMap = ModuleMap.create();
     const resolver = new Resolver(moduleMap, {
       moduleNameMapper: [
         {
@@ -203,11 +196,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   beforeEach(() => {
     jest.resetModules();
 
-    moduleMap = new ModuleMap({
-      duplicates: [],
-      map: [],
-      mocks: [],
-    });
+    moduleMap = ModuleMap.create();
 
     // Mocking realpath to function the old way, where it just looks at
     // pathstrings instead of actually trying to access the physical directory.
