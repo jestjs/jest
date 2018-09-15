@@ -66,6 +66,12 @@ export default function Spec(attrs: Object) {
   this.initError = new Error();
   this.initError.name = '';
 
+  // Without this line v8 stores references to all closures
+  // in the stack in the Error object. This line stringifies the stack
+  // property to allow garbage-collecting objects on the stack
+  // https://crbug.com/v8/7142
+  this.initError.stack = this.initError.stack;
+
   this.queueableFn.initError = this.initError;
 
   this.result = {
