@@ -3,6 +3,7 @@
 ### Fixes
 
 - `[jest-haste-map]` [**BREAKING**] Replaced internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
+- `[jest-haste-map]` Fixed Haste whitelist generation for scoped modules on Windows ([#6980](https://github.com/facebook/jest/pull/6980))
 
 ### Chore & Maintenance
 
