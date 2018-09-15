@@ -85,20 +85,24 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <pre><code class="hljs">npm install --save-dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
-<p>Примітка: Якщо ви використовуєте babel версії 7 то вам необхідно встановити <code>babel-jest</code> наступною командою:</p>
-<pre><code class="hljs">npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
-</code></pre>
+<p>Note: If you are using Babel version 7 then you need to install <code>babel-jest</code>, <code>babel-core@^7.0.0-bridge.0</code> and <code>@babel/core</code> with the following command:</p>
+<pre><code class="hljs css languages- bash"></code></pre>
 </blockquote>
-<p><em>Примітка: безпосереднє встановлення <code>regenerator-runtime</code> не обов’язкове, якщо ви використовуєте <code>npm</code> 3 або 4 або Yarn</em></p>
-<p>Не забудьте додати файл <a href="https://babeljs.io/docs/usage/babelrc/"> <code>.babelrc</code></a> в кореневу папку вашого проекту. Наприклад, якщо ви використовуєте ES6 і <a href="https://facebook.github.io/react/"> React.js</a> з пресетами <a href="https://babeljs.io/docs/plugins/preset-es2015/"> <code>babel-preset-es2015</code></a> і <a href="https://babeljs.io/docs/plugins/preset-react/"> <code>babel-preset-react</code></a>:</p>
-<pre><code class="hljs css languages- json">{
-  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"es2015"</span>, <span class="hljs-string">"react"</span>]
+<p>npm install --save-dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime</p>
+<pre><code class="hljs">
+<span class="hljs-emphasis">*Примітка: безпосереднє встановлення `regenerator-runtime` не обов’язкове, якщо ви використовуєте `npm` 3 або 4 або Yarn*</span>
+
+Не забудьте додати файл [<span class="hljs-string"> `.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) в кореневу папку вашого проекту. Наприклад, якщо ви використовуєте ES6 і [<span class="hljs-string"> React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) з пресетами [<span class="hljs-string"> `babel-preset-es2015`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-es2015/</span>) і [<span class="hljs-string"> `babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>):
+
+<span class="hljs-code">```json
+{
+  "presets": ["es2015", "react"]
 }
-</code></pre>
+</span></code></pre>
 <p>Тепер усе готово для використання всіх ES6 функцій і синтаксису React.</p>
 <blockquote>
 <p>Примітка: Якщо ви використовуєте більш складну конфігурацію Babel з <code>env</code> блоками, майте на увазі, що Jest автоматично встановить <code>NODE_ENV</code> як <code>test</code>. Він не буде використовувати <code>development</code> розділ як це робить Babel за замовчуванням, коли <code>NODE_ENV</code> не вказано.</p>
-<p>Note: If you've turned off transpilation of ES2015 modules with the option <code>{ &quot;modules&quot;: false }</code>, you have to make sure to turn this on in your test environment.</p>
+<p>Примітка: якщо ви відключили транспіляцію ES2015 модулів параметром <code>{&quot;modules&quot;: false }</code>, ви повинні переконатися, що ця опція увімкнена в тестовому середовищі.</p>
 </blockquote>
 <pre><code class="hljs css languages- json">{
   <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"es2015"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],

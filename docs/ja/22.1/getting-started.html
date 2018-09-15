@@ -85,16 +85,20 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <pre><code class="hljs">npm install --save-dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
-<p>注意: バージョン 7 の Babel を使用している場合は、以下のコマンドで <code>babel-jest</code> をインストールする必要があります。</p>
-<pre><code class="hljs">npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
-</code></pre>
+<p>Note: If you are using Babel version 7 then you need to install <code>babel-jest</code>, <code>babel-core@^7.0.0-bridge.0</code> and <code>@babel/core</code> with the following command:</p>
+<pre><code class="hljs css languages- bash"></code></pre>
 </blockquote>
-<p><em>注: <code>npm</code> v3,4 か <code>yarn</code> を使用している場合は、<code>regenerator-runtime</code> を明示的にインストールする必要ありません。</em></p>
-<p>プロジェクトのルートフォルダーに <a href="https://babeljs.io/docs/usage/babelrc/"> <code>.babelrc</code></a> ファイルを追加することを忘れないでください。 For example, if you are using ES6 and <a href="https://facebook.github.io/react/">React.js</a> with the <a href="https://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-env</code></a> and <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a> presets:</p>
-<pre><code class="hljs css languages- json">{
-  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"env"</span>, <span class="hljs-string">"react"</span>]
+<p>npm install --save-dev  babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime</p>
+<pre><code class="hljs">
+<span class="hljs-emphasis">*注: `npm` v3,4 か `yarn` を使用している場合は、`regenerator-runtime` を明示的にインストールする必要ありません。*</span>
+
+プロジェクトのルートフォルダーに [<span class="hljs-string"> `.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) ファイルを追加することを忘れないでください。 For example, if you are using ES6 and [<span class="hljs-string">React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) with the [<span class="hljs-string">`babel-preset-env`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-env/</span>) and [<span class="hljs-string">`babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>) presets:
+
+<span class="hljs-code">```json
+{
+  "presets": ["env", "react"]
 }
-</code></pre>
+</span></code></pre>
 <p>ES6 と React の構文が使用できるように設定されました。</p>
 <blockquote>
 <p>注意: もし Babel の <code>env</code> オプションでより複雑な Babel の設定を行っている場合は、Jest は自動的に <code>NODE_ENV</code> を <code>test</code> に設定することに注意してください。 Jest では Babel が デフォルトで行うような、<code>NODE_ENV</code> が設定されていない場合に, <code>development</code> セクションを利用するといった事をしません。</p>

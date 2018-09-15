@@ -85,16 +85,20 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <pre><code class="hljs">npm install --save-dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
-<p>Note: If you are using a babel version 7 then you need to install <code>babel-jest</code> with the following command:</p>
-<pre><code class="hljs">npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
-</code></pre>
+<p>Note: If you are using Babel version 7 then you need to install <code>babel-jest</code>, <code>babel-core@^7.0.0-bridge.0</code> and <code>@babel/core</code> with the following command:</p>
+<pre><code class="hljs css languages- bash"></code></pre>
 </blockquote>
-<p><em>Nota: Instalar explicitamente <code>regenerator-runtime</code> não é necessário se você usa o <code>npm</code> 3 ou 4 ou Yarn</em></p>
-<p>Não se esqueça de adicionar um arquivo <a href="https://babeljs.io/docs/usage/babelrc/"> <code>.babelrc</code></a> na pasta raiz do seu projeto. Por exemplo, se você estiver usando ES6 e <a href="https://facebook.github.io/react/">React.js</a> com os presets <a href="https://babeljs.io/docs/plugins/preset-es2015/"><code>babel-preset-es2015</code></a> e <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a>:</p>
-<pre><code class="hljs css languages- json">{
-  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"es2015"</span>, <span class="hljs-string">"react"</span>]
+<p>npm install --save-dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime</p>
+<pre><code class="hljs">
+<span class="hljs-emphasis">*Nota: Instalar explicitamente `regenerator-runtime` não é necessário se você usa o `npm` 3 ou 4 ou Yarn*</span>
+
+Não se esqueça de adicionar um arquivo [<span class="hljs-string"> `.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) na pasta raiz do seu projeto. Por exemplo, se você estiver usando ES6 e [<span class="hljs-string">React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) com os presets [<span class="hljs-string">`babel-preset-es2015`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-es2015/</span>) e [<span class="hljs-string">`babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>):
+
+<span class="hljs-code">```json
+{
+  "presets": ["es2015", "react"]
 }
-</code></pre>
+</span></code></pre>
 <p>Você está agora configurado para usar todos os recursos da ES6 e a sintaxe específica do React.</p>
 <blockquote>
 <p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code>. Ele não usará a seção de <code>development</code> como Babel por padrão quando nenhuma <code>NODE_ENV</code> é definida.</p>

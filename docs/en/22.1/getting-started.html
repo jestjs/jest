@@ -85,8 +85,8 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <pre><code class="hljs">npm <span class="hljs-keyword">install </span>--save-dev <span class="hljs-keyword">babel-jest </span><span class="hljs-keyword">babel-core </span>regenerator-runtime
 </code></pre>
 <blockquote>
-<p>Note: If you are using a babel version 7 then you need to install <code>babel-jest</code> with the following command:</p>
-<pre><code class="hljs"><span class="hljs-built_in">npm</span> install --save-dev babel-jest <span class="hljs-string">'babel-core@^7.0.0-0'</span> @babel/core regenerator-runtime
+<p>Note: If you are using Babel version 7 then you need to install <code>babel-jest</code>, <code>babel-core@^7.0.0-bridge.0</code> and <code>@babel/core</code> with the following command:</p>
+<pre><code class="hljs css languages- bash">npm install --save-dev  babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
 </code></pre>
 </blockquote>
 <p><em>Note: Explicitly installing <code>regenerator-runtime</code> is not needed if you use <code>npm</code> 3 or 4 or Yarn</em></p>

@@ -85,16 +85,20 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <pre><code class="hljs">npm install --save-dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
-<p>注意：如果您使用的是 babel 7，那么您需要用下面的命令安装 <code>babel-jest</code>：</p>
-<pre><code class="hljs">npm install --save-dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
-</code></pre>
+<p>Note: If you are using Babel version 7 then you need to install <code>babel-jest</code>, <code>babel-core@^7.0.0-bridge.0</code> and <code>@babel/core</code> with the following command:</p>
+<pre><code class="hljs css languages- bash"></code></pre>
 </blockquote>
-<p><em>注意：如果你使用了 <code>npm</code> 3 或 4，或者 Yarn，就不用再显式的安装 <code>regenerator-runtime</code> 这个包了。</em></p>
-<p>别忘了在你的项目根文件夹下添加一个 <a href="https://babeljs.io/docs/usage/babelrc/"><code>.babelrc</code></a> 配置文件。 For example, if you are using ES6 and <a href="https://facebook.github.io/react/">React.js</a> with the <a href="https://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-env</code></a> and <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a> presets:</p>
-<pre><code class="hljs css languages- json">{
-  <span class="hljs-attr">"presets"</span>: [<span class="hljs-string">"env"</span>, <span class="hljs-string">"react"</span>]
+<p>npm install --save-dev  babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime</p>
+<pre><code class="hljs">
+<span class="hljs-emphasis">*注意：如果你使用了 `npm` 3 或 4，或者 Yarn，就不用再显式的安装 `regenerator-runtime` 这个包了。*</span>
+
+别忘了在你的项目根文件夹下添加一个 [<span class="hljs-string">`.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) 配置文件。 For example, if you are using ES6 and [<span class="hljs-string">React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) with the [<span class="hljs-string">`babel-preset-env`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-env/</span>) and [<span class="hljs-string">`babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>) presets:
+
+<span class="hljs-code">```json
+{
+  "presets": ["env", "react"]
 }
-</code></pre>
+</span></code></pre>
 <p>现在你就完成了使用所有 ES6 特性和 React 特殊语法所需的配置了。</p>
 <blockquote>
 <p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code>. 它不会像 Babel 那样在 <code>NODE_ENV</code> 没有被设置时默认使用 <code>development</code>。</p>
