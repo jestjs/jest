@@ -4,6 +4,10 @@
 
 - `[jest-haste-map]` [**BREAKING**] Replaced internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
 
+### Chore & Maintenance
+
+- `[docs]` Fix babel-core installation instructions ([#6745](https://github.com/facebook/jest/pull/6745))
+
 ## 23.6.0
 
 ### Features
@@ -76,7 +80,6 @@
 - `[babel-jest]` Make `getCacheKey()` take into account `createTransformer` options ([#6699](https://github.com/facebook/jest/pull/6699))
 - `[jest-jasmine2]` Use prettier through `require` instead of `localRequire`. Fixes `matchInlineSnapshot` where prettier dependencies like `path` and `fs` are mocked with `jest.mock`. ([#6776](https://github.com/facebook/jest/pull/6776))
 - `[docs]` Fix contributors link ([#6711](https://github.com/facebook/jest/pull/6711))
-- `[docs]` Fix babel-core installation instructions ([#6745](https://github.com/facebook/jest/pull/6745))
 - `[website]` Fix website versions page to link to correct language ([#6734](https://github.com/facebook/jest/pull/6734))
 - `[expect]` Update `toContain` suggestion to contain equal message ([#6792](https://github.com/facebook/jest/pull/6810))
 
