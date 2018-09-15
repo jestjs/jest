@@ -4,6 +4,10 @@
 
 - `[jest-haste-map]` [**BREAKING**] Replaced internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
 
+### Chore & Maintenance
+
+- `[docs]` Fix babel-core installation instructions ([#6745](https://github.com/facebook/jest/pull/6745))
+
 ## 23.6.0
 
 ### Features
