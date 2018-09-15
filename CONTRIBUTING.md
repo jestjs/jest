@@ -24,10 +24,10 @@ _Before_ submitting a pull request, please make sure the following is done…
 
     Open terminal (e.g. Terminal, iTerm, Git Bash or Git Shell) and type:
 
-    ```sh
-    git clone https://github.com/<your_username>/jest
-    cd jest
-    git checkout -b my_branch
+    ```sh-session
+    $ git clone https://github.com/<your_username>/jest
+    $ cd jest
+    $ git checkout -b my_branch
     ```
 
     Note: Replace `<your_username>` with your GitHub username
@@ -37,7 +37,8 @@ _Before_ submitting a pull request, please make sure the following is done…
 1.  Make sure you have `python` installed (v2.7 is recommended, v3.x.x is not supported). Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
 
     To check your version of Python and ensure it's installed you can type:
-    ```
+
+    ```sh
     python --version
     ```
 
@@ -64,9 +65,9 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 1.  Ensure the test suite passes via `yarn test`. To run the test suite you may need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On macOS, this can be done using [homebrew](http://brew.sh/): `brew install hg`.
 
-    ```sh
-    brew install hg # maybe
-    yarn test
+    ```sh-session
+    $ brew install hg # maybe
+    $ yarn test
     ```
 
 1.  If you haven't already, complete the CLA.
@@ -76,10 +77,10 @@ _Before_ submitting a pull request, please make sure the following is done…
 If you are making changes to the website or documentation, test the website folder and run the server to check if your changes are being displayed accurately.
 
 1.  Locate to the website directory and install any website specific dependencies by typing in `yarn`. Following steps are to be followed for this purpose from the root directory.
-    ```sh
-    cd website       # Only needed if you are not already in the website directory
-    yarn
-    yarn start
+    ```sh-session
+    $ cd website       # Only needed if you are not already in the website directory
+    $ yarn
+    $ yarn start
     ```
 1.  You can run a development server to check if the changes you made are being displayed accurately by running `yarn start` in the website directory.
 
@@ -93,34 +94,34 @@ In order to accept your pull request, we need you to submit a CLA. You only need
 
 To link `jest` on the command line to `jest-cli/bin/jest.js` in a development build:
 
-```sh
-cd /path/to/your/Jest_clone/packages/jest-cli
-yarn link
+```sh-session
+$ cd /path/to/your/Jest_clone/packages/jest-cli
+$ yarn link
 ```
 
 To build Jest:
 
-```sh
-cd /path/to/your/Jest_clone
+```sh-session
+$ cd /path/to/your/Jest_clone
 
 # Do one of the following:
 
 # Check out a commit from another contributor, and then
-yarn run build
+$ yarn run build
 
 # Or, save your changes to Jest, and then
-yarn test # which also builds Jest
+$ yarn test # which also builds Jest
 ```
 
 To run tests in another project with the development build of Jest:
 
-```sh
-cd /path/to/another/project
+```sh-session
+$ cd /path/to/another/project
 
 # link development build to the other project
-yarn link jest-cli
+$ yarn link jest-cli
 
-jest [options] # run jest-cli/bin/jest.js in the development build
+$ jest [options] # run jest-cli/bin/jest.js in the development build
 ```
 
 - To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.
