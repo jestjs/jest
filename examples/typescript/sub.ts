@@ -1,7 +1,7 @@
-const sum = require('./sum');
+const sum = require('./sum').default;
 
 function sub(a: number, b: number): number {
   return sum(a, -b);
 }
 
-export = sub;
+export default sub;

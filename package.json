@@ -63,7 +63,7 @@
     "slash": "^2.0.0",
     "string-length": "^2.0.0",
     "strip-ansi": "^4.0.0",
-    "typescript": "^2.2.2",
+    "typescript": "^3.0.3",
     "watchify": "^3.9.0"
   },
   "scripts": {
