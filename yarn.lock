@@ -5986,9 +5986,9 @@ jest-resolve@^22.4.2:
     browser-resolve "^1.11.2"
     chalk "^2.0.1"
 
-jest-silent-reporter@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/jest-silent-reporter/-/jest-silent-reporter-0.1.0.tgz#9628c58c7f018b26c902836de278f40a4b072570"
+jest-silent-reporter@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/jest-silent-reporter/-/jest-silent-reporter-0.1.1.tgz#2580704abf6245009f486fbea68f697dd7db2f48"
   dependencies:
     chalk "^2.3.1"
     jest-util "^23.0.0"
