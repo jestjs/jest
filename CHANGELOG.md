@@ -8,6 +8,7 @@
 ### Chore & Maintenance
 
 - `[docs]` Fix babel-core installation instructions ([#6745](https://github.com/facebook/jest/pull/6745))
+- `[jest-changed-files]` Refactor to use `execa` over `child_process`
 
 ## 23.6.0
 
