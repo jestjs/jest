@@ -25,6 +25,8 @@ type ResolverOptions = {|
   rootDir: ?Path,
 |};
 
+const preserveSymlinks = true;
+
 export default function defaultResolver(
   path: Path,
   options: ResolverOptions,
@@ -88,7 +90,7 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
     if (isDirectory(dir)) {
       result = resolveAsFile(name) || resolveAsDirectory(name);
     }
-    if (result) {
+    if (result && !preserveSymlinks) {
       // Dereference symlinks to ensure we don't create a separate
       // module instance depending on how it was referenced.
       result = fs.realpathSync(result);

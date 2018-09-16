@@ -16,6 +16,7 @@ import {spawn} from 'child_process';
 import H from '../constants';
 
 type Callback = (result: Array<[/* id */ string, /* mtime */ number]>) => void;
+const preserveSymlinks = true;
 
 function find(
   roots: Array<string>,
@@ -80,6 +81,9 @@ function findNative(
   callback: Callback,
 ): void {
   const args = [].concat(roots);
+  if (preserveSymlinks) {
+    args.unshift('-L');
+  }
   args.push('-type', 'f');
   if (extensions.length) {
     args.push('(');

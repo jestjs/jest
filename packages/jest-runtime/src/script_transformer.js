@@ -44,6 +44,7 @@ const cache: Map<string, TransformResult> = new Map();
 const configToJsonMap = new Map();
 // Cache regular expressions to test whether the file needs to be preprocessed
 const ignoreCache: WeakMap<ProjectConfig, ?RegExp> = new WeakMap();
+const preserveSymlinks = true;
 
 // To reset the cache for specific changesets (rather than package version).
 const CACHE_VERSION = '1';
@@ -180,7 +181,7 @@ export default class ScriptTransformer {
   }
 
   transformSource(filepath: Path, content: string, instrument: boolean) {
-    const filename = this._getRealPath(filepath);
+    const filename = preserveSymlinks ? filepath : this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(filename, content, instrument);
     let sourceMapPath = cacheFilePath + '.map';
