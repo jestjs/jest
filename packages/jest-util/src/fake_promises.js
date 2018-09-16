@@ -11,7 +11,6 @@ import type {ProjectConfig} from 'types/Config';
 import type {Global} from 'types/Global';
 
 import {formatStackTrace} from 'jest-message-util';
-import path from 'path';
 import setGlobal from './set_global';
 
 /**
@@ -287,7 +286,7 @@ export default class FakePromises {
   }
 
   useFakePromises() {
-    this._checkWillConvertAsyncToFakePromise();
+    this._checkWillCompileAsyncToGenerator();
     setGlobal(this._global, 'Promise', this._fakePromise);
   }
 
@@ -348,22 +347,12 @@ export default class FakePromises {
     }
   }
 
-  _checkWillConvertAsyncToFakePromise() {
-    let hasBabelJest = false;
-    this._config.transform.forEach(([pattern, transformer]) => {
-      hasBabelJest =
-        hasBabelJest ||
-        transformer.endsWith(path.join('babel-jest', 'build', 'index.js'));
-    });
-
-    if (!hasBabelJest) {
+  _checkWillCompileAsyncToGenerator() {
+    if (!this._config.compileAsyncToGenerator) {
       this._global.console.warn(
-        `Fake promises are being used without babel-jest. All promises created ` +
-          `implicitly with async-await syntax will not be converted to fake ` +
-          `promises. Fake promises may work with transpiler plugins that ` +
-          `compile from async-await syntax to syntax that uses explicit ES6 ` +
-          `Promises. However, these are outside the scope of the jest project, ` +
-          `and have not been tested against.\n\n` +
+        `Fake promises are being used with the \`compileAsyncToGenerator\` option ` +
+          `being set to \`false\`. Any promises implicitly created with the ` +
+          `\`async\`-\`await\` syntax may not be mocked.\n\n` +
           `Stack Trace:\n` +
           formatStackTrace(new Error().stack, this._config, {
             noStackTrace: false,

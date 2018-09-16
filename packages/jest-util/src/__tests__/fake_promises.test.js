@@ -8,18 +8,13 @@
 
 'use strict';
 
-const path = require('path');
-
 describe('FakePromises', () => {
   let FakePromises, config;
 
   beforeEach(() => {
     FakePromises = require('../fake_promises').default;
-    const configTransform = [
-      ['*', path.join('babel-jest', 'build', 'index.js')],
-    ];
     config = {
-      transform: configTransform,
+      compileAsyncToGenerator: true,
     };
   });
 
@@ -206,11 +201,11 @@ describe('FakePromises', () => {
   });
 
   describe('useFakePromises', () => {
-    it('warns if babel-jest is not being used', () => {
+    it('warns if compileAsyncToGenerator config option is set to false', () => {
       const consoleWarn = console.warn;
       console.warn = jest.fn();
       config.rootDir = __dirname;
-      config.transform = [];
+      config.compileAsyncToGenerator = false;
       const promises = new FakePromises({
         config,
         global,

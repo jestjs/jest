@@ -5,7 +5,7 @@ exports[`FakePromises runAllPromises warns if promise rejection is not handled 1
 "
 `;
 
-exports[`FakePromises useFakePromises warns if babel-jest is not being used 1`] = `
-"Fake promises are being used without babel-jest. All promises created implicitly with async-await syntax will not be converted to fake promises. Fake promises may work with transpiler plugins that compile from async-await syntax to syntax that uses explicit ES6 Promises. However, these are outside the scope of the jest project, and have not been tested against.
+exports[`FakePromises useFakePromises warns if compileAsyncToGenerator config option is set to false 1`] = `
+"Fake promises are being used with the \`compileAsyncToGenerator\` option being set to \`false\`. Any promises implicitly created with the \`async\`-\`await\` syntax may not be mocked.
 "
 `;

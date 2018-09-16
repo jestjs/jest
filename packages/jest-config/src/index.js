@@ -156,6 +156,7 @@ const getConfigs = (
     cache: options.cache,
     cacheDirectory: options.cacheDirectory,
     clearMocks: options.clearMocks,
+    compileAsyncToGenerator: options.compileAsyncToGenerator,
     coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
     cwd: options.cwd,
     detectLeaks: options.detectLeaks,

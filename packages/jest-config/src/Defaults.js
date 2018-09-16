@@ -25,6 +25,7 @@ export default ({
   clearMocks: false,
   collectCoverage: false,
   collectCoverageFrom: null,
+  compileAsyncToGenerator: false,
   coverageDirectory: null,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],

@@ -26,6 +26,7 @@ export type Argv = {|
   collectCoverageFrom: Array<string>,
   collectCoverageOnlyFrom: Array<string>,
   config: string,
+  compileAsyncToGenerator: boolean,
   coverage: boolean,
   coverageDirectory: string,
   coveragePathIgnorePatterns: Array<string>,

@@ -555,6 +555,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
+      case 'compileAsyncToGenerator':
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'detectLeaks':
@@ -578,6 +579,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'onlyChanged':
       case 'outputFile':
       case 'passWithNoTests':
+      case 'promises':
       case 'replname':
       case 'reporters':
       case 'resetMocks':
