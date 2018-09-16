@@ -10,7 +10,7 @@
 import fs from 'fs';
 import {parse as babelParse} from '@babel/core';
 import {Expect, ItBlock} from './parser_nodes';
-// TODO: Change import to @babel/parser once types exist
+// TODO: Change import to @babel/core once types exist
 import type {File as BabylonFile} from 'babylon';
 
 export type BabylonParserResult = {
