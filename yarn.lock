@@ -232,7 +232,7 @@
     "@babel/helper-remap-async-to-generator" "^7.0.0"
     "@babel/plugin-syntax-async-generators" "^7.0.0"
 
-"@babel/plugin-proposal-class-properties@*", "@babel/plugin-proposal-class-properties@^7.0.0":
+"@babel/plugin-proposal-class-properties@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-class-properties/-/plugin-proposal-class-properties-7.0.0.tgz#a16b5c076ba6c3d87df64d2480a380e979543731"
   dependencies:
@@ -831,6 +831,10 @@ acorn-walk@^6.0.1:
 acorn@^5.0.0, acorn@^5.3.0, acorn@^5.4.1, acorn@^5.5.0:
   version "5.6.2"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.6.2.tgz#b1da1d7be2ac1b4a327fb9eab851702c5045b4e7"
+
+acorn@^5.7.3:
+  version "5.7.3"
+  resolved "https://registry.npmjs.org/acorn/-/acorn-5.7.3.tgz#67aa231bf8812974b85235a96771eb6bd07ea279"
 
 add-dom-event-listener@1.x:
   version "1.0.2"
@@ -7645,8 +7649,21 @@ lru-cache@^4.0.1, lru-cache@^4.1.2, lru-cache@^4.1.3:
     yallist "^2.1.2"
 
 ltgt@^2.1.2:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/ltgt/-/ltgt-2.2.1.tgz#f35ca91c493f7b73da0e07495304f17b31f87ee5"
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/ltgt/-/ltgt-2.2.0.tgz#b65ba5fcb349a29924c8e333f7c6a5562f2e4842"
+
+magic-string@^0.22.4, magic-string@^0.22.5:
+  version "0.22.5"
+  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.22.5.tgz#8e9cf5afddf44385c1da5bc2a6a0dbd10b03657e"
+  dependencies:
+    vlq "^0.2.2"
+
+mailcomposer@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/mailcomposer/-/mailcomposer-4.0.1.tgz#0e1c44b2a07cf740ee17dc149ba009f19cadfeb4"
+  dependencies:
+    buildmail "4.0.1"
+    libmime "3.0.0"
 
 magic-string@^0.22.4:
   version "0.22.5"
@@ -7832,9 +7849,9 @@ metro-babel7-plugin-react-transform@0.45.1:
   dependencies:
     "@babel/helper-module-imports" "^7.0.0"
 
-metro-babel7-plugin-react-transform@0.45.2:
-  version "0.45.2"
-  resolved "https://registry.yarnpkg.com/metro-babel7-plugin-react-transform/-/metro-babel7-plugin-react-transform-0.45.2.tgz#e7208606b062c5c9ea0544b196453695e1b04428"
+metro-babel7-plugin-react-transform@0.45.3:
+  version "0.45.3"
+  resolved "https://registry.npmjs.org/metro-babel7-plugin-react-transform/-/metro-babel7-plugin-react-transform-0.45.3.tgz#24b5299638c02f0c6ec5e8e21454054fa7bba8bd"
   dependencies:
     "@babel/helper-module-imports" "^7.0.0"
 
@@ -7875,7 +7892,7 @@ metro-minify-uglify@0.45.1:
   dependencies:
     uglify-es "^3.1.9"
 
-metro-react-native-babel-preset@*, metro-react-native-babel-preset@0.45.1:
+metro-react-native-babel-preset@0.45.1:
   version "0.45.1"
   resolved "https://registry.yarnpkg.com/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.45.1.tgz#5299d1997bb51a98cd4586ff5eb712a432530882"
   dependencies:
@@ -7910,9 +7927,9 @@ metro-react-native-babel-preset@*, metro-react-native-babel-preset@0.45.1:
     "@babel/template" "^7.0.0"
     metro-babel7-plugin-react-transform "0.45.1"
 
-metro-react-native-babel-preset@^0.45.2:
-  version "0.45.2"
-  resolved "https://registry.yarnpkg.com/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.45.2.tgz#d9a4a7af65380527010fe7245641f57a9ab031b6"
+metro-react-native-babel-preset@0.45.3, metro-react-native-babel-preset@^0.45.3:
+  version "0.45.3"
+  resolved "https://registry.npmjs.org/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.45.3.tgz#b256f21efe995ca8477d81a59042e6c663375e40"
   dependencies:
     "@babel/plugin-proposal-class-properties" "^7.0.0"
     "@babel/plugin-proposal-nullish-coalescing-operator" "^7.0.0"
@@ -7943,7 +7960,7 @@ metro-react-native-babel-preset@^0.45.2:
     "@babel/plugin-transform-typescript" "^7.0.0"
     "@babel/plugin-transform-unicode-regex" "^7.0.0"
     "@babel/template" "^7.0.0"
-    metro-babel7-plugin-react-transform "0.45.2"
+    metro-babel7-plugin-react-transform "0.45.3"
 
 metro-resolver@0.45.1:
   version "0.45.1"
@@ -10948,11 +10965,11 @@ rollup-plugin-flow@^1.1.1:
     flow-remove-types "^1.1.0"
     rollup-pluginutils "^1.5.1"
 
-rollup-plugin-json@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-json/-/rollup-plugin-json-3.0.0.tgz#aeed2ff36e6c4fd0c60c4a8fc3d0884479e9dfce"
+rollup-plugin-json@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/rollup-plugin-json/-/rollup-plugin-json-3.1.0.tgz#7c1daf60c46bc21021ea016bd00863561a03321b"
   dependencies:
-    rollup-pluginutils "^2.2.0"
+    rollup-pluginutils "^2.3.1"
 
 rollup-plugin-node-builtins@^2.1.1:
   version "2.1.2"
@@ -10963,9 +10980,9 @@ rollup-plugin-node-builtins@^2.1.1:
     crypto-browserify "^3.11.0"
     process-es6 "^0.11.2"
 
-rollup-plugin-node-globals@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-node-globals/-/rollup-plugin-node-globals-1.3.0.tgz#ee277271d199f3c2d73b80c46b0e53a07463db99"
+rollup-plugin-node-globals@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/rollup-plugin-node-globals/-/rollup-plugin-node-globals-1.4.0.tgz#5e1f24a9bb97c0ef51249f625e16c7e61b7c020b"
   dependencies:
     acorn "^5.7.3"
     buffer-es6 "^4.9.3"
@@ -10996,16 +11013,16 @@ rollup-pluginutils@^2.0.1, rollup-pluginutils@^2.3.1:
     estree-walker "^0.5.2"
     micromatch "^2.3.11"
 
-rollup-pluginutils@^2.2.0, rollup-pluginutils@^2.3.0:
+rollup-pluginutils@^2.3.0, rollup-pluginutils@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/rollup-pluginutils/-/rollup-pluginutils-2.3.1.tgz#760d185ccc237dedc12d7ae48c6bcd127b4892d0"
   dependencies:
     estree-walker "^0.5.2"
     micromatch "^2.3.11"
 
-rollup@^0.65.2:
-  version "0.65.2"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.65.2.tgz#e1532e3c1a2e102c89d99289a184fcbbc7cd4b4a"
+rollup@^0.66.0:
+  version "0.66.0"
+  resolved "https://registry.npmjs.org/rollup/-/rollup-0.66.0.tgz#697acc008f4b613695b17222c7626affddf4a506"
   dependencies:
     "@types/estree" "0.0.39"
     "@types/node" "*"
