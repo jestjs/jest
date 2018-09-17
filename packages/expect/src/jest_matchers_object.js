@@ -7,7 +7,12 @@
  * @flow
  */
 
-import type {MatchersObject} from 'types/Matchers';
+import {AsymmetricMatcher} from './asymmetric_matchers';
+import type {
+  Expect,
+  MatchersObject,
+  SyncExpectationResult,
+} from 'types/Matchers';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.
@@ -39,12 +44,59 @@ export const setState = (state: Object) => {
 
 export const getMatchers = () => global[JEST_MATCHERS_OBJECT].matchers;
 
-export const setMatchers = (matchers: MatchersObject, isInternal: boolean) => {
+export const setMatchers = (
+  matchers: MatchersObject,
+  isInternal: boolean,
+  expect: Expect,
+) => {
   Object.keys(matchers).forEach(key => {
     const matcher = matchers[key];
     Object.defineProperty(matcher, INTERNAL_MATCHER_FLAG, {
       value: isInternal,
     });
+
+    if (!isInternal) {
+      // expect is defined
+
+      class CustomMatcher extends AsymmetricMatcher {
+        sample: Array<any>;
+
+        constructor(inverse: boolean = false, ...sample: Array<any>) {
+          super();
+          this.inverse = inverse;
+          this.sample = sample;
+        }
+
+        asymmetricMatch(other: any) {
+          const {pass} = ((matcher(
+            (other: any),
+            ...(this.sample: any),
+          ): any): SyncExpectationResult);
+
+          return this.inverse ? !pass : pass;
+        }
+
+        toString() {
+          return `${this.inverse ? 'not.' : ''}${key}`;
+        }
+
+        getExpectedType() {
+          return 'any';
+        }
+
+        toAsymmetricMatcher() {
+          return `${this.toString()}<${this.sample.join(', ')}>`;
+        }
+      }
+
+      expect[key] = (...sample: Array<any>) =>
+        new CustomMatcher(false, ...sample);
+      if (!expect.not) {
+        expect.not = {};
+      }
+      expect.not[key] = (...sample: Array<any>) =>
+        new CustomMatcher(true, ...sample);
+    }
   });
 
   Object.assign(global[JEST_MATCHERS_OBJECT].matchers, matchers);

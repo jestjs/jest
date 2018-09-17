@@ -7,13 +7,13 @@
  * @flow
  */
 import type {GlobalConfig} from 'types/Config';
-import BaseWatchPlugin from '../base_watch_plugin';
-import TestNamePatternPrompt from '../test_name_pattern_prompt';
+import {BaseWatchPlugin, Prompt} from 'jest-watcher';
+import TestNamePatternPrompt from '../TestNamePatternPrompt';
 import activeFilters from '../lib/active_filters_message';
-import Prompt from '../lib/Prompt';
 
 class TestNamePatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
+  isInternal: true;
 
   constructor(options: {
     stdin: stream$Readable | tty$ReadStream,
@@ -21,11 +21,12 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
   }) {
     super(options);
     this._prompt = new Prompt();
+    this.isInternal = true;
   }
 
   getUsageInfo() {
     return {
-      key: 't'.codePointAt(0),
+      key: 't',
       prompt: 'filter by a test name regex pattern',
     };
   }
@@ -36,14 +37,14 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
 
   run(globalConfig: GlobalConfig, updateConfigAndRun: Function): Promise<void> {
     return new Promise((res, rej) => {
-      const testPathPatternPrompt = new TestNamePatternPrompt(
+      const testNamePatternPrompt = new TestNamePatternPrompt(
         this._stdout,
         this._prompt,
       );
 
-      testPathPatternPrompt.run(
+      testNamePatternPrompt.run(
         (value: string) => {
-          updateConfigAndRun({testNamePattern: value});
+          updateConfigAndRun({mode: 'watch', testNamePattern: value});
           res();
         },
         rej,

@@ -9,6 +9,7 @@
 
 import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 
+import crypto from 'crypto';
 import path from 'path';
 import * as docblock from 'jest-docblock';
 import fs from 'graceful-fs';
@@ -20,6 +21,13 @@ const PACKAGE_JSON = path.sep + 'package.json';
 
 let hasteImpl: ?HasteImpl = null;
 let hasteImplModulePath: ?string = null;
+
+function sha1hex(content: string | Buffer): string {
+  return crypto
+    .createHash('sha1')
+    .update(content)
+    .digest('hex');
+}
 
 export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   if (
@@ -34,38 +42,68 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
     hasteImpl = (require(hasteImplModulePath): HasteImpl);
   }
 
-  const filePath = data.filePath;
-  let module;
-  let id: ?string;
+  let content;
   let dependencies;
+  let id;
+  let module;
+  let sha1;
 
-  if (filePath.endsWith(PACKAGE_JSON)) {
-    const fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-
-    if (fileData.name) {
-      id = fileData.name;
-      module = [filePath, H.PACKAGE];
+  const {computeDependencies, computeSha1, filePath} = data;
+  const getContent = (): string => {
+    if (content === undefined) {
+      content = fs.readFileSync(filePath, 'utf8');
     }
 
-    return {dependencies, id, module};
-  }
+    return content;
+  };
 
-  if (!blacklist.has(filePath.substr(filePath.lastIndexOf('.')))) {
-    const content = fs.readFileSync(filePath, 'utf8');
+  if (filePath.endsWith(PACKAGE_JSON)) {
+    // Process a package.json that is returned as a PACKAGE type with its name.
+    try {
+      const fileData = JSON.parse(getContent());
 
+      if (fileData.name) {
+        id = fileData.name;
+        module = [filePath, H.PACKAGE];
+      }
+    } catch (err) {
+      throw new Error(`Cannot parse ${filePath} as JSON: ${err.message}`);
+    }
+  } else if (!blacklist.has(filePath.substr(filePath.lastIndexOf('.')))) {
+    // Process a random file that is returned as a MODULE.
     if (hasteImpl) {
       id = hasteImpl.getHasteName(filePath);
     } else {
-      const doc = docblock.parse(docblock.extract(content));
+      const doc = docblock.parse(docblock.extract(getContent()));
       id = [].concat(doc.providesModule || doc.provides)[0];
     }
 
-    dependencies = extractRequires(content);
+    if (computeDependencies) {
+      dependencies = extractRequires(getContent());
+    }
 
     if (id) {
       module = [filePath, H.MODULE];
     }
   }
 
-  return {dependencies, id, module};
+  // If a SHA-1 is requested on update, compute it.
+  if (computeSha1) {
+    sha1 = sha1hex(getContent() || fs.readFileSync(filePath));
+  }
+
+  return {dependencies, id, module, sha1};
+}
+
+export async function getSha1(data: WorkerMessage): Promise<WorkerMetadata> {
+  const sha1 = data.computeSha1
+    ? sha1hex(fs.readFileSync(data.filePath))
+    : null;
+
+  return {
+    dependencies: undefined,
+    id: undefined,
+    module: undefined,
+    sha1,
+  };
 }

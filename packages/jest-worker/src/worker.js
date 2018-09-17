@@ -22,8 +22,9 @@ import type {Readable} from 'stream';
 
 import type {
   ChildMessage,
-  QueueCallback,
   QueueChildMessage,
+  OnProcessEnd,
+  OnProcessStart,
   WorkerOptions,
 } from './types';
 
@@ -48,13 +49,14 @@ import type {
 export default class {
   _busy: boolean;
   _child: ChildProcess;
+  _last: ?QueueChildMessage;
   _options: WorkerOptions;
-  _queue: Array<QueueChildMessage>;
+  _queue: ?QueueChildMessage;
   _retries: number;
 
   constructor(options: WorkerOptions) {
     this._options = options;
-    this._queue = [];
+    this._queue = null;
 
     this._initialize();
   }
@@ -67,8 +69,20 @@ export default class {
     return this._child.stderr;
   }
 
-  send(request: ChildMessage, callback: QueueCallback) {
-    this._queue.push({callback, request});
+  send(
+    request: ChildMessage,
+    onProcessStart: OnProcessStart,
+    onProcessEnd: OnProcessEnd,
+  ) {
+    const item = {next: null, onProcessEnd, onProcessStart, request};
+
+    if (this._last) {
+      this._last.next = item;
+    } else {
+      this._queue = item;
+    }
+
+    this._last = item;
     this._process();
   }
 
@@ -82,7 +96,7 @@ export default class {
           env: Object.assign({}, process.env, {
             JEST_WORKER_ID: this._options.workerId,
           }),
-          // suppress --debug / --inspect flags while preserving others (like --harmony)
+          // Suppress --debug / --inspect flags while preserving others (like --harmony).
           execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
           silent: true,
         },
@@ -121,42 +135,49 @@ export default class {
       return;
     }
 
-    const queue = this._queue;
-    let skip = 0;
+    let item = this._queue;
 
     // Calls in the queue might have already been processed by another worker,
     // so we have to skip them.
-    while (queue.length > skip && queue[skip].request[1]) {
-      skip++;
+    while (item && item.request[1]) {
+      item = item.next;
     }
 
-    // Remove all pieces at once.
-    queue.splice(0, skip);
+    this._queue = item;
 
-    if (queue.length) {
-      const call = queue[0];
-
+    if (item) {
       // Flag the call as processed, so that other workers know that they don't
       // have to process it as well.
-      call.request[1] = true;
+      item.request[1] = true;
+
+      // Tell the parent that this item is starting to be processed.
+      item.onProcessStart(this);
 
       this._retries = 0;
       this._busy = true;
 
       // $FlowFixMe: wrong "ChildProcess.send" signature.
-      this._child.send(call.request);
+      this._child.send(item.request);
+    } else {
+      this._last = item;
     }
   }
 
   _receive(response: any /* Should be ParentMessage */) {
-    const callback = this._queue[0].callback;
+    const item = this._queue;
+
+    if (!item) {
+      throw new TypeError('Unexpected response with an empty queue');
+    }
+
+    const onProcessEnd = item.onProcessEnd;
 
     this._busy = false;
     this._process();
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
-        callback.call(this, null, response[1]);
+        onProcessEnd(null, response[1]);
         break;
 
       case PARENT_MESSAGE_ERROR:
@@ -178,7 +199,7 @@ export default class {
           }
         }
 
-        callback.call(this, error, null);
+        onProcessEnd(error, null);
         break;
 
       default:

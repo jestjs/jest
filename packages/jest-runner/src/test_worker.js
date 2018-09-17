@@ -9,7 +9,8 @@
 
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {SerializableError, TestResult} from 'types/TestResult';
-import type {RawModuleMap} from 'types/HasteMap';
+import type {SerializableModuleMap} from 'types/HasteMap';
+import type {ErrorWithCode} from 'types/Errors';
 
 import exit from 'exit';
 import HasteMap from 'jest-haste-map';
@@ -21,7 +22,7 @@ export type WorkerData = {|
   config: ProjectConfig,
   globalConfig: GlobalConfig,
   path: Path,
-  rawModuleMap: ?RawModuleMap,
+  serializableModuleMap: ?SerializableModuleMap,
 |};
 
 // Make sure uncaught errors are logged before we exit.
@@ -30,7 +31,7 @@ process.on('uncaughtException', err => {
   exit(1);
 });
 
-const formatError = (error: string | Error): SerializableError => {
+const formatError = (error: string | ErrorWithCode): SerializableError => {
   if (typeof error === 'string') {
     const {message, stack} = separateMessageFromStack(error);
     return {
@@ -49,13 +50,13 @@ const formatError = (error: string | Error): SerializableError => {
 };
 
 const resolvers = Object.create(null);
-const getResolver = (config, rawModuleMap) => {
+const getResolver = (config, moduleMap) => {
   // In watch mode, the raw module map with all haste modules is passed from
   // the test runner to the watch command. This is because jest-haste-map's
   // watch mode does not persist the haste map on disk after every file change.
   // To make this fast and consistent, we pass it from the TestRunner.
-  if (rawModuleMap) {
-    return Runtime.createResolver(config, new HasteMap.ModuleMap(rawModuleMap));
+  if (moduleMap) {
+    return Runtime.createResolver(config, moduleMap);
   } else {
     const name = config.name;
     if (!resolvers[name]) {
@@ -72,14 +73,17 @@ export async function worker({
   config,
   globalConfig,
   path,
-  rawModuleMap,
+  serializableModuleMap,
 }: WorkerData): Promise<TestResult> {
   try {
+    const moduleMap = serializableModuleMap
+      ? HasteMap.ModuleMap.fromJSON(serializableModuleMap)
+      : null;
     return await runTest(
       path,
       globalConfig,
       config,
-      getResolver(config, rawModuleMap),
+      getResolver(config, moduleMap),
     );
   } catch (error) {
     throw formatError(error);

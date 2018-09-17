@@ -14,7 +14,7 @@ import type {TestFramework} from 'types/TestRunner';
 import type {TestResult} from 'types/TestResult';
 import type RuntimeClass from 'jest-runtime';
 
-import fs from 'fs';
+import fs from 'graceful-fs';
 import {
   BufferedConsole,
   Console,
@@ -22,19 +22,16 @@ import {
   getConsoleOutput,
   setGlobal,
 } from 'jest-util';
-import jasmine2 from 'jest-jasmine2';
 import LeakDetector from 'jest-leak-detector';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
+import {formatExecError} from 'jest-message-util';
+import sourcemapSupport from 'source-map-support';
 
 type RunTestInternalResult = {
   leakDetector: ?LeakDetector,
   result: TestResult,
 };
-
-// The default jest-runner is required because it is the default test runner
-// and required implicitly through the `testRunner` ProjectConfig option.
-jasmine2;
 
 // Keeping the core of "runTest" as a separate function (as "runTestInternal")
 // is key to be able to detect memory leaks. Since all variables are local to
@@ -67,8 +64,10 @@ async function runTestInternal(
 
   /* $FlowFixMe */
   const TestEnvironment = (require(testEnvironment): EnvironmentClass);
-  /* $FlowFixMe */
-  const testFramework = (require(config.testRunner): TestFramework);
+  const testFramework = ((process.env.JEST_CIRCUS === '1'
+    ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
+    : /* $FlowFixMe */
+      require(config.testRunner)): TestFramework);
   /* $FlowFixMe */
   const Runtime = (require(config.moduleLoader || 'jest-runtime'): Class<
     RuntimeClass,
@@ -116,15 +115,85 @@ async function runTestInternal(
   });
 
   const start = Date.now();
-  await environment.setup();
+
+  const sourcemapOptions = {
+    environment: 'node',
+    handleUncaughtExceptions: false,
+    retrieveSourceMap: source => {
+      const sourceMaps = runtime && runtime.getSourceMaps();
+      const sourceMapSource = sourceMaps && sourceMaps[source];
+
+      if (sourceMapSource) {
+        try {
+          return {
+            map: JSON.parse(fs.readFileSync(sourceMapSource)),
+            url: source,
+          };
+        } catch (e) {}
+      }
+      return null;
+    },
+  };
+
+  // For tests
+  runtime
+    .requireInternalModule(
+      require.resolve('source-map-support'),
+      'source-map-support',
+    )
+    .install(sourcemapOptions);
+
+  // For runtime errors
+  sourcemapSupport.install(sourcemapOptions);
+
+  if (
+    environment.global &&
+    environment.global.process &&
+    environment.global.process.exit
+  ) {
+    const realExit = environment.global.process.exit;
+
+    environment.global.process.exit = function exit(...args) {
+      const error = new Error(`process.exit called with "${args.join(', ')}"`);
+
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(error, exit);
+      }
+
+      const formattedError = formatExecError(
+        error,
+        config,
+        {noStackTrace: false},
+        undefined,
+        true,
+      );
+
+      process.stderr.write(formattedError);
+
+      return realExit(...args);
+    };
+  }
+
   try {
-    const result: TestResult = await testFramework(
-      globalConfig,
-      config,
-      environment,
-      runtime,
-      path,
-    );
+    await environment.setup();
+
+    let result: TestResult;
+
+    try {
+      result = await testFramework(
+        globalConfig,
+        config,
+        environment,
+        runtime,
+        path,
+      );
+    } catch (err) {
+      // Access stack before uninstalling sourcemaps
+      err.stack;
+
+      throw err;
+    }
+
     const testCount =
       result.numPassingTests + result.numFailingTests + result.numPendingTests;
 
@@ -151,6 +220,8 @@ async function runTestInternal(
     });
   } finally {
     await environment.teardown();
+
+    sourcemapSupport.resetRetrieveHandlers();
   }
 }
 

@@ -60,8 +60,12 @@ const WHITELISTED_IDENTIFIERS = {
   WeakMap: true,
   WeakSet: true,
   arguments: true,
+  console: true,
   expect: true,
+  isNaN: true,
   jest: true,
+  parseFloat: true,
+  parseInt: true,
   require: true,
   undefined: true,
 };
@@ -106,7 +110,7 @@ FUNCTIONS.mock = args => {
       if (!found) {
         invariant(
           (scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS[name]) ||
-            /^mock/.test(name) ||
+            /^mock/i.test(name) ||
             // Allow istanbul's coverage variable to pass.
             /^(?:__)?cov/.test(name),
           'The module factory of `jest.mock()` is not allowed to ' +
@@ -119,7 +123,7 @@ FUNCTIONS.mock = args => {
             '.\n' +
             'Note: This is a precaution to guard against uninitialized mock ' +
             'variables. If it is ensured that the mock is required lazily, ' +
-            'variable names prefixed with `mock` are permitted.',
+            'variable names prefixed with `mock` (case insensitive) are permitted.',
         );
       }
     }

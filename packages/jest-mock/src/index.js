@@ -21,10 +21,29 @@ export type MockFunctionMetadata = {
   length?: number,
 };
 
+/**
+ * Represents the result of a single call to a mock function.
+ */
+type MockFunctionResult = {
+  /**
+   * True if the function threw.
+   * False if the function returned.
+   */
+  isThrow: boolean,
+  /**
+   * The value that was either thrown or returned by the function.
+   */
+  value: any,
+};
+
 type MockFunctionState = {
   instances: Array<any>,
   calls: Array<Array<any>>,
-  timestamps: Array<number>,
+  /**
+   * List of results of calls to the mock function.
+   */
+  results: Array<MockFunctionResult>,
+  invocationCallOrder: Array<number>,
 };
 
 type MockFunctionConfig = {
@@ -159,7 +178,11 @@ function isA(typeName: string, value: any): boolean {
 }
 
 function getType(ref?: any): string | null {
-  if (isA('Function', ref) || isA('AsyncFunction', ref)) {
+  if (
+    isA('Function', ref) ||
+    isA('AsyncFunction', ref) ||
+    isA('GeneratorFunction', ref)
+  ) {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
@@ -192,7 +215,9 @@ function isReadonlyProp(object: any, prop: string): boolean {
       prop === 'callee' ||
       prop === 'name' ||
       prop === 'length') &&
-      (isA('Function', object) || isA('AsyncFunction', object))) ||
+      (isA('Function', object) ||
+        isA('AsyncFunction', object) ||
+        isA('GeneratorFunction', object))) ||
     ((prop === 'source' ||
       prop === 'global' ||
       prop === 'ignoreCase' ||
@@ -217,7 +242,7 @@ function getSlots(object?: Object): Array<string> {
       const prop = ownNames[i];
       if (!isReadonlyProp(object, prop)) {
         const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-        if (!propDesc.get || object.__esModule) {
+        if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
           slots[prop] = true;
         }
       }
@@ -227,23 +252,13 @@ function getSlots(object?: Object): Array<string> {
   return Object.keys(slots);
 }
 
-function wrapAsyncParam(
-  fn: any => any,
-  asyncAction: 'resolve' | 'reject',
-): any => any {
-  if (asyncAction === 'reject') {
-    return value => fn(Promise.reject(value));
-  }
-
-  return value => fn(Promise.resolve(value));
-}
-
 class ModuleMockerClass {
   _environmentGlobal: Global;
   _mockState: WeakMap<Function, MockFunctionState>;
   _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
   _spyState: Set<() => void>;
   ModuleMocker: Class<ModuleMockerClass>;
+  _invocationCallCounter: number;
 
   /**
    * @see README.md
@@ -256,6 +271,7 @@ class ModuleMockerClass {
     this._mockConfigRegistry = new WeakMap();
     this._spyState = new Set();
     this.ModuleMocker = ModuleMockerClass;
+    this._invocationCallCounter = 1;
   }
 
   _ensureMockConfig(f: Mock): MockFunctionConfig {
@@ -291,7 +307,8 @@ class ModuleMockerClass {
     return {
       calls: [],
       instances: [],
-      timestamps: [],
+      invocationCallOrder: [],
+      results: [],
     };
   }
 
@@ -326,59 +343,92 @@ class ModuleMockerClass {
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
-        mockState.timestamps.push(Date.now());
-        if (this instanceof f) {
-          // This is probably being called as a constructor
-          prototypeSlots.forEach(slot => {
-            // Copy prototype methods to the instance to make
-            // it easier to interact with mock instance call and
-            // return values
-            if (prototype[slot].type === 'function') {
-              const protoImpl = this[slot];
-              this[slot] = mocker.generateFromMetadata(prototype[slot]);
-              this[slot]._protoImpl = protoImpl;
+        mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
+
+        // Will be set to the return value of the mock if an error is not thrown
+        let finalReturnValue;
+        // Will be set to the error that is thrown by the mock (if it throws)
+        let thrownError;
+        // Will be set to true if the mock throws an error. The presence of a
+        // value in `thrownError` is not a 100% reliable indicator because a
+        // function could throw a value of undefined.
+        let callDidThrowError = false;
+
+        try {
+          // The bulk of the implementation is wrapped in an immediately
+          // executed arrow function so the return value of the mock function
+          // can be easily captured and recorded, despite the many separate
+          // return points within the logic.
+          finalReturnValue = (() => {
+            if (this instanceof f) {
+              // This is probably being called as a constructor
+              prototypeSlots.forEach(slot => {
+                // Copy prototype methods to the instance to make
+                // it easier to interact with mock instance call and
+                // return values
+                if (prototype[slot].type === 'function') {
+                  const protoImpl = this[slot];
+                  this[slot] = mocker.generateFromMetadata(prototype[slot]);
+                  this[slot]._protoImpl = protoImpl;
+                }
+              });
+
+              // Run the mock constructor implementation
+              const mockImpl = mockConfig.specificMockImpls.length
+                ? mockConfig.specificMockImpls.shift()
+                : mockConfig.mockImpl;
+              return mockImpl && mockImpl.apply(this, arguments);
             }
+
+            const returnValue = mockConfig.defaultReturnValue;
+            // If return value is last set, either specific or default, i.e.
+            // mockReturnValueOnce()/mockReturnValue() is called and no
+            // mockImplementationOnce()/mockImplementation() is called after
+            // that.
+            // use the set return value.
+            if (mockConfig.specificReturnValues.length) {
+              return mockConfig.specificReturnValues.shift();
+            }
+
+            if (mockConfig.isReturnValueLastSet) {
+              return mockConfig.defaultReturnValue;
+            }
+
+            // If mockImplementationOnce()/mockImplementation() is last set,
+            // or specific return values are used up, use the mock
+            // implementation.
+            let specificMockImpl;
+            if (returnValue === undefined) {
+              specificMockImpl = mockConfig.specificMockImpls.shift();
+              if (specificMockImpl === undefined) {
+                specificMockImpl = mockConfig.mockImpl;
+              }
+              if (specificMockImpl) {
+                return specificMockImpl.apply(this, arguments);
+              }
+            }
+
+            // Otherwise use prototype implementation
+            if (returnValue === undefined && f._protoImpl) {
+              return f._protoImpl.apply(this, arguments);
+            }
+
+            return returnValue;
+          })();
+        } catch (error) {
+          // Store the thrown error so we can record it, then re-throw it.
+          thrownError = error;
+          callDidThrowError = true;
+          throw error;
+        } finally {
+          // Record the result of the function
+          mockState.results.push({
+            isThrow: callDidThrowError,
+            value: callDidThrowError ? thrownError : finalReturnValue,
           });
-
-          // Run the mock constructor implementation
-          const mockImpl = mockConfig.specificMockImpls.length
-            ? mockConfig.specificMockImpls.shift()
-            : mockConfig.mockImpl;
-          return mockImpl && mockImpl.apply(this, arguments);
         }
 
-        const returnValue = mockConfig.defaultReturnValue;
-        // If return value is last set, either specific or default, i.e.
-        // mockReturnValueOnce()/mockReturnValue() is called and no
-        // mockImplementationOnce()/mockImplementation() is called after that.
-        // use the set return value.
-        if (mockConfig.specificReturnValues.length) {
-          return mockConfig.specificReturnValues.shift();
-        }
-
-        if (mockConfig.isReturnValueLastSet) {
-          return mockConfig.defaultReturnValue;
-        }
-
-        // If mockImplementationOnce()/mockImplementation() is last set,
-        // or specific return values are used up, use the mock implementation.
-        let specificMockImpl;
-        if (returnValue === undefined) {
-          specificMockImpl = mockConfig.specificMockImpls.shift();
-          if (specificMockImpl === undefined) {
-            specificMockImpl = mockConfig.mockImpl;
-          }
-          if (specificMockImpl) {
-            return specificMockImpl.apply(this, arguments);
-          }
-        }
-
-        // Otherwise use prototype implementation
-        if (returnValue === undefined && f._protoImpl) {
-          return f._protoImpl.apply(this, arguments);
-        }
-
-        return returnValue;
+        return finalReturnValue;
       }, metadata.length || 0);
 
       f = this._createMockFunction(metadata, mockConstructor);
@@ -406,9 +456,14 @@ class ModuleMockerClass {
       };
 
       f.mockReset = () => {
-        this._mockState.delete(f);
+        f.mockClear();
         this._mockConfigRegistry.delete(f);
         return f;
+      };
+
+      f.mockRestore = () => {
+        f.mockReset();
+        return restore ? restore() : undefined;
       };
 
       f.mockReturnValueOnce = value => {
@@ -418,12 +473,11 @@ class ModuleMockerClass {
         return f;
       };
 
-      f.mockResolvedValueOnce = wrapAsyncParam(
-        f.mockReturnValueOnce,
-        'resolve',
-      );
+      f.mockResolvedValueOnce = value =>
+        f.mockImplementationOnce(() => Promise.resolve(value));
 
-      f.mockRejectedValueOnce = wrapAsyncParam(f.mockReturnValueOnce, 'reject');
+      f.mockRejectedValueOnce = value =>
+        f.mockImplementationOnce(() => Promise.reject(value));
 
       f.mockReturnValue = value => {
         // next function call will return specified return value or this one
@@ -433,9 +487,11 @@ class ModuleMockerClass {
         return f;
       };
 
-      f.mockResolvedValue = wrapAsyncParam(f.mockReturnValue, 'resolve');
+      f.mockResolvedValue = value =>
+        f.mockImplementation(() => Promise.resolve(value));
 
-      f.mockRejectedValue = wrapAsyncParam(f.mockReturnValue, 'reject');
+      f.mockRejectedValue = value =>
+        f.mockImplementation(() => Promise.reject(value));
 
       f.mockImplementationOnce = fn => {
         // next function call will use this mock implementation return value
@@ -476,8 +532,6 @@ class ModuleMockerClass {
       if (metadata.mockImpl) {
         f.mockImplementation(metadata.mockImpl);
       }
-
-      f.mockRestore = restore ? restore : () => {};
 
       return f;
     } else {
@@ -734,7 +788,13 @@ class ModuleMockerClass {
       throw new Error('No property name supplied');
     }
 
-    const descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
+    let descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
+    let proto = Object.getPrototypeOf(obj);
+
+    while (!descriptor && proto !== null) {
+      descriptor = Object.getOwnPropertyDescriptor(proto, propertyName);
+      proto = Object.getPrototypeOf(proto);
+    }
 
     if (!descriptor) {
       throw new Error(propertyName + ' property does not exist');
@@ -764,7 +824,9 @@ class ModuleMockerClass {
       }
 
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
+        // $FlowFixMe
         descriptor[accessType] = original;
+        // $FlowFixMe
         Object.defineProperty(obj, propertyName, descriptor);
       });
 

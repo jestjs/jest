@@ -1,22 +1,36 @@
 {
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-typescript",
   "dependencies": {
-    "react": "15.4.2",
-    "react-dom": "15.4.2",
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
     "typescript": "*"
   },
   "devDependencies": {
-    "@types/jest": "^19.2.4",
+    "@types/jest": "^23.1.1",
     "jest": "*",
-    "react-addons-test-utils": "15.4.2"
+    "ts-jest": "*"
   },
   "scripts": {
     "test": "jest"
   },
   "jest": {
-    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
     "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
+      "^.+\\.(ts|tsx)$": "ts-jest"
     },
-    "testMatch": ["**/__tests__/*.(ts|tsx|js)"]
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "testMatch": [
+      "**/__tests__/*.+(ts|tsx|js)"
+    ]
   }
 }

@@ -204,6 +204,34 @@ describe('.toBe()', () => {
   });
 });
 
+describe('.toStrictEqual()', () => {
+  class TestClass {
+    constructor(a, b) {
+      this.a = a;
+      this.b = b;
+    }
+  }
+
+  it('does not ignore keys with undefined values', () => {
+    expect({
+      a: undefined,
+      b: 2,
+    }).not.toStrictEqual({b: 2});
+  });
+
+  it('passes when comparing same type', () => {
+    expect({
+      test: new TestClass(1, 2),
+    }).toStrictEqual({test: new TestClass(1, 2)});
+  });
+
+  it('does not pass for different types', () => {
+    expect({
+      test: new TestClass(1, 2),
+    }).not.toStrictEqual({test: {a: 1, b: 2}});
+  });
+});
+
 describe('.toEqual()', () => {
   [
     [true, false],
@@ -219,12 +247,23 @@ describe('.toEqual()', () => {
     [new Map(), new Set()],
     [new Set([1, 2]), new Set()],
     [new Set([1, 2]), new Set([1, 2, 3])],
+    [new Set([[1], [2]]), new Set([[1], [2], [3]])],
+    [new Set([[1], [2]]), new Set([[1], [2], [2]])],
+    [
+      new Set([new Set([1]), new Set([2])]),
+      new Set([new Set([1]), new Set([3])]),
+    ],
     [Immutable.Set([1, 2]), Immutable.Set()],
     [Immutable.Set([1, 2]), Immutable.Set([1, 2, 3])],
     [Immutable.OrderedSet([1, 2]), Immutable.OrderedSet([2, 1])],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[1, 'one']])],
     [new Map([['a', 0]]), new Map([['b', 0]])],
     [new Map([['v', 1]]), new Map([['v', 2]])],
+    [new Map([[['v'], 1]]), new Map([[['v'], 2]])],
+    [
+      new Map([[[1], new Map([[[1], 'one']])]]),
+      new Map([[[1], new Map([[[1], 'two']])]]),
+    ],
     [Immutable.Map({a: 0}), Immutable.Map({b: 0})],
     [Immutable.Map({v: 1}), Immutable.Map({v: 2})],
     [
@@ -255,6 +294,20 @@ describe('.toEqual()', () => {
         },
       },
     ],
+    [
+      {
+        target: {
+          nodeType: 1,
+          value: 'a',
+        },
+      },
+      {
+        target: {
+          nodeType: 1,
+          value: 'b',
+        },
+      },
+    ],
   ].forEach(([a, b]) => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
@@ -276,6 +329,13 @@ describe('.toEqual()', () => {
     [new Set(), new Set()],
     [new Set([1, 2]), new Set([1, 2])],
     [new Set([1, 2]), new Set([2, 1])],
+    [new Set([[1], [2]]), new Set([[2], [1]])],
+    [
+      new Set([new Set([[1]]), new Set([[2]])]),
+      new Set([new Set([[2]]), new Set([[1]])]),
+    ],
+    [new Set([[1], [2], [3], [3]]), new Set([[3], [3], [2], [1]])],
+    [new Set([{a: 1}, {b: 2}]), new Set([{b: 2}, {a: 1}])],
     [Immutable.Set(), Immutable.Set()],
     [Immutable.Set([1, 2]), Immutable.Set([1, 2])],
     [Immutable.Set([1, 2]), Immutable.Set([2, 1])],
@@ -284,6 +344,26 @@ describe('.toEqual()', () => {
     [new Map(), new Map()],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[1, 'one'], [2, 'two']])],
     [new Map([[1, 'one'], [2, 'two']]), new Map([[2, 'two'], [1, 'one']])],
+    [
+      new Map([[[1], 'one'], [[2], 'two'], [[3], 'three'], [[3], 'four']]),
+      new Map([[[3], 'three'], [[3], 'four'], [[2], 'two'], [[1], 'one']]),
+    ],
+    [
+      new Map([[[1], new Map([[[1], 'one']])], [[2], new Map([[[2], 'two']])]]),
+      new Map([[[2], new Map([[[2], 'two']])], [[1], new Map([[[1], 'one']])]]),
+    ],
+    [
+      new Map([[[1], 'one'], [[2], 'two']]),
+      new Map([[[2], 'two'], [[1], 'one']]),
+    ],
+    [
+      new Map([[{a: 1}, 'one'], [{b: 2}, 'two']]),
+      new Map([[{b: 2}, 'two'], [{a: 1}, 'one']]),
+    ],
+    [
+      new Map([[1, ['one']], [2, ['two']]]),
+      new Map([[2, ['two']], [1, ['one']]]),
+    ],
     [Immutable.Map(), Immutable.Map()],
     [
       Immutable.Map()
@@ -362,6 +442,42 @@ describe('.toEqual()', () => {
       );
     }
   });
+
+  test('symbol based keys in arrays are processed correctly', () => {
+    const mySymbol = Symbol('test');
+    const actual1 = [];
+    actual1[mySymbol] = 3;
+    const actual2 = [];
+    actual2[mySymbol] = 4;
+    const expected = [];
+    expected[mySymbol] = 3;
+
+    expect(actual1).toEqual(expected);
+    expect(actual2).not.toEqual(expected);
+  });
+
+  test('non-enumerable members should be skipped during equal', () => {
+    const actual = {
+      x: 3,
+    };
+    Object.defineProperty(actual, 'test', {
+      enumerable: false,
+      value: 5,
+    });
+    expect(actual).toEqual({x: 3});
+  });
+
+  test('non-enumerable symbolic members should be skipped during equal', () => {
+    const actual = {
+      x: 3,
+    };
+    const mySymbol = Symbol('test');
+    Object.defineProperty(actual, mySymbol, {
+      enumerable: false,
+      value: 5,
+    });
+    expect(actual).toEqual({x: 3});
+  });
 });
 
 describe('.toBeInstanceOf()', () => {
@@ -384,6 +500,8 @@ describe('.toBeInstanceOf()', () => {
     [true, Boolean],
     [new A(), B],
     [Object.create(null), A],
+    [undefined, String],
+    [null, String],
   ].forEach(([a, b]) => {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
@@ -953,6 +1071,15 @@ describe('.toHaveProperty()', () => {
 });
 
 describe('toMatchObject()', () => {
+  class Foo {
+    get a() {
+      return undefined;
+    }
+    get b() {
+      return 'b';
+    }
+  }
+
   [
     [{a: 'b', c: 'd'}, {a: 'b'}],
     [{a: 'b', c: 'd'}, {a: 'b', c: 'd'}],
@@ -974,6 +1101,7 @@ describe('toMatchObject()', () => {
     [[], []],
     [new Error('foo'), new Error('foo')],
     [new Error('bar'), {message: 'bar'}],
+    [new Foo(), {a: undefined, b: 'b'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,

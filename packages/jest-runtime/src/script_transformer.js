@@ -13,6 +13,7 @@ import type {
   TransformedSource,
   TransformResult,
 } from 'types/Transform';
+import type {ErrorWithCode} from 'types/Errors';
 
 import crypto from 'crypto';
 import path from 'path';
@@ -23,12 +24,13 @@ import {transform as babelTransform} from 'babel-core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
-import stableStringify from 'json-stable-stringify';
+import stableStringify from 'fast-json-stable-stringify';
 import slash from 'slash';
 import {version as VERSION} from '../package.json';
 import shouldInstrument from './should_instrument';
 import writeFileAtomic from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
+import {enhanceUnexpectedTokenMessage} from './helpers';
 
 export type Options = {|
   collectCoverage: boolean,
@@ -136,13 +138,13 @@ export default class ScriptTransformer {
 
       // $FlowFixMe
       transform = (require(transformPath): Transformer);
+      if (typeof transform.createTransformer === 'function') {
+        transform = transform.createTransformer();
+      }
       if (typeof transform.process !== 'function') {
         throw new TypeError(
           'Jest: a transform must export a `process` function.',
         );
-      }
-      if (typeof transform.createTransformer === 'function') {
-        transform = transform.createTransformer();
       }
       this._transformCache.set(transformPath, transform);
     }
@@ -158,6 +160,7 @@ export default class ScriptTransformer {
         [
           babelPluginIstanbul,
           {
+            compact: false,
             // files outside `cwd` will not be instrumented
             cwd: this._config.rootDir,
             exclude: [],
@@ -165,7 +168,6 @@ export default class ScriptTransformer {
           },
         ],
       ],
-      retainLines: true,
     }).code;
   }
 
@@ -217,7 +219,6 @@ export default class ScriptTransformer {
     if (transform && shouldCallTransform) {
       const processed = transform.process(content, filename, this._config, {
         instrument,
-        returnSourceString: false,
       });
 
       if (typeof processed === 'string') {
@@ -315,6 +316,14 @@ export default class ScriptTransformer {
         e.stack = e.codeFrame;
       }
 
+      if (
+        e instanceof SyntaxError &&
+        e.message.includes('Unexpected token') &&
+        !e.message.includes(' expected')
+      ) {
+        throw enhanceUnexpectedTokenMessage(e);
+      }
+
       throw e;
     }
   }
@@ -330,7 +339,7 @@ export default class ScriptTransformer {
 
     if (!options.isCoreModule) {
       instrument = shouldInstrument(filename, options, this._config);
-      scriptCacheKey = getScriptCacheKey(filename, this._config, instrument);
+      scriptCacheKey = getScriptCacheKey(filename, instrument);
       result = cache.get(scriptCacheKey);
     }
 
@@ -436,13 +445,10 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
  * If the target file exists we can be reasonably sure another process has
  * legitimately won a cache write race and ignore the error.
  */
-const cacheWriteErrorSafeToIgnore = (e: Error, cachePath: Path) => {
-  return (
-    process.platform === 'win32' &&
-    e.code === 'EPERM' &&
-    fs.existsSync(cachePath)
-  );
-};
+const cacheWriteErrorSafeToIgnore = (e: ErrorWithCode, cachePath: Path) =>
+  process.platform === 'win32' &&
+  e.code === 'EPERM' &&
+  fs.existsSync(cachePath);
 
 const readCacheFile = (cachePath: Path): ?string => {
   if (!fs.existsSync(cachePath)) {
@@ -470,7 +476,7 @@ const readCacheFile = (cachePath: Path): ?string => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename, config, instrument: boolean) => {
+const getScriptCacheKey = (filename, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
   return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };

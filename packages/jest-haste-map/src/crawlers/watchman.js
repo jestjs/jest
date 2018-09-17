@@ -28,6 +28,7 @@ function WatchmanError(error: Error): Error {
 module.exports = async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
+  const fields = ['name', 'exists', 'mtime_ms'];
   const {data, extensions, ignore, roots} = options;
   const defaultWatchExpression = [
     'allof',
@@ -35,8 +36,8 @@ module.exports = async function watchmanCrawl(
     ['anyof'].concat(extensions.map(extension => ['suffix', extension])),
   ];
   const clocks = data.clocks;
-
   const client = new watchman.Client();
+
   let clientError;
   client.on('error', error => (clientError = WatchmanError(error)));
 
@@ -49,13 +50,22 @@ module.exports = async function watchmanCrawl(
       ),
     );
 
+  if (options.computeSha1) {
+    const {capabilities} = await cmd('list-capabilities');
+
+    if (capabilities.indexOf('field-content.sha1hex') !== -1) {
+      fields.push('content.sha1hex');
+    }
+  }
+
   async function getWatchmanRoots(roots) {
     const watchmanRoots = new Map();
     await Promise.all(
       roots.map(async root => {
         const response = await cmd('watch-project', root);
         const existing = watchmanRoots.get(response.watch);
-        // A root can only be filtered if it was never seen with a relative_path before
+        // A root can only be filtered if it was never seen with a
+        // relative_path before.
         const canBeFiltered = !existing || existing.length > 0;
 
         if (canBeFiltered) {
@@ -65,8 +75,9 @@ module.exports = async function watchmanCrawl(
               (existing || []).concat(response.relative_path),
             );
           } else {
-            // Make the filter directories an empty array to signal that this root
-            // was already seen and needs to be watched for all files/directories
+            // Make the filter directories an empty array to signal that this
+            // root was already seen and needs to be watched for all files or
+            // directories.
             watchmanRoots.set(response.watch, []);
           }
         }
@@ -82,24 +93,37 @@ module.exports = async function watchmanCrawl(
       Array.from(rootProjectDirMappings).map(
         async ([root, directoryFilters]) => {
           const expression = Array.from(defaultWatchExpression);
+          const glob = [];
+
           if (directoryFilters.length > 0) {
             expression.push([
               'anyof',
               ...directoryFilters.map(dir => ['dirname', dir]),
             ]);
-          }
-          const fields = ['name', 'exists', 'mtime_ms'];
 
-          const query = clocks[root]
+            for (const directory of directoryFilters) {
+              for (const extension of extensions) {
+                glob.push(`${directory}/**/*.${extension}`);
+              }
+            }
+          } else {
+            for (const extension of extensions) {
+              glob.push(`**/*.${extension}`);
+            }
+          }
+
+          const query = clocks.has(root)
             ? // Use the `since` generator if we have a clock available
-              {expression, fields, since: clocks[root]}
-            : // Otherwise use the `suffix` generator
-              {expression, fields, suffix: extensions};
+              {expression, fields, since: clocks.get(root)}
+            : // Otherwise use the `glob` filter
+              {expression, fields, glob};
 
           const response = await cmd('query', root, query);
+
           if ('warning' in response) {
             console.warn('watchman warning: ', response.warning);
           }
+
           isFresh = isFresh || response.is_fresh_instance;
           files.set(root, response);
         },
@@ -117,10 +141,13 @@ module.exports = async function watchmanCrawl(
   try {
     const watchmanRoots = await getWatchmanRoots(roots);
     const watchmanFileResults = await queryWatchmanForDirs(watchmanRoots);
-    // Reset the file map if watchman was restarted and sends us a list of files.
+
+    // Reset the file map if watchman was restarted and sends us a list of
+    // files.
     if (watchmanFileResults.isFresh) {
-      files = Object.create(null);
+      files = new Map();
     }
+
     watchmanFiles = watchmanFileResults.files;
   } finally {
     client.end();
@@ -132,23 +159,28 @@ module.exports = async function watchmanCrawl(
 
   for (const [watchRoot, response] of watchmanFiles) {
     const fsRoot = normalizePathSep(watchRoot);
-    clocks[fsRoot] = response.clock;
+    clocks.set(fsRoot, response.clock);
     for (const fileData of response.files) {
       const name = fsRoot + path.sep + normalizePathSep(fileData.name);
       if (!fileData.exists) {
-        delete files[name];
+        files.delete(name);
       } else if (!ignore(name)) {
         const mtime =
           typeof fileData.mtime_ms === 'number'
             ? fileData.mtime_ms
             : fileData.mtime_ms.toNumber();
-        const existingFileData = data.files[name];
-        const isOld = existingFileData && existingFileData[H.MTIME] === mtime;
-        if (isOld) {
-          files[name] = existingFileData;
+        const existingFileData = data.files.get(name);
+        if (existingFileData && existingFileData[H.MTIME] === mtime) {
+          files.set(name, existingFileData);
         } else {
+          let sha1hex = fileData['content.sha1hex'];
+
+          if (typeof sha1hex !== 'string' || sha1hex.length !== 40) {
+            sha1hex = null;
+          }
+
           // See ../constants.js
-          files[name] = ['', mtime, 0, []];
+          files.set(name, ['', mtime, 0, [], sha1hex]);
         }
       }
     }

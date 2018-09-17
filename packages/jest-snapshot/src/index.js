@@ -48,26 +48,122 @@ const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
   };
 };
 
-const toMatchSnapshot = function(received: any, testName?: string) {
-  this.dontThrow && this.dontThrow();
+const toMatchSnapshot = function(
+  received: any,
+  propertyMatchers?: any,
+  testName?: string,
+) {
+  if (arguments.length === 3 && !propertyMatchers) {
+    throw new Error(
+      'Property matchers must be an object.\n\nTo provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
+    );
+  }
 
-  const {currentTestName, isNot, snapshotState}: MatcherState = this;
+  return _toMatchSnapshot({
+    context: this,
+    propertyMatchers,
+    received,
+    testName,
+  });
+};
+
+const toMatchInlineSnapshot = function(
+  received: any,
+  propertyMatchersOrInlineSnapshot?: any,
+  inlineSnapshot?: string,
+) {
+  let propertyMatchers;
+  if (typeof propertyMatchersOrInlineSnapshot === 'string') {
+    inlineSnapshot = propertyMatchersOrInlineSnapshot;
+  } else {
+    propertyMatchers = propertyMatchersOrInlineSnapshot;
+  }
+  return _toMatchSnapshot({
+    context: this,
+    inlineSnapshot: inlineSnapshot || '',
+    propertyMatchers,
+    received,
+  });
+};
+
+const _toMatchSnapshot = ({
+  context,
+  received,
+  propertyMatchers,
+  testName,
+  inlineSnapshot,
+}: {
+  context: MatcherState & {dontThrow?: () => any},
+  received: any,
+  propertyMatchers?: any,
+  testName?: string,
+  inlineSnapshot?: string,
+}) => {
+  context.dontThrow && context.dontThrow();
+  testName = typeof propertyMatchers === 'string' ? propertyMatchers : testName;
+
+  const {currentTestName, isNot, snapshotState} = context;
 
   if (isNot) {
-    throw new Error('Jest: `.not` cannot be used with `.toMatchSnapshot()`.');
+    const matcherName =
+      typeof inlineSnapshot === 'string'
+        ? 'toMatchInlineSnapshot'
+        : 'toMatchSnapshot';
+    throw new Error(
+      `Jest: \`.not\` cannot be used with \`.${matcherName}()\`.`,
+    );
   }
 
   if (!snapshotState) {
     throw new Error('Jest: snapshot state must be initialized.');
   }
 
-  const result = snapshotState.match(
+  const fullTestName =
     testName && currentTestName
       ? `${currentTestName}: ${testName}`
-      : currentTestName || '',
+      : currentTestName || '';
+
+  if (typeof propertyMatchers === 'object') {
+    if (propertyMatchers === null) {
+      throw new Error(`Property matchers must be an object.`);
+    }
+    const propertyPass = context.equals(received, propertyMatchers, [
+      context.utils.iterableEquality,
+      context.utils.subsetEquality,
+    ]);
+
+    if (!propertyPass) {
+      const key = snapshotState.fail(fullTestName, received);
+
+      const report = () =>
+        `${RECEIVED_COLOR('Received value')} does not match ` +
+        `${EXPECTED_COLOR(`snapshot properties for "${key}"`)}.\n\n` +
+        `Expected snapshot to match properties:\n` +
+        `  ${context.utils.printExpected(propertyMatchers)}` +
+        `\nReceived:\n` +
+        `  ${context.utils.printReceived(received)}`;
+
+      return {
+        message: () =>
+          matcherHint('.toMatchSnapshot', 'value', 'properties') +
+          '\n\n' +
+          report(),
+        name: 'toMatchSnapshot',
+        pass: false,
+        report,
+      };
+    } else {
+      received = utils.deepMerge(received, propertyMatchers);
+    }
+  }
+
+  const result = snapshotState.match({
+    error: context.error,
+    inlineSnapshot,
     received,
-  );
-  const {count, pass} = result;
+    testName: fullTestName,
+  });
+  const {pass} = result;
   let {actual, expected} = result;
 
   let report;
@@ -92,7 +188,7 @@ const toMatchSnapshot = function(received: any, testName?: string) {
 
     report = () =>
       `${RECEIVED_COLOR('Received value')} does not match ` +
-      `${EXPECTED_COLOR('stored snapshot ' + count)}.\n\n` +
+      `${EXPECTED_COLOR(`stored snapshot "${result.key}"`)}.\n\n` +
       (diffMessage ||
         EXPECTED_COLOR('- ' + (expected || '')) +
           '\n' +
@@ -117,13 +213,50 @@ const toThrowErrorMatchingSnapshot = function(
   testName?: string,
   fromPromise: boolean,
 ) {
-  this.dontThrow && this.dontThrow();
+  return _toThrowErrorMatchingSnapshot({
+    context: this,
+    fromPromise,
+    received,
+    testName,
+  });
+};
 
-  const {isNot} = this;
+const toThrowErrorMatchingInlineSnapshot = function(
+  received: any,
+  inlineSnapshot?: string,
+  fromPromise?: boolean,
+) {
+  return _toThrowErrorMatchingSnapshot({
+    context: this,
+    fromPromise,
+    inlineSnapshot: inlineSnapshot || '',
+    received,
+  });
+};
+
+const _toThrowErrorMatchingSnapshot = ({
+  context,
+  received,
+  testName,
+  fromPromise,
+  inlineSnapshot,
+}: {
+  context: MatcherState & {dontThrow?: () => any},
+  received: any,
+  testName?: string,
+  fromPromise?: boolean,
+  inlineSnapshot?: string,
+}) => {
+  context.dontThrow && context.dontThrow();
+  const {isNot} = context;
+  const matcherName =
+    typeof inlineSnapshot === 'string'
+      ? 'toThrowErrorMatchingInlineSnapshot'
+      : 'toThrowErrorMatchingSnapshot';
 
   if (isNot) {
     throw new Error(
-      'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
+      `Jest: \`.not\` cannot be used with \`.${matcherName}()\`.`,
     );
   }
 
@@ -141,14 +274,19 @@ const toThrowErrorMatchingSnapshot = function(
 
   if (error === undefined) {
     throw new Error(
-      matcherHint('.toThrowErrorMatchingSnapshot', '() => {}', '') +
+      matcherHint(`.${matcherName}`, '() => {}', '') +
         '\n\n' +
         `Expected the function to throw an error.\n` +
         `But it didn't throw anything.`,
     );
   }
 
-  return toMatchSnapshot.call(this, error.message, testName);
+  return _toMatchSnapshot({
+    context,
+    inlineSnapshot,
+    received: error.message,
+    testName,
+  });
 };
 
 module.exports = {
@@ -157,7 +295,9 @@ module.exports = {
   addSerializer,
   cleanup,
   getSerializers,
+  toMatchInlineSnapshot,
   toMatchSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
   utils,
 };

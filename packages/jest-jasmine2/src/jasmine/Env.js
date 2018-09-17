@@ -32,6 +32,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import queueRunner from '../queue_runner';
 import treeProcessor from '../tree_processor';
+import checkIsError from '../is_error';
 
 // Try getting the real promise object from the context, if available. Someone
 // could have overridden it in a test. Async functions return it implicitly.
@@ -176,73 +177,38 @@ export default function(j$) {
         return j$.testPath;
       },
     });
-    defaultResourcesForRunnable(topSuite.id);
+
     currentDeclarationSuite = topSuite;
 
     this.topSuite = function() {
       return topSuite;
     };
 
-    this.execute = async function(runnablesToRun) {
-      if (!runnablesToRun) {
-        if (focusedRunnables.length) {
-          runnablesToRun = focusedRunnables;
-        } else {
-          runnablesToRun = [topSuite.id];
-        }
+    const uncaught = err => {
+      if (currentSpec) {
+        currentSpec.onException(err);
+        currentSpec.cancel();
+      } else {
+        console.error('Unhandled error');
+        console.error(err.stack);
       }
+    };
 
-      const uncaught = err => {
-        if (currentSpec) {
-          currentSpec.onException(err);
-          currentSpec.cancel();
-        } else {
-          console.error('Unhandled error');
-          console.error(err.stack);
-        }
-      };
-
+    let oldListenersException;
+    let oldListenersRejection;
+    const executionSetup = function() {
       // Need to ensure we are the only ones handling these exceptions.
-      const oldListenersException = process
-        .listeners('uncaughtException')
-        .slice();
-      const oldListenersRejection = process
-        .listeners('unhandledRejection')
-        .slice();
+      oldListenersException = process.listeners('uncaughtException').slice();
+      oldListenersRejection = process.listeners('unhandledRejection').slice();
 
       j$.process.removeAllListeners('uncaughtException');
       j$.process.removeAllListeners('unhandledRejection');
 
       j$.process.on('uncaughtException', uncaught);
       j$.process.on('unhandledRejection', uncaught);
+    };
 
-      reporter.jasmineStarted({totalSpecsDefined});
-
-      currentlyExecutingSuites.push(topSuite);
-
-      await treeProcessor({
-        nodeComplete(suite) {
-          if (!suite.disabled) {
-            clearResourcesForRunnable(suite.id);
-          }
-          currentlyExecutingSuites.pop();
-          reporter.suiteDone(suite.getResult());
-        },
-        nodeStart(suite) {
-          currentlyExecutingSuites.push(suite);
-          defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
-          reporter.suiteStarted(suite.result);
-        },
-        queueRunnerFactory,
-        runnableIds: runnablesToRun,
-        tree: topSuite,
-      });
-      clearResourcesForRunnable(topSuite.id);
-      currentlyExecutingSuites.pop();
-      reporter.jasmineDone({
-        failedExpectations: topSuite.result.failedExpectations,
-      });
-
+    const executionTeardown = function() {
       j$.process.removeListener('uncaughtException', uncaught);
       j$.process.removeListener('unhandledRejection', uncaught);
 
@@ -254,6 +220,59 @@ export default function(j$) {
       oldListenersRejection.forEach(listener => {
         j$.process.on('unhandledRejection', listener);
       });
+    };
+
+    this.execute = async function(runnablesToRun, suiteTree = topSuite) {
+      if (!runnablesToRun) {
+        if (focusedRunnables.length) {
+          runnablesToRun = focusedRunnables;
+        } else {
+          runnablesToRun = [suiteTree.id];
+        }
+      }
+
+      if (currentlyExecutingSuites.length === 0) {
+        executionSetup();
+      }
+
+      const lastDeclarationSuite = currentDeclarationSuite;
+
+      await treeProcessor({
+        nodeComplete(suite) {
+          if (!suite.disabled) {
+            clearResourcesForRunnable(suite.id);
+          }
+          currentlyExecutingSuites.pop();
+          if (suite === topSuite) {
+            reporter.jasmineDone({
+              failedExpectations: topSuite.result.failedExpectations,
+            });
+          } else {
+            reporter.suiteDone(suite.getResult());
+          }
+        },
+        nodeStart(suite) {
+          currentlyExecutingSuites.push(suite);
+          defaultResourcesForRunnable(
+            suite.id,
+            suite.parentSuite && suite.parentSuite.id,
+          );
+          if (suite === topSuite) {
+            reporter.jasmineStarted({totalSpecsDefined});
+          } else {
+            reporter.suiteStarted(suite.result);
+          }
+        },
+        queueRunnerFactory,
+        runnableIds: runnablesToRun,
+        tree: suiteTree,
+      });
+
+      currentDeclarationSuite = lastDeclarationSuite;
+
+      if (currentlyExecutingSuites.length === 0) {
+        executionTeardown();
+      }
     };
 
     this.addReporter = function(reporterToAdd) {
@@ -398,7 +417,7 @@ export default function(j$) {
         queueableFn: {
           fn,
           timeout() {
-            return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
           },
         },
         throwOnExpectationFailure,
@@ -424,6 +443,21 @@ export default function(j$) {
     };
 
     this.it = function(description, fn, timeout) {
+      if (typeof description !== 'string') {
+        throw new Error(
+          `Invalid first argument, ${description}. It must be a string.`,
+        );
+      }
+      if (fn === undefined) {
+        throw new Error(
+          'Missing second argument. It must be a callback function.',
+        );
+      }
+      if (typeof fn !== 'function') {
+        throw new Error(
+          `Invalid second argument, ${fn}. It must be a callback function.`,
+        );
+      }
       const spec = specFactory(
         description,
         fn,
@@ -472,7 +506,7 @@ export default function(j$) {
       currentDeclarationSuite.beforeEach({
         fn: beforeEachFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -481,7 +515,7 @@ export default function(j$) {
       currentDeclarationSuite.beforeAll({
         fn: beforeAllFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -490,7 +524,7 @@ export default function(j$) {
       currentDeclarationSuite.afterEach({
         fn: afterEachFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -499,7 +533,7 @@ export default function(j$) {
       currentDeclarationSuite.afterAll({
         fn: afterAllFunction,
         timeout() {
-          return timeout || j$.DEFAULT_TIMEOUT_INTERVAL;
+          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
         },
       });
     };
@@ -513,11 +547,7 @@ export default function(j$) {
     };
 
     this.fail = function(error) {
-      let message = 'Failed';
-      if (error) {
-        message += ': ';
-        message += error.message || error;
-      }
+      const {isError, message} = checkIsError(error);
 
       currentRunnable().addExpectationResult(false, {
         matcherName: '',
@@ -525,7 +555,7 @@ export default function(j$) {
         expected: '',
         actual: '',
         message,
-        error: error && error.message ? error : null,
+        error: isError ? error : new Error(message),
       });
     };
   }

@@ -1,71 +1,73 @@
 aliases:
   - &restore-cache
     keys:
-      - dependencies-{{ .Branch }}-{{ checksum "package.json" }}
+      - v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       # Fallback in case checksum fails
-      - dependencies-{{ .Branch }}-
+      - v2-dependencies-{{ .Branch }}-
 
   - &save-cache
     paths:
       - node_modules
       - website/node_modules
-    key: dependencies-{{ .Branch }}-{{ checksum "package.json" }}
+    key: v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
-  - &yarn-install
-    run: |
-      sudo npm i -g yarn@^1.2.1
-      yarn --no-progress
-
-  - &yarn-install-no-sudo
-    run: |
-      npm i -g yarn@^1.2.1
-      yarn --no-progress
-
-  - &deploy
-    command: |
-      # Deploy Jest website using Docusaurus bot
-      git config --global user.email "docusaurus-bot@users.noreply.github.com"
-      git config --global user.name "Website Deployment Script"
-      echo "machine github.com login docusaurus-bot password $DOCUSAURUS_PUBLISH_TOKEN" > ~/.netrc
-      # install Docusaurus and generate file of English strings
-      yarn && cd website && yarn run write-translations
-      # crowdin install
-      sudo apt-get update
-      sudo apt-get install default-jre rsync
-      wget https://artifacts.crowdin.com/repo/deb/crowdin.deb -O crowdin.deb
-      sudo dpkg -i crowdin.deb
-      sleep 5
-      # translations upload/download
-      yarn run crowdin-upload
-      yarn run crowdin-download
-      # build and publish website
-      GIT_USER=docusaurus-bot USE_SSH=false yarn run publish-gh-pages
+  - &filter-ignore-gh-pages
+    branches:
+      ignore: gh-pages
 
 version: 2
 jobs:
-  test-browser:
+  lint-and-typecheck:
     working_directory: ~/jest
     docker:
-      - image: markhobson/node-chrome
-    steps:
-      - checkout
-      - restore-cache: *restore-cache
-      - run: |
-          apt-get update && apt-get install make g++ -y
-      - *yarn-install-no-sudo
-      - save-cache: *save-cache
-      - run: yarn run test-ci-es5-build-in-browser
-
-  test-node-9:
-    working_directory: ~/jest
-    docker:
-      - image: circleci/node:9
+      - image: circleci/node:10
     steps:
       - checkout
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn run test-ci-partial
+      - run: yarn lint --format junit -o reports/junit/js-lint-results.xml && yarn typecheck && yarn lint-es5-build --format junit -o reports/junit/js-es5-lint-results.xml  && yarn lint:md:ci
+      - store_test_results:
+          path: reports/junit
+
+  test-browser:
+    working_directory: ~/jest
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore-cache: *restore-cache
+      - run: yarn --no-progress
+      - save-cache: *save-cache
+      - run: yarn test-ci-es5-build-in-browser
+
+  test-node-10:
+    working_directory: ~/jest
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore-cache: *restore-cache
+      - run: yarn --no-progress
+      - save-cache: *save-cache
+      - run:
+          command: yarn test-ci-partial
+      - store_test_results:
+          path: reports/junit
+
+  test-jest-circus:
+    working_directory: ~/jest
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore-cache: *restore-cache
+      - run: yarn --no-progress
+      - save-cache: *save-cache
+      - run:
+          command: JEST_CIRCUS=1 yarn test-ci-partial
+      - store_test_results:
+          path: reports/junit
 
   test-node-8:
     working_directory: ~/jest
@@ -76,7 +78,10 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn run test-ci
+      - run:
+          command: yarn test-ci
+      - store_test_results:
+          path: reports/junit
 
   test-node-6:
     working_directory: ~/jest
@@ -85,28 +90,37 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - *yarn-install
+      - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn run test-ci-partial
+      - run:
+          command: yarn test-ci-partial
+      - store_test_results:
+          path: reports/junit
 
-  test-and-deploy-website:
+  test-or-deploy-website:
     working_directory: ~/jest
     docker:
       - image: circleci/node:8
+    resource_class: large
     steps:
       - checkout
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - deploy: *deploy
+      - run:
+          name: Test or Deploy Jest Website
+          command: ./.circleci/website.sh
 
 # Workflows enables us to run multiple jobs in parallel
 workflows:
   version: 2
   build-and-deploy:
     jobs:
+      - lint-and-typecheck
       - test-node-8
       - test-node-6
-      - test-node-9
+      - test-node-10
+      - test-jest-circus
       - test-browser
-      - test-and-deploy-website
+      - test-or-deploy-website:
+          filters: *filter-ignore-gh-pages

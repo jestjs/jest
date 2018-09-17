@@ -9,7 +9,12 @@
 'use strict';
 
 const {stringify} = require('jest-matcher-utils');
-const {getObjectSubset, getPath} = require('../utils');
+const {
+  emptyObject,
+  getObjectSubset,
+  getPath,
+  subsetEquality,
+} = require('../utils');
 
 describe('getPath()', () => {
   test('property exists', () => {
@@ -105,5 +110,43 @@ describe('getObjectSubset()', () => {
         expect(getObjectSubset(object, subset)).toEqual(expected);
       },
     );
+  });
+});
+
+describe('emptyObject()', () => {
+  test('matches an empty object', () => {
+    expect(emptyObject({})).toBe(true);
+  });
+
+  test('does not match an object with keys', () => {
+    expect(emptyObject({foo: undefined})).toBe(false);
+  });
+
+  test('does not match a non-object', () => {
+    expect(emptyObject(null)).toBe(false);
+    expect(emptyObject(34)).toBe(false);
+  });
+});
+
+describe('subsetEquality()', () => {
+  test('matching object returns true', () => {
+    expect(subsetEquality({foo: 'bar'}, {foo: 'bar'})).toBe(true);
+  });
+
+  test('object without keys is undefined', () => {
+    expect(subsetEquality('foo', 'bar')).toBe(undefined);
+  });
+
+  test('objects to not match', () => {
+    expect(subsetEquality({foo: 'bar'}, {foo: 'baz'})).toBe(false);
+    expect(subsetEquality('foo', {foo: 'baz'})).toBe(false);
+  });
+
+  test('null does not return errors', () => {
+    expect(subsetEquality(null, {foo: 'bar'})).not.toBeTruthy();
+  });
+
+  test('undefined does not return errors', () => {
+    expect(subsetEquality(undefined, {foo: 'bar'})).not.toBeTruthy();
   });
 });

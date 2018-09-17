@@ -13,28 +13,36 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 
 import {Console, clearLine, createDirectory} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
-import {readConfig} from 'jest-config';
-import {version as VERSION} from '../../package.json';
+import {readConfig, deprecationEntries} from 'jest-config';
 import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
 import exit from 'exit';
-import getChangedFilesPromise from '../get_changed_files_promise';
+import getChangedFilesPromise from '../getChangedFilesPromise';
+import {formatHandleErrors} from '../collectHandles';
 import fs from 'fs';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
-import {print as preRunMessagePrint} from '../pre_run_message';
-import runJest from '../run_jest';
+import {print as preRunMessagePrint} from '../preRunMessage';
+import runJest from '../runJest';
 import Runtime from 'jest-runtime';
-import TestWatcher from '../test_watcher';
+import TestWatcher from '../TestWatcher';
 import watch from '../watch';
+import pluralize from '../pluralize';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
+import init from '../lib/init';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
     const argv: Argv = buildArgv(maybeArgv, project);
+
+    if (argv.init) {
+      await init();
+      return;
+    }
+
     const projects = getProjectListFromCLIArgs(argv, project);
 
     const {results, globalConfig} = await runCLI(argv, projects);
@@ -62,8 +70,6 @@ export const runCLI = async (
   // it'll break the JSON structure and it won't be valid.
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
-
-  argv.version && printVersionAndExit(outputStream);
 
   const {globalConfig, configs, hasDeprecationWarnings} = getConfigs(
     projects,
@@ -101,6 +107,21 @@ export const runCLI = async (
     );
   }
 
+  const {openHandles} = results;
+
+  if (openHandles && openHandles.length) {
+    const formatted = formatHandleErrors(openHandles, configs[0]);
+
+    const openHandlesString = pluralize('open handle', formatted.length, 's');
+
+    const message =
+      chalk.red(
+        `\nJest has detected the following ${openHandlesString} potentially keeping Jest from exiting:\n\n`,
+      ) + formatted.join('\n\n');
+
+    console.error(message);
+  }
+
   return Promise.resolve({globalConfig, results});
 };
 
@@ -113,7 +134,31 @@ const readResultsAndExit = (
   process.on('exit', () => (process.exitCode = code));
 
   if (globalConfig.forceExit) {
+    if (!globalConfig.detectOpenHandles) {
+      console.error(
+        chalk.red.bold('Force exiting Jest\n\n') +
+          chalk.red(
+            'Have you considered using `--detectOpenHandles` to detect ' +
+              'async operations that kept running after all tests finished?',
+          ),
+      );
+    }
+
     exit(code);
+  } else if (!globalConfig.detectOpenHandles) {
+    setTimeout(() => {
+      console.error(
+        chalk.red.bold(
+          'Jest did not exit one second after the test run has completed.\n\n',
+        ) +
+          chalk.red(
+            'This usually means that there are asynchronous operations that ' +
+              "weren't stopped in your tests. Consider running Jest with " +
+              '`--detectOpenHandles` to troubleshoot this issue.',
+          ),
+      );
+      // $FlowFixMe: `unref` exists in Node
+    }, 1000).unref();
   }
 };
 
@@ -123,10 +168,12 @@ const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
     .alias('help', 'h')
     .options(args.options)
     .epilogue(args.docs)
-    .check(args.check)
-    .version(false).argv;
+    .check(args.check).argv;
 
-  validateCLIOptions(argv, args.options);
+  validateCLIOptions(
+    argv,
+    Object.assign({}, args.options, {deprecationEntries}),
+  );
 
   return argv;
 };
@@ -160,40 +207,41 @@ const printDebugInfoAndExitIfNeeded = (
   configs,
   outputStream,
 ) => {
-  if (argv.debug || argv.showConfig) {
+  if (argv.debug) {
     logDebugMessages(globalConfig, configs, outputStream);
+    return;
   }
+
   if (argv.showConfig) {
+    logDebugMessages(globalConfig, configs, process.stdout);
     exit(0);
   }
 };
 
-const printVersionAndExit = outputStream => {
-  outputStream.write(`v${VERSION}\n`);
-  exit(0);
-};
+const ensureNoDuplicateConfigs = (parsedConfigs, projects, rootConfigPath) => {
+  const configPathMap = new Map();
 
-const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
-  const configPathSet = new Set();
+  for (const config of parsedConfigs) {
+    const {configPath} = config;
+    if (configPathMap.has(configPath)) {
+      const message = `Whoops! Two projects resolved to the same config path: ${chalk.bold(
+        String(configPath),
+      )}:
 
-  for (const {configPath} of parsedConfigs) {
-    if (configPathSet.has(configPath)) {
-      let message =
-        'One or more specified projects share the same config file\n';
+  Project 1: ${chalk.bold(projects[parsedConfigs.findIndex(x => x === config)])}
+  Project 2: ${chalk.bold(
+    projects[parsedConfigs.findIndex(x => x === configPathMap.get(configPath))],
+  )}
 
-      parsedConfigs.forEach(({configPath}, index) => {
-        message =
-          message +
-          '\nProject: "' +
-          projects[index] +
-          '"\nConfig: "' +
-          String(configPath) +
-          '"';
-      });
+This usually means that your ${chalk.bold(
+        '"projects"',
+      )} config includes a directory that doesn't have any configuration recognizable by Jest. Please fix it.
+`;
+
       throw new Error(message);
     }
     if (configPath !== null) {
-      configPathSet.add(configPath);
+      configPathMap.set(configPath, config);
     }
   }
 };
@@ -259,7 +307,7 @@ const getConfigs = (
       })
       .map(root => readConfig(argv, root, true, configPath));
 
-    ensureNoDuplicateConfigs(parsedConfigs, projects);
+    ensureNoDuplicateConfigs(parsedConfigs, projects, configPath);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(

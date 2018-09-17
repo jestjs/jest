@@ -10,14 +10,13 @@
 import type {Argv} from 'types/Argv';
 
 import chalk from 'chalk';
-import {deprecationEntries} from 'jest-config';
 import {createDidYouMeanMessage, format, ValidationError} from './utils';
 import {deprecationWarning} from './deprecated';
 import defaultConfig from './default_config';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
-  https://facebook.github.io/jest/docs/en/cli.html
+  https://jestjs.io/docs/en/cli.html
 `;
 
 const createCLIValidationError = (
@@ -28,7 +27,7 @@ const createCLIValidationError = (
   let message;
   const comment =
     `  ${chalk.bold('CLI Options Documentation')}:\n` +
-    `  https://facebook.github.io/jest/docs/en/cli.html\n`;
+    `  https://jestjs.io/docs/en/cli.html\n`;
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];
@@ -68,6 +67,7 @@ const logDeprecatedOptions = (
 
 export default function validateCLIOptions(argv: Argv, options: Object) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
+  const deprecationEntries = options.deprecationEntries || {};
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) => acc.add(option).add(options[option].alias || option),
     new Set(yargsSpecialOptions),

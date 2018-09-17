@@ -4,17 +4,15 @@ title: Using with puppeteer
 original_id: puppeteer
 ---
 
-With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and
-[Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can
-work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
+With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [puppeteer](https://github.com/GoogleChrome/puppeteer).
 
 ## A jest-puppeteer example
 
 The basic idea is to:
 
-1. launch & file the websocket endpoint of puppeteer with Global Setup
-2. connect to puppeteer from each Test Environment
-3. close puppeteer with Global Teardown
+1.  launch & file the websocket endpoint of puppeteer with Global Setup
+2.  connect to puppeteer from each Test Environment
+3.  close puppeteer with Global Teardown
 
 Here's an example of the GlobalSetup script
 
@@ -99,5 +97,4 @@ describe(
 );
 ```
 
-Here's the code of
-[full working example](https://github.com/xfumihiro/jest-puppeteer-example).
+Here's the code of [full working example](https://github.com/xfumihiro/jest-puppeteer-example).

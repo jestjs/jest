@@ -13,9 +13,13 @@ const {
   any,
   anything,
   arrayContaining,
+  arrayNotContaining,
   objectContaining,
+  objectNotContaining,
   stringContaining,
+  stringNotContaining,
   stringMatching,
+  stringNotMatching,
 } = require('../asymmetric_matchers');
 
 test('Any.asymmetricMatch()', () => {
@@ -89,6 +93,27 @@ test('ArrayContaining throws for non-arrays', () => {
   }).toThrow();
 });
 
+test('ArrayNotContaining matches', () => {
+  jestExpect(arrayNotContaining(['foo']).asymmetricMatch(['bar'])).toBe(true);
+});
+
+test('ArrayNotContaining does not match', () => {
+  [
+    arrayNotContaining([]).asymmetricMatch('jest'),
+    arrayNotContaining(['foo']).asymmetricMatch(['foo']),
+    arrayNotContaining(['foo']).asymmetricMatch(['foo', 'bar']),
+    arrayNotContaining([]).asymmetricMatch({}),
+  ].forEach(test => {
+    jestExpect(test).toEqual(false);
+  });
+});
+
+test('ArrayNotContaining throws for non-arrays', () => {
+  jestExpect(() => {
+    arrayNotContaining('foo').asymmetricMatch([]);
+  }).toThrow();
+});
+
 test('ObjectContaining matches', () => {
   [
     objectContaining({}).asymmetricMatch('jest'),
@@ -139,32 +164,106 @@ test('ObjectContaining throws for non-objects', () => {
   jestExpect(() => objectContaining(1337).asymmetricMatch()).toThrow();
 });
 
+test('ObjectNotContaining matches', () => {
+  [
+    objectNotContaining({}).asymmetricMatch('jest'),
+    objectNotContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
+    objectNotContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
+    objectNotContaining({foo: undefined}).asymmetricMatch({}),
+  ].forEach(test => {
+    jestExpect(test).toEqual(true);
+  });
+});
+
+test('ObjectNotContaining does not match', () => {
+  [
+    objectNotContaining({foo: 'foo'}).asymmetricMatch({
+      foo: 'foo',
+      jest: 'jest',
+    }),
+    objectNotContaining({foo: undefined}).asymmetricMatch({foo: undefined}),
+    objectNotContaining({
+      first: objectNotContaining({second: {}}),
+    }).asymmetricMatch({first: {second: {}}}),
+  ].forEach(test => {
+    jestExpect(test).toEqual(false);
+  });
+});
+
+test('ObjectNotContaining throws for non-objects', () => {
+  jestExpect(() => objectNotContaining(1337).asymmetricMatch()).toThrow();
+});
+
 test('StringContaining matches string against string', () => {
   jestExpect(stringContaining('en*').asymmetricMatch('queen*')).toBe(true);
   jestExpect(stringContaining('en').asymmetricMatch('queue')).toBe(false);
-  jestExpect(stringContaining('en').asymmetricMatch({})).toBe(false);
 });
 
 test('StringContaining throws for non-strings', () => {
   jestExpect(() => {
     stringContaining([1]).asymmetricMatch('queen');
   }).toThrow();
+
+  jestExpect(() => {
+    stringContaining('en*').asymmetricMatch(1);
+  }).toThrow();
+});
+
+test('StringNotContaining matches string against string', () => {
+  jestExpect(stringNotContaining('en*').asymmetricMatch('queen*')).toBe(false);
+  jestExpect(stringNotContaining('en').asymmetricMatch('queue')).toBe(true);
+});
+
+test('StringNotContaining throws for non-strings', () => {
+  jestExpect(() => {
+    stringNotContaining([1]).asymmetricMatch('queen');
+  }).toThrow();
+
+  jestExpect(() => {
+    stringNotContaining('en*').asymmetricMatch(1);
+  }).toThrow();
 });
 
 test('StringMatching matches string against regexp', () => {
   jestExpect(stringMatching(/en/).asymmetricMatch('queen')).toBe(true);
   jestExpect(stringMatching(/en/).asymmetricMatch('queue')).toBe(false);
-  jestExpect(stringMatching(/en/).asymmetricMatch({})).toBe(false);
 });
 
 test('StringMatching matches string against string', () => {
   jestExpect(stringMatching('en').asymmetricMatch('queen')).toBe(true);
   jestExpect(stringMatching('en').asymmetricMatch('queue')).toBe(false);
-  jestExpect(stringMatching('en').asymmetricMatch({})).toBe(false);
 });
 
 test('StringMatching throws for non-strings and non-regexps', () => {
   jestExpect(() => {
     stringMatching([1]).asymmetricMatch('queen');
+  }).toThrow();
+});
+
+test('StringMatching throws for non-string actual values', () => {
+  jestExpect(() => {
+    stringMatching('en').asymmetricMatch(1);
+  }).toThrow();
+});
+
+test('StringNotMatching matches string against regexp', () => {
+  jestExpect(stringNotMatching(/en/).asymmetricMatch('queen')).toBe(false);
+  jestExpect(stringNotMatching(/en/).asymmetricMatch('queue')).toBe(true);
+});
+
+test('StringNotMatching matches string against string', () => {
+  jestExpect(stringNotMatching('en').asymmetricMatch('queen')).toBe(false);
+  jestExpect(stringNotMatching('en').asymmetricMatch('queue')).toBe(true);
+});
+
+test('StringNotMatching throws for non-strings and non-regexps', () => {
+  jestExpect(() => {
+    stringNotMatching([1]).asymmetricMatch('queen');
+  }).toThrow();
+});
+
+test('StringNotMatching throws for non-string actual values', () => {
+  jestExpect(() => {
+    stringNotMatching('en').asymmetricMatch(1);
   }).toThrow();
 });

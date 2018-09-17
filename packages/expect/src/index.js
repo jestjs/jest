@@ -10,6 +10,8 @@
 import type {
   Expect,
   ExpectationObject,
+  AsyncExpectationResult,
+  SyncExpectationResult,
   ExpectationResult,
   MatcherState,
   MatchersObject,
@@ -18,7 +20,8 @@ import type {
   PromiseMatcherFn,
 } from 'types/Matchers';
 
-import * as utils from 'jest-matcher-utils';
+import * as matcherUtils from 'jest-matcher-utils';
+import {iterableEquality, subsetEquality} from './utils';
 import matchers from './matchers';
 import spyMatchers from './spy_matchers';
 import toThrowMatchers, {
@@ -29,9 +32,13 @@ import {
   any,
   anything,
   arrayContaining,
+  arrayNotContaining,
   objectContaining,
+  objectNotContaining,
   stringContaining,
+  stringNotContaining,
   stringMatching,
+  stringNotMatching,
 } from './asymmetric_matchers';
 import {
   INTERNAL_MATCHER_FLAG,
@@ -46,24 +53,24 @@ class JestAssertionError extends Error {
   matcherResult: any;
 }
 
-const isPromise = obj => {
-  return (
-    !!obj &&
-    (typeof obj === 'object' || typeof obj === 'function') &&
-    typeof obj.then === 'function'
-  );
-};
+const isPromise = obj =>
+  !!obj &&
+  (typeof obj === 'object' || typeof obj === 'function') &&
+  typeof obj.then === 'function';
 
 const createToThrowErrorMatchingSnapshotMatcher = function(matcher) {
-  return function(received: any, testName?: string) {
-    return matcher.apply(this, [received, testName, true]);
+  return function(received: any, testNameOrInlineSnapshot?: string) {
+    return matcher.apply(this, [received, testNameOrInlineSnapshot, true]);
   };
 };
 
 const getPromiseMatcher = (name, matcher) => {
   if (name === 'toThrow' || name === 'toThrowError') {
     return createThrowMatcher('.' + name, true);
-  } else if (name === 'toThrowErrorMatchingSnapshot') {
+  } else if (
+    name === 'toThrowErrorMatchingSnapshot' ||
+    name === 'toThrowErrorMatchingInlineSnapshot'
+  ) {
     return createToThrowErrorMatchingSnapshotMatcher(matcher);
   }
 
@@ -82,6 +89,8 @@ const expect = (actual: any, ...rest): ExpectationObject => {
     resolves: {not: {}},
   };
 
+  const err = new JestAssertionError();
+
   Object.keys(allMatchers).forEach(name => {
     const matcher = allMatchers[name];
     const promiseMatcher = getPromiseMatcher(name, matcher) || matcher;
@@ -93,12 +102,14 @@ const expect = (actual: any, ...rest): ExpectationObject => {
       promiseMatcher,
       false,
       actual,
+      err,
     );
     expectation.resolves.not[name] = makeResolveMatcher(
       name,
       promiseMatcher,
       true,
       actual,
+      err,
     );
 
     expectation.rejects[name] = makeRejectMatcher(
@@ -106,52 +117,62 @@ const expect = (actual: any, ...rest): ExpectationObject => {
       promiseMatcher,
       false,
       actual,
+      err,
     );
     expectation.rejects.not[name] = makeRejectMatcher(
       name,
-      matcher,
+      promiseMatcher,
       true,
       actual,
+      err,
     );
   });
 
   return expectation;
 };
 
-const getMessage = message => {
-  return (
-    (message && message()) ||
-    utils.RECEIVED_COLOR('No message was specified for this matcher.')
-  );
-};
+const getMessage = message =>
+  (message && message()) ||
+  matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.');
 
 const makeResolveMatcher = (
   matcherName: string,
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: Promise<any>,
+  outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
   const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
-      utils.matcherHint(matcherStatement, 'received', '') +
+      matcherUtils.matcherHint(matcherStatement, 'received', '') +
         '\n\n' +
-        `${utils.RECEIVED_COLOR('received')} value must be a Promise.\n` +
-        utils.printWithType('Received', actual, utils.printReceived),
+        `${matcherUtils.RECEIVED_COLOR(
+          'received',
+        )} value must be a Promise.\n` +
+        matcherUtils.printWithType(
+          'Received',
+          actual,
+          matcherUtils.printReceived,
+        ),
     );
   }
 
+  const innerErr = new JestAssertionError();
+
   return actual.then(
-    result => makeThrowingMatcher(matcher, isNot, result).apply(null, args),
+    result =>
+      makeThrowingMatcher(matcher, isNot, result, innerErr).apply(null, args),
     reason => {
-      const err = new JestAssertionError(
-        utils.matcherHint(matcherStatement, 'received', '') +
-          '\n\n' +
-          `Expected ${utils.RECEIVED_COLOR('received')} Promise to resolve, ` +
-          'instead it rejected to value\n' +
-          `  ${utils.printReceived(reason)}`,
-      );
-      return Promise.reject(err);
+      outerErr.message =
+        matcherUtils.matcherHint(matcherStatement, 'received', '') +
+        '\n\n' +
+        `Expected ${matcherUtils.RECEIVED_COLOR(
+          'received',
+        )} Promise to resolve, ` +
+        'instead it rejected to value\n' +
+        `  ${matcherUtils.printReceived(reason)}`;
+      return Promise.reject(outerErr);
     },
   );
 };
@@ -161,29 +182,40 @@ const makeRejectMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: Promise<any>,
+  outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
   const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
-      utils.matcherHint(matcherStatement, 'received', '') +
+      matcherUtils.matcherHint(matcherStatement, 'received', '') +
         '\n\n' +
-        `${utils.RECEIVED_COLOR('received')} value must be a Promise.\n` +
-        utils.printWithType('Received', actual, utils.printReceived),
+        `${matcherUtils.RECEIVED_COLOR(
+          'received',
+        )} value must be a Promise.\n` +
+        matcherUtils.printWithType(
+          'Received',
+          actual,
+          matcherUtils.printReceived,
+        ),
     );
   }
 
+  const innerErr = new JestAssertionError();
+
   return actual.then(
     result => {
-      const err = new JestAssertionError(
-        utils.matcherHint(matcherStatement, 'received', '') +
-          '\n\n' +
-          `Expected ${utils.RECEIVED_COLOR('received')} Promise to reject, ` +
-          'instead it resolved to value\n' +
-          `  ${utils.printReceived(result)}`,
-      );
-      return Promise.reject(err);
+      outerErr.message =
+        matcherUtils.matcherHint(matcherStatement, 'received', '') +
+        '\n\n' +
+        `Expected ${matcherUtils.RECEIVED_COLOR(
+          'received',
+        )} Promise to reject, ` +
+        'instead it resolved to value\n' +
+        `  ${matcherUtils.printReceived(result)}`;
+      return Promise.reject(outerErr);
     },
-    reason => makeThrowingMatcher(matcher, isNot, reason).apply(null, args),
+    reason =>
+      makeThrowingMatcher(matcher, isNot, reason, innerErr).apply(null, args),
   );
 };
 
@@ -191,9 +223,15 @@ const makeThrowingMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
   actual: any,
-): ThrowingMatcherFn => {
-  return function throwingMatcher(...args) {
+  err?: JestAssertionError,
+): ThrowingMatcherFn =>
+  function throwingMatcher(...args): any {
     let throws = true;
+    const utils = Object.assign({}, matcherUtils, {
+      iterableEquality,
+      subsetEquality,
+    });
+
     const matcherContext: MatcherState = Object.assign(
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
@@ -204,15 +242,48 @@ const makeThrowingMatcher = (
       getState(),
       {
         equals,
+        error: err,
         isNot,
         utils,
       },
     );
-    let result: ExpectationResult;
 
-    try {
-      result = matcher.apply(matcherContext, [actual].concat(args));
-    } catch (error) {
+    const processResult = (result: SyncExpectationResult) => {
+      _validateResult(result);
+
+      getState().assertionCalls++;
+
+      if ((result.pass && isNot) || (!result.pass && !isNot)) {
+        // XOR
+        const message = getMessage(result.message);
+        let error;
+
+        if (err) {
+          error = err;
+          error.message = message;
+        } else {
+          error = new JestAssertionError(message);
+
+          // Try to remove this function from the stack trace frame.
+          // Guard for some environments (browsers) that do not support this feature.
+          if (Error.captureStackTrace) {
+            Error.captureStackTrace(error, throwingMatcher);
+          }
+        }
+        // Passing the result of the matcher with the error so that a custom
+        // reporter could access the actual and expected objects of the result
+        // for example in order to display a custom visual diff
+        error.matcherResult = result;
+
+        if (throws) {
+          throw error;
+        } else {
+          getState().suppressedErrors.push(error);
+        }
+      }
+    };
+
+    const handlError = (error: Error) => {
       if (
         matcher[INTERNAL_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
@@ -224,40 +295,42 @@ const makeThrowingMatcher = (
         Error.captureStackTrace(error, throwingMatcher);
       }
       throw error;
-    }
+    };
 
-    _validateResult(result);
+    let potentialResult: ExpectationResult;
 
-    getState().assertionCalls++;
+    try {
+      potentialResult = matcher.apply(matcherContext, [actual].concat(args));
 
-    if ((result.pass && isNot) || (!result.pass && !isNot)) {
-      // XOR
-      const message = getMessage(result.message);
-      const error = new JestAssertionError(message);
-      // Passing the result of the matcher with the error so that a custom
-      // reporter could access the actual and expected objects of the result
-      // for example in order to display a custom visual diff
-      error.matcherResult = result;
-      // Try to remove this function from the stack trace frame.
-      // Guard for some environments (browsers) that do not support this feature.
-      if (Error.captureStackTrace) {
-        Error.captureStackTrace(error, throwingMatcher);
-      }
+      if (isPromise((potentialResult: any))) {
+        const asyncResult = ((potentialResult: any): AsyncExpectationResult);
 
-      if (throws) {
-        throw error;
+        return asyncResult
+          .then(aResult => processResult(aResult))
+          .catch(error => handlError(error));
       } else {
-        getState().suppressedErrors.push(error);
+        const syncResult = ((potentialResult: any): SyncExpectationResult);
+
+        return processResult(syncResult);
       }
+    } catch (error) {
+      return handlError(error);
     }
   };
-};
 
 expect.extend = (matchers: MatchersObject): void =>
-  setMatchers(matchers, false);
+  setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;
+
+expect.not = {
+  arrayContaining: arrayNotContaining,
+  objectContaining: objectNotContaining,
+  stringContaining: stringNotContaining,
+  stringMatching: stringNotMatching,
+};
+
 expect.objectContaining = objectContaining;
 expect.arrayContaining = arrayContaining;
 expect.stringContaining = stringContaining;
@@ -276,24 +349,39 @@ const _validateResult = result => {
         'Matcher functions should ' +
         'return an object in the following format:\n' +
         '  {message?: string | function, pass: boolean}\n' +
-        `'${utils.stringify(result)}' was returned`,
+        `'${matcherUtils.stringify(result)}' was returned`,
     );
   }
 };
 
+function assertions(expected: number) {
+  const error = new Error();
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(error, assertions);
+  }
+
+  getState().expectedAssertionsNumber = expected;
+  getState().expectedAssertionsNumberError = error;
+}
+function hasAssertions(...args) {
+  const error = new Error();
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(error, hasAssertions);
+  }
+
+  matcherUtils.ensureNoExpected(args[0], '.hasAssertions');
+  getState().isExpectingAssertions = true;
+  getState().isExpectingAssertionsError = error;
+}
+
 // add default jest matchers
-setMatchers(matchers, true);
-setMatchers(spyMatchers, true);
-setMatchers(toThrowMatchers, true);
+setMatchers(matchers, true, expect);
+setMatchers(spyMatchers, true, expect);
+setMatchers(toThrowMatchers, true, expect);
 
 expect.addSnapshotSerializer = () => void 0;
-expect.assertions = (expected: number) => {
-  getState().expectedAssertionsNumber = expected;
-};
-expect.hasAssertions = expected => {
-  utils.ensureNoExpected(expected, '.hasAssertions');
-  getState().isExpectingAssertions = true;
-};
+expect.assertions = assertions;
+expect.hasAssertions = hasAssertions;
 expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;

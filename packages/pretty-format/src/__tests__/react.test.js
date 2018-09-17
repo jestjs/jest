@@ -13,6 +13,7 @@ const React = require('react');
 const renderer = require('react-test-renderer');
 
 const elementSymbol = Symbol.for('react.element');
+const fragmentSymbol = Symbol.for('react.fragment');
 const testSymbol = Symbol.for('react.test.json');
 
 const prettyFormat = require('..');
@@ -298,6 +299,32 @@ test('supports undefined element type', () => {
   expect(formatElement({$$typeof: elementSymbol, props: {}})).toEqual(
     '<UNDEFINED />',
   );
+});
+
+test('supports a fragment with no children', () => {
+  expect(
+    formatElement({$$typeof: elementSymbol, props: {}, type: fragmentSymbol}),
+  ).toEqual('<React.Fragment />');
+});
+
+test('supports a fragment with string child', () => {
+  expect(
+    formatElement({
+      $$typeof: elementSymbol,
+      props: {children: 'test'},
+      type: fragmentSymbol,
+    }),
+  ).toEqual('<React.Fragment>\n  test\n</React.Fragment>');
+});
+
+test('supports a fragment with element child', () => {
+  expect(
+    formatElement({
+      $$typeof: elementSymbol,
+      props: {children: React.createElement('div', null, 'test')},
+      type: fragmentSymbol,
+    }),
+  ).toEqual('<React.Fragment>\n  <div>\n    test\n  </div>\n</React.Fragment>');
 });
 
 test('supports a single element with React elements with a child', () => {
@@ -683,6 +710,66 @@ test('ReactTestComponent plugin highlights syntax with color from theme option',
   );
   expect(
     formatTestObject(renderer.create(jsx).toJSON(), {
+      highlight: true,
+      theme: {
+        value: 'red',
+      },
+    }),
+  ).toMatchSnapshot();
+});
+
+test('supports forwardRef with a child', () => {
+  function Cat(props) {
+    return React.createElement('div', props, props.children);
+  }
+
+  expect(
+    // $FlowFixMe - https://github.com/facebook/flow/issues/6103
+    formatElement(React.createElement(React.forwardRef(Cat), null, 'mouse')),
+  ).toEqual('<ForwardRef(Cat)>\n  mouse\n</ForwardRef(Cat)>');
+});
+
+test('supports context Provider with a child', () => {
+  const {Provider} = React.createContext('test');
+
+  expect(
+    formatElement(
+      React.createElement(Provider, {value: 'test-value'}, 'child'),
+    ),
+  ).toEqual(
+    '<Context.Provider\n  value="test-value"\n>\n  child\n</Context.Provider>',
+  );
+});
+
+test('supports context Consumer with a child', () => {
+  const {Consumer} = React.createContext('test');
+
+  expect(
+    formatElement(
+      React.createElement(Consumer, null, () =>
+        React.createElement('div', null, 'child'),
+      ),
+    ),
+  ).toEqual('<Context.Consumer>\n  [Function anonymous]\n</Context.Consumer>');
+});
+
+test('ReactElement removes undefined props', () => {
+  assertPrintedJSX(
+    React.createElement('Mouse', {
+      abc: undefined,
+      xyz: true,
+    }),
+    '<Mouse\n  xyz={true}\n/>',
+  );
+});
+
+test('ReactTestComponent removes undefined props', () => {
+  const jsx = React.createElement('Mouse', {
+    abc: undefined,
+    xyz: true,
+  });
+  expect(
+    formatElement(jsx, {
       highlight: true,
       theme: {
         value: 'red',

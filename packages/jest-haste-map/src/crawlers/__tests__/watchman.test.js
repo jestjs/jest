@@ -15,7 +15,8 @@ jest.mock('fb-watchman', () => {
   const Client = jest.fn();
   Client.prototype.command = jest.fn((args, callback) =>
     setImmediate(() => {
-      const response = mockResponse[args[0]][normalizePathSep(args[1])];
+      const path = args[1] ? normalizePathSep(args[1]) : undefined;
+      const response = mockResponse[args[0]][path];
       callback(null, response.next ? response.next().value : response);
     }),
   );
@@ -52,6 +53,8 @@ const WATCH_PROJECT_MOCK = {
   },
 };
 
+const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
+
 describe('watchman watch', () => {
   beforeEach(() => {
     watchmanCrawl = require('../watchman');
@@ -59,6 +62,11 @@ describe('watchman watch', () => {
     watchman = require('fb-watchman');
 
     mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
       query: {
         [ROOT_MOCK]: {
           clock: 'c:fake-clock:1',
@@ -91,10 +99,10 @@ describe('watchman watch', () => {
       'watch-project': WATCH_PROJECT_MOCK,
     };
 
-    mockFiles = Object.assign(Object.create(null), {
-      [MELON]: ['', 33, 0, []],
-      [STRAWBERRY]: ['', 30, 0, []],
-      [TOMATO]: ['', 31, 0, []],
+    mockFiles = createMap({
+      [MELON]: ['', 33, 0, [], null],
+      [STRAWBERRY]: ['', 30, 0, [], null],
+      [TOMATO]: ['', 31, 0, [], null],
     });
   });
 
@@ -102,11 +110,11 @@ describe('watchman watch', () => {
     watchman.Client.mock.instances[0].command.mockClear();
   });
 
-  test('returns a list of all files when there are no clocks', () => {
-    return watchmanCrawl({
+  test('returns a list of all files when there are no clocks', () =>
+    watchmanCrawl({
       data: {
-        clocks: Object.create(null),
-        files: Object.create(null),
+        clocks: new Map(),
+        files: new Map(),
       },
       extensions: ['js', 'json'],
       ignore: pearMatcher,
@@ -135,20 +143,31 @@ describe('watchman watch', () => {
 
       expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms']);
 
-      expect(query[2].suffix).toEqual(['js', 'json']);
+      expect(query[2].glob).toEqual([
+        'fruits/**/*.js',
+        'fruits/**/*.json',
+        'vegetables/**/*.js',
+        'vegetables/**/*.json',
+      ]);
 
-      expect(data.clocks).toEqual({
-        [ROOT_MOCK]: 'c:fake-clock:1',
-      });
+      expect(data.clocks).toEqual(
+        createMap({
+          [ROOT_MOCK]: 'c:fake-clock:1',
+        }),
+      );
 
       expect(data.files).toEqual(mockFiles);
 
       expect(client.end).toBeCalled();
-    });
-  });
+    }));
 
   test('updates the file object when the clock is given', () => {
     mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
       query: {
         [ROOT_MOCK]: {
           clock: 'c:fake-clock:2',
@@ -171,7 +190,7 @@ describe('watchman watch', () => {
       'watch-project': WATCH_PROJECT_MOCK,
     };
 
-    const clocks = Object.assign(Object.create(null), {
+    const clocks = createMap({
       [ROOT_MOCK]: 'c:fake-clock:1',
     });
 
@@ -187,20 +206,29 @@ describe('watchman watch', () => {
       // The object was reused.
       expect(data.files).toBe(mockFiles);
 
-      expect(data.clocks).toEqual({
-        [ROOT_MOCK]: 'c:fake-clock:2',
-      });
+      expect(data.clocks).toEqual(
+        createMap({
+          [ROOT_MOCK]: 'c:fake-clock:2',
+        }),
+      );
 
-      expect(data.files).toEqual({
-        [KIWI]: ['', 42, 0, []],
-        [MELON]: ['', 33, 0, []],
-        [STRAWBERRY]: ['', 30, 0, []],
-      });
+      expect(data.files).toEqual(
+        createMap({
+          [KIWI]: ['', 42, 0, [], null],
+          [MELON]: ['', 33, 0, [], null],
+          [STRAWBERRY]: ['', 30, 0, [], null],
+        }),
+      );
     });
   });
 
   test('resets the file object when watchman is restarted', () => {
     mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
       query: {
         [ROOT_MOCK]: {
           clock: 'c:fake-clock:3',
@@ -228,10 +256,10 @@ describe('watchman watch', () => {
       'watch-project': WATCH_PROJECT_MOCK,
     };
 
-    const mockMetadata = ['Banana', 41, 1, ['Raspberry']];
-    mockFiles[BANANA] = mockMetadata;
+    const mockMetadata = ['Banana', 41, 1, ['Raspberry'], null];
+    mockFiles.set(BANANA, mockMetadata);
 
-    const clocks = Object.assign(Object.create(null), {
+    const clocks = createMap({
       [ROOT_MOCK]: 'c:fake-clock:1',
     });
 
@@ -247,27 +275,36 @@ describe('watchman watch', () => {
       // The file object was *not* reused.
       expect(data.files).not.toBe(mockFiles);
 
-      expect(data.clocks).toEqual({
-        [ROOT_MOCK]: 'c:fake-clock:3',
-      });
+      expect(data.clocks).toEqual(
+        createMap({
+          [ROOT_MOCK]: 'c:fake-clock:3',
+        }),
+      );
 
       // /fruits/strawberry.js was removed from the file list.
-      expect(data.files).toEqual({
-        [BANANA]: mockMetadata,
-        [KIWI]: ['', 42, 0, []],
-        [TOMATO]: mockFiles[TOMATO],
-      });
+      expect(data.files).toEqual(
+        createMap({
+          [BANANA]: mockMetadata,
+          [KIWI]: ['', 42, 0, [], null],
+          [TOMATO]: mockFiles.get(TOMATO),
+        }),
+      );
 
       // Even though the file list was reset, old file objects are still reused
       // if no changes have been made.
-      expect(data.files[BANANA]).toBe(mockMetadata);
+      expect(data.files.get(BANANA)).toBe(mockMetadata);
 
-      expect(data.files[TOMATO]).toBe(mockFiles[TOMATO]);
+      expect(data.files.get(TOMATO)).toBe(mockFiles.get(TOMATO));
     });
   });
 
   test('properly resets the file map when only one watcher is reset', () => {
     mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
       query: {
         [FRUITS]: {
           clock: 'c:fake-clock:3',
@@ -304,7 +341,7 @@ describe('watchman watch', () => {
       },
     };
 
-    const clocks = Object.assign(Object.create(null), {
+    const clocks = createMap({
       [FRUITS]: 'c:fake-clock:1',
       [VEGETABLES]: 'c:fake-clock:2',
     });
@@ -318,20 +355,29 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       roots: ROOTS,
     }).then(data => {
-      expect(data.clocks).toEqual({
-        [FRUITS]: 'c:fake-clock:3',
-        [VEGETABLES]: 'c:fake-clock:4',
-      });
+      expect(data.clocks).toEqual(
+        createMap({
+          [FRUITS]: 'c:fake-clock:3',
+          [VEGETABLES]: 'c:fake-clock:4',
+        }),
+      );
 
-      expect(data.files).toEqual({
-        [KIWI]: ['', 42, 0, []],
-        [MELON]: ['', 33, 0, []],
-      });
+      expect(data.files).toEqual(
+        createMap({
+          [KIWI]: ['', 42, 0, [], null],
+          [MELON]: ['', 33, 0, [], null],
+        }),
+      );
     });
   });
 
   test('does not add directory filters to query when watching a ROOT', () => {
     mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
       query: {
         [ROOT_MOCK]: {
           clock: 'c:fake-clock:1',
@@ -357,8 +403,8 @@ describe('watchman watch', () => {
 
     return watchmanCrawl({
       data: {
-        clocks: Object.create(null),
-        files: Object.create(null),
+        clocks: new Map(),
+        files: new Map(),
       },
       extensions: ['js', 'json'],
       ignore: pearMatcher,
@@ -387,15 +433,95 @@ describe('watchman watch', () => {
 
       expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms']);
 
-      expect(query[2].suffix).toEqual(['js', 'json']);
+      expect(query[2].glob).toEqual(['**/*.js', '**/*.json']);
 
-      expect(data.clocks).toEqual({
-        [ROOT_MOCK]: 'c:fake-clock:1',
-      });
+      expect(data.clocks).toEqual(
+        createMap({
+          [ROOT_MOCK]: 'c:fake-clock:1',
+        }),
+      );
 
-      expect(data.files).toEqual({});
+      expect(data.files).toEqual(createMap({}));
 
       expect(client.end).toBeCalled();
     });
+  });
+
+  test('SHA-1 requested and available', async () => {
+    mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
+      query: {
+        [ROOT_MOCK]: {
+          clock: 'c:fake-clock:1',
+          files: [],
+          is_fresh_instance: false,
+          version: '4.5.0',
+        },
+      },
+      'watch-project': {
+        [ROOT_MOCK]: {
+          watch: forcePOSIXPaths(ROOT_MOCK),
+        },
+      },
+    };
+
+    await watchmanCrawl({
+      computeSha1: true,
+      data: {
+        clocks: new Map(),
+        files: new Map(),
+      },
+      extensions: ['js', 'json'],
+      roots: [ROOT_MOCK],
+    });
+
+    const client = watchman.Client.mock.instances[0];
+    const calls = client.command.mock.calls;
+
+    expect(calls[0][0]).toEqual(['list-capabilities']);
+    expect(calls[2][0][2].fields).toContain('content.sha1hex');
+  });
+
+  test('SHA-1 requested and NOT available', async () => {
+    mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: [],
+        },
+      },
+      query: {
+        [ROOT_MOCK]: {
+          clock: 'c:fake-clock:1',
+          files: [],
+          is_fresh_instance: false,
+          version: '4.5.0',
+        },
+      },
+      'watch-project': {
+        [ROOT_MOCK]: {
+          watch: forcePOSIXPaths(ROOT_MOCK),
+        },
+      },
+    };
+
+    await watchmanCrawl({
+      computeSha1: true,
+      data: {
+        clocks: new Map(),
+        files: new Map(),
+      },
+      extensions: ['js', 'json'],
+      roots: [ROOT_MOCK],
+    });
+
+    const client = watchman.Client.mock.instances[0];
+    const calls = client.command.mock.calls;
+
+    expect(calls[0][0]).toEqual(['list-capabilities']);
+    expect(calls[2][0][2].fields).not.toContain('content.sha1hex');
   });
 });

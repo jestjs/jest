@@ -3,10 +3,7 @@ id: mock-function-api
 title: Mock Functions
 ---
 
-Mock functions are also known as "spies", because they let you spy on the
-behavior of a function that is called indirectly by some other code, rather than
-just testing the output. You can create a mock function with `jest.fn()`. If no
-implementation is given, the mock function will return `undefined` when invoked.
+Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than just testing the output. You can create a mock function with `jest.fn()`. If no implementation is given, the mock function will return `undefined` when invoked.
 
 ## Methods
 
@@ -18,31 +15,48 @@ implementation is given, the mock function will return `undefined` when invoked.
 
 ### `mockFn.getMockName()`
 
-##### available in Jest **22.0.0+**
-
 Returns the mock name string set by calling `mockFn.mockName(value)`.
 
 ### `mockFn.mock.calls`
 
-An array that represents all calls that have been made into this mock function.
-Each call is represented by an array of arguments that were passed during the
-call.
+An array containing the call arguments of all calls that have been made to this mock function. Each item in the array is an array of arguments that were passed during the call.
 
-For example: A mock function `f` that has been called twice, with the arguments
-`f('arg1', 'arg2')`, and then with the arguments `f('arg3', 'arg4')` would have
-a `mock.calls` array that looks like this:
+For example: A mock function `f` that has been called twice, with the arguments `f('arg1', 'arg2')`, and then with the arguments `f('arg3', 'arg4')`, would have a `mock.calls` array that looks like this:
 
 ```js
 [['arg1', 'arg2'], ['arg3', 'arg4']];
 ```
 
+### `mockFn.mock.results`
+
+An array containing the results of all calls that have been made to this mock function. Each entry in this array is an object containing a boolean `isThrow` property, and a `value` property. `isThrow` is true if the call terminated due to a `throw`, or false if the the call returned normally. The `value` property contains the value that was thrown or returned.
+
+For example: A mock function `f` that has been called three times, returning `result1`, throwing an error, and then returning `result2`, would have a `mock.results` array that looks like this:
+
+```js
+[
+  {
+    isThrow: false,
+    value: 'result1',
+  },
+  {
+    isThrow: true,
+    value: {
+      /* Error instance */
+    },
+  },
+  {
+    isThrow: false,
+    value: 'result2',
+  },
+];
+```
+
 ### `mockFn.mock.instances`
 
-An array that contains all the object instances that have been instantiated from
-this mock function using `new`.
+An array that contains all the object instances that have been instantiated from this mock function using `new`.
 
-For example: A mock function that has been instantiated twice would have the
-following `mock.instances` array:
+For example: A mock function that has been instantiated twice would have the following `mock.instances` array:
 
 ```js
 const mockFn = jest.fn();
@@ -56,58 +70,37 @@ mockFn.mock.instances[1] === b; // true
 
 ### `mockFn.mockClear()`
 
-Resets all information stored in the [`mockFn.mock.calls`](#mockfn-mock-calls)
-and [`mockFn.mock.instances`](#mockfn-mock-instances) arrays.
+Resets all information stored in the [`mockFn.mock.calls`](#mockfn-mock-calls) and [`mockFn.mock.instances`](#mockfn-mock-instances) arrays.
 
-Often this is useful when you want to clean up a mock's usage data between two
-assertions.
+Often this is useful when you want to clean up a mock's usage data between two assertions.
 
-Beware that `mockClear` will replace `mockFn.mock`, not just
-[`mockFn.mock.calls`](#mockfn-mock-calls) and
-[`mockFn.mock.instances`](#mockfn-mock-instances). You should therefore avoid
-assigning `mockFn.mock` to other variables, temporary or not, to make sure you
-don't access stale data.
+Beware that `mockClear` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfn-mock-calls) and [`mockFn.mock.instances`](#mockfn-mock-instances). You should therefore avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
-The [`clearMocks`](configuration.html#clearmocks-boolean) configuration option
-is available to clear mocks automatically between tests.
+The [`clearMocks`](configuration.html#clearmocks-boolean) configuration option is available to clear mocks automatically between tests.
 
 ### `mockFn.mockReset()`
 
-Resets all information stored in the mock, including any initial implementation
-and mock name given.
+Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also removes any mocked return values or implementations.
 
-This is useful when you want to completely restore a mock back to its initial
-state.
+This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
 
-Beware that `mockReset` will replace `mockFn.mock`, not just
-[`mockFn.mock.calls`](#mockfn-mock-calls) and
-[`mockFn.mock.instances`](#mockfn-mock-instances). You should therefore avoid
-assigning `mockFn.mock` to other variables, temporary or not, to make sure you
-don't access stale data.
+Beware that `mockReset` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfn-mock-calls) and [`mockFn.mock.instances`](#mockfn-mock-instances). You should therefore avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
 ### `mockFn.mockRestore()`
 
-Removes the mock and restores the initial implementation.
+Does everything that [`mockFn.mockReset()`](#mockfnmockreset) does, and also restores the original (non-mocked) implementation.
 
-This is useful when you want to mock functions in certain test cases and restore
-the original implementation in others.
+This is useful when you want to mock functions in certain test cases and restore the original implementation in others.
 
-Beware that `mockFn.mockRestore` only works when mock was created with
-`jest.spyOn`. Thus you have to take care of restoration yourself when manually
-assigning `jest.fn()`.
+Beware that `mockFn.mockRestore` only works when mock was created with `jest.spyOn`. Thus you have to take care of restoration yourself when manually assigning `jest.fn()`.
 
-The [`restoreMocks`](configuration.html#restoremocks-boolean) configuration
-option is available to restore mocks automatically between tests.
+The [`restoreMocks`](configuration.html#restoremocks-boolean) configuration option is available to restore mocks automatically between tests.
 
 ### `mockFn.mockImplementation(fn)`
 
-Accepts a function that should be used as the implementation of the mock. The
-mock itself will still record all calls that go into and instances that come
-from itself – the only difference is that the implementation will also be
-executed when the mock is called.
+Accepts a function that should be used as the implementation of the mock. The mock itself will still record all calls that go into and instances that come from itself – the only difference is that the implementation will also be executed when the mock is called.
 
-_Note: `jest.fn(implementation)` is a shorthand for
-`jest.fn().mockImplementation(implementation)`._
+_Note: `jest.fn(implementation)` is a shorthand for `jest.fn().mockImplementation(implementation)`._
 
 For example:
 
@@ -150,9 +143,7 @@ console.log('Calls to m: ', mMock.mock.calls);
 
 ### `mockFn.mockImplementationOnce(fn)`
 
-Accepts a function that will be used as an implementation of the mock for one
-call to the mocked function. Can be chained so that multiple function calls
-produce different results.
+Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.
 
 ```js
 const myMockFn = jest
@@ -165,10 +156,7 @@ myMockFn((err, val) => console.log(val)); // true
 myMockFn((err, val) => console.log(val)); // false
 ```
 
-When the mocked function runs out of implementations defined with
-mockImplementationOnce, it will execute the default implementation set with
-`jest.fn(() => defaultValue)` or `.mockImplementation(() => defaultValue)` if
-they were called:
+When the mocked function runs out of implementations defined with mockImplementationOnce, it will execute the default implementation set with `jest.fn(() => defaultValue)` or `.mockImplementation(() => defaultValue)` if they were called:
 
 ```js
 const myMockFn = jest
@@ -182,10 +170,7 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 ### `mockFn.mockName(value)`
 
-##### available in Jest **22.0.0+**
-
-Accepts a string to use in test result output in place of "jest.fn()" to
-indicate which mock function is being referenced.
+Accepts a string to use in test result output in place of "jest.fn()" to indicate which mock function is being referenced.
 
 For example:
 
@@ -227,10 +212,7 @@ mock(); // 43
 
 ### `mockFn.mockReturnValueOnce(value)`
 
-Accepts a value that will be returned for one call to the mock function. Can be
-chained so that successive calls to the mock function return different values.
-When there are no more `mockReturnValueOnce` values to use, calls will return a
-value specified by `mockReturnValue`.
+Accepts a value that will be returned for one call to the mock function. Can be chained so that successive calls to the mock function return different values. When there are no more `mockReturnValueOnce` values to use, calls will return a value specified by `mockReturnValue`.
 
 ```js
 const myMockFn = jest
@@ -248,7 +230,7 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 Simple sugar function for:
 
 ```js
-jest.fn().mockReturnValue(Promise.resolve(value));
+jest.fn().mockImplementation(() => Promise.resolve(value));
 ```
 
 Useful to mock async functions in async tests:
@@ -266,7 +248,7 @@ test('async test', async () => {
 Simple sugar function for:
 
 ```js
-jest.fn().mockReturnValueOnce(Promise.resolve(value));
+jest.fn().mockImplementationOnce(() => Promise.resolve(value));
 ```
 
 Useful to resolve different values over multiple async calls:
@@ -291,7 +273,7 @@ test('async test', async () => {
 Simple sugar function for:
 
 ```js
-jest.fn().mockReturnValue(Promise.reject(value));
+jest.fn().mockImplementation(() => Promise.reject(value));
 ```
 
 Useful to create async mock functions that will always reject:
@@ -309,7 +291,7 @@ test('async test', async () => {
 Simple sugar function for:
 
 ```js
-jest.fn().mockReturnValueOnce(Promise.reject(value));
+jest.fn().mockImplementationOnce(() => Promise.reject(value));
 ```
 
 Example usage:

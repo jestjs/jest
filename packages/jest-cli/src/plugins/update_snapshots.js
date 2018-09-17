@@ -7,11 +7,21 @@
  * @flow
  */
 import type {GlobalConfig} from 'types/Config';
-import BaseWatchPlugin from '../base_watch_plugin';
-import type {JestHookSubscriber} from '../jest_hooks';
+import type {JestHookSubscriber} from 'types/JestHooks';
+import {BaseWatchPlugin} from 'jest-watcher';
 
 class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   _hasSnapshotFailure: boolean;
+  isInternal: true;
+
+  constructor(options: {
+    stdin: stream$Readable | tty$ReadStream,
+    stdout: stream$Writable | tty$WriteStream,
+  }) {
+    super(options);
+    this.isInternal = true;
+  }
+
   run(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
@@ -21,7 +31,7 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   }
 
   apply(hooks: JestHookSubscriber) {
-    hooks.testRunComplete(results => {
+    hooks.onTestRunComplete(results => {
       this._hasSnapshotFailure = results.snapshot.failure;
     });
   }
@@ -29,7 +39,7 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   getUsageInfo(globalConfig: GlobalConfig) {
     if (this._hasSnapshotFailure) {
       return {
-        key: 'u'.codePointAt(0),
+        key: 'u',
         prompt: 'update failing snapshots',
       };
     }

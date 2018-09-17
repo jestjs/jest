@@ -18,6 +18,7 @@ type Options = {
 type TreeNode = {
   afterAllFns: Array<any>,
   beforeAllFns: Array<any>,
+  disabled?: boolean,
   execute: (onComplete: () => void, enabled: boolean) => void,
   id: string,
   onException: (error: Error) => void,
@@ -43,40 +44,56 @@ export default function treeProcessor(options: Options) {
     return parentEnabled || runnableIds.indexOf(node.id) !== -1;
   }
 
-  return queueRunnerFactory({
-    onException: error => tree.onException(error),
-    queueableFns: wrapChildren(tree, isEnabled(tree, false)),
-    userContext: tree.sharedUserContext(),
-  });
-
-  function executeNode(node, parentEnabled) {
+  function getNodeHandler(node: TreeNode, parentEnabled: boolean) {
     const enabled = isEnabled(node, parentEnabled);
-    if (!node.children) {
-      return {
-        fn(done) {
-          node.execute(done, enabled);
-        },
-      };
-    }
-    return {
-      async fn(done) {
-        nodeStart(node);
-        await queueRunnerFactory({
-          onException: error => node.onException(error),
-          queueableFns: wrapChildren(node, enabled),
-          userContext: node.sharedUserContext(),
-        });
-        nodeComplete(node);
-        done();
-      },
+    return node.children
+      ? getNodeWithChildrenHandler(node, enabled)
+      : getNodeWithoutChildrenHandler(node, enabled);
+  }
+
+  function getNodeWithoutChildrenHandler(node: TreeNode, enabled: boolean) {
+    return function fn(done: (error?: any) => void = () => {}) {
+      node.execute(done, enabled);
     };
+  }
+
+  function getNodeWithChildrenHandler(node: TreeNode, enabled: boolean) {
+    return async function fn(done: (error?: any) => void = () => {}) {
+      nodeStart(node);
+      await queueRunnerFactory({
+        onException: error => node.onException(error),
+        queueableFns: wrapChildren(node, enabled),
+        userContext: node.sharedUserContext(),
+      });
+      nodeComplete(node);
+      done();
+    };
+  }
+
+  function hasEnabledTest(node: TreeNode) {
+    if (node.children) {
+      if (node.children.some(hasEnabledTest)) {
+        return true;
+      }
+    } else {
+      return !node.disabled;
+    }
+    return false;
   }
 
   function wrapChildren(node: TreeNode, enabled: boolean) {
     if (!node.children) {
       throw new Error('`node.children` is not defined.');
     }
-    const children = node.children.map(child => executeNode(child, enabled));
+    const children = node.children.map(child => ({
+      fn: getNodeHandler(child, enabled),
+    }));
+    if (!hasEnabledTest(node)) {
+      return children;
+    }
     return node.beforeAllFns.concat(children).concat(node.afterAllFns);
   }
+
+  const treeHandler = getNodeHandler(tree, false);
+  return treeHandler();
 }

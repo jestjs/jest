@@ -6,9 +6,19 @@
  *
  * @flow
  */
-import BaseWatchPlugin from '../base_watch_plugin';
+import {BaseWatchPlugin} from 'jest-watcher';
 
 class QuitPlugin extends BaseWatchPlugin {
+  isInternal: true;
+
+  constructor(options: {
+    stdin: stream$Readable | tty$ReadStream,
+    stdout: stream$Writable | tty$WriteStream,
+  }) {
+    super(options);
+    this.isInternal = true;
+  }
+
   async run() {
     if (typeof this._stdin.setRawMode === 'function') {
       this._stdin.setRawMode(false);
@@ -19,7 +29,7 @@ class QuitPlugin extends BaseWatchPlugin {
 
   getUsageInfo() {
     return {
-      key: 'q'.codePointAt(0),
+      key: 'q',
       prompt: 'quit watch mode',
     };
   }

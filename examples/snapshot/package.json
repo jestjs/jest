@@ -1,6 +1,9 @@
 {
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-snapshot",
   "dependencies": {
-    "react": "15.4.2"
+    "react": "16.4.1"
   },
   "devDependencies": {
     "babel-jest": "*",

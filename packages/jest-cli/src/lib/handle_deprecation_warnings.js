@@ -8,14 +8,13 @@
  */
 
 import chalk from 'chalk';
-
-import {KEYS} from '../constants';
+import {KEYS} from 'jest-watcher';
 
 export default (
   pipe: stream$Writable | tty$WriteStream,
   stdin: stream$Readable | tty$ReadStream = process.stdin,
-): Promise<void> => {
-  return new Promise((resolve, reject) => {
+): Promise<void> =>
+  new Promise((resolve, reject) => {
     if (typeof stdin.setRawMode === 'function') {
       const messages = [
         chalk.red('There are deprecation warnings.\n'),
@@ -28,7 +27,7 @@ export default (
       // $FlowFixMe
       stdin.setRawMode(true);
       stdin.resume();
-      stdin.setEncoding('hex');
+      stdin.setEncoding('utf8');
       stdin.on('data', (key: string) => {
         if (key === KEYS.ENTER) {
           resolve();
@@ -42,4 +41,3 @@ export default (
       resolve();
     }
   });
-};

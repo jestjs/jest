@@ -46,15 +46,33 @@ export default class ProjectWorkspace {
    */
   localJestMajorVersion: number;
 
+  /**
+   * Whether test coverage should be (automatically) collected.
+   *
+   * @type {boolean}
+   */
+  collectCoverage: ?boolean;
+
+  /**
+   * if to output more information for debugging purpose. Default is false.
+   *
+   * @type {boolean}
+   */
+  debug: ?boolean;
+
   constructor(
     rootPath: string,
     pathToJest: string,
     pathToConfig: string,
     localJestMajorVersion: number,
+    collectCoverage: ?boolean,
+    debug: ?boolean,
   ) {
     this.rootPath = rootPath;
     this.pathToJest = pathToJest;
     this.pathToConfig = pathToConfig;
     this.localJestMajorVersion = localJestMajorVersion;
+    this.collectCoverage = collectCoverage;
+    this.debug = debug;
   }
 }

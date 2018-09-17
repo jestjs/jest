@@ -24,6 +24,7 @@ import babelIstanbulPlugin from 'babel-plugin-istanbul';
 
 const BABELRC_FILENAME = '.babelrc';
 const BABELRC_JS_FILENAME = '.babelrc.js';
+const BABEL_CONFIG_JS_FILENAME = 'babel.config.js';
 const BABEL_CONFIG_KEY = 'babel';
 const PACKAGE_JSON = 'package.json';
 const THIS_FILE = fs.readFileSync(__filename);
@@ -45,7 +46,13 @@ const createTransformer = (options: any): Transformer => {
         cache[directory] = fs.readFileSync(configFilePath, 'utf8');
         break;
       }
-      const configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
+      let configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
+      if (fs.existsSync(configJsFilePath)) {
+        // $FlowFixMe
+        cache[directory] = JSON.stringify(require(configJsFilePath));
+        break;
+      }
+      configJsFilePath = path.join(directory, BABEL_CONFIG_JS_FILENAME);
       if (fs.existsSync(configJsFilePath)) {
         // $FlowFixMe
         cache[directory] = JSON.stringify(require(configJsFilePath));
@@ -72,6 +79,7 @@ const createTransformer = (options: any): Transformer => {
   };
 
   options = Object.assign({}, options, {
+    compact: false,
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat([jestPreset]),
     sourceMaps: 'both',
@@ -90,6 +98,8 @@ const createTransformer = (options: any): Transformer => {
       return crypto
         .createHash('md5')
         .update(THIS_FILE)
+        .update('\0', 'utf8')
+        .update(JSON.stringify(options))
         .update('\0', 'utf8')
         .update(fileData)
         .update('\0', 'utf8')
@@ -134,16 +144,7 @@ const createTransformer = (options: any): Transformer => {
       // babel v7 might return null in the case when the file has been ignored.
       const transformResult = babelTransform(src, theseOptions);
 
-      if (!transformResult) {
-        return src;
-      }
-
-      const shouldReturnCodeOnly =
-        transformOptions == null ||
-        transformOptions.returnSourceString == null ||
-        transformOptions.returnSourceString === true;
-
-      return shouldReturnCodeOnly ? transformResult.code : transformResult;
+      return transformResult || src;
     },
   };
 };

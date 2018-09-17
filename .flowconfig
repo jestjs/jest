@@ -1,6 +1,7 @@
 [ignore]
 .*/examples/.*
 .*/node_modules/metro-bundler/.*
+.*/node_modules/module-deps/.*
 
 [options]
 module.name_mapper='^pretty-format$' -> '<PROJECT_ROOT>/packages/pretty-format/src/index.js'
@@ -9,5 +10,12 @@ module.name_mapper='\(jest-[^/]*\)' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
 include_warnings=true
 emoji=true
 
+[strict]
+nonstrict-import
+unclear-type
+unsafe-getters-setters
+untyped-import
+untyped-type-import
+
 [version]
-^0.66.0
+^0.75.0

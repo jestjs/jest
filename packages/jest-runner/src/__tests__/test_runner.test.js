@@ -13,26 +13,27 @@ const {TestWatcher} = require('jest-cli');
 
 let mockWorkerFarm;
 
-jest.mock('jest-worker', () => {
-  return jest.fn(worker => {
-    return (mockWorkerFarm = {
-      end: jest.fn(),
-      getStderr: jest.fn(),
-      getStdout: jest.fn(),
-      worker: jest.fn((data, callback) => require(worker)(data, callback)),
-    });
-  });
-});
+jest.mock('jest-worker', () =>
+  jest.fn(
+    worker =>
+      (mockWorkerFarm = {
+        end: jest.fn(),
+        getStderr: jest.fn(),
+        getStdout: jest.fn(),
+        worker: jest.fn((data, callback) => require(worker)(data, callback)),
+      }),
+  ),
+);
 
 jest.mock('../test_worker', () => {});
 
-test('injects the rawModuleMap into each worker in watch mode', () => {
+test('injects the serializable module map into each worker in watch mode', () => {
   const globalConfig = {maxWorkers: 2, watch: true};
   const config = {rootDir: '/path/'};
-  const rawModuleMap = jest.fn();
+  const serializableModuleMap = jest.fn();
   const context = {
     config,
-    moduleMap: {getRawModuleMap: () => rawModuleMap},
+    moduleMap: {toJSON: () => serializableModuleMap},
   };
   return new TestRunner(globalConfig)
     .runTests(
@@ -45,13 +46,20 @@ test('injects the rawModuleMap into each worker in watch mode', () => {
     )
     .then(() => {
       expect(mockWorkerFarm.worker.mock.calls).toEqual([
-        [{config, globalConfig, path: './file.test.js', rawModuleMap}],
-        [{config, globalConfig, path: './file2.test.js', rawModuleMap}],
+        [{config, globalConfig, path: './file.test.js', serializableModuleMap}],
+        [
+          {
+            config,
+            globalConfig,
+            path: './file2.test.js',
+            serializableModuleMap,
+          },
+        ],
       ]);
     });
 });
 
-test('does not inject the rawModuleMap in serial mode', () => {
+test('does not inject the serializable module map in serial mode', () => {
   const globalConfig = {maxWorkers: 1, watch: false};
   const config = {rootDir: '/path/'};
   const context = {config};
@@ -72,7 +80,7 @@ test('does not inject the rawModuleMap in serial mode', () => {
             config,
             globalConfig,
             path: './file.test.js',
-            rawModuleMap: null,
+            serializableModuleMap: null,
           },
         ],
         [
@@ -80,9 +88,28 @@ test('does not inject the rawModuleMap in serial mode', () => {
             config,
             globalConfig,
             path: './file2.test.js',
-            rawModuleMap: null,
+            serializableModuleMap: null,
           },
         ],
       ]);
+    });
+});
+
+test('assign process.env.JEST_WORKER_ID = 1 when in runInBand mode', () => {
+  const globalConfig = {maxWorkers: 1, watch: false};
+  const config = {rootDir: '/path/'};
+  const context = {config};
+
+  return new TestRunner(globalConfig)
+    .runTests(
+      [{context, path: './file.test.js'}],
+      new TestWatcher({isWatchMode: globalConfig.watch}),
+      () => {},
+      () => {},
+      () => {},
+      {serial: true},
+    )
+    .then(() => {
+      expect(process.env.JEST_WORKER_ID).toBe('1');
     });
 });

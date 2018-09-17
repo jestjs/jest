@@ -8,13 +8,13 @@
  */
 
 import type {GlobalConfig} from 'types/Config';
-import BaseWatchPlugin from '../base_watch_plugin';
-import TestPathPatternPrompt from '../test_path_pattern_prompt';
+import {BaseWatchPlugin, Prompt} from 'jest-watcher';
+import TestPathPatternPrompt from '../TestPathPatternPrompt';
 import activeFilters from '../lib/active_filters_message';
-import Prompt from '../lib/Prompt';
 
 class TestPathPatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
+  isInternal: true;
 
   constructor(options: {
     stdin: stream$Readable | tty$ReadStream,
@@ -22,11 +22,12 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
   }) {
     super(options);
     this._prompt = new Prompt();
+    this.isInternal = true;
   }
 
   getUsageInfo() {
     return {
-      key: 'p'.codePointAt(0),
+      key: 'p',
       prompt: 'filter by a filename regex pattern',
     };
   }
@@ -44,7 +45,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
 
       testPathPatternPrompt.run(
         (value: string) => {
-          updateConfigAndRun({testPathPattern: value});
+          updateConfigAndRun({mode: 'watch', testPathPattern: value});
           res();
         },
         rej,

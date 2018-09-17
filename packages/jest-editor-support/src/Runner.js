@@ -66,6 +66,15 @@ export default class Runner extends EventEmitter {
     if (this.options.testFileNamePattern) {
       args.push(this.options.testFileNamePattern);
     }
+    if (this.workspace.collectCoverage === true) {
+      args.push('--coverage');
+    }
+    if (this.workspace.collectCoverage === false) {
+      args.push('--no-coverage');
+    }
+    if (this.options.noColor === true) {
+      args.push('--no-color');
+    }
 
     const options = {
       shell: this.options.shell,
@@ -73,40 +82,14 @@ export default class Runner extends EventEmitter {
 
     this.debugprocess = this._createProcess(this.workspace, args, options);
     this.debugprocess.stdout.on('data', (data: Buffer) => {
-      // Make jest save to a file, otherwise we get chunked data
-      // and it can be hard to put it back together.
-      const stringValue = data
-        .toString()
-        .replace(/\n$/, '')
-        .trim();
-
-      if (stringValue.startsWith('Test results written to')) {
-        readFile(this.outputPath, 'utf8', (err, data) => {
-          if (err) {
-            const message = `JSON report not found at ${this.outputPath}`;
-            this.emit('terminalError', message);
-          } else {
-            const noTestsFound = this.doResultsFollowNoTestsFoundMessage();
-            this.emit('executableJSON', JSON.parse(data), {noTestsFound});
-          }
-        });
-      } else {
-        this.emit('executableOutput', stringValue.replace('[2J[H', ''));
-      }
-      this.prevMessageTypes.length = 0;
+      this._parseOutput(data, false);
     });
 
     this.debugprocess.stderr.on('data', (data: Buffer) => {
-      const type = this.findMessageType(data);
-      if (type === messageTypes.unknown) {
-        this.prevMessageTypes.length = 0;
-      } else {
-        this.prevMessageTypes.push(type);
-      }
-
-      this.emit('executableStdErr', data, {type});
+      // jest 23 could send test results message to stderr
+      // see https://github.com/facebook/jest/pull/4858
+      this._parseOutput(data, true);
     });
-
     this.debugprocess.on('exit', () => {
       this.emit('debuggerProcessExit');
       this.prevMessageTypes.length = 0;
@@ -123,10 +106,52 @@ export default class Runner extends EventEmitter {
     });
   }
 
+  _parseOutput(data: Buffer, isStdErr: boolean): MessageType {
+    const msgType = this.findMessageType(data);
+    switch (msgType) {
+      case messageTypes.testResults:
+        readFile(this.outputPath, 'utf8', (err, data) => {
+          if (err) {
+            const message = `JSON report not found at ${this.outputPath}`;
+            this.emit('terminalError', message);
+          } else {
+            const noTestsFound = this.doResultsFollowNoTestsFoundMessage();
+            this.emit('executableJSON', JSON.parse(data), {
+              noTestsFound,
+            });
+          }
+        });
+        this.prevMessageTypes.length = 0;
+        break;
+      case messageTypes.watchUsage:
+      case messageTypes.noTests:
+        this.prevMessageTypes.push(msgType);
+        this.emit('executableStdErr', data, {
+          type: msgType,
+        });
+        break;
+      default:
+        // no special action needed, just report the output by its source
+        if (isStdErr) {
+          this.emit('executableStdErr', data, {
+            type: msgType,
+          });
+        } else {
+          this.emit('executableOutput', data.toString().replace('[2J[H', ''));
+        }
+        this.prevMessageTypes.length = 0;
+        break;
+    }
+
+    return msgType;
+  }
+
   runJestWithUpdateForSnapshots(completion: any, args: string[]) {
     const defaultArgs = ['--updateSnapshot'];
 
-    const options = {shell: this.options.shell};
+    const options = {
+      shell: this.options.shell,
+    };
     const updateProcess = this._createProcess(
       this.workspace,
       [...defaultArgs, ...(args ? args : [])],
@@ -150,7 +175,7 @@ export default class Runner extends EventEmitter {
     delete this.debugprocess;
   }
 
-  findMessageType(buf: Buffer) {
+  findMessageType(buf: Buffer): MessageType {
     const str = buf.toString('utf8', 0, 58);
     if (str === 'No tests found related to files changed since last commit.') {
       return messageTypes.noTests;
@@ -160,6 +185,9 @@ export default class Runner extends EventEmitter {
       return messageTypes.watchUsage;
     }
 
+    if (str.trim().startsWith('Test results written to')) {
+      return messageTypes.testResults;
+    }
     return messageTypes.unknown;
   }
 

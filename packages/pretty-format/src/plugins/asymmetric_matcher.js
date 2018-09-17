@@ -24,7 +24,10 @@ export const serialize = (
 ): string => {
   const stringedValue = val.toString();
 
-  if (stringedValue === 'ArrayContaining') {
+  if (
+    stringedValue === 'ArrayContaining' ||
+    stringedValue === 'ArrayNotContaining'
+  ) {
     if (++depth > config.maxDepth) {
       return '[' + stringedValue + ']';
     }
@@ -37,7 +40,10 @@ export const serialize = (
     );
   }
 
-  if (stringedValue === 'ObjectContaining') {
+  if (
+    stringedValue === 'ObjectContaining' ||
+    stringedValue === 'ObjectNotContaining'
+  ) {
     if (++depth > config.maxDepth) {
       return '[' + stringedValue + ']';
     }
@@ -57,7 +63,10 @@ export const serialize = (
     );
   }
 
-  if (stringedValue === 'StringMatching') {
+  if (
+    stringedValue === 'StringMatching' ||
+    stringedValue === 'StringNotMatching'
+  ) {
     return (
       stringedValue +
       SPACE +
@@ -65,7 +74,10 @@ export const serialize = (
     );
   }
 
-  if (stringedValue === 'StringContaining') {
+  if (
+    stringedValue === 'StringContaining' ||
+    stringedValue === 'StringNotContaining'
+  ) {
     return (
       stringedValue +
       SPACE +

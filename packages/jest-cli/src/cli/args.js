@@ -67,7 +67,7 @@ export const check = (argv: Argv) => {
 
 export const usage =
   'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
-export const docs = 'Documentation: https://facebook.github.io/jest/';
+export const docs = 'Documentation: https://jestjs.io/';
 
 export const options = {
   all: {
@@ -153,9 +153,9 @@ export const options = {
   },
   collectCoverageFrom: {
     description:
-      'An array of glob patterns relative to <rootDir> matching the files ' +
-      'that coverage info needs to be collected from.',
-    type: 'array',
+      'A glob pattern relative to <rootDir> matching the files that coverage ' +
+      'info needs to be collected from.',
+    type: 'string',
   },
   collectCoverageOnlyFrom: {
     description: 'Explicit list of paths coverage will be restricted to.',
@@ -225,6 +225,13 @@ export const options = {
       'if it was leaked',
     type: 'boolean',
   },
+  detectOpenHandles: {
+    default: false,
+    description:
+      'Print out remaining open handles preventing Jest from exiting at the ' +
+      'end of a test run.',
+    type: 'boolean',
+  },
   env: {
     description:
       'The test environment used for all tests. This can point to ' +
@@ -232,11 +239,25 @@ export const options = {
       '`path/to/my-environment.js`',
     type: 'string',
   },
+  errorOnDeprecated: {
+    default: false,
+    description: 'Make calling deprecated APIs throw helpful error messages.',
+    type: 'boolean',
+  },
   expand: {
     alias: 'e',
     default: undefined,
     description: 'Use this flag to show full diffs instead of a patch.',
     type: 'boolean',
+  },
+  filter: {
+    default: undefined,
+    description:
+      'Path to a module exporting a filtering function. This method receives ' +
+      'a list of tests which can be manipulated to exclude tests from ' +
+      'running. Especially useful when used in conjunction with a testing ' +
+      'infrastructure to filter known broken tests.',
+    type: 'string',
   },
   findRelatedTests: {
     default: undefined,
@@ -272,6 +293,10 @@ export const options = {
     description:
       'A JSON string with map of variables for the haste module system',
     type: 'string',
+  },
+  init: {
+    description: 'Generate a basic configuration file',
+    type: 'boolean',
   },
   json: {
     default: undefined,
@@ -399,6 +424,11 @@ export const options = {
     description: "A preset that is used as a base for Jest's configuration.",
     type: 'string',
   },
+  prettierPath: {
+    default: 'prettier',
+    description: 'The path to the "prettier" module used for inline snapshots.',
+    type: 'string',
+  },
   projects: {
     description:
       'A list of projects that use Jest to run all tests of all ' +
@@ -464,6 +494,11 @@ export const options = {
       'every single file.',
     type: 'boolean',
   },
+  runner: {
+    description:
+      "Allows to use a custom runner instead of Jest's default test runner.",
+    type: 'string',
+  },
   setupFiles: {
     description:
       'The paths to modules that run some code to configure or ' +
@@ -486,6 +521,13 @@ export const options = {
     description: 'Prevent tests from printing messages through the console.',
     type: 'boolean',
   },
+  skipFilter: {
+    default: undefined,
+    description:
+      'Disables the filter provided by --filter. Useful for CI jobs, or ' +
+      'local enforcement when fixing tests.',
+    type: 'boolean',
+  },
   snapshotSerializers: {
     description:
       'A list of paths to snapshot serializer modules Jest should ' +
@@ -495,6 +537,12 @@ export const options = {
   testEnvironment: {
     description: 'Alias for --env',
     type: 'string',
+  },
+  testEnvironmentOptions: {
+    description:
+      'Test environment options that will be passed to the testEnvironment. ' +
+      'The relevant options depend on the environment.',
+    type: 'string', // Object
   },
   testFailureExitCode: {
     description: 'Exit code of `jest` command if the test run failed',
@@ -535,7 +583,7 @@ export const options = {
     description:
       'Allows the use of a custom results processor. ' +
       'This processor must be a node module that exports ' +
-      'a function expecting as the first argument the result object',
+      'a function expecting as the first argument the result object.',
     type: 'string',
   },
   testRunner: {

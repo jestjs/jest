@@ -4,13 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @flow strict-local
  */
 
 import type {Environment} from 'types/Environment';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type Runtime from 'jest-runtime';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jest_adapter_init');
@@ -34,12 +33,23 @@ const jestAdapter = async (
       expand: globalConfig.expand,
     });
 
+  const getPrettier = () =>
+    config.prettierPath ? require(config.prettierPath) : null;
+  const getBabelTraverse = () => require('babel-traverse').default;
+
   const {globals, snapshotState} = initialize({
     config,
+    getBabelTraverse,
+    getPrettier,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
+    parentProcess: process,
     testPath,
   });
+
+  if (config.timers === 'fake') {
+    environment.fakeTimers.useFakeTimers();
+  }
 
   globals.beforeEach(() => {
     if (config.resetModules) {
@@ -52,14 +62,14 @@ const jestAdapter = async (
 
     if (config.resetMocks) {
       runtime.resetAllMocks();
+
+      if (config.timers === 'fake') {
+        environment.fakeTimers.useFakeTimers();
+      }
     }
 
     if (config.restoreMocks) {
       runtime.restoreAllMocks();
-    }
-
-    if (config.timers === 'fake') {
-      environment.fakeTimers.useFakeTimers();
     }
   });
 
@@ -86,6 +96,7 @@ const _addSnapshotData = (results: TestResult, snapshotState) => {
   });
 
   const uncheckedCount = snapshotState.getUncheckedCount();
+  const uncheckedKeys = snapshotState.getUncheckedKeys();
   if (uncheckedCount) {
     snapshotState.removeUncheckedKeys();
   }
@@ -97,7 +108,9 @@ const _addSnapshotData = (results: TestResult, snapshotState) => {
   results.snapshot.unmatched = snapshotState.unmatched;
   results.snapshot.updated = snapshotState.updated;
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
+  // Copy the array to prevent memory leaks
+  results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
   return results;
 };
 
-export default jestAdapter;
+module.exports = jestAdapter;

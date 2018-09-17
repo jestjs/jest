@@ -9,12 +9,12 @@
 
 const {spawnSync} = require('child_process');
 const path = require('path');
-const SkipOnWindows = require('../../../../scripts/SkipOnWindows');
+const ConditionalTest = require('../../../../scripts/ConditionalTest');
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
 
 describe('Repl', () => {
-  SkipOnWindows.suite();
+  ConditionalTest.skipSuiteOnWindows();
 
   describe('cli', () => {
     it('runs without errors', () => {

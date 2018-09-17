@@ -180,6 +180,45 @@ describe('Runner', () => {
       expect((createProcess: any).mock.calls[0][1]).toContain('--watch');
     });
 
+    it('calls createProcess with the --coverage arg when provided', () => {
+      const expected = '--coverage';
+
+      const workspace: any = {collectCoverage: true};
+      const options = {};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      const args = (createProcess: any).mock.calls[0][1];
+      const index = args.indexOf(expected);
+      expect(index).not.toBe(-1);
+    });
+
+    it('calls createProcess with the ---no-coverage arg when provided and false', () => {
+      const expected = '--no-coverage';
+
+      const workspace: any = {collectCoverage: false};
+      const options = {};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      const args = (createProcess: any).mock.calls[0][1];
+      const index = args.indexOf(expected);
+      expect(index).not.toBe(-1);
+    });
+
+    it('calls createProcess without the --coverage arg when undefined', () => {
+      const expected = '--coverage';
+
+      const workspace: any = {};
+      const options = {};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      const args = (createProcess: any).mock.calls[0][1];
+      const index = args.indexOf(expected);
+      expect(index).toBe(-1);
+    });
+
     it('calls createProcess with the --testNamePattern arg when provided', () => {
       const expected = 'testNamePattern';
 
@@ -211,6 +250,17 @@ describe('Runner', () => {
       sut.start(false);
 
       expect((createProcess: any).mock.calls[0][2]).toEqual({shell: true});
+    });
+
+    it('calls createProcess with the no color option when provided', () => {
+      const expected = '--no-color';
+
+      const workspace: any = {};
+      const options = {noColor: true};
+      const sut = new Runner(workspace, options);
+      sut.start(false);
+
+      expect((createProcess: any).mock.calls[0][1]).toContain(expected);
     });
   });
 
@@ -295,20 +345,27 @@ describe('events', () => {
     runner.start();
   });
 
-  it('expects JSON from stdout, then it passes the JSON', () => {
+  it('expects JSON from both stdout and stderr, then it passes the JSON', () => {
     const data = jest.fn();
     runner.on('executableJSON', data);
 
     runner.outputPath = `${fixtures}/failing-jsons/failing_jest_json.json`;
 
-    // Emitting data through stdout should trigger sending JSON
-    fakeProcess.stdout.emit('data', 'Test results written to file');
-    expect(data).toBeCalled();
+    const doTest = (out: stream$Readable) => {
+      data.mockClear();
 
-    // And lets check what we emit
-    const dataAtPath = readFileSync(runner.outputPath);
-    const storedJSON = JSON.parse(dataAtPath.toString());
-    expect(data.mock.calls[0][0]).toEqual(storedJSON);
+      // Emitting data through stdout should trigger sending JSON
+      out.emit('data', 'Test results written to file');
+      expect(data).toBeCalled();
+
+      // And lets check what we emit
+      const dataAtPath = readFileSync(runner.outputPath);
+      const storedJSON = JSON.parse(dataAtPath.toString());
+      expect(data.mock.calls[0][0]).toEqual(storedJSON);
+    };
+
+    doTest(fakeProcess.stdout);
+    doTest(fakeProcess.stderr);
   });
 
   it('emits errors when process errors', () => {

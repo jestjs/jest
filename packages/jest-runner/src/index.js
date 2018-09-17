@@ -61,6 +61,7 @@ class TestRunner {
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
   ) {
+    process.env.JEST_WORKER_ID = '1';
     const mutex = throat(1);
     return tests.reduce(
       (promise, test) =>
@@ -117,8 +118,8 @@ class TestRunner {
           config: test.context.config,
           globalConfig: this._globalConfig,
           path: test.path,
-          rawModuleMap: watcher.isWatchMode()
-            ? test.context.moduleMap.getRawModuleMap()
+          serializableModuleMap: watcher.isWatchMode()
+            ? test.context.moduleMap.toJSON()
             : null,
         });
       });

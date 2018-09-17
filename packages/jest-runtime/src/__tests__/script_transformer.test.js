@@ -11,7 +11,13 @@
 const slash = require('slash');
 
 jest
-  .mock('fs')
+  .mock('fs', () =>
+    // Node 10.5.x compatibility
+    Object.assign({}, jest.genMockFromModule('fs'), {
+      ReadStream: require.requireActual('fs').ReadStream,
+      WriteStream: require.requireActual('fs').WriteStream,
+    }),
+  )
   .mock('graceful-fs')
   .mock('jest-haste-map', () => ({
     getCacheFilePath: (cacheDir, baseDir, version) => cacheDir + baseDir,
@@ -26,21 +32,17 @@ jest
 jest.mock(
   'test_preprocessor',
   () => {
-    const escapeStrings = str => {
-      return str.replace(/'/, `'`);
-    };
+    const escapeStrings = str => str.replace(/'/, `'`);
 
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
-      process: (content, filename, config) => {
-        return `
+      process: (content, filename, config) => `
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
             config: '${escapeStrings(JSON.stringify(config))}',
           };
-        `;
-      },
+        `,
     };
   },
   {virtual: true},
@@ -48,40 +50,60 @@ jest.mock(
 
 jest.mock(
   'preprocessor-with-sourcemaps',
-  () => {
-    return {
-      getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
-      process: jest.fn(),
-    };
-  },
+  () => ({
+    getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
+    process: jest.fn(),
+  }),
   {virtual: true},
 );
 
 jest.mock(
   'css-preprocessor',
-  () => {
-    return {
-      getCacheKey: jest.fn((content, filename, configStr) => 'cd'),
-      process: (content, filename, config) => {
-        return `
+  () => ({
+    getCacheKey: jest.fn((content, filename, configStr) => 'cd'),
+    process: (content, filename, config) => `
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
           };
-        `;
-      },
-    };
-  },
+        `,
+  }),
   {virtual: true},
 );
 
 jest.mock(
   'passthrough-preprocessor',
-  () => {
-    return {
-      process: jest.fn(),
-    };
-  },
+  () => ({
+    process: jest.fn(),
+  }),
+  {virtual: true},
+);
+
+// Bad preprocessor
+jest.mock('skipped-required-props-preprocessor', () => ({}), {virtual: true});
+
+// Bad preprocessor
+jest.mock(
+  'skipped-required-create-transformer-props-preprocessor',
+  () => ({
+    createTransformer() {
+      return {};
+    },
+  }),
+  {virtual: true},
+);
+
+jest.mock(
+  'skipped-process-method-preprocessor',
+  () => ({
+    createTransformer() {
+      const mockProcess = jest.fn();
+      mockProcess.mockReturnValue('code');
+      return {
+        process: mockProcess,
+      };
+    },
+  }),
   {virtual: true},
 );
 
@@ -262,6 +284,38 @@ describe('ScriptTransformer', () => {
     },
   );
 
+  it("throws an error if `process` doesn't defined", () => {
+    Object.assign(config, {
+      transform: [['^.+\\.js$', 'skipped-required-props-preprocessor']],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+    expect(() =>
+      scriptTransformer.transformSource('sample.js', '', false),
+    ).toThrow('Jest: a transform must export a `process` function.');
+  });
+
+  it('throws an error if createTransformer returns object without `process` method', () => {
+    Object.assign(config, {
+      transform: [
+        ['^.+\\.js$', 'skipped-required-create-transformer-props-preprocessor'],
+      ],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+    expect(() =>
+      scriptTransformer.transformSource('sample.js', '', false),
+    ).toThrow('Jest: a transform must export a `process` function.');
+  });
+
+  it("shouldn't throw error without process method. But with corrent createTransformer method", () => {
+    Object.assign(config, {
+      transform: [['^.+\\.js$', 'skipped-process-method-preprocessor']],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+    expect(() =>
+      scriptTransformer.transformSource('sample.js', '', false),
+    ).not.toThrow();
+  });
+
   it('uses the supplied preprocessor', () => {
     config = Object.assign(config, {
       transform: [['^.+\\.js$', 'test_preprocessor']],
@@ -340,7 +394,7 @@ describe('ScriptTransformer', () => {
     const content =
       'var x = 1;\n' +
       '//# sourceMappingURL=data:application/json;base64,' +
-      new Buffer(sourceMap).toString('base64');
+      Buffer.from(sourceMap).toString('base64');
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
