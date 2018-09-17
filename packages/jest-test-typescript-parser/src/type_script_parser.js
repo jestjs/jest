@@ -10,57 +10,75 @@
 import {readFileSync} from 'fs';
 
 import ts from 'typescript';
-import {Expect, ItBlock, Node} from 'jest-editor-support';
+import {ParseResult} from 'jest-editor-support';
+import type {NodeType, NodeClass} from 'jest-editor-support';
 
-export function parse(file: string) {
+export function parse(file: string): ParseResult {
   const sourceFile = ts.createSourceFile(
     file,
     readFileSync(file).toString(),
     ts.ScriptTarget.ES3,
   );
+  const parseResult = new ParseResult(file);
 
-  const itBlocks: Array<ItBlock> = [];
-  const expects: Array<Expect> = [];
-  function searchNodes(node: ts.Node) {
-    if (node.kind === ts.SyntaxKind.CallExpression) {
-      let {text} = node.expression;
-      if (!text) {
-        // Property access (it.only)
-        text = node.expression.expression.text;
-      }
-      if (text === 'it' || text === 'test' || text === 'fit') {
-        const position = getNode(sourceFile, node, new ItBlock());
-        position.name = node.arguments[0].text;
-        itBlocks.push(position);
-      } else {
-        let element = node.expression;
-        let expectText = '';
-        while (element && !expectText) {
-          expectText = element.text;
-          element = element.expression;
+  const addNode = (
+    tsNode: ts.Node,
+    parent: NodeClass,
+    type: NodeType,
+  ): NodeClass => {
+    const child = parent.addChild(type);
+
+    switch (type) {
+      case 'describe':
+      case 'it':
+        getNode(sourceFile, tsNode, child);
+        child.name = tsNode.arguments[0].text;
+        parseResult.addNode(child);
+        break;
+      case 'expect':
+        getNode(sourceFile, tsNode, child);
+        parseResult.addNode(child, true);
+        break;
+      default:
+        throw new TypeError(`unexpected node type ${type}`);
+    }
+
+    return child;
+  };
+
+  // const itBlocks: Array<ItBlock> = [];
+  // const expects: Array<Expect> = [];
+  function searchNodes(parent: NodeClass) {
+    return (node: ts.Node) => {
+      let sNode: ?NodeClass;
+      if (node.kind === ts.SyntaxKind.CallExpression) {
+        let {text} = node.expression;
+        if (!text) {
+          // Property access (it.only)
+          text = node.expression.expression.text;
         }
-        if (expectText === 'expect') {
-          const position = getNode(sourceFile, node, new Expect());
-          if (
-            !expects.some(
-              e =>
-                e.start.line === position.start.line &&
-                e.start.column === position.start.column,
-            )
-          ) {
-            expects.push(position);
+        if (text === 'describe') {
+          sNode = addNode(node, parent, 'describe');
+        } else if (text === 'it' || text === 'test' || text === 'fit') {
+          sNode = addNode(node, parent, 'it');
+        } else {
+          let element = node.expression;
+          let expectText = '';
+          while (element && !expectText) {
+            expectText = element.text;
+            element = element.expression;
+          }
+          if (expectText === 'expect') {
+            sNode = addNode(node, parent, 'expect');
           }
         }
       }
-    }
-    ts.forEachChild(node, searchNodes);
+      ts.forEachChild(node, searchNodes(sNode || parent));
+    };
   }
 
-  ts.forEachChild(sourceFile, searchNodes);
-  return {
-    expects,
-    itBlocks,
-  };
+  ts.forEachChild(sourceFile, searchNodes(parseResult.root));
+  return parseResult;
 }
 
 function getNode<T: Node>(

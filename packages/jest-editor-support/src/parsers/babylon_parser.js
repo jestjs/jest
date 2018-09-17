@@ -9,14 +9,20 @@
 
 import {readFileSync} from 'fs';
 
-import {parse as babylonParse} from 'babylon';
-import {Expect, ItBlock} from './parser_nodes';
-import type {File as BabylonFile} from 'babylon';
+import type {NodeType, NodeClass, ParseResult} from './parser_nodes';
+import {Expect, ItBlock, DescribeBlock, Node} from './parser_nodes';
+import {
+  File as BabylonFile,
+  Node as BabylonNode,
+  parse as babylonParse,
+} from 'babylon';
 
-export type BabylonParserResult = {
-  expects: Array<Expect>,
-  itBlocks: Array<ItBlock>,
-};
+// export type BabylonParserResult = {
+//   describeBlocks: Array<DescribeBlock>,
+//   expects: Array<Expect>,
+//   itBlocks: Array<ItBlock>,
+//   root: Node,
+// };
 
 export const getASTfor = (file: string): BabylonFile => {
   const data = readFileSync(file).toString();
@@ -24,40 +30,32 @@ export const getASTfor = (file: string): BabylonFile => {
   return babylonParse(data, config);
 };
 
-export const parse = (file: string): BabylonParserResult => {
-  const itBlocks: ItBlock[] = [];
-  const expects: Expect[] = [];
-
+export const parse = (file: string): ParseResult => {
+  // const itBlocks: ItBlock[] = [];
+  // const describeBlocks: DescribeBlock[] = [];
+  // const expects: Expect[] = [];
+  const parseResult = new ParseResult(file);
   const ast = getASTfor(file);
 
-  // An `it`/`test` was found in the AST
-  // So take the AST node and create an object for us
-  // to store for later usage
-  const foundItNode = (node: any, file: string) => {
-    const block = new ItBlock();
-    block.name = node.expression.arguments[0].value;
-    block.start = node.loc.start;
-    block.end = node.loc.end;
+  const updateNode = (node: NodeClass, babylonNode: BabylonNode) => {
+    node.start = babylonNode.loc.start;
+    node.end = babylonNode.loc.end;
+    node.start.column += 1;
 
-    block.start.column += 1;
+    parseResult.addNode(node);
 
-    block.file = file;
-    itBlocks.push(block);
-  };
+    switch (node.type) {
+      case 'it':
+      case 'describe':
+        (node: NamedBlock).name = getBlockName(babylonNode); //.expression.arguments[0].value;
+        break;
 
-  // An `expect` was found in the AST
-  // So take the AST node and create an object for us
-  // to store for later usage
-  const foundExpectNode = (node: any, file: string) => {
-    const expect = new Expect();
-    expect.start = node.loc.start;
-    expect.end = node.loc.end;
-
-    expect.start.column += 1;
-    expect.end.column += 1;
-
-    expect.file = file;
-    expects.push(expect);
+      case 'expect':
+        node.end.column += 1;
+        break;
+      default:
+        throw new TypeError(`unexpected node type: ${node}`);
+    }
   };
 
   const isFunctionCall = node =>
@@ -67,6 +65,32 @@ export const parse = (file: string): BabylonParserResult => {
 
   const isFunctionDeclaration = (nodeType: string) =>
     nodeType === 'ArrowFunctionExpression' || nodeType === 'FunctionExpression';
+
+  const getBlockName = (bNode: BabylonNode) => {
+    const name = bNode.expression.arguments[0].value;
+    if (name) {
+      return name;
+    }
+
+    if (bNode.expression.arguments[0].type === 'TemplateLiteral') {
+      //construct name from the quasis + expression
+      const arg = bNode.expression.arguments[0];
+      const elements = [...arg.expressions, ...arg.quasis];
+      elements.sort((a, b) => {
+        if (a.start === b.start) return 0;
+        if (a.start < b.start) return -1;
+        return 1;
+      });
+      const strings = elements.map(b => {
+        if (b.type === 'TemplateElement') return b.value.raw;
+        if (b.type === 'Identifier') return `\$\{${b.name}\}`;
+        throw new TypeError(
+          `unrecognized TemplateLiteral element: ${JSON.stringify(b)}`,
+        );
+      });
+      return strings.join('');
+    }
+  };
 
   // Pull out the name of a CallExpression (describe/it)
   // handle cases where it's a member expression (.only)
@@ -97,6 +121,11 @@ export const parse = (file: string): BabylonParserResult => {
     return name === 'it' || name === 'fit' || name === 'test';
   };
 
+  const isAnDescribe = node => {
+    const name = getNameForNode(node);
+    return name === 'describe';
+  };
+
   // When given a node in the AST, does this represent
   // the start of an expect expression?
   const isAnExpect = node => {
@@ -114,28 +143,47 @@ export const parse = (file: string): BabylonParserResult => {
     return name === 'expect';
   };
 
+  const addNode = (
+    type: NodeType,
+    parent: NodeClass,
+    babylonNode: BabylonNode,
+  ): Node => {
+    const child = parent.addChild(type);
+    updateNode(child, babylonNode);
+
+    if (child.type == 'it' && !(child: ItBlock).name) {
+      console.warn(`babylonNode: ${JSON.stringify(babylonNode)}`);
+    }
+    return child;
+  };
+
   // A recursive AST parser
-  const searchNodes = (root: any, file: string) => {
+  const searchNodes = (babylonParent: BabylonNode, parent: NodeClass) => {
     // Look through the node's children
-    for (const node in root.body) {
-      if (!root.body.hasOwnProperty(node)) {
+    let child: ?Node;
+
+    for (const node in babylonParent.body) {
+      if (!babylonParent.body.hasOwnProperty(node)) {
         return;
       }
 
+      child = undefined;
       // Pull out the node
-      const element = root.body[node];
+      const element = babylonParent.body[node];
 
-      if (isAnIt(element)) {
-        foundItNode(element, file);
+      if (isAnDescribe(element)) {
+        child = addNode('describe', parent, element);
+      } else if (isAnIt(element)) {
+        child = addNode('it', parent, element);
       } else if (isAnExpect(element)) {
-        foundExpectNode(element, file);
+        child = addNode('expect', parent, element);
       } else if (element && element.type === 'VariableDeclaration') {
         element.declarations
           .filter(
             declaration =>
               declaration.init && isFunctionDeclaration(declaration.init.type),
           )
-          .forEach(declaration => searchNodes(declaration.init.body, file));
+          .forEach(declaration => searchNodes(declaration.init.body, parent));
       } else if (
         element &&
         element.type === 'ExpressionStatement' &&
@@ -144,28 +192,32 @@ export const parse = (file: string): BabylonParserResult => {
         element.expression.right &&
         isFunctionDeclaration(element.expression.right.type)
       ) {
-        searchNodes(element.expression.right.body, file);
+        searchNodes(element.expression.right.body, parent);
       } else if (
         element.type === 'ReturnStatement' &&
         element.argument.arguments
       ) {
         element.argument.arguments
           .filter(argument => isFunctionDeclaration(argument.type))
-          .forEach(argument => searchNodes(argument.body, file));
+          .forEach(argument => searchNodes(argument.body, parent));
       }
 
       if (isFunctionCall(element)) {
         element.expression.arguments
           .filter(argument => isFunctionDeclaration(argument.type))
-          .forEach(argument => searchNodes(argument.body, file));
+          .forEach(argument => searchNodes(argument.body, child || parent));
       }
     }
   };
 
-  searchNodes(ast['program'], file);
+  const program: BabylonNode = ast['program'];
+  searchNodes(program, parseResult.root);
 
-  return {
-    expects,
-    itBlocks,
-  };
+  return parseResult;
+  // return {
+  //   describeBlocks,
+  //   expects,
+  //   itBlocks,
+  //   root,
+  // };
 };

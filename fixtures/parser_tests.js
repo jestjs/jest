@@ -153,6 +153,64 @@ function parserTests(parse: (file: string) => BabylonParserResult) {
       expect(data.expects.length).toEqual(1);
     });
   });
+  describe('File Parsing for describe blocks', () => {
+    it('finds describe in a danger test file', () => {
+      const data = parse(`${fixtures}/dangerjs/travis-ci.example`);
+      expect(data.describeBlocks.length).toEqual(4);
+
+      const firstDescribe = data.describeBlocks[0];
+      expect(firstDescribe.start).toEqual({
+        column: 1,
+        line: 10,
+      });
+      expect(firstDescribe.end).toEqual({
+        column: 2,
+        line: 20,
+      });
+      expect(firstDescribe.name).toBe('.isCI');
+    });
+    it('finds test blocks within describe blocks', () => {
+      const data = parse(`${fixtures}/dangerjs/travis-ci.example`);
+      const descBlock = data.describeBlocks[1];
+      expect(descBlock.children.length).toBe(4);
+
+      // check test blocks, including the template literal
+      const found = descBlock.children.filter(
+        b =>
+          b.name === 'needs to have a PR number' ||
+          b.name === 'does not validate without josh' ||
+          b.name === 'does not validate when ${key} is missing',
+      );
+      expect(found.length).toBe(3);
+    });
+  });
+  describe('Nested Elements', () => {
+    let nested;
+    beforeEach(() => {
+      const data = parse(`${fixtures}/nested_elements.example`);
+      nested = data.root.children.filter(
+        e => e.type === 'describe' && e.name === 'describe 1.0',
+      )[0];
+    });
+    it('can find nested describe or test blocks', () => {
+      expect(nested.children.length).toBe(2);
+      expect(nested.children[0].type).toBe('it');
+      expect(nested.children[0].name).toBe('test 1.1');
+      expect(nested.children[1].type).toBe('describe');
+      expect(nested.children[1].name).toBe('describe 1.2');
+    });
+    it('can find deep nested blocks', () => { 
+      const itBlock = nested.children[0];
+      expect(itBlock.children.length).toBe(2);
+      expect(itBlock.children[0].name).toBe('test 1.1.1');
+      expect(itBlock.children[1].name).toBe('describe 1.1.2');
+
+      const descBlock = itBlock.children[1];
+      expect(descBlock.children.length).toBe(1);
+      expect(descBlock.children[0].name).toBe('test 1.1.2.1');
+      expect(descBlock.children[0].children[0].type).toBe('expect');
+    });
+  });
 }
 
 module.exports = {
