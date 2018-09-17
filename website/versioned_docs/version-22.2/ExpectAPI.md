@@ -642,7 +642,9 @@ describe('my beverage', () => {
 
 ### `.toEqual(value)`
 
-Use `.toEqual` when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity—this is also known as "deep equal". For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
+Use `.toEqual` to compare recursively all properties of object instances (also known as "deep" equality).
+
+For example, `.toEqual` and `.toBe` behave differently in this test suite, so all the tests pass:
 
 ```js
 const can1 = {
@@ -665,6 +667,11 @@ describe('the La Croix cans on my desk', () => {
 ```
 
 > Note: `.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
+
+If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the `expect` function. For example, use `equals` method of `Buffer` class to assert whether or not buffers contain the same content:
+
+- rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
+- rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
 
 ### `.toHaveLength(number)`
 
