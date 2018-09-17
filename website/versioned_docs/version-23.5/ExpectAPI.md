@@ -492,6 +492,7 @@ Although the `.toBe` matcher **checks** shallow equality, it **reports** a deep 
 
 - rewrite `expect(received).toBe(expected)` as `expect(Object.is(received, expected)).toBe(true)`
 - rewrite `expect(received).not.toBe(expected)` as `expect(Object.is(received, expected)).toBe(false)`
+
 ### `.toHaveBeenCalled()`
 
 Also under the alias: `.toBeCalled()`
