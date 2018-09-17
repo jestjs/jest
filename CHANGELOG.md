@@ -1,5 +1,9 @@
 ## master
 
+### Features
+
+- `[pretty-format]` Option to not escape strings in diff messages ([#5661](https://github.com/facebook/jest/pull/5661))
+
 ### Fixes
 
 - `[jest-haste-map]` [**BREAKING**] Replaced internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
