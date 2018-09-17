@@ -8,7 +8,6 @@
 
 'use strict';
 
-const path = require('path');
 const vm = require('vm');
 
 describe('FakeTimers', () => {
@@ -21,11 +20,8 @@ describe('FakeTimers', () => {
     const global = vm.runInNewContext('this');
     moduleMocker = new mock.ModuleMocker(global);
 
-    const configTransform = [
-      ['*', path.join('babel-jest', 'build', 'index.js')],
-    ];
     config = {
-      transform: configTransform,
+      compileAsyncToGenerator: true,
     };
 
     timerConfig = {

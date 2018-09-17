@@ -8,5 +8,8 @@
   },
   "scripts": {
     "test": "jest"
+  },
+  "jest": {
+    "compileAsyncToGenerator": true
   }
 }
