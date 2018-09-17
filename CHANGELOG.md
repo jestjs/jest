@@ -4,6 +4,7 @@
 
 * `[jest-matcher-utils]` Add `isNot` option to `matcherHint` function
   ([#5512](https://github.com/facebook/jest/pull/5512))
+- `[pretty-format]` Option to not escape strings in diff messages ((#5661)[https://github.com/facebook/jest/pull/5661])
 
 ### Fixes
 
