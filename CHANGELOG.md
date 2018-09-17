@@ -1,6 +1,7 @@
 ## master
 
 ### Features
+
 - `[pretty-format]` Option to not escape strings in diff messages ([#5661](https://github.com/facebook/jest/pull/5661))
 
 ### Fixes
