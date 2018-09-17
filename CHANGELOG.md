@@ -12,9 +12,6 @@
 ### Chore & Maintenance
 
 - `[docs]` Fix babel-core installation instructions ([#6745](https://github.com/facebook/jest/pull/6745))
-
-### Chore & Maintenance
-
 - `[docs]` Explain how to rewrite assertions to avoid large irrelevant diff ([#6971](https://github.com/facebook/jest/pull/6971))
 
 ## 23.6.0
