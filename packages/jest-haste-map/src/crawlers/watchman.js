@@ -169,16 +169,27 @@ module.exports = async function watchmanCrawl(
           typeof fileData.mtime_ms === 'number'
             ? fileData.mtime_ms
             : fileData.mtime_ms.toNumber();
+        let sha1hex = fileData['content.sha1hex'];
+        if (typeof sha1hex !== 'string' || sha1hex.length !== 40) {
+          sha1hex = null;
+        }
+
         const existingFileData = data.files.get(name);
         if (existingFileData && existingFileData[H.MTIME] === mtime) {
           files.set(name, existingFileData);
+        } else if (
+          existingFileData &&
+          sha1hex &&
+          existingFileData[H.SHA1] === sha1hex
+        ) {
+          files.set(name, [
+            existingFileData[0],
+            mtime,
+            existingFileData[2],
+            existingFileData[3],
+            existingFileData[4],
+          ]);
         } else {
-          let sha1hex = fileData['content.sha1hex'];
-
-          if (typeof sha1hex !== 'string' || sha1hex.length !== 40) {
-            sha1hex = null;
-          }
-
           // See ../constants.js
           files.set(name, ['', mtime, 0, [], sha1hex]);
         }
