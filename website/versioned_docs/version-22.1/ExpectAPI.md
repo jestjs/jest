@@ -366,7 +366,7 @@ test('rejects to octopus', async () => {
 
 ### `.toBe(value)`
 
-Use `.toBe` to compare primitive values or to check identity of object instances (also known as "shallow" equality).
+Use `.toBe` to compare primitive values or to check referential identity of object instances.
 
 For example, this code will validate some properties of the `can` object:
 
@@ -389,7 +389,7 @@ describe('the can', () => {
 
 Don't use `.toBe` with floating-point numbers. For example, due to rounding, in JavaScript `0.2 + 0.1` is not strictly equal to `0.3`. If you have floating point numbers, try `.toBeCloseTo` instead.
 
-Although the `.toBe` matcher **checks** shallow equality, it **reports** a deep comparison of values if the assertion fails. If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the `expect` function. For example, to assert whether or not elements are the same instance:
+Although the `.toBe` matcher **checks** referential identity, it **reports** a deep comparison of values if the assertion fails. If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the `expect` function. For example, to assert whether or not elements are the same instance:
 
 - rewrite `expect(received).toBe(expected)` as `expect(Object.is(received, expected)).toBe(true)`
 - rewrite `expect(received).not.toBe(expected)` as `expect(Object.is(received, expected)).toBe(false)`

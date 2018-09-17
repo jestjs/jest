@@ -13,6 +13,7 @@
 
 - `[docs]` Fix babel-core installation instructions ([#6745](https://github.com/facebook/jest/pull/6745))
 - `[docs]` Explain how to rewrite assertions to avoid large irrelevant diff ([#6971](https://github.com/facebook/jest/pull/6971))
+- `[docs]` Replace shallow equality with referential identity in `ExpectAPI.md` ([#6991](https://github.com/facebook/jest/pull/6991))
 
 ## 23.6.0
 
