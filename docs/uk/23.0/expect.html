@@ -380,7 +380,7 @@ expect.addSnapshotSerializer(serializer);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobevalue"></a><a href="#tobevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBe(value)</code></h3>
-<p><code>toBe</code> just checks that a value is what you expect. It uses <code>Object.is</code> to check exact equality.</p>
+<p>Use <code>.toBe</code> to compare primitive values or to check identity of object instances (also known as &quot;shallow&quot; equality). It calls <code>Object.is</code> to compare values, which is even better for testing than <code>===</code> strict equality operator.</p>
 <p>Наприклад, наступний код буде валідувати деякі властивості об’єкту <code>can</code>:</p>
 <pre><code class="hljs css languages- js"><span class="hljs-keyword">const</span> can = {
   <span class="hljs-attr">name</span>: <span class="hljs-string">'pamplemousse'</span>,
@@ -397,7 +397,11 @@ describe(<span class="hljs-string">'the can'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>Не використовуйте <code>toBe</code> для чисел з плаваючою комою. Наприклад, через округлення в JavaScript, <code>0.2 + 0.1</code> не дорівнює <code>0.3</code>. Якщо вам потрібно перевіряти числа з плаваючою комою, використовуйте <code>.toBeCloseTo</code>.</p>
+<p>Don't use <code>.toBe</code> with floating-point numbers. Наприклад, через округлення в JavaScript, <code>0.2 + 0.1</code> не дорівнює <code>0.3</code>. Якщо вам потрібно перевіряти числа з плаваючою комою, використовуйте <code>.toBeCloseTo</code>. Although the <code>.toBe</code> matcher <strong>checks</strong> shallow equality, it <strong>reports</strong> a deep comparison of values if the assertion fails. If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the <code>expect</code> function. For example, to assert whether or not elements are the same instance:</p>
+<ul>
+<li>rewrite <code>expect(received).toBe(expected)</code> as <code>expect(Object.is(received, expected)).toBe(true)</code></li>
+<li>rewrite <code>expect(received).not.toBe(expected)</code> as <code>expect(Object.is(received, expected)).toBe(false)</code></li>
+</ul>
 <h3><a class="anchor" aria-hidden="true" id="tohavebeencalled"></a><a href="#tohavebeencalled" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveBeenCalled()</code></h3>
 <p>Також має псевдонім <code>.toBeCalled()</code></p>
 <p>Використовуйте <code>.toHaveBeenCalled</code>, щоб переконатися, що мок функція була викликана.</p>
@@ -641,7 +645,8 @@ test(<span class="hljs-string">'bloop returns null'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="toequalvalue"></a><a href="#toequalvalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toEqual(value)</code></h3>
-<p>Використовуйте <code>.toEqual</code>, коли ви хочете перевірити, що два об’єкти мають однакове значення. Цей матчер рекурсивно порівнує всі поля об’єктів, замість перевірки їх рівності. Така перевірка також відома, як глибоке порівняння. Наприклад, <code>toEqual</code> і <code>toBe</code> поводяться по-різному в наступному наборі тестів, тому всі тести проходять успішно:</p>
+<p>Use <code>.toEqual</code> to compare recursively all properties of object instances (also known as &quot;deep&quot; equality). It calls <code>Object.is</code> to compare primitive values, which is even better for testing than <code>===</code> strict equality operator.</p>
+<p>For example, <code>.toEqual</code> and <code>.toBe</code> behave differently in this test suite, so all the tests pass:</p>
 <pre><code class="hljs css languages- js"><span class="hljs-keyword">const</span> can1 = {
   <span class="hljs-attr">flavor</span>: <span class="hljs-string">'grapefruit'</span>,
   <span class="hljs-attr">ounces</span>: <span class="hljs-number">12</span>,
@@ -661,8 +666,12 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
 });
 </code></pre>
 <blockquote>
-<p>Примітка: <code>.toEqual</code> не виконує порівняння на <em>глибоку рівність</em> для двох об’єктів помилок. Порівнюються лише їх властивості <code>message</code>. Рекомендується використовувати матчер <code>.toThrow</code> для тестування об’єктів помилок.</p>
+<p>Примітка: <code>.toEqual</code> не виконує порівняння на <em>глибоку рівність</em> для двох об’єктів помилок. Порівнюються лише їх властивості <code>message</code>. Рекомендується використовувати матчер <code>.toThrow</code> для тестування об’єктів помилок. If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the <code>expect</code> function. For example, use <code>equals</code> method of <code>Buffer</code> class to assert whether or not buffers contain the same content:</p>
 </blockquote>
+<ul>
+<li>rewrite <code>expect(received).toEqual(expected)</code> as <code>expect(received.equals(expected)).toBe(true)</code></li>
+<li>rewrite <code>expect(received).not.toEqual(expected)</code> as <code>expect(received.equals(expected)).toBe(false)</code></li>
+</ul>
 <h3><a class="anchor" aria-hidden="true" id="tohavelengthnumber"></a><a href="#tohavelengthnumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveLength(number)</code></h3>
 <p>Використовуйте <code>.toHaveLength</code>, щоб перевірити, що об’єкт має властивість <code>.length</code> і вона дорівнює певному числовому значенню.</p>
 <p>Це особливо корисно для перевірки розміру масивів або довжини рядків.</p>

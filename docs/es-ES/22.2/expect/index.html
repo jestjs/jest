@@ -485,7 +485,8 @@ test(<span class="hljs-string">'bloop regresa null'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="toequalvalue"></a><a href="#toequalvalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toEqual(value)</code></h3>
-<p>Utilice <code>.toEqual</code> cuando se desee verificar que dos objetos tienen el mismo valor. Este método verifica la igualdad de todos los campos, en lugar de verificar la identidad del objeto - a esto se le conoce también como &quot;igualdad profunda&quot;. Por ejemplo, <code>toEqual</code> y <code>toBe</code> se comportan diferentemente en esta serie de tests, así que todos los tests pasan:</p>
+<p>Use <code>.toEqual</code> to compare recursively all properties of object instances (also known as &quot;deep&quot; equality).</p>
+<p>For example, <code>.toEqual</code> and <code>.toBe</code> behave differently in this test suite, so all the tests pass:</p>
 <pre><code class="hljs css languages- js"><span class="hljs-keyword">const</span> lata1 = {
   <span class="hljs-attr">sabor</span>: <span class="hljs-string">'toronja'</span>,
   <span class="hljs-attr">onzas</span>: <span class="hljs-number">12</span>,
@@ -507,6 +508,11 @@ describe(<span class="hljs-string">'las latas de La Croix en mi escritorio'</spa
 <blockquote>
 <p>Nota: <code>.toEqual</code> no realizara una verificación de <em>igualdad profunda</em> para dos errores. Sólo la propiedad <code>message</code> de un error se verifica para comparar igualdad. Se recomienda utilizar el método <code>.toThrow</code> para probar errores.</p>
 </blockquote>
+<p>If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the <code>expect</code> function. For example, use <code>equals</code> method of <code>Buffer</code> class to assert whether or not buffers contain the same content:</p>
+<ul>
+<li>rewrite <code>expect(received).toEqual(expected)</code> as <code>expect(received.equals(expected)).toBe(true)</code></li>
+<li>rewrite <code>expect(received).not.toEqual(expected)</code> as <code>expect(received.equals(expected)).toBe(false)</code></li>
+</ul>
 <h3><a class="anchor" aria-hidden="true" id="tohavelengthnumber"></a><a href="#tohavelengthnumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveLength(number)</code></h3>
 <p>Utilice <code>.toHaveLength</code> para verificar que un objeto tenga longitud de <code>.length</code> y tenga cierto valor numérico.</p>
 <p>Es especialmente útil para verificar el tamaño de cadenas o arreglos.</p>
