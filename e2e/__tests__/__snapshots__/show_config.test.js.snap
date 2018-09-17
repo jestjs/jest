@@ -9,6 +9,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"cache\\": false,
       \\"cacheDirectory\\": \\"/tmp/jest\\",
       \\"clearMocks\\": false,
+      \\"compileAsyncToGenerator\\": false,
       \\"coveragePathIgnorePatterns\\": [
         \\"/node_modules/\\"
       ],
