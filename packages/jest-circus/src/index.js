@@ -121,6 +121,31 @@ test.only = (testName: TestName, fn: TestFn, timeout?: number) => {
   });
 };
 
+test.todo = (testName: TestName, ...rest: Array<mixed>) => {
+  if (rest.length > 0 || testName === undefined) {
+    throw new Error('Todo must be called with only a description.');
+  }
+
+  if (typeof testName !== 'string') {
+    throw new Error(
+      `Invalid first argument: ${testName}. Todo must be called with a string.`,
+    );
+  }
+  const asyncError = new Error();
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(asyncError, test);
+  }
+
+  return dispatch({
+    asyncError,
+    fn: () => {},
+    mode: 'todo',
+    name: 'add_test',
+    testName,
+    timeout: undefined,
+  });
+};
+
 test.each = bindEach(test);
 test.only.each = bindEach(test.only);
 test.skip.each = bindEach(test.skip);
