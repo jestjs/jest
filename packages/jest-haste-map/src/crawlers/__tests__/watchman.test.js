@@ -223,6 +223,8 @@ describe('watchman watch', () => {
   });
 
   test('resets the file object when watchman is restarted', () => {
+    const mockTomatoSha1 = '321f6b7e8bf7f29aab89c5e41a555b1b0baa41a9';
+
     mockResponse = {
       'list-capabilities': {
         [undefined]: {
@@ -244,8 +246,9 @@ describe('watchman watch', () => {
               name: 'fruits/banana.js',
             },
             {
+              'content.sha1hex': mockTomatoSha1,
               exists: true,
-              mtime_ms: {toNumber: () => 31},
+              mtime_ms: {toNumber: () => 76},
               name: 'fruits/tomato.js',
             },
           ],
@@ -256,8 +259,10 @@ describe('watchman watch', () => {
       'watch-project': WATCH_PROJECT_MOCK,
     };
 
-    const mockMetadata = ['Banana', 41, 1, ['Raspberry'], null];
-    mockFiles.set(BANANA, mockMetadata);
+    const mockBananaMetadata = ['Banana', 41, 1, ['Raspberry'], null];
+    mockFiles.set(BANANA, mockBananaMetadata);
+    const mockTomatoMetadata = ['Tomato', 31, 1, [], mockTomatoSha1];
+    mockFiles.set(TOMATO, mockTomatoMetadata);
 
     const clocks = createMap({
       [ROOT_MOCK]: 'c:fake-clock:1',
@@ -284,17 +289,18 @@ describe('watchman watch', () => {
       // /fruits/strawberry.js was removed from the file list.
       expect(data.files).toEqual(
         createMap({
-          [BANANA]: mockMetadata,
+          [BANANA]: mockBananaMetadata,
           [KIWI]: ['', 42, 0, [], null],
-          [TOMATO]: mockFiles.get(TOMATO),
+          [TOMATO]: ['Tomato', 76, 1, [], mockTomatoSha1],
         }),
       );
 
       // Even though the file list was reset, old file objects are still reused
-      // if no changes have been made.
-      expect(data.files.get(BANANA)).toBe(mockMetadata);
+      // if no changes have been made
+      expect(data.files.get(BANANA)).toBe(mockBananaMetadata);
 
-      expect(data.files.get(TOMATO)).toBe(mockFiles.get(TOMATO));
+      // Old file objects are not reused if they have a different mtime
+      expect(data.files.get(TOMATO)).not.toBe(mockTomatoMetadata);
     });
   });
 
