@@ -94,6 +94,10 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 </blockquote>
 <p>yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime</p>
 <pre><code class="hljs">
+You will need to use <span class="hljs-code">`babel.config.js`</span> in order to transpile <span class="hljs-code">`node_modules`</span>. See https://babeljs.io/docs/en/next/config-files for more information.
+
+You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/master/examples/babel-7
+
 <span class="hljs-emphasis">*Примітка: безпосереднє встановлення `regenerator-runtime` не обов’язкове, якщо ви використовуєте `npm` 3 або 4 або Yarn*</span>
 
 Не забудьте додати файл [<span class="hljs-string"> `.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) в кореневу папку вашого проекту. Наприклад, якщо ви використовуєте ES6 і [<span class="hljs-string"> React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) з пресетами [<span class="hljs-string"> `babel-preset-env`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-env/</span>) і [<span class="hljs-string"> `babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>):

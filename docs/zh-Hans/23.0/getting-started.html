@@ -90,6 +90,10 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 </blockquote>
 <p>yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime</p>
 <pre><code class="hljs">
+You will need to use <span class="hljs-code">`babel.config.js`</span> in order to transpile <span class="hljs-code">`node_modules`</span>. See https://babeljs.io/docs/en/next/config-files for more information.
+
+You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/master/examples/babel-7
+
 <span class="hljs-emphasis">*注意：如果你使用了 `npm` 3 或 4，或者 Yarn，就不用再显式的安装 `regenerator-runtime` 这个包了。*</span>
 
 别忘了在你的项目根文件夹下添加一个 [<span class="hljs-string">`.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) 配置文件。 For example, if you are using ES6 and [<span class="hljs-string">React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) with the [<span class="hljs-string">`babel-preset-env`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-env/</span>) and [<span class="hljs-string">`babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>) presets:

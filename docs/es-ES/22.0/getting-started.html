@@ -91,6 +91,10 @@ test(<span class="hljs-string">'sumar 1 + 2 es igual a 3'</span>, () =&gt; {
 </blockquote>
 <p>npm install --save-dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime</p>
 <pre><code class="hljs">
+You will need to use <span class="hljs-code">`babel.config.js`</span> in order to transpile <span class="hljs-code">`node_modules`</span>. See https://babeljs.io/docs/en/next/config-files for more information.
+
+You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/master/examples/babel-7
+
 <span class="hljs-emphasis">*Nota: No es necesario instalar explicitamente `regenerator-runtime` si usas `npm` 3 o 4 o Yarn*</span>
 
 No olvides agregar un archivo [<span class="hljs-string">`.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) en el directorio raíz de tu proyecto. Por ejemplo, si estas usando ES6 y [<span class="hljs-string">React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) con los presets de [<span class="hljs-string">`babel-preset-es2015`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-es2015/</span>) y [<span class="hljs-string">`babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>):
