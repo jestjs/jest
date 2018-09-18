@@ -323,7 +323,7 @@ Default: `undefined`
 
 This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
-Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at list one test from this project.
+Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project.
 
 ### `globalTeardown` [string]
 
@@ -331,7 +331,7 @@ Default: `undefined`
 
 This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
-Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at list one test from this project.
+Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project.
 
 ### `moduleDirectories` [array<string>]
 
