@@ -1,0 +1,55 @@
+/**
+ * Copyright (c) 2018-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
+
+'use strict';
+
+const path = require('path');
+const runJest = require('../runJest');
+const {extractSummary} = require('../Utils');
+const dir = path.resolve(__dirname, '../test-todo');
+
+test('works with all statuses', () => {
+  const result = runJest(dir, ['statuses.test.js']);
+  expect(result.status).toBe(1);
+  const output = extractSummary(result.stderr)
+    .rest.split('\n')
+    .map(line => line.trimRight())
+    .join('\n');
+  expect(output).toMatchSnapshot();
+});
+
+test('shows error messages when called with no arguments', () => {
+  const result = runJest(dir, ['todo_no_args.test.js']);
+  expect(result.status).toBe(1);
+  const output = extractSummary(result.stderr)
+    .rest.split('\n')
+    .map(line => line.trimRight())
+    .join('\n');
+  expect(output).toMatchSnapshot();
+});
+
+test('shows error messages when called with multiple arguments', () => {
+  const result = runJest(dir, ['todo_multiple_args.test.js']);
+  expect(result.status).toBe(1);
+  const output = extractSummary(result.stderr)
+    .rest.split('\n')
+    .map(line => line.trimRight())
+    .join('\n');
+  expect(output).toMatchSnapshot();
+});
+
+test('shows error messages when called with invalid argument', () => {
+  const result = runJest(dir, ['todo_non_string.test.js']);
+  expect(result.status).toBe(1);
+  const output = extractSummary(result.stderr)
+    .rest.split('\n')
+    .map(line => line.trimRight())
+    .join('\n');
+  expect(output).toMatchSnapshot();
+});
