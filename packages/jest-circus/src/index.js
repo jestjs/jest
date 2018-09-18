@@ -67,10 +67,7 @@ const test = (testName: TestName, fn: TestFn, timeout?: number) => {
       `Invalid first argument, ${testName}. It must be a string.`,
     );
   }
-  if (fn === undefined) {
-    throw new Error('Missing second argument. It must be a callback function.');
-  }
-  if (typeof fn !== 'function') {
+  if (fn !== undefined && typeof fn !== 'function') {
     throw new Error(
       `Invalid second argument, ${fn}. It must be a callback function.`,
     );
@@ -84,6 +81,7 @@ const test = (testName: TestName, fn: TestFn, timeout?: number) => {
   return dispatch({
     asyncError,
     fn,
+    mode: fn ? undefined : 'skip',
     name: 'add_test',
     testName,
     timeout,

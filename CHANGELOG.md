@@ -114,6 +114,8 @@
 
 ### Features
 
+- `[jest-jasmine2]` Updated error throwing with `it`/ `test` to re-allow the valid single string argument for pending tests.
+- `[jest-circus]` Updated error throwing with `it`/ `test` to re-allow the valid single string argument for pending tests
 - `[jest-haste-map]` Add `computeDependencies` flag to avoid opening files if not needed ([#6667](https://github.com/facebook/jest/pull/6667))
 - `[jest-runtime]` Support `require.resolve.paths` ([#6471](https://github.com/facebook/jest/pull/6471))
 - `[jest-runtime]` Support `paths` option for `require.resolve` ([#6471](https://github.com/facebook/jest/pull/6471))
