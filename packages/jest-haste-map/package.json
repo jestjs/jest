@@ -19,6 +19,7 @@
     "jest-util": "^24.9.0",
     "jest-worker": "^24.9.0",
     "micromatch": "^3.1.10",
+    "realpath-native": "^1.0.0",
     "sane": "^4.0.3",
     "walker": "^1.0.7"
   },

@@ -165,6 +165,7 @@ export = function nodeCrawl(
         removedFiles.delete(relativeFilePath);
       });
       data.files = files;
+      data.links = new Map(); // TODO: support symlinks
 
       resolve({
         hasteMap: data,
