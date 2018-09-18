@@ -195,7 +195,10 @@ async function runTestInternal(
     }
 
     const testCount =
-      result.numPassingTests + result.numFailingTests + result.numPendingTests;
+      result.numPassingTests +
+      result.numFailingTests +
+      result.numPendingTests +
+      result.numTodoTests;
 
     result.perfStats = {end: Date.now(), start};
     result.testFilePath = path;

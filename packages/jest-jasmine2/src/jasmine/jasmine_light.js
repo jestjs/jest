@@ -88,6 +88,10 @@ exports.interface = function(jasmine: Jasmine, env: any) {
       return env.xit.apply(env, arguments);
     },
 
+    tit(description: string) {
+      return env.tit(description);
+    },
+
     fit() {
       return env.fit.apply(env, arguments);
     },

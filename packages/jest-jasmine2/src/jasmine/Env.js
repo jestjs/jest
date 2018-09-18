@@ -328,6 +328,9 @@ export default function(j$) {
       if (currentDeclarationSuite.markedPending) {
         suite.pend();
       }
+      if (currentDeclarationSuite.markedTodo) {
+        suite.todo();
+      }
       addSpecsToSuite(suite, specDefinitions);
       return suite;
     };
@@ -486,6 +489,22 @@ export default function(j$) {
     this.xit = function() {
       const spec = this.it.apply(this, arguments);
       spec.pend('Temporarily disabled with xit');
+      return spec;
+    };
+
+    this.todo = function() {
+      if (arguments.length !== 1) {
+        throw new Error('Todo must be called with only a description.');
+      }
+      const description = arguments[0];
+      if (typeof description !== 'string') {
+        throw new Error(
+          `Invalid first argument: ${description}. Todo must be called with a string.`,
+        );
+      }
+      const spec = specFactory(description, () => {}, currentDeclarationSuite);
+      spec.todo();
+      currentDeclarationSuite.addChild(spec);
       return spec;
     };
 

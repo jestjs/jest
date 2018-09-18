@@ -97,6 +97,8 @@ export default class VerboseReporter extends DefaultReporter {
       return chalk.red(ICONS.failed);
     } else if (status === 'pending') {
       return chalk.yellow(ICONS.pending);
+    } else if (status === 'todo') {
+      return chalk.magenta(ICONS.todo);
     } else {
       return chalk.green(ICONS.success);
     }
