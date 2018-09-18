@@ -4,7 +4,7 @@ exports[`shows error messages when called with invalid argument 1`] = `
 "FAIL __tests__/todo_non_string.test.js
   ● Test suite failed to run
 
-    Invalid first argument: () => {}. Todo must be called with a string.
+    Todo must be called with only a description.
 
       6 |  */
       7 |
@@ -12,7 +12,7 @@ exports[`shows error messages when called with invalid argument 1`] = `
         |    ^
       9 |
 
-      at packages/jest-jasmine2/build/jasmine/Env.js:480:15
+      at packages/jest-jasmine2/build/jasmine/Env.js:477:15
       at __tests__/todo_non_string.test.js:8:4
 
 "
@@ -30,7 +30,7 @@ exports[`shows error messages when called with multiple arguments 1`] = `
         |    ^
       9 |
 
-      at packages/jest-jasmine2/build/jasmine/Env.js:476:15
+      at packages/jest-jasmine2/build/jasmine/Env.js:477:15
       at __tests__/todo_multiple_args.test.js:8:4
 
 "
@@ -48,7 +48,7 @@ exports[`shows error messages when called with no arguments 1`] = `
         |    ^
       9 |
 
-      at packages/jest-jasmine2/build/jasmine/Env.js:476:15
+      at packages/jest-jasmine2/build/jasmine/Env.js:477:15
       at __tests__/todo_no_args.test.js:8:4
 
 "
@@ -58,8 +58,8 @@ exports[`works with all statuses 1`] = `
 "FAIL __tests__/statuses.test.js
   ✓ passes
   ✕ fails
-  ✎ todo
   ○ skipped 1 test
+  ✎ todo 1 test
 
   ● fails
 

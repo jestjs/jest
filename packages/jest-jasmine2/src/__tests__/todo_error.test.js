@@ -22,8 +22,6 @@ describe('test/it.todo error throwing', () => {
   it('it throws error when given none string description', () => {
     expect(() => {
       it.todo(() => {});
-    }).toThrowError(
-      'Invalid first argument: () => {}. Todo must be called with a string.',
-    );
+    }).toThrowError('Todo must be called with only a description.');
   });
 });

@@ -493,14 +493,9 @@ export default function(j$) {
     };
 
     this.todo = function() {
-      if (arguments.length !== 1) {
-        throw new Error('Todo must be called with only a description.');
-      }
       const description = arguments[0];
-      if (typeof description !== 'string') {
-        throw new Error(
-          `Invalid first argument: ${description}. Todo must be called with a string.`,
-        );
+      if (arguments.length !== 1 || typeof description !== 'string') {
+        throw new Error('Todo must be called with only a description.');
       }
       const spec = specFactory(description, () => {}, currentDeclarationSuite);
       spec.todo();

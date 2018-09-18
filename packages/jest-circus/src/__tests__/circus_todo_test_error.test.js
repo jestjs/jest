@@ -37,8 +37,6 @@ describe('test/it.todo error throwing', () => {
     expect(() => {
       // $FlowFixMe: Testing runitme errors here
       circusIt.todo(() => {});
-    }).toThrowError(
-      'Invalid first argument: () => {}. Todo must be called with a string.',
-    );
+    }).toThrowError('Todo must be called with only a description.');
   });
 });
