@@ -153,6 +153,7 @@ module.exports = function nodeCrawl(
         }
       });
       data.files = files;
+      data.links = new Map();
       resolve(data);
     };
 

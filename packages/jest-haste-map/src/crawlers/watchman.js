@@ -19,6 +19,21 @@ import H from '../constants';
 const watchmanURL =
   'https://facebook.github.io/watchman/docs/troubleshooting.html';
 
+// Matches symlinks in "node_modules" directories.
+const nodeModules = ['**/node_modules/*', '**/node_modules/@*/*'];
+const linkExpression = [
+  'allof',
+  ['type', 'l'],
+  ['anyof'].concat(
+    nodeModules.map(glob => [
+      'match',
+      glob,
+      'wholename',
+      {includedotfiles: true},
+    ]),
+  ),
+];
+
 function WatchmanError(error: Error): Error {
   error.message =
     `Watchman error: ${error.message.trim()}. Make sure watchman ` +
@@ -29,9 +44,9 @@ function WatchmanError(error: Error): Error {
 module.exports = async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
-  const fields = ['name', 'exists', 'mtime_ms'];
+  const fields = ['name', 'type', 'exists', 'mtime_ms'];
   const {data, extensions, ignore, rootDir, roots} = options;
-  const defaultWatchExpression = [
+  const fileExpression = [
     'allof',
     ['type', 'f'],
     ['anyof'].concat(extensions.map(extension => ['suffix', extension])),
@@ -93,21 +108,24 @@ module.exports = async function watchmanCrawl(
     await Promise.all(
       Array.from(rootProjectDirMappings).map(
         async ([root, directoryFilters]) => {
-          const expression = Array.from(defaultWatchExpression);
+          let expression = ['anyof', fileExpression, linkExpression];
           const glob = [];
 
           if (directoryFilters.length > 0) {
-            expression.push([
-              'anyof',
-              ...directoryFilters.map(dir => ['dirname', dir]),
-            ]);
+            expression = [
+              'allof',
+              ['anyof'].concat(directoryFilters.map(dir => ['dirname', dir])),
+              expression,
+            ];
 
             for (const directory of directoryFilters) {
+              glob.push(...nodeModules.map(glob => directory + '/' + glob));
               for (const extension of extensions) {
                 glob.push(`${directory}/**/*.${extension}`);
               }
             }
           } else {
+            glob.push(...nodeModules);
             for (const extension of extensions) {
               glob.push(`**/*.${extension}`);
             }
@@ -118,7 +136,7 @@ module.exports = async function watchmanCrawl(
             ? // Use the `since` generator if we have a clock available
               {expression, fields, since: clocks.get(relativeRoot)}
             : // Otherwise use the `glob` filter
-              {expression, fields, glob};
+              {expression, fields, glob, glob_includedotfiles: true};
 
           const response = await cmd('query', root, query);
 
@@ -139,6 +157,7 @@ module.exports = async function watchmanCrawl(
   }
 
   let files = data.files;
+  let links = data.links;
   let watchmanFiles;
   try {
     const watchmanRoots = await getWatchmanRoots(roots);
@@ -148,6 +167,7 @@ module.exports = async function watchmanCrawl(
     // files.
     if (watchmanFileResults.isFresh) {
       files = new Map();
+      links = new Map();
     }
 
     watchmanFiles = watchmanFileResults.files;
@@ -166,29 +186,37 @@ module.exports = async function watchmanCrawl(
 
     for (const fileData of response.files) {
       const filePath = fsRoot + path.sep + normalizePathSep(fileData.name);
-      const relativeFilePath = fastPath.relative(rootDir, filePath);
+      const fileName = fastPath.relative(rootDir, filePath);
 
+      const cache: Map<string, any> = fileData.type === 'f' ? files : links;
       if (!fileData.exists) {
-        files.delete(relativeFilePath);
+        cache.delete(filePath);
       } else if (!ignore(filePath)) {
         const mtime =
           typeof fileData.mtime_ms === 'number'
             ? fileData.mtime_ms
             : fileData.mtime_ms.toNumber();
+
         let sha1hex = fileData['content.sha1hex'];
         if (typeof sha1hex !== 'string' || sha1hex.length !== 40) {
           sha1hex = null;
         }
 
-        const existingFileData = data.files.get(relativeFilePath);
+        const existingFileData: any =
+          fileData.type === 'f'
+            ? data.files.get(fileName)
+            : data.links.get(fileName);
+
         if (existingFileData && existingFileData[H.MTIME] === mtime) {
-          files.set(relativeFilePath, existingFileData);
+          cache.set(fileName, existingFileData);
+        } else if (fileData.type !== 'f') {
+          cache.set(fileName, [undefined, mtime]);
         } else if (
-          existingFileData &&
           sha1hex &&
+          existingFileData &&
           existingFileData[H.SHA1] === sha1hex
         ) {
-          files.set(relativeFilePath, [
+          cache.set(fileName, [
             existingFileData[0],
             mtime,
             existingFileData[2],
@@ -196,13 +224,13 @@ module.exports = async function watchmanCrawl(
             existingFileData[4],
           ]);
         } else {
-          // See ../constants.js
-          files.set(relativeFilePath, ['', mtime, 0, [], sha1hex]);
+          cache.set(fileName, ['', mtime, 0, [], sha1hex]);
         }
       }
     }
   }
 
   data.files = files;
+  data.links = links;
   return data;
 };

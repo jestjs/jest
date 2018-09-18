@@ -305,6 +305,7 @@ class HasteMap extends EventEmitter {
           const rootDir = this._options.rootDir;
           const hasteFS = new HasteFS({
             files: hasteMap.files,
+            links: hasteMap.links,
             rootDir,
           });
           const moduleMap = new HasteModuleMap({
@@ -760,6 +761,7 @@ class HasteMap extends EventEmitter {
           eventsQueue,
           hasteFS: new HasteFS({
             files: hasteMap.files,
+            links: hasteMap.links,
             rootDir,
           }),
           moduleMap: new HasteModuleMap({
@@ -811,6 +813,7 @@ class HasteMap extends EventEmitter {
               clocks: new Map(hasteMap.clocks),
               duplicates: new Map(hasteMap.duplicates),
               files: new Map(hasteMap.files),
+              links: new Map(hasteMap.links),
               map: new Map(hasteMap.map),
               mocks: new Map(hasteMap.mocks),
             };
@@ -1006,6 +1009,7 @@ class HasteMap extends EventEmitter {
       clocks: new Map(),
       duplicates: new Map(),
       files: new Map(),
+      links: new Map(),
       map: new Map(),
       mocks: new Map(),
     };
