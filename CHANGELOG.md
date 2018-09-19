@@ -19,6 +19,7 @@
 - `[docs]` Replace shallow equality with referential identity in `ExpectAPI.md` ([#6991](https://github.com/facebook/jest/pull/6991))
 - `[jest-changed-files]` Refactor to use `execa` over `child_process` ([#6987](https://github.com/facebook/jest/pull/6987))
 - `[*]` Bump dated dependencies ([#6978](https://github.com/facebook/jest/pull/6978))
+- `[scripts]` Don’t make empty subfolders for ignored files in build folder ([#7001](https://github.com/facebook/jest/pull/7001))
 
 ## 23.6.0
 
