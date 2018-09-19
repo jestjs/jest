@@ -17,39 +17,27 @@ const dir = path.resolve(__dirname, '../test-todo');
 test('works with all statuses', () => {
   const result = runJest(dir, ['statuses.test.js']);
   expect(result.status).toBe(1);
-  const output = extractSummary(result.stderr)
-    .rest.split('\n')
-    .map(line => line.trimRight())
-    .join('\n');
-  expect(output).toMatchSnapshot();
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
 });
 
 test('shows error messages when called with no arguments', () => {
   const result = runJest(dir, ['todo_no_args.test.js']);
   expect(result.status).toBe(1);
-  const output = extractSummary(result.stderr)
-    .rest.split('\n')
-    .map(line => line.trimRight())
-    .join('\n');
-  expect(output).toMatchSnapshot();
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
 });
 
 test('shows error messages when called with multiple arguments', () => {
   const result = runJest(dir, ['todo_multiple_args.test.js']);
   expect(result.status).toBe(1);
-  const output = extractSummary(result.stderr)
-    .rest.split('\n')
-    .map(line => line.trimRight())
-    .join('\n');
-  expect(output).toMatchSnapshot();
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
 });
 
 test('shows error messages when called with invalid argument', () => {
   const result = runJest(dir, ['todo_non_string.test.js']);
   expect(result.status).toBe(1);
-  const output = extractSummary(result.stderr)
-    .rest.split('\n')
-    .map(line => line.trimRight())
-    .join('\n');
-  expect(output).toMatchSnapshot();
+  const {rest} = extractSummary(result.stderr);
+  expect(rest).toMatchSnapshot();
 });
