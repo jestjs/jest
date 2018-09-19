@@ -7,9 +7,9 @@
 
 /**
  * script to build (transpile) files.
- * By default it transpiles all files for all packages and writes them
+ * By default it transpiles js files for all packages and writes them
  * into `build/` directory.
- * Non-js or files matching IGNORE_PATTERN will be copied without transpiling.
+ * Non-js files not matching IGNORE_PATTERN will be copied without transpiling.
  *
  * Example:
  *  node ./scripts/build.js
@@ -124,7 +124,6 @@ function buildBrowserPackage(p) {
 function buildFile(file, silent) {
   const destPath = getBuildPath(file, BUILD_DIR);
 
-  mkdirp.sync(path.dirname(destPath));
   if (micromatch.isMatch(file, IGNORE_PATTERN)) {
     silent ||
       process.stdout.write(
@@ -132,7 +131,11 @@ function buildFile(file, silent) {
           path.relative(PACKAGES_DIR, file) +
           ' (ignore)\n'
       );
-  } else if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
+    return;
+  }
+
+  mkdirp.sync(path.dirname(destPath));
+  if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
     fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
     silent ||
       process.stdout.write(
