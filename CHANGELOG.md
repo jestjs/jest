@@ -17,6 +17,7 @@
 - `[docs]` Explain how to rewrite assertions to avoid large irrelevant diff ([#6971](https://github.com/facebook/jest/pull/6971))
 - `[examples]` add example using Babel 7 ([#6983](https://github.com/facebook/jest/pull/6983))
 - `[docs]` Replace shallow equality with referential identity in `ExpectAPI.md` ([#6991](https://github.com/facebook/jest/pull/6991))
+- `[jest-changed-files]` Refactor to use `execa` over `child_process` ([#6987](https://github.com/facebook/jest/pull/6987))
 
 ## 23.6.0
 
