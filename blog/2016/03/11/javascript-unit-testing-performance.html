@@ -6,7 +6,7 @@
 
               ga('create', 'UA-44373548-17', 'auto');
               ga('send', 'pageview');
-            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/en"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/en/versions"><h3>23.6</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/en/getting-started" target="_self">Docs</a></li><li class=""><a href="/docs/en/api" target="_self">API</a></li><li class=""><a href="/en/help" target="_self">Help</a></li><li class="siteNavGroupActive"><a href="/blog" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/ja">日本語</a></li><li><a href="/es-ES">Español</a></li><li><a href="/pt-BR">Português (Brasil)</a></li><li><a href="/ro">Română</a></li><li><a href="/ru">Русский</a></li><li><a href="/uk">Українська</a></li><li><a href="/zh-Hans">简体中文</a></li></ul></div></li><script>
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/en"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/en/versions"><h3>23.6</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/en/getting-started" target="_self">Docs</a></li><li class=""><a href="/docs/en/api" target="_self">API</a></li><li class=""><a href="/en/help" target="_self">Help</a></li><li class="siteNavGroupActive"><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/ja">日本語</a></li><li><a href="/es-ES">Español</a></li><li><a href="/pt-BR">Português (Brasil)</a></li><li><a href="/ro">Română</a></li><li><a href="/ru">Русский</a></li><li><a href="/uk">Українська</a></li><li><a href="/zh-Hans">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(event) {
@@ -33,6 +33,10 @@
               function createToggler(togglerSelector, targetSelector, className) {
                 var toggler = document.querySelector(togglerSelector);
                 var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
 
                 toggler.onclick = function(event) {
                   event.preventDefault();
@@ -62,7 +66,7 @@
 <p>Because we are running slow tests first, Jest can sometimes seem to take a long time to start up – we only print results after the first test has completed. For the future we are planning to run previously failed tests first, because getting that info to developers as quickly as possible matters the most.</p>
 <h2><a class="anchor" aria-hidden="true" id="inline-requires-and-lazy-mocking"></a><a href="#inline-requires-and-lazy-mocking" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Inline Requires and Lazy Mocking</h2>
 <p>If you have written tests using Jasmine before, they probably look like this:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-keyword">const</span> sum = <span class="hljs-built_in">require</span>(<span class="hljs-string">'sum'</span>);
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> sum = <span class="hljs-built_in">require</span>(<span class="hljs-string">'sum'</span>);
 describe(<span class="hljs-string">'sum'</span>, () =&gt; {
   it(<span class="hljs-string">'works'</span>, () =&gt; {
     expect(sum(<span class="hljs-number">5</span>, <span class="hljs-number">4</span>)).toEqual(<span class="hljs-number">9</span>);
@@ -71,7 +75,7 @@ describe(<span class="hljs-string">'sum'</span>, () =&gt; {
 </code></pre>
 <p>One special thing we do in Jest is reset the entire module registry after every single test (call to <code>it</code>) to make sure tests don't depend on each other. Before Jest, individual tests would depend on each other and internal module state often leaked between them. As engineers removed, reordered or refactored tests, some of them started to fail, making it hard for people to understand what was going on.</p>
 <p>Every single test in Jest receives a fresh new copy of all modules, including new versions of all mocked dependencies which take a lot of time to generate for each test. A side effect of this is that we had to call <code>require</code> manually before every test, like this:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-keyword">let</span> sum;
+<pre><code class="hljs css language-js"><span class="hljs-keyword">let</span> sum;
 describe(<span class="hljs-string">'sum'</span>, () =&gt; {
   beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
     sum = <span class="hljs-built_in">require</span>(<span class="hljs-string">'sum'</span>);
@@ -86,7 +90,7 @@ describe(<span class="hljs-string">'sum'</span>, () =&gt; {
 });
 </code></pre>
 <p>We built a babel transform called <a href="https://github.com/facebook/fbjs/blob/master/packages/babel-preset-fbjs/plugins/inline-requires.js">inline-requires</a> that removes top-level require statements and inlines them in code. For example, the line <code>const sum = require('sum');</code> will be removed from code, but every use of <code>sum</code> in the file will be replaced by <code>require('sum')</code>. With this transform we can write tests just like you'd expect in Jasmine and the code gets transformed into this:</p>
-<pre><code class="hljs css languages- js">describe(<span class="hljs-string">'sum'</span>, () =&gt; {
+<pre><code class="hljs css language-js">describe(<span class="hljs-string">'sum'</span>, () =&gt; {
   it(<span class="hljs-string">'works'</span>, () =&gt; {
     expect(<span class="hljs-built_in">require</span>(<span class="hljs-string">'sum'</span>)(<span class="hljs-number">5</span>, <span class="hljs-number">4</span>)).toEqual(<span class="hljs-number">9</span>);
   });

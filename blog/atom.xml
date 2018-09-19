@@ -13,9 +13,7 @@
         <link href="https://jestjs.io/blog/2018/06/27/supporting-jest-open-source.html">
         </link>
         <updated>2018-06-27T06:00:00Z</updated>
-        <summary type="html"><![CDATA[<p>Jest is maintained by a community of open source contributors and Facebook employees.</p>
-<p>Our open source contributors work on behalf of the community to create new features, fix bugs, and maintain the issue backlog. Facebook employees do the same, focu</p>
-]]></summary>
+        <summary type="html"><![CDATA[<p>Jest is maintained by a community of open source contributors and Facebook employees.</p> <p>Our open source contributors work on behalf of the community to create new features, fix bugs, and maintain the issue backlog. Facebook employees do the same, focus...</p>]]></summary>
         <author>
             <name>Rick Hanlon II</name>
             <uri>https://twitter.com/rickhanlonii</uri>
@@ -27,9 +25,7 @@
         <link href="https://jestjs.io/blog/2018/05/29/jest-23-blazing-fast-delightful-testing.html">
         </link>
         <updated>2018-05-29T06:00:00Z</updated>
-        <summary type="html"><![CDATA[<p>Today we are excited to announce Jest 23, our largest major release to date! Together with over 100 contributors, we've shipped a ton of features and bug fixes. Thank you to everyone in the community for helping make JavaScript Testing Delightful.</p>
-<p>W</p>
-]]></summary>
+        <summary type="html"><![CDATA[<p>Today we are excited to announce Jest 23, our largest major release to date! Together with over 100 contributors, we've shipped a ton of features and bug fixes. Thank you to everyone in the community for helping make JavaScript Testing Delightful.</p> <p>We ...</p>]]></summary>
         <author>
             <name>Rick Hanlon II</name>
             <uri>https://twitter.com/rickhanlonii</uri>
@@ -41,8 +37,7 @@
         <link href="https://jestjs.io/blog/2017/12/18/jest-22.html">
         </link>
         <updated>2017-12-18T06:00:00Z</updated>
-        <summary type="html"><![CDATA[<p>Today we are announcing a new major version of Jest which refines almost all parts of Jest to provide a more solid testing foundation. Together with the Jest community we made a number of changes across the board that will help you get more out of Je</p>
-]]></summary>
+        <summary type="html"><![CDATA[<p>Today we are announcing a new major version of Jest which refines almost all parts of Jest to provide a more solid testing foundation. Together with the Jest community we made a number of changes across the board that will help you get more out of Je...</p>]]></summary>
         <author>
             <name>Simen Bekkhus</name>
             <uri>https://github.com/SimenB</uri>

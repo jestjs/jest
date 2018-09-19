@@ -6,7 +6,7 @@
 
               ga('create', 'UA-44373548-17', 'auto');
               ga('send', 'pageview');
-            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ro"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ro/versions"><h3>22.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ro/22.0/getting-started" target="_self">Documentație</a></li><li class="siteNavGroupActive"><a href="/docs/ro/22.0/api" target="_self">API</a></li><li class=""><a href="/ro/help" target="_self">Ajutor</a></li><li class=""><a href="/blog" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg"/>Română</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/22.0/troubleshooting">English</a></li><li><a href="/docs/ja/22.0/troubleshooting">日本語</a></li><li><a href="/docs/es-ES/22.0/troubleshooting">Español</a></li><li><a href="/docs/pt-BR/22.0/troubleshooting">Português (Brasil)</a></li><li><a href="/docs/ru/22.0/troubleshooting">Русский</a></li><li><a href="/docs/uk/22.0/troubleshooting">Українська</a></li><li><a href="/docs/zh-Hans/22.0/troubleshooting">简体中文</a></li></ul></div></li><script>
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ro"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ro/versions"><h3>22.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ro/22.0/getting-started" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/docs/ro/22.0/api" target="_self">API</a></li><li class=""><a href="/ro/help" target="_self">Help</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Română</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/22.0/troubleshooting">English</a></li><li><a href="/docs/ja/22.0/troubleshooting">日本語</a></li><li><a href="/docs/es-ES/22.0/troubleshooting">Español</a></li><li><a href="/docs/pt-BR/22.0/troubleshooting">Português (Brasil)</a></li><li><a href="/docs/ru/22.0/troubleshooting">Русский</a></li><li><a href="/docs/uk/22.0/troubleshooting">Українська</a></li><li><a href="/docs/zh-Hans/22.0/troubleshooting">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(event) {
@@ -34,6 +34,10 @@
                 var toggler = document.querySelector(togglerSelector);
                 var target = document.querySelector(targetSelector);
 
+                if (!toggler) {
+                  return;
+                }
+
                 toggler.onclick = function(event) {
                   event.preventDefault();
 
@@ -41,7 +45,7 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/Troubleshooting.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Troubleshooting</h1></header><article><div><span><p>Uh oh, ceva a mers prost? Utilizați acest ghid pentru a rezolva probleme cu Jest.</p>
+        </script></nav></div><div class="container mainContainer docMainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/Troubleshooting.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Troubleshooting</h1></header><article><div><span><p>Uh oh, ceva a mers prost? Utilizați acest ghid pentru a rezolva probleme cu Jest.</p>
 <h2><a class="anchor" aria-hidden="true" id="testele-cad-şi-nu-ştii-de-ce"></a><a href="#testele-cad-şi-nu-ştii-de-ce" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Testele cad şi nu ştii de ce</h2>
 <p>Încercaţi să utilizaţi suportul de depanare încorporat în node.</p>
 <p>Puneţi o declaraţie <code>debugger;</code> în oricare din teste, şi apoi, în proiectul vostru, rulați:</p>
@@ -63,7 +67,7 @@ or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 </code></pre>
 <p>Apoi ataşaţi debugger-ul VS Code folosind următoarea configurare <code>launch.json</code>:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"version"</span>: <span class="hljs-string">"0.2.0"</span>,
   <span class="hljs-attr">"configurations"</span>: [
     {
@@ -76,7 +80,7 @@ node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other argume
 }
 </code></pre>
 <p>Pentru lansarea automată şi ataşarea la un proces care execută testele, utilizaţi următoarea configuraţie:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"version"</span>: <span class="hljs-string">"0.2.0"</span>,
   <span class="hljs-attr">"configurations"</span>: [
     {
@@ -95,7 +99,7 @@ node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other argume
 }
 </code></pre>
 <p>or the following for Windows:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"version"</span>: <span class="hljs-string">"0.2.0"</span>,
   <span class="hljs-attr">"configurations"</span>: [
     {
@@ -114,7 +118,7 @@ node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other argume
 }
 </code></pre>
 <p>Dacă utilizaţi pachetul de la Facebook <a href="https://github.com/facebookincubator/create-react-app"> <code>create-react-app</code></a>, puteţi depana testele Jest cu următoarea configurație:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"version"</span>: <span class="hljs-string">"0.2.0"</span>,
   <span class="hljs-attr">"configurations"</span>: [
     {
@@ -154,14 +158,14 @@ node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other argume
 <p>While Jest is most of the time extremely fast on modern multi-core computers with fast SSDs, it may be slow on certain setups as our users <a href="https://github.com/facebook/jest/issues/1395">have</a> <a href="https://github.com/facebook/jest/issues/1524#issuecomment-260246008">discovered</a>.</p>
 <p>Based on the <a href="https://github.com/facebook/jest/issues/1524#issuecomment-262366820">findings</a>, one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.</p>
 <p>Pentru aceasta puteţi rula teste în acelaşi proces folosind <a href="/docs/ro/22.0/cli#runinband"> <code>--runInBand</code></a>:</p>
-<pre><code class="hljs css languages- bash"><span class="hljs-comment"># Using Jest CLI</span>
+<pre><code class="hljs css language-bash"><span class="hljs-comment"># Using Jest CLI</span>
 jest --runInBand
 
 <span class="hljs-comment"># Using npm test (e.g. with create-react-app)</span>
 npm <span class="hljs-built_in">test</span> -- --runInBand
 </code></pre>
 <p>Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~<em>4</em>. În mod specific pe Travis-CI, acest lucru poate reduce timpul de execuție a testelor la jumătate. Notă: Planul <em>gratuit</em> de la Travis CI disponibil pentru proiecte open source include doar 2 nuclee CPU.</p>
-<pre><code class="hljs css languages- bash"><span class="hljs-comment"># Using Jest CLI</span>
+<pre><code class="hljs css language-bash"><span class="hljs-comment"># Using Jest CLI</span>
 jest --maxWorkers=4
 
 <span class="hljs-comment"># Using npm test (e.g. with create-react-app)</span>
@@ -175,16 +179,16 @@ npm <span class="hljs-built_in">test</span> -- --maxWorkers=4
 <h2><a class="anchor" aria-hidden="true" id="folosesc-babel-şi-import-urile-ne-mock-uite-nu-funcționează"></a><a href="#folosesc-babel-şi-import-urile-ne-mock-uite-nu-funcționează" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Folosesc babel şi import-urile ne-mock-uite nu funcționează?</h2>
 <p>Actualizați <code>jest-cli</code> la versiunea <code>0.9.0</code> sau mai mare.</p>
 <p>Explicaţie:</p>
-<pre><code class="hljs css languages- js">jest.dontMock(<span class="hljs-string">'foo'</span>);
+<pre><code class="hljs css language-js">jest.dontMock(<span class="hljs-string">'foo'</span>);
 
 <span class="hljs-keyword">import</span> foo <span class="hljs-keyword">from</span> <span class="hljs-string">'./foo'</span>;
 </code></pre>
 <p>În ES6, declaraţiile de import sunt arborate înainte de toate celelalte</p>
-<pre><code class="hljs css languages- js"><span class="hljs-keyword">const</span> foo = <span class="hljs-built_in">require</span>(<span class="hljs-string">'foo'</span>);
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> foo = <span class="hljs-built_in">require</span>(<span class="hljs-string">'foo'</span>);
 jest.dontMock(<span class="hljs-string">'foo'</span>); <span class="hljs-comment">// Oops!</span>
 </code></pre>
 <p>In Jest 0.9.0, a new API <code>jest.unmock</code> was introduced. Together with a plugin for babel, this will now work properly when using <code>babel-jest</code>:</p>
-<pre><code class="hljs css languages- js">jest.unmock(<span class="hljs-string">'./foo'</span>); <span class="hljs-comment">// Use unmock!</span>
+<pre><code class="hljs css language-js">jest.unmock(<span class="hljs-string">'./foo'</span>); <span class="hljs-comment">// Use unmock!</span>
 
 <span class="hljs-keyword">import</span> foo <span class="hljs-keyword">from</span> <span class="hljs-string">'./foo'</span>;
 
@@ -200,7 +204,7 @@ jest.dontMock(<span class="hljs-string">'foo'</span>); <span class="hljs-comment
 <p>Make sure you are not using the <code>babel-plugin-istanbul</code> plugin. Jest wraps Istanbul, and therefore also tells Istanbul what files to instrument with coverage collection. When using <code>babel-plugin-istanbul</code>, every file that is processed by Babel will have coverage collection code, hence it is not being ignored by <code>coveragePathIgnorePatterns</code>.</p>
 <h2><a class="anchor" aria-hidden="true" id="incă-nu-ați-rezolvat-problema"></a><a href="#incă-nu-ați-rezolvat-problema" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Încă nu ați rezolvat problema?</h2>
 <p>Consultaţi <a href="/help.html">ajutor</a>.</p>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ro/22.0/migration-guide">← Migrating to Jest</a><a class="docs-next button" href="/docs/ro/22.0/tutorial-react">Testing React Apps →</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#testele-cad-şi-nu-ştii-de-ce">Testele cad şi nu ştii de ce</a></li><li><a href="#depanarea-in-vs-code">Depanarea în VS Code</a></li><li><a href="#depanarea-in-webstorm">Depanarea în WebStorm</a></li><li><a href="#probleme-de-caching">Probleme de caching</a></li><li><a href="#promisiuni-nerezolvate">Promisiuni nerezolvate</a></li><li><a href="#probleme-cu-watchman">Probleme cu Watchman</a></li><li><a href="#testele-sunt-extrem-de-lente-pe-docker-și-sau-pe-serverul-de-integrare-continuă-ci">Testele sunt extrem de lente pe Docker și/sau pe serverul de Integrare Continuă (CI).</a></li><li><a href="#testele-sunt-lente-atunci-cand-utilizați-automocking">Testele sunt lente atunci când utilizați automocking</a></li><li><a href="#folosesc-npm3-si-node-modules-nu-sunt-incărcate-in-mod-corespunzător">Folosesc npm3 si node_modules nu sunt încărcate în mod corespunzător.</a></li><li><a href="#folosesc-babel-şi-import-urile-ne-mock-uite-nu-funcționează">Folosesc babel şi import-urile ne-mock-uite nu funcționează?</a></li><li><a href="#am-actualizat-jest-la-versiunea-090-şi-acum-testele-mele-cad">Am actualizat Jest la versiunea 0.9.0 şi acum testele mele cad?</a></li><li><a href="#probleme-de-compatibilitate">Probleme de compatibilitate</a></li><li><a href="#coveragepathignorepatterns-seems-to-not-have-any-effect"><code>coveragePathIgnorePatterns</code> seems to not have any effect.</a></li><li><a href="#incă-nu-ați-rezolvat-problema">Încă nu ați rezolvat problema?</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ro/getting-started.html">Getting Started</a><a href="/docs/ro/snapshot-testing.html">Guides</a><a href="/docs/ro/api.html">API Reference</a></div><div><h5>Community</h5><a href="/ro/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ro/22.0/migration-guide"><span class="arrow-prev">← </span><span>Anterior</span></a><a class="docs-next button" href="/docs/ro/22.0/tutorial-react"><span>Înainte</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav docOnPageNav"><ul class="toc-headings"><li><a href="#testele-cad-şi-nu-ştii-de-ce">Testele cad şi nu ştii de ce</a></li><li><a href="#depanarea-in-vs-code">Depanarea în VS Code</a></li><li><a href="#depanarea-in-webstorm">Depanarea în WebStorm</a></li><li><a href="#probleme-de-caching">Probleme de caching</a></li><li><a href="#promisiuni-nerezolvate">Promisiuni nerezolvate</a></li><li><a href="#probleme-cu-watchman">Probleme cu Watchman</a></li><li><a href="#testele-sunt-extrem-de-lente-pe-docker-și-sau-pe-serverul-de-integrare-continuă-ci">Testele sunt extrem de lente pe Docker și/sau pe serverul de Integrare Continuă (CI).</a></li><li><a href="#testele-sunt-lente-atunci-cand-utilizați-automocking">Testele sunt lente atunci când utilizați automocking</a></li><li><a href="#folosesc-npm3-si-node-modules-nu-sunt-incărcate-in-mod-corespunzător">Folosesc npm3 si node_modules nu sunt încărcate în mod corespunzător.</a></li><li><a href="#folosesc-babel-şi-import-urile-ne-mock-uite-nu-funcționează">Folosesc babel şi import-urile ne-mock-uite nu funcționează?</a></li><li><a href="#am-actualizat-jest-la-versiunea-090-şi-acum-testele-mele-cad">Am actualizat Jest la versiunea 0.9.0 şi acum testele mele cad?</a></li><li><a href="#probleme-de-compatibilitate">Probleme de compatibilitate</a></li><li><a href="#coveragepathignorepatterns-seems-to-not-have-any-effect"><code>coveragePathIgnorePatterns</code> seems to not have any effect.</a></li><li><a href="#incă-nu-ați-rezolvat-problema">Încă nu ați rezolvat problema?</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ro/getting-started.html">Getting Started</a><a href="/docs/ro/snapshot-testing.html">Guides</a><a href="/docs/ro/api.html">API Reference</a></div><div><h5>Community</h5><a href="/ro/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
               var search = docsearch({
                 
                 apiKey: '833906d7486e4059359fa58823c4ef56',

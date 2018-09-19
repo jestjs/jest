@@ -6,7 +6,7 @@
 
               ga('create', 'UA-44373548-17', 'auto');
               ga('send', 'pageview');
-            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/pt-BR"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/pt-BR/versions"><h3>22.2</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/pt-BR/22.2/getting-started" target="_self">Documentação</a></li><li class="siteNavGroupActive"><a href="/docs/pt-BR/22.2/api" target="_self">API</a></li><li class=""><a href="/pt-BR/help" target="_self">Ajuda</a></li><li class=""><a href="/blog" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg"/>Português (Brasil)</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/22.2/tutorial-async">English</a></li><li><a href="/docs/ja/22.2/tutorial-async">日本語</a></li><li><a href="/docs/es-ES/22.2/tutorial-async">Español</a></li><li><a href="/docs/ro/22.2/tutorial-async">Română</a></li><li><a href="/docs/ru/22.2/tutorial-async">Русский</a></li><li><a href="/docs/uk/22.2/tutorial-async">Українська</a></li><li><a href="/docs/zh-Hans/22.2/tutorial-async">简体中文</a></li></ul></div></li><script>
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/pt-BR"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/pt-BR/versions"><h3>22.2</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/pt-BR/22.2/getting-started" target="_self">Documentação</a></li><li class="siteNavGroupActive"><a href="/docs/pt-BR/22.2/api" target="_self">API</a></li><li class=""><a href="/pt-BR/help" target="_self">Ajuda</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Português (Brasil)</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/22.2/tutorial-async">English</a></li><li><a href="/docs/ja/22.2/tutorial-async">日本語</a></li><li><a href="/docs/es-ES/22.2/tutorial-async">Español</a></li><li><a href="/docs/ro/22.2/tutorial-async">Română</a></li><li><a href="/docs/ru/22.2/tutorial-async">Русский</a></li><li><a href="/docs/uk/22.2/tutorial-async">Українська</a></li><li><a href="/docs/zh-Hans/22.2/tutorial-async">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(event) {
@@ -34,6 +34,10 @@
                 var toggler = document.querySelector(togglerSelector);
                 var target = document.querySelector(targetSelector);
 
+                if (!toggler) {
+                  return;
+                }
+
                 toggler.onclick = function(event) {
                   event.preventDefault();
 
@@ -41,9 +45,9 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/TutorialAsync.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">An Async Example</h1></header><article><div><span><p>Primeiro, ative o suporte para Babel em Jest conforme documentado no guia de <a href="/docs/pt-BR/22.2/getting-started#using-babel">Introdução</a>.</p>
+        </script></nav></div><div class="container mainContainer docMainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/TutorialAsync.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">An Async Example</h1></header><article><div><span><p>Primeiro, ative o suporte para Babel em Jest conforme documentado no guia de <a href="/docs/pt-BR/22.2/getting-started#using-babel">Introdução</a>.</p>
 <p>Let's implement a simple module that fetches user data from an API and returns the user name.</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// user.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// user.js</span>
 <span class="hljs-keyword">import</span> request <span class="hljs-keyword">from</span> <span class="hljs-string">'./request'</span>;
 
 <span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getUserName</span>(<span class="hljs-params">userID</span>) </span>{
@@ -52,7 +56,7 @@
 </code></pre>
 <p>In the above implementation we expect the <code>request.js</code> module to return a promise. We chain a call to <code>then</code> to receive the user name.</p>
 <p>Now imagine an implementation of <code>request.js</code> that goes to the network and fetches some user data:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// request.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// request.js</span>
 <span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">request</span>(<span class="hljs-params">url</span>) </span>{
@@ -69,7 +73,7 @@
 }
 </code></pre>
 <p>Because we don't want to go to the network in our test, we are going to create a manual mock for our <code>request.js</code> module in the <code>__mocks__</code> folder (the folder is case-sensitive, <code>__MOCKS__</code> will not work). Pode ficar parecido com:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// __mocks__/request.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// __mocks__/request.js</span>
 <span class="hljs-keyword">const</span> users = {
   <span class="hljs-number">4</span>: {<span class="hljs-attr">name</span>: <span class="hljs-string">'Mark'</span>},
   <span class="hljs-number">5</span>: {<span class="hljs-attr">name</span>: <span class="hljs-string">'Paul'</span>},
@@ -90,7 +94,7 @@
 }
 </code></pre>
 <p>Agora vamos escrever um teste para a nossa funcionalidade async.</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// __tests__/user-test.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// __tests__/user-test.js</span>
 jest.mock(<span class="hljs-string">'../request'</span>);
 
 <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> user <span class="hljs-keyword">from</span> <span class="hljs-string">'../user'</span>;
@@ -104,14 +108,14 @@ it(<span class="hljs-string">'funciona com promessas'</span>, () =&gt; {
 <p>Nós chamamos <code>jest.mock('../request')</code> para informar Jest para usar nossa simulação manual. <code>it</code> espera que o valor de retorno seja uma promessa que vai ser resolvida. You can chain as many Promises as you like and call <code>expect</code> at any time, as long as you return a Promise at the end.</p>
 <h2><a class="anchor" aria-hidden="true" id="resolves"></a><a href="#resolves" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.resolves</code></h2>
 <p>Existe uma maneira menos verbosa usando <code>resolves</code> para decodificar o valor de uma promessa cumprida, juntamente com quaisquer outro matcher. Se a promessa for rejeitada, a afirmação falhará.</p>
-<pre><code class="hljs css languages- js">it(<span class="hljs-string">'funciona com resolves'</span>, () =&gt; {
+<pre><code class="hljs css language-js">it(<span class="hljs-string">'funciona com resolves'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> expect(user.getUserName(<span class="hljs-number">5</span>)).resolves.toEqual(<span class="hljs-string">'Paul'</span>);
 });
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="async-await"></a><a href="#async-await" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>async</code>/<code>await</code></h2>
 <p>Writing tests using the <code>async</code>/<code>await</code> syntax is easy. Here is how you'd write the same examples from before:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// async/await pode ser usado.</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// async/await pode ser usado.</span>
 it(<span class="hljs-string">'funciona com async/await'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> user.getUserName(<span class="hljs-number">4</span>);
@@ -127,7 +131,7 @@ it(<span class="hljs-string">'funciona com async/await e resolves'</span>, <span
 <p>To enable async/await in your project, install <a href="http://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-env</code></a> and enable the feature in your <code>.babelrc</code> file.</p>
 <h2><a class="anchor" aria-hidden="true" id="tratamento-de-erros"></a><a href="#tratamento-de-erros" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Tratamento de erros</h2>
 <p>Erros podem ser tratados usando o método <code>.catch</code>. Se certifique de adicionar <code>expect.assertions</code> para verificar que um certo número de afirmações são chamadas. Caso contrário, uma promessa cumprida não falharia no teste:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// Testando para erros async usando Promise.catch.</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// Testando para erros async usando Promise.catch.</span>
 test(<span class="hljs-string">'testa erro com promises'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> user.getUserName(<span class="hljs-number">2</span>).catch(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span>
@@ -151,7 +155,7 @@ it(<span class="hljs-string">'testa erro com async/await'</span>, <span class="h
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="rejects"></a><a href="#rejects" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.rejects</code></h2>
 <p>O auxiliar <code>.rejects</code> funciona como o auxiliar <code>.resolves</code>. Se a promessa é cumprida, o teste automaticamente irá falhar.</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// Testando para erros async usando `.rejects`.</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// Testando para erros async usando `.rejects`.</span>
 it(<span class="hljs-string">'testa erro com rejects'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> expect(user.getUserName(<span class="hljs-number">3</span>)).rejects.toEqual({
@@ -170,7 +174,7 @@ it(<span class="hljs-string">'testa erro com async/await e rejects'</span>, <spa
 </code></pre>
 <p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/async">examples/async</a>.</p>
 <p>If you'd like to test timers, like <code>setTimeout</code>, take a look at the <a href="/docs/pt-BR/22.2/timer-mocks">Timer mocks</a> documentation.</p>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/pt-BR/22.2/snapshot-testing">← Teste de Snapshot</a><a class="docs-next button" href="/docs/pt-BR/22.2/timer-mocks">Timer Mocks →</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#resolves"><code>.resolves</code></a></li><li><a href="#async-await"><code>async</code>/<code>await</code></a></li><li><a href="#tratamento-de-erros">Tratamento de erros</a></li><li><a href="#rejects"><code>.rejects</code></a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/pt-BR/getting-started.html">Getting Started</a><a href="/docs/pt-BR/snapshot-testing.html">Guides</a><a href="/docs/pt-BR/api.html">API Reference</a></div><div><h5>Community</h5><a href="/pt-BR/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/pt-BR/22.2/snapshot-testing"><span class="arrow-prev">← </span><span>Anterior</span></a><a class="docs-next button" href="/docs/pt-BR/22.2/timer-mocks"><span>Próximo</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav docOnPageNav"><ul class="toc-headings"><li><a href="#resolves"><code>.resolves</code></a></li><li><a href="#async-await"><code>async</code>/<code>await</code></a></li><li><a href="#tratamento-de-erros">Tratamento de erros</a></li><li><a href="#rejects"><code>.rejects</code></a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/pt-BR/getting-started.html">Getting Started</a><a href="/docs/pt-BR/snapshot-testing.html">Guides</a><a href="/docs/pt-BR/api.html">API Reference</a></div><div><h5>Community</h5><a href="/pt-BR/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
               var search = docsearch({
                 
                 apiKey: '833906d7486e4059359fa58823c4ef56',

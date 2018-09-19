@@ -17,26 +17,21 @@
             <link>https://jestjs.io/blog/2018/06/27/supporting-jest-open-source.html</link>
             <guid>https://jestjs.io/blog/2018/06/27/supporting-jest-open-source.html</guid>
             <pubDate>Wed, 27 Jun 2018 06:00:00 GMT</pubDate>
-            <description><![CDATA[<p>Jest is maintained by a community of open source contributors and Facebook employees.</p>
-<p>Our open source contributors work on behalf of the community to create new features, fix bugs, and maintain the issue backlog. Facebook employees do the same, focu</p>
-]]></description>
+            <description><![CDATA[<p>Jest is maintained by a community of open source contributors and Facebook employees.</p> <p>Our open source contributors work on behalf of the community to create new features, fix bugs, and maintain the issue backlog. Facebook employees do the same, focus...</p>]]></description>
         </item>
         <item>
             <title><![CDATA[Jest 23: 🔥 Blazing Fast Delightful Testing]]></title>
             <link>https://jestjs.io/blog/2018/05/29/jest-23-blazing-fast-delightful-testing.html</link>
             <guid>https://jestjs.io/blog/2018/05/29/jest-23-blazing-fast-delightful-testing.html</guid>
             <pubDate>Tue, 29 May 2018 06:00:00 GMT</pubDate>
-            <description><![CDATA[<p>Today we are excited to announce Jest 23, our largest major release to date! Together with over 100 contributors, we've shipped a ton of features and bug fixes. Thank you to everyone in the community for helping make JavaScript Testing Delightful.</p>
-<p>W</p>
-]]></description>
+            <description><![CDATA[<p>Today we are excited to announce Jest 23, our largest major release to date! Together with over 100 contributors, we've shipped a ton of features and bug fixes. Thank you to everyone in the community for helping make JavaScript Testing Delightful.</p> <p>We ...</p>]]></description>
         </item>
         <item>
             <title><![CDATA[Jest 22: Refinements & Custom Runners]]></title>
             <link>https://jestjs.io/blog/2017/12/18/jest-22.html</link>
             <guid>https://jestjs.io/blog/2017/12/18/jest-22.html</guid>
             <pubDate>Mon, 18 Dec 2017 06:00:00 GMT</pubDate>
-            <description><![CDATA[<p>Today we are announcing a new major version of Jest which refines almost all parts of Jest to provide a more solid testing foundation. Together with the Jest community we made a number of changes across the board that will help you get more out of Je</p>
-]]></description>
+            <description><![CDATA[<p>Today we are announcing a new major version of Jest which refines almost all parts of Jest to provide a more solid testing foundation. Together with the Jest community we made a number of changes across the board that will help you get more out of Je...</p>]]></description>
         </item>
         <item>
             <title><![CDATA[Jest 20: 💖 Delightful Testing & 🏃🏽 Multi-Project-Runner]]></title>

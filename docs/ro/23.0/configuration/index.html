@@ -6,7 +6,7 @@
 
               ga('create', 'UA-44373548-17', 'auto');
               ga('send', 'pageview');
-            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ro"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ro/versions"><h3>23.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ro/23.0/getting-started" target="_self">Documentație</a></li><li class="siteNavGroupActive"><a href="/docs/ro/23.0/api" target="_self">API</a></li><li class=""><a href="/ro/help" target="_self">Ajutor</a></li><li class=""><a href="/blog" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg"/>Română</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/23.0/configuration">English</a></li><li><a href="/docs/ja/23.0/configuration">日本語</a></li><li><a href="/docs/es-ES/23.0/configuration">Español</a></li><li><a href="/docs/pt-BR/23.0/configuration">Português (Brasil)</a></li><li><a href="/docs/ru/23.0/configuration">Русский</a></li><li><a href="/docs/uk/23.0/configuration">Українська</a></li><li><a href="/docs/zh-Hans/23.0/configuration">简体中文</a></li></ul></div></li><script>
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ro"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ro/versions"><h3>23.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ro/23.0/getting-started" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/docs/ro/23.0/api" target="_self">API</a></li><li class=""><a href="/ro/help" target="_self">Help</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Română</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/23.0/configuration">English</a></li><li><a href="/docs/ja/23.0/configuration">日本語</a></li><li><a href="/docs/es-ES/23.0/configuration">Español</a></li><li><a href="/docs/pt-BR/23.0/configuration">Português (Brasil)</a></li><li><a href="/docs/ru/23.0/configuration">Русский</a></li><li><a href="/docs/uk/23.0/configuration">Українська</a></li><li><a href="/docs/zh-Hans/23.0/configuration">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(event) {
@@ -34,6 +34,10 @@
                 var toggler = document.querySelector(togglerSelector);
                 var target = document.querySelector(targetSelector);
 
+                if (!toggler) {
+                  return;
+                }
+
                 toggler.onclick = function(event) {
                   event.preventDefault();
 
@@ -41,8 +45,8 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/Configuration.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Configuring Jest</h1></header><article><div><span><p>Jest's configuration can be defined in the <code>package.json</code> file of your project, or through a <code>jest.config.js</code> file or through the <code>--config &lt;path/to/js|json&gt;</code> option. If you'd like to use your <code>package.json</code> to store Jest's config, the &quot;jest&quot; key should be used on the top level so Jest will know how to find your settings:</p>
-<pre><code class="hljs css languages- json">{
+        </script></nav></div><div class="container mainContainer docMainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/Configuration.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Configuring Jest</h1></header><article><div><span><p>Jest's configuration can be defined in the <code>package.json</code> file of your project, or through a <code>jest.config.js</code> file or through the <code>--config &lt;path/to/js|json&gt;</code> option. If you'd like to use your <code>package.json</code> to store Jest's config, the &quot;jest&quot; key should be used on the top level so Jest will know how to find your settings:</p>
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"name"</span>: <span class="hljs-string">"my-project"</span>,
   <span class="hljs-attr">"jest"</span>: {
     <span class="hljs-attr">"verbose"</span>: <span class="hljs-literal">true</span>
@@ -50,14 +54,14 @@
 }
 </code></pre>
 <p>Sau prin intermediul JavaScript:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// jest.config.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// jest.config.js</span>
 <span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-attr">verbose</span>: <span class="hljs-literal">true</span>,
 };
 </code></pre>
 <p>Reţineţi că toată configuraţia care rezultă trebuie să fie serializabilă JSON.</p>
 <p>When using the <code>--config</code> option, the JSON file must not contain a &quot;jest&quot; key:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"bail"</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">"verbose"</span>: <span class="hljs-literal">true</span>
 }
@@ -66,7 +70,7 @@
 <p>Aceste opţiuni vă vor permite să controlați comportamentul Jest din fişierul <code>package.json</code>. Filosofia Jest este să funcționeze bine din start, însă uneori, e nevoie de mai multă putere de configurare.</p>
 <h3><a class="anchor" aria-hidden="true" id="defaults"></a><a href="#defaults" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Defaults</h3>
 <p>You can retrieve Jest's default options to expand them if needed:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// jest.config.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// jest.config.js</span>
 <span class="hljs-keyword">const</span> {defaults} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-config'</span>);
 <span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-comment">// ...</span>
@@ -81,7 +85,7 @@
 <p>Implicit: <code>false</code></p>
 <p>This option tells Jest that all imported modules in your tests should be mocked automatically. All modules used in your tests will have a replacement implementation, keeping the API surface.</p>
 <p>Exemplu:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// utils.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// utils.js</span>
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
   <span class="hljs-attr">authorize</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
     <span class="hljs-keyword">return</span> <span class="hljs-string">'token'</span>;
@@ -89,7 +93,7 @@
   <span class="hljs-attr">isAuthorized</span>: <span class="hljs-function"><span class="hljs-params">secret</span> =&gt;</span> secret === <span class="hljs-string">'wizard'</span>,
 };
 </code></pre>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">//__tests__/automocking.test.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">//__tests__/automocking.test.js</span>
 <span class="hljs-keyword">import</span> utils <span class="hljs-keyword">from</span> <span class="hljs-string">'../utils'</span>;
 
 test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; {
@@ -128,7 +132,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Implicit: <code>undefined</code></p>
 <p>An array of <a href="https://github.com/jonschlinkert/micromatch">glob patterns</a> indicating a set of files for which coverage information should be collected. If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.</p>
 <p>Exemplu:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"collectCoverageFrom"</span>: [
     <span class="hljs-string">"**/*.{js,jsx}"</span>,
     <span class="hljs-string">"!**/node_modules/**"</span>,
@@ -153,7 +157,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Implicit: <code>undefined</code></p>
 <p>Acesta va fi utilizat pentru a configura pragul minim de acoperire. Thresholds can be specified as <code>global</code>, as a <a href="https://github.com/isaacs/node-glob#glob-primer">glob</a>, and as a directory or file path. If thresholds aren't met, jest will fail. Thresholds specified as a positive number are taken to be the minimum percentage required. Thresholds specified as a negative number represent the maximum number of uncovered entities allowed.</p>
 <p>For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   ...
   "jest": {
     "coverageThreshold": {
@@ -169,7 +173,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 </code></pre>
 <p>If globs or paths are specified alongside <code>global</code>, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. Dacă nu se regăsește fișierul specificat în cale, se returnează eroare.</p>
 <p>For example, with the following configuration:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   ...
   "jest": {
     "coverageThreshold": {
@@ -207,7 +211,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Default: <code>['']</code></p>
 <p>Test files are normally ignored from collecting code coverage. With this option, you can overwrite this behavior and include otherwise ignored files in code coverage.</p>
 <p>For example, if you have tests in source files named with <code>.t.js</code> extension as following:</p>
-<pre><code class="hljs css languages- javascript"><span class="hljs-comment">// sum.t.js</span>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// sum.t.js</span>
 
 <span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
   <span class="hljs-keyword">return</span> a + b;
@@ -220,7 +224,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 }
 </code></pre>
 <p>You can collect coverage from those files with setting <code>forceCoverageMatch</code>.</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   ...
   "jest": {
     "forceCoverageMatch": ["**/*.t.js"]
@@ -231,7 +235,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Implicit: <code>{}</code></p>
 <p>Un set de variabile globale care trebuie să fie disponibile în toate mediile de testare.</p>
 <p>De exemplu, următorul cod ar crea o variabilă globală <code>__DEV__</code> cu valoarea <code>true</code> în toate mediile de testare:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   ...
   "jest": {
     "globals": {
@@ -261,7 +265,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Utilizaţi <code>&lt;rootDir&gt;</code> pentru a vă referi la valoarea <a href="#rootdir-string"><code>rootDir</code></a>, dacă doriţi să utilizaţi căi de fişier.</p>
 <p>În plus, puteţi înlocui grupuri capturate cu regex folosind referințe numerotate.</p>
 <p>Exemplu:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"moduleNameMapper"</span>: {
     <span class="hljs-attr">"^image![a-zA-Z0-9$_-]+$"</span>: <span class="hljs-string">"GlobalImageStub"</span>,
     <span class="hljs-attr">"^[./a-zA-Z0-9$_-]+\\.png$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/RelativeImageStub.js"</span>,
@@ -297,20 +301,20 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Implicit: <code>undefined</code></p>
 <p>A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a <code>jest-preset.json</code> or <code>jest-preset.js</code> module at its top level.</p>
 <p>Presets may also be relative filesystem paths.</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"preset"</span>: <span class="hljs-string">"./node_modules/foo-bar/jest-preset.js"</span>
 }
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="projects-array-string-projectconfig"></a><a href="#projects-array-string-projectconfig" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>projects</code> [array&lt;string | projectconfig&gt;]</h3>
 <p>Implicit: <code>undefined</code></p>
 <p>Atunci când configuraţia <code>projects</code> este completată cu o serie de căi sau tipare glob, Jest va rula testele în toate proiectele specificate, în acelaşi timp. Acest lucru este util pentru proiecte monolit sau atunci când se lucrează pe mai multe proiecte în acelaşi timp.</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"projects"</span>: [<span class="hljs-string">"&lt;rootDir&gt;"</span>, <span class="hljs-string">"&lt;rootDir&gt;/examples/*"</span>]
 }
 </code></pre>
 <p>Acest exemplu de configurare va rula Jest în directorul rădăcină, precum şi în fiecare subdirector din directorul &quot;examples&quot;. Puteţi avea un număr nelimitat de proiecte care rulează în aceeaşi instanță Jest.</p>
 <p>The projects feature can also be used to run multiple configurations or multiple <a href="#runner-string">runners</a>. For this purpose you can pass an array of configuration objects. For example, to run both tests and ESLint (via <a href="https://github.com/jest-community/jest-runner-eslint">jest-runner-eslint</a>) in the same invocation of Jest:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"projects"</span>: [
     {
       <span class="hljs-attr">"displayName"</span>: <span class="hljs-string">"test"</span>
@@ -329,17 +333,17 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Utilizaţi această opţiune de configurare pentru a adăuga tipuri personalizate de raportări Jest. Un reporter personalizat este o clasă care implementează metodele <code>onRunStart</code>, <code>onTestStart</code>, <code>onTestResult</code>, <code>onRunComplete</code>, ce vor fi apelate atunci când oricare din aceste evenimente survine.</p>
 <p>Dacă sunt specificați reporteri personalizați, atunci cei impliciți din Jest vor fi suprascriși. Pentru a păstra reporterii impliciți, <code>default</code> poate fi adăugat.</p>
 <p>Acest lucru va suprascrie reporterii impliciți:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"reporters"</span>: [<span class="hljs-string">"&lt;rootDir&gt;/my-custom-reporter.js"</span>]
 }
 </code></pre>
 <p>Acest lucru va utiliza reporterul personalizat în plus faţă de cei impliciți pe care Jest îi oferă:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"reporters"</span>: [<span class="hljs-string">"default"</span>, <span class="hljs-string">"&lt;rootDir&gt;/my-custom-reporter.js"</span>]
 }
 </code></pre>
 <p>În plus, reporterii personalizați pot fi configurați prin pasarea unui obiect <code>options</code> ca al doilea argument:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"reporters"</span>: [
     <span class="hljs-string">"default"</span>,
     [<span class="hljs-string">"&lt;rootDir&gt;/my-custom-reporter.js"</span>, {<span class="hljs-attr">"banana"</span>: <span class="hljs-string">"yes"</span>, <span class="hljs-attr">"pineapple"</span>: <span class="hljs-string">"no"</span>}]
@@ -348,7 +352,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 </code></pre>
 <p>Modulele pentru reporteri personalizați trebuie să definească o clasă care primește <code>GlobalConfig</code> şi un obiect &quot;options&quot; ca argumente în constructor:</p>
 <p>Exemplu de reporter:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// my-custom-reporter.js</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// my-custom-reporter.js</span>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyCustomReporter</span> </span>{
   <span class="hljs-keyword">constructor</span>(globalConfig, options) {
     <span class="hljs-keyword">this</span>._globalConfig = globalConfig;
@@ -365,7 +369,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <span class="hljs-built_in">module</span>.exports = MyCustomReporter;
 </code></pre>
 <p>Reporterii personalizați pot forţa Jest să-ți termine execuția cu cod non-0 prin returnarea unui obiect Error în metoda <code>getLastError()</code></p>
-<pre><code class="hljs css languages- js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyCustomReporter</span> </span>{
+<pre><code class="hljs css language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyCustomReporter</span> </span>{
   <span class="hljs-comment">// ...</span>
   getLastError() {
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._shouldFail) {
@@ -384,7 +388,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <h3><a class="anchor" aria-hidden="true" id="resolver-string"></a><a href="#resolver-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>resolver</code> [string]</h3>
 <p>Implicit: <code>undefined</code></p>
 <p>Această opţiune permite utilizarea unei metode personalizate pentru rezolvarea modulelor. Acest instrument de rezolvare trebuie să fie un modul Node care exportă o funcţie ce aşteaptă ca prim argument un şir de caractere pentru calea de rezolvat şi un obiect cu următoarea structură ca al doilea argument:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"basedir"</span>: string,
   <span class="hljs-attr">"browser"</span>: bool,
   <span class="hljs-attr">"extensions"</span>: [string],
@@ -418,7 +422,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <li><a href="https://github.com/keplersj/jest-runner-prettier"><code>jest-runner-prettier</code></a></li>
 </ul>
 <p>To write a test-runner, export a class with which accepts <code>globalConfig</code> in the constructor, and has a <code>runTests</code> method with the signature:</p>
-<pre><code class="hljs css languages- ts"><span class="hljs-keyword">async</span> runTests(
+<pre><code class="hljs css language-ts"><span class="hljs-keyword">async</span> runTests(
   tests: <span class="hljs-built_in">Array</span>&lt;Test&gt;,
   watcher: TestWatcher,
   onStart: OnTestStart,
@@ -442,7 +446,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>A list of paths to snapshot serializer modules Jest should use for snapshot testing.</p>
 <p>Jest has default serializers for built-in JavaScript types, HTML elements (Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See <a href="/docs/ro/23.0/tutorial-react-native#snapshot-test">snapshot test tutorial</a> for more information.</p>
 <p>Exemplu de modul serializator:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// my-serializer-module</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// my-serializer-module</span>
 <span class="hljs-built_in">module</span>.exports = {
   print(val, serialize, indent) {
     <span class="hljs-keyword">return</span> <span class="hljs-string">'Pretty foo: '</span> + serialize(val.foo);
@@ -455,7 +459,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 </code></pre>
 <p><code>serialize</code> este o funcţie care serializează o valoare folosind plugin-uri existente.</p>
 <p>To use <code>my-serializer-module</code> as a serializer, configuration would be as follows:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   ...
   "jest": {
     "snapshotSerializers": ["my-serializer-module"]
@@ -463,7 +467,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 }
 </code></pre>
 <p>În cele din urmă testul ar arăta după cum urmează:</p>
-<pre><code class="hljs css languages- js">test(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+<pre><code class="hljs css language-js">test(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
   <span class="hljs-keyword">const</span> bar = {
     <span class="hljs-attr">foo</span>: {
       <span class="hljs-attr">x</span>: <span class="hljs-number">1</span>,
@@ -475,7 +479,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 });
 </code></pre>
 <p>Imaginea obținută:</p>
-<pre><code class="hljs css languages- json">Pretty foo: Object {
+<pre><code class="hljs css language-json">Pretty foo: Object {
   "x": 1,
   "y": 2,
 }
@@ -485,7 +489,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Implicit: <code>&quot;jsdom&quot;</code></p>
 <p>Mediul de testare care va fi utilizat pentru testare. Mediul implicit în Jest este un mediu similar unui browser, și anume <a href="https://github.com/tmpvar/jsdom">jsdom</a>. În cazul în care dezvoltați un serviciu nodejs, utilizaţi opţiunea <code>node</code> pentru a folosi un mediu similar cu nodejs.</p>
 <p>By adding a <code>@jest-environment</code> docblock at the top of the file, you can specify another environment to be used for all tests in that file:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">/**
+<pre><code class="hljs css language-js"><span class="hljs-comment">/**
  * @jest-environment jsdom
  */</span>
 
@@ -497,7 +501,7 @@ test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
 <p>Puteţi crea propriile module care vor fi folosite pentru configurarea mediul de testare. The module must export a class with <code>setup</code>, <code>teardown</code> and <code>runScript</code> methods. You can also pass variables from this module to your test suites by assigning them to <code>this.global</code> object – this will make them available in your test suites as global variables.</p>
 <p><em>Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment.</em></p>
 <p>Exemplu:</p>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// my-custom-environment</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// my-custom-environment</span>
 <span class="hljs-keyword">const</span> NodeEnvironment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-environment-node'</span>);
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CustomEnvironment</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">NodeEnvironment</span> </span>{
@@ -522,7 +526,7 @@ test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
   }
 }
 </code></pre>
-<pre><code class="hljs css languages- js"><span class="hljs-comment">// my-test-suite</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// my-test-suite</span>
 <span class="hljs-keyword">let</span> someGlobalObject;
 
 beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
@@ -545,7 +549,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>Implicit: <code>(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$</code></p>
 <p>Modele glob pe care Jest le utilizează pentru a detecta fişiere de test. By default it looks for <code>.js</code> and <code>.jsx</code> files inside of <code>__tests__</code> folders, as well as any files with a suffix of <code>.test</code> or <code>.spec</code> (e.g. <code>Component.test.js</code> or <code>Component.spec.js</code>). It will also find files called <code>test.js</code> or <code>spec.js</code>. See also <a href="#testmatch-array-string"><code>testMatch</code> [array<string>]</a>, but note that you cannot specify both options.</p>
 <p>Aceasta este o vizualizare a opțiunii implicite:</p>
-<pre><code class="hljs css languages- bash">├── __tests__
+<pre><code class="hljs css language-bash">├── __tests__
 │   └── component.spec.js <span class="hljs-comment"># test</span>
 │   └── anything <span class="hljs-comment"># test</span>
 ├── package.json <span class="hljs-comment"># not test</span>
@@ -556,7 +560,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <h3><a class="anchor" aria-hidden="true" id="testresultsprocessor-string"></a><a href="#testresultsprocessor-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testResultsProcessor</code> [string]</h3>
 <p>Implicit: <code>undefined</code></p>
 <p>This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument and return it:</p>
-<pre><code class="hljs css languages- json">{
+<pre><code class="hljs css language-json">{
   <span class="hljs-attr">"success"</span>: bool,
   <span class="hljs-attr">"startTime"</span>: epoch,
   <span class="hljs-attr">"numTotalTestSuites"</span>: number,
@@ -600,7 +604,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>Implicit: <code>jasmine2</code></p>
 <p>Această opţiune permite utilizarea unui anumit framework de testare. Implicit este utilizat jasmine2. Un framework de testare personalizat poate fi furnizat prin specificarea unei căi spre implementarea sa.</p>
 <p>Un astfel de modul trebuie să exporte o funcţie cu următoarea semnătură:</p>
-<pre><code class="hljs css languages- ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testRunner</span>(<span class="hljs-params">
+<pre><code class="hljs css language-ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testRunner</span>(<span class="hljs-params">
   config: Config,
   environment: Environment,
   runtime: Runtime,
@@ -638,7 +642,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>Implicit: <code>[]</code></p>
 <p>O listă de tipare RegExp care sunt comparate cu toate căile fişierelor sursă înainte de a re-rula testele în modul de veghe. În cazul în care calea de fişier se potriveşte cu oricare dintre modele, atunci când acesta este actualizat, nu se va declanşa o re-rulare a testelor.</p>
 <p>Aceste tipare sunt comparate față de calea completă. Utilizaţi cuvântul cheie <code>&lt;rootDir&gt;</code> pentru a include calea către directorul rădăcină din proiectul vostru pentru a preveni ignorarea accidentală a fișierelor în medii diferite, care pot avea diferite directoare rădăcină. Exemplu: <code>[&quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ro/23.0/jest-object">← The Jest Object</a><a class="docs-next button" href="/docs/ro/23.0/cli">Jest CLI Options →</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#opțiuni">Opțiuni</a><ul class="toc-headings"><li><a href="#defaults">Defaults</a></li></ul></li><li><a href="#referințe">Referințe</a><ul class="toc-headings"><li><a href="#automock-boolean"><code>automock</code> [boolean]</a></li><li><a href="#browser-boolean"><code>browser</code> [boolean]</a></li><li><a href="#bail-boolean"><code>bail</code> [boolean]</a></li><li><a href="#cachedirectory-string"><code>cacheDirectory</code> [string]</a></li><li><a href="#clearmocks-boolean"><code>clearMocks</code> [boolean]</a></li><li><a href="#collectcoverage-boolean"><code>collectCoverage</code> [boolean]</a></li><li><a href="#collectcoveragefrom-array"><code>collectCoverageFrom</code> [array]</a></li><li><a href="#coveragedirectory-string"><code>coverageDirectory</code> [string]</a></li><li><a href="#coveragepathignorepatterns-array-string"><code>coveragePathIgnorePatterns</code> [array]</a></li><li><a href="#coveragereporters-array-string"><code>coverageReporters</code> [array]</a></li><li><a href="#coveragethreshold-object"><code>coverageThreshold</code> [object]</a></li><li><a href="#forcecoveragematch-array-string"><code>forceCoverageMatch</code> [array]</a></li><li><a href="#globals-object"><code>globals</code> [object]</a></li><li><a href="#globalsetup-string"><code>globalSetup</code> [string]</a></li><li><a href="#globalteardown-string"><code>globalTeardown</code> [string]</a></li><li><a href="#modulefileextensions-array-string"><code>moduleFileExtensions</code> [array]</a></li><li><a href="#moduledirectories-array-string"><code>moduleDirectories</code> [array]</a></li><li><a href="#modulenamemapper-object-string-string"><code>moduleNameMapper</code> [object]</a></li><li><a href="#modulepathignorepatterns-array-string"><code>modulePathIgnorePatterns</code> [array]</a></li><li><a href="#modulepaths-array-string"><code>modulePaths</code> [array]</a></li><li><a href="#notify-boolean"><code>notify</code> [boolean]</a></li><li><a href="#notifymode-string"><code>notifyMode</code> [string]</a></li><li><a href="#preset-string"><code>preset</code> [string]</a></li><li><a href="#projects-array-string-projectconfig"><code>projects</code> [array]</a></li><li><a href="#reporters-array-modulename-modulename-options"><code>reporters</code> [array]</a></li><li><a href="#resetmocks-boolean"><code>resetMocks</code> [boolean]</a></li><li><a href="#resetmodules-boolean"><code>resetModules</code> [boolean]</a></li><li><a href="#resolver-string"><code>resolver</code> [string]</a></li><li><a href="#restoremocks-boolean"><code>restoreMocks</code> [boolean]</a></li><li><a href="#rootdir-string"><code>rootDir</code> [string]</a></li><li><a href="#roots-array-string"><code>roots</code> [array]</a></li><li><a href="#runner-string"><code>runner</code> [string]</a></li><li><a href="#setupfiles-array"><code>setupFiles</code> [array]</a></li><li><a href="#setuptestframeworkscriptfile-string"><code>setupTestFrameworkScriptFile</code> [string]</a></li><li><a href="#snapshotserializers-array-string"><code>snapshotSerializers</code> [array]</a></li><li><a href="#testenvironment-string"><code>testEnvironment</code> [string]</a></li><li><a href="#testenvironmentoptions-object"><code>testEnvironmentOptions</code> [Object]</a></li><li><a href="#testmatch-array-string"><code>testMatch</code> [array]</a></li><li><a href="#testpathignorepatterns-array-string"><code>testPathIgnorePatterns</code> [array]</a></li><li><a href="#testregex-string"><code>testRegex</code> [string]</a></li><li><a href="#testresultsprocessor-string"><code>testResultsProcessor</code> [string]</a></li><li><a href="#testrunner-string"><code>testRunner</code> [string]</a></li><li><a href="#testurl-string"><code>testURL</code> [string]</a></li><li><a href="#timers-string"><code>timers</code> [string]</a></li><li><a href="#transform-object-string-string"><code>transform</code> [object]</a></li><li><a href="#transformignorepatterns-array-string"><code>transformIgnorePatterns</code> [array]</a></li><li><a href="#unmockedmodulepathpatterns-array-string"><code>unmockedModulePathPatterns</code> [array]</a></li><li><a href="#verbose-boolean"><code>verbose</code> [boolean]</a></li><li><a href="#watchpathignorepatterns-array-string"><code>watchPathIgnorePatterns</code> [array]</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ro/getting-started.html">Getting Started</a><a href="/docs/ro/snapshot-testing.html">Guides</a><a href="/docs/ro/api.html">API Reference</a></div><div><h5>Community</h5><a href="/ro/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ro/23.0/jest-object"><span class="arrow-prev">← </span><span>Anterior</span></a><a class="docs-next button" href="/docs/ro/23.0/cli"><span>Înainte</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav docOnPageNav"><ul class="toc-headings"><li><a href="#opțiuni">Opțiuni</a><ul class="toc-headings"><li><a href="#defaults">Defaults</a></li></ul></li><li><a href="#referințe">Referințe</a><ul class="toc-headings"><li><a href="#automock-boolean"><code>automock</code> [boolean]</a></li><li><a href="#browser-boolean"><code>browser</code> [boolean]</a></li><li><a href="#bail-boolean"><code>bail</code> [boolean]</a></li><li><a href="#cachedirectory-string"><code>cacheDirectory</code> [string]</a></li><li><a href="#clearmocks-boolean"><code>clearMocks</code> [boolean]</a></li><li><a href="#collectcoverage-boolean"><code>collectCoverage</code> [boolean]</a></li><li><a href="#collectcoveragefrom-array"><code>collectCoverageFrom</code> [array]</a></li><li><a href="#coveragedirectory-string"><code>coverageDirectory</code> [string]</a></li><li><a href="#coveragepathignorepatterns-array-string"><code>coveragePathIgnorePatterns</code> [array]</a></li><li><a href="#coveragereporters-array-string"><code>coverageReporters</code> [array]</a></li><li><a href="#coveragethreshold-object"><code>coverageThreshold</code> [object]</a></li><li><a href="#forcecoveragematch-array-string"><code>forceCoverageMatch</code> [array]</a></li><li><a href="#globals-object"><code>globals</code> [object]</a></li><li><a href="#globalsetup-string"><code>globalSetup</code> [string]</a></li><li><a href="#globalteardown-string"><code>globalTeardown</code> [string]</a></li><li><a href="#modulefileextensions-array-string"><code>moduleFileExtensions</code> [array]</a></li><li><a href="#moduledirectories-array-string"><code>moduleDirectories</code> [array]</a></li><li><a href="#modulenamemapper-object-string-string"><code>moduleNameMapper</code> [object]</a></li><li><a href="#modulepathignorepatterns-array-string"><code>modulePathIgnorePatterns</code> [array]</a></li><li><a href="#modulepaths-array-string"><code>modulePaths</code> [array]</a></li><li><a href="#notify-boolean"><code>notify</code> [boolean]</a></li><li><a href="#notifymode-string"><code>notifyMode</code> [string]</a></li><li><a href="#preset-string"><code>preset</code> [string]</a></li><li><a href="#projects-array-string-projectconfig"><code>projects</code> [array]</a></li><li><a href="#reporters-array-modulename-modulename-options"><code>reporters</code> [array]</a></li><li><a href="#resetmocks-boolean"><code>resetMocks</code> [boolean]</a></li><li><a href="#resetmodules-boolean"><code>resetModules</code> [boolean]</a></li><li><a href="#resolver-string"><code>resolver</code> [string]</a></li><li><a href="#restoremocks-boolean"><code>restoreMocks</code> [boolean]</a></li><li><a href="#rootdir-string"><code>rootDir</code> [string]</a></li><li><a href="#roots-array-string"><code>roots</code> [array]</a></li><li><a href="#runner-string"><code>runner</code> [string]</a></li><li><a href="#setupfiles-array"><code>setupFiles</code> [array]</a></li><li><a href="#setuptestframeworkscriptfile-string"><code>setupTestFrameworkScriptFile</code> [string]</a></li><li><a href="#snapshotserializers-array-string"><code>snapshotSerializers</code> [array]</a></li><li><a href="#testenvironment-string"><code>testEnvironment</code> [string]</a></li><li><a href="#testenvironmentoptions-object"><code>testEnvironmentOptions</code> [Object]</a></li><li><a href="#testmatch-array-string"><code>testMatch</code> [array]</a></li><li><a href="#testpathignorepatterns-array-string"><code>testPathIgnorePatterns</code> [array]</a></li><li><a href="#testregex-string"><code>testRegex</code> [string]</a></li><li><a href="#testresultsprocessor-string"><code>testResultsProcessor</code> [string]</a></li><li><a href="#testrunner-string"><code>testRunner</code> [string]</a></li><li><a href="#testurl-string"><code>testURL</code> [string]</a></li><li><a href="#timers-string"><code>timers</code> [string]</a></li><li><a href="#transform-object-string-string"><code>transform</code> [object]</a></li><li><a href="#transformignorepatterns-array-string"><code>transformIgnorePatterns</code> [array]</a></li><li><a href="#unmockedmodulepathpatterns-array-string"><code>unmockedModulePathPatterns</code> [array]</a></li><li><a href="#verbose-boolean"><code>verbose</code> [boolean]</a></li><li><a href="#watchpathignorepatterns-array-string"><code>watchPathIgnorePatterns</code> [array]</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ro/getting-started.html">Getting Started</a><a href="/docs/ro/snapshot-testing.html">Guides</a><a href="/docs/ro/api.html">API Reference</a></div><div><h5>Community</h5><a href="/ro/users.html">User Showcase</a><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
               var search = docsearch({
                 
                 apiKey: '833906d7486e4059359fa58823c4ef56',
