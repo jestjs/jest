@@ -123,7 +123,13 @@ test.only = (testName: TestName, fn: TestFn, timeout?: number) => {
 
 test.todo = (testName: TestName, ...rest: Array<mixed>) => {
   if (rest.length > 0 || typeof testName !== 'string') {
-    throw new Error('Todo must be called with only a description.');
+    const e = new Error('Todo must be called with only a description.');
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(e, test.todo);
+    }
+
+    throw e;
   }
 
   const asyncError = new Error();

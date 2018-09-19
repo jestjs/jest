@@ -12,7 +12,6 @@ exports[`shows error messages when called with invalid argument 1`] = `
         |    ^
       9 |
 
-      at packages/jest-jasmine2/build/jasmine/Env.js:477:15
       at __tests__/todo_non_string.test.js:8:4
 
 "
@@ -30,7 +29,6 @@ exports[`shows error messages when called with multiple arguments 1`] = `
         |    ^
       9 |
 
-      at packages/jest-jasmine2/build/jasmine/Env.js:477:15
       at __tests__/todo_multiple_args.test.js:8:4
 
 "
@@ -48,7 +46,6 @@ exports[`shows error messages when called with no arguments 1`] = `
         |    ^
       9 |
 
-      at packages/jest-jasmine2/build/jasmine/Env.js:477:15
       at __tests__/todo_no_args.test.js:8:4
 
 "

@@ -495,8 +495,15 @@ export default function(j$) {
     this.todo = function() {
       const description = arguments[0];
       if (arguments.length !== 1 || typeof description !== 'string') {
-        throw new Error('Todo must be called with only a description.');
+        const e = new Error('Todo must be called with only a description.');
+
+        if (Error.captureStackTrace) {
+          Error.captureStackTrace(e, test.todo);
+        }
+
+        throw e;
       }
+
       const spec = specFactory(description, () => {}, currentDeclarationSuite);
       spec.todo();
       currentDeclarationSuite.addChild(spec);
