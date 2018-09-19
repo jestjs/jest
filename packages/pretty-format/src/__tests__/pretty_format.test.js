@@ -317,6 +317,11 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('"\\"\'\\\\"');
   });
 
+  it("doesn't escape string with {excapeString: false}", () => {
+    const val = '"\'\\n';
+    expect(prettyFormat(val, {escapeString: false})).toEqual('""\'\\n"');
+  });
+
   it('prints a string with escapes', () => {
     expect(prettyFormat('"-"')).toEqual('"\\"-\\""');
     expect(prettyFormat('\\ \\\\')).toEqual('"\\\\ \\\\\\\\"');
