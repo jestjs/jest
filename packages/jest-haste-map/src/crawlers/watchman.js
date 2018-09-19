@@ -210,6 +210,7 @@ module.exports = async function watchmanCrawl(
         if (existingFileData && existingFileData[H.MTIME] === mtime) {
           cache.set(fileName, existingFileData);
         } else if (fileData.type !== 'f') {
+          // See ../constants.js
           cache.set(fileName, [undefined, mtime]);
         } else if (
           sha1hex &&
@@ -224,6 +225,7 @@ module.exports = async function watchmanCrawl(
             existingFileData[4],
           ]);
         } else {
+          // See ../constants.js
           cache.set(fileName, ['', mtime, 0, [], sha1hex]);
         }
       }

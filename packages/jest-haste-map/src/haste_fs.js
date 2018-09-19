@@ -11,8 +11,8 @@ import type {Glob, Path} from 'types/Config';
 import type {FileData, LinkData} from 'types/HasteMap';
 
 import * as fastPath from './lib/fast_path';
-import fs from 'fs';
 import micromatch from 'micromatch';
+import {sync as realpath} from 'realpath-native';
 import H from './constants';
 
 export default class HasteFS {
@@ -55,7 +55,13 @@ export default class HasteFS {
 
   follow(file: Path): Path {
     const link = this._links[file];
-    return link ? link[0] || (link[0] = fs.realpathSync(file)) : file;
+    if (link === undefined) {
+      return file;
+    }
+    if (link[0] === undefined) {
+      link[0] = realpath(file);
+    }
+    return link[0];
   }
 
   getAllFiles(): Array<string> {
