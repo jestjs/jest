@@ -449,7 +449,7 @@ export default function(j$) {
         );
       }
       if (fn === undefined) {
-        return this.xit(description);
+        return this.xit(description, () => {});
       }
       if (typeof fn !== 'function') {
         throw new Error(

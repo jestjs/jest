@@ -68,7 +68,7 @@ const test = (testName: TestName, fn?: TestFn, timeout?: number) => {
     );
   }
   if (fn === undefined) {
-    return test.skip(testName);
+    return test.skip(testName, () => {});
   }
   if (typeof fn !== 'function') {
     throw new Error(
