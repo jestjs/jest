@@ -44,6 +44,10 @@ export default class HasteFS {
     return Array.from(this._files.keys());
   }
 
+  getFileIterator(): Iterator<string> {
+    return this._files.keys();
+  }
+
   matchFiles(pattern: RegExp | string): Array<Path> {
     if (!(pattern instanceof RegExp)) {
       pattern = new RegExp(pattern);

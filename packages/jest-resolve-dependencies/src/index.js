@@ -100,10 +100,13 @@ class DependencyResolver {
         }
       }
     }
-    const modules = this._hasteFS.getAllFiles().map(file => ({
-      dependencies: this.resolve(file, options),
-      file,
-    }));
+    const modules = [];
+    for (const file of this._hasteFS.getFileIterator()) {
+      modules.push({
+        dependencies: this.resolve(file, options),
+        file,
+      });
+    }
     return Array.from(collectModules(relatedPaths, modules, changed));
   }
 }
