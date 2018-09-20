@@ -366,7 +366,7 @@ test('rejects to octopus', async () => {
 
 ### `.toBe(value)`
 
-`toBe` just checks that a value is what you expect. It uses `Object.is` to check exact equality.
+Use `.toBe` to compare primitive values or to check referential identity of object instances.
 
 For example, this code will validate some properties of the `can` object:
 
@@ -387,7 +387,12 @@ describe('the can', () => {
 });
 ```
 
-Don't use `toBe` with floating-point numbers. For example, due to rounding, in JavaScript `0.2 + 0.1` is not strictly equal to `0.3`. If you have floating point numbers, try `.toBeCloseTo` instead.
+Don't use `.toBe` with floating-point numbers. For example, due to rounding, in JavaScript `0.2 + 0.1` is not strictly equal to `0.3`. If you have floating point numbers, try `.toBeCloseTo` instead.
+
+Although the `.toBe` matcher **checks** referential identity, it **reports** a deep comparison of values if the assertion fails. If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the `expect` function. For example, to assert whether or not elements are the same instance:
+
+- rewrite `expect(received).toBe(expected)` as `expect(Object.is(received, expected)).toBe(true)`
+- rewrite `expect(received).not.toBe(expected)` as `expect(Object.is(received, expected)).toBe(false)`
 
 ### `.toHaveBeenCalled()`
 
@@ -642,7 +647,9 @@ describe('my beverage', () => {
 
 ### `.toEqual(value)`
 
-Use `.toEqual` when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity—this is also known as "deep equal". For example, `toEqual` and `toBe` behave differently in this test suite, so all the tests pass:
+Use `.toEqual` to compare recursively all properties of object instances (also known as "deep" equality).
+
+For example, `.toEqual` and `.toBe` behave differently in this test suite, so all the tests pass:
 
 ```js
 const can1 = {
@@ -665,6 +672,11 @@ describe('the La Croix cans on my desk', () => {
 ```
 
 > Note: `.toEqual` won't perform a _deep equality_ check for two errors. Only the `message` property of an Error is considered for equality. It is recommended to use the `.toThrow` matcher for testing against errors.
+
+If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the `expect` function. For example, use `equals` method of `Buffer` class to assert whether or not buffers contain the same content:
+
+- rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
+- rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
 
 ### `.toHaveLength(number)`
 

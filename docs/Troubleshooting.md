@@ -69,7 +69,8 @@ To automatically launch and attach to a process running your tests, use the foll
         "--runInBand"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229
     }
   ]
 }
@@ -91,7 +92,8 @@ or the following for Windows:
         "--runInBand"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229
     }
   ]
 }

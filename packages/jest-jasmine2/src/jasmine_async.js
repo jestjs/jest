@@ -37,9 +37,15 @@ function promisifyLifeCycleFunction(originalFn, env) {
 
     const extraError = new Error();
 
+    // Without this line v8 stores references to all closures
+    // in the stack in the Error object. This line stringifies the stack
+    // property to allow garbage-collecting objects on the stack
+    // https://crbug.com/v8/7142
+    extraError.stack = extraError.stack;
+
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
-    const asyncFn = function(done) {
+    const asyncJestLifecycle = function(done) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
       const returnValue = wrappedFn.call({});
 
@@ -57,7 +63,7 @@ function promisifyLifeCycleFunction(originalFn, env) {
       }
     };
 
-    return originalFn.call(env, asyncFn, timeout);
+    return originalFn.call(env, asyncJestLifecycle, timeout);
   };
 }
 
@@ -79,7 +85,13 @@ function promisifyIt(originalFn, env) {
 
     const extraError = new Error();
 
-    const asyncFn = function(done) {
+    // Without this line v8 stores references to all closures
+    // in the stack in the Error object. This line stringifies the stack
+    // property to allow garbage-collecting objects on the stack
+    // https://crbug.com/v8/7142
+    extraError.stack = extraError.stack;
+
+    const asyncJestTest = function(done) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
       const returnValue = wrappedFn.call({});
 
@@ -103,7 +115,7 @@ function promisifyIt(originalFn, env) {
       }
     };
 
-    return originalFn.call(env, specName, asyncFn, timeout);
+    return originalFn.call(env, specName, asyncJestTest, timeout);
   };
 }
 

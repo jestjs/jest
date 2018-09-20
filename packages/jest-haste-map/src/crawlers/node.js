@@ -30,7 +30,10 @@ function find(
     activeCalls++;
     fs.readdir(directory, (err, names) => {
       activeCalls--;
-
+      if (err) {
+        callback(result);
+        return;
+      }
       names.forEach(file => {
         file = path.join(directory, file);
         if (ignore(file)) {
@@ -128,16 +131,16 @@ module.exports = function nodeCrawl(
 
   return new Promise(resolve => {
     const callback = list => {
-      const files = Object.create(null);
+      const files = new Map();
       list.forEach(fileData => {
         const name = fileData[0];
         const mtime = fileData[1];
-        const existingFile = data.files[name];
+        const existingFile = data.files.get(name);
         if (existingFile && existingFile[H.MTIME] === mtime) {
-          files[name] = existingFile;
+          files.set(name, existingFile);
         } else {
           // See ../constants.js; SHA-1 will always be null and fulfilled later.
-          files[name] = ['', mtime, 0, [], null];
+          files.set(name, ['', mtime, 0, [], null]);
         }
       });
       data.files = files;

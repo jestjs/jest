@@ -49,7 +49,7 @@ Below are the hooks available in Jest.
 
 #### `jestHooks.shouldRunTestSuite(testPath)`
 
-Returns a boolean (or `Promise<boolean>`) for handling asynchronous operations) to specify if a test should be run or not.
+Returns a boolean (or `Promise<boolean>` for handling asynchronous operations) to specify if a test should be run or not.
 
 For example:
 
@@ -202,3 +202,30 @@ class MyWatchPlugin {
   constructor({config}) {}
 }
 ```
+
+## Choosing a good key
+
+Jest allows third-party plugins to override some of its built-in feature keys, but not all. Specifically, the following keys are **not overwritable** :
+
+- `c` (clears filter patterns)
+- `i` (updates non-matching snapshots interactively)
+- `q` (quits)
+- `u` (updates all non-matching snapshots)
+- `w` (displays watch mode usage / available actions)
+
+The following keys for built-in functionality **can be overwritten** :
+
+- `p` (test filename pattern)
+- `t` (test name pattern)
+
+Any key not used by built-in functionality can be claimed, as you would expect. Try to avoid using keys that are difficult to obtain on various keyboards (e.g. `é`, `€`), or not visible by default (e.g. many Mac keyboards do not have visual hints for characters such as `|`, `\`, `[`, etc.)
+
+### When a conflict happens
+
+Should your plugin attempt to overwrite a reserved key, Jest will error out with a descriptive message, something like:
+
+> Watch plugin YourFaultyPlugin attempted to register key <q>, that is reserved internally for quitting watch mode. Please change the configuration key for this plugin.
+
+Third-party plugins are also forbidden to overwrite a key reserved already by another third-party plugin present earlier in the configured plugins list (`watchPlugins` array setting). When this happens, you’ll also get an error message that tries to help you fix that:
+
+> Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key <x>. Please change the key configuration for one of the conflicting plugins to avoid overlap.
