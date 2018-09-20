@@ -9,11 +9,6 @@
 'use strict';
 
 describe('test/it error throwing', () => {
-  it(`it doesn\'t throw an error with missing callback function`, () => {
-    expect(() => {
-      it('test1');
-    }).not.toThrowError();
-  });
   it(`it throws an error when first argument isn't a string`, () => {
     expect(() => {
       it(() => {});
@@ -25,11 +20,6 @@ describe('test/it error throwing', () => {
     }).toThrowError(
       `Invalid second argument, test3b. It must be a callback function.`,
     );
-  });
-  test(`test doesn\'t throw an error with missing callback function`, () => {
-    expect(() => {
-      test('test4');
-    }).not.toThrowError();
   });
   test(`test throws an error when first argument isn't a string`, () => {
     expect(() => {
