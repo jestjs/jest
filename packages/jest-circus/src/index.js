@@ -61,14 +61,14 @@ const afterEach: THook = (fn, timeout) =>
 const afterAll: THook = (fn, timeout) =>
   _addHook(fn, 'afterAll', afterAll, timeout);
 
-const test = (testName: TestName, fn: TestFn, timeout?: number) => {
+const test = (testName: TestName, fn?: TestFn, timeout?: number) => {
   if (typeof testName !== 'string') {
     throw new Error(
       `Invalid first argument, ${testName}. It must be a string.`,
     );
   }
   if (fn === undefined) {
-    throw new Error('Missing second argument. It must be a callback function.');
+    return test.skip(testName);
   }
   if (typeof fn !== 'function') {
     throw new Error(

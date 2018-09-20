@@ -449,9 +449,7 @@ export default function(j$) {
         );
       }
       if (fn === undefined) {
-        throw new Error(
-          'Missing second argument. It must be a callback function.',
-        );
+        return this.xit(description);
       }
       if (typeof fn !== 'function') {
         throw new Error(
