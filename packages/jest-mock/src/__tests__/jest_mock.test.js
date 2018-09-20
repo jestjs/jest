@@ -237,10 +237,10 @@ describe('moduleMocker', () => {
     it('does not mock methods from Object.prototype (in mock context)', () => {
       const Bar = vm.runInContext(
         `
-        const Foo = { foo() {} };
-        const Bar = Object.assign(Object.create(Foo), { bar() {} });
-        Bar;
-      `,
+          const Foo = { foo() {} };
+          const Bar = Object.assign(Object.create(Foo), { bar() {} });
+          Bar;
+        `,
         mockContext,
       );
 
@@ -273,10 +273,10 @@ describe('moduleMocker', () => {
     it('does not mock methods from Function.prototype (in mock context)', () => {
       const Bar = vm.runInContext(
         `
-        class Foo {}
-        class Bar extends Foo {}
-        Bar;
-      `,
+          class Foo {}
+          class Bar extends Foo {}
+          Bar;
+        `,
         mockContext,
       );
 
@@ -304,9 +304,9 @@ describe('moduleMocker', () => {
     it('does not mock methods from RegExp.prototype (in mock context)', () => {
       const bar = vm.runInContext(
         `
-        const bar = /bar/;
-        bar;
-      `,
+          const bar = /bar/;
+          bar;
+        `,
         mockContext,
       );
 
@@ -633,7 +633,7 @@ describe('moduleMocker', () => {
       });
     });
 
-    it(`tracks thrown errors without interfering with other tracking`, () => {
+    it('tracks thrown errors without interfering with other tracking', () => {
       const error = new Error('ODD!');
       const fn = moduleMocker.fn((x, y) => {
         // multiply params
