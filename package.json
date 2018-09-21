@@ -88,11 +88,16 @@
     "typecheck": "flow check --include-warnings",
     "watch": "yarn build && node ./scripts/watch.js"
   },
-  "workspaces": [
-    "packages/*",
-    "website",
-    "examples/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "website",
+      "examples/*"
+    ],
+    "nohoist": [
+      "**/react-native"
+    ]
+  },
   "prettier": {
     "bracketSpacing": false,
     "proseWrap": "never",
