@@ -13,7 +13,7 @@
     "babel-preset-jest": "^23.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0"
+    "@babel/core": "^7.1.0"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0"
