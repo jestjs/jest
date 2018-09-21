@@ -18,7 +18,10 @@ export type BabylonParserResult = {
   itBlocks: Array<ItBlock>,
 };
 
-export const getASTfor = (file: string): ?BabylonFile => {
+export const getASTfor = (
+  file: string,
+  enableTypeScript: boolean = false,
+): ?BabylonFile => {
   const data = fs.readFileSync(file).toString();
   const config = {
     // Enable all (most of) the things
@@ -50,7 +53,7 @@ export const getASTfor = (file: string): ?BabylonFile => {
     sourceType: 'module',
   };
 
-  if (process.env.JEST_BABEL_TYPESCRIPT) {
+  if (enableTypeScript) {
     config.plugins.push('typescript');
   } else {
     config.plugins.push('flow', 'flowComments');
@@ -59,10 +62,13 @@ export const getASTfor = (file: string): ?BabylonFile => {
   return babelParse(data, config);
 };
 
-export const parse = (file: string): BabylonParserResult => {
+export const parse = (
+  file: string,
+  enableTypeScript: boolean = false,
+): BabylonParserResult => {
   const itBlocks: ItBlock[] = [];
   const expects: Expect[] = [];
-  const ast = getASTfor(file);
+  const ast = getASTfor(file, enableTypeScript);
 
   // An `it`/`test` was found in the AST
   // So take the AST node and create an object for us
