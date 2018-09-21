@@ -15,33 +15,41 @@ import micromatch from 'micromatch';
 import H from './constants';
 
 export default class HasteFS {
+  _rootDir: Path;
   _files: FileData;
 
-  constructor(files: FileData) {
+  constructor({rootDir, files}: {rootDir: Path, files: FileData}) {
+    this._rootDir = rootDir;
     this._files = files;
   }
 
   getModuleName(file: Path): ?string {
-    const fileMetadata = this._files.get(file);
+    const fileMetadata = this._getFileData(file);
     return (fileMetadata && fileMetadata[H.ID]) || null;
   }
 
   getDependencies(file: Path): ?Array<string> {
-    const fileMetadata = this._files.get(file);
+    const fileMetadata = this._getFileData(file);
     return (fileMetadata && fileMetadata[H.DEPENDENCIES]) || null;
   }
 
   getSha1(file: Path): ?string {
-    const fileMetadata = this._files.get(file);
+    const fileMetadata = this._getFileData(file);
     return (fileMetadata && fileMetadata[H.SHA1]) || null;
   }
 
   exists(file: Path): boolean {
-    return this._files.has(file);
+    return this._getFileData(file) != null;
   }
 
   getAllFiles(): Array<string> {
-    return Array.from(this._files.keys());
+    return Array.from(this.getFileIterator());
+  }
+
+  *getFileIterator(): Iterator<string> {
+    for (const file of this._files.keys()) {
+      yield path.resolve(this._rootDir, file);
+    }
   }
 
   getFileIterator(): Iterator<string> {
@@ -53,7 +61,7 @@ export default class HasteFS {
       pattern = new RegExp(pattern);
     }
     const files = [];
-    for (const file of this._files.keys()) {
+    for (const file of this.getFileIterator()) {
       if (pattern.test(file)) {
         files.push(file);
       }
@@ -63,12 +71,17 @@ export default class HasteFS {
 
   matchFilesWithGlob(globs: Array<Glob>, root: ?Path): Set<Path> {
     const files = new Set();
-    for (const file of this._files.keys()) {
+    for (const file of this.getFileIterator()) {
       const filePath = root ? path.relative(root, file) : file;
       if (micromatch([filePath], globs).length) {
         files.add(file);
       }
     }
     return files;
+  }
+
+  _getFileData(file: Path) {
+    const relativePath = path.relative(this._rootDir, file);
+    return this._files.get(relativePath);
   }
 }

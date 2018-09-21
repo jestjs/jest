@@ -18,6 +18,7 @@ import type {
   MockData,
 } from 'types/HasteMap';
 
+import path from 'path';
 import H from './constants';
 
 const EMPTY_MAP = {};
@@ -30,6 +31,7 @@ export opaque type SerializableModuleMap = {
   >,
   map: $Call<typeof Array.from, $Call<$PropertyType<ModuleMapData, 'entries'>>>,
   mocks: $Call<typeof Array.from, $Call<$PropertyType<MockData, 'entries'>>>,
+  rootDir: string,
 };
 
 export default class ModuleMap {
@@ -55,7 +57,8 @@ export default class ModuleMap {
       !!supportsNativePlatform,
     );
     if (module && module[H.TYPE] === type) {
-      return module[H.PATH];
+      const modulePath = module[H.PATH];
+      return modulePath && path.resolve(this._raw.rootDir, modulePath);
     }
     return null;
   }
@@ -69,7 +72,9 @@ export default class ModuleMap {
   }
 
   getMockModule(name: string): ?Path {
-    return this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
+    const mockPath =
+      this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
+    return mockPath && path.resolve(this._raw.rootDir, mockPath);
   }
 
   getRawModuleMap(): RawModuleMap {
@@ -77,6 +82,7 @@ export default class ModuleMap {
       duplicates: this._raw.duplicates,
       map: this._raw.map,
       mocks: this._raw.mocks,
+      rootDir: this._raw.rootDir,
     };
   }
 
@@ -85,6 +91,7 @@ export default class ModuleMap {
       duplicates: Array.from(this._raw.duplicates),
       map: Array.from(this._raw.map),
       mocks: Array.from(this._raw.mocks),
+      rootDir: this._raw.rootDir,
     };
   }
 
@@ -93,6 +100,7 @@ export default class ModuleMap {
       duplicates: new Map(serializableModuleMap.duplicates),
       map: new Map(serializableModuleMap.map),
       mocks: new Map(serializableModuleMap.mocks),
+      rootDir: serializableModuleMap.rootDir,
     });
   }
 
@@ -149,11 +157,18 @@ export default class ModuleMap {
     name: string,
     platform: string,
     supportsNativePlatform: boolean,
-    set: ?DuplicatesSet,
+    relativePathSet: ?DuplicatesSet,
   ) {
-    if (set == null) {
+    if (relativePathSet == null) {
       return;
     }
+    // Force flow refinement
+    const previousSet: DuplicatesSet = relativePathSet;
+    const set = Object.keys(previousSet).reduce((set, relativePath) => {
+      const duplicatePath = path.resolve(this._raw.rootDir, relativePath);
+      set[duplicatePath] = previousSet[relativePath];
+      return set;
+    }, Object.create(null));
     throw new DuplicateHasteCandidatesError(
       name,
       platform,
@@ -162,11 +177,12 @@ export default class ModuleMap {
     );
   }
 
-  static create() {
+  static create(rootDir: Path) {
     return new ModuleMap({
       duplicates: new Map(),
       map: new Map(),
       mocks: new Map(),
+      rootDir,
     });
   }
 }

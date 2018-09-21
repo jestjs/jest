@@ -29,7 +29,7 @@ module.exports = async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
   const fields = ['name', 'exists', 'mtime_ms'];
-  const {data, extensions, ignore, roots} = options;
+  const {data, extensions, ignore, rootDir, roots} = options;
   const defaultWatchExpression = [
     'allof',
     ['type', 'f'],
@@ -112,9 +112,10 @@ module.exports = async function watchmanCrawl(
             }
           }
 
-          const query = clocks.has(root)
+          const relativeRoot = path.relative(rootDir, root);
+          const query = clocks.has(relativeRoot)
             ? // Use the `since` generator if we have a clock available
-              {expression, fields, since: clocks.get(root)}
+              {expression, fields, since: clocks.get(relativeRoot)}
             : // Otherwise use the `glob` filter
               {expression, fields, glob};
 
@@ -159,12 +160,15 @@ module.exports = async function watchmanCrawl(
 
   for (const [watchRoot, response] of watchmanFiles) {
     const fsRoot = normalizePathSep(watchRoot);
-    clocks.set(fsRoot, response.clock);
+    const relativeFsRoot = path.relative(rootDir, fsRoot);
+    clocks.set(relativeFsRoot, response.clock);
     for (const fileData of response.files) {
-      const name = fsRoot + path.sep + normalizePathSep(fileData.name);
+      const filePath = fsRoot + path.sep + normalizePathSep(fileData.name);
+      const relativeFilePath = path.relative(rootDir, filePath);
+
       if (!fileData.exists) {
-        files.delete(name);
-      } else if (!ignore(name)) {
+        files.delete(relativeFilePath);
+      } else if (!ignore(filePath)) {
         const mtime =
           typeof fileData.mtime_ms === 'number'
             ? fileData.mtime_ms
@@ -174,15 +178,15 @@ module.exports = async function watchmanCrawl(
           sha1hex = null;
         }
 
-        const existingFileData = data.files.get(name);
+        const existingFileData = data.files.get(relativeFilePath);
         if (existingFileData && existingFileData[H.MTIME] === mtime) {
-          files.set(name, existingFileData);
+          files.set(relativeFilePath, existingFileData);
         } else if (
           existingFileData &&
           sha1hex &&
           existingFileData[H.SHA1] === sha1hex
         ) {
-          files.set(name, [
+          files.set(relativeFilePath, [
             existingFileData[0],
             mtime,
             existingFileData[2],
@@ -191,7 +195,7 @@ module.exports = async function watchmanCrawl(
           ]);
         } else {
           // See ../constants.js
-          files.set(name, ['', mtime, 0, [], sha1hex]);
+          files.set(relativeFilePath, ['', mtime, 0, [], sha1hex]);
         }
       }
     }
