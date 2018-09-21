@@ -687,7 +687,7 @@ class ModuleMockerClass {
       return metadata;
     } else if (type === 'function') {
       metadata.name = component.name;
-      if (component._isMockFunction) {
+      if (component._isMockFunction === true) {
         metadata.mockImpl = component.getMockImplementation();
       }
     }
@@ -702,7 +702,7 @@ class ModuleMockerClass {
         this._getSlots(component).forEach(slot => {
           if (
             type === 'function' &&
-            component._isMockFunction &&
+            component._isMockFunction === true &&
             slot.match(/^mock/)
           ) {
             return;
@@ -727,7 +727,7 @@ class ModuleMockerClass {
   }
 
   isMockFunction(fn: any): boolean {
-    return !!(fn && fn._isMockFunction);
+    return !!fn && fn._isMockFunction === true;
   }
 
   fn(implementation?: any): any {

@@ -430,7 +430,7 @@ class Runtime {
           (typeof globalMock === 'object' && globalMock !== null) ||
           typeof globalMock === 'function'
         ) {
-          globalMock._isMockFunction && globalMock.mockClear();
+          globalMock._isMockFunction === true && globalMock.mockClear();
         }
       });
 
