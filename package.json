@@ -49,7 +49,7 @@
     "prettylint": "^1.0.0",
     "progress": "^2.0.0",
     "readable-stream": "^3.0.3",
-    "regenerator-runtime": "^0.11.0",
+    "regenerator-runtime": "^0.12.1",
     "resolve": "^1.4.0",
     "rimraf": "^2.6.2",
     "rollup": "^0.66.1",
