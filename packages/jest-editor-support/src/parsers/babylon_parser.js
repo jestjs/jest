@@ -8,9 +8,9 @@
  */
 
 import fs from 'fs';
-import {parse as babelParse} from '@babel/core';
+import {parse as babelParse} from '@babel/parser';
 import {Expect, ItBlock} from './parser_nodes';
-// TODO: Change import to @babel/core once types exist
+// TODO: Change import to @babel/parser once types exist
 import type {File as BabylonFile} from 'babylon';
 
 export type BabylonParserResult = {
@@ -20,13 +20,43 @@ export type BabylonParserResult = {
 
 export const getASTfor = (file: string): ?BabylonFile => {
   const data = fs.readFileSync(file).toString();
-
-  return babelParse(data, {
-    babelrc: true,
-    filename: file,
-    sourceFileName: file,
+  const config = {
+    // Enable all (most of) the things
+    // https://babeljs.io/docs/en/babel-parser#docsNav
+    plugins: [
+      'asyncGenerators',
+      'bigInt',
+      'classProperties',
+      'classPrivateProperties',
+      'classPrivateMethods',
+      // 'decorators',
+      'doExpressions',
+      'dynamicImport',
+      'exportDefaultFrom',
+      'exportNamespaceFrom',
+      'functionBind',
+      'functionSent',
+      'importMeta',
+      'jsx',
+      'logicalAssignment',
+      'nullishCoalescingOperator',
+      'numericSeparator',
+      'objectRestSpread',
+      'optionalCatchBinding',
+      'optionalChaining',
+      // 'pipelineOperator',
+      'throwExpressions',
+    ],
     sourceType: 'module',
-  });
+  };
+
+  if (process.env.JEST_BABEL_TYPESCRIPT) {
+    config.plugins.push('typescript');
+  } else {
+    config.plugins.push('flow', 'flowComments');
+  }
+
+  return babelParse(data, config);
 };
 
 export const parse = (file: string): BabylonParserResult => {
