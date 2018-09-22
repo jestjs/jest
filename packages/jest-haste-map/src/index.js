@@ -74,6 +74,7 @@ type InternalOptions = {
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
+  hiddenFiles: Array<string>,
   ignorePattern: HasteRegExp,
   maxWorkers: number,
   mocksPattern: ?RegExp,
