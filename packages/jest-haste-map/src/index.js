@@ -688,9 +688,7 @@ class HasteMap extends EventEmitter {
         : os.platform() === 'darwin'
           ? sane.FSEventsWatcher
           : sane.NodeWatcher;
-    const extensions = this._options.extensions;
-    const hiddenFiles = this._options.hiddenFiles;
-    const ignorePattern = this._options.ignorePattern;
+    const {extensions, hiddenFiles, ignorePattern} = this._options;
     let changeQueue = Promise.resolve();
     let eventsQueue = [];
     // We only need to copy the entire haste map once on every "frame".
