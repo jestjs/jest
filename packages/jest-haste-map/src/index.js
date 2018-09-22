@@ -74,7 +74,6 @@ type InternalOptions = {
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
-  hiddenFiles: Array<string>,
   ignorePattern: HasteRegExp,
   maxWorkers: number,
   mocksPattern: ?RegExp,
@@ -231,7 +230,6 @@ class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
-      hiddenFiles: ['.gitignore', '.hgignore'],
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
@@ -689,7 +687,8 @@ class HasteMap extends EventEmitter {
         : os.platform() === 'darwin'
           ? sane.FSEventsWatcher
           : sane.NodeWatcher;
-    const {extensions, hiddenFiles, ignorePattern} = this._options;
+    const {extensions, ignorePattern} = this._options;
+    const hiddenFiles = ['.gitignore', '.hgignore'];
     let changeQueue = Promise.resolve();
     let eventsQueue = [];
     // We only need to copy the entire haste map once on every "frame".
