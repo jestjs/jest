@@ -230,6 +230,7 @@ class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
+      hiddenFiles: ['.gitignore', '.hgignore'],
       ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
@@ -688,6 +689,7 @@ class HasteMap extends EventEmitter {
           ? sane.FSEventsWatcher
           : sane.NodeWatcher;
     const extensions = this._options.extensions;
+    const hiddenFiles = this._options.hiddenFiles;
     const ignorePattern = this._options.ignorePattern;
     let changeQueue = Promise.resolve();
     let eventsQueue = [];
@@ -696,8 +698,11 @@ class HasteMap extends EventEmitter {
 
     const createWatcher = root => {
       const watcher = new Watcher(root, {
-        dot: false,
-        glob: extensions.map(extension => '**/*.' + extension),
+        dot: true,
+        glob: [
+          ...extensions.map(extension => '**/*.' + extension),
+          ...hiddenFiles.map(hiddenFile => '**/' + hiddenFile),
+        ],
         ignored: ignorePattern,
       });
 
@@ -738,10 +743,11 @@ class HasteMap extends EventEmitter {
       stat: ?fs.Stats,
     ) => {
       filePath = path.join(root, normalizePathSep(filePath));
+      const suffixes = [...hiddenFiles, ...extensions];
       if (
         (stat && stat.isDirectory()) ||
         this._ignore(filePath) ||
-        !extensions.some(extension => filePath.endsWith(extension))
+        !suffixes.some(suffix => filePath.endsWith(suffix))
       ) {
         return;
       }
