@@ -98,7 +98,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"noStackTrace\\": false,
     \\"nonFlagArgs\\": [],
     \\"notify\\": false,
-    \\"notifyMode\\": \\"always\\",
+    \\"notifyMode\\": \\"failure-change\\",
     \\"passWithNoTests\\": false,
     \\"projects\\": null,
     \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",

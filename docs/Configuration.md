@@ -393,7 +393,7 @@ Activates notifications for test results.
 
 ### `notifyMode` [string]
 
-Default: `always`
+Default: `failure-change`
 
 Specifies notification mode. Requires `notify: true`.
 

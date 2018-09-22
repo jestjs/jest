@@ -68,7 +68,7 @@ export default ({
   name: 'string',
   noStackTrace: false,
   notify: false,
-  notifyMode: 'always',
+  notifyMode: 'failure-change',
   onlyChanged: false,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
