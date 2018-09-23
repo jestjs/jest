@@ -9,6 +9,7 @@
 
 ### Fixes
 
+- `[jest-each]` Add each array validation check ([#7033](https://github.com/facebook/jest/pull/7033))
 - `[jest-haste-map]` [**BREAKING**] Replace internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
 - `[jest-haste-map]` Do not visit again files with the same sha-1 ([#6990](https://github.com/facebook/jest/pull/6990))
 - `[jest-jasmine2]` Fix memory leak in Error objects hold by the framework ([#6965](https://github.com/facebook/jest/pull/6965))
