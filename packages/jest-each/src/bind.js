@@ -38,7 +38,11 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
 
       if (!Array.isArray(tableArg)) {
         const error = errorWithStack(
-          '`.each` must be called with an Array or Tagged Template String.\n',
+          '`.each` must be called with an Array or Tagged Template String.\n\n' +
+            `Instead was called with: ${pretty(tableArg, {
+              maxDepth: 1,
+              min: true,
+            })}\n`,
           eachBind,
         );
         return cb(title, () => {
