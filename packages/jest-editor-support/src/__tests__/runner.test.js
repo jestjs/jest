@@ -464,7 +464,7 @@ describe('events', () => {
 
     it('should track when "No tests found related to files changed since master" is received', () => {
       const data = Buffer.from(
-        'No tests found related to files changed since master.\n' +
+        'No tests found related to files changed since "master".\n' +
           'Press `a` to run all tests, or run Jest with `--watchAll`.',
       );
       fakeProcess.stderr.emit('data', data);
@@ -496,7 +496,7 @@ describe('events', () => {
 
     it('should identify "No tests found related to files changed since git ref."', () => {
       const buf = Buffer.from(
-        'No tests found related to files changed since master.\n' +
+        'No tests found related to files changed since "master".\n' +
           'Press `a` to run all tests, or run Jest with `--watchAll`.',
       );
       expect(runner.findMessageType(buf)).toBe(messageTypes.noTests);

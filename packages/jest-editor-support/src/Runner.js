@@ -177,7 +177,7 @@ export default class Runner extends EventEmitter {
 
   findMessageType(buf: Buffer): MessageType {
     const str = buf.toString('utf8', 0, 58);
-    const lastCommitRegex = /No tests found related to files changed since ((last commit)|([a-z0-9]+))./;
+    const lastCommitRegex = /No tests found related to files changed since ((last commit)|("[a-z0-9]+"))./;
     if (lastCommitRegex.test(str)) {
       return messageTypes.noTests;
     }
