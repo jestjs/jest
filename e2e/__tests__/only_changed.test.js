@@ -21,6 +21,29 @@ const HG = 'hg --config ui.username=jest_test';
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
+test('run for "onlyChanged" and "changedSince"', () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    'file1.js': 'module.exports = {}',
+    'package.json': '{}',
+  });
+
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit -m "first"`, DIR);
+
+  let stdout = runJest(DIR, ['-o']).stdout;
+  expect(stdout).toMatch(
+    /No tests found related to files changed since last commit./,
+  );
+
+  stdout = runJest(DIR, ['--changedSince=master']).stdout;
+  expect(stdout).toMatch(
+    /No tests found related to files changed since "master"./,
+  );
+});
+
 test('run only changed files', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
