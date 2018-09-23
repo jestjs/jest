@@ -33,11 +33,10 @@ describe('test/it error throwing', () => {
       circusIt('test1', () => {});
     }).not.toThrowError();
   });
-  it(`it throws error with missing callback function`, () => {
+  it(`it doesn't throw an error with missing callback function`, () => {
     expect(() => {
-      // $FlowFixMe: Easy, we're testing runitme errors here
       circusIt('test2');
-    }).toThrowError('Missing second argument. It must be a callback function.');
+    }).not.toThrowError();
   });
   it(`it throws an error when first argument isn't a string`, () => {
     expect(() => {
@@ -58,11 +57,10 @@ describe('test/it error throwing', () => {
       circusTest('test5', () => {});
     }).not.toThrowError();
   });
-  it(`test throws error with missing callback function`, () => {
+  it(`test doesn't throw an error with missing callback function`, () => {
     expect(() => {
-      // $FlowFixMe: Easy, we're testing runitme errors here
       circusTest('test6');
-    }).toThrowError('Missing second argument. It must be a callback function.');
+    }).not.toThrowError();
   });
   it(`test throws an error when first argument isn't a string`, () => {
     expect(() => {
