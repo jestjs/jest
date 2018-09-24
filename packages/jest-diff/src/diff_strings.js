@@ -29,10 +29,10 @@ type Original = {|
 const fgPatchMark = chalk.yellow;
 const fgDelete = chalk.green;
 const fgInsert = chalk.red;
-const fgUnchanged = chalk.dim; // common lines (even indentation same)
-const fgInchanged = chalk.cyan; // common lines (only indentation different)
-const bgUnchanged = chalk.bgYellow; // edge spaces in common line (even indentation same)
-const bgDefault = chalk.inverse; // edge spaces in any other lines
+const fgCommon = chalk.dim; // common lines (even indentation same)
+const fgIndent = chalk.cyan; // common lines (only indentation different)
+const bgCommon = chalk.bgYellow; // edge spaces in common line (even indentation same)
+const bgInverse = chalk.inverse; // edge spaces in any other lines
 
 // ONLY trailing if expected value is snapshot or multiline string.
 const highlightTrailingSpaces = (line: string, bgColor: Chalk): string =>
@@ -74,7 +74,7 @@ const formatDelete = (
     const aLineIn = aLinesIn[aIndex];
     const indentation = aLineIn.slice(0, aLineIn.length - aLineUn.length);
 
-    put(fgDelete('- ' + indentation + highlightSpaces(aLineUn, bgDefault)));
+    put(fgDelete('- ' + indentation + highlightSpaces(aLineUn, bgInverse)));
   }
 };
 
@@ -92,7 +92,7 @@ const formatInsert = (
     const bLineIn = bLinesIn[bIndex];
     const indentation = bLineIn.slice(0, bLineIn.length - bLineUn.length);
 
-    put(fgInsert('+ ' + indentation + highlightSpaces(bLineUn, bgDefault)));
+    put(fgInsert('+ ' + indentation + highlightSpaces(bLineUn, bgInverse)));
   }
 };
 
@@ -119,8 +119,8 @@ const formatCommon = (
 
     // Color shows whether expected and received line has same indentation.
     const hasSameIndentation = aLinesIn[aCommon].length === bLineInLength;
-    const fg = hasSameIndentation ? fgUnchanged : fgInchanged;
-    const bg = hasSameIndentation ? bgUnchanged : bgDefault;
+    const fg = hasSameIndentation ? fgCommon : fgIndent;
+    const bg = hasSameIndentation ? bgCommon : bgInverse;
 
     put(fg('  ' + indentation + highlightSpaces(bLineUn, bg)));
   }
