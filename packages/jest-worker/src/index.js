@@ -69,6 +69,7 @@ export default class {
     const sharedWorkerOptions = {
       forkOptions: options.forkOptions || {},
       maxRetries: options.maxRetries || 3,
+      setupArgs: options.setupArgs || [],
       workerPath,
     };
 

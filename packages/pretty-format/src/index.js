@@ -102,6 +102,7 @@ function printBasicValue(
   val: any,
   printFunctionName: boolean,
   escapeRegex: boolean,
+  escapeString: boolean,
 ): StringOrNull {
   if (val === true || val === false) {
     return '' + val;
@@ -119,7 +120,10 @@ function printBasicValue(
     return printNumber(val);
   }
   if (typeOf === 'string') {
-    return '"' + val.replace(/"|\\/g, '\\$&') + '"';
+    if (escapeString) {
+      return '"' + val.replace(/"|\\/g, '\\$&') + '"';
+    }
+    return '"' + val + '"';
   }
   if (typeOf === 'function') {
     return printFunction(val, printFunctionName);
@@ -322,6 +326,7 @@ function printer(
     val,
     config.printFunctionName,
     config.escapeRegex,
+    config.escapeString,
   );
   if (basicResult !== null) {
     return basicResult;
@@ -350,6 +355,7 @@ const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME);
 const DEFAULT_OPTIONS: Options = {
   callToJSON: true,
   escapeRegex: false,
+  escapeString: true,
   highlight: false,
   indent: 2,
   maxDepth: Infinity,
@@ -424,6 +430,11 @@ const getEscapeRegex = (options?: OptionsReceived) =>
     ? options.escapeRegex
     : DEFAULT_OPTIONS.escapeRegex;
 
+const getEscapeString = (options?: OptionsReceived) =>
+  options && options.escapeString !== undefined
+    ? options.escapeString
+    : DEFAULT_OPTIONS.escapeString;
+
 const getConfig = (options?: OptionsReceived): Config => ({
   callToJSON:
     options && options.callToJSON !== undefined
@@ -434,6 +445,7 @@ const getConfig = (options?: OptionsReceived): Config => ({
       ? getColorsHighlight(options)
       : getColorsEmpty(),
   escapeRegex: getEscapeRegex(options),
+  escapeString: getEscapeString(options),
   indent:
     options && options.min
       ? ''
@@ -475,6 +487,7 @@ function prettyFormat(val: any, options?: OptionsReceived): string {
     val,
     getPrintFunctionName(options),
     getEscapeRegex(options),
+    getEscapeString(options),
   );
   if (basicResult !== null) {
     return basicResult;

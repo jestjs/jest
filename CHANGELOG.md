@@ -2,13 +2,37 @@
 
 ### Features
 
-- Breaking Change: `[jest-diff]` Replace `diff` with `diff-sequences` package ([#6961](https://github.com/facebook/jest/pull/6961))
+- `[pretty-format]` Option to not escape strings in diff messages ([#5661](https://github.com/facebook/jest/pull/5661))
+- `[jest-diff]` [**BREAKING**] Replace `diff` with `diff-sequences` package ([#6961](https://github.com/facebook/jest/pull/6961))
+- `[jest-haste-map]` Add `getFileIterator` to `HasteFS` for faster file iteration ([#7010](https://github.com/facebook/jest/pull/7010)).
+- `[jest-worker]` [**BREAKING**] Add functionality to call a `setup` method in the worker before the first call and a `teardown` method when ending the farm ([#7014](https://github.com/facebook/jest/pull/7014)).
+- `[jest-config]` [**BREAKING**] Set default `notifyMode` to `failure-change` ([#7024](https://github.com/facebook/jest/pull/7024))
+
+### Fixes
+
+- `[jest-each]` Add each array validation check ([#7033](https://github.com/facebook/jest/pull/7033))
+- `[jest-haste-map]` [**BREAKING**] Replace internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
+- `[jest-haste-map]` Do not visit again files with the same sha-1 ([#6990](https://github.com/facebook/jest/pull/6990))
+- `[jest-jasmine2]` Fix memory leak in Error objects hold by the framework ([#6965](https://github.com/facebook/jest/pull/6965))
+- `[jest-haste-map]` Fixed Haste whitelist generation for scoped modules on Windows ([#6980](https://github.com/facebook/jest/pull/6980))
+- `[jest-mock]` Fix inheritance of static properties and methods in mocks ([#7003](https://github.com/facebook/jest/pull/7003))
+- `[jest-mock]` Fix mocking objects without `Object.prototype` in their prototype chain ([#7003](https://github.com/facebook/jest/pull/7003))
+- `[jest-cli]` Update jest-cli to show git ref in message when using `changedSince` ([#7028](https://github.com/facebook/jest/pull/7028))
+
+### Chore & Maintenance
+
+- `[docs]` Fix babel-core installation instructions ([#6745](https://github.com/facebook/jest/pull/6745))
+- `[docs]` Explain how to rewrite assertions to avoid large irrelevant diff ([#6971](https://github.com/facebook/jest/pull/6971))
+- `[examples]` add example using Babel 7 ([#6983](https://github.com/facebook/jest/pull/6983))
+- `[docs]` Replace shallow equality with referential identity in `ExpectAPI.md` ([#6991](https://github.com/facebook/jest/pull/6991))
+- `[jest-changed-files]` Refactor to use `execa` over `child_process` ([#6987](https://github.com/facebook/jest/pull/6987))
+- `[*]` Bump dated dependencies ([#6978](https://github.com/facebook/jest/pull/6978))
 
 ## 23.6.0
 
 ### Features
 
-- `[jest-ci]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
+- `[jest-cli]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
 - `[babel-jest]` Add support for `babel.config.js` added in Babel 7.0.0 ([#6911](https://github.com/facebook/jest/pull/6911))
 
 ### Fixes

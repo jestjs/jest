@@ -2,9 +2,10 @@ import chalk from 'chalk';
 import {isInteractive} from 'jest-util';
 
 export default function getNoTestFoundRelatedToChangedFiles(globalConfig) {
-  let msg = chalk.bold(
-    'No tests found related to files changed since last commit.',
-  );
+  const ref = globalConfig.changedSince
+    ? `"${globalConfig.changedSince}"`
+    : 'last commit';
+  let msg = chalk.bold(`No tests found related to files changed since ${ref}.`);
 
   if (isInteractive) {
     msg += chalk.dim(
