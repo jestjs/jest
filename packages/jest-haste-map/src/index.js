@@ -258,7 +258,9 @@ class HasteMap extends EventEmitter {
       this._options.cacheDirectory,
       `haste-map-${this._options.name}`,
       VERSION,
-      this._options.roots.join(':'),
+      this._options.roots
+        .map(root => path.relative(options.rootDir, root))
+        .join(':'),
       this._options.extensions.join(':'),
       this._options.platforms.join(':'),
       this._options.computeSha1.toString(),
