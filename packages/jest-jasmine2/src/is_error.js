@@ -13,6 +13,7 @@ export default function isError(potentialError: any) {
   // duck-type Error, see #2549
   const isError =
     typeof potentialError === 'object' &&
+    potentialError !== null &&
     typeof potentialError.message === 'string' &&
     typeof potentialError.name === 'string';
   const message = isError
