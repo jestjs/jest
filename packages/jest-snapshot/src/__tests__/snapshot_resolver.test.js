@@ -96,4 +96,13 @@ describe('malformed custom resolver in project config', () => {
       buildSnapshotResolver(projectConfig);
     }).toThrowErrorMatchingSnapshot();
   });
+
+  it('inconsistent functions throws ', () => {
+    const projectConfig = newProjectConfig(
+      'customSnapshotResolver-inconsistent-fns.js',
+    );
+    expect(() => {
+      buildSnapshotResolver(projectConfig);
+    }).toThrowErrorMatchingSnapshot();
+  });
 });

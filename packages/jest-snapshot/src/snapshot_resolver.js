@@ -51,12 +51,16 @@ function createCustomSnapshotResolver(
     throw new TypeError(mustImplement('resolveTestPath'));
   }
 
-  return {
+  const customResolver = {
     resolveSnapshotPath: testPath =>
       custom.resolveSnapshotPath(testPath, DOT_EXTENSION),
     resolveTestPath: snapshotPath =>
       custom.resolveTestPath(snapshotPath, DOT_EXTENSION),
   };
+
+  verifyConsistentTransformations(customResolver);
+
+  return customResolver;
 }
 
 function mustImplement(functionName: string) {
@@ -66,4 +70,22 @@ function mustImplement(functionName: string) {
     ) +
     '\nDocumentation: https://facebook.github.io/jest/docs/en/configuration.html#snapshotResolver'
   );
+}
+
+function verifyConsistentTransformations(custom: SnapshotResolver) {
+  const fakeTestPath = path.join(
+    'some-path',
+    '__tests__',
+    'snapshot_resolver.test.js',
+  );
+  const transformedPath = custom.resolveTestPath(
+    custom.resolveSnapshotPath(fakeTestPath),
+  );
+  if (transformedPath !== fakeTestPath) {
+    throw new Error(
+      chalk.bold(
+        `Custom snapshot resolver functions must transform paths consistently, i.e. expects resolveTestPath(resolveSnapshotPath('${fakeTestPath}')) === ${transformedPath}`,
+      ),
+    );
+  }
 }
