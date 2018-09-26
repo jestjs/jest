@@ -10,9 +10,11 @@
 
 'use strict';
 
+import type {ProjectConfig} from 'types/Config';
+
 import traverse from 'babel-traverse';
 import {getASTfor} from './parsers/babylon_parser';
-import {utils} from 'jest-snapshot';
+import {buildSnapshotResolver, utils} from 'jest-snapshot';
 
 type Node = any;
 
@@ -95,11 +97,17 @@ const buildName: (
 export default class Snapshot {
   _parser: Function;
   _matchers: Array<string>;
-  constructor(parser: any, customMatchers?: Array<string>) {
+  _projectConfig: ?ProjectConfig;
+  constructor(
+    parser: any,
+    customMatchers?: Array<string>,
+    projectConfig?: ProjectConfig,
+  ) {
     this._parser = parser || getASTfor;
     this._matchers = ['toMatchSnapshot', 'toThrowErrorMatchingSnapshot'].concat(
       customMatchers || [],
     );
+    this._projectConfig = projectConfig;
   }
 
   getMetadata(filePath: string): Array<SnapshotMetadata> {
@@ -127,7 +135,9 @@ export default class Snapshot {
       },
     });
 
-    const snapshotPath = utils.getSnapshotPath(filePath);
+    // NOTE if no projectConfig is given the default resolver will be used
+    const snapshotResolver = buildSnapshotResolver(this._projectConfig || {});
+    const snapshotPath = snapshotResolver.resolveSnapshotPath(filePath);
     const snapshots = utils.getSnapshotData(snapshotPath, 'none').data;
     let lastParent = null;
     let count = 1;

@@ -453,6 +453,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'moduleLoader':
       case 'runner':
       case 'setupTestFrameworkScriptFile':
+      case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
       case 'filter':
