@@ -22,6 +22,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Document `--runTestsByPath` CLI parameter ([#7046](https://github.com/facebook/jest/pull/7046))
 - `[docs]` Fix babel-core installation instructions ([#6745](https://github.com/facebook/jest/pull/6745))
 - `[docs]` Explain how to rewrite assertions to avoid large irrelevant diff ([#6971](https://github.com/facebook/jest/pull/6971))
 - `[examples]` add example using Babel 7 ([#6983](https://github.com/facebook/jest/pull/6983))
