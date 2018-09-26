@@ -73,7 +73,7 @@ function mustImplement(functionName: string) {
 }
 
 function verifyConsistentTransformations(custom: SnapshotResolver) {
-  const fakeTestPath = path.join(
+  const fakeTestPath = path.posix.join(
     'some-path',
     '__tests__',
     'snapshot_resolver.test.js',
