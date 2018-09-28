@@ -24,6 +24,7 @@ import {
   invariant,
   makeRunResult,
   getOriginalPromise,
+  makeTimeoutMessage,
 } from './utils';
 
 const Promise = getOriginalPromise();
@@ -138,8 +139,22 @@ const _callCircusHook = ({
 }): Promise<mixed> => {
   dispatch({hook, name: 'hook_start'});
   const timeout = hook.timeout || getState().testTimeout;
+  const startTime = Date.now();
   return callAsyncCircusFn(hook.fn, testContext, {isHook: true, timeout})
-    .then(() => dispatch({describeBlock, hook, name: 'hook_success', test}))
+    .then(() => {
+      // when running single threaded, we need to double check the timeout
+      if (Date.now() - startTime < timeout) {
+        return dispatch({describeBlock, hook, name: 'hook_success', test});
+      } else {
+        return dispatch({
+          describeBlock,
+          error: makeTimeoutMessage(timeout, true),
+          hook,
+          name: 'hook_failure',
+          test,
+        });
+      }
+    })
     .catch(error =>
       dispatch({describeBlock, error, hook, name: 'hook_failure', test}),
     );
