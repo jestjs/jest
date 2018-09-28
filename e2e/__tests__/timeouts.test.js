@@ -40,6 +40,30 @@ test('exceeds the timeout', () => {
   expect(status).toBe(1);
 });
 
+test('exceeds the timeout synchronously', () => {
+  writeFiles(DIR, {
+    '__tests__/a-banana.js': `
+      jest.setTimeout(20);
+
+      test('banana', () => {
+        const startTime = new Date().getTime();
+        while (new Date().getTime() - startTime < 100) {
+          ;
+        }
+      });
+    `,
+    'package.json': '{}',
+  });
+
+  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stderr);
+  expect(rest).toMatch(
+    /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
+  );
+  expect(summary).toMatchSnapshot();
+  expect(status).toBe(1);
+});
+
 test('does not exceed the timeout', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
