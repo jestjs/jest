@@ -572,7 +572,20 @@ describe('.toBeNaN()', () => {
 });
 
 describe('.toBeNull()', () => {
-  [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
+  [
+    {},
+    [],
+    true,
+    1,
+    'a',
+    0.5,
+    new Map(),
+    () => {},
+    Infinity,
+    0,
+    '',
+    undefined,
+  ].forEach(v => {
     test(`fails for '${stringify(v)}' with .not`, () => {
       jestExpect(v).not.toBeNull();
 
@@ -589,8 +602,45 @@ describe('.toBeNull()', () => {
   });
 });
 
+describe('.toBeNullish()', () => {
+  [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity, 0, ''].forEach(
+    v => {
+      test(`fails for '${stringify(v)}' with .not`, () => {
+        jestExpect(v).not.toBeNullish();
+
+        expect(() =>
+          jestExpect(v).toBeNullish(),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    },
+  );
+
+  [null, undefined].forEach(v => {
+    test(`passes for ${stringify(v)}`, () => {
+      jestExpect(v).toBeNullish();
+
+      expect(() =>
+        jestExpect(null).not.toBeNullish(),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+});
+
 describe('.toBeDefined(), .toBeUndefined()', () => {
-  [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
+  [
+    {},
+    [],
+    true,
+    1,
+    'a',
+    0.5,
+    new Map(),
+    () => {},
+    Infinity,
+    0,
+    '',
+    null,
+  ].forEach(v => {
     test(`'${stringify(v)}' is defined`, () => {
       jestExpect(v).toBeDefined();
       jestExpect(v).not.toBeUndefined();

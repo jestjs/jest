@@ -242,6 +242,18 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
+  toBeNullish(actual: any, expected: void) {
+    ensureNoExpected(expected, '.toBeNullish');
+    const pass = actual == null;
+    const message = () =>
+      matcherHint('.toBeNullish', 'received', '', {
+        isNot: this.isNot,
+      }) +
+      '\n\n' +
+      `Received: ${printReceived(actual)}`;
+    return {message, pass};
+  },
+
   toBeTruthy(actual: any, expected: void) {
     ensureNoExpected(expected, '.toBeTruthy');
     const pass = !!actual;

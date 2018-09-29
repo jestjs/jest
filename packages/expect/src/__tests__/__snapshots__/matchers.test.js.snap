@@ -464,6 +464,18 @@ Expected: <green>1.2249999</>
 Received: <red>1.23</>"
 `;
 
+exports[`.toBeDefined(), .toBeUndefined() '""' is defined 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+
+Received: <red>\\"\\"</>"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '""' is defined 2`] = `
+"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+
+Received: <red>\\"\\"</>"
+`;
+
 exports[`.toBeDefined(), .toBeUndefined() '"a"' is defined 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
 
@@ -512,6 +524,18 @@ exports[`.toBeDefined(), .toBeUndefined() '{}' is defined 2`] = `
 Received: <red>{}</>"
 `;
 
+exports[`.toBeDefined(), .toBeUndefined() '0' is defined 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+
+Received: <red>0</>"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() '0' is defined 2`] = `
+"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+
+Received: <red>0</>"
+`;
+
 exports[`.toBeDefined(), .toBeUndefined() '0.5' is defined 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
 
@@ -558,6 +582,18 @@ exports[`.toBeDefined(), .toBeUndefined() 'Map {}' is defined 2`] = `
 "<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
 
 Received: <red>Map {}</>"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() 'null' is defined 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+
+Received: <red>null</>"
+`;
+
+exports[`.toBeDefined(), .toBeUndefined() 'null' is defined 2`] = `
+"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+
+Received: <red>null</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() 'true' is defined 1`] = `
@@ -1214,6 +1250,12 @@ exports[`.toBeNaN() throws 10`] = `
 Received: <red>-Infinity</>"
 `;
 
+exports[`.toBeNull() fails for '""' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+
+Received: <red>\\"\\"</>"
+`;
+
 exports[`.toBeNull() fails for '"a"' with .not 1`] = `
 "<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
 
@@ -1236,6 +1278,12 @@ exports[`.toBeNull() fails for '{}' with .not 1`] = `
 "<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
 
 Received: <red>{}</>"
+`;
+
+exports[`.toBeNull() fails for '0' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+
+Received: <red>0</>"
 `;
 
 exports[`.toBeNull() fails for '0.5' with .not 1`] = `
@@ -1268,8 +1316,92 @@ exports[`.toBeNull() fails for 'true' with .not 1`] = `
 Received: <red>true</>"
 `;
 
+exports[`.toBeNull() fails for 'undefined' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+
+Received: <red>undefined</>"
+`;
+
 exports[`.toBeNull() pass for null 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeNull(</><dim>)</>
+
+Received: <red>null</>"
+`;
+
+exports[`.toBeNullish() fails for '""' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>\\"\\"</>"
+`;
+
+exports[`.toBeNullish() fails for '"a"' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>\\"a\\"</>"
+`;
+
+exports[`.toBeNullish() fails for '[]' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>[]</>"
+`;
+
+exports[`.toBeNullish() fails for '[Function anonymous]' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>[Function anonymous]</>"
+`;
+
+exports[`.toBeNullish() fails for '{}' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>{}</>"
+`;
+
+exports[`.toBeNullish() fails for '0' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>0</>"
+`;
+
+exports[`.toBeNullish() fails for '0.5' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>0.5</>"
+`;
+
+exports[`.toBeNullish() fails for '1' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>1</>"
+`;
+
+exports[`.toBeNullish() fails for 'Infinity' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>Infinity</>"
+`;
+
+exports[`.toBeNullish() fails for 'Map {}' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>Map {}</>"
+`;
+
+exports[`.toBeNullish() fails for 'true' with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).toBeNullish(</><dim>)</>
+
+Received: <red>true</>"
+`;
+
+exports[`.toBeNullish() passes for null 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeNullish(</><dim>)</>
+
+Received: <red>null</>"
+`;
+
+exports[`.toBeNullish() passes for undefined 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeNullish(</><dim>)</>
 
 Received: <red>null</>"
 `;
