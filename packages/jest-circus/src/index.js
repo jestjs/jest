@@ -68,7 +68,9 @@ const test = (testName: TestName, fn: TestFn, timeout?: number) => {
     );
   }
   if (fn === undefined) {
-    throw new Error('Missing second argument. It must be a callback function.');
+    throw new Error(
+      'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
+    );
   }
   if (typeof fn !== 'function') {
     throw new Error(
@@ -118,6 +120,32 @@ test.only = (testName: TestName, fn: TestFn, timeout?: number) => {
     name: 'add_test',
     testName,
     timeout,
+  });
+};
+
+test.todo = (testName: TestName, ...rest: Array<mixed>) => {
+  if (rest.length > 0 || typeof testName !== 'string') {
+    const e = new Error('Todo must be called with only a description.');
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(e, test.todo);
+    }
+
+    throw e;
+  }
+
+  const asyncError = new Error();
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(asyncError, test);
+  }
+
+  return dispatch({
+    asyncError,
+    fn: () => {},
+    mode: 'todo',
+    name: 'add_test',
+    testName,
+    timeout: undefined,
   });
 };
 

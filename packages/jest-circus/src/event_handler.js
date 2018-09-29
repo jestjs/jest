@@ -105,6 +105,10 @@ const handler: EventHandler = (event, state): void => {
       event.test.status = 'skip';
       break;
     }
+    case 'test_todo': {
+      event.test.status = 'todo';
+      break;
+    }
     case 'test_done': {
       event.test.duration = getTestDuration(event.test);
       event.test.status = 'done';

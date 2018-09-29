@@ -330,6 +330,9 @@ export default function(j$) {
       if (currentDeclarationSuite.markedPending) {
         suite.pend();
       }
+      if (currentDeclarationSuite.markedTodo) {
+        suite.todo();
+      }
       addSpecsToSuite(suite, specDefinitions);
       return suite;
     };
@@ -452,7 +455,7 @@ export default function(j$) {
       }
       if (fn === undefined) {
         throw new Error(
-          'Missing second argument. It must be a callback function.',
+          'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
         );
       }
       if (typeof fn !== 'function') {
@@ -488,6 +491,24 @@ export default function(j$) {
     this.xit = function() {
       const spec = this.it.apply(this, arguments);
       spec.pend('Temporarily disabled with xit');
+      return spec;
+    };
+
+    this.todo = function() {
+      const description = arguments[0];
+      if (arguments.length !== 1 || typeof description !== 'string') {
+        const e = new Error('Todo must be called with only a description.');
+
+        if (Error.captureStackTrace) {
+          Error.captureStackTrace(e, test.todo);
+        }
+
+        throw e;
+      }
+
+      const spec = specFactory(description, () => {}, currentDeclarationSuite);
+      spec.todo();
+      currentDeclarationSuite.addChild(spec);
       return spec;
     };
 
