@@ -21,6 +21,7 @@
 - `[jest-cli]` Update jest-cli to show git ref in message when using `changedSince` ([#7028](https://github.com/facebook/jest/pull/7028))
 - `[jest-jasmine2`] Fix crash when test return Promise rejected with null ([#7049](https://github.com/facebook/jest/pull/7049))
 - `[jest-runtime]` Check `_isMockFunction` is true rather than truthy on potential global mocks ([#7017](https://github.com/facebook/jest/pull/7017))
+- `[jest-jasmine]` Show proper error message from async `assert` errors ([#6821](https://github.com/facebook/jest/pull/6821))
 
 ### Chore & Maintenance
 
