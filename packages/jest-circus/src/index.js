@@ -68,7 +68,9 @@ const test = (testName: TestName, fn: TestFn, timeout?: number) => {
     );
   }
   if (fn === undefined) {
-    throw new Error('Missing second argument. It must be a callback function.');
+    throw new Error(
+      'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
+    );
   }
   if (typeof fn !== 'function') {
     throw new Error(
