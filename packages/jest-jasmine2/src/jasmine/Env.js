@@ -35,6 +35,7 @@ import queueRunner from '../queue_runner';
 import treeProcessor from '../tree_processor';
 import checkIsError from '../is_error';
 import assertionErrorMessage from '../assert_support';
+import {ErrorWithStack} from 'jest-util';
 
 // Try getting the real promise object from the context, if available. Someone
 // could have overridden it in a test. Async functions return it implicitly.
@@ -497,13 +498,10 @@ export default function(j$) {
     this.todo = function() {
       const description = arguments[0];
       if (arguments.length !== 1 || typeof description !== 'string') {
-        const e = new Error('Todo must be called with only a description.');
-
-        if (Error.captureStackTrace) {
-          Error.captureStackTrace(e, test.todo);
-        }
-
-        throw e;
+        throw new ErrorWithStack(
+          'Todo must be called with only a description.',
+          test.todo,
+        );
       }
 
       const spec = specFactory(description, () => {}, currentDeclarationSuite);
