@@ -72,6 +72,7 @@ export type Argv = {|
   runInBand: boolean,
   setupFiles: Array<string>,
   setupTestFrameworkScriptFile: string,
+  setupTestsAfterJest: Array<string>,
   showConfig: boolean,
   silent: boolean,
   snapshotSerializers: Array<string>,

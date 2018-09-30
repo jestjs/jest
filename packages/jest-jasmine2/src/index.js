@@ -131,6 +131,12 @@ async function jasmine2(
     runtime.requireModule(config.setupTestFrameworkScriptFile);
   }
 
+  if (config.setupTestsAfterJest.length) {
+    for (let i = 0; i < config.setupTestsAfterJest.length; i++) {
+      runtime.requireModule(config.setupTestsAfterJest[i]);
+    }
+  }
+
   if (globalConfig.enabledTestsMap) {
     env.specFilter = spec => {
       const suiteMap =

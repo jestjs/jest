@@ -511,6 +511,12 @@ export const options = {
       'set up the testing framework before each test.',
     type: 'string',
   },
+  setupTestsAfterJest: {
+    description:
+      'The paths to modules that run some code to configure or ' +
+      'set up the testing framework after each test. ',
+    type: 'array',
+  },
   showConfig: {
     default: undefined,
     description: 'Print your jest config and then exits.',

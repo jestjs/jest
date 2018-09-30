@@ -109,6 +109,11 @@ const setupPreset = (
   if (options.setupFiles) {
     options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
   }
+
+  if (!options.setupTestsAfterJest) {
+    options.setupTestsAfterJest = [];
+  }
+
   if (options.modulePathIgnorePatterns && preset.modulePathIgnorePatterns) {
     options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
       options.modulePathIgnorePatterns,
@@ -414,6 +419,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeCollectCoverageOnlyFrom(options, key);
         break;
       case 'setupFiles':
+      case 'setupTestsAfterJest':
       case 'snapshotSerializers':
         value =
           options[key] &&

@@ -183,6 +183,7 @@ const getConfigs = (
     runner: options.runner,
     setupFiles: options.setupFiles,
     setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
+    setupTestsAfterJest: options.setupTestsAfterJest,
     skipFilter: options.skipFilter,
     skipNodeResolution: options.skipNodeResolution,
     snapshotResolver: options.snapshotResolver,

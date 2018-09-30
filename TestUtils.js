@@ -100,6 +100,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   runner: 'jest-runner',
   setupFiles: [],
   setupTestFrameworkScriptFile: null,
+  setupTestsAfterJest: [],
   skipFilter: false,
   skipNodeResolution: false,
   snapshotResolver: null,
