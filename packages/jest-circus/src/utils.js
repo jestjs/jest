@@ -155,7 +155,7 @@ export const getEachHooksForTest = (
 export const describeBlockHasTests = (describe: DescribeBlock) =>
   describe.tests.length || describe.children.some(describeBlockHasTests);
 
-export const makeTimeoutMessage = (timeout, isHook) =>
+export const makeTimeoutMessage = (timeout: number, isHook: ?boolean) =>
   `Exceeded timeout of ${timeout}ms for a ${
     isHook ? 'hook' : 'test'
   }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
@@ -167,7 +167,7 @@ const {setTimeout, clearTimeout} = global;
 export const callAsyncCircusFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
-  {isHook, timeout}: {isHook?: ?boolean, timeout: number},
+  {isHook, timeout}: {isHook: ?boolean, timeout: number},
 ): Promise<mixed> => {
   let timeoutID;
 
