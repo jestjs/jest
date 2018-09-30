@@ -15,13 +15,13 @@ const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
 // It does not throw on timeout.
 export default function pTimeout(
   promise: Promise<any>,
+  startTime: number,
   ms: number,
   clearTimeout: (timeoutID: number) => void,
   setTimeout: (func: () => void, delay: number) => number,
   onTimeout: () => any,
 ): Promise<any> {
   return new Promise((resolve, reject) => {
-    const startTime = Date.now();
     const timer = setTimeout(() => resolve(onTimeout()), ms);
     promise.then(
       val => {

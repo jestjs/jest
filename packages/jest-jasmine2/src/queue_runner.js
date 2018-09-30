@@ -35,6 +35,7 @@ export default function queueRunner(options: Options) {
   });
 
   const mapper = ({fn, timeout, initError = new Error()}) => {
+    let startTime;
     let promise = new Promise(resolve => {
       const next = function(err) {
         if (err) {
@@ -48,6 +49,7 @@ export default function queueRunner(options: Options) {
         resolve();
       };
       try {
+        startTime = Date.now();
         fn.call(options.userContext, next);
       } catch (e) {
         options.onException(e);
@@ -65,6 +67,7 @@ export default function queueRunner(options: Options) {
 
     return pTimeout(
       promise,
+      startTime,
       timeoutMs,
       options.clearTimeout,
       options.setTimeout,

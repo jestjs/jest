@@ -46,9 +46,8 @@ test('exceeds the timeout synchronously', () => {
       jest.setTimeout(20);
 
       test('banana', () => {
-        const startTime = new Date().getTime();
-        while (new Date().getTime() - startTime < 100) {
-          ;
+        const startTime = Date.now();
+        while (Date.now() - startTime < 100) {
         }
       });
     `,

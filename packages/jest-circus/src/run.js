@@ -146,13 +146,7 @@ const _callCircusHook = ({
       if (Date.now() - startTime < timeout) {
         return dispatch({describeBlock, hook, name: 'hook_success', test});
       } else {
-        return dispatch({
-          describeBlock,
-          error: makeTimeoutMessage(timeout, true),
-          hook,
-          name: 'hook_failure',
-          test,
-        });
+        return Promise.reject(makeTimeoutMessage(timeout, true));
       }
     })
     .catch(error =>
@@ -173,8 +167,17 @@ const _callCircusTest = (
     return Promise.resolve();
   }
 
+  const startTime = Date.now();
+
   return callAsyncCircusFn(test.fn, testContext, {isHook: false, timeout})
-    .then(() => dispatch({name: 'test_fn_success', test}))
+    .then(() => {
+      // when running single threaded, we need to double check the timeout
+      if (Date.now() - startTime < timeout) {
+        return dispatch({name: 'test_fn_success', test});
+      } else {
+        return Promise.reject(makeTimeoutMessage(timeout, false));
+      }
+    })
     .catch(error => dispatch({error, name: 'test_fn_failure', test}));
 };
 
