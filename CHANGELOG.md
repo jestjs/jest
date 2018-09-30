@@ -23,6 +23,8 @@
 - `[jest-jasmine2`] Fix crash when test return Promise rejected with null ([#7049](https://github.com/facebook/jest/pull/7049))
 - `[jest-runtime]` Check `_isMockFunction` is true rather than truthy on potential global mocks ([#7017](https://github.com/facebook/jest/pull/7017))
 - `[jest-jasmine]` Show proper error message from async `assert` errors ([#6821](https://github.com/facebook/jest/pull/6821))
+- `[jest-circus]` Fail synchronous hook timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
+- `[jest-jasmine2]` Fail synchronous test timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
 
 ### Chore & Maintenance
 
@@ -46,8 +48,6 @@
 
 ### Fixes
 
-- `[jest-circus]` Fail synchronous hook timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
-- `[jest-jasmine2]` Fail synchronous test timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
 - `[jest-resolve]` Only resolve realpath once in try-catch ([#6925](https://github.com/facebook/jest/pull/6925))
 - `[expect]` Fix TypeError in `toBeInstanceOf` on `null` or `undefined` ([#6912](https://github.com/facebook/jest/pull/6912))
 - `[jest-jasmine2]` Throw a descriptive error if the first argument supplied to a hook was not a function ([#6917](https://github.com/facebook/jest/pull/6917)) and ([#6931](https://github.com/facebook/jest/pull/6931))
