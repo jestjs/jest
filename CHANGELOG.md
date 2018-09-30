@@ -98,6 +98,7 @@
 - `[jest-runtime]` Fix mistake as test files when run coverage issue. ([#7506](https://github.com/facebook/jest/pull/7506))
 - `[jest-cli]` print info about passWithNoTests flag ([#7309](https://github.com/facebook/jest/pull/7309))
 - `[pretty-format]` Omit unnecessary symbol filter for object keys ([#7457](https://github.com/facebook/jest/pull/7457))
+- `[jest-snapshot]` Write and read snapshots from disk even if `fs` is mocked ([#7080](https://github.com/facebook/jest/pull/7080))
 
 ### Chore & Maintenance
 
