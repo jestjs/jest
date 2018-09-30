@@ -10,6 +10,7 @@
 import util from 'util';
 import chalk from 'chalk';
 import pretty from 'pretty-format';
+import {ErrorWithStack} from 'jest-util';
 
 type Table = Array<Array<any>>;
 type PrettyArgs = {
@@ -23,21 +24,13 @@ const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
 
-const errorWithStack = (message, callsite) => {
-  const error = new Error(message);
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(error, callsite);
-  }
-  return error;
-};
-
 export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
   function eachBind(title: string, test: Function, timeout: number): void {
     if (args.length === 1) {
       const [tableArg] = args;
 
       if (!Array.isArray(tableArg)) {
-        const error = errorWithStack(
+        const error = new ErrorWithStack(
           '`.each` must be called with an Array or Tagged Template String.\n\n' +
             `Instead was called with: ${pretty(tableArg, {
               maxDepth: 1,
@@ -70,7 +63,7 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
     const missingData = data.length % keys.length;
 
     if (missingData > 0) {
-      const error = errorWithStack(
+      const error = new ErrorWithStack(
         'Not enough arguments supplied for given headings:\n' +
           EXPECTED_COLOR(keys.join(' | ')) +
           '\n\n' +
