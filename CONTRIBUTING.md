@@ -88,7 +88,7 @@ It is possible to run the integration test itself manually to inspect that the n
 
 ```bash
 $ cd e2e/clear-cache
-$ ../../packages/jest-cli/bin/jest.js
+$ node ../../packages/jest-cli/bin/jest.js # It is possible to use node --inspect or ndb
 PASS  __tests__/clear_cache.test.js
 ✓ stub (3ms)
 
