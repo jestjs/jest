@@ -26,6 +26,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Add link for jest-extended in expect docs ([#7078](https://github.com/facebook/jest/pull/7078))
 - `[jest-util]` Add ErrorWithStack class ([#7067](https://github.com/facebook/jest/pull/7067))
 - `[docs]` Document `--runTestsByPath` CLI parameter ([#7046](https://github.com/facebook/jest/pull/7046))
 - `[docs]` Fix babel-core installation instructions ([#6745](https://github.com/facebook/jest/pull/6745))
