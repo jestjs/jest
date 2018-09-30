@@ -11,6 +11,7 @@
 // could have overridden it in a test.
 const Promise: Class<Promise> =
   global[Symbol.for('jest-native-promise')] || global.Promise;
+const timestamp = Date.now.bind(Date);
 
 import PCancelable from './p_cancelable';
 import pTimeout from './p_timeout';
@@ -35,7 +36,8 @@ export default function queueRunner(options: Options) {
   });
 
   const mapper = ({fn, timeout, initError = new Error()}) => {
-    let startTime;
+    // Flow wants us to initialize this even though it's safe
+    let startTime: number = timestamp();
     let promise = new Promise(resolve => {
       const next = function(err) {
         if (err) {
@@ -49,7 +51,7 @@ export default function queueRunner(options: Options) {
         resolve();
       };
       try {
-        startTime = Date.now();
+        startTime = timestamp();
         fn.call(options.userContext, next);
       } catch (e) {
         options.onException(e);

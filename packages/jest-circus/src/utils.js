@@ -244,9 +244,11 @@ export const callAsyncCircusFn = (
     });
 };
 
+export const getTimestamp = Date.now.bind(Date);
+
 export const getTestDuration = (test: TestEntry): ?number => {
   const {startedAt} = test;
-  return startedAt ? Date.now() - startedAt : null;
+  return startedAt ? getTimestamp() - startedAt : null;
 };
 
 export const makeRunResult = (
