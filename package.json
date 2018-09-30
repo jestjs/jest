@@ -73,7 +73,7 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "slash": "^2.0.0",
     "string-length": "^2.0.0",
-    "strip-ansi": "^4.0.0",
+    "strip-ansi": "^5.0.0",
     "typescript": "^2.2.2",
     "watchify": "^3.9.0"
   },
