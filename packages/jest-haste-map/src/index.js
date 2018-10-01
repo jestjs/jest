@@ -255,9 +255,13 @@ class HasteMap extends EventEmitter {
           'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
       );
     }
+    const rootDirHash = crypto
+      .createHash('md5')
+      .update(options.rootDir)
+      .digest('hex');
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
-      `haste-map-${this._options.name}`,
+      `haste-map-${this._options.name}-${rootDirHash}`,
       VERSION,
       this._options.roots
         .map(root => fastPath.relative(options.rootDir, root))
