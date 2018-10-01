@@ -10,7 +10,7 @@
 import type {Glob, Path} from 'types/Config';
 import type {FileData} from 'types/HasteMap';
 
-import path from 'path';
+import * as fastPath from './lib/fast_path';
 import micromatch from 'micromatch';
 import H from './constants';
 
@@ -48,7 +48,7 @@ export default class HasteFS {
 
   *getFileIterator(): Iterator<string> {
     for (const file of this._files.keys()) {
-      yield path.resolve(this._rootDir, file);
+      yield fastPath.resolve(this._rootDir, file);
     }
   }
 
@@ -68,7 +68,7 @@ export default class HasteFS {
   matchFilesWithGlob(globs: Array<Glob>, root: ?Path): Set<Path> {
     const files = new Set();
     for (const file of this.getFileIterator()) {
-      const filePath = root ? path.relative(root, file) : file;
+      const filePath = root ? fastPath.relative(root, file) : file;
       if (micromatch([filePath], globs).length) {
         files.add(file);
       }
@@ -77,7 +77,7 @@ export default class HasteFS {
   }
 
   _getFileData(file: Path) {
-    const relativePath = path.relative(this._rootDir, file);
+    const relativePath = fastPath.relative(this._rootDir, file);
     return this._files.get(relativePath);
   }
 }

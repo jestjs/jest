@@ -14,6 +14,7 @@ import fs from 'fs';
 import path from 'path';
 import {spawn} from 'child_process';
 import H from '../constants';
+import * as fastPath from '../lib/fast_path';
 
 type Callback = (result: Array<[/* id */ string, /* mtime */ number]>) => void;
 
@@ -141,7 +142,7 @@ module.exports = function nodeCrawl(
       const files = new Map();
       list.forEach(fileData => {
         const filePath = fileData[0];
-        const relativeFilePath = path.relative(rootDir, filePath);
+        const relativeFilePath = fastPath.relative(rootDir, filePath);
         const mtime = fileData[1];
         const existingFile = data.files.get(relativeFilePath);
         if (existingFile && existingFile[H.MTIME] === mtime) {

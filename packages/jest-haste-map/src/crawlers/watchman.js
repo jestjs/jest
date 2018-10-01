@@ -10,6 +10,7 @@
 import type {InternalHasteMap} from 'types/HasteMap';
 import type {CrawlerOptions} from '../types';
 
+import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalize_path_sep';
 import path from 'path';
 import watchman from 'fb-watchman';
@@ -112,7 +113,7 @@ module.exports = async function watchmanCrawl(
             }
           }
 
-          const relativeRoot = path.relative(rootDir, root);
+          const relativeRoot = fastPath.relative(rootDir, root);
           const query = clocks.has(relativeRoot)
             ? // Use the `since` generator if we have a clock available
               {expression, fields, since: clocks.get(relativeRoot)}
@@ -160,11 +161,12 @@ module.exports = async function watchmanCrawl(
 
   for (const [watchRoot, response] of watchmanFiles) {
     const fsRoot = normalizePathSep(watchRoot);
-    const relativeFsRoot = path.relative(rootDir, fsRoot);
+    const relativeFsRoot = fastPath.relative(rootDir, fsRoot);
     clocks.set(relativeFsRoot, response.clock);
+
     for (const fileData of response.files) {
       const filePath = fsRoot + path.sep + normalizePathSep(fileData.name);
-      const relativeFilePath = path.relative(rootDir, filePath);
+      const relativeFilePath = fastPath.relative(rootDir, filePath);
 
       if (!fileData.exists) {
         files.delete(relativeFilePath);

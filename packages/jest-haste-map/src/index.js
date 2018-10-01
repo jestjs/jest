@@ -29,6 +29,7 @@ import serializer from 'jest-serializer';
 // eslint-disable-next-line import/default
 import watchmanCrawl from './crawlers/watchman';
 import WatchmanWatcher from './lib/watchman_watcher';
+import * as fastPath from './lib/fast_path';
 import Worker from 'jest-worker';
 
 import type {Console} from 'console';
@@ -259,7 +260,7 @@ class HasteMap extends EventEmitter {
       `haste-map-${this._options.name}`,
       VERSION,
       this._options.roots
-        .map(root => path.relative(options.rootDir, root))
+        .map(root => fastPath.relative(options.rootDir, root))
         .join(':'),
       this._options.extensions.join(':'),
       this._options.platforms.join(':'),
@@ -395,8 +396,11 @@ class HasteMap extends EventEmitter {
         const message =
           `jest-haste-map: @providesModule naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
-          `  Paths: ${path.resolve(rootDir, module[H.PATH])} collides with ` +
-          `${path.resolve(rootDir, existingModule[H.PATH])}\n\nThis ` +
+          `  Paths: ${fastPath.resolve(
+            rootDir,
+            module[H.PATH],
+          )} collides with ` +
+          `${fastPath.resolve(rootDir, existingModule[H.PATH])}\n\nThis ` +
           `${this._options.throwOnModuleCollision ? 'error' : 'warning'} ` +
           `is caused by a @providesModule declaration ` +
           `with the same name across two different files.`;
@@ -432,7 +436,7 @@ class HasteMap extends EventEmitter {
       moduleMap[platform] = module;
     };
 
-    const relativeFilePath = path.relative(rootDir, filePath);
+    const relativeFilePath = fastPath.relative(rootDir, filePath);
     const fileMetadata = hasteMap.files.get(relativeFilePath);
     if (!fileMetadata) {
       throw new Error(
@@ -574,7 +578,10 @@ class HasteMap extends EventEmitter {
 
     for (const relativeFilePath of hasteMap.files.keys()) {
       // SHA-1, if requested, should already be present thanks to the crawler.
-      const filePath = path.resolve(this._options.rootDir, relativeFilePath);
+      const filePath = fastPath.resolve(
+        this._options.rootDir,
+        relativeFilePath,
+      );
       const promise = this._processFile(hasteMap, map, mocks, filePath);
       if (promise) {
         promises.push(promise);
@@ -802,7 +809,7 @@ class HasteMap extends EventEmitter {
 
           const add = () => eventsQueue.push({filePath, stat, type});
 
-          const relativeFilePath = path.relative(rootDir, filePath);
+          const relativeFilePath = fastPath.relative(rootDir, filePath);
           const fileMetadata = hasteMap.files.get(relativeFilePath);
 
           // If it's not an addition, delete the file and all its metadata

@@ -18,7 +18,7 @@ import type {
   MockData,
 } from 'types/HasteMap';
 
-import path from 'path';
+import * as fastPath from './lib/fast_path';
 import H from './constants';
 
 const EMPTY_MAP = {};
@@ -58,7 +58,7 @@ export default class ModuleMap {
     );
     if (module && module[H.TYPE] === type) {
       const modulePath = module[H.PATH];
-      return modulePath && path.resolve(this._raw.rootDir, modulePath);
+      return modulePath && fastPath.resolve(this._raw.rootDir, modulePath);
     }
     return null;
   }
@@ -74,7 +74,7 @@ export default class ModuleMap {
   getMockModule(name: string): ?Path {
     const mockPath =
       this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
-    return mockPath && path.resolve(this._raw.rootDir, mockPath);
+    return mockPath && fastPath.resolve(this._raw.rootDir, mockPath);
   }
 
   getRawModuleMap(): RawModuleMap {
@@ -165,7 +165,7 @@ export default class ModuleMap {
     // Force flow refinement
     const previousSet: DuplicatesSet = relativePathSet;
     const set = Object.keys(previousSet).reduce((set, relativePath) => {
-      const duplicatePath = path.resolve(this._raw.rootDir, relativePath);
+      const duplicatePath = fastPath.resolve(this._raw.rootDir, relativePath);
       set[duplicatePath] = previousSet[relativePath];
       return set;
     }, Object.create(null));
