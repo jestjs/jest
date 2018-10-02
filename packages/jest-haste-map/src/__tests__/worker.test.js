@@ -16,6 +16,7 @@ import H from '../constants';
 
 const {worker, getSha1} = require('../worker');
 
+const rootDir = '/project';
 let mockFs;
 let readFileSync;
 let readFile;
@@ -25,26 +26,35 @@ describe('worker', () => {
 
   beforeEach(() => {
     mockFs = {
-      '/fruits/apple.png': Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
-      '/fruits/banana.js': [
+      '/project/fruits/apple.png': Buffer.from([
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+      ]),
+      '/project/fruits/banana.js': [
         '/**',
         ' * @providesModule Banana',
         ' */',
         'const Strawberry = require("Strawberry");',
       ].join('\n'),
-      '/fruits/pear.js': [
+      '/project/fruits/pear.js': [
         '/**',
         ' * @providesModule Pear',
         ' */',
         'const Banana = require("Banana");',
         'const Strawberry = require(`Strawberry`);',
       ].join('\n'),
-      '/fruits/strawberry.js': [
+      '/project/fruits/strawberry.js': [
         '/**',
         ' * @providesModule Strawberry',
         ' */',
       ].join('\n'),
-      '/package.json': [
+      '/project/package.json': [
         '{',
         '  "name": "haste-package",',
         '  "main": "foo.js"',
@@ -73,30 +83,36 @@ describe('worker', () => {
 
   it('parses JavaScript files and extracts module information', async () => {
     expect(
-      await worker({computeDependencies: true, filePath: '/fruits/pear.js'}),
+      await worker({
+        computeDependencies: true,
+        filePath: '/project/fruits/pear.js',
+        rootDir,
+      }),
     ).toEqual({
       dependencies: ['Banana', 'Strawberry'],
       id: 'Pear',
-      module: ['/fruits/pear.js', H.MODULE],
+      module: ['fruits/pear.js', H.MODULE],
     });
 
     expect(
       await worker({
         computeDependencies: true,
-        filePath: '/fruits/strawberry.js',
+        filePath: '/project/fruits/strawberry.js',
+        rootDir,
       }),
     ).toEqual({
       dependencies: [],
       id: 'Strawberry',
-      module: ['/fruits/strawberry.js', H.MODULE],
+      module: ['fruits/strawberry.js', H.MODULE],
     });
   });
 
   it('delegates to hasteImplModulePath for getting the id', async () => {
     const moduleData = await worker({
       computeDependencies: true,
-      filePath: '/fruits/strawberry.js',
+      filePath: '/project/fruits/strawberry.js',
       hasteImplModulePath: path.resolve(__dirname, 'haste_impl.js'),
+      rootDir,
     });
 
     expect(moduleData.id).toBe('strawberry');
@@ -111,11 +127,15 @@ describe('worker', () => {
 
   it('parses package.json files as haste packages', async () => {
     expect(
-      await worker({computeDependencies: true, filePath: '/package.json'}),
+      await worker({
+        computeDependencies: true,
+        filePath: '/project/package.json',
+        rootDir,
+      }),
     ).toEqual({
       dependencies: undefined,
       id: 'haste-package',
-      module: ['/package.json', H.PACKAGE],
+      module: ['package.json', H.PACKAGE],
     });
   });
 
@@ -123,7 +143,7 @@ describe('worker', () => {
     let error = null;
 
     try {
-      await worker({computeDependencies: true, filePath: '/kiwi.js'});
+      await worker({computeDependencies: true, filePath: '/kiwi.js', rootDir});
     } catch (err) {
       error = err;
     }
@@ -133,23 +153,39 @@ describe('worker', () => {
 
   it('simply computes SHA-1s when requested (works well with binary data)', async () => {
     expect(
-      await getSha1({computeSha1: true, filePath: '/fruits/apple.png'}),
+      await getSha1({
+        computeSha1: true,
+        filePath: '/project/fruits/apple.png',
+        rootDir,
+      }),
     ).toEqual({sha1: '4caece539b039b16e16206ea2478f8c5ffb2ca05'});
 
     expect(
-      await getSha1({computeSha1: false, filePath: '/fruits/banana.js'}),
+      await getSha1({
+        computeSha1: false,
+        filePath: '/project/fruits/banana.js',
+        rootDir,
+      }),
     ).toEqual({sha1: null});
 
     expect(
-      await getSha1({computeSha1: true, filePath: '/fruits/banana.js'}),
+      await getSha1({
+        computeSha1: true,
+        filePath: '/project/fruits/banana.js',
+        rootDir,
+      }),
     ).toEqual({sha1: 'f24c6984cce6f032f6d55d771d04ab8dbbe63c8c'});
 
     expect(
-      await getSha1({computeSha1: true, filePath: '/fruits/pear.js'}),
+      await getSha1({
+        computeSha1: true,
+        filePath: '/project/fruits/pear.js',
+        rootDir,
+      }),
     ).toEqual({sha1: '1bf6fc618461c19553e27f8b8021c62b13ff614a'});
 
     await expect(
-      getSha1({computeSha1: true, filePath: '/i/dont/exist.js'}),
+      getSha1({computeSha1: true, filePath: '/i/dont/exist.js', rootDir}),
     ).rejects.toThrow();
   });
 
@@ -157,13 +193,14 @@ describe('worker', () => {
     expect(
       await worker({
         computeDependencies: false,
-        filePath: '/fruits/pear.js',
+        filePath: '/project/fruits/pear.js',
         hasteImplModulePath: path.resolve(__dirname, 'haste_impl.js'),
+        rootDir,
       }),
     ).toEqual({
       dependencies: undefined,
       id: 'pear',
-      module: ['/fruits/pear.js', H.MODULE],
+      module: ['fruits/pear.js', H.MODULE],
       sha1: undefined,
     });
 

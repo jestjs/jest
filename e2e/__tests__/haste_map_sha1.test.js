@@ -40,6 +40,7 @@ test('exits the process after test are done but before timers complete', async (
     name: 'tmp',
     platforms: ['ios', 'android'],
     retainAllFiles: true,
+    rootDir: DIR,
     roots: [DIR],
     useWatchman: false,
     watch: false,
