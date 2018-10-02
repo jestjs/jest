@@ -192,8 +192,8 @@ describe('watchman watch', () => {
 
     return watchmanCrawl({
       data: {
-        clocks: Object.create(null),
-        files: Object.create(null),
+        clocks: new Map(),
+        files: new Map(),
       },
       extensions: ['js', 'json', 'zip'],
       ignore: pearMatcher,
@@ -201,12 +201,15 @@ describe('watchman watch', () => {
         n.endsWith('.zip')
           ? [path.join(n, 'foo.1.js'), path.join(n, 'foo.2.js')]
           : null,
+      rootDir: ROOT_MOCK,
       roots: ROOTS,
     }).then(data => {
-      expect(data.files).toEqual({
-        [path.join(DURIAN_RELATIVE, 'foo.1.js')]: ['', 33, 0, [], null],
-        [path.join(DURIAN_RELATIVE, 'foo.2.js')]: ['', 33, 0, [], null],
-      });
+      expect(data.files).toEqual(
+        createMap({
+          [path.join(DURIAN_RELATIVE, 'foo.1.js')]: ['', 33, 0, [], null],
+          [path.join(DURIAN_RELATIVE, 'foo.2.js')]: ['', 33, 0, [], null],
+        }),
+      );
     });
   });
 

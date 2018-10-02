@@ -184,13 +184,13 @@ module.exports = async function watchmanCrawl(
         const existingFileData = data.files.get(relativeFilePath);
         let nextData;
 
-        const isOld = existingFileData && existingFileData[H.MTIME] === mtime;
-        const hasChanged =
-          existingFileData && sha1hex && existingFileData[H.SHA1] === sha1hex;
-
-        if (existingFileData && isOld) {
+        if (existingFileData && existingFileData[H.MTIME] === mtime) {
           nextData = existingFileData;
-        } else if (existingFileData && !hasChanged) {
+        } else if (
+          existingFileData &&
+          sha1hex &&
+          existingFileData[H.SHA1] === sha1hex
+        ) {
           nextData = [...existingFileData];
           nextData[1] = mtime;
         } else {
@@ -205,7 +205,7 @@ module.exports = async function watchmanCrawl(
             if (!ignore(absoluteVirtualFilePath)) {
               const relativeVirtualFilePath = fastPath.relative(
                 rootDir,
-                filePath,
+                absoluteVirtualFilePath,
               );
               files.set(relativeVirtualFilePath, nextData);
             }
