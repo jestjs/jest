@@ -185,6 +185,15 @@ export const deepMerge = (target: any, source: any) => {
       if (isObject(source[key]) && !source[key].$$typeof) {
         if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
         else mergedOutput[key] = deepMerge(target[key], source[key]);
+      } else if (Array.isArray(source[key])) {
+        // Convert arrays to objects, merge, convert back to array
+        const mergedArrayObject = deepMerge(
+          Object.assign({}, target[key]),
+          Object.assign({}, source[key]),
+        );
+        mergedOutput[key] = Object.keys(mergedArrayObject).map(
+          arrKey => mergedArrayObject[arrKey],
+        );
       } else {
         Object.assign(mergedOutput, {[key]: source[key]});
       }
