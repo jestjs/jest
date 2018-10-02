@@ -195,12 +195,57 @@ test('serialize handles \\r\\n', () => {
 
 describe('DeepMerge', () => {
   it('Correctly merges objects with property matchers', () => {
-    const target = {data: {bar: 'bar', foo: 'foo'}};
+    /* eslint-disable sort-keys */
+    // to keep keys in numerical order rather than alphabetical
+    const target = {
+      data: {
+        one: 'one',
+        two: 'two',
+        three: [
+          {
+            four: 'four',
+            five: 'five',
+          },
+        ],
+      },
+    };
     const matcher = expect.any(String);
-    const propertyMatchers = {data: {foo: matcher}};
+    const propertyMatchers = {
+      data: {
+        two: matcher,
+        three: [
+          {
+            four: matcher,
+          },
+        ],
+      },
+    };
     const mergedOutput = deepMerge(target, propertyMatchers);
 
-    expect(mergedOutput).toStrictEqual({data: {bar: 'bar', foo: matcher}});
-    expect(target).toStrictEqual({data: {bar: 'bar', foo: 'foo'}});
+    expect(mergedOutput).toStrictEqual({
+      data: {
+        one: 'one',
+        two: matcher,
+        three: [
+          {
+            four: matcher,
+            five: 'five',
+          },
+        ],
+      },
+    });
+    expect(target).toStrictEqual({
+      data: {
+        one: 'one',
+        two: 'two',
+        three: [
+          {
+            four: 'four',
+            five: 'five',
+          },
+        ],
+      },
+    });
+    /* eslint-enable sort-keys */
   });
 });
