@@ -185,12 +185,13 @@ module.exports = async function watchmanCrawl(
         let nextData;
 
         const isOld = existingFileData && existingFileData[H.MTIME] === mtime;
-        const hasChanged = existingFileData && sha1hex && existingFileData[H.SHA1] === sha1hex;
+        const hasChanged =
+          existingFileData && sha1hex && existingFileData[H.SHA1] === sha1hex;
 
         if (existingFileData && isOld) {
           nextData = existingFileData;
         } else if (existingFileData && !hasChanged) {
-          nextData = [... existingFileData];
+          nextData = [...existingFileData];
           nextData[1] = mtime;
         } else {
           // See ../constants.js
@@ -202,7 +203,10 @@ module.exports = async function watchmanCrawl(
         if (mappings) {
           for (const absoluteVirtualFilePath of mappings) {
             if (!ignore(absoluteVirtualFilePath)) {
-              const relativeVirtualFilePath = fastPath.relative(rootDir, filePath);
+              const relativeVirtualFilePath = fastPath.relative(
+                rootDir,
+                filePath,
+              );
               files.set(relativeVirtualFilePath, nextData);
             }
           }
