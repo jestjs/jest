@@ -69,8 +69,8 @@ it('prints out info about open handlers', async () => {
         |     ^
       8 | 
 
-      at Object.<anonymous> (server.js:7:5)
-      at Object.<anonymous> (__tests__/outside.js:1:1)
+      at Object.listen (server.js:7:5)
+      at Object.require (__tests__/outside.js:1:1)
 `.trim(),
   );
 });

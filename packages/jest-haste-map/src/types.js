@@ -15,6 +15,7 @@ export type Mapper = (item: string) => ?Array<string>;
 export type WorkerMessage = {
   computeDependencies: boolean,
   computeSha1: boolean,
+  rootDir: string,
   filePath: string,
   hasteImplModulePath?: string,
 };
@@ -33,6 +34,7 @@ export type CrawlerOptions = {|
   forceNodeFilesystemAPI: boolean,
   ignore: IgnoreMatcher,
   mapper?: ?Mapper,
+  rootDir: string,
   roots: Array<string>,
 |};
 

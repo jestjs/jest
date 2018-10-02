@@ -576,7 +576,7 @@ describe('Watch mode flows', () => {
     ok      | option
     ${'✔︎'} | ${'bail'}
     ${'✖︎'} | ${'changedFilesWithAncestor'}
-    ${'✖︎'} | ${'changedSince'}
+    ${'✔︎'} | ${'changedSince'}
     ${'✔︎'} | ${'collectCoverage'}
     ${'✔︎'} | ${'collectCoverageFrom'}
     ${'✔︎'} | ${'collectCoverageOnlyFrom'}

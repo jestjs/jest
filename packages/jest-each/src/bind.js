@@ -10,6 +10,7 @@
 import util from 'util';
 import chalk from 'chalk';
 import pretty from 'pretty-format';
+import {ErrorWithStack} from 'jest-util';
 
 type Table = Array<Array<any>>;
 type PrettyArgs = {
@@ -26,9 +27,24 @@ const INDEX_PLACEHOLDER = '%#';
 export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
   function eachBind(title: string, test: Function, timeout: number): void {
     if (args.length === 1) {
-      const table: Table = args[0].every(Array.isArray)
-        ? args[0]
-        : args[0].map(entry => [entry]);
+      const [tableArg] = args;
+
+      if (!Array.isArray(tableArg)) {
+        const error = new ErrorWithStack(
+          '`.each` must be called with an Array or Tagged Template String.\n\n' +
+            `Instead was called with: ${pretty(tableArg, {
+              maxDepth: 1,
+              min: true,
+            })}\n`,
+          eachBind,
+        );
+        return cb(title, () => {
+          throw error;
+        });
+      }
+      const table: Table = tableArg.every(Array.isArray)
+        ? tableArg
+        : tableArg.map(entry => [entry]);
       return table.forEach((row, i) =>
         cb(
           arrayFormat(title, i, ...row),
@@ -47,7 +63,7 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
     const missingData = data.length % keys.length;
 
     if (missingData > 0) {
-      const error = new Error(
+      const error = new ErrorWithStack(
         'Not enough arguments supplied for given headings:\n' +
           EXPECTED_COLOR(keys.join(' | ')) +
           '\n\n' +
@@ -58,11 +74,8 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
             'argument',
             missingData,
           )}`,
+        eachBind,
       );
-
-      if (Error.captureStackTrace) {
-        Error.captureStackTrace(error, eachBind);
-      }
 
       return cb(title, () => {
         throw error;

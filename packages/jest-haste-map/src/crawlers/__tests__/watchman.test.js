@@ -34,15 +34,18 @@ let mockResponse;
 let mockFiles;
 
 const ROOT_MOCK = path.sep === '/' ? '/root-mock' : 'M:\\root-mock';
-const FRUITS = `${ROOT_MOCK}${path.sep}fruits`;
-const VEGETABLES = `${ROOT_MOCK}${path.sep}vegetables`;
+const FRUITS_RELATIVE = 'fruits';
+const VEGETABLES_RELATIVE = 'vegetables';
+const FRUITS = path.resolve(ROOT_MOCK, FRUITS_RELATIVE);
+const VEGETABLES = path.resolve(ROOT_MOCK, VEGETABLES_RELATIVE);
 const ROOTS = [FRUITS, VEGETABLES];
-const BANANA = path.join(FRUITS, 'banana.js');
-const STRAWBERRY = path.join(FRUITS, 'strawberry.js');
-const KIWI = path.join(FRUITS, 'kiwi.js');
-const TOMATO = path.join(FRUITS, 'tomato.js');
-const MELON = path.join(VEGETABLES, 'melon.json');
-const DURIAN = path.join(VEGETABLES, 'durian.zip');
+const BANANA_RELATIVE = path.join(FRUITS_RELATIVE, 'banana.js');
+const STRAWBERRY_RELATIVE = path.join(FRUITS_RELATIVE, 'strawberry.js');
+const KIWI_RELATIVE = path.join(FRUITS_RELATIVE, 'kiwi.js');
+const TOMATO_RELATIVE = path.join(FRUITS_RELATIVE, 'tomato.js');
+const MELON_RELATIVE = path.join(VEGETABLES_RELATIVE, 'melon.json');
+const DURIAN_RELATIVE = path.join(VEGETABLES_RELATIVE, 'durian.zip');
+
 const WATCH_PROJECT_MOCK = {
   [FRUITS]: {
     relative_path: 'fruits',
@@ -53,6 +56,8 @@ const WATCH_PROJECT_MOCK = {
     watch: forcePOSIXPaths(ROOT_MOCK),
   },
 };
+
+const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
 describe('watchman watch', () => {
   beforeEach(() => {
@@ -98,10 +103,10 @@ describe('watchman watch', () => {
       'watch-project': WATCH_PROJECT_MOCK,
     };
 
-    mockFiles = Object.assign(Object.create(null), {
-      [MELON]: ['', 33, 0, [], null],
-      [STRAWBERRY]: ['', 30, 0, [], null],
-      [TOMATO]: ['', 31, 0, [], null],
+    mockFiles = createMap({
+      [MELON_RELATIVE]: ['', 33, 0, [], null],
+      [STRAWBERRY_RELATIVE]: ['', 30, 0, [], null],
+      [TOMATO_RELATIVE]: ['', 31, 0, [], null],
     });
   });
 
@@ -112,11 +117,12 @@ describe('watchman watch', () => {
   test('returns a list of all files when there are no clocks', () =>
     watchmanCrawl({
       data: {
-        clocks: Object.create(null),
-        files: Object.create(null),
+        clocks: new Map(),
+        files: new Map(),
       },
       extensions: ['js', 'json'],
       ignore: pearMatcher,
+      rootDir: ROOT_MOCK,
       roots: ROOTS,
     }).then(data => {
       const client = watchman.Client.mock.instances[0];
@@ -149,9 +155,11 @@ describe('watchman watch', () => {
         'vegetables/**/*.json',
       ]);
 
-      expect(data.clocks).toEqual({
-        [ROOT_MOCK]: 'c:fake-clock:1',
-      });
+      expect(data.clocks).toEqual(
+        createMap({
+          '': 'c:fake-clock:1',
+        }),
+      );
 
       expect(data.files).toEqual(mockFiles);
 
@@ -196,8 +204,8 @@ describe('watchman watch', () => {
       roots: ROOTS,
     }).then(data => {
       expect(data.files).toEqual({
-        [path.join(DURIAN, 'foo.1.js')]: ['', 33, 0, [], null],
-        [path.join(DURIAN, 'foo.2.js')]: ['', 33, 0, [], null],
+        [path.join(DURIAN_RELATIVE, 'foo.1.js')]: ['', 33, 0, [], null],
+        [path.join(DURIAN_RELATIVE, 'foo.2.js')]: ['', 33, 0, [], null],
       });
     });
   });
@@ -231,8 +239,8 @@ describe('watchman watch', () => {
       'watch-project': WATCH_PROJECT_MOCK,
     };
 
-    const clocks = Object.assign(Object.create(null), {
-      [ROOT_MOCK]: 'c:fake-clock:1',
+    const clocks = createMap({
+      '': 'c:fake-clock:1',
     });
 
     return watchmanCrawl({
@@ -242,24 +250,31 @@ describe('watchman watch', () => {
       },
       extensions: ['js', 'json'],
       ignore: pearMatcher,
+      rootDir: ROOT_MOCK,
       roots: ROOTS,
     }).then(data => {
       // The object was reused.
       expect(data.files).toBe(mockFiles);
 
-      expect(data.clocks).toEqual({
-        [ROOT_MOCK]: 'c:fake-clock:2',
-      });
+      expect(data.clocks).toEqual(
+        createMap({
+          '': 'c:fake-clock:2',
+        }),
+      );
 
-      expect(data.files).toEqual({
-        [KIWI]: ['', 42, 0, [], null],
-        [MELON]: ['', 33, 0, [], null],
-        [STRAWBERRY]: ['', 30, 0, [], null],
-      });
+      expect(data.files).toEqual(
+        createMap({
+          [KIWI_RELATIVE]: ['', 42, 0, [], null],
+          [MELON_RELATIVE]: ['', 33, 0, [], null],
+          [STRAWBERRY_RELATIVE]: ['', 30, 0, [], null],
+        }),
+      );
     });
   });
 
   test('resets the file object when watchman is restarted', () => {
+    const mockTomatoSha1 = '321f6b7e8bf7f29aab89c5e41a555b1b0baa41a9';
+
     mockResponse = {
       'list-capabilities': {
         [undefined]: {
@@ -281,8 +296,9 @@ describe('watchman watch', () => {
               name: 'fruits/banana.js',
             },
             {
+              'content.sha1hex': mockTomatoSha1,
               exists: true,
-              mtime_ms: {toNumber: () => 31},
+              mtime_ms: {toNumber: () => 76},
               name: 'fruits/tomato.js',
             },
           ],
@@ -293,11 +309,13 @@ describe('watchman watch', () => {
       'watch-project': WATCH_PROJECT_MOCK,
     };
 
-    const mockMetadata = ['Banana', 41, 1, ['Raspberry'], null];
-    mockFiles[BANANA] = mockMetadata;
+    const mockBananaMetadata = ['Banana', 41, 1, ['Raspberry'], null];
+    mockFiles.set(BANANA_RELATIVE, mockBananaMetadata);
+    const mockTomatoMetadata = ['Tomato', 31, 1, [], mockTomatoSha1];
+    mockFiles.set(TOMATO_RELATIVE, mockTomatoMetadata);
 
-    const clocks = Object.assign(Object.create(null), {
-      [ROOT_MOCK]: 'c:fake-clock:1',
+    const clocks = createMap({
+      '': 'c:fake-clock:1',
     });
 
     return watchmanCrawl({
@@ -307,27 +325,33 @@ describe('watchman watch', () => {
       },
       extensions: ['js', 'json'],
       ignore: pearMatcher,
+      rootDir: ROOT_MOCK,
       roots: ROOTS,
     }).then(data => {
       // The file object was *not* reused.
       expect(data.files).not.toBe(mockFiles);
 
-      expect(data.clocks).toEqual({
-        [ROOT_MOCK]: 'c:fake-clock:3',
-      });
+      expect(data.clocks).toEqual(
+        createMap({
+          '': 'c:fake-clock:3',
+        }),
+      );
 
       // /fruits/strawberry.js was removed from the file list.
-      expect(data.files).toEqual({
-        [BANANA]: mockMetadata,
-        [KIWI]: ['', 42, 0, [], null],
-        [TOMATO]: mockFiles[TOMATO],
-      });
+      expect(data.files).toEqual(
+        createMap({
+          [BANANA_RELATIVE]: mockBananaMetadata,
+          [KIWI_RELATIVE]: ['', 42, 0, [], null],
+          [TOMATO_RELATIVE]: ['Tomato', 76, 1, [], mockTomatoSha1],
+        }),
+      );
 
       // Even though the file list was reset, old file objects are still reused
-      // if no changes have been made.
-      expect(data.files[BANANA]).toBe(mockMetadata);
+      // if no changes have been made
+      expect(data.files.get(BANANA_RELATIVE)).toBe(mockBananaMetadata);
 
-      expect(data.files[TOMATO]).toBe(mockFiles[TOMATO]);
+      // Old file objects are not reused if they have a different mtime
+      expect(data.files.get(TOMATO_RELATIVE)).not.toBe(mockTomatoMetadata);
     });
   });
 
@@ -374,9 +398,9 @@ describe('watchman watch', () => {
       },
     };
 
-    const clocks = Object.assign(Object.create(null), {
-      [FRUITS]: 'c:fake-clock:1',
-      [VEGETABLES]: 'c:fake-clock:2',
+    const clocks = createMap({
+      [FRUITS_RELATIVE]: 'c:fake-clock:1',
+      [VEGETABLES_RELATIVE]: 'c:fake-clock:2',
     });
 
     return watchmanCrawl({
@@ -386,17 +410,22 @@ describe('watchman watch', () => {
       },
       extensions: ['js', 'json'],
       ignore: pearMatcher,
+      rootDir: ROOT_MOCK,
       roots: ROOTS,
     }).then(data => {
-      expect(data.clocks).toEqual({
-        [FRUITS]: 'c:fake-clock:3',
-        [VEGETABLES]: 'c:fake-clock:4',
-      });
+      expect(data.clocks).toEqual(
+        createMap({
+          [FRUITS_RELATIVE]: 'c:fake-clock:3',
+          [VEGETABLES_RELATIVE]: 'c:fake-clock:4',
+        }),
+      );
 
-      expect(data.files).toEqual({
-        [KIWI]: ['', 42, 0, [], null],
-        [MELON]: ['', 33, 0, [], null],
-      });
+      expect(data.files).toEqual(
+        createMap({
+          [KIWI_RELATIVE]: ['', 42, 0, [], null],
+          [MELON_RELATIVE]: ['', 33, 0, [], null],
+        }),
+      );
     });
   });
 
@@ -432,11 +461,12 @@ describe('watchman watch', () => {
 
     return watchmanCrawl({
       data: {
-        clocks: Object.create(null),
-        files: Object.create(null),
+        clocks: new Map(),
+        files: new Map(),
       },
       extensions: ['js', 'json'],
       ignore: pearMatcher,
+      rootDir: ROOT_MOCK,
       roots: [...ROOTS, ROOT_MOCK],
     }).then(data => {
       const client = watchman.Client.mock.instances[0];
@@ -464,11 +494,13 @@ describe('watchman watch', () => {
 
       expect(query[2].glob).toEqual(['**/*.js', '**/*.json']);
 
-      expect(data.clocks).toEqual({
-        [ROOT_MOCK]: 'c:fake-clock:1',
-      });
+      expect(data.clocks).toEqual(
+        createMap({
+          '': 'c:fake-clock:1',
+        }),
+      );
 
-      expect(data.files).toEqual({});
+      expect(data.files).toEqual(createMap({}));
 
       expect(client.end).toBeCalled();
     });
@@ -499,10 +531,11 @@ describe('watchman watch', () => {
     await watchmanCrawl({
       computeSha1: true,
       data: {
-        clocks: Object.create(null),
-        files: Object.create(null),
+        clocks: new Map(),
+        files: new Map(),
       },
       extensions: ['js', 'json'],
+      rootDir: ROOT_MOCK,
       roots: [ROOT_MOCK],
     });
 
@@ -538,10 +571,11 @@ describe('watchman watch', () => {
     await watchmanCrawl({
       computeSha1: true,
       data: {
-        clocks: Object.create(null),
-        files: Object.create(null),
+        clocks: new Map(),
+        files: new Map(),
       },
       extensions: ['js', 'json'],
+      rootDir: ROOT_MOCK,
       roots: [ROOT_MOCK],
     });
 

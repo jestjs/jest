@@ -161,6 +161,7 @@ export default class TestScheduler {
         const status = snapshot.cleanup(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
+          snapshot.buildSnapshotResolver(context.config),
         );
 
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;

@@ -23,7 +23,7 @@ exports[`cannot test with no implementation 1`] = `
 "FAIL __tests__/only-constructs.test.js
   ● Test suite failed to run
 
-    Missing second argument. It must be a callback function.
+    Missing second argument. It must be a callback function. Perhaps you want to use \`test.todo\` for a test placeholder.
 
       1 | 
       2 |     it('it', () => {});
@@ -50,7 +50,7 @@ exports[`cannot test with no implementation with expand arg 1`] = `
 "FAIL __tests__/only-constructs.test.js
   ● Test suite failed to run
 
-    Missing second argument. It must be a callback function.
+    Missing second argument. It must be a callback function. Perhaps you want to use \`test.todo\` for a test placeholder.
 
       1 | 
       2 |     it('it', () => {});

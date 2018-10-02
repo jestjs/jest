@@ -17,6 +17,7 @@ import type {
   TestName,
 } from 'types/Circus';
 import {bind as bindEach} from 'jest-each';
+import {ErrorWithStack} from 'jest-util';
 import {dispatch} from './state';
 
 type THook = (fn: HookFn, timeout?: number) => void;
@@ -44,10 +45,7 @@ const _addHook = (fn: HookFn, hookType: HookType, hookFn, timeout: ?number) => {
     throw new Error('Invalid first argument. It must be a callback function.');
   }
 
-  const asyncError = new Error();
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(asyncError, hookFn);
-  }
+  const asyncError = new ErrorWithStack(undefined, hookFn);
   dispatch({asyncError, fn, hookType, name: 'add_hook', timeout});
 };
 
@@ -68,7 +66,9 @@ const test = (testName: TestName, fn: TestFn, timeout?: number) => {
     );
   }
   if (fn === undefined) {
-    throw new Error('Missing second argument. It must be a callback function.');
+    throw new Error(
+      'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
+    );
   }
   if (typeof fn !== 'function') {
     throw new Error(
@@ -76,10 +76,7 @@ const test = (testName: TestName, fn: TestFn, timeout?: number) => {
     );
   }
 
-  const asyncError = new Error();
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(asyncError, test);
-  }
+  const asyncError = new ErrorWithStack(undefined, test);
 
   return dispatch({
     asyncError,
@@ -91,10 +88,7 @@ const test = (testName: TestName, fn: TestFn, timeout?: number) => {
 };
 const it = test;
 test.skip = (testName: TestName, fn?: TestFn, timeout?: number) => {
-  const asyncError = new Error();
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(asyncError, test);
-  }
+  const asyncError = new ErrorWithStack(undefined, test);
 
   return dispatch({
     asyncError,
@@ -106,10 +100,7 @@ test.skip = (testName: TestName, fn?: TestFn, timeout?: number) => {
   });
 };
 test.only = (testName: TestName, fn: TestFn, timeout?: number) => {
-  const asyncError = new Error();
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(asyncError, test);
-  }
+  const asyncError = new ErrorWithStack(undefined, test);
 
   return dispatch({
     asyncError,
@@ -118,6 +109,26 @@ test.only = (testName: TestName, fn: TestFn, timeout?: number) => {
     name: 'add_test',
     testName,
     timeout,
+  });
+};
+
+test.todo = (testName: TestName, ...rest: Array<mixed>) => {
+  if (rest.length > 0 || typeof testName !== 'string') {
+    throw new ErrorWithStack(
+      'Todo must be called with only a description.',
+      test.todo,
+    );
+  }
+
+  const asyncError = new ErrorWithStack(undefined, test);
+
+  return dispatch({
+    asyncError,
+    fn: () => {},
+    mode: 'todo',
+    name: 'add_test',
+    testName,
+    timeout: undefined,
   });
 };
 

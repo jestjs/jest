@@ -13,11 +13,26 @@ import type {
   HTypeValue,
   ModuleMetaData,
   RawModuleMap,
+  ModuleMapData,
+  DuplicatesIndex,
+  MockData,
 } from 'types/HasteMap';
 
+import * as fastPath from './lib/fast_path';
 import H from './constants';
 
 const EMPTY_MAP = {};
+
+export opaque type SerializableModuleMap = {
+  // There is no easier way to extract the type of the entries of a Map
+  duplicates: $Call<
+    typeof Array.from,
+    $Call<$PropertyType<DuplicatesIndex, 'entries'>>,
+  >,
+  map: $Call<typeof Array.from, $Call<$PropertyType<ModuleMapData, 'entries'>>>,
+  mocks: $Call<typeof Array.from, $Call<$PropertyType<MockData, 'entries'>>>,
+  rootDir: string,
+};
 
 export default class ModuleMap {
   _raw: RawModuleMap;
@@ -42,7 +57,8 @@ export default class ModuleMap {
       !!supportsNativePlatform,
     );
     if (module && module[H.TYPE] === type) {
-      return module[H.PATH];
+      const modulePath = module[H.PATH];
+      return modulePath && fastPath.resolve(this._raw.rootDir, modulePath);
     }
     return null;
   }
@@ -56,7 +72,9 @@ export default class ModuleMap {
   }
 
   getMockModule(name: string): ?Path {
-    return this._raw.mocks[name] || this._raw.mocks[name + '/index'];
+    const mockPath =
+      this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
+    return mockPath && fastPath.resolve(this._raw.rootDir, mockPath);
   }
 
   getRawModuleMap(): RawModuleMap {
@@ -64,7 +82,26 @@ export default class ModuleMap {
       duplicates: this._raw.duplicates,
       map: this._raw.map,
       mocks: this._raw.mocks,
+      rootDir: this._raw.rootDir,
     };
+  }
+
+  toJSON(): SerializableModuleMap {
+    return {
+      duplicates: Array.from(this._raw.duplicates),
+      map: Array.from(this._raw.map),
+      mocks: Array.from(this._raw.mocks),
+      rootDir: this._raw.rootDir,
+    };
+  }
+
+  static fromJSON(serializableModuleMap: SerializableModuleMap) {
+    return new ModuleMap({
+      duplicates: new Map(serializableModuleMap.duplicates),
+      map: new Map(serializableModuleMap.map),
+      mocks: new Map(serializableModuleMap.mocks),
+      rootDir: serializableModuleMap.rootDir,
+    });
   }
 
   /**
@@ -80,8 +117,8 @@ export default class ModuleMap {
     platform: ?string,
     supportsNativePlatform: boolean,
   ): ?ModuleMetaData {
-    const map = this._raw.map[name] || EMPTY_MAP;
-    const dupMap = this._raw.duplicates[name] || EMPTY_MAP;
+    const map = this._raw.map.get(name) || EMPTY_MAP;
+    const dupMap = this._raw.duplicates.get(name) || EMPTY_MAP;
     if (platform != null) {
       this._assertNoDuplicates(
         name,
@@ -120,17 +157,33 @@ export default class ModuleMap {
     name: string,
     platform: string,
     supportsNativePlatform: boolean,
-    set: ?DuplicatesSet,
+    relativePathSet: ?DuplicatesSet,
   ) {
-    if (set == null) {
+    if (relativePathSet == null) {
       return;
     }
+    // Force flow refinement
+    const previousSet: DuplicatesSet = relativePathSet;
+    const set = Object.keys(previousSet).reduce((set, relativePath) => {
+      const duplicatePath = fastPath.resolve(this._raw.rootDir, relativePath);
+      set[duplicatePath] = previousSet[relativePath];
+      return set;
+    }, Object.create(null));
     throw new DuplicateHasteCandidatesError(
       name,
       platform,
       supportsNativePlatform,
       set,
     );
+  }
+
+  static create(rootDir: Path) {
+    return new ModuleMap({
+      duplicates: new Map(),
+      map: new Map(),
+      mocks: new Map(),
+      rootDir,
+    });
   }
 }
 
