@@ -215,7 +215,6 @@
 ### Chore & Maintenance
 
 - `[docs]` Improve documentation of `mockClear`, `mockReset`, and `mockRestore` ([#6227](https://github.com/facebook/jest/pull/6227/files))
-- `[jest-circus]` Add dependency on jest-each ([#6309](https://github.com/facebook/jest/pull/6309))
 - `[jest-each]` Refactor each to use shared implementation with core ([#6345](https://github.com/facebook/jest/pull/6345))
 - `[jest-each]` Update jest-each docs for serialising values into titles ([#6337](https://github.com/facebook/jest/pull/6337))
 - `[jest-circus]` Add dependency on jest-each ([#6309](https://github.com/facebook/jest/pull/6309))
