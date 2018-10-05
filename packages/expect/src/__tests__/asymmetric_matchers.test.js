@@ -244,6 +244,10 @@ test('StringMatching returns false if received value is not string', () => {
   jestExpect(stringMatching('en').asymmetricMatch(1)).toBe(false);
 });
 
+test('StringMatching returns false even if coerced non-string received value matches pattern', () => {
+  jestExpect(stringMatching('null').asymmetricMatch(null)).toBe(false);
+});
+
 test('StringNotMatching matches string against regexp', () => {
   jestExpect(stringNotMatching(/en/).asymmetricMatch('queen')).toBe(false);
   jestExpect(stringNotMatching(/en/).asymmetricMatch('queue')).toBe(true);

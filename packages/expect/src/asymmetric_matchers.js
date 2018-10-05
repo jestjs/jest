@@ -245,7 +245,7 @@ class StringMatching extends AsymmetricMatcher {
   }
 
   asymmetricMatch(other: any) {
-    const result = this.sample.test(other);
+    const result = isA('String', other) && this.sample.test(other);
 
     return this.inverse ? !result : result;
   }
