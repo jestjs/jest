@@ -13,7 +13,11 @@ import type {Event, TestEntry} from 'types/Circus';
 
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
-import {SnapshotState, addSerializer} from 'jest-snapshot';
+import {
+  SnapshotState,
+  addSerializer,
+  buildSnapshotResolver,
+} from 'jest-snapshot';
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID, getOriginalPromise} from '../utils';
 import run from '../run';
@@ -23,12 +27,16 @@ import globals from '../index';
 const Promise = getOriginalPromise();
 export const initialize = ({
   config,
+  getPrettier,
+  getBabelTraverse,
   globalConfig,
   localRequire,
   parentProcess,
   testPath,
 }: {
   config: ProjectConfig,
+  getPrettier: () => null | any,
+  getBabelTraverse: () => Function,
   globalConfig: GlobalConfig,
   localRequire: Path => any,
   testPath: Path,
@@ -92,10 +100,12 @@ export const initialize = ({
     });
 
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotState = new SnapshotState(testPath, {
+  const snapshotResolver = buildSnapshotResolver(config);
+  const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
+  const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getPrettier: () =>
-      config.prettierPath ? localRequire(config.prettierPath) : null,
+    getBabelTraverse,
+    getPrettier,
     updateSnapshot,
   });
   setState({snapshotState, testPath});
@@ -118,12 +128,16 @@ export const runAndTransformResultsToJestFormat = async ({
   let numFailingTests = 0;
   let numPassingTests = 0;
   let numPendingTests = 0;
+  let numTodoTests = 0;
 
   const assertionResults = runResult.testResults.map(testResult => {
     let status: Status;
     if (testResult.status === 'skip') {
       status = 'pending';
       numPendingTests += 1;
+    } else if (testResult.status === 'todo') {
+      status = 'todo';
+      numTodoTests += 1;
     } else if (testResult.errors.length) {
       status = 'failed';
       numFailingTests += 1;
@@ -180,6 +194,7 @@ export const runAndTransformResultsToJestFormat = async ({
     numFailingTests,
     numPassingTests,
     numPendingTests,
+    numTodoTests,
     openHandles: [],
     perfStats: {
       // populated outside

@@ -1,0 +1,9 @@
+{
+  "jest": {
+    "timers": "fake",
+    "setupFiles": [
+      "<rootDir>/fake-promises"
+    ],
+    "testEnvironment": "node"
+  }
+}

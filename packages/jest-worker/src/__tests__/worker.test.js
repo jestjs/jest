@@ -14,7 +14,7 @@ import EventEmitter from 'events';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
-  PARENT_MESSAGE_ERROR,
+  PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_OK,
 } from '../types';
 
@@ -86,6 +86,7 @@ it('initializes the child process with the given workerPath', () => {
   new Worker({
     forkOptions: {},
     maxRetries: 3,
+    setupArgs: ['foo', 'bar'],
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
@@ -93,6 +94,7 @@ it('initializes the child process with the given workerPath', () => {
     CHILD_MESSAGE_INITIALIZE,
     false,
     '/tmp/foo/bar/baz.js',
+    ['foo', 'bar'],
   ]);
 });
 
@@ -201,7 +203,7 @@ it('relates replies to requests, in order', () => {
 
   // and then the second call replies...
   forkInterface.emit('message', [
-    PARENT_MESSAGE_ERROR,
+    PARENT_MESSAGE_CLIENT_ERROR,
     'TypeError',
     'foo',
     'TypeError: foo',
@@ -287,7 +289,7 @@ it('creates error instances for known errors', () => {
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], () => {}, callback1);
 
   forkInterface.emit('message', [
-    PARENT_MESSAGE_ERROR,
+    PARENT_MESSAGE_CLIENT_ERROR,
     'TypeError',
     'bar',
     'TypeError: bar',
@@ -303,7 +305,7 @@ it('creates error instances for known errors', () => {
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], () => {}, callback2);
 
   forkInterface.emit('message', [
-    PARENT_MESSAGE_ERROR,
+    PARENT_MESSAGE_CLIENT_ERROR,
     'RandomCustomError',
     'bar',
     'RandomCustomError: bar',
@@ -320,7 +322,7 @@ it('creates error instances for known errors', () => {
   worker.send([CHILD_MESSAGE_CALL, false, 'method', []], () => {}, callback3);
 
   forkInterface.emit('message', [
-    PARENT_MESSAGE_ERROR,
+    PARENT_MESSAGE_CLIENT_ERROR,
     'Number',
     null,
     null,

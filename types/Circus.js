@@ -10,7 +10,7 @@
 export type DoneFn = (reason?: string | Error) => void;
 export type BlockFn = () => void;
 export type BlockName = string | Function;
-export type BlockMode = void | 'skip' | 'only';
+export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = string;
 export type TestFn = (done?: DoneFn) => ?Promise<any>;
@@ -92,6 +92,10 @@ export type Event =
       test: TestEntry,
     |}
   | {|
+      name: 'test_retry',
+      test: TestEntry,
+    |}
+  | {|
       // the `test` in this case is all hooks + it/test function, not just the
       // function passed to `it/test`
       name: 'test_start',
@@ -99,6 +103,10 @@ export type Event =
     |}
   | {|
       name: 'test_skip',
+      test: TestEntry,
+    |}
+  | {|
+      name: 'test_todo',
       test: TestEntry,
     |}
   | {|
@@ -141,7 +149,7 @@ export type Event =
       name: 'teardown',
     |};
 
-export type TestStatus = 'skip' | 'done';
+export type TestStatus = 'skip' | 'done' | 'todo';
 export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,

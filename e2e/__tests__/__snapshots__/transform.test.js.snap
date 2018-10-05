@@ -13,7 +13,7 @@ exports[`custom transformer instruments files 1`] = `
 "----------|----------|----------|----------|----------|-------------------|
 File      |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 ----------|----------|----------|----------|----------|-------------------|
-All files |        0 |        0 |        0 |        0 |                   |
+All files |  Unknown |  Unknown |  Unknown |  Unknown |                   |
 ----------|----------|----------|----------|----------|-------------------|"
 `;
 

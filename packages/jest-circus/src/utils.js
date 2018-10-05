@@ -164,7 +164,7 @@ const _makeTimeoutMessage = (timeout, isHook) =>
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
-export const callAsyncFn = (
+export const callAsyncCircusFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
   {isHook, timeout}: {isHook?: ?boolean, timeout: number},

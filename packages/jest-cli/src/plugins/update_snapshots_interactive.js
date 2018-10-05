@@ -10,7 +10,7 @@ import type {JestHookSubscriber} from 'types/JestHooks';
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult, AssertionLocation} from 'types/TestResult';
 import {BaseWatchPlugin} from 'jest-watcher';
-import SnapshotInteractiveMode from '../snapshot_interactive_mode';
+import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   _snapshotInteractiveMode: SnapshotInteractiveMode;

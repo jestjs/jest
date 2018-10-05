@@ -83,7 +83,7 @@ export type AssertionLocation = {|
   path: string,
 |};
 
-export type Status = 'passed' | 'failed' | 'skipped' | 'pending';
+export type Status = 'passed' | 'failed' | 'skipped' | 'pending' | 'todo';
 
 export type Bytes = number;
 export type Milliseconds = number;
@@ -118,6 +118,7 @@ export type AggregatedResultWithoutCoverage = {
   numPassedTests: number,
   numPassedTestSuites: number,
   numPendingTests: number,
+  numTodoTests: number,
   numPendingTestSuites: number,
   numRuntimeErrorTestSuites: number,
   numTotalTests: number,
@@ -150,6 +151,7 @@ export type TestResult = {|
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
+  numTodoTests: number,
   openHandles: Array<Error>,
   perfStats: {|
     end: Milliseconds,

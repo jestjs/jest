@@ -365,6 +365,8 @@ Set the default timeout interval for tests and before/after hooks in millisecond
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
 
+_Note: The method must be called after the test framework is installed in the environment and before the test runs. A good place to do this is in the `setupTestFrameworkScriptFile`._
+
 Example:
 
 ```js

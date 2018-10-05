@@ -22,7 +22,7 @@ function forEach(items, callback) {
 To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.
 
 ```javascript
-const mockCallback = jest.fn();
+const mockCallback = jest.fn(x => 42 + x);
 forEach([0, 1], mockCallback);
 
 // The mock function is called twice
@@ -280,7 +280,7 @@ expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
 // A snapshot will check that a mock was invoked the same number of times,
 // in the same order, with the same arguments. It will also assert on the name.
 expect(mockFunc.mock.calls).toEqual([[arg1, arg2]]);
-expect(mockFunc.mock.getMockName()).toBe('a mock name');
+expect(mockFunc.getMockName()).toBe('a mock name');
 ```
 
 For a complete list of matchers, check out the [reference docs](ExpectAPI.md).

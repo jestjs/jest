@@ -18,15 +18,15 @@ import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
 import exit from 'exit';
-import getChangedFilesPromise from '../get_changed_files_promise';
-import {formatHandleErrors} from '../get_node_handles';
+import getChangedFilesPromise from '../getChangedFilesPromise';
+import {formatHandleErrors} from '../collectHandles';
 import fs from 'fs';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import logDebugMessages from '../lib/log_debug_messages';
-import {print as preRunMessagePrint} from '../pre_run_message';
-import runJest from '../run_jest';
+import {print as preRunMessagePrint} from '../preRunMessage';
+import runJest from '../runJest';
 import Runtime from 'jest-runtime';
-import TestWatcher from '../test_watcher';
+import TestWatcher from '../TestWatcher';
 import watch from '../watch';
 import pluralize from '../pluralize';
 import yargs from 'yargs';
@@ -110,12 +110,14 @@ export const runCLI = async (
   const {openHandles} = results;
 
   if (openHandles && openHandles.length) {
-    const openHandlesString = pluralize('open handle', openHandles.length, 's');
+    const formatted = formatHandleErrors(openHandles, configs[0]);
+
+    const openHandlesString = pluralize('open handle', formatted.length, 's');
 
     const message =
       chalk.red(
         `\nJest has detected the following ${openHandlesString} potentially keeping Jest from exiting:\n\n`,
-      ) + formatHandleErrors(openHandles, configs[0]).join('\n\n');
+      ) + formatted.join('\n\n');
 
     console.error(message);
   }

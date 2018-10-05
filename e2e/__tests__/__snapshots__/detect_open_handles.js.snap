@@ -11,3 +11,18 @@ exports[`prints message about flag on slow tests 1`] = `
 
 This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with \`--detectOpenHandles\` to troubleshoot this issue."
 `;
+
+exports[`prints out info about open handlers from inside tests 1`] = `
+"Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  Timeout
+
+      1 | test('something', () => {
+    > 2 |   setTimeout(() => {}, 30000);
+        |   ^
+      3 |   expect(true).toBe(true);
+      4 | });
+      5 | 
+
+      at Object.setTimeout (__tests__/inside.js:2:3)"
+`;

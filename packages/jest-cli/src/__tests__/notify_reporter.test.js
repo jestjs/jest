@@ -8,9 +8,9 @@
 
 'use strict';
 
-import TestScheduler from '../test_scheduler';
+import TestScheduler from '../TestScheduler';
 import NotifyReporter from '../reporters/notify_reporter';
-import type {TestSchedulerContext} from '../test_scheduler';
+import type {TestSchedulerContext} from '../TestScheduler';
 import type {AggregatedResult} from '../../../../types/TestResult';
 
 jest.mock('../reporters/default_reporter');
@@ -81,7 +81,7 @@ test('.addReporter() .removeReporter()', () => {
   expect(scheduler._dispatcher._reporters).not.toContain(reporter);
 });
 
-const testModes = (notifyMode: string, arl: Array<AggregatedResult>) => {
+const testModes = ({notifyMode, arl, rootDir, moduleName}) => {
   const notify = require('node-notifier');
 
   let previousContext = initialContext;
@@ -91,12 +91,28 @@ const testModes = (notifyMode: string, arl: Array<AggregatedResult>) => {
       previousSuccess: previousContext.previousSuccess,
     });
     const reporter = new NotifyReporter(
-      {notify: true, notifyMode},
+      {notify: true, notifyMode, rootDir},
       {},
       newContext,
     );
     previousContext = newContext;
-    reporter.onRunComplete(new Set(), ar);
+    const contexts = new Set();
+
+    if (moduleName != null) {
+      contexts.add({
+        hasteFS: {
+          getModuleName() {
+            return moduleName;
+          },
+
+          matchFiles() {
+            return ['package.json'];
+          },
+        },
+      });
+    }
+
+    reporter.onRunComplete(contexts, ar);
 
     if (ar.numTotalTests === 0) {
       expect(notify.notify).not.toHaveBeenCalled();
@@ -112,23 +128,91 @@ const testModes = (notifyMode: string, arl: Array<AggregatedResult>) => {
 };
 
 test('test always', () => {
-  testModes('always', notifyEvents);
+  testModes({arl: notifyEvents, notifyMode: 'always'});
 });
 
 test('test success', () => {
-  testModes('success', notifyEvents);
+  testModes({arl: notifyEvents, notifyMode: 'success'});
 });
 
 test('test change', () => {
-  testModes('change', notifyEvents);
+  testModes({arl: notifyEvents, notifyMode: 'change'});
 });
 
 test('test success-change', () => {
-  testModes('success-change', notifyEvents);
+  testModes({arl: notifyEvents, notifyMode: 'success-change'});
 });
 
 test('test failure-change', () => {
-  testModes('failure-change', notifyEvents);
+  testModes({arl: notifyEvents, notifyMode: 'failure-change'});
+});
+
+test('test always with rootDir', () => {
+  testModes({arl: notifyEvents, notifyMode: 'always', rootDir: 'some-test'});
+});
+
+test('test success with rootDir', () => {
+  testModes({arl: notifyEvents, notifyMode: 'success', rootDir: 'some-test'});
+});
+
+test('test change with rootDir', () => {
+  testModes({arl: notifyEvents, notifyMode: 'change', rootDir: 'some-test'});
+});
+
+test('test success-change with rootDir', () => {
+  testModes({
+    arl: notifyEvents,
+    notifyMode: 'success-change',
+    rootDir: 'some-test',
+  });
+});
+
+test('test failure-change with rootDir', () => {
+  testModes({
+    arl: notifyEvents,
+    notifyMode: 'failure-change',
+    rootDir: 'some-test',
+  });
+});
+
+test('test always with moduleName', () => {
+  testModes({
+    arl: notifyEvents,
+    moduleName: 'some-module',
+    notifyMode: 'always',
+  });
+});
+
+test('test success with moduleName', () => {
+  testModes({
+    arl: notifyEvents,
+    moduleName: 'some-module',
+    notifyMode: 'success',
+  });
+});
+
+test('test change with moduleName', () => {
+  testModes({
+    arl: notifyEvents,
+    moduleName: 'some-module',
+    notifyMode: 'change',
+  });
+});
+
+test('test success-change with moduleName', () => {
+  testModes({
+    arl: notifyEvents,
+    moduleName: 'some-module',
+    notifyMode: 'success-change',
+  });
+});
+
+test('test failure-change with moduleName', () => {
+  testModes({
+    arl: notifyEvents,
+    moduleName: 'some-module',
+    notifyMode: 'failure-change',
+  });
 });
 
 afterEach(() => {
