@@ -433,10 +433,10 @@ class Runtime {
     }
   }
 
-  withResetModules(fn: () => void) {
+  isolateModules(fn: () => void) {
     if (this._sandboxModuleRegistry || this._sandboxMockRegistry) {
       throw new Error(
-        'withResetModules cannot be nested inside another withResetModules.',
+        'isolateModules cannot be nested inside another isolateModules.',
       );
     }
     this._sandboxModuleRegistry = Object.create(null);
@@ -903,8 +903,8 @@ class Runtime {
       this.resetModules();
       return jestObject;
     };
-    const withResetModules = (fn: () => void) => {
-      this.withResetModules(fn);
+    const isolateModules = (fn: () => void) => {
+      this.isolateModules(fn);
       return jestObject;
     };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
@@ -964,7 +964,7 @@ class Runtime {
       unmock,
       useFakeTimers,
       useRealTimers,
-      withResetModules,
+      isolateModules,
     };
     return jestObject;
   }

@@ -49,5 +49,5 @@ export type Jest = {|
   unmock(moduleName: string): Jest,
   useFakeTimers(): Jest,
   useRealTimers(): Jest,
-  withResetModules(fn: () => void): Jest,
+  isolateModules(fn: () => void): Jest,
 |};

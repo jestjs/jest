@@ -197,13 +197,13 @@ describe('resetModules', () => {
     }));
 });
 
-describe('withResetModules', () => {
+describe('isolateModules', () => {
   it('resets all modules after the block', async () =>
     createRuntime(__filename, {
       moduleNameMapper,
     }).then(runtime => {
       let exports;
-      runtime.withResetModules(() => {
+      runtime.isolateModules(() => {
         exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
           'ModuleWithState',
@@ -220,25 +220,25 @@ describe('withResetModules', () => {
       expect(exports.getState()).toBe(1);
     }));
 
-  it('cannot nest withResetModules blocks', async () =>
+  it('cannot nest isolateModules blocks', async () =>
     createRuntime(__filename, {
       moduleNameMapper,
     }).then(runtime => {
       expect(() => {
-        runtime.withResetModules(() => {
-          runtime.withResetModules(() => {});
+        runtime.isolateModules(() => {
+          runtime.isolateModules(() => {});
         });
       }).toThrowError(
-        'withResetModules cannot be nested inside another withResetModules.',
+        'isolateModules cannot be nested inside another isolateModules.',
       );
     }));
 
-  it('can call resetModules within a withResetModules block', async () =>
+  it('can call resetModules within a isolateModules block', async () =>
     createRuntime(__filename, {
       moduleNameMapper,
     }).then(runtime => {
       let exports;
-      runtime.withResetModules(() => {
+      runtime.isolateModules(() => {
         exports = runtime.requireModuleOrMock(
           runtime.__mockRootPath,
           'ModuleWithState',
@@ -262,10 +262,10 @@ describe('withResetModules', () => {
       expect(exports.getState()).toBe(1);
     }));
 
-  describe('can use withResetModules from a beforeEach block', () => {
+  describe('can use isolateModules from a beforeEach block', () => {
     let exports;
     beforeEach(() => {
-      jest.withResetModules(() => {
+      jest.isolateModules(() => {
         exports = require('./test_root/ModuleWithState');
       });
     });
