@@ -9,6 +9,7 @@
 
 const path = require('path');
 const {normalize} = require('jest-config');
+const {buildSnapshotResolver} = require('jest-snapshot');
 const DependencyResolver = require('../index');
 
 const maxWorkers = 1;
@@ -34,6 +35,7 @@ beforeEach(() => {
     dependencyResolver = new DependencyResolver(
       hasteMap.resolver,
       hasteMap.hasteFS,
+      buildSnapshotResolver(config),
     );
   });
 });

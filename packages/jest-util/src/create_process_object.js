@@ -21,7 +21,6 @@ function createProcessEnv() {
     return deepCyclicCopy(process.env);
   }
 
-  // $FlowFixMe: Apparently Flow does not understand that this is a prototype.
   const proto: Object = Object.getPrototypeOf(process.env);
   const real = Object.create(proto);
   const lookup = {};

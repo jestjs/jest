@@ -13,18 +13,17 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
 <yellow>  Please update your configuration.</>
 <yellow></>
 <yellow>  <bold>Configuration Documentation:</></>
-<yellow>  https://facebook.github.io/jest/docs/configuration.html</>
+<yellow>  https://jestjs.io/docs/configuration.html</>
 <yellow></>"
 `;
 
-exports[`preset throws when preset is invalid 1`] = `
+exports[`preset throws when module was found but no "jest-preset.js" or "jest-preset.json" files 1`] = `
 "<red><bold><bold>● <bold>Validation Error</>:</>
 <red></>
-<red>  Preset <bold>react-native</> is invalid:</>
-<red>  Unexpected token } in JSON at position 104</>
+<red>  Module <bold>exist-but-no-jest-preset</> should have \\"jest-preset.js\\" or \\"jest-preset.json\\" file at the root.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration.html</>
 <red></>"
 `;
 
@@ -34,7 +33,7 @@ exports[`preset throws when preset not found 1`] = `
 <red>  Preset <bold>doesnt-exist</> not found.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration.html</>
 <red></>"
 `;
 
@@ -44,7 +43,7 @@ exports[`rootDir throws if the options is missing a rootDir property 1`] = `
 <red>  Configuration option <bold>rootDir</> must be specified.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration.html</>
 <red></>"
 `;
 
@@ -54,7 +53,7 @@ exports[`testEnvironment throws on invalid environment names 1`] = `
 <red>  Test environment <bold>phantom</> cannot be found. Make sure the <bold>testEnvironment</> configuration option points to an existing node module.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration.html</>
 <red></>"
 `;
 
@@ -64,7 +63,7 @@ exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
 <red>  Configuration options <bold>testMatch</> and <bold>testRegex</> cannot be used together.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://facebook.github.io/jest/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration.html</>
 <red></>"
 `;
 

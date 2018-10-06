@@ -9,7 +9,8 @@
       "request": "launch",
       "name": "Debug Jest with current test file",
       "program": "${workspaceFolder}/packages/jest-cli/bin/jest.js",
-      "args": ["--runInBand", "${file}"]
+      "args": ["--runInBand", "${file}"],
+      "runtimeArgs": ["-r", "flow-remove-types/register"]
     }
   ]
 }

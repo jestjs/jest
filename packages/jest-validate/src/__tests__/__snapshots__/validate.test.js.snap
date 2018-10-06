@@ -32,7 +32,12 @@ exports[`pretty prints valid config for Array 1`] = `
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"coverageReporters\\"</>: <bold>[\\"json\\", \\"text\\", \\"lcov\\", \\"clover\\"]</></>
+<red>    <bold>\\"coverageReporters\\"</>: <bold>[</></>
+<red><bold>      \\"json\\",</></>
+<red><bold>      \\"text\\",</></>
+<red><bold>      \\"lcov\\",</></>
+<red><bold>      \\"clover\\"</></>
+<red><bold>    ]</></>
 <red>  }</>
 <red></>"
 `;
@@ -77,7 +82,12 @@ exports[`pretty prints valid config for Object 1`] = `
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"haste\\"</>: <bold>{\\"providesModuleNodeModules\\": [\\"react\\", \\"react-native\\"]}</></>
+<red>    <bold>\\"haste\\"</>: <bold>{</></>
+<red><bold>      \\"providesModuleNodeModules\\": [</></>
+<red><bold>        \\"react\\",</></>
+<red><bold>        \\"react-native\\"</></>
+<red><bold>      ]</></>
+<red><bold>    }</></>
 <red>  }</>
 <red></>"
 `;
@@ -122,7 +132,10 @@ exports[`works with custom errors 1`] = `
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"test\\"</>: <bold>[1, 2]</></>
+<red>    <bold>\\"test\\"</>: <bold>[</></>
+<red><bold>      1,</></>
+<red><bold>      2</></>
+<red><bold>    ]</></>
 <red>  }</>
 <red></>
 <red>My custom comment</>"

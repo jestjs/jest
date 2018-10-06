@@ -14,10 +14,11 @@ import crypto from 'crypto';
 import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
-import validatePattern from './validate_pattern';
+import validatePattern from './validatePattern';
 import {clearLine} from 'jest-util';
 import chalk from 'chalk';
-import getMaxWorkers from './get_max_workers';
+import getMaxWorkers from './getMaxWorkers';
+import micromatch from 'micromatch';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {
@@ -30,11 +31,11 @@ import {
   resolve,
 } from './utils';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
-import {validateReporters} from './reporter_validation_errors';
-import DEFAULT_CONFIG from './defaults';
-import DEPRECATED_CONFIG from './deprecated';
-import setFromArgv from './set_from_argv';
-import VALID_CONFIG from './valid_config';
+import {validateReporters} from './ReporterValidationErrors';
+import DEFAULT_CONFIG from './Defaults';
+import DEPRECATED_CONFIG from './Deprecated';
+import setFromArgv from './setFromArgv';
+import VALID_CONFIG from './ValidConfig';
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
@@ -89,6 +90,19 @@ const setupPreset = (
         `  Preset ${chalk.bold(presetPath)} is invalid:\n  ${error.message}`,
       );
     }
+
+    const preset = Resolver.findNodeModule(presetPath, {
+      basedir: options.rootDir,
+    });
+
+    if (preset) {
+      throw createConfigError(
+        `  Module ${chalk.bold(
+          presetPath,
+        )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
+      );
+    }
+
     throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
@@ -334,6 +348,16 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
+    recursiveBlacklist: [
+      'collectCoverageOnlyFrom',
+      // 'coverageThreshold' allows to use 'global' and glob strings on the same
+      // level, there's currently no way we can deal with such config
+      'coverageThreshold',
+      'globals',
+      'moduleNameMapper',
+      'testEnvironmentOptions',
+      'transform',
+    ],
   });
 
   options = normalizePreprocessor(
@@ -429,6 +453,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'moduleLoader':
       case 'runner':
       case 'setupTestFrameworkScriptFile':
+      case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
       case 'filter':
@@ -440,10 +465,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             rootDir: options.rootDir,
           });
         break;
-      case 'prettier':
-        // We only want this to throw if "prettier" is explicitly passed from
-        // config or CLI, and the requested path isn't found. Otherwise we set
-        // it to null and throw an error lazily when it is used.
+      case 'prettierPath':
+        // We only want this to throw if "prettierPath" is explicitly passed
+        // from config or CLI, and the requested path isn't found. Otherwise we
+        // set it to null and throw an error lazily when it is used.
         value =
           options[key] &&
           resolve(newOptions.resolver, {
@@ -579,13 +604,27 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = options[key];
         break;
       case 'watchPlugins':
-        value = (options[key] || []).map(watchPlugin =>
-          resolve(newOptions.resolver, {
-            filePath: watchPlugin,
-            key,
-            rootDir: options.rootDir,
-          }),
-        );
+        value = (options[key] || []).map(watchPlugin => {
+          if (typeof watchPlugin === 'string') {
+            return {
+              config: {},
+              path: resolve(newOptions.resolver, {
+                filePath: watchPlugin,
+                key,
+                rootDir: options.rootDir,
+              }),
+            };
+          } else {
+            return {
+              config: watchPlugin[1] || {},
+              path: resolve(newOptions.resolver, {
+                filePath: watchPlugin[0],
+                key,
+                rootDir: options.rootDir,
+              }),
+            };
+          }
+        });
         break;
     }
     newOptions[key] = value;
@@ -663,12 +702,29 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
   if (newOptions.collectCoverage && argv.findRelatedTests) {
-    newOptions.collectCoverageFrom = argv._.map(filename => {
+    let collectCoverageFrom = argv._.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)
         : filename;
     });
+
+    // Don't override existing collectCoverageFrom options
+    if (newOptions.collectCoverageFrom) {
+      collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
+        if (
+          !micromatch(
+            [path.relative(options.rootDir, filename)],
+            newOptions.collectCoverageFrom,
+          ).length
+        ) {
+          return patterns;
+        }
+        return [...patterns, filename];
+      }, newOptions.collectCoverageFrom);
+    }
+
+    newOptions.collectCoverageFrom = collectCoverageFrom;
   }
 
   return {

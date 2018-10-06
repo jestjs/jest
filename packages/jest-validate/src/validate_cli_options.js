@@ -16,7 +16,7 @@ import defaultConfig from './default_config';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
-  https://facebook.github.io/jest/docs/en/cli.html
+  https://jestjs.io/docs/en/cli.html
 `;
 
 const createCLIValidationError = (
@@ -27,7 +27,7 @@ const createCLIValidationError = (
   let message;
   const comment =
     `  ${chalk.bold('CLI Options Documentation')}:\n` +
-    `  https://facebook.github.io/jest/docs/en/cli.html\n`;
+    `  https://jestjs.io/docs/en/cli.html\n`;
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];

@@ -59,6 +59,8 @@ jest.mock('fs', () => {
         setTimeout(() => callback(null, ['directory', 'tomato.js']), 0);
       } else if (dir === '/fruits/directory') {
         setTimeout(() => callback(null, ['strawberry.js']), 0);
+      } else if (dir == '/error') {
+        setTimeout(() => callback({code: 'ENOTDIR'}, undefined), 0);
       }
     }),
     stat: jest.fn(stat),
@@ -66,6 +68,7 @@ jest.mock('fs', () => {
 });
 
 const pearMatcher = path => /pear/.test(path);
+const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
 let mockResponse;
 let nodeCrawl;
@@ -102,7 +105,7 @@ describe('node crawler', () => {
 
     const promise = nodeCrawl({
       data: {
-        files: Object.create(null),
+        files: new Map(),
       },
       extensions: ['js', 'json'],
       ignore: pearMatcher,
@@ -124,11 +127,13 @@ describe('node crawler', () => {
 
       expect(data.files).not.toBe(null);
 
-      expect(data.files).toEqual({
-        '/fruits/strawberry.js': ['', 32, 0, [], null],
-        '/fruits/tomato.js': ['', 33, 0, [], null],
-        '/vegetables/melon.json': ['', 34, 0, [], null],
-      });
+      expect(data.files).toEqual(
+        createMap({
+          '/fruits/strawberry.js': ['', 32, 0, [], null],
+          '/fruits/tomato.js': ['', 33, 0, [], null],
+          '/vegetables/melon.json': ['', 34, 0, [], null],
+        }),
+      );
     });
 
     return promise;
@@ -139,12 +144,12 @@ describe('node crawler', () => {
 
     nodeCrawl = require('../node');
 
-    const files = Object.create(null);
-
     // In this test sample, strawberry is changed and tomato is unchanged
     const tomato = ['', 33, 1, [], null];
-    files['/fruits/strawberry.js'] = ['', 30, 1, [], null];
-    files['/fruits/tomato.js'] = tomato;
+    const files = createMap({
+      '/fruits/strawberry.js': ['', 30, 1, [], null],
+      '/fruits/tomato.js': tomato,
+    });
 
     return nodeCrawl({
       data: {files},
@@ -152,13 +157,15 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       roots: ['/fruits'],
     }).then(data => {
-      expect(data.files).toEqual({
-        '/fruits/strawberry.js': ['', 32, 0, [], null],
-        '/fruits/tomato.js': tomato,
-      });
+      expect(data.files).toEqual(
+        createMap({
+          '/fruits/strawberry.js': ['', 32, 0, [], null],
+          '/fruits/tomato.js': tomato,
+        }),
+      );
 
       // Make sure it is the *same* unchanged object.
-      expect(data.files['/fruits/tomato.js']).toBe(tomato);
+      expect(data.files.get('/fruits/tomato.js')).toBe(tomato);
     });
   });
 
@@ -167,17 +174,20 @@ describe('node crawler', () => {
 
     nodeCrawl = require('../node');
 
-    const files = Object.create(null);
     return nodeCrawl({
-      data: {files},
+      data: {
+        files: new Map(),
+      },
       extensions: ['js'],
       ignore: pearMatcher,
       roots: ['/fruits'],
     }).then(data => {
-      expect(data.files).toEqual({
-        '/fruits/directory/strawberry.js': ['', 33, 0, [], null],
-        '/fruits/tomato.js': ['', 32, 0, [], null],
-      });
+      expect(data.files).toEqual(
+        createMap({
+          '/fruits/directory/strawberry.js': ['', 33, 0, [], null],
+          '/fruits/tomato.js': ['', 32, 0, [], null],
+        }),
+      );
     });
   });
 
@@ -186,7 +196,7 @@ describe('node crawler', () => {
 
     nodeCrawl = require('../node');
 
-    const files = Object.create(null);
+    const files = new Map();
     return nodeCrawl({
       data: {files},
       extensions: ['js'],
@@ -194,10 +204,12 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       roots: ['/fruits'],
     }).then(data => {
-      expect(data.files).toEqual({
-        '/fruits/directory/strawberry.js': ['', 33, 0, [], null],
-        '/fruits/tomato.js': ['', 32, 0, [], null],
-      });
+      expect(data.files).toEqual(
+        createMap({
+          '/fruits/directory/strawberry.js': ['', 33, 0, [], null],
+          '/fruits/tomato.js': ['', 32, 0, [], null],
+        }),
+      );
     });
   });
 
@@ -206,7 +218,7 @@ describe('node crawler', () => {
 
     nodeCrawl = require('../node');
 
-    const files = Object.create(null);
+    const files = new Map();
     return nodeCrawl({
       data: {files},
       extensions: ['js'],
@@ -214,7 +226,23 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       roots: [],
     }).then(data => {
-      expect(data.files).toEqual({});
+      expect(data.files).toEqual(new Map());
+    });
+  });
+
+  it('completes with fs.readdir throwing an error', () => {
+    process.platform = 'win32';
+
+    nodeCrawl = require('../node');
+
+    const files = new Map();
+    return nodeCrawl({
+      data: {files},
+      extensions: ['js'],
+      ignore: pearMatcher,
+      roots: ['/error'],
+    }).then(data => {
+      expect(data.files).toEqual(new Map());
     });
   });
 });

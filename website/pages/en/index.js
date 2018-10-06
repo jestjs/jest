@@ -17,6 +17,8 @@ const translation = require('../../server/translation.js');
 const backers = require(process.cwd() + '/backers.json');
 
 const siteConfig = require(process.cwd() + '/siteConfig.js');
+const idx = (target, path) =>
+  path.reduce((obj, key) => (obj && obj[key] ? obj[key] : null), target);
 
 class Button extends React.Component {
   render() {
@@ -130,10 +132,11 @@ class HomeSplash extends React.Component {
               <h2 className="projectTitle">
                 {siteConfig.title}
                 <small>
-                  {
-                    translation[this.props.language]['localized-strings']
-                      .tagline
-                  }
+                  {idx(translation, [
+                    this.props.language,
+                    'localized-strings',
+                    'tagline',
+                  ]) || siteConfig.tagline}
                 </small>
               </h2>
               <div className="section promoSection">
@@ -290,7 +293,7 @@ class Index extends React.Component {
                   content: (
                     <translate>
                       Easily create code coverage reports using
-                      [`--coverage`](https://facebook.github.io/jest/docs/en/cli.html#coverage).
+                      [`--coverage`](https://jestjs.io/docs/en/cli.html#coverage).
                       No additional setup or libraries needed! Jest can collect
                       code coverage information from entire projects, including
                       untested files.
@@ -358,10 +361,9 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Powerful [mocking
-                      library](/jest/docs/en/mock-functions.html) for functions
-                      and modules. Mock React Native components using
-                      `jest-react-native`.
+                      Powerful [mocking library](/docs/en/mock-functions.html)
+                      for functions and modules. Mock React Native components
+                      using `jest-react-native`.
                     </translate>
                   ),
                   image: '/img/content/feature-mocking.png',

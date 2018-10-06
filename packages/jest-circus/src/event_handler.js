@@ -105,6 +105,10 @@ const handler: EventHandler = (event, state): void => {
       event.test.status = 'skip';
       break;
     }
+    case 'test_todo': {
+      event.test.status = 'todo';
+      break;
+    }
     case 'test_done': {
       event.test.duration = getTestDuration(event.test);
       event.test.status = 'done';
@@ -123,6 +127,10 @@ const handler: EventHandler = (event, state): void => {
         test: {asyncError},
       } = event;
       event.test.errors.push([error, asyncError]);
+      break;
+    }
+    case 'test_retry': {
+      event.test.errors = [];
       break;
     }
     case 'run_start': {

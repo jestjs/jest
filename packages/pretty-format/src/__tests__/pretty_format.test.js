@@ -234,6 +234,11 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('2001-09-09T01:46:40.000Z');
   });
 
+  it('prints an invalid date', () => {
+    const val = new Date(Infinity);
+    expect(prettyFormat(val)).toEqual('Date { NaN }');
+  });
+
   it('prints an empty object', () => {
     const val = {};
     expect(prettyFormat(val)).toEqual('Object {}');
@@ -310,6 +315,11 @@ describe('prettyFormat()', () => {
   it('prints and escape a string', () => {
     const val = '"\'\\';
     expect(prettyFormat(val)).toEqual('"\\"\'\\\\"');
+  });
+
+  it("doesn't escape string with {excapeString: false}", () => {
+    const val = '"\'\\n';
+    expect(prettyFormat(val, {escapeString: false})).toEqual('""\'\\n"');
   });
 
   it('prints a string with escapes', () => {

@@ -135,7 +135,7 @@ Alias: `-c`. The path to a Jest config file specifying how to find and execute t
 
 ### `--coverage`
 
-Indicates that test coverage information should be collected and reported in the output.
+Indicates that test coverage information should be collected and reported in the output. This option is also aliased by `--collectCoverage`.
 
 ### `--debug`
 
@@ -213,13 +213,25 @@ Alias: `-o`. Attempts to identify which tests to run based on which files have c
 
 Allows the test suite to pass when no files are found.
 
-### `--projects <project1> ... <projectN>`
+### `--projects <path1> ... <pathN>`
 
-Run tests from one or more projects.
+Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. Note that if configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+
+### `--reporters`
+
+Run tests with specified reporters. [Reporter options](configuration#reporters-array-modulename-modulename-options) are not available via CLI. Example with multiple reporters:
+
+`jest --reporters="default" --reporters="jest-junit"`
 
 ### `--runInBand`
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
+
+### `--runTestsByPath`
+
+Run only the tests that were specified with their exact paths.
+
+_Note: The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files_
 
 ### `--setupTestFrameworkScriptFile=<file>`
 

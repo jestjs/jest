@@ -190,6 +190,12 @@ Run tests from one or more projects.
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
 
+### `--runTestsByPath`
+
+Run only the tests that were specified with their exact paths.
+
+_Note: The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files_
+
 ### `--setupTestFrameworkScriptFile=<file>`
 
 The path to a module that runs some code to configure or set up the testing framework before each test. Beware that files imported by the setup script will not be mocked during testing.

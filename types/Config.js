@@ -53,7 +53,7 @@ export type DefaultOptions = {|
   notify: boolean,
   notifyMode: string,
   preset: ?string,
-  prettier: ?string,
+  prettierPath: ?string,
   projects: ?Array<string | ProjectConfig>,
   resetMocks: boolean,
   resetModules: boolean,
@@ -116,7 +116,7 @@ export type InitialOptions = {
   globalSetup?: ?string,
   globalTeardown?: ?string,
   haste?: HasteConfig,
-  reporters?: Array<ReporterConfig | string>,
+  reporters?: Array<string | ReporterConfig>,
   logHeapUsage?: boolean,
   lastCommit?: boolean,
   listTests?: boolean,
@@ -136,7 +136,7 @@ export type InitialOptions = {
   passWithNoTests?: boolean,
   preprocessorIgnorePatterns?: Array<Glob>,
   preset?: ?string,
-  prettier?: ?string,
+  prettierPath?: ?string,
   projects?: Array<Glob>,
   replname?: ?string,
   resetMocks?: boolean,
@@ -153,6 +153,7 @@ export type InitialOptions = {
   silent?: boolean,
   skipFilter?: boolean,
   skipNodeResolution?: boolean,
+  snapshotResolver?: Path,
   snapshotSerializers?: Array<Path>,
   errorOnDeprecated?: boolean,
   testEnvironment?: string,
@@ -178,7 +179,7 @@ export type InitialOptions = {
   watch?: boolean,
   watchAll?: boolean,
   watchman?: boolean,
-  watchPlugins?: Array<string>,
+  watchPlugins?: Array<string | [string, Object]>,
 };
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -219,7 +220,7 @@ export type GlobalConfig = {|
   passWithNoTests: boolean,
   projects: Array<Glob>,
   replname: ?string,
-  reporters: Array<ReporterConfig>,
+  reporters: Array<string | ReporterConfig>,
   runTestsByPath: boolean,
   rootDir: Path,
   silent: boolean,
@@ -235,7 +236,7 @@ export type GlobalConfig = {|
   watch: boolean,
   watchAll: boolean,
   watchman: boolean,
-  watchPlugins: ?Array<string>,
+  watchPlugins: ?Array<{path: string, config: Object}>,
 |};
 
 export type ProjectConfig = {|
@@ -261,7 +262,7 @@ export type ProjectConfig = {|
   modulePathIgnorePatterns: Array<string>,
   modulePaths: Array<string>,
   name: string,
-  prettier: string,
+  prettierPath: string,
   resetMocks: boolean,
   resetModules: boolean,
   resolver: ?Path,
@@ -273,6 +274,7 @@ export type ProjectConfig = {|
   setupTestFrameworkScriptFile: ?Path,
   skipFilter: boolean,
   skipNodeResolution: boolean,
+  snapshotResolver: ?Path,
   snapshotSerializers: Array<Path>,
   testEnvironment: string,
   testEnvironmentOptions: Object,
