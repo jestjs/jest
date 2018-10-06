@@ -21,11 +21,18 @@ export default function pTimeout(
   onTimeout: () => any,
 ): Promise<any> {
   return new Promise((resolve, reject) => {
+    const startTime = Date.now();
     const timer = setTimeout(() => resolve(onTimeout()), ms);
     promise.then(
       val => {
         clearTimeout(timer);
-        resolve(val);
+
+        // when running single threaded, we need to double check the timeout
+        if (Date.now() - startTime > ms) {
+          resolve(onTimeout());
+        } else {
+          resolve(val);
+        }
       },
       err => {
         clearTimeout(timer);
