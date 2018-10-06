@@ -23,15 +23,42 @@ import {dispatch} from './state';
 type THook = (fn: HookFn, timeout?: number) => void;
 
 const describe = (blockName: BlockName, blockFn: BlockFn) =>
-  _dispatchDescribe(blockFn, blockName);
+  _dispatchDescribe(
+    blockFn,
+    blockName,
+    new ErrorWithStack(undefined, describe),
+  );
 describe.only = (blockName: BlockName, blockFn: BlockFn) =>
-  _dispatchDescribe(blockFn, blockName, 'only');
+  _dispatchDescribe(
+    blockFn,
+    blockName,
+    new ErrorWithStack(undefined, describe.only),
+    'only',
+  );
 describe.skip = (blockName: BlockName, blockFn: BlockFn) =>
-  _dispatchDescribe(blockFn, blockName, 'skip');
+  _dispatchDescribe(
+    blockFn,
+    blockName,
+    new ErrorWithStack(undefined, describe.skip),
+    'skip',
+  );
 
-const _dispatchDescribe = (blockFn, blockName, mode?: BlockMode) => {
+const _dispatchDescribe = (
+  blockFn,
+  blockName,
+  asyncError,
+  mode?: BlockMode,
+) => {
+  if (blockFn === undefined) {
+    asyncError.message = `Missing second argument supplied to 'describe'. It must be a callback function.`;
+    throw asyncError;
+  }
+  if (typeof blockFn !== 'function') {
+    asyncError.message = `Invalid second argument supplied to 'describe', ${blockFn}. It must be a callback function.`;
+    throw asyncError;
+  }
   dispatch({
-    asyncError: new Error(),
+    asyncError,
     blockName,
     mode,
     name: 'start_describe_definition',
@@ -62,17 +89,17 @@ const afterAll: THook = (fn, timeout) =>
 const test = (testName: TestName, fn: TestFn, timeout?: number) => {
   if (typeof testName !== 'string') {
     throw new Error(
-      `Invalid first argument, ${testName}. It must be a string.`,
+      `Invalid first argument supplied to 'it', ${testName}. It must be a string.`,
     );
   }
   if (fn === undefined) {
     throw new Error(
-      'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
+      "Missing second argument supplied to 'it'. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.",
     );
   }
   if (typeof fn !== 'function') {
     throw new Error(
-      `Invalid second argument, ${fn}. It must be a callback function.`,
+      `Invalid second argument supplied to 'it', ${fn}. It must be a callback function.`,
     );
   }
 

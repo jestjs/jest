@@ -30,7 +30,6 @@ exports[`cannot have describe with no implementation 1`] = `
         |     ^
       3 |   
 
-      at packages/jest-jasmine2/build/jasmine/Env.js:<<LINE>>:<<COLUMN>>
       at __tests__/only-constructs.test.js:<<LINE>>:<<COLUMN>>
 
 "

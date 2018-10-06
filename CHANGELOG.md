@@ -23,7 +23,8 @@
 - `[jest-jasmine2`] Fix crash when test return Promise rejected with null ([#7049](https://github.com/facebook/jest/pull/7049))
 - `[jest-runtime]` Check `_isMockFunction` is true rather than truthy on potential global mocks ([#7017](https://github.com/facebook/jest/pull/7017))
 - `[jest-jasmine]` Show proper error message from async `assert` errors ([#6821](https://github.com/facebook/jest/pull/6821))
-- `[jest-jasmine2]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
+- `[jest-jasmine]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
+- `[jest-circus]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
 
 ### Chore & Maintenance
 
