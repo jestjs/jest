@@ -170,10 +170,9 @@ export const callAsyncCircusFn = (
   {isHook, timeout}: {isHook: ?boolean, timeout: number},
 ): Promise<mixed> => {
   let timeoutID;
-  let startedAt;
+  const startedAt = getTimestamp();
 
   return new Promise((resolve, reject) => {
-    startedAt = getTimestamp();
     timeoutID = setTimeout(
       () => reject(_makeTimeoutMessage(timeout, isHook)),
       timeout,
