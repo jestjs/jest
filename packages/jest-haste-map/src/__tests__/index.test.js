@@ -8,6 +8,7 @@
 
 'use strict';
 
+import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 const crypto = require('crypto');
 
 function mockHashContents(contents) {
@@ -102,8 +103,6 @@ jest.mock('graceful-fs', () => ({
 }));
 jest.mock('fs', () => require('graceful-fs'));
 
-const ConditionalTest = require('../../../../scripts/ConditionalTest');
-
 const cacheFilePath = '/cache-file';
 const object = data => Object.assign(Object.create(null), data);
 const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
@@ -135,7 +134,7 @@ let mockWorker;
 let getCacheFilePath;
 
 describe('HasteMap', () => {
-  ConditionalTest.skipSuiteOnWindows();
+  skipSuiteOnWindows();
 
   beforeEach(() => {
     jest.resetModules();

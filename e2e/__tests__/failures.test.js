@@ -7,9 +7,9 @@
  * @flow
  */
 
-const path = require('path');
-const {extractSummary} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
 

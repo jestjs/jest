@@ -8,13 +8,11 @@
  */
 'use strict';
 
-const path = require('path');
-const fs = require('fs');
-const execa = require('execa');
-const {Writable} = require('readable-stream');
-const {normalizeIcons} = require('./Utils');
-
-const {sync: spawnSync} = execa;
+import path from 'path';
+import fs from 'fs';
+import execa, {sync as spawnSync} from 'execa';
+import {Writable} from 'readable-stream';
+import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
@@ -26,7 +24,7 @@ type RunJestOptions = {
 // return the result of the spawned process:
 //  [ 'status', 'signal', 'output', 'pid', 'stdout', 'stderr',
 //    'envPairs', 'options', 'args', 'file' ]
-function runJest(
+export default function runJest(
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},
@@ -75,9 +73,13 @@ function runJest(
 //   'success', 'startTime', 'numTotalTests', 'numTotalTestSuites',
 //   'numRuntimeErrorTestSuites', 'numPassedTests', 'numFailedTests',
 //   'numPendingTests', 'testResults'
-runJest.json = function(dir: string, args?: Array<string>, ...rest) {
+export const json = function(
+  dir: string,
+  args?: Array<string>,
+  options: RunJestOptions = {},
+) {
   args = [...(args || []), '--json'];
-  const result = runJest(dir, args, ...rest);
+  const result = runJest(dir, args, options);
   try {
     result.json = JSON.parse((result.stdout || '').toString());
   } catch (e) {
@@ -94,7 +96,7 @@ runJest.json = function(dir: string, args?: Array<string>, ...rest) {
 };
 
 // Runs `jest` until a given output is achieved, then kills it with `SIGTERM`
-runJest.until = async function(
+export const until = async function(
   dir: string,
   args?: Array<string>,
   text: string,
@@ -155,5 +157,3 @@ runJest.until = async function(
 
   return result;
 };
-
-module.exports = runJest;

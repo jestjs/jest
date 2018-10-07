@@ -8,8 +8,8 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
-const {extractSummary} = require('../Utils');
+import runJest from '../runJest';
+import {extractSummary} from '../Utils';
 
 describe('Stack Trace', () => {
   it('prints a stack trace for runtime errors', () => {

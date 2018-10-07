@@ -10,7 +10,7 @@
 
 import path from 'path';
 import fs from 'graceful-fs';
-import ConditionalTest from '../../../../scripts/ConditionalTest';
+import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
 import H from '../constants';
 
@@ -22,7 +22,7 @@ let readFileSync;
 let readFile;
 
 describe('worker', () => {
-  ConditionalTest.skipSuiteOnWindows();
+  skipSuiteOnWindows();
 
   beforeEach(() => {
     mockFs = {
