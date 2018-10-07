@@ -20,7 +20,7 @@ const TEST_DIR = path.resolve(DIR, '__tests__');
 
 function cleanStderr(stderr) {
   const {rest} = extractSummary(stderr);
-  return rest.replace(/.*(jest-jasmine2|jest-circus).*\n/g, '');
+  return rest.replace(/.*(jest-jasmine2).*\n/g, '');
 }
 
 beforeEach(() => {
@@ -122,7 +122,8 @@ test('cannot have describe with no implementation', () => {
   const {stderr, status} = runJest(DIR);
   expect(status).toBe(1);
 
-  const {summary, rest} = extractSummary(stderr, {stripLocation: true});
+  const rest = cleanStderr(stderr);
+  const {summary} = extractSummary(stderr);
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });
