@@ -28,7 +28,7 @@
 - `[jest-circus]` Fail synchronous hook timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
 - `[jest-jasmine2]` Fail synchronous test timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
 - `[jest-jasmine2]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
-- `[jest-circus]` Better error message when a describe block is empty ([#6372]
+- `[jest-circus]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
 - `[jest-cli]` Fix unhandled error when a bad revision is provided to `changedSince` ([#7112](https://github.com/facebook/jest/pull/7112))
 
 ### Chore & Maintenance
