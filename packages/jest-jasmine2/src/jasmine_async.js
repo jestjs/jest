@@ -37,6 +37,12 @@ function promisifyLifeCycleFunction(originalFn, env) {
 
     const extraError = new Error();
 
+    // Without this line v8 stores references to all closures
+    // in the stack in the Error object. This line stringifies the stack
+    // property to allow garbage-collecting objects on the stack
+    // https://crbug.com/v8/7142
+    extraError.stack = extraError.stack;
+
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
     const asyncJestLifecycle = function(done) {
@@ -78,6 +84,12 @@ function promisifyIt(originalFn, env) {
     }
 
     const extraError = new Error();
+
+    // Without this line v8 stores references to all closures
+    // in the stack in the Error object. This line stringifies the stack
+    // property to allow garbage-collecting objects on the stack
+    // https://crbug.com/v8/7142
+    extraError.stack = extraError.stack;
 
     const asyncJestTest = function(done) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;

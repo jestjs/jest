@@ -185,6 +185,7 @@ const getConfigs = (
     setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
     skipFilter: options.skipFilter,
     skipNodeResolution: options.skipNodeResolution,
+    snapshotResolver: options.snapshotResolver,
     snapshotSerializers: options.snapshotSerializers,
     testEnvironment: options.testEnvironment,
     testEnvironmentOptions: options.testEnvironmentOptions,

@@ -389,7 +389,7 @@ export const options = {
     type: 'boolean',
   },
   notifyMode: {
-    default: 'always',
+    default: 'failure-change',
     description: 'Specifies when notifications will appear for test results.',
     type: 'string',
   },

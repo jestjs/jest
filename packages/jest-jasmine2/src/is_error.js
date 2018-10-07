@@ -12,9 +12,11 @@ import prettyFormat from 'pretty-format';
 export default function isError(potentialError: any) {
   // duck-type Error, see #2549
   const isError =
+    potentialError !== null &&
     typeof potentialError === 'object' &&
     typeof potentialError.message === 'string' &&
     typeof potentialError.name === 'string';
+
   const message = isError
     ? null
     : `Failed: ${prettyFormat(potentialError, {maxDepth: 3})}`;

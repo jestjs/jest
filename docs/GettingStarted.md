@@ -90,6 +90,10 @@ yarn add --dev babel-jest babel-core regenerator-runtime
 > ```bash
 > yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
 > ```
+>
+> You will need to use `babel.config.js` in order to transpile `node_modules`. See https://babeljs.io/docs/en/next/config-files for more information.
+>
+> You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/master/examples/babel-7
 
 _Note: Explicitly installing `regenerator-runtime` is not needed if you use `npm` 3 or 4 or Yarn_
 

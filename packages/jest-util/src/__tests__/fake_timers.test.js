@@ -110,13 +110,13 @@ describe('FakeTimers', () => {
       global.process.nextTick(mock1);
       global.process.nextTick(mock2);
 
-      expect(mock1.mock.calls.length).toBe(0);
-      expect(mock2.mock.calls.length).toBe(0);
+      expect(mock1).toHaveBeenCalledTimes(0);
+      expect(mock2).toHaveBeenCalledTimes(0);
 
       timers.runAllTicks();
 
-      expect(mock1.mock.calls.length).toBe(1);
-      expect(mock2.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
+      expect(mock2).toHaveBeenCalledTimes(1);
       expect(runOrder).toEqual(['mock1', 'mock2']);
     });
 
@@ -132,7 +132,7 @@ describe('FakeTimers', () => {
       timers.useFakeTimers();
       timers.runAllTicks();
 
-      expect(nextTick.mock.calls.length).toBe(0);
+      expect(nextTick).toHaveBeenCalledTimes(0);
     });
 
     it('only runs a scheduled callback once', () => {
@@ -147,13 +147,13 @@ describe('FakeTimers', () => {
 
       const mock1 = jest.fn();
       global.process.nextTick(mock1);
-      expect(mock1.mock.calls.length).toBe(0);
+      expect(mock1).toHaveBeenCalledTimes(0);
 
       timers.runAllTicks();
-      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
 
       timers.runAllTicks();
-      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
     });
 
     it('cancels a callback even from native nextTick', () => {
@@ -171,13 +171,13 @@ describe('FakeTimers', () => {
       const mock1 = jest.fn();
       global.process.nextTick(mock1);
       timers.runAllTicks();
-      expect(mock1.mock.calls.length).toBe(1);
-      expect(nativeNextTick.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
+      expect(nativeNextTick).toHaveBeenCalledTimes(1);
 
       // Now imagine we fast forward to the next real tick. We need to be sure
       // that native nextTick doesn't try to run the callback again
       nativeNextTick.mock.calls[0][0]();
-      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
     });
 
     it('cancels a callback even from native setImmediate', () => {
@@ -194,12 +194,12 @@ describe('FakeTimers', () => {
       const mock1 = jest.fn();
       global.setImmediate(mock1);
       timers.runAllImmediates();
-      expect(mock1.mock.calls.length).toBe(1);
-      expect(nativeSetImmediate.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
+      expect(nativeSetImmediate).toHaveBeenCalledTimes(1);
 
       // ensure that native setImmediate doesn't try to run the callback again
       nativeSetImmediate.mock.calls[0][0]();
-      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
     });
 
     it('doesnt run a tick callback if native nextTick already did', () => {
@@ -219,11 +219,11 @@ describe('FakeTimers', () => {
 
       // Emulate native nextTick running...
       nativeNextTick.mock.calls[0][0]();
-      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
 
       // Ensure runAllTicks() doesn't run the callback again
       timers.runAllTicks();
-      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
     });
 
     it('doesnt run immediate if native setImmediate already did', () => {
@@ -242,11 +242,11 @@ describe('FakeTimers', () => {
 
       // Emulate native setImmediate running...
       nativeSetImmediate.mock.calls[0][0]();
-      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
 
       // Ensure runAllTicks() doesn't run the callback again
       timers.runAllImmediates();
-      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
     });
 
     it('native doesnt run immediate if fake already did', () => {
@@ -265,12 +265,12 @@ describe('FakeTimers', () => {
 
       //run all immediates now
       timers.runAllImmediates();
-      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
 
       // Emulate native setImmediate running ensuring it doesn't re-run
       nativeSetImmediate.mock.calls[0][0]();
 
-      expect(mock1.mock.calls.length).toBe(1);
+      expect(mock1).toHaveBeenCalledTimes(1);
     });
 
     it('throws before allowing infinite recursion', () => {
@@ -376,13 +376,13 @@ describe('FakeTimers', () => {
 
       const fn = jest.fn();
       global.setTimeout(fn, 0);
-      expect(fn.mock.calls.length).toBe(0);
+      expect(fn).toHaveBeenCalledTimes(0);
 
       timers.runAllTimers();
-      expect(fn.mock.calls.length).toBe(1);
+      expect(fn).toHaveBeenCalledTimes(1);
 
       timers.runAllTimers();
-      expect(fn.mock.calls.length).toBe(1);
+      expect(fn).toHaveBeenCalledTimes(1);
     });
 
     it('runs callbacks with arguments after the interval', () => {
@@ -394,7 +394,8 @@ describe('FakeTimers', () => {
       global.setTimeout(fn, 0, 'mockArg1', 'mockArg2');
 
       timers.runAllTimers();
-      expect(fn.mock.calls).toEqual([['mockArg1', 'mockArg2']]);
+      expect(fn).toHaveBeenCalledTimes(1);
+      expect(fn).toHaveBeenCalledWith('mockArg1', 'mockArg2');
     });
 
     it('doesnt pass the callback to native setTimeout', () => {
@@ -412,8 +413,8 @@ describe('FakeTimers', () => {
       global.setTimeout(mock1, 0);
 
       timers.runAllTimers();
-      expect(mock1.mock.calls.length).toBe(1);
-      expect(nativeSetTimeout.mock.calls.length).toBe(0);
+      expect(mock1).toHaveBeenCalledTimes(1);
+      expect(nativeSetTimeout).toHaveBeenCalledTimes(0);
     });
 
     it('throws before allowing infinite recursion', () => {
@@ -449,10 +450,10 @@ describe('FakeTimers', () => {
       global.setTimeout(() => {
         process.nextTick(fn);
       }, 0);
-      expect(fn.mock.calls.length).toBe(0);
+      expect(fn).toHaveBeenCalledTimes(0);
 
       timers.runAllTimers();
-      expect(fn.mock.calls.length).toBe(1);
+      expect(fn).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -540,7 +541,7 @@ describe('FakeTimers', () => {
 
       timers.reset();
       timers.runAllTimers();
-      expect(mock1.mock.calls.length).toBe(0);
+      expect(mock1).toHaveBeenCalledTimes(0);
     });
 
     it('resets all pending setIntervals', () => {
@@ -553,7 +554,7 @@ describe('FakeTimers', () => {
 
       timers.reset();
       timers.runAllTimers();
-      expect(mock1.mock.calls.length).toBe(0);
+      expect(mock1).toHaveBeenCalledTimes(0);
     });
 
     it('resets all pending ticks callbacks & immediates', () => {
@@ -573,7 +574,7 @@ describe('FakeTimers', () => {
       timers.reset();
       timers.runAllTicks();
       timers.runAllImmediates();
-      expect(mock1.mock.calls.length).toBe(0);
+      expect(mock1).toHaveBeenCalledTimes(0);
     });
 
     it('resets current advanceTimersByTime time cursor', () => {
@@ -589,7 +590,7 @@ describe('FakeTimers', () => {
       global.setTimeout(mock1, 100);
 
       timers.advanceTimersByTime(50);
-      expect(mock1.mock.calls.length).toBe(0);
+      expect(mock1).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -685,29 +686,29 @@ describe('FakeTimers', () => {
       timers.runWithRealTimers(() => {
         global.clearInterval();
       });
-      expect(nativeClearInterval.mock.calls.length).toBe(1);
-      expect(global.clearInterval.mock.calls.length).toBe(0);
+      expect(nativeClearInterval).toHaveBeenCalledTimes(1);
+      expect(global.clearInterval).toHaveBeenCalledTimes(0);
 
       // clearTimeout()
       timers.runWithRealTimers(() => {
         global.clearTimeout();
       });
-      expect(nativeClearTimeout.mock.calls.length).toBe(1);
-      expect(global.clearTimeout.mock.calls.length).toBe(0);
+      expect(nativeClearTimeout).toHaveBeenCalledTimes(1);
+      expect(global.clearTimeout).toHaveBeenCalledTimes(0);
 
       // setInterval()
       timers.runWithRealTimers(() => {
         global.setInterval();
       });
-      expect(nativeSetInterval.mock.calls.length).toBe(1);
-      expect(global.setInterval.mock.calls.length).toBe(0);
+      expect(nativeSetInterval).toHaveBeenCalledTimes(1);
+      expect(global.setInterval).toHaveBeenCalledTimes(0);
 
       // setTimeout()
       timers.runWithRealTimers(() => {
         global.setTimeout();
       });
-      expect(nativeSetTimeout.mock.calls.length).toBe(1);
-      expect(global.setTimeout.mock.calls.length).toBe(0);
+      expect(nativeSetTimeout).toHaveBeenCalledTimes(1);
+      expect(global.setTimeout).toHaveBeenCalledTimes(0);
     });
 
     it('resets mock timers after executing callback', () => {
@@ -730,45 +731,45 @@ describe('FakeTimers', () => {
       timers.runWithRealTimers(() => {
         global.clearInterval();
       });
-      expect(nativeClearInterval.mock.calls.length).toBe(1);
-      expect(global.clearInterval.mock.calls.length).toBe(0);
+      expect(nativeClearInterval).toHaveBeenCalledTimes(1);
+      expect(global.clearInterval).toHaveBeenCalledTimes(0);
 
       global.clearInterval();
-      expect(nativeClearInterval.mock.calls.length).toBe(1);
-      expect(global.clearInterval.mock.calls.length).toBe(1);
+      expect(nativeClearInterval).toHaveBeenCalledTimes(1);
+      expect(global.clearInterval).toHaveBeenCalledTimes(1);
 
       // clearTimeout()
       timers.runWithRealTimers(() => {
         global.clearTimeout();
       });
-      expect(nativeClearTimeout.mock.calls.length).toBe(1);
-      expect(global.clearTimeout.mock.calls.length).toBe(0);
+      expect(nativeClearTimeout).toHaveBeenCalledTimes(1);
+      expect(global.clearTimeout).toHaveBeenCalledTimes(0);
 
       global.clearTimeout();
-      expect(nativeClearTimeout.mock.calls.length).toBe(1);
-      expect(global.clearTimeout.mock.calls.length).toBe(1);
+      expect(nativeClearTimeout).toHaveBeenCalledTimes(1);
+      expect(global.clearTimeout).toHaveBeenCalledTimes(1);
 
       // setInterval()
       timers.runWithRealTimers(() => {
         global.setInterval();
       });
-      expect(nativeSetInterval.mock.calls.length).toBe(1);
-      expect(global.setInterval.mock.calls.length).toBe(0);
+      expect(nativeSetInterval).toHaveBeenCalledTimes(1);
+      expect(global.setInterval).toHaveBeenCalledTimes(0);
 
       global.setInterval();
-      expect(nativeSetInterval.mock.calls.length).toBe(1);
-      expect(global.setInterval.mock.calls.length).toBe(1);
+      expect(nativeSetInterval).toHaveBeenCalledTimes(1);
+      expect(global.setInterval).toHaveBeenCalledTimes(1);
 
       // setTimeout()
       timers.runWithRealTimers(() => {
         global.setTimeout();
       });
-      expect(nativeSetTimeout.mock.calls.length).toBe(1);
-      expect(global.setTimeout.mock.calls.length).toBe(0);
+      expect(nativeSetTimeout).toHaveBeenCalledTimes(1);
+      expect(global.setTimeout).toHaveBeenCalledTimes(0);
 
       global.setTimeout();
-      expect(nativeSetTimeout.mock.calls.length).toBe(1);
-      expect(global.setTimeout.mock.calls.length).toBe(1);
+      expect(nativeSetTimeout).toHaveBeenCalledTimes(1);
+      expect(global.setTimeout).toHaveBeenCalledTimes(1);
     });
 
     it('resets mock timer functions even if callback throws', () => {
@@ -786,12 +787,12 @@ describe('FakeTimers', () => {
           throw new Error('test');
         });
       }).toThrow(new Error('test'));
-      expect(nativeSetTimeout.mock.calls.length).toBe(1);
-      expect(global.setTimeout.mock.calls.length).toBe(0);
+      expect(nativeSetTimeout).toHaveBeenCalledTimes(1);
+      expect(global.setTimeout).toHaveBeenCalledTimes(0);
 
       global.setTimeout();
-      expect(nativeSetTimeout.mock.calls.length).toBe(1);
-      expect(global.setTimeout.mock.calls.length).toBe(1);
+      expect(nativeSetTimeout).toHaveBeenCalledTimes(1);
+      expect(global.setTimeout).toHaveBeenCalledTimes(1);
     });
   });
 
