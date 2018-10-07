@@ -17,6 +17,7 @@ import {
 } from '../../packages/jest-changed-files/src';
 import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 import {cleanup, run, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 skipSuiteOnWindows();
 
@@ -243,6 +244,24 @@ test('monitors only root paths for git', async () => {
   ).toEqual(['file2.txt', 'file3.txt']);
 });
 
+test('handles a bad revision for "changedSince", for git', async () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    'file1.js': 'module.exports = {}',
+    'package.json': '{}',
+  });
+
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
+
+  const {status, stderr} = runJest(DIR, ['--changedSince=blablabla']);
+
+  expect(status).toBe(1);
+  expect(stderr).toMatchSnapshot();
+});
+
 test('gets changed files for hg', async () => {
   if (process.env.CI) {
     // Circle and Travis have very old version of hg (v2, and current
@@ -370,4 +389,22 @@ test('monitors only root paths for hg', async () => {
       .map(filePath => path.basename(filePath))
       .sort(),
   ).toEqual(['file2.txt', 'file3.txt']);
+});
+
+test('handles a bad revision for "changedSince", for hg', async () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    'file1.js': 'module.exports = {}',
+    'package.json': '{}',
+  });
+
+  run(`${HG} init`, DIR);
+  run(`${HG} add .`, DIR);
+  run(`${HG} commit -m "first"`, DIR);
+
+  const {status, stderr} = runJest(DIR, ['--changedSince=blablabla']);
+
+  expect(status).toBe(1);
+  expect(stderr).toMatchSnapshot();
 });
