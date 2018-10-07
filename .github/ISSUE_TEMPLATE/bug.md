@@ -1,8 +1,9 @@
 ---
-
 name: 🐛 Bug report
 about: Create a report to help us improve
 ---
+
+<!-- Love Jest? Please consider supporting our collective: 👉  https://opencollective.com/jest/donate -->
 
 ## 🐛 Bug Report
 

@@ -7,16 +7,32 @@
  * @flow
  */
 
-import type {GlobalConfig, SnapshotUpdateState} from 'types/Config';
+import {replacePathSepForRegex} from 'jest-regex-util';
 
-type Options = {
-  testNamePattern?: string,
-  testPathPattern?: string,
-  noSCM?: boolean,
-  updateSnapshot?: SnapshotUpdateState,
+import type {GlobalConfig} from 'types/Config';
+
+export type Options = {
+  bail?: $PropertyType<GlobalConfig, 'bail'>,
+  changedSince?: $PropertyType<GlobalConfig, 'changedSince'>,
+  collectCoverage?: $PropertyType<GlobalConfig, 'collectCoverage'>,
+  collectCoverageFrom?: $PropertyType<GlobalConfig, 'collectCoverageFrom'>,
+  collectCoverageOnlyFrom?: $PropertyType<
+    GlobalConfig,
+    'collectCoverageOnlyFrom',
+  >,
+  coverageDirectory?: $PropertyType<GlobalConfig, 'coverageDirectory'>,
+  coverageReporters?: $PropertyType<GlobalConfig, 'coverageReporters'>,
   mode?: 'watch' | 'watchAll',
-  passWithNoTests?: boolean,
-  onlyFailures?: boolean,
+  noSCM?: $PropertyType<GlobalConfig, 'noSCM'>,
+  notify?: $PropertyType<GlobalConfig, 'notify'>,
+  notifyMode?: $PropertyType<GlobalConfig, 'notifyMode'>,
+  onlyFailures?: $PropertyType<GlobalConfig, 'onlyFailures'>,
+  passWithNoTests?: $PropertyType<GlobalConfig, 'passWithNoTests'>,
+  reporters?: $PropertyType<GlobalConfig, 'reporters'>,
+  testNamePattern?: $PropertyType<GlobalConfig, 'testNamePattern'>,
+  testPathPattern?: $PropertyType<GlobalConfig, 'testPathPattern'>,
+  updateSnapshot?: $PropertyType<GlobalConfig, 'updateSnapshot'>,
+  verbose?: $PropertyType<GlobalConfig, 'verbose'>,
 };
 
 export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
@@ -27,10 +43,6 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
     options = {};
   }
 
-  if (options.updateSnapshot) {
-    newConfig.updateSnapshot = options.updateSnapshot;
-  }
-
   if (options.mode === 'watch') {
     newConfig.watch = true;
     newConfig.watchAll = false;
@@ -39,12 +51,13 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
     newConfig.watchAll = true;
   }
 
-  if ('testPathPattern' in options) {
-    newConfig.testPathPattern = options.testPathPattern || '';
+  if (options.testNamePattern !== undefined) {
+    newConfig.testNamePattern = options.testNamePattern || '';
   }
 
-  if ('testNamePattern' in options) {
-    newConfig.testNamePattern = options.testNamePattern || '';
+  if (options.testPathPattern !== undefined) {
+    newConfig.testPathPattern =
+      replacePathSepForRegex(options.testPathPattern) || '';
   }
 
   newConfig.onlyChanged = false;
@@ -53,16 +66,64 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
     !newConfig.testNamePattern &&
     !newConfig.testPathPattern;
 
+  if (options.bail !== undefined) {
+    newConfig.bail = options.bail || false;
+  }
+
+  if (options.changedSince !== undefined) {
+    newConfig.changedSince = options.changedSince;
+  }
+
+  if (options.collectCoverage !== undefined) {
+    newConfig.collectCoverage = options.collectCoverage || false;
+  }
+
+  if (options.collectCoverageFrom !== undefined) {
+    newConfig.collectCoverageFrom = options.collectCoverageFrom;
+  }
+
+  if (options.collectCoverageOnlyFrom !== undefined) {
+    newConfig.collectCoverageOnlyFrom = options.collectCoverageOnlyFrom;
+  }
+
+  if (options.coverageDirectory !== undefined) {
+    newConfig.coverageDirectory = options.coverageDirectory;
+  }
+
+  if (options.coverageReporters !== undefined) {
+    newConfig.coverageReporters = options.coverageReporters;
+  }
+
   if (options.noSCM) {
     newConfig.noSCM = true;
   }
 
-  if (options.passWithNoTests) {
+  if (options.notify !== undefined) {
+    newConfig.notify = options.notify || false;
+  }
+
+  if (options.notifyMode !== undefined) {
+    newConfig.notifyMode = options.notifyMode;
+  }
+
+  if (options.onlyFailures !== undefined) {
+    newConfig.onlyFailures = options.onlyFailures || false;
+  }
+
+  if (options.passWithNoTests !== undefined) {
     newConfig.passWithNoTests = true;
   }
 
-  if ('onlyFailures' in options) {
-    newConfig.onlyFailures = options.onlyFailures || false;
+  if (options.reporters !== undefined) {
+    newConfig.reporters = options.reporters;
+  }
+
+  if (options.updateSnapshot !== undefined) {
+    newConfig.updateSnapshot = options.updateSnapshot;
+  }
+
+  if (options.verbose !== undefined) {
+    newConfig.verbose = options.verbose || false;
   }
 
   return Object.freeze(newConfig);

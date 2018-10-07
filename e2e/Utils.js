@@ -42,22 +42,21 @@ const run = (cmd: string, cwd?: Path) => {
 const linkJestPackage = (packageName: string, cwd: Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
-  const destination = path.resolve(cwd, 'node_modules/');
+  const destination = path.resolve(cwd, 'node_modules/', packageName);
   mkdirp.sync(destination);
   rimraf.sync(destination);
   fs.symlinkSync(packagePath, destination, 'dir');
 };
 
-const makeTemplate = (str: string): ((values?: Array<any>) => string) => {
-  return (values: ?Array<any>) => {
-    return str.replace(/\$(\d+)/g, (match, number) => {
-      if (!Array.isArray(values)) {
-        throw new Error('Array of values must be passed to the template.');
-      }
-      return values[number - 1];
-    });
-  };
-};
+const makeTemplate = (str: string): ((values?: Array<any>) => string) => (
+  values: ?Array<any>,
+) =>
+  str.replace(/\$(\d+)/g, (match, number) => {
+    if (!Array.isArray(values)) {
+      throw new Error('Array of values must be passed to the template.');
+    }
+    return values[number - 1];
+  });
 
 const cleanup = (directory: string) => rimraf.sync(directory);
 
@@ -93,9 +92,9 @@ const copyDir = (src: string, dest: string) => {
     if (!fs.existsSync(dest)) {
       fs.mkdirSync(dest);
     }
-    fs.readdirSync(src).map(filePath => {
-      return copyDir(path.join(src, filePath), path.join(dest, filePath));
-    });
+    fs.readdirSync(src).map(filePath =>
+      copyDir(path.join(src, filePath), path.join(dest, filePath)),
+    );
   } else {
     fs.writeFileSync(dest, fs.readFileSync(src));
   }
@@ -120,14 +119,7 @@ const createEmptyPackage = (
   );
 };
 
-type ExtractSummaryOptions = {|
-  stripLocation: boolean,
-|};
-
-const extractSummary = (
-  stdout: string,
-  {stripLocation = false}: ExtractSummaryOptions = {},
-) => {
+const extractSummary = (stdout: string) => {
   const match = stdout.match(
     /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
   );
@@ -145,14 +137,10 @@ const extractSummary = (
     .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
 
-  let rest = cleanupStackTrace(
+  const rest = cleanupStackTrace(
     // remove all timestamps
     stdout.replace(match[0], '').replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
   );
-
-  if (stripLocation) {
-    rest = rest.replace(/(at .*):\d+:\d+/g, '$1:<<LINE>>:<<COLUMN>>');
-  }
 
   return {rest, summary};
 };
@@ -160,11 +148,10 @@ const extractSummary = (
 // different versions of Node print different stack traces. This function
 // unifies their output to make it possible to snapshot them.
 // TODO: Remove when we drop support for node 4
-const cleanupStackTrace = (output: string) => {
-  return output
+const cleanupStackTrace = (output: string) =>
+  output
     .replace(/.*(?=packages)/g, '      at ')
     .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
-};
 
 const normalizeIcons = (str: string) => {
   if (!str) {

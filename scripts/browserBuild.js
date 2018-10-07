@@ -20,7 +20,7 @@ const babelEs5Options = Object.assign(
   {},
   {
     babelrc: false,
-    exclude: 'node_modules/!(ansi-styles|chalk|ansi-regex)/**',
+    exclude: 'node_modules/!(ansi-styles|chalk|ansi-regex|slash)/**',
     plugins: [
       'syntax-trailing-function-commas',
       'transform-flow-strip-types',
@@ -64,13 +64,13 @@ function browserBuild(pkgName, entryPath, destination) {
       rollupResolve(),
     ],
     strict: false,
-  }).then(bundle => {
-    return bundle.write({
+  }).then(bundle =>
+    bundle.write({
       file: destination,
       format: 'umd',
       name: pkgName,
-    });
-  });
+    })
+  );
 }
 
 module.exports = browserBuild;

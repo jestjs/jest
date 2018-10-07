@@ -17,7 +17,6 @@ import naturalCompare from 'natural-compare';
 import path from 'path';
 import prettyFormat from 'pretty-format';
 
-export const SNAPSHOT_EXTENSION = 'snap';
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
 export const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
@@ -77,6 +76,10 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   return null;
 };
 
+function isObject(item) {
+  return item && typeof item === 'object' && !Array.isArray(item);
+}
+
 export const testNameToKey = (testName: string, count: number) =>
   testName + ' ' + count;
 
@@ -87,12 +90,6 @@ export const keyToTestName = (key: string) => {
 
   return key.replace(/ \d+$/, '');
 };
-
-export const getSnapshotPath = (testPath: Path) =>
-  path.join(
-    path.join(path.dirname(testPath), '__snapshots__'),
-    path.basename(testPath) + '.' + SNAPSHOT_EXTENSION,
-  );
 
 export const getSnapshotData = (
   snapshotPath: Path,
@@ -131,8 +128,8 @@ export const getSnapshotData = (
 const addExtraLineBreaks = string =>
   string.includes('\n') ? `\n${string}\n` : string;
 
-export const serialize = (data: any): string => {
-  return addExtraLineBreaks(
+export const serialize = (data: any): string =>
+  addExtraLineBreaks(
     normalizeNewlines(
       prettyFormat(data, {
         escapeRegex: true,
@@ -141,14 +138,15 @@ export const serialize = (data: any): string => {
       }),
     ),
   );
-};
 
 // unescape double quotes
 export const unescape = (data: any): string => data.replace(/\\(")/g, '$1');
 
-const printBacktickString = (str: string) => {
-  return '`' + str.replace(/`|\\|\${/g, '\\$&') + '`';
-};
+export const escapeBacktickString = (str: string) =>
+  str.replace(/`|\\|\${/g, '\\$&');
+
+const printBacktickString = (str: string) =>
+  '`' + escapeBacktickString(str) + '`';
 
 export const ensureDirectoryExists = (filePath: Path) => {
   try {
@@ -178,4 +176,19 @@ export const saveSnapshotFile = (
     snapshotPath,
     writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n',
   );
+};
+
+export const deepMerge = (target: any, source: any) => {
+  const mergedOutput = Object.assign({}, target);
+  if (isObject(target) && isObject(source)) {
+    Object.keys(source).forEach(key => {
+      if (isObject(source[key]) && !source[key].$$typeof) {
+        if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
+        else mergedOutput[key] = deepMerge(target[key], source[key]);
+      } else {
+        Object.assign(mergedOutput, {[key]: source[key]});
+      }
+    });
+  }
+  return mergedOutput;
 };

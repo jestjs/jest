@@ -12,7 +12,9 @@ import type {InternalHasteMap, ModuleMetaData} from 'types/HasteMap';
 export type IgnoreMatcher = (item: string) => boolean;
 
 export type WorkerMessage = {
+  computeDependencies: boolean,
   computeSha1: boolean,
+  rootDir: string,
   filePath: string,
   hasteImplModulePath?: string,
 };
@@ -30,6 +32,7 @@ export type CrawlerOptions = {|
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   ignore: IgnoreMatcher,
+  rootDir: string,
   roots: Array<string>,
 |};
 

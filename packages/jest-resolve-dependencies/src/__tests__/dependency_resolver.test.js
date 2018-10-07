@@ -9,6 +9,7 @@
 
 const path = require('path');
 const {normalize} = require('jest-config');
+const {buildSnapshotResolver} = require('jest-snapshot');
 const DependencyResolver = require('../index');
 
 const maxWorkers = 1;
@@ -19,9 +20,7 @@ const cases = {
   fancyCondition: jest.fn(path => path.length > 10),
   testRegex: jest.fn(path => /.test.js$/.test(path)),
 };
-const filter = path => {
-  return Object.keys(cases).every(key => cases[key](path));
-};
+const filter = path => Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(() => {
   Runtime = require('jest-runtime');
@@ -36,6 +35,7 @@ beforeEach(() => {
     dependencyResolver = new DependencyResolver(
       hasteMap.resolver,
       hasteMap.hasteFS,
+      buildSnapshotResolver(config),
     );
   });
 });

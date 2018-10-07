@@ -72,6 +72,7 @@ export type JestTotalResultsMeta = {
 
 export const messageTypes = {
   noTests: 1,
+  testResults: 3,
   unknown: 0,
   watchUsage: 2,
 };

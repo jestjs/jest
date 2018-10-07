@@ -82,6 +82,7 @@ async function jasmine2(
 
   environment.global.test = environment.global.it;
   environment.global.it.only = environment.global.fit;
+  environment.global.it.todo = env.todo;
   environment.global.it.skip = environment.global.xit;
   environment.global.xtest = environment.global.xit;
   environment.global.describe.skip = environment.global.xdescribe;

@@ -10,17 +10,14 @@
 describe('promise beforeAll', () => {
   let flag;
 
-  beforeAll(() => {
-    return new Promise(resolve => {
+  beforeAll(() =>
+    new Promise(resolve => {
       process.nextTick(resolve);
     }).then(() => {
       flag = 1;
-    });
-  });
+    }));
 
-  beforeAll(() => {
-    return new Promise(resolve => setTimeout(resolve, 10));
-  }, 500);
+  beforeAll(() => new Promise(resolve => setTimeout(resolve, 10)), 500);
 
   // passing tests
   it('runs tests after beforeAll asynchronously completes', () => {
@@ -29,9 +26,7 @@ describe('promise beforeAll', () => {
 
   describe('with failing async', () => {
     // failing before hook
-    beforeAll(() => {
-      return new Promise(resolve => setTimeout(resolve, 100));
-    }, 11);
+    beforeAll(() => new Promise(resolve => setTimeout(resolve, 100)), 11);
 
     it('fails', () => {});
   });

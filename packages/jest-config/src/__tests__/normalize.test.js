@@ -885,6 +885,11 @@ describe('preset', () => {
       if (name === 'react-native/jest-preset') {
         return '/node_modules/react-native/jest-preset.json';
       }
+
+      if (name === 'doesnt-exist') {
+        return null;
+      }
+
       return '/node_modules/' + name;
     });
     jest.doMock(
@@ -915,6 +920,15 @@ describe('preset', () => {
       }),
       {virtual: true},
     );
+    jest.mock(
+      '/node_modules/exist-but-no-jest-preset/index.js',
+      () => ({
+        moduleNameMapper: {
+          js: true,
+        },
+      }),
+      {virtual: true},
+    );
   });
 
   afterEach(() => {
@@ -926,6 +940,18 @@ describe('preset', () => {
       normalize(
         {
           preset: 'doesnt-exist',
+          rootDir: '/root/path/foo',
+        },
+        {},
+      );
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('throws when module was found but no "jest-preset.js" or "jest-preset.json" files', () => {
+    expect(() => {
+      normalize(
+        {
+          preset: 'exist-but-no-jest-preset',
           rootDir: '/root/path/foo',
         },
         {},
@@ -946,7 +972,7 @@ describe('preset', () => {
         },
         {},
       );
-    }).toThrowErrorMatchingSnapshot();
+    }).toThrowError(/Unexpected token }/);
   });
 
   test('works with "react-native"', () => {
@@ -1066,12 +1092,10 @@ describe('preset without setupFiles', () => {
   beforeAll(() => {
     jest.doMock(
       '/node_modules/react-foo/jest-preset',
-      () => {
-        return {
-          moduleNameMapper: {b: 'b'},
-          modulePathIgnorePatterns: ['b'],
-        };
-      },
+      () => ({
+        moduleNameMapper: {b: 'b'},
+        modulePathIgnorePatterns: ['b'],
+      }),
       {virtual: true},
     );
   });
@@ -1129,8 +1153,8 @@ describe('watchPlugins', () => {
     );
 
     expect(options.watchPlugins).toEqual([
-      '/node_modules/my-watch-plugin',
-      '/root/path/to/plugin',
+      {config: {}, path: '/node_modules/my-watch-plugin'},
+      {config: {}, path: '/root/path/to/plugin'},
     ]);
   });
 });

@@ -51,23 +51,17 @@ beforeEach(() => {
 
   jest.mock(
     '/fake-worker.js',
-    () => {
-      return {
-        _shouldNotExist1() {},
-        methodA() {},
-        methodB() {},
-      };
-    },
+    () => ({
+      _shouldNotExist1() {},
+      methodA() {},
+      methodB() {},
+    }),
     {virtual: true},
   );
 
-  jest.mock(
-    '/fake-worker-with-default-method.js',
-    () => {
-      return () => {};
-    },
-    {virtual: true},
-  );
+  jest.mock('/fake-worker-with-default-method.js', () => () => {}, {
+    virtual: true,
+  });
 
   Worker = require('../worker').default;
   Farm = require('../index').default;
@@ -127,6 +121,7 @@ it('tries instantiating workers with the right options', () => {
   expect(Worker.mock.calls[0][0]).toEqual({
     forkOptions: {execArgv: []},
     maxRetries: 6,
+    setupArgs: [],
     workerId: 1,
     workerPath: '/tmp/baz.js',
   });
@@ -161,22 +156,20 @@ it('aggregates all stdouts and stderrs from all workers', () => {
   const out = [];
   const err = [];
 
-  Worker.mockImplementation(() => {
-    return {
-      getStderr: () => ({
-        once() {},
-        pipe(errStream) {
-          err.push(errStream);
-        },
-      }),
-      getStdout: () => ({
-        once() {},
-        pipe(outStream) {
-          out.push(outStream);
-        },
-      }),
-    };
-  });
+  Worker.mockImplementation(() => ({
+    getStderr: () => ({
+      once() {},
+      pipe(errStream) {
+        err.push(errStream);
+      },
+    }),
+    getStdout: () => ({
+      once() {},
+      pipe(outStream) {
+        out.push(outStream);
+      },
+    }),
+  }));
 
   const farm = new Farm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],

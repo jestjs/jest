@@ -10,20 +10,30 @@
 import type {Path, SnapshotUpdateState} from 'types/Config';
 
 import fs from 'fs';
+import {getTopFrame, getStackTraceLines} from 'jest-message-util';
 import {
   saveSnapshotFile,
   getSnapshotData,
-  getSnapshotPath,
   keyToTestName,
   serialize,
   testNameToKey,
   unescape,
 } from './utils';
+import {saveInlineSnapshots, type InlineSnapshot} from './inline_snapshots';
 
 export type SnapshotStateOptions = {|
   updateSnapshot: SnapshotUpdateState,
-  snapshotPath?: string,
+  getPrettier: () => null | any,
+  getBabelTraverse: () => Function,
   expand?: boolean,
+|};
+
+export type SnapshotMatchOptions = {|
+  testName: string,
+  received: any,
+  key?: string,
+  inlineSnapshot?: string,
+  error?: Error,
 |};
 
 export default class SnapshotState {
@@ -33,21 +43,27 @@ export default class SnapshotState {
   _updateSnapshot: SnapshotUpdateState;
   _snapshotData: {[key: string]: string};
   _snapshotPath: Path;
+  _inlineSnapshots: Array<InlineSnapshot>;
   _uncheckedKeys: Set<string>;
+  _getBabelTraverse: () => Function;
+  _getPrettier: () => null | any;
   added: number;
   expand: boolean;
   matched: number;
   unmatched: number;
   updated: number;
 
-  constructor(testPath: Path, options: SnapshotStateOptions) {
-    this._snapshotPath = options.snapshotPath || getSnapshotPath(testPath);
+  constructor(snapshotPath: Path, options: SnapshotStateOptions) {
+    this._snapshotPath = snapshotPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
       options.updateSnapshot,
     );
     this._snapshotData = data;
     this._dirty = dirty;
+    this._getBabelTraverse = options.getBabelTraverse;
+    this._getPrettier = options.getPrettier;
+    this._inlineSnapshots = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
     this._index = 0;
@@ -67,22 +83,51 @@ export default class SnapshotState {
     });
   }
 
-  _addSnapshot(key: string, receivedSerialized: string) {
+  _addSnapshot(
+    key: string,
+    receivedSerialized: string,
+    options: {isInline: boolean, error?: Error},
+  ) {
     this._dirty = true;
-    this._snapshotData[key] = receivedSerialized;
+    if (options.isInline) {
+      const error = options.error || new Error();
+      const lines = getStackTraceLines(error.stack);
+      const frame = getTopFrame(lines);
+      if (!frame) {
+        throw new Error(
+          "Jest: Couldn't infer stack frame for inline snapshot.",
+        );
+      }
+      this._inlineSnapshots.push({
+        frame,
+        snapshot: receivedSerialized,
+      });
+    } else {
+      this._snapshotData[key] = receivedSerialized;
+    }
   }
 
   save() {
-    const isEmpty = Object.keys(this._snapshotData).length === 0;
+    const hasExternalSnapshots = Object.keys(this._snapshotData).length;
+    const hasInlineSnapshots = this._inlineSnapshots.length;
+    const isEmpty = !hasExternalSnapshots && !hasInlineSnapshots;
+
     const status = {
       deleted: false,
       saved: false,
     };
 
     if ((this._dirty || this._uncheckedKeys.size) && !isEmpty) {
-      saveSnapshotFile(this._snapshotData, this._snapshotPath);
+      if (hasExternalSnapshots) {
+        saveSnapshotFile(this._snapshotData, this._snapshotPath);
+      }
+      if (hasInlineSnapshots) {
+        const prettier = this._getPrettier(); // Load lazily
+        const babelTraverse = this._getBabelTraverse(); // Load lazily
+        saveInlineSnapshots(this._inlineSnapshots, prettier, babelTraverse);
+      }
       status.saved = true;
-    } else if (isEmpty && fs.existsSync(this._snapshotPath)) {
+    } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {
       if (this._updateSnapshot === 'all') {
         fs.unlinkSync(this._snapshotPath);
       }
@@ -108,22 +153,37 @@ export default class SnapshotState {
     }
   }
 
-  match(testName: string, received: any, key?: string) {
+  match({
+    testName,
+    received,
+    key,
+    inlineSnapshot,
+    error,
+  }: SnapshotMatchOptions) {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
+    const isInline = inlineSnapshot !== undefined;
 
     if (!key) {
       key = testNameToKey(testName, count);
     }
 
-    this._uncheckedKeys.delete(key);
+    // Do not mark the snapshot as "checked" if the snapshot is inline and
+    // there's an external snapshot. This way the external snapshot can be
+    // removed with `--updateSnapshot`.
+    if (!(isInline && this._snapshotData[key])) {
+      this._uncheckedKeys.delete(key);
+    }
 
     const receivedSerialized = serialize(received);
-    const expected = this._snapshotData[key];
+    const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;
-    const hasSnapshot = this._snapshotData[key] !== undefined;
+    const hasSnapshot = isInline
+      ? inlineSnapshot !== ''
+      : this._snapshotData[key] !== undefined;
+    const snapshotIsPersisted = isInline || fs.existsSync(this._snapshotPath);
 
-    if (pass) {
+    if (pass && !isInline) {
       // Executing a snapshot file as JavaScript and writing the strings back
       // when other snapshots have changed loses the proper escaping for some
       // characters. Since we check every snapshot in every test, use the newly
@@ -142,7 +202,7 @@ export default class SnapshotState {
     //  * There's no snapshot file or a file without this snapshot on a CI environment.
     if (
       (hasSnapshot && this._updateSnapshot === 'all') ||
-      ((!hasSnapshot || !fs.existsSync(this._snapshotPath)) &&
+      ((!hasSnapshot || !snapshotIsPersisted) &&
         (this._updateSnapshot === 'new' || this._updateSnapshot === 'all'))
     ) {
       if (this._updateSnapshot === 'all') {
@@ -152,12 +212,12 @@ export default class SnapshotState {
           } else {
             this.added++;
           }
-          this._addSnapshot(key, receivedSerialized);
+          this._addSnapshot(key, receivedSerialized, {error, isInline});
         } else {
           this.matched++;
         }
       } else {
-        this._addSnapshot(key, receivedSerialized);
+        this._addSnapshot(key, receivedSerialized, {error, isInline});
         this.added++;
       }
 

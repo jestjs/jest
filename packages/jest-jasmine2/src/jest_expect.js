@@ -13,7 +13,9 @@ import expect from 'expect';
 import {
   addSerializer,
   toMatchSnapshot,
+  toMatchInlineSnapshot,
   toThrowErrorMatchingSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
 } from 'jest-snapshot';
 
 type JasmineMatcher = {
@@ -27,7 +29,9 @@ export default (config: {expand: boolean}) => {
   global.expect = expect;
   expect.setState({expand: config.expand});
   expect.extend({
+    toMatchInlineSnapshot,
     toMatchSnapshot,
+    toThrowErrorMatchingInlineSnapshot,
     toThrowErrorMatchingSnapshot,
   });
   (expect: Object).addSnapshotSerializer = addSerializer;

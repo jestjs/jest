@@ -1078,12 +1078,28 @@ Received constructor: <red>Number</>
 Received value: <red>1</>"
 `;
 
+exports[`.toBeInstanceOf() failing null and [Function String] 1`] = `
+"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+
+Expected constructor: <green>String</>
+Received constructor: 
+Received value: <red>null</>"
+`;
+
 exports[`.toBeInstanceOf() failing true and [Function Boolean] 1`] = `
 "<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
 
 Expected constructor: <green>Boolean</>
 Received constructor: <red>Boolean</>
 Received value: <red>true</>"
+`;
+
+exports[`.toBeInstanceOf() failing undefined and [Function String] 1`] = `
+"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+
+Expected constructor: <green>String</>
+Received constructor: 
+Received value: <red>undefined</>"
 `;
 
 exports[`.toBeInstanceOf() passing [] and [Function Array] 1`] = `
@@ -1517,7 +1533,9 @@ exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '[]' 1`] = 
 Expected array:
   <red>[{}, []]</>
 To contain value:
-  <green>[]</> <dim>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>"
+  <green>[]</>
+
+<dim>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '{}' 1`] = `
@@ -1526,7 +1544,9 @@ exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '{}' 1`] = 
 Expected array:
   <red>[{}, []]</>
 To contain value:
-  <green>{}</> <dim>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>"
+  <green>{}</>
+
+<dim>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[0, 1]' contains '1' 1`] = `

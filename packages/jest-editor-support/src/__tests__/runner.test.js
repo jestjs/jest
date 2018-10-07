@@ -345,20 +345,27 @@ describe('events', () => {
     runner.start();
   });
 
-  it('expects JSON from stdout, then it passes the JSON', () => {
+  it('expects JSON from both stdout and stderr, then it passes the JSON', () => {
     const data = jest.fn();
     runner.on('executableJSON', data);
 
     runner.outputPath = `${fixtures}/failing-jsons/failing_jest_json.json`;
 
-    // Emitting data through stdout should trigger sending JSON
-    fakeProcess.stdout.emit('data', 'Test results written to file');
-    expect(data).toBeCalled();
+    const doTest = (out: stream$Readable) => {
+      data.mockClear();
 
-    // And lets check what we emit
-    const dataAtPath = readFileSync(runner.outputPath);
-    const storedJSON = JSON.parse(dataAtPath.toString());
-    expect(data.mock.calls[0][0]).toEqual(storedJSON);
+      // Emitting data through stdout should trigger sending JSON
+      out.emit('data', 'Test results written to file');
+      expect(data).toBeCalled();
+
+      // And lets check what we emit
+      const dataAtPath = readFileSync(runner.outputPath);
+      const storedJSON = JSON.parse(dataAtPath.toString());
+      expect(data.mock.calls[0][0]).toEqual(storedJSON);
+    };
+
+    doTest(fakeProcess.stdout);
+    doTest(fakeProcess.stderr);
   });
 
   it('emits errors when process errors', () => {
@@ -455,6 +462,16 @@ describe('events', () => {
       expect(runner.prevMessageTypes).toEqual([messageTypes.noTests]);
     });
 
+    it('should track when "No tests found related to files changed since master" is received', () => {
+      const data = Buffer.from(
+        'No tests found related to files changed since "master".\n' +
+          'Press `a` to run all tests, or run Jest with `--watchAll`.',
+      );
+      fakeProcess.stderr.emit('data', data);
+
+      expect(runner.prevMessageTypes).toEqual([messageTypes.noTests]);
+    });
+
     it('should clear the message type history when any other other data is received', () => {
       const data = Buffer.from('');
       fakeProcess.stderr.emit('data', data);
@@ -472,6 +489,14 @@ describe('events', () => {
     it('should identify "No tests found related to files changed since last commit."', () => {
       const buf = Buffer.from(
         'No tests found related to files changed since last commit.\n' +
+          'Press `a` to run all tests, or run Jest with `--watchAll`.',
+      );
+      expect(runner.findMessageType(buf)).toBe(messageTypes.noTests);
+    });
+
+    it('should identify "No tests found related to files changed since git ref."', () => {
+      const buf = Buffer.from(
+        'No tests found related to files changed since "master".\n' +
           'Press `a` to run all tests, or run Jest with `--watchAll`.',
       );
       expect(runner.findMessageType(buf)).toBe(messageTypes.noTests);

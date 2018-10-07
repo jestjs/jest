@@ -96,14 +96,11 @@ const operatorMessage = (operator: ?string) => {
     : '';
 };
 
-const assertThrowingMatcherHint = (operatorName: string) => {
-  return (
-    chalk.dim('assert') +
-    chalk.dim('.' + operatorName + '(') +
-    chalk.red('function') +
-    chalk.dim(')')
-  );
-};
+const assertThrowingMatcherHint = (operatorName: string) =>
+  chalk.dim('assert') +
+  chalk.dim('.' + operatorName + '(') +
+  chalk.red('function') +
+  chalk.dim(')');
 
 const assertMatcherHint = (operator: ?string, operatorName: string) => {
   let message =

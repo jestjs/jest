@@ -5,7 +5,7 @@ title: Using Matchers
 
 Jest uses "matchers" to let you test values in different ways. This document will introduce some commonly used matchers. For the full list, see the [`expect` API doc](ExpectAPI.md).
 
-### Common Matchers
+## Common Matchers
 
 The simplest way to test a value is with exact equality.
 
@@ -41,7 +41,7 @@ test('adding positive numbers is not zero', () => {
 });
 ```
 
-### Truthiness
+## Truthiness
 
 In tests you sometimes need to distinguish between `undefined`, `null`, and `false`, but you sometimes do not want to treat these differently. Jest contains helpers that let you be explicit about what you want.
 
@@ -75,7 +75,7 @@ test('zero', () => {
 
 You should use the matcher that most precisely corresponds to what you want your code to be doing.
 
-### Numbers
+## Numbers
 
 Most ways of comparing numbers have matcher equivalents.
 
@@ -103,7 +103,7 @@ test('adding floating point numbers', () => {
 });
 ```
 
-### Strings
+## Strings
 
 You can check strings against regular expressions with `toMatch`:
 
@@ -117,7 +117,7 @@ test('but there is a "stop" in Christoph', () => {
 });
 ```
 
-### Arrays
+## Arrays
 
 You can check if an array contains a particular item using `toContain`:
 
@@ -135,7 +135,7 @@ test('the shopping list has beer on it', () => {
 });
 ```
 
-### Exceptions
+## Exceptions
 
 If you want to test that a particular function throws an error when it's called, use `toThrow`.
 
@@ -154,7 +154,7 @@ test('compiling android goes as expected', () => {
 });
 ```
 
-### And More
+## And More
 
 This is just a taste. For a complete list of matchers, check out the [reference docs](ExpectAPI.md).
 

@@ -445,13 +445,10 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
  * If the target file exists we can be reasonably sure another process has
  * legitimately won a cache write race and ignore the error.
  */
-const cacheWriteErrorSafeToIgnore = (e: ErrorWithCode, cachePath: Path) => {
-  return (
-    process.platform === 'win32' &&
-    e.code === 'EPERM' &&
-    fs.existsSync(cachePath)
-  );
-};
+const cacheWriteErrorSafeToIgnore = (e: ErrorWithCode, cachePath: Path) =>
+  process.platform === 'win32' &&
+  e.code === 'EPERM' &&
+  fs.existsSync(cachePath);
 
 const readCacheFile = (cachePath: Path): ?string => {
   if (!fs.existsSync(cachePath)) {

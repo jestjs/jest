@@ -22,7 +22,7 @@ ${DOT}If you simply want to mock your non-JS modules (e.g. binary assets) you ca
     )} config option.
 
 You'll find more details and examples of these config options in the docs:
-${chalk.cyan('https://facebook.github.io/jest/docs/en/configuration.html')}
+${chalk.cyan('https://jestjs.io/docs/en/configuration.html')}
 
 ${chalk.bold.red('Details:')}
 

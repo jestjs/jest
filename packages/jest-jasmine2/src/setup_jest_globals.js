@@ -11,7 +11,11 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Plugin} from 'types/PrettyFormat';
 
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
-import {SnapshotState, addSerializer} from 'jest-snapshot';
+import {
+  buildSnapshotResolver,
+  SnapshotState,
+  addSerializer,
+} from 'jest-snapshot';
 
 export type SetupOptions = {|
   config: ProjectConfig,
@@ -44,14 +48,12 @@ const addSuppressedErrors = result => {
 const addAssertionErrors = result => {
   const assertionErrors = extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
-    const jasmineErrors = assertionErrors.map(({actual, error, expected}) => {
-      return {
-        actual,
-        expected,
-        message: error.stack,
-        passed: false,
-      };
-    });
+    const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
+      actual,
+      expected,
+      message: error.stack,
+      passed: false,
+    }));
     result.status = 'failed';
     result.failedExpectations = result.failedExpectations.concat(jasmineErrors);
   }
@@ -98,9 +100,19 @@ export default ({
     .forEach(path => {
       addSerializer(localRequire(path));
     });
+
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotState = new SnapshotState(testPath, {expand, updateSnapshot});
+  const snapshotResolver = buildSnapshotResolver(config);
+  const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
+  const snapshotState = new SnapshotState(snapshotPath, {
+    expand,
+    getBabelTraverse: () => require('babel-traverse').default,
+    getPrettier: () =>
+      // $FlowFixMe dynamic require
+      config.prettierPath ? require(config.prettierPath) : null,
+    updateSnapshot,
+  });
   setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;

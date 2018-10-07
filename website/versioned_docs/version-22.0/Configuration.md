@@ -807,7 +807,7 @@ A map from regular expressions to paths to transformers. A transformer is a modu
 
 Examples of such compilers include [Babel](https://babeljs.io/), [TypeScript](http://www.typescriptlang.org/) and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
 
-_Note: a transformer is only ran once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
+_Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
 
 _Note: if you are using the `babel-jest` transformer and want to use an additional code preprocessor, keep in mind that when "transform" is overwritten in any way the `babel-jest` is not loaded automatically anymore. If you want to use it to compile JavaScript code it has to be explicitly defined. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 
@@ -821,7 +821,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Example: `["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
-Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to whitelist such modules. You'll find a good example of this use case in [React Native Guide](http://facebook.github.io/jest/docs/en/tutorial-react-native.html#transformignorepatterns-customization).
+Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to whitelist such modules. You'll find a good example of this use case in [React Native Guide](https://jestjs.io/docs/en/tutorial-react-native.html#transformignorepatterns-customization).
 
 ### `unmockedModulePathPatterns` [array<string>]
 

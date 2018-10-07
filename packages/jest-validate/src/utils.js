@@ -21,6 +21,13 @@ export const format = (value: any): string =>
     ? value.toString()
     : prettyFormat(value, {min: true});
 
+export const formatPrettyObject = (value: any): string =>
+  typeof value === 'function'
+    ? value.toString()
+    : JSON.stringify(value, null, 2)
+        .split('\n')
+        .join('\n    ');
+
 export class ValidationError extends Error {
   name: string;
   message: string;

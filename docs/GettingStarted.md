@@ -69,6 +69,14 @@ If you'd like to learn more about running `jest` through the command line, take 
 
 ## Additional Configuration
 
+### Generate a basic configuration file
+
+Based on your project, Jest will ask you a few questions and will create a basic configuration file with a short description for each option:
+
+```bash
+jest --init
+```
+
 ### Using Babel
 
 To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
@@ -77,11 +85,15 @@ To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-ru
 yarn add --dev babel-jest babel-core regenerator-runtime
 ```
 
-> Note: If you are using a babel version 7 then you need to install `babel-jest` with the following command:
+> Note: If you are using Babel version 7 then you need to install `babel-jest`, `babel-core@^7.0.0-bridge.0` and `@babel/core` with the following command:
 >
 > ```bash
-> yarn add --dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
+> yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
 > ```
+>
+> You will need to use `babel.config.js` in order to transpile `node_modules`. See https://babeljs.io/docs/en/next/config-files for more information.
+>
+> You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/master/examples/babel-7
 
 _Note: Explicitly installing `regenerator-runtime` is not needed if you use `npm` 3 or 4 or Yarn_
 
