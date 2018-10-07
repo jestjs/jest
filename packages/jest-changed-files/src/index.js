@@ -13,7 +13,6 @@ import type {ChangedFilesPromise, Options, Repos} from 'types/ChangedFiles';
 import git from './git';
 import hg from './hg';
 import throat from 'throat';
-import {formatExecError} from 'jest-message-util';
 
 // This is an arbitrary number. The main goal is to prevent projects with
 // many roots (50+) from spawning too many processes at once.
@@ -30,46 +29,23 @@ export const getChangedFilesForRoots = async (
 
   const changedFilesOptions = Object.assign({}, {includePaths: roots}, options);
 
-  let changedFiles = new Set([]);
+  const gitPromises = Array.from(repos.git).map(repo =>
+    git.findChangedFiles(repo, changedFilesOptions),
+  );
 
-  try {
-    const gitPromises = Array.from(repos.git).map(repo =>
-      git.findChangedFiles(repo, changedFilesOptions),
-    );
+  const hgPromises = Array.from(repos.hg).map(repo =>
+    hg.findChangedFiles(repo, changedFilesOptions),
+  );
 
-    const hgPromises = Array.from(repos.hg).map(repo =>
-      hg.findChangedFiles(repo, changedFilesOptions),
-    );
+  const changedFiles = (await Promise.all(
+    gitPromises.concat(hgPromises),
+  )).reduce((allFiles, changedFilesInTheRepo) => {
+    for (const file of changedFilesInTheRepo) {
+      allFiles.add(file);
+    }
 
-    changedFiles = (await Promise.all(gitPromises.concat(hgPromises))).reduce(
-      (allFiles, changedFilesInTheRepo) => {
-        for (const file of changedFilesInTheRepo) {
-          allFiles.add(file);
-        }
-
-        return allFiles;
-      },
-      new Set(),
-    );
-
-    return {changedFiles, repos};
-  } catch (error) {
-    const formattedError = formatExecError(
-      error,
-      {rootDir: '', testMatch: []},
-      {noStackTrace: true},
-    )
-      .split('\n')
-      .filter(line => !!line);
-
-    console.error(
-      `\n\n${formattedError[0]}\n\n${
-        formattedError[formattedError.length - 1]
-      }\n`,
-    );
-
-    process.exit(1);
-  }
+    return allFiles;
+  }, new Set());
 
   return {changedFiles, repos};
 };

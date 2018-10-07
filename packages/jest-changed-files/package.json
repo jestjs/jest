@@ -9,7 +9,6 @@
   "main": "build/index.js",
   "dependencies": {
     "execa": "^1.0.0",
-    "jest-message-util": "^23.4.0",
     "throat": "^4.0.0"
   }
 }

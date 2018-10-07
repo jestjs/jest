@@ -254,13 +254,12 @@ test('handles a bad revision for "changedSince", for git', async () => {
 
   run(`${GIT} init`, DIR);
   run(`${GIT} add .`, DIR);
-  run(`${GIT} commit -m "first"`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
-  const stderr = runJest(DIR, ['--changedSince=blablabla']).stderr;
+  const {status, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
-  expect(stderr).toMatch(
-    `\n\n  ● Test suite failed to run\n\n    fatal: bad revision '^blablabla'\n`,
-  );
+  expect(status).toBe(1);
+  expect(stderr).toMatchSnapshot();
 });
 
 test('gets changed files for hg', async () => {
@@ -404,9 +403,8 @@ test('handles a bad revision for "changedSince", for hg', async () => {
   run(`${HG} add .`, DIR);
   run(`${HG} commit -m "first"`, DIR);
 
-  const stderr = runJest(DIR, ['--changedSince=blablabla']).stderr;
+  const {status, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
-  expect(stderr).toMatch(
-    `\n\n  ● Test suite failed to run\n\n    abort: unknown revision 'blablabla'!\n`,
-  );
+  expect(status).toBe(1);
+  expect(stderr).toMatchSnapshot();
 });
