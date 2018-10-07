@@ -85,7 +85,7 @@ test('should call globalTeardown function of multiple projects', () => {
     '../global-teardown/projects.jest.config.js',
   );
 
-  const result = runJest.json('global-teardown', [`--config=${configPath}`]);
+  const result = runWithJson('global-teardown', [`--config=${configPath}`]);
 
   expect(result.status).toBe(0);
 
@@ -100,7 +100,7 @@ test('should not call a globalTeardown of a project if there are no tests to run
     '../global-teardown/projects.jest.config.js',
   );
 
-  const result = runJest.json('global-teardown', [
+  const result = runWithJson('global-teardown', [
     `--config=${configPath}`,
     '--testPathPattern=project-1',
   ]);
