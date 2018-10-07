@@ -14,10 +14,6 @@ describe('replacePathSepForRegex()', () => {
   });
 
   describe('escapeStrForRegex', () => {
-    it('returns empty regex when given empty string', () => {
-      expect(escapeStrForRegex('')).toBe('^$');
-    });
-
     it('returns regex for given string: [0-9]', () => {
       expect(escapeStrForRegex('[0-9]')).toBe('\\[0-9\\]');
     });

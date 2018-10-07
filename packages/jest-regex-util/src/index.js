@@ -19,7 +19,7 @@ export const escapePathForRegex = (dir: string) => {
 };
 
 export const escapeStrForRegex = (string: string) =>
-  string.length > 0 ? string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&') : '^$';
+  string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&');
 
 export const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
