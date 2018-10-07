@@ -6,9 +6,9 @@
  */
 
 /* eslint-disable */
-var expect = require('../../packages/expect/build-es5/index.js');
+var {default: expect} = require('../../packages/expect/build-es5/index.js');
 var mock = require('../../packages/jest-mock/build-es5/index.js');
-var prettyFormat = require('../../packages/pretty-format/build-es5/index.js');
+var {default: prettyFormat} = require('../../packages/pretty-format/build-es5/index.js');
 
 describe('es5 builds in browser', function() {
   it('runs assertions', function() {

@@ -16,6 +16,7 @@ import {
   SnapshotState,
   addSerializer,
 } from 'jest-snapshot';
+import {interopRequireDefault} from 'jest-util';
 
 export type SetupOptions = {|
   config: ProjectConfig,
@@ -107,10 +108,13 @@ export default ({
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getBabelTraverse: () => require('@babel/traverse').default,
+    getBabelTraverse: () =>
+      interopRequireDefault(require('@babel/traverse')).default,
     getPrettier: () =>
-      // $FlowFixMe dynamic require
-      config.prettierPath ? require(config.prettierPath) : null,
+      config.prettierPath
+        ? // $FlowFixMe dynamic require
+          interopRequireDefault(require(config.prettierPath)).default
+        : null,
     updateSnapshot,
   });
   setState({snapshotState, testPath});

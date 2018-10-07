@@ -8,11 +8,7 @@
  */
 
 import {AsymmetricMatcher} from './asymmetricMatchers';
-import type {
-  Expect,
-  MatchersObject,
-  SyncExpectationResult,
-} from 'types/Matchers';
+import type {MatchersObject, SyncExpectationResult} from 'types/Matchers';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.
@@ -47,7 +43,7 @@ export const getMatchers = () => global[JEST_MATCHERS_OBJECT].matchers;
 export const setMatchers = (
   matchers: MatchersObject,
   isInternal: boolean,
-  expect: Expect,
+  expect: any,
 ) => {
   Object.keys(matchers).forEach(key => {
     const matcher = matchers[key];

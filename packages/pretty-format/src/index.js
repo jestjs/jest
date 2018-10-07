@@ -472,7 +472,7 @@ function createIndent(indent: number): string {
   return new Array(indent + 1).join(' ');
 }
 
-function prettyFormat(val: any, options?: OptionsReceived): string {
+export default function prettyFormat(val: any, options?: OptionsReceived): string {
   if (options) {
     validateOptions(options);
     if (options.plugins) {
@@ -496,7 +496,7 @@ function prettyFormat(val: any, options?: OptionsReceived): string {
   return printComplexValue(val, getConfig(options), '', 0, []);
 }
 
-prettyFormat.plugins = {
+export const plugins = {
   AsymmetricMatcher,
   ConvertAnsi,
   DOMCollection,
@@ -506,4 +506,5 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-module.exports = prettyFormat;
+// TODO: Remove at some point (currently breaks `dom-testing-library`)
+prettyFormat.plugins = plugins;

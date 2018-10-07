@@ -8,35 +8,35 @@
 
 'use strict';
 
-const jestExpect = require('../');
+import jestExpect, {assertions, hasAssertions} from '../';
 
 describe('.assertions()', () => {
   it('does not throw', () => {
-    jestExpect.assertions(2);
+    assertions(2);
     jestExpect('a').not.toBe('b');
     jestExpect('a').toBe('a');
   });
 
   it('redeclares different assertion count', () => {
-    jestExpect.assertions(3);
+    assertions(3);
     jestExpect('a').not.toBe('b');
     jestExpect('a').toBe('a');
-    jestExpect.assertions(2);
+    assertions(2);
   });
   it('expects no assertions', () => {
-    jestExpect.assertions(0);
+    assertions(0);
   });
 });
 
 describe('.hasAssertions()', () => {
   it('does not throw if there is an assertion', () => {
-    jestExpect.hasAssertions();
+    hasAssertions();
     jestExpect('a').toBe('a');
   });
 
   it('throws if expected is not undefined', () => {
     jestExpect(() => {
-      jestExpect.hasAssertions(2);
+      hasAssertions(2);
     }).toThrowErrorMatchingSnapshot();
   });
 

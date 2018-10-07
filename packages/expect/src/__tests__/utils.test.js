@@ -8,14 +8,14 @@
 
 'use strict';
 
-const {stringify} = require('jest-matcher-utils');
-const {
+import {stringify} from 'jest-matcher-utils';
+import {
   emptyObject,
   getObjectSubset,
   getPath,
   hasOwnProperty,
   subsetEquality,
-} = require('../utils');
+} from '../utils';
 
 describe('getPath()', () => {
   test('property exists', () => {

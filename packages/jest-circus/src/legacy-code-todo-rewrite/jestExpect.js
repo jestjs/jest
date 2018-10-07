@@ -9,7 +9,7 @@
 
 import type {RawMatcherFn} from 'types/Matchers';
 
-import expect from 'expect';
+import expect, {setState, extend, assertions, hasAssertions} from 'expect';
 
 import {
   addSerializer,
@@ -27,15 +27,16 @@ type JasmineMatcher = {
 
 export default (config: {expand: boolean}) => {
   global.expect = expect;
-  expect.setState({
-    expand: config.expand,
-  });
-  expect.extend({
+  setState({expand: config.expand});
+  extend({
     toMatchInlineSnapshot,
     toMatchSnapshot,
     toThrowErrorMatchingInlineSnapshot,
     toThrowErrorMatchingSnapshot,
   });
+  global.expect.extend = extend;
+  global.expect.assertions = assertions;
+  global.expect.hasAssertions = hasAssertions;
 
   (expect: Object).addSnapshotSerializer = addSerializer;
 };

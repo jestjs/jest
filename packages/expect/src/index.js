@@ -8,7 +8,6 @@
  */
 
 import type {
-  Expect,
   ExpectationObject,
   AsyncExpectationResult,
   SyncExpectationResult,
@@ -47,7 +46,12 @@ import {
   getMatchers,
   setMatchers,
 } from './jestMatchersObject';
-import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
+
+export {
+  default as extractExpectedAssertionsErrors,
+} from './extractExpectedAssertionsErrors';
+
+export {getState, setState};
 
 class JestAssertionError extends Error {
   matcherResult: any;
@@ -77,7 +81,7 @@ const getPromiseMatcher = (name, matcher) => {
   return null;
 };
 
-const expect = (actual: any, ...rest): ExpectationObject => {
+const expect = (actual: any, ...rest: Array<any>): ExpectationObject => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
   }
@@ -316,8 +320,10 @@ const makeThrowingMatcher = (
     }
   };
 
-expect.extend = (matchers: MatchersObject): void =>
+export const extend = (matchers: MatchersObject): void =>
   setMatchers(matchers, false, expect);
+
+expect.extend = extend;
 
 expect.anything = anything;
 expect.any = any;
@@ -352,7 +358,7 @@ const _validateResult = result => {
   }
 };
 
-function assertions(expected: number) {
+export function assertions(expected: number) {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, assertions);
@@ -361,7 +367,7 @@ function assertions(expected: number) {
   getState().expectedAssertionsNumber = expected;
   getState().expectedAssertionsNumberError = error;
 }
-function hasAssertions(...args) {
+export function hasAssertions(...args: Array<any>) {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, hasAssertions);
@@ -377,11 +383,6 @@ setMatchers(matchers, true, expect);
 setMatchers(spyMatchers, true, expect);
 setMatchers(toThrowMatchers, true, expect);
 
-expect.addSnapshotSerializer = () => void 0;
-expect.assertions = assertions;
-expect.hasAssertions = hasAssertions;
-expect.getState = getState;
-expect.setState = setState;
-expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
+export const addSnapshotSerializer = () => void 0;
 
-module.exports = (expect: Expect);
+export default expect;

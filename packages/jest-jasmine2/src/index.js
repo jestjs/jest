@@ -23,7 +23,7 @@ import jasmineAsyncInstall from './jasmineAsyncInstall';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight.js');
 
-async function jasmine2(
+export default async function jasmine2(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   environment: Environment,
@@ -197,5 +197,3 @@ const addSnapshotData = (results, snapshotState) => {
 
   return results;
 };
-
-module.exports = jasmine2;

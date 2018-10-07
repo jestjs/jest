@@ -139,7 +139,7 @@ FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = args =>
   args.length === 0;
 
-module.exports = () => {
+export default () => {
   const isJest = callee =>
     callee.get('object').isIdentifier(JEST_GLOBAL) ||
     (callee.isMemberExpression() && isJest(callee.get('object')));
