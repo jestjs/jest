@@ -327,12 +327,12 @@ export default function(j$) {
       const suite = suiteFactory(description);
       if (specDefinitions === undefined) {
         throw new Error(
-          `Missing second argument supplied to 'describe'. It must be a callback function.`,
+          `Missing second argument. It must be a callback function.`,
         );
       }
       if (typeof specDefinitions !== 'function') {
         throw new Error(
-          `Invalid second argument supplied to 'describe', ${specDefinitions}. It must be a callback function.`,
+          `Invalid second argument, ${specDefinitions}. It must be a callback function.`,
         );
       }
       if (specDefinitions.length > 0) {
@@ -466,12 +466,12 @@ export default function(j$) {
       }
       if (fn === undefined) {
         throw new Error(
-          "Missing second argument supplied to 'it'. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.",
+          "Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.",
         );
       }
       if (typeof fn !== 'function') {
         throw new Error(
-          `Invalid second argument supplied to 'it', ${fn}. It must be a callback function.`,
+          `Invalid second argument, ${fn}. It must be a callback function.`,
         );
       }
       const spec = specFactory(

@@ -38,11 +38,11 @@ const _dispatchDescribe = (
 ) => {
   const asyncError = new ErrorWithStack(undefined, describeFn);
   if (blockFn === undefined) {
-    asyncError.message = `Missing second argument supplied to 'describe'. It must be a callback function.`;
+    asyncError.message = `Missing second argument. It must be a callback function.`;
     throw asyncError;
   }
   if (typeof blockFn !== 'function') {
-    asyncError.message = `Invalid second argument supplied to 'describe', ${blockFn}. It must be a callback function.`;
+    asyncError.message = `Invalid second argument, ${blockFn}. It must be a callback function.`;
     throw asyncError;
   }
   dispatch({
@@ -105,18 +105,18 @@ const _addTest = (
   const asyncError = new ErrorWithStack(undefined, testFn);
 
   if (typeof testName !== 'string') {
-    asyncError.message = `Invalid first argument supplied to 'test/it', ${testName}. It must be a string.`;
+    asyncError.message = `Invalid first argument, ${testName}. It must be a string.`;
 
     throw asyncError;
   }
   if (fn === undefined) {
     asyncError.message =
-      "Missing second argument supplied to 'test/it'. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.";
+      'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.';
 
     throw asyncError;
   }
   if (typeof fn !== 'function') {
-    asyncError.message = `Invalid second argument supplied to 'test/it', ${fn}. It must be a callback function.`;
+    asyncError.message = `Invalid second argument, ${fn}. It must be a callback function.`;
 
     throw asyncError;
   }
