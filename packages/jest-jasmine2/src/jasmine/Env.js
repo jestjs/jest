@@ -466,7 +466,7 @@ export default function(j$) {
       }
       if (fn === undefined) {
         throw new Error(
-          "Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.",
+          'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
         );
       }
       if (typeof fn !== 'function') {
