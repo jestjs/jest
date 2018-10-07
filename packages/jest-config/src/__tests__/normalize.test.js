@@ -330,6 +330,53 @@ describe('haste', () => {
   });
 });
 
+describe('setupTestsAfterJest', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(
+      name =>
+        name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+    );
+  });
+
+  it('normalizes the path according to rootDir', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/path/foo',
+        setupTestsAfterJest: ['bar/baz'],
+      },
+      {},
+    );
+
+    expect(options.setupTestsAfterJest).toEqual([expectedPathFooBar]);
+  });
+
+  it('does not change absolute paths', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/path/foo',
+        setupTestsAfterJest: ['/an/abs/path'],
+      },
+      {},
+    );
+
+    expect(options.setupTestsAfterJest).toEqual([expectedPathAbs]);
+  });
+
+  it('substitutes <rootDir> tokens', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/path/foo',
+        setupTestsAfterJest: ['<rootDir>/bar/baz'],
+      },
+      {},
+    );
+
+    expect(options.setupTestsAfterJest).toEqual([expectedPathFooBar]);
+  });
+});
+
 describe('setupTestFrameworkScriptFile', () => {
   let Resolver;
   beforeEach(() => {
