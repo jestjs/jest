@@ -151,7 +151,7 @@ test('gets changed files for git', async () => {
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   run(`${GIT} add .`, DIR);
-  run(`${GIT} commit -m "test"`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "test"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(Array.from(files)).toEqual([]);
@@ -176,7 +176,7 @@ test('gets changed files for git', async () => {
       .sort(),
   ).toEqual(['file1.txt']);
 
-  run(`${GIT} commit -am "test2"`, DIR);
+  run(`${GIT} commit --no-gpg-sign -am "test2"`, DIR);
 
   writeFiles(DIR, {
     'file4.txt': 'file4',
@@ -193,7 +193,7 @@ test('gets changed files for git', async () => {
   ).toEqual(['file1.txt', 'file4.txt']);
 
   run(`${GIT} add file4.txt`, DIR);
-  run(`${GIT} commit -m "test3"`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "test3"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
     changedSince: 'HEAD^^',
@@ -211,7 +211,7 @@ test('gets changed files for git', async () => {
     'file5.txt': 'file5',
   });
   run(`${GIT} add file5.txt`, DIR);
-  run(`${GIT} commit -m "test5"`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "test5"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
     changedSince: 'master',
