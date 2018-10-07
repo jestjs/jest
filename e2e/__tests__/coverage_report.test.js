@@ -8,10 +8,10 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const {extractSummary} = require('../Utils');
-const runJest = require('../runJest');
+import fs from 'fs';
+import path from 'path';
+import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../coverage-report');
 
@@ -87,6 +87,53 @@ test('outputs coverage report as json', () => {
       "Can't parse the JSON result from stdout. " + err.toString(),
     );
   }
+});
+
+test('outputs coverage report when text is requested', () => {
+  const {stdout, status} = runJest(DIR, [
+    '--no-cache',
+    '--coverage',
+    '--coverageReporters=text',
+    '--coverageReporters=html',
+  ]);
+  expect(status).toBe(0);
+  expect(stdout).toMatch(/Stmts | . Branch/);
+  expect(stdout).toMatchSnapshot();
+});
+
+test('outputs coverage report when text-summary is requested', () => {
+  const {stdout, status} = runJest(DIR, [
+    '--no-cache',
+    '--coverage',
+    '--coverageReporters=text-summary',
+  ]);
+  expect(status).toBe(0);
+  expect(stdout).toMatch(/Coverage summary/);
+  expect(stdout).toMatchSnapshot();
+});
+
+test('outputs coverage report when text and text-summary is requested', () => {
+  const {stdout, status} = runJest(DIR, [
+    '--no-cache',
+    '--coverage',
+    '--coverageReporters=text-summary',
+    '--coverageReporters=text',
+  ]);
+  expect(status).toBe(0);
+  expect(stdout).toMatch(/Stmts | . Branch/);
+  expect(stdout).toMatch(/Coverage summary/);
+  expect(stdout).toMatchSnapshot();
+});
+
+test('does not output coverage report when html is requested', () => {
+  const {stdout, status} = runJest(DIR, [
+    '--no-cache',
+    '--coverage',
+    '--coverageReporters=html',
+  ]);
+  expect(status).toBe(0);
+  expect(stdout).toMatch(/^$/);
+  expect(stdout).toMatchSnapshot();
 });
 
 test('collects coverage from duplicate files avoiding shared cache', () => {

@@ -6,8 +6,8 @@
  */
 
 const jestPreset = require('babel-preset-jest');
-const babelTransform = require('babel-core').transform;
-const babelIstanbulPlugin = require('babel-plugin-istanbul').default;
+const {transform: babelTransform} = require('babel-core');
+const {default: babelIstanbulPlugin} = require('babel-plugin-istanbul');
 
 const options = {
   presets: ['env', jestPreset],

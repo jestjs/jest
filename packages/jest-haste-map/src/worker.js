@@ -48,7 +48,8 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   let module;
   let sha1;
 
-  const {computeDependencies, computeSha1, filePath} = data;
+  const {computeDependencies, computeSha1, rootDir, filePath} = data;
+
   const getContent = (): string => {
     if (content === undefined) {
       content = fs.readFileSync(filePath, 'utf8');
@@ -63,8 +64,9 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
       const fileData = JSON.parse(getContent());
 
       if (fileData.name) {
+        const relativeFilePath = path.relative(rootDir, filePath);
         id = fileData.name;
-        module = [filePath, H.PACKAGE];
+        module = [relativeFilePath, H.PACKAGE];
       }
     } catch (err) {
       throw new Error(`Cannot parse ${filePath} as JSON: ${err.message}`);
@@ -83,7 +85,8 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
     }
 
     if (id) {
-      module = [filePath, H.MODULE];
+      const relativeFilePath = path.relative(rootDir, filePath);
+      module = [relativeFilePath, H.MODULE];
     }
   }
 
