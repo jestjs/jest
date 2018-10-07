@@ -11,7 +11,6 @@
 
 ### Fixes
 
-- `[jest-haste-map]` [**BREAKING**] Replaced internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
 - `[jest-cli]` Fix coverage summary reporting ([#7058](https://github.com/facebook/jest/pull/7058))
 - `[jest-each]` Add each array validation check ([#7033](https://github.com/facebook/jest/pull/7033))
 - `[jest-haste-map]` [**BREAKING**] Replace internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
@@ -29,6 +28,7 @@
 - `[jest-circus]` Fail synchronous hook timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
 - `[jest-jasmine2]` Fail synchronous test timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
 - `[jest-jasmine2]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
+- `[jest-circus]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
 - `[expect]` Add empty string check to `toThrow` matcher ([#6836](https://github.com/facebook/jest/pull/6836))
 
 ### Chore & Maintenance
