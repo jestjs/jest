@@ -151,7 +151,7 @@ export type InitialOptions = {
   scriptPreprocessor?: string,
   setupFiles?: Array<Path>,
   setupTestFrameworkScriptFile?: Path,
-  setupTestsAfterJest: Array<Path>,
+  setupTestsAfterJest?: Array<Path>,
   silent?: boolean,
   skipFilter?: boolean,
   skipNodeResolution?: boolean,
