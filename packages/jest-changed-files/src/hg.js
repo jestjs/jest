@@ -45,12 +45,22 @@ const adapter: SCMAdapter = {
     }
     args.push(...includePaths);
 
-    const result = await execa('hg', args, {cwd, env});
+    try {
+      const result = await execa('hg', args, {cwd, env});
 
-    return result.stdout
-      .split('\n')
-      .filter(s => s !== '')
-      .map(changedPath => path.resolve(cwd, changedPath));
+      return result.stdout
+        .split('\n')
+        .filter(s => s !== '')
+        .map(changedPath => path.resolve(cwd, changedPath));
+    } catch (e) {
+      const errorMsg = e.message.split('\n')[1];
+
+      console.error(`\n\n${errorMsg}\n`);
+
+      process.exit(0);
+
+      return [];
+    }
   },
 
   getRoot: async (cwd: Path): Promise<?Path> => {

@@ -25,6 +25,7 @@
 - `[jest-jasmine2`] Fix crash when test return Promise rejected with null ([#7049](https://github.com/facebook/jest/pull/7049))
 - `[jest-runtime]` Check `_isMockFunction` is true rather than truthy on potential global mocks ([#7017](https://github.com/facebook/jest/pull/7017))
 - `[jest-jasmine]` Show proper error message from async `assert` errors ([#6821](https://github.com/facebook/jest/pull/6821))
+- `[jest-cli]` Fix unhandled error when a bad revision is provided to `changedSince` ([#7112](https://github.com/facebook/jest/pull/7112))
 
 ### Chore & Maintenance
 

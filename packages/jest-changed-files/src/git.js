@@ -17,12 +17,22 @@ const findChangedFilesUsingCommand = async (
   args: Array<string>,
   cwd: Path,
 ): Promise<Array<Path>> => {
-  const result = await execa('git', args, {cwd});
+  try {
+    const result = await execa('git', args, {cwd});
 
-  return result.stdout
-    .split('\n')
-    .filter(s => s !== '')
-    .map(changedPath => path.resolve(cwd, changedPath));
+    return result.stdout
+      .split('\n')
+      .filter(s => s !== '')
+      .map(changedPath => path.resolve(cwd, changedPath));
+  } catch (e) {
+    const errorMsg = e.message.split('\n')[1];
+
+    console.error(`\n\n${errorMsg}\n`);
+
+    process.exit(0);
+
+    return [];
+  }
 };
 
 const adapter: SCMAdapter = {
