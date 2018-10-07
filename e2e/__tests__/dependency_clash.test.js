@@ -7,20 +7,20 @@
  * @flow
  */
 
-const path = require('path');
-const {
+import path from 'path';
+import {
   cleanup,
   createEmptyPackage,
   linkJestPackage,
   writeFiles,
-} = require('../Utils');
-const runJest = require('../runJest');
-const os = require('os');
-const mkdirp = require('mkdirp');
-const fs = require('fs');
-const ConditionalTest = require('../../scripts/ConditionalTest');
+} from '../Utils';
+import runJest from '../runJest';
+import os from 'os';
+import mkdirp from 'mkdirp';
+import fs from 'fs';
+import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 
-ConditionalTest.skipSuiteOnWindows();
+skipSuiteOnWindows();
 
 // doing test in a temp directory because we don't want jest node_modules affect it
 const tempDir = path.resolve(os.tmpdir(), 'clashing-dependencies-test');

@@ -9,11 +9,15 @@
 
 'use strict';
 
-const path = require('path');
-const os = require('os');
-const runJest = require('../runJest');
-const {extractSummary} = require('../Utils');
-const {createEmptyPackage, writeFiles, cleanup} = require('../Utils');
+import path from 'path';
+import os from 'os';
+import runJest from '../runJest';
+import {
+  cleanup,
+  createEmptyPackage,
+  extractSummary,
+  writeFiles,
+} from '../Utils';
 
 const DIR = path.resolve(os.tmpdir(), 'global-variables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');

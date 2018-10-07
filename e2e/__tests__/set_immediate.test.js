@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('setImmediate', () => {
   const result = runJest('set-immediate', ['--verbose']);

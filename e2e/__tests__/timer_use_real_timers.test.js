@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('useRealTimers cancels "timers": "fake" for whole test file', () => {
   const result = runJest('timer-use-real-timers');

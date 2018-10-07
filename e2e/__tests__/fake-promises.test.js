@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 describe('Fake promises', () => {
   it('should be possible to resolve with fake timers using immediates', () => {
