@@ -15,6 +15,7 @@ import type {
   BlockMode,
   BlockName,
   TestName,
+  TestMode,
 } from 'types/Circus';
 import {bind as bindEach} from 'jest-each';
 import {ErrorWithStack} from 'jest-util';
@@ -23,15 +24,29 @@ import {dispatch} from './state';
 type THook = (fn: HookFn, timeout?: number) => void;
 
 const describe = (blockName: BlockName, blockFn: BlockFn) =>
-  _dispatchDescribe(blockFn, blockName);
+  _dispatchDescribe(blockFn, blockName, describe);
 describe.only = (blockName: BlockName, blockFn: BlockFn) =>
-  _dispatchDescribe(blockFn, blockName, 'only');
+  _dispatchDescribe(blockFn, blockName, describe.only, 'only');
 describe.skip = (blockName: BlockName, blockFn: BlockFn) =>
-  _dispatchDescribe(blockFn, blockName, 'skip');
+  _dispatchDescribe(blockFn, blockName, describe.skip, 'skip');
 
-const _dispatchDescribe = (blockFn, blockName, mode?: BlockMode) => {
+const _dispatchDescribe = (
+  blockFn,
+  blockName,
+  describeFn,
+  mode?: BlockMode,
+) => {
+  const asyncError = new ErrorWithStack(undefined, describeFn);
+  if (blockFn === undefined) {
+    asyncError.message = `Missing second argument. It must be a callback function.`;
+    throw asyncError;
+  }
+  if (typeof blockFn !== 'function') {
+    asyncError.message = `Invalid second argument, ${blockFn}. It must be a callback function.`;
+    throw asyncError;
+  }
   dispatch({
-    asyncError: new Error(),
+    asyncError,
     blockName,
     mode,
     name: 'start_describe_definition',
@@ -41,11 +56,15 @@ const _dispatchDescribe = (blockFn, blockName, mode?: BlockMode) => {
 };
 
 const _addHook = (fn: HookFn, hookType: HookType, hookFn, timeout: ?number) => {
+  const asyncError = new ErrorWithStack(undefined, hookFn);
+
   if (typeof fn !== 'function') {
-    throw new Error('Invalid first argument. It must be a callback function.');
+    asyncError.message =
+      'Invalid first argument. It must be a callback function.';
+
+    throw asyncError;
   }
 
-  const asyncError = new ErrorWithStack(undefined, hookFn);
   dispatch({asyncError, fn, hookType, name: 'add_hook', timeout});
 };
 
@@ -59,59 +78,13 @@ const afterEach: THook = (fn, timeout) =>
 const afterAll: THook = (fn, timeout) =>
   _addHook(fn, 'afterAll', afterAll, timeout);
 
-const test = (testName: TestName, fn: TestFn, timeout?: number) => {
-  if (typeof testName !== 'string') {
-    throw new Error(
-      `Invalid first argument, ${testName}. It must be a string.`,
-    );
-  }
-  if (fn === undefined) {
-    throw new Error(
-      'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
-    );
-  }
-  if (typeof fn !== 'function') {
-    throw new Error(
-      `Invalid second argument, ${fn}. It must be a callback function.`,
-    );
-  }
-
-  const asyncError = new ErrorWithStack(undefined, test);
-
-  return dispatch({
-    asyncError,
-    fn,
-    name: 'add_test',
-    testName,
-    timeout,
-  });
-};
+const test = (testName: TestName, fn: TestFn, timeout?: number) =>
+  _addTest(testName, undefined, fn, test, timeout);
 const it = test;
-test.skip = (testName: TestName, fn?: TestFn, timeout?: number) => {
-  const asyncError = new ErrorWithStack(undefined, test);
-
-  return dispatch({
-    asyncError,
-    fn,
-    mode: 'skip',
-    name: 'add_test',
-    testName,
-    timeout,
-  });
-};
-test.only = (testName: TestName, fn: TestFn, timeout?: number) => {
-  const asyncError = new ErrorWithStack(undefined, test);
-
-  return dispatch({
-    asyncError,
-    fn,
-    mode: 'only',
-    name: 'add_test',
-    testName,
-    timeout,
-  });
-};
-
+test.skip = (testName: TestName, fn?: TestFn, timeout?: number) =>
+  _addTest(testName, 'skip', fn, test.skip, timeout);
+test.only = (testName: TestName, fn: TestFn, timeout?: number) =>
+  _addTest(testName, 'only', fn, test.only, timeout);
 test.todo = (testName: TestName, ...rest: Array<mixed>) => {
   if (rest.length > 0 || typeof testName !== 'string') {
     throw new ErrorWithStack(
@@ -119,16 +92,42 @@ test.todo = (testName: TestName, ...rest: Array<mixed>) => {
       test.todo,
     );
   }
+  return _addTest(testName, 'todo', () => {}, test.todo);
+};
 
-  const asyncError = new ErrorWithStack(undefined, test);
+const _addTest = (
+  testName: TestName,
+  mode: TestMode,
+  fn?: TestFn,
+  testFn,
+  timeout: ?number,
+) => {
+  const asyncError = new ErrorWithStack(undefined, testFn);
+
+  if (typeof testName !== 'string') {
+    asyncError.message = `Invalid first argument, ${testName}. It must be a string.`;
+
+    throw asyncError;
+  }
+  if (fn === undefined) {
+    asyncError.message =
+      'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.';
+
+    throw asyncError;
+  }
+  if (typeof fn !== 'function') {
+    asyncError.message = `Invalid second argument, ${fn}. It must be a callback function.`;
+
+    throw asyncError;
+  }
 
   return dispatch({
     asyncError,
-    fn: () => {},
-    mode: 'todo',
+    fn,
+    mode,
     name: 'add_test',
     testName,
-    timeout: undefined,
+    timeout,
   });
 };
 

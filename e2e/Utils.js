@@ -119,14 +119,7 @@ const createEmptyPackage = (
   );
 };
 
-type ExtractSummaryOptions = {|
-  stripLocation: boolean,
-|};
-
-const extractSummary = (
-  stdout: string,
-  {stripLocation = false}: ExtractSummaryOptions = {},
-) => {
+const extractSummary = (stdout: string) => {
   const match = stdout.match(
     /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
   );
@@ -144,14 +137,10 @@ const extractSummary = (
     .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
 
-  let rest = cleanupStackTrace(
+  const rest = cleanupStackTrace(
     // remove all timestamps
     stdout.replace(match[0], '').replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
   );
-
-  if (stripLocation) {
-    rest = rest.replace(/(at .*):\d+:\d+/g, '$1:<<LINE>>:<<COLUMN>>');
-  }
 
   return {rest, summary};
 };
