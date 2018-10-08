@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "setupTestsAfterJest": [
+      "./setup_hooks_into_runner.js"
+    ]
+  }
+}
