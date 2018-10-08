@@ -45,7 +45,7 @@ const setupFiles = input => {
 };
 
 test('can press "p" to filter by file name', () => {
-  const input = [{type: 'pbar\r'}, {type: 'q'}];
+  const input = [{keys: ['p', 'b', 'a', 'r', '\r']}, {keys: ['q']}];
   setupFiles(input);
 
   const {status, stdout, stderr} = runJest(DIR, [
@@ -61,7 +61,7 @@ test('can press "p" to filter by file name', () => {
 });
 
 test('can press "t" to filter by test name', () => {
-  const input = [{type: 't2\r'}, {type: 'q'}];
+  const input = [{keys: ['t', '2', '\r']}, {keys: ['q']}];
   setupFiles(input);
 
   const {status, stdout, stderr} = runJest(DIR, [

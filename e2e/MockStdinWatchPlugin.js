@@ -7,8 +7,8 @@ class MockStdinWatchPlugin {
 
   apply(jestHooks) {
     jestHooks.onTestRunComplete(() => {
-      const {type} = this._config.input.shift();
-      type.split('').forEach(key => this._stdin.emit('data', key));
+      const {keys} = this._config.input.shift();
+      keys.forEach(key => this._stdin.emit('data', key));
     });
   }
 }
