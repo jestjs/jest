@@ -13,8 +13,8 @@ import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
 import stripAnsi from 'strip-ansi';
+import {cleanup, extractSummary, writeFiles} from '../Utils';
 
-const {cleanup, extractSummary, writeFiles} = require('../Utils');
 const DIR = path.resolve(os.tmpdir(), 'multi_project_runner_test');
 
 const fileContentWithProvidesModule = name => `/*

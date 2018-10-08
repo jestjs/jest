@@ -885,6 +885,11 @@ describe('preset', () => {
       if (name === 'react-native/jest-preset') {
         return '/node_modules/react-native/jest-preset.json';
       }
+
+      if (name === 'doesnt-exist') {
+        return null;
+      }
+
       return '/node_modules/' + name;
     });
     jest.doMock(
@@ -915,6 +920,15 @@ describe('preset', () => {
       }),
       {virtual: true},
     );
+    jest.mock(
+      '/node_modules/exist-but-no-jest-preset/index.js',
+      () => ({
+        moduleNameMapper: {
+          js: true,
+        },
+      }),
+      {virtual: true},
+    );
   });
 
   afterEach(() => {
@@ -926,6 +940,18 @@ describe('preset', () => {
       normalize(
         {
           preset: 'doesnt-exist',
+          rootDir: '/root/path/foo',
+        },
+        {},
+      );
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('throws when module was found but no "jest-preset.js" or "jest-preset.json" files', () => {
+    expect(() => {
+      normalize(
+        {
+          preset: 'exist-but-no-jest-preset',
           rootDir: '/root/path/foo',
         },
         {},

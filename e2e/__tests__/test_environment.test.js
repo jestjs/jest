@@ -8,14 +8,14 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import {json as runWithJson} from '../runJest';
 
-const testFixturePackage = require('../test-environment/package.json');
+import testFixturePackage from '../test-environment/package.json';
 
 it('respects testEnvironment docblock', () => {
   expect(testFixturePackage.jest.testEnvironment).toEqual('node');
 
-  const result = runJest.json('test-environment').json;
+  const {json: result} = runWithJson('test-environment');
 
   expect(result.success).toBe(true);
   expect(result.numTotalTests).toBe(1);

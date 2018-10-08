@@ -500,6 +500,8 @@ describe('.toBeInstanceOf()', () => {
     [true, Boolean],
     [new A(), B],
     [Object.create(null), A],
+    [undefined, String],
+    [null, String],
   ].forEach(([a, b]) => {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>

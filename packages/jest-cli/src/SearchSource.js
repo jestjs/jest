@@ -18,6 +18,7 @@ import DependencyResolver from 'jest-resolve-dependencies';
 import testPathPatternToRegExp from './testPathPatternToRegexp';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
+import {buildSnapshotResolver} from 'jest-snapshot';
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -47,8 +48,7 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
     return () => true;
   }
 
-  const matchers = globs.map(each => micromatch.matcher(each, {dot: true}));
-  return path => matchers.some(each => each(path));
+  return path => micromatch([path], globs, {dot: true}).length > 0;
 };
 
 const regexToMatcher = (testRegex: string) => {
@@ -154,6 +154,7 @@ export default class SearchSource {
     const dependencyResolver = new DependencyResolver(
       this._context.resolver,
       this._context.hasteFS,
+      buildSnapshotResolver(this._context.config),
     );
 
     const tests = toTests(

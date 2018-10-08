@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('resolve node module', () => {
   const result = runJest('resolve-node-module');

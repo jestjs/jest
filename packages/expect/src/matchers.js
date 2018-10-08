@@ -183,7 +183,9 @@ const matchers: MatchersObject = {
             constructor.name || String(constructor),
           )}\n` +
           `Received constructor: ${RECEIVED_COLOR(
-            received.constructor && received.constructor.name,
+            received != null
+              ? received.constructor && received.constructor.name
+              : '',
           )}\n` +
           `Received value: ${printReceived(received)}`;
 
@@ -313,7 +315,7 @@ const matchers: MatchersObject = {
             `  ${printReceived(collection)}\n` +
             `To contain value:\n` +
             `  ${printExpected(value)}` +
-            (suggestToContainEqual ? ` ${SUGGEST_TO_CONTAIN_EQUAL}` : '')
+            (suggestToContainEqual ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}` : '')
           );
         };
 

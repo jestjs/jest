@@ -177,10 +177,10 @@ export default class Runner extends EventEmitter {
 
   findMessageType(buf: Buffer): MessageType {
     const str = buf.toString('utf8', 0, 58);
-    if (str === 'No tests found related to files changed since last commit.') {
+    const lastCommitRegex = /No tests found related to files changed since ((last commit)|("[a-z0-9]+"))./;
+    if (lastCommitRegex.test(str)) {
       return messageTypes.noTests;
     }
-
     if (/^\s*Watch Usage\b/.test(str)) {
       return messageTypes.watchUsage;
     }

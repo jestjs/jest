@@ -9,8 +9,8 @@
 
 'use strict';
 
-const path = require('path');
-const runJest = require('../runJest');
+import path from 'path';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../no-tests-found-test');
 

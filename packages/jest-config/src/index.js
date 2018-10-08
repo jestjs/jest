@@ -18,15 +18,15 @@ import type {
 import path from 'path';
 import {isJSONString, replaceRootDirInPath} from './utils';
 import normalize from './normalize';
-import resolveConfigPath from './resolve_config_path';
-import readConfigFileAndSetRootDir from './read_config_file_and_set_root_dir';
+import resolveConfigPath from './resolveConfigPath';
+import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
 
 export {getTestEnvironment, isJSONString} from './utils';
 export {default as normalize} from './normalize';
-export {default as deprecationEntries} from './deprecated';
+export {default as deprecationEntries} from './Deprecated';
 export {replaceRootDirInPath} from './utils';
-export {default as defaults} from './defaults';
-export {default as descriptions} from './descriptions';
+export {default as defaults} from './Defaults';
+export {default as descriptions} from './Descriptions';
 
 export function readConfig(
   argv: Argv,
@@ -185,6 +185,7 @@ const getConfigs = (
     setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
     skipFilter: options.skipFilter,
     skipNodeResolution: options.skipNodeResolution,
+    snapshotResolver: options.snapshotResolver,
     snapshotSerializers: options.snapshotSerializers,
     testEnvironment: options.testEnvironment,
     testEnvironmentOptions: options.testEnvironmentOptions,

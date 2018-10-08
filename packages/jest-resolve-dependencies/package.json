@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve-dependencies",
-  "version": "23.4.2",
+  "version": "23.6.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -9,6 +9,6 @@
   "main": "build/index.js",
   "dependencies": {
     "jest-regex-util": "^23.3.0",
-    "jest-snapshot": "^23.4.2"
+    "jest-snapshot": "^23.6.0"
   }
 }

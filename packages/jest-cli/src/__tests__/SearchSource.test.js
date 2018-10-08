@@ -9,11 +9,9 @@
 'use strict';
 
 import path from 'path';
+import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
 jest.setTimeout(15000);
-
-const ConditionalTest = require('../../../../scripts/ConditionalTest');
-
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
 const testMatch = ['**/__testtests__/**/*'];
@@ -25,7 +23,7 @@ let findMatchingTests;
 let normalize;
 
 describe('SearchSource', () => {
-  ConditionalTest.skipSuiteOnWindows();
+  skipSuiteOnWindows();
 
   const name = 'SearchSource';
   let Runtime;
@@ -135,7 +133,7 @@ describe('SearchSource', () => {
           moduleFileExtensions: ['js', 'jsx', 'txt'],
           name,
           rootDir,
-          testMatch: ['**/not-really-a-test.txt'],
+          testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
           testRegex: '',
         },
         {},

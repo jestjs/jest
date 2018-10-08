@@ -1,4 +1,6 @@
-const defaultResolver = require('jest-resolve/build/default_resolver').default;
+const {
+  default: defaultResolver,
+} = require('jest-resolve/build/default_resolver');
 
 const exportedModules = new Map([
   ['foo', 'foo'],

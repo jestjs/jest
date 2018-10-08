@@ -12,7 +12,9 @@ describe('test/it error throwing', () => {
   it(`it throws error with missing callback function`, () => {
     expect(() => {
       it('test1');
-    }).toThrowError('Missing second argument. It must be a callback function.');
+    }).toThrowError(
+      'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
+    );
   });
   it(`it throws an error when first argument isn't a string`, () => {
     expect(() => {
@@ -23,13 +25,15 @@ describe('test/it error throwing', () => {
     expect(() => {
       it('test3', 'test3b');
     }).toThrowError(
-      `Invalid second argument, test3b. It must be a callback function.`,
+      'Invalid second argument, test3b. It must be a callback function.',
     );
   });
   test(`test throws error with missing callback function`, () => {
     expect(() => {
       test('test4');
-    }).toThrowError('Missing second argument. It must be a callback function.');
+    }).toThrowError(
+      'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
+    );
   });
   test(`test throws an error when first argument isn't a string`, () => {
     expect(() => {
@@ -40,7 +44,7 @@ describe('test/it error throwing', () => {
     expect(() => {
       test('test6', 'test6b');
     }).toThrowError(
-      `Invalid second argument, test6b. It must be a callback function.`,
+      'Invalid second argument, test6b. It must be a callback function.',
     );
   });
 });
