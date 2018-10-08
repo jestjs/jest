@@ -63,7 +63,7 @@ test('works with jsdom testEnvironmentOptions config JSON', () => {
     '--config=' +
       JSON.stringify({
         testEnvironmentOptions: {
-          userAgent: 'Agent/007',
+          referrer: 'Agent/007',
         },
       }),
   ]);
