@@ -119,6 +119,13 @@ describe('async jasmine', () => {
     expect(message).toMatch('fails if a custom timeout is exceeded');
   });
 
+  it('tests async promise when it skips during the test', () => {
+    const result = runWithJson('jasmine-async', ['pending_in_promise.test.js']);
+    const json = result.json;
+
+    expect(json.numPendingTests).toBe(1);
+  });
+
   it('works with concurrent', () => {
     const result = runWithJson('jasmine-async', ['concurrent.test.js']);
     const json = result.json;
