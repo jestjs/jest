@@ -64,7 +64,7 @@ export default ({
   setupTestFrameworkScriptFile:
     'The path to a module that runs some code to configure or set up the testing framework before each test',
   setupTestsAfterJest:
-    'The paths to modules that run some code to configure or set up the testing environment after each test',
+    'A list of paths to modules that run some code to configure or set up the testing framework before each test',
   snapshotSerializers:
     'A list of paths to snapshot serializer modules Jest should use for snapshot testing',
   testEnvironment: 'The test environment that will be used for testing',
