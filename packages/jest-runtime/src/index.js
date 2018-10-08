@@ -942,6 +942,7 @@ class Runtime {
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
       isMockFunction: this._moduleMocker.isMockFunction,
+      isolateModules,
       mock,
       requireActual: localRequire.requireActual,
       requireMock: localRequire.requireMock,
@@ -964,7 +965,6 @@ class Runtime {
       unmock,
       useFakeTimers,
       useRealTimers,
-      isolateModules,
     };
     return jestObject;
   }
