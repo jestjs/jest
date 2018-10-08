@@ -19,7 +19,7 @@ module.exports = {
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
-  projects: ['<rootDir>'],
+  projects: ['<rootDir>', '<rootDir>/examples/*/'],
   setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
   snapshotSerializers: [
     '<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js',
