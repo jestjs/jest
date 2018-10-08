@@ -103,6 +103,20 @@ export const copyDir = (src: string, dest: string) => {
   }
 };
 
+export const replaceTime = (str: string) =>
+  str
+    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
+    .replace(/, estimated <<REPLACED>>/g, '');
+
+// Since Jest does not guarantee the order of tests we'll sort the output.
+export const sortLines = (output: string) =>
+  output
+    .split(/\n/)
+    .sort()
+    .map(str => str.trim())
+    .filter(str => Boolean(str))
+    .join('\n');
+
 export const createEmptyPackage = (
   directory: Path,
   packageJson?: {[keys: string]: any},
@@ -136,9 +150,7 @@ export const extractSummary = (stdout: string) => {
     );
   }
 
-  const summary = match[0]
-    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
-    .replace(/, estimated <<REPLACED>>/g, '');
+  const summary = replaceTime(match[0]);
 
   const rest = cleanupStackTrace(
     // remove all timestamps

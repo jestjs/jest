@@ -9,28 +9,69 @@
 'use strict';
 
 import path from 'path';
-import {cleanup, extractSummary, writeFiles} from '../Utils';
+import {
+  cleanup,
+  sortLines,
+  writeFiles,
+  replaceTime,
+  extractSummary,
+} from '../Utils';
+import os from 'os';
 import runJest from '../runJest';
 
-const DIR = path.resolve(__dirname, '../watch_mode/rogelio');
+const DIR = path.resolve(os.tmpdir(), '../watch_mode');
+const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
-test('works', () => {
+const setupFiles = input => {
   writeFiles(DIR, {
-    '__tests__/foo.spec.js': `
-      test('foo', () => {
-        expect('foo').toBe('foo');
-      });
+    '__tests__/bar.spec.js': `
+      test('bar 1', () => { expect('bar').toBe('bar'); });
+      test('bar 2', () => { expect('bar').toBe('bar'); });
     `,
-    'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
+    '__tests__/foo.spec.js': `
+      test('foo 1', () => { expect('foo').toBe('foo'); });
+      test('foo 2', () => { expect('foo').toBe('foo'); });
+    `,
+    'package.json': JSON.stringify({
+      jest: {
+        testEnvironment: 'node',
+        watchPlugins: [[pluginPath, {input}]],
+      },
+    }),
   });
-  const {status, stdout} = runJest(DIR, [
+};
+
+test('can press "p" to filter by file name', () => {
+  const input = [{type: 'pbar\r'}, {type: 'q'}];
+  setupFiles(input);
+
+  const {status, stdout, stderr} = runJest(DIR, [
     '--no-watchman',
-    // '--watchPlugins',
-    // 'rogelio',
+    '--watchAll',
   ]);
+  const result = extractSummary(stderr);
+
   expect(stdout).toMatchSnapshot();
+  expect(result.summary).toMatchSnapshot();
+  expect(sortLines(replaceTime(result.rest))).toMatchSnapshot();
+  expect(status).toBe(0);
+});
+
+test('can press "t" to filter by test name', () => {
+  const input = [{type: 't2\r'}, {type: 'q'}];
+  setupFiles(input);
+
+  const {status, stdout, stderr} = runJest(DIR, [
+    '--no-watchman',
+    '--watchAll',
+  ]);
+  const result = extractSummary(stderr);
+
+  expect(stdout).toMatchSnapshot();
+  expect(result.summary).toMatchSnapshot();
+  expect(sortLines(replaceTime(result.rest))).toMatchSnapshot();
   expect(status).toBe(0);
 });
