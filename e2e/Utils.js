@@ -169,6 +169,29 @@ export const extractSortedSummary = (stdout: string) => {
   };
 };
 
+export const extractSummaries = (
+  stdout: string,
+): Array<{rest: string, summary: string}> => {
+  const regex = /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
+
+  let match = regex.exec(stdout);
+  const matches = [];
+
+  while (match) {
+    matches.push(match);
+    match = regex.exec(stdout);
+  }
+
+  return matches
+    .map((currentMatch, i) => {
+      const prevMatch = matches[i - 1];
+      const start = prevMatch ? prevMatch.index + prevMatch[0].length : 0;
+      const end = currentMatch.index + currentMatch[0].length;
+      return {end, start};
+    })
+    .map(({start, end}) => extractSortedSummary(stdout.slice(start, end)));
+};
+
 // different versions of Node print different stack traces. This function
 // unifies their output to make it possible to snapshot them.
 // TODO: Remove when we drop support for node 4

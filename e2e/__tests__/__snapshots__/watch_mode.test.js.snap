@@ -16,7 +16,10 @@ Pattern Mode Usage
 `;
 
 exports[`can press "p" to filter by file name 2`] = `
-"Test Suites: 2 passed, 2 total
+"PASS __tests__/bar.spec.js
+PASS __tests__/foo.spec.js
+
+Test Suites: 2 passed, 2 total
 Tests:       4 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -27,13 +30,12 @@ exports[`can press "p" to filter by file name 3`] = `
 "✓ bar 1
 ✓ bar 2
 PASS __tests__/bar.spec.js
-PASS __tests__/bar.spec.js
-PASS __tests__/foo.spec.js
-Ran all test suites matching /bar/i.
-Snapshots:   0 total
+
 Test Suites: 1 passed, 1 total
 Tests:       2 passed, 2 total
-Time:        <<REPLACED>>"
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /bar/i."
 `;
 
 exports[`can press "t" to filter by test name 1`] = `
@@ -50,7 +52,10 @@ Pattern Mode Usage
 `;
 
 exports[`can press "t" to filter by test name 2`] = `
-"Test Suites: 2 passed, 2 total
+"PASS __tests__/bar.spec.js
+PASS __tests__/foo.spec.js
+
+Test Suites: 2 passed, 2 total
 Tests:       4 passed, 4 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
@@ -59,12 +64,11 @@ Ran all test suites."
 
 exports[`can press "t" to filter by test name 3`] = `
 "PASS __tests__/bar.spec.js
-PASS __tests__/bar.spec.js
 PASS __tests__/foo.spec.js
-PASS __tests__/foo.spec.js
-Ran all test suites with tests matching \\"2\\".
-Snapshots:   0 total
+
 Test Suites: 2 passed, 2 total
 Tests:       2 skipped, 2 passed, 4 total
-Time:        <<REPLACED>>"
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites with tests matching \\"2\\"."
 `;

@@ -9,7 +9,7 @@
 'use strict';
 
 import path from 'path';
-import {cleanup, writeFiles, extractSortedSummary} from '../Utils';
+import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import os from 'os';
 import runJest from '../runJest';
 
@@ -51,11 +51,13 @@ test('can press "p" to filter by file name', () => {
     '--no-watchman',
     '--watchAll',
   ]);
-  const result = extractSortedSummary(stderr);
+  const results = extractSummaries(stderr);
 
   expect(stdout).toMatchSnapshot();
-  expect(result.summary).toMatchSnapshot();
-  expect(result.rest).toMatchSnapshot();
+  expect(results).toHaveLength(2);
+  results.forEach(({rest, summary}) => {
+    expect(`${rest}\n\n${summary}`).toMatchSnapshot();
+  });
   expect(status).toBe(0);
 });
 
@@ -67,10 +69,12 @@ test('can press "t" to filter by test name', () => {
     '--no-watchman',
     '--watchAll',
   ]);
-  const result = extractSortedSummary(stderr);
+  const results = extractSummaries(stderr);
 
   expect(stdout).toMatchSnapshot();
-  expect(result.summary).toMatchSnapshot();
-  expect(result.rest).toMatchSnapshot();
+  expect(results).toHaveLength(2);
+  results.forEach(({rest, summary}) => {
+    expect(`${rest}\n\n${summary}`).toMatchSnapshot();
+  });
   expect(status).toBe(0);
 });
