@@ -126,7 +126,7 @@ This is a deep-equality function that will return `true` if two objects have the
 
 #### `this.expand`
 
-A boolean to let you know this matcher was called with an `expand` option. When Jest is called with the `--expand` flag, `this.expand` is used to determine if Jest is expected to show full diffs and errors.
+A boolean to let you know this matcher was called with an `expand` option. When Jest is called with the `--expand` flag, `this.expand` can be used to determine if Jest is expected to show full diffs and errors.
 
 #### `this.utils`
 
