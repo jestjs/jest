@@ -35,6 +35,17 @@ describe('DOMCollection plugin for object properties', () => {
 
     expect(el.attributes).toPrettyPrintTo('NamedNodeMap {\n  "foo": "bar",\n}');
   });
+
+  it('supports config.min option', () => {
+    const el = document.createElement('div');
+    el.setAttribute('name1', 'value1');
+    el.setAttribute('name2', 'value2');
+
+    expect(el.attributes).toPrettyPrintTo(
+      '{"name1": "value1", "name2": "value2"}',
+      {min: true},
+    );
+  });
 });
 
 describe('DOMCollection plugin for list items', () => {
@@ -87,6 +98,10 @@ describe('DOMCollection plugin for list items', () => {
     expect(select.children).toPrettyPrintTo(expectedHTMLCollection);
   });
 
+  it('supports config.maxDepth option', () => {
+    expect(select.children).toPrettyPrintTo('[HTMLCollection]', {maxDepth: 0});
+  });
+
   const expectedNodeList = [
     'NodeList [',
     expectedOption1,
@@ -112,11 +127,35 @@ describe('DOMCollection plugin for list items', () => {
     ']',
   ].join('\n');
 
-  it('supports HTMLOptionsCollection for options', () => {
+  it('supports HTMLOptionsCollection for select options', () => {
     expect(select.options).toPrettyPrintTo(expectedHTMLOptionsCollection);
   });
 
-  // Omitted a test for form.elements because constructor.name
-  // is HTMLCollection in jsdom version 11
-  // might become HTMLFormControlsCollectio in jsdom 12
+  // When Jest upgrades to a version of jsdom later than 12.2.0,
+  // the class name might become HTMLFormControlsCollection
+  const expectedHTMLFormControlsCollection = [
+    'HTMLCollection [',
+    '  <select>',
+    '    <option',
+    '      value="1"',
+    '    >',
+    '      one',
+    '    </option>', // no comma because element
+    '    <option',
+    '      value="2"',
+    '    >',
+    '      two',
+    '    </option>', // no comma because element
+    '    <option',
+    '      value="3"',
+    '    >',
+    '      three',
+    '    </option>', // no comma because element
+    '  </select>,', // comma because item
+    ']',
+  ].join('\n');
+
+  it('supports HTMLCollection for form elements', () => {
+    expect(form.elements).toPrettyPrintTo(expectedHTMLFormControlsCollection);
+  });
 });

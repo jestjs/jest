@@ -61,7 +61,7 @@ export const serialize = (
         '}'
       : '[' +
         printListItems(
-          Array.prototype.slice.call(collection),
+          Array.from(collection),
           config,
           indentation,
           depth,
