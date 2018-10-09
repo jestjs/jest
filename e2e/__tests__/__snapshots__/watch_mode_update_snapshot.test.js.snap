@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can press "u" to update snapshots: test results 1`] = `
+"|                                         ^
+1 |
+3 |
+at __tests__/bar.spec.js:2:41
++ \\"bar\\"
++ Received
+- \\"foo\\"
+- Snapshot
+> 2 |       test('bar', () => { expect('bar').toMatchSnapshot(); });
+Received value does not match stored snapshot \\"bar 1\\".
+expect(value).toMatchSnapshot()
+● bar
+✕ bar
+› 1 snapshot failed from 1 test suite. Inspect your code changes or run \`yarn run jest -u\` to update them.
+› 1 snapshot failed.
+FAIL __tests__/bar.spec.js
+Snapshot Summary"
+`;
+
+exports[`can press "u" to update snapshots: test results 2`] = `
+"✓ bar
+› 1 snapshot updated from 1 test suite.
+› 1 snapshot updated.
+PASS __tests__/bar.spec.js
+Snapshot Summary"
+`;
+
+exports[`can press "u" to update snapshots: test summary 1`] = `
+"Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   1 failed, 1 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
+
+exports[`can press "u" to update snapshots: test summary 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   1 updated, 1 total
+Time:        <<REPLACED>>
+Ran all test suites."
+`;
