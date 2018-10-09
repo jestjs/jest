@@ -9,21 +9,20 @@
 'use strict';
 
 import path from 'path';
-import {
-  cleanup,
-  sortLines,
-  writeFiles,
-  replaceTime,
-  extractSummary,
-} from '../Utils';
+import {cleanup, writeFiles, extractSortedSummary} from '../Utils';
 import os from 'os';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), '../watch_mode');
+const DIR = path.resolve(os.tmpdir(), 'watch_mode');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
+
+expect.addSnapshotSerializer({
+  print: val => val.replace(/\[s\[u/g, '\n'),
+  test: val => typeof val === 'string' && val.includes('[s[u'),
+});
 
 const setupFiles = input => {
   writeFiles(DIR, {
@@ -52,11 +51,11 @@ test('can press "p" to filter by file name', () => {
     '--no-watchman',
     '--watchAll',
   ]);
-  const result = extractSummary(stderr);
+  const result = extractSortedSummary(stderr);
 
   expect(stdout).toMatchSnapshot();
   expect(result.summary).toMatchSnapshot();
-  expect(sortLines(replaceTime(result.rest))).toMatchSnapshot();
+  expect(result.rest).toMatchSnapshot();
   expect(status).toBe(0);
 });
 
@@ -68,10 +67,10 @@ test('can press "t" to filter by test name', () => {
     '--no-watchman',
     '--watchAll',
   ]);
-  const result = extractSummary(stderr);
+  const result = extractSortedSummary(stderr);
 
   expect(stdout).toMatchSnapshot();
   expect(result.summary).toMatchSnapshot();
-  expect(sortLines(replaceTime(result.rest))).toMatchSnapshot();
+  expect(result.rest).toMatchSnapshot();
   expect(status).toBe(0);
 });

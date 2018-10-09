@@ -111,10 +111,10 @@ export const replaceTime = (str: string) =>
 // Since Jest does not guarantee the order of tests we'll sort the output.
 export const sortLines = (output: string) =>
   output
-    .split(/\n/)
+    .split('\n')
     .sort()
     .map(str => str.trim())
-    .filter(str => Boolean(str))
+    .filter(Boolean)
     .join('\n');
 
 export const createEmptyPackage = (
@@ -158,6 +158,15 @@ export const extractSummary = (stdout: string) => {
   );
 
   return {rest, summary};
+};
+
+export const extractSortedSummary = (stdout: string) => {
+  const {rest, summary} = extractSummary(stdout);
+
+  return {
+    rest: sortLines(replaceTime(rest)),
+    summary,
+  };
 };
 
 // different versions of Node print different stack traces. This function
