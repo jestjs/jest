@@ -131,7 +131,7 @@ const matchers: MatchersObject = {
         isNot: this.isNot,
       }) +
       '\n\n' +
-      `Expected: ${printExpected(expected)}\n` +
+      `Expected value to be grear than: ${printExpected(expected)}\n` +
       `Received: ${printReceived(actual)}`;
     return {message, pass};
   },
@@ -144,7 +144,8 @@ const matchers: MatchersObject = {
         isNot: this.isNot,
       }) +
       '\n\n' +
-      `Expected: ${printExpected(expected)}\n` +
+      `Expected value to be greater than or equal: ` +
+      `${printExpected(expected)}\n` +
       `Received: ${printReceived(actual)}`;
     return {message, pass};
   },
@@ -200,7 +201,7 @@ const matchers: MatchersObject = {
         isNot: this.isNot,
       }) +
       '\n\n' +
-      `Expected: ${printExpected(expected)}\n` +
+      `Expected value to be less than: ${printExpected(expected)}\n` +
       `Received: ${printReceived(actual)}`;
     return {message, pass};
   },
@@ -213,7 +214,7 @@ const matchers: MatchersObject = {
         isNot: this.isNot,
       }) +
       '\n\n' +
-      `Expected: ${printExpected(expected)}\n` +
+      `Expected value to be less than or equal: ${printExpected(expected)}\n` +
       `Received: ${printReceived(actual)}`;
     return {message, pass};
   },
