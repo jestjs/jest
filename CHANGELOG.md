@@ -47,6 +47,7 @@
 - `[*]` Bump dated dependencies ([#6978](https://github.com/facebook/jest/pull/6978))
 - `[scripts]` Don’t make empty subfolders for ignored files in build folder ([#7001](https://github.com/facebook/jest/pull/7001))
 - `[docs]` Add missing export statement in `puppeteer_environment.js` under `docs/Puppeteer.md` ([#7127](https://github.com/facebook/jest/pull/7127))
+- `[chore]` Update `.toBeGreaterThan` `.toBeLessThan` matcher error messages. ([#7134](https://github.com/facebook/jest/pull/7134))
 
 ## 23.6.0
 
