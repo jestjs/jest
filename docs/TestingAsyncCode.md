@@ -73,7 +73,6 @@ You can also use the `.resolves` matcher in your expect statement, and Jest will
 
 ```js
 test('the data is peanut butter', () => {
-  expect.assertions(1);
   return expect(fetchData()).resolves.toBe('peanut butter');
 });
 ```
@@ -84,7 +83,6 @@ If you expect a promise to be rejected use the `.rejects` matcher. It works anal
 
 ```js
 test('the fetch fails with an error', () => {
-  expect.assertions(1);
   return expect(fetchData()).rejects.toMatch('error');
 });
 ```
@@ -114,12 +112,10 @@ Of course, you can combine `async` and `await` with `.resolves` or `.rejects`.
 
 ```js
 test('the data is peanut butter', async () => {
-  expect.assertions(1);
   await expect(fetchData()).resolves.toBe('peanut butter');
 });
 
 test('the fetch fails with an error', async () => {
-  expect.assertions(1);
   await expect(fetchData()).rejects.toThrow('error');
 });
 ```
