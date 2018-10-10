@@ -21,7 +21,7 @@ import {
   Node,
   ParseResult,
 } from './parsers/parser_nodes';
-import type {NodeType, NodeClass} from './parsers/parser_nodes';
+import type {NodeType} from './parsers/parser_nodes';
 import {parse} from './parsers/babylon_parser';
 import TestReconciler from './test_reconciler';
 
@@ -41,4 +41,4 @@ module.exports = {
   parse,
 };
 
-export type {NodeType, NodeClass};
+export type {NodeType};

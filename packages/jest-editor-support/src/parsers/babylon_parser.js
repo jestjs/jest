@@ -9,52 +9,37 @@
 
 import {readFileSync} from 'fs';
 
-import type {NodeType, NodeClass, ParseResult} from './parser_nodes';
-import {Expect, ItBlock, DescribeBlock, Node} from './parser_nodes';
+import type {NodeType} from './parser_nodes';
+import {NamedBlock, ParseResult, Node} from './parser_nodes';
 import {
   File as BabylonFile,
   Node as BabylonNode,
   parse as babylonParse,
 } from 'babylon';
 
-// export type BabylonParserResult = {
-//   describeBlocks: Array<DescribeBlock>,
-//   expects: Array<Expect>,
-//   itBlocks: Array<ItBlock>,
-//   root: Node,
-// };
-
 export const getASTfor = (file: string): BabylonFile => {
+  const [bFile] = _getASTfor(file);
+  return bFile;
+};
+
+const _getASTfor = (file: string): [BabylonFile, string] => {
   const data = readFileSync(file).toString();
   const config = {plugins: ['*'], sourceType: 'module'};
-  return babylonParse(data, config);
+  return [babylonParse(data, config), data];
 };
 
 export const parse = (file: string): ParseResult => {
-  // const itBlocks: ItBlock[] = [];
-  // const describeBlocks: DescribeBlock[] = [];
-  // const expects: Expect[] = [];
   const parseResult = new ParseResult(file);
-  const ast = getASTfor(file);
+  const [ast, data] = _getASTfor(file);
 
-  const updateNode = (node: NodeClass, babylonNode: BabylonNode) => {
+  const updateNode = (node: Node, babylonNode: BabylonNode) => {
     node.start = babylonNode.loc.start;
     node.end = babylonNode.loc.end;
     node.start.column += 1;
 
     parseResult.addNode(node);
-
-    switch (node.type) {
-      case 'it':
-      case 'describe':
-        (node: NamedBlock).name = getBlockName(babylonNode); //.expression.arguments[0].value;
-        break;
-
-      case 'expect':
-        node.end.column += 1;
-        break;
-      default:
-        throw new TypeError(`unexpected node type: ${node}`);
+    if (node instanceof NamedBlock) {
+      node.name = getBlockName(babylonNode);
     }
   };
 
@@ -66,30 +51,20 @@ export const parse = (file: string): ParseResult => {
   const isFunctionDeclaration = (nodeType: string) =>
     nodeType === 'ArrowFunctionExpression' || nodeType === 'FunctionExpression';
 
-  const getBlockName = (bNode: BabylonNode) => {
-    const name = bNode.expression.arguments[0].value;
+  const getBlockName = (bNode: BabylonNode): string => {
+    const arg = bNode.expression.arguments[0];
+    const name = arg.value;
     if (name) {
       return name;
     }
 
-    if (bNode.expression.arguments[0].type === 'TemplateLiteral') {
+    if (arg.type === 'TemplateLiteral') {
       //construct name from the quasis + expression
-      const arg = bNode.expression.arguments[0];
-      const elements = [...arg.expressions, ...arg.quasis];
-      elements.sort((a, b) => {
-        if (a.start === b.start) return 0;
-        if (a.start < b.start) return -1;
-        return 1;
-      });
-      const strings = elements.map(b => {
-        if (b.type === 'TemplateElement') return b.value.raw;
-        if (b.type === 'Identifier') return `\$\{${b.name}\}`;
-        throw new TypeError(
-          `unrecognized TemplateLiteral element: ${JSON.stringify(b)}`,
-        );
-      });
-      return strings.join('');
+      const tString = data.substring(arg.start + 1, arg.end - 1);
+      return tString;
     }
+
+    throw new TypeError(`failed to find name for: ${JSON.stringify(bNode)}`);
   };
 
   // Pull out the name of a CallExpression (describe/it)
@@ -145,20 +120,20 @@ export const parse = (file: string): ParseResult => {
 
   const addNode = (
     type: NodeType,
-    parent: NodeClass,
+    parent: Node,
     babylonNode: BabylonNode,
   ): Node => {
     const child = parent.addChild(type);
     updateNode(child, babylonNode);
 
-    if (child.type == 'it' && !(child: ItBlock).name) {
-      console.warn(`babylonNode: ${JSON.stringify(babylonNode)}`);
+    if (child instanceof NamedBlock && !(child: NamedBlock).name) {
+      console.warn(`block is missing name: ${JSON.stringify(babylonNode)}`);
     }
     return child;
   };
 
   // A recursive AST parser
-  const searchNodes = (babylonParent: BabylonNode, parent: NodeClass) => {
+  const searchNodes = (babylonParent: BabylonNode, parent: Node) => {
     // Look through the node's children
     let child: ?Node;
 
@@ -214,10 +189,4 @@ export const parse = (file: string): ParseResult => {
   searchNodes(program, parseResult.root);
 
   return parseResult;
-  // return {
-  //   describeBlocks,
-  //   expects,
-  //   itBlocks,
-  //   root,
-  // };
 };

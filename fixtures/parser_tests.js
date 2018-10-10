@@ -7,7 +7,14 @@
 
 const fixtures = __dirname;
 
-function parserTests(parse: (file: string) => BabylonParserResult) {
+function parserTests(parse: (file: string) => ParserResult) {
+  const assertBlock = (block, start, end, name: ?string = null) => {
+    expect(block.start).toEqual(start);
+    expect(block.end).toEqual(end);
+    if (name) {
+      expect(block.name).toEqual(name);
+    }
+  };
   describe('File parsing without throwing', () => {
     it('Should not throw', () => {
       expect(() => {
@@ -131,7 +138,7 @@ function parserTests(parse: (file: string) => BabylonParserResult) {
 
       const firstExpect = data.expects[0];
       expect(firstExpect.start).toEqual({column: 5, line: 13});
-      expect(firstExpect.end).toEqual({column: 37, line: 13});
+      expect(firstExpect.end).toEqual({column: 36, line: 13});
     });
 
     it('finds Expects in a danger flow test file ', () => {
@@ -140,7 +147,7 @@ function parserTests(parse: (file: string) => BabylonParserResult) {
 
       const thirdExpect = data.expects[2];
       expect(thirdExpect.start).toEqual({column: 5, line: 33});
-      expect(thirdExpect.end).toEqual({column: 40, line: 33});
+      expect(thirdExpect.end).toEqual({column: 39, line: 33});
     });
 
     it('finds Expects in a metaphysics test file', () => {
@@ -159,15 +166,12 @@ function parserTests(parse: (file: string) => BabylonParserResult) {
       expect(data.describeBlocks.length).toEqual(4);
 
       const firstDescribe = data.describeBlocks[0];
-      expect(firstDescribe.start).toEqual({
-        column: 1,
-        line: 10,
-      });
-      expect(firstDescribe.end).toEqual({
-        column: 2,
-        line: 20,
-      });
-      expect(firstDescribe.name).toBe('.isCI');
+      assertBlock(
+        firstDescribe,
+        {column: 1, line: 10},
+        {column: 2, line: 20},
+        '.isCI',
+      );
     });
     it('finds test blocks within describe blocks', () => {
       const data = parse(`${fixtures}/dangerjs/travis-ci.example`);
@@ -199,7 +203,7 @@ function parserTests(parse: (file: string) => BabylonParserResult) {
       expect(nested.children[1].type).toBe('describe');
       expect(nested.children[1].name).toBe('describe 1.2');
     });
-    it('can find deep nested blocks', () => { 
+    it('can find deep nested blocks', () => {
       const itBlock = nested.children[0];
       expect(itBlock.children.length).toBe(2);
       expect(itBlock.children[0].name).toBe('test 1.1.1');
@@ -209,6 +213,117 @@ function parserTests(parse: (file: string) => BabylonParserResult) {
       expect(descBlock.children.length).toBe(1);
       expect(descBlock.children[0].name).toBe('test 1.1.2.1');
       expect(descBlock.children[0].children[0].type).toBe('expect');
+    });
+  });
+
+  describe('template literals', () => {
+    const parseResult = parse(`${fixtures}/template-literal.example`);
+
+    test(`all blocks are parsed`, () => {
+      expect(parseResult.describeBlocks.length).toEqual(5);
+      expect(parseResult.itBlocks.length).toEqual(7);
+      expect(parseResult.expects.length).toEqual(4);
+    });
+    test(`no expression template`, () => {
+      const dBlock = parseResult.describeBlocks.filter(
+        b => b.name === 'no expression template',
+      )[0];
+      const t1 = dBlock.children[0];
+      const e1 = t1.children[0];
+
+      expect(dBlock.children.length).toBe(1);
+      expect(t1.children.length).toBe(1);
+
+      assertBlock(
+        t1,
+        {column: 3, line: 2},
+        {column: 5, line: 4},
+        'test has no expression either',
+      );
+      assertBlock(e1, {column: 5, line: 3}, {column: 25, line: 3});
+    });
+
+    test(`simple template literal`, () => {
+      const dBlock = parseResult.describeBlocks.filter(
+        b => b.name === 'simple template literal',
+      )[0];
+      expect(dBlock.children.length).toBe(3);
+
+      const t1 = dBlock.children[0];
+      const t2 = dBlock.children[1];
+      const t3 = dBlock.children[2];
+
+      assertBlock(
+        t1,
+        {column: 3, line: 8},
+        {column: 41, line: 8},
+        '${expression} up front',
+      );
+      assertBlock(
+        t2,
+        {column: 3, line: 9},
+        {column: 4, line: 10},
+        'at the end ${expression}',
+      );
+      assertBlock(
+        t3,
+        {column: 3, line: 11},
+        {column: 5, line: 12},
+        'mixed ${expression1} and ${expression2}',
+      );
+    });
+
+    test(`template literal with functions`, () => {
+      const dBlock = parseResult.describeBlocks.filter(
+        b => b.name === 'template literal with functions',
+      )[0];
+      const t1 = dBlock.children[0];
+      const e1 = t1.children[0];
+
+      expect(dBlock.children.length).toBe(1);
+      expect(t1.children.length).toBe(1);
+
+      assertBlock(
+        t1,
+        {column: 3, line: 16},
+        {column: 5, line: 18},
+        'this ${test} calls ${JSON.stringfy(expression)} should still work',
+      );
+      assertBlock(e1, {column: 5, line: 17}, {column: 31, line: 17});
+    });
+
+    test(`multiline template literal`, () => {
+      const dBlock = parseResult.describeBlocks.filter(
+        b => b.name === 'multiline template literal',
+      )[0];
+      const t1 = dBlock.children[0];
+      const e1 = t1.children[0];
+
+      expect(dBlock.children.length).toBe(1);
+      expect(t1.children.length).toBe(1);
+
+      assertBlock(
+        t1,
+        {column: 3, line: 22},
+        {column: 5, line: 25},
+        `this \${test} will span in
+    multiple lines`,
+      );
+      assertBlock(e1, {column: 5, line: 24}, {column: 32, line: 24});
+    });
+
+    test(`edge case: should not fail`, () => {
+      const dBlock = parseResult.describeBlocks.filter(
+        b => b.name === 'edge case: should not fail',
+      )[0];
+      const t1 = dBlock.children[0];
+      const e1 = t1.children[0];
+
+      expect(dBlock.children.length).toBe(1);
+      expect(t1.children.length).toBe(1);
+
+      assertBlock(t1, {column: 3, line: 29}, {column: 5, line: 31}, '');
+      assertBlock(e1, {column: 5, line: 30}, {column: 30, line: 30});
     });
   });
 }

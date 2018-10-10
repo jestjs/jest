@@ -5,11 +5,9 @@
     "**/node_modules": true,
     "**/build": true
   },
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "flow.useNPMPackagedFlow": true,
   "javascript.validate.enable": false,
   "jest.pathToJest": "yarn jest --",
-  "prettier.eslintIntegration": true,
-  "jest.autoEnable": false,
-  "jest.runAllTestsFirst": false
+  "prettier.eslintIntegration": true
 }

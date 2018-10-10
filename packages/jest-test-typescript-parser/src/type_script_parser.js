@@ -10,8 +10,8 @@
 import {readFileSync} from 'fs';
 
 import ts from 'typescript';
-import {ParseResult} from 'jest-editor-support';
-import type {NodeType, NodeClass} from 'jest-editor-support';
+import {NamedBlock, Node as ParsedNode, ParseResult} from 'jest-editor-support';
+import type {NodeType} from 'jest-editor-support';
 
 export function parse(file: string): ParseResult {
   const sourceFile = ts.createSourceFile(
@@ -23,34 +23,40 @@ export function parse(file: string): ParseResult {
 
   const addNode = (
     tsNode: ts.Node,
-    parent: NodeClass,
+    parent: ParsedNode,
     type: NodeType,
-  ): NodeClass => {
+  ): ParsedNode => {
     const child = parent.addChild(type);
+    getNode(sourceFile, tsNode, child);
 
-    switch (type) {
-      case 'describe':
-      case 'it':
-        getNode(sourceFile, tsNode, child);
-        child.name = tsNode.arguments[0].text;
-        parseResult.addNode(child);
-        break;
-      case 'expect':
-        getNode(sourceFile, tsNode, child);
-        parseResult.addNode(child, true);
-        break;
-      default:
-        throw new TypeError(`unexpected node type ${type}`);
+    if (child instanceof NamedBlock) {
+      const firstArg = tsNode.arguments[0];
+      child.name = firstArg.text;
+      if (!child.name) {
+        if (ts.isTemplateExpression(firstArg)) {
+          child.name = sourceFile.text.substring(
+            firstArg.pos + 1,
+            firstArg.end - 1,
+          );
+        } else {
+          console.warn(
+            `NamedBlock but no name found for ${type} tsNode=`,
+            tsNode,
+          );
+        }
+      }
+      parseResult.addNode(child);
+    } else {
+      // block has no name, thus perform extra dedup check by line info
+      parseResult.addNode(child, true);
     }
 
     return child;
   };
 
-  // const itBlocks: Array<ItBlock> = [];
-  // const expects: Array<Expect> = [];
-  function searchNodes(parent: NodeClass) {
+  function searchNodes(parent: ParsedNode) {
     return (node: ts.Node) => {
-      let sNode: ?NodeClass;
+      let sNode: ?ParsedNode;
       if (node.kind === ts.SyntaxKind.CallExpression) {
         let {text} = node.expression;
         if (!text) {
@@ -81,20 +87,30 @@ export function parse(file: string): ParseResult {
   return parseResult;
 }
 
-function getNode<T: Node>(
+function getNode<T: ParsedNode>(
   file: ts.SourceFile,
   expression: ts.CallExpression,
   node: T,
 ): T {
   const start = file.getLineAndCharacterOfPosition(expression.getStart(file));
-  // TypeScript parser is 0 based, so we have to increment by 1 to normalize
   node.start = {
     column: start.character + 1,
     line: start.line + 1,
   };
-  const end = file.getLineAndCharacterOfPosition(expression.getEnd());
+  const pos = expression.getEnd();
+  const end = file.getLineAndCharacterOfPosition(pos);
+
+  // our end position is 1-based end character, including whitespace and
+  // statement separator.  getLineAndCharacterOfPosition in typescript, however,
+  // returns the 1-based location of the last non-whitespace char position.
+  // Therefore we need to adjust for the actual lineEnd position here
+  const lineEnd = file.getLineEndOfPosition(pos);
+  const lineEndDiff = lineEnd - pos;
+
+  // TypeScript parser is 0 based, so we have to increment by 1 to normalize
+  // but the character position is the exclusive, so no need to to increment by 1
   node.end = {
-    column: end.character + 1,
+    column: end.character + lineEndDiff,
     line: end.line + 1,
   };
   node.file = file.fileName;

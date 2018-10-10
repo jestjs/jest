@@ -22,7 +22,7 @@ export class Node {
     this.type = type;
     this.file = file;
   }
-  addChild(type: NodeType): NodeClass {
+  addChild(type: NodeType): Node {
     let child: Node;
 
     switch (type) {
@@ -53,16 +53,17 @@ export class NamedBlock extends Node {
   name: string;
 }
 
-export class ItBlock extends NamedBlock {};
+export class ItBlock extends NamedBlock {}
 export class DescribeBlock extends NamedBlock {}
 
-export type NodeClass = Node | Expect | ItBlock | DescribeBlock;
+// export type NodeClass = Node | Expect | ItBlock | DescribeBlock;
 
 export class ParseResult {
   describeBlocks: Array<DescribeBlock>;
   expects: Array<Expect>;
   itBlocks: Array<ItBlock>;
   root: Node;
+  file: string;
 
   constructor(file: string) {
     this.file = file;
@@ -72,7 +73,7 @@ export class ParseResult {
     this.expects = [];
     this.itBlocks = [];
   }
-  addNode(node: NodeClass, dedup = false) {
+  addNode(node: Node, dedup: boolean = false) {
     if (node instanceof DescribeBlock) {
       this.describeBlocks.push(node);
     } else if (node instanceof ItBlock) {
@@ -92,7 +93,7 @@ export class ParseResult {
 
       this.expects.push(node);
     } else {
-      throw new TypeError(`unexpected node class: ${node}`);
+      throw new TypeError(`unexpected node class: ${JSON.stringify(node)}`);
     }
   }
 }

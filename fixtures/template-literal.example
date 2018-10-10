@@ -1,0 +1,33 @@
+describe(`no expression template`, () => {
+  it(`test has no expression either`, () => {
+    expect(1).toEqual(1);
+  });
+});
+
+describe('simple template literal', () => {
+  it(`${expression} up front`, () => {});
+  it('at the end ${expression}', () => {
+  })
+  it('mixed ${expression1} and ${expression2}', () => {
+  });
+});
+
+describe('template literal with functions', () => {
+  it(`this ${test} calls ${JSON.stringfy(expression)} should still work`, () => {
+    expect(true).toEqual(true);
+  });
+});
+
+describe('multiline template literal', () => {
+  it(`this ${test} will span in
+    multiple lines`, () => {
+    expect(true).toEqual(false);
+  });
+});
+
+describe('edge case: should not fail', function() {
+  it(``, () => {
+    expect(true).toEqual(true)
+  });
+});
+
