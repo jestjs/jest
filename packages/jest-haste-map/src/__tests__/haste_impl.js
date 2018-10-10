@@ -6,19 +6,21 @@
  */
 'use strict';
 
+const path = require('path');
+
 module.exports = {
-  getHasteName(path) {
+  getHasteName(filename) {
     if (
-      path.includes('__mocks__') ||
-      path.includes('NoHaste') ||
-      path.includes('/module_dir/') ||
-      path.includes('/sourcemaps/')
+      filename.includes('__mocks__') ||
+      filename.includes('NoHaste') ||
+      filename.includes(path.sep + 'module_dir' + path.sep) ||
+      filename.includes(path.sep + 'sourcemaps' + path.sep)
     ) {
       return undefined;
     }
 
-    return path
-      .substr(path.lastIndexOf('/') + 1)
+    return filename
+      .substr(filename.lastIndexOf(path.sep) + 1)
       .replace(/(\.(android|ios|native))?\.js$/, '');
   },
 };

@@ -58,10 +58,11 @@ test('can pass projects or global config', () => {
       };
     `,
     'hasteImpl.js': `
+      const path = require('path');
       module.exports = {
-        getHasteName(path) {
-          return path
-            .substr(path.lastIndexOf('/') + 1)
+        getHasteName(filename) {
+          return filename
+            .substr(filename.lastIndexOf(path.sep) + 1)
             .replace(/\.js$/, '');
         },
       };
