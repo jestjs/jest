@@ -9,6 +9,7 @@
 - `[jest-config]` [**BREAKING**] Set default `notifyMode` to `failure-change` ([#7024](https://github.com/facebook/jest/pull/7024))
 - `[jest-config]` Add `readConfigs` function, previously in `jest-cli` ([#7096](https://github.com/facebook/jest/pull/7096))
 - `[jest-snapshot]` Enable configurable snapshot paths ([#6143](https://github.com/facebook/jest/pull/6143))
+- `[jest-haste-map]` [**BREAKING**] Remove support for `@providesModule` ([#6104](https://github.com/facebook/jest/pull/6104))
 
 ### Fixes
 
