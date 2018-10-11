@@ -7,7 +7,9 @@
 - `[jest-haste-map]` Add `getFileIterator` to `HasteFS` for faster file iteration ([#7010](https://github.com/facebook/jest/pull/7010)).
 - `[jest-worker]` [**BREAKING**] Add functionality to call a `setup` method in the worker before the first call and a `teardown` method when ending the farm ([#7014](https://github.com/facebook/jest/pull/7014)).
 - `[jest-config]` [**BREAKING**] Set default `notifyMode` to `failure-change` ([#7024](https://github.com/facebook/jest/pull/7024))
+- `[jest-config]` Add `readConfigs` function, previously in `jest-cli` ([#7096](https://github.com/facebook/jest/pull/7096))
 - `[jest-snapshot]` Enable configurable snapshot paths ([#6143](https://github.com/facebook/jest/pull/6143))
+- `[jest-haste-map]` [**BREAKING**] Remove support for `@providesModule` ([#6104](https://github.com/facebook/jest/pull/6104))
 - `[pretty-format]` Support HTMLCollection and NodeList in DOMCollection plugin ([#7125](https://github.com/facebook/jest/pull/7125))
 
 ### Fixes
@@ -35,6 +37,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Add `this.extend` to the Custom Matchers API reference ([#7130](https://github.com/facebook/jest/pull/7130))
+- `[docs]` Fix default value for `coverageReporters` value in configuration docs ([#7126](https://github.com/facebook/jest/pull/7126))
 - `[docs]` Add link for jest-extended in expect docs ([#7078](https://github.com/facebook/jest/pull/7078))
 - `[jest-util]` Add ErrorWithStack class ([#7067](https://github.com/facebook/jest/pull/7067))
 - `[docs]` Document `--runTestsByPath` CLI parameter ([#7046](https://github.com/facebook/jest/pull/7046))
@@ -45,6 +49,7 @@
 - `[jest-changed-files]` Refactor to use `execa` over `child_process` ([#6987](https://github.com/facebook/jest/pull/6987))
 - `[*]` Bump dated dependencies ([#6978](https://github.com/facebook/jest/pull/6978))
 - `[scripts]` Don’t make empty subfolders for ignored files in build folder ([#7001](https://github.com/facebook/jest/pull/7001))
+- `[docs]` Add missing export statement in `puppeteer_environment.js` under `docs/Puppeteer.md` ([#7127](https://github.com/facebook/jest/pull/7127))
 
 ## 23.6.0
 
