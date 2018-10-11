@@ -34,16 +34,16 @@ const cleanup = (
 ) => {
   const pattern = '\\.' + EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
-  const filesRemoved = files
-    .filter(
-      snapshotFile =>
-        !fileExists(snapshotResolver.resolveTestPath(snapshotFile), hasteFS),
-    )
-    .map(snapshotFile => {
+  let filesRemoved = 0;
+
+  files.forEach(snapshotFile => {
+    if (!fileExists(snapshotResolver.resolveTestPath(snapshotFile), hasteFS)) {
+      filesRemoved++;
       if (update === 'all') {
         fs.unlinkSync(snapshotFile);
       }
-    }).length;
+    }
+  });
 
   return {
     filesRemoved,
