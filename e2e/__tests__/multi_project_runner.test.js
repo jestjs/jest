@@ -13,7 +13,7 @@ import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
 import stripAnsi from 'strip-ansi';
-import {cleanup, extractSummary, writeFiles} from '../Utils';
+import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
 
 const DIR = path.resolve(os.tmpdir(), 'multi_project_runner_test');
 
@@ -21,15 +21,6 @@ const SAMPLE_FILE_CONTENT = 'module.exports = {};';
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
-
-// Since Jest does not guarantee the order of tests we'll sort the output.
-const sortLines = output =>
-  output
-    .split(/\n/)
-    .sort()
-    .map(str => str.trim())
-    .filter(str => Boolean(str))
-    .join('\n');
 
 test('--listTests doesnt duplicate the test files', () => {
   writeFiles(DIR, {
