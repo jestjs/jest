@@ -8,6 +8,7 @@
  */
 
 import type {Global} from '../../../types/Global';
+import {ErrorWithStack} from 'jest-util';
 
 // prettier-ignore
 const disabledGlobals = {
@@ -60,9 +61,5 @@ export function installErrorOnPrivate(global: Global): void {
 }
 
 function throwAtFunction(message, fn) {
-  const e = new Error(message);
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(e, fn);
-  }
-  throw e;
+  throw new ErrorWithStack(message, fn);
 }

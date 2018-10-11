@@ -40,7 +40,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   noStackTrace: false,
   nonFlagArgs: [],
   notify: false,
-  notifyMode: 'always',
+  notifyMode: 'failure-change',
   onlyChanged: false,
   onlyFailures: false,
   outputFile: null,
@@ -104,6 +104,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   setupTestFrameworkScriptFile: null,
   skipFilter: false,
   skipNodeResolution: false,
+  snapshotResolver: null,
   snapshotSerializers: [],
   testEnvironment: 'node',
   testEnvironmentOptions: {},
@@ -120,7 +121,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   watchPathIgnorePatterns: [],
 };
 
-const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
+export const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
   Object.keys(DEFAULT_GLOBAL_CONFIG).forEach(key => overridesKeys.delete(key));
 
@@ -134,7 +135,7 @@ const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
   return Object.assign({}, DEFAULT_GLOBAL_CONFIG, overrides);
 };
 
-const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
+export const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
   Object.keys(DEFAULT_PROJECT_CONFIG).forEach(key => overridesKeys.delete(key));
 
@@ -146,9 +147,4 @@ const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
   }
 
   return Object.assign({}, DEFAULT_PROJECT_CONFIG, overrides);
-};
-
-module.exports = {
-  makeGlobalConfig,
-  makeProjectConfig,
 };

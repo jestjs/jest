@@ -122,6 +122,7 @@ export const getSummary = (
   const testsFailed = aggregatedResults.numFailedTests;
   const testsPassed = aggregatedResults.numPassedTests;
   const testsPending = aggregatedResults.numPendingTests;
+  const testsTodo = aggregatedResults.numTodoTests;
   const testsTotal = aggregatedResults.numTotalTests;
   const width = (options && options.width) || 0;
 
@@ -141,6 +142,7 @@ export const getSummary = (
     chalk.bold('Tests:       ') +
     (testsFailed ? chalk.bold.red(`${testsFailed} failed`) + ', ' : '') +
     (testsPending ? chalk.bold.yellow(`${testsPending} skipped`) + ', ' : '') +
+    (testsTodo ? chalk.bold.magenta(`${testsTodo} todo`) + ', ' : '') +
     (testsPassed ? chalk.bold.green(`${testsPassed} passed`) + ', ' : '') +
     `${testsTotal} total`;
 

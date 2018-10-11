@@ -3,10 +3,17 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @providesModule Platform
  */
 
 'use strict';
 
-exports.platform = 'default';
+test('fake promises', () => {
+  let someValue;
+  Promise.resolve().then(() => {
+    someValue = 'foobar';
+  });
+
+  jest.runAllTicks();
+
+  expect(someValue).toBe('foobar');
+});

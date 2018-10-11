@@ -7,12 +7,12 @@
  */
 'use strict';
 
-const fs = require('fs');
-const mkdirp = require('mkdirp');
-const os = require('os');
-const path = require('path');
-const runJest = require('../runJest');
-const {cleanup} = require('../Utils');
+import fs from 'fs';
+import mkdirp from 'mkdirp';
+import os from 'os';
+import path from 'path';
+import runJest, {json as runWithJson} from '../runJest';
+import {cleanup} from '../Utils';
 
 const DIR = path.join(os.tmpdir(), 'jest-global-teardown');
 
@@ -25,7 +25,7 @@ test('globalTeardown is triggered once after all test suites', () => {
     __dirname,
     '../global-teardown/teardown.js',
   );
-  const result = runJest.json('global-teardown', [
+  const result = runWithJson('global-teardown', [
     `--globalTeardown=${teardownPath}`,
   ]);
   expect(result.status).toBe(0);

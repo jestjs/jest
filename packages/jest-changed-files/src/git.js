@@ -11,37 +11,19 @@ import type {Path} from 'types/Config';
 import type {Options, SCMAdapter} from 'types/ChangedFiles';
 
 import path from 'path';
-import childProcess from 'child_process';
+import execa from 'execa';
 
 const findChangedFilesUsingCommand = async (
   args: Array<string>,
   cwd: Path,
-): Promise<Array<Path>> =>
-  new Promise((resolve, reject) => {
-    const child = childProcess.spawn('git', args, {cwd});
-    let stdout = '';
-    let stderr = '';
-    child.stdout.on('data', data => (stdout += data));
-    child.stderr.on('data', data => (stderr += data));
-    child.on('error', e => reject(e));
-    child.on('close', code => {
-      if (code === 0) {
-        stdout = stdout.trim();
-        if (stdout === '') {
-          resolve([]);
-        } else {
-          resolve(
-            stdout
-              .split('\n')
-              .filter(s => s !== '')
-              .map(changedPath => path.resolve(cwd, changedPath)),
-          );
-        }
-      } else {
-        reject(code + ': ' + stderr);
-      }
-    });
-  });
+): Promise<Array<Path>> => {
+  const result = await execa('git', args, {cwd});
+
+  return result.stdout
+    .split('\n')
+    .filter(s => s !== '')
+    .map(changedPath => path.resolve(cwd, changedPath));
+};
 
 const adapter: SCMAdapter = {
   findChangedFiles: async (
@@ -54,7 +36,7 @@ const adapter: SCMAdapter = {
     const includePaths: Array<Path> = (options && options.includePaths) || [];
 
     if (options && options.lastCommit) {
-      return await findChangedFilesUsingCommand(
+      return findChangedFilesUsingCommand(
         ['show', '--name-only', '--pretty=%b', 'HEAD'].concat(includePaths),
         cwd,
       );
@@ -81,7 +63,7 @@ const adapter: SCMAdapter = {
       );
       return [...committed, ...staged, ...unstaged];
     } else {
-      return await findChangedFilesUsingCommand(
+      return findChangedFilesUsingCommand(
         ['ls-files', '--other', '--modified', '--exclude-standard'].concat(
           includePaths,
         ),
@@ -90,19 +72,17 @@ const adapter: SCMAdapter = {
     }
   },
 
-  getRoot: async (cwd: string): Promise<?string> =>
-    new Promise(resolve => {
-      try {
-        let stdout = '';
-        const options = ['rev-parse', '--show-toplevel'];
-        const child = childProcess.spawn('git', options, {cwd});
-        child.stdout.on('data', data => (stdout += data));
-        child.on('error', () => resolve(null));
-        child.on('close', code => resolve(code === 0 ? stdout.trim() : null));
-      } catch (e) {
-        resolve(null);
-      }
-    }),
+  getRoot: async (cwd: string): Promise<?string> => {
+    const options = ['rev-parse', '--show-toplevel'];
+
+    try {
+      const result = await execa('git', options, {cwd});
+
+      return result.stdout;
+    } catch (e) {
+      return null;
+    }
+  },
 };
 
 export default adapter;

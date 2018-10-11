@@ -42,6 +42,7 @@ module.exports = {
     '/packages/jest-runtime/src/__tests__/module_dir/',
     '/packages/jest-runtime/src/__tests__/NODE_PATH_dir',
     '/packages/jest-snapshot/src/__tests__/plugins',
+    '/packages/jest-snapshot/src/__tests__/fixtures/',
     '/packages/jest-validate/src/__tests__/fixtures/',
     '/packages/jest-worker/src/__performance_tests__',
     '/packages/pretty-format/perf/test.js',

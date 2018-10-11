@@ -9,34 +9,30 @@
 
 /* eslint-disable jest/no-focused-tests */
 
-const ConditionalTest = {
-  isJestCircusRun() {
-    return process.env.JEST_CIRCUS === '1';
-  },
+export function isJestCircusRun() {
+  return process.env.JEST_CIRCUS === '1';
+}
 
-  skipSuiteOnJasmine() {
-    if (!this.isJestCircusRun()) {
-      fit('does not work on Jasmine', () => {
-        console.warn('[SKIP] Does not work on Jasmine');
-      });
-    }
-  },
+export function skipSuiteOnJasmine() {
+  if (!isJestCircusRun()) {
+    test.only('does not work on Jasmine', () => {
+      console.warn('[SKIP] Does not work on Jasmine');
+    });
+  }
+}
 
-  skipSuiteOnJestCircus() {
-    if (this.isJestCircusRun()) {
-      fit('does not work on jest-circus', () => {
-        console.warn('[SKIP] Does not work on jest-circus');
-      });
-    }
-  },
+export function skipSuiteOnJestCircus() {
+  if (isJestCircusRun()) {
+    test.only('does not work on jest-circus', () => {
+      console.warn('[SKIP] Does not work on jest-circus');
+    });
+  }
+}
 
-  skipSuiteOnWindows() {
-    if (process.platform === 'win32') {
-      fit('does not work on Windows', () => {
-        console.warn('[SKIP] Does not work on Windows');
-      });
-    }
-  },
-};
-
-module.exports = ConditionalTest;
+export function skipSuiteOnWindows() {
+  if (process.platform === 'win32') {
+    test.only('does not work on Windows', () => {
+      console.warn('[SKIP] Does not work on Windows');
+    });
+  }
+}

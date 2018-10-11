@@ -48,7 +48,7 @@ export default ({
   modulePathIgnorePatterns: [],
   noStackTrace: false,
   notify: false,
-  notifyMode: 'always',
+  notifyMode: 'failure-change',
   preset: null,
   prettierPath: 'prettier',
   projects: null,

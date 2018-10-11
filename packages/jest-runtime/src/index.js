@@ -240,6 +240,7 @@ class Runtime {
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,
       retainAllFiles: false,
+      rootDir: config.rootDir,
       roots: config.roots,
       useWatchman: options && options.watchman,
       watch: options && options.watch,
@@ -430,7 +431,7 @@ class Runtime {
           (typeof globalMock === 'object' && globalMock !== null) ||
           typeof globalMock === 'function'
         ) {
-          globalMock._isMockFunction && globalMock.mockClear();
+          globalMock._isMockFunction === true && globalMock.mockClear();
         }
       });
 

@@ -187,7 +187,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `coverageReporters` [array<string>]
 
-Default: `["json", "lcov", "text"]`
+Default: `["json", "lcov", "text", "clover"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib) can be used.
 
@@ -393,7 +393,7 @@ Activates notifications for test results.
 
 ### `notifyMode` [string]
 
-Default: `always`
+Default: `failure-change`
 
 Specifies notification mode. Requires `notify: true`.
 
@@ -647,6 +647,29 @@ The path to a module that runs some code to configure or set up the testing fram
 If you want this path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside the path string, like `"<rootDir>/a-configs-folder"`.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
+
+### `snapshotResolver` [string]
+
+Default: `undefined`
+
+The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores that snapshot files on disk.
+
+Example snapshot resolver module:
+
+```js
+// my-snapshot-resolver-module
+module.exports = {
+  // resolves from test to snapshot path
+  resolveSnapshotPath: (testPath, snapshotExtension) =>
+    testPath.replace('__tests__', '__snapshots__') + snapshotExtension,
+
+  // resolves from snapshot to test path
+  resolveTestPath: (snapshotFilePath, snapshotExtension) =>
+    snapshotFilePath
+      .replace('__snapshots__', '__tests__')
+      .slice(0, -snapshotExtension.length),
+};
+```
 
 ### `snapshotSerializers` [array<string>]
 
@@ -902,7 +925,7 @@ A map from regular expressions to paths to transformers. A transformer is a modu
 
 Examples of such compilers include [Babel](https://babeljs.io/), [TypeScript](http://www.typescriptlang.org/) and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
 
-_Note: a transformer is only ran once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
+_Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
 
 _Note: if you are using the `babel-jest` transformer and want to use an additional code preprocessor, keep in mind that when "transform" is overwritten in any way the `babel-jest` is not loaded automatically anymore. If you want to use it to compile JavaScript code it has to be explicitly defined. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 

@@ -9,6 +9,6 @@ exports[`prints stack trace pointing to process.exit call 1`] = `
       3 | test('something', () => {
       4 |   expect(true).toBe(true);
 
-      at Object.<anonymous> (__tests__/test.js:1:9)
+      at Object.exit (__tests__/test.js:1:9)
 "
 `;

@@ -17,6 +17,7 @@
     <a href="#backers"><img src="https://opencollective.com/jest/backers/badge.svg" alt="Backers on Open Collective"></a>
     <a href="#sponsors"><img src="https://opencollective.com/jest/sponsors/badge.svg" alt="Sponsors on Open Collective"></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+     <a href="https://snyk.io/test/github/facebook/jest?targetFile=packages/jest/package.json"><img src="https://snyk.io/test/github/facebook/jest/badge.svg?targetFile=packages/jest/package.json" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/facebook/jest?targetFile=packages/jest/package.json" style="max-width:100%;"></a>
 </p>
 
 **👩🏻‍💻 Developer Ready**: Complete and ready to set-up JavaScript testing solution. Works out of the box for any React project.
@@ -101,10 +102,10 @@ If you'd like to learn more about running `jest` through the command line, take 
 
 [Babel](http://babeljs.io/) is automatically handled by Jest using `babel-jest`. You don't need install anything extra for using Babel.
 
-> Note: If you are using a babel version 7 then you need to install `babel-core@^7.0.0-0` and `@babel/core` with the following command:
+> Note: If you are using Babel version 7 then you need to install `babel-jest`, `babel-core@^7.0.0-bridge.0` and `@babel/core` with the following command:
 >
 > ```bash
-> yarn add --dev 'babel-core@^7.0.0-0' @babel/core
+> yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
 > ```
 
 Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`babel-preset-env`](https://babeljs.io/docs/plugins/preset-env/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
