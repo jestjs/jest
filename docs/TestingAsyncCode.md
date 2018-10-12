@@ -49,7 +49,6 @@ For example, let's say that `fetchData`, instead of using a callback, returns a 
 
 ```js
 test('the data is peanut butter', () => {
-  expect.assertions(1);
   return fetchData().then(data => {
     expect(data).toBe('peanut butter');
   });
