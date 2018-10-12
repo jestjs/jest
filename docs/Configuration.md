@@ -555,7 +555,7 @@ By default, each test file gets its own independent module registry. Enabling `r
 
 Default: `false`
 
-`isolateModules` goes a step further than `resetModules` and creates a sanbox registry for the modules that are loaded inside the callback function. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.isolateModules()`](#jest-isolatemodules).
+`isolateModules` goes a step further than `resetModules` and creates a sandbox registry for the modules that are loaded inside the callback function. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.isolateModules()`](#jest-isolatemodules).
 
 ```js
 let myModule;

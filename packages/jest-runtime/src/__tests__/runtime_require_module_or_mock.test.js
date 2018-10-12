@@ -198,7 +198,7 @@ describe('resetModules', () => {
 });
 
 describe('isolateModules', () => {
-  it('resets all modules after the block', async () =>
+  it('resets all modules after the block', () =>
     createRuntime(__filename, {
       moduleNameMapper,
     }).then(runtime => {
@@ -220,7 +220,7 @@ describe('isolateModules', () => {
       expect(exports.getState()).toBe(1);
     }));
 
-  it('cannot nest isolateModules blocks', async () =>
+  it('cannot nest isolateModules blocks', () =>
     createRuntime(__filename, {
       moduleNameMapper,
     }).then(runtime => {
@@ -233,7 +233,7 @@ describe('isolateModules', () => {
       );
     }));
 
-  it('can call resetModules within a isolateModules block', async () =>
+  it('can call resetModules within a isolateModules block', () =>
     createRuntime(__filename, {
       moduleNameMapper,
     }).then(runtime => {
