@@ -280,7 +280,7 @@ const matchers: MatchersObject = {
         converted = Array.from(collection);
       } catch (e) {
         throw new Error(
-          matcherHint('[.not].toContainEqual', 'collection', 'value') +
+          matcherHint('[.not].toContain', 'collection', 'value') +
             '\n\n' +
             `Expected ${RECEIVED_COLOR(
               'collection',
@@ -289,17 +289,19 @@ const matchers: MatchersObject = {
         );
       }
     }
+    const comment = 'indexOf';
     // At this point, we're either a string or an Array,
     // which was converted from an array-like structure.
     const pass = converted.indexOf(value) != -1;
     const message = pass
       ? () =>
-          matcherHint('.not.toContain', collectionType, 'value') +
+          matcherHint('.toContain', collectionType, 'value', {
+            comment,
+            isNot: this.isNot,
+          }) +
           '\n\n' +
-          `Expected ${collectionType}:\n` +
-          `  ${printReceived(collection)}\n` +
-          `Not to contain value:\n` +
-          `  ${printExpected(value)}\n`
+          `Expected value: ${printExpected(value)}\n` +
+          `Received ${collectionType}: ${printReceived(collection)}`
       : () => {
           const suggestToContainEqual =
             converted !== null &&
@@ -309,12 +311,13 @@ const matchers: MatchersObject = {
               equals(item, value, [iterableEquality]),
             ) !== -1;
           return (
-            matcherHint('.toContain', collectionType, 'value') +
+            matcherHint('.toContain', collectionType, 'value', {
+              comment,
+              isNot: this.isNot,
+            }) +
             '\n\n' +
-            `Expected ${collectionType}:\n` +
-            `  ${printReceived(collection)}\n` +
-            `To contain value:\n` +
-            `  ${printExpected(value)}` +
+            `Expected value: ${printExpected(value)}\n` +
+            `Received ${collectionType}: ${printReceived(collection)}` +
             (suggestToContainEqual ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}` : '')
           );
         };
@@ -342,24 +345,18 @@ const matchers: MatchersObject = {
       }
     }
 
+    const comment = 'deep equality';
     const pass =
       converted.findIndex(item => equals(item, value, [iterableEquality])) !==
       -1;
-    const message = pass
-      ? () =>
-          matcherHint('.not.toContainEqual', collectionType, 'value') +
-          '\n\n' +
-          `Expected ${collectionType}:\n` +
-          `  ${printReceived(collection)}\n` +
-          `Not to contain a value equal to:\n` +
-          `  ${printExpected(value)}\n`
-      : () =>
-          matcherHint('.toContainEqual', collectionType, 'value') +
-          '\n\n' +
-          `Expected ${collectionType}:\n` +
-          `  ${printReceived(collection)}\n` +
-          `To contain a value equal to:\n` +
-          `  ${printExpected(value)}`;
+    const message = () =>
+      matcherHint('.toContainEqual', collectionType, 'value', {
+        comment,
+        isNot: this.isNot,
+      }) +
+      '\n\n' +
+      `Expected value: ${printExpected(value)}\n` +
+      `Received ${collectionType}: ${printReceived(collection)}`;
 
     return {message, pass};
   },
@@ -414,25 +411,14 @@ const matchers: MatchersObject = {
     }
 
     const pass = received.length === length;
-    const message = pass
-      ? () =>
-          matcherHint('.not.toHaveLength', 'received', 'length') +
-          '\n\n' +
-          `Expected value to not have length:\n` +
-          `  ${printExpected(length)}\n` +
-          `Received:\n` +
-          `  ${printReceived(received)}\n` +
-          `received.length:\n` +
-          `  ${printReceived(received.length)}`
-      : () =>
-          matcherHint('.toHaveLength', 'received', 'length') +
-          '\n\n' +
-          `Expected value to have length:\n` +
-          `  ${printExpected(length)}\n` +
-          `Received:\n` +
-          `  ${printReceived(received)}\n` +
-          `received.length:\n` +
-          `  ${printReceived(received.length)}`;
+    const message = () =>
+      matcherHint('.toHaveLength', 'received', 'length', {
+        isNot: this.isNot,
+      }) +
+      '\n\n' +
+      `Expected length: ${printExpected(length)}\n` +
+      `Received length: ${printReceived(received.length)}\n` +
+      `Received value: ${printReceived(received)}`;
 
     return {message, pass};
   },
