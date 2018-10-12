@@ -171,7 +171,7 @@ const sortTests = (stdout: string) =>
       }
       return tests;
     }, [])
-    .sort(([a], [b]) => a > b)
+    .sort(([a], [b]) => (a > b ? 1 : -1))
     .reduce(
       (array, lines = []) =>
         lines.length > 1 ? array.concat(lines, '') : array.concat(lines),
