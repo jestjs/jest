@@ -36,6 +36,7 @@
 - `[jest-circus]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
 - `[jest-cli]` Fix unhandled error when a bad revision is provided to `changedSince` ([#7115](https://github.com/facebook/jest/pull/7115))
 - `[jest-config]` Moved dynamically assigned `cwd` from `jest-cli` to default configuration in `jest-config` ([#7146](https://github.com/facebook/jest/pull/7146))
+- `[jest-cli]` Fix watch mode filename/test name filtering is not taken into account for coverage calculation with collectCoverageFrom set ([#7153](https://github.com/facebook/jest/pull/7153))
 
 ### Chore & Maintenance
 
