@@ -7,9 +7,9 @@
  * @flow
  */
 
-const path = require('path');
-const {makeTemplate, writeFiles, cleanup} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import {cleanup, makeTemplate, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../toMatchSnapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');

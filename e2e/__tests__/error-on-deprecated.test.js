@@ -8,11 +8,11 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
-const {extractSummary} = require('../Utils');
-const ConditionalTest = require('../../scripts/ConditionalTest');
+import runJest from '../runJest';
+import {extractSummary} from '../Utils';
+import {skipSuiteOnJestCircus} from '../../scripts/ConditionalTest';
 
-ConditionalTest.skipSuiteOnJestCircus();
+skipSuiteOnJestCircus();
 
 const testFiles = [
   'fail.test.js',

@@ -114,7 +114,7 @@ expect.extend({
 });
 ```
 
-These helper functions can be found on `this` inside a custom matcher:
+These helper functions and properties can be found on `this` inside a custom matcher:
 
 #### `this.isNot`
 
@@ -123,6 +123,10 @@ A boolean to let you know this matcher was called with the negated `.not` modifi
 #### `this.equals(a, b)`
 
 This is a deep-equality function that will return `true` if two objects have the same values (recursively).
+
+#### `this.expand`
+
+A boolean to let you know this matcher was called with an `expand` option. When Jest is called with the `--expand` flag, `this.expand` can be used to determine if Jest is expected to show full diffs and errors.
 
 #### `this.utils`
 

@@ -10,11 +10,13 @@
 // Try getting the real promise object from the context, if available. Someone
 // could have overridden it in a test.
 const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
+const timestamp = Date.now.bind(Date);
 
 // A specialized version of `p-timeout` that does not touch globals.
 // It does not throw on timeout.
 export default function pTimeout(
   promise: Promise<any>,
+  startTime: number,
   ms: number,
   clearTimeout: (timeoutID: number) => void,
   setTimeout: (func: () => void, delay: number) => number,
@@ -25,7 +27,13 @@ export default function pTimeout(
     promise.then(
       val => {
         clearTimeout(timer);
-        resolve(val);
+
+        // when running single threaded, we need to double check the timeout
+        if (timestamp() - startTime > ms) {
+          resolve(onTimeout());
+        } else {
+          resolve(val);
+        }
       },
       err => {
         clearTimeout(timer);

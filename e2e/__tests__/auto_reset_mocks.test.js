@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('suite with auto-reset', () => {
   const result = runJest('auto-reset-mocks/with-auto-reset');

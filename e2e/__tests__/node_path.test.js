@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('supports NODE_PATH', () => {
   // $FlowFixMe after adding @flow to this test this seems to be a real bug

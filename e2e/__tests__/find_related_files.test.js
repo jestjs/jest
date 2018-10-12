@@ -12,8 +12,7 @@
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
-
-const {cleanup, writeFiles, extractSummary} = require('../Utils');
+import {cleanup, extractSummary, writeFiles} from '../Utils';
 
 const DIR = path.resolve(os.tmpdir(), 'find_related_tests_test');
 

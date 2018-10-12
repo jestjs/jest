@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('works with nested event loops', () => {
   const result = runJest('nested-event-loop');

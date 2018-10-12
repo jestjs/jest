@@ -12,9 +12,6 @@ exports[`renders correctly 1`] = `
   }
 >
   <Text
-    accessible={true}
-    allowFontScaling={true}
-    ellipsizeMode="tail"
     style={
       Object {
         "fontSize": 20,
@@ -26,9 +23,6 @@ exports[`renders correctly 1`] = `
     Welcome to React Native!
   </Text>
   <Text
-    accessible={true}
-    allowFontScaling={true}
-    ellipsizeMode="tail"
     style={
       Object {
         "color": "#333333",
@@ -73,25 +67,13 @@ exports[`renders the ListView component 1`] = `
   renderScrollComponent={[Function]}
 >
   <View>
-    <Text
-      accessible={true}
-      allowFontScaling={true}
-      ellipsizeMode="tail"
-    >
+    <Text>
       apple
     </Text>
-    <Text
-      accessible={true}
-      allowFontScaling={true}
-      ellipsizeMode="tail"
-    >
+    <Text>
       banana
     </Text>
-    <Text
-      accessible={true}
-      allowFontScaling={true}
-      ellipsizeMode="tail"
-    >
+    <Text>
       kiwi
     </Text>
   </View>
@@ -102,6 +84,7 @@ exports[`renders the TextInput component 1`] = `
 <TextInput
   allowFontScaling={true}
   autoCorrect={false}
+  underlineColorAndroid="transparent"
   value="apple banana kiwi"
 />
 `;
