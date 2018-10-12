@@ -2,6 +2,21 @@
 
 exports[`ScriptTransformer passes expected transform options to getCacheKey 1`] = `
 Object {
+  "config": Object {
+    "cache": true,
+    "cacheDirectory": "/cache/",
+    "name": "test",
+    "rootDir": "/",
+    "transform": Array [
+      Array [
+        "^.+\\\\.js$",
+        "test_preprocessor",
+      ],
+    ],
+    "transformIgnorePatterns": Array [
+      "/node_modules/",
+    ],
+  },
   "instrument": true,
   "rootDir": "/",
 }
