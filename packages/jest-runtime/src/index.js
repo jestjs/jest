@@ -17,6 +17,7 @@ import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 import type {SourceMapRegistry} from 'types/SourceMaps';
 
+import crypto from 'crypto';
 import path from 'path';
 import HasteMap from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
@@ -61,7 +62,6 @@ type CoverageOptions = {
 };
 
 type ModuleRegistry = {[key: string]: Module, __proto__: null};
-
 type BooleanObject = {[key: string]: boolean, __proto__: null};
 type CacheFS = {[path: Path]: string, __proto__: null};
 
@@ -81,6 +81,7 @@ const getModuleNameMapper = (config: ProjectConfig) => {
 };
 
 const unmockRegExpCache = new WeakMap();
+const hasteMaps = new Map();
 
 class Runtime {
   static ScriptTransformer: Class<ScriptTransformer>;
@@ -227,7 +228,7 @@ class Runtime {
       [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
     );
 
-    return new HasteMap({
+    const hasteOptions = {
       cacheDirectory: config.cacheDirectory,
       console: options && options.console,
       extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
@@ -244,7 +245,22 @@ class Runtime {
       roots: config.roots,
       useWatchman: options && options.watchman,
       watch: options && options.watch,
-    });
+    };
+
+    const hash = crypto.createHash('md5');
+
+    Object.keys(hasteOptions)
+      .sort()
+      .forEach(key =>
+        hash.update(key + '\0' + JSON.stringify(hasteOptions[key]) + '\0\0'),
+      );
+
+    const hasteKey = hash.digest('hex');
+    const hasteMap = hasteMaps.get(hasteKey) || new HasteMap(hasteOptions);
+
+    hasteMaps.set(hasteKey, hasteMap);
+
+    return hasteMap;
   }
 
   static createResolver(config: ProjectConfig, moduleMap: ModuleMap): Resolver {
