@@ -284,8 +284,7 @@ describe('docblock', () => {
   });
 
   it('supports slashes in @team directive', () => {
-    const code =
-      '/**' + os.EOL + '' + ' * @team apple/banana' + os.EOL + '' + ' */';
+    const code = '/**' + os.EOL + ' * @team apple/banana' + os.EOL + ' */';
     expect(docblock.parse(code)).toEqual({
       team: 'apple/banana',
     });
