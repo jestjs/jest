@@ -50,6 +50,7 @@
 - `[*]` Bump dated dependencies ([#6978](https://github.com/facebook/jest/pull/6978))
 - `[scripts]` Don’t make empty subfolders for ignored files in build folder ([#7001](https://github.com/facebook/jest/pull/7001))
 - `[docs]` Add missing export statement in `puppeteer_environment.js` under `docs/Puppeteer.md` ([#7127](https://github.com/facebook/jest/pull/7127))
+- `[docs]` Remove references to `@providesModule` which isn't supported anymore ([#7147](https://github.com/facebook/jest/pull/7147))
 
 ## 23.6.0
 
