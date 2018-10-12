@@ -160,11 +160,29 @@ export const extractSummary = (stdout: string) => {
   return {rest, summary};
 };
 
+const sortTests = (stdout: string) =>
+  stdout
+    .split('\n')
+    .reduce((tests, line, i) => {
+      if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
+        tests.push([line.trim()]);
+      } else if (line) {
+        tests[tests.length - 1].push(line.trim());
+      }
+      return tests;
+    }, [])
+    .sort(([a], [b]) => a > b)
+    .reduce(
+      (array, lines = []) =>
+        lines.length > 1 ? array.concat(lines, '') : array.concat(lines),
+      [],
+    )
+    .join('\n');
+
 export const extractSortedSummary = (stdout: string) => {
   const {rest, summary} = extractSummary(stdout);
-
   return {
-    rest: sortLines(replaceTime(rest)),
+    rest: sortTests(replaceTime(rest)),
     summary,
   };
 };

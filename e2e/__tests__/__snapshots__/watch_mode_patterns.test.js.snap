@@ -21,9 +21,10 @@ PASS __tests__/foo.spec.js"
 `;
 
 exports[`can press "p" to filter by file name: test results 2`] = `
-"✓ bar 1
+"PASS __tests__/bar.spec.js
+✓ bar 1
 ✓ bar 2
-PASS __tests__/bar.spec.js"
+"
 `;
 
 exports[`can press "p" to filter by file name: test summary 1`] = `

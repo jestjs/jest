@@ -1,31 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`can press "f" to run only failed tests: test results 1`] = `
-"|                                           ^
-1 |
-3 |
-at __tests__/bar.spec.js:2:43
-> 2 |       test('bar 1', () => { expect('bar').toBe('foo'); });
+"FAIL __tests__/bar.spec.js
+● bar 1
+expect(received).toBe(expected) // Object.is equality
 Expected: \\"foo\\"
 Received: \\"bar\\"
-expect(received).toBe(expected) // Object.is equality
-● bar 1
-FAIL __tests__/bar.spec.js
+1 |
+> 2 |       test('bar 1', () => { expect('bar').toBe('foo'); });
+|                                           ^
+3 |
+at __tests__/bar.spec.js:2:43
+
 PASS __tests__/foo.spec.js"
 `;
 
 exports[`can press "f" to run only failed tests: test results 2`] = `
-"|                                           ^
-1 |
-3 |
-at __tests__/bar.spec.js:2:43
-> 2 |       test('bar 1', () => { expect('bar').toBe('foo'); });
+"FAIL __tests__/bar.spec.js
+✕ bar 1
+● bar 1
+expect(received).toBe(expected) // Object.is equality
 Expected: \\"foo\\"
 Received: \\"bar\\"
-expect(received).toBe(expected) // Object.is equality
-● bar 1
-✕ bar 1
-FAIL __tests__/bar.spec.js"
+1 |
+> 2 |       test('bar 1', () => { expect('bar').toBe('foo'); });
+|                                           ^
+3 |
+at __tests__/bar.spec.js:2:43
+"
 `;
 
 exports[`can press "f" to run only failed tests: test summary 1`] = `
