@@ -11,6 +11,7 @@
 - `[jest-snapshot]` Enable configurable snapshot paths ([#6143](https://github.com/facebook/jest/pull/6143))
 - `[jest-haste-map]` [**BREAKING**] Remove support for `@providesModule` ([#6104](https://github.com/facebook/jest/pull/6104))
 - `[pretty-format]` Support HTMLCollection and NodeList in DOMCollection plugin ([#7125](https://github.com/facebook/jest/pull/7125))
+- `[jest-runtime]` Pass the normalized configuration to script transformers ([#7148](https://github.com/facebook/jest/pull/7148))
 
 ### Fixes
 
@@ -34,6 +35,7 @@
 - `[jest-jasmine2]` Pending calls inside async tests are reported as pending not failed ([#6782](https://github.com/facebook/jest/pull/6782))
 - `[jest-circus]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
 - `[jest-cli]` Fix unhandled error when a bad revision is provided to `changedSince` ([#7115](https://github.com/facebook/jest/pull/7115))
+- `[jest-config]` Moved dynamically assigned `cwd` from `jest-cli` to default configuration in `jest-config` ([#7146](https://github.com/facebook/jest/pull/7146))
 
 ### Chore & Maintenance
 
@@ -50,6 +52,7 @@
 - `[*]` Bump dated dependencies ([#6978](https://github.com/facebook/jest/pull/6978))
 - `[scripts]` Don’t make empty subfolders for ignored files in build folder ([#7001](https://github.com/facebook/jest/pull/7001))
 - `[docs]` Add missing export statement in `puppeteer_environment.js` under `docs/Puppeteer.md` ([#7127](https://github.com/facebook/jest/pull/7127))
+- `[docs]` Remove references to `@providesModule` which isn't supported anymore ([#7147](https://github.com/facebook/jest/pull/7147))
 
 ## 23.6.0
 
