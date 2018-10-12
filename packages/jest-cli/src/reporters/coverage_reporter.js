@@ -125,7 +125,8 @@ export default class CoverageReporter extends BaseReporter {
       const config = context.config;
       if (
         globalConfig.collectCoverageFrom &&
-        globalConfig.collectCoverageFrom.length
+        globalConfig.collectCoverageFrom.length &&
+        !globalConfig.watch
       ) {
         context.hasteFS
           .matchFilesWithGlob(globalConfig.collectCoverageFrom, config.rootDir)
