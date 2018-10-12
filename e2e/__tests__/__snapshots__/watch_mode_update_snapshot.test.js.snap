@@ -2,31 +2,31 @@
 
 exports[`can press "u" to update snapshots: test results 1`] = `
 "FAIL __tests__/bar.spec.js
-✕ bar
-● bar
-expect(value).toMatchSnapshot()
-Received value does not match stored snapshot \\"bar 1\\".
-- Snapshot
-+ Received
-- \\"foo\\"
-+ \\"bar\\"
-1 |
-> 2 |       test('bar', () => { expect('bar').toMatchSnapshot(); });
-|                                         ^
-3 |
-at __tests__/bar.spec.js:2:41
-› 1 snapshot failed.
+  ✕ bar
+  ● bar
+    expect(value).toMatchSnapshot()
+    Received value does not match stored snapshot \\"bar 1\\".
+    - Snapshot
+    + Received
+    - \\"foo\\"
+    + \\"bar\\"
+      1 |
+    > 2 |       test('bar', () => { expect('bar').toMatchSnapshot(); });
+        |                                         ^
+      3 |
+      at __tests__/bar.spec.js:2:41
+ › 1 snapshot failed.
 Snapshot Summary
-› 1 snapshot failed from 1 test suite. Inspect your code changes or run \`yarn run jest -u\` to update them.
+ › 1 snapshot failed from 1 test suite. Inspect your code changes or run \`yarn run jest -u\` to update them.
 "
 `;
 
 exports[`can press "u" to update snapshots: test results 2`] = `
 "PASS __tests__/bar.spec.js
-✓ bar
-› 1 snapshot updated.
+  ✓ bar
+ › 1 snapshot updated.
 Snapshot Summary
-› 1 snapshot updated from 1 test suite.
+ › 1 snapshot updated from 1 test suite.
 "
 `;
 

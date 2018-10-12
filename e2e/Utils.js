@@ -165,9 +165,9 @@ const sortTests = (stdout: string) =>
     .split('\n')
     .reduce((tests, line, i) => {
       if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
-        tests.push([line.trim()]);
+        tests.push([line.trimRight()]);
       } else if (line) {
-        tests[tests.length - 1].push(line.trim());
+        tests[tests.length - 1].push(line.trimRight());
       }
       return tests;
     }, [])
