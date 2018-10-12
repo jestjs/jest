@@ -563,7 +563,7 @@ jest.isolateModules(() => {
   myModule = require('myModule');
 });
 
-let otherCopyOfMyModule = require('myModule');
+const otherCopyOfMyModule = require('myModule');
 ```
 
 ### `resolver` [string]
