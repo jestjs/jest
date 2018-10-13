@@ -373,6 +373,18 @@ describe('SearchSource', () => {
     beforeEach(done => {
       const {options: config} = normalize(
         {
+          haste: {
+            hasteImplModulePath: path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'jest-haste-map',
+              'src',
+              '__tests__',
+              'haste_impl.js',
+            ),
+          },
           name: 'SearchSource-findRelatedTests-tests',
           rootDir,
         },

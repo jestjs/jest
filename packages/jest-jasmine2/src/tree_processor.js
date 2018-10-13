@@ -72,13 +72,9 @@ export default function treeProcessor(options: Options) {
 
   function hasEnabledTest(node: TreeNode) {
     if (node.children) {
-      if (node.children.some(hasEnabledTest)) {
-        return true;
-      }
-    } else {
-      return !node.disabled;
+      return node.children.some(hasEnabledTest);
     }
-    return false;
+    return !node.disabled;
   }
 
   function wrapChildren(node: TreeNode, enabled: boolean) {

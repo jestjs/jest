@@ -35,6 +35,7 @@ export type DefaultOptions = {|
   coveragePathIgnorePatterns: Array<string>,
   coverageReporters: Array<string>,
   coverageThreshold: ?{global: {[key: string]: number}},
+  cwd: Path,
   errorOnDeprecated: boolean,
   expand: boolean,
   filter: ?Path,
