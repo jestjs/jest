@@ -17,7 +17,7 @@ exports[`can press "u" to update snapshots: test results 1`] = `
       at __tests__/bar.spec.js:2:41
  › 1 snapshot failed.
 Snapshot Summary
- › 1 snapshot failed from 1 test suite. Inspect your code changes or run \`yarn run jest -u\` to update them.
+ › 1 snapshot failed from 1 test suite. Inspect your code changes or press \`u\` to update them.
 "
 `;
 
