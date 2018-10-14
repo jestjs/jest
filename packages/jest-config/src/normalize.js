@@ -36,6 +36,7 @@ import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import setFromArgv from './setFromArgv';
 import VALID_CONFIG from './ValidConfig';
+
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
@@ -548,6 +549,24 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'testRegex':
         value = options[key] && replacePathSepForRegex(options[key]);
         break;
+      case 'moduleFileExtensions': {
+        value = options[key];
+
+        // If it's the wrong type, it can throw at a later time
+        if (Array.isArray(value) && !value.includes('js')) {
+          const errorMessage =
+            `  moduleFileExtensions must include 'js':\n` +
+            `  but instead received:\n` +
+            `    ${chalk.bold.red(JSON.stringify(value))}`;
+
+          throw createConfigError(
+            errorMessage +
+              "\n  Please change your configuration to include 'js'.",
+          );
+        }
+
+        break;
+      }
       case 'automock':
       case 'bail':
       case 'browser':
@@ -571,7 +590,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
-      case 'moduleFileExtensions':
       case 'name':
       case 'noStackTrace':
       case 'notify':
