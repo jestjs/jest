@@ -54,7 +54,7 @@ describe('Runtime', () => {
         expect(exports.getModuleStateValue()).toBe('test value');
       }));
 
-    it('automocks @providesModule modules without a manual mock', () =>
+    it('automocks haste modules without a manual mock', () =>
       createRuntime(__filename).then(runtime => {
         const exports = runtime.requireMock(
           runtime.__mockRootPath,
@@ -100,7 +100,7 @@ describe('Runtime', () => {
         }
       }));
 
-    it('stores and re-uses automocked @providesModule exports', () =>
+    it('stores and re-uses automocked haste exports', () =>
       createRuntime(__filename).then(runtime => {
         let exports = runtime.requireMock(
           runtime.__mockRootPath,
@@ -130,7 +130,7 @@ describe('Runtime', () => {
         ).toBeDefined();
       }));
 
-    it('throws on non-existent @providesModule modules', () =>
+    it('throws on non-existent haste modules', () =>
       createRuntime(__filename).then(runtime => {
         expect(() => {
           runtime.requireMock(runtime.__mockRootPath, 'DoesntExist');

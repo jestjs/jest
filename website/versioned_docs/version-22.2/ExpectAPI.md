@@ -63,7 +63,7 @@ test('even and odd numbers', () => {
 
 Matchers should return an object with two keys. `pass` indicates whether there was a match or not, and `message` provides a function with no arguments that returns an error message in case of failure. Thus, when `pass` is false, `message` should return the error message for when `expect(x).yourMatcher()` fails. And when `pass` is true, `message` should return the error message for when `expect(x).not.yourMatcher()` fails.
 
-These helper functions can be found on `this` inside a custom matcher:
+These helper functions and properties can be found on `this` inside a custom matcher:
 
 #### `this.isNot`
 
@@ -72,6 +72,10 @@ A boolean to let you know this matcher was called with the negated `.not` modifi
 #### `this.equals(a, b)`
 
 This is a deep-equality function that will return `true` if two objects have the same values (recursively).
+
+#### `this.expand`
+
+A boolean to let you know this matcher was called with an `expand` option. When Jest is called with the `--expand` flag, `this.expand` can be used to determine if Jest is expected to show full diffs and errors.
 
 #### `this.utils`
 

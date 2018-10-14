@@ -398,7 +398,7 @@ class HasteMap extends EventEmitter {
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
         const message =
-          `jest-haste-map: @providesModule naming collision:\n` +
+          `jest-haste-map: Haste module naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${fastPath.resolve(
             rootDir,
@@ -406,8 +406,8 @@ class HasteMap extends EventEmitter {
           )} collides with ` +
           `${fastPath.resolve(rootDir, existingModule[H.PATH])}\n\nThis ` +
           `${this._options.throwOnModuleCollision ? 'error' : 'warning'} ` +
-          `is caused by a @providesModule declaration ` +
-          `with the same name across two different files.`;
+          `is caused by \`hasteImpl\` returning the same name for different` +
+          ` files.`;
         if (this._options.throwOnModuleCollision) {
           throw new Error(message);
         }

@@ -8,12 +8,4 @@
 
 'use strict';
 
-module.exports = {
-  getBodyHeight() {
-    return 5;
-  },
-
-  getHeaderHeight() {
-    return 5;
-  },
-};
+exports.platform = 'native';

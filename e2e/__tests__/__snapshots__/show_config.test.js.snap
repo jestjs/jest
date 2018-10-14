@@ -12,6 +12,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"coveragePathIgnorePatterns\\": [
         \\"/node_modules/\\"
       ],
+      \\"cwd\\": \\"<<REPLACED_ROOT_DIR>>\\",
       \\"detectLeaks\\": false,
       \\"detectOpenHandles\\": false,
       \\"errorOnDeprecated\\": false,

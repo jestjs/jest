@@ -112,6 +112,8 @@ class PuppeteerEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+
+module.exports = PuppeteerEnvironment;
 ```
 
 Finally we can close the puppeteer instance and clean-up the file

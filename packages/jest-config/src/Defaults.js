@@ -29,6 +29,7 @@ export default ({
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   coverageThreshold: null,
+  cwd: process.cwd(),
   detectLeaks: false,
   detectOpenHandles: false,
   errorOnDeprecated: false,

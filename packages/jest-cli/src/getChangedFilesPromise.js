@@ -29,7 +29,7 @@ export default (
     }).catch(e => {
       const message = formatExecError(e, configs[0], {noStackTrace: true})
         .split('\n')
-        .filter(line => !line || !line.includes('Command failed:'))
+        .filter(line => !line.includes('Command failed:'))
         .join('\n');
 
       console.error(chalk.red(`\n\n${message}`));
