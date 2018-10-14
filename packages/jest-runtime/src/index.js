@@ -27,6 +27,7 @@ import Snapshot from 'jest-snapshot';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import {sync as glob} from 'glob';
+import slash from 'slash';
 import ScriptTransformer from './script_transformer';
 import shouldInstrument from './should_instrument';
 import {run as cliRun} from './cli';
@@ -426,11 +427,14 @@ class Runtime {
           const pathToModule = path.resolve(dirname, moduleName);
 
           try {
-            const matches = glob(`${pathToModule}.*`)
-              .map(match => {
-                const relativePath = path.relative(dirname, match);
+            const slashedDirname = slash(dirname);
 
-                return path.dirname(match) === dirname
+            const matches = glob(`${pathToModule}.*`)
+              .map(match => slash(match))
+              .map(match => {
+                const relativePath = path.posix.relative(slashedDirname, match);
+
+                return path.posix.dirname(match) === slashedDirname
                   ? `./${relativePath}`
                   : relativePath;
               })
