@@ -195,9 +195,7 @@ Make sure you are not using the `babel-plugin-istanbul` plugin. Jest wraps Istan
 
 ## Defining Tests
 
-Tests much be defined synchronously for Jest to be able to collect your tests.
-
-This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
+Tests must be defined synchronously for Jest to be able to collect your tests.
 
 As an example to show why this is the case, imagine we wrote a test like so:
 
@@ -207,6 +205,10 @@ setTimeout(() => {
   it('passes', () => expect(1).toBe(1));
 }, 0);
 ```
+
+When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
+
+_Note:_ This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
 
 When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
 
