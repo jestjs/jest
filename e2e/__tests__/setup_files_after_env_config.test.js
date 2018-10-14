@@ -8,11 +8,21 @@
  */
 'use strict';
 
+import fs from 'fs';
 import path from 'path';
 import {json as runWithJson} from '../runJest';
 import {writeFiles} from '../Utils';
 
 const DIR = path.resolve(__dirname, '../setup-files-after-env-config');
+
+const pkgJsonOutputFilePath = path.join(
+  process.cwd(),
+  'e2e/setup-files-after-env-config/package.json',
+);
+
+afterAll(() => {
+  fs.unlinkSync(pkgJsonOutputFilePath);
+});
 
 describe('setupFilesAfterEnv', () => {
   it('requires multiple setup files before each file in the suite', () => {
