@@ -12,13 +12,13 @@ import path from 'path';
 import {json as runWithJson} from '../runJest';
 import {writeFiles} from '../Utils';
 
-const DIR = path.resolve(__dirname, '../setup-tests-after-jest-config');
+const DIR = path.resolve(__dirname, '../setup-files-after-env-config');
 
-describe('setupTestsAfterJest', () => {
+describe('setupFilesAfterEnv', () => {
   it('requires multiple setup files before each file in the suite', () => {
     const pkgJson = {
       jest: {
-        setupTestsAfterJest: ['./setup1.js', './setup2.js'],
+        setupFilesAfterEnv: ['./setup1.js', './setup2.js'],
       },
     };
 
@@ -26,7 +26,7 @@ describe('setupTestsAfterJest', () => {
       'package.json': JSON.stringify(pkgJson, null, 2),
     });
 
-    const result = runWithJson('setup-tests-after-jest-config', [
+    const result = runWithJson('setup-files-after-env-config', [
       'test1.test.js',
       'test2.test.js',
     ]);
@@ -40,7 +40,7 @@ describe('setupTestsAfterJest', () => {
   it('requires setup files *after* the test runners are required', () => {
     const pkgJson = {
       jest: {
-        setupTestsAfterJest: ['./setup_hooks_into_runner.js'],
+        setupFilesAfterEnv: ['./setup_hooks_into_runner.js'],
       },
     };
 
@@ -48,7 +48,7 @@ describe('setupTestsAfterJest', () => {
       'package.json': JSON.stringify(pkgJson, null, 2),
     });
 
-    const result = runWithJson('setup-tests-after-jest-config', [
+    const result = runWithJson('setup-files-after-env-config', [
       'runner_patch.test.js',
     ]);
 

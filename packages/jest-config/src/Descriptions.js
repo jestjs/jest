@@ -61,10 +61,10 @@ export default ({
     "Allows you to use a custom runner instead of Jest's default test runner",
   setupFiles:
     'The paths to modules that run some code to configure or set up the testing environment before each test',
+  setupFilesAfterEnv:
+    'A list of paths to modules that run some code to configure or set up the testing framework before each test',
   setupTestFrameworkScriptFile:
     'The path to a module that runs some code to configure or set up the testing framework before each test',
-  setupTestsAfterJest:
-    'A list of paths to modules that run some code to configure or set up the testing framework before each test',
   snapshotSerializers:
     'A list of paths to snapshot serializer modules Jest should use for snapshot testing',
   testEnvironment: 'The test environment that will be used for testing',

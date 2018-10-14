@@ -505,17 +505,17 @@ export const options = {
       'set up the testing environment before each test. ',
     type: 'array',
   },
+  setupFilesAfterEnv: {
+    description:
+      'A list of paths to modules that run some code to configure or ' +
+      'set up the testing framework before each test ',
+    type: 'array',
+  },
   setupTestFrameworkScriptFile: {
     description:
       'The path to a module that runs some code to configure or ' +
       'set up the testing framework before each test.',
     type: 'string',
-  },
-  setupTestsAfterJest: {
-    description:
-      'A list of paths to modules that run some code to configure or ' +
-      'set up the testing framework before each test ',
-    type: 'array',
   },
   showConfig: {
     default: undefined,

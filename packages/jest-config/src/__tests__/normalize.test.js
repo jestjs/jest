@@ -330,7 +330,7 @@ describe('haste', () => {
   });
 });
 
-describe('setupTestsAfterJest', () => {
+describe('setupFilesAfterEnv', () => {
   let Resolver;
   beforeEach(() => {
     Resolver = require('jest-resolve');
@@ -344,36 +344,36 @@ describe('setupTestsAfterJest', () => {
     const {options} = normalize(
       {
         rootDir: '/root/path/foo',
-        setupTestsAfterJest: ['bar/baz'],
+        setupFilesAfterEnv: ['bar/baz'],
       },
       {},
     );
 
-    expect(options.setupTestsAfterJest).toEqual([expectedPathFooBar]);
+    expect(options.setupFilesAfterEnv).toEqual([expectedPathFooBar]);
   });
 
   it('does not change absolute paths', () => {
     const {options} = normalize(
       {
         rootDir: '/root/path/foo',
-        setupTestsAfterJest: ['/an/abs/path'],
+        setupFilesAfterEnv: ['/an/abs/path'],
       },
       {},
     );
 
-    expect(options.setupTestsAfterJest).toEqual([expectedPathAbs]);
+    expect(options.setupFilesAfterEnv).toEqual([expectedPathAbs]);
   });
 
   it('substitutes <rootDir> tokens', () => {
     const {options} = normalize(
       {
         rootDir: '/root/path/foo',
-        setupTestsAfterJest: ['<rootDir>/bar/baz'],
+        setupFilesAfterEnv: ['<rootDir>/bar/baz'],
       },
       {},
     );
 
-    expect(options.setupTestsAfterJest).toEqual([expectedPathFooBar]);
+    expect(options.setupFilesAfterEnv).toEqual([expectedPathFooBar]);
   });
 });
 

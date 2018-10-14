@@ -1,6 +1,6 @@
 {
   "jest": {
-    "setupTestsAfterJest": [
+    "setupFilesAfterEnv": [
       "./setup_hooks_into_runner.js"
     ]
   }
