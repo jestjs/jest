@@ -39,8 +39,13 @@ export const createProcess = (
   }
 
   if (workspace.useWsl) {
-    runtimeArgs = [command, ...runtimeArgs.map(convertWslPath)];
-    command = 'wsl';
+    // useWsl can be either true for the default ('wsl' or the explicit
+    // wsl call to use, e.g. 'ubuntu run')
+    const wslCommand = workspace.useWsl === true ? 'wsl' : workspace.useWsl;
+    runtimeArgs = [command, ...runtimeArgs].map(path =>
+      convertWslPath(path, wslCommand),
+    );
+    command = wslCommand;
   }
 
   // To use our own commands in create-react, we need to tell the command that
@@ -63,14 +68,14 @@ export const createProcess = (
   return spawn(command, runtimeArgs, spawnOptions);
 };
 
-const convertWslPath = (maybePath: string): string => {
+const convertWslPath = (maybePath: string, wslCommand?: string): string => {
   if (!/^\w:\\/.test(maybePath)) {
     return maybePath;
   }
   // not every string containing a windows delimiter needs to be a
   // path, but if it starts with C:\ or similar the chances are very high
   try {
-    return windowsToWslSync(maybePath);
+    return windowsToWslSync(maybePath, {wslCommand});
   } catch (exception) {
     console.log(
       `Tried to translate ${maybePath} but received exception`,

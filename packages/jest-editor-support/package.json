@@ -10,8 +10,8 @@
   "dependencies": {
     "babel-traverse": "^6.14.1",
     "babylon": "^6.14.1",
-    "jest-snapshot": "^23.6.0"
-    "wsl-path": "^1.0.3"
+    "jest-snapshot": "^23.6.0",
+    "wsl-path": "^1.1.0"
   },
   "typings": "index.d.ts"
 }

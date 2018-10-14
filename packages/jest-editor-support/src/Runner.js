@@ -12,7 +12,9 @@ import {messageTypes} from './types';
 
 import {ChildProcess, spawn} from 'child_process';
 import {readFile} from 'fs';
+import {readTestResults} from './readTestResults';
 import {tmpdir} from 'os';
+import {sep} from 'path';
 import EventEmitter from 'events';
 import ProjectWorkspace from './project_workspace';
 import {createProcess} from './Process';
@@ -40,7 +42,7 @@ export default class Runner extends EventEmitter {
     this._createProcess = (options && options.createProcess) || createProcess;
     this.options = options || {};
     this.workspace = workspace;
-    this.outputPath = tmpdir() + '/jest_runner.json';
+    this.outputPath = tmpdir() + sep + 'jest_runner.json';
     this.prevMessageTypes = [];
   }
 
@@ -116,7 +118,7 @@ export default class Runner extends EventEmitter {
             this.emit('terminalError', message);
           } else {
             const noTestsFound = this.doResultsFollowNoTestsFoundMessage();
-            this.emit('executableJSON', JSON.parse(data), {
+            this.emit('executableJSON', readTestResults(data, this.workspace), {
               noTestsFound,
             });
           }

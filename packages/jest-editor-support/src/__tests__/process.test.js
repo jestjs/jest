@@ -11,6 +11,8 @@
 
 jest.mock('child_process');
 jest.mock('wsl-path');
+jest.mock('../readTestResults', () => ({readTestResults: x => x}));
+
 import {createProcess} from '../Process';
 import {spawn} from 'child_process';
 import * as wslPath from 'wsl-path';

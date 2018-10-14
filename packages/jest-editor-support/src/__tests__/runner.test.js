@@ -11,6 +11,8 @@
 
 jest.mock('../Process');
 jest.mock('child_process', () => ({spawn: jest.fn()}));
+jest.mock('../readTestResults', () => ({readTestResults: x => JSON.parse(x)}));
+
 jest.mock('os', () => ({tmpdir: jest.fn()}));
 jest.mock('fs', () => {
   // $FlowFixMe requireActual
@@ -61,7 +63,7 @@ describe('Runner', () => {
       const workspace: any = {};
       const sut = new Runner(workspace);
 
-      expect(sut.outputPath).toBe('tmpdir/jest_runner.json');
+      expect(sut.outputPath).toBe('tmpdir' + path.sep + 'jest_runner.json');
     });
 
     it('sets the default options', () => {

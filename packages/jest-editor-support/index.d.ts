@@ -52,7 +52,7 @@ export class ProjectWorkspace {
     localJestMajorVersin: number,
     collectCoverage?: boolean,
     debug?: boolean,
-    useWsl?: boolean,
+    useWsl?: boolean | string,
   );
   pathToJest: string;
   pathToConfig: string;
@@ -60,7 +60,7 @@ export class ProjectWorkspace {
   localJestMajorVersion: number;
   collectCoverage?: boolean;
   debug?: boolean;
-  useWsl?: boolean;
+  useWsl?: boolean | string;
 }
 
 export interface IParseResults {
