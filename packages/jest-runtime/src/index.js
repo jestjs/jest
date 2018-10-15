@@ -26,12 +26,11 @@ import {escapePathForRegex} from 'jest-regex-util';
 import Snapshot from 'jest-snapshot';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
-import {sync as glob} from 'glob';
-import slash from 'slash';
 import ScriptTransformer from './script_transformer';
 import shouldInstrument from './should_instrument';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
+import {findSiblingsWithFileExtension} from './helpers';
 
 type Module = {|
   children: Array<Module>,
@@ -422,40 +421,14 @@ class Runtime {
       }
     } catch (e) {
       if (e.code === 'MODULE_NOT_FOUND') {
-        if (!path.isAbsolute(moduleName) && path.extname(moduleName) === '') {
-          const dirname = path.dirname(from);
-          const pathToModule = path.resolve(dirname, moduleName);
+        const appendedMessage = findSiblingsWithFileExtension(
+          this._config.moduleFileExtensions,
+          from,
+          moduleName,
+        );
 
-          try {
-            const slashedDirname = slash(dirname);
-
-            const matches = glob(`${pathToModule}.*`)
-              .map(match => slash(match))
-              .map(match => {
-                const relativePath = path.posix.relative(slashedDirname, match);
-
-                return path.posix.dirname(match) === slashedDirname
-                  ? `./${relativePath}`
-                  : relativePath;
-              })
-              .map(match => `\t'${match}'`)
-              .join('\n');
-
-            if (matches) {
-              const foundMessage = `\n\nHowever, Jest was able to find:\n${matches}`;
-
-              const moduleFileExtensions = this._config.moduleFileExtensions
-                .map(ext => `'${ext}'`)
-                .join(', ');
-
-              const appendedMessage =
-                foundMessage +
-                "\n\nYou might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently " +
-                `[${moduleFileExtensions}].\n\nSee https://jestjs.io/docs/en/configuration#modulefileextensions-array-string`;
-
-              e.message += appendedMessage;
-            }
-          } catch (ignored) {}
+        if (appendedMessage) {
+          e.message += appendedMessage;
         }
       }
       throw e;
