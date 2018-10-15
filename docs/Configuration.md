@@ -778,7 +778,7 @@ class CustomEnvironment extends NodeEnvironment {
   }
 }
 
-module.exports = CustomEnvironment
+module.exports = CustomEnvironment;
 ```
 
 ```js
