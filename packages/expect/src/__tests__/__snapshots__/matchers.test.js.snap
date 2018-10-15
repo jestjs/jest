@@ -1471,14 +1471,14 @@ Got: <green>null</>"
 exports[`.toContain(), .toContainEqual() '"11112111"' contains '"2"' 1`] = `
 "<dim>expect(</><red>string</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected value: <green>\\"2\\"</>
+Expected value:  <green>\\"2\\"</>
 Received string: <red>\\"11112111\\"</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '"abcdef"' contains '"abc"' 1`] = `
 "<dim>expect(</><red>string</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected value: <green>\\"abc\\"</>
+Expected value:  <green>\\"abc\\"</>
 Received string: <red>\\"abcdef\\"</>"
 `;
 
@@ -1531,14 +1531,14 @@ Received array: <red>[{}, []]</>
 exports[`.toContain(), .toContainEqual() '[0, 1]' contains '1' 1`] = `
 "<dim>expect(</><red>object</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected value: <green>1</>
+Expected value:  <green>1</>
 Received object: <red>[0, 1]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[0, 1]' contains a value equal to '1' 1`] = `
 "<dim>expect(</><red>object</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
 
-Expected value: <green>1</>
+Expected value:  <green>1</>
 Received object: <red>[0, 1]</>"
 `;
 
@@ -1616,14 +1616,14 @@ exports[`.toContain(), .toContainEqual() 'Set {"abc", "def"}' contains '"abc"' 1
 "<dim>expect(</><red>set</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
 Expected value: <green>\\"abc\\"</>
-Received set: <red>Set {\\"abc\\", \\"def\\"}</>"
+Received set:   <red>Set {\\"abc\\", \\"def\\"}</>"
 `;
 
 exports[`.toContain(), .toContainEqual() 'Set {1, 2, 3, 4}' contains a value equal to '1' 1`] = `
 "<dim>expect(</><red>set</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
 
 Expected value: <green>1</>
-Received set: <red>Set {1, 2, 3, 4}</>"
+Received set:   <red>Set {1, 2, 3, 4}</>"
 `;
 
 exports[`.toContain(), .toContainEqual() error cases 1`] = `
@@ -2683,7 +2683,7 @@ exports[`.toHaveLength {pass: false} expect("").toHaveLength(1) 1`] = `
 
 Expected length: <green>1</>
 Received length: <red>0</>
-Received value: <red>\\"\\"</>"
+Received value:  <red>\\"\\"</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect("abc").toHaveLength(66) 1`] = `
@@ -2691,7 +2691,7 @@ exports[`.toHaveLength {pass: false} expect("abc").toHaveLength(66) 1`] = `
 
 Expected length: <green>66</>
 Received length: <red>3</>
-Received value: <red>\\"abc\\"</>"
+Received value:  <red>\\"abc\\"</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect(["a", "b"]).toHaveLength(99) 1`] = `
@@ -2699,7 +2699,7 @@ exports[`.toHaveLength {pass: false} expect(["a", "b"]).toHaveLength(99) 1`] = `
 
 Expected length: <green>99</>
 Received length: <red>2</>
-Received value: <red>[\\"a\\", \\"b\\"]</>"
+Received value:  <red>[\\"a\\", \\"b\\"]</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect([]).toHaveLength(1) 1`] = `
@@ -2707,7 +2707,7 @@ exports[`.toHaveLength {pass: false} expect([]).toHaveLength(1) 1`] = `
 
 Expected length: <green>1</>
 Received length: <red>0</>
-Received value: <red>[]</>"
+Received value:  <red>[]</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect([1, 2]).toHaveLength(3) 1`] = `
@@ -2715,7 +2715,7 @@ exports[`.toHaveLength {pass: false} expect([1, 2]).toHaveLength(3) 1`] = `
 
 Expected length: <green>3</>
 Received length: <red>2</>
-Received value: <red>[1, 2]</>"
+Received value:  <red>[1, 2]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect("").toHaveLength(0) 1`] = `
@@ -2723,7 +2723,7 @@ exports[`.toHaveLength {pass: true} expect("").toHaveLength(0) 1`] = `
 
 Expected length: <green>0</>
 Received length: <red>0</>
-Received value: <red>\\"\\"</>"
+Received value:  <red>\\"\\"</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect("abc").toHaveLength(3) 1`] = `
@@ -2731,7 +2731,7 @@ exports[`.toHaveLength {pass: true} expect("abc").toHaveLength(3) 1`] = `
 
 Expected length: <green>3</>
 Received length: <red>3</>
-Received value: <red>\\"abc\\"</>"
+Received value:  <red>\\"abc\\"</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect(["a", "b"]).toHaveLength(2) 1`] = `
@@ -2739,7 +2739,7 @@ exports[`.toHaveLength {pass: true} expect(["a", "b"]).toHaveLength(2) 1`] = `
 
 Expected length: <green>2</>
 Received length: <red>2</>
-Received value: <red>[\\"a\\", \\"b\\"]</>"
+Received value:  <red>[\\"a\\", \\"b\\"]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect([]).toHaveLength(0) 1`] = `
@@ -2747,7 +2747,7 @@ exports[`.toHaveLength {pass: true} expect([]).toHaveLength(0) 1`] = `
 
 Expected length: <green>0</>
 Received length: <red>0</>
-Received value: <red>[]</>"
+Received value:  <red>[]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect([1, 2]).toHaveLength(2) 1`] = `
@@ -2755,7 +2755,7 @@ exports[`.toHaveLength {pass: true} expect([1, 2]).toHaveLength(2) 1`] = `
 
 Expected length: <green>2</>
 Received length: <red>2</>
-Received value: <red>[1, 2]</>"
+Received value:  <red>[1, 2]</>"
 `;
 
 exports[`.toHaveLength error cases 1`] = `

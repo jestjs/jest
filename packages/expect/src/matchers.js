@@ -19,6 +19,7 @@ import {
   SUGGEST_TO_CONTAIN_EQUAL,
   ensureNoExpected,
   ensureNumbers,
+  getLabelPrinter,
   matcherHint,
   printReceived,
   printExpected,
@@ -290,6 +291,9 @@ const matchers: MatchersObject = {
       }
     }
     const comment = 'indexOf';
+    const stringExpected = 'Expected value';
+    const stringReceived = `Received ${collectionType}`;
+    const printLabel = getLabelPrinter(stringExpected, stringReceived);
     // At this point, we're either a string or an Array,
     // which was converted from an array-like structure.
     const pass = converted.indexOf(value) != -1;
@@ -300,8 +304,8 @@ const matchers: MatchersObject = {
             isNot: this.isNot,
           }) +
           '\n\n' +
-          `Expected value: ${printExpected(value)}\n` +
-          `Received ${collectionType}: ${printReceived(collection)}`
+          `${printLabel(stringExpected)}${printExpected(value)}\n` +
+          `${printLabel(stringReceived)}${printReceived(collection)}`
       : () => {
           const suggestToContainEqual =
             converted !== null &&
@@ -316,8 +320,8 @@ const matchers: MatchersObject = {
               isNot: this.isNot,
             }) +
             '\n\n' +
-            `Expected value: ${printExpected(value)}\n` +
-            `Received ${collectionType}: ${printReceived(collection)}` +
+            `${printLabel(stringExpected)}${printExpected(value)}\n` +
+            `${printLabel(stringReceived)}${printReceived(collection)}` +
             (suggestToContainEqual ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}` : '')
           );
         };
@@ -346,6 +350,9 @@ const matchers: MatchersObject = {
     }
 
     const comment = 'deep equality';
+    const stringExpected = 'Expected value';
+    const stringReceived = `Received ${collectionType}`;
+    const printLabel = getLabelPrinter(stringExpected, stringReceived);
     const pass =
       converted.findIndex(item => equals(item, value, [iterableEquality])) !==
       -1;
@@ -355,8 +362,8 @@ const matchers: MatchersObject = {
         isNot: this.isNot,
       }) +
       '\n\n' +
-      `Expected value: ${printExpected(value)}\n` +
-      `Received ${collectionType}: ${printReceived(collection)}`;
+      `${printLabel(stringExpected)}${printExpected(value)}\n` +
+      `${printLabel(stringReceived)}${printReceived(collection)}`;
 
     return {message, pass};
   },
@@ -411,14 +418,22 @@ const matchers: MatchersObject = {
     }
 
     const pass = received.length === length;
+    const stringExpected = 'Expected length';
+    const stringReceivedLength = 'Received length';
+    const stringReceivedValue = 'Received value';
+    const printLabel = getLabelPrinter(
+      stringExpected,
+      stringReceivedLength,
+      stringReceivedValue,
+    );
     const message = () =>
       matcherHint('.toHaveLength', 'received', 'length', {
         isNot: this.isNot,
       }) +
       '\n\n' +
-      `Expected length: ${printExpected(length)}\n` +
-      `Received length: ${printReceived(received.length)}\n` +
-      `Received value: ${printReceived(received)}`;
+      `${printLabel(stringExpected)}${printExpected(length)}\n` +
+      `${printLabel(stringReceivedLength)}${printReceived(received.length)}\n` +
+      `${printLabel(stringReceivedValue)}${printReceived(received)}`;
 
     return {message, pass};
   },
