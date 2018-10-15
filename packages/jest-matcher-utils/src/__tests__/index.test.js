@@ -167,6 +167,14 @@ describe('getLabelPrinter', () => {
     expect(printLabel(stringExpected)).toBe('Expected value: ');
     expect(printLabel(stringReceived)).toBe('Received set:   ');
   });
+  test('returns incorrect padding if inconsistent arg is shorter', () => {
+    const stringConsistent = 'Expected';
+    const stringInconsistent = 'Received value';
+    const stringInconsistentShorter = 'Received set';
+    const printLabel = getLabelPrinter(stringConsistent, stringInconsistent);
+    expect(printLabel(stringConsistent)).toBe('Expected:       ');
+    expect(printLabel(stringInconsistentShorter)).toBe('Received set:   ');
+  });
   test('throws if inconsistent arg is longer', () => {
     const stringConsistent = 'Expected';
     const stringInconsistent = 'Received value';
