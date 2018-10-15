@@ -1,4 +1,7 @@
 // @flow
+
+import type {Path} from 'types/Config';
+
 import path from 'path';
 import chalk from 'chalk';
 import slash from 'slash';
