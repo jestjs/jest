@@ -1273,3 +1273,23 @@ describe('testPathPattern', () => {
     expect(options.onlyChanged).toBe(false);
   });
 });
+
+describe('moduleFileExtensions', () => {
+  it('defaults to something useful', () => {
+    const {options} = normalize({rootDir: '/root'}, {});
+
+    expect(options.moduleFileExtensions).toEqual(['js', 'json', 'jsx', 'node']);
+  });
+
+  it('throws if missing `js`', () => {
+    expect(() =>
+      normalize(
+        {
+          rootDir: '/root/',
+          moduleFileExtensions: ['json', 'jsx'],
+        },
+        {},
+      ),
+    ).toThrowError("moduleFileExtensions must include 'js'");
+  });
+});

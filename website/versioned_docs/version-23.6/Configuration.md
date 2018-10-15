@@ -238,7 +238,7 @@ For example, with the following configuration:
         "statements": 40
       },
       "./src/reducers/**/*.js": {
-        "statements": 90,
+        "statements": 90
       },
       "./src/api/very-important-module.js": {
         "branches": 100,
@@ -755,6 +755,8 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+
+module.exports = CustomEnvironment;
 ```
 
 ```js

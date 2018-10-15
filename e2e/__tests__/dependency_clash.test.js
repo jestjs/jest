@@ -59,11 +59,10 @@ test('fails with syntax error on flow types', () => {
       }
     `,
     '__tests__/test.js': `
-      const invariant = require('invariant');
+      const invariant = require('../invariant');
       test('haii', () => expect(invariant(false, 'haii')).toBe('haii'));
     `,
     'invariant.js': `/**
-      * @providesModule invariant
       * @flow
       */
       const invariant = (condition: boolean, message: string) => message;
