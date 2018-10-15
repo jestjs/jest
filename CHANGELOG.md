@@ -39,6 +39,7 @@
 - `[jest-config]` Moved dynamically assigned `cwd` from `jest-cli` to default configuration in `jest-config` ([#7146](https://github.com/facebook/jest/pull/7146))
 - `[jest-config]` Fix `getMaxWorkers` on termux ([#7154](https://github.com/facebook/jest/pull/7154))
 - `[jest-runtime]` Throw an explicit error if `js` is missing from `moduleFileExtensions` ([#7160](https://github.com/facebook/jest/pull/7160))
+- `[jest-runtime]` Fix missing coverage when using negative glob pattern in `testMatch` ([#7170](https://github.com/facebook/jest/pull/7170))
 
 ### Chore & Maintenance
 
