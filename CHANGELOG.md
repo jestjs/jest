@@ -12,6 +12,7 @@
 - `[jest-haste-map]` [**BREAKING**] Remove support for `@providesModule` ([#6104](https://github.com/facebook/jest/pull/6104))
 - `[pretty-format]` Support HTMLCollection and NodeList in DOMCollection plugin ([#7125](https://github.com/facebook/jest/pull/7125))
 - `[jest-runtime]` Pass the normalized configuration to script transformers ([#7148](https://github.com/facebook/jest/pull/7148))
+- `[jest-runtime]` If `require` fails without a file extension, print all files that match with one ([#7160](https://github.com/facebook/jest/pull/7160))
 
 ### Fixes
 
@@ -37,6 +38,7 @@
 - `[jest-cli]` Fix unhandled error when a bad revision is provided to `changedSince` ([#7115](https://github.com/facebook/jest/pull/7115))
 - `[jest-config]` Moved dynamically assigned `cwd` from `jest-cli` to default configuration in `jest-config` ([#7146](https://github.com/facebook/jest/pull/7146))
 - `[jest-config]` Fix `getMaxWorkers` on termux ([#7154](https://github.com/facebook/jest/pull/7154))
+- `[jest-runtime]` Throw an explicit error if `js` is missing from `moduleFileExtensions` ([#7160](https://github.com/facebook/jest/pull/7160))
 
 ### Chore & Maintenance
 
