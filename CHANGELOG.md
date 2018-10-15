@@ -57,6 +57,10 @@
 - `[docs]` Removed useless expect.assertions in `TestingAsyncCode.md` ([#7131](https://github.com/facebook/jest/pull/7131))
 - `[docs]` Remove references to `@providesModule` which isn't supported anymore ([#7147](https://github.com/facebook/jest/pull/7147))
 
+### Performance
+
+- `[jest-mock]` Improve `getType` function performance. ([#7159](https://github.com/facebook/jest/pull/7159))
+
 ## 23.6.0
 
 ### Features
