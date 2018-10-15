@@ -428,13 +428,17 @@ const matchers: MatchersObject = {
         stringReceivedValue,
       );
 
-      return matcherHint('.toHaveLength', 'received', 'length', {
-        isNot: this.isNot,
-      }) +
-      '\n\n' +
-      `${printLabel(stringExpected)}${printExpected(length)}\n` +
-      `${printLabel(stringReceivedLength)}${printReceived(received.length)}\n` +
-      `${printLabel(stringReceivedValue)}${printReceived(received)}`;
+      return (
+        matcherHint('.toHaveLength', 'received', 'length', {
+          isNot: this.isNot,
+        }) +
+        '\n\n' +
+        `${printLabel(stringExpected)}${printExpected(length)}\n` +
+        `${printLabel(stringReceivedLength)}${printReceived(
+          received.length,
+        )}\n` +
+        `${printLabel(stringReceivedValue)}${printReceived(received)}`
+      );
     };
 
     return {message, pass};
