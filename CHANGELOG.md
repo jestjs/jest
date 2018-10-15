@@ -15,6 +15,7 @@
 
 ### Fixes
 
+- `[jest-cli]` Remove newline from initial test runs ([#7153](https://github.com/facebook/jest/pull/7153))
 - `[jest-cli]` Fix coverage summary reporting ([#7058](https://github.com/facebook/jest/pull/7058))
 - `[jest-each]` Add each array validation check ([#7033](https://github.com/facebook/jest/pull/7033))
 - `[jest-haste-map]` [**BREAKING**] Replace internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
