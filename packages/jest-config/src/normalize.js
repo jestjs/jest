@@ -559,6 +559,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             `  but instead received:\n` +
             `    ${chalk.bold.red(JSON.stringify(value))}`;
 
+          // If `js` is not included, any dependency Jest itself injects into
+          // the environment, like jasmine or sourcemap-support, will need to
+          // `require` its modules with a file extension. This is not plausible
+          // in the long run, so it's way easier to just fail hard early.
+          // We might consider throwing if `json` is missing as well, as it's a
+          // fair assumption from modules that they can do
+          // `require('some-package/package') without the trailing `.json` as it
+          // works in Node normally.
           throw createConfigError(
             errorMessage +
               "\n  Please change your configuration to include 'js'.",
