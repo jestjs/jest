@@ -2683,7 +2683,7 @@ exports[`.toHaveLength {pass: false} expect("").toHaveLength(1) 1`] = `
 
 Expected length: <green>1</>
 Received length: <red>0</>
-Received value:  <red>\\"\\"</>"
+Received string: <red>\\"\\"</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect("abc").toHaveLength(66) 1`] = `
@@ -2691,7 +2691,7 @@ exports[`.toHaveLength {pass: false} expect("abc").toHaveLength(66) 1`] = `
 
 Expected length: <green>66</>
 Received length: <red>3</>
-Received value:  <red>\\"abc\\"</>"
+Received string: <red>\\"abc\\"</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect(["a", "b"]).toHaveLength(99) 1`] = `
@@ -2699,7 +2699,7 @@ exports[`.toHaveLength {pass: false} expect(["a", "b"]).toHaveLength(99) 1`] = `
 
 Expected length: <green>99</>
 Received length: <red>2</>
-Received value:  <red>[\\"a\\", \\"b\\"]</>"
+Received array:  <red>[\\"a\\", \\"b\\"]</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect([]).toHaveLength(1) 1`] = `
@@ -2707,7 +2707,7 @@ exports[`.toHaveLength {pass: false} expect([]).toHaveLength(1) 1`] = `
 
 Expected length: <green>1</>
 Received length: <red>0</>
-Received value:  <red>[]</>"
+Received array:  <red>[]</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect([1, 2]).toHaveLength(3) 1`] = `
@@ -2715,7 +2715,7 @@ exports[`.toHaveLength {pass: false} expect([1, 2]).toHaveLength(3) 1`] = `
 
 Expected length: <green>3</>
 Received length: <red>2</>
-Received value:  <red>[1, 2]</>"
+Received array:  <red>[1, 2]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect("").toHaveLength(0) 1`] = `
@@ -2723,7 +2723,7 @@ exports[`.toHaveLength {pass: true} expect("").toHaveLength(0) 1`] = `
 
 Expected length: <green>0</>
 Received length: <red>0</>
-Received value:  <red>\\"\\"</>"
+Received string: <red>\\"\\"</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect("abc").toHaveLength(3) 1`] = `
@@ -2731,7 +2731,7 @@ exports[`.toHaveLength {pass: true} expect("abc").toHaveLength(3) 1`] = `
 
 Expected length: <green>3</>
 Received length: <red>3</>
-Received value:  <red>\\"abc\\"</>"
+Received string: <red>\\"abc\\"</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect(["a", "b"]).toHaveLength(2) 1`] = `
@@ -2739,7 +2739,7 @@ exports[`.toHaveLength {pass: true} expect(["a", "b"]).toHaveLength(2) 1`] = `
 
 Expected length: <green>2</>
 Received length: <red>2</>
-Received value:  <red>[\\"a\\", \\"b\\"]</>"
+Received array:  <red>[\\"a\\", \\"b\\"]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect([]).toHaveLength(0) 1`] = `
@@ -2747,7 +2747,7 @@ exports[`.toHaveLength {pass: true} expect([]).toHaveLength(0) 1`] = `
 
 Expected length: <green>0</>
 Received length: <red>0</>
-Received value:  <red>[]</>"
+Received array:  <red>[]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect([1, 2]).toHaveLength(2) 1`] = `
@@ -2755,7 +2755,7 @@ exports[`.toHaveLength {pass: true} expect([1, 2]).toHaveLength(2) 1`] = `
 
 Expected length: <green>2</>
 Received length: <red>2</>
-Received value:  <red>[1, 2]</>"
+Received array:  <red>[1, 2]</>"
 `;
 
 exports[`.toHaveLength error cases 1`] = `

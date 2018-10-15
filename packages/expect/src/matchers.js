@@ -418,22 +418,24 @@ const matchers: MatchersObject = {
     }
 
     const pass = received.length === length;
-    const stringExpected = 'Expected length';
-    const stringReceivedLength = 'Received length';
-    const stringReceivedValue = 'Received value';
-    const printLabel = getLabelPrinter(
-      stringExpected,
-      stringReceivedLength,
-      stringReceivedValue,
-    );
-    const message = () =>
-      matcherHint('.toHaveLength', 'received', 'length', {
+    const message = () => {
+      const stringExpected = 'Expected length';
+      const stringReceivedLength = 'Received length';
+      const stringReceivedValue = `Received ${getType(received)}`;
+      const printLabel = getLabelPrinter(
+        stringExpected,
+        stringReceivedLength,
+        stringReceivedValue,
+      );
+
+      return matcherHint('.toHaveLength', 'received', 'length', {
         isNot: this.isNot,
       }) +
       '\n\n' +
       `${printLabel(stringExpected)}${printExpected(length)}\n` +
       `${printLabel(stringReceivedLength)}${printReceived(received.length)}\n` +
       `${printLabel(stringReceivedValue)}${printReceived(received)}`;
+    };
 
     return {message, pass};
   },
