@@ -224,9 +224,15 @@ class Runtime {
     config: ProjectConfig,
     options?: HasteMapOptions,
   ): HasteMap {
-    const ignorePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
-    );
+    const ignorePatternParts = [
+      ...config.modulePathIgnorePatterns,
+      config.cacheDirectory.startsWith(config.rootDir + path.sep) &&
+        config.cacheDirectory,
+    ].filter(Boolean);
+    const ignorePattern =
+      ignorePatternParts.length > 0
+        ? new RegExp(ignorePatternParts.join('|'))
+        : null;
 
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,

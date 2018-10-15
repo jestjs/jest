@@ -13,6 +13,8 @@
 - `[pretty-format]` Support HTMLCollection and NodeList in DOMCollection plugin ([#7125](https://github.com/facebook/jest/pull/7125))
 - `[jest-runtime]` Pass the normalized configuration to script transformers ([#7148](https://github.com/facebook/jest/pull/7148))
 - `[jest-runtime]` If `require` fails without a file extension, print all files that match with one ([#7160](https://github.com/facebook/jest/pull/7160))
+- `[jest-haste-map]` Make `ignorePattern` optional ([#7166](https://github.com/facebook/jest/pull/7166))
+- `[jest-runtime]` Remove `cacheDirectory` from `ignorePattern` for `HasteMap` if not necessary ([#7166](https://github.com/facebook/jest/pull/7166))
 
 ### Fixes
 
