@@ -40,7 +40,7 @@ export default class DefaultReporter extends BaseReporter {
     this._clear = '';
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
-    this._status = new Status();
+    this._status = new Status(globalConfig);
     this._bufferedOutput = new Set();
     this._wrapStdio(process.stdout);
     this._wrapStdio(process.stderr);

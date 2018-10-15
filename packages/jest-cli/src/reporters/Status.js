@@ -8,7 +8,7 @@
  */
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {ProjectConfig, Path} from 'types/Config';
+import type {ProjectConfig, GlobalConfig, Path} from 'types/Config';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
 import chalk from 'chalk';
@@ -65,6 +65,7 @@ class CurrentTestList {
 export default class Status {
   _cache: ?{content: string, clear: string};
   _callback: () => void;
+  _config: GlobalConfig;
   _currentTests: CurrentTestList;
   _done: boolean;
   _emitScheduled: boolean;
@@ -75,8 +76,9 @@ export default class Status {
   _lastUpdated: number;
   _showStatus: boolean;
 
-  constructor() {
+  constructor(globalConfig: GlobalConfig) {
     this._cache = null;
+    this._config = globalConfig;
     this._currentTests = new CurrentTestList();
     this._done = false;
     this._emitScheduled = false;
@@ -137,7 +139,7 @@ export default class Status {
 
     // $FlowFixMe
     const width: number = process.stdout.columns;
-    let content = process.argv.includes('--verbose') ? '\n' : '';
+    let content = this._config.verbose ? '\n' : '';
     this._currentTests.get().forEach(record => {
       if (record) {
         const {config, testPath} = record;
