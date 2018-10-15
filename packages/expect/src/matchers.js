@@ -94,8 +94,8 @@ const matchers: MatchersObject = {
       }) +
       '\n\n' +
       `Precision: ${printExpected(precision)}-digit\n` +
-      `Expected: ${printExpected(expected)}\n` +
-      `Received: ${printReceived(actual)}`;
+      `Expected:  ${printExpected(expected)}\n` +
+      `Received:  ${printReceived(actual)}`;
 
     return {message, pass};
   },
