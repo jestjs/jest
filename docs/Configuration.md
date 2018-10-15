@@ -777,6 +777,8 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+
+module.exports = CustomEnvironment;
 ```
 
 ```js
