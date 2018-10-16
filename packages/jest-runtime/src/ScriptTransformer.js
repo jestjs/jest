@@ -60,10 +60,12 @@ export default class ScriptTransformer {
   _cache: ProjectCache;
   _config: ProjectConfig;
   _transformCache: Map<Path, ?Transformer>;
+  _transformConfigCache: Map<Path, Object>;
 
   constructor(config: ProjectConfig) {
     this._config = config;
     this._transformCache = new Map();
+    this._transformConfigCache = new Map();
 
     let projectCache = projectCaches.get(config);
 
@@ -78,6 +80,7 @@ export default class ScriptTransformer {
     }
 
     this._cache = projectCache;
+
   }
 
   _getCacheKey(fileData: string, filename: Path, instrument: boolean): string {
@@ -135,7 +138,13 @@ export default class ScriptTransformer {
   _getTransformPath(filename: Path) {
     for (let i = 0; i < this._config.transform.length; i++) {
       if (new RegExp(this._config.transform[i][0]).test(filename)) {
-        return this._config.transform[i][1];
+        const transformPath = this._config.transform[i][1];
+        this._transformConfigCache.set(
+          transformPath,
+          this._config.transform[i][2],
+        );
+
+        return transformPath;
       }
     }
     return null;
@@ -156,8 +165,9 @@ export default class ScriptTransformer {
 
       // $FlowFixMe
       transform = (require(transformPath): Transformer);
+      const transformerConfig = this._transformConfigCache.get(transformPath);
       if (typeof transform.createTransformer === 'function') {
-        transform = transform.createTransformer();
+        transform = transform.createTransformer(transformerConfig);
       }
       if (typeof transform.process !== 'function') {
         throw new TypeError(

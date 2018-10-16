@@ -33,7 +33,7 @@ export type CacheKeyOptions = {|
 
 export type Transformer = {|
   canInstrument?: boolean,
-  createTransformer?: (options: any) => Transformer,
+  createTransformer?: (options?: any) => Transformer,
 
   getCacheKey: (
     fileData: string,

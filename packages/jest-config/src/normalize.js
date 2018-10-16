@@ -565,10 +565,13 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           Object.keys(transform).map(regex => [
             regex,
             resolve(newOptions.resolver, {
-              filePath: transform[regex],
+              filePath: Array.isArray(transform[regex])
+                ? transform[regex][0]
+                : transform[regex],
               key,
               rootDir: options.rootDir,
             }),
+            Array.isArray(transform[regex]) ? transform[regex][1] : null,
           ]);
         break;
       case 'coveragePathIgnorePatterns':
