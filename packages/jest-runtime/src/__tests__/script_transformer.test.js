@@ -511,17 +511,19 @@ describe('ScriptTransformer', () => {
   });
 
   it('does not reuse the in-memory cache between different projects', () => {
-    const scriptTransformer = new ScriptTransformer({
-      ...config,
-      transform: [['^.+\\.js$', 'test_preprocessor']],
-    });
+    const scriptTransformer = new ScriptTransformer(
+      Object.assign({}, config, {
+        transform: [['^.+\\.js$', 'test_preprocessor']],
+      }),
+    );
 
     scriptTransformer.transform('/fruits/banana.js', {});
 
-    const anotherScriptTransformer = new ScriptTransformer({
-      ...config,
-      transform: [['^.+\\.js$', 'css-preprocessor']],
-    });
+    const anotherScriptTransformer = new ScriptTransformer(
+      Object.assign({}, config, {
+        transform: [['^.+\\.js$', 'css-preprocessor']],
+      }),
+    );
 
     anotherScriptTransformer.transform('/fruits/banana.js', {});
 
