@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('require.resolve.paths', () => {
   const {status} = runJest('resolve-get-paths');

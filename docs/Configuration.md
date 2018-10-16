@@ -187,7 +187,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `coverageReporters` [array<string>]
 
-Default: `["json", "lcov", "text"]`
+Default: `["json", "lcov", "text", "clover"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib) can be used.
 
@@ -237,7 +237,7 @@ For example, with the following configuration:
         "statements": 40
       },
       "./src/reducers/**/*.js": {
-        "statements": 90,
+        "statements": 90
       },
       "./src/api/very-important-module.js": {
         "branches": 100,
@@ -777,6 +777,8 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+
+module.exports = CustomEnvironment;
 ```
 
 ```js

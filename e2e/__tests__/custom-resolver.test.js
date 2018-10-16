@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('use the custom resolver', () => {
   const result = runJest('custom-resolver');

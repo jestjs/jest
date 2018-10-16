@@ -69,7 +69,7 @@ function promisifyLifeCycleFunction(originalFn, env) {
 
 // Similar to promisifyLifeCycleFunction but throws an error
 // when the return value is neither a Promise nor `undefined`
-function promisifyIt(originalFn, env) {
+function promisifyIt(originalFn, env, jasmine) {
   return function(specName, fn, timeout) {
     if (!fn) {
       const spec = originalFn.call(env, specName);
@@ -102,7 +102,13 @@ function promisifyIt(originalFn, env) {
           if (message) {
             extraError.message = message;
           }
-          done.fail(isError ? error : extraError);
+
+          if (jasmine.Spec.isPendingSpecException(error)) {
+            env.pending(message);
+            done();
+          } else {
+            done.fail(isError ? error : extraError);
+          }
         });
       } else if (returnValue === undefined) {
         done();
@@ -146,8 +152,8 @@ export function install(global: Global) {
   const jasmine = global.jasmine;
 
   const env = jasmine.getEnv();
-  env.it = promisifyIt(env.it, env);
-  env.fit = promisifyIt(env.fit, env);
+  env.it = promisifyIt(env.it, env, jasmine);
+  env.fit = promisifyIt(env.fit, env, jasmine);
   global.it.concurrent = makeConcurrent(env.it, env);
   global.it.concurrent.only = makeConcurrent(env.fit, env);
   global.it.concurrent.skip = makeConcurrent(env.xit, env);

@@ -8,10 +8,10 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const {extractSummary} = require('../Utils');
-const runJest = require('../runJest');
+import fs from 'fs';
+import path from 'path';
+import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../coverage-report');
 
