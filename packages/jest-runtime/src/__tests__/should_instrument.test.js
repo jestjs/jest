@@ -35,14 +35,13 @@ describe('should_instrument', () => {
 
     it('when testMatch is provided and file is not a test file', () => {
       testShouldInstrument('source_file.js', defaultOptions, {
-        testMatch: ['**/?(*.)(test).js'],
+        testMatch: ['**/?(*.)(test).js', '!**/dont/**/*.js'],
       });
     });
 
     it('should return true when file is in collectCoverageOnlyFrom when provided', () => {
       testShouldInstrument(
         'collect/only/from/here.js',
-
         {
           collectCoverage: true,
           collectCoverageOnlyFrom: {'collect/only/from/here.js': true},
