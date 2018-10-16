@@ -16,9 +16,13 @@ it('defaults to null for location', () => {
 
   const assertions = result.testResults[0].assertionResults;
   expect(result.success).toBe(true);
-  expect(result.numTotalTests).toBe(2);
+  expect(result.numTotalTests).toBe(6);
   expect(assertions[0].location).toBeNull();
   expect(assertions[1].location).toBeNull();
+  expect(assertions[2].location).toBeNull();
+  expect(assertions[3].location).toBeNull();
+  expect(assertions[4].location).toBeNull();
+  expect(assertions[5].location).toBeNull();
 });
 
 it('adds correct location info when provided with flag', () => {
