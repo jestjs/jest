@@ -59,8 +59,5 @@ it('adds correct location info when provided with flag', () => {
   expect(assertions[5].location).toEqual({
     column: ConditionalTest.isJestCircusRun() ? 3 : 2,
     line: 33,
-  expect(assertions[1].location).toEqual({
-    column: isJestCircusRun() ? 3 : 2,
-    line: 15,
   });
 });
