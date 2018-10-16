@@ -75,6 +75,7 @@ export default class Status {
   _aggregatedResults: AggregatedResult;
   _lastUpdated: number;
   _showStatus: boolean;
+  _initialized: boolean;
 
   constructor(globalConfig: GlobalConfig) {
     this._cache = null;
@@ -84,6 +85,7 @@ export default class Status {
     this._emitScheduled = false;
     this._estimatedTime = 0;
     this._height = 0;
+    this._initialized = false;
     this._showStatus = false;
   }
 
@@ -139,7 +141,9 @@ export default class Status {
 
     // $FlowFixMe
     const width: number = process.stdout.columns;
-    let content = this._config.verbose ? '\n' : '';
+    let content = this._initialized || this._config.verbose ? '\n' : '';
+    this._initialized = true;
+
     this._currentTests.get().forEach(record => {
       if (record) {
         const {config, testPath} = record;
