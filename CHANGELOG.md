@@ -45,7 +45,6 @@
 - `[*]` Ensure `maxWorkers` is at least 1 (was 0 in some cases where there was only 1 CPU) ([#7182](https://github.com/facebook/jest/pull/7182))
 - `[jest-cli]` Fix watch mode filename/test name filtering is not taken into account for coverage calculation with collectCoverageFrom set ([#7153](https://github.com/facebook/jest/pull/7153))
 
-
 ### Chore & Maintenance
 
 - `[docs]` Add synchronous test.each setup ([#7150](https://github.com/facebook/jest/pull/7150))
