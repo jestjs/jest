@@ -76,7 +76,7 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
     unmockedModulePathPatterns: null,
   });
   Runtime.createContext(config, {
-    maxWorkers: os.cpus().length - 1,
+    maxWorkers: Math.max(os.cpus().length - 1, 1),
     watchman: globalConfig.watchman,
   })
     .then(hasteMap => {
