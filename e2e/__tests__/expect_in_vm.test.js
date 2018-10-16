@@ -9,7 +9,7 @@
 
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('expect works correctly with RegExps created inside a VM', () => {
   const result = runJest('expect-in-vm');
