@@ -10,7 +10,6 @@
 import fs from 'fs';
 import semver from 'semver';
 import path from 'path';
-import {templateElement, templateLiteral, file} from 'babel-types';
 
 import type {Path} from 'types/Config';
 import {escapeBacktickString} from './utils';
@@ -19,6 +18,8 @@ export type InlineSnapshot = {|
   snapshot: string,
   frame: {line: number, column: number, file: string},
 |};
+
+const getBabelTypes = () => require('babel-types');
 
 export const saveInlineSnapshots = (
   snapshots: InlineSnapshot[],
@@ -112,6 +113,7 @@ const createParser = (
   parsers: {[key: string]: (string) => any},
   options: any,
 ) => {
+  const {templateElement, templateLiteral, file} = getBabelTypes();
   // Workaround for https://github.com/prettier/prettier/issues/3150
   options.parser = inferredParser;
 

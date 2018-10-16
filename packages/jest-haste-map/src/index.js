@@ -24,7 +24,6 @@ import nodeCrawl from './crawlers/node';
 import normalizePathSep from './lib/normalize_path_sep';
 import os from 'os';
 import path from 'path';
-import sane from 'sane';
 import serializer from 'jest-serializer';
 // eslint-disable-next-line import/default
 import watchmanCrawl from './crawlers/watchman';
@@ -43,6 +42,8 @@ import type {
   MockData,
 } from 'types/HasteMap';
 import type {SerializableModuleMap as HasteSerializableModuleMap} from './module_map';
+
+const getSane = () => require('sane').default;
 
 type HType = typeof H;
 
@@ -711,13 +712,14 @@ class HasteMap extends EventEmitter {
     // all files, even changes to node_modules.
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
-
-    const Watcher =
-      canUseWatchman && this._options.useWatchman
-        ? WatchmanWatcher
-        : os.platform() === 'darwin'
-          ? sane.FSEventsWatcher
-          : sane.NodeWatcher;
+    let Watcher;
+    if (canUseWatchman && this._options.useWatchman) {
+      Watcher = WatchmanWatcher;
+    } else {
+      const sane = getSane();
+      Watcher =
+        os.platform() === 'darwin' ? sane.FSEventsWatcher : sane.NodeWatcher;
+    }
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     const rootDir = this._options.rootDir;

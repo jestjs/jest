@@ -20,8 +20,6 @@ import path from 'path';
 import vm from 'vm';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
-import {transform as babelTransform} from 'babel-core';
-import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
 import stableStringify from 'fast-json-stable-stringify';
@@ -31,6 +29,9 @@ import shouldInstrument from './should_instrument';
 import writeFileAtomic from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
 import {enhanceUnexpectedTokenMessage} from './helpers';
+
+const getBabelCore = () => require('babel-core');
+const getBabelPluginIstanbul = () => require('babel-plugin-istanbul').default;
 
 export type Options = {|
   collectCoverage: boolean,
@@ -169,6 +170,8 @@ export default class ScriptTransformer {
   }
 
   _instrumentFile(filename: Path, content: string): string {
+    const {transform: babelTransform} = getBabelCore();
+    const babelPluginIstanbul = getBabelPluginIstanbul();
     return babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,

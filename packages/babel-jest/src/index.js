@@ -20,7 +20,8 @@ import fs from 'fs';
 import path from 'path';
 import jestPreset from 'babel-preset-jest';
 import {transform as babelTransform, util as babelUtil} from 'babel-core';
-import babelIstanbulPlugin from 'babel-plugin-istanbul';
+
+const getBabelPluginIstanbul = () => require('babel-plugin-istanbul').default;
 
 const BABELRC_FILENAME = '.babelrc';
 const BABELRC_JS_FILENAME = '.babelrc.js';
@@ -127,6 +128,7 @@ const createTransformer = (options: any): Transformer => {
 
       const theseOptions = Object.assign({filename}, options);
       if (transformOptions && transformOptions.instrument) {
+        const babelIstanbulPlugin = getBabelPluginIstanbul();
         theseOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
         // Copied from jest-runtime transform.js
         theseOptions.plugins = theseOptions.plugins.concat([

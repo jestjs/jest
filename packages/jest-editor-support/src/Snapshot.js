@@ -12,7 +12,6 @@
 
 import type {ProjectConfig} from 'types/Config';
 
-import traverse from 'babel-traverse';
 import {getASTfor} from './parsers/babylon_parser';
 import {buildSnapshotResolver, utils} from 'jest-snapshot';
 
@@ -111,6 +110,7 @@ export default class Snapshot {
   }
 
   getMetadata(filePath: string): Array<SnapshotMetadata> {
+    const traverse = require('babel-traverse').default;
     const fileNode = this._parser(filePath);
     const state = {
       found: [],
