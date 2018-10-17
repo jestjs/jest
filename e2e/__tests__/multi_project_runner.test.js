@@ -363,7 +363,7 @@ test('Does transform files with the corresponding project transformer', () => {
     'project1/jest.config.js': `
       module.exports = {
         rootDir: './',
-        transform: {'file.js': './transformer.js'},
+        transform: {'file\.js': './transformer.js'},
       };`,
     'project1/transformer.js': `
       module.exports = {
