@@ -6,6 +6,7 @@
 </h1>
 
 ## Overview
+
 Circus a flux-based test runner for Jest that is fast, easy to maintain, and simple to extend.
 
 ## Installation
@@ -26,9 +27,9 @@ npm install --save-dev jest-circus
 
 Configure Jest to use `jest-circus` via the [`testRunner`](https://jestjs.io/docs/en/configuration#testrunner-string) option:
 
-```js
+```json
 {
-  testRunner: 'jest-circus/runner'
+  "testRunner": "jest-circus/runner"
 }
 ```
 

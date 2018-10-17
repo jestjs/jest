@@ -316,32 +316,7 @@ Returns the `jest` object for chaining.
 
 ### `jest.retryTimes()`
 
-Runs failed tests n-times until they pass or until the max number of retries are exhausted. This only works with jest-circus!
-
-Example in a test:
-
-```js
-jest.retryTimes(3);
-test('will fail', () => {
-  expect(true).toBe(false);
-});
-```
-
-To run with jest circus:
-
-Install jest-circus
-
-```
-yarn add --dev jest-circus
-```
-
-Then set as the testRunner in your jest config:
-
-```js
-module.exports = {
-  testRunner: 'jest-circus/runner',
-};
-```
+Runs failed tests n-times until they pass or until the max number of retries are exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus)!
 
 Returns the `jest` object for chaining.
 
