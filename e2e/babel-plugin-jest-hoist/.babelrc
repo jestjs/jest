@@ -1,4 +1,0 @@
-{
-  "presets": ["@babel/preset-env", "@babel/preset-flow"],
-  "plugins": ["jest-hoist"]
-}

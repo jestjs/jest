@@ -96,7 +96,9 @@
       "examples/*"
     ],
     "nohoist": [
-      "**/react-native"
+      "**/react-native",
+      "**/react-native/**",
+      "examples/react-native/**"
     ]
   },
   "prettier": {
