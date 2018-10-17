@@ -350,3 +350,53 @@ test('resolves projects and their <rootDir> properly', () => {
   );
   expect(stderr).toMatch(/banana/);
 });
+
+test('Does transform files with the corresponding project transformer', () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    'file.js': SAMPLE_FILE_CONTENT,
+    'package.json': '{}',
+    'project1/__tests__/project1.test.js': `
+      const file = require('../../file.js');
+      test('file', () => expect(file).toBe('PROJECT1'));
+    `,
+    'project1/jest.config.js': `
+      module.exports = {
+        rootDir: './',
+        transform: {'file\.js': './transformer.js'},
+      };`,
+    'project1/transformer.js': `
+      module.exports = {
+        process: () => 'module.exports = "PROJECT1";',
+        getCacheKey: () => 'PROJECT1_CACHE_KEY',
+      }
+    `,
+    'project2/__tests__/project2.test.js': `
+      const file = require('../../file.js');
+      test('file', () => expect(file).toBe('PROJECT2'));
+    `,
+    'project2/jest.config.js': `
+      module.exports = {
+        rootDir: './',
+        transform: {'file\.js': './transformer.js'},
+      };`,
+    'project2/transformer.js': `
+      module.exports = {
+        process: () => 'module.exports = "PROJECT2";',
+        getCacheKey: () => 'PROJECT2_CACHE_KEY',
+      }
+    `,
+  });
+
+  const {stderr} = runJest(DIR, [
+    '--no-watchman',
+    '-i',
+    '--projects',
+    'project1',
+    'project2',
+  ]);
+
+  expect(stderr).toMatch('Ran all test suites in 2 projects.');
+  expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
+  expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
+});
