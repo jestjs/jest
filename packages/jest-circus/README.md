@@ -7,7 +7,7 @@
 
 ## Overview
 
-Circus a flux-based test runner for Jest that is fast, easy to maintain, and simple to extend.
+Circus is a flux-based test runner for Jest that is fast, easy to maintain, and simple to extend.
 
 ## Installation
 
