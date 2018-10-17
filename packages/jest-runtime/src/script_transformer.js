@@ -72,6 +72,7 @@ export default class ScriptTransformer {
         .createHash('md5')
         .update(
           transformer.getCacheKey(fileData, filename, configString, {
+            config: this._config,
             instrument,
             rootDir: this._config.rootDir,
           }),

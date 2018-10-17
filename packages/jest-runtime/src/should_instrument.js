@@ -42,7 +42,7 @@ export default function shouldInstrument(
   if (
     config.testMatch &&
     config.testMatch.length &&
-    micromatch.any(filename, config.testMatch)
+    micromatch([filename], config.testMatch).length
   ) {
     return false;
   }

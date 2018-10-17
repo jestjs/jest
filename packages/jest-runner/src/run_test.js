@@ -18,6 +18,7 @@ import fs from 'graceful-fs';
 import {
   BufferedConsole,
   Console,
+  ErrorWithStack,
   NullConsole,
   getConsoleOutput,
   setGlobal,
@@ -154,11 +155,10 @@ async function runTestInternal(
     const realExit = environment.global.process.exit;
 
     environment.global.process.exit = function exit(...args) {
-      const error = new Error(`process.exit called with "${args.join(', ')}"`);
-
-      if (Error.captureStackTrace) {
-        Error.captureStackTrace(error, exit);
-      }
+      const error = new ErrorWithStack(
+        `process.exit called with "${args.join(', ')}"`,
+        exit,
+      );
 
       const formattedError = formatExecError(
         error,
@@ -195,7 +195,10 @@ async function runTestInternal(
     }
 
     const testCount =
-      result.numPassingTests + result.numFailingTests + result.numPendingTests;
+      result.numPassingTests +
+      result.numFailingTests +
+      result.numPendingTests +
+      result.numTodoTests;
 
     result.perfStats = {end: Date.now(), start};
     result.testFilePath = path;

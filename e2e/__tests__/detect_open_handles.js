@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest, {until} from '../runJest';
 
 try {
   // $FlowFixMe: Node core
@@ -29,7 +29,7 @@ function getTextAfterTest(stderr) {
 }
 
 it('prints message about flag on slow tests', async () => {
-  const {stderr} = await runJest.until(
+  const {stderr} = await until(
     'detect-open-handles',
     ['outside'],
     'Jest did not exit one second after the test run has completed.',
@@ -40,7 +40,7 @@ it('prints message about flag on slow tests', async () => {
 });
 
 it('prints message about flag on forceExit', async () => {
-  const {stderr} = await runJest.until(
+  const {stderr} = await until(
     'detect-open-handles',
     ['outside', '--forceExit'],
     'Force exiting Jest',
@@ -51,7 +51,7 @@ it('prints message about flag on forceExit', async () => {
 });
 
 it('prints out info about open handlers', async () => {
-  const {stderr} = await runJest.until(
+  const {stderr} = await until(
     'detect-open-handles',
     ['outside', '--detectOpenHandles'],
     'Jest has detected',
@@ -63,7 +63,7 @@ it('prints out info about open handlers', async () => {
     `
   ●  GETADDRINFOREQWRAP
 
-      5 | const app = new http.Server();
+      5 | const app = new Server();
       6 | 
     > 7 | app.listen({host: 'localhost', port: 0});
         |     ^
@@ -76,7 +76,7 @@ it('prints out info about open handlers', async () => {
 });
 
 it('does not report promises', () => {
-  // The test here is basically that it exits cleanly without reporting anything (does not need `runJest.until`)
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
   const {stderr} = runJest('detect-open-handles', [
     'promise',
     '--detectOpenHandles',
@@ -87,7 +87,7 @@ it('does not report promises', () => {
 });
 
 it('prints out info about open handlers from inside tests', async () => {
-  const {stderr} = await runJest.until(
+  const {stderr} = await until(
     'detect-open-handles',
     ['inside', '--detectOpenHandles'],
     'Jest has detected',

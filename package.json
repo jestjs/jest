@@ -48,6 +48,7 @@
     "prettier": "^1.13.3",
     "prettylint": "^1.0.0",
     "progress": "^2.0.0",
+    "promise": "^8.0.2",
     "readable-stream": "^3.0.3",
     "regenerator-runtime": "^0.12.1",
     "resolve": "^1.4.0",
@@ -62,7 +63,7 @@
     "rollup-plugin-node-resolve": "^3.4.0",
     "slash": "^2.0.0",
     "string-length": "^2.0.0",
-    "strip-ansi": "^4.0.0",
+    "strip-ansi": "^5.0.0",
     "typescript": "^3.0.3",
     "watchify": "^3.9.0"
   },

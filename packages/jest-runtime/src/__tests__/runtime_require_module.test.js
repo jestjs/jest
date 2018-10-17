@@ -18,7 +18,7 @@ describe('Runtime requireModule', () => {
     createRuntime = require('createRuntime');
   });
 
-  it('finds @providesModule modules', () =>
+  it('finds haste modules', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -142,7 +142,7 @@ describe('Runtime requireModule', () => {
       });
     }));
 
-  it('throws on non-existent @providesModule modules', () =>
+  it('throws on non-existent haste modules', () =>
     createRuntime(__filename).then(runtime => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, 'DoesntExist');

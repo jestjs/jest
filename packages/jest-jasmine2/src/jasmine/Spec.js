@@ -103,7 +103,12 @@ Spec.prototype.execute = function(onComplete, enabled) {
 
   this.onStart(this);
 
-  if (!this.isExecutable() || this.markedPending || enabled === false) {
+  if (
+    !this.isExecutable() ||
+    this.markedPending ||
+    this.markedTodo ||
+    enabled === false
+  ) {
     complete(enabled);
     return;
   }
@@ -175,6 +180,10 @@ Spec.prototype.pend = function(message) {
   }
 };
 
+Spec.prototype.todo = function() {
+  this.markedTodo = true;
+};
+
 Spec.prototype.getResult = function() {
   this.result.status = this.status();
   return this.result;
@@ -183,6 +192,10 @@ Spec.prototype.getResult = function() {
 Spec.prototype.status = function(enabled) {
   if (this.disabled || enabled === false) {
     return 'disabled';
+  }
+
+  if (this.markedTodo) {
+    return 'todo';
   }
 
   if (this.markedPending) {

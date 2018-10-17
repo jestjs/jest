@@ -97,6 +97,11 @@ const _runTest = async (test: TestEntry): Promise<void> => {
     return;
   }
 
+  if (test.mode === 'todo') {
+    dispatch({name: 'test_todo', test});
+    return;
+  }
+
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
   for (const hook of beforeEach) {

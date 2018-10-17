@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('run timers after resetAllMocks test', () => {
   const result = runJest('timer-reset-mocks/after-reset-all-mocks');

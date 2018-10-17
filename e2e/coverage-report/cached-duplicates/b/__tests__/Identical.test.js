@@ -6,7 +6,7 @@
  */
 'use strict';
 
-const sum = require('../Identical').sum;
+const {sum} = require('../Identical');
 
 describe('sum', () => {
   it('adds numbers', () => {

@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 const getLog = result => result.stdout.split('\n')[1].trim();
 
