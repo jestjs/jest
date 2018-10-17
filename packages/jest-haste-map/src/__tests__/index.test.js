@@ -144,9 +144,6 @@ describe('HasteMap', () => {
       '/project/fruits/Banana.js': `
         const Strawberry = require("Strawberry");
       `,
-      '/project/fruits/Kiwi.js': `
-        // Kiwi!
-      `,
       '/project/fruits/Pear.js': `
         const Banana = require("Banana");
         const Strawberry = require("Strawberry");
@@ -189,7 +186,6 @@ describe('HasteMap', () => {
     defaultConfig = {
       extensions: ['js', 'json'],
       hasteImplModulePath: require.resolve('./haste_impl.js'),
-      ignorePattern: /Kiwi/,
       maxWorkers: 1,
       name: 'haste-map-test',
       platforms: ['ios', 'android'],
@@ -236,6 +232,16 @@ describe('HasteMap', () => {
         '/project/fruits/__mocks__/Pear.js',
       ]);
     }));
+
+  it('ignores files given a pattern', () => {
+    const config = Object.assign({}, defaultConfig, {ignorePattern: /Kiwi/});
+    mockFs['/project/fruits/Kiwi.js'] = `
+      // Kiwi!
+    `;
+    return new HasteMap(config).build().then(({hasteFS}) => {
+      expect(hasteFS.matchFiles(/Kiwi/)).toEqual([]);
+    });
+  });
 
   it('builds a haste map on a fresh cache', () => {
     // Include these files in the map
