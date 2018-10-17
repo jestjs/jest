@@ -13,7 +13,7 @@ export type Argv = {|
   $0: string,
   all: boolean,
   automock: boolean,
-  bail: boolean,
+  bail: boolean | number,
   browser: boolean,
   cache: boolean,
   cacheDirectory: string,

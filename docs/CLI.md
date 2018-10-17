@@ -97,7 +97,7 @@ When you run `jest` with an argument, that argument is treated as a regular expr
 
 ### `--bail`
 
-Alias: `-b`. Exit the test suite immediately upon the first failing test suite.
+Alias: `-b`. Exit the test suite immediately upon `n` number of failing test suite. Defaults to `1`.
 
 ### `--cache`
 
