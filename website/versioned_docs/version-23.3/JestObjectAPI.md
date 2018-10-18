@@ -318,6 +318,15 @@ Returns the `jest` object for chaining.
 
 Runs failed tests n-times until they pass or until the max number of retries are exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus)!
 
+Example in a test:
+
+```js
+jest.retryTimes(3);
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
 Returns the `jest` object for chaining.
 
 ### `jest.runAllTicks()`
