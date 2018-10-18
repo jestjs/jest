@@ -68,6 +68,7 @@
 - `[docs]` Remove references to `@providesModule` which isn't supported anymore ([#7147](https://github.com/facebook/jest/pull/7147))
 - `[docs]` Update `setupFiles` documentation for clarity ([#7187](https://github.com/facebook/jest/pull/7187))
 - `[jest-circus]` Add readme.md ([#7198](https://github.com/facebook/jest/pull/7198))
+- `[ci]` Run Windows builds on Travis ([#7211](https://github.com/facebook/jest/pull/7211))
 
 ### Performance
 
