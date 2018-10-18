@@ -1,7 +1,5 @@
 {
-  "editor.rulers": [
-    80
-  ],
+  "editor.rulers": [80],
   "files.exclude": {
     "**/.git": true,
     "**/node_modules": true,
