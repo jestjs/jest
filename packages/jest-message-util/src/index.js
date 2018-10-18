@@ -63,10 +63,10 @@ const STACK_TRACE_COLOR = chalk.dim;
 const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const ERROR_TEXT = 'Error: ';
-const REG_EXP_NOT_EMPTY_LINE = /^(?!$)/gm;
+const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
 const indentAllLines = (lines: string, indent: string) =>
-  lines.replace(REG_EXP_NOT_EMPTY_LINE, indent);
+  lines.replace(NOT_EMPTY_LINE_REGEXP, indent);
 
 const trim = string => (string || '').trim();
 
