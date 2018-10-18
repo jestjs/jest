@@ -9,37 +9,37 @@
 
 import {readFileSync} from 'fs';
 
-import type {NodeType} from './parser_nodes';
-import {NamedBlock, ParseResult, Node} from './parser_nodes';
+import type {ParsedNodeType} from './parser_nodes';
+import {NamedBlock, ParsedRange, ParseResult, ParsedNode} from './parser_nodes';
 import {
   File as BabylonFile,
   Node as BabylonNode,
   parse as babylonParse,
 } from 'babylon';
 
-export const getASTfor = (file: string): BabylonFile => {
-  const [bFile] = _getASTfor(file);
+export const getASTfor = (file: string, data: ?string): BabylonFile => {
+  const [bFile] = _getASTfor(file, data);
   return bFile;
 };
 
-const _getASTfor = (file: string): [BabylonFile, string] => {
-  const data = readFileSync(file).toString();
+const _getASTfor = (file: string, data: ?string): [BabylonFile, string] => {
+  const _data = data ? data : readFileSync(file).toString();
   const config = {plugins: ['*'], sourceType: 'module'};
-  return [babylonParse(data, config), data];
+  return [babylonParse(_data, config), _data];
 };
 
-export const parse = (file: string): ParseResult => {
+export const parse = (file: string, data: ?string): ParseResult => {
   const parseResult = new ParseResult(file);
-  const [ast, data] = _getASTfor(file);
+  const [ast, _data] = _getASTfor(file, data);
 
-  const updateNode = (node: Node, babylonNode: BabylonNode) => {
+  const updateNode = (node: ParsedNode, babylonNode: BabylonNode) => {
     node.start = babylonNode.loc.start;
     node.end = babylonNode.loc.end;
     node.start.column += 1;
 
     parseResult.addNode(node);
     if (node instanceof NamedBlock) {
-      node.name = getBlockName(babylonNode);
+      updateNameInfo(node, babylonNode);
     }
   };
 
@@ -51,20 +51,26 @@ export const parse = (file: string): ParseResult => {
   const isFunctionDeclaration = (nodeType: string) =>
     nodeType === 'ArrowFunctionExpression' || nodeType === 'FunctionExpression';
 
-  const getBlockName = (bNode: BabylonNode): string => {
+  const updateNameInfo = (nBlock: NamedBlock, bNode: BabylonNode) => {
     const arg = bNode.expression.arguments[0];
-    const name = arg.value;
-    if (name) {
-      return name;
+    let name = arg.value;
+
+    if (!name && arg.type === 'TemplateLiteral') {
+      name = _data.substring(arg.start + 1, arg.end - 1);
     }
 
-    if (arg.type === 'TemplateLiteral') {
-      //construct name from the quasis + expression
-      const tString = data.substring(arg.start + 1, arg.end - 1);
-      return tString;
+    if (name == null) {
+      throw new TypeError(
+        `failed to update namedBlock from: ${JSON.stringify(bNode)}`,
+      );
     }
-
-    throw new TypeError(`failed to find name for: ${JSON.stringify(bNode)}`);
+    nBlock.name = name;
+    nBlock.nameRange = new ParsedRange(
+      arg.loc.start.line,
+      arg.loc.start.column + 2,
+      arg.loc.end.line,
+      arg.loc.end.column - 1,
+    );
   };
 
   // Pull out the name of a CallExpression (describe/it)
@@ -119,23 +125,23 @@ export const parse = (file: string): ParseResult => {
   };
 
   const addNode = (
-    type: NodeType,
-    parent: Node,
+    type: ParsedNodeType,
+    parent: ParsedNode,
     babylonNode: BabylonNode,
-  ): Node => {
+  ): ParsedNode => {
     const child = parent.addChild(type);
     updateNode(child, babylonNode);
 
-    if (child instanceof NamedBlock && !(child: NamedBlock).name) {
+    if (child instanceof NamedBlock && child.name == null) {
       console.warn(`block is missing name: ${JSON.stringify(babylonNode)}`);
     }
     return child;
   };
 
   // A recursive AST parser
-  const searchNodes = (babylonParent: BabylonNode, parent: Node) => {
+  const searchNodes = (babylonParent: BabylonNode, parent: ParsedNode) => {
     // Look through the node's children
-    let child: ?Node;
+    let child: ?ParsedNode;
 
     for (const node in babylonParent.body) {
       if (!babylonParent.body.hasOwnProperty(node)) {

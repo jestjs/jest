@@ -61,28 +61,68 @@ export class ProjectWorkspace {
 }
 
 export interface IParseResults {
-  expects: Expect[];
-  itBlocks: ItBlock[];
+  describeBlocks: Array<DescribeBlock>;
+  expects: Array<Expect>;
+  itBlocks: Array<ItBlock>;
+  root: ParsedNode;
+  file: string;
 }
 
-export function parse(file: string): IParseResults;
+export function parse(file: string, data?: string): IParseResults;
 
 export interface Location {
   column: number;
   line: number;
 }
 
-export class Node {
+export class ParsedRange {
+  start: Location;
+  end: Location;
+  constructor(
+    startLine: number,
+    startCol: number,
+    endLine: number,
+    endCol: number,
+  );
+}
+
+export enum ParsedNodeTypes {
+  it = 'it',
+  describe = 'describe',
+  expect = 'expect',
+  root = 'root',
+}
+
+export type ParsedNodeType = ParsedNodeTypes;
+
+export declare class ParsedNode {
+  type: ParsedNodeType;
   start: Location;
   end: Location;
   file: string;
+  children?: ParsedNode[];
+
+  constructor(type: ParsedNodeType, file: string);
+  filter(f: (ParsedNode) => boolean): Array<ParsedNode>;
+  addChild(type: ParsedNodeType): ParsedNode;
 }
 
-export class ItBlock extends Node {
+export declare class NamedBlock extends ParsedNode {
   name: string;
+  nameRange: ParsedRange;
+  constructor(type: ParsedNodeType, file: string, name?: string);
 }
 
-export class Expect extends Node {}
+export declare class ItBlock extends NamedBlock {
+  constructor(file: string, name?: string);
+}
+export declare class DescribeBlock extends NamedBlock {
+  constructor(file: string, name?: string);
+}
+
+export declare class Expect extends ParsedNode {
+  constructor(file: string);
+}
 
 export class TestReconciler {
   stateForTestFile(file: string): TestReconcilationState;
@@ -177,7 +217,7 @@ export interface SnapshotMetadata {
   exists: boolean;
   name: string;
   node: {
-    loc: Node;
+    loc: ParsedNode;
   };
   content?: string;
 }

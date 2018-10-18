@@ -18,10 +18,12 @@ import {
   ItBlock,
   DescribeBlock,
   NamedBlock,
-  Node,
   ParseResult,
+  ParsedNode,
+  ParsedNodeTypes,
+  ParsedRange,
 } from './parsers/parser_nodes';
-import type {NodeType} from './parsers/parser_nodes';
+import type {ParsedNodeType} from './parsers/parser_nodes';
 import {parse} from './parsers/babylon_parser';
 import TestReconciler from './test_reconciler';
 
@@ -30,8 +32,10 @@ module.exports = {
   Expect,
   ItBlock,
   NamedBlock,
-  Node,
   ParseResult,
+  ParsedNode,
+  ParsedNodeTypes,
+  ParsedRange,
   Process,
   ProjectWorkspace,
   Runner,
@@ -41,4 +45,4 @@ module.exports = {
   parse,
 };
 
-export type {NodeType};
+export type {ParsedNodeType};

@@ -8,6 +8,14 @@
 const fixtures = __dirname;
 
 function parserTests(parse: (file: string) => ParserResult) {
+  const assertBlock2 = (
+    block,
+    sl: number,
+    sc: number,
+    el: number,
+    ec: number,
+    name: ?string = null,
+  ) => assertBlock(block, {column: sc, line: sl}, {column: ec, line: el}, name);
   const assertBlock = (block, start, end, name: ?string = null) => {
     expect(block.start).toEqual(start);
     expect(block.end).toEqual(end);
@@ -256,7 +264,7 @@ function parserTests(parse: (file: string) => ParserResult) {
       assertBlock(
         t1,
         {column: 3, line: 8},
-        {column: 41, line: 8},
+        {column: 46, line: 8},
         '${expression} up front',
       );
       assertBlock(
@@ -324,6 +332,80 @@ function parserTests(parse: (file: string) => ParserResult) {
 
       assertBlock(t1, {column: 3, line: 29}, {column: 5, line: 31}, '');
       assertBlock(e1, {column: 5, line: 30}, {column: 30, line: 30});
+    });
+  });
+
+  const assertNameInfo = (
+    nBlock: NamedBlock,
+    name: string,
+    startLine: number,
+    startCol: number,
+    endLine: number,
+    endCol: number,
+  ) => {
+    expect(nBlock.name).toEqual(name);
+    expect(nBlock.nameRange.start.line).toEqual(startLine);
+    expect(nBlock.nameRange.start.column).toEqual(startCol);
+    expect(nBlock.nameRange.end.line).toEqual(endLine);
+    expect(nBlock.nameRange.end.column).toEqual(endCol);
+  };
+
+  describe('name range', () => {
+    it('name range for string literals', () => {
+      const parseResult = parse(`${fixtures}/nested_elements.example`);
+      const dBlock = parseResult.describeBlocks[0];
+      assertNameInfo(dBlock, 'describe 1.0', 1, 11, 1, 22);
+      const itBlock = parseResult.itBlocks[2];
+      assertNameInfo(itBlock, 'test 1.1.2.1', 5, 11, 5, 22);
+    });
+    it('name range for template literals', () => {
+      const parseResult = parse(`${fixtures}/template-literal.example`);
+      let itBlock = parseResult.itBlocks[0];
+      assertNameInfo(itBlock, 'test has no expression either', 2, 7, 2, 35);
+      itBlock = parseResult.itBlocks[1];
+      assertNameInfo(itBlock, '${expression} up front', 8, 12, 8, 33);
+      itBlock = parseResult.itBlocks[5];
+      assertNameInfo(
+        itBlock,
+        `this \${test} will span in
+    multiple lines`,
+        22,
+        7,
+        23,
+        18,
+      );
+    });
+  });
+
+  describe('parse string buffer', () => {
+    it('can parse non-empty string buffer', () => {
+      const data = `
+    describe('d1', () => {
+      test('t1', () => {
+        expect(true).toEqual(true)
+      })
+    })
+    it('t2', () => {
+      expect(true).toBeTruthy()
+    })
+    `;
+      const parseResult = parse(`${fixtures}/template-literal.example`, data);
+      expect(parseResult.describeBlocks.length).toEqual(1);
+      expect(parseResult.itBlocks.length).toEqual(2);
+      expect(parseResult.expects.length).toEqual(2);
+
+      const describeBlock = parseResult.describeBlocks[0];
+      assertBlock2(describeBlock, 2, 5, 6, 6, 'd1');
+      assertNameInfo(describeBlock, 'd1', 2, 15, 2, 16);
+      const itBlock = parseResult.itBlocks[0];
+      assertBlock2(itBlock, 3, 7, 5, 8, 't1');
+      assertNameInfo(itBlock, 't1', 3, 13, 3, 14);
+    });
+    it('ignore empty/falsy string buffer', () => {
+      const parseResult = parse(`${fixtures}/template-literal.example`, '');
+      expect(parseResult.describeBlocks.length).toEqual(5);
+      expect(parseResult.itBlocks.length).toEqual(7);
+      expect(parseResult.expects.length).toEqual(4);
     });
   });
 }

@@ -7,23 +7,18 @@
  * @flow
  */
 
-import {parse as babylonParser, ItBlock, Expect} from 'jest-editor-support';
+import {parse as babylonParser, ParseResult} from 'jest-editor-support';
 import * as TypeScriptParser from './type_script_parser';
-
-export type ParserReturn = {
-  itBlocks: Array<ItBlock>,
-  expects: Array<Expect>,
-};
 
 /**
  * Converts the file into an AST, then passes out a
  * collection of it and expects.
  */
-function parse(file: string): ParserReturn {
+function parse(file: string, data?: string): ParseResult {
   if (file.match(/\.tsx?$/)) {
-    return TypeScriptParser.parse(file);
+    return TypeScriptParser.parse(file, data);
   } else {
-    return babylonParser(file);
+    return babylonParser(file, data);
   }
 }
 

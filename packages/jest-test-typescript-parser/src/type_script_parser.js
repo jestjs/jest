@@ -10,13 +10,18 @@
 import {readFileSync} from 'fs';
 
 import ts from 'typescript';
-import {NamedBlock, Node as ParsedNode, ParseResult} from 'jest-editor-support';
-import type {NodeType} from 'jest-editor-support';
+import {
+  NamedBlock,
+  ParsedRange,
+  ParsedNode,
+  ParseResult,
+} from 'jest-editor-support';
+import type {ParsedNodeType} from 'jest-editor-support';
 
-export function parse(file: string): ParseResult {
+export function parse(file: string, data: ?string): ParseResult {
   const sourceFile = ts.createSourceFile(
     file,
-    readFileSync(file).toString(),
+    data ? data : readFileSync(file).toString(),
     ts.ScriptTarget.ES3,
   );
   const parseResult = new ParseResult(file);
@@ -24,27 +29,35 @@ export function parse(file: string): ParseResult {
   const addNode = (
     tsNode: ts.Node,
     parent: ParsedNode,
-    type: NodeType,
+    type: ParsedNodeType,
   ): ParsedNode => {
     const child = parent.addChild(type);
     getNode(sourceFile, tsNode, child);
 
     if (child instanceof NamedBlock) {
-      const firstArg = tsNode.arguments[0];
-      child.name = firstArg.text;
+      const arg = tsNode.arguments[0];
+      child.name = arg.text;
       if (!child.name) {
-        if (ts.isTemplateExpression(firstArg)) {
-          child.name = sourceFile.text.substring(
-            firstArg.pos + 1,
-            firstArg.end - 1,
-          );
-        } else {
-          console.warn(
-            `NamedBlock but no name found for ${type} tsNode=`,
-            tsNode,
-          );
+        if (ts.isTemplateExpression(arg)) {
+          child.name = sourceFile.text.substring(arg.pos + 1, arg.end - 1);
         }
       }
+      if (child.name != null) {
+        const start = sourceFile.getLineAndCharacterOfPosition(arg.pos);
+        const end = sourceFile.getLineAndCharacterOfPosition(arg.end);
+        child.nameRange = new ParsedRange(
+          start.line + 1,
+          start.character + 2,
+          end.line + 1,
+          end.character - 1,
+        );
+      } else {
+        console.warn(
+          `NamedBlock but no name found for ${type} tsNode=`,
+          tsNode,
+        );
+      }
+
       parseResult.addNode(child);
     } else {
       // block has no name, thus perform extra dedup check by line info

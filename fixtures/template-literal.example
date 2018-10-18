@@ -5,7 +5,7 @@ describe(`no expression template`, () => {
 });
 
 describe('simple template literal', () => {
-  it(`${expression} up front`, () => {});
+  it.only(`${expression} up front`, () => {});
   it('at the end ${expression}', () => {
   })
   it('mixed ${expression1} and ${expression2}', () => {
