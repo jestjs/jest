@@ -37,7 +37,7 @@ export default function shouldInstrument(
 
   if (
     config.testRegex &&
-    config.testRegex.some(regex => filename.match(regex))
+    config.testRegex.some(regex => regex.test(filename))
   ) {
     return false;
   }

@@ -551,7 +551,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         const valueArray = Array.isArray(valueOrEmptyArray)
           ? valueOrEmptyArray
           : [valueOrEmptyArray];
-        value = valueArray.map(replacePathSepForRegex);
+        value = valueArray.map(replacePathSepForRegex).map(e => new RegExp(e));
         break;
       case 'moduleFileExtensions': {
         value = options[key];

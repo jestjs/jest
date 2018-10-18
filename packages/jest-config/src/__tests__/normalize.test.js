@@ -816,7 +816,7 @@ describe('testRegex', () => {
 
     expect(options.testRegex).toEqual([]);
   });
-  it('testRegex string is mapped to array', () => {
+  it('testRegex string is mapped to array of RegExp objects', () => {
     const {options} = normalize(
       {
         rootDir: '/root',
@@ -825,18 +825,18 @@ describe('testRegex', () => {
       {},
     );
 
-    expect(options.testRegex).toEqual(['.*']);
+    expect(options.testRegex).toEqual([/.*/]);
   });
-  it('testRegex array is passed through', () => {
+  it('testRegex array is mapped to array of RegExp objects', () => {
     const {options} = normalize(
       {
         rootDir: '/root',
-        testRegex: ['.*'],
+        testRegex: ['.*', 'foo\\.bar'],
       },
       {},
     );
 
-    expect(options.testRegex).toEqual(['.*']);
+    expect(options.testRegex).toEqual([/.*/, /foo\.bar/]);
   });
 });
 
