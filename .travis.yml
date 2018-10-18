@@ -8,6 +8,10 @@ os:
   - windows
   - linux
 
+branches:
+  only:
+    - master
+
 cache:
   yarn: true
   directories:
