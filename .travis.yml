@@ -10,9 +10,8 @@ os:
 
 
 before_install:
-  - if [[ $TRAVIS_OS_NAME == windows ]]; then
-    choco install python;
-    fi
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$PATH"
 
 branches:
   only:
