@@ -73,6 +73,16 @@ Almost anything can be overwritten to suite your needs.
 
 You will find examples of `condition`, `deprecate`, `error`, `unknown`, and `deprecatedConfig` inside source of this repository, named respectively.
 
+## exampleConfig syntax
+
+`exampleConfig` should be an object with key/value pairs that contain an example of a valid value for each key. A configuration value is considered valid when:
+
+  - it matches the JavaScript type of the example value, e.g. `string`, `number`, `array`, `boolean`, `function`, or `object`
+  - it is `null` or `undefined`
+  - the example valie is an array where the first element is the special value `MultipleValidOptions`, and the value matches the type of *any* of the other values in the array
+
+The last condition is a special syntax that allows validating where more than one type is permissible; see example below. It's acceptable to have multiple values of the same type in the example, so you can also use this syntax to provide more than one example. When a validation failure occurs, the error message will show all other values in the array as examples.
+
 ## Examples
 
 Minimal example:
@@ -123,6 +133,42 @@ This will output:
     "transform": {
       "^.+\\.js$": "<rootDir>/preprocessor.js"
     }
+  }
+
+  Documentation: http://custom-docs.com
+```
+
+## Example validating multiple types
+
+```js
+
+import {MultipleValidOptions} from "jest-validate";
+
+validate(config, {
+  // `bar` will accept either a string or a number
+  bar: [MultipleValidOptions, "string is ok", 2]
+});
+```
+
+#### Error:
+
+```bash
+● Validation Error:
+
+  Option foo must be of type:
+    string or number
+  but instead received:
+    array
+
+  Example:
+  {
+    "bar": "string is ok"
+  }
+
+  or
+
+  {
+    "bar": 2
   }
 
   Documentation: http://custom-docs.com
