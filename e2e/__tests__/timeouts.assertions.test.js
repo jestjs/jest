@@ -37,10 +37,8 @@ test('exceeds the timeout, without reporting expect.assertions', () => {
 
   const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
-  expect(rest).toMatch(
-    /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
-  );
   expect(rest).not.toMatch(/Expected two assertions/);
+  expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
   expect(status).toBe(1);
 });
@@ -66,6 +64,7 @@ test('exceeds the timeout synchronously', () => {
     /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
   );
   expect(rest).not.toMatch(/Expected two assertions/);
+  expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
   expect(status).toBe(1);
 });
