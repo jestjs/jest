@@ -35,7 +35,10 @@ export default function shouldInstrument(
     return true;
   }
 
-  if (config.testRegex && filename.match(config.testRegex)) {
+  if (
+    config.testRegex &&
+    config.testRegex.some(regex => filename.match(regex))
+  ) {
     return false;
   }
 

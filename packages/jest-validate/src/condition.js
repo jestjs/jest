@@ -34,6 +34,6 @@ export function validationCondition(option: any, validOption: any): boolean {
   return getValues(validOption).some(e => validationConditionSingle(option, e));
 }
 
-export function MultipleValidOptions(...args: Array<any>) {
+export function MultipleValidOptions(...args: any) {
   return [MultipleValidOptionsSymbol, ...args];
 }
