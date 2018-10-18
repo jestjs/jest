@@ -10,6 +10,7 @@
 import type {InitialOptions} from 'types/Config';
 
 import {replacePathSepForRegex} from 'jest-regex-util';
+import {MultipleValidOptions} from 'jest-validate';
 import {NODE_MODULES} from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
@@ -100,7 +101,11 @@ export default ({
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+  testRegex: ([
+    MultipleValidOptions,
+    '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+    [],
+  ]: any),
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
   testURL: 'http://localhost',

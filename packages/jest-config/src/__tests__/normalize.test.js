@@ -804,6 +804,42 @@ describe('Upgrade help', () => {
   });
 });
 
+describe('testRegex', () => {
+  it('testRegex empty string is mapped to empty array', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        testRegex: '',
+      },
+      {},
+    );
+
+    expect(options.testRegex).toEqual([]);
+  });
+  it('testRegex string is mapped to array', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        testRegex: '.*',
+      },
+      {},
+    );
+
+    expect(options.testRegex).toEqual(['.*']);
+  });
+  it('testRegex array is passed through', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        testRegex: ['.*'],
+      },
+      {},
+    );
+
+    expect(options.testRegex).toEqual(['.*']);
+  });
+});
+
 describe('testMatch', () => {
   it('testMatch default not applied if testRegex is set', () => {
     const {options} = normalize(
@@ -826,7 +862,7 @@ describe('testMatch', () => {
       {},
     );
 
-    expect(options.testRegex).toBe('');
+    expect(options.testRegex).toEqual([]);
   });
 
   it('throws if testRegex and testMatch are both specified', () => {
