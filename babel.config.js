@@ -5,13 +5,14 @@ module.exports = {
     // they will simply crash before relative configs can be found.
     // '@babel/plugin-proposal-class-properties',
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
+    '@babel/plugin-transform-strict-mode',
   ],
   presets: [
     [
       '@babel/preset-env',
       {
         shippedProposals: true,
-        targets: {node: '6'},
+        targets: {node: 6},
         useBuiltIns: 'usage',
       },
     ],
