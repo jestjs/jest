@@ -210,7 +210,7 @@ test('works with custom deprecations', () => {
 
 test('works with multiple valid types', () => {
   const exampleConfig = {
-    foo: [MultipleValidOptions, 'text', ['text']],
+    foo: MultipleValidOptions('text', ['text']),
   };
 
   expect(
@@ -239,7 +239,7 @@ test('works with multiple valid types', () => {
 
 test('reports errors nicely when failing with multiple valid options', () => {
   const exampleConfig = {
-    foo: [MultipleValidOptions, 'text', ['text']],
+    foo: MultipleValidOptions('text', ['text']),
   };
 
   expect(() =>
@@ -254,7 +254,7 @@ test('reports errors nicely when failing with multiple valid options', () => {
 
 test('Repeated types within multiple valid examples are coalesced in error report', () => {
   const exampleConfig = {
-    foo: [MultipleValidOptions, 'foo', 'bar', 2],
+    foo: MultipleValidOptions('foo', 'bar', 2),
   };
 
   expect(() =>

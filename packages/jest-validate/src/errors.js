@@ -12,7 +12,7 @@ import type {ValidationOptions} from './types';
 import chalk from 'chalk';
 import getType from 'jest-get-type';
 import {formatPrettyObject, ValidationError, ERROR} from './utils';
-import {getConditions} from './condition';
+import {getValues} from './condition';
 
 export const errorMessage = (
   option: string,
@@ -21,16 +21,15 @@ export const errorMessage = (
   options: ValidationOptions,
   path?: Array<string>,
 ): void => {
-  const conditions = getConditions(defaultValue);
-  const validTypes = conditions
-    .map(getType)
-    .filter(uniqueFilter())
-    .join(' or ');
+  const conditions = getValues(defaultValue);
+  const validTypes: Array<string> = Array.from(
+    new Set(conditions.map(getType)),
+  );
 
   const message = `  Option ${chalk.bold(
     `"${path && path.length > 0 ? path.join('.') + '.' : ''}${option}"`,
   )} must be of type:
-    ${chalk.bold.green(validTypes)}
+    ${validTypes.map(e => chalk.bold.green(e)).join(' or ')}
   but instead received:
     ${chalk.bold.red(getType(received))}
 
@@ -53,14 +52,4 @@ function formatExamples(option: string, examples: Array<any>) {
   or
 
 `);
-}
-
-function uniqueFilter() {
-  const seen: {[string]: any} = {};
-  return function(key) {
-    if (seen[key]) {
-      return false;
-    }
-    return (seen[key] = true);
-  };
 }

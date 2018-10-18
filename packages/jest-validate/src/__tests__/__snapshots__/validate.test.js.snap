@@ -4,7 +4,7 @@ exports[`Repeated types within multiple valid examples are coalesced in error re
 "<red><bold><bold>●<bold> Validation Error</>:</>
 <red></>
 <red>  Option <bold>\\"foo\\"</> must be of type:</>
-<red>    <bold><green>string or number<red></></>
+<red>    <bold><green>string<red></> or <bold><green>number<red></></>
 <red>  but instead received:</>
 <red>    <bold><red>boolean<red></></>
 <red></>
@@ -138,7 +138,7 @@ exports[`reports errors nicely when failing with multiple valid options 1`] = `
 "<red><bold><bold>●<bold> Validation Error</>:</>
 <red></>
 <red>  Option <bold>\\"foo\\"</> must be of type:</>
-<red>    <bold><green>string or array<red></></>
+<red>    <bold><green>string<red></> or <bold><green>array<red></></>
 <red>  but instead received:</>
 <red>    <bold><red>number<red></></>
 <red></>

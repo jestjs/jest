@@ -9,7 +9,7 @@
 
 const toString = Object.prototype.toString;
 
-export const MultipleValidOptions = Symbol('JEST_MULTIPLE_VALID_OPTIONS');
+const MultipleValidOptionsSymbol = Symbol('JEST_MULTIPLE_VALID_OPTIONS');
 
 function validationConditionSingle(option: any, validOption: any): boolean {
   return (
@@ -19,11 +19,11 @@ function validationConditionSingle(option: any, validOption: any): boolean {
   );
 }
 
-export function getConditions(validOption: any) {
+export function getValues(validOption: any) {
   if (
     Array.isArray(validOption) &&
     validOption.length &&
-    validOption[0] === MultipleValidOptions
+    validOption[0] === MultipleValidOptionsSymbol
   ) {
     return validOption.slice(1);
   }
@@ -31,7 +31,9 @@ export function getConditions(validOption: any) {
 }
 
 export function validationCondition(option: any, validOption: any): boolean {
-  return getConditions(validOption).some(e =>
-    validationConditionSingle(option, e),
-  );
+  return getValues(validOption).some(e => validationConditionSingle(option, e));
+}
+
+export function MultipleValidOptions(...args: Array<any>) {
+  return [MultipleValidOptionsSymbol, ...args];
 }

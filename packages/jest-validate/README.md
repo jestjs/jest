@@ -79,7 +79,7 @@ You will find examples of `condition`, `deprecate`, `error`, `unknown`, and `dep
 
 - it matches the JavaScript type of the example value, e.g. `string`, `number`, `array`, `boolean`, `function`, or `object`
 - it is `null` or `undefined`
-- the example value is an array where the first element is the special value `MultipleValidOptions`, and the value matches the type of _any_ of the other values in the array
+- it matches the Javascript type of any of arguments passed to `MultipleValidOptions(...)`
 
 The last condition is a special syntax that allows validating where more than one type is permissible; see example below. It's acceptable to have multiple values of the same type in the example, so you can also use this syntax to provide more than one example. When a validation failure occurs, the error message will show all other values in the array as examples.
 
@@ -145,7 +145,7 @@ import {MultipleValidOptions} from 'jest-validate';
 
 validate(config, {
   // `bar` will accept either a string or a number
-  bar: [MultipleValidOptions, 'string is ok', 2],
+  bar: MultipleValidOptions('string is ok', 2),
 });
 ```
 
