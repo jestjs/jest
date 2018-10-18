@@ -102,6 +102,44 @@ export const _replaceRootDirTags = (rootDir: string, config: any) => {
   return config;
 };
 
+export const resolveWithPrefix = (
+  resolver: ?string,
+  {
+    rootDir,
+    filePath,
+    prefix,
+  }: {
+    rootDir: string,
+    filePath: string,
+    prefix: string,
+  },
+) => {
+  const fileName = replaceRootDirInPath(rootDir, filePath);
+  let module = Resolver.findNodeModule(`${prefix}${fileName}`, {
+    basedir: rootDir,
+    resolver,
+  });
+  if (module) {
+    return module;
+  }
+
+  try {
+    return require.resolve(`${prefix}${fileName}`);
+  } catch (e) {}
+
+  module = Resolver.findNodeModule(fileName, {
+    basedir: rootDir,
+    resolver,
+  });
+  if (module) {
+    return module;
+  }
+
+  try {
+    return require.resolve(fileName);
+  } catch (e) {}
+};
+
 /**
  * Finds the test environment to use:
  *
@@ -110,35 +148,89 @@ export const _replaceRootDirTags = (rootDir: string, config: any) => {
  * 1. looks for <name> relative to project.
  * 1. looks for <name> relative to Jest.
  */
-export const getTestEnvironment = (config: Object) => {
-  const env = replaceRootDirInPath(config.rootDir, config.testEnvironment);
-  let module = Resolver.findNodeModule(`jest-environment-${env}`, {
-    basedir: config.rootDir,
+export const getTestEnvironment = ({
+  rootDir,
+  testEnvironment: filePath,
+}: Object) => {
+  const module = resolveWithPrefix(null, {
+    filePath,
+    prefix: 'jest-environment-',
+    rootDir,
   });
-  if (module) {
-    return module;
+
+  if (!module) {
+    throw createValidationError(
+      `  Test environment ${chalk.bold(
+        replaceRootDirInPath(rootDir, filePath),
+      )} cannot be found. Make sure the ${chalk.bold(
+        'testEnvironment',
+      )} configuration option points to an existing node module.`,
+    );
   }
 
-  try {
-    return require.resolve(`jest-environment-${env}`);
-  } catch (e) {}
+  return module;
+};
 
-  module = Resolver.findNodeModule(env, {basedir: config.rootDir});
-  if (module) {
-    return module;
+/**
+ * Finds the watch plugins to use:
+ *
+ * 1. looks for jest-watch-<name> relative to project.
+ * 1. looks for jest-watch-<name> relative to Jest.
+ * 1. looks for <name> relative to project.
+ * 1. looks for <name> relative to Jest.
+ */
+export const getWatchPlugin = (
+  resolver: ?string,
+  {filePath, rootDir}: {filePath: string, rootDir: string},
+) => {
+  const module = resolveWithPrefix(resolver, {
+    filePath,
+    prefix: 'jest-watch-',
+    rootDir,
+  });
+
+  if (!module) {
+    throw createValidationError(
+      `  Watch plugin ${chalk.bold(
+        replaceRootDirInPath(rootDir, filePath),
+      )} cannot be found. Make sure the each element in ${chalk.bold(
+        'watchPlugins',
+      )} configuration option points to an existing node module.`,
+    );
   }
 
-  try {
-    return require.resolve(env);
-  } catch (e) {}
+  return module;
+};
 
-  throw createValidationError(
-    `  Test environment ${chalk.bold(
-      env,
-    )} cannot be found. Make sure the ${chalk.bold(
-      'testEnvironment',
-    )} configuration option points to an existing node module.`,
-  );
+/**
+ * Finds the runner to use:
+ *
+ * 1. looks for jest-runner-<name> relative to project.
+ * 1. looks for jest-runner-<name> relative to Jest.
+ * 1. looks for <name> relative to project.
+ * 1. looks for <name> relative to Jest.
+ */
+export const getRunner = (
+  resolver: ?string,
+  {filePath, rootDir}: {filePath: string, rootDir: string},
+) => {
+  const module = resolveWithPrefix(resolver, {
+    filePath,
+    prefix: 'jest-runner-',
+    rootDir,
+  });
+
+  if (!module) {
+    throw createValidationError(
+      `  Jest Runner ${chalk.bold(
+        replaceRootDirInPath(rootDir, filePath),
+      )} cannot be found. Make sure the ${chalk.bold(
+        'runner',
+      )} configuration option points to an existing node module.`,
+    );
+  }
+
+  return module;
 };
 
 export const isJSONString = (text: ?string) =>

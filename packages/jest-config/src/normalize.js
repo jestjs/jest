@@ -28,6 +28,8 @@ import {
   _replaceRootDirTags,
   escapeGlobCharacters,
   getTestEnvironment,
+  getRunner,
+  getWatchPlugin,
   resolve,
 } from './utils';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
@@ -452,7 +454,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'globalSetup':
       case 'globalTeardown':
       case 'moduleLoader':
-      case 'runner':
       case 'setupTestFrameworkScriptFile':
       case 'snapshotResolver':
       case 'testResultsProcessor':
@@ -463,6 +464,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           resolve(newOptions.resolver, {
             filePath: options[key],
             key,
+            rootDir: options.rootDir,
+          });
+        break;
+      case 'runner':
+        value =
+          options[key] &&
+          getRunner(newOptions.resolver, {
+            filePath: options[key],
             rootDir: options.rootDir,
           });
         break;
@@ -634,18 +643,16 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           if (typeof watchPlugin === 'string') {
             return {
               config: {},
-              path: resolve(newOptions.resolver, {
+              path: getWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
-                key,
                 rootDir: options.rootDir,
               }),
             };
           } else {
             return {
               config: watchPlugin[1] || {},
-              path: resolve(newOptions.resolver, {
+              path: getWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
-                key,
                 rootDir: options.rootDir,
               }),
             };
