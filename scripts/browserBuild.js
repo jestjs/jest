@@ -16,30 +16,30 @@ const rollupJson = require('rollup-plugin-json');
 const rollupBabel = require('rollup-plugin-babel');
 const rollupFlow = require('rollup-plugin-flow');
 
-const babelEs5Options = Object.assign(
-  {},
-  {
-    // Dont load other config files
-    babelrc: false,
-    configFile: false,
-    exclude: 'node_modules/!(ansi-styles|chalk|ansi-regex|slash)/**',
-    plugins: [],
-    presets: [
-      [
-        '@babel/preset-env',
-        {
-          // Required for Rollup
-          modules: false,
-          shippedProposals: true,
-          // Target ES5
-          targets: 'IE 10',
-          useBuiltIns: 'usage',
-        },
-      ],
+const babelEs5Options = {
+  // Dont load other config files
+  babelrc: false,
+  configFile: false,
+  plugins: [
+    '@babel/plugin-transform-strict-mode',
+    '@babel/plugin-external-helpers',
+  ],
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        // Required for Rollup
+        modules: false,
+        shippedProposals: true,
+        // Target ES5
+        targets: 'IE 11',
+        useBuiltIns: 'usage',
+      },
     ],
-    runtimeHelpers: true,
-  }
-);
+    '@babel/preset-flow',
+  ],
+  runtimeHelpers: true,
+};
 
 function browserBuild(pkgName, entryPath, destination) {
   return rollup({

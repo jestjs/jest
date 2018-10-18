@@ -509,4 +509,25 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
     expect(writeFileAtomic.sync).toBeCalled();
   });
+
+  it('does not reuse the in-memory cache between different projects', () => {
+    const scriptTransformer = new ScriptTransformer(
+      Object.assign({}, config, {
+        transform: [['^.+\\.js$', 'test_preprocessor']],
+      }),
+    );
+
+    scriptTransformer.transform('/fruits/banana.js', {});
+
+    const anotherScriptTransformer = new ScriptTransformer(
+      Object.assign({}, config, {
+        transform: [['^.+\\.js$', 'css-preprocessor']],
+      }),
+    );
+
+    anotherScriptTransformer.transform('/fruits/banana.js', {});
+
+    expect(fs.readFileSync.mock.calls.length).toBe(2);
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+  });
 });

@@ -19,16 +19,16 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import {transformSync as babelTransform, loadPartialConfig} from '@babel/core';
-import jestPreset from 'babel-preset-jest';
 import babelIstanbulPlugin from 'babel-plugin-istanbul';
 
 const THIS_FILE = fs.readFileSync(__filename);
+const jestPresetPath = require.resolve('babel-preset-jest');
 
 const createTransformer = (options: any): Transformer => {
   options = Object.assign({}, options, {
     compact: false,
     plugins: (options && options.plugins) || [],
-    presets: ((options && options.presets) || []).concat([jestPreset]),
+    presets: ((options && options.presets) || []).concat(jestPresetPath),
     sourceMaps: 'both',
   });
 
