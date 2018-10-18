@@ -54,6 +54,26 @@ async function jasmine2(
 
       return it;
     };
+
+    const originalXit = environment.global.xit;
+    environment.global.xit = (...args) => {
+      const stack = getCallsite(1, runtime.getSourceMaps());
+      const xit = originalXit(...args);
+
+      xit.result.__callsite = stack;
+
+      return xit;
+    };
+
+    const originalFit = environment.global.fit;
+    environment.global.fit = (...args) => {
+      const stack = getCallsite(1, runtime.getSourceMaps());
+      const fit = originalFit(...args);
+
+      fit.result.__callsite = stack;
+
+      return fit;
+    };
   }
 
   jasmineAsyncInstall(environment.global);
@@ -62,6 +82,7 @@ async function jasmine2(
 
   environment.global.test = environment.global.it;
   environment.global.it.only = environment.global.fit;
+  environment.global.it.todo = env.todo;
   environment.global.it.skip = environment.global.xit;
   environment.global.xtest = environment.global.xit;
   environment.global.describe.skip = environment.global.xdescribe;

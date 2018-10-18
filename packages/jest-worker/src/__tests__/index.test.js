@@ -121,6 +121,7 @@ it('tries instantiating workers with the right options', () => {
   expect(Worker.mock.calls[0][0]).toEqual({
     forkOptions: {execArgv: []},
     maxRetries: 6,
+    setupArgs: [],
     workerId: 1,
     workerPath: '/tmp/baz.js',
   });

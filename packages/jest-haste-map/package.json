@@ -1,6 +1,6 @@
 {
   "name": "jest-haste-map",
-  "version": "23.5.0",
+  "version": "23.6.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -15,6 +15,6 @@
     "jest-serializer": "^23.0.1",
     "jest-worker": "^23.2.0",
     "micromatch": "^2.3.11",
-    "sane": "^2.0.0"
+    "sane": "^3.0.0"
   }
 }

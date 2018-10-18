@@ -102,6 +102,7 @@ Expected value to be falsy, instead received
 
       const succeededTests = results
         .map(r => r.assertions || [])
+        // $FlowFixMe: Flow thinks the type is array from above, not the number passed as initial value
         .reduce((sum: number, assertions: TestAssertionStatus[]) => {
           const success = assertions.filter(a => a.status === 'KnownSuccess');
           return sum + success.length;

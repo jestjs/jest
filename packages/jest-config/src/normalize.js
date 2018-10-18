@@ -36,6 +36,7 @@ import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import setFromArgv from './setFromArgv';
 import VALID_CONFIG from './ValidConfig';
+
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
@@ -90,6 +91,19 @@ const setupPreset = (
         `  Preset ${chalk.bold(presetPath)} is invalid:\n  ${error.message}`,
       );
     }
+
+    const preset = Resolver.findNodeModule(presetPath, {
+      basedir: options.rootDir,
+    });
+
+    if (preset) {
+      throw createConfigError(
+        `  Module ${chalk.bold(
+          presetPath,
+        )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
+      );
+    }
+
     throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
@@ -342,6 +356,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       'coverageThreshold',
       'globals',
       'moduleNameMapper',
+      'testEnvironmentOptions',
       'transform',
     ],
   });
@@ -439,6 +454,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'moduleLoader':
       case 'runner':
       case 'setupTestFrameworkScriptFile':
+      case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
       case 'filter':
@@ -533,6 +549,32 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'testRegex':
         value = options[key] && replacePathSepForRegex(options[key]);
         break;
+      case 'moduleFileExtensions': {
+        value = options[key];
+
+        // If it's the wrong type, it can throw at a later time
+        if (Array.isArray(value) && !value.includes('js')) {
+          const errorMessage =
+            `  moduleFileExtensions must include 'js':\n` +
+            `  but instead received:\n` +
+            `    ${chalk.bold.red(JSON.stringify(value))}`;
+
+          // If `js` is not included, any dependency Jest itself injects into
+          // the environment, like jasmine or sourcemap-support, will need to
+          // `require` its modules with a file extension. This is not plausible
+          // in the long run, so it's way easier to just fail hard early.
+          // We might consider throwing if `json` is missing as well, as it's a
+          // fair assumption from modules that they can do
+          // `require('some-package/package') without the trailing `.json` as it
+          // works in Node normally.
+          throw createConfigError(
+            errorMessage +
+              "\n  Please change your configuration to include 'js'.",
+          );
+        }
+
+        break;
+      }
       case 'automock':
       case 'bail':
       case 'browser':
@@ -556,7 +598,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
-      case 'moduleFileExtensions':
       case 'name':
       case 'noStackTrace':
       case 'notify':

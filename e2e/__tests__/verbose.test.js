@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('Verbose Reporter', () => {
   const {status, stderr} = runJest('verbose-reporter');

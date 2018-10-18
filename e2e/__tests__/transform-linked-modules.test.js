@@ -2,10 +2,12 @@
 
 'use strict';
 
-const runJest = require('../runJest');
+import {json as runWithJson} from '../runJest';
 
 it('should transform linked modules', () => {
-  const result = runJest.json('transform-linked-modules', ['--no-cache']).json;
+  const {json: result} = runWithJson('transform-linked-modules', [
+    '--no-cache',
+  ]);
 
   expect(result.success).toBe(true);
   expect(result.numTotalTests).toBe(2);

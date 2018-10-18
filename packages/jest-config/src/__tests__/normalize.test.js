@@ -885,6 +885,11 @@ describe('preset', () => {
       if (name === 'react-native/jest-preset') {
         return '/node_modules/react-native/jest-preset.json';
       }
+
+      if (name === 'doesnt-exist') {
+        return null;
+      }
+
       return '/node_modules/' + name;
     });
     jest.doMock(
@@ -915,6 +920,15 @@ describe('preset', () => {
       }),
       {virtual: true},
     );
+    jest.mock(
+      '/node_modules/exist-but-no-jest-preset/index.js',
+      () => ({
+        moduleNameMapper: {
+          js: true,
+        },
+      }),
+      {virtual: true},
+    );
   });
 
   afterEach(() => {
@@ -926,6 +940,18 @@ describe('preset', () => {
       normalize(
         {
           preset: 'doesnt-exist',
+          rootDir: '/root/path/foo',
+        },
+        {},
+      );
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('throws when module was found but no "jest-preset.js" or "jest-preset.json" files', () => {
+    expect(() => {
+      normalize(
+        {
+          preset: 'exist-but-no-jest-preset',
           rootDir: '/root/path/foo',
         },
         {},
@@ -1245,5 +1271,25 @@ describe('testPathPattern', () => {
     });
 
     expect(options.onlyChanged).toBe(false);
+  });
+});
+
+describe('moduleFileExtensions', () => {
+  it('defaults to something useful', () => {
+    const {options} = normalize({rootDir: '/root'}, {});
+
+    expect(options.moduleFileExtensions).toEqual(['js', 'json', 'jsx', 'node']);
+  });
+
+  it('throws if missing `js`', () => {
+    expect(() =>
+      normalize(
+        {
+          rootDir: '/root/',
+          moduleFileExtensions: ['json', 'jsx'],
+        },
+        {},
+      ),
+    ).toThrowError("moduleFileExtensions must include 'js'");
   });
 });

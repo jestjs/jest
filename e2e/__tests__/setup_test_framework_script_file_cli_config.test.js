@@ -8,11 +8,11 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import {json as runWithJson} from '../runJest';
 
 describe('--setupTestFrameworkScriptFile setup.js', () => {
   it('requires a setup file before each file in the suite', () => {
-    const result = runJest.json('setup-test-framework-script-file-cli-config', [
+    const result = runWithJson('setup-test-framework-script-file-cli-config', [
       '--setupTestFrameworkScriptFile',
       './setup1.js',
       'test1.test.js',
@@ -26,7 +26,7 @@ describe('--setupTestFrameworkScriptFile setup.js', () => {
   });
 
   it('requires setup files *after* the test runners are required', () => {
-    const result = runJest.json('setup-test-framework-script-file-cli-config', [
+    const result = runWithJson('setup-test-framework-script-file-cli-config', [
       '--setupTestFrameworkScriptFile',
       './setup_hooks_into_runner.js',
       'runner_patch.test.js',

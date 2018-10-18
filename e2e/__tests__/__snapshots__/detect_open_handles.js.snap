@@ -24,5 +24,5 @@ exports[`prints out info about open handlers from inside tests 1`] = `
       4 | });
       5 | 
 
-      at Object.<anonymous>.test (__tests__/inside.js:2:3)"
+      at Object.setTimeout (__tests__/inside.js:2:3)"
 `;

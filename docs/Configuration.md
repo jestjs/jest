@@ -187,7 +187,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `coverageReporters` [array<string>]
 
-Default: `["json", "lcov", "text"]`
+Default: `["json", "lcov", "text", "clover"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib) can be used.
 
@@ -237,7 +237,7 @@ For example, with the following configuration:
         "statements": 40
       },
       "./src/reducers/**/*.js": {
-        "statements": 90,
+        "statements": 90
       },
       "./src/api/very-important-module.js": {
         "branches": 100,
@@ -393,7 +393,7 @@ Activates notifications for test results.
 
 ### `notifyMode` [string]
 
-Default: `always`
+Default: `failure-change`
 
 Specifies notification mode. Requires `notify: true`.
 
@@ -404,13 +404,21 @@ Specifies notification mode. Requires `notify: true`.
 - `success`: send a notification when tests pass.
 - `change`: send a notification when the status changed.
 - `success-change`: send a notification when tests pass or once when it fails.
-- `failure-success`: send a notification when tests fails or once when it passes.
+- `failure-change`: send a notification when tests fails or once when it passes.
 
 ### `preset` [string]
 
 Default: `undefined`
 
-A preset that is used as a base for Jest's configuration. A preset should point to an npm module that exports a `jest-preset.json` or `jest-preset.js` module at its top level.
+A preset that is used as a base for Jest's configuration. A preset should point to an npm module that has a `jest-preset.json` or `jest-preset.js` file at the root.
+
+For example, this preset `foo-bar/jest-preset.js` will be configured as follows:
+
+```json
+{
+  "preset": "foo-bar"
+}
+```
 
 Presets may also be relative filesystem paths.
 
@@ -620,9 +628,9 @@ If you need to restrict your test-runner to only run in serial rather then being
 
 Default: `[]`
 
-The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
+The paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
-It's worth noting that this code will execute _before_ [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
+It's also worth noting that `setupFiles` will execute _before_ [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
 
 ### `setupTestFrameworkScriptFile` [string]
 
@@ -633,6 +641,29 @@ The path to a module that runs some code to configure or set up the testing fram
 If you want this path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside the path string, like `"<rootDir>/a-configs-folder"`.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
+
+### `snapshotResolver` [string]
+
+Default: `undefined`
+
+The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores that snapshot files on disk.
+
+Example snapshot resolver module:
+
+```js
+// my-snapshot-resolver-module
+module.exports = {
+  // resolves from test to snapshot path
+  resolveSnapshotPath: (testPath, snapshotExtension) =>
+    testPath.replace('__tests__', '__snapshots__') + snapshotExtension,
+
+  // resolves from snapshot to test path
+  resolveTestPath: (snapshotFilePath, snapshotExtension) =>
+    snapshotFilePath
+      .replace('__snapshots__', '__tests__')
+      .slice(0, -snapshotExtension.length),
+};
+```
 
 ### `snapshotSerializers` [array<string>]
 
@@ -746,6 +777,8 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+
+module.exports = CustomEnvironment;
 ```
 
 ```js
@@ -888,7 +921,7 @@ A map from regular expressions to paths to transformers. A transformer is a modu
 
 Examples of such compilers include [Babel](https://babeljs.io/), [TypeScript](http://www.typescriptlang.org/) and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
 
-_Note: a transformer is only ran once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
+_Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
 
 _Note: if you are using the `babel-jest` transformer and want to use an additional code preprocessor, keep in mind that when "transform" is overwritten in any way the `babel-jest` is not loaded automatically anymore. If you want to use it to compile JavaScript code it has to be explicitly defined. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 

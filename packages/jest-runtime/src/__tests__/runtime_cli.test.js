@@ -8,11 +8,11 @@
  */
 'use strict';
 
-const path = require('path');
-const {sync: spawnSync} = require('execa');
-const ConditionalTest = require('../../../../scripts/ConditionalTest');
+import path from 'path';
+import {sync as spawnSync} from 'execa';
+import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
-ConditionalTest.skipSuiteOnWindows();
+skipSuiteOnWindows();
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');
 

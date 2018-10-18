@@ -10,6 +10,7 @@
 import util from 'util';
 import chalk from 'chalk';
 import pretty from 'pretty-format';
+import {ErrorWithStack} from 'jest-util';
 
 type Table = Array<Array<any>>;
 type PrettyArgs = {
@@ -23,14 +24,33 @@ const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
 
-export default (cb: Function) => (...args: any) =>
+export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
   function eachBind(title: string, test: Function, timeout: number): void {
     if (args.length === 1) {
-      const table: Table = args[0].every(Array.isArray)
-        ? args[0]
-        : args[0].map(entry => [entry]);
+      const [tableArg] = args;
+
+      if (!Array.isArray(tableArg)) {
+        const error = new ErrorWithStack(
+          '`.each` must be called with an Array or Tagged Template String.\n\n' +
+            `Instead was called with: ${pretty(tableArg, {
+              maxDepth: 1,
+              min: true,
+            })}\n`,
+          eachBind,
+        );
+        return cb(title, () => {
+          throw error;
+        });
+      }
+      const table: Table = tableArg.every(Array.isArray)
+        ? tableArg
+        : tableArg.map(entry => [entry]);
       return table.forEach((row, i) =>
-        cb(arrayFormat(title, i, ...row), applyRestParams(row, test), timeout),
+        cb(
+          arrayFormat(title, i, ...row),
+          applyRestParams(supportsDone, row, test),
+          timeout,
+        ),
       );
     }
 
@@ -43,7 +63,7 @@ export default (cb: Function) => (...args: any) =>
     const missingData = data.length % keys.length;
 
     if (missingData > 0) {
-      const error = new Error(
+      const error = new ErrorWithStack(
         'Not enough arguments supplied for given headings:\n' +
           EXPECTED_COLOR(keys.join(' | ')) +
           '\n\n' +
@@ -54,11 +74,8 @@ export default (cb: Function) => (...args: any) =>
             'argument',
             missingData,
           )}`,
+        eachBind,
       );
-
-      if (Error.captureStackTrace) {
-        Error.captureStackTrace(error, eachBind);
-      }
 
       return cb(title, () => {
         throw error;
@@ -66,7 +83,11 @@ export default (cb: Function) => (...args: any) =>
     }
 
     return table.forEach(row =>
-      cb(interpolate(title, row), applyObjectParams(row, test), timeout),
+      cb(
+        interpolate(title, row),
+        applyObjectParams(supportsDone, row, test),
+        timeout,
+      ),
     );
   };
 
@@ -107,11 +128,14 @@ const arrayFormat = (title, rowIndex, ...args) => {
   );
 };
 
-const applyRestParams = (params: Array<any>, test: Function) => {
-  if (params.length < test.length) return done => test(...params, done);
-
-  return () => test(...params);
-};
+const applyRestParams = (
+  supportsDone: boolean,
+  params: Array<any>,
+  test: Function,
+) =>
+  supportsDone && params.length < test.length
+    ? done => test(...params, done)
+    : () => test(...params);
 
 const getHeadingKeys = (headings: string): Array<string> =>
   headings.replace(/\s/g, '').split('|');
@@ -144,11 +168,8 @@ const interpolate = (title: string, data: any) =>
     .reduce(getMatchingKeyPaths(title), []) // aka flatMap
     .reduce(replaceKeyPathWithValue(data), title);
 
-const applyObjectParams = (obj: any, test: Function) => {
-  if (test.length > 1) return done => test(obj, done);
-
-  return () => test(obj);
-};
+const applyObjectParams = (supportsDone: boolean, obj: any, test: Function) =>
+  supportsDone && test.length > 1 ? done => test(obj, done) : () => test(obj);
 
 const pluralize = (word: string, count: number) =>
   word + (count === 1 ? '' : 's');

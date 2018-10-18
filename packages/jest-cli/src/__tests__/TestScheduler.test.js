@@ -27,6 +27,45 @@ jest.mock('jest-runner-parallel', () => jest.fn(() => mockParallelRunner), {
   virtual: true,
 });
 
+test('config for reporters supports `default`', () => {
+  const undefinedReportersScheduler = new TestScheduler(
+    {
+      reporters: undefined,
+    },
+    {},
+  );
+  const numberOfReporters =
+    undefinedReportersScheduler._dispatcher._reporters.length;
+
+  const stringDefaultReportersScheduler = new TestScheduler(
+    {
+      reporters: ['default'],
+    },
+    {},
+  );
+  expect(stringDefaultReportersScheduler._dispatcher._reporters.length).toBe(
+    numberOfReporters,
+  );
+
+  const defaultReportersScheduler = new TestScheduler(
+    {
+      reporters: [['default', {}]],
+    },
+    {},
+  );
+  expect(defaultReportersScheduler._dispatcher._reporters.length).toBe(
+    numberOfReporters,
+  );
+
+  const emptyReportersScheduler = new TestScheduler(
+    {
+      reporters: [],
+    },
+    {},
+  );
+  expect(emptyReportersScheduler._dispatcher._reporters.length).toBe(0);
+});
+
 test('.addReporter() .removeReporter()', () => {
   const scheduler = new TestScheduler({}, {});
   const reporter = new SummaryReporter();

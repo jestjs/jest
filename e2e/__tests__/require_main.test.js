@@ -9,7 +9,7 @@
 
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('provides `require.main` set to test suite module', () => {
   const {stderr, stdout} = runJest('require-main');

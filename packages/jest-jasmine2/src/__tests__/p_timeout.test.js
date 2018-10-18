@@ -16,7 +16,14 @@ describe('pTimeout', () => {
   it('calls `clearTimeout` and resolves when `promise` resolves.', async () => {
     const onTimeout = jest.fn();
     const promise = Promise.resolve();
-    await pTimeout(promise, 1000, clearTimeout, setTimeout, onTimeout);
+    await pTimeout(
+      promise,
+      Date.now(),
+      1000,
+      clearTimeout,
+      setTimeout,
+      onTimeout,
+    );
     expect(setTimeout).toHaveBeenCalled();
     expect(clearTimeout).toHaveBeenCalled();
     expect(onTimeout).not.toHaveBeenCalled();
@@ -26,7 +33,14 @@ describe('pTimeout', () => {
     const onTimeout = jest.fn();
     const promise = Promise.reject();
     try {
-      await pTimeout(promise, 1000, clearTimeout, setTimeout, onTimeout);
+      await pTimeout(
+        promise,
+        Date.now(),
+        1000,
+        clearTimeout,
+        setTimeout,
+        onTimeout,
+      );
     } catch (e) {}
     expect(setTimeout).toHaveBeenCalled();
     expect(clearTimeout).toHaveBeenCalled();
@@ -39,6 +53,7 @@ describe('pTimeout', () => {
     const promise = new Promise(() => {});
     const timeoutPromise = pTimeout(
       promise,
+      Date.now(),
       1000,
       clearTimeout,
       setTimeout,

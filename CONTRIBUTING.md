@@ -24,17 +24,25 @@ _Before_ submitting a pull request, please make sure the following is done…
 
     Open terminal (e.g. Terminal, iTerm, Git Bash or Git Shell) and type:
 
-    ```sh
-    git clone https://github.com/<your_username>/jest
-    cd jest
-    git checkout -b my_branch
+    ```sh-session
+    $ git clone https://github.com/<your_username>/jest
+    $ cd jest
+    $ git checkout -b my_branch
     ```
 
     Note: Replace `<your_username>` with your GitHub username
 
-2.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for running development scripts. If you haven't already done so, please [install yarn](https://yarnpkg.com/en/docs/install).
+1.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for running development scripts. If you haven't already done so, please [install yarn](https://yarnpkg.com/en/docs/install).
 
-3.  Run `yarn install`. On Windows: To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may need to download either node.js or Chocolatey<br />
+1.  Make sure you have `python` installed (v2.7 is recommended, v3.x.x is not supported). Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
+
+    To check your version of Python and ensure it's installed you can type:
+
+    ```sh
+    python --version
+    ```
+
+1.  Run `yarn install`. On Windows: To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may need to download either node.js or Chocolatey<br />
 
     ```sh
     yarn install
@@ -46,35 +54,62 @@ _Before_ submitting a pull request, please make sure the following is done…
     yarn --version
     ```
 
-4.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
+1.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
 
     ```sh
     # in the background
     yarn run watch
     ```
 
-5.  If you've changed APIs, update the documentation.
+1.  If you've changed APIs, update the documentation.
 
-6.  Ensure the test suite passes via `yarn test`. To run the test suite you may need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On macOS, this can be done using [homebrew](http://brew.sh/): `brew install hg`.
+1.  Ensure the test suite passes via `yarn test`. To run the test suite you may need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On macOS, this can be done using [homebrew](http://brew.sh/): `brew install hg`.
 
-    ```sh
-    brew install hg # maybe
-    yarn test
+    ```sh-session
+    $ brew install hg # maybe
+    $ yarn test
     ```
 
-7.  If you haven't already, complete the CLA.
+1.  If you haven't already, complete the CLA.
+
+#### Testing
+
+Code that is written needs to be tested to ensure that it achieves the desired behaviour. Tests either fall into a unit test or an integration test.
+
+##### Unit tests
+
+Some of the packages within jest have a `__tests__` directory. This is where unit tests reside in. If the scope of your work only requires a unit test, this is where you will write it in. Tests here usually don't require much if any setup.
+
+##### Integration tests
+
+There will be situations however where the work you have done cannot be tested alone using unit tests. In situations like this, you should write an integration test for your code. The integration tests reside within the `e2e` directory. Within this directory, there is a `__tests__` directory. This is where you will write the integration test itself. The tests within this directory execute jest itself using `runJest.js` and assertions are usually made on one if not all the output of the following `status`, `stdout` and `stderr`. The other sub directories within the `e2e` directory are where you will write the files that jest will run for your integration tests. Feel free to take a look at any of the tests in the `__tests__` directory within `e2e` to have a better sense of how it is currently being done.
+
+It is possible to run the integration test itself manually to inspect that the new behaviour is indeed correct. Here is a small code snippet of how to do just that. This is useful when debugging a failing test.
+
+```bash
+$ cd e2e/clear-cache
+$ node ../../packages/jest-cli/bin/jest.js # It is possible to use node --inspect or ndb
+PASS  __tests__/clear_cache.test.js
+✓ stub (3ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        0.232s, estimated 1s
+Ran all test suites.
+```
 
 #### Additional Workflow for any changes made to website or docs
 
 If you are making changes to the website or documentation, test the website folder and run the server to check if your changes are being displayed accurately.
 
 1.  Locate to the website directory and install any website specific dependencies by typing in `yarn`. Following steps are to be followed for this purpose from the root directory.
-    ```sh
-    cd website       # Only needed if you are not already in the website directory
-    yarn
-    yarn start
+    ```sh-session
+    $ cd website       # Only needed if you are not already in the website directory
+    $ yarn
+    $ yarn start
     ```
-2.  You can run a development server to check if the changes you made are being displayed accurately by running `yarn start` in the website directory.
+1.  You can run a development server to check if the changes you made are being displayed accurately by running `yarn start` in the website directory.
 
 ### Contributor License Agreement (CLA)
 
@@ -86,34 +121,34 @@ In order to accept your pull request, we need you to submit a CLA. You only need
 
 To link `jest` on the command line to `jest-cli/bin/jest.js` in a development build:
 
-```sh
-cd /path/to/your/Jest_clone/packages/jest-cli
-yarn link
+```sh-session
+$ cd /path/to/your/Jest_clone/packages/jest-cli
+$ yarn link
 ```
 
 To build Jest:
 
-```sh
-cd /path/to/your/Jest_clone
+```sh-session
+$ cd /path/to/your/Jest_clone
 
 # Do one of the following:
 
 # Check out a commit from another contributor, and then
-yarn run build
+$ yarn run build
 
 # Or, save your changes to Jest, and then
-yarn test # which also builds Jest
+$ yarn test # which also builds Jest
 ```
 
 To run tests in another project with the development build of Jest:
 
-```sh
-cd /path/to/another/project
+```sh-session
+$ cd /path/to/another/project
 
 # link development build to the other project
-yarn link jest-cli
+$ yarn link jest-cli
 
-jest [options] # run jest-cli/bin/jest.js in the development build
+$ jest [options] # run jest-cli/bin/jest.js in the development build
 ```
 
 - To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.

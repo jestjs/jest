@@ -12,7 +12,7 @@
 import os from 'os';
 import path from 'path';
 import JestHasteMap from 'jest-haste-map';
-const {cleanup, writeFiles} = require('../Utils');
+import {cleanup, writeFiles} from '../Utils';
 
 const DIR = path.resolve(os.tmpdir(), 'haste_map_sha1');
 
@@ -40,6 +40,7 @@ test('exits the process after test are done but before timers complete', async (
     name: 'tmp',
     platforms: ['ios', 'android'],
     retainAllFiles: true,
+    rootDir: DIR,
     roots: [DIR],
     useWatchman: false,
     watch: false,
