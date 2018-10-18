@@ -161,6 +161,7 @@ export default class TestScheduler {
         const status = snapshot.cleanup(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
+          snapshot.buildSnapshotResolver(context.config),
         );
 
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
@@ -255,10 +256,14 @@ export default class TestScheduler {
     }
   }
 
-  _shouldAddDefaultReporters(reporters?: Array<ReporterConfig>): boolean {
+  _shouldAddDefaultReporters(
+    reporters?: Array<string | ReporterConfig>,
+  ): boolean {
     return (
       !reporters ||
-      !!reporters.find(reporterConfig => reporterConfig[0] === 'default')
+      !!reporters.find(
+        reporter => this._getReporterProps(reporter).path === 'default',
+      )
     );
   }
 
@@ -303,13 +308,11 @@ export default class TestScheduler {
     this.addReporter(new SummaryReporter(this._globalConfig));
   }
 
-  _addCustomReporters(reporters: Array<ReporterConfig>) {
-    const customReporters = reporters.filter(
-      reporterConfig => reporterConfig[0] !== 'default',
-    );
-
-    customReporters.forEach((reporter, index) => {
+  _addCustomReporters(reporters: Array<string | ReporterConfig>) {
+    reporters.forEach((reporter, index) => {
       const {options, path} = this._getReporterProps(reporter);
+
+      if (path === 'default') return;
 
       try {
         // $FlowFixMe
@@ -331,7 +334,7 @@ export default class TestScheduler {
    * to make dealing with them less painful.
    */
   _getReporterProps(
-    reporter: ReporterConfig,
+    reporter: string | ReporterConfig,
   ): {path: string, options?: Object} {
     if (typeof reporter === 'string') {
       return {options: this._options, path: reporter};

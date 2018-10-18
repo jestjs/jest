@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('does not crash when expect involving a DOM node fails', () => {
   const result = runJest('compare-dom-nodes');

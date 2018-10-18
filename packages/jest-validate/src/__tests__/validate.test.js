@@ -18,7 +18,7 @@ const {
   deprecatedConfig,
 } = require('./fixtures/jest_config');
 
-test('validates default Jest config', () => {
+test('recursively validates default Jest config', () => {
   expect(
     validate(defaultConfig, {
       exampleConfig: validConfig,
@@ -29,7 +29,7 @@ test('validates default Jest config', () => {
   });
 });
 
-test('validates default jest-validate config', () => {
+test('recursively validates default jest-validate config', () => {
   expect(
     validate(jestValidateDefaultConfig, {
       exampleConfig: jestValidateExampleConfig,
@@ -40,19 +40,17 @@ test('validates default jest-validate config', () => {
   });
 });
 
-[
-  [{automock: []}, 'Boolean'],
-  [{coverageReporters: {}}, 'Array'],
-  [{preset: 1337}, 'String'],
-  [{haste: 42}, 'Object'],
-].forEach(([config, type]) => {
-  test(`pretty prints valid config for ${type}`, () => {
-    expect(() =>
-      validate(config, {
-        exampleConfig: validConfig,
-      }),
-    ).toThrowErrorMatchingSnapshot();
-  });
+test.each([
+  ['Boolean', {automock: []}],
+  ['Array', {coverageReporters: {}}],
+  ['String', {preset: 1337}],
+  ['Object', {haste: 42}],
+])('pretty prints valid config for %s', (type, config) => {
+  expect(() =>
+    validate(config, {
+      exampleConfig: validConfig,
+    }),
+  ).toThrowErrorMatchingSnapshot();
 });
 
 test(`pretty prints valid config for Function`, () => {
@@ -74,6 +72,54 @@ test('omits null and undefined config values', () => {
     hasDeprecationWarnings: false,
     isValid: true,
   });
+});
+
+test('recursively omits null and undefined config values', () => {
+  const config = {
+    haste: {
+      providesModuleNodeModules: null,
+    },
+  };
+  expect(
+    validate(config, {exampleConfig: validConfig, recursive: true}),
+  ).toEqual({
+    hasDeprecationWarnings: false,
+    isValid: true,
+  });
+});
+
+test('respects blacklist', () => {
+  const warn = console.warn;
+  console.warn = jest.fn();
+  const config = {
+    something: {
+      nested: {
+        some_random_key: 'value',
+        some_random_key2: 'value2',
+      },
+    },
+  };
+  const exampleConfig = {
+    something: {
+      nested: {
+        test: true,
+      },
+    },
+  };
+
+  validate(config, {exampleConfig});
+
+  expect(console.warn).toBeCalled();
+
+  console.warn.mockReset();
+
+  validate(config, {
+    exampleConfig,
+    recursiveBlacklist: ['something.nested'],
+  });
+
+  expect(console.warn).not.toBeCalled();
+  console.warn = warn;
 });
 
 test('displays warning for unknown config options', () => {

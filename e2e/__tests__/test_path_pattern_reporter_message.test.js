@@ -11,7 +11,7 @@
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
-const {cleanup, writeFiles} = require('../Utils');
+import {cleanup, writeFiles} from '../Utils';
 
 const DIR = path.resolve(os.tmpdir(), 'jest_path_pattern_reporter_message');
 

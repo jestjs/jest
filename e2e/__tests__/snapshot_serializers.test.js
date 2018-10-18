@@ -8,16 +8,16 @@
  */
 'use strict';
 
-const path = require('path');
-const {cleanup} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import {cleanup} from '../Utils';
+import {json as runWithJson} from '../runJest';
 
 const testDir = path.resolve(__dirname, '../snapshot-serializers');
 const snapshotsDir = path.resolve(testDir, '__tests__/__snapshots__');
 const snapshotPath = path.resolve(snapshotsDir, 'snapshot.test.js.snap');
 
 const runAndAssert = () => {
-  const result = runJest.json('snapshot-serializers', [
+  const result = runWithJson('snapshot-serializers', [
     '-w=1',
     '--ci=false',
     '--no-cache',

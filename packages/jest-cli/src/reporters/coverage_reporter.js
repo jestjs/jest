@@ -93,13 +93,10 @@ export default class CoverageReporter extends BaseReporter {
         reporter.dir = this._globalConfig.coverageDirectory;
       }
 
-      let coverageReporters = this._globalConfig.coverageReporters || [];
-      if (
-        !this._globalConfig.useStderr &&
-        coverageReporters.length &&
-        coverageReporters.indexOf('text') === -1
-      ) {
-        coverageReporters = coverageReporters.concat(['text-summary']);
+      const coverageReporters = this._globalConfig.coverageReporters || [];
+
+      if (!this._globalConfig.useStderr && coverageReporters.length < 1) {
+        coverageReporters.push('text-summary');
       }
 
       reporter.addAll(coverageReporters);
@@ -248,51 +245,61 @@ export default class CoverageReporter extends BaseReporter {
       };
       const coveredFiles = map.files();
       const thresholdGroups = Object.keys(globalConfig.coverageThreshold);
-      const numThresholdGroups = thresholdGroups.length;
       const groupTypeByThresholdGroup = {};
       const filesByGlob = {};
 
-      const coveredFilesSortedIntoThresholdGroup = coveredFiles.map(file => {
-        for (let i = 0; i < numThresholdGroups; i++) {
-          const thresholdGroup = thresholdGroups[i];
-          const absoluteThresholdGroup = path.resolve(thresholdGroup);
+      const coveredFilesSortedIntoThresholdGroup = coveredFiles.reduce(
+        (files, file) => {
+          const pathOrGlobMatches = thresholdGroups.reduce(
+            (agg, thresholdGroup) => {
+              const absoluteThresholdGroup = path.resolve(thresholdGroup);
 
-          // The threshold group might be a path:
+              // The threshold group might be a path:
 
-          if (file.indexOf(absoluteThresholdGroup) === 0) {
-            groupTypeByThresholdGroup[thresholdGroup] =
-              THRESHOLD_GROUP_TYPES.PATH;
-            return [file, thresholdGroup];
+              if (file.indexOf(absoluteThresholdGroup) === 0) {
+                groupTypeByThresholdGroup[thresholdGroup] =
+                  THRESHOLD_GROUP_TYPES.PATH;
+                return agg.concat([[file, thresholdGroup]]);
+              }
+
+              // If the threshold group is not a path it might be a glob:
+
+              // Note: glob.sync is slow. By memoizing the files matching each glob
+              // (rather than recalculating it for each covered file) we save a tonne
+              // of execution time.
+              if (filesByGlob[absoluteThresholdGroup] === undefined) {
+                filesByGlob[absoluteThresholdGroup] = glob
+                  .sync(absoluteThresholdGroup)
+                  .map(filePath => path.resolve(filePath));
+              }
+
+              if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
+                groupTypeByThresholdGroup[thresholdGroup] =
+                  THRESHOLD_GROUP_TYPES.GLOB;
+                return agg.concat([[file, thresholdGroup]]);
+              }
+
+              return agg;
+            },
+            [],
+          );
+
+          if (pathOrGlobMatches.length > 0) {
+            return files.concat(pathOrGlobMatches);
           }
 
-          // If the threshold group is not a path it might be a glob:
-
-          // Note: glob.sync is slow. By memoizing the files matching each glob
-          // (rather than recalculating it for each covered file) we save a tonne
-          // of execution time.
-          if (filesByGlob[absoluteThresholdGroup] === undefined) {
-            filesByGlob[absoluteThresholdGroup] = glob
-              .sync(absoluteThresholdGroup)
-              .map(filePath => path.resolve(filePath));
+          // Neither a glob or a path? Toss it in global if there's a global threshold:
+          if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
+            groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
+              THRESHOLD_GROUP_TYPES.GLOBAL;
+            return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);
           }
 
-          if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
-            groupTypeByThresholdGroup[thresholdGroup] =
-              THRESHOLD_GROUP_TYPES.GLOB;
-            return [file, thresholdGroup];
-          }
-        }
-
-        // Neither a glob or a path? Toss it in global if there's a global threshold:
-        if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
-          groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
-            THRESHOLD_GROUP_TYPES.GLOBAL;
-          return [file, THRESHOLD_GROUP_TYPES.GLOBAL];
-        }
-
-        // A covered file that doesn't have a threshold:
-        return [file, undefined];
-      });
+          // A covered file that doesn't have a threshold:
+          return files.concat([[file, undefined]]);
+        },
+        [],
+      );
 
       const getFilesInThresholdGroup = thresholdGroup =>
         coveredFilesSortedIntoThresholdGroup
@@ -364,9 +371,15 @@ export default class CoverageReporter extends BaseReporter {
             );
             break;
           default:
-            errors = errors.concat(
-              `Jest: Coverage data for ${thresholdGroup} was not found.`,
-            );
+            // If the file specified by path is not found, error is returned.
+            if (thresholdGroup !== THRESHOLD_GROUP_TYPES.GLOBAL) {
+              errors = errors.concat(
+                `Jest: Coverage data for ${thresholdGroup} was not found.`,
+              );
+            }
+          // Sometimes all files in the coverage data are matched by
+          // PATH and GLOB threshold groups in which case, don't error when
+          // the global threshold group doesn't match any files.
         }
       });
 

@@ -14,7 +14,6 @@ import {getTopFrame, getStackTraceLines} from 'jest-message-util';
 import {
   saveSnapshotFile,
   getSnapshotData,
-  getSnapshotPath,
   keyToTestName,
   serialize,
   testNameToKey,
@@ -26,7 +25,6 @@ export type SnapshotStateOptions = {|
   updateSnapshot: SnapshotUpdateState,
   getPrettier: () => null | any,
   getBabelTraverse: () => Function,
-  snapshotPath?: string,
   expand?: boolean,
 |};
 
@@ -55,8 +53,8 @@ export default class SnapshotState {
   unmatched: number;
   updated: number;
 
-  constructor(testPath: Path, options: SnapshotStateOptions) {
-    this._snapshotPath = options.snapshotPath || getSnapshotPath(testPath);
+  constructor(snapshotPath: Path, options: SnapshotStateOptions) {
+    this._snapshotPath = snapshotPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
       options.updateSnapshot,
@@ -170,7 +168,12 @@ export default class SnapshotState {
       key = testNameToKey(testName, count);
     }
 
-    this._uncheckedKeys.delete(key);
+    // Do not mark the snapshot as "checked" if the snapshot is inline and
+    // there's an external snapshot. This way the external snapshot can be
+    // removed with `--updateSnapshot`.
+    if (!(isInline && this._snapshotData[key])) {
+      this._uncheckedKeys.delete(key);
+    }
 
     const receivedSerialized = serialize(received);
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];

@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('suite with test cases that contain malformed sourcemaps', () => {
   const result = runJest('bad-source-map');
