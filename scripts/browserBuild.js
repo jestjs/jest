@@ -33,7 +33,6 @@ const babelEs5Options = {
         shippedProposals: true,
         // Target ES5
         targets: 'IE 11',
-        useBuiltIns: 'usage',
       },
     ],
     '@babel/preset-flow',
