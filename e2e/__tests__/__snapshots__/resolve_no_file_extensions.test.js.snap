@@ -31,7 +31,7 @@ exports[`show error message with matching files 1`] = `
         |                  ^
       2 | 
 
-      at packages/jest-resolve/build/index.js:221:17
+      at packages/jest-resolve/build/index.js:207:17
       at index.js:1:18
 
 "
