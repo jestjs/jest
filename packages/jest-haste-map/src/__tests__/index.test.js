@@ -211,12 +211,30 @@ describe('HasteMap', () => {
     expect(
       HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
     ).toMatch(/^\/-scoped-package-(.*)$/);
+  });
 
-    expect(
-      HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
-    ).not.toEqual(
-      HasteMap.getCacheFilePath('/', '-scoped-package', 'random-value'),
+  it('creates different cache file paths for different roots', () => {
+    jest.resetModuleRegistry();
+    const HasteMap = require('../');
+    const hasteMap1 = new HasteMap(
+      Object.assign({}, defaultConfig, {rootDir: '/root1'}),
     );
+    const hasteMap2 = new HasteMap(
+      Object.assign({}, defaultConfig, {rootDir: '/root2'}),
+    );
+    expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
+  });
+
+  it('creates different cache file paths for different projects', () => {
+    jest.resetModuleRegistry();
+    const HasteMap = require('../');
+    const hasteMap1 = new HasteMap(
+      Object.assign({}, defaultConfig, {name: '@scoped/package'}),
+    );
+    const hasteMap2 = new HasteMap(
+      Object.assign({}, defaultConfig, {name: '-scoped-package'}),
+    );
+    expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
 
   it('matches files against a pattern', () =>
