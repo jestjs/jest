@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="http://dp.hanlon.io/313y3u2D0p38/jest.png" height="150" width="150"/>
+  <img src="https://jestjs.io/img/jest.png" height="150" width="150"/>
   <p align="center">Jest</p>
   <p align="center" style="font-size: 0.5em">🃏 Delightful JavaScript Testing</p>
 </h1>
