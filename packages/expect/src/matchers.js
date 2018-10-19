@@ -327,7 +327,7 @@ const matchers: MatchersObject = {
   toContainEqual(collection: ContainIterable, value: any) {
     const collectionType = getType(collection);
     let converted = null;
-    if (collectionType === 'array') {
+    if (Array.isArray(collection)) {
       converted = collection;
     } else {
       try {
