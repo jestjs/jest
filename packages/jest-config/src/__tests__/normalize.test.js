@@ -878,6 +878,18 @@ describe('testMatch', () => {
     }).toThrowErrorMatchingSnapshot();
   });
 
+  it('throws if testRegex is provided an invalid regex string', () => {
+    expect(() => {
+      normalize(
+        {
+          rootDir: '/root',
+          testRegex: 'foo(bar',
+        },
+        {},
+      );
+    }).toThrowErrorMatchingSnapshot();
+  });
+
   it('normalizes testMatch', () => {
     const {options} = normalize(
       {

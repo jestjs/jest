@@ -551,7 +551,19 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         const valueArray = Array.isArray(valueOrEmptyArray)
           ? valueOrEmptyArray
           : [valueOrEmptyArray];
-        value = valueArray.map(replacePathSepForRegex).map(e => new RegExp(e));
+
+        value = valueArray.map(replacePathSepForRegex).map(pattern => {
+          try {
+            return new RegExp(pattern);
+          } catch (err) {
+            throw createConfigError(
+              `Error parsing configuration for ${chalk.bold(
+                key,
+              )}: "${pattern}" could not be parsed.\n` +
+                `Error: ${err.message}`,
+            );
+          }
+        });
         break;
       case 'moduleFileExtensions': {
         value = options[key];
