@@ -15,6 +15,7 @@
 - `[jest-runtime]` If `require` fails without a file extension, print all files that match with one ([#7160](https://github.com/facebook/jest/pull/7160))
 - `[jest-haste-map]` Make `ignorePattern` optional ([#7166](https://github.com/facebook/jest/pull/7166))
 - `[jest-runtime]` Remove `cacheDirectory` from `ignorePattern` for `HasteMap` if not necessary ([#7166](https://github.com/facebook/jest/pull/7166))
+- `[jest-editor-support]` and `[jest-test-typescript-pars]`: add support for describe blocks, template literals and string buffer parsing ([#7215](https://github.com/facebook/jest/pull/7215))
 
 ### Fixes
 
