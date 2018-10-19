@@ -10,6 +10,8 @@
 - `[jest-config]` Add `readConfigs` function, previously in `jest-cli` ([#7096](https://github.com/facebook/jest/pull/7096))
 - `[jest-snapshot]` Enable configurable snapshot paths ([#6143](https://github.com/facebook/jest/pull/6143))
 - `[jest-haste-map]` [**BREAKING**] Remove support for `@providesModule` ([#6104](https://github.com/facebook/jest/pull/6104))
+- `[jest-haste-map]` [**BREAKING**] Replace internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
+- `[jest-haste-map]` [**BREAKING**] Use relative paths to allow remote caching ([#7020](https://github.com/facebook/jest/pull/7020))
 - `[pretty-format]` Support HTMLCollection and NodeList in DOMCollection plugin ([#7125](https://github.com/facebook/jest/pull/7125))
 - `[jest-runtime]` Pass the normalized configuration to script transformers ([#7148](https://github.com/facebook/jest/pull/7148))
 - `[jest-runtime]` If `require` fails without a file extension, print all files that match with one ([#7160](https://github.com/facebook/jest/pull/7160))
@@ -17,13 +19,12 @@
 - `[jest-haste-map]` Add `getCacheFilePath` to get the path to the cache file for a `HasteMap` instance ([#7217](https://github.com/facebook/jest/pull/7217))
 - `[jest-runtime]` Remove `cacheDirectory` from `ignorePattern` for `HasteMap` if not necessary ([#7166](https://github.com/facebook/jest/pull/7166))
 - `[jest-validate]` Add syntax to validate multiple permitted types ([#7207](https://github.com/facebook/jest/pull/7207))
+- `[babel-preset-jest]` [**BREAKING**] Export a function instead of an object for Babel 7 compatibility ([#7203](https://github.com/facebook/jest/pull/7203))
 
 ### Fixes
 
 - `[jest-cli]` Fix coverage summary reporting ([#7058](https://github.com/facebook/jest/pull/7058))
 - `[jest-each]` Add each array validation check ([#7033](https://github.com/facebook/jest/pull/7033))
-- `[jest-haste-map]` [**BREAKING**] Replace internal data structures to improve performance ([#6960](https://github.com/facebook/jest/pull/6960))
-- `[jest-haste-map]` Use relative paths to allow remote caching ([#7020](https://github.com/facebook/jest/pull/7020))
 - `[jest-haste-map]` Do not visit again files with the same sha-1 ([#6990](https://github.com/facebook/jest/pull/6990))
 - `[jest-jasmine2]` Fix memory leak in Error objects hold by the framework ([#6965](https://github.com/facebook/jest/pull/6965))
 - `[jest-haste-map]` Fixed Haste whitelist generation for scoped modules on Windows ([#6980](https://github.com/facebook/jest/pull/6980))
@@ -47,7 +48,6 @@
 - `[jest-runtime]` Fix missing coverage when using negative glob pattern in `testMatch` ([#7170](https://github.com/facebook/jest/pull/7170))
 - `[*]` Ensure `maxWorkers` is at least 1 (was 0 in some cases where there was only 1 CPU) ([#7182](https://github.com/facebook/jest/pull/7182))
 - `[jest-runtime]` Fix transform cache invalidation when requiring a test file from multiple projects ([#7186](https://github.com/facebook/jest/pull/7186))
-- `[babel-preset-jest]` [**BREAKING**] Export a function instead of an object for Babel 7 compatibility ([#7203](https://github.com/facebook/jest/pull/7203))
 
 ### Chore & Maintenance
 
