@@ -14,7 +14,7 @@ import {ChildProcess, spawn} from 'child_process';
 import {readFile} from 'fs';
 import {readTestResults} from './readTestResults';
 import {tmpdir} from 'os';
-import {sep} from 'path';
+import {join} from 'path';
 import EventEmitter from 'events';
 import ProjectWorkspace from './project_workspace';
 import {createProcess} from './Process';
@@ -42,7 +42,7 @@ export default class Runner extends EventEmitter {
     this._createProcess = (options && options.createProcess) || createProcess;
     this.options = options || {};
     this.workspace = workspace;
-    this.outputPath = tmpdir() + sep + 'jest_runner.json';
+    this.outputPath = join(tmpdir(), 'jest_runner.json');
     this.prevMessageTypes = [];
   }
 
