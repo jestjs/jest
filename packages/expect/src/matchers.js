@@ -56,9 +56,11 @@ const matchers: MatchersObject = {
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}`
       : () => {
+          const receivedType = getType(received);
+          const expectedType = getType(expected);
           const suggestToEqual =
-            getType(received) === getType(expected) &&
-            (getType(received) === 'object' || getType(expected) === 'array') &&
+            receivedType === expectedType &&
+            (receivedType === 'object' || expectedType === 'array') &&
             equals(received, expected, [iterableEquality]);
           const oneline = isOneline(expected, received);
           const diffString = diff(expected, received, {expand: this.expand});
@@ -463,7 +465,7 @@ const matchers: MatchersObject = {
           `Expected ${EXPECTED_COLOR(
             'path',
           )} to be a string or an array. Received:\n` +
-          `  ${getType(keyPath)}: ${printReceived(keyPath)}`,
+          `  ${keyPathType}: ${printReceived(keyPath)}`,
       );
     }
 
