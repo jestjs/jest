@@ -228,7 +228,7 @@ function parserTests(parse: (file: string) => ParserResult) {
     const parseResult = parse(`${fixtures}/template-literal.example`);
 
     test(`all blocks are parsed`, () => {
-      expect(parseResult.describeBlocks.length).toEqual(5);
+      expect(parseResult.describeBlocks.length).toEqual(6);
       expect(parseResult.itBlocks.length).toEqual(7);
       expect(parseResult.expects.length).toEqual(4);
     });
@@ -327,7 +327,7 @@ function parserTests(parse: (file: string) => ParserResult) {
       const t1 = dBlock.children[0];
       const e1 = t1.children[0];
 
-      expect(dBlock.children.length).toBe(1);
+      expect(dBlock.children.length).toBe(2);
       expect(t1.children.length).toBe(1);
 
       assertBlock(t1, {column: 3, line: 29}, {column: 5, line: 31}, '');
@@ -403,9 +403,13 @@ function parserTests(parse: (file: string) => ParserResult) {
     });
     it('ignore empty/falsy string buffer', () => {
       const parseResult = parse(`${fixtures}/template-literal.example`, '');
-      expect(parseResult.describeBlocks.length).toEqual(5);
-      expect(parseResult.itBlocks.length).toEqual(7);
-      expect(parseResult.expects.length).toEqual(4);
+      let block = parseResult.itBlocks[parseResult.itBlocks.length - 1];
+      expect(block.name).toEqual('');
+      expect(block.children.length).toEqual(1);
+
+      block = parseResult.describeBlocks[parseResult.describeBlocks.length - 1];
+      expect(block.name).toEqual('empty describe should not crash');
+      expect(block.children).toBeFalsy();
     });
   });
 }

@@ -29,5 +29,5 @@ describe('edge case: should not fail', function() {
   it(``, () => {
     expect(true).toEqual(true)
   });
+  describe('empty describe should not crash')
 });
-
