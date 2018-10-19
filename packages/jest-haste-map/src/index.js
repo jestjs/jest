@@ -290,6 +290,10 @@ class HasteMap extends EventEmitter {
     );
   }
 
+  getCacheFilePath(): string {
+    return this._cachePath;
+  }
+
   build(): Promise<HasteMapObject> {
     if (!this._buildPromise) {
       this._buildPromise = this._buildFileMap()
