@@ -627,11 +627,8 @@ describe('testEnvironment', () => {
   beforeEach(() => {
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(name => {
-      if (name === 'jsdom') {
-        return 'node_modules/jsdom';
-      }
-      if (name === 'jest-environment-jsdom') {
-        return 'node_modules/jest-environment-jsdom';
+      if (['jsdom', 'jest-environment-jsdom'].includes(name)) {
+        return `node_modules/${name}`;
       }
       if (name.startsWith('/root')) {
         return name;
@@ -1130,15 +1127,8 @@ describe('runner', () => {
   beforeEach(() => {
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(name => {
-      if (name === 'eslint') {
-        return 'node_modules/eslint';
-      }
-      if (name === 'jest-runner-eslint') {
-        return 'node_modules/jest-runner-eslint';
-      }
-
-      if (name === 'my-runner-foo') {
-        return 'node_modules/my-runner-foo';
+      if (['eslint', 'jest-runner-eslint', 'my-runner-foo'].includes(name)) {
+        return `node_modules/${name}`;
       }
       if (name.startsWith('/root')) {
         return name;
@@ -1195,16 +1185,12 @@ describe('watchPlugins', () => {
   beforeEach(() => {
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(name => {
-      if (name === 'typeahead') {
-        return 'node_modules/typeahead';
-      }
-      if (name === 'jest-watch-typeahead') {
-        return 'node_modules/jest-watch-typeahead';
+      if (
+        ['typeahead', 'jest-watch-typeahead', 'my-watch-plugin'].includes(name)
+      ) {
+        return `node_modules/${name}`;
       }
 
-      if (name === 'my-watch-plugin') {
-        return 'node_modules/my-watch-plugin';
-      }
       if (name.startsWith('/root')) {
         return name;
       }
