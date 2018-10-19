@@ -263,6 +263,7 @@ class HasteMap extends EventEmitter {
       this._options.cacheDirectory,
       `haste-map-${this._options.name}-${rootDirHash}`,
       VERSION,
+      this._options.name,
       this._options.roots
         .map(root => fastPath.relative(options.rootDir, root))
         .join(':'),
@@ -283,7 +284,7 @@ class HasteMap extends EventEmitter {
     name: string,
     ...extra: Array<string>
   ): string {
-    const hash = crypto.createHash('md5').update(name + extra.join(''));
+    const hash = crypto.createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
