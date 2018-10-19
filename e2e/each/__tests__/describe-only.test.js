@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable jest/no-focused-tests */
+
 describe.only.each([[true, true], [true, true]])(
   'passes all rows expected %s == %s',
   (left, right) => {

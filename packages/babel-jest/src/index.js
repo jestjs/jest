@@ -18,7 +18,6 @@ import type {
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import jestPreset from 'babel-preset-jest';
 import {transform as babelTransform, util as babelUtil} from 'babel-core';
 import babelIstanbulPlugin from 'babel-plugin-istanbul';
 
@@ -28,6 +27,7 @@ const BABEL_CONFIG_JS_FILENAME = 'babel.config.js';
 const BABEL_CONFIG_KEY = 'babel';
 const PACKAGE_JSON = 'package.json';
 const THIS_FILE = fs.readFileSync(__filename);
+const jestPresetPath = require.resolve('babel-preset-jest');
 
 const createTransformer = (options: any): Transformer => {
   const cache = Object.create(null);
@@ -81,7 +81,7 @@ const createTransformer = (options: any): Transformer => {
   options = Object.assign({}, options, {
     compact: false,
     plugins: (options && options.plugins) || [],
-    presets: ((options && options.presets) || []).concat([jestPreset]),
+    presets: ((options && options.presets) || []).concat(jestPresetPath),
     sourceMaps: 'both',
   });
   delete options.cacheDirectory;
