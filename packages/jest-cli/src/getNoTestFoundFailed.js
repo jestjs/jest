@@ -1,3 +1,5 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 import chalk from 'chalk';
 
 export default function getNoTestFoundFailed() {

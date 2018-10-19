@@ -17,12 +17,13 @@ exports[`prints out info about open handlers from inside tests 1`] = `
 
   ●  Timeout
 
-      1 | test('something', () => {
-    > 2 |   setTimeout(() => {}, 30000);
+      2 | 
+      3 | test('something', () => {
+    > 4 |   setTimeout(() => {}, 30000);
         |   ^
-      3 |   expect(true).toBe(true);
-      4 | });
-      5 | 
+      5 |   expect(true).toBe(true);
+      6 | });
+      7 | 
 
-      at Object.setTimeout (__tests__/inside.js:2:3)"
+      at Object.setTimeout (__tests__/inside.js:4:3)"
 `;

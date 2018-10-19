@@ -63,11 +63,11 @@ it('prints out info about open handlers', async () => {
     `
   ●  GETADDRINFOREQWRAP
 
-      5 | const app = new Server();
-      6 | 
-    > 7 | app.listen({host: 'localhost', port: 0});
+      7 | const app = new Server();
+      8 |
+    > 9 | app.listen({host: 'localhost', port: 0});
         |     ^
-      8 | 
+     10 |
 
       at Object.listen (server.js:7:5)
       at Object.require (__tests__/outside.js:1:1)
