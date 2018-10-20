@@ -17,7 +17,7 @@ const DIR = path.resolve(os.tmpdir(), 'watch_mode_update_snapshot');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+// afterAll(() => cleanup(DIR));
 
 expect.addSnapshotSerializer({
   print: val => val.replace(/\[s\[u/g, '\n'),
@@ -26,10 +26,9 @@ expect.addSnapshotSerializer({
 
 const setupFiles = input => {
   writeFiles(DIR, {
-    '__tests__/__snapshots__/bar.spec.js.snap': `
-    // Jest Snapshot v1, https://goo.gl/fbAQLP
+    '__tests__/__snapshots__/bar.spec.js.snap': `// Jest Snapshot v1, https://goo.gl/fbAQLP
 
-      exports[\`bar 1\`] = \`"foo"\`;
+exports[\`bar 1\`] = \`"foo"\`;
     `,
     '__tests__/bar.spec.js': `
       test('bar', () => { expect('bar').toMatchSnapshot(); });
