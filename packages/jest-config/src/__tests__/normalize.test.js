@@ -11,7 +11,7 @@ import normalize from '../normalize';
 
 jest.mock('jest-resolve');
 
-jest.mock('path', () => require.requireActual('path').posix);
+jest.mock('path', () => jest.requireActual('path').posix);
 
 const crypto = require('crypto');
 const path = require('path');
@@ -1009,7 +1009,7 @@ describe('preset', () => {
 
   test('throws when preset is invalid', () => {
     jest.doMock('/node_modules/react-native/jest-preset.json', () =>
-      require.requireActual('./jest-preset.json'),
+      jest.requireActual('./jest-preset.json'),
     );
 
     expect(() => {
@@ -1263,7 +1263,7 @@ describe('testPathPattern', () => {
 
       describe('win32', () => {
         beforeEach(() => {
-          jest.mock('path', () => require.requireActual('path').win32);
+          jest.mock('path', () => jest.requireActual('path').win32);
           require('jest-resolve').findNodeModule = findNodeModule;
         });
 

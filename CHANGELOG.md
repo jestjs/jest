@@ -71,6 +71,7 @@
 - `[docs]` Removed useless expect.assertions in `TestingAsyncCode.md` ([#7131](https://github.com/facebook/jest/pull/7131))
 - `[docs]` Remove references to `@providesModule` which isn't supported anymore ([#7147](https://github.com/facebook/jest/pull/7147))
 - `[docs]` Update `setupFiles` documentation for clarity ([#7187](https://github.com/facebook/jest/pull/7187))
+- `[docs]` Change `require.require*` to `jest.require*` ([#7210](https://github.com/facebook/jest/pull/7210))
 - `[jest-circus]` Add readme.md ([#7198](https://github.com/facebook/jest/pull/7198))
 
 ### Performance
