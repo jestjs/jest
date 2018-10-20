@@ -111,7 +111,7 @@ test(<span class="hljs-string">'может добавить запись'</span>
 <p>Если <code>afterEach</code> находится внутри блока <code>describe</code>, то он запускается только после каждого теста внутри блока describe.</p>
 <p>Если вы хотите провести очистку только один раз, после всех тестов, используйте <code>afterAll</code>.</p>
 <h3><a class="anchor" aria-hidden="true" id="beforeallfn-timeout"></a><a href="#beforeallfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeAll(fn, timeout)</code></h3>
-<p>Runs a function before any of the tests in this file run. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running tests.</p>
+<p>Выполняет функцию перед выполнением тестов в текущем файле. Если функция возвращает промис или является генератором, Jest ждет пока промис решится, а затем запускает тесты.</p>
 <p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
 <p>Это может быть полезно, если вы хотите установить некоторое глобальное состояние, которое будет использовано многими текстами.</p>
 <p>Например:</p>
@@ -212,12 +212,12 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="describeeachtable-name-fn"></a><a href="#describeeachtable-name-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.each(table)(name, fn)</code></h3>
-<p>Use <code>describe.each</code> if you keep duplicating the same test suites with different data. <code>describe.each</code> allows you to write the test suite once and pass data in.</p>
+<p>Используйте <code>describe.each</code> если собираетесь дублировать одинаковые тесты с разными данными. <code>describe.each</code> позволяет вам писать наборы тестов один раз и передавать в него данные.</p>
 <p><code>describe.each</code> is available with two APIs:</p>
 <h4><a class="anchor" aria-hidden="true" id="1-describeeachtable-name-fn"></a><a href="#1-describeeachtable-name-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. <code>describe.each(table)(name, fn)</code></h4>
 <ul>
 <li><code>table</code>: <code>Array</code> of Arrays with the arguments that are passed into the <code>fn</code> for each row.</li>
-<li><code>name</code>: <code>Строка</code> the title of the test suite.
+<li><code>name</code>: <code>Строка</code> название теста.
 <ul>
 <li>Generate unique test titles by positionally injecting parameters with <a href="https://nodejs.org/api/util.html#util_util_format_format_args"><code>printf</code> formatting</a>:
 <ul>
@@ -407,8 +407,8 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 </code></pre>
 <p>Even though the call to <code>test</code> will return right away, the test doesn't complete until the promise resolves as well.</p>
 <h3><a class="anchor" aria-hidden="true" id="testeachtable-name-fn"></a><a href="#testeachtable-name-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.each(table)(name, fn)</code></h3>
-<p>Also under the alias: <code>it.each(table)(name, fn)</code> and <code>it.each`table`(name, fn)</code></p>
-<p>Use <code>test.each</code> if you keep duplicating the same test with different data. <code>test.each</code> allows you to write the test once and pass data in.</p>
+<p>Можно воспользоваться алиасами: <code>it.each(table)(name, fn)</code> и <code>it.each`table`(name, fn)</code></p>
+<p>Используйте <code>test.each</code> если собираетесь дублировать одинаковые тесты с разными данными. <code>test.each</code> позволяет вам писать тест один раз и передавать в него данные.</p>
 <p><code>test.each</code> is available with two APIs:</p>
 <h4><a class="anchor" aria-hidden="true" id="1-testeachtable-name-fn"></a><a href="#1-testeachtable-name-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. <code>test.each(table)(name, fn)</code></h4>
 <ul>
