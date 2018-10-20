@@ -84,7 +84,7 @@ exports[`testPathPattern --testPathPattern ignores invalid regular expressions a
 exports[`watchPlugins throw error when a watch plugin is not found 1`] = `
 "<red><bold><bold>● <bold>Validation Error</>:</>
 <red></>
-<red>  Watch plugin <bold>missing-plugin</> cannot be found. Make sure the each element in <bold>watchPlugins</> configuration option points to an existing node module.</>
+<red>  Watch plugin <bold>missing-plugin</> cannot be found. Make sure the <bold>watchPlugins</> configuration option points to an existing node module.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
 <red>  https://jestjs.io/docs/configuration.html</>

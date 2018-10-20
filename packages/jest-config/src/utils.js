@@ -105,13 +105,17 @@ export const _replaceRootDirTags = (rootDir: string, config: any) => {
 export const resolveWithPrefix = (
   resolver: ?string,
   {
-    rootDir,
     filePath,
+    humanOptionName,
+    optionName,
     prefix,
+    rootDir,
   }: {
-    rootDir: string,
     filePath: string,
+    humanOptionName: string,
+    optionName: string,
     prefix: string,
+    rootDir: string,
   },
 ) => {
   const fileName = replaceRootDirInPath(rootDir, filePath);
@@ -138,6 +142,14 @@ export const resolveWithPrefix = (
   try {
     return require.resolve(fileName);
   } catch (e) {}
+
+  throw createValidationError(
+    `  ${humanOptionName} ${chalk.bold(
+      fileName,
+    )} cannot be found. Make sure the ${chalk.bold(
+      optionName,
+    )} configuration option points to an existing node module.`,
+  );
 };
 
 /**
@@ -151,25 +163,17 @@ export const resolveWithPrefix = (
 export const getTestEnvironment = ({
   rootDir,
   testEnvironment: filePath,
-}: Object) => {
-  const module = resolveWithPrefix(null, {
+}: {
+  rootDir: string,
+  testEnvironment: string,
+}) =>
+  resolveWithPrefix(null, {
     filePath,
+    humanOptionName: 'Test environment',
+    optionName: 'testEnvironment',
     prefix: 'jest-environment-',
     rootDir,
   });
-
-  if (!module) {
-    throw createValidationError(
-      `  Test environment ${chalk.bold(
-        replaceRootDirInPath(rootDir, filePath),
-      )} cannot be found. Make sure the ${chalk.bold(
-        'testEnvironment',
-      )} configuration option points to an existing node module.`,
-    );
-  }
-
-  return module;
-};
 
 /**
  * Finds the watch plugins to use:
@@ -182,25 +186,14 @@ export const getTestEnvironment = ({
 export const getWatchPlugin = (
   resolver: ?string,
   {filePath, rootDir}: {filePath: string, rootDir: string},
-) => {
-  const module = resolveWithPrefix(resolver, {
+) =>
+  resolveWithPrefix(resolver, {
     filePath,
+    humanOptionName: 'Watch plugin',
+    optionName: 'watchPlugins',
     prefix: 'jest-watch-',
     rootDir,
   });
-
-  if (!module) {
-    throw createValidationError(
-      `  Watch plugin ${chalk.bold(
-        replaceRootDirInPath(rootDir, filePath),
-      )} cannot be found. Make sure the each element in ${chalk.bold(
-        'watchPlugins',
-      )} configuration option points to an existing node module.`,
-    );
-  }
-
-  return module;
-};
 
 /**
  * Finds the runner to use:
@@ -213,25 +206,14 @@ export const getWatchPlugin = (
 export const getRunner = (
   resolver: ?string,
   {filePath, rootDir}: {filePath: string, rootDir: string},
-) => {
-  const module = resolveWithPrefix(resolver, {
+) =>
+  resolveWithPrefix(resolver, {
     filePath,
+    humanOptionName: 'Jest Runner',
+    optionName: 'runner',
     prefix: 'jest-runner-',
     rootDir,
   });
-
-  if (!module) {
-    throw createValidationError(
-      `  Jest Runner ${chalk.bold(
-        replaceRootDirInPath(rootDir, filePath),
-      )} cannot be found. Make sure the ${chalk.bold(
-        'runner',
-      )} configuration option points to an existing node module.`,
-    );
-  }
-
-  return module;
-};
 
 export const isJSONString = (text: ?string) =>
   text &&
