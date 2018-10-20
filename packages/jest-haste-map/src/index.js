@@ -54,7 +54,7 @@ type Options = {
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: HasteRegExp,
+  ignorePattern?: ?HasteRegExp,
   maxWorkers: number,
   mocksPattern?: string,
   name: string,
@@ -76,7 +76,7 @@ type InternalOptions = {
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: HasteRegExp,
+  ignorePattern: ?HasteRegExp,
   maxWorkers: number,
   mocksPattern: ?RegExp,
   name: string,
@@ -249,7 +249,7 @@ class HasteMap extends EventEmitter {
       watch: !!options.watch,
     };
     this._console = options.console || global.console;
-    if (!(options.ignorePattern instanceof RegExp)) {
+    if (options.ignorePattern && !(options.ignorePattern instanceof RegExp)) {
       this._console.warn(
         'jest-haste-map: the `ignorePattern` options as a function is being ' +
           'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
@@ -263,6 +263,7 @@ class HasteMap extends EventEmitter {
       this._options.cacheDirectory,
       `haste-map-${this._options.name}-${rootDirHash}`,
       VERSION,
+      this._options.name,
       this._options.roots
         .map(root => fastPath.relative(options.rootDir, root))
         .join(':'),
@@ -270,7 +271,7 @@ class HasteMap extends EventEmitter {
       this._options.platforms.join(':'),
       this._options.computeSha1.toString(),
       options.mocksPattern || '',
-      options.ignorePattern.toString(),
+      (options.ignorePattern || '').toString(),
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
@@ -283,11 +284,15 @@ class HasteMap extends EventEmitter {
     name: string,
     ...extra: Array<string>
   ): string {
-    const hash = crypto.createHash('md5').update(name + extra.join(''));
+    const hash = crypto.createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
     );
+  }
+
+  getCacheFilePath(): string {
+    return this._cachePath;
   }
 
   build(): Promise<HasteMapObject> {
@@ -966,7 +971,7 @@ class HasteMap extends EventEmitter {
     const ignoreMatched =
       ignorePattern instanceof RegExp
         ? ignorePattern.test(filePath)
-        : ignorePattern(filePath);
+        : ignorePattern && ignorePattern(filePath);
 
     return (
       ignoreMatched ||

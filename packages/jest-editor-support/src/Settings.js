@@ -28,7 +28,7 @@ import {createProcess} from './Process';
 type Glob = string;
 
 type ConfigRepresentation = {
-  testRegex: string,
+  testRegex: string | Array<string>,
   testMatch: Array<Glob>,
 };
 
@@ -59,7 +59,7 @@ export default class Settings extends EventEmitter {
     // Defaults for a Jest project
     this.settings = {
       testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
-      testRegex: '(/__tests__/.*|\\.(test|spec))\\.jsx?$',
+      testRegex: ['(/__tests__/.*|\\.(test|spec))\\.jsx?$'],
     };
 
     this.configs = [this.settings];

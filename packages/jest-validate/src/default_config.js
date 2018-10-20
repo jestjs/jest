@@ -12,7 +12,7 @@ import type {ValidationOptions} from './types';
 import {deprecationWarning} from './deprecated';
 import {unknownOptionWarning} from './warnings';
 import {errorMessage} from './errors';
-import validationCondition from './condition';
+import {validationCondition} from './condition';
 import {ERROR, DEPRECATION, WARNING} from './utils';
 
 export default ({

@@ -70,7 +70,7 @@ export default ({
   testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: '',
+  testRegex: [],
   testResultsProcessor: null,
   testRunner: 'jasmine2',
   testURL: 'http://localhost',

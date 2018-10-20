@@ -144,9 +144,6 @@ describe('HasteMap', () => {
       '/project/fruits/Banana.js': `
         const Strawberry = require("Strawberry");
       `,
-      '/project/fruits/Kiwi.js': `
-        // Kiwi!
-      `,
       '/project/fruits/Pear.js': `
         const Banana = require("Banana");
         const Strawberry = require("Strawberry");
@@ -189,7 +186,6 @@ describe('HasteMap', () => {
     defaultConfig = {
       extensions: ['js', 'json'],
       hasteImplModulePath: require.resolve('./haste_impl.js'),
-      ignorePattern: /Kiwi/,
       maxWorkers: 1,
       name: 'haste-map-test',
       platforms: ['ios', 'android'],
@@ -215,12 +211,30 @@ describe('HasteMap', () => {
     expect(
       HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
     ).toMatch(/^\/-scoped-package-(.*)$/);
+  });
 
-    expect(
-      HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
-    ).not.toEqual(
-      HasteMap.getCacheFilePath('/', '-scoped-package', 'random-value'),
+  it('creates different cache file paths for different roots', () => {
+    jest.resetModuleRegistry();
+    const HasteMap = require('../');
+    const hasteMap1 = new HasteMap(
+      Object.assign({}, defaultConfig, {rootDir: '/root1'}),
     );
+    const hasteMap2 = new HasteMap(
+      Object.assign({}, defaultConfig, {rootDir: '/root2'}),
+    );
+    expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
+  });
+
+  it('creates different cache file paths for different projects', () => {
+    jest.resetModuleRegistry();
+    const HasteMap = require('../');
+    const hasteMap1 = new HasteMap(
+      Object.assign({}, defaultConfig, {name: '@scoped/package'}),
+    );
+    const hasteMap2 = new HasteMap(
+      Object.assign({}, defaultConfig, {name: '-scoped-package'}),
+    );
+    expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
 
   it('matches files against a pattern', () =>
@@ -236,6 +250,16 @@ describe('HasteMap', () => {
         '/project/fruits/__mocks__/Pear.js',
       ]);
     }));
+
+  it('ignores files given a pattern', () => {
+    const config = Object.assign({}, defaultConfig, {ignorePattern: /Kiwi/});
+    mockFs['/project/fruits/Kiwi.js'] = `
+      // Kiwi!
+    `;
+    return new HasteMap(config).build().then(({hasteFS}) => {
+      expect(hasteFS.matchFiles(/Kiwi/)).toEqual([]);
+    });
+  });
 
   it('builds a haste map on a fresh cache', () => {
     // Include these files in the map
