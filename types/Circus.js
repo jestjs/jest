@@ -153,6 +153,7 @@ export type TestStatus = 'skip' | 'done' | 'todo';
 export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,
+  invocations: number,
   status: TestStatus,
   location: ?{|column: number, line: number|},
   testPath: Array<TestName | BlockName>,
