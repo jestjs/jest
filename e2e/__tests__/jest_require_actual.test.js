@@ -9,21 +9,21 @@
 
 'use strict';
 
-const path = require('path');
-const os = require('os');
-const {cleanup, writeFiles} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import os from 'os';
+import {cleanup, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(os.tmpdir(), 'jest_require_actual_test');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
-test('understands dependencies using require.requireActual', () => {
+test('understands dependencies using jest.requireActual', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
     '__tests__/a.test.js': `
-      const a = require.requireActual('../a');
+      const a = jest.requireActual('../a');
 
       test('a', () => {});
     `,

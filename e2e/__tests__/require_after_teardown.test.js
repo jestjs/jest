@@ -9,7 +9,7 @@
 
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('prints useful error for requires after test is done', () => {
   const {stderr} = runJest('require-after-teardown');

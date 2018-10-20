@@ -12,7 +12,7 @@
 import os from 'os';
 import path from 'path';
 import JestHasteMap from 'jest-haste-map';
-const {cleanup, writeFiles} = require('../Utils');
+import {cleanup, writeFiles} from '../Utils';
 
 const DIR = path.resolve(os.tmpdir(), 'haste_map_sha1');
 

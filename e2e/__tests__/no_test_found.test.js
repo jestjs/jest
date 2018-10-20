@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 describe('Coverage Report', () => {
   it('outputs coverage report', () => {

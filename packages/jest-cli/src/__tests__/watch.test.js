@@ -105,7 +105,7 @@ describe('Watch mode flows', () => {
   let stdin;
 
   beforeEach(() => {
-    const config = {roots: [], testPathIgnorePatterns: [], testRegex: ''};
+    const config = {roots: [], testPathIgnorePatterns: [], testRegex: []};
     pipe = {write: jest.fn()};
     globalConfig = {watch: true};
     hasteMapInstances = [{on: () => {}}];

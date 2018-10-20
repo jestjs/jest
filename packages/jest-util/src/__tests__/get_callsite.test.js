@@ -5,8 +5,8 @@ import getCallsite from '../get_callsite';
 // Node 10.5.x compatibility
 jest.mock('fs', () =>
   Object.assign({}, jest.genMockFromModule('fs'), {
-    ReadStream: require.requireActual('fs').ReadStream,
-    WriteStream: require.requireActual('fs').WriteStream,
+    ReadStream: jest.requireActual('fs').ReadStream,
+    WriteStream: jest.requireActual('fs').WriteStream,
   }),
 );
 

@@ -15,8 +15,10 @@ import {
 } from './utils';
 import validate from './validate';
 import validateCLIOptions from './validate_cli_options';
+import {MultipleValidOptions} from './condition';
 
 module.exports = {
+  MultipleValidOptions,
   ValidationError,
   createDidYouMeanMessage,
   format,

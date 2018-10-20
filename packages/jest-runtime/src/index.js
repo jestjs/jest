@@ -30,6 +30,7 @@ import ScriptTransformer from './script_transformer';
 import shouldInstrument from './should_instrument';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
+import {findSiblingsWithFileExtension} from './helpers';
 
 type Module = {|
   children: Array<Module>,
@@ -223,9 +224,15 @@ class Runtime {
     config: ProjectConfig,
     options?: HasteMapOptions,
   ): HasteMap {
-    const ignorePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
-    );
+    const ignorePatternParts = [
+      ...config.modulePathIgnorePatterns,
+      config.cacheDirectory.startsWith(config.rootDir + path.sep) &&
+        config.cacheDirectory,
+    ].filter(Boolean);
+    const ignorePattern =
+      ignorePatternParts.length > 0
+        ? new RegExp(ignorePatternParts.join('|'))
+        : null;
 
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
@@ -412,10 +419,25 @@ class Runtime {
   }
 
   requireModuleOrMock(from: Path, moduleName: string) {
-    if (this._shouldMock(from, moduleName)) {
-      return this.requireMock(from, moduleName);
-    } else {
-      return this.requireModule(from, moduleName);
+    try {
+      if (this._shouldMock(from, moduleName)) {
+        return this.requireMock(from, moduleName);
+      } else {
+        return this.requireModule(from, moduleName);
+      }
+    } catch (e) {
+      if (e.code === 'MODULE_NOT_FOUND') {
+        const appendedMessage = findSiblingsWithFileExtension(
+          this._config.moduleFileExtensions,
+          from,
+          moduleName,
+        );
+
+        if (appendedMessage) {
+          e.message += appendedMessage;
+        }
+      }
+      throw e;
     }
   }
 

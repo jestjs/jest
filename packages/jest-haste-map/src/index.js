@@ -55,7 +55,7 @@ type Options = {
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: HasteRegExp,
+  ignorePattern?: ?HasteRegExp,
   mapper?: ?Mapper,
   maxWorkers: number,
   mocksPattern?: string,
@@ -78,7 +78,7 @@ type InternalOptions = {
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: HasteRegExp,
+  ignorePattern: ?HasteRegExp,
   mapper?: ?Mapper,
   maxWorkers: number,
   mocksPattern: ?RegExp,
@@ -252,7 +252,7 @@ class HasteMap extends EventEmitter {
       watch: !!options.watch,
     };
     this._console = options.console || global.console;
-    if (!(options.ignorePattern instanceof RegExp)) {
+    if (options.ignorePattern && !(options.ignorePattern instanceof RegExp)) {
       this._console.warn(
         'jest-haste-map: the `ignorePattern` options as a function is being ' +
           'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
@@ -266,6 +266,7 @@ class HasteMap extends EventEmitter {
       this._options.cacheDirectory,
       `haste-map-${this._options.name}-${rootDirHash}`,
       VERSION,
+      this._options.name,
       this._options.roots
         .map(root => fastPath.relative(options.rootDir, root))
         .join(':'),
@@ -273,7 +274,7 @@ class HasteMap extends EventEmitter {
       this._options.platforms.join(':'),
       this._options.computeSha1.toString(),
       options.mocksPattern || '',
-      options.ignorePattern.toString(),
+      (options.ignorePattern || '').toString(),
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
@@ -286,11 +287,15 @@ class HasteMap extends EventEmitter {
     name: string,
     ...extra: Array<string>
   ): string {
-    const hash = crypto.createHash('md5').update(name + extra.join(''));
+    const hash = crypto.createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
     );
+  }
+
+  getCacheFilePath(): string {
+    return this._cachePath;
   }
 
   build(): Promise<HasteMapObject> {
@@ -401,7 +406,7 @@ class HasteMap extends EventEmitter {
       const existingModule = moduleMap[platform];
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
         const message =
-          `jest-haste-map: @providesModule naming collision:\n` +
+          `jest-haste-map: Haste module naming collision:\n` +
           `  Duplicate module name: ${id}\n` +
           `  Paths: ${fastPath.resolve(
             rootDir,
@@ -409,8 +414,8 @@ class HasteMap extends EventEmitter {
           )} collides with ` +
           `${fastPath.resolve(rootDir, existingModule[H.PATH])}\n\nThis ` +
           `${this._options.throwOnModuleCollision ? 'error' : 'warning'} ` +
-          `is caused by a @providesModule declaration ` +
-          `with the same name across two different files.`;
+          `is caused by \`hasteImpl\` returning the same name for different` +
+          ` files.`;
         if (this._options.throwOnModuleCollision) {
           throw new Error(message);
         }
@@ -970,7 +975,7 @@ class HasteMap extends EventEmitter {
     const ignoreMatched =
       ignorePattern instanceof RegExp
         ? ignorePattern.test(filePath)
-        : ignorePattern(filePath);
+        : ignorePattern && ignorePattern(filePath);
 
     return (
       ignoreMatched ||

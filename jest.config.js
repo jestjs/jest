@@ -8,9 +8,10 @@ module.exports = {
     '!**/perf/**',
     '!**/__mocks__/**',
     '!**/__tests__/**',
+    '!**/build/**',
+    '!**/vendor/**',
     '!e2e/**',
   ],
-  coverageReporters: ['json'],
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
