@@ -147,7 +147,7 @@
 <p>If a promise doesn't resolve at all, this error might be thrown:</p>
 <pre><code class="hljs">- Error: Timeout - Async callback was <span class="hljs-keyword">not</span> invoked within <span class="hljs-keyword">timeout</span> specified <span class="hljs-keyword">by</span> jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 </code></pre>
-<p>Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example <code>global.Promise = require.requireActual('promise');</code> and/or consolidate the used Promise libraries to a single one.</p>
+<p>Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example <code>global.Promise = jest.requireActual('promise');</code> and/or consolidate the used Promise libraries to a single one.</p>
 <p>If your test is long running, you may want to consider to increase the timeout by calling <code>jest.setTimeout</code></p>
 <pre><code class="hljs">jest.<span class="hljs-built_in">setTimeout</span>(<span class="hljs-number">10000</span>); <span class="hljs-comment">// 10 second timeout</span>
 </code></pre>
