@@ -147,11 +147,7 @@ async function jasmine2(
       testPath,
     });
 
-  if (config.setupFilesAfterEnv.length) {
-    for (let i = 0; i < config.setupFilesAfterEnv.length; i++) {
-      runtime.requireModule(config.setupFilesAfterEnv[i]);
-    }
-  }
+  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
 
   if (globalConfig.enabledTestsMap) {
     env.specFilter = spec => {

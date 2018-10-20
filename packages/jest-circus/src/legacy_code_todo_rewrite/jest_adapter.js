@@ -73,11 +73,7 @@ const jestAdapter = async (
     }
   });
 
-  if (config.setupFilesAfterEnv.length) {
-    for (let i = 0; i < config.setupFilesAfterEnv.length; i++) {
-      runtime.requireModule(config.setupFilesAfterEnv[i]);
-    }
-  }
+  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
 
   runtime.requireModule(testPath);
   const results = await runAndTransformResultsToJestFormat({

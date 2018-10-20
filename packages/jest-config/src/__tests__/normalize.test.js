@@ -395,18 +395,29 @@ describe('setupTestFrameworkScriptFile', () => {
     console.warn = consoleWarn;
   });
 
-  it('logs a deprecation warning and error when `setupTestFrameworkScriptFile` is used', () => {
+  it('logs a deprecation warning when `setupTestFrameworkScriptFile` is used', () => {
+    normalize(
+      {
+        rootDir: '/root/path/foo',
+        setupTestFrameworkScriptFile: 'bar/baz',
+      },
+      {},
+    );
+
+    expect(consoleWarn.mock.calls[0][0]).toMatchSnapshot();
+  });
+
+  it('logs an error when `setupTestFrameworkScriptFile` and `setupFilesAfterEnv` are used', () => {
     expect(() =>
       normalize(
         {
           rootDir: '/root/path/foo',
+          setupFilesAfterEnv: ['bar/baz'],
           setupTestFrameworkScriptFile: 'bar/baz',
         },
         {},
       ),
     ).toThrowErrorMatchingSnapshot();
-
-    expect(consoleWarn.mock.calls[0][0]).toMatchSnapshot();
   });
 });
 

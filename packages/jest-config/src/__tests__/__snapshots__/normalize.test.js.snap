@@ -47,18 +47,7 @@ exports[`rootDir throws if the options is missing a rootDir property 1`] = `
 <red></>"
 `;
 
-exports[`setupTestFrameworkScriptFile logs a deprecation warning and error when \`setupTestFrameworkScriptFile\` is used 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
-<red></>
-<red>  Options: <bold>setupTestFrameworkScriptFile</> and <bold>setupFilesAfterEnv</> cannot be used together.</>
-<red>  Please change your configuration to only use <bold>setupFilesAfterEnv</>.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
-<red></>"
-`;
-
-exports[`setupTestFrameworkScriptFile logs a deprecation warning and error when \`setupTestFrameworkScriptFile\` is used 2`] = `
+exports[`setupTestFrameworkScriptFile logs a deprecation warning when \`setupTestFrameworkScriptFile\` is used 1`] = `
 "<yellow><bold><bold>●<bold> Deprecation Warning</>:</>
 <yellow></>
 <yellow>  Option <bold>\\"setupTestFrameworkScriptFile\\"</> was replaced by configuration <bold>\\"setupFilesAfterEnv\\"</>, which supports multiple paths.</>
@@ -68,6 +57,17 @@ exports[`setupTestFrameworkScriptFile logs a deprecation warning and error when 
 <yellow>  <bold>Configuration Documentation:</></>
 <yellow>  https://jestjs.io/docs/configuration.html</>
 <yellow></>"
+`;
+
+exports[`setupTestFrameworkScriptFile logs an error when \`setupTestFrameworkScriptFile\` and \`setupFilesAfterEnv\` are used 1`] = `
+"<red><bold><bold>● <bold>Validation Error</>:</>
+<red></>
+<red>  Options: <bold>setupTestFrameworkScriptFile</> and <bold>setupFilesAfterEnv</> cannot be used together.</>
+<red>  Please change your configuration to only use <bold>setupFilesAfterEnv</>.</>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration.html</>
+<red></>"
 `;
 
 exports[`testEnvironment throws on invalid environment names 1`] = `

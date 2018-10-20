@@ -254,10 +254,6 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
     options.setupFiles = [];
   }
 
-  if (!options.setupFilesAfterEnv) {
-    options.setupFilesAfterEnv = [];
-  }
-
   return options;
 };
 
@@ -371,7 +367,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     ),
   );
 
-  if (options.setupTestFrameworkScriptFile && options.setupFilesAfterEnv) {
+  if (!options.setupFilesAfterEnv) {
+    options.setupFilesAfterEnv = [];
+  }
+
+  if (
+    options.setupTestFrameworkScriptFile &&
+    options.setupFilesAfterEnv.length >= 1
+  ) {
     throw createConfigError(
       `  Options: ${chalk.bold(
         'setupTestFrameworkScriptFile',
@@ -380,6 +383,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     'setupFilesAfterEnv',
   )}.`,
     );
+  }
+
+  if (options.setupTestFrameworkScriptFile) {
+    options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
   }
 
   if (options.preset) {
