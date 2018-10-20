@@ -19,12 +19,11 @@ import {
   buildSnapshotResolver,
 } from 'jest-snapshot';
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
-import {getTestID, getOriginalPromise} from '../utils';
+import {getTestID} from '../utils';
 import run from '../run';
 // eslint-disable-next-line import/default
 import globals from '../index';
 
-const Promise = getOriginalPromise();
 export const initialize = ({
   config,
   getPrettier,

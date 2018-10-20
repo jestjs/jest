@@ -7,11 +7,6 @@
  * @flow
  */
 
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test.
-const Promise: Class<Promise> =
-  global[Symbol.for('jest-native-promise')] || global.Promise;
-
 import PCancelable from './p_cancelable';
 import pTimeout from './p_timeout';
 

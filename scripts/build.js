@@ -166,6 +166,7 @@ function buildFile(file, silent) {
         },
       ]);
     }
+    options.plugins.push(require.resolve('./babel-plugin-jest-native-promise'));
 
     const transformed = babel.transformFileSync(file, options).code;
     const prettyCode = prettier.format(transformed, prettierConfig);

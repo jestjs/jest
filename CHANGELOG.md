@@ -80,6 +80,7 @@
 - `[jest-test-typescript-parser]` Remove from the repository ([#7232](https://github.com/facebook/jest/pull/7232))
 - `[tests]` Free tests from the dependency on value of FORCE_COLOR ([#6585](https://github.com/facebook/jest/pull/6585/files))
 - `[jest-diff]` Standardize filenames ([#7238](https://github.com/facebook/jest/pull/7238))
+- `[*]` Add babel plugin to make sure Jest is unaffected by fake Promise implementations
 
 ### Performance
 

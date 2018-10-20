@@ -2,10 +2,6 @@
 
 'use strict';
 
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test.
-const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
-
 class CancelError extends Error {
   constructor() {
     super('Promise was canceled');
