@@ -22,13 +22,19 @@ const path = require('path');
 
 const fs = require('fs');
 
-const MongodbMemoryServer = require('mongodb-memory-server');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const globalConfigPath = path.join(__dirname, 'globalConfig.json');
 
-const mongoServer = new MongodbMemoryServer.MongoMemoryServer();
+const mongoServer = new MongoMemoryServer({
+  autoStart: false,
+});
 
-module.exports = async function() {
+module.exports = async () => {
+  if (!mongod.isRunning) {
+    await mongod.start();
+  }
+
   const mongoConfig = {
     mongoDBName: 'jest',
     mongoUri: await mongoServer.getConnectionString(),
