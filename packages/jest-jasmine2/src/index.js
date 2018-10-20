@@ -127,10 +127,6 @@ async function jasmine2(
       testPath,
     });
 
-  if (config.setupTestFrameworkScriptFile) {
-    runtime.requireModule(config.setupTestFrameworkScriptFile);
-  }
-
   if (config.setupFilesAfterEnv.length) {
     for (let i = 0; i < config.setupFilesAfterEnv.length; i++) {
       runtime.requireModule(config.setupFilesAfterEnv[i]);

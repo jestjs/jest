@@ -62,7 +62,6 @@ export default ({
   runner: 'jest-runner',
   setupFiles: [],
   setupFilesAfterEnv: [],
-  setupTestFrameworkScriptFile: null,
   skipFilter: false,
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',

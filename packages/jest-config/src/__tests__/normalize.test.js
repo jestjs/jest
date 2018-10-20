@@ -379,7 +379,11 @@ describe('setupFilesAfterEnv', () => {
 
 describe('setupTestFrameworkScriptFile', () => {
   let Resolver;
+  let consoleWarn;
+
   beforeEach(() => {
+    console.warn = jest.fn();
+    consoleWarn = console.warn;
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(
       name =>
@@ -387,40 +391,22 @@ describe('setupTestFrameworkScriptFile', () => {
     );
   });
 
-  it('normalizes the path according to rootDir', () => {
-    const {options} = normalize(
-      {
-        rootDir: '/root/path/foo',
-        setupTestFrameworkScriptFile: 'bar/baz',
-      },
-      {},
-    );
-
-    expect(options.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
+  afterEach(() => {
+    console.warn = consoleWarn;
   });
 
-  it('does not change absolute paths', () => {
-    const {options} = normalize(
-      {
-        rootDir: '/root/path/foo',
-        setupTestFrameworkScriptFile: '/an/abs/path',
-      },
-      {},
-    );
+  it('logs a deprecation warning and error when `setupTestFrameworkScriptFile` is used', () => {
+    expect(() =>
+      normalize(
+        {
+          rootDir: '/root/path/foo',
+          setupTestFrameworkScriptFile: 'bar/baz',
+        },
+        {},
+      ),
+    ).toThrowErrorMatchingSnapshot();
 
-    expect(options.setupTestFrameworkScriptFile).toEqual(expectedPathAbs);
-  });
-
-  it('substitutes <rootDir> tokens', () => {
-    const {options} = normalize(
-      {
-        rootDir: '/root/path/foo',
-        setupTestFrameworkScriptFile: '<rootDir>/bar/baz',
-      },
-      {},
-    );
-
-    expect(options.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
+    expect(consoleWarn.mock.calls[0][0]).toMatchSnapshot();
   });
 });
 

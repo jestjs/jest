@@ -100,7 +100,6 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   runner: 'jest-runner',
   setupFiles: [],
   setupFilesAfterEnv: [],
-  setupTestFrameworkScriptFile: null,
   skipFilter: false,
   skipNodeResolution: false,
   snapshotResolver: null,

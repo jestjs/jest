@@ -110,10 +110,6 @@ const setupPreset = (
     options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
   }
 
-  if (!options.setupFilesAfterEnv) {
-    options.setupFilesAfterEnv = [];
-  }
-
   if (options.modulePathIgnorePatterns && preset.modulePathIgnorePatterns) {
     options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
       options.modulePathIgnorePatterns,
@@ -258,6 +254,10 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
     options.setupFiles = [];
   }
 
+  if (!options.setupFilesAfterEnv) {
+    options.setupFilesAfterEnv = [];
+  }
+
   return options;
 };
 
@@ -371,6 +371,17 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     ),
   );
 
+  if (options.setupTestFrameworkScriptFile && options.setupFilesAfterEnv) {
+    throw createConfigError(
+      `  Options: ${chalk.bold(
+        'setupTestFrameworkScriptFile',
+      )} and ${chalk.bold('setupFilesAfterEnv')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold(
+    'setupFilesAfterEnv',
+  )}.`,
+    );
+  }
+
   if (options.preset) {
     options = setupPreset(options, options.preset);
   }
@@ -458,7 +469,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'globalTeardown':
       case 'moduleLoader':
       case 'runner':
-      case 'setupTestFrameworkScriptFile':
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':

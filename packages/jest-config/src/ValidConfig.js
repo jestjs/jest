@@ -88,7 +88,6 @@ export default ({
   runner: 'jest-runner',
   setupFiles: ['<rootDir>/setup.js'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
-  setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,
