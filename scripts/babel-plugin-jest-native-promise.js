@@ -10,21 +10,22 @@
 // This plugin exists to make sure that we use a `Promise` that has not been messed with by user code.
 // Might consider extending this to other globals as well in the future
 
-const jestPromise =
-  "(global[Symbol.for('jest-native-promise')] || global.Promise)";
+module.exports = ({template}) => {
+  const promiseDeclaration = template(`
+    var Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
+  `);
 
-module.exports = () => ({
-  name: 'jest-native-promise',
-  visitor: {
-    MemberExpression(path) {
-      if (path.node.object.name === 'Promise') {
-        path.node.object.name = jestPromise;
-      }
+  return {
+    name: 'jest-native-promise',
+    visitor: {
+      ReferencedIdentifier(path, state) {
+        if (path.node.name === 'Promise' && !state.injectedPromise) {
+          state.injectedPromise = true;
+          path
+            .findParent(p => p.isProgram())
+            .unshiftContainer('body', promiseDeclaration());
+        }
+      },
     },
-    NewExpression(path) {
-      if (path.node.callee.name === 'Promise') {
-        path.node.callee.name = jestPromise;
-      }
-    },
-  },
-});
+  };
+};
