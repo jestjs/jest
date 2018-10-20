@@ -19,12 +19,7 @@ export default function(globalObject: Global, globals: ConfigGlobals) {
   globalObject.process = createProcessObject();
 
   // Keep a reference to "Promise", since "jasmine_light.js" needs it.
-  Object.defineProperty(globalObject, 'jest-promise-stay-away', {
-    configurable: false,
-    enumerable: false,
-    value: Promise,
-    writable: false,
-  });
+  globalObject[globalObject.Symbol.for('jest-native-promise')] = Promise;
 
   // Forward some APIs.
   DTRACE.forEach(dtrace => {

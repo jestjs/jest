@@ -10,7 +10,8 @@
 // This plugin exists to make sure that we use a `Promise` that has not been messed with by user code.
 // Might consider extending this to other globals as well in the future
 
-const jestPromise = "(global['jest-promise-stay-away'] || global.Promise)";
+const jestPromise =
+  "(global[Symbol.for('jest-native-promise')] || global.Promise)";
 
 module.exports = () => ({
   name: 'jest-native-promise',
