@@ -67,6 +67,17 @@ exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
 <red></>"
 `;
 
+exports[`testMatch throws if testRegex is provided an invalid regex string 1`] = `
+"<red><bold><bold>● <bold>Validation Error</>:</>
+<red></>
+<red>Error parsing configuration for <bold>testRegex</>: \\"foo(bar\\" could not be parsed.</>
+<red>Error: Invalid regular expression: /foo(bar/: Unterminated group</>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration.html</>
+<red></>"
+`;
+
 exports[`testPathPattern <regexForTestFiles> ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</>"`;
 
 exports[`testPathPattern --testPathPattern ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</>"`;

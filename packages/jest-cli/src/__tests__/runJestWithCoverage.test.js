@@ -51,7 +51,7 @@ jest.mock(
     },
 );
 
-const config = {roots: [], testPathIgnorePatterns: [], testRegex: ''};
+const config = {roots: [], testPathIgnorePatterns: [], testRegex: []};
 let globalConfig;
 const defaults = {
   changedFilesPromise: Promise.resolve({
