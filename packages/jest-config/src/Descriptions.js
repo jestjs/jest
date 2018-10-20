@@ -71,7 +71,8 @@ export default ({
   testMatch: 'The glob patterns Jest uses to detect test files',
   testPathIgnorePatterns:
     'An array of regexp pattern strings that are matched against all test paths, matched tests are skipped',
-  testRegex: 'The regexp pattern Jest uses to detect test files',
+  testRegex:
+    'The regexp pattern or array of patterns that Jest uses to detect test files',
   testResultsProcessor:
     'This option allows the use of a custom results processor',
   testRunner: 'This option allows use of a custom test runner',

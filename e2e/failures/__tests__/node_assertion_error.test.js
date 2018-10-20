@@ -76,3 +76,7 @@ test('assert.doesNotThrow', () => {
 test('assert.throws', () => {
   assert.throws(() => {});
 });
+
+test('async', async () => {
+  assert.equal('hello\ngoodbye', 'hello', 'hmmm');
+});

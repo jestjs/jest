@@ -128,12 +128,16 @@ export const runAndTransformResultsToJestFormat = async ({
   let numFailingTests = 0;
   let numPassingTests = 0;
   let numPendingTests = 0;
+  let numTodoTests = 0;
 
   const assertionResults = runResult.testResults.map(testResult => {
     let status: Status;
     if (testResult.status === 'skip') {
       status = 'pending';
       numPendingTests += 1;
+    } else if (testResult.status === 'todo') {
+      status = 'todo';
+      numTodoTests += 1;
     } else if (testResult.errors.length) {
       status = 'failed';
       numFailingTests += 1;
@@ -190,6 +194,7 @@ export const runAndTransformResultsToJestFormat = async ({
     numFailingTests,
     numPassingTests,
     numPendingTests,
+    numTodoTests,
     openHandles: [],
     perfStats: {
       // populated outside

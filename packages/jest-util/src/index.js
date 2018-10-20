@@ -12,6 +12,7 @@ import mkdirp from 'mkdirp';
 import BufferedConsole from './buffered_console';
 import clearLine from './clear_line';
 import Console from './Console';
+import ErrorWithStack from './error_with_stack';
 import FakeTimers from './fake_timers';
 import formatTestResults from './format_test_results';
 import getFailedSnapshotTests from './get_failed_snapshot_tests';
@@ -37,6 +38,7 @@ const createDirectory = (path: string) => {
 module.exports = {
   BufferedConsole,
   Console,
+  ErrorWithStack,
   FakeTimers,
   NullConsole,
   clearLine,

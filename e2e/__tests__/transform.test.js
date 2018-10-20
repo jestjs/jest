@@ -7,16 +7,16 @@
  * @flow
  */
 
-const path = require('path');
-const {
-  run,
+import path from 'path';
+import {
   cleanup,
+  copyDir,
   createEmptyPackage,
   linkJestPackage,
-  copyDir,
-} = require('../Utils');
-const runJest = require('../runJest');
-const os = require('os');
+  run,
+} from '../Utils';
+import runJest, {json as runWithJson} from '../runJest';
+import os from 'os';
 
 describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
@@ -27,7 +27,7 @@ describe('babel-jest', () => {
 
   it('runs transpiled code', () => {
     // --no-cache because babel can cache stuff and result in false green
-    const {json} = runJest.json(dir, ['--no-cache']);
+    const {json} = runWithJson(dir, ['--no-cache']);
     expect(json.success).toBe(true);
     expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
   });
@@ -83,7 +83,7 @@ describe('custom transformer', () => {
   );
 
   it('proprocesses files', () => {
-    const {json, stderr} = runJest.json(dir, ['--no-cache']);
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
     expect(stderr).toMatch(/FAIL/);
     expect(stderr).toMatch(/instruments by setting.*global\.__INSTRUMENTED__/);
     expect(json.numTotalTests).toBe(2);
@@ -107,7 +107,7 @@ describe('multiple-transformers', () => {
   });
 
   it('transforms dependencies using specific transformers', () => {
-    const {json, stderr} = runJest.json(dir, ['--no-cache']);
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
 
     expect(stderr).toMatch(/PASS/);
     expect(json.numTotalTests).toBe(1);
@@ -124,7 +124,7 @@ describe('ecmascript-modules-support', () => {
 
   it('runs transpiled code', () => {
     // --no-cache because babel can cache stuff and result in false green
-    const {json} = runJest.json(dir, ['--no-cache']);
+    const {json} = runWithJson(dir, ['--no-cache']);
     expect(json.success).toBe(true);
     expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
   });

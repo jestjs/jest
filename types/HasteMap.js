@@ -48,6 +48,7 @@ export type HasteMap = {|
 |};
 
 export type RawModuleMap = {|
+  rootDir: Path,
   duplicates: DuplicatesIndex,
   map: ModuleMapData,
   mocks: MockData,

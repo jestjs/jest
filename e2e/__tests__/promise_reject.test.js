@@ -7,10 +7,11 @@
  * @flow
  */
 'use strict';
+
 import runJest from '../runJest';
 import path from 'path';
+import {cleanup, writeFiles} from '../Utils';
 
-const {cleanup, writeFiles} = require('../Utils');
 const DIR = path.resolve('../promise-reject');
 
 beforeEach(() => cleanup(DIR));

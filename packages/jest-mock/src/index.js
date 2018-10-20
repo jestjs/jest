@@ -173,31 +173,36 @@ function matchArity(fn: any, length: number): any {
   return mockConstructor;
 }
 
-function isA(typeName: string, value: any): boolean {
-  return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
+function getObjectType(value: any): string {
+  return Object.prototype.toString.apply(value).slice(8, -1);
 }
 
 function getType(ref?: any): string | null {
+  const typeName = getObjectType(ref);
   if (
-    isA('Function', ref) ||
-    isA('AsyncFunction', ref) ||
-    isA('GeneratorFunction', ref)
+    typeName === 'Function' ||
+    typeName === 'AsyncFunction' ||
+    typeName === 'GeneratorFunction'
   ) {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
-  } else if (isA('Object', ref)) {
+  } else if (typeName === 'Object') {
     return 'object';
   } else if (
-    isA('Number', ref) ||
-    isA('String', ref) ||
-    isA('Boolean', ref) ||
-    isA('Symbol', ref)
+    typeName === 'Number' ||
+    typeName === 'String' ||
+    typeName === 'Boolean' ||
+    typeName === 'Symbol'
   ) {
     return 'constant';
-  } else if (isA('Map', ref) || isA('WeakMap', ref) || isA('Set', ref)) {
+  } else if (
+    typeName === 'Map' ||
+    typeName === 'WeakMap' ||
+    typeName === 'Set'
+  ) {
     return 'collection';
-  } else if (isA('RegExp', ref)) {
+  } else if (typeName === 'RegExp') {
     return 'regexp';
   } else if (ref === undefined) {
     return 'undefined';
@@ -209,21 +214,31 @@ function getType(ref?: any): string | null {
 }
 
 function isReadonlyProp(object: any, prop: string): boolean {
-  return (
-    ((prop === 'arguments' ||
-      prop === 'caller' ||
-      prop === 'callee' ||
-      prop === 'name' ||
-      prop === 'length') &&
-      (isA('Function', object) ||
-        isA('AsyncFunction', object) ||
-        isA('GeneratorFunction', object))) ||
-    ((prop === 'source' ||
-      prop === 'global' ||
-      prop === 'ignoreCase' ||
-      prop === 'multiline') &&
-      isA('RegExp', object))
-  );
+  if (
+    prop === 'arguments' ||
+    prop === 'caller' ||
+    prop === 'callee' ||
+    prop === 'name' ||
+    prop === 'length'
+  ) {
+    const typeName = getObjectType(object);
+    return (
+      typeName === 'Function' ||
+      typeName === 'AsyncFunction' ||
+      typeName === 'GeneratorFunction'
+    );
+  }
+
+  if (
+    prop === 'source' ||
+    prop === 'global' ||
+    prop === 'ignoreCase' ||
+    prop === 'multiline'
+  ) {
+    return getObjectType(object) === 'RegExp';
+  }
+
+  return false;
 }
 
 class ModuleMockerClass {
@@ -687,7 +702,7 @@ class ModuleMockerClass {
       return metadata;
     } else if (type === 'function') {
       metadata.name = component.name;
-      if (component._isMockFunction) {
+      if (component._isMockFunction === true) {
         metadata.mockImpl = component.getMockImplementation();
       }
     }
@@ -702,7 +717,7 @@ class ModuleMockerClass {
         this._getSlots(component).forEach(slot => {
           if (
             type === 'function' &&
-            component._isMockFunction &&
+            component._isMockFunction === true &&
             slot.match(/^mock/)
           ) {
             return;
@@ -727,7 +742,7 @@ class ModuleMockerClass {
   }
 
   isMockFunction(fn: any): boolean {
-    return !!(fn && fn._isMockFunction);
+    return !!fn && fn._isMockFunction === true;
   }
 
   fn(implementation?: any): any {

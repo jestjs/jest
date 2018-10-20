@@ -434,14 +434,6 @@ test('will be ran', () => {
 });
 ```
 
-### `require.requireActual(moduleName)`
-
-Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
-
-### `require.requireMock(moduleName)`
-
-Returns a mock module instead of the actual module, bypassing all checks on whether the module should be required normally or not.
-
 ### `test(name, fn, timeout)`
 
 Also under the alias: `it(name, fn, timeout)`
@@ -654,4 +646,22 @@ test.skip.each`
 test('will be ran', () => {
   expect(1 / 0).toBe(Infinity);
 });
+```
+
+### `test.todo(name)`
+
+Use `test.todo` when you are planning on writing tests. These tests will be highlighted in the summary output at the end so you know how many tests you still need todo.
+
+_Note_: If you supply a test callback function then the `test.todo` will throw an error. If you have already implemented the test and it is broken and you do not want it to run, then use `test.skip` instead.
+
+#### API
+
+- `name`: `String` the title of the test plan.
+
+Example:
+
+```js
+const add = (a, b) => a + b;
+
+test.todo('add should be associative');
 ```

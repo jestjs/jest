@@ -456,6 +456,7 @@ exports[`works with node assert 1`] = `
   ✕ assert.ifError
   ✕ assert.doesNotThrow
   ✕ assert.throws
+  ✕ async
 
   ● assert
 
@@ -809,8 +810,42 @@ exports[`works with node assert 1`] = `
          |          ^
       78 | });
       79 | 
+      80 | test('async', async () => {
 
       at __tests__/node_assertion_error.test.js:77:10
+
+  ● async
+
+    assert.equal(received, expected) or assert(received) 
+
+    Expected value to be equal to:
+      \\"hello\\"
+    Received:
+      \\"hello
+    goodbye\\"
+
+    Message:
+      hmmm
+
+    Difference:
+
+    - Expected
+    + Received
+
+      hello
+    + goodbye
+
+      79 | 
+      80 | test('async', async () => {
+    > 81 |   assert.equal('hello\\\\ngoodbye', 'hello', 'hmmm');
+         |          ^
+      82 | });
+      83 | 
+
+      at __tests__/node_assertion_error.test.js:81:10
+      at __tests__/node_assertion_error.test.js:12:191
+      at __tests__/node_assertion_error.test.js:12:437
+      at __tests__/node_assertion_error.test.js:12:99
 
 "
 `;

@@ -11,13 +11,13 @@
 
 import type {Path} from 'types/Config';
 
-const {sync: spawnSync} = require('execa');
-const fs = require('fs');
-const path = require('path');
-const mkdirp = require('mkdirp');
-const rimraf = require('rimraf');
+import {sync as spawnSync} from 'execa';
+import fs from 'fs';
+import path from 'path';
+import mkdirp from 'mkdirp';
+import rimraf from 'rimraf';
 
-const run = (cmd: string, cwd?: Path) => {
+export const run = (cmd: string, cwd?: Path) => {
   const args = cmd.split(/\s/).slice(1);
   const spawnOptions = {cwd, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions);
@@ -39,7 +39,7 @@ const run = (cmd: string, cwd?: Path) => {
   return result;
 };
 
-const linkJestPackage = (packageName: string, cwd: Path) => {
+export const linkJestPackage = (packageName: string, cwd: Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
@@ -48,9 +48,9 @@ const linkJestPackage = (packageName: string, cwd: Path) => {
   fs.symlinkSync(packagePath, destination, 'dir');
 };
 
-const makeTemplate = (str: string): ((values?: Array<any>) => string) => (
-  values: ?Array<any>,
-) =>
+export const makeTemplate = (
+  str: string,
+): ((values?: Array<any>) => string) => (values: ?Array<any>) =>
   str.replace(/\$(\d+)/g, (match, number) => {
     if (!Array.isArray(values)) {
       throw new Error('Array of values must be passed to the template.');
@@ -58,7 +58,7 @@ const makeTemplate = (str: string): ((values?: Array<any>) => string) => (
     return values[number - 1];
   });
 
-const cleanup = (directory: string) => rimraf.sync(directory);
+export const cleanup = (directory: string) => rimraf.sync(directory);
 
 /**
  * Creates a nested directory with files and their contents
@@ -70,7 +70,10 @@ const cleanup = (directory: string) => rimraf.sync(directory);
  *   }
  * );
  */
-const writeFiles = (directory: string, files: {[filename: string]: string}) => {
+export const writeFiles = (
+  directory: string,
+  files: {[filename: string]: string},
+) => {
   mkdirp.sync(directory);
   Object.keys(files).forEach(fileOrPath => {
     const filePath = fileOrPath.split('/'); // ['tmp', 'a.js']
@@ -86,7 +89,7 @@ const writeFiles = (directory: string, files: {[filename: string]: string}) => {
   });
 };
 
-const copyDir = (src: string, dest: string) => {
+export const copyDir = (src: string, dest: string) => {
   const srcStat = fs.lstatSync(src);
   if (srcStat.isDirectory()) {
     if (!fs.existsSync(dest)) {
@@ -100,7 +103,21 @@ const copyDir = (src: string, dest: string) => {
   }
 };
 
-const createEmptyPackage = (
+export const replaceTime = (str: string) =>
+  str
+    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
+    .replace(/, estimated <<REPLACED>>/g, '');
+
+// Since Jest does not guarantee the order of tests we'll sort the output.
+export const sortLines = (output: string) =>
+  output
+    .split('\n')
+    .sort()
+    .map(str => str.trim())
+    .filter(Boolean)
+    .join('\n');
+
+export const createEmptyPackage = (
   directory: Path,
   packageJson?: {[keys: string]: any},
 ) => {
@@ -119,14 +136,7 @@ const createEmptyPackage = (
   );
 };
 
-type ExtractSummaryOptions = {|
-  stripLocation: boolean,
-|};
-
-const extractSummary = (
-  stdout: string,
-  {stripLocation = false}: ExtractSummaryOptions = {},
-) => {
+export const extractSummary = (stdout: string) => {
   const match = stdout.match(
     /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
   );
@@ -140,31 +150,75 @@ const extractSummary = (
     );
   }
 
-  const summary = match[0]
-    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
-    .replace(/, estimated <<REPLACED>>/g, '');
+  const summary = replaceTime(match[0]);
 
-  let rest = cleanupStackTrace(
+  const rest = cleanupStackTrace(
     // remove all timestamps
     stdout.replace(match[0], '').replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
   );
 
-  if (stripLocation) {
-    rest = rest.replace(/(at .*):\d+:\d+/g, '$1:<<LINE>>:<<COLUMN>>');
+  return {rest, summary};
+};
+
+const sortTests = (stdout: string) =>
+  stdout
+    .split('\n')
+    .reduce((tests, line, i) => {
+      if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
+        tests.push([line.trimRight()]);
+      } else if (line) {
+        tests[tests.length - 1].push(line.trimRight());
+      }
+      return tests;
+    }, [])
+    .sort(([a], [b]) => (a > b ? 1 : -1))
+    .reduce(
+      (array, lines = []) =>
+        lines.length > 1 ? array.concat(lines, '') : array.concat(lines),
+      [],
+    )
+    .join('\n');
+
+export const extractSortedSummary = (stdout: string) => {
+  const {rest, summary} = extractSummary(stdout);
+  return {
+    rest: sortTests(replaceTime(rest)),
+    summary,
+  };
+};
+
+export const extractSummaries = (
+  stdout: string,
+): Array<{rest: string, summary: string}> => {
+  const regex = /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
+
+  let match = regex.exec(stdout);
+  const matches = [];
+
+  while (match) {
+    matches.push(match);
+    match = regex.exec(stdout);
   }
 
-  return {rest, summary};
+  return matches
+    .map((currentMatch, i) => {
+      const prevMatch = matches[i - 1];
+      const start = prevMatch ? prevMatch.index + prevMatch[0].length : 0;
+      const end = currentMatch.index + currentMatch[0].length;
+      return {end, start};
+    })
+    .map(({start, end}) => extractSortedSummary(stdout.slice(start, end)));
 };
 
 // different versions of Node print different stack traces. This function
 // unifies their output to make it possible to snapshot them.
 // TODO: Remove when we drop support for node 4
-const cleanupStackTrace = (output: string) =>
+export const cleanupStackTrace = (output: string) =>
   output
     .replace(/.*(?=packages)/g, '      at ')
     .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
 
-const normalizeIcons = (str: string) => {
+export const normalizeIcons = (str: string) => {
   if (!str) {
     return str;
   }
@@ -173,16 +227,4 @@ const normalizeIcons = (str: string) => {
   return str
     .replace(new RegExp('\u00D7', 'g'), '\u2715')
     .replace(new RegExp('\u221A', 'g'), '\u2713');
-};
-
-module.exports = {
-  cleanup,
-  copyDir,
-  createEmptyPackage,
-  extractSummary,
-  linkJestPackage,
-  makeTemplate,
-  normalizeIcons,
-  run,
-  writeFiles,
 };
