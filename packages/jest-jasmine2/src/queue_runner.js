@@ -22,6 +22,7 @@ type Options = {
 type QueueableFn = {
   fn: (next: () => void) => void,
   timeout?: () => number,
+  initError?: Error,
 };
 
 export default function queueRunner(options: Options) {
@@ -29,7 +30,7 @@ export default function queueRunner(options: Options) {
     onCancel(resolve);
   });
 
-  const mapper = ({fn, timeout, initError = new Error()}) => {
+  const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
     let promise = new Promise(resolve => {
       const next = function(err) {
         if (err) {
