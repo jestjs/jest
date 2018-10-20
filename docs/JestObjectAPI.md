@@ -315,7 +315,7 @@ Returns the `jest` object for chaining.
 
 ### `jest.retryTimes()`
 
-Runs failed tests n-times until they pass or until the max number of retries are exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus)!
+Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus)!
 
 Example in a test:
 
