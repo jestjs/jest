@@ -202,7 +202,7 @@ js
 jest.mock('./SomeComponent', () =&gt; () =&gt; 'SomeComponent');</p></li>
 <li><p>Render as a custom element. DOM &quot;custom elements&quot; aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
 js
-jest.mock('./Widget', () =&gt; 'mock-widget');</p></li>
+jest.mock('./Widget', () =&gt; () =&gt; &lt;mock-widget /&gt;);</p></li>
 <li><p>Use <code>react-test-renderer</code>. The test renderer doesn't care about element types and will happily accept e.g. <code>SomeComponent</code>. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.</p></li>
 <li><p>Disable warnings all together (should be done in your jest setup file):
 js

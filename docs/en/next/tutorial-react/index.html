@@ -200,7 +200,7 @@ Warning: The tag &lt;SomeComponent&gt; is unrecognized <span class="hljs-keyword
 <pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'./SomeComponent'</span>, () =&gt; <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'SomeComponent'</span>);
 </code></pre></li>
 <li>Render as a custom element. DOM &quot;custom elements&quot; aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
-<pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'./Widget'</span>, () =&gt; <span class="hljs-string">'mock-widget'</span>);
+<pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'./Widget'</span>, () =&gt; <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &lt;mock-widget /&gt;);
 </code></pre></li>
 <li>Use <code>react-test-renderer</code>. The test renderer doesn't care about element types and will happily accept e.g. <code>SomeComponent</code>. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.</li>
 <li>Disable warnings all together (should be done in your jest setup file):
