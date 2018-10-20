@@ -630,6 +630,8 @@ Default: `[]`
 
 The paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
+It's also worth noting that `setupFiles` will execute _before_ [`setupFilesAfterEnv`](#setupFilesAfterEnv-array).
+
 ### `setupFilesAfterEnv` [array]
 
 Default: `[]`
@@ -639,8 +641,6 @@ Multiple paths to modules that run some code to configure or set up the testing 
 If you want a path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside a path's string, like `"<rootDir>/a-configs-folder"`.
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in these modules.
-
-It's also worth noting that [`setupFiles`](#setupfiles-array) will execute _before_ [`setupFilesAfterEnv`](#setupFilesAfterEnv-array).
 
 ### `snapshotResolver` [string]
 

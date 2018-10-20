@@ -373,7 +373,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   if (
     options.setupTestFrameworkScriptFile &&
-    options.setupFilesAfterEnv.length >= 1
+    options.setupFilesAfterEnv.length > 0
   ) {
     throw createConfigError(
       `  Options: ${chalk.bold(
