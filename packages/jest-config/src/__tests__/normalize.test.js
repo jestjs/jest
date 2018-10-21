@@ -330,7 +330,7 @@ describe('haste', () => {
   });
 });
 
-describe('setupTestFrameworkScriptFile', () => {
+describe('setupFilesAfterEnv', () => {
   let Resolver;
   beforeEach(() => {
     Resolver = require('jest-resolve');
@@ -344,36 +344,80 @@ describe('setupTestFrameworkScriptFile', () => {
     const {options} = normalize(
       {
         rootDir: '/root/path/foo',
-        setupTestFrameworkScriptFile: 'bar/baz',
+        setupFilesAfterEnv: ['bar/baz'],
       },
       {},
     );
 
-    expect(options.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
+    expect(options.setupFilesAfterEnv).toEqual([expectedPathFooBar]);
   });
 
   it('does not change absolute paths', () => {
     const {options} = normalize(
       {
         rootDir: '/root/path/foo',
-        setupTestFrameworkScriptFile: '/an/abs/path',
+        setupFilesAfterEnv: ['/an/abs/path'],
       },
       {},
     );
 
-    expect(options.setupTestFrameworkScriptFile).toEqual(expectedPathAbs);
+    expect(options.setupFilesAfterEnv).toEqual([expectedPathAbs]);
   });
 
   it('substitutes <rootDir> tokens', () => {
     const {options} = normalize(
       {
         rootDir: '/root/path/foo',
-        setupTestFrameworkScriptFile: '<rootDir>/bar/baz',
+        setupFilesAfterEnv: ['<rootDir>/bar/baz'],
       },
       {},
     );
 
-    expect(options.setupTestFrameworkScriptFile).toEqual(expectedPathFooBar);
+    expect(options.setupFilesAfterEnv).toEqual([expectedPathFooBar]);
+  });
+});
+
+describe('setupTestFrameworkScriptFile', () => {
+  let Resolver;
+  let consoleWarn;
+
+  beforeEach(() => {
+    console.warn = jest.fn();
+    consoleWarn = console.warn;
+    Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(
+      name =>
+        name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+    );
+  });
+
+  afterEach(() => {
+    console.warn = consoleWarn;
+  });
+
+  it('logs a deprecation warning when `setupTestFrameworkScriptFile` is used', () => {
+    normalize(
+      {
+        rootDir: '/root/path/foo',
+        setupTestFrameworkScriptFile: 'bar/baz',
+      },
+      {},
+    );
+
+    expect(consoleWarn.mock.calls[0][0]).toMatchSnapshot();
+  });
+
+  it('logs an error when `setupTestFrameworkScriptFile` and `setupFilesAfterEnv` are used', () => {
+    expect(() =>
+      normalize(
+        {
+          rootDir: '/root/path/foo',
+          setupFilesAfterEnv: ['bar/baz'],
+          setupTestFrameworkScriptFile: 'bar/baz',
+        },
+        {},
+      ),
+    ).toThrowErrorMatchingSnapshot();
   });
 });
 

@@ -147,9 +147,7 @@ async function jasmine2(
       testPath,
     });
 
-  if (config.setupTestFrameworkScriptFile) {
-    runtime.requireModule(config.setupTestFrameworkScriptFile);
-  }
+  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
 
   if (globalConfig.enabledTestsMap) {
     env.specFilter = spec => {

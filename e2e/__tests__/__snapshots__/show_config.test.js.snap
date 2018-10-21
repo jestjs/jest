@@ -45,7 +45,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       \\"runner\\": \\"jest-runner\\",
       \\"setupFiles\\": [],
-      \\"setupTestFrameworkScriptFile\\": null,
+      \\"setupFilesAfterEnv\\": [],
       \\"skipFilter\\": false,
       \\"snapshotSerializers\\": [],
       \\"testEnvironment\\": \\"jest-environment-jsdom\\",
