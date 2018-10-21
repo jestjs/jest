@@ -188,7 +188,7 @@ Or if you'd like to create your own manual mock, you can do something like this:
 
 ```js
 jest.mock('Text', () => {
-  const RealComponent = require.requireActual('Text');
+  const RealComponent = jest.requireActual('Text');
   const React = require('React');
   class Text extends React.Component {
     render() {

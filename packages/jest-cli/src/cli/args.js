@@ -576,8 +576,9 @@ export const options = {
     type: 'array',
   },
   testRegex: {
-    description: 'The regexp pattern Jest uses to detect test files.',
-    type: 'string',
+    description:
+      'A string or array of string regexp patterns that Jest uses to detect test files.',
+    type: 'array',
   },
   testResultsProcessor: {
     description:
