@@ -501,7 +501,7 @@ export const options = {
   },
   setupFiles: {
     description:
-      'The paths to modules that run some code to configure or ' +
+      'A list of paths to modules that run some code to configure or ' +
       'set up the testing environment before each test. ',
     type: 'array',
   },
