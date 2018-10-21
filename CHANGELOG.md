@@ -77,6 +77,7 @@
 - `[jest-circus]` Add readme.md ([#7198](https://github.com/facebook/jest/pull/7198))
 - `[jest-editor-support]` Remove from the repository ([#7232](https://github.com/facebook/jest/pull/7232))
 - `[jest-test-typescript-parser]` Remove from the repository ([#7232](https://github.com/facebook/jest/pull/7232))
+- `[tests]` Free tests from the dependency on value of FORCE_COLOR ([#6585](https://github.com/facebook/jest/pull/6585/files))
 
 ### Performance
 
@@ -204,7 +205,6 @@
 ### Chore & Maintenance
 
 - `[website]` Switch domain to https://jestjs.io ([#6549](https://github.com/facebook/jest/pull/6549))
-- `[tests]` Free tests from the dependency on value of FORCE_COLOR ([#6585](https://github.com/facebook/jest/pull/6585/files))
 - `[tests]` Improve stability of `yarn test` on Windows ([#6534](https://github.com/facebook/jest/pull/6534))
 - `[*]` Transpile object shorthand into Node 4 compatible syntax ([#6582](https://github.com/facebook/jest/pull/6582))
 - `[*]` Update all legacy links to jestjs.io ([#6622](https://github.com/facebook/jest/pull/6622))
