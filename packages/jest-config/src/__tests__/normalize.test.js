@@ -11,7 +11,7 @@ import normalize from '../normalize';
 
 jest.mock('jest-resolve');
 
-jest.mock('path', () => require.requireActual('path').posix);
+jest.mock('path', () => jest.requireActual('path').posix);
 
 const crypto = require('crypto');
 const path = require('path');
@@ -804,6 +804,42 @@ describe('Upgrade help', () => {
   });
 });
 
+describe('testRegex', () => {
+  it('testRegex empty string is mapped to empty array', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        testRegex: '',
+      },
+      {},
+    );
+
+    expect(options.testRegex).toEqual([]);
+  });
+  it('testRegex string is mapped to array of RegExp objects', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        testRegex: '.*',
+      },
+      {},
+    );
+
+    expect(options.testRegex).toEqual([/.*/]);
+  });
+  it('testRegex array is mapped to array of RegExp objects', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root',
+        testRegex: ['.*', 'foo\\.bar'],
+      },
+      {},
+    );
+
+    expect(options.testRegex).toEqual([/.*/, /foo\.bar/]);
+  });
+});
+
 describe('testMatch', () => {
   it('testMatch default not applied if testRegex is set', () => {
     const {options} = normalize(
@@ -826,7 +862,7 @@ describe('testMatch', () => {
       {},
     );
 
-    expect(options.testRegex).toBe('');
+    expect(options.testRegex).toEqual([]);
   });
 
   it('throws if testRegex and testMatch are both specified', () => {
@@ -836,6 +872,18 @@ describe('testMatch', () => {
           rootDir: '/root',
           testMatch: ['**/*.js'],
           testRegex: '.*',
+        },
+        {},
+      );
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  it('throws if testRegex is provided an invalid regex string', () => {
+    expect(() => {
+      normalize(
+        {
+          rootDir: '/root',
+          testRegex: 'foo(bar',
         },
         {},
       );
@@ -961,7 +1009,7 @@ describe('preset', () => {
 
   test('throws when preset is invalid', () => {
     jest.doMock('/node_modules/react-native/jest-preset.json', () =>
-      require.requireActual('./jest-preset.json'),
+      jest.requireActual('./jest-preset.json'),
     );
 
     expect(() => {
@@ -1215,7 +1263,7 @@ describe('testPathPattern', () => {
 
       describe('win32', () => {
         beforeEach(() => {
-          jest.mock('path', () => require.requireActual('path').win32);
+          jest.mock('path', () => jest.requireActual('path').win32);
           require('jest-resolve').findNodeModule = findNodeModule;
         });
 

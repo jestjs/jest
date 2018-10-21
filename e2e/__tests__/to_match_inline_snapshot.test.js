@@ -47,9 +47,6 @@ test('basic support', () => {
     expect(fileAfter).toMatchSnapshot('snapshot passed');
   }
 
-  // This test below also covers how jest-editor-support creates terse messages
-  // for letting a Snapshot update, so if the wording is updated, please edit
-  // /packages/jest-editor-support/src/test_reconciler.js
   {
     writeFiles(TESTS_DIR, {
       [filename]: readFile(filename).replace('original value', 'updated value'),

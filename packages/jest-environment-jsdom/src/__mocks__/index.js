@@ -6,7 +6,7 @@
  */
 'use strict';
 
-const vm = require.requireActual('vm');
+const vm = jest.requireActual('vm');
 
 const JSDOMEnvironment = jest.genMockFromModule('../index');
 

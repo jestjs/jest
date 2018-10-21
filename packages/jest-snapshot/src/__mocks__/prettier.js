@@ -1,4 +1,4 @@
-const prettier = require.requireActual('prettier');
+const prettier = jest.requireActual('prettier');
 
 module.exports = {
   format: (text, opts) =>
