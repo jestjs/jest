@@ -60,13 +60,19 @@
 
 <span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
 
-<span class="hljs-keyword">const</span> MongodbMemoryServer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongodb-memory-server'</span>);
+<span class="hljs-keyword">const</span> {MongoMemoryServer} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongodb-memory-server'</span>);
 
 <span class="hljs-keyword">const</span> globalConfigPath = path.join(__dirname, <span class="hljs-string">'globalConfig.json'</span>);
 
-<span class="hljs-keyword">const</span> mongoServer = <span class="hljs-keyword">new</span> MongodbMemoryServer.MongoMemoryServer();
+<span class="hljs-keyword">const</span> mongoServer = <span class="hljs-keyword">new</span> MongoMemoryServer({
+  <span class="hljs-attr">autoStart</span>: <span class="hljs-literal">false</span>,
+});
 
-<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">if</span> (!mongod.isRunning) {
+    <span class="hljs-keyword">await</span> mongod.start();
+  }
+
   <span class="hljs-keyword">const</span> mongoConfig = {
     <span class="hljs-attr">mongoDBName</span>: <span class="hljs-string">'jest'</span>,
     <span class="hljs-attr">mongoUri</span>: <span class="hljs-keyword">await</span> mongoServer.getConnectionString(),

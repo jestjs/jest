@@ -56,25 +56,45 @@
 </ol>
 <p>Aquí hay un ejemplo del script GlobalSetup</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// setup.js</span>
-<span class="hljs-keyword">const</span> MongodbMemoryServer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongodb-memory-server'</span>);
+<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
 
-<span class="hljs-keyword">const</span> MONGO_DB_NAME = <span class="hljs-string">'jest'</span>;
-<span class="hljs-keyword">const</span> mongod = <span class="hljs-keyword">new</span> MongodbMemoryServer.default({
-  <span class="hljs-attr">instance</span>: {
-    <span class="hljs-attr">dbName</span>: MONGO_DB_NAME,
-  },
-  <span class="hljs-attr">binary</span>: {
-    <span class="hljs-attr">version</span>: <span class="hljs-string">'3.2.19'</span>,
-  },
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+
+<span class="hljs-keyword">const</span> {MongoMemoryServer} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongodb-memory-server'</span>);
+
+<span class="hljs-keyword">const</span> globalConfigPath = path.join(__dirname, <span class="hljs-string">'globalConfig.json'</span>);
+
+<span class="hljs-keyword">const</span> mongoServer = <span class="hljs-keyword">new</span> MongoMemoryServer({
+  <span class="hljs-attr">autoStart</span>: <span class="hljs-literal">false</span>,
 });
 
-<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-  global.__MONGOD__ = mongod;
-  global.__MONGO_DB_NAME__ = MONGO_DB_NAME;
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">if</span> (!mongod.isRunning) {
+    <span class="hljs-keyword">await</span> mongod.start();
+  }
+
+  <span class="hljs-keyword">const</span> mongoConfig = {
+    <span class="hljs-attr">mongoDBName</span>: <span class="hljs-string">'jest'</span>,
+    <span class="hljs-attr">mongoUri</span>: <span class="hljs-keyword">await</span> mongoServer.getConnectionString(),
+  };
+
+  <span class="hljs-comment">// Write global config to disk because all tests run in different contexts.</span>
+  fs.writeFileSync(globalConfigPath, <span class="hljs-built_in">JSON</span>.stringify(mongoConfig));
+
+  <span class="hljs-comment">// Set reference to mongod in order to close the server during teardown.</span>
+  global.__MONGOD__ = mongoServer;
 };
 </code></pre>
 <p>Entonces necesitamos un entorno de prueba personalizado para Mongo</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// mongo-environment.js</span>
+<span class="hljs-keyword">const</span> NodeEnvironment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-environment-node'</span>);
+
+<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+
+<span class="hljs-keyword">const</span> globalConfigPath = path.join(__dirname, <span class="hljs-string">'globalConfig.json'</span>);
+
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MongoEnvironment</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">NodeEnvironment</span> </span>{
   <span class="hljs-keyword">constructor</span>(config) {
     <span class="hljs-keyword">super</span>(config);
@@ -83,8 +103,10 @@
   <span class="hljs-keyword">async</span> setup() {
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Setup MongoDB Test Environment'</span>);
 
-    <span class="hljs-keyword">this</span>.global.__MONGO_URI__ = <span class="hljs-keyword">await</span> global.__MONGOD__.getConnectionString();
-    <span class="hljs-keyword">this</span>.global.__MONGO_DB_NAME__ = global.__MONGO_DB_NAME__;
+    <span class="hljs-keyword">const</span> globalConfig = <span class="hljs-built_in">JSON</span>.parse(fs.readFileSync(globalConfigPath, <span class="hljs-string">'utf-8'</span>));
+
+    <span class="hljs-keyword">this</span>.global.__MONGO_URI__ = globalConfig.mongoUri;
+    <span class="hljs-keyword">this</span>.global.__MONGO_DB_NAME__ = globalConfig.mongoDBName;
 
     <span class="hljs-keyword">await</span> <span class="hljs-keyword">super</span>.setup();
   }
