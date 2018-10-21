@@ -55,10 +55,10 @@ async function runTestInternal(
 
   let testEnvironment = config.testEnvironment;
 
-  if (customEnvironment) {
+  if (customEnvironment && customEnvironment[0]) {
     testEnvironment = getTestEnvironment(
       Object.assign({}, config, {
-        testEnvironment: customEnvironment,
+        testEnvironment: customEnvironment[0],
       }),
     );
   }
