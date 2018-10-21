@@ -55,10 +55,11 @@ async function runTestInternal(
 
   let testEnvironment = config.testEnvironment;
 
-  if (customEnvironment && customEnvironment[0]) {
+  if (customEnvironment) {
     testEnvironment = getTestEnvironment(
       Object.assign({}, config, {
-        testEnvironment: customEnvironment[0],
+        // $FlowFixMe
+        testEnvironment: customEnvironment,
       }),
     );
   }
