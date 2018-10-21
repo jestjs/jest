@@ -374,7 +374,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   }
 
   if (options.testEnvironment) {
-    options.testEnvironment = getTestEnvironment(options);
+    options.testEnvironment = getTestEnvironment({
+      rootDir: options.rootDir,
+      testEnvironment: options.testEnvironment,
+    });
   }
 
   if (!options.roots && options.testPathDirs) {
