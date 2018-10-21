@@ -23,7 +23,7 @@ const path = require('path');
 
 const fs = require('fs');
 
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const {MongoMemoryServer} = require('mongodb-memory-server');
 
 const globalConfigPath = path.join(__dirname, 'globalConfig.json');
 
