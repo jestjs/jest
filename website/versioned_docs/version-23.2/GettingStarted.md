@@ -80,7 +80,7 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
+To use [Babel](https://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
 
 ```bash
 yarn add --dev babel-jest babel-core regenerator-runtime
