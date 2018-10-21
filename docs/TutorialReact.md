@@ -197,7 +197,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
     ```
 2.  Render as a custom element. DOM "custom elements" aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
     ```js
-    jest.mock('./Widget', () => 'mock-widget');
+    jest.mock('./Widget', () => () => <mock-widget />);
     ```
 3.  Use `react-test-renderer`. The test renderer doesn't care about element types and will happily accept e.g. `SomeComponent`. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.
 4.  Disable warnings all together (should be done in your jest setup file):

@@ -11,7 +11,7 @@ let OnlyRequiredFromMock;
 let moduleStateValue = 'default';
 
 try {
-  OnlyRequiredFromMock = require.requireActual('OnlyRequiredFromMock');
+  OnlyRequiredFromMock = jest.requireActual('OnlyRequiredFromMock');
 } catch (e) {
   // If the module cannot be loaded, use a dummy value. There is one test
   // that specifically tests for the correct value which ensures this feature

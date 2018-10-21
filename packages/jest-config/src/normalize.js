@@ -547,7 +547,23 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         );
         break;
       case 'testRegex':
-        value = options[key] && replacePathSepForRegex(options[key]);
+        const valueOrEmptyArray = options[key] || [];
+        const valueArray = Array.isArray(valueOrEmptyArray)
+          ? valueOrEmptyArray
+          : [valueOrEmptyArray];
+
+        value = valueArray.map(replacePathSepForRegex).map(pattern => {
+          try {
+            return new RegExp(pattern);
+          } catch (err) {
+            throw createConfigError(
+              `Error parsing configuration for ${chalk.bold(
+                key,
+              )}: "${pattern}" could not be parsed.\n` +
+                `Error: ${err.message}`,
+            );
+          }
+        });
         break;
       case 'moduleFileExtensions': {
         value = options[key];
@@ -701,14 +717,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     }
   }
 
-  if (options.testRegex && options.testMatch) {
+  if (newOptions.testRegex.length && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (options.testRegex && !options.testMatch) {
+  if (newOptions.testRegex.length && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];
