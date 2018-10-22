@@ -367,6 +367,28 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     ),
   );
 
+  if (!options.setupFilesAfterEnv) {
+    options.setupFilesAfterEnv = [];
+  }
+
+  if (
+    options.setupTestFrameworkScriptFile &&
+    options.setupFilesAfterEnv.length > 0
+  ) {
+    throw createConfigError(
+      `  Options: ${chalk.bold(
+        'setupTestFrameworkScriptFile',
+      )} and ${chalk.bold('setupFilesAfterEnv')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold(
+    'setupFilesAfterEnv',
+  )}.`,
+    );
+  }
+
+  if (options.setupTestFrameworkScriptFile) {
+    options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
+  }
+
   if (options.preset) {
     options = setupPreset(options, options.preset);
   }
@@ -415,6 +437,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeCollectCoverageOnlyFrom(options, key);
         break;
       case 'setupFiles':
+      case 'setupFilesAfterEnv':
       case 'snapshotSerializers':
         value =
           options[key] &&
@@ -453,7 +476,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'globalTeardown':
       case 'moduleLoader':
       case 'runner':
-      case 'setupTestFrameworkScriptFile':
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
