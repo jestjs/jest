@@ -7,16 +7,16 @@
  * @flow
  */
 
-const path = require('path');
-const {
-  run,
+import path from 'path';
+import {
   cleanup,
+  copyDir,
   createEmptyPackage,
   linkJestPackage,
-  copyDir,
-} = require('../Utils');
-const runJest = require('../runJest');
-const os = require('os');
+  run,
+} from '../Utils';
+import runJest, {json as runWithJson} from '../runJest';
+import os from 'os';
 
 describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
@@ -27,13 +27,15 @@ describe('babel-jest', () => {
 
   it('runs transpiled code', () => {
     // --no-cache because babel can cache stuff and result in false green
-    const {json} = runJest.json(dir, ['--no-cache']);
+    const {json} = runWithJson(dir, ['--no-cache']);
     expect(json.success).toBe(true);
     expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
   });
 
   it('instruments only specific files and collects coverage', () => {
-    const {stdout} = runJest(dir, ['--coverage', '--no-cache']);
+    const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
+      stripAnsi: true,
+    });
     expect(stdout).toMatch('Covered.js');
     expect(stdout).not.toMatch('NotCovered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
@@ -63,11 +65,11 @@ describe('no babel-jest', () => {
   });
 
   test('instrumentation with no babel-jest', () => {
-    const {stdout} = runJest(tempDir, [
-      '--no-cache',
-      '--coverage',
-      '--no-watchman',
-    ]);
+    const {stdout} = runJest(
+      tempDir,
+      ['--no-cache', '--coverage', '--no-watchman'],
+      {stripAnsi: true},
+    );
     expect(stdout).toMatch('Covered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
@@ -83,7 +85,7 @@ describe('custom transformer', () => {
   );
 
   it('proprocesses files', () => {
-    const {json, stderr} = runJest.json(dir, ['--no-cache']);
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
     expect(stderr).toMatch(/FAIL/);
     expect(stderr).toMatch(/instruments by setting.*global\.__INSTRUMENTED__/);
     expect(json.numTotalTests).toBe(2);
@@ -92,7 +94,9 @@ describe('custom transformer', () => {
   });
 
   it('instruments files', () => {
-    const {stdout, status} = runJest(dir, ['--no-cache', '--coverage']);
+    const {stdout, status} = runJest(dir, ['--no-cache', '--coverage'], {
+      stripAnsi: true,
+    });
     // coverage should be empty because there's no real instrumentation
     expect(stdout).toMatchSnapshot();
     expect(status).toBe(0);
@@ -107,7 +111,7 @@ describe('multiple-transformers', () => {
   });
 
   it('transforms dependencies using specific transformers', () => {
-    const {json, stderr} = runJest.json(dir, ['--no-cache']);
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
 
     expect(stderr).toMatch(/PASS/);
     expect(json.numTotalTests).toBe(1);
@@ -124,7 +128,7 @@ describe('ecmascript-modules-support', () => {
 
   it('runs transpiled code', () => {
     // --no-cache because babel can cache stuff and result in false green
-    const {json} = runJest.json(dir, ['--no-cache']);
+    const {json} = runWithJson(dir, ['--no-cache']);
     expect(json.success).toBe(true);
     expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
   });

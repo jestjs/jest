@@ -6,8 +6,8 @@
  * @flow
  */
 
-const path = require('path');
-const runJest = require('../runJest');
+import path from 'path';
+import runJest from '../runJest';
 
 describe('jest --debug', () => {
   const dir = path.resolve(__dirname, '..', 'verbose-reporter');

@@ -188,7 +188,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `coverageReporters` [array<string>]
 
-Default: `["json", "lcov", "text"]`
+Default: `["json", "lcov", "text", "clover"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib) can be used.
 
@@ -238,7 +238,7 @@ For example, with the following configuration:
         "statements": 40
       },
       "./src/reducers/**/*.js": {
-        "statements": 90,
+        "statements": 90
       },
       "./src/api/very-important-module.js": {
         "branches": 100,
@@ -629,9 +629,9 @@ If you need to restrict your test-runner to only run in serial rather then being
 
 Default: `[]`
 
-The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
+The paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
-It's worth noting that this code will execute _before_ [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
+It's also worth noting that `setupFiles` will execute _before_ [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
 
 ### `setupTestFrameworkScriptFile` [string]
 
@@ -755,6 +755,8 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+
+module.exports = CustomEnvironment;
 ```
 
 ```js

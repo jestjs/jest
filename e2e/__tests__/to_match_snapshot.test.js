@@ -7,9 +7,9 @@
  * @flow
  */
 
-const path = require('path');
-const {makeTemplate, writeFiles, cleanup} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import {cleanup, makeTemplate, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../toMatchSnapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
@@ -39,9 +39,6 @@ test('basic support', () => {
     expect(status).toBe(0);
   }
 
-  // This test below also covers how jest-editor-support creates terse messages
-  // for letting a Snapshot update, so if the wording is updated, please edit
-  // /packages/jest-editor-support/src/test_reconciler.js
   {
     writeFiles(TESTS_DIR, {
       [filename]: template(['{apple: "updated value"}']),

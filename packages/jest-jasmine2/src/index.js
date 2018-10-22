@@ -54,6 +54,26 @@ async function jasmine2(
 
       return it;
     };
+
+    const originalXit = environment.global.xit;
+    environment.global.xit = (...args) => {
+      const stack = getCallsite(1, runtime.getSourceMaps());
+      const xit = originalXit(...args);
+
+      xit.result.__callsite = stack;
+
+      return xit;
+    };
+
+    const originalFit = environment.global.fit;
+    environment.global.fit = (...args) => {
+      const stack = getCallsite(1, runtime.getSourceMaps());
+      const fit = originalFit(...args);
+
+      fit.result.__callsite = stack;
+
+      return fit;
+    };
   }
 
   jasmineAsyncInstall(environment.global);
@@ -127,9 +147,7 @@ async function jasmine2(
       testPath,
     });
 
-  if (config.setupTestFrameworkScriptFile) {
-    runtime.requireModule(config.setupTestFrameworkScriptFile);
-  }
+  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
 
   if (globalConfig.enabledTestsMap) {
     env.specFilter = spec => {

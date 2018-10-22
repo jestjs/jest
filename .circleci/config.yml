@@ -90,10 +90,11 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: yarn --no-progress
+      - run: yarn --no-progress --ignore-engines
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci-partial
+          # react-native does not work with node 6
+          command: rm -rf examples/react-native && yarn test-ci-partial
       - store_test_results:
           path: reports/junit
 

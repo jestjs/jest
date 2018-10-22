@@ -3,9 +3,9 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const runJest = require('../runJest');
+import fs from 'fs';
+import path from 'path';
+import runJest from '../runJest';
 
 const snapshotDir = path.resolve(
   __dirname,

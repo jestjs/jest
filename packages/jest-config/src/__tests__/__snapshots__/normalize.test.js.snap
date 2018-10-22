@@ -47,6 +47,29 @@ exports[`rootDir throws if the options is missing a rootDir property 1`] = `
 <red></>"
 `;
 
+exports[`setupTestFrameworkScriptFile logs a deprecation warning when \`setupTestFrameworkScriptFile\` is used 1`] = `
+"<yellow><bold><bold>●<bold> Deprecation Warning</>:</>
+<yellow></>
+<yellow>  Option <bold>\\"setupTestFrameworkScriptFile\\"</> was replaced by configuration <bold>\\"setupFilesAfterEnv\\"</>, which supports multiple paths.</>
+<yellow></>
+<yellow>  Please update your configuration.</>
+<yellow></>
+<yellow>  <bold>Configuration Documentation:</></>
+<yellow>  https://jestjs.io/docs/configuration.html</>
+<yellow></>"
+`;
+
+exports[`setupTestFrameworkScriptFile logs an error when \`setupTestFrameworkScriptFile\` and \`setupFilesAfterEnv\` are used 1`] = `
+"<red><bold><bold>● <bold>Validation Error</>:</>
+<red></>
+<red>  Options: <bold>setupTestFrameworkScriptFile</> and <bold>setupFilesAfterEnv</> cannot be used together.</>
+<red>  Please change your configuration to only use <bold>setupFilesAfterEnv</>.</>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration.html</>
+<red></>"
+`;
+
 exports[`testEnvironment throws on invalid environment names 1`] = `
 "<red><bold><bold>● <bold>Validation Error</>:</>
 <red></>
@@ -61,6 +84,17 @@ exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
 "<red><bold><bold>● <bold>Validation Error</>:</>
 <red></>
 <red>  Configuration options <bold>testMatch</> and <bold>testRegex</> cannot be used together.</>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration.html</>
+<red></>"
+`;
+
+exports[`testMatch throws if testRegex is provided an invalid regex string 1`] = `
+"<red><bold><bold>● <bold>Validation Error</>:</>
+<red></>
+<red>Error parsing configuration for <bold>testRegex</>: \\"foo(bar\\" could not be parsed.</>
+<red>Error: Invalid regular expression: /foo(bar/: Unterminated group</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
 <red>  https://jestjs.io/docs/configuration.html</>

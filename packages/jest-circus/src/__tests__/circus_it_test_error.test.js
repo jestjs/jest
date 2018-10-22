@@ -35,7 +35,7 @@ describe('test/it error throwing', () => {
   });
   it(`it throws error with missing callback function`, () => {
     expect(() => {
-      // $FlowFixMe: Easy, we're testing runitme errors here
+      // $FlowFixMe: Easy, we're testing runtime errors here
       circusIt('test2');
     }).toThrowError(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
@@ -43,16 +43,16 @@ describe('test/it error throwing', () => {
   });
   it(`it throws an error when first argument isn't a string`, () => {
     expect(() => {
-      // $FlowFixMe: Easy, we're testing runitme errors here
+      // $FlowFixMe: Easy, we're testing runtime errors here
       circusIt(() => {});
-    }).toThrowError(`Invalid first argument, () => {}. It must be a string.`);
+    }).toThrowError('Invalid first argument, () => {}. It must be a string.');
   });
   it('it throws an error when callback function is not a function', () => {
     expect(() => {
-      // $FlowFixMe: Easy, we're testing runitme errors here
+      // $FlowFixMe: Easy, we're testing runtime errors here
       circusIt('test4', 'test4b');
     }).toThrowError(
-      `Invalid second argument, test4b. It must be a callback function.`,
+      'Invalid second argument, test4b. It must be a callback function.',
     );
   });
   it(`test doesn't throw an error with valid arguments`, () => {
@@ -62,7 +62,7 @@ describe('test/it error throwing', () => {
   });
   it(`test throws error with missing callback function`, () => {
     expect(() => {
-      // $FlowFixMe: Easy, we're testing runitme errors here
+      // $FlowFixMe: Easy, we're testing runtime errors here
       circusTest('test6');
     }).toThrowError(
       'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
@@ -70,16 +70,16 @@ describe('test/it error throwing', () => {
   });
   it(`test throws an error when first argument isn't a string`, () => {
     expect(() => {
-      // $FlowFixMe: Easy, we're testing runitme errors here
+      // $FlowFixMe: Easy, we're testing runtime errors here
       circusTest(() => {});
-    }).toThrowError(`Invalid first argument, () => {}. It must be a string.`);
+    }).toThrowError('Invalid first argument, () => {}. It must be a string.');
   });
   it('test throws an error when callback function is not a function', () => {
     expect(() => {
-      // $FlowFixMe: Easy, we're testing runitme errors here
+      // $FlowFixMe: Easy, we're testing runtime errors here
       circusTest('test8', 'test8b');
     }).toThrowError(
-      `Invalid second argument, test8b. It must be a callback function.`,
+      'Invalid second argument, test8b. It must be a callback function.',
     );
   });
 });

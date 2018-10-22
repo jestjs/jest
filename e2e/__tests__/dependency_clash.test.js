@@ -7,30 +7,23 @@
  * @flow
  */
 
-const path = require('path');
-const {
-  cleanup,
-  createEmptyPackage,
-  linkJestPackage,
-  writeFiles,
-} = require('../Utils');
-const runJest = require('../runJest');
-const os = require('os');
-const mkdirp = require('mkdirp');
-const fs = require('fs');
-const ConditionalTest = require('../../scripts/ConditionalTest');
+import path from 'path';
+import {cleanup, createEmptyPackage, writeFiles} from '../Utils';
+import runJest from '../runJest';
+import os from 'os';
+import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 
-ConditionalTest.skipSuiteOnWindows();
+skipSuiteOnWindows();
 
 // doing test in a temp directory because we don't want jest node_modules affect it
 const tempDir = path.resolve(os.tmpdir(), 'clashing-dependencies-test');
-const thirdPartyDir = path.resolve(tempDir, 'third-party');
+const hasteImplModulePath = path.resolve(
+  './packages/jest-haste-map/src/__tests__/haste_impl.js',
+);
 
 beforeEach(() => {
   cleanup(tempDir);
   createEmptyPackage(tempDir);
-  mkdirp(path.join(thirdPartyDir, 'node_modules'));
-  linkJestPackage('babel-jest', thirdPartyDir);
 });
 
 // This test case is checking that when having both
@@ -38,40 +31,51 @@ beforeEach(() => {
 // module we can still require the right invariant. This is pretty specific
 // use case and in the future we should probably delete this test.
 // see: https://github.com/facebook/jest/pull/6687
-test('fails with syntax error on flow types', () => {
-  const babelFileThatRequiresInvariant = require.resolve(
-    'babel-traverse/lib/path/index.js',
-  );
-
-  expect(fs.existsSync(babelFileThatRequiresInvariant)).toBe(true);
-  // make sure the babel depenency that depends on `invariant` from npm still
-  // exists, otherwise the test will pass regardless of whether the bug still
-  // exists or no.
-  expect(fs.readFileSync(babelFileThatRequiresInvariant).toString()).toMatch(
-    /invariant/,
-  );
+test('does not require project modules from inside node_modules', () => {
   writeFiles(tempDir, {
-    '.babelrc': `
-      {
-        "plugins": [
-          "${require.resolve('babel-plugin-transform-flow-strip-types')}"
-        ]
-      }
-    `,
     '__tests__/test.js': `
       const invariant = require('invariant');
       test('haii', () => expect(invariant(false, 'haii')).toBe('haii'));
     `,
-    'invariant.js': `/**
-      * @providesModule invariant
-      * @flow
-      */
-      const invariant = (condition: boolean, message: string) => message;
+    'invariant.js': `
+      INVALID CODE FRAGMENT THAT WILL BE REMOVED BY THE TRANSFORMER
+      const invariant = (condition, message) => message;
       module.exports = invariant;
     `,
     'jest.config.js': `module.exports = {
-      transform: {'.*\\.js': './third-party/node_modules/babel-jest'},
+      haste: {
+        hasteImplModulePath: '${hasteImplModulePath}',
+      },
+      transform: {'.*\\.js': './third-party/node_modules/transform'},
     };`,
+    'third-party/node_modules/invariant/index.js': `
+      const invariant = (condition, message) => {
+        if (!condition) {
+          throw new Error(message);
+        }
+      };
+      module.exports = invariant;
+    `,
+    'third-party/node_modules/transform/index.js': `
+      const invariant = require('invariant');
+      module.exports = {
+        process: script => {
+          let threw = false;
+          try {
+            invariant(false, 'this should throw');
+          } catch (e) {
+            threw = true;
+          }
+          if (!threw) {
+            throw new Error('It used the wrong invariant module!');
+          }
+          return script.replace(
+            'INVALID CODE FRAGMENT THAT WILL BE REMOVED BY THE TRANSFORMER',
+            ''
+          );
+        },
+      };
+    `,
   });
   const {stderr, status} = runJest(tempDir, ['--no-cache', '--no-watchman']);
   // make sure there are no errors that lead to invariant.js (if we were to

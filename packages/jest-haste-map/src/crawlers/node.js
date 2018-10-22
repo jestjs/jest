@@ -14,6 +14,7 @@ import fs from 'fs';
 import path from 'path';
 import {spawn} from 'child_process';
 import H from '../constants';
+import * as fastPath from '../lib/fast_path';
 
 type Callback = (result: Array<[/* id */ string, /* mtime */ number]>) => void;
 
@@ -127,20 +128,28 @@ function findNative(
 module.exports = function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
-  const {data, extensions, forceNodeFilesystemAPI, ignore, roots} = options;
+  const {
+    data,
+    extensions,
+    forceNodeFilesystemAPI,
+    ignore,
+    rootDir,
+    roots,
+  } = options;
 
   return new Promise(resolve => {
     const callback = list => {
       const files = new Map();
       list.forEach(fileData => {
-        const name = fileData[0];
+        const filePath = fileData[0];
+        const relativeFilePath = fastPath.relative(rootDir, filePath);
         const mtime = fileData[1];
-        const existingFile = data.files.get(name);
+        const existingFile = data.files.get(relativeFilePath);
         if (existingFile && existingFile[H.MTIME] === mtime) {
-          files.set(name, existingFile);
+          files.set(relativeFilePath, existingFile);
         } else {
           // See ../constants.js; SHA-1 will always be null and fulfilled later.
-          files.set(name, ['', mtime, 0, [], null]);
+          files.set(relativeFilePath, ['', mtime, 0, [], null]);
         }
       });
       data.files = files;

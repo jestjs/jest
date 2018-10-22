@@ -36,6 +36,7 @@ import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import setFromArgv from './setFromArgv';
 import VALID_CONFIG from './ValidConfig';
+
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
@@ -366,6 +367,28 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     ),
   );
 
+  if (!options.setupFilesAfterEnv) {
+    options.setupFilesAfterEnv = [];
+  }
+
+  if (
+    options.setupTestFrameworkScriptFile &&
+    options.setupFilesAfterEnv.length > 0
+  ) {
+    throw createConfigError(
+      `  Options: ${chalk.bold(
+        'setupTestFrameworkScriptFile',
+      )} and ${chalk.bold('setupFilesAfterEnv')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold(
+    'setupFilesAfterEnv',
+  )}.`,
+    );
+  }
+
+  if (options.setupTestFrameworkScriptFile) {
+    options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
+  }
+
   if (options.preset) {
     options = setupPreset(options, options.preset);
   }
@@ -414,6 +437,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeCollectCoverageOnlyFrom(options, key);
         break;
       case 'setupFiles':
+      case 'setupFilesAfterEnv':
       case 'snapshotSerializers':
         value =
           options[key] &&
@@ -452,7 +476,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'globalTeardown':
       case 'moduleLoader':
       case 'runner':
-      case 'setupTestFrameworkScriptFile':
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
@@ -546,8 +569,50 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         );
         break;
       case 'testRegex':
-        value = options[key] && replacePathSepForRegex(options[key]);
+        const valueOrEmptyArray = options[key] || [];
+        const valueArray = Array.isArray(valueOrEmptyArray)
+          ? valueOrEmptyArray
+          : [valueOrEmptyArray];
+
+        value = valueArray.map(replacePathSepForRegex).map(pattern => {
+          try {
+            return new RegExp(pattern);
+          } catch (err) {
+            throw createConfigError(
+              `Error parsing configuration for ${chalk.bold(
+                key,
+              )}: "${pattern}" could not be parsed.\n` +
+                `Error: ${err.message}`,
+            );
+          }
+        });
         break;
+      case 'moduleFileExtensions': {
+        value = options[key];
+
+        // If it's the wrong type, it can throw at a later time
+        if (Array.isArray(value) && !value.includes('js')) {
+          const errorMessage =
+            `  moduleFileExtensions must include 'js':\n` +
+            `  but instead received:\n` +
+            `    ${chalk.bold.red(JSON.stringify(value))}`;
+
+          // If `js` is not included, any dependency Jest itself injects into
+          // the environment, like jasmine or sourcemap-support, will need to
+          // `require` its modules with a file extension. This is not plausible
+          // in the long run, so it's way easier to just fail hard early.
+          // We might consider throwing if `json` is missing as well, as it's a
+          // fair assumption from modules that they can do
+          // `require('some-package/package') without the trailing `.json` as it
+          // works in Node normally.
+          throw createConfigError(
+            errorMessage +
+              "\n  Please change your configuration to include 'js'.",
+          );
+        }
+
+        break;
+      }
       case 'automock':
       case 'bail':
       case 'browser':
@@ -571,7 +636,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
-      case 'moduleFileExtensions':
       case 'name':
       case 'noStackTrace':
       case 'notify':
@@ -675,14 +739,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     }
   }
 
-  if (options.testRegex && options.testMatch) {
+  if (newOptions.testRegex.length && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (options.testRegex && !options.testMatch) {
+  if (newOptions.testRegex.length && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];

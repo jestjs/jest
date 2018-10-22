@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('jest.resetModules should not error when _isMockFunction is defined but not boolean', () => {
   const result = runJest('reset_modules');

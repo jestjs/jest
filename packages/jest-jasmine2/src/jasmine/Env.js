@@ -325,6 +325,16 @@ export default function(j$) {
 
     this.describe = function(description, specDefinitions) {
       const suite = suiteFactory(description);
+      if (specDefinitions === undefined) {
+        throw new Error(
+          `Missing second argument. It must be a callback function.`,
+        );
+      }
+      if (typeof specDefinitions !== 'function') {
+        throw new Error(
+          `Invalid second argument, ${specDefinitions}. It must be a callback function.`,
+        );
+      }
       if (specDefinitions.length > 0) {
         throw new Error('describe does not expect any arguments');
       }

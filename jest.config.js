@@ -8,9 +8,10 @@ module.exports = {
     '!**/perf/**',
     '!**/__mocks__/**',
     '!**/__tests__/**',
+    '!**/build/**',
+    '!**/vendor/**',
     '!e2e/**',
   ],
-  coverageReporters: ['json'],
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
@@ -20,7 +21,7 @@ module.exports = {
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
-  setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
+  setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotSerializers: [
     '<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js',
   ],
