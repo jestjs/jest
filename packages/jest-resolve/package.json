@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "23.6.0",
+  "version": "24.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -13,6 +13,7 @@
     "realpath-native": "^1.0.0"
   },
   "devDependencies": {
-    "jest-haste-map": "^23.6.0"
-  }
+    "jest-haste-map": "^24.0.0-alpha.0"
+  },
+  "gitHead": "22f67d49ffcce7a5b6d6891438b837b3b26ba9db"
 }

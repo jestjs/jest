@@ -1,6 +1,6 @@
 {
   "name": "jest-worker",
-  "version": "23.2.0",
+  "version": "24.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -8,6 +8,8 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "merge-stream": "^1.0.1"
-  }
+    "merge-stream": "^1.0.1",
+    "worker-farm": "^1.6.0"
+  },
+  "gitHead": "22f67d49ffcce7a5b6d6891438b837b3b26ba9db"
 }

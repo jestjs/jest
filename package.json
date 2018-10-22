@@ -101,9 +101,7 @@
     "watch": "yarn build && node ./scripts/watch.js"
   },
   "workspaces": [
-    "packages/*",
-    "website",
-    "examples/*"
+    "packages/*"
   ],
   "prettier": {
     "bracketSpacing": false,

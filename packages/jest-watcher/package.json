@@ -1,7 +1,7 @@
 {
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "23.4.0",
+  "version": "24.0.0-alpha.0",
   "main": "build/index.js",
   "dependencies": {
     "ansi-escapes": "^3.0.0",
@@ -16,5 +16,6 @@
     "url": "https://github.com/facebook/jest/issues"
   },
   "homepage": "https://jestjs.io/",
-  "license": "MIT"
+  "license": "MIT",
+  "gitHead": "22f67d49ffcce7a5b6d6891438b837b3b26ba9db"
 }
