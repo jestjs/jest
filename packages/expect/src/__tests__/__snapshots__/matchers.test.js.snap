@@ -2884,6 +2884,14 @@ exports[`.toHaveLength error cases 3`] = `
 Received: <red>undefined</>"
 `;
 
+exports[`.toHaveLength matcher error expected length 1`] = `
+"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: Expected value must be number
+
+Expected string: <green>\\"3\\"</>"
+`;
+
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('1') 1`] = `
 "<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
