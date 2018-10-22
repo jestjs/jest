@@ -37,7 +37,7 @@ describe('.hasAssertions()', () => {
   it('throws if passed parameters', () => {
     jestExpect(() => {
       jestExpect.hasAssertions(2);
-    }).toThrow(/does not accept any arguments/);
+    }).toThrow(/Expected value must be omitted or undefined/);
   });
 
   it('hasAssertions not leaking to global state', () => {});

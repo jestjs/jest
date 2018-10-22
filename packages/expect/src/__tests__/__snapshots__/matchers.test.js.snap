@@ -10,62 +10,64 @@ Expected <red>received</> Promise to reject, instead it resolved to value
 exports[`.rejects fails non-promise value "a" 1`] = `
 "<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  string: <red>\\"a\\"</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received string: <red>\\"a\\"</>"
 `;
 
 exports[`.rejects fails non-promise value [1] 1`] = `
 "<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  array: <red>[1]</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received array: <red>[1]</>"
 `;
 
 exports[`.rejects fails non-promise value [Function anonymous] 1`] = `
 "<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  function: <red>[Function anonymous]</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received function: <red>[Function anonymous]</>"
 `;
 
 exports[`.rejects fails non-promise value {"a": 1} 1`] = `
 "<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  object: <red>{\\"a\\": 1}</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received object: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.rejects fails non-promise value 4 1`] = `
 "<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  number: <red>4</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received number: <red>4</>"
 `;
 
 exports[`.rejects fails non-promise value null 1`] = `
 "<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
+<bold>Matcher error</>: Received value must be Promise
+
 Received: <red>null</>"
 `;
 
 exports[`.rejects fails non-promise value true 1`] = `
 "<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  boolean: <red>true</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received boolean: <red>true</>"
 `;
 
 exports[`.rejects fails non-promise value undefined 1`] = `
 "<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
+<bold>Matcher error</>: Received value must be Promise
+
 Received: <red>undefined</>"
 `;
 
@@ -79,124 +81,128 @@ Expected <red>received</> Promise to resolve, instead it rejected to value
 exports[`.resolves fails non-promise value "a" 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  string: <red>\\"a\\"</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received string: <red>\\"a\\"</>"
 `;
 
 exports[`.resolves fails non-promise value "a" synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  string: <red>\\"a\\"</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received string: <red>\\"a\\"</>"
 `;
 
 exports[`.resolves fails non-promise value [1] 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  array: <red>[1]</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received array: <red>[1]</>"
 `;
 
 exports[`.resolves fails non-promise value [1] synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  array: <red>[1]</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received array: <red>[1]</>"
 `;
 
 exports[`.resolves fails non-promise value [Function anonymous] 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  function: <red>[Function anonymous]</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received function: <red>[Function anonymous]</>"
 `;
 
 exports[`.resolves fails non-promise value [Function anonymous] synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  function: <red>[Function anonymous]</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received function: <red>[Function anonymous]</>"
 `;
 
 exports[`.resolves fails non-promise value {"a": 1} 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  object: <red>{\\"a\\": 1}</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received object: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.resolves fails non-promise value {"a": 1} synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  object: <red>{\\"a\\": 1}</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received object: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.resolves fails non-promise value 4 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  number: <red>4</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received number: <red>4</>"
 `;
 
 exports[`.resolves fails non-promise value 4 synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  number: <red>4</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received number: <red>4</>"
 `;
 
 exports[`.resolves fails non-promise value null 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
+<bold>Matcher error</>: Received value must be Promise
+
 Received: <red>null</>"
 `;
 
 exports[`.resolves fails non-promise value null synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
+<bold>Matcher error</>: Received value must be Promise
+
 Received: <red>null</>"
 `;
 
 exports[`.resolves fails non-promise value true 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  boolean: <red>true</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received boolean: <red>true</>"
 `;
 
 exports[`.resolves fails non-promise value true synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
-Received:
-  boolean: <red>true</>"
+<bold>Matcher error</>: Received value must be Promise
+
+Received boolean: <red>true</>"
 `;
 
 exports[`.resolves fails non-promise value undefined 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
+<bold>Matcher error</>: Received value must be Promise
+
 Received: <red>undefined</>"
 `;
 
 exports[`.resolves fails non-promise value undefined synchronously 1`] = `
 "<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
 
-<red>received</> value must be a Promise.
+<bold>Matcher error</>: Received value must be Promise
+
 Received: <red>undefined</>"
 `;
 
@@ -1124,10 +1130,11 @@ Received value: <red>Map {}</>"
 `;
 
 exports[`.toBeInstanceOf() throws if constructor is not a function 1`] = `
-"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toBeInstanceOf(</><green>expected</><dim>)</>
 
-Expected constructor to be a function. Instead got:
-  <green>\\"number\\"</>"
+<bold>Matcher error</>: Expected value must be function
+
+Expected number: <green>4</>"
 `;
 
 exports[`.toBeNaN() {pass: true} expect(NaN).toBeNaN() 1`] = `
@@ -1457,15 +1464,17 @@ Received: <red>undefined</>"
 exports[`.toBeTruthy(), .toBeFalsy() does not accept arguments 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeTruthy(</><dim>)</>
 
-Matcher does not accept any arguments.
-Got: <green>null</>"
+<bold>Matcher error</>: Expected value must be omitted or undefined
+
+Expected: <green>null</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() does not accept arguments 2`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeFalsy(</><dim>)</>
 
-Matcher does not accept any arguments.
-Got: <green>null</>"
+<bold>Matcher error</>: Expected value must be omitted or undefined
+
+Expected: <green>null</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '"11112111"' contains '"2"' 1`] = `
@@ -1688,16 +1697,18 @@ Not to contain a value equal to:
 `;
 
 exports[`.toContain(), .toContainEqual() error cases 1`] = `
-"<dim>expect(</><red>collection</><dim>)[.not].toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toContain(</><green>expected</><dim>)</>
 
-Expected <red>collection</> to be an array-like structure.
+<bold>Matcher error</>: Received value cannot be null or undefined
+
 Received: <red>null</>"
 `;
 
 exports[`.toContain(), .toContainEqual() error cases for toContainEqual 1`] = `
-"<dim>expect(</><red>collection</><dim>)[.not].toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toContainEqual(</><green>expected</><dim>)</>
 
-Expected <red>collection</> to be an array-like structure.
+<bold>Matcher error</>: Received value cannot be null or undefined
+
 Received: <red>null</>"
 `;
 
@@ -2850,63 +2861,67 @@ received.length:
 `;
 
 exports[`.toHaveLength error cases 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>expected</><dim>)</>
 
-Expected value to have a 'length' property that is a number. Received:
-  <red>{\\"a\\": 9}</>
-received.length:
-  <red>undefined</>"
+<bold>Matcher error</>: Received value must have length property whose value must be number
+
+Received object: <red>{\\"a\\": 9}</>"
 `;
 
 exports[`.toHaveLength error cases 2`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>expected</><dim>)</>
 
-Expected value to have a 'length' property that is a number. Received:
-  <red>0</>
-"
+<bold>Matcher error</>: Received value must have length property whose value must be number
+
+Received number: <red>0</>"
 `;
 
 exports[`.toHaveLength error cases 3`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>expected</><dim>)</>
 
-Expected value to have a 'length' property that is a number. Received:
-  <red>undefined</>
-"
+<bold>Matcher error</>: Received value must have length property whose value must be number
+
+Received: <red>undefined</>"
 `;
 
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('1') 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
-Expected <green>path</> to be a string or an array. Received:
-  number: <red>1</>"
+<bold>Matcher error</>: Expected path must be string or array
+
+Expected number: <green>1</>"
 `;
 
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('null') 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
-Expected <green>path</> to be a string or an array. Received:
-  null: <red>null</>"
+<bold>Matcher error</>: Expected path must be string or array
+
+Expected: <green>null</>"
 `;
 
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('undefined') 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
-Expected <green>path</> to be a string or an array. Received:
-  undefined: <red>undefined</>"
+<bold>Matcher error</>: Expected path must be string or array
+
+Expected: <green>undefined</>"
 `;
 
 exports[`.toHaveProperty() {error} expect(null).toHaveProperty('a.b') 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
-Expected <red>object</> to be an object. Received:
-  null: <red>null</>"
+<bold>Matcher error</>: Received value cannot be null or undefined
+
+Received: <red>null</>"
 `;
 
 exports[`.toHaveProperty() {error} expect(undefined).toHaveProperty('a') 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
-Expected <red>object</> to be an object. Received:
-  undefined: <red>undefined</>"
+<bold>Matcher error</>: Received value cannot be null or undefined
+
+Received: <red>undefined</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect("abc").toHaveProperty('a.b.c') 1`] = `
@@ -3360,104 +3375,106 @@ Received:
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [/foo/i, "foo"] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<red>string</> value must be a string.
-Received:
-  regexp: <red>/foo/i</>"
+<bold>Matcher error</>: Received value must be string
+
+Received regexp: <red>/foo/i</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [[], "foo"] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<red>string</> value must be a string.
-Received:
-  array: <red>[]</>"
+<bold>Matcher error</>: Received value must be string
+
+Received array: <red>[]</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [[Function anonymous], "foo"] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<red>string</> value must be a string.
-Received:
-  function: <red>[Function anonymous]</>"
+<bold>Matcher error</>: Received value must be string
+
+Received function: <red>[Function anonymous]</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [{}, "foo"] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<red>string</> value must be a string.
-Received:
-  object: <red>{}</>"
+<bold>Matcher error</>: Received value must be string
+
+Received object: <red>{}</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [1, "foo"] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<red>string</> value must be a string.
-Received:
-  number: <red>1</>"
+<bold>Matcher error</>: Received value must be string
+
+Received number: <red>1</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [true, "foo"] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<red>string</> value must be a string.
-Received:
-  boolean: <red>true</>"
+<bold>Matcher error</>: Received value must be string
+
+Received boolean: <red>true</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [undefined, "foo"] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<red>string</> value must be a string.
+<bold>Matcher error</>: Received value must be string
+
 Received: <red>undefined</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", []] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<green>expected</> value must be a string or a regular expression.
-Expected:
-  array: <green>[]</>"
+<bold>Matcher error</>: Expected value must be string or regular expression
+
+Expected array: <green>[]</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", [Function anonymous]] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<green>expected</> value must be a string or a regular expression.
-Expected:
-  function: <green>[Function anonymous]</>"
+<bold>Matcher error</>: Expected value must be string or regular expression
+
+Expected function: <green>[Function anonymous]</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", {}] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<green>expected</> value must be a string or a regular expression.
-Expected:
-  object: <green>{}</>"
+<bold>Matcher error</>: Expected value must be string or regular expression
+
+Expected object: <green>{}</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", 1] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<green>expected</> value must be a string or a regular expression.
-Expected:
-  number: <green>1</>"
+<bold>Matcher error</>: Expected value must be string or regular expression
+
+Expected number: <green>1</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", true] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<green>expected</> value must be a string or a regular expression.
-Expected:
-  boolean: <green>true</>"
+<bold>Matcher error</>: Expected value must be string or regular expression
+
+Expected boolean: <green>true</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", undefined] 1`] = `
-"<dim>expect(</><red>string</><dim>)[.not].toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
 
-<green>expected</> value must be a string or a regular expression.
+<bold>Matcher error</>: Expected value must be string or regular expression
+
 Expected: <green>undefined</>"
 `;
 
@@ -4120,77 +4137,81 @@ Received:
 `;
 
 exports[`toMatchObject() throws expect("44").toMatchObject({}) 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toMatchObject(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
-<red>received</> value must be an object.
-Received:
-  string: <red>\\"44\\"</>"
+<bold>Matcher error</>: Received value must be non-null object
+
+Received string: <red>\\"44\\"</>"
 `;
 
 exports[`toMatchObject() throws expect({}).toMatchObject("some string") 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toMatchObject(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
-<green>expected</> value must be an object.
-Expected:
-  string: <green>\\"some string\\"</>"
+<bold>Matcher error</>: Expected value must be non-null object
+
+Expected string: <green>\\"some string\\"</>"
 `;
 
 exports[`toMatchObject() throws expect({}).toMatchObject(4) 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toMatchObject(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
-<green>expected</> value must be an object.
-Expected:
-  number: <green>4</>"
+<bold>Matcher error</>: Expected value must be non-null object
+
+Expected number: <green>4</>"
 `;
 
 exports[`toMatchObject() throws expect({}).toMatchObject(null) 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toMatchObject(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
-<green>expected</> value must be an object.
+<bold>Matcher error</>: Expected value must be non-null object
+
 Expected: <green>null</>"
 `;
 
 exports[`toMatchObject() throws expect({}).toMatchObject(true) 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toMatchObject(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
-<green>expected</> value must be an object.
-Expected:
-  boolean: <green>true</>"
+<bold>Matcher error</>: Expected value must be non-null object
+
+Expected boolean: <green>true</>"
 `;
 
 exports[`toMatchObject() throws expect({}).toMatchObject(undefined) 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toMatchObject(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
-<green>expected</> value must be an object.
+<bold>Matcher error</>: Expected value must be non-null object
+
 Expected: <green>undefined</>"
 `;
 
 exports[`toMatchObject() throws expect(4).toMatchObject({}) 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toMatchObject(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
-<red>received</> value must be an object.
-Received:
-  number: <red>4</>"
+<bold>Matcher error</>: Received value must be non-null object
+
+Received number: <red>4</>"
 `;
 
 exports[`toMatchObject() throws expect(null).toMatchObject({}) 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toMatchObject(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
-<red>received</> value must be an object.
+<bold>Matcher error</>: Received value must be non-null object
+
 Received: <red>null</>"
 `;
 
 exports[`toMatchObject() throws expect(true).toMatchObject({}) 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toMatchObject(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
-<red>received</> value must be an object.
-Received:
-  boolean: <red>true</>"
+<bold>Matcher error</>: Received value must be non-null object
+
+Received boolean: <red>true</>"
 `;
 
 exports[`toMatchObject() throws expect(undefined).toMatchObject({}) 1`] = `
-"<dim>expect(</><red>object</><dim>)[.not].toMatchObject(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
-<red>received</> value must be an object.
+<bold>Matcher error</>: Received value must be non-null object
+
 Received: <red>undefined</>"
 `;

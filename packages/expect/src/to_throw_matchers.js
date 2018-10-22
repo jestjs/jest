@@ -15,8 +15,10 @@ import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   RECEIVED_COLOR,
   highlightTrailingWhitespace,
+  matcherErrorMessage,
   matcherHint,
   printExpected,
+  printReceived,
   printWithType,
 } from 'jest-matcher-utils';
 import {equals} from './jasmine_utils';
@@ -35,10 +37,11 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
     if (typeof actual !== 'function') {
       if (!fromPromise) {
         throw new Error(
-          matcherHint(matcherName, 'function', getType(value)) +
-            '\n\n' +
-            'Received value must be a function, but instead ' +
-            `"${getType(actual)}" was found`,
+          matcherErrorMessage(
+            matcherHint('[.not]' + matcherName, undefined, undefined),
+            'Received value must be function',
+            printWithType('Received', actual, printReceived),
+          ),
         );
       }
     } else {
@@ -83,13 +86,11 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
     };
   } else {
     throw new Error(
-      matcherHint('.not' + matcherName, 'function', getType(value)) +
-        '\n\n' +
-        'Unexpected argument passed.\nExpected: ' +
-        `${printExpected('string')}, ${printExpected(
-          'Error (type)',
-        )} or ${printExpected('regexp')}.\n` +
-        printWithType('Got', String(expected), printExpected),
+      matcherErrorMessage(
+        matcherHint('[.not]' + matcherName, undefined, undefined),
+        'Expected value must be string or regular expression or Error',
+        printWithType('Expected', expected, printExpected),
+      ),
     );
   }
 };

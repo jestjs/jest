@@ -95,13 +95,13 @@ describe('.ensureNumbers()', () => {
   test('throws error when expected is not a number', () => {
     expect(() => {
       ensureNumbers(1, 'not_a_number');
-    }).toThrow('Expected value must be a number');
+    }).toThrow(/Expected value must be number/);
   });
 
   test('throws error when actual is not a number', () => {
     expect(() => {
       ensureNumbers('not_a_number', 3);
-    }).toThrow('Received value must be a number');
+    }).toThrow(/Received value must be number/);
   });
 });
 
@@ -115,13 +115,13 @@ describe('.ensureNoExpected()', () => {
   test('throws error when is not undefined', () => {
     expect(() => {
       ensureNoExpected({a: 1});
-    }).toThrow('Matcher does not accept any arguments');
+    }).toThrow(/Expected value must be omitted or undefined/);
   });
 
   test('throws error when is not undefined with matcherName', () => {
     expect(() => {
       ensureNoExpected({a: 1}, '.toBeDefined');
-    }).toThrow('Matcher does not accept any arguments');
+    }).toThrow(/Expected value must be omitted or undefined/);
   });
 });
 

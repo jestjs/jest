@@ -19,6 +19,7 @@ import {
   SUGGEST_TO_CONTAIN_EQUAL,
   ensureNoExpected,
   ensureNumbers,
+  matcherErrorMessage,
   matcherHint,
   printReceived,
   printExpected,
@@ -156,12 +157,13 @@ const matchers: MatchersObject = {
 
     if (constType !== 'function') {
       throw new Error(
-        matcherHint('.toBeInstanceOf', 'value', 'constructor', {
-          isNot: this.isNot,
-        }) +
-          `\n\n` +
-          `Expected constructor to be a function. Instead got:\n` +
-          `  ${printExpected(constType)}`,
+        matcherErrorMessage(
+          matcherHint('.toBeInstanceOf', undefined, undefined, {
+            isNot: this.isNot,
+          }),
+          'Expected value must be function',
+          printWithType('Expected', constructor, printExpected),
+        ),
       );
     }
     const pass = received instanceof constructor;
@@ -282,12 +284,13 @@ const matchers: MatchersObject = {
         converted = Array.from(collection);
       } catch (e) {
         throw new Error(
-          matcherHint('[.not].toContainEqual', 'collection', 'value') +
-            '\n\n' +
-            `Expected ${RECEIVED_COLOR(
-              'collection',
-            )} to be an array-like structure.\n` +
+          matcherErrorMessage(
+            matcherHint('.toContain', undefined, undefined, {
+              isNot: this.isNot,
+            }),
+            'Received value cannot be null or undefined',
             printWithType('Received', collection, printReceived),
+          ),
         );
       }
     }
@@ -334,12 +337,13 @@ const matchers: MatchersObject = {
         converted = Array.from(collection);
       } catch (e) {
         throw new Error(
-          matcherHint('[.not].toContainEqual', 'collection', 'value') +
-            '\n\n' +
-            `Expected ${RECEIVED_COLOR(
-              'collection',
-            )} to be an array-like structure.\n` +
+          matcherErrorMessage(
+            matcherHint('.toContainEqual', undefined, undefined, {
+              isNot: this.isNot,
+            }),
+            'Received value cannot be null or undefined',
             printWithType('Received', collection, printReceived),
+          ),
         );
       }
     }
@@ -404,14 +408,25 @@ const matchers: MatchersObject = {
       (!received || typeof received.length !== 'number')
     ) {
       throw new Error(
-        matcherHint('[.not].toHaveLength', 'received', 'length') +
-          '\n\n' +
-          `Expected value to have a 'length' property that is a number. ` +
-          `Received:\n` +
-          `  ${printReceived(received)}\n` +
-          (received
-            ? `received.length:\n  ${printReceived(received.length)}`
-            : ''),
+        matcherErrorMessage(
+          matcherHint('.toHaveLength', undefined, undefined, {
+            isNot: this.isNot,
+          }),
+          'Received value must have length property whose value must be number',
+          printWithType('Received', received, printReceived),
+        ),
+      );
+    }
+
+    if (typeof length !== 'number') {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint('.toHaveLength', undefined, undefined, {
+            isNot: this.isNot,
+          }),
+          'Expected value must be number',
+          printWithType('Expected', length, printExpected),
+        ),
       );
     }
 
@@ -443,14 +458,16 @@ const matchers: MatchersObject = {
     const valuePassed = arguments.length === 3;
     const secondArgument = valuePassed ? 'value' : null;
 
-    if (!object && typeof object !== 'string' && typeof object !== 'number') {
+    if (object === null || object === undefined) {
       throw new Error(
-        matcherHint('[.not].toHaveProperty', 'object', 'path', {
-          secondArgument,
-        }) +
-          '\n\n' +
-          `Expected ${RECEIVED_COLOR('object')} to be an object. Received:\n` +
-          `  ${getType(object)}: ${printReceived(object)}`,
+        matcherErrorMessage(
+          matcherHint('.toHaveProperty', undefined, 'path', {
+            isNot: this.isNot,
+            secondArgument,
+          }),
+          'Received value cannot be null or undefined',
+          printWithType('Received', object, printReceived),
+        ),
       );
     }
 
@@ -458,14 +475,14 @@ const matchers: MatchersObject = {
 
     if (keyPathType !== 'string' && keyPathType !== 'array') {
       throw new Error(
-        matcherHint('[.not].toHaveProperty', 'object', 'path', {
-          secondArgument,
-        }) +
-          '\n\n' +
-          `Expected ${EXPECTED_COLOR(
-            'path',
-          )} to be a string or an array. Received:\n` +
-          `  ${keyPathType}: ${printReceived(keyPath)}`,
+        matcherErrorMessage(
+          matcherHint('.toHaveProperty', undefined, 'path', {
+            isNot: this.isNot,
+            secondArgument,
+          }),
+          'Expected path must be string or array',
+          printWithType('Expected', keyPath, printExpected),
+        ),
       );
     }
 
@@ -527,10 +544,13 @@ const matchers: MatchersObject = {
   toMatch(received: string, expected: string | RegExp) {
     if (typeof received !== 'string') {
       throw new Error(
-        matcherHint('[.not].toMatch', 'string', 'expected') +
-          '\n\n' +
-          `${RECEIVED_COLOR('string')} value must be a string.\n` +
+        matcherErrorMessage(
+          matcherHint('.toMatch', undefined, undefined, {
+            isNot: this.isNot,
+          }),
+          'Received value must be string',
           printWithType('Received', received, printReceived),
+        ),
       );
     }
 
@@ -539,12 +559,13 @@ const matchers: MatchersObject = {
       !(typeof expected === 'string')
     ) {
       throw new Error(
-        matcherHint('[.not].toMatch', 'string', 'expected') +
-          '\n\n' +
-          `${EXPECTED_COLOR(
-            'expected',
-          )} value must be a string or a regular expression.\n` +
+        matcherErrorMessage(
+          matcherHint('.toMatch', undefined, undefined, {
+            isNot: this.isNot,
+          }),
+          'Expected value must be string or regular expression',
           printWithType('Expected', expected, printExpected),
+        ),
       );
     }
 
@@ -571,19 +592,25 @@ const matchers: MatchersObject = {
   toMatchObject(receivedObject: Object, expectedObject: Object) {
     if (typeof receivedObject !== 'object' || receivedObject === null) {
       throw new Error(
-        matcherHint('[.not].toMatchObject', 'object', 'expected') +
-          '\n\n' +
-          `${RECEIVED_COLOR('received')} value must be an object.\n` +
+        matcherErrorMessage(
+          matcherHint('.toMatchObject', undefined, undefined, {
+            isNot: this.isNot,
+          }),
+          'Received value must be non-null object',
           printWithType('Received', receivedObject, printReceived),
+        ),
       );
     }
 
     if (typeof expectedObject !== 'object' || expectedObject === null) {
       throw new Error(
-        matcherHint('[.not].toMatchObject', 'object', 'expected') +
-          '\n\n' +
-          `${EXPECTED_COLOR('expected')} value must be an object.\n` +
+        matcherErrorMessage(
+          matcherHint('.toMatchObject', undefined, undefined, {
+            isNot: this.isNot,
+          }),
+          'Expected value must be non-null object',
           printWithType('Expected', expectedObject, printExpected),
+        ),
       );
     }
 
