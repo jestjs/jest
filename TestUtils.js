@@ -99,7 +99,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   roots: [],
   runner: 'jest-runner',
   setupFiles: [],
-  setupTestFrameworkScriptFile: null,
+  setupFilesAfterEnv: [],
   skipFilter: false,
   skipNodeResolution: false,
   snapshotResolver: null,
