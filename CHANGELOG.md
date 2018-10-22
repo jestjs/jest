@@ -90,6 +90,7 @@
 
 - `[jest-cli]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
 - `[babel-jest]` Add support for `babel.config.js` added in Babel 7.0.0 ([#6911](https://github.com/facebook/jest/pull/6911))
+- `[jest-resolve]` Add support for an experimental `mapper` option (Watchman crawler only) that adds virtual files to the Haste map ([#6940](https://github.com/facebook/jest/pull/6940))
 
 ### Fixes
 
