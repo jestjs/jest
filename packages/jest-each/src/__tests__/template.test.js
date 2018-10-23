@@ -83,6 +83,21 @@ describe('jest-each', () => {
         expect(testCallBack).not.toHaveBeenCalled();
       });
 
+      test('throws an error when called with an empty string', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`   `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('this will blow up :(', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+        expect(testCallBack).not.toHaveBeenCalled();
+      });
+
       test('calls global with given title', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`

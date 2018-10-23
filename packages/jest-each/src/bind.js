@@ -43,6 +43,20 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
         });
       }
 
+      if (
+        tableArg.length === 1 &&
+        typeof tableArg[0] === 'string' &&
+        tableArg[0].trim() === ''
+      ) {
+        const error = new ErrorWithStack(
+          'Error: `.each` called with an empty tagged template string of table data.\n',
+          eachBind,
+        );
+        return cb(title, () => {
+          throw error;
+        });
+      }
+
       if (tableArg.length === 0) {
         const error = new ErrorWithStack(
           'Error: `.each` called with an empty array of table data.\n',
