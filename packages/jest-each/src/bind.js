@@ -42,6 +42,16 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
           throw error;
         });
       }
+
+      if (tableArg.length === 0) {
+        const error = new ErrorWithStack(
+          'Error: `.each` called with an empty array of table data.\n',
+          eachBind,
+        );
+        return cb(title, () => {
+          throw error;
+        });
+      }
       const table: Table = tableArg.every(Array.isArray)
         ? tableArg
         : tableArg.map(entry => [entry]);

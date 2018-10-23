@@ -1,9 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`jest-each .describe throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty array of table data.
+"
+`;
+
 exports[`jest-each .describe throws an error when not called with an array 1`] = `
 "\`.each\` must be called with an Array or Tagged Template String.
 
 Instead was called with: undefined
+"
+`;
+
+exports[`jest-each .describe.only throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty array of table data.
 "
 `;
 
@@ -14,10 +24,20 @@ Instead was called with: undefined
 "
 `;
 
+exports[`jest-each .fdescribe throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty array of table data.
+"
+`;
+
 exports[`jest-each .fdescribe throws an error when not called with an array 1`] = `
 "\`.each\` must be called with an Array or Tagged Template String.
 
 Instead was called with: undefined
+"
+`;
+
+exports[`jest-each .fit throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty array of table data.
 "
 `;
 
@@ -28,10 +48,20 @@ Instead was called with: undefined
 "
 `;
 
+exports[`jest-each .it throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty array of table data.
+"
+`;
+
 exports[`jest-each .it throws an error when not called with an array 1`] = `
 "\`.each\` must be called with an Array or Tagged Template String.
 
 Instead was called with: undefined
+"
+`;
+
+exports[`jest-each .it.only throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty array of table data.
 "
 `;
 
@@ -42,10 +72,20 @@ Instead was called with: undefined
 "
 `;
 
+exports[`jest-each .test throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty array of table data.
+"
+`;
+
 exports[`jest-each .test throws an error when not called with an array 1`] = `
 "\`.each\` must be called with an Array or Tagged Template String.
 
 Instead was called with: undefined
+"
+`;
+
+exports[`jest-each .test.only throws an error when called with an empty array 1`] = `
+"Error: \`.each\` called with an empty array of table data.
 "
 `;
 
