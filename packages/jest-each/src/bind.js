@@ -31,7 +31,7 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
 
       if (!Array.isArray(tableArg)) {
         const error = new ErrorWithStack(
-          '`.each` must be called with an Array or Tagged Template String.\n\n' +
+          '`.each` must be called with an Array or Tagged Template Literal.\n\n' +
             `Instead was called with: ${pretty(tableArg, {
               maxDepth: 1,
               min: true,
@@ -49,7 +49,7 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
         tableArg[0].trim() === ''
       ) {
         const error = new ErrorWithStack(
-          'Error: `.each` called with an empty tagged template string of table data.\n',
+          'Error: `.each` called with an empty Tagged Template Literal of table data.\n',
           eachBind,
         );
         return cb(title, () => {
@@ -59,7 +59,7 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
 
       if (tableArg.length === 0) {
         const error = new ErrorWithStack(
-          'Error: `.each` called with an empty array of table data.\n',
+          'Error: `.each` called with an empty Array of table data.\n',
           eachBind,
         );
         return cb(title, () => {
