@@ -569,23 +569,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         );
         break;
       case 'testRegex':
-        const valueOrEmptyArray = options[key] || [];
-        const valueArray = Array.isArray(valueOrEmptyArray)
-          ? valueOrEmptyArray
-          : [valueOrEmptyArray];
-
-        value = valueArray.map(replacePathSepForRegex).map(pattern => {
-          try {
-            return new RegExp(pattern);
-          } catch (err) {
-            throw createConfigError(
-              `Error parsing configuration for ${chalk.bold(
-                key,
-              )}: "${pattern}" could not be parsed.\n` +
-                `Error: ${err.message}`,
-            );
-          }
-        });
+        value = options[key]
+          ? [].concat(options[key]).map(replacePathSepForRegex)
+          : [];
         break;
       case 'moduleFileExtensions': {
         value = options[key];

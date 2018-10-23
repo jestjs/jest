@@ -860,7 +860,7 @@ describe('testRegex', () => {
 
     expect(options.testRegex).toEqual([]);
   });
-  it('testRegex string is mapped to array of RegExp objects', () => {
+  it('testRegex string is mapped to an array', () => {
     const {options} = normalize(
       {
         rootDir: '/root',
@@ -869,9 +869,9 @@ describe('testRegex', () => {
       {},
     );
 
-    expect(options.testRegex).toEqual([/.*/]);
+    expect(options.testRegex).toEqual(['.*']);
   });
-  it('testRegex array is mapped to array of RegExp objects', () => {
+  it('testRegex array is preserved', () => {
     const {options} = normalize(
       {
         rootDir: '/root',
@@ -880,7 +880,7 @@ describe('testRegex', () => {
       {},
     );
 
-    expect(options.testRegex).toEqual([/.*/, /foo\.bar/]);
+    expect(options.testRegex).toEqual(['.*', 'foo\\.bar']);
   });
 });
 
@@ -916,18 +916,6 @@ describe('testMatch', () => {
           rootDir: '/root',
           testMatch: ['**/*.js'],
           testRegex: '.*',
-        },
-        {},
-      );
-    }).toThrowErrorMatchingSnapshot();
-  });
-
-  it('throws if testRegex is provided an invalid regex string', () => {
-    expect(() => {
-      normalize(
-        {
-          rootDir: '/root',
-          testRegex: 'foo(bar',
         },
         {},
       );
