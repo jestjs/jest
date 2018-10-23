@@ -4,12 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ * @flow
  */
 
 import type {EventHandler} from 'types/Circus';
 
-const JestAssertionError = require('expect/jest_assertion_error_object');
+import expect from 'expect';
 
 import {
   addErrorToEachTestUnderDescribe,
@@ -133,7 +133,7 @@ const handler: EventHandler = (event, state): void => {
       // Detect if this is an unknown error
       // So we can differentiate known assertion errors
       // From uncaught errors
-      if (!(error instanceof JestAssertionError)) {
+      if (!(error instanceof expect.JestAssertionError)) {
         event.test.status = 'error';
       }
 

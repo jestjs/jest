@@ -37,7 +37,7 @@ exports[`cannot have describe with no implementation 1`] = `
 
 exports[`cannot have describe with no implementation 2`] = `
 "Test Suites: 1 failed, 1 total
-Tests:       0 total
+Tests:       1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
@@ -64,7 +64,7 @@ exports[`cannot test with no implementation 1`] = `
 
 exports[`cannot test with no implementation 2`] = `
 "Test Suites: 1 failed, 1 total
-Tests:       0 total
+Tests:       1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.
@@ -91,7 +91,7 @@ exports[`cannot test with no implementation with expand arg 1`] = `
 
 exports[`cannot test with no implementation with expand arg 2`] = `
 "Test Suites: 1 failed, 1 total
-Tests:       0 total
+Tests:       1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.

@@ -49,7 +49,9 @@ import {
 } from './jest_matchers_object';
 import extractExpectedAssertionsErrors from './extract_expected_assertions_errors';
 
-const JestAssertionError = require('../jest_assertion_error_object');
+class JestAssertionError extends Error {
+  matcherResult: any;
+}
 
 const isPromise = obj =>
   !!obj &&
@@ -383,5 +385,8 @@ expect.hasAssertions = hasAssertions;
 expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
+
+// Exporting for external assertion comparisons in circus
+expect.JestAssertionError = JestAssertionError;
 
 module.exports = (expect: Expect);

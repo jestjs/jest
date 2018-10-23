@@ -20,7 +20,7 @@ Ran all test suites matching /stack_trace.test.js/i.
 
 exports[`Stack Trace does not print a stack trace for runtime errors when --noStackTrace is given 1`] = `
 "Test Suites: 1 failed, 1 total
-Tests:       0 total
+Tests:       1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching /runtime_error.test.js/i.
@@ -56,7 +56,7 @@ Ran all test suites matching /stack_trace.test.js/i.
 
 exports[`Stack Trace prints a stack trace for runtime errors 1`] = `
 "Test Suites: 1 failed, 1 total
-Tests:       0 total
+Tests:       1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites matching /runtime_error.test.js/i.
