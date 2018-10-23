@@ -1,3 +1,5 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 'use strict';
 
 // Try getting the real promise object from the context, if available. Someone

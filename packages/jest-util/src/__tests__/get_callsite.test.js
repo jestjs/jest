@@ -1,3 +1,5 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 import fs from 'fs';
 import SourceMap from 'source-map';
 import getCallsite from '../get_callsite';
