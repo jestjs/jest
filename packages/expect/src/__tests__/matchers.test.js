@@ -963,7 +963,7 @@ describe('.toHaveLength', () => {
     expect(() =>
       jestExpect('abc').toHaveLength('3'),
     ).toThrowErrorMatchingSnapshot();
-  })
+  });
 });
 
 describe('.toHaveProperty()', () => {
