@@ -149,7 +149,7 @@ export type Event =
       name: 'teardown',
     |};
 
-export type TestStatus = 'skip' | 'done' | 'todo';
+export type TestStatus = 'skip' | 'done' | 'todo' | 'error';
 export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,

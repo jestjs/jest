@@ -125,6 +125,7 @@ export const runAndTransformResultsToJestFormat = async ({
 }): Promise<TestResult> => {
   const runResult = await run();
 
+  let numErroredTests = 0;
   let numFailingTests = 0;
   let numPassingTests = 0;
   let numPendingTests = 0;
@@ -132,7 +133,10 @@ export const runAndTransformResultsToJestFormat = async ({
 
   const assertionResults = runResult.testResults.map(testResult => {
     let status: Status;
-    if (testResult.status === 'skip') {
+
+    if (testResult.status === 'error') {
+      numErroredTests += 1;
+    } else if (testResult.status === 'skip') {
       status = 'pending';
       numPendingTests += 1;
     } else if (testResult.status === 'todo') {
@@ -191,6 +195,7 @@ export const runAndTransformResultsToJestFormat = async ({
     displayName: config.displayName,
     failureMessage,
     leaks: false, // That's legacy code, just adding it so Flow is happy.
+    numErroredTests,
     numFailingTests,
     numPassingTests,
     numPendingTests,

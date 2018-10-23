@@ -9,6 +9,8 @@
 
 import type {EventHandler} from 'types/Circus';
 
+const JestAssertionError = require('expect/jest_assertion_error_object');
+
 import {
   addErrorToEachTestUnderDescribe,
   makeDescribe,
@@ -112,7 +114,7 @@ const handler: EventHandler = (event, state): void => {
     }
     case 'test_done': {
       event.test.duration = getTestDuration(event.test);
-      event.test.status = 'done';
+      event.test.status = event.test.status || 'done';
       state.currentlyRunningTest = null;
       break;
     }
@@ -127,6 +129,14 @@ const handler: EventHandler = (event, state): void => {
         error,
         test: {asyncError},
       } = event;
+
+      // Detect if this is an unknown error
+      // So we can differentiate known assertion errors
+      // From uncaught errors
+      if (!(error instanceof JestAssertionError)) {
+        event.test.status = 'error';
+      }
+
       event.test.errors.push([error, asyncError]);
       break;
     }

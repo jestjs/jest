@@ -49,9 +49,7 @@ import {
 } from './jest_matchers_object';
 import extractExpectedAssertionsErrors from './extract_expected_assertions_errors';
 
-class JestAssertionError extends Error {
-  matcherResult: any;
-}
+const JestAssertionError = require('../jest_assertion_error_object');
 
 const isPromise = obj =>
   !!obj &&
