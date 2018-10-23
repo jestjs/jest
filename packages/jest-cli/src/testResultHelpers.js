@@ -14,6 +14,7 @@ import type {
 } from 'types/TestResult';
 
 export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
+  numErroredTests: 0,
   numFailedTestSuites: 0,
   numFailedTests: 0,
   numPassedTestSuites: 0,
@@ -55,6 +56,7 @@ export const buildFailureTestResult = (
   displayName: '',
   failureMessage: null,
   leaks: false,
+  numErroredTests: 1,
   numFailingTests: 0,
   numPassingTests: 0,
   numPendingTests: 0,
@@ -88,9 +90,11 @@ export const addResult = (
   aggregatedResults.testResults.push(testResult);
   aggregatedResults.numTotalTests +=
     testResult.numPassingTests +
+    testResult.numErroredTests +
     testResult.numFailingTests +
     testResult.numPendingTests +
     testResult.numTodoTests;
+  aggregatedResults.numErroredTests += testResult.numErroredTests;
   aggregatedResults.numFailedTests += testResult.numFailingTests;
   aggregatedResults.numPassedTests += testResult.numPassingTests;
   aggregatedResults.numPendingTests += testResult.numPendingTests;

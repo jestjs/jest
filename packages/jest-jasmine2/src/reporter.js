@@ -82,13 +82,16 @@ export default class Jasmine2Reporter {
   }
 
   jasmineDone(): void {
+    let numErroredTests = 0;
     let numFailingTests = 0;
     let numPassingTests = 0;
     let numPendingTests = 0;
     let numTodoTests = 0;
     const testResults = this._testResults;
     testResults.forEach(testResult => {
-      if (testResult.status === 'failed') {
+      if (testResult.status === 'error') {
+        numErroredTests++;
+      } else if (testResult.status === 'failed') {
         numFailingTests++;
       } else if (testResult.status === 'pending') {
         numPendingTests++;
@@ -107,6 +110,7 @@ export default class Jasmine2Reporter {
         this._globalConfig,
         this._testPath,
       ),
+      numErroredTests,
       numFailingTests,
       numPassingTests,
       numPendingTests,

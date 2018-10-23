@@ -34,7 +34,11 @@ export default (
 ) => {
   const testPath = result.testFilePath;
   const status =
-    result.numFailingTests > 0 || result.testExecError ? FAIL : PASS;
+    result.numFailingTests > 0 ||
+    result.numErroredTests > 0 ||
+    result.testExecError
+      ? FAIL
+      : PASS;
 
   const runTime = result.perfStats
     ? (result.perfStats.end - result.perfStats.start) / 1000

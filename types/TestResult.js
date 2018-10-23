@@ -113,6 +113,7 @@ export type FormattedAssertionResult = {
 };
 
 export type AggregatedResultWithoutCoverage = {
+  numErroredTests: number,
   numFailedTests: number,
   numFailedTestSuites: number,
   numPassedTests: number,
@@ -148,6 +149,7 @@ export type TestResult = {|
   failureMessage: ?string,
   leaks: boolean,
   memoryUsage?: Bytes,
+  numErroredTests: number,
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
