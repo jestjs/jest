@@ -161,7 +161,7 @@ const matchers: MatchersObject = {
           matcherHint('.toBeInstanceOf', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Expected value must be a function',
+          `${EXPECTED_COLOR('expected')} value must be a function`,
           printWithType('Expected', constructor, printExpected),
         ),
       );
@@ -288,7 +288,7 @@ const matchers: MatchersObject = {
             matcherHint('.toContain', undefined, undefined, {
               isNot: this.isNot,
             }),
-            'Received value cannot be null nor undefined',
+            `${RECEIVED_COLOR('received')} value cannot be null nor undefined`,
             printWithType('Received', collection, printReceived),
           ),
         );
@@ -341,7 +341,7 @@ const matchers: MatchersObject = {
             matcherHint('.toContainEqual', undefined, undefined, {
               isNot: this.isNot,
             }),
-            'Received value cannot be null nor undefined',
+            `${RECEIVED_COLOR('received')} value cannot be null nor undefined`,
             printWithType('Received', collection, printReceived),
           ),
         );
@@ -412,7 +412,9 @@ const matchers: MatchersObject = {
           matcherHint('.toHaveLength', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Received value must have a length property whose value must be a number',
+          `${RECEIVED_COLOR(
+            'received',
+          )} value must have a length property whose value must be a number`,
           printWithType('Received', received, printReceived),
         ),
       );
@@ -424,7 +426,7 @@ const matchers: MatchersObject = {
           matcherHint('.toHaveLength', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Expected value must be a number',
+          `${EXPECTED_COLOR('expected')} value must be a number`,
           printWithType('Expected', length, printExpected),
         ),
       );
@@ -465,7 +467,7 @@ const matchers: MatchersObject = {
             isNot: this.isNot,
             secondArgument,
           }),
-          'Received value cannot be null nor undefined',
+          `${RECEIVED_COLOR('received')} value cannot be null nor undefined`,
           printWithType('Received', object, printReceived),
         ),
       );
@@ -480,7 +482,7 @@ const matchers: MatchersObject = {
             isNot: this.isNot,
             secondArgument,
           }),
-          'Expected path must be a string or array',
+          `${EXPECTED_COLOR('expected')} path must be a string or array`,
           printWithType('Expected', keyPath, printExpected),
         ),
       );
@@ -548,7 +550,7 @@ const matchers: MatchersObject = {
           matcherHint('.toMatch', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Received value must be a string',
+          `${RECEIVED_COLOR('received')} value must be a string`,
           printWithType('Received', received, printReceived),
         ),
       );
@@ -563,7 +565,9 @@ const matchers: MatchersObject = {
           matcherHint('.toMatch', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Expected value must be a string or regular expression',
+          `${EXPECTED_COLOR(
+            'expected',
+          )} value must be a string or regular expression`,
           printWithType('Expected', expected, printExpected),
         ),
       );
@@ -596,7 +600,7 @@ const matchers: MatchersObject = {
           matcherHint('.toMatchObject', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Received value must be a non-null object',
+          `${RECEIVED_COLOR('received')} value must be a non-null object`,
           printWithType('Received', receivedObject, printReceived),
         ),
       );
@@ -608,7 +612,7 @@ const matchers: MatchersObject = {
           matcherHint('.toMatchObject', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Expected value must be a non-null object',
+          `${EXPECTED_COLOR('expected')} value must be a non-null object`,
           printWithType('Expected', expectedObject, printExpected),
         ),
       );

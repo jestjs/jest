@@ -468,7 +468,7 @@ const ensureMock = (mockOrSpy, matcherName) => {
     throw new Error(
       matcherErrorMessage(
         matcherHint('[.not]' + matcherName, 'jest.fn()', ''),
-        'Received value must be a mock or spy function',
+        `${RECEIVED_COLOR('received')} value must be a mock or spy function`,
         printWithType('Received', mockOrSpy, printReceived),
       ),
     );

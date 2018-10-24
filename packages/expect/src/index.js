@@ -147,7 +147,7 @@ const makeResolveMatcher = (
     throw new JestAssertionError(
       matcherUtils.matcherErrorMessage(
         matcherUtils.matcherHint(matcherStatement, undefined, ''),
-        'Received value must be a Promise',
+        `${matcherUtils.RECEIVED_COLOR('received')} value must be a Promise`,
         matcherUtils.printWithType(
           'Received',
           actual,
@@ -188,7 +188,7 @@ const makeRejectMatcher = (
     throw new JestAssertionError(
       matcherUtils.matcherErrorMessage(
         matcherUtils.matcherHint(matcherStatement, undefined, ''),
-        'Received value must be a Promise',
+        `${matcherUtils.RECEIVED_COLOR('received')} value must be a Promise`,
         matcherUtils.printWithType(
           'Received',
           actual,

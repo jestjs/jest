@@ -94,9 +94,12 @@ export const printWithType = (
   print: (value: any) => string, // printExpected or printReceived
 ) => {
   const type = getType(value);
-  return `${name}${
-    type !== 'null' && type !== 'undefined' ? ' ' + type : ''
-  }: ${print(value)}`;
+  const hasType =
+    type !== 'null' && type !== 'undefined'
+      ? `${name} has type:  ${type}\n`
+      : '';
+  const hasValue = `${name} has value: ${print(value)}`;
+  return hasType + hasValue;
 };
 
 export const ensureNoExpected = (expected: any, matcherName: string) => {
@@ -105,7 +108,7 @@ export const ensureNoExpected = (expected: any, matcherName: string) => {
     throw new Error(
       matcherErrorMessage(
         matcherHint('[.not]' + matcherName, undefined, ''),
-        'Expected value must be omitted or undefined',
+        `${EXPECTED_COLOR('expected')} value must be omitted or undefined`,
         printWithType('Expected', expected, printExpected),
       ),
     );
@@ -118,7 +121,7 @@ export const ensureActualIsNumber = (actual: any, matcherName: string) => {
     throw new Error(
       matcherErrorMessage(
         matcherHint('[.not]' + matcherName),
-        'Received value must be a number',
+        `${RECEIVED_COLOR('received')} value must be a number`,
         printWithType('Received', actual, printReceived),
       ),
     );
@@ -131,7 +134,7 @@ export const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
     throw new Error(
       matcherErrorMessage(
         matcherHint('[.not]' + matcherName),
-        'Expected value must be a number',
+        `${EXPECTED_COLOR('expected')} value must be a number`,
         printWithType('Expected', expected, printExpected),
       ),
     );

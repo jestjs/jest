@@ -13,6 +13,7 @@ import getType from 'jest-get-type';
 import {escapeStrForRegex} from 'jest-regex-util';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
+  EXPECTED_COLOR,
   RECEIVED_COLOR,
   highlightTrailingWhitespace,
   matcherErrorMessage,
@@ -39,7 +40,7 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
         throw new Error(
           matcherErrorMessage(
             matcherHint('[.not]' + matcherName, undefined, undefined),
-            'Received value must be a function',
+            `${RECEIVED_COLOR('received')} value must be a function`,
             printWithType('Received', actual, printReceived),
           ),
         );
@@ -88,7 +89,9 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
     throw new Error(
       matcherErrorMessage(
         matcherHint('[.not]' + matcherName, undefined, undefined),
-        'Expected value must be a string or regular expression or Error',
+        `${EXPECTED_COLOR(
+          'expected',
+        )} value must be a string or regular expression or Error`,
         printWithType('Expected', expected, printExpected),
       ),
     );

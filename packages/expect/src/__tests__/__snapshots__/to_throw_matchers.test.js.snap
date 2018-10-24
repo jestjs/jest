@@ -31,17 +31,19 @@ Instead, it threw:
 exports[`.toThrow() invalid actual 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toThrow(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Received value must be a function
+<bold>Matcher error</>: <red>received</> value must be a function
 
-Received string: <red>\\"a string\\"</>"
+Received has type:  string
+Received has value: <red>\\"a string\\"</>"
 `;
 
 exports[`.toThrow() invalid arguments 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toThrow(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be a string or regular expression or Error
+<bold>Matcher error</>: <green>expected</> value must be a string or regular expression or Error
 
-Expected number: <green>111</>"
+Expected has type:  number
+Expected has value: <green>111</>"
 `;
 
 exports[`.toThrow() promise/async throws if Error-like object is returned did not throw at all 1`] = `
@@ -157,17 +159,19 @@ Instead, it threw:
 exports[`.toThrowError() invalid actual 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toThrowError(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Received value must be a function
+<bold>Matcher error</>: <red>received</> value must be a function
 
-Received string: <red>\\"a string\\"</>"
+Received has type:  string
+Received has value: <red>\\"a string\\"</>"
 `;
 
 exports[`.toThrowError() invalid arguments 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toThrowError(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be a string or regular expression or Error
+<bold>Matcher error</>: <green>expected</> value must be a string or regular expression or Error
 
-Expected number: <green>111</>"
+Expected has type:  number
+Expected has value: <green>111</>"
 `;
 
 exports[`.toThrowError() promise/async throws if Error-like object is returned did not throw at all 1`] = `
