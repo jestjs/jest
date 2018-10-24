@@ -11,7 +11,7 @@ import type {InternalHasteMap} from 'types/HasteMap';
 import type {CrawlerOptions} from '../types';
 
 import * as fastPath from '../lib/fast_path';
-import normalizePathSep from '../lib/normalize_path_sep';
+import normalizePathSep from '../lib/normalizePathSep';
 import path from 'path';
 import watchman from 'fb-watchman';
 import H from '../constants';

@@ -75,7 +75,7 @@ jest.mock('sane', () => ({
   WatchmanWatcher: mockWatcherConstructor,
 }));
 
-jest.mock('../lib/watchman_watcher.js', () => mockWatcherConstructor);
+jest.mock('../lib/WatchmanWatcher.js', () => mockWatcherConstructor);
 
 let mockChangedFiles;
 let mockFs;
@@ -1230,7 +1230,7 @@ describe('HasteMap', () => {
         } catch (error) {
           const {
             DuplicateHasteCandidatesError,
-          } = require('../module_map').default;
+          } = require('../ModuleMap').default;
           expect(error).toBeInstanceOf(DuplicateHasteCandidatesError);
           expect(error.hasteName).toBe('Pear');
           expect(error.platform).toBe('g');

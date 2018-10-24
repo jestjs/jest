@@ -9,7 +9,7 @@
 
 'use strict';
 
-import getPlatformExtension from '../get_platform_extension';
+import getPlatformExtension from '../getPlatformExtension';
 
 describe('getPlatformExtension', () => {
   it('should get platform ext', () => {
