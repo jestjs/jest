@@ -22,8 +22,8 @@ module.exports = ({template}) => {
     name: 'jest-native-globals',
     visitor: {
       ReferencedIdentifier(path, state) {
-        if (path.node.name === 'Promise' && !state.injectedPromise) {
-          state.injectedPromise = true;
+        if (path.node.name === 'Promise' && !state.jestInjectedPromise) {
+          state.jestInjectedPromise = true;
           path
             .findParent(p => p.isProgram())
             .unshiftContainer('body', promiseDeclaration());
@@ -33,8 +33,8 @@ module.exports = ({template}) => {
           path.parent.property &&
           path.parent.property.name === 'now'
         ) {
-          if (!state.injectedHrtime) {
-            state.injectedHrtime = true;
+          if (!state.jestInjectedNow) {
+            state.jestInjectedNow = true;
             path
               .findParent(p => p.isProgram())
               .unshiftContainer('body', nowDeclaration());
