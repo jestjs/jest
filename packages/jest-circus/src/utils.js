@@ -155,7 +155,7 @@ export const getEachHooksForTest = (
 export const describeBlockHasTests = (describe: DescribeBlock) =>
   describe.tests.length || describe.children.some(describeBlockHasTests);
 
-const _makeTimeoutMessage = (timeout: number, isHook: ?boolean) =>
+const _makeTimeoutMessage = (timeout, isHook) =>
   `Exceeded timeout of ${timeout}ms for a ${
     isHook ? 'hook' : 'test'
   }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
@@ -167,10 +167,9 @@ const {setTimeout, clearTimeout} = global;
 export const callAsyncCircusFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
-  {isHook, timeout}: {isHook: ?boolean, timeout: number},
+  {isHook, timeout}: {isHook?: ?boolean, timeout: number},
 ): Promise<mixed> => {
   let timeoutID;
-  const startedAt = getTimestamp();
 
   return new Promise((resolve, reject) => {
     timeoutID = setTimeout(
@@ -237,9 +236,6 @@ export const callAsyncCircusFn = (
       // it's resolved.
       timeoutID.unref && timeoutID.unref();
       clearTimeout(timeoutID);
-      if (getTimestamp() - startedAt > timeout) {
-        throw new Error(_makeTimeoutMessage(timeout, isHook));
-      }
     })
     .catch(error => {
       timeoutID.unref && timeoutID.unref();
@@ -248,11 +244,9 @@ export const callAsyncCircusFn = (
     });
 };
 
-export const getTimestamp = Date.now.bind(Date);
-
 export const getTestDuration = (test: TestEntry): ?number => {
   const {startedAt} = test;
-  return startedAt ? getTimestamp() - startedAt : null;
+  return startedAt ? Date.now() - startedAt : null;
 };
 
 export const makeRunResult = (
