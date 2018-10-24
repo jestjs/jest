@@ -39,7 +39,7 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
         throw new Error(
           matcherErrorMessage(
             matcherHint('[.not]' + matcherName, undefined, undefined),
-            'Received value must be function',
+            'Received value must be a function',
             printWithType('Received', actual, printReceived),
           ),
         );
@@ -88,7 +88,7 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
     throw new Error(
       matcherErrorMessage(
         matcherHint('[.not]' + matcherName, undefined, undefined),
-        'Expected value must be string or regular expression or Error',
+        'Expected value must be a string or regular expression or Error',
         printWithType('Expected', expected, printExpected),
       ),
     );

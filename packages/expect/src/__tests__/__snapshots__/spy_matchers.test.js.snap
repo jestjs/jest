@@ -10,7 +10,7 @@ Expected mock function \\"named-mock\\" to not have been last called with:
 exports[`lastCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].lastCalledWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -152,7 +152,7 @@ But it was <red>not called</>"
 exports[`lastReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].lastReturnedWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -276,7 +276,7 @@ Expected mock function first call to not have been called with:
 exports[`nthCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].nthCalledWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -439,7 +439,7 @@ But the first call returned exactly:
 exports[`nthReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].nthReturnedWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -581,7 +581,7 @@ Expected mock function not to be called but it was called with:
 exports[`toBeCalled works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalled(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -589,7 +589,7 @@ Received function: <red>[Function fn]</>"
 exports[`toBeCalledTimes .not only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected object: <green>{}</>"
 `;
@@ -597,7 +597,7 @@ Expected object: <green>{}</>"
 exports[`toBeCalledTimes .not only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected array: <green>[]</>"
 `;
@@ -605,7 +605,7 @@ Expected array: <green>[]</>"
 exports[`toBeCalledTimes .not only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected boolean: <green>true</>"
 `;
@@ -613,7 +613,7 @@ Expected boolean: <green>true</>"
 exports[`toBeCalledTimes .not only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected string: <green>\\"a\\"</>"
 `;
@@ -621,7 +621,7 @@ Expected string: <green>\\"a\\"</>"
 exports[`toBeCalledTimes .not only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected map: <green>Map {}</>"
 `;
@@ -629,7 +629,7 @@ Expected map: <green>Map {}</>"
 exports[`toBeCalledTimes .not only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected function: <green>[Function anonymous]</>"
 `;
@@ -655,7 +655,7 @@ Expected mock function \\"named-mock\\" to have been called <green>two times</>,
 exports[`toBeCalledTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected object: <green>{}</>"
 `;
@@ -663,7 +663,7 @@ Expected object: <green>{}</>"
 exports[`toBeCalledTimes only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected array: <green>[]</>"
 `;
@@ -671,7 +671,7 @@ Expected array: <green>[]</>"
 exports[`toBeCalledTimes only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected boolean: <green>true</>"
 `;
@@ -679,7 +679,7 @@ Expected boolean: <green>true</>"
 exports[`toBeCalledTimes only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected string: <green>\\"a\\"</>"
 `;
@@ -687,7 +687,7 @@ Expected string: <green>\\"a\\"</>"
 exports[`toBeCalledTimes only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected map: <green>Map {}</>"
 `;
@@ -695,7 +695,7 @@ Expected map: <green>Map {}</>"
 exports[`toBeCalledTimes only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected function: <green>[Function anonymous]</>"
 `;
@@ -709,7 +709,7 @@ Expected mock function not to be called <green>two times</>, but it was called e
 exports[`toBeCalledTimes works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledTimes(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -724,7 +724,7 @@ Expected mock function \\"named-mock\\" not to have been called with:
 exports[`toBeCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -886,7 +886,7 @@ Expected mock function not to be called but it was called with:
 exports[`toHaveBeenCalled works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalled(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -894,7 +894,7 @@ Received function: <red>[Function fn]</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected object: <green>{}</>"
 `;
@@ -902,7 +902,7 @@ Expected object: <green>{}</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected array: <green>[]</>"
 `;
@@ -910,7 +910,7 @@ Expected array: <green>[]</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected boolean: <green>true</>"
 `;
@@ -918,7 +918,7 @@ Expected boolean: <green>true</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected string: <green>\\"a\\"</>"
 `;
@@ -926,7 +926,7 @@ Expected string: <green>\\"a\\"</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected map: <green>Map {}</>"
 `;
@@ -934,7 +934,7 @@ Expected map: <green>Map {}</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected function: <green>[Function anonymous]</>"
 `;
@@ -960,7 +960,7 @@ Expected mock function \\"named-mock\\" to have been called <green>two times</>,
 exports[`toHaveBeenCalledTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected object: <green>{}</>"
 `;
@@ -968,7 +968,7 @@ Expected object: <green>{}</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected array: <green>[]</>"
 `;
@@ -976,7 +976,7 @@ Expected array: <green>[]</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected boolean: <green>true</>"
 `;
@@ -984,7 +984,7 @@ Expected boolean: <green>true</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected string: <green>\\"a\\"</>"
 `;
@@ -992,7 +992,7 @@ Expected string: <green>\\"a\\"</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected map: <green>Map {}</>"
 `;
@@ -1000,7 +1000,7 @@ Expected map: <green>Map {}</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected function: <green>[Function anonymous]</>"
 `;
@@ -1014,7 +1014,7 @@ Expected mock function not to be called <green>two times</>, but it was called e
 exports[`toHaveBeenCalledTimes works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledTimes(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -1029,7 +1029,7 @@ Expected mock function \\"named-mock\\" not to have been called with:
 exports[`toHaveBeenCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -1162,7 +1162,7 @@ Expected mock function \\"named-mock\\" to not have been last called with:
 exports[`toHaveBeenLastCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenLastCalledWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -1307,7 +1307,7 @@ Expected mock function first call to not have been called with:
 exports[`toHaveBeenNthCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenNthCalledWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -1440,7 +1440,7 @@ But it was <red>not called</>"
 exports[`toHaveLastReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveLastReturnedWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -1591,7 +1591,7 @@ But the first call returned exactly:
 exports[`toHaveNthReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveNthReturnedWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -1761,7 +1761,7 @@ Expected mock function not to have returned, but it returned:
 exports[`toHaveReturned works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturned(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -1769,7 +1769,7 @@ Received function: <red>[Function fn]</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected object: <green>{}</>"
 `;
@@ -1777,7 +1777,7 @@ Expected object: <green>{}</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected array: <green>[]</>"
 `;
@@ -1785,7 +1785,7 @@ Expected array: <green>[]</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected boolean: <green>true</>"
 `;
@@ -1793,7 +1793,7 @@ Expected boolean: <green>true</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected string: <green>\\"a\\"</>"
 `;
@@ -1801,7 +1801,7 @@ Expected string: <green>\\"a\\"</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected map: <green>Map {}</>"
 `;
@@ -1809,7 +1809,7 @@ Expected map: <green>Map {}</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected function: <green>[Function anonymous]</>"
 `;
@@ -1853,7 +1853,7 @@ Expected mock function \\"named-mock\\" to have returned <green>one time</>, but
 exports[`toHaveReturnedTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected object: <green>{}</>"
 `;
@@ -1861,7 +1861,7 @@ Expected object: <green>{}</>"
 exports[`toHaveReturnedTimes only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected array: <green>[]</>"
 `;
@@ -1869,7 +1869,7 @@ Expected array: <green>[]</>"
 exports[`toHaveReturnedTimes only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected boolean: <green>true</>"
 `;
@@ -1877,7 +1877,7 @@ Expected boolean: <green>true</>"
 exports[`toHaveReturnedTimes only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected string: <green>\\"a\\"</>"
 `;
@@ -1885,7 +1885,7 @@ Expected string: <green>\\"a\\"</>"
 exports[`toHaveReturnedTimes only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected map: <green>Map {}</>"
 `;
@@ -1893,7 +1893,7 @@ Expected map: <green>Map {}</>"
 exports[`toHaveReturnedTimes only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected function: <green>[Function anonymous]</>"
 `;
@@ -1907,7 +1907,7 @@ Expected mock function not to have returned <green>two times</>, but it returned
 exports[`toHaveReturnedTimes works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturnedTimes(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -1939,7 +1939,7 @@ But it did <red>not return</>."
 exports[`toHaveReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturnedWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -2119,7 +2119,7 @@ Expected mock function not to have returned, but it returned:
 exports[`toReturn works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturn(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -2127,7 +2127,7 @@ Received function: <red>[Function fn]</>"
 exports[`toReturnTimes .not only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected object: <green>{}</>"
 `;
@@ -2135,7 +2135,7 @@ Expected object: <green>{}</>"
 exports[`toReturnTimes .not only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected array: <green>[]</>"
 `;
@@ -2143,7 +2143,7 @@ Expected array: <green>[]</>"
 exports[`toReturnTimes .not only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected boolean: <green>true</>"
 `;
@@ -2151,7 +2151,7 @@ Expected boolean: <green>true</>"
 exports[`toReturnTimes .not only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected string: <green>\\"a\\"</>"
 `;
@@ -2159,7 +2159,7 @@ Expected string: <green>\\"a\\"</>"
 exports[`toReturnTimes .not only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected map: <green>Map {}</>"
 `;
@@ -2167,7 +2167,7 @@ Expected map: <green>Map {}</>"
 exports[`toReturnTimes .not only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected function: <green>[Function anonymous]</>"
 `;
@@ -2211,7 +2211,7 @@ Expected mock function \\"named-mock\\" to have returned <green>one time</>, but
 exports[`toReturnTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected object: <green>{}</>"
 `;
@@ -2219,7 +2219,7 @@ Expected object: <green>{}</>"
 exports[`toReturnTimes only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected array: <green>[]</>"
 `;
@@ -2227,7 +2227,7 @@ Expected array: <green>[]</>"
 exports[`toReturnTimes only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected boolean: <green>true</>"
 `;
@@ -2235,7 +2235,7 @@ Expected boolean: <green>true</>"
 exports[`toReturnTimes only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected string: <green>\\"a\\"</>"
 `;
@@ -2243,7 +2243,7 @@ Expected string: <green>\\"a\\"</>"
 exports[`toReturnTimes only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected map: <green>Map {}</>"
 `;
@@ -2251,7 +2251,7 @@ Expected map: <green>Map {}</>"
 exports[`toReturnTimes only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be number
+<bold>Matcher error</>: Expected value must be a number
 
 Expected function: <green>[Function anonymous]</>"
 `;
@@ -2265,7 +2265,7 @@ Expected mock function not to have returned <green>two times</>, but it returned
 exports[`toReturnTimes works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturnTimes(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;
@@ -2297,7 +2297,7 @@ But it did <red>not return</>."
 exports[`toReturnWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturnWith(</><dim>)</>
 
-<bold>Matcher error</>: Received value must be mock or spy function
+<bold>Matcher error</>: Received value must be a mock or spy function
 
 Received function: <red>[Function fn]</>"
 `;

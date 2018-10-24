@@ -31,7 +31,7 @@ Instead, it threw:
 exports[`.toThrow() invalid actual 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toThrow(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Received value must be function
+<bold>Matcher error</>: Received value must be a function
 
 Received string: <red>\\"a string\\"</>"
 `;
@@ -39,7 +39,7 @@ Received string: <red>\\"a string\\"</>"
 exports[`.toThrow() invalid arguments 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toThrow(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be string or regular expression or Error
+<bold>Matcher error</>: Expected value must be a string or regular expression or Error
 
 Expected number: <green>111</>"
 `;
@@ -157,7 +157,7 @@ Instead, it threw:
 exports[`.toThrowError() invalid actual 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toThrowError(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Received value must be function
+<bold>Matcher error</>: Received value must be a function
 
 Received string: <red>\\"a string\\"</>"
 `;
@@ -165,7 +165,7 @@ Received string: <red>\\"a string\\"</>"
 exports[`.toThrowError() invalid arguments 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toThrowError(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: Expected value must be string or regular expression or Error
+<bold>Matcher error</>: Expected value must be a string or regular expression or Error
 
 Expected number: <green>111</>"
 `;

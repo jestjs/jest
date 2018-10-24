@@ -118,7 +118,7 @@ export const ensureActualIsNumber = (actual: any, matcherName: string) => {
     throw new Error(
       matcherErrorMessage(
         matcherHint('[.not]' + matcherName),
-        'Received value must be number',
+        'Received value must be a number',
         printWithType('Received', actual, printReceived),
       ),
     );
@@ -131,7 +131,7 @@ export const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
     throw new Error(
       matcherErrorMessage(
         matcherHint('[.not]' + matcherName),
-        'Expected value must be number',
+        'Expected value must be a number',
         printWithType('Expected', expected, printExpected),
       ),
     );

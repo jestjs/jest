@@ -161,7 +161,7 @@ const matchers: MatchersObject = {
           matcherHint('.toBeInstanceOf', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Expected value must be function',
+          'Expected value must be a function',
           printWithType('Expected', constructor, printExpected),
         ),
       );
@@ -288,7 +288,7 @@ const matchers: MatchersObject = {
             matcherHint('.toContain', undefined, undefined, {
               isNot: this.isNot,
             }),
-            'Received value cannot be null or undefined',
+            'Received value cannot be null nor undefined',
             printWithType('Received', collection, printReceived),
           ),
         );
@@ -341,7 +341,7 @@ const matchers: MatchersObject = {
             matcherHint('.toContainEqual', undefined, undefined, {
               isNot: this.isNot,
             }),
-            'Received value cannot be null or undefined',
+            'Received value cannot be null nor undefined',
             printWithType('Received', collection, printReceived),
           ),
         );
@@ -412,7 +412,7 @@ const matchers: MatchersObject = {
           matcherHint('.toHaveLength', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Received value must have length property whose value must be number',
+          'Received value must have a length property whose value must be a number',
           printWithType('Received', received, printReceived),
         ),
       );
@@ -424,7 +424,7 @@ const matchers: MatchersObject = {
           matcherHint('.toHaveLength', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Expected value must be number',
+          'Expected value must be a number',
           printWithType('Expected', length, printExpected),
         ),
       );
@@ -465,7 +465,7 @@ const matchers: MatchersObject = {
             isNot: this.isNot,
             secondArgument,
           }),
-          'Received value cannot be null or undefined',
+          'Received value cannot be null nor undefined',
           printWithType('Received', object, printReceived),
         ),
       );
@@ -480,7 +480,7 @@ const matchers: MatchersObject = {
             isNot: this.isNot,
             secondArgument,
           }),
-          'Expected path must be string or array',
+          'Expected path must be a string or array',
           printWithType('Expected', keyPath, printExpected),
         ),
       );
@@ -548,7 +548,7 @@ const matchers: MatchersObject = {
           matcherHint('.toMatch', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Received value must be string',
+          'Received value must be a string',
           printWithType('Received', received, printReceived),
         ),
       );
@@ -563,7 +563,7 @@ const matchers: MatchersObject = {
           matcherHint('.toMatch', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Expected value must be string or regular expression',
+          'Expected value must be a string or regular expression',
           printWithType('Expected', expected, printExpected),
         ),
       );
@@ -596,7 +596,7 @@ const matchers: MatchersObject = {
           matcherHint('.toMatchObject', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Received value must be non-null object',
+          'Received value must be a non-null object',
           printWithType('Received', receivedObject, printReceived),
         ),
       );
@@ -608,7 +608,7 @@ const matchers: MatchersObject = {
           matcherHint('.toMatchObject', undefined, undefined, {
             isNot: this.isNot,
           }),
-          'Expected value must be non-null object',
+          'Expected value must be a non-null object',
           printWithType('Expected', expectedObject, printExpected),
         ),
       );
