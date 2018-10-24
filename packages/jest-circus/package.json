@@ -20,7 +20,6 @@
     "jest-snapshot": "^23.6.0",
     "jest-util": "^23.4.0",
     "pretty-format": "^23.6.0",
-    "convert-hrtime": "^2.0.0",
     "stack-utils": "^1.0.1"
   },
   "devDependencies": {

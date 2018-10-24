@@ -21,8 +21,8 @@ export default function(globalObject: Global, globals: ConfigGlobals) {
   // Keep a reference to some globals that Jest needs
   globalObject[globalObject.Symbol.for('jest-native-promise')] = Promise;
   globalObject[
-    globalObject.Symbol.for('jest-hrtime')
-  ] = globalObject.process.hrtime.bind(globalObject.process);
+    globalObject.Symbol.for('jest-now')
+  ] = globalObject.Date.now.bind(globalObject.Date);
 
   // Forward some APIs.
   DTRACE.forEach(dtrace => {

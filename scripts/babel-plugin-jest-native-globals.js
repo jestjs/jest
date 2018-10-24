@@ -14,8 +14,8 @@ module.exports = ({template}) => {
   const promiseDeclaration = template(`
     var Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
   `);
-  const hrtimeDeclaration = template(`
-    var hrtime = global[Symbol.for('jest-hrtime')] || global.process.hrtime;
+  const nowDeclaration = template(`
+    var jestNow = global[Symbol.for('jest-now')] || global.Date.now;
   `);
 
   return {
@@ -29,18 +29,18 @@ module.exports = ({template}) => {
             .unshiftContainer('body', promiseDeclaration());
         }
         if (
-          path.node.name === 'process' &&
+          path.node.name === 'Date' &&
           path.parent.property &&
-          path.parent.property.name === 'hrtime'
+          path.parent.property.name === 'now'
         ) {
           if (!state.injectedHrtime) {
             state.injectedHrtime = true;
             path
               .findParent(p => p.isProgram())
-              .unshiftContainer('body', hrtimeDeclaration());
+              .unshiftContainer('body', nowDeclaration());
           }
 
-          path.parentPath.replaceWithSourceString('hrtime');
+          path.parentPath.replaceWithSourceString('jestNow');
         }
       },
     },
