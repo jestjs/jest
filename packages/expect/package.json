@@ -15,5 +15,8 @@
     "jest-matcher-utils": "^23.6.0",
     "jest-message-util": "^23.4.0",
     "jest-regex-util": "^23.3.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }
