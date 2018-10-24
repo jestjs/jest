@@ -207,7 +207,7 @@ export type TestEntry = {|
   mode: TestMode,
   name: TestName,
   parent: DescribeBlock,
-  startedAt: ?number,
+  startedAt: ?[number, number],
   duration: ?number,
   status: ?TestStatus, // whether the test has been skipped or run already
   timeout: ?number,

@@ -14,9 +14,12 @@ module.exports = ({template}) => {
   const promiseDeclaration = template(`
     var Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
   `);
+  const hrtimeDeclaration = template(`
+    var hrtime = global[Symbol.for('jest-hrtime')] || global.process.hrtime;
+  `);
 
   return {
-    name: 'jest-native-promise',
+    name: 'jest-native-globals',
     visitor: {
       ReferencedIdentifier(path, state) {
         if (path.node.name === 'Promise' && !state.injectedPromise) {
@@ -24,6 +27,20 @@ module.exports = ({template}) => {
           path
             .findParent(p => p.isProgram())
             .unshiftContainer('body', promiseDeclaration());
+        }
+        if (
+          path.node.name === 'process' &&
+          path.parent.property &&
+          path.parent.property.name === 'hrtime'
+        ) {
+          if (!state.injectedHrtime) {
+            state.injectedHrtime = true;
+            path
+              .findParent(p => p.isProgram())
+              .unshiftContainer('body', hrtimeDeclaration());
+          }
+
+          path.parentPath.replaceWithSourceString('hrtime');
         }
       },
     },

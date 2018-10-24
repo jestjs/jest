@@ -25,6 +25,7 @@ import type {
 import {convertDescriptorToString} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
+import convertHrtime from 'convert-hrtime';
 
 import StackUtils from 'stack-utils';
 
@@ -240,7 +241,12 @@ export const callAsyncCircusFn = (
 
 export const getTestDuration = (test: TestEntry): ?number => {
   const {startedAt} = test;
-  return startedAt ? Date.now() - startedAt : null;
+
+  if (!startedAt) {
+    return null;
+  }
+
+  return convertHrtime(process.hrtime(startedAt)).milliseconds;
 };
 
 export const makeRunResult = (
