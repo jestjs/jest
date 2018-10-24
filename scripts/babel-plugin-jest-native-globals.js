@@ -14,16 +14,33 @@ module.exports = ({template}) => {
   const promiseDeclaration = template(`
     var Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
   `);
+  const nowDeclaration = template(`
+    var jestNow = global[Symbol.for('jest-native-now')] || global.Date.now;
+  `);
 
   return {
-    name: 'jest-native-promise',
+    name: 'jest-native-globals',
     visitor: {
       ReferencedIdentifier(path, state) {
-        if (path.node.name === 'Promise' && !state.injectedPromise) {
-          state.injectedPromise = true;
+        if (path.node.name === 'Promise' && !state.jestInjectedPromise) {
+          state.jestInjectedPromise = true;
           path
             .findParent(p => p.isProgram())
             .unshiftContainer('body', promiseDeclaration());
+        }
+        if (
+          path.node.name === 'Date' &&
+          path.parent.property &&
+          path.parent.property.name === 'now'
+        ) {
+          if (!state.jestInjectedNow) {
+            state.jestInjectedNow = true;
+            path
+              .findParent(p => p.isProgram())
+              .unshiftContainer('body', nowDeclaration());
+          }
+
+          path.parentPath.replaceWithSourceString('jestNow');
         }
       },
     },

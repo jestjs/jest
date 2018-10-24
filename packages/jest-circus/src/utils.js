@@ -240,7 +240,7 @@ export const callAsyncCircusFn = (
 
 export const getTestDuration = (test: TestEntry): ?number => {
   const {startedAt} = test;
-  return startedAt ? Date.now() - startedAt : null;
+  return typeof startedAt === 'number' ? Date.now() - startedAt : null;
 };
 
 export const makeRunResult = (
