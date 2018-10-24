@@ -15,7 +15,7 @@ module.exports = ({template}) => {
     var Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
   `);
   const nowDeclaration = template(`
-    var jestNow = global[Symbol.for('jest-now')] || global.Date.now;
+    var jestNow = global[Symbol.for('jest-native-now')] || global.Date.now;
   `);
 
   return {

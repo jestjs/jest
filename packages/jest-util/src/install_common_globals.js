@@ -18,11 +18,12 @@ const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
 export default function(globalObject: Global, globals: ConfigGlobals) {
   globalObject.process = createProcessObject();
 
+  const symbol = globalObject.Symbol;
   // Keep a reference to some globals that Jest needs
-  globalObject[globalObject.Symbol.for('jest-native-promise')] = Promise;
-  globalObject[
-    globalObject.Symbol.for('jest-now')
-  ] = globalObject.Date.now.bind(globalObject.Date);
+  globalObject[symbol.for('jest-native-promise')] = Promise;
+  globalObject[symbol.for('jest-native-now')] = globalObject.Date.now.bind(
+    globalObject.Date,
+  );
 
   // Forward some APIs.
   DTRACE.forEach(dtrace => {
