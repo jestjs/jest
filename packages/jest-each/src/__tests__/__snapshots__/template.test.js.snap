@@ -34,6 +34,11 @@ Received:
 Missing <red>2</> arguments"
 `;
 
+exports[`jest-each .describe throws error when there are no arguments for given headings 1`] = `
+"Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
+"
+`;
+
 exports[`jest-each .describe.only throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
@@ -66,6 +71,11 @@ Received:
 <red>]</>
 
 Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .describe.only throws error when there are no arguments for given headings 1`] = `
+"Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
+"
 `;
 
 exports[`jest-each .fdescribe throws an error when called with an empty string 1`] = `
@@ -102,6 +112,11 @@ Received:
 Missing <red>2</> arguments"
 `;
 
+exports[`jest-each .fdescribe throws error when there are no arguments for given headings 1`] = `
+"Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
+"
+`;
+
 exports[`jest-each .fit throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
@@ -134,6 +149,11 @@ Received:
 <red>]</>
 
 Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .fit throws error when there are no arguments for given headings 1`] = `
+"Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
+"
 `;
 
 exports[`jest-each .it throws an error when called with an empty string 1`] = `
@@ -170,6 +190,11 @@ Received:
 Missing <red>2</> arguments"
 `;
 
+exports[`jest-each .it throws error when there are no arguments for given headings 1`] = `
+"Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
+"
+`;
+
 exports[`jest-each .it.only throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
@@ -202,6 +227,11 @@ Received:
 <red>]</>
 
 Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .it.only throws error when there are no arguments for given headings 1`] = `
+"Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
+"
 `;
 
 exports[`jest-each .test throws an error when called with an empty string 1`] = `
@@ -238,6 +268,11 @@ Received:
 Missing <red>2</> arguments"
 `;
 
+exports[`jest-each .test throws error when there are no arguments for given headings 1`] = `
+"Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
+"
+`;
+
 exports[`jest-each .test.only throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
@@ -270,4 +305,9 @@ Received:
 <red>]</>
 
 Missing <red>2</> arguments"
+`;
+
+exports[`jest-each .test.only throws error when there are no arguments for given headings 1`] = `
+"Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
+"
 `;

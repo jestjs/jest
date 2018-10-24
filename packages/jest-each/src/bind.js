@@ -43,13 +43,19 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
         });
       }
 
-      if (
-        tableArg.length === 1 &&
-        typeof tableArg[0] === 'string' &&
-        tableArg[0].trim() === ''
-      ) {
+      if (isTaggedTemplateLiteral(tableArg)) {
+        if (isEmptyString(tableArg[0])) {
+          const error = new ErrorWithStack(
+            'Error: `.each` called with an empty Tagged Template Literal of table data.\n',
+            eachBind,
+          );
+          return cb(title, () => {
+            throw error;
+          });
+        }
+
         const error = new ErrorWithStack(
-          'Error: `.each` called with an empty Tagged Template Literal of table data.\n',
+          'Error: `.each` called with a Tagged Template Literal with no data, remember to interpolate with ${expression} syntax.\n',
           eachBind,
         );
         return cb(title, () => {
@@ -57,7 +63,7 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
         });
       }
 
-      if (tableArg.length === 0) {
+      if (isEmptyTable(tableArg)) {
         const error = new ErrorWithStack(
           'Error: `.each` called with an empty Array of table data.\n',
           eachBind,
@@ -114,6 +120,10 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
       ),
     );
   };
+
+const isTaggedTemplateLiteral = array => array.raw !== undefined;
+const isEmptyTable = table => table.length === 0;
+const isEmptyString = str => typeof str === 'string' && str.trim() === '';
 
 const getPrettyIndexes = placeholders =>
   placeholders.reduce(
