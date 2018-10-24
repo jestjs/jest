@@ -1,3 +1,5 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 const {
   default: defaultResolver,
 } = require('jest-resolve/build/default_resolver');

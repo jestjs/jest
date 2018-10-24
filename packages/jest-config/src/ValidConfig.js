@@ -10,7 +10,7 @@
 import type {InitialOptions} from 'types/Config';
 
 import {replacePathSepForRegex} from 'jest-regex-util';
-import {MultipleValidOptions} from 'jest-validate';
+import {multipleValidOptions} from 'jest-validate';
 import {NODE_MODULES} from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
@@ -88,7 +88,7 @@ export default ({
   runTestsByPath: false,
   runner: 'jest-runner',
   setupFiles: ['<rootDir>/setup.js'],
-  setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
+  setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,
@@ -101,7 +101,7 @@ export default ({
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: MultipleValidOptions(
+  testRegex: multipleValidOptions(
     '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
     ['/__tests__/\\.test\\.jsx?$', '/__tests__/\\.spec\\.jsx?$'],
   ),

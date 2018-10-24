@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-config]` [**BREAKING**] Deprecate `setupTestFrameworkScriptFile` in favor of new `setupFilesAfterEnv` ([#7119](https://github.com/facebook/jest/pull/7119))
 - `[jest-jasmine2/jest-circus/jest-cli]` Add test.todo ([#6996](https://github.com/facebook/jest/pull/6996))
 - `[pretty-format]` Option to not escape strings in diff messages ([#5661](https://github.com/facebook/jest/pull/5661))
 - `[jest-haste-map]` Add `getFileIterator` to `HasteFS` for faster file iteration ([#7010](https://github.com/facebook/jest/pull/7010)).
@@ -39,8 +40,6 @@
 - `[jest-jasmine2`] Fix crash when test return Promise rejected with null ([#7049](https://github.com/facebook/jest/pull/7049))
 - `[jest-runtime]` Check `_isMockFunction` is true rather than truthy on potential global mocks ([#7017](https://github.com/facebook/jest/pull/7017))
 - `[jest-jasmine]` Show proper error message from async `assert` errors ([#6821](https://github.com/facebook/jest/pull/6821))
-- `[jest-circus]` Fail synchronous hook timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
-- `[jest-jasmine2]` Fail synchronous test timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
 - `[jest-jasmine2]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
 - `[jest-jasmine2]` Pending calls inside async tests are reported as pending not failed ([#6782](https://github.com/facebook/jest/pull/6782))
 - `[jest-circus]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
@@ -52,6 +51,9 @@
 - `[jest-runtime]` Fix missing coverage when using negative glob pattern in `testMatch` ([#7170](https://github.com/facebook/jest/pull/7170))
 - `[*]` Ensure `maxWorkers` is at least 1 (was 0 in some cases where there was only 1 CPU) ([#7182](https://github.com/facebook/jest/pull/7182))
 - `[jest-runtime]` Fix transform cache invalidation when requiring a test file from multiple projects ([#7186](https://github.com/facebook/jest/pull/7186))
+- `[jest-changed-files]` Return correctly the changed files when using `lastCommit=true` on Mercurial repositories ([#7228](https://github.com/facebook/jest/pull/7228))
+- `[babel-jest]` Cache includes babel environment variables ([#7239](https://github.com/facebook/jest/pull/7239))
+- `[jest-config]` Use strings instead of `RegExp` instances in normalized configuration ([#7251](https://github.com/facebook/jest/pull/7251))
 
 ### Chore & Maintenance
 
@@ -76,6 +78,9 @@
 - `[jest-circus]` Add readme.md ([#7198](https://github.com/facebook/jest/pull/7198))
 - `[jest-editor-support]` Remove from the repository ([#7232](https://github.com/facebook/jest/pull/7232))
 - `[jest-test-typescript-parser]` Remove from the repository ([#7232](https://github.com/facebook/jest/pull/7232))
+- `[tests]` Free tests from the dependency on value of FORCE_COLOR ([#6585](https://github.com/facebook/jest/pull/6585/files))
+- `[jest-diff]` Standardize filenames ([#7238](https://github.com/facebook/jest/pull/7238))
+- `[*]` Add babel plugin to make sure Jest is unaffected by fake Promise implementations ([#7225](https://github.com/facebook/jest/pull/7225))
 
 ### Performance
 
@@ -87,6 +92,7 @@
 
 - `[jest-cli]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
 - `[babel-jest]` Add support for `babel.config.js` added in Babel 7.0.0 ([#6911](https://github.com/facebook/jest/pull/6911))
+- `[jest-resolve]` Add support for an experimental `mapper` option (Watchman crawler only) that adds virtual files to the Haste map ([#6940](https://github.com/facebook/jest/pull/6940))
 
 ### Fixes
 

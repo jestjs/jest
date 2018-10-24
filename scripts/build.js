@@ -147,8 +147,15 @@ function buildFile(file, silent) {
       );
   } else {
     const options = Object.assign({}, transformOptions);
+    options.plugins = options.plugins.slice();
 
-    if (!INLINE_REQUIRE_BLACKLIST.test(file)) {
+    if (INLINE_REQUIRE_BLACKLIST.test(file)) {
+      // The modules in the blacklist are injected into the user's sandbox
+      // We need to guard `Promise` there.
+      options.plugins.push(
+        require.resolve('./babel-plugin-jest-native-promise')
+      );
+    } else {
       options.plugins = options.plugins.map(plugin => {
         if (
           Array.isArray(plugin) &&

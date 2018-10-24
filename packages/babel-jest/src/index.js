@@ -74,6 +74,10 @@ const createTransformer = (options: any): Transformer => {
         .update(configPath.join(''))
         .update('\0', 'utf8')
         .update(instrument ? 'instrument' : '')
+        .update('\0', 'utf8')
+        .update(process.env.NODE_ENV || '')
+        .update('\0', 'utf8')
+        .update(process.env.BABEL_ENV || '')
         .digest('hex');
     },
     process(

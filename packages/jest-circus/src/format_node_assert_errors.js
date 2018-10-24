@@ -7,7 +7,7 @@
  * @flow strict-local
  */
 
-import type {DiffOptions} from 'jest-diff/src/diff_strings';
+import type {DiffOptions} from 'jest-diff/src/diffStrings';
 import type {Event, State} from 'types/Circus';
 
 import {printExpected, printReceived} from 'jest-matcher-utils';
