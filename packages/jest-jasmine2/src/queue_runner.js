@@ -7,11 +7,6 @@
  * @flow
  */
 
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test.
-const Promise: Class<Promise> =
-  global[Symbol.for('jest-native-promise')] || global.Promise;
-
 import PCancelable from './p_cancelable';
 import pTimeout from './p_timeout';
 
@@ -27,6 +22,7 @@ type Options = {
 type QueueableFn = {
   fn: (next: () => void) => void,
   timeout?: () => number,
+  initError?: Error,
 };
 
 export default function queueRunner(options: Options) {
@@ -34,7 +30,7 @@ export default function queueRunner(options: Options) {
     onCancel(resolve);
   });
 
-  const mapper = ({fn, timeout, initError = new Error()}) => {
+  const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
     let promise = new Promise(resolve => {
       const next = function(err) {
         if (err) {

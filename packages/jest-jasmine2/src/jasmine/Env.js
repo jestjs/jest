@@ -37,11 +37,6 @@ import checkIsError from '../is_error';
 import assertionErrorMessage from '../assert_support';
 import {ErrorWithStack} from 'jest-util';
 
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test. Async functions return it implicitly.
-// eslint-disable-next-line no-unused-vars
-const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
-
 export default function(j$) {
   function Env(options) {
     options = options || {};

@@ -9,7 +9,7 @@
 
 export type DoneFn = (reason?: string | Error) => void;
 export type BlockFn = () => void;
-export type BlockName = string | Function;
+export type BlockName = string;
 export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = string;
@@ -153,6 +153,7 @@ export type TestStatus = 'skip' | 'done' | 'todo';
 export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,
+  invocations: number,
   status: TestStatus,
   location: ?{|column: number, line: number|},
   testPath: Array<TestName | BlockName>,
