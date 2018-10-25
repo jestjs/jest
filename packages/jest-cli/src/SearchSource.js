@@ -51,12 +51,12 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
   return path => micromatch([path], globs, {dot: true}).length > 0;
 };
 
-const regexToMatcher = (testRegex: Array<RegExp>) => {
+const regexToMatcher = (testRegex: Array<string>) => {
   if (!testRegex.length) {
     return () => true;
   }
 
-  return path => testRegex.some(e => e.test(path));
+  return path => testRegex.some(testRegex => new RegExp(testRegex).test(path));
 };
 
 const toTests = (context, tests) =>

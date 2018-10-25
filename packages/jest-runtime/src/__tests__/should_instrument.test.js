@@ -29,13 +29,13 @@ describe('should_instrument', () => {
 
     it('when testRegex provided and file is not a test file', () => {
       testShouldInstrument('source_file.js', defaultOptions, {
-        testRegex: [/.*\.(test)\\.(js)$'/],
+        testRegex: ['.*\\.(test)\\.(js)$'],
       });
     });
 
     it('when more than one testRegex is provided and filename is not a test file', () => {
       testShouldInstrument('source_file.js', defaultOptions, {
-        testRegex: [/.*\_(test)\.(js)$/, /.*\.(test)\.(js)$/, /never/],
+        testRegex: ['.*\\_(test)\\.(js)$', '.*\\.(test)\\.(js)$', 'never'],
       });
     });
 
@@ -121,13 +121,13 @@ describe('should_instrument', () => {
 
     it('when testRegex provided and filename is a test file', () => {
       testShouldInstrument(defaultFilename, defaultOptions, {
-        testRegex: [/.*\.(test)\.(js)$/],
+        testRegex: ['.*\\.(test)\\.(js)$'],
       });
     });
 
     it('when more than one testRegex is provided and filename matches one of the patterns', () => {
       testShouldInstrument(defaultFilename, defaultOptions, {
-        testRegex: [/.*\_(test)\.(js)$/, /.*\.(test)\.(js)$/, /never/],
+        testRegex: ['.*\\_(test)\\.(js)$', '.*\\.(test)\\.(js)$', 'never'],
       });
     });
 

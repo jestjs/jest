@@ -40,8 +40,6 @@
 - `[jest-jasmine2`] Fix crash when test return Promise rejected with null ([#7049](https://github.com/facebook/jest/pull/7049))
 - `[jest-runtime]` Check `_isMockFunction` is true rather than truthy on potential global mocks ([#7017](https://github.com/facebook/jest/pull/7017))
 - `[jest-jasmine]` Show proper error message from async `assert` errors ([#6821](https://github.com/facebook/jest/pull/6821))
-- `[jest-circus]` Fail synchronous hook timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
-- `[jest-jasmine2]` Fail synchronous test timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
 - `[jest-jasmine2]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
 - `[jest-jasmine2]` Pending calls inside async tests are reported as pending not failed ([#6782](https://github.com/facebook/jest/pull/6782))
 - `[jest-circus]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
@@ -55,6 +53,8 @@
 - `[jest-runtime]` Fix transform cache invalidation when requiring a test file from multiple projects ([#7186](https://github.com/facebook/jest/pull/7186))
 - `[jest-changed-files]` Return correctly the changed files when using `lastCommit=true` on Mercurial repositories ([#7228](https://github.com/facebook/jest/pull/7228))
 - `[babel-jest]` Cache includes babel environment variables ([#7239](https://github.com/facebook/jest/pull/7239))
+- `[jest-config]` Use strings instead of `RegExp` instances in normalized configuration ([#7251](https://github.com/facebook/jest/pull/7251))
+- `[jest-circus]` Make sure to display real duration even if time is mocked ([#7264](https://github.com/facebook/jest/pull/7264))
 
 ### Chore & Maintenance
 
@@ -81,6 +81,7 @@
 - `[jest-test-typescript-parser]` Remove from the repository ([#7232](https://github.com/facebook/jest/pull/7232))
 - `[tests]` Free tests from the dependency on value of FORCE_COLOR ([#6585](https://github.com/facebook/jest/pull/6585/files))
 - `[jest-diff]` Standardize filenames ([#7238](https://github.com/facebook/jest/pull/7238))
+- `[*]` Add babel plugin to make sure Jest is unaffected by fake Promise implementations ([#7225](https://github.com/facebook/jest/pull/7225))
 - `[jest-haste-map]` Standardize filenames ([#7266](https://github.com/facebook/jest/pull/7266))
 
 ### Performance
