@@ -83,6 +83,7 @@
 - `[jest-diff]` Standardize filenames ([#7238](https://github.com/facebook/jest/pull/7238))
 - `[*]` Add babel plugin to make sure Jest is unaffected by fake Promise implementations ([#7225](https://github.com/facebook/jest/pull/7225))
 - `[jest-haste-map]` Standardize filenames ([#7266](https://github.com/facebook/jest/pull/7266))
+- `[*]` [**BREAKING**] Require Node.js 6+ for all packages ([#7258](https://github.com/facebook/jest/pull/7258))
 
 ### Performance
 

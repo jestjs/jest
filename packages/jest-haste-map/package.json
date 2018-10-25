@@ -16,5 +16,8 @@
     "jest-worker": "^23.2.0",
     "micromatch": "^2.3.11",
     "sane": "^3.0.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }
