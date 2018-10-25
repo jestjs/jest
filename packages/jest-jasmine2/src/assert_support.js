@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {DiffOptions} from 'jest-diff/src/diff_strings';
+import type {DiffOptions} from 'jest-diff/src/diffStrings';
 
 import {printReceived, printExpected} from 'jest-matcher-utils';
 import chalk from 'chalk';

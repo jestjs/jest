@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "weak": "^1.0.1"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-config]` [**BREAKING**] Deprecate `setupTestFrameworkScriptFile` in favor of new `setupFilesAfterEnv` ([#7119](https://github.com/facebook/jest/pull/7119))
 - `[jest-jasmine2/jest-circus/jest-cli]` Add test.todo ([#6996](https://github.com/facebook/jest/pull/6996))
 - `[pretty-format]` Option to not escape strings in diff messages ([#5661](https://github.com/facebook/jest/pull/5661))
 - `[jest-haste-map]` Add `getFileIterator` to `HasteFS` for faster file iteration ([#7010](https://github.com/facebook/jest/pull/7010)).
@@ -20,11 +21,14 @@
 - `[jest-haste-map]` [**BREAKING**] Remove name from hash in `HasteMap.getCacheFilePath` ([#7218](https://github.com/facebook/jest/pull/7218))
 - `[jest-runtime]` Remove `cacheDirectory` from `ignorePattern` for `HasteMap` if not necessary ([#7166](https://github.com/facebook/jest/pull/7166))
 - `[jest-validate]` Add syntax to validate multiple permitted types ([#7207](https://github.com/facebook/jest/pull/7207))
+- `[jest-config]` Accept an array as as well as a string for `testRegex`([#7209]https://github.com/facebook/jest/pull/7209))
 - `[babel-preset-jest]` [**BREAKING**] Export a function instead of an object for Babel 7 compatibility ([#7203](https://github.com/facebook/jest/pull/7203))
+- `[expect]` Check constructor equality in .toStrictEqual() ([#7005](https://github.com/facebook/jest/pull/7005))
 - `[expect/jest-matcher-utils]` Improve report when assertion fails, part 4 ([#7241](https://github.com/facebook/jest/pull/7241))
 
 ### Fixes
 
+- `[jest-cli]` Interrupt tests if interactive watch plugin key is pressed ([#7222](https://github.com/facebook/jest/pull/7222))
 - `[jest-cli]` Fix coverage summary reporting ([#7058](https://github.com/facebook/jest/pull/7058))
 - `[jest-each]` Add each array validation check ([#7033](https://github.com/facebook/jest/pull/7033))
 - `[jest-haste-map]` Do not visit again files with the same sha-1 ([#6990](https://github.com/facebook/jest/pull/6990))
@@ -37,8 +41,6 @@
 - `[jest-jasmine2`] Fix crash when test return Promise rejected with null ([#7049](https://github.com/facebook/jest/pull/7049))
 - `[jest-runtime]` Check `_isMockFunction` is true rather than truthy on potential global mocks ([#7017](https://github.com/facebook/jest/pull/7017))
 - `[jest-jasmine]` Show proper error message from async `assert` errors ([#6821](https://github.com/facebook/jest/pull/6821))
-- `[jest-circus]` Fail synchronous hook timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
-- `[jest-jasmine2]` Fail synchronous test timeouts ([#7074](https://github.com/facebook/jest/pull/7074))
 - `[jest-jasmine2]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
 - `[jest-jasmine2]` Pending calls inside async tests are reported as pending not failed ([#6782](https://github.com/facebook/jest/pull/6782))
 - `[jest-circus]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
@@ -50,6 +52,10 @@
 - `[jest-runtime]` Fix missing coverage when using negative glob pattern in `testMatch` ([#7170](https://github.com/facebook/jest/pull/7170))
 - `[*]` Ensure `maxWorkers` is at least 1 (was 0 in some cases where there was only 1 CPU) ([#7182](https://github.com/facebook/jest/pull/7182))
 - `[jest-runtime]` Fix transform cache invalidation when requiring a test file from multiple projects ([#7186](https://github.com/facebook/jest/pull/7186))
+- `[jest-changed-files]` Return correctly the changed files when using `lastCommit=true` on Mercurial repositories ([#7228](https://github.com/facebook/jest/pull/7228))
+- `[babel-jest]` Cache includes babel environment variables ([#7239](https://github.com/facebook/jest/pull/7239))
+- `[jest-config]` Use strings instead of `RegExp` instances in normalized configuration ([#7251](https://github.com/facebook/jest/pull/7251))
+- `[jest-circus]` Make sure to display real duration even if time is mocked ([#7264](https://github.com/facebook/jest/pull/7264))
 
 ### Chore & Maintenance
 
@@ -70,7 +76,15 @@
 - `[docs]` Removed useless expect.assertions in `TestingAsyncCode.md` ([#7131](https://github.com/facebook/jest/pull/7131))
 - `[docs]` Remove references to `@providesModule` which isn't supported anymore ([#7147](https://github.com/facebook/jest/pull/7147))
 - `[docs]` Update `setupFiles` documentation for clarity ([#7187](https://github.com/facebook/jest/pull/7187))
+- `[docs]` Change `require.require*` to `jest.require*` ([#7210](https://github.com/facebook/jest/pull/7210))
 - `[jest-circus]` Add readme.md ([#7198](https://github.com/facebook/jest/pull/7198))
+- `[jest-editor-support]` Remove from the repository ([#7232](https://github.com/facebook/jest/pull/7232))
+- `[jest-test-typescript-parser]` Remove from the repository ([#7232](https://github.com/facebook/jest/pull/7232))
+- `[tests]` Free tests from the dependency on value of FORCE_COLOR ([#6585](https://github.com/facebook/jest/pull/6585/files))
+- `[jest-diff]` Standardize filenames ([#7238](https://github.com/facebook/jest/pull/7238))
+- `[*]` Add babel plugin to make sure Jest is unaffected by fake Promise implementations ([#7225](https://github.com/facebook/jest/pull/7225))
+- `[jest-haste-map]` Standardize filenames ([#7266](https://github.com/facebook/jest/pull/7266))
+- `[*]` [**BREAKING**] Require Node.js 6+ for all packages ([#7258](https://github.com/facebook/jest/pull/7258))
 
 ### Performance
 
@@ -82,6 +96,7 @@
 
 - `[jest-cli]` Add `changedSince` to allowed watch mode configs ([#6955](https://github.com/facebook/jest/pull/6955))
 - `[babel-jest]` Add support for `babel.config.js` added in Babel 7.0.0 ([#6911](https://github.com/facebook/jest/pull/6911))
+- `[jest-resolve]` Add support for an experimental `mapper` option (Watchman crawler only) that adds virtual files to the Haste map ([#6940](https://github.com/facebook/jest/pull/6940))
 
 ### Fixes
 

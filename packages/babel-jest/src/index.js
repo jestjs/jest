@@ -48,13 +48,11 @@ const createTransformer = (options: any): Transformer => {
       }
       let configJsFilePath = path.join(directory, BABELRC_JS_FILENAME);
       if (fs.existsSync(configJsFilePath)) {
-        // $FlowFixMe
         cache[directory] = JSON.stringify(require(configJsFilePath));
         break;
       }
       configJsFilePath = path.join(directory, BABEL_CONFIG_JS_FILENAME);
       if (fs.existsSync(configJsFilePath)) {
-        // $FlowFixMe
         cache[directory] = JSON.stringify(require(configJsFilePath));
         break;
       }
@@ -64,7 +62,6 @@ const createTransformer = (options: any): Transformer => {
           ? path.resolve(directory, PACKAGE_JSON)
           : resolvedJsonFilePath;
       if (fs.existsSync(packageJsonFilePath)) {
-        // $FlowFixMe
         const packageJsonFileContents = require(packageJsonFilePath);
         if (packageJsonFileContents[BABEL_CONFIG_KEY]) {
           cache[directory] = JSON.stringify(
@@ -110,6 +107,10 @@ const createTransformer = (options: any): Transformer => {
         .update(getBabelRC(filename))
         .update('\0', 'utf8')
         .update(instrument ? 'instrument' : '')
+        .update('\0', 'utf8')
+        .update(process.env.NODE_ENV || '')
+        .update('\0', 'utf8')
+        .update(process.env.BABEL_ENV || '')
         .digest('hex');
     },
     process(

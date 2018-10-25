@@ -13,7 +13,7 @@ import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import os from 'os';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'watch_mode');
+const DIR = path.resolve(os.tmpdir(), 'watch_mode_patterns');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
@@ -56,7 +56,8 @@ test('can press "p" to filter by file name', () => {
   expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(`${rest}\n\n${summary}`).toMatchSnapshot();
+    expect(rest).toMatchSnapshot('test results');
+    expect(summary).toMatchSnapshot('test summary');
   });
   expect(status).toBe(0);
 });
@@ -74,7 +75,8 @@ test('can press "t" to filter by test name', () => {
   expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(`${rest}\n\n${summary}`).toMatchSnapshot();
+    expect(rest).toMatchSnapshot('test results');
+    expect(summary).toMatchSnapshot('test summary');
   });
   expect(status).toBe(0);
 });

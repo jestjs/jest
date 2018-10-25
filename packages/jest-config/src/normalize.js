@@ -367,6 +367,28 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     ),
   );
 
+  if (!options.setupFilesAfterEnv) {
+    options.setupFilesAfterEnv = [];
+  }
+
+  if (
+    options.setupTestFrameworkScriptFile &&
+    options.setupFilesAfterEnv.length > 0
+  ) {
+    throw createConfigError(
+      `  Options: ${chalk.bold(
+        'setupTestFrameworkScriptFile',
+      )} and ${chalk.bold('setupFilesAfterEnv')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold(
+    'setupFilesAfterEnv',
+  )}.`,
+    );
+  }
+
+  if (options.setupTestFrameworkScriptFile) {
+    options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
+  }
+
   if (options.preset) {
     options = setupPreset(options, options.preset);
   }
@@ -415,6 +437,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeCollectCoverageOnlyFrom(options, key);
         break;
       case 'setupFiles':
+      case 'setupFilesAfterEnv':
       case 'snapshotSerializers':
         value =
           options[key] &&
@@ -453,7 +476,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'globalTeardown':
       case 'moduleLoader':
       case 'runner':
-      case 'setupTestFrameworkScriptFile':
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
@@ -547,7 +569,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         );
         break;
       case 'testRegex':
-        value = options[key] && replacePathSepForRegex(options[key]);
+        value = options[key]
+          ? [].concat(options[key]).map(replacePathSepForRegex)
+          : [];
         break;
       case 'moduleFileExtensions': {
         value = options[key];
@@ -701,14 +725,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     }
   }
 
-  if (options.testRegex && options.testMatch) {
+  if (newOptions.testRegex.length && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (options.testRegex && !options.testMatch) {
+  if (newOptions.testRegex.length && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];

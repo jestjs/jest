@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import extractRequires from '../extract_requires';
+import extractRequires from '../extractRequires';
 
 it('extracts both requires and imports from code', () => {
   const code = `

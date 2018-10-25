@@ -1,3 +1,5 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 'use strict';
 
 module.exports = {
@@ -21,7 +23,7 @@ module.exports = {
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
-  setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
+  setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotSerializers: [
     '<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js',
   ],

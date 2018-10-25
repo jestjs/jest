@@ -67,6 +67,7 @@ class Resolver {
   _moduleIDCache: {[key: string]: string, __proto__: null};
   _moduleNameCache: {[name: string]: Path, __proto__: null};
   _modulePathCache: {[path: Path]: Array<Path>, __proto__: null};
+  _supportsNativePlatform: boolean;
 
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {
@@ -82,6 +83,9 @@ class Resolver {
       resolver: options.resolver,
       rootDir: options.rootDir,
     };
+    this._supportsNativePlatform = options.platforms
+      ? options.platforms.includes(NATIVE_PLATFORM)
+      : false;
     this._moduleMap = moduleMap;
     this._moduleIDCache = Object.create(null);
     this._moduleNameCache = Object.create(null);
@@ -118,7 +122,7 @@ class Resolver {
     const key = dirname + path.delimiter + moduleName;
     const defaultPlatform = this._options.defaultPlatform;
     const extensions = this._options.extensions.slice();
-    if (this._supportsNativePlatform()) {
+    if (this._supportsNativePlatform) {
       extensions.unshift(
         ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
       );
@@ -221,7 +225,7 @@ class Resolver {
     return this._moduleMap.getModule(
       name,
       this._options.defaultPlatform,
-      this._supportsNativePlatform(),
+      this._supportsNativePlatform,
     );
   }
 
@@ -236,7 +240,7 @@ class Resolver {
     return this._moduleMap.getPackage(
       name,
       this._options.defaultPlatform,
-      this._supportsNativePlatform(),
+      this._supportsNativePlatform,
     );
   }
 
@@ -380,10 +384,6 @@ class Resolver {
       }
     }
     return null;
-  }
-
-  _supportsNativePlatform() {
-    return (this._options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
   }
 }
 

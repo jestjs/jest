@@ -13,26 +13,27 @@ import {getSha1, worker} from './worker';
 import crypto from 'crypto';
 import EventEmitter from 'events';
 import fs from 'fs';
-import getMockName from './get_mock_name';
-import getPlatformExtension from './lib/get_platform_extension';
+import getMockName from './getMockName';
+import getPlatformExtension from './lib/getPlatformExtension';
 import H from './constants';
-import HasteFS from './haste_fs';
-import HasteModuleMap from './module_map';
+import HasteFS from './HasteFS';
+import HasteModuleMap from './ModuleMap';
 import invariant from 'invariant';
 // eslint-disable-next-line import/default
 import nodeCrawl from './crawlers/node';
-import normalizePathSep from './lib/normalize_path_sep';
+import normalizePathSep from './lib/normalizePathSep';
 import os from 'os';
 import path from 'path';
 import sane from 'sane';
 import serializer from 'jest-serializer';
 // eslint-disable-next-line import/default
 import watchmanCrawl from './crawlers/watchman';
-import WatchmanWatcher from './lib/watchman_watcher';
+import WatchmanWatcher from './lib/WatchmanWatcher';
 import * as fastPath from './lib/fast_path';
 import Worker from 'jest-worker';
 
 import type {Console} from 'console';
+import type {Mapper} from './types';
 import type {Path} from 'types/Config';
 import type {
   HasteMap as HasteMapObject,
@@ -42,7 +43,7 @@ import type {
   HasteRegExp,
   MockData,
 } from 'types/HasteMap';
-import type {SerializableModuleMap as HasteSerializableModuleMap} from './module_map';
+import type {SerializableModuleMap as HasteSerializableModuleMap} from './ModuleMap';
 
 type HType = typeof H;
 
@@ -55,6 +56,7 @@ type Options = {
   forceNodeFilesystemAPI?: boolean,
   hasteImplModulePath?: string,
   ignorePattern?: ?HasteRegExp,
+  mapper?: ?Mapper,
   maxWorkers: number,
   mocksPattern?: string,
   name: string,
@@ -77,6 +79,7 @@ type InternalOptions = {
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
   ignorePattern: ?HasteRegExp,
+  mapper?: ?Mapper,
   maxWorkers: number,
   mocksPattern: ?RegExp,
   name: string,
@@ -671,6 +674,7 @@ class HasteMap extends EventEmitter {
           extensions: options.extensions,
           forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
           ignore,
+          mapper: options.mapper,
           rootDir: options.rootDir,
           roots: options.roots,
         }).catch(e => {
