@@ -82,6 +82,7 @@
 - `[tests]` Free tests from the dependency on value of FORCE_COLOR ([#6585](https://github.com/facebook/jest/pull/6585/files))
 - `[jest-diff]` Standardize filenames ([#7238](https://github.com/facebook/jest/pull/7238))
 - `[*]` Add babel plugin to make sure Jest is unaffected by fake Promise implementations ([#7225](https://github.com/facebook/jest/pull/7225))
+- `[jest-haste-map]` Standardize filenames ([#7266](https://github.com/facebook/jest/pull/7266))
 
 ### Performance
 

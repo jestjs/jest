@@ -11,7 +11,7 @@
 const path = require('path');
 
 jest.mock('fb-watchman', () => {
-  const normalizePathSep = require('../../lib/normalize_path_sep').default;
+  const normalizePathSep = require('../../lib/normalizePathSep').default;
   const Client = jest.fn();
   Client.prototype.command = jest.fn((args, callback) =>
     setImmediate(() => {
