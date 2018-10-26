@@ -145,12 +145,21 @@ const setupBabelJest = (options: InitialOptions) => {
 
     if (customJSPattern) {
       const customJSTransformer = transform[customJSPattern];
+      if (Array.isArray(customJSTransformer)) {
+        if (customJSTransformer[0] === 'babel-jest') {
+          babelJest = require.resolve('babel-jest');
 
-      if (customJSTransformer === 'babel-jest') {
-        babelJest = require.resolve('babel-jest');
-        transform[customJSPattern] = babelJest;
-      } else if (customJSTransformer.includes('babel-jest')) {
-        babelJest = customJSTransformer;
+          customJSTransformer[0] = babelJest;
+        } else if (customJSTransformer[0].includes('babel-jest')) {
+          babelJest = customJSTransformer[0];
+        }
+      } else {
+        if (customJSTransformer === 'babel-jest') {
+          babelJest = require.resolve('babel-jest');
+          transform[customJSPattern] = babelJest;
+        } else if (customJSTransformer.includes('babel-jest')) {
+          babelJest = customJSTransformer;
+        }
       }
     }
 
@@ -562,17 +571,20 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         const transform = options[key];
         value =
           transform &&
-          Object.keys(transform).map(regex => [
-            regex,
-            resolve(newOptions.resolver, {
-              filePath: Array.isArray(transform[regex])
-                ? transform[regex][0]
-                : transform[regex],
-              key,
-              rootDir: options.rootDir,
-            }),
-            Array.isArray(transform[regex]) ? transform[regex][1] : null,
-          ]);
+          Object.keys(transform).map(regex =>
+            [
+              regex,
+              resolve(newOptions.resolver, {
+                filePath: Array.isArray(transform[regex])
+                  ? transform[regex][0]
+                  : transform[regex],
+                key,
+                rootDir: options.rootDir,
+              }),
+            ].concat(
+              Array.isArray(transform[regex]) ? [transform[regex][1]] : [],
+            ),
+          );
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':

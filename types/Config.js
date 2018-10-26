@@ -176,7 +176,7 @@ export type InitialOptions = {
   testRunner?: string,
   testURL?: string,
   timers?: 'real' | 'fake',
-  transform?: {[key: string]: Path | TransformerConfig},
+  transform?: {[regex: string]: Path | TransformerConfig},
   transformIgnorePatterns?: Array<Glob>,
   watchPathIgnorePatterns?: Array<string>,
   unmockedModulePathPatterns?: Array<string>,

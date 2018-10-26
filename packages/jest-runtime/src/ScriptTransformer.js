@@ -80,7 +80,6 @@ export default class ScriptTransformer {
     }
 
     this._cache = projectCache;
-
   }
 
   _getCacheKey(fileData: string, filename: Path, instrument: boolean): string {
