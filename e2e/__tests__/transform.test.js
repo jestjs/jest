@@ -134,3 +134,30 @@ describe('ecmascript-modules-support', () => {
     expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
   });
 });
+
+describe('transformer-config', () => {
+  const dir = path.resolve(__dirname, '..', 'transform/transformer-config');
+
+  beforeEach(() => {
+    run('yarn', dir);
+  });
+
+  it('runs transpiled code', () => {
+    // --no-cache because babel can cache stuff and result in false green
+    const {json} = runWithJson(dir, ['--no-cache']);
+    console.log(json);
+    expect(json.success).toBe(true);
+    expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
+  });
+
+  it('instruments only specific files and collects coverage', () => {
+    const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
+      stripAnsi: true,
+    });
+    expect(stdout).toMatch('Covered.js');
+    expect(stdout).not.toMatch('NotCovered.js');
+    expect(stdout).not.toMatch('ExcludedFromCoverage.js');
+    // coverage result should not change
+    expect(stdout).toMatchSnapshot();
+  });
+});
