@@ -943,4 +943,26 @@ describe('FakeTimers', () => {
       expect(global.clearImmediate).not.toBe(nativeClearImmediate);
     });
   });
+
+  describe('getTimersCount', () => {
+    it('returns the correct count', () => {
+      const timers = new FakeTimers({global, moduleMocker, timerConfig});
+
+      timers.useFakeTimers();
+
+      global.setTimeout(() => {}, 0);
+      global.setTimeout(() => {}, 0);
+      global.setTimeout(() => {}, 10);
+
+      expect(timers.getTimersCount()).toEqual(3);
+
+      timers.advanceTimersByTime(5);
+
+      expect(timers.getTimersCount()).toEqual(1);
+
+      timers.advanceTimersByTime(5);
+
+      expect(timers.getTimersCount()).toEqual(0);
+    });
+  });
 });
