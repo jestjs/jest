@@ -871,7 +871,7 @@ An example of such function can be found in our default [jasmine2 test runner pa
 
 ### `testURL` [string]
 
-Default: `about:blank`
+Default: `http://localhost`
 
 This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
 
