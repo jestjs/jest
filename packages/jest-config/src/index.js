@@ -184,7 +184,7 @@ const groupOptions = (
     roots: options.roots,
     runner: options.runner,
     setupFiles: options.setupFiles,
-    setupTestFrameworkScriptFile: options.setupTestFrameworkScriptFile,
+    setupFilesAfterEnv: options.setupFilesAfterEnv,
     skipFilter: options.skipFilter,
     skipNodeResolution: options.skipNodeResolution,
     snapshotResolver: options.snapshotResolver,

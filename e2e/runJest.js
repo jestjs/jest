@@ -12,6 +12,7 @@ import path from 'path';
 import fs from 'fs';
 import execa, {sync as spawnSync} from 'execa';
 import {Writable} from 'readable-stream';
+const stripAnsi = require('strip-ansi');
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
@@ -19,6 +20,7 @@ const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 type RunJestOptions = {
   nodePath?: string,
   skipPkgJsonCheck?: boolean, // don't complain if can't find package.json
+  stripAnsi?: boolean, // remove colors from stdout and stderr
 };
 
 // return the result of the spawned process:
@@ -47,13 +49,8 @@ export default function runJest(
     );
   }
 
-  const env = options.nodePath
-    ? Object.assign({}, process.env, {
-        FORCE_COLOR: 0,
-        NODE_PATH: options.nodePath,
-      })
-    : process.env;
-
+  const env = Object.assign({}, process.env, {FORCE_COLOR: 0});
+  if (options.nodePath) env['NODE_PATH'] = options.nodePath;
   const result = spawnSync(JEST_PATH, args || [], {
     cwd: dir,
     env,
@@ -64,7 +61,9 @@ export default function runJest(
   result.status = result.code;
 
   result.stdout = normalizeIcons(result.stdout);
+  if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
   result.stderr = normalizeIcons(result.stderr);
+  if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
 
   return result;
 }
@@ -120,12 +119,8 @@ export const until = async function(
     );
   }
 
-  const env = options.nodePath
-    ? Object.assign({}, process.env, {
-        FORCE_COLOR: 0,
-        NODE_PATH: options.nodePath,
-      })
-    : process.env;
+  const env = Object.assign({}, process.env, {FORCE_COLOR: 0});
+  if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
   const jestPromise = execa(JEST_PATH, args || [], {
     cwd: dir,
@@ -153,7 +148,9 @@ export const until = async function(
   result.status = result.code;
 
   result.stdout = normalizeIcons(result.stdout);
+  if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
   result.stderr = normalizeIcons(result.stderr);
+  if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
 
   return result;
 };

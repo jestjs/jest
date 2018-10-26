@@ -14,7 +14,7 @@ import path from 'path';
 import fs from 'graceful-fs';
 import blacklist from './blacklist';
 import H from './constants';
-import extractRequires from './lib/extract_requires';
+import extractRequires from './lib/extractRequires';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 

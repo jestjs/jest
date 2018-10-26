@@ -205,12 +205,31 @@ describe('.toBe()', () => {
 });
 
 describe('.toStrictEqual()', () => {
-  class TestClass {
+  class TestClassA {
     constructor(a, b) {
       this.a = a;
       this.b = b;
     }
   }
+
+  class TestClassB {
+    constructor(a, b) {
+      this.a = a;
+      this.b = b;
+    }
+  }
+
+  const TestClassC = class Child extends TestClassA {
+    constructor(a, b) {
+      super(a, b);
+    }
+  };
+
+  const TestClassD = class Child extends TestClassB {
+    constructor(a, b) {
+      super(a, b);
+    }
+  };
 
   it('does not ignore keys with undefined values', () => {
     expect({
@@ -221,14 +240,21 @@ describe('.toStrictEqual()', () => {
 
   it('passes when comparing same type', () => {
     expect({
-      test: new TestClass(1, 2),
-    }).toStrictEqual({test: new TestClass(1, 2)});
+      test: new TestClassA(1, 2),
+    }).toStrictEqual({test: new TestClassA(1, 2)});
   });
 
   it('does not pass for different types', () => {
     expect({
-      test: new TestClass(1, 2),
-    }).not.toStrictEqual({test: {a: 1, b: 2}});
+      test: new TestClassA(1, 2),
+    }).not.toStrictEqual({test: new TestClassB(1, 2)});
+  });
+
+  it('does not simply compare constructor names', () => {
+    const c = new TestClassC(1, 2);
+    const d = new TestClassD(1, 2);
+    expect(c.constructor.name).toEqual(d.constructor.name);
+    expect({test: c}).not.toStrictEqual({test: d});
   });
 });
 

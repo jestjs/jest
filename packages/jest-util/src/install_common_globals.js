@@ -18,8 +18,12 @@ const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
 export default function(globalObject: Global, globals: ConfigGlobals) {
   globalObject.process = createProcessObject();
 
-  // Keep a reference to "Promise", since "jasmine_light.js" needs it.
-  globalObject[globalObject.Symbol.for('jest-native-promise')] = Promise;
+  const symbol = globalObject.Symbol;
+  // Keep a reference to some globals that Jest needs
+  globalObject[symbol.for('jest-native-promise')] = Promise;
+  globalObject[symbol.for('jest-native-now')] = globalObject.Date.now.bind(
+    globalObject.Date,
+  );
 
   // Forward some APIs.
   DTRACE.forEach(dtrace => {

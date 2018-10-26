@@ -141,11 +141,11 @@ This will output:
 ## Example validating multiple types
 
 ```js
-import {MultipleValidOptions} from 'jest-validate';
+import {multipleValidOptions} from 'jest-validate';
 
 validate(config, {
   // `bar` will accept either a string or a number
-  bar: MultipleValidOptions('string is ok', 2),
+  bar: multipleValidOptions('string is ok', 2),
 });
 ```
 

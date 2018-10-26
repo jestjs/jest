@@ -22,5 +22,8 @@
     "jest-validate": "^23.6.0",
     "micromatch": "^2.3.11",
     "pretty-format": "^23.6.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

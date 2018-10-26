@@ -14,5 +14,8 @@
   },
   "devDependencies": {
     "jest-haste-map": "^23.6.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

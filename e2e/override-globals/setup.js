@@ -5,9 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-import {parse} from '../type_script_parser';
-import {parserTests} from '../../../../fixtures/parser_tests';
-
-parserTests(parse);
+Date.now = () => 0;
+process.hrtime = () => [0, 5000];

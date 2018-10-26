@@ -404,7 +404,7 @@ Specifies notification mode. Requires `notify: true`.
 - `success`: send a notification when tests pass.
 - `change`: send a notification when the status changed.
 - `success-change`: send a notification when tests pass or once when it fails.
-- `failure-change`: send a notification when tests fails or once when it passes.
+- `failure-change`: send a notification when tests fail or once when it passes.
 
 ### `preset` [string]
 
@@ -630,19 +630,21 @@ If you need to restrict your test-runner to only run in serial rather then being
 
 Default: `[]`
 
-The paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
+A list of paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
-It's also worth noting that `setupFiles` will execute _before_ [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
+It's also worth noting that `setupFiles` will execute _before_ [`setupFilesAfterEnv`](#setupFilesAfterEnv-array).
 
-### `setupTestFrameworkScriptFile` [string]
+### `setupFilesAfterEnv` [array]
 
-Default: `undefined`
+Default: `[]`
 
-The path to a module that runs some code to configure or set up the testing framework before each test. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
+A list of paths to modules that run some code to configure or set up the testing framework before each test. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
-If you want this path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside the path string, like `"<rootDir>/a-configs-folder"`.
+If you want a path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside a path's string, like `"<rootDir>/a-configs-folder"`.
 
-For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in this module.
+For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in these modules.
+
+_Note: `setupTestFrameworkScriptFile` is deprecated in favor of `setupFilesAfterEnv`._
 
 ### `snapshotResolver` [string]
 
@@ -806,7 +808,7 @@ The glob patterns Jest uses to detect test files. By default it looks for `.js` 
 
 See the [micromatch](https://github.com/jonschlinkert/micromatch) package for details of the patterns you can specify.
 
-See also [`testRegex` [string]](#testregex-string), but note that you cannot specify both options.
+See also [`testRegex` [string | Array<string>]](#testregex-string), but note that you cannot specify both options.
 
 ### `testPathIgnorePatterns` [array<string>]
 
@@ -816,11 +818,11 @@ An array of regexp pattern strings that are matched against all test paths befor
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
-### `testRegex` [string]
+### `testRegex` [string | Array<string>]
 
 Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$`
 
-The pattern Jest uses to detect test files. By default it looks for `.js` and `.jsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array<string>]](#testmatch-array-string), but note that you cannot specify both options.
+The pattern or patterns Jest uses to detect test files. By default it looks for `.js` and `.jsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array<string>]](#testmatch-array-string), but note that you cannot specify both options.
 
 The following is a visualization of the default regex:
 
@@ -905,7 +907,7 @@ An example of such function can be found in our default [jasmine2 test runner pa
 
 ### `testURL` [string]
 
-Default: `about:blank`
+Default: `http://localhost`
 
 This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
 

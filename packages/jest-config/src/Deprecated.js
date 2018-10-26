@@ -53,6 +53,16 @@ export default {
 
   Please update your configuration.`,
 
+  setupTestFrameworkScriptFile: (options: {
+    setupTestFrameworkScriptFile: Array<string>,
+  }) => `  Option ${chalk.bold(
+    '"setupTestFrameworkScriptFile"',
+  )} was replaced by configuration ${chalk.bold(
+    '"setupFilesAfterEnv"',
+  )}, which supports multiple paths.
+
+  Please update your configuration.`,
+
   testPathDirs: (options: {
     testPathDirs: Array<string>,
   }) => `  Option ${chalk.bold('"testPathDirs"')} was replaced by ${chalk.bold(
