@@ -24,6 +24,7 @@
 - `[jest-config]` Accept an array as as well as a string for `testRegex`([#7209]https://github.com/facebook/jest/pull/7209))
 - `[babel-preset-jest]` [**BREAKING**] Export a function instead of an object for Babel 7 compatibility ([#7203](https://github.com/facebook/jest/pull/7203))
 - `[expect]` Check constructor equality in .toStrictEqual() ([#7005](https://github.com/facebook/jest/pull/7005))
+- `[jest-util]` Add `jest.getTimersCount()` to get the count of scheduled fake timers ([#7285](https://github.com/facebook/jest/pull/7285))
 
 ### Fixes
 
