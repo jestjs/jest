@@ -342,7 +342,7 @@ export default class FakeTimers<TimerRef> {
     global.process.nextTick = this._fakeTimerAPIs.nextTick;
   }
 
-  getTimerCount() {
+  getTimersCount() {
     this._checkFakeTimers();
 
     return Object.keys(this._timers).length;
