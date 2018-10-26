@@ -515,14 +515,23 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         const transform = options[key];
         value =
           transform &&
-          Object.keys(transform).map(regex => [
-            regex,
-            resolve(newOptions.resolver, {
-              filePath: transform[regex],
-              key,
-              rootDir: options.rootDir,
-            }),
-          ]);
+          Object.keys(transform).map(regex => {
+            const transformer = transform[regex];
+            const isModule = typeof transformer !== 'string';
+
+            /**
+             * Do not try to resolve a module.
+             */
+            const module = isModule
+              ? transformer
+              : resolve(newOptions.resolver, {
+                  filePath: transform[regex],
+                  key,
+                  rootDir: options.rootDir,
+                });
+
+            return [regex, module];
+          });
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
