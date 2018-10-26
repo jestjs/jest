@@ -132,11 +132,12 @@ const setupBabelJest = (options: InitialOptions) => {
 
     if (customJSPattern) {
       const customJSTransformer = transform[customJSPattern];
+      const isModule = typeof customJSTransformer !== 'string';
 
       if (customJSTransformer === 'babel-jest') {
         babelJest = require.resolve('babel-jest');
         transform[customJSPattern] = babelJest;
-      } else if (customJSTransformer.includes('babel-jest')) {
+      } else if (!isModule && customJSTransformer.includes('babel-jest')) {
         babelJest = customJSTransformer;
       }
     }
