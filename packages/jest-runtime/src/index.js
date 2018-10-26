@@ -445,20 +445,22 @@ class Runtime {
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
 
-    if (this._environment && this._environment.global) {
-      const envGlobal = this._environment.global;
-      Object.keys(envGlobal).forEach(key => {
-        const globalMock = envGlobal[key];
-        if (
-          (typeof globalMock === 'object' && globalMock !== null) ||
-          typeof globalMock === 'function'
-        ) {
-          globalMock._isMockFunction === true && globalMock.mockClear();
-        }
-      });
+    if (this._environment) {
+      if (this._environment.global) {
+        const envGlobal = this._environment.global;
+        Object.keys(envGlobal).forEach(key => {
+          const globalMock = envGlobal[key];
+          if (
+            (typeof globalMock === 'object' && globalMock !== null) ||
+            typeof globalMock === 'function'
+          ) {
+            globalMock._isMockFunction === true && globalMock.mockClear();
+          }
+        });
+      }
 
-      if (envGlobal.mockClearTimers) {
-        envGlobal.mockClearTimers();
+      if (this._environment.fakeTimers) {
+        this._environment.fakeTimers.clearAllTimers();
       }
     }
   }
@@ -932,6 +934,7 @@ class Runtime {
       fn,
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
+      getTimerCount: () => this._environment.fakeTimers.getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       mock,
       requireActual: localRequire.requireActual,
