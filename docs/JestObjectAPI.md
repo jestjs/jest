@@ -484,8 +484,6 @@ This means, if any timers have been scheduled (but have not yet executed), they 
 
 ## Misc
 
-Returns the `jest` object for chaining.
-
 ### `jest.setTimeout(timeout)`
 
 Set the default timeout interval for tests and before/after hooks in milliseconds.
@@ -512,3 +510,5 @@ test('will fail', () => {
   expect(true).toBe(false);
 });
 ```
+
+Returns the `jest` object for chaining.
