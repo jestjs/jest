@@ -447,7 +447,7 @@ Removes any pending timers from the timer system.
 
 This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
 
-### `jest.getTimersCount()`
+### `jest.getTimerCount()`
 
 Returns the number of fake timers still left to run.
 

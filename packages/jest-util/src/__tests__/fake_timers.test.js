@@ -944,7 +944,7 @@ describe('FakeTimers', () => {
     });
   });
 
-  describe('getTimersCount', () => {
+  describe('getTimerCount', () => {
     it('returns the correct count', () => {
       const timers = new FakeTimers({global, moduleMocker, timerConfig});
 
@@ -954,15 +954,15 @@ describe('FakeTimers', () => {
       global.setTimeout(() => {}, 0);
       global.setTimeout(() => {}, 10);
 
-      expect(timers.getTimersCount()).toEqual(3);
+      expect(timers.getTimerCount()).toEqual(3);
 
       timers.advanceTimersByTime(5);
 
-      expect(timers.getTimersCount()).toEqual(1);
+      expect(timers.getTimerCount()).toEqual(1);
 
       timers.advanceTimersByTime(5);
 
-      expect(timers.getTimersCount()).toEqual(0);
+      expect(timers.getTimerCount()).toEqual(0);
     });
   });
 });

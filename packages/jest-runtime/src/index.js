@@ -934,7 +934,7 @@ class Runtime {
       fn,
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
-      getTimersCount: () => this._environment.fakeTimers.getTimersCount(),
+      getTimerCount: () => this._environment.fakeTimers.getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       mock,
       requireActual: localRequire.requireActual,
