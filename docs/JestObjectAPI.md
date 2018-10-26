@@ -5,41 +5,6 @@ title: The Jest Object
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior.
 
-## Methods
-
-- [`jest.disableAutomock()`](#jestdisableautomock)
-- [`jest.enableAutomock()`](#jestenableautomock)
-- [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
-- [`jest.mock(moduleName, factory, options)`](#jestmockmodulename-factory-options)
-- [`jest.unmock(moduleName)`](#jestunmockmodulename)
-- [`jest.doMock(moduleName, factory, options)`](#jestdomockmodulename-factory-options)
-- [`jest.dontMock(moduleName)`](#jestdontmockmodulename)
-- [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulename-moduleexports)
-- [`jest.requireActual()`](#jestrequireactualmodulename)
-- [`jest.requireMock()`](#jestrequiremockmodulename)
-- [`jest.resetModules()`](#jestresetmodules)
-- [`jest.fn(implementation)`](#jestfnimplementation)
-- [`jest.isMockFunction(fn)`](#jestismockfunctionfn)
-- [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname)
-- [`jest.spyOn(object, methodName, accessType?)`](#jestspyonobject-methodname-accesstype)
-- [`jest.clearAllMocks()`](#jestclearallmocks)
-- [`jest.resetAllMocks()`](#jestresetallmocks)
-- [`jest.restoreAllMocks()`](#jestrestoreallmocks)
-- [`jest.useFakeTimers()`](#jestusefaketimers)
-- [`jest.useRealTimers()`](#jestuserealtimers)
-- [`jest.runAllTicks()`](#jestrunallticks)
-- [`jest.runAllTimers()`](#jestrunalltimers)
-- [`jest.runAllImmediates()`](#jestrunallimmediates)
-- [`jest.advanceTimersByTime(msToRun)`](#jestadvancetimersbytimemstorun)
-- [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
-- [`jest.useFakeTimers()`](#jestusefaketimers)
-- [`jest.useRealTimers()`](#jestuserealtimers)
-- [`jest.clearAllTimers()`](#jestclearalltimers)
-- [`jest.setTimeout(timeout)`](#jestsettimeouttimeout)
-- [`jest.retryTimes()`](#jestretrytimes)
-
----
-
 ## Mock Modules
 
 ### `jest.disableAutomock()`
