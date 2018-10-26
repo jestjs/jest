@@ -5,5 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+// $FlowFixMe
 Date.now = () => 0;
+// $FlowFixMe
 process.hrtime = () => [0, 5000];
