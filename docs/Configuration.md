@@ -25,6 +25,19 @@ module.exports = {
 
 Please keep in mind that the resulting configuration must be JSON-serializable.
 
+In either JSON or JavaScript, if you'd like to add comments, use a `"//"` key and include your comment as a string value.
+
+```json
+{
+  "name": "my-project",
+  "jest": {
+    "//": "Comment goes here",
+    "verbose": true
+  }
+}
+
+```
+
 When using the `--config` option, the JSON file must not contain a "jest" key:
 
 ```json
