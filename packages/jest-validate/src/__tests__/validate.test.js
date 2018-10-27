@@ -266,3 +266,25 @@ test('Repeated types within multiple valid examples are coalesced in error repor
     ),
   ).toThrowErrorMatchingSnapshot();
 });
+
+test('Comments using "//" key are not warned by default', () => {
+  const warn = console.warn;
+  console.warn = jest.fn();
+
+  const config = {'//': 'a comment'};
+
+  validate(config, {
+    exampleConfig: validConfig,
+  });
+  expect(console.warn).not.toBeCalled();
+
+  console.warn.mockReset();
+
+  validate(config, {
+    exampleConfig: validConfig,
+    recursiveBlacklist: [],
+  });
+  expect(console.warn).toBeCalled();
+
+  console.warn = warn;
+});
