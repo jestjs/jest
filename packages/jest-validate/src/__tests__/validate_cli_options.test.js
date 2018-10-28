@@ -8,7 +8,7 @@
 
 'use strict';
 
-import validateCLIOptions from '../validate_cli_options';
+import validateCLIOptions from '../validateCLIOptions';
 
 test('validates yargs special options', () => {
   const options = ['$0', '_', 'help', 'h'];
