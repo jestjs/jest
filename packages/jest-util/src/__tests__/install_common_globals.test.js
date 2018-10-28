@@ -18,7 +18,7 @@ beforeEach(() => {
   fake = jest.fn();
   global.DTRACE_NET_SERVER_CONNECTION = fake;
 
-  installCommonGlobals = require('../install_common_globals').default;
+  installCommonGlobals = require('../installCommonGlobals').default;
 });
 
 it('returns the passed object', () => {

@@ -8,7 +8,7 @@
  */
 
 import chalk from 'chalk';
-import BufferedConsole from '../buffered_console';
+import BufferedConsole from '../BufferedConsole';
 
 describe('CustomConsole', () => {
   let _console;

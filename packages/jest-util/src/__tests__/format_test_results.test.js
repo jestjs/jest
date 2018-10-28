@@ -8,7 +8,7 @@
 
 'use strict';
 
-import formatTestResults from '../format_test_results';
+import formatTestResults from '../formatTestResults';
 
 describe('formatTestResults', () => {
   const assertion = {

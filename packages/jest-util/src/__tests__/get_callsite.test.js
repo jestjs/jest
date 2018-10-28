@@ -2,7 +2,7 @@
 
 import fs from 'fs';
 import SourceMap from 'source-map';
-import getCallsite from '../get_callsite';
+import getCallsite from '../getCallsite';
 
 // Node 10.5.x compatibility
 jest.mock('fs', () =>

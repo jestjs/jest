@@ -7,7 +7,7 @@
  * @flow
  */
 
-import deepCyclicCopy from './deep_cyclic_copy';
+import deepCyclicCopy from './deepCyclicCopy';
 
 const BLACKLIST = new Set(['env', 'mainModule', '_events']);
 

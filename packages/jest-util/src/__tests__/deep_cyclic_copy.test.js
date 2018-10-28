@@ -6,7 +6,7 @@
  *
  */
 
-import deepCyclicCopy from '../deep_cyclic_copy';
+import deepCyclicCopy from '../deepCyclicCopy';
 
 it('returns the same value for primitive or function values', () => {
   const fn = () => {};

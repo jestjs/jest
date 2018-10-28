@@ -7,9 +7,9 @@
  * @flow
  */
 
-import Console from './Console';
+import CustomConsole from './CustomConsole';
 
-export default class NullConsole extends Console {
+export default class NullConsole extends CustomConsole {
   assert() {}
   debug() {}
   dir() {}

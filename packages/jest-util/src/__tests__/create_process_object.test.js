@@ -6,7 +6,7 @@
  */
 
 import EventEmitter from 'events';
-import createProcessObject from '../create_process_object';
+import createProcessObject from '../createProcessObject';
 
 it('creates a process object that looks like the original one', () => {
   const fakeProcess = createProcessObject();
