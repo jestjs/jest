@@ -16,7 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
-import defaultResolver from './defaultResolver.js';
+import defaultResolver from './defaultResolver';
 import chalk from 'chalk';
 
 type ResolverConfig = {|
