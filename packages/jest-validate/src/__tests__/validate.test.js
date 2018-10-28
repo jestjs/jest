@@ -17,7 +17,7 @@ const {
   defaultConfig,
   validConfig,
   deprecatedConfig,
-} = require('./fixtures/jest_config');
+} = require('./fixtures/jestConfig');
 
 test('recursively validates default Jest config', () => {
   expect(
