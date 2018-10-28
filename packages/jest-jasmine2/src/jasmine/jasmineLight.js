@@ -33,12 +33,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import type {Jasmine} from 'types/Jasmine';
 
-import createSpy from './create_spy';
-import Env from './Env';
-import JsApiReporter from './js_api_reporter';
-import ReportDispatcher from './report_dispatcher';
+import createSpy from './createSpy';
+import Env from './env';
+import JsApiReporter from './JsApiReporter';
+import ReportDispatcher from './reportDispatcher';
 import Spec from './Spec';
-import SpyRegistry from './spy_registry';
+import SpyRegistry from './spyRegistry';
 import Suite from './Suite';
 import Timer from './Timer';
 

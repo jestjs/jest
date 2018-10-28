@@ -21,7 +21,7 @@ import {getCallsite} from 'jest-util';
 import JasmineReporter from './reporter';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
 
-const JASMINE = require.resolve('./jasmine/jasmine_light.js');
+const JASMINE = require.resolve('./jasmine/jasmineLight.js');
 
 async function jasmine2(
   globalConfig: GlobalConfig,
