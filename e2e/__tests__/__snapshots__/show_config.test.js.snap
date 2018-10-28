@@ -45,7 +45,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       \\"runner\\": \\"jest-runner\\",
       \\"setupFiles\\": [],
-      \\"setupTestFrameworkScriptFile\\": null,
+      \\"setupFilesAfterEnv\\": [],
       \\"skipFilter\\": false,
       \\"snapshotSerializers\\": [],
       \\"testEnvironment\\": \\"jest-environment-jsdom\\",
@@ -58,7 +58,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"testPathIgnorePatterns\\": [
         \\"/node_modules/\\"
       ],
-      \\"testRegex\\": \\"\\",
+      \\"testRegex\\": [],
       \\"testRunner\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js\\",
       \\"testURL\\": \\"http://localhost\\",
       \\"timers\\": \\"real\\",

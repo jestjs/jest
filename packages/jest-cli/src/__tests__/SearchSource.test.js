@@ -260,7 +260,7 @@ describe('SearchSource', () => {
     it('finds tests with similar but custom file extensions', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['jsx'],
+          moduleFileExtensions: ['js', 'jsx'],
           name,
           rootDir,
           testMatch,
@@ -271,14 +271,17 @@ describe('SearchSource', () => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
-        expect(relPaths).toEqual([path.normalize('__testtests__/test.jsx')]);
+        expect(relPaths.sort()).toEqual([
+          path.normalize('__testtests__/test.js'),
+          path.normalize('__testtests__/test.jsx'),
+        ]);
       });
     });
 
     it('finds tests with totally custom foobar file extensions', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['foobar'],
+          moduleFileExtensions: ['js', 'foobar'],
           name,
           rootDir,
           testMatch,
@@ -289,7 +292,10 @@ describe('SearchSource', () => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
-        expect(relPaths).toEqual([path.normalize('__testtests__/test.foobar')]);
+        expect(relPaths.sort()).toEqual([
+          path.normalize('__testtests__/test.foobar'),
+          path.normalize('__testtests__/test.js'),
+        ]);
       });
     });
 

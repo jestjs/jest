@@ -15,12 +15,14 @@ import {
 } from './utils';
 import validate from './validate';
 import validateCLIOptions from './validate_cli_options';
+import {multipleValidOptions} from './condition';
 
 module.exports = {
   ValidationError,
   createDidYouMeanMessage,
   format,
   logValidationWarning,
+  multipleValidOptions,
   validate,
   validateCLIOptions,
 };

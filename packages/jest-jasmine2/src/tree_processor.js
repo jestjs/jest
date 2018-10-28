@@ -26,11 +26,6 @@ type TreeNode = {
   children?: Array<TreeNode>,
 };
 
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test. Async functions return it implicitly.
-// eslint-disable-next-line no-unused-vars
-const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
-
 export default function treeProcessor(options: Options) {
   const {
     nodeComplete,
@@ -72,13 +67,9 @@ export default function treeProcessor(options: Options) {
 
   function hasEnabledTest(node: TreeNode) {
     if (node.children) {
-      if (node.children.some(hasEnabledTest)) {
-        return true;
-      }
-    } else {
-      return !node.disabled;
+      return node.children.some(hasEnabledTest);
     }
-    return false;
+    return !node.disabled;
   }
 
   function wrapChildren(node: TreeNode, enabled: boolean) {

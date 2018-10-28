@@ -114,16 +114,6 @@ export default class FakeTimers<TimerRef> {
 
     this.reset();
     this._createMocks();
-
-    // These globally-accessible function are now deprecated!
-    // They will go away very soon, so do not use them!
-    // Instead, use the versions available on the `jest` object
-    global.mockRunTicksRepeatedly = this.runAllTicks.bind(this);
-    global.mockRunTimersOnce = this.runOnlyPendingTimers.bind(this);
-    global.mockAdvanceTimersByTime = this.advanceTimersByTime.bind(this);
-    global.mockRunTimersRepeatedly = this.runAllTimers.bind(this);
-    global.mockClearTimers = this.clearAllTimers.bind(this);
-    global.mockGetTimersCount = () => Object.keys(this._timers).length;
   }
 
   clearAllTimers() {
@@ -350,6 +340,12 @@ export default class FakeTimers<TimerRef> {
     setGlobal(global, 'setTimeout', this._fakeTimerAPIs.setTimeout);
 
     global.process.nextTick = this._fakeTimerAPIs.nextTick;
+  }
+
+  getTimerCount() {
+    this._checkFakeTimers();
+
+    return Object.keys(this._timers).length;
   }
 
   _checkFakeTimers() {
