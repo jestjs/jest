@@ -31,10 +31,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
-import queueRunner from '../queue_runner';
-import treeProcessor from '../tree_processor';
-import checkIsError from '../is_error';
-import assertionErrorMessage from '../assert_support';
+import queueRunner from '../queueRunner';
+import treeProcessor from '../treeProcessor';
+import checkIsError from '../isError';
+import assertionErrorMessage from '../assertionErrorMessage';
 import {ErrorWithStack} from 'jest-util';
 
 export default function(j$) {

@@ -16,7 +16,7 @@ import type {Global} from 'types/Global';
 
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
-import checkIsError from './is_error';
+import checkIsError from './isError';
 
 function isPromise(obj) {
   return obj && typeof obj.then === 'function';
@@ -148,7 +148,7 @@ function makeConcurrent(originalFn: Function, env) {
   };
 }
 
-export function install(global: Global) {
+export default function jasmineAsyncInstall(global: Global) {
   const jasmine = global.jasmine;
 
   const env = jasmine.getEnv();
