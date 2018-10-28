@@ -34,7 +34,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import type {Jasmine} from 'types/Jasmine';
 
 import createSpy from './createSpy';
-import Env from './env';
+import Env from './Env';
 import JsApiReporter from './JsApiReporter';
 import ReportDispatcher from './ReportDispatcher';
 import Spec from './Spec';
