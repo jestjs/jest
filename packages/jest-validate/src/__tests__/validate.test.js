@@ -268,9 +268,7 @@ test('Repeated types within multiple valid examples are coalesced in error repor
 });
 
 test('Comments using "//" key are not warned by default', () => {
-  const warn = console.warn;
-  console.warn = jest.fn();
-
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
   const config = {'//': 'a comment'};
 
   validate(config, {
@@ -286,5 +284,5 @@ test('Comments using "//" key are not warned by default', () => {
   });
   expect(console.warn).toBeCalled();
 
-  console.warn = warn;
+  console.warn.mockRestore();
 });
