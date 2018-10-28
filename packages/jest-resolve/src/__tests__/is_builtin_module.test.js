@@ -1,7 +1,7 @@
 // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 // @flow
 
-import isBuiltinModule from '../is_builtin_module';
+import isBuiltinModule from '../isBuiltinModule';
 
 describe('isBuiltinModule', () => {
   it('should return true for the `path` module', () => {
