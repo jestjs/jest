@@ -30,10 +30,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* @flow */
 
-import CallTracker from './callTracker';
+import CallTracker from './CallTracker';
 
 import createSpy from './createSpy';
-import SpyStrategy from './spyStrategy';
+import SpyStrategy from './SpyStrategy';
 
 const formatErrorMsg = (domain: string, usage?: string) => {
   const usageDefinition = usage ? '\nUsage: ' + usage : '';

@@ -36,7 +36,7 @@ import type {Jasmine} from 'types/Jasmine';
 import createSpy from './createSpy';
 import Env from './env';
 import JsApiReporter from './JsApiReporter';
-import ReportDispatcher from './reportDispatcher';
+import ReportDispatcher from './ReportDispatcher';
 import Spec from './Spec';
 import SpyRegistry from './spyRegistry';
 import Suite from './Suite';

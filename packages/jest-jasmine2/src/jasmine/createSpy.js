@@ -30,9 +30,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
-import CallTracker from './callTracker';
+import CallTracker from './CallTracker';
 
-import SpyStrategy from './spyStrategy';
+import SpyStrategy from './SpyStrategy';
 
 function createSpy(name, originalFn) {
   const spyStrategy = new SpyStrategy({
