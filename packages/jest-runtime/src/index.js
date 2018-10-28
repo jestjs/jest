@@ -97,9 +97,9 @@ class Runtime {
   _mockFactories: {[key: string]: () => any, __proto__: null};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata, __proto__: null};
   _mockRegistry: {[key: string]: any, __proto__: null};
-  _sandboxMockRegistry: ?{[key: string]: any, __proto__: null};
+  _isolatedMockRegistry: ?{[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
-  _sandboxModuleRegistry: ?ModuleRegistry;
+  _isolatedModuleRegistry: ?ModuleRegistry;
   _moduleRegistry: ModuleRegistry;
   _needsCoverageMapped: Set<string>;
   _resolver: Resolver;
@@ -134,7 +134,7 @@ class Runtime {
     this._mockFactories = Object.create(null);
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
-    this._sandboxModuleRegistry = null;
+    this._isolatedModuleRegistry = null;
     this._moduleRegistry = Object.create(null);
     this._needsCoverageMapped = new Set();
     this._resolver = resolver;
@@ -318,10 +318,10 @@ class Runtime {
     let moduleRegistry;
 
     if (!options || !options.isInternalModule) {
-      if (this._moduleRegistry[modulePath] || !this._sandboxModuleRegistry) {
+      if (this._moduleRegistry[modulePath] || !this._isolatedModuleRegistry) {
         moduleRegistry = this._moduleRegistry;
       } else {
-        moduleRegistry = this._sandboxModuleRegistry;
+        moduleRegistry = this._isolatedModuleRegistry;
       }
     } else {
       moduleRegistry = this._internalModuleRegistry;
@@ -368,13 +368,13 @@ class Runtime {
       moduleName,
     );
 
-    if (this._sandboxMockRegistry && this._sandboxMockRegistry[moduleID]) {
-      return this._sandboxMockRegistry[moduleID];
+    if (this._isolatedMockRegistry && this._isolatedMockRegistry[moduleID]) {
+      return this._isolatedMockRegistry[moduleID];
     } else if (this._mockRegistry[moduleID]) {
       return this._mockRegistry[moduleID];
     }
 
-    const mockRegistry = this._sandboxMockRegistry || this._mockRegistry;
+    const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
 
     if (moduleID in this._mockFactories) {
       return (mockRegistry[moduleID] = this._mockFactories[moduleID]());
@@ -456,21 +456,21 @@ class Runtime {
   }
 
   isolateModules(fn: () => void) {
-    if (this._sandboxModuleRegistry || this._sandboxMockRegistry) {
+    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
       throw new Error(
         'isolateModules cannot be nested inside another isolateModules.',
       );
     }
-    this._sandboxModuleRegistry = Object.create(null);
-    this._sandboxMockRegistry = Object.create(null);
+    this._isolatedModuleRegistry = Object.create(null);
+    this._isolatedMockRegistry = Object.create(null);
     fn();
-    this._sandboxModuleRegistry = null;
-    this._sandboxMockRegistry = null;
+    this._isolatedModuleRegistry = null;
+    this._isolatedMockRegistry = null;
   }
 
   resetModules() {
-    this._sandboxModuleRegistry = null;
-    this._sandboxMockRegistry = null;
+    this._isolatedModuleRegistry = null;
+    this._isolatedMockRegistry = null;
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
 
