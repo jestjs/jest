@@ -987,8 +987,8 @@ No default
 
 This option allow comments in `package.json`. Include the comment text as the value of this key anywhere in `package.json`.
 
-
 Example:
+
 ```json
 {
   "name": "my-project",
