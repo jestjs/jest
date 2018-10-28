@@ -33,7 +33,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import {AssertionError} from 'assert';
 import queueRunner from '../queueRunner';
 import treeProcessor from '../treeProcessor';
-import checkIsError from '../isError';
+import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
 import {ErrorWithStack} from 'jest-util';
 
@@ -573,16 +573,16 @@ export default function(j$) {
     };
 
     this.fail = function(error) {
-      let isError;
+      let checkIsError;
       let message;
 
       if (error instanceof AssertionError) {
-        isError = false;
+        checkIsError = false;
         message = assertionErrorMessage(error, {expand: j$.Spec.expand});
       } else {
-        const check = checkIsError(error);
+        const check = isError(error);
 
-        isError = check.isError;
+        checkIsError = check.isError;
         message = check.message;
       }
 
@@ -592,7 +592,7 @@ export default function(j$) {
         expected: '',
         actual: '',
         message,
-        error: isError ? error : new Error(message),
+        error: checkIsError ? error : new Error(message),
       });
     };
   }

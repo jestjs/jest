@@ -16,7 +16,7 @@ import type {Global} from 'types/Global';
 
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
-import checkIsError from './isError';
+import isError from './isError';
 
 function isPromise(obj) {
   return obj && typeof obj.then === 'function';
@@ -51,12 +51,12 @@ function promisifyLifeCycleFunction(originalFn, env) {
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), error => {
-          const {isError, message} = checkIsError(error);
+          const {isError: checkIsError, message} = isError(error);
 
           if (message) {
             extraError.message = message;
           }
-          done.fail(isError ? error : extraError);
+          done.fail(checkIsError ? error : extraError);
         });
       } else {
         done();
@@ -97,7 +97,7 @@ function promisifyIt(originalFn, env, jasmine) {
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), error => {
-          const {isError, message} = checkIsError(error);
+          const {isError: checkIsError, message} = isError(error);
 
           if (message) {
             extraError.message = message;
@@ -107,7 +107,7 @@ function promisifyIt(originalFn, env, jasmine) {
             env.pending(message);
             done();
           } else {
-            done.fail(isError ? error : extraError);
+            done.fail(checkIsError ? error : extraError);
           }
         });
       } else if (returnValue === undefined) {
