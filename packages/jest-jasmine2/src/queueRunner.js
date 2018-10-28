@@ -7,8 +7,8 @@
  * @flow
  */
 
-import PCancelable from './p_cancelable';
-import pTimeout from './p_timeout';
+import PCancelable from './PCancelable';
+import pTimeout from './pTimeout';
 
 type Options = {
   clearTimeout: (timeoutID: number) => void,

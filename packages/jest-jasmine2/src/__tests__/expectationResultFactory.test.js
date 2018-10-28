@@ -8,7 +8,7 @@
 
 'use strict';
 
-import expectationResultFactory from '../expectation_result_factory';
+import expectationResultFactory from '../expectationResultFactory';
 
 describe('expectationResultFactory', () => {
   it('returns the result if passed.', () => {

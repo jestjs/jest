@@ -8,7 +8,7 @@
 
 'use strict';
 
-import queueRunner from '../queue_runner';
+import queueRunner from '../queueRunner';
 
 describe('queueRunner', () => {
   it('runs every function in the queue.', async () => {
