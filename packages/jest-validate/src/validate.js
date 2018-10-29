@@ -81,16 +81,17 @@ const _validate = (
 const validate = (config: Object, options: ValidationOptions) => {
   hasDeprecationWarnings = false;
 
+  // Preserve default blacklist entries even with user-supplied blacklist
+  const combinedBlacklist: Array<string> = [].concat(
+    defaultConfig.recursiveBlacklist || [],
+    options.recursiveBlacklist || [],
+  );
+
   const defaultedOptions: ValidationOptions = Object.assign(
     {},
     defaultConfig,
     options,
-    {
-      // Preserve default blacklist entries even with user-supplied blacklist
-      recursiveBlacklist: defaultConfig.recursiveBlacklist.concat(
-        options.recursiveBlacklist || [],
-      ),
-    },
+    {recursiveBlacklist: combinedBlacklist},
     {title: Object.assign({}, defaultConfig.title, options.title)},
   );
 
