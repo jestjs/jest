@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import getFailedSnapshotTests from '../get_failed_snapshot_tests';
+import getFailedSnapshotTests from '../getFailedSnapshotTests';
 
 test('return a list of path', () => {
   const targetFilename = 'somewhere.js';

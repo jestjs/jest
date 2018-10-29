@@ -6,69 +6,45 @@
  *
  * @flow
  */
+/* global stream$Writable */
 
-import type {
-  ConsoleBuffer,
-  LogMessage,
-  LogType,
-  LogCounters,
-  LogTimers,
-} from 'types/Console';
-
-import type {SourceMapRegistry} from 'types/SourceMaps';
+import type {LogType, LogMessage, LogCounters, LogTimers} from 'types/Console';
 
 import assert from 'assert';
-import {Console} from 'console';
 import {format} from 'util';
+import {Console} from 'console';
 import chalk from 'chalk';
-import getCallsite from './get_callsite';
+import clearLine from './clearLine';
 
-export default class BufferedConsole extends Console {
-  _buffer: ConsoleBuffer;
+type Formatter = (type: LogType, message: LogMessage) => string;
+
+export default class CustomConsole extends Console {
+  _stdout: stream$Writable;
+  _formatBuffer: Formatter;
   _counters: LogCounters;
   _timers: LogTimers;
   _groupDepth: number;
-  _getSourceMaps: () => ?SourceMapRegistry;
 
-  constructor(getSourceMaps: () => ?SourceMapRegistry) {
-    const buffer = [];
-    super({
-      write: message =>
-        BufferedConsole.write(buffer, 'log', message, null, getSourceMaps()),
-    });
-    this._getSourceMaps = getSourceMaps;
-    this._buffer = buffer;
+  constructor(
+    stdout: stream$Writable,
+    stderr: stream$Writable,
+    formatBuffer: ?Formatter,
+  ) {
+    super(stdout, stderr);
+    this._formatBuffer = formatBuffer || ((type, message) => message);
     this._counters = {};
     this._timers = {};
     this._groupDepth = 0;
   }
 
-  static write(
-    buffer: ConsoleBuffer,
-    type: LogType,
-    message: LogMessage,
-    level: ?number,
-    sourceMaps: ?SourceMapRegistry,
-  ) {
-    const callsite = getCallsite(level != null ? level : 2, sourceMaps);
-    const origin = callsite.getFileName() + ':' + callsite.getLineNumber();
-
-    buffer.push({
-      message,
-      origin,
-      type,
-    });
-
-    return buffer;
+  _logToParentConsole(message: string) {
+    super.log(message);
   }
 
-  _log(type: LogType, message: LogMessage) {
-    BufferedConsole.write(
-      this._buffer,
-      type,
-      '  '.repeat(this._groupDepth) + message,
-      3,
-      this._getSourceMaps(),
+  _log(type: LogType, message: string) {
+    clearLine(this._stdout);
+    this._logToParentConsole(
+      this._formatBuffer(type, '  '.repeat(this._groupDepth) + message),
     );
   }
 
@@ -162,6 +138,6 @@ export default class BufferedConsole extends Console {
   }
 
   getBuffer() {
-    return this._buffer;
+    return null;
   }
 }
