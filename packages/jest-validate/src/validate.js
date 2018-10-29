@@ -85,6 +85,13 @@ const validate = (config: Object, options: ValidationOptions) => {
     {},
     defaultConfig,
     options,
+    // Don't overwrite recursiveBlacklist from defaultConfig with
+    // recursiveBlacklist from options
+    {
+      recursiveBlacklist: defaultConfig.recursiveBlacklist.concat(
+        options.recursiveBlacklist,
+      ),
+    },
     {title: Object.assign({}, defaultConfig.title, options.title)},
   );
 

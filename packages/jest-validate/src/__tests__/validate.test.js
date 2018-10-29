@@ -267,7 +267,7 @@ test('Repeated types within multiple valid examples are coalesced in error repor
   ).toThrowErrorMatchingSnapshot();
 });
 
-test('Comments using "//" key are not warned by default', () => {
+test('Comments in config JSON using "//" key are not warned', () => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   const config = {'//': 'a comment'};
 
@@ -280,9 +280,9 @@ test('Comments using "//" key are not warned by default', () => {
 
   validate(config, {
     exampleConfig: validConfig,
-    recursiveBlacklist: [],
+    recursiveBlacklist: [('myCustomKey': "don't validate this")],
   });
-  expect(console.warn).toBeCalled();
+  expect(console.warn).not.toBeCalled();
 
   console.warn.mockRestore();
 });
