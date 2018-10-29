@@ -936,6 +936,7 @@ class Runtime {
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
+      clearAllPromises: () => this._environment.fakePromises.clearAllPromises(),
       clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
       deepUnmock,
       disableAutomock,

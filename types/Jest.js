@@ -16,6 +16,7 @@ export type Jest = {|
   autoMockOff(): Jest,
   autoMockOn(): Jest,
   clearAllMocks(): Jest,
+  clearAllPromises(): void,
   clearAllTimers(): void,
   deepUnmock(moduleName: string): Jest,
   disableAutomock(): Jest,

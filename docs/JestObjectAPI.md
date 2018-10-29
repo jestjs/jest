@@ -417,6 +417,12 @@ Fake promises should be in use (by calling `jest.useFakePromises`) before callin
 
 This is useful for synchronously executing scheduled promises. For running ticks, promises, and timers in the same order they would run in the Node.js environment, you should call [`jest.runAllTimers()`](#jestrunalltimers).
 
+### `jest.clearAllPromises()`
+
+Clears all queued promises.
+
+This means, if any promises have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
+
 ## Mock timers
 
 ### `jest.useFakeTimers()`

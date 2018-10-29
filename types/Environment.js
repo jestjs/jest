@@ -36,6 +36,7 @@ declare class $JestEnvironment {
   };
   fakePromises: {
     runAllPromises(): void,
+    clearAllPromises(): void,
     useFakePromises(): void,
     useRealPromises(): void,
   };
