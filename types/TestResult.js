@@ -98,6 +98,7 @@ export type AssertionResult = {|
   duration?: ?Milliseconds,
   failureMessages: Array<string>,
   fullName: string,
+  invocations?: number,
   location: ?Callsite,
   numPassingAsserts: number,
   status: Status,

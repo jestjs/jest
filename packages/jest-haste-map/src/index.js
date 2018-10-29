@@ -13,26 +13,27 @@ import {getSha1, worker} from './worker';
 import crypto from 'crypto';
 import EventEmitter from 'events';
 import fs from 'fs';
-import getMockName from './get_mock_name';
-import getPlatformExtension from './lib/get_platform_extension';
+import getMockName from './getMockName';
+import getPlatformExtension from './lib/getPlatformExtension';
 import H from './constants';
-import HasteFS from './haste_fs';
-import HasteModuleMap from './module_map';
+import HasteFS from './HasteFS';
+import HasteModuleMap from './ModuleMap';
 import invariant from 'invariant';
 // eslint-disable-next-line import/default
 import nodeCrawl from './crawlers/node';
-import normalizePathSep from './lib/normalize_path_sep';
+import normalizePathSep from './lib/normalizePathSep';
 import os from 'os';
 import path from 'path';
 import sane from 'sane';
 import serializer from 'jest-serializer';
 // eslint-disable-next-line import/default
 import watchmanCrawl from './crawlers/watchman';
-import WatchmanWatcher from './lib/watchman_watcher';
+import WatchmanWatcher from './lib/WatchmanWatcher';
 import * as fastPath from './lib/fast_path';
 import Worker from 'jest-worker';
 
 import type {Console} from 'console';
+import type {Mapper} from './types';
 import type {Path} from 'types/Config';
 import type {
   HasteMap as HasteMapObject,
@@ -42,7 +43,7 @@ import type {
   HasteRegExp,
   MockData,
 } from 'types/HasteMap';
-import type {SerializableModuleMap as HasteSerializableModuleMap} from './module_map';
+import type {SerializableModuleMap as HasteSerializableModuleMap} from './ModuleMap';
 
 type HType = typeof H;
 
@@ -54,7 +55,8 @@ type Options = {
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: HasteRegExp,
+  ignorePattern?: ?HasteRegExp,
+  mapper?: ?Mapper,
   maxWorkers: number,
   mocksPattern?: string,
   name: string,
@@ -76,7 +78,8 @@ type InternalOptions = {
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
-  ignorePattern: HasteRegExp,
+  ignorePattern: ?HasteRegExp,
+  mapper?: ?Mapper,
   maxWorkers: number,
   mocksPattern: ?RegExp,
   name: string,
@@ -249,7 +252,7 @@ class HasteMap extends EventEmitter {
       watch: !!options.watch,
     };
     this._console = options.console || global.console;
-    if (!(options.ignorePattern instanceof RegExp)) {
+    if (options.ignorePattern && !(options.ignorePattern instanceof RegExp)) {
       this._console.warn(
         'jest-haste-map: the `ignorePattern` options as a function is being ' +
           'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
@@ -263,6 +266,7 @@ class HasteMap extends EventEmitter {
       this._options.cacheDirectory,
       `haste-map-${this._options.name}-${rootDirHash}`,
       VERSION,
+      this._options.name,
       this._options.roots
         .map(root => fastPath.relative(options.rootDir, root))
         .join(':'),
@@ -270,7 +274,7 @@ class HasteMap extends EventEmitter {
       this._options.platforms.join(':'),
       this._options.computeSha1.toString(),
       options.mocksPattern || '',
-      options.ignorePattern.toString(),
+      (options.ignorePattern || '').toString(),
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
@@ -283,11 +287,15 @@ class HasteMap extends EventEmitter {
     name: string,
     ...extra: Array<string>
   ): string {
-    const hash = crypto.createHash('md5').update(name + extra.join(''));
+    const hash = crypto.createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
     );
+  }
+
+  getCacheFilePath(): string {
+    return this._cachePath;
   }
 
   build(): Promise<HasteMapObject> {
@@ -666,6 +674,7 @@ class HasteMap extends EventEmitter {
           extensions: options.extensions,
           forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
           ignore,
+          mapper: options.mapper,
           rootDir: options.rootDir,
           roots: options.roots,
         }).catch(e => {
@@ -966,7 +975,7 @@ class HasteMap extends EventEmitter {
     const ignoreMatched =
       ignorePattern instanceof RegExp
         ? ignorePattern.test(filePath)
-        : ignorePattern(filePath);
+        : ignorePattern && ignorePattern(filePath);
 
     return (
       ignoreMatched ||

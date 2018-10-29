@@ -118,5 +118,8 @@
     "type": "opencollective",
     "url": "https://opencollective.com/jest",
     "logo": "https://opencollective.com/jest/logo.txt"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

@@ -9,5 +9,8 @@
   "main": "build/index.js",
   "dependencies": {
     "detect-newline": "^2.1.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }
