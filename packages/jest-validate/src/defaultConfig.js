@@ -23,7 +23,8 @@ export default ({
   error: errorMessage,
   exampleConfig: {},
   recursive: true,
-  recursiveBlacklist: [],
+  // Allow NPM-sanctioned comments in package.json. Use a "//" key.
+  recursiveBlacklist: ['//'],
   title: {
     deprecation: DEPRECATION,
     error: ERROR,

@@ -980,3 +980,21 @@ Examples of watch plugins include:
 - [`jest-watch-yarn-workspaces`](https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces)
 
 _Note: The values in the `watchPlugins` property value can omit the `jest-watch-` prefix of the package name._
+
+### `//` [string]
+
+No default
+
+This option allow comments in `package.json`. Include the comment text as the value of this key anywhere in `package.json`.
+
+Example:
+
+```json
+{
+  "name": "my-project",
+  "jest": {
+    "//": "Comment goes here",
+    "verbose": true
+  }
+}
+```
