@@ -244,7 +244,4 @@ export interface Jest {
    * every test so that local module state doesn't conflict between tests.
    */
   isolateModules(fn: () => void): Jest;
-
-  getRealSystemTime(): number;
-  setSystemTime(now?: number): void;
 }

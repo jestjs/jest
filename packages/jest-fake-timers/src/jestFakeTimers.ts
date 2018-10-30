@@ -80,16 +80,20 @@ export default class FakeTimers {
   }
 
   useFakeTimers() {
-    const toFake = Object.keys(this._lolex.timers) as Array<
-      keyof LolexWithContext['timers']
-    >;
-
     if (!this._fakingTime) {
       this._clock = this._lolex.install({
         loopLimit: this._maxLoops,
         now: Date.now(),
         target: this._global,
-        toFake,
+        toFake: [
+          'setTimeout',
+          'clearTimeout',
+          'setImmediate',
+          'clearImmediate',
+          'setInterval',
+          'clearInterval',
+          'nextTick',
+        ],
       });
 
       this._fakingTime = true;
@@ -98,20 +102,8 @@ export default class FakeTimers {
 
   reset() {
     if (this._checkFakeTimers()) {
-      const {now} = this._clock;
       this._clock.reset();
-      this._clock.setSystemTime(now);
     }
-  }
-
-  setSystemTime(now?: number) {
-    if (this._checkFakeTimers()) {
-      this._clock.setSystemTime(now);
-    }
-  }
-
-  getRealSystemTime() {
-    return Date.now();
   }
 
   getTimerCount() {
