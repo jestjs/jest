@@ -25,7 +25,7 @@ const BABEL_REGISTER_PATH = require.resolve('babel-register');
 
 skipSuiteOnWindows();
 
-export const runTest = (source: string) => {
+export const testUtils = (source: string) => {
   const filename = crypto
     .createHash('md5')
     .update(source)

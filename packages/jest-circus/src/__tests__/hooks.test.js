@@ -10,10 +10,10 @@
 
 'use strict';
 
-import {runTest} from '../__mocks__/test_utils';
+import {testUtils} from '../__mocks__/testUtils';
 
 test('beforeEach is executed before each test in current/child describe blocks', () => {
-  const {stdout} = runTest(`
+  const {stdout} = testUtils(`
     describe('describe', () => {
       beforeEach(() => console.log('> describe beforeEach'));
       test('one', () => {});
@@ -42,7 +42,7 @@ test('beforeEach is executed before each test in current/child describe blocks',
 });
 
 test('multiple before each hooks in one describe are executed in the right order', () => {
-  const {stdout} = runTest(`
+  const {stdout} = testUtils(`
     describe('describe 1', () => {
       beforeEach(() => {
         console.log('before each 1');
@@ -61,7 +61,7 @@ test('multiple before each hooks in one describe are executed in the right order
 });
 
 test('beforeAll is exectued correctly', () => {
-  const {stdout} = runTest(`
+  const {stdout} = testUtils(`
     describe('describe 1', () => {
       beforeAll(() => console.log('> beforeAll 1'));
       test('test 1', () => console.log('> test 1'));
