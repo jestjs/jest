@@ -10,8 +10,8 @@
 import type {ConfigGlobals} from 'types/Config';
 import type {Global} from 'types/Global';
 
-import createProcessObject from './create_process_object';
-import deepCyclicCopy from './deep_cyclic_copy';
+import createProcessObject from './createProcessObject';
+import deepCyclicCopy from './deepCyclicCopy';
 
 const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
 

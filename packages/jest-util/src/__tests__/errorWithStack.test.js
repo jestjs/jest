@@ -7,7 +7,7 @@
  * @flow
  */
 
-import ErrorWithStack from '../error_with_stack';
+import ErrorWithStack from '../ErrorWithStack';
 
 describe('ErrorWithStack', () => {
   const message = '💩 something went wrong';

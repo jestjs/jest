@@ -12,7 +12,7 @@ import type {Global} from 'types/Global';
 import type {ModuleMocker} from 'types/Mock';
 
 import {formatStackTrace} from 'jest-message-util';
-import setGlobal from './set_global';
+import setGlobal from './setGlobal';
 
 /**
  * We don't know the type of arguments for a callback ahead of time which is why

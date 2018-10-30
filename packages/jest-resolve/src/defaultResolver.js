@@ -13,8 +13,8 @@ import type {ErrorWithCode} from 'types/Errors';
 import browserResolve from 'browser-resolve';
 import fs from 'fs';
 import path from 'path';
-import isBuiltinModule from './is_builtin_module';
-import nodeModulesPaths from './node_modules_paths';
+import isBuiltinModule from './isBuiltinModule';
+import nodeModulesPaths from './nodeModulesPaths';
 
 type ResolverOptions = {|
   basedir: Path,

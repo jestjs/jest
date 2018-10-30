@@ -15,7 +15,7 @@ const path = require('path');
 const ModuleMap = require('jest-haste-map').ModuleMap;
 const Resolver = require('../');
 const userResolver = require('../__mocks__/userResolver');
-const nodeModulesPaths = require('../node_modules_paths').default;
+const nodeModulesPaths = require('../nodeModulesPaths').default;
 
 beforeEach(() => {
   userResolver.mockClear();

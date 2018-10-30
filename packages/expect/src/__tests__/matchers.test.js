@@ -244,6 +244,20 @@ describe('.toStrictEqual()', () => {
     }).toStrictEqual({test: new TestClassA(1, 2)});
   });
 
+  it('matches the expected snapshot when it fails', () => {
+    expect(() =>
+      jestExpect({
+        test: 2,
+      }).toStrictEqual({test: new TestClassA(1, 2)}),
+    ).toThrowErrorMatchingSnapshot();
+
+    expect(() =>
+      jestExpect({
+        test: new TestClassA(1, 2),
+      }).not.toStrictEqual({test: new TestClassA(1, 2)}),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   it('does not pass for different types', () => {
     expect({
       test: new TestClassA(1, 2),

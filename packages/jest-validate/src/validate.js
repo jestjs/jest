@@ -9,7 +9,7 @@
 
 import type {ValidationOptions} from './types';
 
-import defaultConfig from './default_config';
+import defaultConfig from './defaultConfig';
 
 let hasDeprecationWarnings = false;
 

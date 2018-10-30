@@ -12,7 +12,7 @@ import type {Argv} from 'types/Argv';
 import chalk from 'chalk';
 import {createDidYouMeanMessage, format, ValidationError} from './utils';
 import {deprecationWarning} from './deprecated';
-import defaultConfig from './default_config';
+import defaultConfig from './defaultConfig';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
