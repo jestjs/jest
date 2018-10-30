@@ -8,7 +8,13 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {InitialOptions, ReporterConfig} from 'types/Config';
+import type {
+  InitialOptions,
+  DefaultOptions,
+  ReporterConfig,
+  GlobalConfig,
+  ProjectConfig,
+} from 'types/Config';
 
 import crypto from 'crypto';
 import glob from 'glob';
@@ -419,9 +425,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   }
 
   const babelJest = setupBabelJest(options);
-  const newOptions = Object.assign({}, DEFAULT_CONFIG);
-  // Cast back to exact type
-  options = (options: InitialOptions);
+  const newOptions: $Shape<
+    DefaultOptions & ProjectConfig & GlobalConfig,
+  > = (Object.assign({}, DEFAULT_CONFIG): any);
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -431,7 +437,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     });
   }
 
-  Object.keys(options).reduce((newOptions, key) => {
+  Object.keys(options).reduce((newOptions, key: $Keys<InitialOptions>) => {
     // The resolver has been resolved separately; skip it
     if (key === 'resolver') {
       return newOptions;
@@ -687,6 +693,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         });
         break;
     }
+    // $FlowFixMe - automock is missing in GlobalConfig, so what
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
