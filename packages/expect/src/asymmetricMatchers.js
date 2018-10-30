@@ -7,13 +7,7 @@
  * @flow
  */
 
-import {
-  equals,
-  fnNameFor,
-  hasProperty,
-  isA,
-  isUndefined,
-} from './jasmine_utils';
+import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
 
 import {emptyObject} from './utils';
 

@@ -12,7 +12,7 @@ import {
   isA,
   isImmutableUnorderedKeyed,
   isImmutableUnorderedSet,
-} from './jasmine_utils';
+} from './jasmineUtils';
 
 type GetPath = {
   hasEndProp?: boolean,

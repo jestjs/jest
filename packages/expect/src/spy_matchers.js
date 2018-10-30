@@ -23,7 +23,7 @@ import {
   printWithType,
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
-import {equals} from './jasmine_utils';
+import {equals} from './jasmineUtils';
 import {iterableEquality, partition, isOneline} from './utils';
 import diff from 'jest-diff';
 

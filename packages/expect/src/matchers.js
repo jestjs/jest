@@ -32,7 +32,7 @@ import {
   typeEquality,
   isOneline,
 } from './utils';
-import {equals} from './jasmine_utils';
+import {equals} from './jasmineUtils';
 
 type ContainIterable =
   | Array<any>
