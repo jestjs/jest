@@ -46,7 +46,7 @@ import {
   setState,
   getMatchers,
   setMatchers,
-} from './jest_matchers_object';
+} from './jestMatchersObject';
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 
 class JestAssertionError extends Error {
