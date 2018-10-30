@@ -89,6 +89,7 @@
 - `[*]` [**BREAKING**] Require Node.js 6+ for all packages ([#7258](https://github.com/facebook/jest/pull/7258))
 - `[docs]` Add correct default value for `testUrl` config option ([#7277](https://github.com/facebook/jest/pull/7277))
 - `[jest-util]` [**BREAKING**] Remove long-deprecated globals for fake timers ([#7285](https://github.com/facebook/jest/pull/7285))
+- `[docs]` Remove duplicate code in `MockFunctions` ([#7297](https://github.com/facebook/jest/pull/7297))
 
 ### Performance
 

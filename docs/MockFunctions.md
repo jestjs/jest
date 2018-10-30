@@ -162,9 +162,6 @@ const myMockFn = jest.fn(cb => cb(null, true));
 
 myMockFn((err, val) => console.log(val));
 // > true
-
-myMockFn((err, val) => console.log(val));
-// > true
 ```
 
 The `mockImplementation` method is useful when you need to define the default implementation of a mock function that is created from another module:
