@@ -47,7 +47,7 @@ import {
   getMatchers,
   setMatchers,
 } from './jest_matchers_object';
-import extractExpectedAssertionsErrors from './extract_expected_assertions_errors';
+import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 
 class JestAssertionError extends Error {
   matcherResult: any;
