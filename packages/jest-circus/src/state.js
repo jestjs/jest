@@ -10,7 +10,7 @@
 import type {Event, State, EventHandler} from 'types/Circus';
 
 import {makeDescribe} from './utils';
-import eventHandler from './event_handler';
+import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './format_node_assert_errors';
 
 const eventHandlers: Array<EventHandler> = [
