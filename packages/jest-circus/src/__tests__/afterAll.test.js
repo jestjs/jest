@@ -10,10 +10,10 @@
 
 'use strict';
 
-import {testUtils} from '../__mocks__/testUtils';
+import {runTest} from '../__mocks__/testUtils';
 
 test('tests are not marked done until their parent afterAll runs', () => {
-  const {stdout} = testUtils(`
+  const {stdout} = runTest(`
     describe('describe', () => {
       afterAll(() => {});
       test('one', () => {});
@@ -39,7 +39,7 @@ test('tests are not marked done until their parent afterAll runs', () => {
 });
 
 test('describe block cannot have hooks and no tests', () => {
-  const result = testUtils(`
+  const result = runTest(`
     describe('describe', () => {
       afterEach(() => {});
       beforeEach(() => {});
@@ -52,7 +52,7 @@ test('describe block cannot have hooks and no tests', () => {
 });
 
 test('describe block _can_ have hooks if a child describe block has tests', () => {
-  const result = testUtils(`
+  const result = runTest(`
     describe('describe', () => {
       afterEach(() => console.log('> afterEach'));
       beforeEach(() => console.log('> beforeEach'));

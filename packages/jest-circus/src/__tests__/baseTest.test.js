@@ -10,10 +10,10 @@
 
 'use strict';
 
-import {testUtils} from '../__mocks__/testUtils';
+import {runTest} from '../__mocks__/testUtils';
 
 test('simple test', () => {
-  const {stdout} = testUtils(`
+  const {stdout} = runTest(`
     describe('describe', () => {
       beforeEach(() => {});
       afterEach(() => {});
@@ -26,7 +26,7 @@ test('simple test', () => {
 });
 
 test('failures', () => {
-  const {stdout} = testUtils(`
+  const {stdout} = runTest(`
     describe('describe', () => {
       beforeEach(() => {});
       afterEach(() => { throw new Error('banana')});
