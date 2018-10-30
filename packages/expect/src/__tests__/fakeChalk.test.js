@@ -6,7 +6,7 @@
  */
 'use strict';
 
-const fakeChalk = jest.requireActual('../fake_chalk');
+const fakeChalk = jest.requireActual('../fakeChalk');
 
 describe('Fake Chalk', () => {
   it('returns input when invoked', () => {

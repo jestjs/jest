@@ -45,7 +45,7 @@ function browserBuild(pkgName, entryPath, destination) {
       {
         resolveId(id) {
           return id === 'chalk'
-            ? path.resolve(__dirname, '../packages/expect/build/fake_chalk.js')
+            ? path.resolve(__dirname, '../packages/expect/build/fakeChalk.js')
             : undefined;
         },
       },
