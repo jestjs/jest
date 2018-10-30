@@ -20,7 +20,7 @@ const {
   stringNotContaining,
   stringMatching,
   stringNotMatching,
-} = require('../asymmetric_matchers');
+} = require('../asymmetricMatchers');
 
 test('Any.asymmetricMatch()', () => {
   const Thing = function() {};

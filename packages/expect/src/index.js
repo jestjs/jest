@@ -39,7 +39,7 @@ import {
   stringNotContaining,
   stringMatching,
   stringNotMatching,
-} from './asymmetric_matchers';
+} from './asymmetricMatchers';
 import {
   INTERNAL_MATCHER_FLAG,
   getState,
