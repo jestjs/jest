@@ -12,7 +12,7 @@ import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {TestResult} from 'types/TestResult';
 import type Runtime from 'jest-runtime';
 
-const FRAMEWORK_INITIALIZER = require.resolve('./jest_adapter_init');
+const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 import path from 'path';
 
 const jestAdapter = async (
@@ -28,7 +28,7 @@ const jestAdapter = async (
   } = runtime.requireInternalModule(FRAMEWORK_INITIALIZER);
 
   runtime
-    .requireInternalModule(path.resolve(__dirname, './jest_expect.js'))
+    .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
     .default({
       expand: globalConfig.expand,
     });
