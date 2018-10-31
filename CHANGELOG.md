@@ -61,6 +61,7 @@
 - `[jest-config]` Use strings instead of `RegExp` instances in normalized configuration ([#7251](https://github.com/facebook/jest/pull/7251))
 - `[jest-circus]` Make sure to display real duration even if time is mocked ([#7264](https://github.com/facebook/jest/pull/7264))
 - `[expect]` Improves the failing message for `toStrictEqual` matcher. ([#7224](https://github.com/facebook/jest/pull/7224))
+- `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381)
 
 ### Chore & Maintenance
 
@@ -185,9 +186,6 @@
 ### Fixes
 
 - `[jest-haste-map]` Optimize watchman crawler by using `glob` on initial query ([#6689](https://github.com/facebook/jest/pull/6689))
-
-### Fixes
-
 - `[pretty-format]` Fix formatting of invalid Date objects ([#6635](https://github.com/facebook/jest/pull/6635))
 
 ## 23.4.0
@@ -348,7 +346,7 @@
 - `[jest-diff]` Support returning diff from oneline strings ([#6221](https://github.com/facebook/jest/pull/6221))
 - `[expect]` Improve return matchers ([#6172](https://github.com/facebook/jest/pull/6172))
 - `[jest-cli]` Overhaul watch plugin hooks names ([#6249](https://github.com/facebook/jest/pull/6249))
-- `[jest-mock]` Include tracked call results in serialized mock ([#6244](https://github.com/facebook/jest/pull/6244))
+- `[jest-mock]` [**BREAKING**] Include tracked call results in serialized mock ([#6244](https://github.com/facebook/jest/pull/6244))
 
 ### Fixes
 
