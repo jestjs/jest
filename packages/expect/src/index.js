@@ -23,7 +23,7 @@ import type {
 import * as matcherUtils from 'jest-matcher-utils';
 import {iterableEquality, subsetEquality} from './utils';
 import matchers from './matchers';
-import spyMatchers from './spy_matchers';
+import spyMatchers from './spyMatchers';
 import toThrowMatchers, {
   createMatcher as createThrowMatcher,
 } from './to_throw_matchers';
