@@ -51,7 +51,7 @@ function asymmetricMatch(a, b) {
   }
 
   if (asymmetricA) {
-    // $FlowFixMe 0.85
+    // $FlowFixMe – Flow sees `a` as a number
     return a.asymmetricMatch(b);
   }
 
@@ -97,7 +97,7 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
     case '[object String]':
       // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
       // equivalent to `new String("5")`.
-      // $FlowFixMe 0.85
+      // $FlowFixMe – Flow sees `a` as a number
       return a == String(b);
     case '[object Number]':
       // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for
@@ -115,7 +115,7 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
         a.source == b.source &&
         a.global == b.global &&
         a.multiline == b.multiline &&
-        // $FlowFixMe 0.85
+        // $FlowFixMe – Flow sees `a` as a number
         a.ignoreCase == b.ignoreCase
       );
   }
