@@ -21,7 +21,9 @@ export default function getNoTestFound(testRunData, globalConfig): string {
   }
 
   return (
-    chalk.bold('No tests found') +
+    chalk.bold('No tests found, exiting with code 1') +
+    '\n' +
+    'Pass `--passWithNoTests` to exit with code 0' +
     '\n' +
     `In ${chalk.bold(process.cwd())}` +
     '\n' +
