@@ -37,12 +37,6 @@ An array containing the results of all calls that have been made to this mock fu
 
 The `value` property contains the value that was thrown or returned. `value` is undefined when `type === 'incomplete'`.
 
-A deprecated `isThrow` property also exists. Use `type` instead. Possible values are:
-
-- `false` - Indicates that the call completed by returning normally.
-- `true` - Indicates that the call completed by throwing a value.
-- `undefined` - Indicates that the call has not yet completed.
-
 For example: A mock function `f` that has been called three times, returning `'result1'`, throwing an error, and then returning `'result2'`, would have a `mock.results` array that looks like this:
 
 ```js
@@ -50,19 +44,16 @@ For example: A mock function `f` that has been called three times, returning `'r
   {
     type: 'return',
     value: 'result1',
-    isThrow: false, // deprecated
   },
   {
     type: 'throw',
     value: {
       /* Error instance */
     },
-    isThrow: true, // deprecated
   },
   {
     type: 'return',
     value: 'result2',
-    isThrow: false, // deprecated
   },
 ];
 ```

@@ -445,12 +445,10 @@ describe('moduleMocker', () => {
 
         expect(fn.mock.results).toEqual([
           {
-            isThrow: false,
             type: 'return',
             value: 2,
           },
           {
-            isThrow: false,
             type: 'return',
             value: 4,
           },
@@ -466,12 +464,10 @@ describe('moduleMocker', () => {
 
         expect(fn.mock.results).toEqual([
           {
-            isThrow: false,
             type: 'return',
             value: 'MOCKED!',
           },
           {
-            isThrow: false,
             type: 'return',
             value: 4,
           },
@@ -488,12 +484,10 @@ describe('moduleMocker', () => {
 
         expect(fn.mock.results).toEqual([
           {
-            isThrow: false,
             type: 'return',
             value: 2,
           },
           {
-            isThrow: false,
             type: 'return',
             value: 4,
           },
@@ -534,17 +528,14 @@ describe('moduleMocker', () => {
       // Results are tracked
       expect(fn.mock.results).toEqual([
         {
-          isThrow: false,
           type: 'return',
           value: 8,
         },
         {
-          isThrow: true,
           type: 'throw',
           value: error,
         },
         {
-          isThrow: false,
           type: 'return',
           value: 18,
         },
@@ -568,7 +559,6 @@ describe('moduleMocker', () => {
       // Results are tracked
       expect(fn.mock.results).toEqual([
         {
-          isThrow: true,
           type: 'throw',
           value: undefined,
         },
@@ -593,27 +583,22 @@ describe('moduleMocker', () => {
       // (in correct order of calls, rather than order of returns)
       expect(fn.mock.results).toEqual([
         {
-          isThrow: false,
           type: 'return',
           value: 10,
         },
         {
-          isThrow: false,
           type: 'return',
           value: 6,
         },
         {
-          isThrow: false,
           type: 'return',
           value: 3,
         },
         {
-          isThrow: false,
           type: 'return',
           value: 1,
         },
         {
-          isThrow: false,
           type: 'return',
           value: 0,
         },
@@ -634,27 +619,22 @@ describe('moduleMocker', () => {
             // But only the last 3 calls have returned at this point.
             expect(fn.mock.results).toEqual([
               {
-                isThrow: undefined,
                 type: 'incomplete',
                 value: undefined,
               },
               {
-                isThrow: undefined,
                 type: 'incomplete',
                 value: undefined,
               },
               {
-                isThrow: false,
                 type: 'return',
                 value: 3,
               },
               {
-                isThrow: false,
                 type: 'return',
                 value: 1,
               },
               {
-                isThrow: false,
                 type: 'return',
                 value: 0,
               },
@@ -689,17 +669,14 @@ describe('moduleMocker', () => {
       // Results (after the call that cleared the mock) are tracked
       expect(fn.mock.results).toEqual([
         {
-          isThrow: false,
           type: 'return',
           value: 3,
         },
         {
-          isThrow: false,
           type: 'return',
           value: 1,
         },
         {
-          isThrow: false,
           type: 'return',
           value: 0,
         },
