@@ -26,7 +26,7 @@ import matchers from './matchers';
 import spyMatchers from './spyMatchers';
 import toThrowMatchers, {
   createMatcher as createThrowMatcher,
-} from './to_throw_matchers';
+} from './toThrowMatchers';
 import {equals} from './jasmineUtils';
 import {
   any,
