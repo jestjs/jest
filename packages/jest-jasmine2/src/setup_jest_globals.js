@@ -11,7 +11,11 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Plugin} from 'types/PrettyFormat';
 
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
-import {SnapshotState, addSerializer} from 'jest-snapshot';
+import {
+  buildSnapshotResolver,
+  SnapshotState,
+  addSerializer,
+} from 'jest-snapshot';
 
 export type SetupOptions = {|
   config: ProjectConfig,
@@ -96,12 +100,17 @@ export default ({
     .forEach(path => {
       addSerializer(localRequire(path));
     });
+
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotState = new SnapshotState(testPath, {
+  const snapshotResolver = buildSnapshotResolver(config);
+  const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
+  const snapshotState = new SnapshotState(snapshotPath, {
     expand,
+    getBabelTraverse: () => require('babel-traverse').default,
     getPrettier: () =>
-      config.prettierPath ? localRequire(config.prettierPath) : null,
+      // $FlowFixMe dynamic require
+      config.prettierPath ? require(config.prettierPath) : null,
     updateSnapshot,
   });
   setState({snapshotState, testPath});

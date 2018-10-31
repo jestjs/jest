@@ -177,9 +177,9 @@ export const options = {
     alias: 'c',
     description:
       'The path to a jest config file specifying how to find ' +
-      'and execute tests. If no rootDir is set in the config, the current ' +
-      'directory is assumed to be the rootDir for the project. This can also ' +
-      'be a JSON encoded value which Jest will use as configuration.',
+      'and execute tests. If no rootDir is set in the config, the directory ' +
+      'containing the config file is assumed to be the rootDir for the project.' +
+      'This can also be a JSON encoded value which Jest will use as configuration.',
     type: 'string',
   },
   coverage: {
@@ -389,7 +389,7 @@ export const options = {
     type: 'boolean',
   },
   notifyMode: {
-    default: 'always',
+    default: 'failure-change',
     description: 'Specifies when notifications will appear for test results.',
     type: 'string',
   },
@@ -501,15 +501,15 @@ export const options = {
   },
   setupFiles: {
     description:
-      'The paths to modules that run some code to configure or ' +
+      'A list of paths to modules that run some code to configure or ' +
       'set up the testing environment before each test. ',
     type: 'array',
   },
-  setupTestFrameworkScriptFile: {
+  setupFilesAfterEnv: {
     description:
-      'The path to a module that runs some code to configure or ' +
-      'set up the testing framework before each test.',
-    type: 'string',
+      'A list of paths to modules that run some code to configure or ' +
+      'set up the testing framework before each test ',
+    type: 'array',
   },
   showConfig: {
     default: undefined,
@@ -576,8 +576,9 @@ export const options = {
     type: 'array',
   },
   testRegex: {
-    description: 'The regexp pattern Jest uses to detect test files.',
-    type: 'string',
+    description:
+      'A string or array of string regexp patterns that Jest uses to detect test files.',
+    type: 'array',
   },
   testResultsProcessor: {
     description:

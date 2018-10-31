@@ -9,9 +9,9 @@
 
 'use strict';
 
-const path = require('path');
-const {run} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import {run} from '../Utils';
+import runJest from '../runJest';
 
 it('processes stack traces and code frames with source maps', () => {
   const dir = path.resolve(__dirname, '../stack-trace-source-maps');

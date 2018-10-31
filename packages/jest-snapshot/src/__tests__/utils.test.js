@@ -13,11 +13,11 @@ const chalk = require('chalk');
 
 const {
   getSnapshotData,
-  getSnapshotPath,
   keyToTestName,
   saveSnapshotFile,
   serialize,
   testNameToKey,
+  deepMerge,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
@@ -48,12 +48,6 @@ test('keyToTestName()', () => {
 test('testNameToKey', () => {
   expect(testNameToKey('abc cde', 1)).toBe('abc cde 1');
   expect(testNameToKey('abc cde ', 12)).toBe('abc cde  12');
-});
-
-test('getSnapshotPath()', () => {
-  expect(getSnapshotPath('/abc/cde/a.test.js')).toBe(
-    path.join('/abc', 'cde', '__snapshots__', 'a.test.js.snap'),
-  );
 });
 
 test('saveSnapshotFile() works with \r\n', () => {
@@ -197,4 +191,16 @@ test('serialize handles \\r\\n', () => {
   const serializedData = serialize(data);
 
   expect(serializedData).toBe('\n"<div>\n</div>"\n');
+});
+
+describe('DeepMerge', () => {
+  it('Correctly merges objects with property matchers', () => {
+    const target = {data: {bar: 'bar', foo: 'foo'}};
+    const matcher = expect.any(String);
+    const propertyMatchers = {data: {foo: matcher}};
+    const mergedOutput = deepMerge(target, propertyMatchers);
+
+    expect(mergedOutput).toStrictEqual({data: {bar: 'bar', foo: matcher}});
+    expect(target).toStrictEqual({data: {bar: 'bar', foo: 'foo'}});
+  });
 });

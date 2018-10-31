@@ -31,7 +31,6 @@ export default (testName: string, pattern: string, width: number) => {
     return chalk.dim(inlineTestName);
   }
 
-  // $FlowFixMe
   const startPatternIndex = Math.max(match.index, 0);
   const endPatternIndex = startPatternIndex + match[0].length;
 

@@ -32,12 +32,6 @@ import prettyFormat from 'pretty-format';
 
 import {getState} from './state';
 
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test. Async functions return it implicitly.
-// eslint-disable-next-line no-unused-vars
-const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
-export const getOriginalPromise = () => Promise;
-
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
 export const makeDescribe = (
@@ -164,7 +158,7 @@ const _makeTimeoutMessage = (timeout, isHook) =>
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
-export const callAsyncFn = (
+export const callAsyncCircusFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
   {isHook, timeout}: {isHook?: ?boolean, timeout: number},
@@ -246,7 +240,7 @@ export const callAsyncFn = (
 
 export const getTestDuration = (test: TestEntry): ?number => {
   const {startedAt} = test;
-  return startedAt ? Date.now() - startedAt : null;
+  return typeof startedAt === 'number' ? Date.now() - startedAt : null;
 };
 
 export const makeRunResult = (

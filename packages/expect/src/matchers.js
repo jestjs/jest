@@ -32,7 +32,7 @@ import {
   typeEquality,
   isOneline,
 } from './utils';
-import {equals} from './jasmine_utils';
+import {equals} from './jasmineUtils';
 
 type ContainIterable =
   | Array<any>
@@ -56,9 +56,11 @@ const matchers: MatchersObject = {
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}`
       : () => {
+          const receivedType = getType(received);
+          const expectedType = getType(expected);
           const suggestToEqual =
-            getType(received) === getType(expected) &&
-            (getType(received) === 'object' || getType(expected) === 'array') &&
+            receivedType === expectedType &&
+            (receivedType === 'object' || expectedType === 'array') &&
             equals(received, expected, [iterableEquality]);
           const oneline = isOneline(expected, received);
           const diffString = diff(expected, received, {expand: this.expand});
@@ -183,7 +185,9 @@ const matchers: MatchersObject = {
             constructor.name || String(constructor),
           )}\n` +
           `Received constructor: ${RECEIVED_COLOR(
-            received.constructor && received.constructor.name,
+            received != null
+              ? received.constructor && received.constructor.name
+              : '',
           )}\n` +
           `Received value: ${printReceived(received)}`;
 
@@ -313,7 +317,7 @@ const matchers: MatchersObject = {
             `  ${printReceived(collection)}\n` +
             `To contain value:\n` +
             `  ${printExpected(value)}` +
-            (suggestToContainEqual ? ` ${SUGGEST_TO_CONTAIN_EQUAL}` : '')
+            (suggestToContainEqual ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}` : '')
           );
         };
 
@@ -461,7 +465,7 @@ const matchers: MatchersObject = {
           `Expected ${EXPECTED_COLOR(
             'path',
           )} to be a string or an array. Received:\n` +
-          `  ${getType(keyPath)}: ${printReceived(keyPath)}`,
+          `  ${keyPathType}: ${printReceived(keyPath)}`,
       );
     }
 
@@ -624,27 +628,20 @@ const matchers: MatchersObject = {
       true,
     );
 
+    const hint = matcherHint('.toStrictEqual', undefined, undefined, {
+      isNot: this.isNot,
+    });
     const message = pass
       ? () =>
-          matcherHint('.not.toStrictEqual') +
+          hint +
           '\n\n' +
-          `Expected value to not equal:\n` +
-          `  ${printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${printReceived(received)}`
+          `Expected: ${printExpected(expected)}\n` +
+          `Received: ${printReceived(received)}`
       : () => {
           const diffString = diff(expected, received, {
             expand: this.expand,
           });
-          return (
-            matcherHint('.toStrictEqual') +
-            '\n\n' +
-            `Expected value to equal:\n` +
-            `  ${printExpected(expected)}\n` +
-            `Received:\n` +
-            `  ${printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
-          );
+          return hint + (diffString ? `\n\nDifference:\n\n${diffString}` : '');
         };
 
     // Passing the the actual and expected objects so that a custom reporter

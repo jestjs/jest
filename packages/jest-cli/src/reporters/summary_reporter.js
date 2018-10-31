@@ -17,7 +17,7 @@ import BaseReporter from './base_reporter';
 import {getSummary} from './utils';
 import getResultHeader from './get_result_header';
 import getSnapshotSummary from './get_snapshot_summary';
-import testPathPatternToRegExp from '../test_path_pattern_to_regexp';
+import testPathPatternToRegExp from '../testPathPatternToRegexp';
 
 const TEST_SUMMARY_THRESHOLD = 20;
 
@@ -137,7 +137,7 @@ export default class SummaryReporter extends BaseReporter {
         typeof process.env.npm_lifecycle_script === 'string' &&
         process.env.npm_lifecycle_script.indexOf('jest') !== -1;
 
-      if (globalConfig.watch) {
+      if (globalConfig.watch || globalConfig.watchAll) {
         updateCommand = 'press `u`';
       } else if (event && scriptUsesJest) {
         updateCommand = `run \`${client +

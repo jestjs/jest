@@ -24,7 +24,6 @@
 /website/yarn.lock
 /website/translated_docs
 /website/i18n/*
-!/website/i18n/en.json
 
 coverage
 lerna-debug.log

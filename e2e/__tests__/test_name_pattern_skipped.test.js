@@ -8,11 +8,11 @@
  */
 'use strict';
 
-const {extractSummary} = require('../Utils');
-const runJest = require('../runJest');
+import {extractSummary} from '../Utils';
+import {json as runWithJson} from '../runJest';
 
 test('testNamePattern skipped', () => {
-  const {stderr, status} = runJest.json('testNamePattern_skipped', [
+  const {stderr, status} = runWithJson('testNamePattern_skipped', [
     '--testNamePattern',
     'false',
   ]);

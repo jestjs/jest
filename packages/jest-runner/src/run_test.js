@@ -18,6 +18,7 @@ import fs from 'graceful-fs';
 import {
   BufferedConsole,
   Console,
+  ErrorWithStack,
   NullConsole,
   getConsoleOutput,
   setGlobal,
@@ -25,6 +26,7 @@ import {
 import LeakDetector from 'jest-leak-detector';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
+import {formatExecError} from 'jest-message-util';
 import sourcemapSupport from 'source-map-support';
 
 type RunTestInternalResult = {
@@ -56,6 +58,7 @@ async function runTestInternal(
   if (customEnvironment) {
     testEnvironment = getTestEnvironment(
       Object.assign({}, config, {
+        // $FlowFixMe
         testEnvironment: customEnvironment,
       }),
     );
@@ -145,6 +148,33 @@ async function runTestInternal(
   // For runtime errors
   sourcemapSupport.install(sourcemapOptions);
 
+  if (
+    environment.global &&
+    environment.global.process &&
+    environment.global.process.exit
+  ) {
+    const realExit = environment.global.process.exit;
+
+    environment.global.process.exit = function exit(...args) {
+      const error = new ErrorWithStack(
+        `process.exit called with "${args.join(', ')}"`,
+        exit,
+      );
+
+      const formattedError = formatExecError(
+        error,
+        config,
+        {noStackTrace: false},
+        undefined,
+        true,
+      );
+
+      process.stderr.write(formattedError);
+
+      return realExit(...args);
+    };
+  }
+
   try {
     await environment.setup();
 
@@ -166,7 +196,10 @@ async function runTestInternal(
     }
 
     const testCount =
-      result.numPassingTests + result.numFailingTests + result.numPendingTests;
+      result.numPassingTests +
+      result.numFailingTests +
+      result.numPendingTests +
+      result.numTodoTests;
 
     result.perfStats = {end: Date.now(), start};
     result.testFilePath = path;

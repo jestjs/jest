@@ -32,8 +32,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {convertDescriptorToString} from 'jest-util';
-import ExpectationFailed from '../expectation_failed';
-import expectationResultFactory from '../expectation_result_factory';
+import ExpectationFailed from '../ExpectationFailed';
+import expectationResultFactory from '../expectationResultFactory';
 
 export default function Suite(attrs: Object) {
   this.id = attrs.id;

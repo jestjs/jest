@@ -10,7 +10,6 @@
 import fs from 'fs';
 import semver from 'semver';
 import path from 'path';
-import traverse from 'babel-traverse';
 import {templateElement, templateLiteral, file} from 'babel-types';
 
 import type {Path} from 'types/Config';
@@ -24,6 +23,7 @@ export type InlineSnapshot = {|
 export const saveInlineSnapshots = (
   snapshots: InlineSnapshot[],
   prettier: any,
+  babelTraverse: Function,
 ) => {
   if (!prettier) {
     throw new Error(
@@ -47,6 +47,7 @@ export const saveInlineSnapshots = (
       snapshotsByFile[sourceFilePath],
       sourceFilePath,
       prettier,
+      babelTraverse,
     );
   }
 };
@@ -55,6 +56,7 @@ const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: Path,
   prettier: any,
+  babelTraverse: Function,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
@@ -77,7 +79,7 @@ const saveSnapshotsForFile = (
     sourceFile,
     Object.assign({}, config, {
       filepath: sourceFilePath,
-      parser: createParser(snapshots, inferredParser),
+      parser: createParser(snapshots, inferredParser, babelTraverse),
     }),
   );
 
@@ -101,7 +103,11 @@ const groupSnapshotsByFrame = groupSnapshotsBy(
 );
 const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
-const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
+const createParser = (
+  snapshots: InlineSnapshot[],
+  inferredParser: string,
+  babelTraverse: Function,
+) => (
   text: string,
   parsers: {[key: string]: (string) => any},
   options: any,
@@ -119,7 +125,7 @@ const createParser = (snapshots: InlineSnapshot[], inferredParser: string) => (
     delete ast.program.comments;
   }
 
-  traverse(ast, {
+  babelTraverse(ast, {
     CallExpression({node: {arguments: args, callee}}) {
       if (
         callee.type !== 'MemberExpression' ||

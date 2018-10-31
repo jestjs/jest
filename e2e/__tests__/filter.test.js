@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 describe('Dynamic test filtering', () => {
   it('uses the default JSON option', () => {

@@ -26,6 +26,8 @@ The `jest` object is automatically in scope within every test file. The methods 
 - [`jest.runAllTimers()`](#jestrunalltimers)
 - [`jest.advanceTimersByTime(msToRun)`](#jestadvancetimersbytimemstorun)
 - [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
+- [`jest.requireActual()`](#jestrequireactual)
+- [`jest.requireMock()`](#jestrequiremock)
 - [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulename-moduleexports)
 - [`jest.setTimeout(timeout)`](#jestsettimeouttimeout)
 - [`jest.useFakeTimers()`](#jestusefaketimers)
@@ -265,6 +267,14 @@ Executes only the macro-tasks that are currently pending (i.e., only the tasks t
 
 This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
 
+### `jest.requireActual(moduleName)`
+
+Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
+
+### `jest.requireMock(moduleName)`
+
+Returns a mock module instead of the actual module, bypassing all checks on whether the module should be required normally or not.
+
 ### `jest.setMock(moduleName, moduleExports)`
 
 Explicitly supplies the mock object that the module system should return for the specified module.
@@ -282,6 +292,8 @@ _Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-optio
 Set the default timeout interval for tests and before/after hooks in milliseconds.
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
+
+_Note: The method must be called after the test framework is installed in the environment and before the test runs. A good place to do this is in the `setupTestFrameworkScriptFile`._
 
 Example:
 

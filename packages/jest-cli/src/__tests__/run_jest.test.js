@@ -1,9 +1,11 @@
-import runJest from '../run_jest';
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
+import runJest from '../runJest';
 
 jest.mock('jest-util');
 
 const processErrWriteFn = process.stderr.write;
-describe('run_jest', () => {
+describe('runJest', () => {
   let stderrSpy;
   beforeEach(async () => {
     process.exit = jest.fn();

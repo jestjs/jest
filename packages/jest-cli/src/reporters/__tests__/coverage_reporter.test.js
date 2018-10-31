@@ -6,10 +6,7 @@
  */
 'use strict';
 
-jest
-  .mock('istanbul-lib-coverage')
-  .mock('istanbul-lib-source-maps')
-  .mock('istanbul-api');
+jest.mock('istanbul-lib-source-maps').mock('istanbul-api');
 
 let libCoverage;
 let libSourceMaps;
@@ -32,6 +29,9 @@ beforeEach(() => {
 
   const fileTree = {};
   fileTree[process.cwd() + '/path-test-files'] = {
+    '000pc_coverage_file.js': '',
+    '050pc_coverage_file.js': '',
+    '100pc_coverage_file.js': '',
     'full_path_file.js': '',
     'glob-path': {
       'file1.js': '',
@@ -68,29 +68,44 @@ describe('onRunComplete', () => {
     };
 
     libCoverage.createCoverageMap = jest.fn(() => {
-      const files = [
-        './path-test-files/covered_file_without_threshold.js',
-        './path-test-files/full_path_file.js',
-        './path-test-files/relative_path_file.js',
-        './path-test-files/glob-path/file1.js',
-        './path-test-files/glob-path/file2.js',
-      ].map(p => path.resolve(p));
+      const covSummary = {
+        branches: {covered: 0, pct: 0, skipped: 0, total: 0},
+        functions: {covered: 0, pct: 0, skipped: 0, total: 0},
+        lines: {covered: 0, pct: 0, skipped: 0, total: 0},
+        statements: {covered: 5, pct: 50, skipped: 0, total: 10},
+      };
+      const fileCoverage = [
+        ['./path-test-files/covered_file_without_threshold.js'],
+        ['./path-test-files/full_path_file.js'],
+        ['./path-test-files/relative_path_file.js'],
+        ['./path-test-files/glob-path/file1.js'],
+        ['./path-test-files/glob-path/file2.js'],
+        [
+          './path-test-files/000pc_coverage_file.js',
+          {statements: {covered: 0, pct: 0, total: 10}},
+        ],
+        [
+          './path-test-files/050pc_coverage_file.js',
+          {statements: {covered: 5, pct: 50, total: 10}},
+        ],
+        [
+          './path-test-files/100pc_coverage_file.js',
+          {statements: {covered: 10, pct: 100, total: 10}},
+        ],
+      ].reduce((c, f) => {
+        const file = path.resolve(f[0]);
+        const override = f[1];
+        const obj = Object.assign({}, covSummary, override);
+        c[file] = libCoverage.createCoverageSummary(obj);
+        return c;
+      }, {});
 
       return {
         fileCoverageFor(path) {
-          if (files.indexOf(path) !== -1) {
-            const covSummary = {
-              branches: {covered: 0, pct: 0, skipped: 0, total: 0},
-              functions: {covered: 0, pct: 0, skipped: 0, total: 0},
-              lines: {covered: 0, pct: 0, skipped: 0, total: 0},
-              merge(other) {
-                return covSummary;
-              },
-              statements: {covered: 0, pct: 50, skipped: 0, total: 0},
-            };
+          if (fileCoverage[path]) {
             return {
               toSummary() {
-                return covSummary;
+                return fileCoverage[path];
               },
             };
           } else {
@@ -98,7 +113,7 @@ describe('onRunComplete', () => {
           }
         },
         files() {
-          return files;
+          return Object.keys(fileCoverage);
         },
       };
     });
@@ -277,6 +292,127 @@ describe('onRunComplete', () => {
       .onRunComplete(new Set(), {}, mockAggResults)
       .then(() => {
         expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
+      });
+  });
+
+  test(`getLastError() returns 'undefined' when global threshold group
+   is empty because PATH and GLOB threshold groups have matched all the
+    files in the coverage data.`, () => {
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: {
+          './path-test-files/': {
+            statements: 50,
+          },
+          global: {
+            statements: 100,
+          },
+        },
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+    return testReporter
+      .onRunComplete(new Set(), {}, mockAggResults)
+      .then(() => {
+        expect(testReporter.getLastError()).toBeUndefined();
+      });
+  });
+
+  test(`getLastError() returns 'undefined' when file and directory path 
+  threshold groups overlap`, () => {
+    const covThreshold = {};
+    [
+      './path-test-files/',
+      './path-test-files/covered_file_without_threshold.js',
+      './path-test-files/full_path_file.js',
+      './path-test-files/relative_path_file.js',
+      './path-test-files/glob-path/file1.js',
+      './path-test-files/glob-path/file2.js',
+      './path-test-files/*.js',
+    ].forEach(path => {
+      covThreshold[path] = {
+        statements: 0,
+      };
+    });
+
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: covThreshold,
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+    return testReporter
+      .onRunComplete(new Set(), {}, mockAggResults)
+      .then(() => {
+        expect(testReporter.getLastError()).toBeUndefined();
+      });
+  });
+
+  test(`that if globs or paths are specified alongside global, coverage 
+  data for matching paths will be subtracted from overall coverage 
+  and thresholds will be applied independently`, () => {
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: {
+          './path-test-files/100pc_coverage_file.js': {
+            statements: 100,
+          },
+          global: {
+            statements: 50,
+          },
+        },
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+    // 100% coverage file is removed from overall coverage so
+    // coverage drops to < 50%
+    return testReporter
+      .onRunComplete(new Set(), {}, mockAggResults)
+      .then(() => {
+        expect(testReporter.getLastError().message.split('\n')).toHaveLength(1);
+      });
+  });
+
+  test(`that files are matched by all matching threshold groups`, () => {
+    const testReporter = new CoverageReporter(
+      {
+        collectCoverage: true,
+        coverageThreshold: {
+          './path-test-files/': {
+            statements: 50,
+          },
+          './path-test-files/050pc_coverage_file.js': {
+            statements: 50,
+          },
+          './path-test-files/100pc_coverage_*.js': {
+            statements: 100,
+          },
+          './path-test-files/100pc_coverage_file.js': {
+            statements: 100,
+          },
+        },
+      },
+      {
+        maxWorkers: 2,
+      },
+    );
+    testReporter.log = jest.fn();
+    return testReporter
+      .onRunComplete(new Set(), {}, mockAggResults)
+      .then(() => {
+        expect(testReporter.getLastError()).toBeUndefined();
       });
   });
 });

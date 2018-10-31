@@ -12,11 +12,14 @@ const vm = require('vm');
 
 describe('moduleMocker', () => {
   let moduleMocker;
+  let mockContext;
+  let mockGlobals;
 
   beforeEach(() => {
     const mock = require('../');
-    const global = vm.runInNewContext('this');
-    moduleMocker = new mock.ModuleMocker(global);
+    mockContext = vm.createContext();
+    mockGlobals = vm.runInNewContext('this', mockContext);
+    moduleMocker = new mock.ModuleMocker(mockGlobals);
   });
 
   describe('getMetadata', () => {
@@ -137,7 +140,7 @@ describe('moduleMocker', () => {
 
       expect(typeof foo.nonEnumMethod).toBe('function');
 
-      expect(mock.nonEnumMethod.mock).not.toBeUndefined();
+      expect(mock.nonEnumMethod.mock).toBeDefined();
       expect(mock.nonEnumGetter).toBeUndefined();
     });
 
@@ -180,9 +183,140 @@ describe('moduleMocker', () => {
 
       expect(typeof foo.foo).toBe('function');
       expect(typeof instanceFooMock.foo).toBe('function');
-      expect(instanceFooMock.foo.mock).not.toBeUndefined();
+      expect(instanceFooMock.foo.mock).toBeDefined();
 
-      expect(instanceFooMock.toString.mock).not.toBeUndefined();
+      expect(instanceFooMock.toString.mock).toBeDefined();
+    });
+
+    it('mocks ES2015 non-enumerable static properties and methods', () => {
+      class ClassFoo {
+        static foo() {}
+      }
+      ClassFoo.fooProp = () => {};
+
+      class ClassBar extends ClassFoo {}
+
+      const ClassBarMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(ClassBar),
+      );
+
+      expect(typeof ClassBarMock.foo).toBe('function');
+      expect(typeof ClassBarMock.fooProp).toBe('function');
+      expect(ClassBarMock.foo.mock).toBeDefined();
+      expect(ClassBarMock.fooProp.mock).toBeDefined();
+    });
+
+    it('mocks methods in all the prototype chain (null prototype)', () => {
+      const Foo = Object.assign(Object.create(null), {foo() {}});
+      const Bar = Object.assign(Object.create(Foo), {bar() {}});
+
+      const BarMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(Bar),
+      );
+      expect(typeof BarMock.foo).toBe('function');
+      expect(typeof BarMock.bar).toBe('function');
+    });
+
+    it('does not mock methods from Object.prototype', () => {
+      const Foo = {foo() {}};
+      const Bar = Object.assign(Object.create(Foo), {bar() {}});
+
+      const BarMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(Bar),
+      );
+
+      expect(BarMock).toBeInstanceOf(mockGlobals.Object);
+      expect(
+        Object.prototype.hasOwnProperty.call(BarMock, 'hasOwnProperty'),
+      ).toBe(false);
+      expect(BarMock.hasOwnProperty).toBe(
+        mockGlobals.Object.prototype.hasOwnProperty,
+      );
+    });
+
+    it('does not mock methods from Object.prototype (in mock context)', () => {
+      const Bar = vm.runInContext(
+        `
+          const Foo = { foo() {} };
+          const Bar = Object.assign(Object.create(Foo), { bar() {} });
+          Bar;
+        `,
+        mockContext,
+      );
+
+      const BarMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(Bar),
+      );
+
+      expect(BarMock).toBeInstanceOf(mockGlobals.Object);
+      expect(
+        Object.prototype.hasOwnProperty.call(BarMock, 'hasOwnProperty'),
+      ).toBe(false);
+      expect(BarMock.hasOwnProperty).toBe(
+        mockGlobals.Object.prototype.hasOwnProperty,
+      );
+    });
+
+    it('does not mock methods from Function.prototype', () => {
+      class Foo {}
+      class Bar extends Foo {}
+
+      const BarMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(Bar),
+      );
+
+      expect(BarMock).toBeInstanceOf(mockGlobals.Function);
+      expect(Object.prototype.hasOwnProperty.call(BarMock, 'bind')).toBe(false);
+      expect(BarMock.bind).toBe(mockGlobals.Function.prototype.bind);
+    });
+
+    it('does not mock methods from Function.prototype (in mock context)', () => {
+      const Bar = vm.runInContext(
+        `
+          class Foo {}
+          class Bar extends Foo {}
+          Bar;
+        `,
+        mockContext,
+      );
+
+      const BarMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(Bar),
+      );
+
+      expect(BarMock).toBeInstanceOf(mockGlobals.Function);
+      expect(Object.prototype.hasOwnProperty.call(BarMock, 'bind')).toBe(false);
+      expect(BarMock.bind).toBe(mockGlobals.Function.prototype.bind);
+    });
+
+    it('does not mock methods from RegExp.prototype', () => {
+      const bar = /bar/;
+
+      const barMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(bar),
+      );
+
+      expect(barMock).toBeInstanceOf(mockGlobals.RegExp);
+      expect(Object.prototype.hasOwnProperty.call(barMock, 'test')).toBe(false);
+      expect(barMock.test).toBe(mockGlobals.RegExp.prototype.test);
+    });
+
+    it('does not mock methods from RegExp.prototype (in mock context)', () => {
+      const bar = vm.runInContext(
+        `
+          const bar = /bar/;
+          bar;
+        `,
+        mockContext,
+      );
+
+      const barMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(bar),
+      );
+
+      expect(barMock).toBeInstanceOf(mockGlobals.RegExp);
+      expect(Object.prototype.hasOwnProperty.call(barMock, 'test')).toBe(false);
+      expect(barMock.test).toBe(mockGlobals.RegExp.prototype.test);
     });
 
     it('mocks methods that are bound multiple times', () => {
@@ -499,7 +633,7 @@ describe('moduleMocker', () => {
       });
     });
 
-    it(`tracks thrown errors without interfering with other tracking`, () => {
+    it('tracks thrown errors without interfering with other tracking', () => {
       const error = new Error('ODD!');
       const fn = moduleMocker.fn((x, y) => {
         // multiply params

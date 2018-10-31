@@ -17,16 +17,13 @@ import type {
 
 import {getState, dispatch} from './state';
 import {
-  callAsyncFn,
+  callAsyncCircusFn,
   getAllHooksForDescribe,
   getEachHooksForTest,
   getTestID,
   invariant,
   makeRunResult,
-  getOriginalPromise,
 } from './utils';
-
-const Promise = getOriginalPromise();
 
 const run = async (): Promise<RunResult> => {
   const {rootDescribeBlock} = getState();
@@ -44,7 +41,7 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
   for (const hook of beforeAll) {
-    await _callHook({describeBlock, hook});
+    await _callCircusHook({describeBlock, hook});
   }
 
   // Tests that fail and are retried we run after other tests
@@ -64,6 +61,9 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
     let numRetriesAvailable = retryTimes;
 
     while (numRetriesAvailable > 0 && test.errors.length > 0) {
+      // Clear errors so retries occur
+      dispatch({name: 'test_retry', test});
+
       await _runTest(test);
       numRetriesAvailable--;
     }
@@ -74,7 +74,7 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   }
 
   for (const hook of afterAll) {
-    await _callHook({describeBlock, hook});
+    await _callCircusHook({describeBlock, hook});
   }
   dispatch({describeBlock, name: 'run_describe_finish'});
 };
@@ -94,6 +94,11 @@ const _runTest = async (test: TestEntry): Promise<void> => {
     return;
   }
 
+  if (test.mode === 'todo') {
+    dispatch({name: 'test_todo', test});
+    return;
+  }
+
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
   for (const hook of beforeEach) {
@@ -102,13 +107,13 @@ const _runTest = async (test: TestEntry): Promise<void> => {
       // hooks after that.
       break;
     }
-    await _callHook({hook, test, testContext});
+    await _callCircusHook({hook, test, testContext});
   }
 
-  await _callTest(test, testContext);
+  await _callCircusTest(test, testContext);
 
   for (const hook of afterEach) {
-    await _callHook({hook, test, testContext});
+    await _callCircusHook({hook, test, testContext});
   }
 
   // `afterAll` hooks should not affect test status (pass or fail), because if
@@ -117,7 +122,7 @@ const _runTest = async (test: TestEntry): Promise<void> => {
   dispatch({name: 'test_done', test});
 };
 
-const _callHook = ({
+const _callCircusHook = ({
   hook,
   test,
   describeBlock,
@@ -130,14 +135,14 @@ const _callHook = ({
 }): Promise<mixed> => {
   dispatch({hook, name: 'hook_start'});
   const timeout = hook.timeout || getState().testTimeout;
-  return callAsyncFn(hook.fn, testContext, {isHook: true, timeout})
+  return callAsyncCircusFn(hook.fn, testContext, {isHook: true, timeout})
     .then(() => dispatch({describeBlock, hook, name: 'hook_success', test}))
     .catch(error =>
       dispatch({describeBlock, error, hook, name: 'hook_failure', test}),
     );
 };
 
-const _callTest = async (
+const _callCircusTest = (
   test: TestEntry,
   testContext: TestContext,
 ): Promise<void> => {
@@ -147,10 +152,10 @@ const _callTest = async (
 
   if (test.errors.length) {
     // We don't run the test if there's already an error in before hooks.
-    return;
+    return Promise.resolve();
   }
 
-  await callAsyncFn(test.fn, testContext, {isHook: false, timeout})
+  return callAsyncCircusFn(test.fn, testContext, {isHook: false, timeout})
     .then(() => dispatch({name: 'test_fn_success', test}))
     .catch(error => dispatch({error, name: 'test_fn_failure', test}));
 };

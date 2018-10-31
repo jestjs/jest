@@ -1,4 +1,8 @@
-const defaultResolver = require('jest-resolve/build/default_resolver').default;
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
+const {
+  default: defaultResolver,
+} = require('jest-resolve/build/defaultResolver');
 
 const exportedModules = new Map([
   ['foo', 'foo'],

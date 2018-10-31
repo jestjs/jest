@@ -8,13 +8,12 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const runJest = require('../runJest');
+import fs from 'fs';
+import path from 'path';
+import runJest from '../runJest';
+import {skipSuiteOnJasmine} from '../../scripts/ConditionalTest';
 
-const ConditionalTest = require('../../scripts/ConditionalTest');
-
-ConditionalTest.skipSuiteOnJasmine();
+skipSuiteOnJasmine();
 
 describe('Test Retries', () => {
   const outputFileName = 'retries.result.json';
@@ -28,7 +27,14 @@ describe('Test Retries', () => {
     fs.unlinkSync(outputFilePath);
   });
 
-  it('retries failed tests if configured', () => {
+  it('retries failed tests', () => {
+    const result = runJest('test-retries', ['e2e.test.js']);
+
+    expect(result.code).toEqual(0);
+    expect(result.failed).toBe(false);
+  });
+
+  it('reporter shows more than 1 invocation if test is retried', () => {
     let jsonResult;
 
     const reporterConfig = {
@@ -59,7 +65,7 @@ describe('Test Retries', () => {
     expect(jsonResult.testResults[0].testResults[0].invocations).toBe(4);
   });
 
-  it('does not retry by default', () => {
+  it('reporter shows 1 invocation if tests are not retried', () => {
     let jsonResult;
 
     const reporterConfig = {

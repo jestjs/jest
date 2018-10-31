@@ -15,6 +15,26 @@ const expectFunction = expect.any(Function);
 const get = (object, lensPath) =>
   lensPath.reduce((acc, key) => acc[key], object);
 
+const getGlobalTestMocks = () => {
+  const globals = {
+    describe: jest.fn(),
+    fdescribe: jest.fn(),
+    fit: jest.fn(),
+    it: jest.fn(),
+    test: jest.fn(),
+    xdescribe: jest.fn(),
+    xit: jest.fn(),
+    xtest: jest.fn(),
+  };
+  globals.test.only = jest.fn();
+  globals.test.skip = jest.fn();
+  globals.it.only = jest.fn();
+  globals.it.skip = jest.fn();
+  globals.describe.only = jest.fn();
+  globals.describe.skip = jest.fn();
+  return globals;
+};
+
 describe('jest-each', () => {
   [
     ['test'],
@@ -27,19 +47,31 @@ describe('jest-each', () => {
     ['describe', 'only'],
   ].forEach(keyPath => {
     describe(`.${keyPath.join('.')}`, () => {
-      const getGlobalTestMocks = () => {
-        const globals = {
-          describe: jest.fn(),
-          fdescribe: jest.fn(),
-          fit: jest.fn(),
-          it: jest.fn(),
-          test: jest.fn(),
-        };
-        globals.test.only = jest.fn();
-        globals.it.only = jest.fn();
-        globals.describe.only = jest.fn();
-        return globals;
-      };
+      test('throws an error when not called with an array', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)(undefined);
+        const testFunction = get(eachObject, keyPath);
+
+        testFunction('expected string', noop);
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+      });
+
+      test('throws an error when called with an empty array', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([]);
+        const testFunction = get(eachObject, keyPath);
+
+        testFunction('expected string', noop);
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+      });
 
       test('calls global with given title', () => {
         const globalTestMocks = getGlobalTestMocks();
@@ -52,6 +84,7 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -66,10 +99,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -102,21 +137,23 @@ describe('jest-each', () => {
           ],
         ]);
         const testFunction = get(eachObject, keyPath);
-        testFunction('expected string: %s %d %s %s %d %j %s %j %d %d', noop);
+        testFunction('expected string: %s %d %s %s %d %j %s %j %d %d %#', noop);
 
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledTimes(2);
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: hello 1 null undefined 1.2 ${JSON.stringify({
             foo: 'bar',
-          })} () => {} [] Infinity NaN`,
+          })} () => {} [] Infinity NaN 0`,
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: world 1 null undefined 1.2 ${JSON.stringify({
             baz: 'qux',
-          })} () => {} [] Infinity NaN`,
+          })} () => {} [] Infinity NaN 1`,
           expectFunction,
+          undefined,
         );
       });
 
@@ -134,10 +171,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: hello',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: world',
           expectFunction,
+          undefined,
         );
       });
 
@@ -157,12 +196,14 @@ describe('jest-each', () => {
             'pretty2',
           )}`,
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: string1 ${pretty('pretty1')} string2 ${pretty(
             'pretty2',
           )}`,
           expectFunction,
+          undefined,
         );
       });
 
@@ -180,10 +221,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: string1 ${pretty('pretty1')} string2 %p`,
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           `expected string: string1 ${pretty('pretty1')} string2 %p`,
           expectFunction,
+          undefined,
         );
       });
 
@@ -226,7 +269,32 @@ describe('jest-each', () => {
         expect(testCallBack).toHaveBeenCalledWith('joe', 'bloggs');
       });
 
-      test('calls global with async done when cb function has more args than params of given test row', () => {
+      test('calls global with given timeout', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([['hello']]);
+
+        const testFunction = get(eachObject, keyPath);
+        testFunction('some test', noop, 10000);
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledWith(
+          'some test',
+          expect.any(Function),
+          10000,
+        );
+      });
+    });
+  });
+
+  describe('done callback', () => {
+    test.each([
+      [['test']],
+      [['test', 'only']],
+      [['it']],
+      [['fit']],
+      [['it', 'only']],
+    ])(
+      'calls %O with done when cb function has more args than params of given test row',
+      keyPath => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)([['hello']]);
 
@@ -236,8 +304,24 @@ describe('jest-each', () => {
           expect(done).toBe('DONE');
         });
         get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
-      });
-    });
+      },
+    );
+
+    test.each([[['describe']], [['fdescribe']], [['describe', 'only']]])(
+      'does not call %O with done when test function has more args than params of given test row',
+      keyPath => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([['hello']]);
+
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string', function(hello, done) {
+          expect(hello).toBe('hello');
+          expect(arguments.length).toBe(1);
+          expect(done).toBe(undefined);
+        });
+        get(globalTestMocks, keyPath).mock.calls[0][1]('DONE');
+      },
+    );
   });
 
   [
@@ -249,24 +333,6 @@ describe('jest-each', () => {
     ['describe', 'skip'],
   ].forEach(keyPath => {
     describe(`.${keyPath.join('.')}`, () => {
-      const getGlobalTestMocks = () => {
-        const globals = {
-          describe: {
-            skip: jest.fn(),
-          },
-          it: {
-            skip: jest.fn(),
-          },
-          test: {
-            skip: jest.fn(),
-          },
-          xdescribe: jest.fn(),
-          xit: jest.fn(),
-          xtest: jest.fn(),
-        };
-        return globals;
-      };
-
       test('calls global with given title', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)([[]]);
@@ -278,6 +344,7 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -292,6 +359,7 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string',
           expectFunction,
+          undefined,
         );
       });
 
@@ -309,10 +377,12 @@ describe('jest-each', () => {
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: hello 1',
           expectFunction,
+          undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: world 2',
           expectFunction,
+          undefined,
         );
       });
     });
