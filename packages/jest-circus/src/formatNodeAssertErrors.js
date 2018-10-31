@@ -43,7 +43,7 @@ const humanReadableOperators = {
   strictEqual: 'to strictly be equal',
 };
 
-export default (event: Event, state: State) => {
+const formatNodeAssertErrors = (event: Event, state: State) => {
   switch (event.name) {
     case 'test_done': {
       event.test.errors = event.test.errors.map(errors => {
@@ -167,3 +167,5 @@ function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
     trimmedStack
   );
 }
+
+export default formatNodeAssertErrors;

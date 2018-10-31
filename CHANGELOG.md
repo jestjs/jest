@@ -64,6 +64,7 @@
 
 ### Chore & Maintenance
 
+- `[jest-circus]` Standardize file naming in `jest-circus` ([#7301](https://github.com/facebook/jest/pull/7301))
 - `[docs]` Add synchronous test.each setup ([#7150](https://github.com/facebook/jest/pull/7150))
 - `[docs]` Add `this.extend` to the Custom Matchers API reference ([#7130](https://github.com/facebook/jest/pull/7130))
 - `[docs]` Fix default value for `coverageReporters` value in configuration docs ([#7126](https://github.com/facebook/jest/pull/7126))

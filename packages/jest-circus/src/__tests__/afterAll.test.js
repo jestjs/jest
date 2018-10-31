@@ -10,7 +10,7 @@
 
 'use strict';
 
-import {runTest} from '../__mocks__/test_utils';
+import {runTest} from '../__mocks__/testUtils';
 
 test('tests are not marked done until their parent afterAll runs', () => {
   const {stdout} = runTest(`
