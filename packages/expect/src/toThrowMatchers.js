@@ -19,7 +19,7 @@ import {
   printExpected,
   printWithType,
 } from 'jest-matcher-utils';
-import {equals} from './jasmine_utils';
+import {equals} from './jasmineUtils';
 import {isError} from './utils';
 
 export const createMatcher = (matcherName: string, fromPromise?: boolean) => (

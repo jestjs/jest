@@ -7,7 +7,7 @@
  * @flow
  */
 
-import {AsymmetricMatcher} from './asymmetric_matchers';
+import {AsymmetricMatcher} from './asymmetricMatchers';
 import type {
   Expect,
   MatchersObject,
