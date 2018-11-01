@@ -1,6 +1,6 @@
 // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 
-import scroll from '../scroll_list';
+import scroll from '../scroll';
 
 it('When offset is -1', () => {
   expect(scroll(25, {max: 10, offset: -1})).toEqual({
