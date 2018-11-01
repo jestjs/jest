@@ -48,7 +48,7 @@ test('should resolve filename.native.js', () => {
 });
 
 test('should resolve filename.native.js with moduleNameMapper', () => {
-  expect(testRequire('test2')).not.toThrow();
+  expect(testRequire('test2mapper')).not.toThrow();
   expect(platform.extension).toBe('native.js');
 });
 

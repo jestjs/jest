@@ -9,7 +9,7 @@
     },
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "test2": "<rootDir>/test2mapper"
+      "test2mapper": "<rootDir>/test2mapper"
     }
   }
 }
