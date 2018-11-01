@@ -160,6 +160,7 @@ const groupOptions = (
     clearMocks: options.clearMocks,
     coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
     cwd: options.cwd,
+    dependencyExtractor: options.dependencyExtractor,
     detectLeaks: options.detectLeaks,
     detectOpenHandles: options.detectOpenHandles,
     displayName: options.displayName,

@@ -885,8 +885,11 @@ describe('HasteMap', () => {
 
   it('distributes work across workers', () => {
     const jestWorker = require('jest-worker');
+    const path = require('path');
+    const dependencyExtractor = path.join(__dirname, 'dependencyExtractor.js');
     return new HasteMap(
       Object.assign({}, defaultConfig, {
+        dependencyExtractor,
         hasteImplModulePath: undefined,
         maxWorkers: 4,
       }),
@@ -902,6 +905,7 @@ describe('HasteMap', () => {
             {
               computeDependencies: true,
               computeSha1: false,
+              dependencyExtractor,
               filePath: '/project/fruits/Banana.js',
               hasteImplModulePath: undefined,
               rootDir: '/project',
@@ -911,6 +915,7 @@ describe('HasteMap', () => {
             {
               computeDependencies: true,
               computeSha1: false,
+              dependencyExtractor,
               filePath: '/project/fruits/Pear.js',
               hasteImplModulePath: undefined,
               rootDir: '/project',
@@ -920,6 +925,7 @@ describe('HasteMap', () => {
             {
               computeDependencies: true,
               computeSha1: false,
+              dependencyExtractor,
               filePath: '/project/fruits/Strawberry.js',
               hasteImplModulePath: undefined,
               rootDir: '/project',
@@ -929,6 +935,7 @@ describe('HasteMap', () => {
             {
               computeDependencies: true,
               computeSha1: false,
+              dependencyExtractor,
               filePath: '/project/fruits/__mocks__/Pear.js',
               hasteImplModulePath: undefined,
               rootDir: '/project',
@@ -938,6 +945,7 @@ describe('HasteMap', () => {
             {
               computeDependencies: true,
               computeSha1: false,
+              dependencyExtractor,
               filePath: '/project/vegetables/Melon.js',
               hasteImplModulePath: undefined,
               rootDir: '/project',

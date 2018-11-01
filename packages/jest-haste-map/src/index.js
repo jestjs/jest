@@ -52,6 +52,7 @@ type Options = {
   computeDependencies?: boolean,
   computeSha1?: boolean,
   console?: Console,
+  dependencyExtractor?: string,
   extensions: Array<string>,
   forceNodeFilesystemAPI?: boolean,
   hasteImplModulePath?: string,
@@ -75,6 +76,7 @@ type InternalOptions = {
   cacheDirectory: string,
   computeDependencies: boolean,
   computeSha1: boolean,
+  dependencyExtractor?: string,
   extensions: Array<string>,
   forceNodeFilesystemAPI: boolean,
   hasteImplModulePath?: string,
@@ -233,6 +235,7 @@ class HasteMap extends EventEmitter {
           ? true
           : options.computeDependencies,
       computeSha1: options.computeSha1 || false,
+      dependencyExtractor: options.dependencyExtractor,
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
@@ -504,6 +507,7 @@ class HasteMap extends EventEmitter {
           .getSha1({
             computeDependencies: this._options.computeDependencies,
             computeSha1,
+            dependencyExtractor: this._options.dependencyExtractor,
             filePath,
             hasteImplModulePath: this._options.hasteImplModulePath,
             rootDir,
@@ -567,6 +571,7 @@ class HasteMap extends EventEmitter {
       .worker({
         computeDependencies: this._options.computeDependencies,
         computeSha1,
+        dependencyExtractor: this._options.dependencyExtractor,
         filePath,
         hasteImplModulePath: this._options.hasteImplModulePath,
         rootDir,

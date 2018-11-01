@@ -237,6 +237,7 @@ class Runtime {
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
       console: options && options.console,
+      dependencyExtractor: config.dependencyExtractor,
       extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,

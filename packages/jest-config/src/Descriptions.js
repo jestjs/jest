@@ -26,6 +26,7 @@ export default ({
     'A list of reporter names that Jest uses when writing coverage reports',
   coverageThreshold:
     'An object that configures minimum threshold enforcement for coverage results',
+  dependencyExtractor: 'A path to a custom dependency extractor',
   errorOnDeprecated:
     'Make calling deprecated APIs throw helpful error messages',
   forceCoverageMatch:
