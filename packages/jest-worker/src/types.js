@@ -29,7 +29,7 @@ export type PARENT_MESSAGE_ERROR =
 
 // Option objects.
 
-import type Worker from './worker';
+import type Worker from './Worker';
 
 export type ForkOptions = {
   cwd?: string,

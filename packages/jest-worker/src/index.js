@@ -17,7 +17,7 @@ import type {FarmOptions} from './types';
 import type {Readable} from 'stream';
 
 import {CHILD_MESSAGE_CALL, CHILD_MESSAGE_END} from './types';
-import Worker from './worker';
+import Worker from './Worker';
 
 /* istanbul ignore next */
 const emptyMethod = () => {};
