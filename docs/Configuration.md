@@ -257,6 +257,14 @@ Jest will fail if:
 - The `./src/api/very-important-module.js` file has less than 100% coverage.
 - Every remaining file combined has less than 50% coverage (`global`).
 
+### `dependencyExtractor` [string]
+
+Default: `undefined`
+
+This option allows the use of a custom dependency extractor. It must be a node module that exports a function expecting a string as the first argument for the code to analyze and Jest's dependency extractor as the second argument (in case you only want to extend it).
+
+The function should return an iterable (`Array`, `Set`, etc.) with the dependencies found in the code.
+
 ### `errorOnDeprecated` [boolean]
 
 Default: `false`

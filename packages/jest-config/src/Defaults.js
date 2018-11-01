@@ -30,6 +30,7 @@ export default ({
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   coverageThreshold: null,
   cwd: process.cwd(),
+  dependencyExtractor: null,
   detectLeaks: false,
   detectOpenHandles: false,
   errorOnDeprecated: false,

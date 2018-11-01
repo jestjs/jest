@@ -40,6 +40,7 @@ export default ({
       statements: 100,
     },
   },
+  dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: 'project-name',
   errorOnDeprecated: false,
   expand: false,
