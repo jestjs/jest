@@ -2,9 +2,14 @@
   "name": "custom-resolve",
   "jest": {
     "haste": {
-      "platforms": ["native"],
+      "platforms": [
+        "native"
+      ],
       "defaultPlatform": "android"
     },
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "test2mapper": "<rootDir>/test2mapper"
+    }
   }
 }
