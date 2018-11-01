@@ -9,7 +9,7 @@
 
 import type {Config, Printer, Refs} from 'types/PrettyFormat';
 
-import escapeHTML from './escape_html';
+import escapeHTML from './escapeHTML';
 
 // Return empty string if keys is empty.
 export const printProps = (
