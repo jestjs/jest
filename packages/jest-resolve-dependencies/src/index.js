@@ -97,7 +97,7 @@ class DependencyResolver {
       }
     }
     const modules = [];
-    for (const file of this._hasteFS.getFileIterator()) {
+    for (const file of this._hasteFS.getAbsoluteFileIterator()) {
       modules.push({
         dependencies: this.resolve(file, options),
         file,
