@@ -64,7 +64,7 @@
 
 <span class="hljs-keyword">const</span> globalConfigPath = path.join(__dirname, <span class="hljs-string">'globalConfig.json'</span>);
 
-<span class="hljs-keyword">const</span> mongoServer = <span class="hljs-keyword">new</span> MongoMemoryServer({
+<span class="hljs-keyword">const</span> mongod = <span class="hljs-keyword">new</span> MongoMemoryServer({
   <span class="hljs-attr">autoStart</span>: <span class="hljs-literal">false</span>,
 });
 
@@ -75,14 +75,14 @@
 
   <span class="hljs-keyword">const</span> mongoConfig = {
     <span class="hljs-attr">mongoDBName</span>: <span class="hljs-string">'jest'</span>,
-    <span class="hljs-attr">mongoUri</span>: <span class="hljs-keyword">await</span> mongoServer.getConnectionString(),
+    <span class="hljs-attr">mongoUri</span>: <span class="hljs-keyword">await</span> mongod.getConnectionString(),
   };
 
   <span class="hljs-comment">// Write global config to disk because all tests run in different contexts.</span>
   fs.writeFileSync(globalConfigPath, <span class="hljs-built_in">JSON</span>.stringify(mongoConfig));
 
   <span class="hljs-comment">// Set reference to mongod in order to close the server during teardown.</span>
-  global.__MONGOD__ = mongoServer;
+  global.__MONGOD__ = mongod;
 };
 </code></pre>
 <p>Entonces necesitamos un entorno de prueba personalizado para Mongo</p>
