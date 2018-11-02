@@ -9,7 +9,7 @@
 
 import type {ValidationOptions} from './types';
 
-import defaultConfig from './default_config';
+import defaultConfig from './defaultConfig';
 
 let hasDeprecationWarnings = false;
 
@@ -81,10 +81,17 @@ const _validate = (
 const validate = (config: Object, options: ValidationOptions) => {
   hasDeprecationWarnings = false;
 
+  // Preserve default blacklist entries even with user-supplied blacklist
+  const combinedBlacklist: Array<string> = [].concat(
+    defaultConfig.recursiveBlacklist || [],
+    options.recursiveBlacklist || [],
+  );
+
   const defaultedOptions: ValidationOptions = Object.assign(
     {},
     defaultConfig,
     options,
+    {recursiveBlacklist: combinedBlacklist},
     {title: Object.assign({}, defaultConfig.title, options.title)},
   );
 

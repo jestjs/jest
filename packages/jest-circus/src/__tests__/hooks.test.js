@@ -10,7 +10,7 @@
 
 'use strict';
 
-import {runTest} from '../__mocks__/test_utils';
+import {runTest} from '../__mocks__/testUtils';
 
 test('beforeEach is executed before each test in current/child describe blocks', () => {
   const {stdout} = runTest(`

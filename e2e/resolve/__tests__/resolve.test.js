@@ -47,6 +47,11 @@ test('should resolve filename.native.js', () => {
   expect(platform.extension).toBe('native.js');
 });
 
+test('should resolve filename.native.js with moduleNameMapper', () => {
+  expect(testRequire('test2mapper')).not.toThrow();
+  expect(platform.extension).toBe('native.js');
+});
+
 test('should resolve filename.js', () => {
   expect(testRequire('../test3')).not.toThrow();
   expect(platform.extension).toBe('js');

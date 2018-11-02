@@ -95,7 +95,7 @@ console.log(myMock(), myMock(), myMock(), myMock());
 // > 10, 'x', true, true
 ```
 
-Mock functions are also very effective in code that uses a functional continuation-passing style. Code written in this style helps avoid the need for complicated stubs that recreate behavior of the real component they're standing in for, in favor of injecting values directly into the test right before they're used.
+Mock functions are also very effective in code that uses a functional continuation-passing style. Code written in this style helps avoid the need for complicated stubs that recreate the behavior of the real component they're standing in for, in favor of injecting values directly into the test right before they're used.
 
 ```javascript
 const filterTestFn = jest.fn();
@@ -159,9 +159,6 @@ Still, there are cases where it's useful to go beyond the ability to specify ret
 
 ```javascript
 const myMockFn = jest.fn(cb => cb(null, true));
-
-myMockFn((err, val) => console.log(val));
-// > true
 
 myMockFn((err, val) => console.log(val));
 // > true

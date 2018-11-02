@@ -321,6 +321,10 @@ export default function watch(
     ).find(plugin => getPluginKey(plugin, globalConfig) === key);
 
     if (matchingWatchPlugin != null) {
+      if (isRunning) {
+        testWatcher.setState({interrupted: true});
+        return;
+      }
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
       // can handle them
       activePlugin = matchingWatchPlugin;

@@ -75,7 +75,7 @@ jest.mock('sane', () => ({
   WatchmanWatcher: mockWatcherConstructor,
 }));
 
-jest.mock('../lib/watchman_watcher.js', () => mockWatcherConstructor);
+jest.mock('../lib/WatchmanWatcher.js', () => mockWatcherConstructor);
 
 let mockChangedFiles;
 let mockFs;
@@ -144,9 +144,6 @@ describe('HasteMap', () => {
       '/project/fruits/Banana.js': `
         const Strawberry = require("Strawberry");
       `,
-      '/project/fruits/Kiwi.js': `
-        // Kiwi!
-      `,
       '/project/fruits/Pear.js': `
         const Banana = require("Banana");
         const Strawberry = require("Strawberry");
@@ -189,7 +186,6 @@ describe('HasteMap', () => {
     defaultConfig = {
       extensions: ['js', 'json'],
       hasteImplModulePath: require.resolve('./haste_impl.js'),
-      ignorePattern: /Kiwi/,
       maxWorkers: 1,
       name: 'haste-map-test',
       platforms: ['ios', 'android'],
@@ -215,12 +211,30 @@ describe('HasteMap', () => {
     expect(
       HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
     ).toMatch(/^\/-scoped-package-(.*)$/);
+  });
 
-    expect(
-      HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
-    ).not.toEqual(
-      HasteMap.getCacheFilePath('/', '-scoped-package', 'random-value'),
+  it('creates different cache file paths for different roots', () => {
+    jest.resetModuleRegistry();
+    const HasteMap = require('../');
+    const hasteMap1 = new HasteMap(
+      Object.assign({}, defaultConfig, {rootDir: '/root1'}),
     );
+    const hasteMap2 = new HasteMap(
+      Object.assign({}, defaultConfig, {rootDir: '/root2'}),
+    );
+    expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
+  });
+
+  it('creates different cache file paths for different projects', () => {
+    jest.resetModuleRegistry();
+    const HasteMap = require('../');
+    const hasteMap1 = new HasteMap(
+      Object.assign({}, defaultConfig, {name: '@scoped/package'}),
+    );
+    const hasteMap2 = new HasteMap(
+      Object.assign({}, defaultConfig, {name: '-scoped-package'}),
+    );
+    expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
 
   it('matches files against a pattern', () =>
@@ -236,6 +250,16 @@ describe('HasteMap', () => {
         '/project/fruits/__mocks__/Pear.js',
       ]);
     }));
+
+  it('ignores files given a pattern', () => {
+    const config = Object.assign({}, defaultConfig, {ignorePattern: /Kiwi/});
+    mockFs['/project/fruits/Kiwi.js'] = `
+      // Kiwi!
+    `;
+    return new HasteMap(config).build().then(({hasteFS}) => {
+      expect(hasteFS.matchFiles(/Kiwi/)).toEqual([]);
+    });
+  });
 
   it('builds a haste map on a fresh cache', () => {
     // Include these files in the map
@@ -861,8 +885,11 @@ describe('HasteMap', () => {
 
   it('distributes work across workers', () => {
     const jestWorker = require('jest-worker');
+    const path = require('path');
+    const dependencyExtractor = path.join(__dirname, 'dependencyExtractor.js');
     return new HasteMap(
       Object.assign({}, defaultConfig, {
+        dependencyExtractor,
         hasteImplModulePath: undefined,
         maxWorkers: 4,
       }),
@@ -878,6 +905,7 @@ describe('HasteMap', () => {
             {
               computeDependencies: true,
               computeSha1: false,
+              dependencyExtractor,
               filePath: '/project/fruits/Banana.js',
               hasteImplModulePath: undefined,
               rootDir: '/project',
@@ -887,6 +915,7 @@ describe('HasteMap', () => {
             {
               computeDependencies: true,
               computeSha1: false,
+              dependencyExtractor,
               filePath: '/project/fruits/Pear.js',
               hasteImplModulePath: undefined,
               rootDir: '/project',
@@ -896,6 +925,7 @@ describe('HasteMap', () => {
             {
               computeDependencies: true,
               computeSha1: false,
+              dependencyExtractor,
               filePath: '/project/fruits/Strawberry.js',
               hasteImplModulePath: undefined,
               rootDir: '/project',
@@ -905,6 +935,7 @@ describe('HasteMap', () => {
             {
               computeDependencies: true,
               computeSha1: false,
+              dependencyExtractor,
               filePath: '/project/fruits/__mocks__/Pear.js',
               hasteImplModulePath: undefined,
               rootDir: '/project',
@@ -914,6 +945,7 @@ describe('HasteMap', () => {
             {
               computeDependencies: true,
               computeSha1: false,
+              dependencyExtractor,
               filePath: '/project/vegetables/Melon.js',
               hasteImplModulePath: undefined,
               rootDir: '/project',
@@ -1206,7 +1238,7 @@ describe('HasteMap', () => {
         } catch (error) {
           const {
             DuplicateHasteCandidatesError,
-          } = require('../module_map').default;
+          } = require('../ModuleMap').default;
           expect(error).toBeInstanceOf(DuplicateHasteCandidatesError);
           expect(error.hasteName).toBe('Pear');
           expect(error.platform).toBe('g');

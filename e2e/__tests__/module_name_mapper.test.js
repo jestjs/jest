@@ -20,7 +20,9 @@ test('moduleNameMapper wrong configuration', () => {
 });
 
 test('moduleNameMapper correct configuration', () => {
-  const {stderr, status} = runJest('module-name-mapper-correct-config');
+  const {stderr, status} = runJest('module-name-mapper-correct-config', [], {
+    stripAnsi: true,
+  });
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(0);

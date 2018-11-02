@@ -9,21 +9,21 @@
 
 import mkdirp from 'mkdirp';
 
-import BufferedConsole from './buffered_console';
-import clearLine from './clear_line';
-import Console from './Console';
-import ErrorWithStack from './error_with_stack';
-import FakeTimers from './fake_timers';
-import formatTestResults from './format_test_results';
-import getFailedSnapshotTests from './get_failed_snapshot_tests';
-import getConsoleOutput from './get_console_output';
-import installCommonGlobals from './install_common_globals';
-import NullConsole from './null_console';
-import isInteractive from './is_interative';
-import getCallsite from './get_callsite';
-import setGlobal from './set_global';
-import deepCyclicCopy from './deep_cyclic_copy';
-import convertDescriptorToString from './convert_descriptor_to_string';
+import BufferedConsole from './BufferedConsole';
+import clearLine from './clearLine';
+import CustomConsole from './CustomConsole';
+import ErrorWithStack from './ErrorWithStack';
+import FakeTimers from './FakeTimers';
+import formatTestResults from './formatTestResults';
+import getFailedSnapshotTests from './getFailedSnapshotTests';
+import getConsoleOutput from './getConsoleOutput';
+import installCommonGlobals from './installCommonGlobals';
+import NullConsole from './NullConsole';
+import isInteractive from './isInteractive';
+import getCallsite from './getCallsite';
+import setGlobal from './setGlobal';
+import deepCyclicCopy from './deepCyclicCopy';
+import convertDescriptorToString from './convertDescriptorToString';
 
 const createDirectory = (path: string) => {
   try {
@@ -37,7 +37,7 @@ const createDirectory = (path: string) => {
 
 module.exports = {
   BufferedConsole,
-  Console,
+  Console: CustomConsole,
   ErrorWithStack,
   FakeTimers,
   NullConsole,

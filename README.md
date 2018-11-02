@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="http://dp.hanlon.io/313y3u2D0p38/jest.png" height="150" width="150"/>
+  <img src="https://jestjs.io/img/jest.png" height="150" width="150"/>
   <p align="center">Jest</p>
   <p align="center" style="font-size: 0.5em">🃏 Delightful JavaScript Testing</p>
 </h1>
@@ -185,7 +185,7 @@ Read our [contributing guide](CONTRIBUTING.md) to learn about our development pr
 
 ### [Good First Issues](https://github.com/facebook/jest/labels/%3Awave%3A%20Good%20First%20Issue)
 
-To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/jest/labels/Good%20First%20Issue%20%3Awave%3A) that contain bugs which have a relatively limited scope. This is a great place to get started.
+To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/jest/labels/%3Awave%3A%20Good%20First%20Issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
 
 ## Credits
 
