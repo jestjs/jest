@@ -14,7 +14,7 @@
     "jest-serializer": "^23.0.1",
     "jest-worker": "^23.2.0",
     "micromatch": "^2.3.11",
-    "sane": "^3.0.0"
+    "sane": "^4.0.2"
   },
   "engines": {
     "node": ">= 6"
