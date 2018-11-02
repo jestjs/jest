@@ -31,8 +31,8 @@ const mongoServer = new MongoMemoryServer({
 });
 
 module.exports = async () => {
-  if (!mongod.isRunning) {
-    await mongod.start();
+  if (!mongoServer.isRunning) {
+    await mongoServer.start();
   }
 
   const mongoConfig = {
