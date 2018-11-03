@@ -11,7 +11,7 @@ import path from 'path';
 
 // rootDir and filename must be absolute paths (resolved)
 export function relative(rootDir: string, filename: string): string {
-  return filename.indexOf(rootDir) === 0
+  return filename.indexOf(rootDir + path.sep) === 0
     ? filename.substr(rootDir.length + 1)
     : path.relative(rootDir, filename);
 }

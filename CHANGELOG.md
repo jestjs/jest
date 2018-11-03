@@ -67,6 +67,7 @@
 - `[jest-resolve]` Fix not being able to resolve path to mapped file with custom platform ([#7312](https://github.com/facebook/jest/pull/7312))
 - `[jest-message-util]` Improve parsing of error messages for unusually formatted stack traces ([#7319](https://github.com/facebook/jest/pull/7319))
 - `[jest-runtime]` Ensure error message text is not lost on errors with code frames ([#7319](https://github.com/facebook/jest/pull/7319))
+- `[jest-haste-map]` Fix to resolve path that is start with words same as rootDir ([#7324](https://github.com/facebook/jest/pull/7324))
 
 ### Chore & Maintenance
 
