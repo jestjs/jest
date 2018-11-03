@@ -9,9 +9,8 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
 
   ● fail with expected non promise values
 
-    Error
+    Expected value to have length:
 
-      Error: Expected value to have length:
         2
       Received:
         1
@@ -20,9 +19,8 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
 
   ● fail with expected non promise values and not
 
-    Error
+    Expected value to not have length:
 
-      Error: Expected value to not have length:
         2
       Received:
         1,2
