@@ -63,6 +63,7 @@
 - `[jest-config]` Use strings instead of `RegExp` instances in normalized configuration ([#7251](https://github.com/facebook/jest/pull/7251))
 - `[jest-circus]` Make sure to display real duration even if time is mocked ([#7264](https://github.com/facebook/jest/pull/7264))
 - `[expect]` Improves the failing message for `toStrictEqual` matcher. ([#7224](https://github.com/facebook/jest/pull/7224))
+- `[expect]` Improves the failing message for `toEqual` matcher. ([#7325](https://github.com/facebook/jest/pull/7325))
 - `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381))
 - `[jest-resolve]` Fix not being able to resolve path to mapped file with custom platform ([#7312](https://github.com/facebook/jest/pull/7312))
 - `[jest-message-util]` Improve parsing of error messages for unusually formatted stack traces ([#7319](https://github.com/facebook/jest/pull/7319))
