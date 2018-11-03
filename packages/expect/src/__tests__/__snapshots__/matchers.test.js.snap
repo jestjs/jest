@@ -2739,6 +2739,27 @@ Received:
   <red>undefined</>"
 `;
 
+exports[`.toEqual() failure message matches the expected snapshot 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"a\\": 2,</>
+<red>+   \\"a\\": 1,</>
+<dim>  }</>"
+`;
+
+exports[`.toEqual() failure message matches the expected snapshot 2`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+
+Expected: <green>{\\"a\\": 1}</>
+Received: <red>{\\"a\\": 1}</>"
+`;
+
 exports[`.toHaveLength {pass: false} expect("").toHaveLength(1) 1`] = `
 "<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
 

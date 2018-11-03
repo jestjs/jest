@@ -371,23 +371,20 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint('.not.toEqual') +
+          matcherHint('.toEqual', undefined, undefined, {
+            isNot: this.isNot,
+          }) +
           '\n\n' +
-          `Expected value to not equal:\n` +
-          `  ${printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${printReceived(received)}`
+          `Expected: ${printExpected(expected)}\n` +
+          `Received: ${printReceived(received)}`
       : () => {
           const oneline = isOneline(expected, received);
           const diffString = diff(expected, received, {expand: this.expand});
 
           return (
-            matcherHint('.toEqual') +
-            '\n\n' +
-            `Expected value to equal:\n` +
-            `  ${printExpected(expected)}\n` +
-            `Received:\n` +
-            `  ${printReceived(received)}` +
+            matcherHint('.toEqual', undefined, undefined, {
+              isNot: this.isNot,
+            }) +
             (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '')
           );
         };
