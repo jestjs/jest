@@ -8,7 +8,7 @@
 'use strict';
 
 import path from 'path';
-import getMockName from '../get_mock_name';
+import getMockName from '../getMockName';
 
 describe('getMockName', () => {
   it('extracts mock name from file path', () => {

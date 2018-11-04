@@ -29,20 +29,25 @@ describe('should_instrument', () => {
 
     it('when testRegex provided and file is not a test file', () => {
       testShouldInstrument('source_file.js', defaultOptions, {
-        testRegex: '.*\\.(test)\\.(js)$',
+        testRegex: ['.*\\.(test)\\.(js)$'],
+      });
+    });
+
+    it('when more than one testRegex is provided and filename is not a test file', () => {
+      testShouldInstrument('source_file.js', defaultOptions, {
+        testRegex: ['.*\\_(test)\\.(js)$', '.*\\.(test)\\.(js)$', 'never'],
       });
     });
 
     it('when testMatch is provided and file is not a test file', () => {
       testShouldInstrument('source_file.js', defaultOptions, {
-        testMatch: ['**/?(*.)(test).js'],
+        testMatch: ['**/?(*.)(test).js', '!**/dont/**/*.js'],
       });
     });
 
     it('should return true when file is in collectCoverageOnlyFrom when provided', () => {
       testShouldInstrument(
         'collect/only/from/here.js',
-
         {
           collectCoverage: true,
           collectCoverageOnlyFrom: {'collect/only/from/here.js': true},
@@ -89,7 +94,7 @@ describe('should_instrument', () => {
       testShouldInstrument('do/collect/sum.coverage.test.js', defaultOptions, {
         forceCoverageMatch: ['**/*.(coverage).(test).js'],
         rootDir: '/',
-        testRegex: '.*\\.(test)\\.(js)$',
+        testRegex: ['.*\\.(test)\\.(js)$'],
       });
     });
   });
@@ -116,7 +121,13 @@ describe('should_instrument', () => {
 
     it('when testRegex provided and filename is a test file', () => {
       testShouldInstrument(defaultFilename, defaultOptions, {
-        testRegex: '.*\\.(test)\\.(js)$',
+        testRegex: ['.*\\.(test)\\.(js)$'],
+      });
+    });
+
+    it('when more than one testRegex is provided and filename matches one of the patterns', () => {
+      testShouldInstrument(defaultFilename, defaultOptions, {
+        testRegex: ['.*\\_(test)\\.(js)$', '.*\\.(test)\\.(js)$', 'never'],
       });
     });
 

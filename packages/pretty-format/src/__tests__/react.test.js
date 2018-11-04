@@ -272,12 +272,7 @@ test('supports a single element with custom React elements with props (using dis
 test('supports a single element with custom React elements with props (using anonymous function)', () => {
   assertPrintedJSX(
     React.createElement('Mouse', {
-      prop: React.createElement(
-        () => {
-          React.createElement('div');
-        },
-        {foo: 'bar'},
-      ),
+      prop: React.createElement(() => React.createElement('div'), {foo: 'bar'}),
     }),
     '<Mouse\n  prop={\n    <Unknown\n      foo="bar"\n    />\n  }\n/>',
   );

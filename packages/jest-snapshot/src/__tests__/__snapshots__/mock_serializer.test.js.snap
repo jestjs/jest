@@ -24,7 +24,7 @@ Object {
     ],
     "results": Array [
       Object {
-        "isThrow": false,
+        "type": "return",
         "value": undefined,
       },
     ],
@@ -43,7 +43,7 @@ exports[`mock with 1 calls in React element 1`] = `
       ],
       "results": Array [
         Object {
-          "isThrow": false,
+          "type": "return",
           "value": undefined,
         },
       ],
@@ -67,11 +67,11 @@ exports[`mock with 2 calls 1`] = `
   ],
   "results": Array [
     Object {
-      "isThrow": false,
+      "type": "return",
       "value": undefined,
     },
     Object {
-      "isThrow": false,
+      "type": "return",
       "value": undefined,
     },
   ],
@@ -90,11 +90,11 @@ exports[`mock with 2 calls, 1 return, 1 throw 1`] = `
   ],
   "results": Array [
     Object {
-      "isThrow": false,
+      "type": "return",
       "value": 4,
     },
     Object {
-      "isThrow": true,
+      "type": "throw",
       "value": [Error: Error Message!],
     },
   ],

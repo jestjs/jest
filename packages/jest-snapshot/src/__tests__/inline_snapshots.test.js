@@ -23,27 +23,37 @@ const existsSync = fs.existsSync;
 const statSync = fs.statSync;
 const readdirSync = fs.readdirSync;
 beforeEach(() => {
+  // $FlowFixMe mock
   fs.writeFileSync = jest.fn();
+  // $FlowFixMe mock
   fs.readFileSync = jest.fn();
+  // $FlowFixMe mock
   fs.existsSync = jest.fn(() => true);
   // $FlowFixMe mock
   fs.statSync = jest.fn(filePath => ({
     isDirectory: () => !filePath.endsWith('.js'),
   }));
+  // $FlowFixMe mock
   fs.readdirSync = jest.fn(() => []);
 
   prettier.resolveConfig.sync.mockReset();
 });
 afterEach(() => {
+  // $FlowFixMe mock
   fs.writeFileSync = writeFileSync;
+  // $FlowFixMe mock
   fs.readFileSync = readFileSync;
+  // $FlowFixMe mock
   fs.existsSync = existsSync;
+  // $FlowFixMe mock
   fs.statSync = statSync;
+  // $FlowFixMe mock
   fs.readdirSync = readdirSync;
 });
 
 test('saveInlineSnapshots() replaces empty function call with a template literal', () => {
   const filename = path.join(__dirname, 'my.test.js');
+  // $FlowFixMe mock
   fs.readFileSync = (jest.fn(
     () => `expect(1).toMatchInlineSnapshot();\n`,
   ): any);
@@ -69,6 +79,7 @@ test.each([['babylon'], ['flow'], ['typescript']])(
   'saveInlineSnapshots() replaces existing template literal - %s parser',
   parser => {
     const filename = path.join(__dirname, 'my.test.js');
+    // $FlowFixMe mock
     fs.readFileSync = (jest.fn(
       () => 'expect(1).toMatchInlineSnapshot(`2`);\n',
     ): any);
@@ -97,6 +108,7 @@ test.each([['babylon'], ['flow'], ['typescript']])(
 
 test('saveInlineSnapshots() replaces existing template literal with property matchers', () => {
   const filename = path.join(__dirname, 'my.test.js');
+  // $FlowFixMe mock
   fs.readFileSync = (jest.fn(
     () => 'expect(1).toMatchInlineSnapshot({}, `2`);\n',
   ): any);
@@ -120,6 +132,7 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
 
 test('saveInlineSnapshots() throws if frame does not match', () => {
   const filename = path.join(__dirname, 'my.test.js');
+  // $FlowFixMe mock
   fs.readFileSync = (jest.fn(
     () => 'expect(1).toMatchInlineSnapshot();\n',
   ): any);
@@ -141,6 +154,7 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
 
 test('saveInlineSnapshots() throws if multiple calls to to the same location', () => {
   const filename = path.join(__dirname, 'my.test.js');
+  // $FlowFixMe mock
   fs.readFileSync = (jest.fn(
     () => 'expect(1).toMatchInlineSnapshot();\n',
   ): any);
@@ -160,6 +174,7 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
 
 test('saveInlineSnapshots() uses escaped backticks', () => {
   const filename = path.join(__dirname, 'my.test.js');
+  // $FlowFixMe mock
   fs.readFileSync = (jest.fn(
     () => 'expect("`").toMatchInlineSnapshot();\n',
   ): any);
@@ -175,6 +190,7 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
 
 test('saveInlineSnapshots() works with non-literals in expect call', () => {
   const filename = path.join(__dirname, 'my.test.js');
+  // $FlowFixMe mock
   fs.readFileSync = (jest.fn(
     () => `expect({a: 'a'}).toMatchInlineSnapshot();\n`,
   ): any);

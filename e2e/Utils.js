@@ -103,6 +103,20 @@ export const copyDir = (src: string, dest: string) => {
   }
 };
 
+export const replaceTime = (str: string) =>
+  str
+    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
+    .replace(/, estimated <<REPLACED>>/g, '');
+
+// Since Jest does not guarantee the order of tests we'll sort the output.
+export const sortLines = (output: string) =>
+  output
+    .split('\n')
+    .sort()
+    .map(str => str.trim())
+    .filter(Boolean)
+    .join('\n');
+
 export const createEmptyPackage = (
   directory: Path,
   packageJson?: {[keys: string]: any},
@@ -136,9 +150,7 @@ export const extractSummary = (stdout: string) => {
     );
   }
 
-  const summary = match[0]
-    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
-    .replace(/, estimated <<REPLACED>>/g, '');
+  const summary = replaceTime(match[0]);
 
   const rest = cleanupStackTrace(
     // remove all timestamps
@@ -146,6 +158,56 @@ export const extractSummary = (stdout: string) => {
   );
 
   return {rest, summary};
+};
+
+const sortTests = (stdout: string) =>
+  stdout
+    .split('\n')
+    .reduce((tests, line, i) => {
+      if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
+        tests.push([line.trimRight()]);
+      } else if (line) {
+        tests[tests.length - 1].push(line.trimRight());
+      }
+      return tests;
+    }, [])
+    .sort(([a], [b]) => (a > b ? 1 : -1))
+    .reduce(
+      (array, lines = []) =>
+        lines.length > 1 ? array.concat(lines, '') : array.concat(lines),
+      [],
+    )
+    .join('\n');
+
+export const extractSortedSummary = (stdout: string) => {
+  const {rest, summary} = extractSummary(stdout);
+  return {
+    rest: sortTests(replaceTime(rest)),
+    summary,
+  };
+};
+
+export const extractSummaries = (
+  stdout: string,
+): Array<{rest: string, summary: string}> => {
+  const regex = /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
+
+  let match = regex.exec(stdout);
+  const matches = [];
+
+  while (match) {
+    matches.push(match);
+    match = regex.exec(stdout);
+  }
+
+  return matches
+    .map((currentMatch, i) => {
+      const prevMatch = matches[i - 1];
+      const start = prevMatch ? prevMatch.index + prevMatch[0].length : 0;
+      const end = currentMatch.index + currentMatch[0].length;
+      return {end, start};
+    })
+    .map(({start, end}) => extractSortedSummary(stdout.slice(start, end)));
 };
 
 // different versions of Node print different stack traces. This function

@@ -3479,6 +3479,30 @@ Received:
   <red>\\"bar\\"</>"
 `;
 
+exports[`.toStrictEqual() matches the expected snapshot when it fails 1`] = `
+"<dim>expect(</><red>received</><dim>).toStrictEqual(</><green>expected</><dim>)</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"test\\": TestClassA {</>
+<green>-     \\"a\\": 1,</>
+<green>-     \\"b\\": 2,</>
+<green>-   },</>
+<red>+   \\"test\\": 2,</>
+<dim>  }</>"
+`;
+
+exports[`.toStrictEqual() matches the expected snapshot when it fails 2`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toStrictEqual(</><green>expected</><dim>)</>
+
+Expected: <green>{\\"test\\": {\\"a\\": 1, \\"b\\": 2}}</>
+Received: <red>{\\"test\\": {\\"a\\": 1, \\"b\\": 2}}</>"
+`;
+
 exports[`toMatchObject() {pass: false} expect([0]).toMatchObject([-0]) 1`] = `
 "<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
