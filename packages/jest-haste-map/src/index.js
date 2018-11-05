@@ -36,6 +36,7 @@ import type {Console} from 'console';
 import type {Mapper} from './types';
 import type {Path} from 'types/Config';
 import type {
+  DuplicatesSet,
   HasteMap as HasteMapObject,
   InternalHasteMap,
   ModuleMetaData,
@@ -935,22 +936,26 @@ class HasteMap extends EventEmitter {
 
     dupsByPlatform = copy(dupsByPlatform);
     hasteMap.duplicates.set(moduleName, dupsByPlatform);
-    dups = copy(dups);
-    dupsByPlatform[platform] = dups;
 
-    const dedupType = dups[relativeFilePath];
+    dups = (copy(dups): DuplicatesSet);
+    dupsByPlatform[platform] = dups;
     delete dups[relativeFilePath];
+
     const filePaths = Object.keys(dups);
-    if (filePaths.length > 1) {
+    // flow types Object.values<> as Array<mixed>
+    const fileTypes: Array<number> = (Object.values(dups): any);
+
+    if (filePaths.length > 1 || fileTypes.length > 1) {
       return;
     }
 
     let dedupMap = hasteMap.map.get(moduleName);
+
     if (dedupMap == null) {
       dedupMap = Object.create(null);
       hasteMap.map.set(moduleName, dedupMap);
     }
-    dedupMap[platform] = [filePaths[0], dedupType];
+    dedupMap[platform] = [filePaths[0], fileTypes[0]];
     delete dupsByPlatform[platform];
     if (Object.keys(dupsByPlatform).length === 0) {
       hasteMap.duplicates.delete(moduleName);
