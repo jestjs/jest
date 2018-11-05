@@ -5,6 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+'use strict';
+
+import exit from 'exit';
+
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
@@ -106,7 +110,7 @@ function end(): void {
 }
 
 function exitProcess(): void {
-  process.exit(0);
+  exit(0);
 }
 
 function execMethod(method: string, args: Array<any>): void {
