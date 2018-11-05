@@ -36,7 +36,6 @@ import type {Console} from 'console';
 import type {Mapper} from './types';
 import type {Path} from 'types/Config';
 import type {
-  DuplicatesSet,
   HasteMap as HasteMapObject,
   InternalHasteMap,
   ModuleMetaData,
@@ -431,20 +430,24 @@ class HasteMap extends EventEmitter {
         }
         let dupsByPlatform = hasteMap.duplicates.get(id);
         if (dupsByPlatform == null) {
-          dupsByPlatform = Object.create(null);
+          dupsByPlatform = new Map();
           hasteMap.duplicates.set(id, dupsByPlatform);
         }
-        const dups = (dupsByPlatform[platform] = Object.create(null));
-        dups[module[H.PATH]] = module[H.TYPE];
-        dups[existingModule[H.PATH]] = existingModule[H.TYPE];
+
+        const dups = new Map([
+          [module[H.PATH], module[H.TYPE]],
+          [existingModule[H.PATH], existingModule[H.TYPE]],
+        ]);
+        dupsByPlatform.set(platform, dups);
+
         return;
       }
 
       const dupsByPlatform = hasteMap.duplicates.get(id);
       if (dupsByPlatform != null) {
-        const dups = dupsByPlatform[platform];
+        const dups = dupsByPlatform.get(platform);
         if (dups != null) {
-          dups[module[H.PATH]] = module[H.TYPE];
+          dups.set(module[H.PATH], module[H.TYPE]);
         }
         return;
       }
@@ -929,23 +932,25 @@ class HasteMap extends EventEmitter {
     const platform =
       getPlatformExtension(relativeFilePath, this._options.platforms) ||
       H.GENERIC_PLATFORM;
-    let dups = dupsByPlatform[platform];
+    let dups = dupsByPlatform.get(platform);
     if (dups == null) {
       return;
     }
 
-    dupsByPlatform = copy(dupsByPlatform);
+    dupsByPlatform = copyMap(dupsByPlatform);
     hasteMap.duplicates.set(moduleName, dupsByPlatform);
 
-    dups = (copy(dups): DuplicatesSet);
-    dupsByPlatform[platform] = dups;
-    delete dups[relativeFilePath];
+    dups = copyMap(dups);
+    dupsByPlatform.set(platform, dups);
+    dups.delete(relativeFilePath);
 
-    const filePaths = Object.keys(dups);
-    // flow types Object.values<> as Array<mixed>
-    const fileTypes: Array<number> = (Object.values(dups): any);
+    if (dups.size !== 1) {
+      return;
+    }
 
-    if (filePaths.length > 1 || fileTypes.length > 1) {
+    const uniqueModule = dups.entries().next().value;
+
+    if (!uniqueModule) {
       return;
     }
 
@@ -955,9 +960,9 @@ class HasteMap extends EventEmitter {
       dedupMap = Object.create(null);
       hasteMap.map.set(moduleName, dedupMap);
     }
-    dedupMap[platform] = [filePaths[0], fileTypes[0]];
-    delete dupsByPlatform[platform];
-    if (Object.keys(dupsByPlatform).length === 0) {
+    dedupMap[platform] = uniqueModule;
+    dupsByPlatform.delete(platform);
+    if (dupsByPlatform.size === 0) {
       hasteMap.duplicates.delete(moduleName);
     }
   }
@@ -1030,6 +1035,10 @@ class HasteMap extends EventEmitter {
 }
 
 const copy = object => Object.assign(Object.create(null), object);
+
+function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
+  return new Map(input);
+}
 
 HasteMap.H = H;
 HasteMap.ModuleMap = HasteModuleMap;

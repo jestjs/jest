@@ -783,12 +783,12 @@ describe('HasteMap', () => {
       ).build();
       expect(normalizeMap(data.duplicates)).toEqual(
         createMap({
-          Strawberry: {
-            g: {
+          Strawberry: createMap({
+            g: createMap({
               'fruits/Strawberry.js': H.MODULE,
               'fruits/another/Strawberry.js': H.MODULE,
-            },
-          },
+            }),
+          }),
         }),
       );
       expect(data.map.get('Strawberry')).toEqual({});
@@ -828,13 +828,13 @@ describe('HasteMap', () => {
 
       expect(normalizeMap(data.duplicates)).toEqual(
         createMap({
-          Strawberry: {
-            g: {
+          Strawberry: createMap({
+            g: createMap({
               'fruits/Strawberry.js': H.MODULE,
               'fruits/another/Strawberry.js': H.MODULE,
               'fruits/strawberryPackage/package.json': H.PACKAGE,
-            },
-          },
+            }),
+          }),
         }),
       );
 
@@ -1292,10 +1292,12 @@ describe('HasteMap', () => {
           expect(error.hasteName).toBe('Pear');
           expect(error.platform).toBe('g');
           expect(error.supportsNativePlatform).toBe(false);
-          expect(error.duplicatesSet).toEqual({
-            '/project/fruits/Pear.js': H.MODULE,
-            '/project/fruits/another/Pear.js': H.MODULE,
-          });
+          expect(error.duplicatesSet).toEqual(
+            createMap({
+              '/project/fruits/Pear.js': H.MODULE,
+              '/project/fruits/another/Pear.js': H.MODULE,
+            }),
+          );
           expect(error.message).toMatchSnapshot();
         }
       }
