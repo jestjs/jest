@@ -1142,6 +1142,7 @@ describe('toMatchObject()', () => {
     [new Error('foo'), new Error('foo')],
     [new Error('bar'), {message: 'bar'}],
     [new Foo(), {a: undefined, b: 'b'}],
+    [Object.assign(Object.create(null), {a: 'b'}), {a: 'b'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,
@@ -1178,6 +1179,7 @@ describe('toMatchObject()', () => {
     [[1, 2, 3], [2, 3, 1]],
     [[1, 2, 3], [1, 2, 2]],
     [new Error('foo'), new Error('bar')],
+    [Object.assign(Object.create(null), {a: 'b'}), {c: 'd'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,
