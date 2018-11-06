@@ -83,7 +83,13 @@ export type AssertionLocation = {|
   path: string,
 |};
 
-export type Status = 'passed' | 'failed' | 'skipped' | 'pending' | 'todo';
+export type Status =
+  | 'passed'
+  | 'failed'
+  | 'skipped'
+  | 'pending'
+  | 'todo'
+  | 'disabled';
 
 export type Bytes = number;
 export type Milliseconds = number;
@@ -98,6 +104,7 @@ export type AssertionResult = {|
   duration?: ?Milliseconds,
   failureMessages: Array<string>,
   fullName: string,
+  invocations?: number,
   location: ?Callsite,
   numPassingAsserts: number,
   status: Status,

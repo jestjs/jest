@@ -10,5 +10,8 @@
   "dependencies": {
     "execa": "^1.0.0",
     "throat": "^4.0.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

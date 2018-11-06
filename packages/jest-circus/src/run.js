@@ -23,10 +23,7 @@ import {
   getTestID,
   invariant,
   makeRunResult,
-  getOriginalPromise,
 } from './utils';
-
-const Promise = getOriginalPromise();
 
 const run = async (): Promise<RunResult> => {
   const {rootDescribeBlock} = getState();

@@ -112,7 +112,7 @@ Forces test results output highlighting even if stdout is not a TTY.
 
 ### `--config=<path>`
 
-Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the current directory is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
+Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
 
 ### `--coverage`
 

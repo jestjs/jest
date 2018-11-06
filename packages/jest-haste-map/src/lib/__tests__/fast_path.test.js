@@ -26,6 +26,13 @@ describe('fastPath.relative', () => {
     const relativeFilename = path.join('..', 'baz', 'foobar');
     expect(relative(root, filename)).toBe(relativeFilename);
   });
+
+  it('should get relative paths outside the root when start with same word', () => {
+    const root = path.join(__dirname, 'foo', 'bar');
+    const filename = path.join(__dirname, 'foo', 'barbaz', 'foobar');
+    const relativeFilename = path.join('..', 'barbaz', 'foobar');
+    expect(relative(root, filename)).toBe(relativeFilename);
+  });
 });
 
 describe('fastPath.resolve', () => {

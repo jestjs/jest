@@ -8,7 +8,7 @@
 
 const matcherUtils = require('jest-matcher-utils');
 const {iterableEquality, subsetEquality} = require('../utils');
-const {equals} = require('../jasmine_utils');
+const {equals} = require('../jasmineUtils');
 const jestExpect = require('../');
 
 jestExpect.extend({

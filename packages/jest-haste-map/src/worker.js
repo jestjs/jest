@@ -14,7 +14,7 @@ import path from 'path';
 import fs from 'graceful-fs';
 import blacklist from './blacklist';
 import H from './constants';
-import extractRequires from './lib/extract_requires';
+import extractRequires from './lib/extractRequires';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
@@ -77,7 +77,13 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
     }
 
     if (computeDependencies) {
-      dependencies = extractRequires(getContent());
+      const content = getContent();
+      dependencies = Array.from(
+        data.dependencyExtractor
+          ? // $FlowFixMe
+            require(data.dependencyExtractor)(content, extractRequires)
+          : extractRequires(content),
+      );
     }
 
     if (id) {
