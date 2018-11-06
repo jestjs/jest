@@ -523,6 +523,18 @@ describe('HasteMap', () => {
       });
   });
 
+  it('warns on duplicate module ids only once', async () => {
+    mockFs['/project/fruits/other/Strawberry.js'] = `
+      const Banana = require("Banana");
+    `;
+
+    await new HasteMap(defaultConfig).build();
+    expect(console.warn).toHaveBeenCalledTimes(1);
+
+    await new HasteMap(defaultConfig).build();
+    expect(console.warn).toHaveBeenCalledTimes(1);
+  });
+
   it('throws on duplicate module ids if "throwOnModuleCollision" is set to true', () => {
     // Raspberry thinks it is a Strawberry
     mockFs['/project/fruits/another/Strawberry.js'] = `
