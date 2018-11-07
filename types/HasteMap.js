@@ -24,14 +24,8 @@ export type ModuleMapData = Map<string, ModuleMapItem>;
 export type WatchmanClocks = Map<Path, string>;
 export type HasteRegExp = RegExp | ((str: string) => boolean);
 
-export type DuplicatesSet = {
-  [filePath: string]: /* type */ number,
-  __proto__: null,
-};
-export type DuplicatesIndex = Map<
-  string,
-  {[platform: string]: DuplicatesSet, __proto__: null},
->;
+export type DuplicatesSet = Map<string, /* type */ number>;
+export type DuplicatesIndex = Map<string, Map<string, DuplicatesSet>>;
 
 export type InternalHasteMap = {|
   clocks: WatchmanClocks,
