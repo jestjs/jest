@@ -385,8 +385,8 @@ exports[`works with async failures 1`] = `
     > 21 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
          |   ^
       22 | 
-      23 | test(
-      24 |   'timeout',
+      23 | test('timeout', done => {
+      24 |   setTimeout(done, 50);
 
       at __tests__/async_failures.test.js:21:3
 
@@ -396,11 +396,11 @@ exports[`works with async failures 1`] = `
 
       21 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
       22 | 
-    > 23 | test(
+    > 23 | test('timeout', done => {
          | ^
-      24 |   'timeout',
-      25 |   done => {
-      26 |     setTimeout(done, 50);
+      24 |   setTimeout(done, 50);
+      25 | }, 5);
+      26 |
 
       at __tests__/async_failures.test.js:23:1
 

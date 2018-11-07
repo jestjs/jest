@@ -49,25 +49,29 @@ class Contributors extends React.Component {
           </translate>
         </p>
         <div>
-          {backers.filter(b => b.tier === 'sponsor').map(b => (
-            <a
-              key={b.id}
-              className="sponsor-item"
-              title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
-              target="_blank"
-              href={b.website || `https://opencollective.com/${b.slug}`}
-            >
-              {
-                <img
-                  className="sponsor-avatar"
-                  src={b.avatar}
-                  alt={
-                    b.name || b.slug ? `${b.name || b.slug}'s avatar` : 'avatar'
-                  }
-                />
-              }
-            </a>
-          ))}
+          {backers
+            .filter(b => b.tier === 'sponsor')
+            .map(b => (
+              <a
+                key={b.id}
+                className="sponsor-item"
+                title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
+                target="_blank"
+                href={b.website || `https://opencollective.com/${b.slug}`}
+              >
+                {
+                  <img
+                    className="sponsor-avatar"
+                    src={b.avatar}
+                    alt={
+                      b.name || b.slug
+                        ? `${b.name || b.slug}'s avatar`
+                        : 'avatar'
+                    }
+                  />
+                }
+              </a>
+            ))}
         </div>
         <div className="support">
           <a
@@ -86,25 +90,29 @@ class Contributors extends React.Component {
           </translate>
         </p>
         <div>
-          {backers.filter(b => b.tier === 'backer').map(b => (
-            <a
-              key={b.id}
-              className="backer-item"
-              title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
-              target="_blank"
-              href={b.website || `https://opencollective.com/${b.slug}`}
-            >
-              {
-                <img
-                  className="backer-avatar"
-                  src={b.avatar}
-                  alt={
-                    b.name || b.slug ? `${b.name || b.slug}'s avatar` : 'avatar'
-                  }
-                />
-              }
-            </a>
-          ))}
+          {backers
+            .filter(b => b.tier === 'backer')
+            .map(b => (
+              <a
+                key={b.id}
+                className="backer-item"
+                title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
+                target="_blank"
+                href={b.website || `https://opencollective.com/${b.slug}`}
+              >
+                {
+                  <img
+                    className="backer-avatar"
+                    src={b.avatar}
+                    alt={
+                      b.name || b.slug
+                        ? `${b.name || b.slug}'s avatar`
+                        : 'avatar'
+                    }
+                  />
+                }
+              </a>
+            ))}
           <div>
             <a
               className="support-button"
