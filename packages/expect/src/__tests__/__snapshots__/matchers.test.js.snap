@@ -3688,6 +3688,23 @@ Difference:
 <dim>  }</>"
 `;
 
+exports[`toMatchObject() {pass: false} expect({"a": "b"}).toMatchObject({"c": "d"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
+
+Expected value to match object:
+  <green>{\\"c\\": \\"d\\"}</>
+Received:
+  <red>{\\"a\\": \\"b\\"}</>
+Difference:
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"c\\": \\"d\\",</>
+<red>+   \\"a\\": \\"b\\",</>
+<dim>  }</>"
+`;
+
 exports[`toMatchObject() {pass: false} expect({"a": [{"a": "a", "b": "b"}]}).toMatchObject({"a": [{"a": "c"}]}) 1`] = `
 "<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
@@ -4024,6 +4041,15 @@ Expected value not to match object:
   <green>{\\"t\\": {\\"x\\": {\\"r\\": \\"r\\"}}}</>
 Received:
   <red>{\\"a\\": \\"b\\", \\"t\\": {\\"x\\": {\\"r\\": \\"r\\"}, \\"z\\": \\"z\\"}}</>"
+`;
+
+exports[`toMatchObject() {pass: true} expect({"a": "b"}).toMatchObject({"a": "b"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toMatchObject(</><green>expected</><dim>)</>
+
+Expected value not to match object:
+  <green>{\\"a\\": \\"b\\"}</>
+Received:
+  <red>{\\"a\\": \\"b\\"}</>"
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": [{"a": "a", "b": "b"}]}).toMatchObject({"a": [{"a": "a"}]}) 1`] = `
