@@ -95,7 +95,7 @@
 - `[docs]` Add correct default value for `testUrl` config option ([#7277](https://github.com/facebook/jest/pull/7277))
 - `[jest-util]` [**BREAKING**] Remove long-deprecated globals for fake timers ([#7285](https://github.com/facebook/jest/pull/7285))
 - `[docs]` Remove duplicate code in `MockFunctions` ([#7297](https://github.com/facebook/jest/pull/7297))
-- `[jest-haste-map]` Standardize filenames ([#7316](https://github.com/facebook/jest/pull/7316))
+- `[jest-worker]` Standardize filenames ([#7316](https://github.com/facebook/jest/pull/7316))
 - `[pretty-format]` Standardize filenames ([#7316](https://github.com/facebook/jest/pull/7316))
 
 ### Performance
