@@ -108,18 +108,25 @@ const object = data => Object.assign(Object.create(null), data);
 const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
 // Jest toEqual does not match Map instances from different contexts
-const normalizePersisted = hasteMap => ({
-  clocks: normalizeMap(hasteMap.clocks),
-  duplicates: normalizeMap(hasteMap.duplicates),
-  files: normalizeMap(hasteMap.files),
-  map: normalizeMap(hasteMap.map),
-  mocks: normalizeMap(hasteMap.mocks),
-});
-const normalizeMap = map => {
-  if (Object.prototype.toString.call(map) !== '[object Map]') {
-    throw new TypeError('expected map instance');
+// This normalizes them for the uses cases in this test
+const useBuitinsInContext = value => {
+  const stringTag = Object.prototype.toString.call(value);
+  switch (stringTag) {
+    case '[object Map]':
+      return new Map(
+        Array.from(value).map(([k, v]) => [
+          useBuitinsInContext(k),
+          useBuitinsInContext(v),
+        ]),
+      );
+    case '[object Object]':
+      return Object.keys(value).reduce((obj, key) => {
+        obj[key] = useBuitinsInContext(value[key]);
+        return obj;
+      }, {});
+    default:
+      return value;
   }
-  return new Map(map);
 };
 
 let consoleWarn;
@@ -359,7 +366,7 @@ describe('HasteMap', () => {
 
       // The cache file must exactly mirror the data structure returned from a
       // build
-      expect(normalizePersisted(hasteMap.read())).toEqual(data);
+      expect(useBuitinsInContext(hasteMap.read())).toEqual(data);
     });
   });
 
@@ -433,7 +440,7 @@ describe('HasteMap', () => {
           }),
         );
 
-        expect(normalizePersisted(hasteMap.read())).toEqual(data);
+        expect(useBuitinsInContext(hasteMap.read())).toEqual(data);
       });
     });
   });
@@ -521,6 +528,18 @@ describe('HasteMap', () => {
 
         expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
       });
+  });
+
+  it('warns on duplicate module ids only once', async () => {
+    mockFs['/project/fruits/other/Strawberry.js'] = `
+      const Banana = require("Banana");
+    `;
+
+    await new HasteMap(defaultConfig).build();
+    expect(console.warn).toHaveBeenCalledTimes(1);
+
+    await new HasteMap(defaultConfig).build();
+    expect(console.warn).toHaveBeenCalledTimes(1);
   });
 
   it('throws on duplicate module ids if "throwOnModuleCollision" is set to true', () => {
@@ -615,9 +634,9 @@ describe('HasteMap', () => {
             } else {
               expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
             }
-            expect(normalizeMap(data.clocks)).toEqual(mockClocks);
-            expect(normalizeMap(data.files)).toEqual(initialData.files);
-            expect(normalizeMap(data.map)).toEqual(initialData.map);
+            expect(useBuitinsInContext(data.clocks)).toEqual(mockClocks);
+            expect(useBuitinsInContext(data.files)).toEqual(initialData.files);
+            expect(useBuitinsInContext(data.map)).toEqual(initialData.map);
           });
       }));
 
@@ -655,15 +674,15 @@ describe('HasteMap', () => {
               'utf8',
             );
 
-            expect(normalizeMap(data.clocks)).toEqual(mockClocks);
+            expect(useBuitinsInContext(data.clocks)).toEqual(mockClocks);
 
             const files = new Map(initialData.files);
             files.set('fruits/Banana.js', ['Banana', 32, 1, ['Kiwi'], null]);
 
-            expect(normalizeMap(data.files)).toEqual(files);
+            expect(useBuitinsInContext(data.files)).toEqual(files);
 
             const map = new Map(initialData.map);
-            expect(normalizeMap(data.map)).toEqual(map);
+            expect(useBuitinsInContext(data.map)).toEqual(map);
           });
       }));
 
@@ -690,11 +709,11 @@ describe('HasteMap', () => {
           .then(({__hasteMapForTest: data}) => {
             const files = new Map(initialData.files);
             files.delete('fruits/Banana.js');
-            expect(normalizeMap(data.files)).toEqual(files);
+            expect(useBuitinsInContext(data.files)).toEqual(files);
 
             const map = new Map(initialData.map);
             map.delete('Banana');
-            expect(normalizeMap(data.map)).toEqual(map);
+            expect(useBuitinsInContext(data.map)).toEqual(map);
           });
       }));
 
@@ -781,11 +800,14 @@ describe('HasteMap', () => {
       const {__hasteMapForTest: data} = await new HasteMap(
         defaultConfig,
       ).build();
-      expect(normalizeMap(data.duplicates)).toEqual(
+      expect(useBuitinsInContext(data.duplicates)).toEqual(
         createMap({
-          Strawberry: {
-            g: {'fruits/Strawberry.js': 0, 'fruits/another/Strawberry.js': 0},
-          },
+          Strawberry: createMap({
+            g: createMap({
+              'fruits/Strawberry.js': H.MODULE,
+              'fruits/another/Strawberry.js': H.MODULE,
+            }),
+          }),
         }),
       );
       expect(data.map.get('Strawberry')).toEqual({});
@@ -804,12 +826,56 @@ describe('HasteMap', () => {
       const {__hasteMapForTest: data} = await new HasteMap(
         defaultConfig,
       ).build();
-      expect(normalizeMap(data.duplicates)).toEqual(new Map());
+      expect(useBuitinsInContext(data.duplicates)).toEqual(new Map());
       expect(data.map.get('Strawberry')).toEqual({
-        g: ['fruits/Strawberry.js', 0],
+        g: ['fruits/Strawberry.js', H.MODULE],
       });
       // Make sure the other files are not affected.
-      expect(data.map.get('Banana')).toEqual({g: ['fruits/Banana.js', 0]});
+      expect(data.map.get('Banana')).toEqual({
+        g: ['fruits/Banana.js', H.MODULE],
+      });
+    });
+
+    it('recovers with the correct type when a duplicate file is deleted', async () => {
+      mockFs['/project/fruits/strawberryPackage/package.json'] = `
+        {"name": "Strawberry"}
+      `;
+
+      const {__hasteMapForTest: data} = await new HasteMap(
+        defaultConfig,
+      ).build();
+
+      expect(useBuitinsInContext(data.duplicates)).toEqual(
+        createMap({
+          Strawberry: createMap({
+            g: createMap({
+              'fruits/Strawberry.js': H.MODULE,
+              'fruits/another/Strawberry.js': H.MODULE,
+              'fruits/strawberryPackage/package.json': H.PACKAGE,
+            }),
+          }),
+        }),
+      );
+
+      delete mockFs['/project/fruits/another/Strawberry.js'];
+      delete mockFs['/project/fruits/strawberryPackage/package.json'];
+
+      mockChangedFiles = object({
+        '/project/fruits/another/Strawberry.js': null,
+        '/project/fruits/strawberryPackage/package.json': null,
+      });
+      mockClocks = createMap({
+        fruits: 'c:fake-clock:4',
+      });
+
+      const {__hasteMapForTest: correctData} = await new HasteMap(
+        defaultConfig,
+      ).build();
+
+      expect(useBuitinsInContext(correctData.duplicates)).toEqual(new Map());
+      expect(correctData.map.get('Strawberry')).toEqual({
+        g: ['fruits/Strawberry.js', H.MODULE],
+      });
     });
 
     it('recovers when a duplicate module is renamed', async () => {
@@ -827,15 +893,17 @@ describe('HasteMap', () => {
       const {__hasteMapForTest: data} = await new HasteMap(
         defaultConfig,
       ).build();
-      expect(normalizeMap(data.duplicates)).toEqual(new Map());
+      expect(useBuitinsInContext(data.duplicates)).toEqual(new Map());
       expect(data.map.get('Strawberry')).toEqual({
-        g: ['fruits/Strawberry.js', 0],
+        g: ['fruits/Strawberry.js', H.MODULE],
       });
       expect(data.map.get('Pineapple')).toEqual({
-        g: ['fruits/another/Pineapple.js', 0],
+        g: ['fruits/another/Pineapple.js', H.MODULE],
       });
       // Make sure the other files are not affected.
-      expect(data.map.get('Banana')).toEqual({g: ['fruits/Banana.js', 0]});
+      expect(data.map.get('Banana')).toEqual({
+        g: ['fruits/Banana.js', H.MODULE],
+      });
     });
   });
 
@@ -1243,10 +1311,12 @@ describe('HasteMap', () => {
           expect(error.hasteName).toBe('Pear');
           expect(error.platform).toBe('g');
           expect(error.supportsNativePlatform).toBe(false);
-          expect(error.duplicatesSet).toEqual({
-            '/project/fruits/Pear.js': 0,
-            '/project/fruits/another/Pear.js': 0,
-          });
+          expect(error.duplicatesSet).toEqual(
+            createMap({
+              '/project/fruits/Pear.js': H.MODULE,
+              '/project/fruits/another/Pear.js': H.MODULE,
+            }),
+          );
           expect(error.message).toMatchSnapshot();
         }
       }

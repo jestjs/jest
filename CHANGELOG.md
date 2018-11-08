@@ -69,6 +69,8 @@
 - `[jest-runtime]` Ensure error message text is not lost on errors with code frames ([#7319](https://github.com/facebook/jest/pull/7319))
 - `[jest-haste-map]` Fix to resolve path that is start with words same as rootDir ([#7324](https://github.com/facebook/jest/pull/7324))
 - `[expect]` Fix toMatchObject matcher when used with `Object.create(null)` ([#7334](https://github.com/facebook/jest/pull/7334))
+- `[jest-haste-map]` [**BREAKING**] Recover files correctly after haste name collisions are fixed ([#7329](https://github.com/facebook/jest/pull/7329))
+- `[jest-haste-map]` Remove legacy condition for duplicate module detection ([#7333](https://github.com/facebook/jest/pull/7333))
 
 ### Chore & Maintenance
 
