@@ -41,6 +41,7 @@ export default ({
   globalTeardown: null,
   globals: {},
   haste: {
+    computeSha1: false,
     providesModuleNodeModules: [],
   },
   moduleDirectories: ['node_modules'],

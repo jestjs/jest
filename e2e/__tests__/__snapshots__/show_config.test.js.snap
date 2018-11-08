@@ -21,6 +21,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"forceCoverageMatch\\": [],
       \\"globals\\": {},
       \\"haste\\": {
+        \\"computeSha1\\": false,
         \\"providesModuleNodeModules\\": []
       },
       \\"moduleDirectories\\": [
