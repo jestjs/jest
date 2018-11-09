@@ -208,11 +208,11 @@ React 16 triggers these warnings due to how it checks element types, and the moc
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [Enzyme](http://airbnb.io/enzyme/), React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html), or [react-testing-library](https://github.com/kentcdodds/react-testing-library). The following two examples use Enzyme and react-testing-library.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
-#### Enzyme
+#### react-testing-library
 
-You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+You have to run `yarn add --dev react-testing-library` to use react-testing-library.
 
 Let's implement a simple checkbox which swaps between two labels:
 
@@ -250,36 +250,7 @@ export default class CheckboxWithLabel extends React.Component {
 }
 ```
 
-We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
-
 ```javascript
-// __tests__/CheckboxWithLabel-test.js
-
-import React from 'react';
-import {shallow} from 'enzyme';
-import CheckboxWithLabel from '../CheckboxWithLabel';
-
-test('CheckboxWithLabel changes the text after click', () => {
-  // Render a checkbox with label in the document
-  const checkbox = shallow(<CheckboxWithLabel labelOn="On" labelOff="Off" />);
-
-  expect(checkbox.text()).toEqual('Off');
-
-  checkbox.find('input').simulate('change');
-
-  expect(checkbox.text()).toEqual('On');
-});
-```
-
-The code for this example is available at [examples/enzyme](https://github.com/facebook/jest/tree/master/examples/enzyme).
-
-#### react-testing-library
-
-You have to run `yarn add --dev react-testing-library` to use react-testing-library.
-
-Let's rewrite the test from above using react-testing-library instead of Enzyme.
-
-```js
 // __tests__/CheckboxWithLabel-test.js
 import React from 'react';
 import {render, fireEvent, cleanup} from 'react-testing-library';
@@ -302,6 +273,33 @@ it('CheckboxWithLabel changes the text after click', () => {
 ```
 
 The code for this example is available at [examples/react-testing-library](https://github.com/facebook/jest/tree/master/examples/react-testing-library).
+
+#### Enzyme
+
+You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+
+Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
+
+```javascript
+// __tests__/CheckboxWithLabel-test.js
+
+import React from 'react';
+import {shallow} from 'enzyme';
+import CheckboxWithLabel from '../CheckboxWithLabel';
+
+test('CheckboxWithLabel changes the text after click', () => {
+  // Render a checkbox with label in the document
+  const checkbox = shallow(<CheckboxWithLabel labelOn="On" labelOff="Off" />);
+
+  expect(checkbox.text()).toEqual('Off');
+
+  checkbox.find('input').simulate('change');
+
+  expect(checkbox.text()).toEqual('On');
+});
+```
+
+The code for this example is available at [examples/enzyme](https://github.com/facebook/jest/tree/master/examples/enzyme).
 
 ### Custom transformers
 
