@@ -265,6 +265,8 @@ This option allows the use of a custom dependency extractor. It must be a node m
 
 The function should return an iterable (`Array`, `Set`, etc.) with the dependencies found in the code.
 
+That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
+
 ### `errorOnDeprecated` [boolean]
 
 Default: `false`
