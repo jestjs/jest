@@ -51,6 +51,7 @@ export default ({
   globalTeardown: 'teardown.js',
   globals: {__DEV__: true},
   haste: {
+    computeSha1: true,
     defaultPlatform: 'ios',
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],

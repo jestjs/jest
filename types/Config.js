@@ -11,6 +11,7 @@ export type Path = string;
 export type Glob = string;
 
 export type HasteConfig = {|
+  computeSha1?: boolean,
   defaultPlatform?: ?string,
   hasteImplModulePath?: string,
   platforms?: Array<string>,
