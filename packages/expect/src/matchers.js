@@ -366,8 +366,12 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toEqual(received: any, expected: any) {
-    const pass = equals(received, expected, [iterableEquality]);
+  toEqual(received: any, expected: any, customEqualityMatchers = []) {
+    const pass = equals(
+      received,
+      expected,
+      customEqualityMatchers.concat(iterableEquality),
+    );
 
     const message = pass
       ? () =>

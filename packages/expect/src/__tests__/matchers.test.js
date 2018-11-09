@@ -467,6 +467,17 @@ describe('.toEqual()', () => {
     });
   });
 
+  test('toEqual accepts custom equality matchers', () => {
+    const a = {s: 'foo', x: 3};
+    const b = {s: 'foo', x: 2.9999999};
+    const customEqualityMatcher = (a, b) => {
+      if (typeof a !== 'number' || typeof b !== 'number') return undefined;
+      expect(a).toBeCloseTo(b, 4);
+      return true;
+    };
+    jestExpect(a).toEqual(b, [customEqualityMatcher]);
+  });
+
   test('assertion error matcherResult property contains matcher name, expected and actual values', () => {
     const actual = {a: 1};
     const expected = {a: 2};

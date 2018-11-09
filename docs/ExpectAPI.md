@@ -915,7 +915,7 @@ describe('my beverage', () => {
 });
 ```
 
-### `.toEqual(value)`
+### `.toEqual(value, customEqualityMatchers)`
 
 Use `.toEqual` to compare recursively all properties of object instances (also known as "deep" equality). It calls `Object.is` to compare primitive values, which is even better for testing than `===` strict equality operator.
 
@@ -947,6 +947,19 @@ If differences between properties do not help you to understand why a test fails
 
 - rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
 - rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
+
+Optionally, you may provide custom equality matchers.  Custom equality matchers allow you to substitute your own logic for property comparison, or simply return `undefined` to use built-in equality comparison.  For example, to prevent false floating-point comparison errors, you could provide a custom equality matcher for numeric fields:
+
+```js
+const customNumericMatcher = (a, b) => {
+  if (typeof a !== 'number' || typeof b !== 'number') return undefined;
+  expect(a).toBeCloseTo(b, 4);
+  return true;
+};
+const expected = {s: 'foo', x: 3};
+const actual = {s: 'foo', x: 2.9999999};
+jestExpect(expected).toEqual(actual, [customNumericMatcher]);  // passes
+```
 
 ### `.toHaveLength(number)`
 
