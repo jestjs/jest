@@ -261,10 +261,30 @@ class HasteMap extends EventEmitter {
           'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
       );
     }
+
     const rootDirHash = crypto
       .createHash('md5')
       .update(options.rootDir)
       .digest('hex');
+    let hasteImplHash = '';
+    let dependencyExtractorHash = '';
+
+    if (options.hasteImplModulePath) {
+      // $FlowFixMe: dynamic require
+      const hasteImpl = require(options.hasteImplModulePath);
+      if (hasteImpl.getCacheKey) {
+        hasteImplHash = String(hasteImpl.getCacheKey());
+      }
+    }
+
+    if (options.dependencyExtractor) {
+      // $FlowFixMe: dynamic require
+      const dependencyExtractor = require(options.dependencyExtractor);
+      if (dependencyExtractor.getCacheKey) {
+        dependencyExtractorHash = String(dependencyExtractor.getCacheKey());
+      }
+    }
+
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
       `haste-map-${this._options.name}-${rootDirHash}`,
@@ -278,6 +298,8 @@ class HasteMap extends EventEmitter {
       this._options.computeSha1.toString(),
       options.mocksPattern || '',
       (options.ignorePattern || '').toString(),
+      hasteImplHash,
+      dependencyExtractorHash,
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;

@@ -26,3 +26,13 @@ export function extract(code, defaultDependencyExtractor) {
 
   return dependencies;
 }
+
+let cacheKey;
+
+export function getCacheKey() {
+  return cacheKey;
+}
+
+export function setCacheKey(key) {
+  cacheKey = key;
+}
