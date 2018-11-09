@@ -1386,6 +1386,11 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.2.tgz#54c5a964462be3d4d78af631363c18d6fa91ac26"
   integrity sha512-yprFYuno9FtNsSHVlSWd+nRlmGoAbqbeCwOryP6sC/zoCjhpArcRMYp19EvpSUSizJAlsXEwJv+wcWS9XaXdMw==
 
+"@sheerun/mutationobserver-shim@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@sheerun/mutationobserver-shim/-/mutationobserver-shim-0.3.2.tgz#8013f2af54a2b7d735f71560ff360d3a8176a87b"
+  integrity sha512-vTCdPp/T/Q3oSqwHmZ5Kpa9oI7iLtGl3RQaA/NyLHikvcrPxACkkKVr/XzkSPJWXHRhKGzVvb0urJsbMlRxi1Q==
+
 "@types/cheerio@^0.22.8":
   version "0.22.9"
   resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.9.tgz#b5990152604c2ada749b7f88cab3476f21f39d7b"
@@ -4898,6 +4903,15 @@ dom-serializer@0, dom-serializer@~0.1.0:
   dependencies:
     domelementtype "~1.1.1"
     entities "~1.1.1"
+
+dom-testing-library@^3.12.0:
+  version "3.12.3"
+  resolved "https://registry.yarnpkg.com/dom-testing-library/-/dom-testing-library-3.12.3.tgz#16c2fbd5198e175cb5499dabf9c64a893724015e"
+  integrity sha512-HvoxiKm8s4Gf+T52MX+gYHKXkGBM4ZiKYElIZxt8zPZtbT3wokrjKHskzryRqRD3oAKeg6chtUe3gchrurhmvA==
+  dependencies:
+    "@sheerun/mutationobserver-shim" "^0.3.2"
+    pretty-format "^23.6.0"
+    wait-for-expect "^1.0.0"
 
 dom-walk@^0.1.0:
   version "0.1.1"
@@ -11304,6 +11318,13 @@ react-test-renderer@*, react-test-renderer@^16.0.0-0:
     react-is "^16.5.2"
     schedule "^0.5.0"
 
+react-testing-library@*:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/react-testing-library/-/react-testing-library-5.2.3.tgz#c3be44bfa5eb1ba2acc1fb218785c40ebbdfe8ed"
+  integrity sha512-Bw52++7uORuIQnL55lK/WQfppqAc9+8yFG4lWUp/kmSOvYDnt8J9oI5fNCfAGSQi9iIhAv9aNsI2G5rtid0nrA==
+  dependencies:
+    dom-testing-library "^3.12.0"
+
 react-timer-mixin@^0.13.2:
   version "0.13.4"
   resolved "https://registry.yarnpkg.com/react-timer-mixin/-/react-timer-mixin-0.13.4.tgz#75a00c3c94c13abe29b43d63b4c65a88fc8264d3"
@@ -13843,6 +13864,11 @@ w3c-hr-time@^1.0.1:
   integrity sha1-gqwr/2PZUOqeMYmlimViX+3xkEU=
   dependencies:
     browser-process-hrtime "^0.1.2"
+
+wait-for-expect@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/wait-for-expect/-/wait-for-expect-1.0.1.tgz#73ab346ed56ed2ef66c380a59fd623755ceac0ce"
+  integrity sha512-TPZMSxGWUl2DWmqdspLDEy97/S1Mqq0pzbh2A7jTq0WbJurUb5GKli+bai6ayeYdeWTF0rQNWZmUvCVZ9gkrfA==
 
 walker@~1.0.5:
   version "1.0.7"

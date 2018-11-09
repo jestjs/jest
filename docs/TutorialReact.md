@@ -208,7 +208,9 @@ React 16 triggers these warnings due to how it checks element types, and the moc
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [Enzyme](http://airbnb.io/enzyme/) or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme for this example.
+If you'd like to assert, and manipulate your rendered components you can use [Enzyme](http://airbnb.io/enzyme/), React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html), or [react-testing-library](https://github.com/kentcdodds/react-testing-library). The following two examples use Enzyme and react-testing-library.
+
+#### Enzyme
 
 You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
 
@@ -270,6 +272,36 @@ test('CheckboxWithLabel changes the text after click', () => {
 ```
 
 The code for this example is available at [examples/enzyme](https://github.com/facebook/jest/tree/master/examples/enzyme).
+
+#### react-testing-library
+
+You have to run `yarn add --dev react-testing-library` to use react-testing-library.
+
+Let's rewrite the test from above using react-testing-library instead of Enzyme.
+
+```js
+// __tests__/CheckboxWithLabel-test.js
+import React from 'react';
+import {render, fireEvent, cleanup} from 'react-testing-library';
+import CheckboxWithLabel from '../CheckboxWithLabel';
+
+// automatically unmount and cleanup DOM after the test is finished.
+afterEach(cleanup);
+
+it('CheckboxWithLabel changes the text after click', () => {
+  const {queryByLabelText, getByLabelText} = render(
+    <CheckboxWithLabel labelOn="On" labelOff="Off" />,
+  );
+
+  expect(queryByLabelText(/off/i)).toBeTruthy();
+
+  fireEvent.click(getByLabelText(/off/i));
+
+  expect(queryByLabelText(/on/i)).toBeTruthy();
+});
+```
+
+The code for this example is available at [examples/react-testing-library](https://github.com/facebook/jest/tree/master/examples/react-testing-library).
 
 ### Custom transformers
 
