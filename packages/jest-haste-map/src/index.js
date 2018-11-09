@@ -255,8 +255,8 @@ class HasteMap extends EventEmitter {
       roots: Array.from(new Set(options.roots)),
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       // Watchman can not handle symlinks: https://github.com/facebook/watchman/issues/105
-      useWatchman: options.preserveSymlinks == true 
-        ? false 
+      useWatchman: options.preserveSymlinks == true
+        ? false
         : options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
     };
