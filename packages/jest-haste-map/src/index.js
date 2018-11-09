@@ -251,6 +251,7 @@ class HasteMap extends EventEmitter {
       rootDir: options.rootDir,
       roots: Array.from(new Set(options.roots)),
       throwOnModuleCollision: !!options.throwOnModuleCollision,
+      // TODO(Markus): add preserveSymlink check here
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
     };

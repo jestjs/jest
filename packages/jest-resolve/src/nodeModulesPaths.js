@@ -9,13 +9,13 @@
  * @flow
  */
 
-import type { Path } from 'types/Config';
+import type {Path} from 'types/Config';
 import path from 'path';
-import { sync as realpath } from 'realpath-native';
+import {sync as realpath} from 'realpath-native';
 
 type NodeModulesPathsOptions = {|
-  moduleDirectory?: Array < string >,
-    paths ?: ? Array < Path >,
+  moduleDirectory?: Array <string>,
+    paths ?: ? Array <Path>,
 |};
 
 const preserveSymlinks = true;
