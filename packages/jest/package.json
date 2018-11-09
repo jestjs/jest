@@ -4,7 +4,7 @@
   "version": "23.6.0",
   "main": "build/jest.js",
   "dependencies": {
-    "import-local": "^1.0.0",
+    "import-local": "^2.0.0",
     "jest-cli": "^23.6.0"
   },
   "bin": {

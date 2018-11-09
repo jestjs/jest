@@ -13,7 +13,6 @@ const chalk = require('chalk');
 
 const {
   getSnapshotData,
-  getSnapshotPath,
   keyToTestName,
   saveSnapshotFile,
   serialize,
@@ -49,12 +48,6 @@ test('keyToTestName()', () => {
 test('testNameToKey', () => {
   expect(testNameToKey('abc cde', 1)).toBe('abc cde 1');
   expect(testNameToKey('abc cde ', 12)).toBe('abc cde  12');
-});
-
-test('getSnapshotPath()', () => {
-  expect(getSnapshotPath('/abc/cde/a.test.js')).toBe(
-    path.join('/abc', 'cde', '__snapshots__', 'a.test.js.snap'),
-  );
 });
 
 test('saveSnapshotFile() works with \r\n', () => {

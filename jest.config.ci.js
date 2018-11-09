@@ -1,12 +1,12 @@
-'use strict';
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 
-// TODO: Configure the reporter directly: https://github.com/rickhanlonii/jest-silent-reporter/commit/e9a306210f89fa22705823f4c920ed4eecdfb83d#r30109923
-process.env.JEST_SILENT_REPORTER_DOTS = true;
+'use strict';
 
 // Object spread is just node 8
 module.exports = Object.assign({}, require('./jest.config'), {
+  coverageReporters: ['json'],
   reporters: [
     ['jest-junit', {output: 'reports/junit/js-test-results.xml'}],
-    'jest-silent-reporter',
+    ['jest-silent-reporter', {useDots: true}],
   ],
 });

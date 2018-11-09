@@ -9,10 +9,10 @@
 
 'use strict';
 
-const path = require('path');
-const os = require('os');
-const {cleanup, writeFiles} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import os from 'os';
+import {cleanup, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(os.tmpdir(), 'version_test');
 

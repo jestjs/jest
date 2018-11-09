@@ -93,13 +93,10 @@ export default class CoverageReporter extends BaseReporter {
         reporter.dir = this._globalConfig.coverageDirectory;
       }
 
-      let coverageReporters = this._globalConfig.coverageReporters || [];
-      if (
-        !this._globalConfig.useStderr &&
-        coverageReporters.length &&
-        coverageReporters.indexOf('text') === -1
-      ) {
-        coverageReporters = coverageReporters.concat(['text-summary']);
+      const coverageReporters = this._globalConfig.coverageReporters || [];
+
+      if (!this._globalConfig.useStderr && coverageReporters.length < 1) {
+        coverageReporters.push('text-summary');
       }
 
       reporter.addAll(coverageReporters);

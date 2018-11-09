@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('module.parent should be null in test files', () => {
   const {status} = runJest('module_parent_null_in_test');

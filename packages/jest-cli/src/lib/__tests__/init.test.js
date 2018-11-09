@@ -31,7 +31,9 @@ describe('init', () => {
   beforeEach(() => {
     // $FlowFixMe mock console.log to reduce noise from the tests
     console.log = jest.fn();
+    // $FlowFixMe mock
     fs.writeFileSync = jest.fn();
+    // $FlowFixMe mock
     path.sep = '/';
   });
 
@@ -39,7 +41,9 @@ describe('init', () => {
     jest.clearAllMocks();
     // $FlowFixMe
     console.log = consoleLog;
+    // $FlowFixMe mock
     fs.writeFileSync = writeFileSync;
+    // $FlowFixMe mock
     path.sep = sep;
   });
 

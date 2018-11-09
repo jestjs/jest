@@ -9,29 +9,26 @@
 
 import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
 
-import {printObjectProperties} from '../collections';
+import {printListItems, printObjectProperties} from '../collections';
 
 const SPACE = ' ';
 
-const COLLECTION_NAMES = ['DOMStringMap', 'NamedNodeMap'];
+const OBJECT_NAMES = ['DOMStringMap', 'NamedNodeMap'];
+const ARRAY_REGEXP = /^(HTML\w*Collection|NodeList)$/;
+
+const testName = (name: any) =>
+  OBJECT_NAMES.indexOf(name) !== -1 || ARRAY_REGEXP.test(name);
 
 export const test = (val: any) =>
   val &&
   val.constructor &&
-  COLLECTION_NAMES.indexOf(val.constructor.name) !== -1;
+  val.constructor.name &&
+  testName(val.constructor.name);
 
-const convertCollectionToObject = (collection: any) => {
-  let result = {};
-
-  if (collection.constructor.name === 'NamedNodeMap') {
-    for (let i = 0; i < collection.length; i++) {
-      result[collection[i].name] = collection[i].value;
-    }
-  } else {
-    result = Object.assign({}, collection);
-  }
-
-  return result;
+// Convert array of attribute objects to props object.
+const propsReducer = (props, attribute) => {
+  props[attribute.name] = attribute.value;
+  return props;
 };
 
 export const serialize = (
@@ -42,23 +39,36 @@ export const serialize = (
   refs: Refs,
   printer: Printer,
 ): string => {
+  const name = collection.constructor.name;
   if (++depth > config.maxDepth) {
-    return '[' + collection.constructor.name + ']';
+    return '[' + name + ']';
   }
 
   return (
-    collection.constructor.name +
-    SPACE +
-    '{' +
-    printObjectProperties(
-      convertCollectionToObject(collection),
-      config,
-      indentation,
-      depth,
-      refs,
-      printer,
-    ) +
-    '}'
+    (config.min ? '' : name + SPACE) +
+    (OBJECT_NAMES.indexOf(name) !== -1
+      ? '{' +
+        printObjectProperties(
+          name === 'NamedNodeMap'
+            ? Array.prototype.reduce.call(collection, propsReducer, {})
+            : Object.assign({}, collection),
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        ) +
+        '}'
+      : '[' +
+        printListItems(
+          Array.from(collection),
+          config,
+          indentation,
+          depth,
+          refs,
+          printer,
+        ) +
+        ']')
   );
 };
 

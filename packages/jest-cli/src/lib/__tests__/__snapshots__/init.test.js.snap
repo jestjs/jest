@@ -63,6 +63,9 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: null,
 
+  // A path to a custom dependency extractor
+  // dependencyExtractor: null,
+
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,
 
@@ -101,7 +104,7 @@ module.exports = {
   // notify: false,
 
   // An enum that specifies notification mode. Requires { notify: true }
-  // notifyMode: \\"always\\",
+  // notifyMode: \\"failure-change\\",
 
   // A preset that is used as a base for Jest's configuration
   // preset: null,
@@ -138,8 +141,8 @@ module.exports = {
   // The paths to modules that run some code to configure or set up the testing environment before each test
   // setupFiles: [],
 
-  // The path to a module that runs some code to configure or set up the testing framework before each test
-  // setupTestFrameworkScriptFile: null,
+  // A list of paths to modules that run some code to configure or set up the testing framework before each test
+  // setupFilesAfterEnv: [],
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
@@ -164,8 +167,8 @@ module.exports = {
   //   \\"/node_modules/\\"
   // ],
 
-  // The regexp pattern Jest uses to detect test files
-  // testRegex: \\"\\",
+  // The regexp pattern or array of patterns that Jest uses to detect test files
+  // testRegex: [],
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: null,

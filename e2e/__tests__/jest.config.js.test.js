@@ -9,9 +9,9 @@
 
 'use strict';
 
-const path = require('path');
-const {extractSummary, cleanup, writeFiles} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import runJest from '../runJest';
+import {cleanup, extractSummary, writeFiles} from '../Utils';
 
 const DIR = path.resolve(__dirname, '../jest.config.js');
 

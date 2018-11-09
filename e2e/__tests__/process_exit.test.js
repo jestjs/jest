@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 it('prints stack trace pointing to process.exit call', async () => {
   const {stderr} = await runJest('process-exit');

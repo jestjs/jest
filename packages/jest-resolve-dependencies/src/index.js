@@ -10,16 +10,8 @@
 import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
 import type {Resolver, ResolveModuleConfig} from 'types/Resolve';
-import Snapshot from 'jest-snapshot';
-
-import {replacePathSepForRegex} from 'jest-regex-util';
-
-const snapshotDirRegex = new RegExp(replacePathSepForRegex('/__snapshots__/'));
-const snapshotFileRegex = new RegExp(
-  replacePathSepForRegex(`__snapshots__/(.*).${Snapshot.EXTENSION}`),
-);
-const isSnapshotPath = (path: string): boolean =>
-  !!path.match(snapshotDirRegex);
+import type {SnapshotResolver} from 'types/SnapshotResolver';
+import {isSnapshotPath} from 'jest-snapshot';
 
 /**
  * DependencyResolver is used to resolve the direct dependencies of a module or
@@ -28,10 +20,16 @@ const isSnapshotPath = (path: string): boolean =>
 class DependencyResolver {
   _hasteFS: HasteFS;
   _resolver: Resolver;
+  _snapshotResolver: SnapshotResolver;
 
-  constructor(resolver: Resolver, hasteFS: HasteFS) {
+  constructor(
+    resolver: Resolver,
+    hasteFS: HasteFS,
+    snapshotResolver: SnapshotResolver,
+  ) {
     this._resolver = resolver;
     this._hasteFS = hasteFS;
+    this._snapshotResolver = snapshotResolver;
   }
 
   resolve(file: Path, options?: ResolveModuleConfig): Array<Path> {
@@ -89,10 +87,8 @@ class DependencyResolver {
     const changed = new Set();
     for (const path of paths) {
       if (this._hasteFS.exists(path)) {
-        // /path/to/__snapshots__/test.js.snap is always adjacent to
-        // /path/to/test.js
         const modulePath = isSnapshotPath(path)
-          ? path.replace(snapshotFileRegex, '$1')
+          ? this._snapshotResolver.resolveTestPath(path)
           : path;
         changed.add(modulePath);
         if (filter(modulePath)) {
@@ -100,10 +96,13 @@ class DependencyResolver {
         }
       }
     }
-    const modules = this._hasteFS.getAllFiles().map(file => ({
-      dependencies: this.resolve(file, options),
-      file,
-    }));
+    const modules = [];
+    for (const file of this._hasteFS.getAbsoluteFileIterator()) {
+      modules.push({
+        dependencies: this.resolve(file, options),
+        file,
+      });
+    }
     return Array.from(collectModules(relatedPaths, modules, changed));
   }
 }

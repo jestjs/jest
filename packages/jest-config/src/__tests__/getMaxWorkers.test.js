@@ -8,14 +8,21 @@
 
 import getMaxWorkers from '../getMaxWorkers';
 
-jest.mock('os', () => ({
-  cpus: () => ({length: 4}),
-}));
+jest.mock('os');
 
 describe('getMaxWorkers', () => {
+  beforeEach(() => {
+    require('os').__setCpus({length: 4});
+  });
+
   it('Returns 1 when runInBand', () => {
     const argv = {runInBand: true};
     expect(getMaxWorkers(argv)).toBe(1);
+  });
+
+  it('Returns 1 when the OS CPUs are not available', () => {
+    require('os').__setCpus(undefined);
+    expect(getMaxWorkers({})).toBe(1);
   });
 
   it('Returns the `maxWorkers` when specified', () => {

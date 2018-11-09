@@ -30,6 +30,7 @@ import ScriptTransformer from './script_transformer';
 import shouldInstrument from './should_instrument';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
+import {findSiblingsWithFileExtension} from './helpers';
 
 type Module = {|
   children: Array<Module>,
@@ -223,13 +224,21 @@ class Runtime {
     config: ProjectConfig,
     options?: HasteMapOptions,
   ): HasteMap {
-    const ignorePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
-    );
+    const ignorePatternParts = [
+      ...config.modulePathIgnorePatterns,
+      config.cacheDirectory.startsWith(config.rootDir + path.sep) &&
+        config.cacheDirectory,
+    ].filter(Boolean);
+    const ignorePattern =
+      ignorePatternParts.length > 0
+        ? new RegExp(ignorePatternParts.join('|'))
+        : null;
 
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
+      computeSha1: config.haste.computeSha1,
       console: options && options.console,
+      dependencyExtractor: config.dependencyExtractor,
       extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
@@ -240,6 +249,7 @@ class Runtime {
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,
       retainAllFiles: false,
+      rootDir: config.rootDir,
       roots: config.roots,
       useWatchman: options && options.watchman,
       watch: options && options.watch,
@@ -411,10 +421,25 @@ class Runtime {
   }
 
   requireModuleOrMock(from: Path, moduleName: string) {
-    if (this._shouldMock(from, moduleName)) {
-      return this.requireMock(from, moduleName);
-    } else {
-      return this.requireModule(from, moduleName);
+    try {
+      if (this._shouldMock(from, moduleName)) {
+        return this.requireMock(from, moduleName);
+      } else {
+        return this.requireModule(from, moduleName);
+      }
+    } catch (e) {
+      if (e.code === 'MODULE_NOT_FOUND') {
+        const appendedMessage = findSiblingsWithFileExtension(
+          this._config.moduleFileExtensions,
+          from,
+          moduleName,
+        );
+
+        if (appendedMessage) {
+          e.message += appendedMessage;
+        }
+      }
+      throw e;
     }
   }
 
@@ -422,20 +447,22 @@ class Runtime {
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
 
-    if (this._environment && this._environment.global) {
-      const envGlobal = this._environment.global;
-      Object.keys(envGlobal).forEach(key => {
-        const globalMock = envGlobal[key];
-        if (
-          (typeof globalMock === 'object' && globalMock !== null) ||
-          typeof globalMock === 'function'
-        ) {
-          globalMock._isMockFunction && globalMock.mockClear();
-        }
-      });
+    if (this._environment) {
+      if (this._environment.global) {
+        const envGlobal = this._environment.global;
+        Object.keys(envGlobal).forEach(key => {
+          const globalMock = envGlobal[key];
+          if (
+            (typeof globalMock === 'object' && globalMock !== null) ||
+            typeof globalMock === 'function'
+          ) {
+            globalMock._isMockFunction === true && globalMock.mockClear();
+          }
+        });
+      }
 
-      if (envGlobal.mockClearTimers) {
-        envGlobal.mockClearTimers();
+      if (this._environment.fakeTimers) {
+        this._environment.fakeTimers.clearAllTimers();
       }
     }
   }
@@ -909,6 +936,7 @@ class Runtime {
       fn,
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
+      getTimerCount: () => this._environment.fakeTimers.getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       mock,
       requireActual: localRequire.requireActual,

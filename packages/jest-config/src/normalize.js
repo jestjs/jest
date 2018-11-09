@@ -8,7 +8,13 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {InitialOptions, ReporterConfig} from 'types/Config';
+import type {
+  InitialOptions,
+  DefaultOptions,
+  ReporterConfig,
+  GlobalConfig,
+  ProjectConfig,
+} from 'types/Config';
 
 import crypto from 'crypto';
 import glob from 'glob';
@@ -28,6 +34,8 @@ import {
   _replaceRootDirTags,
   escapeGlobCharacters,
   getTestEnvironment,
+  getRunner,
+  getWatchPlugin,
   resolve,
 } from './utils';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
@@ -36,6 +44,7 @@ import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import setFromArgv from './setFromArgv';
 import VALID_CONFIG from './ValidConfig';
+
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
@@ -366,12 +375,37 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     ),
   );
 
+  if (!options.setupFilesAfterEnv) {
+    options.setupFilesAfterEnv = [];
+  }
+
+  if (
+    options.setupTestFrameworkScriptFile &&
+    options.setupFilesAfterEnv.length > 0
+  ) {
+    throw createConfigError(
+      `  Options: ${chalk.bold(
+        'setupTestFrameworkScriptFile',
+      )} and ${chalk.bold('setupFilesAfterEnv')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold(
+    'setupFilesAfterEnv',
+  )}.`,
+    );
+  }
+
+  if (options.setupTestFrameworkScriptFile) {
+    options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
+  }
+
   if (options.preset) {
     options = setupPreset(options, options.preset);
   }
 
   if (options.testEnvironment) {
-    options.testEnvironment = getTestEnvironment(options);
+    options.testEnvironment = getTestEnvironment({
+      rootDir: options.rootDir,
+      testEnvironment: options.testEnvironment,
+    });
   }
 
   if (!options.roots && options.testPathDirs) {
@@ -391,9 +425,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   }
 
   const babelJest = setupBabelJest(options);
-  const newOptions = Object.assign({}, DEFAULT_CONFIG);
-  // Cast back to exact type
-  options = (options: InitialOptions);
+  const newOptions: $Shape<
+    DefaultOptions & ProjectConfig & GlobalConfig,
+  > = (Object.assign({}, DEFAULT_CONFIG): any);
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -403,7 +437,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     });
   }
 
-  Object.keys(options).reduce((newOptions, key) => {
+  Object.keys(options).reduce((newOptions, key: $Keys<InitialOptions>) => {
     // The resolver has been resolved separately; skip it
     if (key === 'resolver') {
       return newOptions;
@@ -414,6 +448,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeCollectCoverageOnlyFrom(options, key);
         break;
       case 'setupFiles':
+      case 'setupFilesAfterEnv':
       case 'snapshotSerializers':
         value =
           options[key] &&
@@ -448,11 +483,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
+      case 'dependencyExtractor':
       case 'globalSetup':
       case 'globalTeardown':
       case 'moduleLoader':
-      case 'runner':
-      case 'setupTestFrameworkScriptFile':
+      case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
       case 'filter':
@@ -461,6 +496,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           resolve(newOptions.resolver, {
             filePath: options[key],
             key,
+            rootDir: options.rootDir,
+          });
+        break;
+      case 'runner':
+        value =
+          options[key] &&
+          getRunner(newOptions.resolver, {
+            filePath: options[key],
             rootDir: options.rootDir,
           });
         break;
@@ -545,8 +588,36 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         );
         break;
       case 'testRegex':
-        value = options[key] && replacePathSepForRegex(options[key]);
+        value = options[key]
+          ? [].concat(options[key]).map(replacePathSepForRegex)
+          : [];
         break;
+      case 'moduleFileExtensions': {
+        value = options[key];
+
+        // If it's the wrong type, it can throw at a later time
+        if (Array.isArray(value) && !value.includes('js')) {
+          const errorMessage =
+            `  moduleFileExtensions must include 'js':\n` +
+            `  but instead received:\n` +
+            `    ${chalk.bold.red(JSON.stringify(value))}`;
+
+          // If `js` is not included, any dependency Jest itself injects into
+          // the environment, like jasmine or sourcemap-support, will need to
+          // `require` its modules with a file extension. This is not plausible
+          // in the long run, so it's way easier to just fail hard early.
+          // We might consider throwing if `json` is missing as well, as it's a
+          // fair assumption from modules that they can do
+          // `require('some-package/package') without the trailing `.json` as it
+          // works in Node normally.
+          throw createConfigError(
+            errorMessage +
+              "\n  Please change your configuration to include 'js'.",
+          );
+        }
+
+        break;
+      }
       case 'automock':
       case 'bail':
       case 'browser':
@@ -570,7 +641,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'listTests':
       case 'logHeapUsage':
       case 'mapCoverage':
-      case 'moduleFileExtensions':
       case 'name':
       case 'noStackTrace':
       case 'notify':
@@ -607,18 +677,16 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           if (typeof watchPlugin === 'string') {
             return {
               config: {},
-              path: resolve(newOptions.resolver, {
+              path: getWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
-                key,
                 rootDir: options.rootDir,
               }),
             };
           } else {
             return {
               config: watchPlugin[1] || {},
-              path: resolve(newOptions.resolver, {
+              path: getWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
-                key,
                 rootDir: options.rootDir,
               }),
             };
@@ -626,6 +694,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         });
         break;
     }
+    // $FlowFixMe - automock is missing in GlobalConfig, so what
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
@@ -674,14 +743,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     }
   }
 
-  if (options.testRegex && options.testMatch) {
+  if (newOptions.testRegex.length && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (options.testRegex && !options.testMatch) {
+  if (newOptions.testRegex.length && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];

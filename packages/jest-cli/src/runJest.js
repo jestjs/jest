@@ -29,14 +29,6 @@ import FailedTestsCache from './FailedTestsCache';
 import {JestHook} from 'jest-watcher';
 import collectNodeHandles from './collectHandles';
 
-const setConfig = (contexts, newConfig) =>
-  contexts.forEach(
-    context =>
-      (context.config = Object.freeze(
-        Object.assign({}, context.config, newConfig),
-      )),
-  );
-
 const getTestPaths = async (
   globalConfig,
   context,
@@ -255,15 +247,6 @@ export default (async function runJest({
     });
     globalConfig = Object.freeze(newConfig);
   }
-
-  // When using more than one context, make all printed paths relative to the
-  // current cwd. Do not modify rootDir, since will be used by custom resolvers.
-  // If --runInBand is true, the resolver saved a copy during initialization,
-  // however, if it is running on spawned processes, the initiation of the
-  // custom resolvers is done within each spawned process and it needs the
-  // original value of rootDir. Instead, use the {cwd: Path} property to resolve
-  // paths when printing.
-  setConfig(contexts, {cwd: process.cwd()});
 
   let collectHandles;
 

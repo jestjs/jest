@@ -12,6 +12,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"coveragePathIgnorePatterns\\": [
         \\"/node_modules/\\"
       ],
+      \\"cwd\\": \\"<<REPLACED_ROOT_DIR>>\\",
+      \\"dependencyExtractor\\": null,
       \\"detectLeaks\\": false,
       \\"detectOpenHandles\\": false,
       \\"errorOnDeprecated\\": false,
@@ -19,6 +21,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"forceCoverageMatch\\": [],
       \\"globals\\": {},
       \\"haste\\": {
+        \\"computeSha1\\": false,
         \\"providesModuleNodeModules\\": []
       },
       \\"moduleDirectories\\": [
@@ -44,7 +47,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       \\"runner\\": \\"jest-runner\\",
       \\"setupFiles\\": [],
-      \\"setupTestFrameworkScriptFile\\": null,
+      \\"setupFilesAfterEnv\\": [],
       \\"skipFilter\\": false,
       \\"snapshotSerializers\\": [],
       \\"testEnvironment\\": \\"jest-environment-jsdom\\",
@@ -57,7 +60,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"testPathIgnorePatterns\\": [
         \\"/node_modules/\\"
       ],
-      \\"testRegex\\": \\"\\",
+      \\"testRegex\\": [],
       \\"testRunner\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js\\",
       \\"testURL\\": \\"http://localhost\\",
       \\"timers\\": \\"real\\",
@@ -98,7 +101,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     \\"noStackTrace\\": false,
     \\"nonFlagArgs\\": [],
     \\"notify\\": false,
-    \\"notifyMode\\": \\"always\\",
+    \\"notifyMode\\": \\"failure-change\\",
     \\"passWithNoTests\\": false,
     \\"projects\\": null,
     \\"rootDir\\": \\"<<REPLACED_ROOT_DIR>>\\",

@@ -17,7 +17,7 @@ export default function getMaxWorkers(argv: Argv): number {
   } else if (argv.maxWorkers) {
     return parseInt(argv.maxWorkers, 10);
   } else {
-    const cpus = os.cpus().length;
+    const cpus = os.cpus() ? os.cpus().length : 1;
     return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
   }
 }

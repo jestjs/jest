@@ -28,7 +28,9 @@ export default class VerboseReporter extends DefaultReporter {
     this._globalConfig = globalConfig;
   }
 
-  static filterTestResults(testResults: Array<AssertionResult>) {
+  static filterTestResults(
+    testResults: Array<AssertionResult>,
+  ): Array<AssertionResult> {
     return testResults.filter(({status}) => status !== 'pending');
   }
 
@@ -97,6 +99,8 @@ export default class VerboseReporter extends DefaultReporter {
       return chalk.red(ICONS.failed);
     } else if (status === 'pending') {
       return chalk.yellow(ICONS.pending);
+    } else if (status === 'todo') {
+      return chalk.magenta(ICONS.todo);
     } else {
       return chalk.green(ICONS.success);
     }
@@ -112,26 +116,48 @@ export default class VerboseReporter extends DefaultReporter {
     if (this._globalConfig.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
-      const skippedCount = tests.reduce((result, test) => {
-        if (test.status === 'pending') {
-          result += 1;
-        } else {
-          this._logTest(test, indentLevel);
-        }
+      const summedTests = tests.reduce(
+        (result, test) => {
+          if (test.status === 'pending') {
+            result.pending += 1;
+          } else if (test.status === 'todo') {
+            result.todo += 1;
+          } else {
+            this._logTest(test, indentLevel);
+          }
 
-        return result;
-      }, 0);
+          return result;
+        },
+        {pending: 0, todo: 0},
+      );
 
-      if (skippedCount > 0) {
-        this._logSkippedTests(skippedCount, indentLevel);
+      if (summedTests.pending > 0) {
+        this._logSummedTests(
+          'skipped',
+          this._getIcon('pending'),
+          summedTests.pending,
+          indentLevel,
+        );
+      }
+
+      if (summedTests.todo > 0) {
+        this._logSummedTests(
+          'todo',
+          this._getIcon('todo'),
+          summedTests.todo,
+          indentLevel,
+        );
       }
     }
   }
 
-  _logSkippedTests(count: number, indentLevel: number) {
-    const icon = this._getIcon('pending');
-    const text = chalk.dim(`skipped ${count} test${count === 1 ? '' : 's'}`);
-
+  _logSummedTests(
+    prefix: string,
+    icon: string,
+    count: number,
+    indentLevel: number,
+  ) {
+    const text = chalk.dim(`${prefix} ${count} test${count === 1 ? '' : 's'}`);
     this._logLine(`${icon} ${text}`, indentLevel);
   }
 

@@ -73,6 +73,10 @@ The callback you provide is called with the method name, plus all the rest of th
 
 By default, no process is bound to any worker.
 
+#### `setupArgs: Array<mixed>` (optional)
+
+The arguments that will be passed to the `setup` method during initialization.
+
 ## Worker
 
 The returned `Worker` instance has all the exposed methods, plus some additional ones to interact with the workers itself:
@@ -90,6 +94,13 @@ Returns a `ReadableStream` where the standard error of all workers is piped. Not
 Finishes the workers by killing all workers. No further calls can be done to the `Worker` instance.
 
 **Note:** Each worker has a unique id (index that starts with `1`) which is available on `process.env.JEST_WORKER_ID`
+
+## Setting up and tearing down the child process
+
+The child process can define two special methods (both of them can be asynchronous):
+
+- `setup()`: If defined, it's executed before the first call to any method in the child.
+- `teardown()`: If defined, it's executed when the farm ends.
 
 # More examples
 

@@ -13,7 +13,8 @@ import childProcess from 'child_process';
 
 import {
   CHILD_MESSAGE_INITIALIZE,
-  PARENT_MESSAGE_ERROR,
+  PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_SETUP_ERROR,
   PARENT_MESSAGE_OK,
 } from './types';
 
@@ -108,7 +109,12 @@ export default class {
     child.on('exit', this._exit.bind(this));
 
     // $FlowFixMe: wrong "ChildProcess.send" signature.
-    child.send([CHILD_MESSAGE_INITIALIZE, false, this._options.workerPath]);
+    child.send([
+      CHILD_MESSAGE_INITIALIZE,
+      false,
+      this._options.workerPath,
+      this._options.setupArgs,
+    ]);
 
     this._retries++;
     this._child = child;
@@ -121,7 +127,7 @@ export default class {
       const error = new Error('Call retries were exceeded');
 
       this._receive([
-        PARENT_MESSAGE_ERROR,
+        PARENT_MESSAGE_CLIENT_ERROR,
         error.name,
         error.message,
         error.stack,
@@ -175,13 +181,15 @@ export default class {
     this._busy = false;
     this._process();
 
+    let error;
+
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
         onProcessEnd(null, response[1]);
         break;
 
-      case PARENT_MESSAGE_ERROR:
-        let error = response[4];
+      case PARENT_MESSAGE_CLIENT_ERROR:
+        error = response[4];
 
         if (error != null && typeof error === 'object') {
           const extra = error;
@@ -198,6 +206,16 @@ export default class {
             error[key] = extra[key];
           }
         }
+
+        onProcessEnd(error, null);
+        break;
+
+      case PARENT_MESSAGE_SETUP_ERROR:
+        error = new Error('Error when calling setup: ' + response[2]);
+
+        // $FlowFixMe: adding custom properties to errors.
+        error.type = response[1];
+        error.stack = response[3];
 
         onProcessEnd(error, null);
         break;

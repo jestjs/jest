@@ -15,6 +15,9 @@
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"
   },
+  "engines": {
+    "node": ">= 6"
+  },
   "homepage": "https://jestjs.io/",
   "license": "MIT"
 }

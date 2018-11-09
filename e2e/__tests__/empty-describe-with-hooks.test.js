@@ -9,13 +9,14 @@
 
 'use strict';
 
-const path = require('path');
-const runJest = require('../runJest');
-const {extractSummary} = require('../Utils');
-const dir = path.resolve(__dirname, '../empty-describe-with-hooks');
-const ConditionalTest = require('../../scripts/ConditionalTest');
+import path from 'path';
+import runJest from '../runJest';
+import {extractSummary} from '../Utils';
+import {skipSuiteOnJasmine} from '../../scripts/ConditionalTest';
 
-ConditionalTest.skipSuiteOnJasmine();
+const dir = path.resolve(__dirname, '../empty-describe-with-hooks');
+
+skipSuiteOnJasmine();
 
 test('hook in empty describe', () => {
   const result = runJest(dir, ['hook-in-empty-describe.test.js']);

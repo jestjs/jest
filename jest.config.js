@@ -1,3 +1,5 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 'use strict';
 
 module.exports = {
@@ -8,9 +10,10 @@ module.exports = {
     '!**/perf/**',
     '!**/__mocks__/**',
     '!**/__tests__/**',
+    '!**/build/**',
+    '!**/vendor/**',
     '!e2e/**',
   ],
-  coverageReporters: ['json'],
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
@@ -20,7 +23,7 @@ module.exports = {
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
-  setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
+  setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotSerializers: [
     '<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js',
   ],
@@ -37,11 +40,13 @@ module.exports = {
     '/packages/jest-cli/src/__tests__/__fixtures__/',
     '/packages/jest-cli/src/lib/__tests__/fixtures/',
     '/packages/jest-haste-map/src/__tests__/haste_impl.js',
+    '/packages/jest-haste-map/src/__tests__/dependencyExtractor.js',
     '/packages/jest-resolve-dependencies/src/__tests__/__fixtures__/',
     '/packages/jest-runtime/src/__tests__/defaultResolver.js',
     '/packages/jest-runtime/src/__tests__/module_dir/',
     '/packages/jest-runtime/src/__tests__/NODE_PATH_dir',
     '/packages/jest-snapshot/src/__tests__/plugins',
+    '/packages/jest-snapshot/src/__tests__/fixtures/',
     '/packages/jest-validate/src/__tests__/fixtures/',
     '/packages/jest-worker/src/__performance_tests__',
     '/packages/pretty-format/perf/test.js',

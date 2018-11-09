@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 describe('Correct BeforeAll run', () => {
   it('ensures the BeforeAll of ignored suite is not run', () => {

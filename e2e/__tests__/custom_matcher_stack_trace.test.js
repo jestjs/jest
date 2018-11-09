@@ -8,8 +8,8 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
-const {extractSummary} = require('../Utils');
+import runJest from '../runJest';
+import {extractSummary} from '../Utils';
 
 test('works with custom matchers', () => {
   const {stderr} = runJest('custom-matcher-stack-trace');

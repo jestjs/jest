@@ -8,10 +8,10 @@
  */
 'use strict';
 
-const fs = require('fs');
-const os = require('os');
-const runJest = require('../runJest');
-const {cleanup} = require('../Utils');
+import fs from 'fs';
+import os from 'os';
+import runJest from '../runJest';
+import {cleanup} from '../Utils';
 
 const DIR = os.tmpdir() + '/jest-test-environment';
 

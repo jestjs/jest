@@ -78,6 +78,7 @@ console.log(prettyFormat(onClick, options));
 | :------------------ | :-------- | :--------- | :------------------------------------------------------ |
 | `callToJSON`        | `boolean` | `true`     | call `toJSON` method (if it exists) on objects          |
 | `escapeRegex`       | `boolean` | `false`    | escape special characters in regular expressions        |
+| `escapeString`      | `boolean` | `true`     | escape special characters in strings                    |
 | `highlight`         | `boolean` | `false`    | highlight syntax with colors in terminal (some plugins) |
 | `indent`            | `number`  | `2`        | spaces in each level of indentation                     |
 | `maxDepth`          | `number`  | `Infinity` | levels to print in arrays, objects, elements, and so on |
@@ -215,6 +216,7 @@ Write `serialize` to return a string, given the arguments:
 | `callToJSON`        | `boolean` | call `toJSON` method (if it exists) on objects          |
 | `colors`            | `Object`  | escape codes for colors to highlight syntax             |
 | `escapeRegex`       | `boolean` | escape special characters in regular expressions        |
+| `escapeString`      | `boolean` | escape special characters in strings                    |
 | `indent`            | `string`  | spaces in each level of indentation                     |
 | `maxDepth`          | `number`  | levels to print in arrays, objects, elements, and so on |
 | `min`               | `boolean` | minimize added space: no indentation nor line breaks    |

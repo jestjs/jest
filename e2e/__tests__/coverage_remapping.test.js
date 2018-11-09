@@ -9,10 +9,10 @@
 
 'use strict';
 
-const {readFileSync} = require('fs');
-const path = require('path');
-const {cleanup, run} = require('../Utils');
-const runJest = require('../runJest');
+import {readFileSync} from 'fs';
+import path from 'path';
+import {cleanup, run} from '../Utils';
+import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../coverage-remapping');
 const coverageDir = path.join(dir, 'coverage');

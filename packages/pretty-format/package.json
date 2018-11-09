@@ -11,7 +11,7 @@
   "browser": "build-es5/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "ansi-regex": "^3.0.0",
+    "ansi-regex": "^4.0.0",
     "ansi-styles": "^3.2.0"
   },
   "devDependencies": {
@@ -19,5 +19,8 @@
     "react": "*",
     "react-dom": "*",
     "react-test-renderer": "*"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

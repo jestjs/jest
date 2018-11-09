@@ -10,11 +10,16 @@
 import type {HasteFS} from 'types/HasteMap';
 import type {MatcherState} from 'types/Matchers';
 import type {Path, SnapshotUpdateState} from 'types/Config';
+import type {SnapshotResolver} from 'types/SnapshotResolver';
 
 import fs from 'fs';
-import path from 'path';
 import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
+import {
+  buildSnapshotResolver,
+  isSnapshotPath,
+  EXTENSION,
+} from './snapshot_resolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import * as utils from './utils';
@@ -22,26 +27,23 @@ import * as utils from './utils';
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
-const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
-  const pattern = '\\.' + utils.SNAPSHOT_EXTENSION + '$';
+const cleanup = (
+  hasteFS: HasteFS,
+  update: SnapshotUpdateState,
+  snapshotResolver: SnapshotResolver,
+) => {
+  const pattern = '\\.' + EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
-  const filesRemoved = files
-    .filter(
-      snapshotFile =>
-        !fileExists(
-          path.resolve(
-            path.dirname(snapshotFile),
-            '..',
-            path.basename(snapshotFile, '.' + utils.SNAPSHOT_EXTENSION),
-          ),
-          hasteFS,
-        ),
-    )
-    .map(snapshotFile => {
+  const filesRemoved = files.reduce((acc, snapshotFile) => {
+    if (!fileExists(snapshotResolver.resolveTestPath(snapshotFile), hasteFS)) {
       if (update === 'all') {
         fs.unlinkSync(snapshotFile);
       }
-    }).length;
+      return acc + 1;
+    }
+
+    return acc;
+  }, 0);
 
   return {
     filesRemoved,
@@ -290,11 +292,13 @@ const _toThrowErrorMatchingSnapshot = ({
 };
 
 module.exports = {
-  EXTENSION: utils.SNAPSHOT_EXTENSION,
+  EXTENSION,
   SnapshotState,
   addSerializer,
+  buildSnapshotResolver,
   cleanup,
   getSerializers,
+  isSnapshotPath,
   toMatchInlineSnapshot,
   toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,

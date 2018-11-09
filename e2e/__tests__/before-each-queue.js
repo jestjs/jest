@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 describe('Correct beforeEach order', () => {
   it('ensures the correct order for beforeEach', () => {
