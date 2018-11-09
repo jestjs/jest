@@ -266,6 +266,7 @@ class Runtime {
       moduleNameMapper: getModuleNameMapper(config),
       modulePaths: config.modulePaths,
       platforms: config.haste.platforms,
+      preserveSymlinks: config.preserveSymlinks,
       resolver: config.resolver,
       rootDir: config.rootDir,
     });

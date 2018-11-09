@@ -385,6 +385,7 @@ class Resolver {
               extensions,
               moduleDirectory,
               paths,
+              preserveSymlinks: this._options.preserveSymlinks,
               resolver,
               rootDir: this._options.rootDir,
             });
