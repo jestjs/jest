@@ -14,7 +14,7 @@ import {printListItems, printObjectProperties} from '../collections';
 const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
 const SPACE = ' ';
 
-const serialize = (
+export const serialize = (
   val: any,
   config: Config,
   indentation: string,
@@ -88,6 +88,6 @@ const serialize = (
   return val.toAsymmetricMatcher();
 };
 
-const test = (val: any) => val && val.$$typeof === asymmetricMatcher;
+export const test = (val: any) => val && val.$$typeof === asymmetricMatcher;
 
 export default ({serialize, test}: NewPlugin);

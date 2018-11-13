@@ -59,9 +59,10 @@ const toHumanReadableAnsi = text =>
     }
   });
 
-const test = (val: any) => typeof val === 'string' && val.match(ansiRegex());
+export const test = (val: any) =>
+  typeof val === 'string' && val.match(ansiRegex());
 
-const serialize = (
+export const serialize = (
   val: string,
   config: Config,
   indentation: string,

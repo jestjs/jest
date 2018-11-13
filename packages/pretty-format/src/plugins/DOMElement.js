@@ -55,7 +55,7 @@ const testNode = (nodeType: any, name: any) =>
   (nodeType === COMMENT_NODE && name === 'Comment') ||
   (nodeType === FRAGMENT_NODE && name === 'DocumentFragment');
 
-const test = (val: any) =>
+export const test = (val: any) =>
   val &&
   val.constructor &&
   val.constructor.name &&
@@ -68,7 +68,7 @@ const propsReducer = (props, attribute) => {
   return props;
 };
 
-const serialize = (
+export const serialize = (
   node: Element | Text | Comment | DocumentFragment,
   config: Config,
   indentation: string,
