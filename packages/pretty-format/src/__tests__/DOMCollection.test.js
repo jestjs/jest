@@ -13,7 +13,7 @@
 
 const prettyFormat = require('../');
 const {DOMCollection, DOMElement} = prettyFormat.plugins;
-const toPrettyPrintTo = require('./getPrettyPrint').getPrettyPrint([
+const toPrettyPrintTo = require('./getPrettyPrint').default([
   DOMCollection,
   DOMElement,
 ]);
