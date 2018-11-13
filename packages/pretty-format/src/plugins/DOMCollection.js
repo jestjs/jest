@@ -19,7 +19,7 @@ const ARRAY_REGEXP = /^(HTML\w*Collection|NodeList)$/;
 const testName = (name: any) =>
   OBJECT_NAMES.indexOf(name) !== -1 || ARRAY_REGEXP.test(name);
 
-export const test = (val: any) =>
+const test = (val: any) =>
   val &&
   val.constructor &&
   val.constructor.name &&
@@ -31,7 +31,7 @@ const propsReducer = (props, attribute) => {
   return props;
 };
 
-export const serialize = (
+const serialize = (
   collection: any,
   config: Config,
   indentation: string,

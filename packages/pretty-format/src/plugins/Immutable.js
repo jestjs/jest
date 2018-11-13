@@ -171,7 +171,7 @@ const printImmutableValues = (
       ) +
       ']';
 
-export const serialize = (
+const serialize = (
   val: any,
   config: Config,
   indentation: string,
@@ -235,7 +235,7 @@ export const serialize = (
 
 // Explicitly comparing sentinel properties to true avoids false positive
 // when mock identity-obj-proxy returns the key as the value for any key.
-export const test = (val: any) =>
+const test = (val: any) =>
   val &&
   (val[IS_ITERABLE_SENTINEL] === true || val[IS_RECORD_SENTINEL] === true);
 

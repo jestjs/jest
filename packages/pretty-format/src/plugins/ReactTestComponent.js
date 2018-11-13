@@ -34,7 +34,7 @@ const getPropKeys = object => {
     : [];
 };
 
-export const serialize = (
+const serialize = (
   object: ReactTestObject,
   config: Config,
   indentation: string,
@@ -74,6 +74,6 @@ export const serialize = (
         indentation,
       );
 
-export const test = (val: any) => val && val.$$typeof === testSymbol;
+const test = (val: any) => val && val.$$typeof === testSymbol;
 
 export default ({serialize, test}: NewPlugin);

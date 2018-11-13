@@ -74,7 +74,7 @@ const getPropKeys = element => {
     .sort();
 };
 
-export const serialize = (
+const serialize = (
   element: React$Element<any>,
   config: Config,
   indentation: string,
@@ -107,6 +107,6 @@ export const serialize = (
         indentation,
       );
 
-export const test = (val: any) => val && val.$$typeof === elementSymbol;
+const test = (val: any) => val && val.$$typeof === elementSymbol;
 
 export default ({serialize, test}: NewPlugin);
