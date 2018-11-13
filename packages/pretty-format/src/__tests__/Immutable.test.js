@@ -11,7 +11,7 @@
 
 import React from 'react';
 import Immutable from 'immutable';
-import {getPrettyPrint} from './getPrettyPrint';
+import getPrettyPrint from './getPrettyPrint';
 
 const {plugins: prettyPlugins} = require('..');
 const {Immutable: ImmutablePlugin, ReactElement} = prettyPlugins;
