@@ -13,7 +13,9 @@
 
 const prettyFormat = require('../');
 const {DOMElement} = prettyFormat.plugins;
-const toPrettyPrintTo = require('./getPrettyPrint').getPrettyPrint([DOMElement]);
+const toPrettyPrintTo = require('./getPrettyPrint').getPrettyPrint([
+  DOMElement,
+]);
 
 const expect: any = global.expect;
 expect.extend({toPrettyPrintTo});
