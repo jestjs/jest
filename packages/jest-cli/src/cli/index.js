@@ -137,8 +137,11 @@ const readResultsAndExit = (
   globalConfig: GlobalConfig,
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
-
-  process.on('exit', () => (process.exitCode = code));
+  
+  // Only exit if needed
+  if (code) {
+    process.on('exit', () => (process.exitCode = code));
+  }
 
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
