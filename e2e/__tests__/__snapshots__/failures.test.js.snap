@@ -13,9 +13,7 @@ exports[`not throwing Error objects 2`] = `
 "FAIL __tests__/throw_string.test.js
   ● Test suite failed to run
 
-    Error
-
-      banana
+    banana
 
 "
 `;

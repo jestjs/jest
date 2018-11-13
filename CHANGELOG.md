@@ -27,13 +27,17 @@
 - `[babel-preset-jest]` [**BREAKING**] Export a function instead of an object for Babel 7 compatibility ([#7203](https://github.com/facebook/jest/pull/7203))
 - `[expect]` Check constructor equality in .toStrictEqual() ([#7005](https://github.com/facebook/jest/pull/7005))
 - `[jest-util]` Add `jest.getTimerCount()` to get the count of scheduled fake timers ([#7285](https://github.com/facebook/jest/pull/7285))
+- `[jest-config]` Add `dependencyExtractor` option to use a custom module to extract dependencies from files ([#7313](https://github.com/facebook/jest/pull/7313), [#7349](https://github.com/facebook/jest/pull/7349), [#7350](https://github.com/facebook/jest/pull/7350))
+- `[jest-haste-map]` [**BREAKING**] Expose relative paths when getting the file iterator ([#7321](https://github.com/facebook/jest/pull/7321))
+- `[jest-haste-map]` Accept a `getCacheKey` method in `hasteImplModulePath` modules to reset the cache when the logic changes ([#7350](https://github.com/facebook/jest/pull/7350))
+- `[jest-config]` Add `haste.computeSha1` option to compute the sha-1 of the files in the haste map ([#7345](https://github.com/facebook/jest/pull/7345))
 
 ### Fixes
 
 - `[expect]` Standardize file naming in `expect` ([#7306](https://github.com/facebook/jest/pull/7306))
 - `[jest-each]` Add empty array validation check ([#7249](https://github.com/facebook/jest/pull/7249))
 - `[jest-cli]` Interrupt tests if interactive watch plugin key is pressed ([#7222](https://github.com/facebook/jest/pull/7222))
-- `[jest-cli]` Fix coverage summary reporting ([#7058](https://github.com/facebook/jest/pull/7058))
+- `[jest-cli]` [**BREAKING**] Do not use `text-summary` coverage reporter by default if other reporters are configured ([#7058](https://github.com/facebook/jest/pull/7058))
 - `[jest-each]` Add each array validation check ([#7033](https://github.com/facebook/jest/pull/7033))
 - `[jest-haste-map]` Do not visit again files with the same sha-1 ([#6990](https://github.com/facebook/jest/pull/6990))
 - `[jest-jasmine2]` Fix memory leak in Error objects hold by the framework ([#6965](https://github.com/facebook/jest/pull/6965))
@@ -61,10 +65,18 @@
 - `[jest-config]` Use strings instead of `RegExp` instances in normalized configuration ([#7251](https://github.com/facebook/jest/pull/7251))
 - `[jest-circus]` Make sure to display real duration even if time is mocked ([#7264](https://github.com/facebook/jest/pull/7264))
 - `[expect]` Improves the failing message for `toStrictEqual` matcher. ([#7224](https://github.com/facebook/jest/pull/7224))
-- `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381)
+- `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381))
+- `[jest-resolve]` Fix not being able to resolve path to mapped file with custom platform ([#7312](https://github.com/facebook/jest/pull/7312))
+- `[jest-message-util]` Improve parsing of error messages for unusually formatted stack traces ([#7319](https://github.com/facebook/jest/pull/7319))
+- `[jest-runtime]` Ensure error message text is not lost on errors with code frames ([#7319](https://github.com/facebook/jest/pull/7319))
+- `[jest-haste-map]` Fix to resolve path that is start with words same as rootDir ([#7324](https://github.com/facebook/jest/pull/7324))
+- `[expect]` Fix toMatchObject matcher when used with `Object.create(null)` ([#7334](https://github.com/facebook/jest/pull/7334))
+- `[jest-haste-map]` [**BREAKING**] Recover files correctly after haste name collisions are fixed ([#7329](https://github.com/facebook/jest/pull/7329))
+- `[jest-haste-map]` Remove legacy condition for duplicate module detection ([#7333](https://github.com/facebook/jest/pull/7333))
 
 ### Chore & Maintenance
 
+- `[jest-watcher]` Standardize filenames ([#7314](https://github.com/facebook/jest/pull/7314))
 - `[jest-circus]` Standardize file naming in `jest-circus` ([#7301](https://github.com/facebook/jest/pull/7301))
 - `[docs]` Add synchronous test.each setup ([#7150](https://github.com/facebook/jest/pull/7150))
 - `[docs]` Add `this.extend` to the Custom Matchers API reference ([#7130](https://github.com/facebook/jest/pull/7130))

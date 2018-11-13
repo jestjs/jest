@@ -161,6 +161,7 @@ describe('getMockModule', () => {
 
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
       moduleNameMapper: [
         {
           moduleName: '$1',

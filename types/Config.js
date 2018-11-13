@@ -11,6 +11,7 @@ export type Path = string;
 export type Glob = string;
 
 export type HasteConfig = {|
+  computeSha1?: boolean,
   defaultPlatform?: ?string,
   hasteImplModulePath?: string,
   platforms?: Array<string>,
@@ -36,6 +37,7 @@ export type DefaultOptions = {|
   coverageReporters: Array<string>,
   coverageThreshold: ?{global: {[key: string]: number}},
   cwd: Path,
+  dependencyExtractor: ?string,
   errorOnDeprecated: boolean,
   expand: boolean,
   filter: ?Path,
@@ -104,6 +106,7 @@ export type InitialOptions = {
   coveragePathIgnorePatterns?: Array<string>,
   coverageReporters?: Array<string>,
   coverageThreshold?: {global: {[key: string]: number}},
+  dependencyExtractor?: string,
   detectLeaks?: boolean,
   detectOpenHandles?: boolean,
   displayName?: string,
@@ -249,6 +252,7 @@ export type ProjectConfig = {|
   clearMocks: boolean,
   coveragePathIgnorePatterns: Array<string>,
   cwd: Path,
+  dependencyExtractor?: string,
   detectLeaks: boolean,
   detectOpenHandles: boolean,
   displayName: ?string,

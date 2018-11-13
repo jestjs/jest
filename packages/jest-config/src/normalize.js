@@ -483,6 +483,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
+      case 'dependencyExtractor':
       case 'globalSetup':
       case 'globalTeardown':
       case 'moduleLoader':

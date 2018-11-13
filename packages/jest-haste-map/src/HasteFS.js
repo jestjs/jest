@@ -43,10 +43,14 @@ export default class HasteFS {
   }
 
   getAllFiles(): Array<string> {
-    return Array.from(this.getFileIterator());
+    return Array.from(this.getAbsoluteFileIterator());
   }
 
-  *getFileIterator(): Iterator<string> {
+  getFileIterator(): Iterator<string> {
+    return this._files.keys();
+  }
+
+  *getAbsoluteFileIterator(): Iterator<string> {
     for (const file of this._files.keys()) {
       yield fastPath.resolve(this._rootDir, file);
     }
@@ -57,7 +61,7 @@ export default class HasteFS {
       pattern = new RegExp(pattern);
     }
     const files = [];
-    for (const file of this.getFileIterator()) {
+    for (const file of this.getAbsoluteFileIterator()) {
       if (pattern.test(file)) {
         files.push(file);
       }
@@ -67,7 +71,7 @@ export default class HasteFS {
 
   matchFilesWithGlob(globs: Array<Glob>, root: ?Path): Set<Path> {
     const files = new Set();
-    for (const file of this.getFileIterator()) {
+    for (const file of this.getAbsoluteFileIterator()) {
       const filePath = root ? fastPath.relative(root, file) : file;
       if (micromatch([filePath], globs).length) {
         files.add(file);

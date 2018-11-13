@@ -9,7 +9,7 @@
 
 'use strict';
 
-import formatTestNameByPattern from '../format_test_name_by_pattern';
+import formatTestNameByPattern from '../formatTestNameByPattern';
 
 describe('for multiline test name returns', () => {
   const testNames = [

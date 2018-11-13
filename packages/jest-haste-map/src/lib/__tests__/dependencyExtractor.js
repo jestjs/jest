@@ -9,7 +9,7 @@
  */
 'use strict';
 
-import extractRequires from '../extractRequires';
+import {extract as extractRequires} from '../dependencyExtractor';
 
 it('extracts both requires and imports from code', () => {
   const code = `
@@ -18,7 +18,9 @@ it('extracts both requires and imports from code', () => {
       import('module3').then(module3 => {})';
     `;
 
-  expect(extractRequires(code)).toEqual(['module1', 'module2', 'module3']);
+  expect(extractRequires(code)).toEqual(
+    new Set(['module1', 'module2', 'module3']),
+  );
 });
 
 it('extracts requires in order', () => {
@@ -28,13 +30,15 @@ it('extracts requires in order', () => {
       const module3 = require('module3');
     `;
 
-  expect(extractRequires(code)).toEqual(['module1', 'module2', 'module3']);
+  expect(extractRequires(code)).toEqual(
+    new Set(['module1', 'module2', 'module3']),
+  );
 });
 
 it('strips out comments from code', () => {
   const code = `// comment const module2 = require('module2');`;
 
-  expect(extractRequires(code)).toEqual([]);
+  expect(extractRequires(code)).toEqual(new Set([]));
 });
 
 it('ignores requires in comments', () => {
@@ -45,7 +49,7 @@ it('ignores requires in comments', () => {
     ' */',
   ].join('\n');
 
-  expect(extractRequires(code)).toEqual([]);
+  expect(extractRequires(code)).toEqual(new Set([]));
 });
 
 it('ignores requires in comments with Windows line endings', () => {
@@ -56,7 +60,7 @@ it('ignores requires in comments with Windows line endings', () => {
     ' */',
   ].join('\r\n');
 
-  expect(extractRequires(code)).toEqual([]);
+  expect(extractRequires(code)).toEqual(new Set([]));
 });
 
 it('ignores requires in comments with unicode line endings', () => {
@@ -68,7 +72,7 @@ it('ignores requires in comments with unicode line endings', () => {
     ' */',
   ].join('');
 
-  expect(extractRequires(code)).toEqual([]);
+  expect(extractRequires(code)).toEqual(new Set([]));
 });
 
 it('does not contain duplicates', () => {
@@ -77,7 +81,7 @@ it('does not contain duplicates', () => {
       const module1Dup = require('module1');
     `;
 
-  expect(extractRequires(code)).toEqual(['module1']);
+  expect(extractRequires(code)).toEqual(new Set(['module1']));
 });
 
 it('ignores type imports', () => {
@@ -89,7 +93,7 @@ it('ignores type imports', () => {
     "} from 'wham'",
   ].join('\r\n');
 
-  expect(extractRequires(code)).toEqual([]);
+  expect(extractRequires(code)).toEqual(new Set([]));
 });
 
 it('ignores type exports', () => {
@@ -99,25 +103,25 @@ it('ignores type exports', () => {
     "export * from 'module1'",
   ].join('\r\n');
 
-  expect(extractRequires(code)).toEqual(['module1']);
+  expect(extractRequires(code)).toEqual(new Set(['module1']));
 });
 
 it('understands require.requireActual', () => {
   const code = `require.requireActual('pizza');`;
-  expect(extractRequires(code)).toEqual(['pizza']);
+  expect(extractRequires(code)).toEqual(new Set(['pizza']));
 });
 
 it('understands jest.requireActual', () => {
   const code = `jest.requireActual('whiskey');`;
-  expect(extractRequires(code)).toEqual(['whiskey']);
+  expect(extractRequires(code)).toEqual(new Set(['whiskey']));
 });
 
 it('understands require.requireMock', () => {
   const code = `require.requireMock('cheeseburger');`;
-  expect(extractRequires(code)).toEqual(['cheeseburger']);
+  expect(extractRequires(code)).toEqual(new Set(['cheeseburger']));
 });
 
 it('understands jest.requireMock', () => {
   const code = `jest.requireMock('scotch');`;
-  expect(extractRequires(code)).toEqual(['scotch']);
+  expect(extractRequires(code)).toEqual(new Set(['scotch']));
 });

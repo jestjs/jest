@@ -341,10 +341,23 @@ class Resolver {
   _resolveStubModuleName(from: Path, moduleName: string): ?Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
-    const extensions = this._options.extensions;
+    const extensions = this._options.extensions.slice();
     const moduleDirectory = this._options.moduleDirectories;
     const moduleNameMapper = this._options.moduleNameMapper;
     const resolver = this._options.resolver;
+    const defaultPlatform = this._options.defaultPlatform;
+
+    if (this._supportsNativePlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
+      );
+    }
+
+    if (defaultPlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + defaultPlatform + ext),
+      );
+    }
 
     if (moduleNameMapper) {
       for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
