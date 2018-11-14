@@ -261,9 +261,11 @@ Jest will fail if:
 
 Default: `undefined`
 
-This option allows the use of a custom dependency extractor. It must be a node module that exports a function expecting a string as the first argument for the code to analyze and Jest's dependency extractor as the second argument (in case you only want to extend it).
+This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function expecting a string as the first argument for the code to analyze and Jest's dependency extractor as the second argument (in case you only want to extend it).
 
 The function should return an iterable (`Array`, `Set`, etc.) with the dependencies found in the code.
+
+That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
 
 ### `errorOnDeprecated` [boolean]
 

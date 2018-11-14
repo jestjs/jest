@@ -11,10 +11,7 @@ const blockCommentRe = /\/\*[^]*?\*\//g;
 const lineCommentRe = /\/\/.*/g;
 const LOAD_MODULE_RE = /(?:^|[^.]\s*)(\bloadModule\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g;
 
-module.exports = function dependencyExtractor(
-  code,
-  defaultDependencyExtractor,
-) {
+export function extract(code, defaultDependencyExtractor) {
   const dependencies = defaultDependencyExtractor(code);
 
   const addDependency = (match, pre, quot, dep, post) => {
@@ -28,4 +25,14 @@ module.exports = function dependencyExtractor(
     .replace(LOAD_MODULE_RE, addDependency);
 
   return dependencies;
-};
+}
+
+let cacheKey;
+
+export function getCacheKey() {
+  return cacheKey;
+}
+
+export function setCacheKey(key) {
+  cacheKey = key;
+}

@@ -232,6 +232,31 @@ describe('HasteMap', () => {
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
 
+  it('creates different cache file paths for different dependency extractor cache keys', () => {
+    jest.resetModuleRegistry();
+    const HasteMap = require('../');
+    const dependencyExtractor = require('./dependencyExtractor');
+    const config = Object.assign({}, defaultConfig, {
+      dependencyExtractor: require.resolve('./dependencyExtractor'),
+    });
+    dependencyExtractor.setCacheKey('foo');
+    const hasteMap1 = new HasteMap(config);
+    dependencyExtractor.setCacheKey('bar');
+    const hasteMap2 = new HasteMap(config);
+    expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
+  });
+
+  it('creates different cache file paths for different hasteImplModulePath cache keys', () => {
+    jest.resetModuleRegistry();
+    const HasteMap = require('../');
+    const hasteImpl = require('./haste_impl');
+    hasteImpl.setCacheKey('foo');
+    const hasteMap1 = new HasteMap(defaultConfig);
+    hasteImpl.setCacheKey('bar');
+    const hasteMap2 = new HasteMap(defaultConfig);
+    expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
+  });
+
   it('creates different cache file paths for different projects', () => {
     jest.resetModuleRegistry();
     const HasteMap = require('../');
