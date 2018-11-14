@@ -30,7 +30,7 @@ beforeEach(() => {
   // The worker mock returns a worker with custom methods, plus it stores them
   // in a global list, so that they can be accessed later. This list is reset in
   // every test.
-  jest.mock('../worker', () => {
+  jest.mock('../Worker', () => {
     const fakeClass = jest.fn(() => {
       const fakeWorker = {
         getStderr: () => ({once() {}, pipe() {}}),
@@ -63,7 +63,7 @@ beforeEach(() => {
     virtual: true,
   });
 
-  Worker = require('../worker').default;
+  Worker = require('../Worker').default;
   Farm = require('../index').default;
 });
 
