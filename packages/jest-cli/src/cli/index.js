@@ -139,7 +139,7 @@ const readResultsAndExit = (
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
   
   // Only exit if needed
-  if (code) {
+  if (typeof code === 'number' && code !== 0) {
     process.on('exit', () => (process.exitCode = code));
   }
 
