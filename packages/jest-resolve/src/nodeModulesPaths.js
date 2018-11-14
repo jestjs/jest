@@ -14,11 +14,10 @@ import path from 'path';
 import {sync as realpath} from 'realpath-native';
 
 type NodeModulesPathsOptions = {|
-  moduleDirectory?: Array <string>,
-    paths ?: ? Array <Path>,
+  moduleDirectory?: Array<string>,
+  paths?: ?Array<Path>,
+  preserveSymlinks?: boolean,
 |};
-
-const preserveSymlinks = true;
 
 export default function nodeModulesPaths(
   basedir: Path,
@@ -44,7 +43,7 @@ export default function nodeModulesPaths(
   // traverses parents of the physical path, not the symlinked path
   let physicalBasedir;
   try {
-    if (!preserveSymlinks) {
+    if (!options.preserveSymlinks) {
       physicalBasedir = realpath(basedirAbs);
     } else {
       physicalBasedir = basedirAbs;
