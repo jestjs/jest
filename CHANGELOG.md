@@ -109,6 +109,7 @@
 - `[docs]` Remove duplicate code in `MockFunctions` ([#7297](https://github.com/facebook/jest/pull/7297))
 - `[jest-worker]` Standardize filenames ([#7316](https://github.com/facebook/jest/pull/7316))
 - `[pretty-format]` Standardize filenames ([#7316](https://github.com/facebook/jest/pull/7316))
+- `[*]` Add check for Facebook copyright headers on CI ([#7370](https://github.com/facebook/jest/pull/7370))
 
 ### Performance
 
