@@ -1,0 +1,310 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Testing React Apps · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="At Facebook, we use Jest to test [React](http://facebook.github.io/react/) applications."/><meta name="docsearch:version" content="23.1"/><meta name="docsearch:language" content="zh-Hans"/><meta property="og:title" content="Testing React Apps · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/index.html"/><meta property="og:description" content="At Facebook, we use Jest to test [React](http://facebook.github.io/react/) applications."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/zh-Hans"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/zh-Hans/versions"><h3>23.1</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/zh-Hans/23.1/getting-started" target="_self">文档</a></li><li class="siteNavGroupActive"><a href="/docs/zh-Hans/23.1/api" target="_self">API</a></li><li class=""><a href="/zh-Hans/help" target="_self">帮助</a></li><li class=""><a href="/blog/" target="_self">博客</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>简体中文</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/23.1/tutorial-react">English</a></li><li><a href="/docs/ja/23.1/tutorial-react">日本語</a></li><li><a href="/docs/es-ES/23.1/tutorial-react">Español</a></li><li><a href="/docs/pt-BR/23.1/tutorial-react">Português (Brasil)</a></li><li><a href="/docs/ro/23.1/tutorial-react">Română</a></li><li><a href="/docs/ru/23.1/tutorial-react">Русский</a></li><li><a href="/docs/uk/23.1/tutorial-react">Українська</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>框架指南</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docMainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/TutorialReact.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Testing React Apps</h1></header><article><div><span><p>At Facebook, we use Jest to test <a href="http://facebook.github.io/react/">React</a> applications.</p>
+<h2><a class="anchor" aria-hidden="true" id="安装"></a><a href="#安装" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>安装</h2>
+<h3><a class="anchor" aria-hidden="true" id="使用create-react-app"></a><a href="#使用create-react-app" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>使用Create React App</h3>
+<p>如果你是刚开始学习React，我们推荐使用<a href="https://github.com/facebookincubator/create-react-app">Create React App</a>. 它现成就有，<a href="https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests">直接就用</a> You will only need to add <code>react-test-renderer</code> for rendering snapshots.</p>
+<p>运行</p>
+<pre><code class="hljs css language-bash">yarn add --dev react-test-renderer
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="不使用create-react-app"></a><a href="#不使用create-react-app" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>不使用Create React App</h3>
+<p>如果你已经有一个应用，你仅需要安装一些包来使他们运行起来。 我们使用<code>babel-jest</code>包和<code>babel-preset-react</code>，从而在测试环境中转换我们代码。 可参考<a href="/docs/zh-Hans/23.1/getting-started#using-babel">使用babel</a></p>
+<p>运行</p>
+<pre><code class="hljs css language-bash">yarn add --dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
+</code></pre>
+<p>你的<code>package.json</code>文件应该像下面这样(<code>&lt;current-version&gt;</code>是当前包的最新版本号) 请添加脚本项目和 jest 配置：</p>
+<pre><code class="hljs css language-json">// package.json
+  "dependencies": {
+    "react": "&lt;current-version&gt;",
+    "react-dom": "&lt;current-version&gt;"
+  },
+  "devDependencies": {
+    "babel-jest": "&lt;current-version&gt;",
+    "babel-preset-env": "&lt;current-version&gt;",
+    "babel-preset-react": "&lt;current-version&gt;",
+    "jest": "&lt;current-version&gt;",
+    "react-test-renderer": "&lt;current-version&gt;"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+</code></pre>
+<pre><code class="hljs css language-json">// .babelrc
+{
+  "presets": ["env", "react"]
+}
+</code></pre>
+<p><strong>准备工作已经完成！</strong></p>
+<h3><a class="anchor" aria-hidden="true" id="快照测试"></a><a href="#快照测试" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>快照测试</h3>
+<p>让我们来为一个渲染超链接的Link组件创建<a href="/docs/zh-Hans/23.1/snapshot-testing">快照测试</a></p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Link.react.js</span>
+<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+
+<span class="hljs-keyword">const</span> STATUS = {
+  <span class="hljs-attr">HOVERED</span>: <span class="hljs-string">'hovered'</span>,
+  <span class="hljs-attr">NORMAL</span>: <span class="hljs-string">'normal'</span>,
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Link</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+  <span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+
+    <span class="hljs-keyword">this</span>._onMouseEnter = <span class="hljs-keyword">this</span>._onMouseEnter.bind(<span class="hljs-keyword">this</span>);
+    <span class="hljs-keyword">this</span>._onMouseLeave = <span class="hljs-keyword">this</span>._onMouseLeave.bind(<span class="hljs-keyword">this</span>);
+
+    <span class="hljs-keyword">this</span>.state = {
+      <span class="hljs-attr">class</span>: STATUS.NORMAL,
+    };
+  }
+
+  _onMouseEnter() {
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">class</span>: STATUS.HOVERED});
+  }
+
+  _onMouseLeave() {
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">class</span>: STATUS.NORMAL});
+  }
+
+  render() {
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">a</span>
+        <span class="hljs-attr">className</span>=<span class="hljs-string">{this.state.class}</span>
+        <span class="hljs-attr">href</span>=<span class="hljs-string">{this.props.page</span> || '#'}
+        <span class="hljs-attr">onMouseEnter</span>=<span class="hljs-string">{this._onMouseEnter}</span>
+        <span class="hljs-attr">onMouseLeave</span>=<span class="hljs-string">{this._onMouseLeave}</span>
+      &gt;</span>
+        {this.props.children}
+      <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span></span>
+    );
+  }
+}
+</code></pre>
+<p>现在，使用React的test renderer和Jest的快照特性来和组件交互，获得渲染结果和生成快照文件：</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Link.react.test.js</span>
+<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> Link <span class="hljs-keyword">from</span> <span class="hljs-string">'../Link.react'</span>;
+<span class="hljs-keyword">import</span> renderer <span class="hljs-keyword">from</span> <span class="hljs-string">'react-test-renderer'</span>;
+
+test(<span class="hljs-string">'Link changes the class when hovered'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> component = renderer.create(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">page</span>=<span class="hljs-string">"http://www.facebook.com"</span>&gt;</span>Facebook<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>,
+  );
+  <span class="hljs-keyword">let</span> tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
+
+  <span class="hljs-comment">// manually trigger the callback</span>
+  tree.props.onMouseEnter();
+  <span class="hljs-comment">// re-rendering</span>
+  tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
+
+  <span class="hljs-comment">// manually trigger the callback</span>
+  tree.props.onMouseLeave();
+  <span class="hljs-comment">// re-rendering</span>
+  tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
+});
+</code></pre>
+<p>When you run <code>yarn test</code> or <code>jest</code>, this will produce an output file like this:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/__snapshots__/Link.react.test.js.snap</span>
+exports[<span class="hljs-string">`Link changes the class when hovered 1`</span>] = <span class="hljs-string">`
+&lt;a
+  className="normal"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}&gt;
+  Facebook
+&lt;/a&gt;
+`</span>;
+
+exports[<span class="hljs-string">`Link changes the class when hovered 2`</span>] = <span class="hljs-string">`
+&lt;a
+  className="hovered"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}&gt;
+  Facebook
+&lt;/a&gt;
+`</span>;
+
+exports[<span class="hljs-string">`Link changes the class when hovered 3`</span>] = <span class="hljs-string">`
+&lt;a
+  className="normal"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}&gt;
+  Facebook
+&lt;/a&gt;
+`</span>;
+</code></pre>
+<p>下次你运行测试时，渲染的结果将会和之前创建的快照进行比较。 代码变动时快照必须按顺序提交。 当快照测试失败，你需要去检查是否是你想要或不想要的变动。 如果变动符合预期，你可以通过<code>jest -u</code>调用Jest从而重写存在的快照。</p>
+<p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/snapshot">examples/snapshot</a>.</p>
+<h4><a class="anchor" aria-hidden="true" id="snapshot-testing-with-mocks-enzyme-and-react-16"></a><a href="#snapshot-testing-with-mocks-enzyme-and-react-16" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Snapshot Testing with Mocks, Enzyme and React 16</h4>
+<p>There's a caveat around snapshot testing when using Enzyme and React 16+. If you mock out a module using the following style:</p>
+<pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'../SomeDirectory/SomeComponent'</span>, () =&gt; <span class="hljs-string">'SomeComponent'</span>);
+</code></pre>
+<p>Then you will see warnings in the console:</p>
+<pre><code class="hljs css language-bash">Warning: &lt;SomeComponent /&gt; is using uppercase HTML. Always use lowercase HTML tags <span class="hljs-keyword">in</span> React.
+
+<span class="hljs-comment"># Or:</span>
+Warning: The tag &lt;SomeComponent&gt; is unrecognized <span class="hljs-keyword">in</span> this browser. If you meant to render a React component, start its name with an uppercase letter.
+</code></pre>
+<p>React 16 triggers these warnings due to how it checks element types, and the mocked module fails these checks. Your options are:</p>
+<ol>
+<li><p>Render as text. This way you won't see the props passed to the mock component in the snapshot, but it's straightforward:
+js
+jest.mock('./SomeComponent', () =&gt; () =&gt; 'SomeComponent');</p></li>
+<li><p>Render as a custom element. DOM &quot;custom elements&quot; aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
+js
+jest.mock('./Widget', () =&gt; 'mock-widget');</p></li>
+<li><p>Use <code>react-test-renderer</code>. The test renderer doesn't care about element types and will happily accept e.g. <code>SomeComponent</code>. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.</p></li>
+</ol>
+<h3><a class="anchor" aria-hidden="true" id="dom测试"></a><a href="#dom测试" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>DOM测试</h3>
+<p>如果你想要断言和操纵您渲染的组件你可以使用 <a href="http://airbnb.io/enzyme/">Enzyme</a> 或 React 的 <a href="http://facebook.github.io/react/docs/test-utils.html">TestUtils</a>。本例中我们使用 Enzyme。 本例中我们使用 Enzyme。</p>
+<p>You have to run <code>yarn add --dev enzyme</code> to use Enzyme. If you are using a React version below 15.5.0, you will also need to install <code>react-addons-test-utils</code>.</p>
+<p>我们来实现一个简单的两个标签来回切换显示的复选框：</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// CheckboxWithLabel.js</span>
+
+<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CheckboxWithLabel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+  <span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+    <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">isChecked</span>: <span class="hljs-literal">false</span>};
+
+    <span class="hljs-comment">// bind manually because React class components don't auto-bind</span>
+    <span class="hljs-comment">// http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding</span>
+    <span class="hljs-keyword">this</span>.onChange = <span class="hljs-keyword">this</span>.onChange.bind(<span class="hljs-keyword">this</span>);
+  }
+
+  onChange() {
+    <span class="hljs-keyword">this</span>.setState(<span class="hljs-function"><span class="hljs-params">prevState</span> =&gt;</span> ({<span class="hljs-attr">isChecked</span>: !prevState.isChecked}));
+  }
+
+  render() {
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">input</span>
+          <span class="hljs-attr">type</span>=<span class="hljs-string">"checkbox"</span>
+          <span class="hljs-attr">checked</span>=<span class="hljs-string">{this.state.isChecked}</span>
+          <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.onChange}</span>
+        /&gt;</span>
+        {this.state.isChecked ? this.props.labelOn : this.props.labelOff}
+      <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+    );
+  }
+}
+</span></code></pre>
+<p>在这个例子中我们使用了 Enzyme 的<a href="http://airbnb.io/enzyme/docs/api/shallow.html">浅渲染器</a>。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/CheckboxWithLabel-test.js</span>
+
+<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> {shallow} <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
+<span class="hljs-keyword">import</span> CheckboxWithLabel <span class="hljs-keyword">from</span> <span class="hljs-string">'../CheckboxWithLabel'</span>;
+
+test(<span class="hljs-string">'CheckboxWithLabel changes the text after click'</span>, () =&gt; {
+  <span class="hljs-comment">// Render a checkbox with label in the document</span>
+  <span class="hljs-keyword">const</span> checkbox = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">CheckboxWithLabel</span> <span class="hljs-attr">labelOn</span>=<span class="hljs-string">"On"</span> <span class="hljs-attr">labelOff</span>=<span class="hljs-string">"Off"</span> /&gt;</span>);
+
+  expect(checkbox.text()).toEqual('Off');
+
+  checkbox.find('input').simulate('change');
+
+  expect(checkbox.text()).toEqual('On');
+});
+</span></code></pre>
+<p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/enzyme">examples/enzyme</a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="自定义转译器"></a><a href="#自定义转译器" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>自定义转译器</h3>
+<p>如果你需要更高级的功能，您还可以建立自己的转译器。而不是使用 babel-jest，这里是使用 babel 的例子：</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// custom-transformer.js</span>
+<span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-keyword">const</span> babel = <span class="hljs-built_in">require</span>(<span class="hljs-string">'babel-core'</span>);
+<span class="hljs-keyword">const</span> jestPreset = <span class="hljs-built_in">require</span>(<span class="hljs-string">'babel-preset-jest'</span>);
+
+<span class="hljs-built_in">module</span>.exports = {
+  process(src, filename) {
+    <span class="hljs-keyword">if</span> (babel.util.canCompile(filename)) {
+      <span class="hljs-keyword">return</span> babel.transform(src, {
+        filename,
+        <span class="hljs-attr">presets</span>: [jestPreset],
+      });
+    }
+    <span class="hljs-keyword">return</span> src;
+  },
+};
+</code></pre>
+<p>不要忘记安装 <code>babel-core</code> 和 <code>babel-preset-jest</code> 包使这个例子可以工作。</p>
+<p>为了使这个与 Jest 一起工作，您需要更新您的 Jest 配置：<code>&quot;transform&quot;: {&quot;\\.js$&quot;: &quot;path/to/custom-transformer.js&quot;}</code>。</p>
+<p>如果你想建立一个带 babel 支持的转译器，你还可以使用 babel-jest 组合一个并传递选项到您的自定义配置：</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> babelJest = <span class="hljs-built_in">require</span>(<span class="hljs-string">'babel-jest'</span>);
+
+<span class="hljs-built_in">module</span>.exports = babelJest.createTransformer({
+  <span class="hljs-attr">presets</span>: [<span class="hljs-string">'my-custom-preset'</span>],
+});
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/zh-Hans/23.1/troubleshooting"><span class="arrow-prev">← </span><span>上一个</span></a><a class="docs-next button" href="/docs/zh-Hans/23.1/tutorial-react-native"><span>下一页</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav docOnPageNav"><ul class="toc-headings"><li><a href="#安装">安装</a><ul class="toc-headings"><li><a href="#使用create-react-app">使用Create React App</a></li><li><a href="#不使用create-react-app">不使用Create React App</a></li><li><a href="#快照测试">快照测试</a></li><li><a href="#dom测试">DOM测试</a></li><li><a href="#自定义转译器">自定义转译器</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/zh-Hans/getting-started.html">Getting Started</a><a href="/docs/zh-Hans/snapshot-testing.html">Guides</a><a href="/docs/zh-Hans/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2018 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:zh-Hans","version:23.1"]}
+              });
+            </script></body></html>
