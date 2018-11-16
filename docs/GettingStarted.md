@@ -84,6 +84,7 @@ To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-ru
 ```bash
 yarn add --dev babel-jest babel-core regenerator-runtime
 ```
+
 Or `npm`:
 
 ```bash
