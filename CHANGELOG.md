@@ -1,7 +1,7 @@
 ## master
 
 ### Features
-
+- `[expect]` Check if the string is empty in the createMatcher function ([#6805](https://github.com/facebook/jest/pull/6805))
 - `[jest-validate]` Add support for comments in `package.json` using a `"//"` key [#7295](https://github.com/facebook/jest/pull/7295))
 - `[jest-config]` Add shorthand for watch plugins and runners ([#7213](https://github.com/facebook/jest/pull/7213))
 - `[jest-config]` [**BREAKING**] Deprecate `setupTestFrameworkScriptFile` in favor of new `setupFilesAfterEnv` ([#7119](https://github.com/facebook/jest/pull/7119))
