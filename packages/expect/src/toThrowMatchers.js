@@ -51,7 +51,9 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
   }
 
   if (typeof expected === 'string') {
-    expected = new RegExp(escapeStrForRegex(expected));
+    if (expected !== '') {
+      expected = new RegExp(escapeStrForRegex(expected));
+    }
   }
 
   if (typeof expected === 'function') {
