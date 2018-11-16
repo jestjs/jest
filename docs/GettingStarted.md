@@ -57,7 +57,7 @@ This test used `expect` and `toBe` to test that two values were exactly identica
 
 ## Running from command line
 
-You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `yarn global add jest`) with a variety of useful options.
+You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `yarn global add jest` or `npm install jest-cli --global`) with a variety of useful options.
 
 Here's how to run Jest on files matching `my-test`, using `config.json` as a configuration file and display a native OS notification after the run:
 
@@ -79,13 +79,18 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
+To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages via `yarn`:
 
 ```bash
 yarn add --dev babel-jest babel-core regenerator-runtime
 ```
+Or `npm`:
 
-> Note: If you are using Babel version 7 then you need to install `babel-jest`, `babel-core@^7.0.0-bridge.0` and `@babel/core` with the following command:
+```bash
+npm install --save-dev babel-jest babel-core regenerator-runtime
+```
+
+> Note: If you are using Babel version 7 then you need to install `babel-jest`, `babel-core@^7.0.0-bridge.0` and `@babel/core` with the following command or its `npm` equivalent:
 >
 > ```bash
 > yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
