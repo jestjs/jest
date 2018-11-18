@@ -85,10 +85,16 @@ describe('promise it', () => {
     expect('sync').toBe('failed');
   });
 
-  it('succeeds if the test finishes in time', () =>
-    new Promise(resolve => setTimeout(resolve, 10)), 250);
+  it(
+    'succeeds if the test finishes in time',
+    () => new Promise(resolve => setTimeout(resolve, 10)),
+    250
+  );
 
   // failing tests
-  it('fails if a custom timeout is exceeded', () =>
-    new Promise(resolve => setTimeout(resolve, 100)), 10);
+  it(
+    'fails if a custom timeout is exceeded',
+    () => new Promise(resolve => setTimeout(resolve, 100)),
+    10
+  );
 });

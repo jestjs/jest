@@ -400,7 +400,7 @@ exports[`works with async failures 1`] = `
          | ^
       24 |   setTimeout(done, 50);
       25 | }, 5);
-      26 |
+      26 | 
 
       at __tests__/async_failures.test.js:23:1
 
