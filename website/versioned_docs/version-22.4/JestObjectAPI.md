@@ -26,6 +26,8 @@ The `jest` object is automatically in scope within every test file. The methods 
 - [`jest.runAllTimers()`](#jestrunalltimers)
 - [`jest.advanceTimersByTime(msToRun)`](#jestadvancetimersbytimemstorun)
 - [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
+- [`jest.requireActual()`](#jestrequireactual)
+- [`jest.requireMock()`](#jestrequiremock)
 - [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulename-moduleexports)
 - [`jest.setTimeout(timeout)`](#jestsettimeouttimeout)
 - [`jest.useFakeTimers()`](#jestusefaketimers)
@@ -346,6 +348,14 @@ When this API is called, all timers are advanced by `msToRun` milliseconds. All 
 Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
 
 This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
+
+### `jest.requireActual(moduleName)`
+
+Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
+
+### `jest.requireMock(moduleName)`
+
+Returns a mock module instead of the actual module, bypassing all checks on whether the module should be required normally or not.
 
 ### `jest.setMock(moduleName, moduleExports)`
 

@@ -41,7 +41,7 @@ const adapter: SCMAdapter = {
     } else if (options && options.changedSince) {
       args.push('--rev', `ancestor(., ${options.changedSince})`);
     } else if (options && options.lastCommit === true) {
-      args.push('-A');
+      args.push('--change', '.');
     }
     args.push(...includePaths);
 

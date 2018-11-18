@@ -58,6 +58,7 @@ async function runTestInternal(
   if (customEnvironment) {
     testEnvironment = getTestEnvironment(
       Object.assign({}, config, {
+        // $FlowFixMe
         testEnvironment: customEnvironment,
       }),
     );

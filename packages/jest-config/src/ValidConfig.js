@@ -10,6 +10,7 @@
 import type {InitialOptions} from 'types/Config';
 
 import {replacePathSepForRegex} from 'jest-regex-util';
+import {multipleValidOptions} from 'jest-validate';
 import {NODE_MODULES} from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
@@ -39,6 +40,7 @@ export default ({
       statements: 100,
     },
   },
+  dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: 'project-name',
   errorOnDeprecated: false,
   expand: false,
@@ -49,6 +51,7 @@ export default ({
   globalTeardown: 'teardown.js',
   globals: {__DEV__: true},
   haste: {
+    computeSha1: true,
     defaultPlatform: 'ios',
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],
@@ -87,7 +90,7 @@ export default ({
   runTestsByPath: false,
   runner: 'jest-runner',
   setupFiles: ['<rootDir>/setup.js'],
-  setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
+  setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,
@@ -100,7 +103,10 @@ export default ({
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+  testRegex: multipleValidOptions(
+    '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+    ['/__tests__/\\.test\\.jsx?$', '/__tests__/\\.spec\\.jsx?$'],
+  ),
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
   testURL: 'http://localhost',

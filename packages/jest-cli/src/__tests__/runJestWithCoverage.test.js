@@ -1,3 +1,5 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 import runJest from '../runJest';
 
 jest.mock('jest-util');
@@ -51,7 +53,7 @@ jest.mock(
     },
 );
 
-const config = {roots: [], testPathIgnorePatterns: [], testRegex: ''};
+const config = {roots: [], testPathIgnorePatterns: [], testRegex: []};
 let globalConfig;
 const defaults = {
   changedFilesPromise: Promise.resolve({

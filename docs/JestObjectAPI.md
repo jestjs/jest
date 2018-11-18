@@ -5,43 +5,7 @@ title: The Jest Object
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior.
 
-## Methods
-
-- [`jest.clearAllTimers()`](#jestclearalltimers)
-- [`jest.disableAutomock()`](#jestdisableautomock)
-- [`jest.enableAutomock()`](#jestenableautomock)
-- [`jest.fn(implementation)`](#jestfnimplementation)
-- [`jest.isMockFunction(fn)`](#jestismockfunctionfn)
-- [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
-- [`jest.mock(moduleName, factory, options)`](#jestmockmodulename-factory-options)
-- [`jest.unmock(moduleName)`](#jestunmockmodulename)
-- [`jest.doMock(moduleName, factory, options)`](#jestdomockmodulename-factory-options)
-- [`jest.dontMock(moduleName)`](#jestdontmockmodulename)
-- [`jest.clearAllMocks()`](#jestclearallmocks)
-- [`jest.resetAllMocks()`](#jestresetallmocks)
-- [`jest.restoreAllMocks()`](#jestrestoreallmocks)
-- [`jest.resetModules()`](#jestresetmodules)
-- [`jest.retryTimes()`](#jestretrytimes)
-- [`jest.runAllTicks()`](#jestrunallticks)
-- [`jest.runAllTimers()`](#jestrunalltimers)
-- [`jest.advanceTimersByTime(msToRun)`](#jestadvancetimersbytimemstorun)
-- [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
-- [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulename-moduleexports)
-- [`jest.setTimeout(timeout)`](#jestsettimeouttimeout)
-- [`jest.useFakeTimers()`](#jestusefaketimers)
-- [`jest.useRealTimers()`](#jestuserealtimers)
-- [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname)
-- [`jest.spyOn(object, methodName, accessType?)`](#jestspyonobject-methodname-accesstype)
-
----
-
-## Reference
-
-### `jest.clearAllTimers()`
-
-Removes any pending timers from the timer system.
-
-This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
+## Mock Modules
 
 ### `jest.disableAutomock()`
 
@@ -54,7 +18,9 @@ After this method is called, all `require()`s will return the real versions of e
 Jest configuration:
 
 ```json
-"automock": true
+{
+  "automock": true
+}
 ```
 
 Example:
@@ -123,24 +89,6 @@ test('original implementation', () => {
 ```
 
 _Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior._
-
-### `jest.fn(implementation)`
-
-Returns a new, unused [mock function](MockFunctionAPI.md). Optionally takes a mock implementation.
-
-```js
-const mockFn = jest.fn();
-mockFn();
-expect(mockFn).toHaveBeenCalled();
-
-// With a mock implementation:
-const returnsTrue = jest.fn(() => true);
-console.log(returnsTrue()); // true;
-```
-
-### `jest.isMockFunction(fn)`
-
-Determines if the given function is a mocked function.
 
 ### `jest.genMockFromModule(moduleName)`
 
@@ -264,21 +212,25 @@ When using `babel-jest`, calls to `unmock` will automatically be hoisted to the 
 
 Returns the `jest` object for chaining.
 
-### `jest.clearAllMocks()`
+### `jest.setMock(moduleName, moduleExports)`
 
-Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
+Explicitly supplies the mock object that the module system should return for the specified module.
 
-Returns the `jest` object for chaining.
+On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](ManualMocks.md) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
 
-### `jest.resetAllMocks()`
-
-Resets the state of all mocks. Equivalent to calling [`.mockReset()`](MockFunctionAPI.md#mockfnmockreset) on every mocked function.
+In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
 
 Returns the `jest` object for chaining.
 
-### `jest.restoreAllMocks()`
+_Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object._
 
-Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
+### `jest.requireActual(moduleName)`
+
+Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
+
+### `jest.requireMock(moduleName)`
+
+Returns a mock module instead of the actual module, bypassing all checks on whether the module should be required normally or not.
 
 ### `jest.resetModules()`
 
@@ -313,92 +265,25 @@ test('works too', () => {
 
 Returns the `jest` object for chaining.
 
-### `jest.retryTimes()`
+## Mock functions
 
-Runs failed tests n-times until they pass or until the max number of retries are exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus)!
+### `jest.fn(implementation)`
 
-Example in a test:
-
-```js
-jest.retryTimes(3);
-test('will fail', () => {
-  expect(true).toBe(false);
-});
-```
-
-Returns the `jest` object for chaining.
-
-### `jest.runAllTicks()`
-
-Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
-
-When this API is called, all pending micro-tasks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue.
-
-### `jest.runAllTimers()`
-
-Exhausts the **macro**-task queue (i.e., all tasks queued by `setTimeout()`, `setInterval()`, and `setImmediate()`).
-
-When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()` will be executed. Additionally if those macro-tasks themselves schedule new macro-tasks, those will be continually exhausted until there are no more macro-tasks remaining in the queue.
-
-This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](TimerMocks.md) doc for more information.
-
-### `jest.runAllImmediates()`
-
-Exhausts all tasks queued by `setImmediate()`.
-
-### `jest.advanceTimersByTime(msToRun)`
-
-##### renamed in Jest **22.0.0+**
-
-Also under the alias: `.runTimersToTime()`
-
-Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
-
-When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
-
-### `jest.runOnlyPendingTimers()`
-
-Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
-
-This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
-
-### `jest.setMock(moduleName, moduleExports)`
-
-Explicitly supplies the mock object that the module system should return for the specified module.
-
-On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](ManualMocks.md) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
-
-In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
-
-Returns the `jest` object for chaining.
-
-_Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object._
-
-### `jest.setTimeout(timeout)`
-
-Set the default timeout interval for tests and before/after hooks in milliseconds.
-
-_Note: The default timeout interval is 5 seconds if this method is not called._
-
-_Note: The method must be called after the test framework is installed in the environment and before the test runs. A good place to do this is in the `setupTestFrameworkScriptFile`._
-
-Example:
+Returns a new, unused [mock function](MockFunctionAPI.md). Optionally takes a mock implementation.
 
 ```js
-jest.setTimeout(1000); // 1 second
+const mockFn = jest.fn();
+mockFn();
+expect(mockFn).toHaveBeenCalled();
+
+// With a mock implementation:
+const returnsTrue = jest.fn(() => true);
+console.log(returnsTrue()); // true;
 ```
 
-### `jest.useFakeTimers()`
+### `jest.isMockFunction(fn)`
 
-Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
-
-Returns the `jest` object for chaining.
-
-### `jest.useRealTimers()`
-
-Instructs Jest to use the real versions of the standard timer functions.
-
-Returns the `jest` object for chaining.
+Determines if the given function is a mocked function.
 
 ### `jest.spyOn(object, methodName)`
 
@@ -491,3 +376,108 @@ test('plays audio', () => {
   spy.mockRestore();
 });
 ```
+
+### `jest.clearAllMocks()`
+
+Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
+
+Returns the `jest` object for chaining.
+
+### `jest.resetAllMocks()`
+
+Resets the state of all mocks. Equivalent to calling [`.mockReset()`](MockFunctionAPI.md#mockfnmockreset) on every mocked function.
+
+Returns the `jest` object for chaining.
+
+### `jest.restoreAllMocks()`
+
+Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
+
+## Mock timers
+
+### `jest.useFakeTimers()`
+
+Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
+
+Returns the `jest` object for chaining.
+
+### `jest.useRealTimers()`
+
+Instructs Jest to use the real versions of the standard timer functions.
+
+Returns the `jest` object for chaining.
+
+### `jest.runAllTicks()`
+
+Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
+
+When this API is called, all pending micro-tasks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue.
+
+### `jest.runAllTimers()`
+
+Exhausts the **macro**-task queue (i.e., all tasks queued by `setTimeout()`, `setInterval()`, and `setImmediate()`).
+
+When this API is called, all pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()` will be executed. Additionally if those macro-tasks themselves schedule new macro-tasks, those will be continually exhausted until there are no more macro-tasks remaining in the queue.
+
+This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](TimerMocks.md) doc for more information.
+
+### `jest.runAllImmediates()`
+
+Exhausts all tasks queued by `setImmediate()`.
+
+### `jest.advanceTimersByTime(msToRun)`
+
+##### renamed in Jest **22.0.0+**
+
+Also under the alias: `.runTimersToTime()`
+
+Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
+
+When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
+
+### `jest.runOnlyPendingTimers()`
+
+Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
+
+This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
+
+### `jest.clearAllTimers()`
+
+Removes any pending timers from the timer system.
+
+This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
+
+### `jest.getTimerCount()`
+
+Returns the number of fake timers still left to run.
+
+## Misc
+
+### `jest.setTimeout(timeout)`
+
+Set the default timeout interval for tests and before/after hooks in milliseconds.
+
+_Note: The default timeout interval is 5 seconds if this method is not called._
+
+_Note: The method must be called after the test framework is installed in the environment and before the test runs. A good place to do this is in the `setupTestFrameworkScriptFile`._
+
+Example:
+
+```js
+jest.setTimeout(1000); // 1 second
+```
+
+### `jest.retryTimes()`
+
+Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus)!
+
+Example in a test:
+
+```js
+jest.retryTimes(3);
+test('will fail', () => {
+  expect(true).toBe(false);
+});
+```
+
+Returns the `jest` object for chaining.

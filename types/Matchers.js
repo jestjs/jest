@@ -50,7 +50,7 @@ export type Expect = {
   assertions(number): void,
   extend(any): void,
   extractExpectedAssertionsErrors: () => Array<{
-    actual: string,
+    actual: string | number,
     error: Error,
     expected: string,
   }>,

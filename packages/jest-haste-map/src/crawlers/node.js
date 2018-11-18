@@ -128,6 +128,10 @@ function findNative(
 module.exports = function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
+  if (options.mapper) {
+    throw new Error(`Option 'mapper' isn't supported by the Node crawler`);
+  }
+
   const {
     data,
     extensions,

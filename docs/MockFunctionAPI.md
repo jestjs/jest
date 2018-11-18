@@ -29,24 +29,30 @@ For example: A mock function `f` that has been called twice, with the arguments 
 
 ### `mockFn.mock.results`
 
-An array containing the results of all calls that have been made to this mock function. Each entry in this array is an object containing a boolean `isThrow` property, and a `value` property. `isThrow` is true if the call terminated due to a `throw`, or false if the the call returned normally. The `value` property contains the value that was thrown or returned.
+An array containing the results of all calls that have been made to this mock function. Each entry in this array is an object containing a `type` property, and a `value` property. `type` will be one of the following:
 
-For example: A mock function `f` that has been called three times, returning `result1`, throwing an error, and then returning `result2`, would have a `mock.results` array that looks like this:
+- `'return'` - Indicates that the call completed by returning normally.
+- `'throw'` - Indicates that the call completed by throwing a value.
+- `'incomplete'` - Indicates that the call has not yet completed. This occurs if you test the result from within the mock function itself, or from within a function that was called by the mock.
+
+The `value` property contains the value that was thrown or returned. `value` is undefined when `type === 'incomplete'`.
+
+For example: A mock function `f` that has been called three times, returning `'result1'`, throwing an error, and then returning `'result2'`, would have a `mock.results` array that looks like this:
 
 ```js
 [
   {
-    isThrow: false,
+    type: 'return',
     value: 'result1',
   },
   {
-    isThrow: true,
+    type: 'throw',
     value: {
       /* Error instance */
     },
   },
   {
-    isThrow: false,
+    type: 'return',
     value: 'result2',
   },
 ];

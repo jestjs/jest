@@ -197,7 +197,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
     ```
 2.  Render as a custom element. DOM "custom elements" aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
     ```js
-    jest.mock('./Widget', () => 'mock-widget');
+    jest.mock('./Widget', () => () => <mock-widget />);
     ```
 3.  Use `react-test-renderer`. The test renderer doesn't care about element types and will happily accept e.g. `SomeComponent`. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.
 4.  Disable warnings all together (should be done in your jest setup file):
@@ -208,9 +208,11 @@ React 16 triggers these warnings due to how it checks element types, and the moc
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [Enzyme](http://airbnb.io/enzyme/) or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme for this example.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
-You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+#### react-testing-library
+
+You have to run `yarn add --dev react-testing-library` to use react-testing-library.
 
 Let's implement a simple checkbox which swaps between two labels:
 
@@ -248,7 +250,35 @@ export default class CheckboxWithLabel extends React.Component {
 }
 ```
 
-We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
+```javascript
+// __tests__/CheckboxWithLabel-test.js
+import React from 'react';
+import {render, fireEvent, cleanup} from 'react-testing-library';
+import CheckboxWithLabel from '../CheckboxWithLabel';
+
+// automatically unmount and cleanup DOM after the test is finished.
+afterEach(cleanup);
+
+it('CheckboxWithLabel changes the text after click', () => {
+  const {queryByLabelText, getByLabelText} = render(
+    <CheckboxWithLabel labelOn="On" labelOff="Off" />,
+  );
+
+  expect(queryByLabelText(/off/i)).toBeTruthy();
+
+  fireEvent.click(getByLabelText(/off/i));
+
+  expect(queryByLabelText(/on/i)).toBeTruthy();
+});
+```
+
+The code for this example is available at [examples/react-testing-library](https://github.com/facebook/jest/tree/master/examples/react-testing-library).
+
+#### Enzyme
+
+You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+
+Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js

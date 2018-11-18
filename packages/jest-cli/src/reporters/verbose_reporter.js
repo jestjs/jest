@@ -28,7 +28,9 @@ export default class VerboseReporter extends DefaultReporter {
     this._globalConfig = globalConfig;
   }
 
-  static filterTestResults(testResults: Array<AssertionResult>) {
+  static filterTestResults(
+    testResults: Array<AssertionResult>,
+  ): Array<AssertionResult> {
     return testResults.filter(({status}) => status !== 'pending');
   }
 
