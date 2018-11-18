@@ -14,7 +14,6 @@ const os = require('os');
 const {makeGlobalConfig, makeProjectConfig} = require('../../../../TestUtils');
 
 jest.mock('jest-runtime', () => {
-  // $FlowFixMe requireActual
   const realRuntime = jest.requireActual('jest-runtime');
   realRuntime.shouldInstrument = () => true;
   return realRuntime;

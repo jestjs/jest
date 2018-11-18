@@ -109,7 +109,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   testLocationInResults: false,
   testMatch: [],
   testPathIgnorePatterns: [],
-  testRegex: [/\.test\.js$/],
+  testRegex: ['\\.test\\.js$'],
   testRunner: 'jest-jasmine2',
   testURL: '',
   timers: 'real',

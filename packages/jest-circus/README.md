@@ -14,7 +14,7 @@ Circus is a flux-based test runner for Jest that is fast, easy to maintain, and 
 Install `jest-circus` using yarn:
 
 ```bash
-yarn add --dev jest-cicus
+yarn add --dev jest-circus
 ```
 
 Or via npm:

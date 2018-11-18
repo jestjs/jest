@@ -27,12 +27,14 @@ exports[`show error message with matching files 1`] = `
 
     See https://jestjs.io/docs/en/configuration#modulefileextensions-array-string
 
-    > 1 | module.exports = require('./some-json-file');
-        |                  ^
+      1 | // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
       2 | 
+    > 3 | module.exports = require('./some-json-file');
+        |                  ^
+      4 | 
 
-      at packages/jest-resolve/build/index.js:221:17
-      at index.js:1:18
+      at packages/jest-resolve/build/index.js:224:17
+      at index.js:3:18
 
 "
 `;

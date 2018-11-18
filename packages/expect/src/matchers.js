@@ -32,7 +32,7 @@ import {
   typeEquality,
   isOneline,
 } from './utils';
-import {equals} from './jasmine_utils';
+import {equals} from './jasmineUtils';
 
 type ContainIterable =
   | Array<any>
@@ -628,27 +628,20 @@ const matchers: MatchersObject = {
       true,
     );
 
+    const hint = matcherHint('.toStrictEqual', undefined, undefined, {
+      isNot: this.isNot,
+    });
     const message = pass
       ? () =>
-          matcherHint('.not.toStrictEqual') +
+          hint +
           '\n\n' +
-          `Expected value to not equal:\n` +
-          `  ${printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${printReceived(received)}`
+          `Expected: ${printExpected(expected)}\n` +
+          `Received: ${printReceived(received)}`
       : () => {
           const diffString = diff(expected, received, {
             expand: this.expand,
           });
-          return (
-            matcherHint('.toStrictEqual') +
-            '\n\n' +
-            `Expected value to equal:\n` +
-            `  ${printExpected(expected)}\n` +
-            `Received:\n` +
-            `  ${printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
-          );
+          return hint + (diffString ? `\n\nDifference:\n\n${diffString}` : '');
         };
 
     // Passing the the actual and expected objects so that a custom reporter

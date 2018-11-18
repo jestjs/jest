@@ -14,7 +14,6 @@ JSDOMEnvironment.mockImplementation(function(config) {
   this.global = {
     JSON,
     console: {},
-    mockClearTimers: jest.fn(),
   };
 
   const globalValues = Object.assign({}, config.globals);

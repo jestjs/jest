@@ -1,3 +1,5 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 import type {ProjectConfig, Path} from 'types/Config';
 import type {SnapshotResolver} from 'types/SnapshotResolver';
 import chalk from 'chalk';

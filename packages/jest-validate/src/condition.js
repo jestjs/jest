@@ -9,7 +9,7 @@
 
 const toString = Object.prototype.toString;
 
-const MultipleValidOptionsSymbol = Symbol('JEST_MULTIPLE_VALID_OPTIONS');
+const MULTIPLE_VALID_OPTIONS_SYMBOL = Symbol('JEST_MULTIPLE_VALID_OPTIONS');
 
 function validationConditionSingle(option: any, validOption: any): boolean {
   return (
@@ -22,10 +22,9 @@ function validationConditionSingle(option: any, validOption: any): boolean {
 export function getValues(validOption: any) {
   if (
     Array.isArray(validOption) &&
-    validOption.length &&
-    validOption[0] === MultipleValidOptionsSymbol
+    validOption[MULTIPLE_VALID_OPTIONS_SYMBOL]
   ) {
-    return validOption.slice(1);
+    return validOption;
   }
   return [validOption];
 }
@@ -34,6 +33,9 @@ export function validationCondition(option: any, validOption: any): boolean {
   return getValues(validOption).some(e => validationConditionSingle(option, e));
 }
 
-export function MultipleValidOptions(...args: Array<any>) {
-  return [MultipleValidOptionsSymbol, ...args];
+export function multipleValidOptions(...args: Array<any>) {
+  const options = [...args];
+  // $FlowFixMe
+  options[MULTIPLE_VALID_OPTIONS_SYMBOL] = true;
+  return options;
 }

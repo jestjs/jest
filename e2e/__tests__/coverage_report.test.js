@@ -185,3 +185,13 @@ test('collects coverage from duplicate files avoiding shared cache', () => {
   expect(stdout).toMatchSnapshot();
   expect(status).toBe(0);
 });
+
+test('generates coverage when using the testRegex config param ', () => {
+  const {stdout, status} = runJest(DIR, [
+    '--no-cache',
+    '--testRegex=__tests__',
+    '--coverage',
+  ]);
+  expect(stdout).toMatchSnapshot();
+  expect(status).toBe(0);
+});

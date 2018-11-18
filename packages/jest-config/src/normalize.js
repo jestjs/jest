@@ -8,7 +8,13 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {InitialOptions, ReporterConfig} from 'types/Config';
+import type {
+  InitialOptions,
+  DefaultOptions,
+  ReporterConfig,
+  GlobalConfig,
+  ProjectConfig,
+} from 'types/Config';
 
 import crypto from 'crypto';
 import glob from 'glob';
@@ -28,6 +34,8 @@ import {
   _replaceRootDirTags,
   escapeGlobCharacters,
   getTestEnvironment,
+  getRunner,
+  getWatchPlugin,
   resolve,
 } from './utils';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
@@ -394,7 +402,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   }
 
   if (options.testEnvironment) {
-    options.testEnvironment = getTestEnvironment(options);
+    options.testEnvironment = getTestEnvironment({
+      rootDir: options.rootDir,
+      testEnvironment: options.testEnvironment,
+    });
   }
 
   if (!options.roots && options.testPathDirs) {
@@ -414,9 +425,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   }
 
   const babelJest = setupBabelJest(options);
-  const newOptions = Object.assign({}, DEFAULT_CONFIG);
-  // Cast back to exact type
-  options = (options: InitialOptions);
+  const newOptions: $Shape<
+    DefaultOptions & ProjectConfig & GlobalConfig,
+  > = (Object.assign({}, DEFAULT_CONFIG): any);
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -426,7 +437,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     });
   }
 
-  Object.keys(options).reduce((newOptions, key) => {
+  Object.keys(options).reduce((newOptions, key: $Keys<InitialOptions>) => {
     // The resolver has been resolved separately; skip it
     if (key === 'resolver') {
       return newOptions;
@@ -472,10 +483,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
+      case 'dependencyExtractor':
       case 'globalSetup':
       case 'globalTeardown':
       case 'moduleLoader':
-      case 'runner':
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
@@ -485,6 +496,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           resolve(newOptions.resolver, {
             filePath: options[key],
             key,
+            rootDir: options.rootDir,
+          });
+        break;
+      case 'runner':
+        value =
+          options[key] &&
+          getRunner(newOptions.resolver, {
+            filePath: options[key],
             rootDir: options.rootDir,
           });
         break;
@@ -569,23 +588,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         );
         break;
       case 'testRegex':
-        const valueOrEmptyArray = options[key] || [];
-        const valueArray = Array.isArray(valueOrEmptyArray)
-          ? valueOrEmptyArray
-          : [valueOrEmptyArray];
-
-        value = valueArray.map(replacePathSepForRegex).map(pattern => {
-          try {
-            return new RegExp(pattern);
-          } catch (err) {
-            throw createConfigError(
-              `Error parsing configuration for ${chalk.bold(
-                key,
-              )}: "${pattern}" could not be parsed.\n` +
-                `Error: ${err.message}`,
-            );
-          }
-        });
+        value = options[key]
+          ? [].concat(options[key]).map(replacePathSepForRegex)
+          : [];
         break;
       case 'moduleFileExtensions': {
         value = options[key];
@@ -672,18 +677,16 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           if (typeof watchPlugin === 'string') {
             return {
               config: {},
-              path: resolve(newOptions.resolver, {
+              path: getWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
-                key,
                 rootDir: options.rootDir,
               }),
             };
           } else {
             return {
               config: watchPlugin[1] || {},
-              path: resolve(newOptions.resolver, {
+              path: getWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
-                key,
                 rootDir: options.rootDir,
               }),
             };
@@ -691,6 +694,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         });
         break;
     }
+    // $FlowFixMe - automock is missing in GlobalConfig, so what
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
