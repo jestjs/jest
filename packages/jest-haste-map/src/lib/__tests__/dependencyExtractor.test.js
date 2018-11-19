@@ -58,10 +58,6 @@ describe('dependencyExtractor', () => {
         a as aliased_a,
         b,
       }, depDefault from 'dep4';
-
-      // Bad
-      foo . import ('inv1');
-      foo . export ('inv2');
     `;
     expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
   });
@@ -88,10 +84,6 @@ describe('dependencyExtractor', () => {
         a as aliased_a,
         b,
       }, depDefault from 'dep4';
-
-      // Bad
-      foo . export ('inv1');
-      foo . export ('inv2');
     `;
     expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
   });
@@ -136,7 +128,8 @@ describe('dependencyExtractor', () => {
       if (require(\`dep3\`).cond) {}
 
       // Bad
-      foo . require('inv1')
+      // Not supported in Node <9:
+      // foo . require('inv1')
       xrequire('inv2');
       requirex('inv3');
       require('inv4', 'inv5');
@@ -156,7 +149,8 @@ describe('dependencyExtractor', () => {
         .requireActual('dep4');
 
       // Bad
-      foo . require.requireActual('inv1')
+      // Not supported in Node <9:
+      // foo . require.requireActual('inv1')
       xrequire.requireActual('inv2');
       require.requireActualx('inv3');
       require.requireActual('inv4', 'inv5');
@@ -176,7 +170,8 @@ describe('dependencyExtractor', () => {
         .requireMock('dep4');
 
       // Bad
-      foo . require.requireMock('inv1')
+      // Not supported in Node <9:
+      // foo . require.requireMock('inv1')
       xrequire.requireMock('inv2');
       require.requireMockx('inv3');
       require.requireMock('inv4', 'inv5');
@@ -196,7 +191,8 @@ describe('dependencyExtractor', () => {
         .requireActual('dep4');
 
       // Bad
-      foo . jest.requireActual('inv1')
+      // Not supported in Node <9:
+      // foo . jest.requireActual('inv1')
       xjest.requireActual('inv2');
       jest.requireActualx('inv3');
       jest.requireActual('inv4', 'inv5');
@@ -216,7 +212,8 @@ describe('dependencyExtractor', () => {
         .requireMock('dep4');
 
       // Bad
-      foo . jest.requireMock('inv1')
+      // Not supported in Node <9:
+      // foo . jest.requireMock('inv1')
       xjest.requireMock('inv2');
       jest.requireMockx('inv3');
       jest.requireMock('inv4', 'inv5');
@@ -236,7 +233,8 @@ describe('dependencyExtractor', () => {
         .requireMock('dep4');
 
       // Bad
-      foo . jest.genMockFromModule('inv1')
+      // Not supported in Node <9:
+      // foo . jest.genMockFromModule('inv1')
       xjest.genMockFromModule('inv2');
       jest.genMockFromModulex('inv3');
       jest.genMockFromModule('inv4', 'inv5');
