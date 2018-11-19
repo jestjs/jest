@@ -81,13 +81,12 @@
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">request</span>(<span class="hljs-params">url</span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
     <span class="hljs-keyword">const</span> userID = <span class="hljs-built_in">parseInt</span>(url.substr(<span class="hljs-string">'/users/'</span>.length), <span class="hljs-number">10</span>);
-    process.nextTick(
-      <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
-        users[userID]
-          ? resolve(users[userID])
-          : reject({
-              <span class="hljs-attr">error</span>: <span class="hljs-string">'User with '</span> + userID + <span class="hljs-string">' not found.'</span>,
-            }),
+    process.nextTick(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
+      users[userID]
+        ? resolve(users[userID])
+        : reject({
+            <span class="hljs-attr">error</span>: <span class="hljs-string">'User with '</span> + userID + <span class="hljs-string">' not found.'</span>,
+          }),
     );
   });
 }
