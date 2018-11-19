@@ -22,7 +22,7 @@ function forEach(items, callback) {
 To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.
 
 ```javascript
-const mockCallback = jest.fn();
+const mockCallback = jest.fn(x => 42 + x);
 forEach([0, 1], mockCallback);
 
 // The mock function is called twice
@@ -95,7 +95,7 @@ console.log(myMock(), myMock(), myMock(), myMock());
 // > 10, 'x', true, true
 ```
 
-Mock functions are also very effective in code that uses a functional continuation-passing style. Code written in this style helps avoid the need for complicated stubs that recreate behavior of the real component they're standing in for, in favor of injecting values directly into the test right before they're used.
+Mock functions are also very effective in code that uses a functional continuation-passing style. Code written in this style helps avoid the need for complicated stubs that recreate the behavior of the real component they're standing in for, in favor of injecting values directly into the test right before they're used.
 
 ```javascript
 const filterTestFn = jest.fn();
@@ -159,9 +159,6 @@ Still, there are cases where it's useful to go beyond the ability to specify ret
 
 ```javascript
 const myMockFn = jest.fn(cb => cb(null, true));
-
-myMockFn((err, val) => console.log(val));
-// > true
 
 myMockFn((err, val) => console.log(val));
 // > true
@@ -280,7 +277,7 @@ expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
 // A snapshot will check that a mock was invoked the same number of times,
 // in the same order, with the same arguments. It will also assert on the name.
 expect(mockFunc.mock.calls).toEqual([[arg1, arg2]]);
-expect(mockFunc.mock.getMockName()).toBe('a mock name');
+expect(mockFunc.getMockName()).toBe('a mock name');
 ```
 
 For a complete list of matchers, check out the [reference docs](ExpectAPI.md).

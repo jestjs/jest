@@ -16,6 +16,18 @@ module.exports = function createRuntime(filename, config) {
   config = normalize(
     Object.assign(
       {
+        haste: {
+          hasteImplModulePath: path.resolve(
+            __dirname,
+            '..',
+            '..',
+            '..',
+            'jest-haste-map',
+            'src',
+            '__tests__',
+            'haste_impl.js',
+          ),
+        },
         name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
         rootDir: path.resolve(path.dirname(filename), 'test_root'),
       },

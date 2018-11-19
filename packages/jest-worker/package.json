@@ -9,5 +9,8 @@
   "main": "build/index.js",
   "dependencies": {
     "merge-stream": "^1.0.1"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

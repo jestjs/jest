@@ -1,0 +1,1 @@
+test('snapshots', () => expect({apple: "original value"}).toMatchSnapshot());

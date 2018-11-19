@@ -13,13 +13,18 @@ import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
-  PARENT_MESSAGE_ERROR,
+  PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_SETUP_ERROR,
   PARENT_MESSAGE_OK,
 } from '../types';
 
 import type {ChildMessageInitialize, ChildMessageCall} from '../types';
 
+import type {PARENT_MESSAGE_ERROR} from './types';
+
 let file = null;
+let setupArgs: Array<mixed> = [];
+let initialized = false;
 
 /**
  * This file is a small bootstrapper for workers. It sets up the communication
@@ -47,7 +52,7 @@ process.on('message', (request: any) => {
       break;
 
     case CHILD_MESSAGE_END:
-      process.exit(0);
+      end();
       break;
 
     default:
@@ -65,7 +70,15 @@ function reportSuccess(result: any) {
   process.send([PARENT_MESSAGE_OK, result]);
 }
 
-function reportError(error: Error) {
+function reportClientError(error: Error) {
+  return reportError(error, PARENT_MESSAGE_CLIENT_ERROR);
+}
+
+function reportInitializeError(error: Error) {
+  return reportError(error, PARENT_MESSAGE_SETUP_ERROR);
+}
+
+function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
   if (!process || !process.send) {
     throw new Error('Child can only be used on a forked process');
   }
@@ -75,7 +88,7 @@ function reportError(error: Error) {
   }
 
   process.send([
-    PARENT_MESSAGE_ERROR,
+    type,
     error.constructor && error.constructor.name,
     error.message,
     error.stack,
@@ -84,25 +97,70 @@ function reportError(error: Error) {
   ]);
 }
 
+function end(): void {
+  // $FlowFixMe: This has to be a dynamic require.
+  const main = require(file);
+
+  if (!main.teardown) {
+    exitProcess();
+
+    return;
+  }
+
+  execFunction(main.teardown, main, [], exitProcess, exitProcess);
+}
+
+function exitProcess(): void {
+  process.exit(0);
+}
+
 function execMethod(method: string, args: $ReadOnlyArray<any>): void {
   // $FlowFixMe: This has to be a dynamic require.
   const main = require(file);
+
+  let fn;
+
+  if (method === 'default') {
+    fn = main.__esModule ? main['default'] : main;
+  } else {
+    fn = main[method];
+  }
+
+  function execHelper() {
+    execFunction(fn, main, args, reportSuccess, reportClientError);
+  }
+
+  if (initialized || !main.setup) {
+    execHelper();
+
+    return;
+  }
+
+  initialized = true;
+
+  execFunction(main.setup, main, setupArgs, execHelper, reportInitializeError);
+}
+
+function execFunction(
+  fn: (...args: $ReadOnlyArray<mixed>) => mixed,
+  ctx: mixed,
+  args: $ReadOnlyArray<mixed>,
+  onResult: (result: mixed) => void,
+  onError: (error: Error) => void,
+): void {
   let result;
 
   try {
-    if (method === 'default') {
-      result = (main.__esModule ? main['default'] : main).apply(global, args);
-    } else {
-      result = main[method].apply(main, args);
-    }
+    result = fn.apply(ctx, args);
   } catch (err) {
-    reportError(err);
+    onError(err);
+
     return;
   }
 
   if (result && typeof result.then === 'function') {
-    result.then(reportSuccess, reportError);
+    result.then(onResult, onError);
   } else {
-    reportSuccess(result);
+    onResult(result);
   }
 }

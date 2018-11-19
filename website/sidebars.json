@@ -16,9 +16,11 @@
       "timer-mocks",
       "manual-mocks",
       "es6-class-mocks",
+      "bypassing-module-mocks",
       "webpack",
       "puppeteer",
       "mongodb",
+      "tutorial-jquery",
       "watch-plugins",
       "migration-guide",
       "troubleshooting"

@@ -30,6 +30,7 @@ import ScriptTransformer from './script_transformer';
 import shouldInstrument from './should_instrument';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
+import {findSiblingsWithFileExtension} from './helpers';
 
 type Module = {|
   children: Array<Module>,
@@ -223,13 +224,21 @@ class Runtime {
     config: ProjectConfig,
     options?: HasteMapOptions,
   ): HasteMap {
-    const ignorePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
-    );
+    const ignorePatternParts = [
+      ...config.modulePathIgnorePatterns,
+      config.cacheDirectory.startsWith(config.rootDir + path.sep) &&
+        config.cacheDirectory,
+    ].filter(Boolean);
+    const ignorePattern =
+      ignorePatternParts.length > 0
+        ? new RegExp(ignorePatternParts.join('|'))
+        : null;
 
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
+      computeSha1: config.haste.computeSha1,
       console: options && options.console,
+      dependencyExtractor: config.dependencyExtractor,
       extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
@@ -240,6 +249,7 @@ class Runtime {
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,
       retainAllFiles: false,
+      rootDir: config.rootDir,
       roots: config.roots,
       useWatchman: options && options.watchman,
       watch: options && options.watch,
@@ -411,10 +421,25 @@ class Runtime {
   }
 
   requireModuleOrMock(from: Path, moduleName: string) {
-    if (this._shouldMock(from, moduleName)) {
-      return this.requireMock(from, moduleName);
-    } else {
-      return this.requireModule(from, moduleName);
+    try {
+      if (this._shouldMock(from, moduleName)) {
+        return this.requireMock(from, moduleName);
+      } else {
+        return this.requireModule(from, moduleName);
+      }
+    } catch (e) {
+      if (e.code === 'MODULE_NOT_FOUND') {
+        const appendedMessage = findSiblingsWithFileExtension(
+          this._config.moduleFileExtensions,
+          from,
+          moduleName,
+        );
+
+        if (appendedMessage) {
+          e.message += appendedMessage;
+        }
+      }
+      throw e;
     }
   }
 
@@ -422,20 +447,22 @@ class Runtime {
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
 
-    if (this._environment && this._environment.global) {
-      const envGlobal = this._environment.global;
-      Object.keys(envGlobal).forEach(key => {
-        const globalMock = envGlobal[key];
-        if (
-          (typeof globalMock === 'object' && globalMock !== null) ||
-          typeof globalMock === 'function'
-        ) {
-          globalMock._isMockFunction && globalMock.mockClear();
-        }
-      });
+    if (this._environment) {
+      if (this._environment.global) {
+        const envGlobal = this._environment.global;
+        Object.keys(envGlobal).forEach(key => {
+          const globalMock = envGlobal[key];
+          if (
+            (typeof globalMock === 'object' && globalMock !== null) ||
+            typeof globalMock === 'function'
+          ) {
+            globalMock._isMockFunction === true && globalMock.mockClear();
+          }
+        });
+      }
 
-      if (envGlobal.mockClearTimers) {
-        envGlobal.mockClearTimers();
+      if (this._environment.fakeTimers) {
+        this._environment.fakeTimers.clearAllTimers();
       }
     }
   }
@@ -494,6 +521,61 @@ class Runtime {
 
   _resolveModule(from: Path, to?: ?string) {
     return to ? this._resolver.resolveModule(from, to) : from;
+  }
+
+  _requireResolve(
+    from: Path,
+    moduleName?: string,
+    {paths}: {paths?: Path[]} = {},
+  ) {
+    if (moduleName == null) {
+      throw new Error(
+        'The first argument to require.resolve must be a string. Received null or undefined.',
+      );
+    }
+
+    if (paths) {
+      for (const p of paths) {
+        const absolutePath = path.resolve(from, '..', p);
+        const module = this._resolver.resolveModuleFromDirIfExists(
+          absolutePath,
+          moduleName,
+          // required to also resolve files without leading './' directly in the path
+          {paths: [absolutePath]},
+        );
+        if (module) {
+          return module;
+        }
+      }
+      throw new Error(
+        `Cannot resolve module '${moduleName}' from paths ['${paths.join(
+          "', '",
+        )}'] from ${from}`,
+      );
+    }
+
+    return this._resolveModule(from, moduleName);
+  }
+
+  _requireResolvePaths(from: Path, moduleName?: string) {
+    if (moduleName == null) {
+      throw new Error(
+        'The first argument to require.resolve.paths must be a string. Received null or undefined.',
+      );
+    }
+    if (!moduleName.length) {
+      throw new Error(
+        'The first argument to require.resolve.paths must not be the empty string.',
+      );
+    }
+
+    if (moduleName[0] === '.') {
+      return [path.resolve(from, '..')];
+    }
+    if (this._resolver.isCoreModule(moduleName)) {
+      return null;
+    }
+    return this._resolver.getModulePaths(path.resolve(from, '..'));
   }
 
   _execModule(
@@ -722,8 +804,10 @@ class Runtime {
     moduleRequire.extensions = Object.create(null);
     moduleRequire.requireActual = this.requireModule.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
-    moduleRequire.resolve = moduleName =>
-      this._resolveModule(from.filename, moduleName);
+    moduleRequire.resolve = (moduleName, options) =>
+      this._requireResolve(from.filename, moduleName, options);
+    moduleRequire.resolve.paths = moduleName =>
+      this._requireResolvePaths(from.filename, moduleName);
     Object.defineProperty(
       moduleRequire,
       'main',
@@ -852,6 +936,7 @@ class Runtime {
       fn,
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
+      getTimerCount: () => this._environment.fakeTimers.getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       mock,
       requireActual: localRequire.requireActual,

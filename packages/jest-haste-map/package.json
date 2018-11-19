@@ -1,6 +1,6 @@
 {
   "name": "jest-haste-map",
-  "version": "23.2.0",
+  "version": "23.6.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -10,10 +10,13 @@
   "dependencies": {
     "fb-watchman": "^2.0.0",
     "graceful-fs": "^4.1.11",
-    "jest-docblock": "^23.2.0",
+    "invariant": "^2.2.4",
     "jest-serializer": "^23.0.1",
     "jest-worker": "^23.2.0",
-    "micromatch": "^3.1.10",
-    "sane": "^2.0.0"
+    "micromatch": "^2.3.11",
+    "sane": "^3.0.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

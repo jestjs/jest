@@ -8,11 +8,11 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import {json as runWithJson} from '../runJest';
 
 describe('Regex Char In Path', () => {
   it('parses paths containing regex chars correctly', () => {
-    const {json} = runJest.json('regex-(char-in-path', []);
+    const {json} = runWithJson('regex-(char-in-path', []);
 
     expect(json.numTotalTests).toBe(1);
     expect(json.numPassedTests).toBe(1);

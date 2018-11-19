@@ -7,25 +7,25 @@
  * @flow
  */
 
-import type {GlobalConfig, SnapshotUpdateState} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {WatchPlugin} from './types';
+import type {Options as UpdateGlobalConfigOptions} from './lib/update_global_config';
 
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
-import getChangedFilesPromise from './get_changed_files_promise';
+import getChangedFilesPromise from './getChangedFilesPromise';
 import exit from 'exit';
-import {replacePathSepForRegex} from 'jest-regex-util';
 import HasteMap from 'jest-haste-map';
 import isValidPath from './lib/is_valid_path';
 import {isInteractive} from 'jest-util';
-import {print as preRunMessagePrint} from './pre_run_message';
+import {print as preRunMessagePrint} from './preRunMessage';
 import createContext from './lib/create_context';
-import runJest from './run_jest';
+import runJest from './runJest';
 import updateGlobalConfig from './lib/update_global_config';
-import SearchSource from './search_source';
-import TestWatcher from './test_watcher';
-import FailedTestsCache from './failed_tests_cache';
+import SearchSource from './SearchSource';
+import TestWatcher from './TestWatcher';
+import FailedTestsCache from './FailedTestsCache';
 import {CLEAR} from './constants';
 import {KEYS, JestHook} from 'jest-watcher';
 import TestPathPatternPlugin from './plugins/test_path_pattern';
@@ -37,6 +37,7 @@ import {
   getSortedUsageRows,
   filterInteractivePlugins,
 } from './lib/watch_plugins_helpers';
+import {ValidationError} from 'jest-validate';
 import activeFilters from './lib/active_filters_message';
 
 let hasExitListener = false;
@@ -48,6 +49,18 @@ const INTERNAL_PLUGINS = [
   UpdateSnapshotsInteractivePlugin,
   QuitPlugin,
 ];
+
+const RESERVED_KEY_PLUGINS = new Map([
+  [
+    UpdateSnapshotsPlugin,
+    {forbiddenOverwriteMessage: 'updating snapshots', key: 'u'},
+  ],
+  [
+    UpdateSnapshotsInteractivePlugin,
+    {forbiddenOverwriteMessage: 'updating snapshots interactively', key: 'i'},
+  ],
+  [QuitPlugin, {forbiddenOverwriteMessage: 'quitting watch mode'}],
+]);
 
 export default function watch(
   initialGlobalConfig: GlobalConfig,
@@ -68,31 +81,41 @@ export default function watch(
   });
 
   const updateConfigAndRun = ({
+    bail,
+    changedSince,
+    collectCoverage,
+    collectCoverageFrom,
+    collectCoverageOnlyFrom,
+    coverageDirectory,
+    coverageReporters,
     mode,
+    notify,
+    notifyMode,
+    onlyFailures,
+    reporters,
     testNamePattern,
     testPathPattern,
     updateSnapshot,
-  }: {
-    mode?: 'watch' | 'watchAll',
-    testNamePattern?: string,
-    testPathPattern?: string,
-    updateSnapshot?: SnapshotUpdateState,
-  } = {}) => {
+    verbose,
+  }: UpdateGlobalConfigOptions = {}) => {
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
     globalConfig = updateGlobalConfig(globalConfig, {
+      bail,
+      changedSince,
+      collectCoverage,
+      collectCoverageFrom,
+      collectCoverageOnlyFrom,
+      coverageDirectory,
+      coverageReporters,
       mode,
-      testNamePattern:
-        testNamePattern !== undefined
-          ? testNamePattern
-          : globalConfig.testNamePattern,
-      testPathPattern:
-        testPathPattern !== undefined
-          ? replacePathSepForRegex(testPathPattern)
-          : globalConfig.testPathPattern,
-      updateSnapshot:
-        updateSnapshot !== undefined
-          ? updateSnapshot
-          : globalConfig.updateSnapshot,
+      notify,
+      notifyMode,
+      onlyFailures,
+      reporters,
+      testNamePattern,
+      testPathPattern,
+      updateSnapshot,
+      verbose,
     });
 
     startRun(globalConfig);
@@ -114,6 +137,21 @@ export default function watch(
   });
 
   if (globalConfig.watchPlugins != null) {
+    const watchPluginKeys = new Map();
+    for (const plugin of watchPlugins) {
+      const reservedInfo = RESERVED_KEY_PLUGINS.get(plugin.constructor) || {};
+      const key = reservedInfo.key || getPluginKey(plugin, globalConfig);
+      if (!key) {
+        continue;
+      }
+      const {forbiddenOverwriteMessage} = reservedInfo;
+      watchPluginKeys.set(key, {
+        forbiddenOverwriteMessage,
+        overwritable: forbiddenOverwriteMessage == null,
+        plugin,
+      });
+    }
+
     for (const pluginWithConfig of globalConfig.watchPlugins) {
       // $FlowFixMe dynamic require
       const ThirdPartyPlugin = require(pluginWithConfig.path);
@@ -122,6 +160,8 @@ export default function watch(
         stdin,
         stdout: outputStream,
       });
+      checkForConflicts(watchPluginKeys, plugin, globalConfig);
+
       const hookSubscriber = hooks.getSubscriber();
       if (plugin.apply) {
         plugin.apply(hookSubscriber);
@@ -278,13 +318,13 @@ export default function watch(
     const matchingWatchPlugin = filterInteractivePlugins(
       watchPlugins,
       globalConfig,
-    ).find(plugin => {
-      const usageData =
-        (plugin.getUsageInfo && plugin.getUsageInfo(globalConfig)) || {};
-      return usageData.key === key;
-    });
+    ).find(plugin => getPluginKey(plugin, globalConfig) === key);
 
     if (matchingWatchPlugin != null) {
+      if (isRunning) {
+        testWatcher.setState({interrupted: true});
+        return;
+      }
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
       // can handle them
       activePlugin = matchingWatchPlugin;
@@ -370,6 +410,61 @@ export default function watch(
   startRun(globalConfig);
   return Promise.resolve();
 }
+
+const checkForConflicts = (watchPluginKeys, plugin, globalConfig) => {
+  const key = getPluginKey(plugin, globalConfig);
+  if (!key) {
+    return;
+  }
+
+  const conflictor = watchPluginKeys.get(key);
+  if (!conflictor || conflictor.overwritable) {
+    watchPluginKeys.set(key, {
+      overwritable: false,
+      plugin,
+    });
+    return;
+  }
+
+  let error;
+  if (conflictor.forbiddenOverwriteMessage) {
+    error = `
+  Watch plugin ${chalk.bold.red(
+    getPluginIdentifier(plugin),
+  )} attempted to register key ${chalk.bold.red(`<${key}>`)},
+  that is reserved internally for ${chalk.bold.red(
+    conflictor.forbiddenOverwriteMessage,
+  )}.
+  Please change the configuration key for this plugin.`.trim();
+  } else {
+    const plugins = [conflictor.plugin, plugin]
+      .map(p => chalk.bold.red(getPluginIdentifier(p)))
+      .join(' and ');
+    error = `
+  Watch plugins ${plugins} both attempted to register key ${chalk.bold.red(
+      `<${key}>`,
+    )}.
+  Please change the key configuration for one of the conflicting plugins to avoid overlap.`.trim();
+  }
+
+  throw new ValidationError('Watch plugin configuration error', error);
+};
+
+const getPluginIdentifier = plugin =>
+  // This breaks as `displayName` is not defined as a static, but since
+  // WatchPlugin is an interface, and it is my understanding interface
+  // static fields are not definable anymore, no idea how to circumvent
+  // this :-(
+  // $FlowFixMe: leave `displayName` be.
+  plugin.constructor.displayName || plugin.constructor.name;
+
+const getPluginKey = (plugin, globalConfig) => {
+  if (typeof plugin.getUsageInfo === 'function') {
+    return (plugin.getUsageInfo(globalConfig) || {}).key;
+  }
+
+  return null;
+};
 
 const usage = (
   globalConfig,

@@ -12,7 +12,7 @@
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
-const {cleanup, run, writeFiles} = require('../Utils');
+import {cleanup, run, writeFiles} from '../Utils';
 
 const DIR = path.resolve(os.tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
@@ -20,6 +20,29 @@ const HG = 'hg --config ui.username=jest_test';
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
+
+test('run for "onlyChanged" and "changedSince"', () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
+    'file1.js': 'module.exports = {}',
+    'package.json': '{}',
+  });
+
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
+
+  let stdout = runJest(DIR, ['-o']).stdout;
+  expect(stdout).toMatch(
+    /No tests found related to files changed since last commit./,
+  );
+
+  stdout = runJest(DIR, ['--changedSince=master']).stdout;
+  expect(stdout).toMatch(
+    /No tests found related to files changed since "master"./,
+  );
+});
 
 test('run only changed files', () => {
   writeFiles(DIR, {
@@ -36,7 +59,7 @@ test('run only changed files', () => {
 
   run(`${GIT} init`, DIR);
   run(`${GIT} add .`, DIR);
-  run(`${GIT} commit -m "first"`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
   ({stdout} = runJest(DIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files');
@@ -58,7 +81,7 @@ test('run only changed files', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 
   run(`${GIT} add .`, DIR);
-  run(`${GIT} commit -m "second"`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "second"`, DIR);
 
   ({stderr} = runJest(DIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files');
@@ -97,7 +120,7 @@ test('report test coverage for only changed files', () => {
 
   run(`${GIT} init`, DIR);
   run(`${GIT} add .`, DIR);
-  run(`${GIT} commit -m "first"`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
   writeFiles(DIR, {
     'a.js': 'module.exports = {modified: true}',
@@ -133,7 +156,7 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
 
   run(`${GIT} init`, DIR);
   run(`${GIT} add .`, DIR);
-  run(`${GIT} commit -m "first"`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
   ({stdout, stderr} = runJest(DIR));
   expect(stdout).toMatch('No tests found related to files');
@@ -158,7 +181,7 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 
   run(`${GIT} add .`, DIR);
-  run(`${GIT} commit -m "second"`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "second"`, DIR);
 
   ({stderr} = runJest(DIR));
   expect(stdout).toMatch('No tests found related to files');
@@ -251,7 +274,7 @@ test('path on Windows is case-insensitive', () => {
 
   run(`${GIT} init`, modifiedDIR);
   run(`${GIT} add .`, modifiedDIR);
-  run(`${GIT} commit -m "first"`, modifiedDIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, modifiedDIR);
 
   const {stdout} = runJest(incorrectModifiedDIR, ['-o']);
   expect(stdout).toMatch('No tests found related to files');

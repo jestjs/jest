@@ -22,15 +22,16 @@ export const unknownOptionWarning = (
   exampleConfig: Object,
   option: string,
   options: ValidationOptions,
+  path?: Array<string>,
 ): void => {
   const didYouMean = createDidYouMeanMessage(
     option,
     Object.keys(exampleConfig),
   );
   const message =
-    `  Unknown option ${chalk.bold(`"${option}"`)} with value ${chalk.bold(
-      format(config[option]),
-    )} was found.` +
+    `  Unknown option ${chalk.bold(
+      `"${path && path.length > 0 ? path.join('.') + '.' : ''}${option}"`,
+    )} with value ${chalk.bold(format(config[option]))} was found.` +
     (didYouMean && ` ${didYouMean}`) +
     `\n  This is probably a typing mistake. Fixing it will remove this message.`;
 

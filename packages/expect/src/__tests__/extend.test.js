@@ -8,7 +8,7 @@
 
 const matcherUtils = require('jest-matcher-utils');
 const {iterableEquality, subsetEquality} = require('../utils');
-const {equals} = require('../jasmine_utils');
+const {equals} = require('../jasmineUtils');
 const jestExpect = require('../');
 
 jestExpect.extend({
@@ -20,15 +20,32 @@ jestExpect.extend({
 
     return {message, pass};
   },
+  toBeWithinRange(actual, floor, ceiling) {
+    const pass = actual >= floor && actual <= ceiling;
+    const message = pass
+      ? () => `expected ${actual} not to be within range ${floor} - ${ceiling}`
+      : () => `expected ${actual} to be within range ${floor} - ${ceiling}`;
+
+    return {message, pass};
+  },
 });
 
-it('is available globally', () => {
+it('is available globally when matcher is unary', () => {
   jestExpect(15).toBeDivisibleBy(5);
   jestExpect(15).toBeDivisibleBy(3);
   jestExpect(15).not.toBeDivisibleBy(6);
 
   jestExpect(() =>
     jestExpect(15).toBeDivisibleBy(2),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+it('is available globally when matcher is variadic', () => {
+  jestExpect(15).toBeWithinRange(10, 20);
+  jestExpect(15).not.toBeWithinRange(6);
+
+  jestExpect(() =>
+    jestExpect(15).toBeWithinRange(1, 3),
   ).toThrowErrorMatchingSnapshot();
 });
 
@@ -78,7 +95,7 @@ it('exposes an equality function to custom matchers', () => {
   expect(() => jestExpect().toBeOne()).not.toThrow();
 });
 
-it('defines asymmetric matchers', () => {
+it('defines asymmetric unary matchers', () => {
   expect(() =>
     jestExpect({value: 2}).toEqual({value: jestExpect.toBeDivisibleBy(2)}),
   ).not.toThrow();
@@ -87,11 +104,33 @@ it('defines asymmetric matchers', () => {
   ).toThrowErrorMatchingSnapshot();
 });
 
-it('defines asymmetric matchers that can be prefixed by not', () => {
+it('defines asymmetric unary matchers that can be prefixed by not', () => {
   expect(() =>
     jestExpect({value: 2}).toEqual({value: jestExpect.not.toBeDivisibleBy(2)}),
   ).toThrowErrorMatchingSnapshot();
   expect(() =>
     jestExpect({value: 3}).toEqual({value: jestExpect.not.toBeDivisibleBy(2)}),
+  ).not.toThrow();
+});
+
+it('defines asymmetric variadic matchers', () => {
+  expect(() =>
+    jestExpect({value: 2}).toEqual({value: jestExpect.toBeWithinRange(1, 3)}),
+  ).not.toThrow();
+  expect(() =>
+    jestExpect({value: 3}).toEqual({value: jestExpect.toBeWithinRange(4, 11)}),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+it('defines asymmetric variadic matchers that can be prefixed by not', () => {
+  expect(() =>
+    jestExpect({value: 2}).toEqual({
+      value: jestExpect.not.toBeWithinRange(1, 3),
+    }),
+  ).toThrowErrorMatchingSnapshot();
+  expect(() =>
+    jestExpect({value: 3}).toEqual({
+      value: jestExpect.not.toBeWithinRange(5, 7),
+    }),
   ).not.toThrow();
 });

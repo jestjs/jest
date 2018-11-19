@@ -12,7 +12,8 @@
 import {
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_OK,
-  PARENT_MESSAGE_ERROR,
+  PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
 
 import type {Readable} from 'stream';
@@ -73,7 +74,7 @@ export default class ExpirementalWorker implements WorkerInterface {
         this._onProcessEnd(null, response[1]);
         break;
 
-      case PARENT_MESSAGE_ERROR:
+      case PARENT_MESSAGE_CLIENT_ERROR:
         let error = response[4];
 
         if (error != null && typeof error === 'object') {
@@ -94,7 +95,15 @@ export default class ExpirementalWorker implements WorkerInterface {
 
         this._onProcessEnd(error, null);
         break;
+      case PARENT_MESSAGE_SETUP_ERROR:
+        error = new Error('Error when calling setup: ' + response[2]);
 
+        // $FlowFixMe: adding custom properties to errors.
+        error.type = response[1];
+        error.stack = response[3];
+
+        this._onProcessEnd(error, null);
+        break;
       default:
         throw new TypeError('Unexpected response from worker: ' + response[0]);
     }

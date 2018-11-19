@@ -33,6 +33,7 @@ jest-each allows you to provide multiple arguments to your `test`/`describe` whi
   - `%f` - Floating point value.
   - `%j` - JSON.
   - `%o` - Object.
+  - `%#` - Index of the test case.
   - `%%` - single percent sign ('%'). This does not consume an argument.
 - 🖖 Spock like data tables with [Tagged Template Literals](#tagged-template-literal-of-rows)
 
@@ -109,6 +110,7 @@ const each = require('jest-each');
     - `%f` - Floating point value.
     - `%j` - JSON.
     - `%o` - Object.
+    - `%#` - Index of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
 - testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
 
@@ -130,6 +132,7 @@ const each = require('jest-each');
     - `%f` - Floating point value.
     - `%j` - JSON.
     - `%o` - Object.
+    - `%#` - Index of the test case.
     - `%%` - single percent sign ('%'). This does not consume an argument.
 - suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments
 

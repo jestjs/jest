@@ -8,25 +8,25 @@
  */
 'use strict';
 
-const path = require('path');
-const fs = require('fs');
-const execa = require('execa');
-const {Writable} = require('readable-stream');
-const {normalizeIcons} = require('./Utils');
-
-const {sync: spawnSync} = execa;
+import path from 'path';
+import fs from 'fs';
+import execa, {sync as spawnSync} from 'execa';
+import {Writable} from 'readable-stream';
+const stripAnsi = require('strip-ansi');
+import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
 type RunJestOptions = {
   nodePath?: string,
   skipPkgJsonCheck?: boolean, // don't complain if can't find package.json
+  stripAnsi?: boolean, // remove colors from stdout and stderr
 };
 
 // return the result of the spawned process:
 //  [ 'status', 'signal', 'output', 'pid', 'stdout', 'stderr',
 //    'envPairs', 'options', 'args', 'file' ]
-function runJest(
+export default function runJest(
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},
@@ -49,13 +49,8 @@ function runJest(
     );
   }
 
-  const env = options.nodePath
-    ? Object.assign({}, process.env, {
-        FORCE_COLOR: 0,
-        NODE_PATH: options.nodePath,
-      })
-    : process.env;
-
+  const env = Object.assign({}, process.env, {FORCE_COLOR: 0});
+  if (options.nodePath) env['NODE_PATH'] = options.nodePath;
   const result = spawnSync(JEST_PATH, args || [], {
     cwd: dir,
     env,
@@ -66,7 +61,9 @@ function runJest(
   result.status = result.code;
 
   result.stdout = normalizeIcons(result.stdout);
+  if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
   result.stderr = normalizeIcons(result.stderr);
+  if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
 
   return result;
 }
@@ -75,9 +72,13 @@ function runJest(
 //   'success', 'startTime', 'numTotalTests', 'numTotalTestSuites',
 //   'numRuntimeErrorTestSuites', 'numPassedTests', 'numFailedTests',
 //   'numPendingTests', 'testResults'
-runJest.json = function(dir: string, args?: Array<string>, ...rest) {
+export const json = function(
+  dir: string,
+  args?: Array<string>,
+  options: RunJestOptions = {},
+) {
   args = [...(args || []), '--json'];
-  const result = runJest(dir, args, ...rest);
+  const result = runJest(dir, args, options);
   try {
     result.json = JSON.parse((result.stdout || '').toString());
   } catch (e) {
@@ -94,7 +95,7 @@ runJest.json = function(dir: string, args?: Array<string>, ...rest) {
 };
 
 // Runs `jest` until a given output is achieved, then kills it with `SIGTERM`
-runJest.until = async function(
+export const until = async function(
   dir: string,
   args?: Array<string>,
   text: string,
@@ -118,12 +119,8 @@ runJest.until = async function(
     );
   }
 
-  const env = options.nodePath
-    ? Object.assign({}, process.env, {
-        FORCE_COLOR: 0,
-        NODE_PATH: options.nodePath,
-      })
-    : process.env;
+  const env = Object.assign({}, process.env, {FORCE_COLOR: 0});
+  if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
   const jestPromise = execa(JEST_PATH, args || [], {
     cwd: dir,
@@ -151,9 +148,9 @@ runJest.until = async function(
   result.status = result.code;
 
   result.stdout = normalizeIcons(result.stdout);
+  if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
   result.stderr = normalizeIcons(result.stderr);
+  if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
 
   return result;
 };
-
-module.exports = runJest;

@@ -118,8 +118,8 @@ class TestRunner {
           config: test.context.config,
           globalConfig: this._globalConfig,
           path: test.path,
-          rawModuleMap: watcher.isWatchMode()
-            ? test.context.moduleMap.getRawModuleMap()
+          serializableModuleMap: watcher.isWatchMode()
+            ? test.context.moduleMap.toJSON()
             : null,
         });
       });

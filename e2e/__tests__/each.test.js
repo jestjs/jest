@@ -9,9 +9,10 @@
 
 'use strict';
 
-const path = require('path');
-const runJest = require('../runJest');
-const {extractSummary} = require('../Utils');
+import path from 'path';
+import runJest from '../runJest';
+import {extractSummary} from '../Utils';
+
 const dir = path.resolve(__dirname, '../each');
 
 test('works with passing tests', () => {

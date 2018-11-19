@@ -13,6 +13,7 @@ export type Options = {|
   lastCommit?: boolean,
   withAncestor?: boolean,
   changedSince?: string,
+  includePaths?: Array<Path>,
 |};
 
 export type ChangedFiles = Set<Path>;

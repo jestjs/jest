@@ -28,13 +28,17 @@ export type ValidationOptions = {
     received: any,
     defaultValue: any,
     options: ValidationOptions,
+    path?: Array<string>,
   ) => void,
   exampleConfig: Object,
+  recursive?: boolean,
+  recursiveBlacklist?: Array<string>,
   title?: Title,
   unknown?: (
     config: Object,
     exampleConfig: Object,
     option: string,
     options: ValidationOptions,
+    path?: Array<string>,
   ) => void,
 };

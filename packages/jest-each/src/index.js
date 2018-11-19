@@ -21,13 +21,13 @@ type GlobalCallbacks = {
 };
 
 const install = (g: GlobalCallbacks, ...args: Array<mixed>) => {
-  const test = (title: string, test: Function) =>
-    bind(g.test)(...args)(title, test);
+  const test = (title: string, test: Function, timeout: number) =>
+    bind(g.test)(...args)(title, test, timeout);
   test.skip = bind(g.test.skip)(...args);
   test.only = bind(g.test.only)(...args);
 
-  const it = (title: string, test: Function) =>
-    bind(g.it)(...args)(title, test);
+  const it = (title: string, test: Function, timeout: number) =>
+    bind(g.it)(...args)(title, test, timeout);
   it.skip = bind(g.it.skip)(...args);
   it.only = bind(g.it.only)(...args);
 
@@ -35,12 +35,12 @@ const install = (g: GlobalCallbacks, ...args: Array<mixed>) => {
   const fit = bind(g.fit)(...args);
   const xtest = bind(g.xtest)(...args);
 
-  const describe = (title: string, suite: Function) =>
-    bind(g.describe)(...args)(title, suite);
-  describe.skip = bind(g.describe.skip)(...args);
-  describe.only = bind(g.describe.only)(...args);
-  const fdescribe = bind(g.fdescribe)(...args);
-  const xdescribe = bind(g.xdescribe)(...args);
+  const describe = (title: string, suite: Function, timeout: number) =>
+    bind(g.describe, false)(...args)(title, suite, timeout);
+  describe.skip = bind(g.describe.skip, false)(...args);
+  describe.only = bind(g.describe.only, false)(...args);
+  const fdescribe = bind(g.fdescribe, false)(...args);
+  const xdescribe = bind(g.xdescribe, false)(...args);
 
   return {describe, fdescribe, fit, it, test, xdescribe, xit, xtest};
 };

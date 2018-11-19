@@ -27,12 +27,14 @@ export const getChangedFilesForRoots = async (
 ): ChangedFilesPromise => {
   const repos = await findRepos(roots);
 
+  const changedFilesOptions = Object.assign({}, {includePaths: roots}, options);
+
   const gitPromises = Array.from(repos.git).map(repo =>
-    git.findChangedFiles(repo, options),
+    git.findChangedFiles(repo, changedFilesOptions),
   );
 
   const hgPromises = Array.from(repos.hg).map(repo =>
-    hg.findChangedFiles(repo, options),
+    hg.findChangedFiles(repo, changedFilesOptions),
   );
 
   const changedFiles = (await Promise.all(

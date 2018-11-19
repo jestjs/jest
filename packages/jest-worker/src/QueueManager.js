@@ -35,7 +35,7 @@ export default class QueueManager {
     //   const error = new Error('Call retries were exceeded');
 
     //   this.onMessage([
-    //     PARENT_MESSAGE_ERROR,
+    //     PARENT_MESSAGE_CLIENT_ERROR,
     //     error.name,
     //     error.message,
     //     error.stack,

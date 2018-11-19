@@ -95,7 +95,8 @@ export default class JestWorker {
     const workerPoolOptions: WorkerPoolOptions = {
       forkOptions: this._options.forkOptions || {},
       maxRetries: this._options.maxRetries || 3,
-      numWorkers: os.cpus().length - 1,
+      setupArgs: this._options.setupArgs || [],
+      numWorkers: Math.max(os.cpus().length - 1, 1),
       useWorkers: canUseWorkerThreads(),
     };
 

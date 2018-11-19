@@ -8,8 +8,8 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
-const {extractSummary} = require('../Utils');
+import runJest from '../runJest';
+import {extractSummary} from '../Utils';
 
 test('moduleNameMapper wrong configuration', () => {
   const {stderr, status} = runJest('module-name-mapper-wrong-config');
@@ -20,7 +20,9 @@ test('moduleNameMapper wrong configuration', () => {
 });
 
 test('moduleNameMapper correct configuration', () => {
-  const {stderr, status} = runJest('module-name-mapper-correct-config');
+  const {stderr, status} = runJest('module-name-mapper-correct-config', [], {
+    stripAnsi: true,
+  });
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(0);

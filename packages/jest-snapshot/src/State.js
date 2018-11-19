@@ -14,7 +14,6 @@ import {getTopFrame, getStackTraceLines} from 'jest-message-util';
 import {
   saveSnapshotFile,
   getSnapshotData,
-  getSnapshotPath,
   keyToTestName,
   serialize,
   testNameToKey,
@@ -25,7 +24,7 @@ import {saveInlineSnapshots, type InlineSnapshot} from './inline_snapshots';
 export type SnapshotStateOptions = {|
   updateSnapshot: SnapshotUpdateState,
   getPrettier: () => null | any,
-  snapshotPath?: string,
+  getBabelTraverse: () => Function,
   expand?: boolean,
 |};
 
@@ -46,6 +45,7 @@ export default class SnapshotState {
   _snapshotPath: Path;
   _inlineSnapshots: Array<InlineSnapshot>;
   _uncheckedKeys: Set<string>;
+  _getBabelTraverse: () => Function;
   _getPrettier: () => null | any;
   added: number;
   expand: boolean;
@@ -53,14 +53,15 @@ export default class SnapshotState {
   unmatched: number;
   updated: number;
 
-  constructor(testPath: Path, options: SnapshotStateOptions) {
-    this._snapshotPath = options.snapshotPath || getSnapshotPath(testPath);
+  constructor(snapshotPath: Path, options: SnapshotStateOptions) {
+    this._snapshotPath = snapshotPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
       options.updateSnapshot,
     );
     this._snapshotData = data;
     this._dirty = dirty;
+    this._getBabelTraverse = options.getBabelTraverse;
     this._getPrettier = options.getPrettier;
     this._inlineSnapshots = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
@@ -122,7 +123,8 @@ export default class SnapshotState {
       }
       if (hasInlineSnapshots) {
         const prettier = this._getPrettier(); // Load lazily
-        saveInlineSnapshots(this._inlineSnapshots, prettier);
+        const babelTraverse = this._getBabelTraverse(); // Load lazily
+        saveInlineSnapshots(this._inlineSnapshots, prettier, babelTraverse);
       }
       status.saved = true;
     } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {
@@ -166,7 +168,12 @@ export default class SnapshotState {
       key = testNameToKey(testName, count);
     }
 
-    this._uncheckedKeys.delete(key);
+    // Do not mark the snapshot as "checked" if the snapshot is inline and
+    // there's an external snapshot. This way the external snapshot can be
+    // removed with `--updateSnapshot`.
+    if (!(isInline && this._snapshotData[key])) {
+      this._uncheckedKeys.delete(key);
+    }
 
     const receivedSerialized = serialize(received);
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];

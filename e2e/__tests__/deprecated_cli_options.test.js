@@ -9,8 +9,8 @@
 
 'use strict';
 
-const path = require('path');
-const runJest = require('../runJest');
+import path from 'path';
+import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../deprecated-cli-options');
 

@@ -18,6 +18,7 @@ const versions = require(CWD + '/versions.json');
 class Versions extends React.Component {
   render() {
     const latestVersion = versions[0];
+    const {language} = this.props;
     return (
       <div className="docMainWrapper wrapper">
         <Container className="mainContainer versionsContainer">
@@ -33,7 +34,9 @@ class Versions extends React.Component {
                   <th>{latestVersion}</th>
                   <td>
                     <a
-                      href={`${siteConfig.baseUrl}docs/en/getting-started.html`}
+                      href={`${
+                        siteConfig.baseUrl
+                      }docs/${language}/getting-started.html`}
                     >
                       Documentation
                     </a>
@@ -58,7 +61,7 @@ class Versions extends React.Component {
                     <a
                       href={`${
                         siteConfig.baseUrl
-                      }docs/en/next/getting-started.html`}
+                      }docs/${language}/next/getting-started.html`}
                     >
                       Documentation
                     </a>
@@ -84,7 +87,7 @@ class Versions extends React.Component {
                           <a
                             href={`${
                               siteConfig.baseUrl
-                            }docs/en/${version}/getting-started.html`}
+                            }docs/${language}/${version}/getting-started.html`}
                           >
                             Documentation
                           </a>

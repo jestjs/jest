@@ -1,17 +1,20 @@
 {
   "name": "jest-message-util",
-  "version": "23.3.0",
+  "version": "23.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
   },
+  "engines": {
+    "node": ">= 6"
+  },
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "@babel/code-frame": "^7.0.0-beta.35",
+    "@babel/code-frame": "^7.0.0",
     "chalk": "^2.0.1",
-    "micromatch": "^3.1.10",
-    "slash": "^1.0.0",
+    "micromatch": "^2.3.11",
+    "slash": "^2.0.0",
     "stack-utils": "^1.0.1"
   }
 }

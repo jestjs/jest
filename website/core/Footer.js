@@ -57,13 +57,6 @@ class Footer extends React.Component {
           <div>
             <h5>Community</h5>
             <a
-              href={
-                this.props.config.baseUrl + this.props.language + '/users.html'
-              }
-            >
-              User Showcase
-            </a>
-            <a
               href="https://stackoverflow.com/questions/tagged/jestjs"
               target="_blank"
             >

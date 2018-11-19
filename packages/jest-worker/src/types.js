@@ -20,7 +20,12 @@ export const CHILD_MESSAGE_CALL: 1 = 1;
 export const CHILD_MESSAGE_END: 2 = 2;
 
 export const PARENT_MESSAGE_OK: 0 = 0;
-export const PARENT_MESSAGE_ERROR: 1 = 1;
+export const PARENT_MESSAGE_CLIENT_ERROR: 1 = 1;
+export const PARENT_MESSAGE_SETUP_ERROR: 2 = 2;
+
+export type PARENT_MESSAGE_ERROR =
+  | typeof PARENT_MESSAGE_CLIENT_ERROR
+  | typeof PARENT_MESSAGE_SETUP_ERROR;
 
 // Option objects.
 
@@ -60,6 +65,7 @@ export type FarmOptions = {
   computeWorkerKey?: (string, ...Array<any>) => ?string,
   exposedMethods?: $ReadOnlyArray<string>,
   forkOptions?: ForkOptions,
+  setupArgs?: Array<mixed>,
   maxRetries?: number,
   numWorkers?: number,
   WorkerPool?: (
@@ -77,6 +83,7 @@ export type WorkerPoolOptions = {|
 
 export type WorkerOptions = {|
   forkOptions: ForkOptions,
+  setupArgs: Array<mixed>,
   maxRetries: number,
   workerId: number,
   workerPath: string,
@@ -98,6 +105,7 @@ export type ChildMessageInitialize = [
   typeof CHILD_MESSAGE_INITIALIZE, // type
   boolean, // processed
   string, // file
+  ?Array<mixed>, // setupArgs
   ?MessagePort, // MessagePort
 ];
 
@@ -126,7 +134,7 @@ export type ParentMessageOk = [
 ];
 
 export type ParentMessageError = [
-  typeof PARENT_MESSAGE_ERROR, // type
+  PARENT_MESSAGE_ERROR, // type
   string, // constructor
   string, // message
   string, // stack

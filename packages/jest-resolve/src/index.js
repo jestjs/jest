@@ -14,9 +14,9 @@ import type {ErrorWithCode} from 'types/Errors';
 
 import fs from 'fs';
 import path from 'path';
-import nodeModulesPaths from './node_modules_paths';
-import isBuiltinModule from './is_builtin_module';
-import defaultResolver from './default_resolver.js';
+import nodeModulesPaths from './nodeModulesPaths';
+import isBuiltinModule from './isBuiltinModule';
+import defaultResolver from './defaultResolver';
 import chalk from 'chalk';
 
 type ResolverConfig = {|
@@ -67,6 +67,7 @@ class Resolver {
   _moduleIDCache: {[key: string]: string, __proto__: null};
   _moduleNameCache: {[name: string]: Path, __proto__: null};
   _modulePathCache: {[path: Path]: Array<Path>, __proto__: null};
+  _supportsNativePlatform: boolean;
 
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {
@@ -82,6 +83,9 @@ class Resolver {
       resolver: options.resolver,
       rootDir: options.rootDir,
     };
+    this._supportsNativePlatform = options.platforms
+      ? options.platforms.includes(NATIVE_PLATFORM)
+      : false;
     this._moduleMap = moduleMap;
     this._moduleIDCache = Object.create(null);
     this._moduleNameCache = Object.create(null);
@@ -108,18 +112,17 @@ class Resolver {
     return null;
   }
 
-  resolveModule(
-    from: Path,
+  resolveModuleFromDirIfExists(
+    dirname: Path,
     moduleName: string,
     options?: ResolveModuleConfig,
-  ): Path {
-    const dirname = path.dirname(from);
-    const paths = this._options.modulePaths;
+  ): ?Path {
+    const paths = (options && options.paths) || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
     const key = dirname + path.delimiter + moduleName;
     const defaultPlatform = this._options.defaultPlatform;
     const extensions = this._options.extensions.slice();
-    if (this._supportsNativePlatform()) {
+    if (this._supportsNativePlatform) {
       extensions.unshift(
         ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
       );
@@ -187,9 +190,25 @@ class Resolver {
       } catch (ignoredError) {}
     }
 
-    // 4. Throw an error if the module could not be found. `resolve.sync`
-    //    only produces an error based on the dirname but we have the actual
-    //    current module name available.
+    return null;
+  }
+
+  resolveModule(
+    from: Path,
+    moduleName: string,
+    options?: ResolveModuleConfig,
+  ): Path {
+    const dirname = path.dirname(from);
+    const module = this.resolveModuleFromDirIfExists(
+      dirname,
+      moduleName,
+      options,
+    );
+    if (module) return module;
+
+    // (4.) Throw an error if the module could not be found. `resolve.sync`
+    //      only produces an error based on the dirname but we have the actual
+    //      current module name available.
     const relativePath = path.relative(dirname, from);
     const err = new Error(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
@@ -206,7 +225,7 @@ class Resolver {
     return this._moduleMap.getModule(
       name,
       this._options.defaultPlatform,
-      this._supportsNativePlatform(),
+      this._supportsNativePlatform,
     );
   }
 
@@ -221,7 +240,7 @@ class Resolver {
     return this._moduleMap.getPackage(
       name,
       this._options.defaultPlatform,
-      this._supportsNativePlatform(),
+      this._supportsNativePlatform,
     );
   }
 
@@ -264,7 +283,7 @@ class Resolver {
     }
 
     const moduleType = this._getModuleType(moduleName);
-    const absolutePath = this._getAbsolutPath(virtualMocks, from, moduleName);
+    const absolutePath = this._getAbsolutePath(virtualMocks, from, moduleName);
     const mockPath = this._getMockPath(from, moduleName);
 
     const sep = path.delimiter;
@@ -281,7 +300,7 @@ class Resolver {
     return this.isCoreModule(moduleName) ? 'node' : 'user';
   }
 
-  _getAbsolutPath(
+  _getAbsolutePath(
     virtualMocks: BooleanObject,
     from: Path,
     moduleName: string,
@@ -322,10 +341,23 @@ class Resolver {
   _resolveStubModuleName(from: Path, moduleName: string): ?Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
-    const extensions = this._options.extensions;
+    const extensions = this._options.extensions.slice();
     const moduleDirectory = this._options.moduleDirectories;
     const moduleNameMapper = this._options.moduleNameMapper;
     const resolver = this._options.resolver;
+    const defaultPlatform = this._options.defaultPlatform;
+
+    if (this._supportsNativePlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
+      );
+    }
+
+    if (defaultPlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + defaultPlatform + ext),
+      );
+    }
 
     if (moduleNameMapper) {
       for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
@@ -365,10 +397,6 @@ class Resolver {
       }
     }
     return null;
-  }
-
-  _supportsNativePlatform() {
-    return (this._options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
   }
 }
 

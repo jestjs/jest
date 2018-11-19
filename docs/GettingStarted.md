@@ -15,6 +15,8 @@ Or [`npm`](https://www.npmjs.com/):
 npm install --save-dev jest
 ```
 
+Note: Jest documentation uses `yarn` commands, but `npm` will also work. You can compare `yarn` and `npm` commands in the [yarn docs, here](https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison).
+
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
 ```javascript
@@ -44,7 +46,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `yarn test` and Jest will print this message:
+Finally, run `yarn test` or `npm run test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
@@ -57,7 +59,7 @@ This test used `expect` and `toBe` to test that two values were exactly identica
 
 ## Running from command line
 
-You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `yarn global add jest`) with a variety of useful options.
+You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `yarn global add jest` or `npm install jest --global`) with a variety of useful options.
 
 Here's how to run Jest on files matching `my-test`, using `config.json` as a configuration file and display a native OS notification after the run:
 
@@ -79,17 +81,27 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
+To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages via `yarn`:
 
 ```bash
 yarn add --dev babel-jest babel-core regenerator-runtime
 ```
 
-> Note: If you are using a babel version 7 then you need to install `babel-jest` with the following command:
+Or `npm`:
+
+```bash
+npm install --save-dev babel-jest babel-core regenerator-runtime
+```
+
+> Note: If you are using Babel version 7 then you need to install `babel-jest`, `babel-core@^7.0.0-bridge.0` and `@babel/core` with the following command or its `npm` equivalent:
 >
 > ```bash
-> yarn add --dev babel-jest 'babel-core@^7.0.0-0' @babel/core regenerator-runtime
+> yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
 > ```
+>
+> You will need to use `babel.config.js` in order to transpile `node_modules`. See https://babeljs.io/docs/en/next/config-files for more information.
+>
+> You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/master/examples/babel-7
 
 _Note: Explicitly installing `regenerator-runtime` is not needed if you use `npm` 3 or 4 or Yarn_
 

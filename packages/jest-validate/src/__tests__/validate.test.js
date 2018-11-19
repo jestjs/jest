@@ -9,16 +9,17 @@
 'use strict';
 
 import validate from '../validate';
-import jestValidateExampleConfig from '../example_config';
-import jestValidateDefaultConfig from '../default_config';
+import {multipleValidOptions} from '../condition';
+import jestValidateExampleConfig from '../exampleConfig';
+import jestValidateDefaultConfig from '../defaultConfig';
 
 const {
   defaultConfig,
   validConfig,
   deprecatedConfig,
-} = require('./fixtures/jest_config');
+} = require('./fixtures/jestConfig');
 
-test('validates default Jest config', () => {
+test('recursively validates default Jest config', () => {
   expect(
     validate(defaultConfig, {
       exampleConfig: validConfig,
@@ -29,7 +30,7 @@ test('validates default Jest config', () => {
   });
 });
 
-test('validates default jest-validate config', () => {
+test('recursively validates default jest-validate config', () => {
   expect(
     validate(jestValidateDefaultConfig, {
       exampleConfig: jestValidateExampleConfig,
@@ -40,19 +41,17 @@ test('validates default jest-validate config', () => {
   });
 });
 
-[
-  [{automock: []}, 'Boolean'],
-  [{coverageReporters: {}}, 'Array'],
-  [{preset: 1337}, 'String'],
-  [{haste: 42}, 'Object'],
-].forEach(([config, type]) => {
-  test(`pretty prints valid config for ${type}`, () => {
-    expect(() =>
-      validate(config, {
-        exampleConfig: validConfig,
-      }),
-    ).toThrowErrorMatchingSnapshot();
-  });
+test.each([
+  ['Boolean', {automock: []}],
+  ['Array', {coverageReporters: {}}],
+  ['String', {preset: 1337}],
+  ['Object', {haste: 42}],
+])('pretty prints valid config for %s', (type, config) => {
+  expect(() =>
+    validate(config, {
+      exampleConfig: validConfig,
+    }),
+  ).toThrowErrorMatchingSnapshot();
 });
 
 test(`pretty prints valid config for Function`, () => {
@@ -74,6 +73,54 @@ test('omits null and undefined config values', () => {
     hasDeprecationWarnings: false,
     isValid: true,
   });
+});
+
+test('recursively omits null and undefined config values', () => {
+  const config = {
+    haste: {
+      providesModuleNodeModules: null,
+    },
+  };
+  expect(
+    validate(config, {exampleConfig: validConfig, recursive: true}),
+  ).toEqual({
+    hasDeprecationWarnings: false,
+    isValid: true,
+  });
+});
+
+test('respects blacklist', () => {
+  const warn = console.warn;
+  console.warn = jest.fn();
+  const config = {
+    something: {
+      nested: {
+        some_random_key: 'value',
+        some_random_key2: 'value2',
+      },
+    },
+  };
+  const exampleConfig = {
+    something: {
+      nested: {
+        test: true,
+      },
+    },
+  };
+
+  validate(config, {exampleConfig});
+
+  expect(console.warn).toBeCalled();
+
+  console.warn.mockReset();
+
+  validate(config, {
+    exampleConfig,
+    recursiveBlacklist: ['something.nested'],
+  });
+
+  expect(console.warn).not.toBeCalled();
+  console.warn = warn;
 });
 
 test('displays warning for unknown config options', () => {
@@ -159,4 +206,83 @@ test('works with custom deprecations', () => {
 
   expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   console.warn = warn;
+});
+
+test('works with multiple valid types', () => {
+  const exampleConfig = {
+    foo: multipleValidOptions('text', ['text']),
+  };
+
+  expect(
+    validate(
+      {foo: 'foo'},
+      {
+        exampleConfig,
+      },
+    ),
+  ).toEqual({
+    hasDeprecationWarnings: false,
+    isValid: true,
+  });
+  expect(
+    validate(
+      {foo: ['foo']},
+      {
+        exampleConfig,
+      },
+    ),
+  ).toEqual({
+    hasDeprecationWarnings: false,
+    isValid: true,
+  });
+});
+
+test('reports errors nicely when failing with multiple valid options', () => {
+  const exampleConfig = {
+    foo: multipleValidOptions('text', ['text']),
+  };
+
+  expect(() =>
+    validate(
+      {foo: 2},
+      {
+        exampleConfig,
+      },
+    ),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+test('Repeated types within multiple valid examples are coalesced in error report', () => {
+  const exampleConfig = {
+    foo: multipleValidOptions('foo', 'bar', 2),
+  };
+
+  expect(() =>
+    validate(
+      {foo: false},
+      {
+        exampleConfig,
+      },
+    ),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+test('Comments in config JSON using "//" key are not warned', () => {
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+  const config = {'//': 'a comment'};
+
+  validate(config, {
+    exampleConfig: validConfig,
+  });
+  expect(console.warn).not.toBeCalled();
+
+  console.warn.mockReset();
+
+  validate(config, {
+    exampleConfig: validConfig,
+    recursiveBlacklist: [('myCustomKey': "don't validate this")],
+  });
+  expect(console.warn).not.toBeCalled();
+
+  console.warn.mockRestore();
 });

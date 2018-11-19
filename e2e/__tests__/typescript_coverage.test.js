@@ -7,13 +7,15 @@
  * @flow
  */
 
-const path = require('path');
-const {run} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import {run} from '../Utils';
+import runJest from '../runJest';
 
 it('instruments and collects coverage for typescript files', () => {
   const dir = path.resolve(__dirname, '../typescript-coverage');
   run('yarn', dir);
-  const {stdout} = runJest(dir, ['--coverage', '--no-cache']);
+  const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
+    stripAnsi: true,
+  });
   expect(stdout).toMatchSnapshot();
 });

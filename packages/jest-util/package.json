@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "23.3.0",
+  "version": "23.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -12,12 +12,15 @@
     "chalk": "^2.0.1",
     "graceful-fs": "^4.1.11",
     "is-ci": "^1.0.10",
-    "jest-message-util": "^23.3.0",
+    "jest-message-util": "^23.4.0",
     "mkdirp": "^0.5.1",
-    "slash": "^1.0.0",
+    "slash": "^2.0.0",
     "source-map": "^0.6.0"
   },
   "devDependencies": {
     "jest-mock": "^23.2.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

@@ -1078,12 +1078,28 @@ Received constructor: <red>Number</>
 Received value: <red>1</>"
 `;
 
+exports[`.toBeInstanceOf() failing null and [Function String] 1`] = `
+"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+
+Expected constructor: <green>String</>
+Received constructor: 
+Received value: <red>null</>"
+`;
+
 exports[`.toBeInstanceOf() failing true and [Function Boolean] 1`] = `
 "<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
 
 Expected constructor: <green>Boolean</>
 Received constructor: <red>Boolean</>
 Received value: <red>true</>"
+`;
+
+exports[`.toBeInstanceOf() failing undefined and [Function String] 1`] = `
+"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+
+Expected constructor: <green>String</>
+Received constructor: 
+Received value: <red>undefined</>"
 `;
 
 exports[`.toBeInstanceOf() passing [] and [Function Array] 1`] = `
@@ -1517,7 +1533,9 @@ exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '[]' 1`] = 
 Expected array:
   <red>[{}, []]</>
 To contain value:
-  <green>[]</> <dim>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>"
+  <green>[]</>
+
+<dim>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '{}' 1`] = `
@@ -1526,7 +1544,9 @@ exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '{}' 1`] = 
 Expected array:
   <red>[{}, []]</>
 To contain value:
-  <green>{}</> <dim>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>"
+  <green>{}</>
+
+<dim>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[0, 1]' contains '1' 1`] = `
@@ -3459,6 +3479,30 @@ Received:
   <red>\\"bar\\"</>"
 `;
 
+exports[`.toStrictEqual() matches the expected snapshot when it fails 1`] = `
+"<dim>expect(</><red>received</><dim>).toStrictEqual(</><green>expected</><dim>)</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"test\\": TestClassA {</>
+<green>-     \\"a\\": 1,</>
+<green>-     \\"b\\": 2,</>
+<green>-   },</>
+<red>+   \\"test\\": 2,</>
+<dim>  }</>"
+`;
+
+exports[`.toStrictEqual() matches the expected snapshot when it fails 2`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toStrictEqual(</><green>expected</><dim>)</>
+
+Expected: <green>{\\"test\\": {\\"a\\": 1, \\"b\\": 2}}</>
+Received: <red>{\\"test\\": {\\"a\\": 1, \\"b\\": 2}}</>"
+`;
+
 exports[`toMatchObject() {pass: false} expect([0]).toMatchObject([-0]) 1`] = `
 "<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
 
@@ -3641,6 +3685,23 @@ Difference:
 <dim>      },</>
 <red>+     \\"z\\": \\"z\\",</>
 <dim>    },</>
+<dim>  }</>"
+`;
+
+exports[`toMatchObject() {pass: false} expect({"a": "b"}).toMatchObject({"c": "d"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
+
+Expected value to match object:
+  <green>{\\"c\\": \\"d\\"}</>
+Received:
+  <red>{\\"a\\": \\"b\\"}</>
+Difference:
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"c\\": \\"d\\",</>
+<red>+   \\"a\\": \\"b\\",</>
 <dim>  }</>"
 `;
 
@@ -3980,6 +4041,15 @@ Expected value not to match object:
   <green>{\\"t\\": {\\"x\\": {\\"r\\": \\"r\\"}}}</>
 Received:
   <red>{\\"a\\": \\"b\\", \\"t\\": {\\"x\\": {\\"r\\": \\"r\\"}, \\"z\\": \\"z\\"}}</>"
+`;
+
+exports[`toMatchObject() {pass: true} expect({"a": "b"}).toMatchObject({"a": "b"}) 1`] = `
+"<dim>expect(</><red>received</><dim>).not.toMatchObject(</><green>expected</><dim>)</>
+
+Expected value not to match object:
+  <green>{\\"a\\": \\"b\\"}</>
+Received:
+  <red>{\\"a\\": \\"b\\"}</>"
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": [{"a": "a", "b": "b"}]}).toMatchObject({"a": [{"a": "a"}]}) 1`] = `

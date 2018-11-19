@@ -38,6 +38,7 @@ export type ThemeReceived = {|
 export type Options = {|
   callToJSON: boolean,
   escapeRegex: boolean,
+  escapeString: boolean,
   highlight: boolean,
   indent: number,
   maxDepth: number,
@@ -50,6 +51,7 @@ export type Options = {|
 export type OptionsReceived = {|
   callToJSON?: boolean,
   escapeRegex?: boolean,
+  escapeString?: boolean,
   highlight?: boolean,
   indent?: number,
   maxDepth?: number,
@@ -63,6 +65,7 @@ export type Config = {|
   callToJSON: boolean,
   colors: Colors,
   escapeRegex: boolean,
+  escapeString: boolean,
   indent: string,
   maxDepth: number,
   min: boolean,

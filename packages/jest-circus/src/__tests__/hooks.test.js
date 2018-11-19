@@ -10,16 +10,16 @@
 
 'use strict';
 
-import {runTest} from '../__mocks__/test_utils';
+import {runTest} from '../__mocks__/testUtils';
 
 test('beforeEach is executed before each test in current/child describe blocks', () => {
   const {stdout} = runTest(`
     describe('describe', () => {
-      beforeEach(() => {});
+      beforeEach(() => console.log('> describe beforeEach'));
       test('one', () => {});
       test('two', () => {});
       describe('2nd level describe', () => {
-        beforeEach(() => {});
+        beforeEach(() => console.log('> 2nd level describe beforeEach'));
         test('2nd level test', () => {});
 
         describe('3rd level describe', () => {
@@ -30,9 +30,48 @@ test('beforeEach is executed before each test in current/child describe blocks',
     })
 
     describe('2nd describe', () => {
-      beforeEach(() => { throw new Error('alabama'); });
+      beforeEach(() => {
+        console.log('> 2nd describe beforeEach that throws')
+        throw new Error('alabama');
+      });
       test('2nd describe test', () => {});
     })
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('multiple before each hooks in one describe are executed in the right order', () => {
+  const {stdout} = runTest(`
+    describe('describe 1', () => {
+      beforeEach(() => {
+        console.log('before each 1');
+      });
+      beforeEach(() => {
+        console.log('before each 2');
+      });
+
+      describe('2nd level describe', () => {
+        test('test', () => {});
+      });
+    });
+  `);
+
+  expect(stdout).toMatchSnapshot();
+});
+
+test('beforeAll is exectued correctly', () => {
+  const {stdout} = runTest(`
+    describe('describe 1', () => {
+      beforeAll(() => console.log('> beforeAll 1'));
+      test('test 1', () => console.log('> test 1'));
+
+      describe('2nd level describe', () => {
+        beforeAll(() => console.log('> beforeAll 2'));
+        test('test 2', () => console.log('> test 2'));
+        test('test 3', () => console.log('> test 3'));
+      });
+    });
   `);
 
   expect(stdout).toMatchSnapshot();

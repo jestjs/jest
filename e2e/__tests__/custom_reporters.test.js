@@ -8,10 +8,10 @@
  */
 'use strict';
 
-const {cleanup, extractSummary, writeFiles} = require('../Utils');
-const runJest = require('../runJest');
-const os = require('os');
-const path = require('path');
+import {cleanup, extractSummary, writeFiles} from '../Utils';
+import runJest from '../runJest';
+import os from 'os';
+import path from 'path';
 
 const DIR = path.resolve(os.tmpdir(), 'custom-reporters-test-dir');
 

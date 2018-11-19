@@ -7,10 +7,10 @@
  * @flow
  */
 
-const fs = require('fs');
-const path = require('path');
-const {makeTemplate, writeFiles, cleanup} = require('../Utils');
-const runJest = require('../runJest');
+import fs from 'fs';
+import path from 'path';
+import {cleanup, makeTemplate, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../toMatchInlineSnapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
@@ -47,9 +47,6 @@ test('basic support', () => {
     expect(fileAfter).toMatchSnapshot('snapshot passed');
   }
 
-  // This test below also covers how jest-editor-support creates terse messages
-  // for letting a Snapshot update, so if the wording is updated, please edit
-  // /packages/jest-editor-support/src/test_reconciler.js
   {
     writeFiles(TESTS_DIR, {
       [filename]: readFile(filename).replace('original value', 'updated value'),
@@ -130,6 +127,54 @@ test('handles property matchers', () => {
   }
 });
 
+test('removes obsolete external snapshots', () => {
+  const filename = 'removes-obsolete-external-snapshots.test.js';
+  const snapshotPath = path.join(
+    TESTS_DIR,
+    '__snapshots__',
+    filename + '.snap',
+  );
+  const template = makeTemplate(`
+    test('removes obsolete external snapshots', () => {
+      expect('1').$1();
+    });
+  `);
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template(['toMatchSnapshot'])});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(status).toBe(0);
+    expect(fileAfter).toMatchSnapshot('initial write');
+    expect(fs.existsSync(snapshotPath)).toEqual(true);
+  }
+
+  {
+    writeFiles(TESTS_DIR, {[filename]: template(['toMatchInlineSnapshot'])});
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('Snapshots:   1 obsolete, 1 written, 1 total');
+    expect(status).toBe(1);
+    expect(fileAfter).toMatchSnapshot('inline snapshot written');
+    expect(fs.existsSync(snapshotPath)).toEqual(true);
+  }
+
+  {
+    const {stderr, status} = runJest(DIR, [
+      '-w=1',
+      '--ci=false',
+      filename,
+      '-u',
+    ]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('Snapshots:   1 file removed, 1 passed, 1 total');
+    expect(status).toBe(0);
+    expect(fileAfter).toMatchSnapshot('external snapshot cleaned');
+    expect(fs.existsSync(snapshotPath)).toEqual(false);
+  }
+});
+
 test('supports async matchers', () => {
   const filename = 'async-matchers.test.js';
   const test = `
@@ -162,4 +207,38 @@ test('supports async tests', () => {
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(status).toBe(0);
   expect(fileAfter).toMatchSnapshot();
+});
+
+test('writes snapshots with non-literals in expect(...)', () => {
+  const filename = 'async.test.js';
+  const test = `
+    it('works with inline snapshots', () => {
+      expect({a: 1}).toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(status).toBe(0);
+  expect(fileAfter).toMatchSnapshot();
+});
+
+// issue: https://github.com/facebook/jest/issues/6702
+test('handles mocking native modules prettier relies on', () => {
+  const filename = 'mockFail.test.js';
+  const test = `
+    jest.mock('path', () => ({}));
+    jest.mock('fs', () => ({}));
+    test('inline snapshots', () => {
+      expect({}).toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(status).toBe(0);
 });

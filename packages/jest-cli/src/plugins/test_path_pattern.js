@@ -9,7 +9,7 @@
 
 import type {GlobalConfig} from 'types/Config';
 import {BaseWatchPlugin, Prompt} from 'jest-watcher';
-import TestPathPatternPrompt from '../test_path_pattern_prompt';
+import TestPathPatternPrompt from '../TestPathPatternPrompt';
 import activeFilters from '../lib/active_filters_message';
 
 class TestPathPatternPlugin extends BaseWatchPlugin {

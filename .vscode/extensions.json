@@ -3,7 +3,7 @@
   // for the documentation about the extensions.json format
   "recommendations": [
     "dbaeumer.vscode-eslint",
-    "adamvoss.yaml",
+    "redhat.vscode-yaml",
     "flowtype.flow-for-vscode",
     "esbenp.prettier-vscode",
     "Orta.vscode-jest"

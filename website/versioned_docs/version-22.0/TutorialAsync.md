@@ -112,7 +112,7 @@ it('works with async/await and resolves', async () => {
 });
 ```
 
-To enable async/await in your project, install [`babel-preset-env`](http://babeljs.io/docs/plugins/preset-env/) and enable the feature in your `.babelrc` file.
+To enable async/await in your project, install [`babel-preset-env`](https://babeljs.io/docs/plugins/preset-env/) and enable the feature in your `.babelrc` file.
 
 ## Error handling
 
