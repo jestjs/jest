@@ -7,18 +7,12 @@
  * @flow
  */
 
-const ifRegExpSupported = (value: string): string | boolean => {
-  try {
-    // eslint-disable-next-line no-new
-    new RegExp(value);
-    return value;
-  } catch (e) {
-    return false;
-  }
-};
+import isRegExpSupported from './isRegExpSupported';
 
 // Negative look behind is only supported in Node 9+
-const NOT_A_DOT = ifRegExpSupported('(?<!\\.\\s*)') || '(?:^|[^.]\\s*)';
+const NOT_A_DOT = isRegExpSupported('(?<!\\.\\s*)')
+  ? '(?<!\\.\\s*)'
+  : '(?:^|[^.]\\s*)';
 const CAPTURE_STRING_LITERAL = pos => `([\`'"])([^'"\`]*?)(?:\\${pos})`;
 const WORD_SEPARATOR = '\\b';
 const LEFT_PARENTHESIS = '\\(';
