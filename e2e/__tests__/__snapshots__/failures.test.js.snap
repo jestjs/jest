@@ -272,6 +272,9 @@ exports[`works with assertions in separate files 1`] = `
 
     expect(received).toEqual(expected)
 
+    Expected: 2
+    Received: 1
+
       10 | 
       11 | module.exports = (one: any, two: any) => {
     > 12 |   expect(one).toEqual(two);
