@@ -1735,7 +1735,17 @@ exports[`.toEqual() {pass: false} expect("abd").toEqual(StringContaining "bc") 1
 
 exports[`.toEqual() {pass: false} expect("abd").toEqual(StringMatching /bc/i) 1`] = `"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>"`;
 
-exports[`.toEqual() {pass: false} expect("banana").toEqual("apple") 1`] = `"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>"`;
+exports[`.toEqual() {pass: false} expect("banana").toEqual("apple") 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<green>- apple</>
+<red>+ banana</>"
+`;
 
 exports[`.toEqual() {pass: false} expect([1, 2, 3]).not.toEqual(ArrayContaining [2, 3]) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>

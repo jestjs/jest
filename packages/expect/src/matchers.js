@@ -378,14 +378,12 @@ const matchers: MatchersObject = {
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}`
       : () => {
-          const oneline = isOneline(expected, received);
           const diffString = diff(expected, received, {expand: this.expand});
 
           return (
             matcherHint('.toEqual', undefined, undefined, {
               isNot: this.isNot,
-            }) +
-            (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '')
+            }) + (diffString ? `\n\nDifference:\n\n${diffString}` : '')
           );
         };
 
