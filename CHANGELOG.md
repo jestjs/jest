@@ -112,6 +112,7 @@
 - `[pretty-format]` Standardize filenames ([#7316](https://github.com/facebook/jest/pull/7316))
 - `[*]` Add check for Facebook copyright headers on CI ([#7370](https://github.com/facebook/jest/pull/7370))
 - `[jest-haste-map]` Refactor `dependencyExtractor` and tests ([#7385](https://github.com/facebook/jest/pull/7385))
+- `[docs]` Clearify conditional setting of `NODE_ENV` ([#7369](https://github.com/facebook/jest/pull/7369))
 
 ### Performance
 
