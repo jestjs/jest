@@ -184,7 +184,7 @@ And finally we just have the webpack `alias` left to handle. For that we can mak
       "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js",
 
       "^react(.*)$": "<rootDir>/vendor/react-master$1",
-      "^config$": "<rootDir>/configs/app-config.js",
+      "^config$": "<rootDir>/configs/app-config.js"
     }
   }
 }
