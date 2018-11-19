@@ -1708,7 +1708,12 @@ Expected: <green>{\\"asymmetricMatch\\": [Function asymmetricMatch]}</>
 Received: <red>\\"Alice\\"</>"
 `;
 
-exports[`.toEqual() {pass: false} expect("Eve").toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>"`;
+exports[`.toEqual() {pass: false} expect("Eve").toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected: <green>{\\"asymmetricMatch\\": [Function asymmetricMatch]}</>
+Received: <red>\\"Eve\\"</>"
+`;
 
 exports[`.toEqual() {pass: false} expect("abc").not.toEqual("abc") 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
@@ -1731,9 +1736,19 @@ Expected: <green>StringMatching /bc/</>
 Received: <red>\\"abcd\\"</>"
 `;
 
-exports[`.toEqual() {pass: false} expect("abd").toEqual(StringContaining "bc") 1`] = `"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>"`;
+exports[`.toEqual() {pass: false} expect("abd").toEqual(StringContaining "bc") 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
-exports[`.toEqual() {pass: false} expect("abd").toEqual(StringMatching /bc/i) 1`] = `"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>"`;
+Expected: <green>StringContaining \\"bc\\"</>
+Received: <red>\\"abd\\"</>"
+`;
+
+exports[`.toEqual() {pass: false} expect("abd").toEqual(StringMatching /bc/i) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected: <green>StringMatching /bc/i</>
+Received: <red>\\"abd\\"</>"
+`;
 
 exports[`.toEqual() {pass: false} expect("banana").toEqual("apple") 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
@@ -1910,7 +1925,12 @@ Expected: <green>1</>
 Received: <red>1</>"
 `;
 
-exports[`.toEqual() {pass: false} expect(1).toEqual(2) 1`] = `"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>"`;
+exports[`.toEqual() {pass: false} expect(1).toEqual(2) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected: <green>2</>
+Received: <red>1</>"
+`;
 
 exports[`.toEqual() {pass: false} expect(1).toEqual(ArrayContaining [1, 2]) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
@@ -2449,7 +2469,12 @@ Expected: <green>true</>
 Received: <red>true</>"
 `;
 
-exports[`.toEqual() {pass: false} expect(true).toEqual(false) 1`] = `"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>"`;
+exports[`.toEqual() {pass: false} expect(true).toEqual(false) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected: <green>false</>
+Received: <red>true</>"
+`;
 
 exports[`.toEqual() {pass: false} expect(undefined).toEqual(Any<Function>) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
@@ -2459,7 +2484,12 @@ Difference:
   Comparing two different types of values. Expected <green>function</> but received <red>undefined</>."
 `;
 
-exports[`.toEqual() {pass: false} expect(undefined).toEqual(Anything) 1`] = `"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>"`;
+exports[`.toEqual() {pass: false} expect(undefined).toEqual(Anything) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected: <green>Anything</>
+Received: <red>undefined</>"
+`;
 
 exports[`.toEqual() failure message matches the expected snapshot 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>

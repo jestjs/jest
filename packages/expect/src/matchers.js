@@ -383,7 +383,12 @@ const matchers: MatchersObject = {
           return (
             matcherHint('.toEqual', undefined, undefined, {
               isNot: this.isNot,
-            }) + (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+            }) +
+            '\n\n' +
+            (diffString
+              ? `Difference:\n\n${diffString}`
+              : `Expected: ${printExpected(expected)}\n` +
+                `Received: ${printReceived(received)}`)
           );
         };
 
