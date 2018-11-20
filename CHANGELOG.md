@@ -34,6 +34,7 @@
 
 ### Fixes
 
+- `[jest-cli]` Fix empty coverage data for untested files ([#7388](https://github.com/facebook/jest/pull/7388))
 - `[expect]` Standardize file naming in `expect` ([#7306](https://github.com/facebook/jest/pull/7306))
 - `[jest-each]` Add empty array validation check ([#7249](https://github.com/facebook/jest/pull/7249))
 - `[jest-cli]` Interrupt tests if interactive watch plugin key is pressed ([#7222](https://github.com/facebook/jest/pull/7222))
