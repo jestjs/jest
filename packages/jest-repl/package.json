@@ -16,5 +16,8 @@
   },
   "bin": {
     "jest-repl": "./bin/jest-repl.js"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

@@ -10,5 +10,8 @@
   "dependencies": {
     "@babel/plugin-syntax-object-rest-spread": "^7.0.0",
     "babel-plugin-jest-hoist": "^23.2.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

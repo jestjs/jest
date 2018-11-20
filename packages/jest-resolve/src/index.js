@@ -14,9 +14,9 @@ import type {ErrorWithCode} from 'types/Errors';
 
 import fs from 'fs';
 import path from 'path';
-import nodeModulesPaths from './node_modules_paths';
-import isBuiltinModule from './is_builtin_module';
-import defaultResolver from './default_resolver.js';
+import nodeModulesPaths from './nodeModulesPaths';
+import isBuiltinModule from './isBuiltinModule';
+import defaultResolver from './defaultResolver';
 import chalk from 'chalk';
 
 type ResolverConfig = {|
@@ -328,8 +328,8 @@ class Resolver {
     return virtualMocks[virtualMockPath]
       ? virtualMockPath
       : moduleName
-        ? this.resolveModule(from, moduleName)
-        : from;
+      ? this.resolveModule(from, moduleName)
+      : from;
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {
@@ -341,10 +341,23 @@ class Resolver {
   _resolveStubModuleName(from: Path, moduleName: string): ?Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
-    const extensions = this._options.extensions;
+    const extensions = this._options.extensions.slice();
     const moduleDirectory = this._options.moduleDirectories;
     const moduleNameMapper = this._options.moduleNameMapper;
     const resolver = this._options.resolver;
+    const defaultPlatform = this._options.defaultPlatform;
+
+    if (this._supportsNativePlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
+      );
+    }
+
+    if (defaultPlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + defaultPlatform + ext),
+      );
+    }
 
     if (moduleNameMapper) {
       for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {

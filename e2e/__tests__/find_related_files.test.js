@@ -41,6 +41,48 @@ describe('--findRelatedTests flag', () => {
     expect(stderr).toMatch(summaryMsg);
   });
 
+  test('runs tests related to filename with a custom dependency extractor', () => {
+    writeFiles(DIR, {
+      '.watchmanconfig': '',
+      '__tests__/test.test.js': `
+        const dynamicImport = path => Promise.resolve(require(path));
+        test('a', () => dynamicImport('../a').then(a => {
+          expect(a.foo).toBe(5);
+        }));
+      `,
+      'a.js': 'module.exports = {foo: 5};',
+      'dependencyExtractor.js': `
+        const DYNAMIC_IMPORT_RE = /(?:^|[^.]\\s*)(\\bdynamicImport\\s*?\\(\\s*?)([\`'"])([^\`'"]+)(\\2\\s*?\\))/g;
+        module.exports = {
+          extract(code) {
+            const dependencies = new Set();
+            const addDependency = (match, pre, quot, dep, post) => {
+              dependencies.add(dep);
+              return match;
+            };
+            code.replace(DYNAMIC_IMPORT_RE, addDependency);
+            return dependencies;
+          },
+        };
+      `,
+      'package.json': JSON.stringify({
+        jest: {
+          dependencyExtractor: '<rootDir>/dependencyExtractor.js',
+          testEnvironment: 'node',
+        },
+      }),
+    });
+
+    const {stdout} = runJest(DIR, ['a.js']);
+    expect(stdout).toMatch('');
+
+    const {stderr} = runJest(DIR, ['--findRelatedTests', 'a.js']);
+    expect(stderr).toMatch('PASS __tests__/test.test.js');
+
+    const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
+    expect(stderr).toMatch(summaryMsg);
+  });
+
   test('generates coverage report for filename', () => {
     writeFiles(DIR, {
       '.watchmanconfig': '',

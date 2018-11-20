@@ -257,6 +257,16 @@ Jest will fail if:
 - The `./src/api/very-important-module.js` file has less than 100% coverage.
 - Every remaining file combined has less than 50% coverage (`global`).
 
+### `dependencyExtractor` [string]
+
+Default: `undefined`
+
+This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function expecting a string as the first argument for the code to analyze and Jest's dependency extractor as the second argument (in case you only want to extend it).
+
+The function should return an iterable (`Array`, `Set`, etc.) with the dependencies found in the code.
+
+That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
+
 ### `errorOnDeprecated` [boolean]
 
 Default: `false`
@@ -609,6 +619,8 @@ This option allows you to use a custom runner instead of Jest's default test run
 - [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc)
 - [`jest-runner-prettier`](https://github.com/keplersj/jest-runner-prettier)
 
+_Note: The `runner` property value can omit the `jest-runner-` prefix of the package name._
+
 To write a test-runner, export a class with which accepts `globalConfig` in the constructor, and has a `runTests` method with the signature:
 
 ```ts
@@ -905,7 +917,7 @@ An example of such function can be found in our default [jasmine2 test runner pa
 
 ### `testURL` [string]
 
-Default: `about:blank`
+Default: `http://localhost`
 
 This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
 
@@ -962,3 +974,37 @@ Default: `[]`
 An array of RegExp patterns that are matched against all source file paths before re-running tests in watch mode. If the file path matches any of the patterns, when it is updated, it will not trigger a re-run of tests.
 
 These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
+
+### `watchPlugins` [array<string | [string, Object]>]
+
+Default: `[]`
+
+This option allows you to use a custom watch plugins. Read more about watch plugins [here](watch-plugins).
+
+Examples of watch plugins include:
+
+- [`jest-watch-master`](https://github.com/rickhanlonii/jest-watch-master)
+- [`jest-watch-select-projects`](https://github.com/rogeliog/jest-watch-select-projects)
+- [`jest-watch-suspend`](https://github.com/unional/jest-watch-suspend)
+- [`jest-watch-typeahead`](https://github.com/jest-community/jest-watch-typeahead)
+- [`jest-watch-yarn-workspaces`](https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces)
+
+_Note: The values in the `watchPlugins` property value can omit the `jest-watch-` prefix of the package name._
+
+### `//` [string]
+
+No default
+
+This option allow comments in `package.json`. Include the comment text as the value of this key anywhere in `package.json`.
+
+Example:
+
+```json
+{
+  "name": "my-project",
+  "jest": {
+    "//": "Comment goes here",
+    "verbose": true
+  }
+}
+```

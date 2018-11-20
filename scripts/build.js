@@ -151,9 +151,9 @@ function buildFile(file, silent) {
 
     if (INLINE_REQUIRE_BLACKLIST.test(file)) {
       // The modules in the blacklist are injected into the user's sandbox
-      // We need to guard `Promise` there.
+      // We need to guard some globals there.
       options.plugins.push(
-        require.resolve('./babel-plugin-jest-native-promise')
+        require.resolve('./babel-plugin-jest-native-globals')
       );
     } else {
       options.plugins = options.plugins.map(plugin => {

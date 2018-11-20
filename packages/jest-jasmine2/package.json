@@ -23,5 +23,8 @@
   },
   "devDependencies": {
     "jest-runtime": "^23.6.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

@@ -25,5 +25,8 @@
   "devDependencies": {
     "execa": "^1.0.0",
     "jest-runtime": "^23.6.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

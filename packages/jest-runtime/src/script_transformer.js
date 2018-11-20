@@ -337,7 +337,7 @@ export default class ScriptTransformer {
       };
     } catch (e) {
       if (e.codeFrame) {
-        e.stack = e.codeFrame;
+        e.stack = e.message + '\n' + e.codeFrame;
       }
 
       if (

@@ -83,7 +83,13 @@ export type AssertionLocation = {|
   path: string,
 |};
 
-export type Status = 'passed' | 'failed' | 'skipped' | 'pending' | 'todo';
+export type Status =
+  | 'passed'
+  | 'failed'
+  | 'skipped'
+  | 'pending'
+  | 'todo'
+  | 'disabled';
 
 export type Bytes = number;
 export type Milliseconds = number;

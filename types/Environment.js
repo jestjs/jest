@@ -28,6 +28,7 @@ declare class $JestEnvironment {
     advanceTimersByTime(msToRun: number): void,
     runOnlyPendingTimers(): void,
     runWithRealTimers(callback: any): void,
+    getTimerCount(): number,
     useFakeTimers(): void,
     useRealTimers(): void,
   };

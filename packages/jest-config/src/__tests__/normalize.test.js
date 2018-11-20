@@ -334,9 +334,8 @@ describe('setupFilesAfterEnv', () => {
   let Resolver;
   beforeEach(() => {
     Resolver = require('jest-resolve');
-    Resolver.findNodeModule = jest.fn(
-      name =>
-        name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+    Resolver.findNodeModule = jest.fn(name =>
+      name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
     );
   });
 
@@ -385,9 +384,8 @@ describe('setupTestFrameworkScriptFile', () => {
     console.warn = jest.fn();
     consoleWarn = console.warn;
     Resolver = require('jest-resolve');
-    Resolver.findNodeModule = jest.fn(
-      name =>
-        name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+    Resolver.findNodeModule = jest.fn(name =>
+      name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
     );
   });
 
@@ -671,11 +669,8 @@ describe('testEnvironment', () => {
   beforeEach(() => {
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(name => {
-      if (name === 'jsdom') {
-        return 'node_modules/jsdom';
-      }
-      if (name === 'jest-environment-jsdom') {
-        return 'node_modules/jest-environment-jsdom';
+      if (['jsdom', 'jest-environment-jsdom'].includes(name)) {
+        return `node_modules/${name}`;
       }
       if (name.startsWith('/root')) {
         return name;
@@ -727,11 +722,10 @@ describe('babel-jest', () => {
   let Resolver;
   beforeEach(() => {
     Resolver = require('jest-resolve');
-    Resolver.findNodeModule = jest.fn(
-      name =>
-        name.indexOf('babel-jest') === -1
-          ? path.sep + 'node_modules' + path.sep + name
-          : name,
+    Resolver.findNodeModule = jest.fn(name =>
+      name.indexOf('babel-jest') === -1
+        ? path.sep + 'node_modules' + path.sep + name
+        : name,
     );
   });
 
@@ -1205,15 +1199,79 @@ describe('preset without setupFiles', () => {
   });
 });
 
+describe('runner', () => {
+  let Resolver;
+  beforeEach(() => {
+    Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => {
+      if (['eslint', 'jest-runner-eslint', 'my-runner-foo'].includes(name)) {
+        return `node_modules/${name}`;
+      }
+      if (name.startsWith('/root')) {
+        return name;
+      }
+      return findNodeModule(name);
+    });
+  });
+
+  it('defaults to `jest-runner`', () => {
+    const {options} = normalize({rootDir: '/root'}, {});
+
+    expect(options.runner).toBe('jest-runner');
+  });
+
+  it('resolves to runners that do not have the prefix', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        runner: 'my-runner-foo',
+      },
+      {},
+    );
+
+    expect(options.runner).toBe('node_modules/my-runner-foo');
+  });
+
+  it('resolves to runners and prefers jest-runner-`name`', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        runner: 'eslint',
+      },
+      {},
+    );
+
+    expect(options.runner).toBe('node_modules/jest-runner-eslint');
+  });
+
+  it('throw error when a runner is not found', () => {
+    expect(() =>
+      normalize(
+        {
+          rootDir: '/root/',
+          runner: 'missing-runner',
+        },
+        {},
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
+});
+
 describe('watchPlugins', () => {
   let Resolver;
   beforeEach(() => {
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(name => {
-      if (name.startsWith(path.sep)) {
+      if (
+        ['typeahead', 'jest-watch-typeahead', 'my-watch-plugin'].includes(name)
+      ) {
+        return `node_modules/${name}`;
+      }
+
+      if (name.startsWith('/root')) {
         return name;
       }
-      return path.sep + 'node_modules' + path.sep + name;
+      return findNodeModule(name);
     });
   });
 
@@ -1223,19 +1281,59 @@ describe('watchPlugins', () => {
     expect(options.watchPlugins).toEqual(undefined);
   });
 
-  it('normalizes watchPlugins', () => {
+  it('resolves to watch plugins and prefers jest-watch-`name`', () => {
     const {options} = normalize(
       {
         rootDir: '/root/',
-        watchPlugins: ['my-watch-plugin', '<rootDir>/path/to/plugin'],
+        watchPlugins: ['typeahead'],
       },
       {},
     );
 
     expect(options.watchPlugins).toEqual([
-      {config: {}, path: '/node_modules/my-watch-plugin'},
+      {config: {}, path: 'node_modules/jest-watch-typeahead'},
+    ]);
+  });
+
+  it('resolves watch plugins that do not have the prefix', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        watchPlugins: ['my-watch-plugin'],
+      },
+      {},
+    );
+
+    expect(options.watchPlugins).toEqual([
+      {config: {}, path: 'node_modules/my-watch-plugin'},
+    ]);
+  });
+
+  it('normalizes multiple watchPlugins', () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        watchPlugins: ['jest-watch-typeahead', '<rootDir>/path/to/plugin'],
+      },
+      {},
+    );
+
+    expect(options.watchPlugins).toEqual([
+      {config: {}, path: 'node_modules/jest-watch-typeahead'},
       {config: {}, path: '/root/path/to/plugin'},
     ]);
+  });
+
+  it('throw error when a watch plugin is not found', () => {
+    expect(() =>
+      normalize(
+        {
+          rootDir: '/root/',
+          watchPlugins: ['missing-plugin'],
+        },
+        {},
+      ),
+    ).toThrowErrorMatchingSnapshot();
   });
 });
 

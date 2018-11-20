@@ -19,5 +19,8 @@
   },
   "devDependencies": {
     "jest-mock": "^23.2.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

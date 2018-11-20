@@ -30,6 +30,7 @@ export default ({
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   coverageThreshold: null,
   cwd: process.cwd(),
+  dependencyExtractor: null,
   detectLeaks: false,
   detectOpenHandles: false,
   errorOnDeprecated: false,
@@ -40,6 +41,7 @@ export default ({
   globalTeardown: null,
   globals: {},
   haste: {
+    computeSha1: false,
     providesModuleNodeModules: [],
   },
   moduleDirectories: ['node_modules'],

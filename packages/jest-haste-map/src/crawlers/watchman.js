@@ -11,7 +11,7 @@ import type {InternalHasteMap} from 'types/HasteMap';
 import type {CrawlerOptions} from '../types';
 
 import * as fastPath from '../lib/fast_path';
-import normalizePathSep from '../lib/normalize_path_sep';
+import normalizePathSep from '../lib/normalizePathSep';
 import path from 'path';
 import watchman from 'fb-watchman';
 import H from '../constants';
@@ -44,10 +44,8 @@ module.exports = async function watchmanCrawl(
 
   const cmd = (...args) =>
     new Promise((resolve, reject) =>
-      client.command(
-        args,
-        (error, result) =>
-          error ? reject(WatchmanError(error)) : resolve(result),
+      client.command(args, (error, result) =>
+        error ? reject(WatchmanError(error)) : resolve(result),
       ),
     );
 
