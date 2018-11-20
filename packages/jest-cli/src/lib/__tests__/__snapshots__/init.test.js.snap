@@ -63,6 +63,9 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: null,
 
+  // A path to a custom dependency extractor
+  // dependencyExtractor: null,
+
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,
 

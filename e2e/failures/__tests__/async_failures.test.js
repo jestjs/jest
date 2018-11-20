@@ -20,10 +20,6 @@ test('expect reject', () =>
 test('expect resolve', () =>
   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
 
-test(
-  'timeout',
-  done => {
-    setTimeout(done, 50);
-  },
-  5
-);
+test('timeout', done => {
+  setTimeout(done, 50);
+}, 5);

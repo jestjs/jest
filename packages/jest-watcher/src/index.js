@@ -7,9 +7,9 @@
  * @flow
  */
 
-export {default as BaseWatchPlugin} from './base_watch_plugin';
-export {default as JestHook} from './jest_hooks';
-export {default as PatternPrompt} from './pattern_prompt';
+export {default as BaseWatchPlugin} from './BaseWatchPlugin';
+export {default as JestHook} from './JestHooks';
+export {default as PatternPrompt} from './PatternPrompt';
 export * from './constants';
 export {default as Prompt} from './lib/Prompt';
-export * from './lib/pattern_mode_helpers';
+export * from './lib/patternModeHelpers';

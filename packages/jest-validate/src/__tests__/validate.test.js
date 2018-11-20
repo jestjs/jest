@@ -10,14 +10,14 @@
 
 import validate from '../validate';
 import {multipleValidOptions} from '../condition';
-import jestValidateExampleConfig from '../example_config';
-import jestValidateDefaultConfig from '../default_config';
+import jestValidateExampleConfig from '../exampleConfig';
+import jestValidateDefaultConfig from '../defaultConfig';
 
 const {
   defaultConfig,
   validConfig,
   deprecatedConfig,
-} = require('./fixtures/jest_config');
+} = require('./fixtures/jestConfig');
 
 test('recursively validates default Jest config', () => {
   expect(
@@ -265,4 +265,24 @@ test('Repeated types within multiple valid examples are coalesced in error repor
       },
     ),
   ).toThrowErrorMatchingSnapshot();
+});
+
+test('Comments in config JSON using "//" key are not warned', () => {
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+  const config = {'//': 'a comment'};
+
+  validate(config, {
+    exampleConfig: validConfig,
+  });
+  expect(console.warn).not.toBeCalled();
+
+  console.warn.mockReset();
+
+  validate(config, {
+    exampleConfig: validConfig,
+    recursiveBlacklist: [('myCustomKey': "don't validate this")],
+  });
+  expect(console.warn).not.toBeCalled();
+
+  console.warn.mockRestore();
 });
