@@ -42,6 +42,23 @@ All files |    85.71 |      100 |       50 |      100 |                   |
 
 exports[`does not output coverage report when html is requested 1`] = `""`;
 
+exports[`generates coverage when using the testRegex config param  1`] = `
+"-------------------------------------|----------|----------|----------|----------|-------------------|
+File                                 |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+-------------------------------------|----------|----------|----------|----------|-------------------|
+All files                           </> |    56.52</> |        0</> |       50</> |    55.56</> |                  </> |
+ coverage-report                    </> |    41.18</> |        0</> |       25</> |    42.86</> |                  </> |
+  OtherFile.js                      </> |      100</> |      100</> |      100</> |      100</> |                  </> |
+  Sum.js                            </> |    85.71</> |      100</> |       50</> |      100</> |                  </> |
+  SumDependency.js                  </> |        0</> |        0</> |        0</> |        0</> |           8,10,12</> |
+  notRequiredInTestSuite.js         </> |        0</> |        0</> |        0</> |        0</> |     8,15,16,17,19</> |
+ coverage-report/cached-duplicates/a</> |      100</> |      100</> |      100</> |      100</> |                  </> |
+  Identical.js                      </> |      100</> |      100</> |      100</> |      100</> |                  </> |
+ coverage-report/cached-duplicates/b</> |      100</> |      100</> |      100</> |      100</> |                  </> |
+  Identical.js                      </> |      100</> |      100</> |      100</> |      100</> |                  </> |
+-------------------------------------|----------|----------|----------|----------|-------------------|"
+`;
+
 exports[`json reporter printing with --coverage 1`] = `
 "Test Suites: 1 failed, 1 total
 Tests:       1 failed, 2 passed, 3 total

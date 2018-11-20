@@ -44,7 +44,9 @@ test('exits with 1 if coverage threshold is not met', () => {
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false']);
+  const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false'], {
+    stripAnsi: true,
+  });
   const {rest, summary} = extractSummary(stderr);
 
   expect(status).toBe(1);
@@ -79,7 +81,9 @@ test('exits with 1 if path threshold group is not found in coverage data', () =>
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false']);
+  const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false'], {
+    stripAnsi: true,
+  });
   const {rest, summary} = extractSummary(stderr);
 
   expect(status).toBe(1);
@@ -117,7 +121,9 @@ test('exits with 0 if global threshold group is not found in coverage data', () 
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, status} = runJest(DIR, ['--coverage', '--ci=false']);
+  const {stdout, status} = runJest(DIR, ['--coverage', '--ci=false'], {
+    stripAnsi: true,
+  });
 
   expect(status).toBe(0);
   expect(stdout).toMatchSnapshot('stdout');
@@ -157,7 +163,9 @@ test('excludes tests matched by path threshold groups from global group', () => 
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false']);
+  const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false'], {
+    stripAnsi: true,
+  });
   const {rest, summary} = extractSummary(stderr);
 
   expect(status).toBe(1);
@@ -198,7 +206,9 @@ test('file is matched by all path and glob threshold groups', () => {
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false']);
+  const {stdout, stderr, status} = runJest(DIR, ['--coverage', '--ci=false'], {
+    stripAnsi: true,
+  });
   const {rest, summary} = extractSummary(
     /* This test also runs on windows and when the glob fails it outputs
     the system specific absolute path to the test file. */

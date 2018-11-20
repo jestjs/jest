@@ -501,15 +501,15 @@ export const options = {
   },
   setupFiles: {
     description:
-      'The paths to modules that run some code to configure or ' +
+      'A list of paths to modules that run some code to configure or ' +
       'set up the testing environment before each test. ',
     type: 'array',
   },
-  setupTestFrameworkScriptFile: {
+  setupFilesAfterEnv: {
     description:
-      'The path to a module that runs some code to configure or ' +
-      'set up the testing framework before each test.',
-    type: 'string',
+      'A list of paths to modules that run some code to configure or ' +
+      'set up the testing framework before each test ',
+    type: 'array',
   },
   showConfig: {
     default: undefined,
@@ -576,8 +576,9 @@ export const options = {
     type: 'array',
   },
   testRegex: {
-    description: 'The regexp pattern Jest uses to detect test files.',
-    type: 'string',
+    description:
+      'A string or array of string regexp patterns that Jest uses to detect test files.',
+    type: 'array',
   },
   testResultsProcessor: {
     description:

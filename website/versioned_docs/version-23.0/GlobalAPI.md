@@ -429,14 +429,6 @@ test('will be ran', () => {
 });
 ```
 
-### `require.requireActual(moduleName)`
-
-Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
-
-### `require.requireMock(moduleName)`
-
-Returns a mock module instead of the actual module, bypassing all checks on whether the module should be required normally or not.
-
 ### `test(name, fn, timeout)`
 
 Also under the alias: `it(name, fn, timeout)`

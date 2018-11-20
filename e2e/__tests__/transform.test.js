@@ -33,7 +33,9 @@ describe('babel-jest', () => {
   });
 
   it('instruments only specific files and collects coverage', () => {
-    const {stdout} = runJest(dir, ['--coverage', '--no-cache']);
+    const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
+      stripAnsi: true,
+    });
     expect(stdout).toMatch('Covered.js');
     expect(stdout).not.toMatch('NotCovered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
@@ -63,11 +65,11 @@ describe('no babel-jest', () => {
   });
 
   test('instrumentation with no babel-jest', () => {
-    const {stdout} = runJest(tempDir, [
-      '--no-cache',
-      '--coverage',
-      '--no-watchman',
-    ]);
+    const {stdout} = runJest(
+      tempDir,
+      ['--no-cache', '--coverage', '--no-watchman'],
+      {stripAnsi: true},
+    );
     expect(stdout).toMatch('Covered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
@@ -92,7 +94,9 @@ describe('custom transformer', () => {
   });
 
   it('instruments files', () => {
-    const {stdout, status} = runJest(dir, ['--no-cache', '--coverage']);
+    const {stdout, status} = runJest(dir, ['--no-cache', '--coverage'], {
+      stripAnsi: true,
+    });
     // coverage should be empty because there's no real instrumentation
     expect(stdout).toMatchSnapshot();
     expect(status).toBe(0);

@@ -19,11 +19,11 @@ const DIR = path.resolve(os.tmpdir(), 'jest_require_actual_test');
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
-test('understands dependencies using require.requireActual', () => {
+test('understands dependencies using jest.requireActual', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
     '__tests__/a.test.js': `
-      const a = require.requireActual('../a');
+      const a = jest.requireActual('../a');
 
       test('a', () => {});
     `,

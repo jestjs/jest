@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const jestPreset = require('babel-preset-jest');
 const {transform: babelTransform} = require('babel-core');
 const {default: babelIstanbulPlugin} = require('babel-plugin-istanbul');
+const jestPreset = require.resolve('babel-preset-jest');
 
 const options = {
   presets: ['env', jestPreset],

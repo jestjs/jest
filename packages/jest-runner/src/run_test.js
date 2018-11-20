@@ -58,6 +58,7 @@ async function runTestInternal(
   if (customEnvironment) {
     testEnvironment = getTestEnvironment(
       Object.assign({}, config, {
+        // $FlowFixMe
         testEnvironment: customEnvironment,
       }),
     );
@@ -70,9 +71,8 @@ async function runTestInternal(
     : /* $FlowFixMe */
       require(config.testRunner)): TestFramework);
   /* $FlowFixMe */
-  const Runtime = (require(config.moduleLoader || 'jest-runtime'): Class<
-    RuntimeClass,
-  >);
+  const Runtime = (require(config.moduleLoader ||
+    'jest-runtime'): Class<RuntimeClass>);
 
   let runtime = undefined;
 

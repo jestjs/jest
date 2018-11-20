@@ -881,7 +881,7 @@ An example of such function can be found in our default [jasmine2 test runner pa
 
 ### `testURL` [string]
 
-Default: `about:blank`
+Default: `http://localhost`
 
 This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
 
@@ -938,3 +938,17 @@ Default: `[]`
 An array of RegExp patterns that are matched against all source file paths before re-running tests in watch mode. If the file path matches any of the patterns, when it is updated, it will not trigger a re-run of tests.
 
 These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
+
+### `watchPlugins` [array<string | [string, Object]>]
+
+Default: `[]`
+
+This option allows you to use a custom watch plugins. Read more about watch plugins [here](watch-plugins).
+
+Examples of watch plugins include:
+
+- [`jest-watch-master`](https://github.com/rickhanlonii/jest-watch-master)
+- [`jest-watch-select-projects`](https://github.com/rogeliog/jest-watch-select-projects)
+- [`jest-watch-suspend`](https://github.com/unional/jest-watch-suspend)
+- [`jest-watch-typeahead`](https://github.com/jest-community/jest-watch-typeahead)
+- [`jest-watch-yarn-workspaces`](https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces)
