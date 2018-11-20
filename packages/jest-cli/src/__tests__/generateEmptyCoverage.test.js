@@ -40,7 +40,8 @@ module.exports = {
 it('generates an empty coverage object for a file without running it', () => {
   const coverageMap = istanbulCoverage.createCoverageMap({});
   const sourceMapStore = libSourceMaps.createSourceMapStore();
-  const filepath = path.join(os.tmpdir(), './sum.js');
+  const rootDir = '/tmp';
+  const filepath = path.join(rootDir, './sum.js');
 
   const emptyCoverage = generateEmptyCoverage(
     src,
@@ -48,7 +49,7 @@ it('generates an empty coverage object for a file without running it', () => {
     makeGlobalConfig(),
     makeProjectConfig({
       cacheDirectory: os.tmpdir(),
-      rootDir: os.tmpdir(),
+      rootDir,
       transform: [
         ['^.+\\.js$', path.join(__dirname, '../../../babel-jest/src/index.js')],
       ],

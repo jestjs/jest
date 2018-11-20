@@ -75,7 +75,7 @@ Object {
       "name": "(anonymous_0)",
     },
   },
-  "path": "/var/folders/d2/3k2_qfn95kn_p6mlbqt_fjs40000gp/T/sum.js",
+  "path": "/tmp/sum.js",
   "s": Object {
     "0": 0,
     "1": 0,
