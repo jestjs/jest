@@ -1913,9 +1913,8 @@ Received: <red>{}</>"
 exports[`.toEqual() {pass: false} expect(0).toEqual(-0) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
-Difference:
-
-<dim>Compared values have no visual difference.</>"
+Expected: <green>-0</>
+Received: <red>0</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(1).not.toEqual(1) 1`] = `
@@ -1935,9 +1934,8 @@ Received: <red>1</>"
 exports[`.toEqual() {pass: false} expect(1).toEqual(ArrayContaining [1, 2]) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
-Difference:
-
-  Comparing two different types of values. Expected <green>array</> but received <red>number</>."
+Expected: <green>ArrayContaining [1, 2]</>
+Received: <red>1</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.List [1, 2]).not.toEqual(Immutable.List [1, 2]) 1`] = `
@@ -2261,9 +2259,8 @@ Received: <red>Map {}</>"
 exports[`.toEqual() {pass: false} expect(Map {}).toEqual(Set {}) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
-Difference:
-
-  Comparing two different types of values. Expected <green>set</> but received <red>map</>."
+Expected: <green>Set {}</>
+Received: <red>Map {}</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(Map {1 => "one", 2 => "two"}).not.toEqual(Map {1 => "one", 2 => "two"}) 1`] = `
@@ -2442,17 +2439,15 @@ Difference:
 exports[`.toEqual() {pass: false} expect(false).toEqual(ObjectContaining {"a": 2}) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
-Difference:
-
-  Comparing two different types of values. Expected <green>object</> but received <red>boolean</>."
+Expected: <green>ObjectContaining {\\"a\\": 2}</>
+Received: <red>false</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(null).toEqual(undefined) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
-Difference:
-
-  Comparing two different types of values. Expected <green>undefined</> but received <red>null</>."
+Expected: <green>undefined</>
+Received: <red>null</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(true).not.toEqual(Anything) 1`] = `
@@ -2479,9 +2474,8 @@ Received: <red>true</>"
 exports[`.toEqual() {pass: false} expect(undefined).toEqual(Any<Function>) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
-Difference:
-
-  Comparing two different types of values. Expected <green>function</> but received <red>undefined</>."
+Expected: <green>Any<Function></>
+Received: <red>undefined</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(undefined).toEqual(Anything) 1`] = `

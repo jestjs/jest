@@ -385,7 +385,7 @@ const matchers: MatchersObject = {
               isNot: this.isNot,
             }) +
             '\n\n' +
-            (diffString
+            (diffString && diffString.includes('- Expect')
               ? `Difference:\n\n${diffString}`
               : `Expected: ${printExpected(expected)}\n` +
                 `Received: ${printReceived(received)}`)
