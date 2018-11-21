@@ -60,16 +60,20 @@ export function readConfig(
         'Jest: Cannot use configuration as an object without a file path.',
       );
     }
-  } else if (isJSONString(argv.config)) {
+  } else if (argv.config && (typeof argv.config === 'object' || isJSONString(argv.config))) {
     // A JSON string was passed to `--config` argument and we can parse it
     // and use as is.
     let config;
-    try {
-      config = JSON.parse(argv.config);
-    } catch (e) {
-      throw new Error(
-        'There was an error while parsing the `--config` argument as a JSON string.',
-      );
+    if (typeof argv.config === 'object') {
+      config = argv.config;
+    } else {
+      try {
+        config = JSON.parse(argv.config);
+      } catch (e) {
+        throw new Error(
+          'There was an error while parsing the `--config` argument as a JSON string.',
+        );
+      }
     }
 
     // NOTE: we might need to resolve this dir to an absolute path in the future
