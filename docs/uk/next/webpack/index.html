@@ -184,11 +184,11 @@
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
     "moduleNameMapper": {
-      "^react(.*)$": "&lt;rootDir&gt;/vendor/react-master$1",
-      "^config$": "&lt;rootDir&gt;/configs/app-config.js",
-
       "\\.(css|less)$": "&lt;rootDir&gt;/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "&lt;rootDir&gt;/__mocks__/fileMock.js"
+      "\\.(gif|ttf|eot|svg)$": "&lt;rootDir&gt;/__mocks__/fileMock.js",
+
+      "^react(.*)$": "&lt;rootDir&gt;/vendor/react-master$1",
+      "^config$": "&lt;rootDir&gt;/configs/app-config.js"
     }
   }
 }
