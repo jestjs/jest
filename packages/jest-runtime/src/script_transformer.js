@@ -131,7 +131,7 @@ export default class ScriptTransformer {
     return cachePath;
   }
 
-  _getTransformPath(filename: Path) {
+  _getTransformFunctionOrPath(filename: Path) {
     for (let i = 0; i < this._config.transform.length; i++) {
       if (new RegExp(this._config.transform[i][0]).test(filename)) {
         return this._config.transform[i][1];
@@ -146,15 +146,21 @@ export default class ScriptTransformer {
       return null;
     }
 
-    const transformPath = this._getTransformPath(filename);
-    if (transformPath) {
-      const transformer = this._transformCache.get(transformPath);
-      if (transformer != null) {
-        return transformer;
+    const transformFunctionOrPath = this._getTransformFunctionOrPath(filename);
+    if (transformFunctionOrPath) {
+      let isTransformFunction = typeof transformFunctionOrPath === 'function';
+      if (isTransformFunction) {
+        transform = transformFunctionOrPath();
       }
+      else {
+        const transformer = this._transformCache.get(transformFunctionOrPath);
+        if (transformer != null) {
+          return transformer;
+        }
 
-      // $FlowFixMe
-      transform = (require(transformPath): Transformer);
+        // $FlowFixMe
+        transform = (require(transformFunctionOrPath): Transformer);
+      }
       if (typeof transform.createTransformer === 'function') {
         transform = transform.createTransformer();
       }
@@ -163,7 +169,9 @@ export default class ScriptTransformer {
           'Jest: a transform must export a `process` function.',
         );
       }
-      this._transformCache.set(transformPath, transform);
+      if (!isTransformFunction) {
+        this._transformCache.set(transformFunctionOrPath, transform);
+      }
     }
     return transform;
   }
