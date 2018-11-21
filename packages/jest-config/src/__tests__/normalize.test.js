@@ -285,7 +285,7 @@ describe('transform', () => {
     Resolver.findNodeModule = jest.fn(name => name);
   });
 
-  it('normalizes the path', () => {
+  it('normalizes the path if it is a string', () => {
     const {options} = normalize(
       {
         rootDir: '/root/',
@@ -301,6 +301,28 @@ describe('transform', () => {
     expect(options.transform).toEqual([
       [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
       [DEFAULT_JS_PATTERN, require.resolve('babel-jest')],
+      ['abs-path', '/qux/quux'],
+    ]);
+  });
+
+  it('does not normalize the path if it is a function', () => {
+    const theFunction = () => {}
+
+    const { options } = normalize(
+      {
+        rootDir: '/root/',
+        transform: {
+          [DEFAULT_CSS_PATTERN]: '<rootDir>/node_modules/jest-regex-util',
+          [DEFAULT_JS_PATTERN]: theFunction,
+          'abs-path': '/qux/quux',
+        },
+      },
+      {},
+    );
+
+    expect(options.transform).toEqual([
+      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
+      [DEFAULT_JS_PATTERN, theFunction],
       ['abs-path', '/qux/quux'],
     ]);
   });
@@ -1077,6 +1099,8 @@ describe('preset', () => {
   });
 
   test('merges with options', () => {
+    const aFunction = () => {};
+
     const {options} = normalize(
       {
         moduleNameMapper: {a: 'a'},
@@ -1084,7 +1108,7 @@ describe('preset', () => {
         preset: 'react-native',
         rootDir: '/root/path/foo',
         setupFiles: ['a'],
-        transform: {a: 'a'},
+        transform: {a: 'a', c: aFunction},
       },
       {},
     );
@@ -1098,6 +1122,7 @@ describe('preset', () => {
     expect(options.transform).toEqual([
       ['a', '/node_modules/a'],
       ['b', '/node_modules/b'],
+      ['c', aFunction]
     ]);
   });
 
