@@ -316,7 +316,7 @@ describe('ScriptTransformer', () => {
     ).not.toThrow();
   });
 
-  it('uses the supplied preprocessor', () => {
+  it('uses the supplied preprocessor if it is a file path', () => {
     config = Object.assign(config, {
       transform: [['^.+\\.js$', 'test_preprocessor']],
     });
@@ -328,6 +328,36 @@ describe('ScriptTransformer', () => {
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
 
     scriptTransformer.transform('/node_modules/react.js', {});
+    // ignores preprocessor
+    expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
+  });
+
+  it('uses the supplied preprocessor if it is a function', () => {
+    const escapeStrings = str => str.replace(/'/, `'`);
+
+    const process = jest.fn(
+      (content, filename, config) => `
+          const TRANSFORMED = {
+            filename: '${escapeStrings(filename)}',
+            script: '${escapeStrings(content)}',
+            config: '${escapeStrings(JSON.stringify(config))}',
+          };
+        `,
+    );
+
+    const preprocessor = jest.fn(() => ({process}));
+    config = Object.assign(config, {
+      transform: [['^.+\\.js$', preprocessor]],
+    });
+    const scriptTransformer = new ScriptTransformer(config);
+    scriptTransformer.transform('/fruits/banana.js', {});
+
+    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    expect(process.mock.calls[0][0]).toMatchSnapshot();
+
+    scriptTransformer.transform('/node_modules/react.js', {});
+
+    expect(process.mock.calls.length).toBe(1);
     // ignores preprocessor
     expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
   });
