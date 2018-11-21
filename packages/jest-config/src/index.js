@@ -60,7 +60,10 @@ export function readConfig(
         'Jest: Cannot use configuration as an object without a file path.',
       );
     }
-  } else if (argv.config && (typeof argv.config === 'object' || isJSONString(argv.config))) {
+  } else if (
+    argv.config &&
+    (typeof argv.config === 'object' || isJSONString(argv.config))
+  ) {
     // A JSON string was passed to `--config` argument and we can parse it
     // and use as is.
     let config;

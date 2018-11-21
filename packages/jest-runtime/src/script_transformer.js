@@ -148,11 +148,9 @@ export default class ScriptTransformer {
 
     const transformFunctionOrPath = this._getTransformFunctionOrPath(filename);
     if (transformFunctionOrPath) {
-      let isTransformFunction = typeof transformFunctionOrPath === 'function';
-      if (isTransformFunction) {
-        transform = transformFunctionOrPath();
-      }
-      else {
+      if (typeof transformFunctionOrPath === 'function') {
+        transform = (transformFunctionOrPath(): Transformer);
+      } else {
         const transformer = this._transformCache.get(transformFunctionOrPath);
         if (transformer != null) {
           return transformer;
@@ -169,7 +167,7 @@ export default class ScriptTransformer {
           'Jest: a transform must export a `process` function.',
         );
       }
-      if (!isTransformFunction) {
+      if (typeof transformFunctionOrPath !== 'function') {
         this._transformCache.set(transformFunctionOrPath, transform);
       }
     }

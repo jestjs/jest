@@ -306,9 +306,9 @@ describe('transform', () => {
   });
 
   it('does not normalize the path if it is a function', () => {
-    const theFunction = () => {}
+    const theFunction = () => {};
 
-    const { options } = normalize(
+    const {options} = normalize(
       {
         rootDir: '/root/',
         transform: {
@@ -1122,7 +1122,7 @@ describe('preset', () => {
     expect(options.transform).toEqual([
       ['a', '/node_modules/a'],
       ['b', '/node_modules/b'],
-      ['c', aFunction]
+      ['c', aFunction],
     ]);
   });
 
