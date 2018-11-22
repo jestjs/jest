@@ -115,7 +115,7 @@ Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file 
 
 You are now set up to use all ES6 features and React specific syntax.
 
-> Note: If you are using a more complicated Babel configuration, using Babel's `env` option, keep in mind that Jest will automatically define `NODE_ENV` as `test`. It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
+> Note: If you are using a more complicated Babel configuration, using Babel's `env` option, keep in mind that Jest will automatically define `NODE_ENV` as `test` **if not already set** to something else. It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
 
 > Note: If you've turned off transpilation of ES6 modules with the option `{ "modules": false }`, you have to make sure to turn this on in your test environment.
 
