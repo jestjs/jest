@@ -1,3 +1,3 @@
 module.exports = {
-  toReplace: 1
+  toReplace: 1,
 };
