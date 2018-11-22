@@ -1119,7 +1119,8 @@ describe('preset', () => {
       '/node_modules/a',
       '/node_modules/b',
     ]);
-    expect(options.transform).toEqual([
+    const sorter = (a, b) => a[0].localeCompare(b[0]);
+    expect(options.transform.sort(sorter)).toEqual([
       ['a', '/node_modules/a'],
       ['b', '/node_modules/b'],
       ['c', aFunction],
