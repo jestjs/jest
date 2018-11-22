@@ -195,3 +195,37 @@ exports[`ScriptTransformer uses the supplied preprocessor 2`] = `
 "({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \\"react\\";
 }});"
 `;
+
+exports[`ScriptTransformer uses the supplied preprocessor if it is a file path 1`] = `
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){
+          const TRANSFORMED = {
+            filename: '/fruits/banana.js',
+            script: 'module.exports = \\"banana\\";',
+            config: '{\\"cache\\":true,\\"cacheDirectory\\":\\"/cache/\\",\\"name\\":\\"test\\",\\"rootDir\\":\\"/\\",\\"transformIgnorePatterns\\":[\\"/node_modules/\\"],\\"transform\\":[[\\"^.+\\\\\\\\.js$\\",\\"test_preprocessor\\"]]}',
+          };
+        
+}});"
+`;
+
+exports[`ScriptTransformer uses the supplied preprocessor if it is a file path 2`] = `
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \\"react\\";
+}});"
+`;
+
+exports[`ScriptTransformer uses the supplied preprocessor if it is a function 1`] = `
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){
+          const TRANSFORMED = {
+            filename: '/fruits/banana.js',
+            script: 'module.exports = \\"banana\\";',
+            config: '{\\"cache\\":true,\\"cacheDirectory\\":\\"/cache/\\",\\"name\\":\\"test\\",\\"rootDir\\":\\"/\\",\\"transformIgnorePatterns\\":[\\"/node_modules/\\"],\\"transform\\":[[\\"^.+\\\\\\\\.js$\\",null]]}',
+          };
+        
+}});"
+`;
+
+exports[`ScriptTransformer uses the supplied preprocessor if it is a function 2`] = `"module.exports = \\"banana\\";"`;
+
+exports[`ScriptTransformer uses the supplied preprocessor if it is a function 3`] = `
+"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \\"react\\";
+}});"
+`;
