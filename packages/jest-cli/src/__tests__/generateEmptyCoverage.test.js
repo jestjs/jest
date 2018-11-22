@@ -50,9 +50,7 @@ it('generates an empty coverage object for a file without running it', () => {
     makeProjectConfig({
       cacheDirectory: os.tmpdir(),
       rootDir,
-      transform: [
-        ['^.+\\.js$', path.join(__dirname, '../../../babel-jest/src/index.js')],
-      ],
+      transform: [['^.+\\.js$', require.resolve('babel-jest')]],
     }),
   );
 

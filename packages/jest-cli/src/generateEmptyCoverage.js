@@ -18,7 +18,7 @@ export type CoverageWorkerResult = {|
   sourceMapPath: ?string,
 |};
 
-const FileCoverage = classes.FileCoverage;
+const {FileCoverage} = classes;
 
 export default function(
   source: string,
@@ -33,14 +33,14 @@ export default function(
   };
   if (Runtime.shouldInstrument(filename, coverageOptions, config)) {
     // Transform file with instrumentation to make sure initial coverage data is well mapped to original code.
-    const transformResult = new Runtime.ScriptTransformer(
+    const {code, mapCoverage, sourceMapPath} = new Runtime.ScriptTransformer(
       config,
     ).transformSource(filename, source, true);
-    const extracted = readInitialCoverage(transformResult.code);
+    const extracted = readInitialCoverage(code);
 
     return {
       coverage: new FileCoverage(extracted.coverageData),
-      sourceMapPath: null,
+      sourceMapPath: mapCoverage ? sourceMapPath : null,
     };
   } else {
     return null;
