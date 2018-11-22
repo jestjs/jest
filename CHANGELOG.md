@@ -78,6 +78,7 @@
 
 ### Chore & Maintenance
 
+- `[examples]` added README with warning incompatibility between jest, node 10 and npm to example using Babel 7 ([#7395](https://github.com/facebook/jest/issues/7395))
 - `[jest-watcher]` Standardize filenames ([#7314](https://github.com/facebook/jest/pull/7314))
 - `[jest-circus]` Standardize file naming in `jest-circus` ([#7301](https://github.com/facebook/jest/pull/7301))
 - `[docs]` Add synchronous test.each setup ([#7150](https://github.com/facebook/jest/pull/7150))
