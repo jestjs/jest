@@ -29,7 +29,7 @@ import type {
   WorkerOptions,
 } from './types';
 
-const supportsColor = require('supports-color');
+import supportsColor from 'supports-color';
 
 /**
  * This class wraps the child process and provides a nice interface to
