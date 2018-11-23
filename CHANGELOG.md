@@ -35,7 +35,6 @@
 
 ### Fixes
 
-
 - `[jest-runner/jest-worker]` Fix missing console output in verbose mode ([#6871](https://github.com/facebook/jest/pull/6871))
 - `[expect]` Standardize file naming in `expect` ([#7306](https://github.com/facebook/jest/pull/7306))
 - `[jest-each]` Add empty array validation check ([#7249](https://github.com/facebook/jest/pull/7249))
