@@ -74,6 +74,7 @@
 - `[jest-haste-map]` [**BREAKING**] Recover files correctly after haste name collisions are fixed ([#7329](https://github.com/facebook/jest/pull/7329))
 - `[jest-haste-map]` Remove legacy condition for duplicate module detection ([#7333](https://github.com/facebook/jest/pull/7333))
 - `[jest-haste-map]` Fix `require` detection with trailing commas and ignore `import typeof` modules ([#7385](https://github.com/facebook/jest/pull/7385))
+- `[jest-runtime]` Fix `requireActual` on node_modules with mock present ([#7404](https://github.com/facebook/jest/pull/7404))
 
 ### Chore & Maintenance
 
