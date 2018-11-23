@@ -117,7 +117,7 @@ You can also see the example in the Jest repository: https://github.com/facebook
 </span></code></pre>
 <p>现在你就完成了使用所有 ES6 特性和 React 特殊语法所需的配置了。</p>
 <blockquote>
-<p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code>. 它不会像 Babel 那样在 <code>NODE_ENV</code> 没有被设置时默认使用 <code>development</code>。</p>
+<p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code> <strong>if not already set</strong> to something else. 它不会像 Babel 那样在 <code>NODE_ENV</code> 没有被设置时默认使用 <code>development</code>。</p>
 <p>Note: If you've turned off transpilation of ES6 modules with the option <code>{ &quot;modules&quot;: false }</code>, you have to make sure to turn this on in your test environment.</p>
 </blockquote>
 <pre><code class="hljs css language-json">{

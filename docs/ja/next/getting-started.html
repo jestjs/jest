@@ -117,7 +117,7 @@ You can also see the example in the Jest repository: https://github.com/facebook
 </span></code></pre>
 <p>ES6 と React の構文が使用できるように設定されました。</p>
 <blockquote>
-<p>注意: もし Babel の <code>env</code> オプションでより複雑な Babel の設定を行っている場合は、Jest は自動的に <code>NODE_ENV</code> を <code>test</code> に設定することに注意してください。 Jest では Babel が デフォルトで行うような、<code>NODE_ENV</code> が設定されていない場合に, <code>development</code> セクションを利用するといった事をしません。</p>
+<p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code> <strong>if not already set</strong> to something else. Jest では Babel が デフォルトで行うような、<code>NODE_ENV</code> が設定されていない場合に, <code>development</code> セクションを利用するといった事をしません。</p>
 <p>注意: <code>{ &quot;modules&quot;: false }</code> オプションで ES6モジュールのトランスパイルを無効にしている場合、テスト環境では必ず有効にする必要があります。</p>
 </blockquote>
 <pre><code class="hljs css language-json">{

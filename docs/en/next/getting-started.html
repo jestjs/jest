@@ -111,7 +111,7 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 </code></pre>
 <p>You are now set up to use all ES6 features and React specific syntax.</p>
 <blockquote>
-<p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code>. It will not use <code>development</code> section like Babel does by default when no <code>NODE_ENV</code> is set.</p>
+<p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code> <strong>if not already set</strong> to something else. It will not use <code>development</code> section like Babel does by default when no <code>NODE_ENV</code> is set.</p>
 </blockquote>
 <blockquote>
 <p>Note: If you've turned off transpilation of ES6 modules with the option <code>{ &quot;modules&quot;: false }</code>, you have to make sure to turn this on in your test environment.</p>

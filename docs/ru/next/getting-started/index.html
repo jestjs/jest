@@ -117,7 +117,7 @@ You can also see the example in the Jest repository: https://github.com/facebook
 </span></code></pre>
 <p>Теперь вы можете использовать все возможности ES6 и React синтаксис.</p>
 <blockquote>
-<p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code>. Jest не будет использовать значение <code>development</code> как Babel делает по умолчанию, когда явно не задан параметр <code>NODE_ENV</code>.</p>
+<p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code> <strong>if not already set</strong> to something else. Jest не будет использовать значение <code>development</code> как Babel делает по умолчанию, когда явно не задан параметр <code>NODE_ENV</code>.</p>
 <p>Note: If you've turned off transpilation of ES6 modules with the option <code>{ &quot;modules&quot;: false }</code>, you have to make sure to turn this on in your test environment.</p>
 </blockquote>
 <pre><code class="hljs css language-json">{

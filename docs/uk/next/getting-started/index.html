@@ -117,7 +117,7 @@ You can also see the example in the Jest repository: https://github.com/facebook
 </span></code></pre>
 <p>Тепер усе готово для використання всіх ES6 функцій і синтаксису React.</p>
 <blockquote>
-<p>Примітка: Якщо ви використовуєте більш складну конфігурацію Babel з <code>env</code> блоками, майте на увазі, що Jest автоматично встановить <code>NODE_ENV</code> як <code>test</code>. Він не буде використовувати <code>development</code> розділ як це робить Babel за замовчуванням, коли <code>NODE_ENV</code> не вказано.</p>
+<p>Note: If you are using a more complicated Babel configuration, using Babel's <code>env</code> option, keep in mind that Jest will automatically define <code>NODE_ENV</code> as <code>test</code> <strong>if not already set</strong> to something else. Він не буде використовувати <code>development</code> розділ як це робить Babel за замовчуванням, коли <code>NODE_ENV</code> не вказано.</p>
 <p>Примітка: якщо ви відключили транспіляцію ES6 модулів параметром <code>{&quot;modules&quot;: false }</code>, ви повинні переконатися, що ця опція увімкнена в тестовому середовищі.</p>
 </blockquote>
 <pre><code class="hljs css language-json">{
