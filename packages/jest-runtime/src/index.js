@@ -283,6 +283,7 @@ class Runtime {
     from: Path,
     moduleName?: string,
     options: ?InternalModuleOptions,
+    isRequireActual: ?boolean,
   ) {
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
@@ -303,6 +304,7 @@ class Runtime {
       moduleName && this._resolver.getMockModule(from, moduleName);
     if (
       (!options || !options.isInternalModule) &&
+      !isRequireActual &&
       !moduleResource &&
       manualMock &&
       manualMock !== this._isCurrentlyExecutingManualMock &&
@@ -351,6 +353,10 @@ class Runtime {
 
   requireInternalModule(from: Path, to?: string) {
     return this.requireModule(from, to, {isInternalModule: true});
+  }
+
+  requireActual(from: Path, moduleName: string) {
+    return this.requireModule(from, moduleName, undefined, true);
   }
 
   requireMock(from: Path, moduleName: string) {
@@ -802,7 +808,7 @@ class Runtime {
         : this.requireModuleOrMock.bind(this, from.filename);
     moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
-    moduleRequire.requireActual = this.requireModule.bind(this, from.filename);
+    moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = (moduleName, options) =>
       this._requireResolve(from.filename, moduleName, options);
