@@ -36,7 +36,7 @@ import logDebugMessages from '../lib/log_debug_messages';
 export const run = async (
   maybeArgv?: Argv,
   project?: Path,
-): Promise<AggregatedResult> => {
+): Promise<?AggregatedResult> => {
   let results, globalConfig;
   try {
     const argv: Argv = buildArgv(maybeArgv, project);
