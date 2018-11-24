@@ -33,7 +33,7 @@ import {sync as realpath} from 'realpath-native';
 import init from '../lib/init';
 import logDebugMessages from '../lib/log_debug_messages';
 
-export async function run(maybeArgv?: Argv, project?: Path, logAndExitOnError?: Boolean = true) {
+export async function run(maybeArgv?: Argv, project?: Path) {
   try {
     const argv: Argv = buildArgv(maybeArgv, project);
 
@@ -48,12 +48,10 @@ export async function run(maybeArgv?: Argv, project?: Path, logAndExitOnError?: 
     readResultsAndExit(results, globalConfig);
     return results;
   } catch (error) {
-    if (logAndExitOnError) {
-      clearLine(process.stderr);
-      clearLine(process.stdout);
-      console.error(chalk.red(error.stack));
-      exit(1);
-    }
+    clearLine(process.stderr);
+    clearLine(process.stdout);
+    console.error(chalk.red(error.stack));
+    exit(1);
     throw error;
   }
 }
@@ -173,19 +171,26 @@ const readResultsAndExit = (
 };
 
 const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
-  const argv: Argv = yargs(maybeArgv || process.argv.slice(2))
-    .usage(args.usage)
-    .alias('help', 'h')
-    .options(args.options)
-    .epilogue(args.docs)
-    .check(args.check).argv;
+  try {
+    const argv: Argv = yargs(maybeArgv || process.argv.slice(2))
+      .usage(args.usage)
+      .alias('help', 'h')
+      .options(args.options)
+      .epilogue(args.docs)
+      .check(args.check).argv;
 
-  validateCLIOptions(
-    argv,
-    Object.assign({}, args.options, {deprecationEntries}),
-  );
+    validateCLIOptions(
+      argv,
+      Object.assign({}, args.options, {deprecationEntries}),
+    );
 
-  return argv;
+    return argv;
+  } catch (err) {
+    if (maybeArgv) {
+      throw new Error('Command line arguments should be an array of strings');
+    }
+    throw err;
+  }
 };
 
 const getProjectListFromCLIArgs = (argv, project: ?Path) => {
