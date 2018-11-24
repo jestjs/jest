@@ -36,18 +36,18 @@ const argvString = {
 
 const processErrWriteFn = process.stderr.write;
 
-const noLogs = true;
+const noSubTestLogs = true;
 
 describe('runCLI', () => {
   beforeEach(() => {
-    if (noLogs) {
+    if (noSubTestLogs) {
       process.stderr.write = jest.fn();
       process.stderr.write.mockReset();
     }
   });
 
   afterEach(() => {
-    if (noLogs) {
+    if (noSubTestLogs) {
       process.stderr.write = processErrWriteFn;
     }
   });
