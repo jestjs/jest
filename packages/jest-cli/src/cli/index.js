@@ -33,20 +33,23 @@ import {sync as realpath} from 'realpath-native';
 import init from '../lib/init';
 import logDebugMessages from '../lib/log_debug_messages';
 
-export async function run(maybeArgv?: Argv, project?: Path) {
+export const run = async (
+  maybeArgv?: Argv,
+  project?: Path,
+): Promise<AggregatedResult> => {
+  let results, globalConfig;
   try {
     const argv: Argv = buildArgv(maybeArgv, project);
 
     if (argv.init) {
       await init();
-      return;
+      return Promise.resolve(results);
     }
 
     const projects = getProjectListFromCLIArgs(argv, project);
 
-    const {results, globalConfig} = await runCLI(argv, projects);
+    ({results, globalConfig} = await runCLI(argv, projects));
     readResultsAndExit(results, globalConfig);
-    return results;
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);
@@ -54,7 +57,8 @@ export async function run(maybeArgv?: Argv, project?: Path) {
     exit(1);
     throw error;
   }
-}
+  return Promise.resolve(results);
+};
 
 export const runCLI = async (
   argv: Argv,
