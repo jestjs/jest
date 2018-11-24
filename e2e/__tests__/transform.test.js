@@ -145,7 +145,6 @@ describe('transformer-config', () => {
   it('runs transpiled code', () => {
     // --no-cache because babel can cache stuff and result in false green
     const {json} = runWithJson(dir, ['--no-cache']);
-    console.log(json);
     expect(json.success).toBe(true);
     expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
   });
