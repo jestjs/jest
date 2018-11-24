@@ -33,7 +33,7 @@ import {sync as realpath} from 'realpath-native';
 import init from '../lib/init';
 import logDebugMessages from '../lib/log_debug_messages';
 
-export async function run(maybeArgv?: Argv, project?: Path) {
+export async function run(maybeArgv?: Argv, project?: Path, logAndExitOnError?: Boolean = true) {
   try {
     const argv: Argv = buildArgv(maybeArgv, project);
 
@@ -46,11 +46,14 @@ export async function run(maybeArgv?: Argv, project?: Path) {
 
     const {results, globalConfig} = await runCLI(argv, projects);
     readResultsAndExit(results, globalConfig);
+    return results;
   } catch (error) {
-    clearLine(process.stderr);
-    clearLine(process.stdout);
-    console.error(chalk.red(error.stack));
-    exit(1);
+    if (logAndExitOnError) {
+      clearLine(process.stderr);
+      clearLine(process.stdout);
+      console.error(chalk.red(error.stack));
+      exit(1);
+    }
     throw error;
   }
 }
