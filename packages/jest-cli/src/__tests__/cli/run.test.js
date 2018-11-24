@@ -18,26 +18,24 @@ jest.mock('exit');
 const runArgvString = [
   '--config',
   JSON.stringify({
-    "rootDir": runProject,
-    "testMatch": ["<rootDir>/*_spec.js"],
-    "transform": {
-      "^.+\\.jsx?$": "./transform-module"
-    }
-  })
+    rootDir: runProject,
+    testMatch: ['<rootDir>/*_spec.js'],
+    transform: {
+      '^.+\\.jsx?$': './transform-module',
+    },
+  }),
 ];
 
 const runArgvObject = [
   '--config',
   {
-    "rootDir": runProject,
-    "testMatch": ["<rootDir>/*_spec.js"],
-    "transform": {
-      "^.+\\.jsx?$": "./transform-module"
-    }
-  }
+    rootDir: runProject,
+    testMatch: ['<rootDir>/*_spec.js'],
+    transform: {
+      '^.+\\.jsx?$': './transform-module',
+    },
+  },
 ];
-
-const mockArgv = ['arg1', 'arg2'];
 
 const processOnFn = process.on;
 const processExitFn = process.exit;
@@ -47,24 +45,16 @@ const consoleErrorFn = console.error;
 const noSubTestLogs = true;
 
 describe('run', () => {
-  let processOnSpy;
-  let processExitSpy;
-  let stderrSpy;
-  let consoleErrorSpy;
   beforeEach(() => {
     if (noSubTestLogs) {
       process.on = jest.fn();
       process.on.mockReset();
-      processOnSpy = jest.spyOn(process, 'on');
       process.exit = jest.fn();
       process.exit.mockReset();
-      processExitSpy = jest.spyOn(process, 'exit');
       process.stderr.write = jest.fn();
       process.stderr.write.mockReset();
-      stderrSpy = jest.spyOn(process.stderr, 'write');
       console.error = jest.fn();
       console.error.mockReset();
-      consoleErrorSpy = jest.spyOn(console, 'error');
     }
   });
 

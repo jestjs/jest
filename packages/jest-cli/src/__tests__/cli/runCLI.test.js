@@ -15,40 +15,34 @@ import transformModule from '../__fixtures__/runCLI/transform-module';
 const project = path.join(__dirname, '../__fixtures__/runCLI');
 const projects = [project];
 
-const processor = {
-  process: (src, filename) => transformModule.process(src, filename)
-};
-
 const argvObject = {
   config: {
     testMatch: ['<rootDir>/*_spec.js'],
     transform: {
-      '^.+\\.jsx?$': () => transformModule
+      '^.+\\.jsx?$': () => transformModule,
     },
   },
 };
 
 const argvString = {
   config: JSON.stringify({
-    "rootDir": project,
-    "testMatch": ["<rootDir>/*_spec.js"],
-    "transform": {
-      "^.+\\.jsx?$": "./transform-module"
-    }
+    rootDir: project,
+    testMatch: ['<rootDir>/*_spec.js'],
+    transform: {
+      '^.+\\.jsx?$': './transform-module',
+    },
   }),
-}
+};
 
 const processErrWriteFn = process.stderr.write;
 
 const noLogs = true;
 
 describe('runCLI', () => {
-  let stderrSpy;
   beforeEach(() => {
     if (noLogs) {
       process.stderr.write = jest.fn();
       process.stderr.write.mockReset();
-      stderrSpy = jest.spyOn(process.stderr, 'write');
     }
   });
 
@@ -88,4 +82,3 @@ describe('runCLI', () => {
     });
   });
 });
-
