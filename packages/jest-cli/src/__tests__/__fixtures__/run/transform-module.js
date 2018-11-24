@@ -1,3 +1,3 @@
 module.exports = {
-  process: (src, filename) => src.replace('toReplace', 'transformModuleReplaced')
+  process: (src, filename) => src.replace('toReplace', 'runReplaced')
 };

@@ -13,6 +13,6 @@ const aFile = require('./aFile');
 
 describe('aFile test', () => {
   it('should have transformed aFile', () => {
-    expect(JSON.stringify(aFile)).toEqual(JSON.stringify({transformModuleReplaced: 1}));
+    expect(JSON.stringify(aFile)).toEqual(JSON.stringify({runReplaced: 1}));
   });
 });

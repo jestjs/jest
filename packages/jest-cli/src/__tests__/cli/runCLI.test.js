@@ -9,54 +9,76 @@
 'use strict';
 
 import path from 'path';
-import {run, runCLI} from '../../cli';
+import {runCLI} from '../../cli';
+import transformModule from '../__fixtures__/runCLI/transform-module';
 
-const runProject = path.join(__dirname, '../__fixtures__/run');
-const runCLIProject = path.join(__dirname, '../__fixtures__/runCLI');
-const runCLIProjects = [runCLIProject];
+const project = path.join(__dirname, '../__fixtures__/runCLI');
+const projects = [project];
 
 const processor = {
-  process: (src, filename) => src.replace('toReplace', 'replaced')
+  process: (src, filename) => transformModule.process(src, filename)
 };
 
-const runCLIArgv = {
+const argvObject = {
   config: {
     testMatch: ['<rootDir>/*_spec.js'],
     transform: {
-      '^.+\\.jsx?$': () => processor
+      '^.+\\.jsx?$': () => transformModule
     },
   },
 };
 
-const runArgvString = [
-  '--config',
-  JSON.stringify({
-    "rootDir": runProject,
+const argvString = {
+  config: JSON.stringify({
+    "rootDir": project,
     "testMatch": ["<rootDir>/*_spec.js"],
     "transform": {
       "^.+\\.jsx?$": "./transform-module"
     }
-  })
-];
+  }),
+}
 
-const runArgvObject = [
-  '--config',
-  {
-    "rootDir": runProject,
-    "testMatch": ["<rootDir>/*_spec.js"],
-    "transform": {
-      "^.+\\.jsx?$": "./transform-module"
-    }
-  }
-];
+const processErrWriteFn = process.stderr.write;
+
+const noLogs = true;
 
 describe('runCLI', () => {
+  let stderrSpy;
+  beforeEach(() => {
+    if (noLogs) {
+      process.stderr.write = jest.fn();
+      process.stderr.write.mockReset();
+      stderrSpy = jest.spyOn(process.stderr, 'write');
+    }
+  });
+
+  afterEach(() => {
+    if (noLogs) {
+      process.stderr.write = processErrWriteFn;
+    }
+  });
+
   describe('config as object', () => {
     it('passes the test when the config has a transform function', async () => {
       let runResult = null;
       let error = null;
       try {
-        runResult = await runCLI(runCLIArgv, runCLIProjects);
+        runResult = await runCLI(argvObject, projects);
+      } catch (ex) {
+        error = ex;
+      }
+      const numPassedTests = runResult ? runResult.results.numPassedTests : -1;
+      expect(error).toBe(null);
+      expect(numPassedTests).toBe(1);
+    });
+  });
+
+  describe('config as string', () => {
+    it('passes the test when the config is a string', async () => {
+      let runResult = null;
+      let error = null;
+      try {
+        runResult = await runCLI(argvString, projects);
       } catch (ex) {
         error = ex;
       }
@@ -67,34 +89,3 @@ describe('runCLI', () => {
   });
 });
 
-describe('run', () => {
-  describe('config as string', () => {
-    it('passes the test when the config has a transform module path', async () => {
-      let runResult = null;
-      let error = null;
-      try {
-        runResult = await run(runArgvString, runProject);
-      } catch (ex) {
-        error = ex;
-      }
-      const numPassedTests = runResult ? runResult.numPassedTests : -1;
-      expect(error).toBe(null);
-      expect(numPassedTests).toBe(1);
-    });
-  });
-
-  describe('config as object', () => {
-    it('throws running the test when the config is an object', async () => {
-      let runResult = null;
-      let error = null;
-      try {
-        runResult = await run(runArgvObject, runProject, false);
-      } catch (ex) {
-        error = ex;
-      }
-      const numPassedTests = runResult ? runResult.numPassedTests : -1;
-      expect(error).not.toBe(null);
-      expect(numPassedTests).toBe(-1);
-    });
-  });
-});
