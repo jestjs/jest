@@ -46,11 +46,11 @@ const noSubTestLogs = true;
 
 describe('run', () => {
   beforeEach(() => {
+    process.on = jest.fn();
+    process.on.mockReset();
+    process.exit = jest.fn();
+    process.exit.mockReset();
     if (noSubTestLogs) {
-      process.on = jest.fn();
-      process.on.mockReset();
-      process.exit = jest.fn();
-      process.exit.mockReset();
       process.stderr.write = jest.fn();
       process.stderr.write.mockReset();
       console.error = jest.fn();
@@ -59,9 +59,9 @@ describe('run', () => {
   });
 
   afterEach(() => {
+    process.on = processOnFn;
+    process.exit = processExitFn;
     if (noSubTestLogs) {
-      process.on = processOnFn;
-      process.exit = processExitFn;
       process.stderr.write = processErrWriteFn;
       console.error = consoleErrorFn;
     }
