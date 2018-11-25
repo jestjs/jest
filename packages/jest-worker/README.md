@@ -39,6 +39,12 @@ export function hello(param) {
 }
 ```
 
+## Experimental worker
+
+Node 10 shipped with [worker-threads](https://nodejs.org/api/worker_threads.html), a "threading API" that uses SharedArrayBuffers to communicate between the main process and its child threads. This experimental Node feature can significantly improve the communication time between parent and child processes in `jest-worker`.
+
+We will use worker threads where available. To enable in Node 10+, run the Node process with the `--experimental-worker` flag.
+
 ## API
 
 The only exposed method is a constructor (`Worker`) that is initialized by passing the worker path, plus an options object.
