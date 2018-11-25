@@ -10,8 +10,6 @@
 'use strict';
 
 import BaseWorkerPool from './base/BaseWorkerPool';
-import ChildProcessWorker from './workers/ChildProcessWorker';
-import NodeThreadsWorker from './workers/NodeThreadsWorker';
 
 import type {
   ChildMessage,
@@ -21,6 +19,17 @@ import type {
   WorkerPoolInterface,
   WorkerInterface,
 } from './types';
+
+export const canUseWorkerThreads = (): boolean => {
+  let workerThreadsAreSupported = false;
+  try {
+    // $FlowFixMe: Flow doesn't know about experimental APIs
+    require('worker_threads');
+    workerThreadsAreSupported = true;
+  } catch (_) {}
+
+  return workerThreadsAreSupported;
+};
 
 class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
   send(
@@ -33,9 +42,14 @@ class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
   }
 
   createWorker(workerOptions: WorkerOptions): WorkerInterface {
-    return this._options.useWorkers
-      ? new NodeThreadsWorker(workerOptions)
-      : new ChildProcessWorker(workerOptions);
+    let Worker;
+    if (canUseWorkerThreads()) {
+      Worker = require('./workers/NodeThreadsWorker').default;
+    } else {
+      Worker = require('./workers/ChildProcessWorker').default;
+    }
+
+    return new Worker(workerOptions);
   }
 }
 

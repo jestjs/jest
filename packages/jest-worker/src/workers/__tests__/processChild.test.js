@@ -20,7 +20,7 @@ import {
   CHILD_MESSAGE_END,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_CLIENT_ERROR,
-} from '../types';
+} from '../../types';
 
 let ended;
 let mockCount;
@@ -31,7 +31,7 @@ beforeEach(() => {
   ended = false;
 
   jest.mock(
-    '../workers/my-fancy-worker',
+    '../my-fancy-worker',
     () => {
       mockCount++;
 
@@ -86,7 +86,7 @@ beforeEach(() => {
   );
 
   jest.mock(
-    '../workers/my-fancy-standalone-worker',
+    '../my-fancy-standalone-worker',
     () => jest.fn().mockImplementation(() => 12345),
     {virtual: true},
   );
@@ -94,7 +94,7 @@ beforeEach(() => {
   // This mock emulates a transpiled Babel module that carries a default export
   // that corresponds to a method.
   jest.mock(
-    '../workers/my-fancy-babel-worker',
+    '../my-fancy-babel-worker',
     () => ({
       __esModule: true,
       default: jest.fn().mockImplementation(() => 67890),
@@ -106,7 +106,7 @@ beforeEach(() => {
   process.send = jest.fn();
 
   // Require the child!
-  require('../workers/processChild');
+  require('../processChild');
 });
 
 afterEach(() => {

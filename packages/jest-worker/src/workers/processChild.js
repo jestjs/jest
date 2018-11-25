@@ -18,9 +18,11 @@ import {
   PARENT_MESSAGE_OK,
 } from '../types';
 
-import type {ChildMessageInitialize, ChildMessageCall} from '../types';
-
-import type {PARENT_MESSAGE_ERROR} from './types';
+import type {
+  ChildMessageInitialize,
+  ChildMessageCall,
+  PARENT_MESSAGE_ERROR,
+} from '../types';
 
 let file = null;
 let setupArgs: Array<mixed> = [];
@@ -44,6 +46,7 @@ process.on('message', (request: any) => {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
       file = init[2];
+      setupArgs = request[3];
       break;
 
     case CHILD_MESSAGE_CALL:

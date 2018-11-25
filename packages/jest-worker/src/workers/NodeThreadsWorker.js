@@ -28,10 +28,11 @@ import type {
 // $FlowFixMe: Flow doesn't know about experimental features of Node
 const {Worker} = require('worker_threads');
 
-export default class ExpirementalWorker implements WorkerInterface {
+export default class ExperimentalWorker implements WorkerInterface {
   _worker: Worker;
   _options: WorkerOptions;
   _onProcessEnd: OnEnd;
+  _retries: number;
 
   constructor(options: WorkerOptions) {
     this._options = options;
@@ -65,17 +66,37 @@ export default class ExpirementalWorker implements WorkerInterface {
       CHILD_MESSAGE_INITIALIZE,
       false,
       this._options.workerPath,
+      this._options.setupArgs,
     ]);
+
+    this._retries++;
+
+    // If we exceeded the amount of retries, we will emulate an error reply
+    // coming from the child. This avoids code duplication related with cleaning
+    // the queue, and scheduling the next call.
+    if (this._retries > this._options.maxRetries) {
+      const error = new Error('Call retries were exceeded');
+
+      this.onMessage([
+        PARENT_MESSAGE_CLIENT_ERROR,
+        error.name,
+        error.message,
+        error.stack,
+        {type: 'WorkerError'},
+      ]);
+    }
   }
 
   onMessage(response: any /* Should be ParentMessage */) {
+    let error;
+
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
         this._onProcessEnd(null, response[1]);
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
-        let error = response[4];
+        error = response[4];
 
         if (error != null && typeof error === 'object') {
           const extra = error;
@@ -118,6 +139,9 @@ export default class ExpirementalWorker implements WorkerInterface {
   send(request: ChildMessage, onProcessStart: OnStart, onProcessEnd: OnEnd) {
     onProcessStart(this);
     this._onProcessEnd = onProcessEnd;
+
+    this._retries = 0;
+
     this._worker.postMessage(request);
   }
 

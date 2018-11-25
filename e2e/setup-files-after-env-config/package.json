@@ -1,7 +1,0 @@
-{
-  "jest": {
-    "setupFilesAfterEnv": [
-      "./setup_hooks_into_runner.js"
-    ]
-  }
-}

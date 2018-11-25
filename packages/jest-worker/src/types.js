@@ -75,10 +75,10 @@ export type FarmOptions = {
 };
 
 export type WorkerPoolOptions = {|
+  setupArgs: Array<mixed>,
   forkOptions: ForkOptions,
   maxRetries: number,
   numWorkers: number,
-  useWorkers: boolean,
 |};
 
 export type WorkerOptions = {|

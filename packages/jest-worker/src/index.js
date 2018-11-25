@@ -10,15 +10,12 @@
 'use strict';
 
 import os from 'os';
-import {CHILD_MESSAGE_CALL, WorkerInterface} from './types';
 import WorkerPool from './WorkerPool';
-import QueueManager from './QueueManager';
-
+import Farm from './Farm';
 import type {
   WorkerPoolInterface,
   WorkerPoolOptions,
   FarmOptions,
-  ChildMessage,
 } from './types';
 import type {Readable} from 'stream';
 
@@ -45,17 +42,6 @@ function getExposedMethods(
   return exposedMethods;
 }
 
-function canUseWorkerThreads(): boolean {
-  let workerThreadsAreSupported = false;
-  try {
-    // $FlowFixMe: Flow doesn't know about experimental APIs
-    require('worker_threads');
-    workerThreadsAreSupported = true;
-  } catch (_) {}
-
-  return workerThreadsAreSupported;
-}
-
 /**
  * The Jest farm (publicly called "Worker") is a class that allows you to queue
  * methods across multiple child processes, in order to parallelize work. This
@@ -77,36 +63,34 @@ function canUseWorkerThreads(): boolean {
  *
  *   - Sticky method: if a "computeWorkerKey" method is provided within the
  *   config, the resulting string of this method will be used as a key.
- *   Everytime this key is returned, it is guaranteed that your job will be
+ *   Every time this key is returned, it is guaranteed that your job will be
  *   processed by the same worker. This is specially useful if your workers are
  *   caching results.
  */
 export default class JestWorker {
-  _cacheKeys: {[string]: WorkerInterface, __proto__: null};
   _ending: boolean;
+  _farm: Farm;
   _options: FarmOptions;
-  _queueManager: QueueManager;
-  _threadPool: WorkerPoolInterface;
+  _workerPool: WorkerPoolInterface;
 
   constructor(workerPath: string, options?: FarmOptions) {
-    this._cacheKeys = Object.create(null);
     this._options = Object.assign({}, options);
 
     const workerPoolOptions: WorkerPoolOptions = {
       forkOptions: this._options.forkOptions || {},
       maxRetries: this._options.maxRetries || 3,
+      numWorkers: this._options.numWorkers || Math.max(os.cpus().length - 1, 1),
       setupArgs: this._options.setupArgs || [],
-      numWorkers: Math.max(os.cpus().length - 1, 1),
-      useWorkers: canUseWorkerThreads(),
     };
 
-    this._threadPool = this._options.WorkerPool
+    this._workerPool = this._options.WorkerPool
       ? new this._options.WorkerPool(workerPath, workerPoolOptions)
       : new WorkerPool(workerPath, workerPoolOptions);
 
-    this._queueManager = new QueueManager(
+    this._farm = new Farm(
       workerPoolOptions.numWorkers,
-      this._threadPool.send.bind(this._threadPool),
+      this._workerPool.send.bind(this._workerPool),
+      this._options.computeWorkerKey,
     );
 
     this._bindExposedWorkerMethods(workerPath, this._options);
@@ -133,47 +117,15 @@ export default class JestWorker {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
 
-    return new Promise((resolve, reject) => {
-      const {computeWorkerKey} = this._options;
-      const request: ChildMessage = [CHILD_MESSAGE_CALL, false, method, args];
-
-      let worker: ?WorkerInterface = null;
-      let hash: ?string = null;
-
-      if (computeWorkerKey) {
-        hash = computeWorkerKey.apply(this, [method].concat(args));
-        worker = hash == null ? null : this._cacheKeys[hash];
-      }
-
-      const onStart: onStart = (worker: WorkerInterface) => {
-        if (hash != null) {
-          this._cacheKeys[hash] = worker;
-        }
-      };
-
-      const onEnd: onEnd = (error: Error, result: mixed) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
-      };
-
-      const task = {onEnd, onStart, request};
-      if (worker) {
-        this._queueManager.enqueue(task, worker.getWorkerId());
-      } else {
-        this._queueManager.push(task);
-      }
-    });
+    return this._farm.doWork(method, ...args);
   }
 
   getStderr(): Readable {
-    return this._threadPool.getStderr();
+    return this._workerPool.getStderr();
   }
 
   getStdout(): Readable {
-    return this._threadPool.getStdout();
+    return this._workerPool.getStdout();
   }
 
   end(): void {
@@ -181,7 +133,7 @@ export default class JestWorker {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
 
-    this._threadPool.end();
+    this._workerPool.end();
 
     this._ending = true;
   }

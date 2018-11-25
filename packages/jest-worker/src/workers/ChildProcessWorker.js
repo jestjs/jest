@@ -46,6 +46,7 @@ export default class ChildProcessWorker implements WorkerInterface {
   _child: ChildProcess;
   _options: WorkerOptions;
   _onProcessEnd: OnEnd;
+  _retries: number;
 
   constructor(options: WorkerOptions) {
     this._options = options;
@@ -82,6 +83,22 @@ export default class ChildProcessWorker implements WorkerInterface {
     ]);
 
     this._child = child;
+    this._retries++;
+
+    // If we exceeded the amount of retries, we will emulate an error reply
+    // coming from the child. This avoids code duplication related with cleaning
+    // the queue, and scheduling the next call.
+    if (this._retries > this._options.maxRetries) {
+      const error = new Error('Call retries were exceeded');
+
+      this.onMessage([
+        PARENT_MESSAGE_CLIENT_ERROR,
+        error.name,
+        error.message,
+        error.stack,
+        {type: 'WorkerError'},
+      ]);
+    }
   }
 
   onMessage(response: any /* Should be ParentMessage */) {
@@ -138,6 +155,8 @@ export default class ChildProcessWorker implements WorkerInterface {
   send(request: ChildMessage, onProcessStart: OnStart, onProcessEnd: OnEnd) {
     onProcessStart(this);
     this._onProcessEnd = onProcessEnd;
+
+    this._retries = 0;
     // $FlowFixMe
     this._child.send(request);
   }
