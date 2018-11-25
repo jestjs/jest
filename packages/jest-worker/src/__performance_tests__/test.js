@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';'use strict';
+'use strict';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 const workerFarm = require('worker-farm');
