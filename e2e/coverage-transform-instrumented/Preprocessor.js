@@ -7,6 +7,7 @@
 
 const {transformSync: babelTransform} = require('@babel/core');
 const {default: babelIstanbulPlugin} = require('babel-plugin-istanbul');
+// This is imported from this repo
 const jestPreset = require.resolve('babel-preset-jest');
 
 const options = {
@@ -33,8 +34,6 @@ module.exports = {
       ];
     }
 
-    const transformResult = babelTransform(src, options);
-
-    return transformResult ? transformResult.code : src;
+    return babelTransform(src, options) || src;
   },
 };

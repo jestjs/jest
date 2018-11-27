@@ -18,7 +18,6 @@
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
-    "babel-plugin-istanbul": "^5.1.0",
-    "babel-preset-jest": "^23.2.0"
+    "babel-plugin-istanbul": "^5.1.0"
   }
 }
