@@ -36,7 +36,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"moduleNameMapper\\": {},
       \\"modulePathIgnorePatterns\\": [],
       \\"name\\": \\"[md5 hash]\\",
-      \\"prettierPath\\": null,
+      \\"prettierPath\\": \\"prettier\\",
       \\"resetMocks\\": false,
       \\"resetModules\\": false,
       \\"resolver\\": null,
