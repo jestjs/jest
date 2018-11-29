@@ -10,6 +10,9 @@
   "dependencies": {
     "merge-stream": "^1.0.1"
   },
+  "devDependencies": {
+    "jest-util": "^23.4.0"
+  },
   "engines": {
     "node": ">= 6"
   }

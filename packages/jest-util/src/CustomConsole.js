@@ -11,6 +11,7 @@
 import type {LogType, LogMessage, LogCounters, LogTimers} from 'types/Console';
 
 import assert from 'assert';
+import {toMilliseconds} from './toMilliseconds';
 import {format} from 'util';
 import {Console} from 'console';
 import chalk from 'chalk';
@@ -119,16 +120,13 @@ export default class CustomConsole extends Console {
       return;
     }
 
-    this._timers[label] = new Date();
+    this._timers[label] = process.hrtime();
   }
 
   timeEnd(label: string = 'default') {
-    const startTime = this._timers[label];
-
-    if (startTime) {
-      const endTime = new Date();
-      const time = endTime - startTime;
-      this._log('time', format(`${label}: ${time}ms`));
+    if (this._timers[label]) {
+      const duration = toMilliseconds(process.hrtime(this._timers[label]));
+      this._log('time', format(`${label}: ${duration}ms`));
       delete this._timers[label];
     }
   }

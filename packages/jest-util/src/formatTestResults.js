@@ -18,12 +18,14 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
+import {toMilliseconds} from './toMilliseconds';
+
 const formatResult = (
   testResult: TestResult,
   codeCoverageFormatter: CodeCoverageFormatter,
   reporter: CodeCoverageReporter,
 ): FormattedTestResult => {
-  const now = Date.now();
+  const now = toMilliseconds(process.hrtime());
   const output: FormattedTestResult = {
     assertionResults: [],
     coverage: {},
@@ -41,7 +43,7 @@ const formatResult = (
   } else {
     const allTestsPassed = testResult.numFailingTests === 0;
     output.status = allTestsPassed ? 'passed' : 'failed';
-    output.startTime = testResult.perfStats.start;
+    output.startTime = toMilliseconds(testResult.perfStats.start);
     output.endTime = testResult.perfStats.end;
     output.coverage = codeCoverageFormatter(testResult.coverage, reporter);
   }

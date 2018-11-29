@@ -7,10 +7,15 @@
  * @flow
  */
 
-import type {AggregatedResult, TestResult} from 'types/TestResult';
+import type {
+  AggregatedResult,
+  TestResult,
+  Milliseconds,
+} from 'types/TestResult';
 import type {ProjectConfig, Path} from 'types/Config';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
+import {toMilliseconds} from 'jest-util';
 import chalk from 'chalk';
 import stringLength from 'string-length';
 import {
@@ -72,7 +77,7 @@ export default class Status {
   _height: number;
   _interval: IntervalID;
   _aggregatedResults: AggregatedResult;
-  _lastUpdated: number;
+  _lastUpdated: Milliseconds;
   _showStatus: boolean;
 
   constructor() {
@@ -180,7 +185,7 @@ export default class Status {
 
   _emit() {
     this._cache = null;
-    this._lastUpdated = Date.now();
+    this._lastUpdated = toMilliseconds(process.hrtime());
     this._callback();
   }
 

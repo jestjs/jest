@@ -13,6 +13,7 @@ import type {AggregatedResult} from 'types/TestResult';
 import path from 'path';
 import chalk from 'chalk';
 import slash from 'slash';
+import {toMilliseconds} from 'jest-util';
 
 type SummaryOptions = {|
   estimatedTime?: number,
@@ -99,9 +100,10 @@ export const getSummary = (
   aggregatedResults: AggregatedResult,
   options?: SummaryOptions,
 ) => {
-  let runTime = (Date.now() - aggregatedResults.startTime) / 1000;
+  let runTime =
+    toMilliseconds(process.hrtime(aggregatedResults.startTime)) / 1000;
   if (options && options.roundTime) {
-    runTime = Math.floor(runTime);
+    runTime = Math.trunc(runTime);
   }
 
   const estimatedTime = (options && options.estimatedTime) || 0;

@@ -78,7 +78,7 @@ export const makeTest = (
     mode: _mode,
     name: convertDescriptorToString(name),
     parent,
-    startedAt: null,
+    startedAt: [0, 0],
     status: null,
     timeout,
   };
@@ -236,11 +236,6 @@ export const callAsyncCircusFn = (
       clearTimeout(timeoutID);
       throw error;
     });
-};
-
-export const getTestDuration = (test: TestEntry): ?number => {
-  const {startedAt} = test;
-  return typeof startedAt === 'number' ? Date.now() - startedAt : null;
 };
 
 export const makeRunResult = (

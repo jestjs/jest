@@ -12,11 +12,13 @@ import type {
   AssertionResult,
   FailedAssertion,
   Milliseconds,
+  HRTime,
   Status,
   TestResult,
 } from 'types/TestResult';
 
 import {formatResultsErrors} from 'jest-message-util';
+import {toMilliseconds} from 'jest-util';
 
 type Suite = {
   description: string,
@@ -32,8 +34,6 @@ type SpecResult = {
   status: Status,
 };
 
-type Microseconds = number;
-
 export default class Jasmine2Reporter {
   _testResults: Array<AssertionResult>;
   _globalConfig: GlobalConfig;
@@ -41,7 +41,7 @@ export default class Jasmine2Reporter {
   _currentSuites: Array<string>;
   _resolve: any;
   _resultsPromise: Promise<TestResult>;
-  _startTimes: Map<string, Microseconds>;
+  _startTimes: Map<string, HRTime>;
   _testPath: Path;
 
   constructor(
@@ -60,7 +60,7 @@ export default class Jasmine2Reporter {
   }
 
   specStarted(spec: {id: string}) {
-    this._startTimes.set(spec.id, Date.now());
+    this._startTimes.set(spec.id, process.hrtime());
   }
 
   specDone(result: SpecResult): void {
@@ -149,8 +149,6 @@ export default class Jasmine2Reporter {
     specResult: SpecResult,
     ancestorTitles: Array<string>,
   ): AssertionResult {
-    const start = this._startTimes.get(specResult.id);
-    const duration = start ? Date.now() - start : undefined;
     const status =
       specResult.status === 'disabled' ? 'pending' : specResult.status;
     const location = specResult.__callsite
@@ -160,6 +158,13 @@ export default class Jasmine2Reporter {
           line: specResult.__callsite.getLineNumber(),
         }
       : null;
+    const start = this._startTimes.get(specResult.id);
+    let duration;
+
+    if (start) {
+      duration = toMilliseconds(process.hrtime(start));
+    }
+
     const results = {
       ancestorTitles,
       duration,

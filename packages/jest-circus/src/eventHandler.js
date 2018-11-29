@@ -12,11 +12,11 @@ import type {EventHandler} from 'types/Circus';
 import {
   addErrorToEachTestUnderDescribe,
   makeDescribe,
-  getTestDuration,
   invariant,
   makeTest,
   describeBlockHasTests,
 } from './utils';
+import {toMilliseconds} from 'jest-util';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
@@ -110,14 +110,16 @@ const eventHandler: EventHandler = (event, state): void => {
       break;
     }
     case 'test_done': {
-      event.test.duration = getTestDuration(event.test);
+      event.test.duration = event.test.startedAt[1]
+        ? toMilliseconds(event.test.startedAt)
+        : null;
       event.test.status = 'done';
       state.currentlyRunningTest = null;
       break;
     }
     case 'test_start': {
       state.currentlyRunningTest = event.test;
-      event.test.startedAt = Date.now();
+      event.test.startedAt = process.hrtime();
       event.test.invocations += 1;
       break;
     }

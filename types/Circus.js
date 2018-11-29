@@ -7,6 +7,8 @@
  * @flow
  */
 
+import type {HRTime} from 'types/TestResult';
+
 export type DoneFn = (reason?: string | Error) => void;
 export type BlockFn = () => void;
 export type BlockName = string;
@@ -207,7 +209,7 @@ export type TestEntry = {|
   mode: TestMode,
   name: TestName,
   parent: DescribeBlock,
-  startedAt: ?number,
+  startedAt: HRTime,
   duration: ?number,
   status: ?TestStatus, // whether the test has been skipped or run already
   timeout: ?number,

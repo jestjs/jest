@@ -41,7 +41,7 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
     unmatched: 0,
     updated: 0,
   },
-  startTime: 0,
+  startTime: [0, 0],
   success: true,
   testResults: [],
   wasInterrupted: false,

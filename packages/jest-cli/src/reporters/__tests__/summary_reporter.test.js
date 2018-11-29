@@ -9,12 +9,12 @@
 import SummaryReporter from '../summary_reporter';
 
 const env = Object.assign({}, process.env);
-const now = Date.now;
 const write = process.stderr.write;
 const globalConfig = {
   rootDir: 'root',
   watch: false,
 };
+let hrtimeSpy;
 
 let results = [];
 
@@ -22,14 +22,16 @@ beforeEach(() => {
   process.env.npm_lifecycle_event = 'test';
   process.env.npm_lifecycle_script = 'jest';
   process.stderr.write = result => results.push(result);
-  Date.now = () => 10;
+  hrtimeSpy = jest
+    .spyOn(process, 'hrtime')
+    .mockImplementation(() => [0, 10 * 1e6]);
 });
 
 afterEach(() => {
   results = [];
   process.env = env;
   process.stderr.write = write;
-  Date.now = now;
+  hrtimeSpy.mockRestore();
 });
 
 test('snapshots needs update with npm test', () => {
@@ -45,7 +47,7 @@ test('snapshots needs update with npm test', () => {
       uncheckedKeysByFile: [],
       unmatched: 2,
     },
-    startTime: 0,
+    startTime: [0, 0],
     testResults: {},
   };
 
@@ -68,7 +70,7 @@ test('snapshots needs update with yarn test', () => {
       uncheckedKeysByFile: [],
       unmatched: 2,
     },
-    startTime: 0,
+    startTime: [0, 0],
     testResults: {},
   };
 
@@ -104,7 +106,7 @@ test('snapshots all have results (no update)', () => {
       unmatched: 1,
       updated: 1,
     },
-    startTime: 0,
+    startTime: [0, 0],
     testResults: {},
   };
 
@@ -139,7 +141,7 @@ test('snapshots all have results (after update)', () => {
       unmatched: 1,
       updated: 1,
     },
-    startTime: 0,
+    startTime: [0, 0],
     testResults: {},
   };
 

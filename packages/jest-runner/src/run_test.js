@@ -16,6 +16,7 @@ import type RuntimeClass from 'jest-runtime';
 
 import fs from 'graceful-fs';
 import {
+  toMilliseconds,
   BufferedConsole,
   Console,
   ErrorWithStack,
@@ -115,7 +116,7 @@ async function runTestInternal(
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
   });
 
-  const start = Date.now();
+  const start = process.hrtime();
 
   const sourcemapOptions = {
     environment: 'node',
@@ -177,7 +178,7 @@ async function runTestInternal(
   try {
     await environment.setup();
 
-    let result: TestResult;
+    let result: ?TestResult;
 
     try {
       result = await testFramework(
@@ -200,7 +201,10 @@ async function runTestInternal(
       result.numPendingTests +
       result.numTodoTests;
 
-    result.perfStats = {end: Date.now(), start};
+    result.perfStats = {
+      end: toMilliseconds(process.hrtime(start)),
+      start,
+    };
     result.testFilePath = path;
     result.coverage = runtime.getAllCoverageInfoCopy();
     result.sourceMaps = runtime.getSourceMapInfo(

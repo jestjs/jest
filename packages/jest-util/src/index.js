@@ -11,7 +11,7 @@ import mkdirp from 'mkdirp';
 
 import BufferedConsole from './BufferedConsole';
 import clearLine from './clearLine';
-import CustomConsole from './CustomConsole';
+import {default as Console} from './CustomConsole';
 import ErrorWithStack from './ErrorWithStack';
 import FakeTimers from './FakeTimers';
 import formatTestResults from './formatTestResults';
@@ -24,6 +24,7 @@ import getCallsite from './getCallsite';
 import setGlobal from './setGlobal';
 import deepCyclicCopy from './deepCyclicCopy';
 import convertDescriptorToString from './convertDescriptorToString';
+import {toMilliseconds} from './toMilliseconds';
 
 const createDirectory = (path: string) => {
   try {
@@ -37,7 +38,7 @@ const createDirectory = (path: string) => {
 
 module.exports = {
   BufferedConsole,
-  Console: CustomConsole,
+  Console,
   ErrorWithStack,
   FakeTimers,
   NullConsole,
@@ -52,4 +53,5 @@ module.exports = {
   installCommonGlobals,
   isInteractive,
   setGlobal,
+  toMilliseconds,
 };

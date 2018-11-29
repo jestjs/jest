@@ -370,7 +370,7 @@ export default class TestScheduler {
 const createAggregatedResults = (numTotalTestSuites: number) => {
   const result = makeEmptyAggregatedTestResult();
   result.numTotalTestSuites = numTotalTestSuites;
-  result.startTime = Date.now();
+  result.startTime = process.hrtime();
   result.success = false;
   return result;
 };

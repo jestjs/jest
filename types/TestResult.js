@@ -93,6 +93,7 @@ export type Status =
 
 export type Bytes = number;
 export type Milliseconds = number;
+export type HRTime = [number, number];
 
 type Callsite = {|
   column: number,
@@ -132,7 +133,7 @@ export type AggregatedResultWithoutCoverage = {
   numTotalTestSuites: number,
   openHandles: Array<Error>,
   snapshot: SnapshotSummary,
-  startTime: number,
+  startTime: HRTime,
   success: boolean,
   testResults: Array<TestResult>,
   wasInterrupted: boolean,
@@ -185,7 +186,7 @@ export type FormattedTestResult = {
   name: string,
   summary: string,
   status: 'failed' | 'passed',
-  startTime: number,
+  startTime: HRTime,
   endTime: number,
   coverage: any,
   assertionResults: Array<FormattedAssertionResult>,
@@ -203,7 +204,7 @@ export type FormattedTestResults = {
   numTotalTests: number,
   numTotalTestSuites: number,
   snapshot: SnapshotSummary,
-  startTime: number,
+  startTime: HRTime,
   success: boolean,
   testResults: Array<FormattedTestResult>,
   wasInterrupted: boolean,

@@ -7,6 +7,8 @@
  * @flow
  */
 
+import type {HRTime} from 'types/TestResult';
+
 export type LogMessage = string;
 export type LogEntry = {|
   message: LogMessage,
@@ -14,7 +16,7 @@ export type LogEntry = {|
   type: LogType,
 |};
 export type LogCounters = {[label: string]: number};
-export type LogTimers = {[label: string]: Date};
+export type LogTimers = {[label: string]: HRTime};
 export type LogType =
   | 'assert'
   | 'count'

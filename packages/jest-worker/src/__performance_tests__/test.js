@@ -6,6 +6,8 @@
 const workerFarm = require('worker-farm');
 const assert = require('assert');
 const JestWorker = require('../../build').default;
+// eslint-disable-next-line import/no-extraneous-dependencies
+const {toMilliseconds} = require('jest-util');
 
 // Typical tests: node --expose-gc test.js empty 100000
 //                node --expose-gc test.js loadTest 10000
@@ -19,20 +21,19 @@ const threads = 6;
 
 function testWorkerFarm() {
   return new Promise(async (resolve, reject) => {
-    const startTime = Date.now();
+    const startTime = process.hrtime();
     let count = 0;
 
     async function countToFinish() {
       if (++count === calls) {
         workerFarm.end(api);
-        const endTime = Date.now();
 
         // Let all workers go down.
         await sleep(2000);
 
         resolve({
-          globalTime: endTime - startTime - 2000,
-          processingTime: endTime - startProcess,
+          globalTime: toMilliseconds(process.hrtime(startTime)) - 2000,
+          processingTime: toMilliseconds(process.hrtime(startProcess)),
         });
       }
     }
@@ -50,7 +51,7 @@ function testWorkerFarm() {
     // Let all workers come up.
     await sleep(2000);
 
-    const startProcess = Date.now();
+    const startProcess = process.hrtime();
 
     for (let i = 0; i < calls; i++) {
       const promisified = new Promise((resolve, reject) => {
@@ -70,20 +71,19 @@ function testWorkerFarm() {
 
 function testJestWorker() {
   return new Promise(async (resolve, reject) => {
-    const startTime = Date.now();
+    const startTime = process.hrtime();
     let count = 0;
 
     async function countToFinish() {
       if (++count === calls) {
         farm.end();
-        const endTime = Date.now();
 
         // Let all workers go down.
         await sleep(2000);
 
         resolve({
-          globalTime: endTime - startTime - 2000,
-          processingTime: endTime - startProcess,
+          globalTime: toMilliseconds(process.hrtime(startTime)) - 2000,
+          processingTime: toMilliseconds(process.hrtime(startProcess)),
         });
       }
     }
@@ -100,7 +100,7 @@ function testJestWorker() {
     // Let all workers come up.
     await sleep(2000);
 
-    const startProcess = Date.now();
+    const startProcess = process.hrtime();
 
     for (let i = 0; i < calls; i++) {
       const promisified = farm[method]();

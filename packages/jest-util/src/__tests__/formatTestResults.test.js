@@ -21,7 +21,7 @@ describe('formatTestResults', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, start: [0, 1 * 1e6]},
         testResults: [assertion],
       },
     ],

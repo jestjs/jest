@@ -21,6 +21,7 @@ import assert from 'assert';
 import {Console} from 'console';
 import {format} from 'util';
 import chalk from 'chalk';
+import {toMilliseconds} from './toMilliseconds';
 import getCallsite from './getCallsite';
 
 export default class BufferedConsole extends Console {
@@ -143,16 +144,13 @@ export default class BufferedConsole extends Console {
       return;
     }
 
-    this._timers[label] = new Date();
+    this._timers[label] = process.hrtime();
   }
 
   timeEnd(label: string = 'default') {
-    const startTime = this._timers[label];
-
-    if (startTime) {
-      const endTime = new Date();
-      const time = endTime - startTime;
-      this._log('time', format(`${label}: ${time}ms`));
+    if (this._timers[label]) {
+      const duration = toMilliseconds(process.hrtime(this._timers[label]));
+      this._log('time', format(`${label}: ${duration}ms`));
       delete this._timers[label];
     }
   }

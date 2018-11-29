@@ -61,7 +61,7 @@ describe('onRunComplete', () => {
       numRuntimeErrorTestSuites: 0,
       numTotalTestSuites: 1,
       numTotalTests: 1,
-      startTime: 0,
+      startTime: [0, 0],
       success: true,
       testFilePath: 'foo',
       testResults: [],
@@ -322,7 +322,7 @@ describe('onRunComplete', () => {
       });
   });
 
-  test(`getLastError() returns 'undefined' when file and directory path 
+  test(`getLastError() returns 'undefined' when file and directory path
   threshold groups overlap`, () => {
     const covThreshold = {};
     [
@@ -356,8 +356,8 @@ describe('onRunComplete', () => {
       });
   });
 
-  test(`that if globs or paths are specified alongside global, coverage 
-  data for matching paths will be subtracted from overall coverage 
+  test(`that if globs or paths are specified alongside global, coverage
+  data for matching paths will be subtracted from overall coverage
   and thresholds will be applied independently`, () => {
     const testReporter = new CoverageReporter(
       {

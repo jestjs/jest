@@ -36,9 +36,7 @@ export default (
   const status =
     result.numFailingTests > 0 || result.testExecError ? FAIL : PASS;
 
-  const runTime = result.perfStats
-    ? (result.perfStats.end - result.perfStats.start) / 1000
-    : null;
+  const runTime = result.perfStats ? result.perfStats.end / 1000 : null;
 
   const testDetail = [];
   if (runTime !== null && runTime > 5) {
