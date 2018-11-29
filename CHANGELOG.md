@@ -79,6 +79,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Fix message property in custom matcher example to return a function instead of a constant.
 - `[jest-watcher]` Standardize filenames ([#7314](https://github.com/facebook/jest/pull/7314))
 - `[jest-circus]` Standardize file naming in `jest-circus` ([#7301](https://github.com/facebook/jest/pull/7301))
 - `[docs]` Add synchronous test.each setup ([#7150](https://github.com/facebook/jest/pull/7150))
