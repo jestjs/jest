@@ -101,7 +101,10 @@ async function runTestInternal(
     testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
   }
 
-  const environment = new TestEnvironment(config, {console: testConsole});
+  const environment = new TestEnvironment(config, {
+    console: testConsole,
+    testPath: path,
+  });
   const leakDetector = config.detectLeaks
     ? new LeakDetector(environment)
     : null;
