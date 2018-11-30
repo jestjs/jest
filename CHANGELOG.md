@@ -1,6 +1,7 @@
 ## master
 
 ### Features
+
 - `[expect]` expect(Infinity).toBeCloseTo(Infinity) works as intended aswell as with -Infinity ([#7405](https://github.com/facebook/jest/pull/7405))
 - `[jest-cli]` [**BREAKING**] Only set error process error codes when they are non-zero ([#7363](https://github.com/facebook/jest/pull/7363))
 - `[jest-config]` [**BREAKING**] Deprecate `setupTestFrameworkScriptFile` in favor of new `setupFilesAfterEnv` ([#7119](https://github.com/facebook/jest/pull/7119))
