@@ -87,7 +87,15 @@ const matchers: MatchersObject = {
   toBeCloseTo(actual: number, expected: number, precision?: number = 2) {
     const secondArgument = arguments.length === 3 ? 'precision' : null;
     ensureNumbers(actual, expected, '.toBeCloseTo');
-    const pass = Math.abs(expected - actual) < Math.pow(10, -precision) / 2;
+
+    let pass = false;
+    //If both actual and expected are Infinity it is true they are close
+    if (actual == Infinity && expected == Infinity) pass = true;
+    //If both actual and expected are -Infinity it is true they are close
+    else if (actual == -Infinity && expected == -Infinity) pass = true;
+    //actual and expected are close to each other taking precision into account
+    else pass = Math.abs(expected - actual) < Math.pow(10, -precision) / 2;
+
     const message = () =>
       matcherHint('.toBeCloseTo', undefined, undefined, {
         isNot: this.isNot,
