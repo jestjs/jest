@@ -89,12 +89,9 @@ const matchers: MatchersObject = {
     ensureNumbers(actual, expected, '.toBeCloseTo');
 
     let pass = false;
-    //If both actual and expected are equal to the Infinity global
+
     if (actual == Infinity && expected == Infinity) pass = true;
-    //If both actual and expected are equal to the symmetric of the Infinity global
     else if (actual == -Infinity && expected == -Infinity) pass = true;
-    //both actual and expected are not equal to the Infinity global
-    //evaluate if they are close to each other taking precision into account
     else pass = Math.abs(expected - actual) < Math.pow(10, -precision) / 2;
 
     const message = () =>
