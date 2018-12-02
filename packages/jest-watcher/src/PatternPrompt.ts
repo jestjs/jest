@@ -14,8 +14,6 @@ import {
   printRestoredPatternCaret,
 } from './lib/patternModeHelpers';
 
-const {CLEAR} = specialChars;
-
 const usage = (entity: string) =>
   `\n${chalk.bold('Pattern Mode Usage')}\n` +
   ` ${chalk.dim('\u203A Press')} Esc ${chalk.dim('to exit pattern mode.')}\n` +
@@ -28,7 +26,7 @@ const usageRows = usage('').split('\n').length;
 const isValid = (pattern: string) => {
   try {
     const regex = new RegExp(pattern, 'i');
-    return !!regex;
+    return Boolean(regex);
   } catch (e) {
     return false;
   }
@@ -70,12 +68,10 @@ export default class PatternPrompt {
   _validation(onSuccess: Function) {
     return (pattern: string) => {
       const valid = isValid(pattern);
+      console.log('\n' + chalk.red('Please provide valid RegExp'));
       if (valid) {
         onSuccess(pattern);
       } else {
-        this._pipe.write(
-          '\n' + chalk.red('Please provide valid RegExp') + '\n',
-        );
         printPatternCaret('', this._pipe);
         printRestoredPatternCaret(pattern, this._currentUsageRows, this._pipe);
       }
