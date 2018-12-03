@@ -565,11 +565,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'projects':
         value = (options[key] || [])
-          .map(
-            project =>
-              typeof project === 'string'
-                ? _replaceRootDirTags(options.rootDir, project)
-                : project,
+          .map(project =>
+            typeof project === 'string'
+              ? _replaceRootDirTags(options.rootDir, project)
+              : project,
           )
           .reduce((projects, project) => {
             // Project can be specified as globs. If a glob matches any files,
@@ -727,8 +726,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     argv.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-        ? 'all'
-        : 'new';
+      ? 'all'
+      : 'new';
 
   newOptions.maxWorkers = getMaxWorkers(argv);
 

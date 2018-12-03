@@ -755,8 +755,8 @@ class HasteMap extends EventEmitter {
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
         : os.platform() === 'darwin'
-          ? sane.FSEventsWatcher
-          : sane.NodeWatcher;
+        ? sane.FSEventsWatcher
+        : sane.NodeWatcher;
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     const rootDir = this._options.rootDir;

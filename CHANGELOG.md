@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-cli]` [**BREAKING**] Only set error process error codes when they are non-zero ([#7363](https://github.com/facebook/jest/pull/7363))
 - `[jest-validate]` Add support for comments in `package.json` using a `"//"` key [#7295](https://github.com/facebook/jest/pull/7295))
 - `[jest-config]` Add shorthand for watch plugins and runners ([#7213](https://github.com/facebook/jest/pull/7213))
 - `[jest-config]` [**BREAKING**] Deprecate `setupTestFrameworkScriptFile` in favor of new `setupFilesAfterEnv` ([#7119](https://github.com/facebook/jest/pull/7119))
@@ -113,6 +114,7 @@
 - `[pretty-format]` Standardize filenames ([#7316](https://github.com/facebook/jest/pull/7316))
 - `[*]` Add check for Facebook copyright headers on CI ([#7370](https://github.com/facebook/jest/pull/7370))
 - `[jest-haste-map]` Refactor `dependencyExtractor` and tests ([#7385](https://github.com/facebook/jest/pull/7385))
+- `[docs]` Clearify conditional setting of `NODE_ENV` ([#7369](https://github.com/facebook/jest/pull/7369))
 
 ### Performance
 

@@ -44,10 +44,8 @@ module.exports = async function watchmanCrawl(
 
   const cmd = (...args) =>
     new Promise((resolve, reject) =>
-      client.command(
-        args,
-        (error, result) =>
-          error ? reject(WatchmanError(error)) : resolve(result),
+      client.command(args, (error, result) =>
+        error ? reject(WatchmanError(error)) : resolve(result),
       ),
     );
 
