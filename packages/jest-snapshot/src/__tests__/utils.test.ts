@@ -212,10 +212,17 @@ describe('DeepMerge', () => {
             four: 'four',
             five: 'five',
           },
+          // Include an array element not present in the propertyMatchers
+          {
+            six: 'six',
+            seven: 'seven',
+          },
         ],
       },
     };
-    const matcher = expect.any(String);
+    // Don't use `expect.any(string)` since that will cause a false positive
+    // if deepMerge incorrectly keeps two as 'two' from the target
+    const matcher = '--matcher--';
     const propertyMatchers = {
       data: {
         two: matcher,
@@ -226,8 +233,8 @@ describe('DeepMerge', () => {
         ],
       },
     };
-    const mergedOutput = deepMerge(target, propertyMatchers);
 
+    const mergedOutput = deepMerge(target, propertyMatchers);
     expect(mergedOutput).toStrictEqual({
       data: {
         one: 'one',
@@ -237,9 +244,15 @@ describe('DeepMerge', () => {
             four: matcher,
             five: 'five',
           },
+          {
+            six: 'six',
+            seven: 'seven',
+          },
         ],
       },
     });
+
+    // Ensure original target is not modified
     expect(target).toStrictEqual({
       data: {
         one: 'one',
@@ -248,6 +261,10 @@ describe('DeepMerge', () => {
           {
             four: 'four',
             five: 'five',
+          },
+          {
+            six: 'six',
+            seven: 'seven',
           },
         ],
       },
