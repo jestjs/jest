@@ -107,8 +107,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  // $FlowFixMe: flow doesn't handle the switch.
-  onMessage(response: ParentMessage) {
+  onMessage(response: any /* Should be ParentMessage */) {
     let error;
 
     switch (response[0]) {
