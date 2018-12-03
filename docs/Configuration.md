@@ -333,7 +333,7 @@ Default: `undefined`
 
 This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
-The global variables that are configured through `global` object can be read only in `globalTeardown`.
+The global variables that are configured through `global` object can be read in `globalTeardown` only.
 
 ```js
 // setup.js
