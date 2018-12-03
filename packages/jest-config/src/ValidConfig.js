@@ -44,6 +44,7 @@ export default ({
   displayName: 'project-name',
   errorOnDeprecated: false,
   expand: false,
+  extraGlobals: [],
   filter: '<rootDir>/filter.js',
   forceCoverageMatch: ['**/*.t.js'],
   forceExit: false,

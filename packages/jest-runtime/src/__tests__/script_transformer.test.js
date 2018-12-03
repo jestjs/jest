@@ -224,6 +224,12 @@ describe('ScriptTransformer', () => {
     // If we disable coverage, we get a different result.
     scriptTransformer.transform('/fruits/kiwi.js', {collectCoverage: false});
     expect(vm.Script.mock.calls[1][0]).toEqual(snapshot);
+
+    scriptTransformer.transform('/fruits/banana.js', {
+      // to make sure jest isn't declared twice
+      extraGlobals: ['Math', 'jest'],
+    }).script;
+    expect(vm.Script.mock.calls[3][0]).toMatchSnapshot();
   });
 
   it('does not transform Node core modules', () => {
