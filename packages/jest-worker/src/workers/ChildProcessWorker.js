@@ -26,7 +26,6 @@ import type {
   ChildMessage,
   OnEnd,
   OnStart,
-  ParentMessage,
   WorkerOptions,
 } from '../types';
 
