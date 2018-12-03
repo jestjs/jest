@@ -176,7 +176,7 @@ jest.fn(function() {
 
 ### `mockFn.mockReturnValue(value)`
 
-Accepts a value that will be returned whenever the mock function is called.
+Accepts a value that will be returned whenever the mock function is called (unless called using the `new` keyword).
 
 ```js
 const mock = jest.fn();
