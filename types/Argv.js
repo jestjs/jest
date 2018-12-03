@@ -62,6 +62,7 @@ export type Argv = {|
   outputFile: string,
   preset: ?string,
   projects: Array<string>,
+  prettierPath: ?string,
   replname: ?string,
   resetMocks: boolean,
   resetModules: boolean,
