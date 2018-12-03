@@ -425,7 +425,7 @@ export const options = {
     type: 'string',
   },
   prettierPath: {
-    default: 'prettier',
+    default: undefined,
     description: 'The path to the "prettier" module used for inline snapshots.',
     type: 'string',
   },

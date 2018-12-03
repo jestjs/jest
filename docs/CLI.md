@@ -268,6 +268,10 @@ Note that `column` is 0-indexed while `line` is not.
 
 A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
+### `--testPathIgnorePatterns=[array]`
+
+An array of regexp pattern strings that is tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those test with a path that does not match with the provided regexp expressions.
+
 ### `--testRunner=<path>`
 
 Lets you specify a custom test runner.
