@@ -39,7 +39,6 @@ describe('Farm', () => {
   });
 
   it('sends a request to one worker', () => {
-    // eslint-disable-next-line no-new
     const farm = new Farm(4, callback);
 
     farm.doWork('foo', 42);
@@ -54,7 +53,6 @@ describe('Farm', () => {
   });
 
   it('sends four requests to four unique workers', () => {
-    // eslint-disable-next-line no-new
     const farm = new Farm(4, callback);
 
     farm.doWork('foo', 42);

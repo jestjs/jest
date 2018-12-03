@@ -23,6 +23,7 @@ import type {
   OnStart,
   WorkerOptions,
   WorkerInterface,
+  ParentMessage,
 } from '../types';
 
 // $FlowFixMe: Flow doesn't know about experimental features of Node
@@ -87,7 +88,8 @@ export default class ExperimentalWorker implements WorkerInterface {
     }
   }
 
-  onMessage(response: any /* Should be ParentMessage */) {
+  // $FlowFixMe: flow doesn't handle the switch.
+  onMessage(response: ParentMessage) {
     let error;
 
     switch (response[0]) {

@@ -22,7 +22,13 @@ import {
 import type {ChildProcess} from 'child_process';
 import type {Readable} from 'stream';
 
-import type {ChildMessage, OnEnd, OnStart, WorkerOptions} from '../types';
+import type {
+  ChildMessage,
+  OnEnd,
+  OnStart,
+  ParentMessage,
+  WorkerOptions,
+} from '../types';
 
 /**
  * This class wraps the child process and provides a nice interface to
@@ -101,7 +107,8 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  onMessage(response: any /* Should be ParentMessage */) {
+  // $FlowFixMe: flow doesn't handle the switch.
+  onMessage(response: ParentMessage) {
     let error;
 
     switch (response[0]) {
