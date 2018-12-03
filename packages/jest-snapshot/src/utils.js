@@ -178,6 +178,23 @@ export const saveSnapshotFile = (
   );
 };
 
+const deepMergeArray = (target, source) => {
+  // Clone target
+  const mergedOutput = target.slice();
+
+  source.forEach((element, index) => {
+    if (typeof mergedOutput[index] === 'undefined') {
+      mergedOutput[index] = element;
+    } else if (typeof element === 'undefined') {
+      mergedOutput.push(target[index]);
+    } else {
+      mergedOutput[index] = deepMerge(target[index], element);
+    }
+  });
+
+  return mergedOutput;
+};
+
 export const deepMerge = (target: any, source: any) => {
   const mergedOutput = Object.assign({}, target);
   if (isObject(target) && isObject(source)) {
@@ -186,14 +203,7 @@ export const deepMerge = (target: any, source: any) => {
         if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
         else mergedOutput[key] = deepMerge(target[key], source[key]);
       } else if (Array.isArray(source[key])) {
-        // Convert arrays to objects, merge, convert back to array
-        const mergedArrayObject = deepMerge(
-          Object.assign({}, target[key]),
-          Object.assign({}, source[key]),
-        );
-        mergedOutput[key] = Object.keys(mergedArrayObject).map(
-          arrKey => mergedArrayObject[arrKey],
-        );
+        mergedOutput[key] = deepMergeArray(target[key], source[key]);
       } else {
         Object.assign(mergedOutput, {[key]: source[key]});
       }
