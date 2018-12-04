@@ -37,6 +37,22 @@ const getChildren = (arg, children = []) => {
 
 const getType = element => {
   const type = element.type;
+  if (type.$$typeof === providerSymbol) {
+    return 'Context.Provider';
+  }
+
+  if (type.$$typeof === contextSymbol) {
+    return 'Context.Consumer';
+  }
+
+  if (type.$$typeof === forwardRefSymbol) {
+    const functionName = type.render.displayName || type.render.name || '';
+
+    return functionName !== ''
+      ? 'ForwardRef(' + functionName + ')'
+      : 'ForwardRef';
+  }
+
   if (typeof type === 'string') {
     return type;
   }
@@ -46,23 +62,7 @@ const getType = element => {
   if (type === fragmentSymbol) {
     return 'React.Fragment';
   }
-  if (typeof type === 'object' && type !== null) {
-    if (type.$$typeof === providerSymbol) {
-      return 'Context.Provider';
-    }
 
-    if (type.$$typeof === contextSymbol) {
-      return 'Context.Consumer';
-    }
-
-    if (type.$$typeof === forwardRefSymbol) {
-      const functionName = type.render.displayName || type.render.name || '';
-
-      return functionName !== ''
-        ? 'ForwardRef(' + functionName + ')'
-        : 'ForwardRef';
-    }
-  }
   return 'UNDEFINED';
 };
 
