@@ -20,12 +20,15 @@ import type {
   WorkerInterface,
 } from './types';
 
-let workerThreadsAreSupported = false;
-try {
-  // $FlowFixMe: Flow doesn't know about experimental APIs
-  require('worker_threads');
-  workerThreadsAreSupported = true;
-} catch (_) {}
+const canUseWorkerThreads = () => {
+  try {
+    // $FlowFixMe: Flow doesn't know about experimental APIs
+    require('worker_threads');
+    return true;
+  } catch (_) {
+    return false;
+  }
+};
 
 class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
   send(
@@ -39,7 +42,7 @@ class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
 
   createWorker(workerOptions: WorkerOptions): WorkerInterface {
     let Worker;
-    if (workerThreadsAreSupported) {
+    if (canUseWorkerThreads()) {
       Worker = require('./workers/NodeThreadsWorker').default;
     } else {
       Worker = require('./workers/ChildProcessWorker').default;
