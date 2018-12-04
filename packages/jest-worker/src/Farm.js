@@ -17,6 +17,7 @@ import type {
   OnEnd,
 } from './types';
 import {CHILD_MESSAGE_CALL} from './types';
+
 export default class Farm {
   _computeWorkerKey: (string, ...Array<any>) => ?string;
   _cacheKeys: {[string]: WorkerInterface, __proto__: null};
