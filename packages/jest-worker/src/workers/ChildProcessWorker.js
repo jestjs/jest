@@ -22,12 +22,7 @@ import {
 import type {ChildProcess} from 'child_process';
 import type {Readable} from 'stream';
 
-import type {
-  ChildMessage,
-  OnEnd,
-  OnStart,
-  WorkerOptions,
-} from '../types';
+import type {ChildMessage, OnEnd, OnStart, WorkerOptions} from '../types';
 
 /**
  * This class wraps the child process and provides a nice interface to
