@@ -20,7 +20,7 @@ import type {
 import typeof {worker} from './test_worker';
 
 import exit from 'exit';
-import runTest from './run_test';
+import runTest from './runTest';
 import throat from 'throat';
 import Worker from 'jest-worker';
 
