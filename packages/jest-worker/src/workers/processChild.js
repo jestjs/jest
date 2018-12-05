@@ -16,9 +16,13 @@ import {
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_SETUP_ERROR,
   PARENT_MESSAGE_OK,
-} from './types';
+} from '../types';
 
-import type {PARENT_MESSAGE_ERROR} from './types';
+import type {
+  ChildMessageInitialize,
+  ChildMessageCall,
+  PARENT_MESSAGE_ERROR,
+} from '../types';
 
 let file = null;
 let setupArgs: Array<mixed> = [];
@@ -37,15 +41,17 @@ let initialized = false;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-process.on('message', (request: any /* Should be ChildMessage */) => {
+process.on('message', (request: any) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
-      file = request[2];
+      const init: ChildMessageInitialize = request;
+      file = init[2];
       setupArgs = request[3];
       break;
 
     case CHILD_MESSAGE_CALL:
-      execMethod(request[2], request[3]);
+      const call: ChildMessageCall = request;
+      execMethod(call[2], call[3]);
       break;
 
     case CHILD_MESSAGE_END:
