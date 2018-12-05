@@ -16,6 +16,8 @@ import {
   PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
 
+import path from 'path';
+
 import type {Readable} from 'stream';
 import type {
   ChildMessage,
@@ -40,7 +42,7 @@ export default class ExperimentalWorker implements WorkerInterface {
   }
 
   initialize() {
-    this._worker = new Worker(__dirname + '/threadChild.js', {
+    this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
       eval: false,
       stderr: true,
       stdout: true,
