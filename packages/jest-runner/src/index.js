@@ -17,14 +17,14 @@ import type {
   TestWatcher,
 } from 'types/TestRunner';
 
-import typeof {worker} from './test_worker';
+import typeof {worker} from './testWorker';
 
 import exit from 'exit';
-import runTest from './run_test';
+import runTest from './runTest';
 import throat from 'throat';
 import Worker from 'jest-worker';
 
-const TEST_WORKER_PATH = require.resolve('./test_worker');
+const TEST_WORKER_PATH = require.resolve('./testWorker');
 
 type WorkerInterface = Worker & {worker: worker};
 
