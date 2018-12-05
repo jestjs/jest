@@ -123,7 +123,7 @@ describe('babel-plugin-jest-hoist', () => {
   });
 
   it('requires modules that also call jest.mock', () => {
-    require('../mock_file');
+    require('../mockFile');
     const mock = require('../banana');
     expect(mock).toEqual('apple');
   });
