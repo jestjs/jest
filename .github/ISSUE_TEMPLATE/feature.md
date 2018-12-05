@@ -1,6 +1,6 @@
 ---
 name: 🚀 Feature Proposal
-labels: ":rocket: Feature Request"
+labels: ':rocket: Feature Request'
 about: Submit a proposal for a new feature
 ---
 
