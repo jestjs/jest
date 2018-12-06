@@ -29,7 +29,7 @@ When using the `--config` option, the JSON file must not contain a "jest" key:
 
 ```json
 {
-  "bail": true,
+  "bail": 1,
   "verbose": true
 }
 ```
@@ -99,11 +99,11 @@ _Note: Core modules, like `fs`, are not mocked by default. They can be mocked ex
 
 _Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
 
-### `bail` [boolean]
+### `bail` [number | boolean]
 
-Default: `false`
+Default: `0`
 
-By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
+By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after `n` failures. Setting bail to `true` is the same as setting bail to `1`.
 
 ### `browser` [boolean]
 
