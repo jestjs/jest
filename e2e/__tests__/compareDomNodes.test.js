@@ -13,5 +13,5 @@ import runJest from '../runJest';
 test('does not crash when expect involving a DOM node fails', () => {
   const result = runJest('compare-dom-nodes');
 
-  expect(result.stderr).toContain('FAIL __tests__/failed-assertion.js');
+  expect(result.stderr).toContain('FAIL __tests__/failedAssertion.js');
 });
