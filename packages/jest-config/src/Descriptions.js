@@ -9,7 +9,7 @@
 
 export default ({
   automock: 'All imported modules in your tests should be mocked automatically',
-  bail: 'Stop running tests after the first failure',
+  bail: 'Stop running tests after `n` failures',
   browser: 'Respect "browser" field in package.json when resolving modules',
   cacheDirectory:
     'The directory where Jest should store its cached dependency information',

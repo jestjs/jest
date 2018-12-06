@@ -617,8 +617,21 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
         break;
       }
+      case 'bail': {
+        if (typeof options[key] === 'boolean') {
+          value = options[key] ? 1 : 0;
+        } else if (typeof options[key] === 'string') {
+          value = 1;
+          // If Jest is invoked as `jest --bail someTestPattern` then need to
+          // move the pattern from the `bail` configuration and into `argv._`
+          // to be processed as an extra parameter
+          argv._.push(options[key]);
+        } else {
+          value = options[key];
+        }
+        break;
+      }
       case 'automock':
-      case 'bail':
       case 'browser':
       case 'cache':
       case 'changedSince':
