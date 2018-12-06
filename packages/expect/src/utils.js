@@ -27,7 +27,7 @@ const hasGetterFromConstructor = (object: Object, key: string) => {
   if (constructor === Object) {
     // A literal object has Object as constructor.
     // Therefore, it cannot inherit application-specific getters.
-    // Furthermore, Object has proto getter which is not relevant.
+    // Furthermore, Object has __proto__ getter which is not relevant.
     // Array, Boolean, Number, String constructors don’t have any getters.
     return false;
   }

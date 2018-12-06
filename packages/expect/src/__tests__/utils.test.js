@@ -96,7 +96,7 @@ describe('getPath()', () => {
 });
 
 describe('hasOwnProperty', () => {
-  test('does inherit getter from class', () => {
+  it('does inherit getter from class', () => {
     class MyClass {
       get key() {
         return 'value';
@@ -104,27 +104,27 @@ describe('hasOwnProperty', () => {
     }
     expect(hasOwnProperty(new MyClass(), 'key')).toBe(true);
   });
-  test('does not inherit setter from class', () => {
+  it('does not inherit setter from class', () => {
     class MyClass {
       set key(value) {}
     }
     expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
   });
-  test('does not inherit method from class', () => {
+  it('does not inherit method from class', () => {
     class MyClass {
       key() {}
     }
     expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
   });
-  test('does not inherit property from constructor prototype', () => {
+  it('does not inherit property from constructor prototype', () => {
     function MyClass() {}
     MyClass.prototype.key = 'value';
     expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
   });
-  test('does not inherit __proto__ getter from Object', () => {
+  it('does not inherit __proto__ getter from Object', () => {
     expect(hasOwnProperty({}, '__proto__')).toBe(false);
   });
-  test('does not inherit toString method from Object', () => {
+  it('does not inherit toString method from Object', () => {
     expect(hasOwnProperty({}, 'toString')).toBe(false);
   });
 });
