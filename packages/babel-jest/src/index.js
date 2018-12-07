@@ -15,6 +15,7 @@ import type {
   TransformedSource,
 } from 'types/Transform';
 
+import convertSourceMap from 'convert-source-map';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
@@ -140,6 +141,14 @@ const createTransformer = (options: any): Transformer => {
             },
           ],
         ]);
+      }
+
+      const sourceMapFromFile = convertSourceMap.fromMapFileSource(
+        src,
+        path.dirname(filename),
+      );
+      if (sourceMapFromFile) {
+        theseOptions.inputSourceMap = sourceMapFromFile.toObject();
       }
 
       // babel v7 might return null in the case when the file has been ignored.

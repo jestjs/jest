@@ -10,7 +10,8 @@
   "main": "build/index.js",
   "dependencies": {
     "babel-plugin-istanbul": "^4.1.6",
-    "babel-preset-jest": "^23.2.0"
+    "babel-preset-jest": "^23.2.0",
+    "convert-source-map": "^1.4.0"
   },
   "devDependencies": {
     "babel-core": "^6.0.0"
