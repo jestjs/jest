@@ -7961,7 +7961,7 @@ jest-haste-map@23.5.0:
     jest-serializer "^23.0.1"
     jest-worker "^23.2.0"
     micromatch "^2.3.11"
-    sane "^2.0.0"
+    sane "^3.0.0"
 
 jest-junit@^5.1.0:
   version "5.1.0"
