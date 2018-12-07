@@ -104,26 +104,31 @@ describe('hasOwnProperty', () => {
     }
     expect(hasOwnProperty(new MyClass(), 'key')).toBe(true);
   });
+
   it('does not inherit setter from class', () => {
     class MyClass {
       set key(value) {}
     }
     expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
   });
+
   it('does not inherit method from class', () => {
     class MyClass {
       key() {}
     }
     expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
   });
+
   it('does not inherit property from constructor prototype', () => {
     function MyClass() {}
     MyClass.prototype.key = 'value';
     expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
   });
+
   it('does not inherit __proto__ getter from Object', () => {
     expect(hasOwnProperty({}, '__proto__')).toBe(false);
   });
+
   it('does not inherit toString method from Object', () => {
     expect(hasOwnProperty({}, 'toString')).toBe(false);
   });
