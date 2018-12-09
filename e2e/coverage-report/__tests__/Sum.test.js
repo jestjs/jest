@@ -6,9 +6,9 @@
  */
 'use strict';
 
-jest.mock('../SumDependency.js'); // call mock explicitly
+jest.mock('../sumDependency.js'); // call mock explicitly
 
-const {sum} = require('../Sum');
+const {sum} = require('../sum');
 
 if (!global.setup) {
   throw new Error('setup.js was not called.');

@@ -57,7 +57,7 @@ test('collects coverage only from multiple specified files', () => {
       '--collectCoverageFrom',
       'setup.js',
       '--collectCoverageFrom',
-      'OtherFile.js',
+      'otherFile.js',
     ],
     {stripAnsi: true},
   );
@@ -72,9 +72,9 @@ test('collects coverage only from specified files avoiding dependencies', () => 
       '--no-cache',
       '--coverage',
       '--collectCoverageOnlyFrom',
-      'Sum.js',
+      'sum.js',
       '--',
-      'Sum.test.js',
+      'sum.test.js',
     ],
     {stripAnsi: true},
   );
@@ -171,11 +171,11 @@ test('collects coverage from duplicate files avoiding shared cache', () => {
     '--coverageThreshold',
     '{"global": {"lines": 100}}',
     '--collectCoverageOnlyFrom',
-    'cached-duplicates/a/Identical.js',
+    'cached-duplicates/a/identical.js',
     '--collectCoverageOnlyFrom',
-    'cached-duplicates/b/Identical.js',
+    'cached-duplicates/b/identical.js',
     '--',
-    'Identical.test.js',
+    'identical.test.js',
   ];
   // Run once to prime the cache
   runJest(DIR, args, {stripAnsi: true});

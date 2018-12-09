@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-require('./SumDependency.js');
-require('./OtherFile');
+require('./sumDependency.js');
+require('./otherFile');
 
 const uncoveredFunction = () => 1 + 'abc';
 
