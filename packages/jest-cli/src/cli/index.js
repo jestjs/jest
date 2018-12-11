@@ -175,7 +175,8 @@ const readResultsAndExit = (
 };
 
 const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
-  const argv: Argv = yargs(maybeArgv || process.argv.slice(2))
+  const rawArgv: Argv | string[] = maybeArgv || process.argv.slice(2);
+  const argv: Argv = yargs(rawArgv)
     .usage(args.usage)
     .alias('help', 'h')
     .options(args.options)
@@ -185,6 +186,9 @@ const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
   validateCLIOptions(
     argv,
     Object.assign({}, args.options, {deprecationEntries}),
+    Array.isArray(rawArgv)
+      ? rawArgv.map(rawArgv => rawArgv.replace(/^--?/, ''))
+      : Object.keys(rawArgv),
   );
 
   return argv;

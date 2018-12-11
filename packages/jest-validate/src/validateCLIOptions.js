@@ -65,16 +65,27 @@ const logDeprecatedOptions = (
   });
 };
 
-export default function validateCLIOptions(argv: Argv, options: Object) {
+export default function validateCLIOptions(
+  argv: Argv,
+  options: Object,
+  rawArgv: string[] = [],
+) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const deprecationEntries = options.deprecationEntries || {};
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) => acc.add(option).add(options[option].alias || option),
     new Set(yargsSpecialOptions),
   );
-  const unrecognizedOptions = Object.keys(argv).filter(
-    arg => !allowedOptions.has(arg),
-  );
+  const unrecognizedOptions = Object.keys(argv).filter(arg => {
+    const camelCased = arg.replace(/-([^-])/g, (a, b) => b.toUpperCase());
+    if (
+      !allowedOptions.has(camelCased) &&
+      (!rawArgv.length || rawArgv.includes(arg))
+    ) {
+      return true;
+    }
+    return false;
+  }, []);
 
   if (unrecognizedOptions.length) {
     throw createCLIValidationError(unrecognizedOptions, allowedOptions);
