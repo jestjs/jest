@@ -16,7 +16,7 @@ import exit from 'exit';
 import HasteMap from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime from 'jest-runtime';
-import runTest from './run_test';
+import runTest from './runTest';
 
 export type WorkerData = {|
   config: ProjectConfig,

@@ -20,7 +20,7 @@ import {
   CHILD_MESSAGE_END,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_CLIENT_ERROR,
-} from '../types';
+} from '../../types';
 
 let ended;
 let mockCount;
@@ -106,7 +106,7 @@ beforeEach(() => {
   process.send = jest.fn();
 
   // Require the child!
-  require('../child');
+  require('../processChild');
 });
 
 afterEach(() => {

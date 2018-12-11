@@ -16,7 +16,7 @@ import {
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_OK,
-} from '../types';
+} from '../../types';
 
 let Worker;
 let forkInterface;
@@ -38,7 +38,7 @@ beforeEach(() => {
     return forkInterface;
   });
 
-  Worker = require('../Worker').default;
+  Worker = require('../ChildProcessWorker').default;
 });
 
 afterEach(() => {
@@ -47,7 +47,7 @@ afterEach(() => {
 });
 
 it('passes fork options down to child_process.fork, adding the defaults', () => {
-  const child = require.resolve('../child');
+  const child = require.resolve('../processChild');
 
   process.execArgv = ['--inspect', '-p'];
 
@@ -119,6 +119,7 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
 
   expect(childProcess.fork).toHaveBeenCalledTimes(5);
   expect(onProcessStart).toBeCalledWith(worker);
+  expect(onProcessEnd).toHaveBeenCalledTimes(1);
   expect(onProcessEnd.mock.calls[0][0]).toBeInstanceOf(Error);
   expect(onProcessEnd.mock.calls[0][0].type).toBe('WorkerError');
   expect(onProcessEnd.mock.calls[0][1]).toBe(null);
@@ -135,30 +136,11 @@ it('provides stdout and stderr fields from the child process', () => {
   expect(worker.getStderr()).toBe(forkInterface.stderr);
 });
 
-it('swtiches the processed flag of a task as soon as it is processed', () => {
-  const worker = new Worker({
-    forkOptions: {},
-    maxRetries: 3,
-    workerPath: '/tmp/foo',
-  });
-
-  const request1 = [CHILD_MESSAGE_CALL, false, 'foo', []];
-  const request2 = [CHILD_MESSAGE_CALL, false, 'bar', []];
-
-  worker.send(request1, () => {}, () => {});
-  worker.send(request2, () => {}, () => {});
-
-  // The queue is empty when it got send, so the task is processed.
-  expect(request1[1]).toBe(true);
-
-  // The previous one is being processed, so that one stays as unprocessed.
-  expect(request2[1]).toBe(false);
-});
-
 it('sends the task to the child process', () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
+    setupArgs: [],
     workerPath: '/tmp/foo',
   });
 
@@ -168,50 +150,6 @@ it('sends the task to the child process', () => {
 
   // Skipping call "0" because it corresponds to the "initialize" one.
   expect(forkInterface.send.mock.calls[1][0]).toEqual(request);
-});
-
-it('relates replies to requests, in order', () => {
-  const worker = new Worker({
-    forkOptions: {},
-    maxRetries: 3,
-    workerPath: '/tmp/foo',
-  });
-
-  const onProcessStart1 = jest.fn();
-  const onProcessEnd1 = jest.fn();
-  const request1 = [CHILD_MESSAGE_CALL, false, 'foo', []];
-
-  const onProcessStart2 = jest.fn();
-  const onProcessEnd2 = jest.fn();
-  const request2 = [CHILD_MESSAGE_CALL, false, 'bar', []];
-
-  worker.send(request1, onProcessStart1, onProcessEnd1);
-  worker.send(request2, onProcessStart2, onProcessEnd2);
-
-  // 2nd call waits on the queue...
-  expect(request2[1]).toBe(false);
-
-  // then first call replies...
-  forkInterface.emit('message', [PARENT_MESSAGE_OK, 44]);
-
-  expect(onProcessStart1.mock.calls[0][0]).toBe(worker);
-  expect(onProcessEnd1.mock.calls[0][0]).toBeFalsy();
-  expect(onProcessEnd1.mock.calls[0][1]).toBe(44);
-
-  // which causes the second call to be processed...
-  expect(request2[1]).toBe(true);
-
-  // and then the second call replies...
-  forkInterface.emit('message', [
-    PARENT_MESSAGE_CLIENT_ERROR,
-    'TypeError',
-    'foo',
-    'TypeError: foo',
-    {},
-  ]);
-
-  expect(onProcessStart2.mock.calls[0][0]).toBe(worker);
-  expect(onProcessEnd2.mock.calls[0][0].message).toBe('foo');
 });
 
 it('calls the onProcessStart method synchronously if the queue is empty', () => {
@@ -238,40 +176,6 @@ it('calls the onProcessStart method synchronously if the queue is empty', () => 
   forkInterface.emit('message', [PARENT_MESSAGE_OK]);
 
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
-});
-
-it('calls the onProcessStart method only when the request is starting to be processed', () => {
-  const worker = new Worker({
-    forkOptions: {},
-    maxRetries: 3,
-    workerPath: '/tmp/foo',
-  });
-
-  const onProcessStart1 = jest.fn();
-  const onProcessEnd1 = jest.fn();
-
-  const onProcessStart2 = jest.fn();
-  const onProcessEnd2 = jest.fn();
-
-  worker.send(
-    [CHILD_MESSAGE_CALL, false, 'foo', []],
-    onProcessStart1,
-    onProcessEnd1,
-  );
-  worker.send(
-    [CHILD_MESSAGE_CALL, false, 'bar', []],
-    onProcessStart2,
-    onProcessEnd2,
-  );
-
-  // Not called yet since the second request is on the queue.
-  expect(onProcessStart2).not.toHaveBeenCalled();
-
-  // then first call replies...
-  forkInterface.emit('message', [PARENT_MESSAGE_OK]);
-
-  // Now it's been called.
-  expect(onProcessStart2).toHaveBeenCalledTimes(1);
 });
 
 it('creates error instances for known errors', () => {

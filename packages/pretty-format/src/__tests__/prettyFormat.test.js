@@ -261,6 +261,30 @@ describe('prettyFormat()', () => {
     );
   });
 
+  it('prints an object without non-enumerable properties which have string key', () => {
+    const val: any = {
+      enumerable: true,
+    };
+    const key = 'non-enumerable';
+    Object.defineProperty(val, key, {
+      enumerable: false,
+      value: false,
+    });
+    expect(prettyFormat(val)).toEqual('Object {\n  "enumerable": true,\n}');
+  });
+
+  it('prints an object without non-enumerable properties which have symbol key', () => {
+    const val: any = {
+      enumerable: true,
+    };
+    const key = Symbol('non-enumerable');
+    Object.defineProperty(val, key, {
+      enumerable: false,
+      value: false,
+    });
+    expect(prettyFormat(val)).toEqual('Object {\n  "enumerable": true,\n}');
+  });
+
   it('prints an object with sorted properties', () => {
     /* eslint-disable sort-keys */
     const val = {b: 1, a: 2};

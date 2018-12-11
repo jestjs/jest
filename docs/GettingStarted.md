@@ -97,6 +97,17 @@ module.exports = {
 
 You are now set up to use all ES6 features and React specific syntax.
 
+```json
+{
+  "presets": [["env", {"modules": false}], "react"],
+  "env": {
+    "test": {
+      "presets": [["env"], "react"]
+    }
+  }
+}
+```
+
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
 ```json
