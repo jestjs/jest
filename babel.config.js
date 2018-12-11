@@ -1,9 +1,8 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 module.exports = {
   // babelrcRoots: ['.', 'packages/*', 'examples/*'],
   plugins: [
-    // Required by some examples, like react-native. Without this plugin,
-    // they will simply crash before relative configs can be found.
-    // '@babel/plugin-proposal-class-properties',
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
     '@babel/plugin-transform-strict-mode',
   ],
