@@ -197,7 +197,7 @@ Logs the heap usage after every test. Useful to debug memory leaks. Use together
 
 Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. This defaults to the number of the cores available on your machine. It may be useful to adjust this in resource limited environments like CIs but the default should be adequate for most use-cases.
 
-For environments which could be unknown or changable you can use percentage based configuration, `--maxWorkers=50%`
+For environments with variable CPUs available, you can use percentage based configuration: `--maxWorkers=50%`
 
 ### `--noStackTrace`
 
