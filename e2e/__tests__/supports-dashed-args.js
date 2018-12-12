@@ -27,17 +27,27 @@ test('works with passing tests', () => {
     '--collect-coverage',
     '--coverageReporters',
     'text-summary',
-    '--detect-open-handles',
+    '--clear-mocks',
+    '--useStderr',
   ]);
+  if (result.status !== 0) {
+    console.error(result.stderr);
+  }
   expect(result.status).toBe(0);
 });
 
 test('throws error for unknown dashed & camelcase args', () => {
   const result = runJest(consoleDir, [
+    'success.test.js',
+    '--runInBand',
+    '--collect-coverage',
+    '--coverageReporters',
+    'text-summary',
+    '--clear-mocks',
     '--doesNotExist',
     '--also-does-not-exist',
+    '--useStderr',
   ]);
-  expect(result.status).toBe(1);
   expect(result.stderr).toMatchInlineSnapshot(`
 ● Unrecognized CLI Parameters:
 
@@ -49,4 +59,5 @@ test('throws error for unknown dashed & camelcase args', () => {
 
 
 `);
+  expect(result.status).toBe(1);
 });
