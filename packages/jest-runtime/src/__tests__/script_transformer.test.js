@@ -16,6 +16,17 @@ jest
     Object.assign({}, jest.genMockFromModule('fs'), {
       ReadStream: jest.requireActual('fs').ReadStream,
       WriteStream: jest.requireActual('fs').WriteStream,
+      readFileSync: jest.fn((path, options) => {
+        if (mockFs[path]) {
+          return mockFs[path];
+        }
+
+        throw new Error(`Cannot read path '${path}'.`);
+      }),
+      statSync: path => ({
+        isFile: () => !!mockFs[path],
+        mtime: {getTime: () => 42, toString: () => '42'},
+      }),
     }),
   )
   .mock('graceful-fs')
@@ -145,6 +156,7 @@ describe('ScriptTransformer', () => {
         'module.exports = function () { return "grapefruit"; }',
       ].join('\n'),
       '/fruits/kiwi.js': ['module.exports = () => "kiwi";'].join('\n'),
+      '/fruits/package.json': ['{"name": "fruits"}'].join('\n'),
       '/node_modules/react.js': ['module.exports = "react";'].join('\n'),
       '/styles/App.css': ['root {', '  font-family: Helvetica;', '}'].join(
         '\n',
