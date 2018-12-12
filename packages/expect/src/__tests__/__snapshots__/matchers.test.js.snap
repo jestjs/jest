@@ -1758,7 +1758,7 @@ Not to contain a value equal to:
 exports[`.toContain(), .toContainEqual() error cases 1`] = `
 "<dim>expect(</><red>received</><dim>).toContain(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value cannot be null nor undefined
+<bold>Matcher error</>: <red>received</> value must not be null nor undefined
 
 Received has value: <red>null</>"
 `;
@@ -1766,7 +1766,7 @@ Received has value: <red>null</>"
 exports[`.toContain(), .toContainEqual() error cases for toContainEqual 1`] = `
 "<dim>expect(</><red>received</><dim>).toContainEqual(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value cannot be null nor undefined
+<bold>Matcher error</>: <red>received</> value must not be null nor undefined
 
 Received has value: <red>null</>"
 `;
@@ -2982,7 +2982,7 @@ Expected has value: <green>undefined</>"
 exports[`.toHaveProperty() {error} expect(null).toHaveProperty('a.b') 1`] = `
 "<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value cannot be null nor undefined
+<bold>Matcher error</>: <red>received</> value must not be null nor undefined
 
 Received has value: <red>null</>"
 `;
@@ -2990,7 +2990,7 @@ Received has value: <red>null</>"
 exports[`.toHaveProperty() {error} expect(undefined).toHaveProperty('a') 1`] = `
 "<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value cannot be null nor undefined
+<bold>Matcher error</>: <red>received</> value must not be null nor undefined
 
 Received has value: <red>undefined</>"
 `;

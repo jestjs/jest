@@ -294,7 +294,7 @@ const matchers: MatchersObject = {
             matcherHint('.toContain', undefined, undefined, {
               isNot: this.isNot,
             }),
-            `${RECEIVED_COLOR('received')} value cannot be null nor undefined`,
+            `${RECEIVED_COLOR('received')} value must not be null nor undefined`,
             printWithType('Received', collection, printReceived),
           ),
         );
@@ -347,7 +347,7 @@ const matchers: MatchersObject = {
             matcherHint('.toContainEqual', undefined, undefined, {
               isNot: this.isNot,
             }),
-            `${RECEIVED_COLOR('received')} value cannot be null nor undefined`,
+            `${RECEIVED_COLOR('received')} value must not be null nor undefined`,
             printWithType('Received', collection, printReceived),
           ),
         );
@@ -473,7 +473,7 @@ const matchers: MatchersObject = {
             isNot: this.isNot,
             secondArgument,
           }),
-          `${RECEIVED_COLOR('received')} value cannot be null nor undefined`,
+          `${RECEIVED_COLOR('received')} value must not be null nor undefined`,
           printWithType('Received', object, printReceived),
         ),
       );
