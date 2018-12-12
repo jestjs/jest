@@ -38,7 +38,6 @@
 
 ### Fixes
 
-- `[jest-cli]` Support dashed args ([#7497](https://github.com/facebook/jest/pull/7497))
 - `[jest-cli]` [**BREAKING**] Do not use `text-summary` coverage reporter by default if other reporters are configured ([#7058](https://github.com/facebook/jest/pull/7058))
 - `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381))
 - `[jest-haste-map]` [**BREAKING**] Recover files correctly after haste name collisions are fixed ([#7329](https://github.com/facebook/jest/pull/7329))
@@ -81,6 +80,7 @@
 - `[jest-haste-map]` Remove legacy condition for duplicate module detection ([#7333](https://github.com/facebook/jest/pull/7333))
 - `[jest-haste-map]` Fix `require` detection with trailing commas and ignore `import typeof` modules ([#7385](https://github.com/facebook/jest/pull/7385))
 - `[jest-cli]` Fix to set prettierPath via config file ([#7412](https://github.com/facebook/jest/pull/7412))
+- `[jest-cli]` Support dashed args ([#7497](https://github.com/facebook/jest/pull/7497))
 
 ### Chore & Maintenance
 
