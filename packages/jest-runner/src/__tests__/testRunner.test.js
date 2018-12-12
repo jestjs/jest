@@ -25,7 +25,7 @@ jest.mock('jest-worker', () =>
   ),
 );
 
-jest.mock('../test_worker', () => {});
+jest.mock('../testWorker', () => {});
 
 test('injects the serializable module map into each worker in watch mode', () => {
   const globalConfig = {maxWorkers: 2, watch: true};

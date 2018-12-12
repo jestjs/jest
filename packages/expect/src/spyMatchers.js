@@ -314,12 +314,12 @@ const createLastReturnedMatcher = matcherName => (
         (!lastResult
           ? `But it was ${RECEIVED_COLOR('not called')}`
           : lastResult.type === 'incomplete'
-            ? `But the last call ${RECEIVED_COLOR('has not returned yet')}`
-            : lastResult.type === 'throw'
-              ? `But the last call ${RECEIVED_COLOR('threw an error')}`
-              : `But the last call returned:\n  ${printReceived(
-                  lastResult.value,
-                )}`);
+          ? `But the last call ${RECEIVED_COLOR('has not returned yet')}`
+          : lastResult.type === 'throw'
+          ? `But the last call ${RECEIVED_COLOR('threw an error')}`
+          : `But the last call returned:\n  ${printReceived(
+              lastResult.value,
+            )}`);
 
   return {message, pass};
 };
@@ -421,18 +421,16 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
         (results.length === 0
           ? `But it was ${RECEIVED_COLOR('not called')}`
           : nth > results.length
-            ? `But it was only called ${printReceived(results.length)} times`
-            : nthResult.type === 'incomplete'
-              ? `But the ${nthString} call ${RECEIVED_COLOR(
-                  'has not returned yet',
-                )}`
-              : nthResult.type === 'throw'
-                ? `But the ${nthString} call ${RECEIVED_COLOR(
-                    'threw an error',
-                  )}`
-                : `But the ${nthString} call returned with:\n  ${printReceived(
-                    nthResult.value,
-                  )}`);
+          ? `But it was only called ${printReceived(results.length)} times`
+          : nthResult.type === 'incomplete'
+          ? `But the ${nthString} call ${RECEIVED_COLOR(
+              'has not returned yet',
+            )}`
+          : nthResult.type === 'throw'
+          ? `But the ${nthString} call ${RECEIVED_COLOR('threw an error')}`
+          : `But the ${nthString} call returned with:\n  ${printReceived(
+              nthResult.value,
+            )}`);
 
   return {message, pass};
 };

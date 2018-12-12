@@ -328,8 +328,8 @@ class Resolver {
     return virtualMocks[virtualMockPath]
       ? virtualMockPath
       : moduleName
-        ? this.resolveModule(from, moduleName)
-        : from;
+      ? this.resolveModule(from, moduleName)
+      : from;
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {
