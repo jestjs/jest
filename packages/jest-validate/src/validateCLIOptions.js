@@ -10,6 +10,7 @@
 import type {Argv} from 'types/Argv';
 
 import chalk from 'chalk';
+import camelcase from 'camelcase';
 import {createDidYouMeanMessage, format, ValidationError} from './utils';
 import {deprecationWarning} from './deprecated';
 import defaultConfig from './defaultConfig';
@@ -76,16 +77,12 @@ export default function validateCLIOptions(
     (acc, option) => acc.add(option).add(options[option].alias || option),
     new Set(yargsSpecialOptions),
   );
-  const unrecognizedOptions = Object.keys(argv).filter(arg => {
-    const camelCased = arg.replace(/-([^-])/g, (a, b) => b.toUpperCase());
-    if (
-      !allowedOptions.has(camelCased) &&
-      (!rawArgv.length || rawArgv.includes(arg))
-    ) {
-      return true;
-    }
-    return false;
-  }, []);
+  const unrecognizedOptions = Object.keys(argv).filter(
+    arg =>
+      !allowedOptions.has(camelcase(arg)) &&
+      (!rawArgv.length || rawArgv.includes(arg)),
+    [],
+  );
 
   if (unrecognizedOptions.length) {
     throw createCLIValidationError(unrecognizedOptions, allowedOptions);
