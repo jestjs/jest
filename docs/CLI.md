@@ -81,6 +81,21 @@ you can use:
 npm test -- -u -t="ColorPicker"
 ```
 
+## Camelcase & dashed args support
+
+Jest supports both camelcase and dashed arg formats. The following examples will have equal result:
+
+```bash
+jest --collect-coverage
+jest --collectCoverage
+```
+
+Arguments can also be mixed:
+
+```bash
+jest --update-snapshot --detectOpenHandles
+```
+
 ## Options
 
 _Note: CLI options take precedence over values from the [Configuration](Configuration.md)._
