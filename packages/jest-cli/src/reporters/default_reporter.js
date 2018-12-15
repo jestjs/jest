@@ -206,13 +206,6 @@ export default class DefaultReporter extends BaseReporter {
     }
     const didUpdate = this._globalConfig.updateSnapshot === 'all';
     const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
-    
-    for (let idx = 0; idx < snapshotStatuses.length; idx++) {
-      if (snapshotStatuses[idx] == chalk.bold.yellow)
-        continue;
-      this.log;
-    }
-
-    /* snapshotStatuses.forEach(this.log); */
+    snapshotStatuses.forEach(this.log);
   }
 }
