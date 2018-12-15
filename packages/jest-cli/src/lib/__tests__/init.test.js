@@ -12,13 +12,11 @@ import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
 import init from '../init';
-import getCacheDirectory from '../../../../jest-config/build/getCacheDirectory';
 
 jest.mock('prompts');
-jest.mock('../../../../jest-config/build/getCacheDirectory');
-
-// mocked to get the same snapshot on every machine
-getCacheDirectory.mockReturnValue('/tmp/jest');
+jest.mock('../../../../jest-config/build/getCacheDirectory', () => () =>
+  '/tmp/jest',
+);
 
 const resolveFromFixture = relativePath =>
   path.resolve(__dirname, 'fixtures', relativePath);
