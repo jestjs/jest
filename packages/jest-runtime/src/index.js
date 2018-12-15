@@ -966,4 +966,5 @@ class Runtime {
 }
 
 Runtime.ScriptTransformer = ScriptTransformer;
-module.exports = Runtime;
+
+export default Runtime;

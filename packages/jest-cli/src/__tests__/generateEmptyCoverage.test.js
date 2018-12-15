@@ -14,7 +14,7 @@ const os = require('os');
 const {makeGlobalConfig, makeProjectConfig} = require('../../../../TestUtils');
 
 jest.mock('jest-runtime', () => {
-  const realRuntime = jest.requireActual('jest-runtime');
+  const realRuntime = jest.requireActual('jest-runtime').default;
   realRuntime.shouldInstrument = () => true;
   return realRuntime;
 });
