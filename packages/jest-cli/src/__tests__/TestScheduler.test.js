@@ -10,6 +10,7 @@
 
 import TestScheduler from '../TestScheduler';
 import SummaryReporter from '../reporters/summary_reporter';
+import * as testSchedulerHelper from '../testSchedulerHelper';
 
 jest.mock('../reporters/default_reporter');
 const mockSerialRunner = {
@@ -27,8 +28,12 @@ jest.mock('jest-runner-parallel', () => jest.fn(() => mockParallelRunner), {
   virtual: true,
 });
 
+const spyComputeRunInBand = jest.spyOn(testSchedulerHelper, 'computeRunInBand');
+
 beforeEach(() => {
   mockSerialRunner.runTests.mockClear();
+  mockParallelRunner.runTests.mockClear();
+  spyComputeRunInBand.mockClear();
 });
 
 test('config for reporters supports `default`', () => {
@@ -179,4 +184,52 @@ test('should not bail if less than `n` failures', async () => {
     testResults: [{}],
   });
   expect(setState).not.toBeCalled();
+});
+
+test('should compute runInBand to run in serial', async () => {
+  const scheduler = new TestScheduler({}, {});
+  const test = {
+    context: {
+      config: {
+        runner: 'jest-runner-parallel',
+      },
+      hasteFS: {
+        matchFiles: jest.fn(() => []),
+      },
+    },
+    path: './test/path.js',
+  };
+  const tests = [test, test];
+
+  spyComputeRunInBand.mockReturnValue(true);
+
+  await scheduler.scheduleTests(tests, {isInterrupted: jest.fn()});
+
+  expect(spyComputeRunInBand).toHaveBeenCalled();
+  expect(mockParallelRunner.runTests).toHaveBeenCalled();
+  expect(mockParallelRunner.runTests.mock.calls[0][5].serial).toBeTruthy();
+});
+
+test('should compute runInBand to not run in serial', async () => {
+  const scheduler = new TestScheduler({}, {});
+  const test = {
+    context: {
+      config: {
+        runner: 'jest-runner-parallel',
+      },
+      hasteFS: {
+        matchFiles: jest.fn(() => []),
+      },
+    },
+    path: './test/path.js',
+  };
+  const tests = [test, test];
+
+  spyComputeRunInBand.mockReturnValue(false);
+
+  await scheduler.scheduleTests(tests, {isInterrupted: jest.fn()});
+
+  expect(spyComputeRunInBand).toHaveBeenCalled();
+  expect(mockParallelRunner.runTests).toHaveBeenCalled();
+  expect(mockParallelRunner.runTests.mock.calls[0][5].serial).toBeFalsy();
 });
