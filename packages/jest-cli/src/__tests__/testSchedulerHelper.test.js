@@ -38,6 +38,12 @@ describe('computeRunInBand()', () => {
       ).toBeTruthy();
     });
 
+    test('more than one worker', () => {
+      expect(
+        computeRunInBand(getTestsMock(), true, 2, [2000, 500]),
+      ).toBeFalsy();
+    });
+
     test('slow tests', () => {
       expect(
         computeRunInBand([getTestMock()], true, undefined, [2000, 500]),
@@ -58,6 +64,12 @@ describe('computeRunInBand()', () => {
       ).toBeTruthy();
     });
 
+    test('more than one worker', () => {
+      expect(
+        computeRunInBand(getTestsMock(), false, 2, [2000, 500]),
+      ).toBeFalsy();
+    });
+
     test('one test only', () => {
       expect(
         computeRunInBand([getTestMock()], false, undefined, [2000]),
@@ -66,19 +78,19 @@ describe('computeRunInBand()', () => {
 
     test('fast tests and less than 20', () => {
       expect(
-        computeRunInBand([getTestMock()], false, undefined, [2000]),
+        computeRunInBand(getTestsMock(), false, undefined, [500, 500]),
       ).toBeTruthy();
-    });
-
-    test('slow tests', () => {
-      expect(
-        computeRunInBand(getTestsMock(), false, undefined, [2000]),
-      ).toBeFalsy();
     });
 
     test('too much tests more than 20', () => {
       const tests = new Array(45);
       expect(computeRunInBand(tests, false, undefined, [500])).toBeFalsy();
+    });
+
+    test('slow tests', () => {
+      expect(
+        computeRunInBand(getTestsMock(), false, undefined, [2000, 500]),
+      ).toBeFalsy();
     });
   });
 });
