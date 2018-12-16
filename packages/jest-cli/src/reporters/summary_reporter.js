@@ -93,10 +93,7 @@ export default class SummaryReporter extends BaseReporter {
       }
 
       this._printSummary(aggregatedResults, this._globalConfig);
-      this._printSnapshotSummary(
-        aggregatedResults,
-        this._globalConfig,
-      );
+      this._printSnapshotSummary(aggregatedResults, this._globalConfig);
 
       if (numTotalTestSuites) {
         let message = getSummary(aggregatedResults, {
@@ -119,7 +116,7 @@ export default class SummaryReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
     globalConfig: GlobalConfig,
   ) {
-    let snapshots = aggregatedResults.snapshot;
+    const snapshots = aggregatedResults.snapshot;
     if (
       snapshots.added ||
       snapshots.filesRemoved ||
@@ -160,13 +157,10 @@ export default class SummaryReporter extends BaseReporter {
       const runtimeErrors = aggregatedResults.numRuntimeErrorTestSuites;
 
       //don't mention any obsolete snapshots when test fails
-      snapshotSummary.forEach((status) => {
-        //if status contains the word obsolete and the test have failed do 
+      snapshotSummary.forEach(status => {
+        //if status contains the word obsolete and the test have failed do
         //nothing otherwise log status.
-        if (
-          status.search('obsolete') != -1 &&
-          failedTests + runtimeErrors > 0
-        )
+        if (status.search('obsolete') != -1 && failedTests + runtimeErrors > 0)
           return;
         this.log(status);
       });
