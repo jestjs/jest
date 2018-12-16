@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type { AggregatedResult } from 'types/TestResult';
+import type {AggregatedResult} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {ReporterOnStartOptions} from 'types/Reporters';
