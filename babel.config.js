@@ -1,7 +1,6 @@
 // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 
 module.exports = {
-  // babelrcRoots: ['.', 'packages/*', 'examples/*'],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
     '@babel/plugin-transform-strict-mode',
@@ -16,7 +15,5 @@ module.exports = {
       },
     ],
     '@babel/preset-flow',
-    // Some tests contain JSX
-    '@babel/preset-react',
   ],
 };
