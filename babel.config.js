@@ -11,7 +11,7 @@ module.exports = {
       '@babel/preset-env',
       {
         shippedProposals: true,
-        targets: {node: '6.15'},
+        targets: {node: 6},
         useBuiltIns: 'usage',
       },
     ],
