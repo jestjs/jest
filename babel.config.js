@@ -12,7 +12,6 @@ module.exports = {
       {
         shippedProposals: true,
         targets: {node: 6},
-        useBuiltIns: 'usage',
       },
     ],
     '@babel/preset-flow',
