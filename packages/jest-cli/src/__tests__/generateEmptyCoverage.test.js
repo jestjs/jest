@@ -9,15 +9,12 @@
 'use strict';
 
 import generateEmptyCoverage from '../generateEmptyCoverage';
+import Runtime from 'jest-runtime';
 
 const os = require('os');
 const {makeGlobalConfig, makeProjectConfig} = require('../../../../TestUtils');
 
-jest.mock('jest-runtime', () => {
-  const realRuntime = jest.requireActual('jest-runtime').default;
-  realRuntime.shouldInstrument = () => true;
-  return realRuntime;
-});
+jest.spyOn(Runtime, 'shouldInstrument').mockImplementation(() => true);
 
 const src = `
 throw new Error('this should not be thrown');
