@@ -338,7 +338,7 @@ The global variables that are configured through `global` object can be read in 
 ```js
 // setup.js
 module.exports = async () => {
-  ...
+  // ...
   // Set reference to mongod in order to close the server during teardown.
   global.__MONGOD__ = mongod;
 };
