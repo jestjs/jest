@@ -1,7 +1,7 @@
 // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 
 module.exports = {
-  babelrcRoots: ['.', 'packages/*', 'examples/*'],
+  babelrcRoots: ['examples/*'],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
     '@babel/plugin-transform-strict-mode',
