@@ -394,7 +394,7 @@ export default function watch(
 
   const onCancelPatternPrompt = () => {
     outputStream.write(ansiEscapes.cursorHide);
-    outputStream.write(ansiEscapes.clearScreen);
+    outputStream.write(specialChars.CLEAR);
     outputStream.write(usage(globalConfig, watchPlugins));
     outputStream.write(ansiEscapes.cursorShow);
   };

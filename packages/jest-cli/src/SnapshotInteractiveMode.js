@@ -17,7 +17,7 @@ import {KEYS} from 'jest-watcher';
 import {pluralize} from './reporters/utils';
 import {specialChars} from 'jest-util';
 
-const {ARROW} = specialChars;
+const {ARROW, CLEAR} = specialChars;
 
 export default class SnapshotInteractiveMode {
   _pipe: stream$Writable | tty$WriteStream;
@@ -92,7 +92,7 @@ export default class SnapshotInteractiveMode {
   }
 
   _drawUIDoneWithSkipped() {
-    this._pipe.write(ansiEscapes.clearScreen);
+    this._pipe.write(CLEAR);
     const numPass = this._countPaths - this._testAssertions.length;
 
     let stats = chalk.bold.dim(
@@ -125,7 +125,7 @@ export default class SnapshotInteractiveMode {
   }
 
   _drawUIDone() {
-    this._pipe.write(ansiEscapes.clearScreen);
+    this._pipe.write(CLEAR);
     const numPass = this._countPaths - this._testAssertions.length;
 
     let stats = chalk.bold.dim(
