@@ -13,6 +13,7 @@ const {
   emptyObject,
   getObjectSubset,
   getPath,
+  iterableEquality,
   subsetEquality,
 } = require('../utils');
 
@@ -148,5 +149,19 @@ describe('subsetEquality()', () => {
 
   test('undefined does not return errors', () => {
     expect(subsetEquality(undefined, {foo: 'bar'})).not.toBeTruthy();
+  });
+});
+
+describe('iterableEquality()', () => {
+  test('self-returning iterator does not explode', () => {
+    class Iter {
+      *[Symbol.iterator]() {
+        yield this;
+      }
+    }
+
+    const val = new Iter();
+
+    expect(iterableEquality(val, val)).toBe(true);
   });
 });

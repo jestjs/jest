@@ -21,6 +21,9 @@ type GetPath = {
   value?: any,
 };
 
+let count = 0;
+const iterableControler = 100;
+
 export const hasOwnProperty = (object: Object, value: string) => {
   // Account for objects created using unconventional means such as
   // `Object.create(null)`, in which case the `object.constructor` is undefined
@@ -123,9 +126,11 @@ export const iterableEquality = (a: any, b: any) => {
     !hasIterator(a) ||
     !hasIterator(b)
   ) {
+    count = 0;
     return undefined;
   }
   if (a.constructor !== b.constructor) {
+    count = 0;
     return false;
   }
 
@@ -181,22 +186,30 @@ export const iterableEquality = (a: any, b: any) => {
         }
       }
       if (allFound) {
+        count = 0;
         return true;
       }
     }
   }
 
   const bIterator = b[IteratorSymbol]();
-
   for (const aValue of a) {
     const nextB = bIterator.next();
+    count++;
+    if (count > iterableControler) {
+      count = 0;
+      return aValue == nextB.value;
+    }
     if (nextB.done || !equals(aValue, nextB.value, [iterableEquality])) {
+      count = 0;
       return false;
     }
   }
   if (!bIterator.next().done) {
+    count = 0;
     return false;
   }
+  count = 0;
   return true;
 };
 
