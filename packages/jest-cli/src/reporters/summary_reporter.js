@@ -153,15 +153,18 @@ export default class SummaryReporter extends BaseReporter {
         updateCommand,
       );
 
-      const failedTests = aggregatedResults.numFailedTests;
-      const runtimeErrors = aggregatedResults.numRuntimeErrorTestSuites;
+      const anyTestFailures = !(
+        aggregatedResults.numFailedTests === 0 &&
+        aggregatedResults.numRuntimeErrorTestSuites === 0
+      );
 
       //don't mention any obsolete snapshots when test fails
       snapshotSummary.forEach(status => {
         //if status contains the word obsolete and the test have failed do
         //nothing otherwise log status.
-        if (status.search('obsolete') != -1 && failedTests + runtimeErrors > 0)
+        if (!status.includes('obsolete') && anyTestFailures) {
           return;
+        }
         this.log(status);
       });
 
