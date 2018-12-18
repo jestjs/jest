@@ -97,10 +97,13 @@ class TestRunner {
     // $FlowFixMe: class object is augmented with worker when instantiating.
     const worker: WorkerInterface = new Worker(TEST_WORKER_PATH, {
       exposedMethods: ['worker'],
-      forkOptions: {stdio: 'inherit'},
+      forkOptions: {stdio: 'pipe'},
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
     });
+
+    if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
+    if (worker.getStderr()) worker.getStderr().pipe(process.stderr);
 
     const mutex = throat(this._globalConfig.maxWorkers);
 
