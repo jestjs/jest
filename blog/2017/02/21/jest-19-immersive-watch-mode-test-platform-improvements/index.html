@@ -57,29 +57,29 @@
 <li>We improved the character escaping mechanism to be more bulletproof.</li>
 </ul>
 <p>Before:</p>
-<pre><code class="hljs">exports[`<span class="javascript">test snap <span class="hljs-number">1</span></span>`] = `<span class="javascript">
-&lt;header&gt;
-  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>
+<pre><code class="hljs">exports[`test snap 1`] = `
+<span class="hljs-tag">&lt;<span class="hljs-name">header</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>
     Jest \"19\"
-  <span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
-  &lt;Subtitle
-    name=<span class="hljs-string">"Painless JavaScript Testing"</span> /&gt;
-<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span></span>
-</span>`;
+  <span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">Subtitle</span>
+    <span class="hljs-attr">name</span>=<span class="hljs-string">"Painless JavaScript Testing"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span>
+`;
 </code></pre>
 <p>After (no “test” prefix, better JSX rendering, version header):</p>
-<pre><code class="hljs"><span class="hljs-regexp">//</span> Jest Snapshot v1, https:<span class="hljs-regexp">//g</span>oo.gl/fbAQLP
+<pre><code class="hljs"><span class="hljs-comment">// Jest Snapshot v1, https://goo.gl/fbAQLP</span>
 
-exports[`<span class="javascript">snap <span class="hljs-number">1</span></span>`] = `<span class="javascript">
+exports[`snap <span class="hljs-number">1</span>`] = `
 &lt;header&gt;
-  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>
-    Jest "19"
-  <span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+  &lt;h1&gt;
+    Jest <span class="hljs-string">"19"</span>
+  &lt;/h1&gt;
   &lt;Subtitle
     name=<span class="hljs-string">"Painless JavaScript Testing"</span>
   /&gt;
-<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span></span>
-</span>`;
+&lt;/header&gt;
+`;
 </code></pre>
 <p>We decided it's a good time to introduce versioned snapshots to ensure all developers are using a compatible version of Jest. Here's how we warn you about the need to update your snapshot:</p>
 <p><img src="/img/blog/19-snapshot-version.png" alt="snapshot-version"></p>

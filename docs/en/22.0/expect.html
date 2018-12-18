@@ -172,9 +172,9 @@ expect.extend({
 });
 </code></pre>
 <p>This will print something like this:</p>
-<pre><code class="hljs">  expect(received).toBe(expected)
+<pre><code class="hljs">  expect(received).<span class="hljs-keyword">to</span><span class="hljs-constructor">Be(<span class="hljs-params">expected</span>)</span>
 
-    Expected value <span class="hljs-keyword">to</span> be (<span class="hljs-keyword">using</span> <span class="hljs-built_in">Object</span>.<span class="hljs-keyword">is</span>):
+    Expected value <span class="hljs-keyword">to</span> be (using <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Object</span>.</span></span>is):
       <span class="hljs-string">"banana"</span>
     Received:
       <span class="hljs-string">"apple"</span>

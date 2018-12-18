@@ -57,7 +57,7 @@
 <h3><a class="anchor" aria-hidden="true" id="instalare-fără-create-react-app"></a><a href="#instalare-fără-create-react-app" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Instalare fără Create React App</h3>
 <p>Dacă aveţi o aplicaţie existentă trebuie să instalaţi câteva pachete pentru a face totul să funcționeze bine împreună. Noi folosim pachetul <code>babel-jest</code> şi presetarea babel <code>react</code> pentru a transforma codul nostru în mediul de testare. De asemenea, consultaţi <a href="/docs/ro/next/getting-started#using-babel">utilizarea babel</a>.</p>
 <p>Rulare</p>
-<pre><code class="hljs css language-bash">yarn add --dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
+<pre><code class="hljs css language-bash">yarn add --dev jest babel-jest @babel/preset-env @babel/preset-react react-test-renderer
 </code></pre>
 <p>Fișierul <code>package.json</code> ar trebui să arate în felul următor (unde <code>&lt;current-version&gt;</code> este numărul real al celei mai recente versiuni pentru pachetul respectiv). Vă rugăm să adăugaţi script-uri şi configurările pentru jest:</p>
 <pre><code class="hljs css language-json">// package.json
@@ -66,9 +66,9 @@
     "react-dom": "&lt;current-version&gt;"
   },
   "devDependencies": {
+    "@babel/preset-env": "&lt;current-version&gt;",
+    "@babel/preset-react": "&lt;current-version&gt;",
     "babel-jest": "&lt;current-version&gt;",
-    "babel-preset-env": "&lt;current-version&gt;",
-    "babel-preset-react": "&lt;current-version&gt;",
     "jest": "&lt;current-version&gt;",
     "react-test-renderer": "&lt;current-version&gt;"
   },
@@ -76,10 +76,10 @@
     "test": "jest"
   }
 </code></pre>
-<pre><code class="hljs css language-json">// .babelrc
-{
-  "presets": ["env", "react"]
-}
+<pre><code class="hljs css language-js"><span class="hljs-comment">// babel.config.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">presets</span>: [<span class="hljs-string">'@babel/preset-env'</span>, <span class="hljs-string">'@babel/preset-react'</span>],
+};
 </code></pre>
 <p><strong>Și sunteți gata de drum!</strong></p>
 <h3><a class="anchor" aria-hidden="true" id="testarea-de-imagine"></a><a href="#testarea-de-imagine" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Testarea de imagine</h3>
@@ -293,22 +293,21 @@ test(<span class="hljs-string">'CheckboxWithLabel changes the text after click'<
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// custom-transformer.js</span>
 <span class="hljs-meta">'use strict'</span>;
 
-<span class="hljs-keyword">const</span> babel = <span class="hljs-built_in">require</span>(<span class="hljs-string">'babel-core'</span>);
+<span class="hljs-keyword">const</span> {transform} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'@babel/core'</span>);
 <span class="hljs-keyword">const</span> jestPreset = <span class="hljs-built_in">require</span>(<span class="hljs-string">'babel-preset-jest'</span>);
 
 <span class="hljs-built_in">module</span>.exports = {
   process(src, filename) {
-    <span class="hljs-keyword">if</span> (babel.util.canCompile(filename)) {
-      <span class="hljs-keyword">return</span> babel.transform(src, {
-        filename,
-        <span class="hljs-attr">presets</span>: [jestPreset],
-      });
-    }
-    <span class="hljs-keyword">return</span> src;
+    <span class="hljs-keyword">const</span> result = transform(src, {
+      filename,
+      <span class="hljs-attr">presets</span>: [jestPreset],
+    });
+
+    <span class="hljs-keyword">return</span> result ? result.code : src;
   },
 };
 </code></pre>
-<p>Nu uitaţi să instalaţi pachetele <code>babel-core</code> şi <code>babel-preset-jest</code> pentru ca acest exemplu să funcționeze.</p>
+<p>Don't forget to install the <code>@babel/core</code> and <code>babel-preset-jest</code> packages for this example to work.</p>
 <p>Pentru a face acest lucru cu Jest trebuie să actualizați configurația Jest cu: <code>&quot;transform&quot;: {&quot;\\.js$&quot;: &quot;calea/catre/transformatorul-personalizat.js&quot;}</code>.</p>
 <p>Dacă doriţi să construiți un transformator cu support babel, puteţi utiliza și babel-jest pasându-i opţiunile proprii de configurare:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> babelJest = <span class="hljs-built_in">require</span>(<span class="hljs-string">'babel-jest'</span>);

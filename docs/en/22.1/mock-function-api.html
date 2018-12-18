@@ -135,14 +135,14 @@ some.m(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockimplementationoncefn"></a><a href="#mockfnmockimplementationoncefn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockImplementationOnce(fn)</code></h3>
 <p>Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.</p>
-<pre><code class="hljs"><span class="hljs-keyword">var</span> myMockFn = jest.fn()
-  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">true</span>))
-  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">false</span>));
+<pre><code class="hljs">var myMockFn = jest.fn<span class="hljs-literal">()</span>
+  .mock<span class="hljs-constructor">ImplementationOnce(<span class="hljs-params">cb</span> =&gt; <span class="hljs-params">cb</span>(<span class="hljs-params">null</span>, <span class="hljs-params">true</span>)</span>)
+  .mock<span class="hljs-constructor">ImplementationOnce(<span class="hljs-params">cb</span> =&gt; <span class="hljs-params">cb</span>(<span class="hljs-params">null</span>, <span class="hljs-params">false</span>)</span>);
 
-myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val));
+my<span class="hljs-constructor">MockFn((<span class="hljs-params">err</span>, <span class="hljs-params">val</span>)</span> =&gt; console.log(<span class="hljs-keyword">val</span>));
 &gt; <span class="hljs-literal">true</span>
 
-myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val));
+my<span class="hljs-constructor">MockFn((<span class="hljs-params">err</span>, <span class="hljs-params">val</span>)</span> =&gt; console.log(<span class="hljs-keyword">val</span>));
 &gt; <span class="hljs-literal">false</span>
 </code></pre>
 <p>When the mocked function runs out of implementations defined with mockImplementationOnce, it will execute the default implementation set with <code>jest.fn(() =&gt; defaultValue)</code> or <code>.mockImplementation(() =&gt; defaultValue)</code> if they were called:</p>
@@ -161,9 +161,9 @@ myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>)
 expect(mockFn).toHaveBeenCalled();
 </code></pre>
 <p>Will result in this error:</p>
-<pre><code class="hljs">    expect(mockedFunction).toHaveBeenCalled()
+<pre><code class="hljs">    expect(mockedFunction).<span class="hljs-keyword">to</span><span class="hljs-constructor">HaveBeenCalled()</span>
 
-    Expected mock <span class="hljs-keyword">function</span> <span class="hljs-title">to</span> have been called.
+    Expected mock <span class="hljs-keyword">function</span> <span class="hljs-keyword">to</span> have been called.
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockreturnthis"></a><a href="#mockfnmockreturnthis" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReturnThis()</code></h3>
 <p>Just a simple sugar function for:</p>

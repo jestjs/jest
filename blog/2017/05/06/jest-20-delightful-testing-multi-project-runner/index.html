@@ -75,14 +75,14 @@
  * @jest-environment node
  */</span>
 
-<span class="hljs-selector-tag">test</span>(<span class="hljs-string">'compares apples and bananas'</span>, async () =&gt; {
-  <span class="hljs-selector-tag">expect</span><span class="hljs-selector-class">.hasAssertions</span>(); <span class="hljs-comment">// Ensure this test has at least one assertion.</span>
+test('compares apples <span class="hljs-keyword">and</span> bananas', async<span class="hljs-function"> <span class="hljs-params">()</span> =&gt;</span> {
+  expect.has<span class="hljs-constructor">Assertions()</span>; <span class="hljs-comment">// Ensure this test has at least one assertion.</span>
 
-  <span class="hljs-selector-tag">await</span> <span class="hljs-selector-tag">expect</span>(
-    Promise.resolve(Immutable.Map({<span class="hljs-attribute">apples</span>: <span class="hljs-number">1</span>, <span class="hljs-attribute">bananas</span>: <span class="hljs-number">2</span>})),
-  )<span class="hljs-selector-class">.resolves</span><span class="hljs-selector-class">.toEqual</span>(Immutable.Map({<span class="hljs-attribute">apples</span>: <span class="hljs-number">1</span>, <span class="hljs-attribute">bananas</span>: <span class="hljs-number">3</span>}));
+  await expect(
+    <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Promise</span>.</span></span>resolve(Immutable.<span class="hljs-constructor">Map({<span class="hljs-params">apples</span>: 1, <span class="hljs-params">bananas</span>: 2})</span>),
+  ).resolves.<span class="hljs-keyword">to</span><span class="hljs-constructor">Equal(Immutable.Map({<span class="hljs-params">apples</span>: 1, <span class="hljs-params">bananas</span>: 3})</span>);
 
-  <span class="hljs-selector-tag">expect</span>(<span class="hljs-string">'banana'</span>); <span class="hljs-comment">// valid-expect in eslint-plugin-jest will show an error.</span>
+  expect('banana'); <span class="hljs-comment">// valid-expect in eslint-plugin-jest will show an error.</span>
 });
 </code></pre>
 <p>This example will print a test failure similar to this:</p>

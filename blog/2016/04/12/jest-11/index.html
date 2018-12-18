@@ -81,7 +81,7 @@ sum(<span class="hljs-number">1</span>, <span class="hljs-number">4</span>); <sp
 </code></pre>
 <p>And <code>jest.fn</code> was added to make it easier to create mock functions:</p>
 <pre><code class="hljs"><span class="hljs-comment">// Create a mock function</span>
-<span class="hljs-keyword">const</span> mockFn = jest.fn(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-number">42</span>);
+<span class="hljs-keyword">const</span> mockFn = jest.fn(() =&gt; <span class="hljs-number">42</span>);
 mockFn(); <span class="hljs-comment">// 42</span>
 expect(mockFn.calls.length).toEqual(<span class="hljs-number">1</span>);
 </code></pre>

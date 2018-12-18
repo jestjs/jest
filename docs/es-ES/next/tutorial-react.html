@@ -58,7 +58,7 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
 <h3><a class="anchor" aria-hidden="true" id="setup-sin-create-react-app"></a><a href="#setup-sin-create-react-app" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Setup sin Create React App</h3>
 <p>Si tiene alguna aplicación existente, necesitará instalar algunos paquetes para hacer que todo trabaje bien junto. Estamos usando el paquete <code>babel-jest</code> y <code>react</code> babel preset para transformar nuestro código dentro de el entorno de prueba. Recomendamos también vea <a href="/docs/es-ES/next/getting-started#using-babel">using babel</a>.</p>
 <p>Ejecutar</p>
-<pre><code class="hljs css language-bash">yarn add --dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
+<pre><code class="hljs css language-bash">yarn add --dev jest babel-jest @babel/preset-env @babel/preset-react react-test-renderer
 </code></pre>
 <p>Tu archivo <code>package.json</code> se debe ver como algo como ésto (donde <code>&lt;current-version&gt;</code> es la ultima versión del paquete). Por favor agregue los scripts y la configuración de jest:</p>
 <pre><code class="hljs css language-json">// package.json
@@ -67,9 +67,9 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
     "react-dom": "&lt;current-version&gt;"
   },
   "devDependencies": {
+    "@babel/preset-env": "&lt;current-version&gt;",
+    "@babel/preset-react": "&lt;current-version&gt;",
     "babel-jest": "&lt;current-version&gt;",
-    "babel-preset-env": "&lt;current-version&gt;",
-    "babel-preset-react": "&lt;current-version&gt;",
     "jest": "&lt;current-version&gt;",
     "react-test-renderer": "&lt;current-version&gt;"
   },
@@ -77,10 +77,10 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
     "test": "jest"
   }
 </code></pre>
-<pre><code class="hljs css language-json">// .babelrc
-{
-  "presets": ["env", "react"]
-}
+<pre><code class="hljs css language-js"><span class="hljs-comment">// babel.config.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">presets</span>: [<span class="hljs-string">'@babel/preset-env'</span>, <span class="hljs-string">'@babel/preset-react'</span>],
+};
 </code></pre>
 <p><strong>Y así, ¡Estás listo para despegar!</strong></p>
 <h3><a class="anchor" aria-hidden="true" id="snapshot-testing"></a><a href="#snapshot-testing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Snapshot Testing</h3>
@@ -294,22 +294,21 @@ test(<span class="hljs-string">'CheckboxWithLabel changes the text after click'<
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// custom-transformer.js</span>
 <span class="hljs-meta">'use strict'</span>;
 
-<span class="hljs-keyword">const</span> babel = <span class="hljs-built_in">require</span>(<span class="hljs-string">'babel-core'</span>);
+<span class="hljs-keyword">const</span> {transform} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'@babel/core'</span>);
 <span class="hljs-keyword">const</span> jestPreset = <span class="hljs-built_in">require</span>(<span class="hljs-string">'babel-preset-jest'</span>);
 
 <span class="hljs-built_in">module</span>.exports = {
   process(src, filename) {
-    <span class="hljs-keyword">if</span> (babel.util.canCompile(filename)) {
-      <span class="hljs-keyword">return</span> babel.transform(src, {
-        filename,
-        <span class="hljs-attr">presets</span>: [jestPreset],
-      });
-    }
-    <span class="hljs-keyword">return</span> src;
+    <span class="hljs-keyword">const</span> result = transform(src, {
+      filename,
+      <span class="hljs-attr">presets</span>: [jestPreset],
+    });
+
+    <span class="hljs-keyword">return</span> result ? result.code : src;
   },
 };
 </code></pre>
-<p>No olvide instalar los paquetes<code>babel-core</code> y <code>babel-preset-jest</code> para que éste ejemplo funcione.</p>
+<p>Don't forget to install the <code>@babel/core</code> and <code>babel-preset-jest</code> packages for this example to work.</p>
 <p>Para que esto funcione con Jest necesita actualizar la configuración de Jest con ésto: <code>&quot;transform&quot;: {&quot;\\.js$&quot;: &quot;path/to/custom-transformer.js&quot;}</code>.</p>
 <p>Si usted desea construir un transformer con soporte con babel, tu puedes usar tambien babel-jest para componer uno y pasarlo a las opciones de tu configuración personalizada:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> babelJest = <span class="hljs-built_in">require</span>(<span class="hljs-string">'babel-jest'</span>);
