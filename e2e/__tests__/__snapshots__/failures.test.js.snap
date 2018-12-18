@@ -841,9 +841,10 @@ exports[`works with node assert 1`] = `
       83 | 
 
       at __tests__/node_assertion_error.test.js:81:10
-      at __tests__/node_assertion_error.test.js:12:191
-      at __tests__/node_assertion_error.test.js:12:437
-      at __tests__/node_assertion_error.test.js:12:99
+      at __tests__/node_assertion_error.test.js:11:103
+      at __tests__/node_assertion_error.test.js:13:194
+      at __tests__/node_assertion_error.test.js:13:364
+      at __tests__/node_assertion_error.test.js:13:97
 
 "
 `;

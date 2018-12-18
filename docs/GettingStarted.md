@@ -81,43 +81,21 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages via `yarn`:
+To use [Babel](http://babeljs.io/), install the `babel-jest` and `@babel/core` packages via `yarn`:
 
 ```bash
-yarn add --dev babel-jest babel-core regenerator-runtime
+yarn add --dev babel-jest @babel/core
 ```
 
-Or `npm`:
+Don't forget to add a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and [`@babel/preset-react`](https://babeljs.io/docs/en/babel-preset-react) presets:
 
-```bash
-npm install --save-dev babel-jest babel-core regenerator-runtime
-```
-
-> Note: If you are using Babel version 7 then you need to install `babel-jest`, `babel-core@^7.0.0-bridge.0` and `@babel/core` with the following command or its `npm` equivalent:
->
-> ```bash
-> yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
-> ```
->
-> You will need to use `babel.config.js` in order to transpile `node_modules`. See https://babeljs.io/docs/en/next/config-files for more information.
->
-> You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/master/examples/babel-7
-
-_Note: Explicitly installing `regenerator-runtime` is not needed if you use `npm` 3 or 4 or Yarn_
-
-Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://facebook.github.io/react/) with the [`babel-preset-env`](https://babeljs.io/docs/plugins/preset-env/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
-
-```json
-{
-  "presets": ["env", "react"]
-}
+```js
+module.exports = {
+  presets: ['@babel/preset-env', '@babel/preset-react'],
+};
 ```
 
 You are now set up to use all ES6 features and React specific syntax.
-
-> Note: If you are using a more complicated Babel configuration, using Babel's `env` option, keep in mind that Jest will automatically define `NODE_ENV` as `test`. It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
-
-> Note: If you've turned off transpilation of ES6 modules with the option `{ "modules": false }`, you have to make sure to turn this on in your test environment.
 
 ```json
 {

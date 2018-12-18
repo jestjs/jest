@@ -162,7 +162,10 @@ export function printObjectProperties(
 ): string {
   let result = '';
   let keys = Object.keys(val).sort();
-  const symbols = getSymbols(val);
+  const symbols = getSymbols(val).filter(
+    //$FlowFixMe because property enumerable is missing in undefined
+    symbol => Object.getOwnPropertyDescriptor(val, symbol).enumerable,
+  );
 
   if (symbols.length) {
     keys = keys.filter(key => !isSymbol(key)).concat(symbols);
