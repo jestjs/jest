@@ -9,7 +9,7 @@ import path from 'path';
 
 module.exports = function createRuntime(filename, config) {
   const NodeEnvironment = require('jest-environment-node');
-  const Runtime = require('../');
+  const Runtime = require('../').default;
 
   const {normalize} = require('jest-config');
 

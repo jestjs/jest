@@ -29,7 +29,7 @@ When using the `--config` option, the JSON file must not contain a "jest" key:
 
 ```json
 {
-  "bail": true,
+  "bail": 1,
   "verbose": true
 }
 ```
@@ -99,11 +99,11 @@ _Note: Core modules, like `fs`, are not mocked by default. They can be mocked ex
 
 _Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
 
-### `bail` [boolean]
+### `bail` [number | boolean]
 
-Default: `false`
+Default: `0`
 
-By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
+By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after `n` failures. Setting bail to `true` is the same as setting bail to `1`.
 
 ### `browser` [boolean]
 
@@ -261,9 +261,11 @@ Jest will fail if:
 
 Default: `undefined`
 
-This option allows the use of a custom dependency extractor. It must be a node module that exports a function expecting a string as the first argument for the code to analyze and Jest's dependency extractor as the second argument (in case you only want to extend it).
+This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function expecting a string as the first argument for the code to analyze and Jest's dependency extractor as the second argument (in case you only want to extend it).
 
 The function should return an iterable (`Array`, `Set`, etc.) with the dependencies found in the code.
+
+That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
 
 ### `errorOnDeprecated` [boolean]
 
@@ -331,7 +333,27 @@ Default: `undefined`
 
 This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
-Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project.
+_Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
+
+_Note: Any global variables that are defined through `globalSetup` can only be read in `globalTeardown`. You cannot retrieve globals defined here in your test suites._
+
+Example:
+
+```js
+// setup.js
+module.exports = async () => {
+  // ...
+  // Set reference to mongod in order to close the server during teardown.
+  global.__MONGOD__ = mongod;
+};
+```
+
+```js
+// teardown.js
+module.exports = async function() {
+  await global.__MONGOD__.stop();
+};
+```
 
 ### `globalTeardown` [string]
 

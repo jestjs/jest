@@ -12,6 +12,7 @@
     <a href="http://badge.fury.io/js/jest"><img src="https://badge.fury.io/js/jest.svg" alt="npm version"></a>
     <a href="https://dependabot.com/compatibility-score.html?dependency-name=jest&amp;package-manager=npm_and_yarn&amp;version-scheme=semver"><img src="https://api.dependabot.com/badges/compatibility_score?dependency-name=jest&amp;package-manager=npm_and_yarn&amp;version-scheme=semver" alt="SemVer">
     <a href="https://twitter.com/acdlite/status/974390255393505280"><img src="https://img.shields.io/badge/speed-blazing%20%F0%9F%94%A5-brightgreen.svg" alt="Blazing Fast"></a>
+    <a href="https://github.com/facebook/jest/pulls"><img src="https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg" alt="PR's welcome"></a>
 </p>
 <p align="center">
     <a href="#backers"><img src="https://opencollective.com/jest/backers/badge.svg" alt="Backers on Open Collective"></a>
@@ -100,38 +101,21 @@ If you'd like to learn more about running `jest` through the command line, take 
 
 ### Using Babel
 
-[Babel](http://babeljs.io/) is automatically handled by Jest using `babel-jest`. You don't need install anything extra for using Babel.
+To use [Babel](http://babeljs.io/), install the `babel-jest` and `@babel/core` packages:
 
-> Note: If you are using Babel version 7 then you need to install `babel-jest`, `babel-core@^7.0.0-bridge.0` and `@babel/core` with the following command:
->
-> ```bash
-> yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
-> ```
+```bash
+yarn add --dev babel-jest @babel/core
+```
 
-Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`babel-preset-env`](https://babeljs.io/docs/plugins/preset-env/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
+Don't forget to add a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and [`@babel/preset-react`](https://babeljs.io/docs/en/babel-preset-react) presets:
 
-```json
-{
-  "presets": ["env", "react"]
-}
+```js
+module.exports = {
+  presets: ['@babel/preset-env', '@babel/preset-react'],
+};
 ```
 
 You are now set up to use all ES6 features and React specific syntax.
-
-> Note: If you are using a more complicated Babel configuration, using Babel's `env` option, keep in mind that Jest will automatically define `NODE_ENV` as `test`. It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
-
-> Note: If you've turned off transpilation of ES modules with the option `{ "modules": false }`, you have to make sure to turn this on in your test environment.
-
-```json
-{
-  "presets": [["env", {"modules": false}], "react"],
-  "env": {
-    "test": {
-      "presets": [["env"], "react"]
-    }
-  }
-}
-```
 
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 

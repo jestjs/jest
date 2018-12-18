@@ -17,7 +17,7 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 export default ({
   automock: false,
-  bail: false,
+  bail: 0,
   browser: false,
   cache: true,
   cacheDirectory: getCacheDirectory(),
@@ -41,6 +41,7 @@ export default ({
   globalTeardown: null,
   globals: {},
   haste: {
+    computeSha1: false,
     providesModuleNodeModules: [],
   },
   moduleDirectories: ['node_modules'],

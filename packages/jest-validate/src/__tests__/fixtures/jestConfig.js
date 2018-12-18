@@ -22,7 +22,7 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 const defaultConfig = {
   automock: false,
-  bail: false,
+  bail: 0,
   browser: false,
   cacheDirectory: path.join(os.tmpdir(), 'jest'),
   clearMocks: false,
@@ -62,7 +62,7 @@ const defaultConfig = {
 
 const validConfig = {
   automock: false,
-  bail: false,
+  bail: 0,
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',

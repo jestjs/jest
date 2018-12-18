@@ -87,7 +87,13 @@ const matchers: MatchersObject = {
   toBeCloseTo(actual: number, expected: number, precision?: number = 2) {
     const secondArgument = arguments.length === 3 ? 'precision' : null;
     ensureNumbers(actual, expected, '.toBeCloseTo');
-    const pass = Math.abs(expected - actual) < Math.pow(10, -precision) / 2;
+
+    let pass = false;
+
+    if (actual == Infinity && expected == Infinity) pass = true;
+    else if (actual == -Infinity && expected == -Infinity) pass = true;
+    else pass = Math.abs(expected - actual) < Math.pow(10, -precision) / 2;
+
     const message = () =>
       matcherHint('.toBeCloseTo', undefined, undefined, {
         isNot: this.isNot,
@@ -511,10 +517,10 @@ const matchers: MatchersObject = {
                 `  ${printReceived(result.value)}` +
                 (diffString ? `\n\nDifference:\n\n${diffString}` : '')
               : traversedPath
-                ? `Received:\n  ${RECEIVED_COLOR(
-                    'object',
-                  )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
-                : '')
+              ? `Received:\n  ${RECEIVED_COLOR(
+                  'object',
+                )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
+              : '')
           );
         };
     if (pass === undefined) {

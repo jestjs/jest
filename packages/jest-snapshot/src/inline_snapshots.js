@@ -10,7 +10,7 @@
 import fs from 'fs';
 import semver from 'semver';
 import path from 'path';
-import {templateElement, templateLiteral, file} from 'babel-types';
+import {templateElement, templateLiteral, file} from '@babel/types';
 
 import type {Path} from 'types/Config';
 import {escapeBacktickString} from './utils';

@@ -23,7 +23,7 @@ const cases = {
 const filter = path => Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(() => {
-  Runtime = require('jest-runtime');
+  Runtime = require('jest-runtime').default;
   config = normalize(
     {
       rootDir: '.',

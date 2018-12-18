@@ -236,6 +236,7 @@ class Runtime {
 
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
+      computeSha1: config.haste.computeSha1,
       console: options && options.console,
       dependencyExtractor: config.dependencyExtractor,
       extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
@@ -965,4 +966,5 @@ class Runtime {
 }
 
 Runtime.ScriptTransformer = ScriptTransformer;
-module.exports = Runtime;
+
+export default Runtime;
