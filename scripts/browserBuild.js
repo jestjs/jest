@@ -17,22 +17,25 @@ const rollupBabel = require('rollup-plugin-babel');
 const rollupFlow = require('rollup-plugin-flow');
 
 const babelEs5Options = {
+  // Dont load other config files
   babelrc: false,
+  configFile: false,
   plugins: [
-    'transform-flow-strip-types',
-    'transform-strict-mode',
-    'external-helpers',
+    '@babel/plugin-transform-strict-mode',
+    '@babel/plugin-external-helpers',
   ],
   presets: [
     [
-      'env',
+      '@babel/preset-env',
       {
         // Required for Rollup
         modules: false,
+        shippedProposals: true,
         // Target ES5
         targets: 'IE 11',
       },
     ],
+    '@babel/preset-flow',
   ],
   runtimeHelpers: true,
 };

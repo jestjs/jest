@@ -3,14 +3,15 @@
   "version": "0.0.0",
   "name": "example-typescript",
   "dependencies": {
-    "react": "16.4.1",
-    "react-dom": "16.4.1",
-    "typescript": "*"
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "typescript": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "*",
+    "@babel/preset-react": "*",
     "@types/jest": "^23.1.1",
-    "jest": "*",
-    "ts-jest": "*"
+    "jest": "*"
   },
   "scripts": {
     "test": "jest"
@@ -22,12 +23,7 @@
       "js"
     ],
     "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
-    },
-    "globals": {
-      "ts-jest": {
-        "tsConfigFile": "tsconfig.json"
-      }
+      "^.+\\.(ts|tsx)$": "babel-jest"
     },
     "testMatch": [
       "**/__tests__/*.+(ts|tsx|js)"

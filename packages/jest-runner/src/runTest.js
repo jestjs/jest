@@ -70,9 +70,10 @@ async function runTestInternal(
     ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
     : /* $FlowFixMe */
       require(config.testRunner)): TestFramework);
-  /* $FlowFixMe */
-  const Runtime = (require(config.moduleLoader ||
-    'jest-runtime'): Class<RuntimeClass>);
+  const Runtime = ((config.moduleLoader
+    ? /* $FlowFixMe */
+      require(config.moduleLoader)
+    : require('jest-runtime').default): Class<RuntimeClass>);
 
   let runtime = undefined;
 
