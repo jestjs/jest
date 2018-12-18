@@ -8,8 +8,6 @@
 
 'use strict';
 
-const slash = require('slash');
-
 jest
   .mock('fs', () =>
     // Node 10.5.x compatibility
@@ -17,12 +15,11 @@ jest
       ReadStream: jest.requireActual('fs').ReadStream,
       WriteStream: jest.requireActual('fs').WriteStream,
       readFileSync: jest.fn((path, options) => {
-        const normalizedPath = require('slash')(path);
-        if (mockFs[normalizedPath]) {
-          return mockFs[normalizedPath];
+        if (mockFs[path]) {
+          return mockFs[path];
         }
 
-        throw new Error(`Cannot read path '${normalizedPath}'.`);
+        throw new Error(`Cannot read path '${path}'.`);
       }),
       statSync: path => ({
         isFile: () => !!mockFs[path],
@@ -39,7 +36,8 @@ jest
     util.createDirectory = jest.fn();
     return util;
   })
-  .mock('vm');
+  .mock('vm')
+  .mock('path', () => jest.requireActual('path').posix);
 
 jest.mock(
   'test_preprocessor',
@@ -138,8 +136,7 @@ let writeFileAtomic;
 
 jest.mock('write-file-atomic', () => ({
   sync: jest.fn().mockImplementation((filePath, data) => {
-    const normalizedPath = require('slash')(filePath);
-    mockFs[normalizedPath] = data;
+    mockFs[filePath] = data;
   }),
 }));
 
@@ -167,18 +164,15 @@ describe('ScriptTransformer', () => {
     fs = require('graceful-fs');
     fs.readFileSync = jest.fn((path, options) => {
       expect(options).toBe('utf8');
-      const normalizedPath = slash(path);
-
-      if (mockFs[normalizedPath]) {
-        return mockFs[normalizedPath];
+      if (mockFs[path]) {
+        return mockFs[path];
       }
 
-      throw new Error(`Cannot read path '${normalizedPath}'.`);
+      throw new Error(`Cannot read path '${path}'.`);
     });
     fs.writeFileSync = jest.fn((path, data, options) => {
       expect(options).toBe('utf8');
-      const normalizedPath = slash(path);
-      mockFs[normalizedPath] = data;
+      mockFs[path] = data;
     });
 
     fs.unlinkSync = jest.fn();
