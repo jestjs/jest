@@ -183,7 +183,7 @@ Object {
       "0": Object {
         "decl": Object {
           "end": Object {
-            "column": 28,
+            "column": 29,
             "line": 3,
           },
           "start": Object {
@@ -206,7 +206,7 @@ Object {
       "1": Object {
         "decl": Object {
           "end": Object {
-            "column": 35,
+            "column": 36,
             "line": 7,
           },
           "start": Object {
@@ -229,7 +229,7 @@ Object {
       "2": Object {
         "decl": Object {
           "end": Object {
-            "column": 48,
+            "column": 49,
             "line": 7,
           },
           "start": Object {
@@ -314,7 +314,7 @@ Object {
       },
       "5": Object {
         "end": Object {
-          "column": 40,
+          "column": 43,
           "line": 7,
         },
         "start": Object {
@@ -324,7 +324,7 @@ Object {
       },
       "6": Object {
         "end": Object {
-          "column": 53,
+          "column": 54,
           "line": 7,
         },
         "start": Object {
