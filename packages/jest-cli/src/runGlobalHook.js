@@ -16,7 +16,7 @@ export default async ({
 }: {
   allTests: Array<Test>,
   globalConfig: GlobalConfig,
-  moduleName: string,
+  moduleName: 'globalSetup' | 'globalTeardown',
 }) => {
   const globalModulePaths = new Set(
     allTests.map(test => test.context.config[moduleName]),
