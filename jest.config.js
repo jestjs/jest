@@ -25,7 +25,7 @@ module.exports = {
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotSerializers: [
-    '<rootDir>/packages/pretty-format/build/plugins/convert_ansi.js',
+    '<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js',
   ],
   testEnvironment: './packages/jest-environment-node',
   testPathIgnorePatterns: [
@@ -35,11 +35,12 @@ module.exports = {
     '\\.snap$',
     '/packages/.*/build',
     '/packages/.*/build-es5',
-    '/packages/.*/src/__tests__/expect_util.js',
+    '/packages/.*/src/__tests__/getPrettyPrint.js',
     '/packages/jest-cli/src/__tests__/test_root',
     '/packages/jest-cli/src/__tests__/__fixtures__/',
     '/packages/jest-cli/src/lib/__tests__/fixtures/',
     '/packages/jest-haste-map/src/__tests__/haste_impl.js',
+    '/packages/jest-haste-map/src/__tests__/dependencyExtractor.js',
     '/packages/jest-resolve-dependencies/src/__tests__/__fixtures__/',
     '/packages/jest-runtime/src/__tests__/defaultResolver.js',
     '/packages/jest-runtime/src/__tests__/module_dir/',

@@ -244,6 +244,20 @@ describe('.toStrictEqual()', () => {
     }).toStrictEqual({test: new TestClassA(1, 2)});
   });
 
+  it('matches the expected snapshot when it fails', () => {
+    expect(() =>
+      jestExpect({
+        test: 2,
+      }).toStrictEqual({test: new TestClassA(1, 2)}),
+    ).toThrowErrorMatchingSnapshot();
+
+    expect(() =>
+      jestExpect({
+        test: new TestClassA(1, 2),
+      }).not.toStrictEqual({test: new TestClassA(1, 2)}),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   it('does not pass for different types', () => {
     expect({
       test: new TestClassA(1, 2),
@@ -880,6 +894,28 @@ describe('.toBeCloseTo()', () => {
     });
   });
 
+  [[Infinity, Infinity], [-Infinity, -Infinity]].forEach(([n1, n2]) => {
+    it(`{pass: true} expect(${n1})toBeCloseTo( ${n2})`, () => {
+      jestExpect(n1).toBeCloseTo(n2);
+
+      expect(() =>
+        jestExpect(n1).not.toBeCloseTo(n2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [[Infinity, -Infinity], [Infinity, 1.23], [-Infinity, -1.23]].forEach(
+    ([n1, n2]) => {
+      it(`{pass: false} expect(${n1})toBeCloseTo( ${n2})`, () => {
+        jestExpect(n1).not.toBeCloseTo(n2);
+
+        expect(() =>
+          jestExpect(n1).toBeCloseTo(n2),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    },
+  );
+
   [[0, 0.1, 0], [0, 0.0001, 3], [0, 0.000004, 5]].forEach(([n1, n2, p]) => {
     it(`accepts an optional precision argument: [${n1}, ${n2}, ${p}]`, () => {
       jestExpect(n1).toBeCloseTo(n2, p);
@@ -1128,6 +1164,7 @@ describe('toMatchObject()', () => {
     [new Error('foo'), new Error('foo')],
     [new Error('bar'), {message: 'bar'}],
     [new Foo(), {a: undefined, b: 'b'}],
+    [Object.assign(Object.create(null), {a: 'b'}), {a: 'b'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,
@@ -1164,6 +1201,7 @@ describe('toMatchObject()', () => {
     [[1, 2, 3], [2, 3, 1]],
     [[1, 2, 3], [1, 2, 2]],
     [new Error('foo'), new Error('bar')],
+    [Object.assign(Object.create(null), {a: 'b'}), {c: 'd'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,

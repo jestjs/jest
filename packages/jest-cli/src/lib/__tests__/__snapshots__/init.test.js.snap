@@ -26,8 +26,8 @@ module.exports = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
-  // Stop running tests after the first failure
-  // bail: false,
+  // Stop running tests after \`n\` failures
+  // bail: 0,
 
   // Respect \\"browser\\" field in package.json when resolving modules
   // browser: false,
@@ -62,6 +62,9 @@ module.exports = {
 
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: null,
+
+  // A path to a custom dependency extractor
+  // dependencyExtractor: null,
 
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,

@@ -8,6 +8,6 @@
 module.exports = () => ({
   plugins: [
     require.resolve('babel-plugin-jest-hoist'),
-    require.resolve('babel-plugin-syntax-object-rest-spread'),
+    require.resolve('@babel/plugin-syntax-object-rest-spread'),
   ],
 });

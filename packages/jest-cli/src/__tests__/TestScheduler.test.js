@@ -27,6 +27,10 @@ jest.mock('jest-runner-parallel', () => jest.fn(() => mockParallelRunner), {
   virtual: true,
 });
 
+beforeEach(() => {
+  mockSerialRunner.runTests.mockClear();
+});
+
 test('config for reporters supports `default`', () => {
   const undefinedReportersScheduler = new TestScheduler(
     {
@@ -115,4 +119,64 @@ test('schedule tests run in serial if the runner flags them', async () => {
 
   expect(mockSerialRunner.runTests).toHaveBeenCalled();
   expect(mockSerialRunner.runTests.mock.calls[0][5].serial).toBeTruthy();
+});
+
+test('should bail after `n` failures', async () => {
+  const scheduler = new TestScheduler({bail: 2}, {});
+  const test = {
+    context: {
+      config: {
+        rootDir: './',
+        runner: 'jest-runner-serial',
+      },
+      hasteFS: {
+        matchFiles: jest.fn(() => []),
+      },
+    },
+    path: './test/path.js',
+  };
+
+  const tests = [test];
+  const setState = jest.fn();
+  await scheduler.scheduleTests(tests, {
+    isInterrupted: jest.fn(),
+    isWatchMode: () => true,
+    setState,
+  });
+  await mockSerialRunner.runTests.mock.calls[0][3](test, {
+    numFailingTests: 2,
+    snapshot: {},
+    testResults: [{}],
+  });
+  expect(setState).toBeCalledWith({interrupted: true});
+});
+
+test('should not bail if less than `n` failures', async () => {
+  const scheduler = new TestScheduler({bail: 2}, {});
+  const test = {
+    context: {
+      config: {
+        rootDir: './',
+        runner: 'jest-runner-serial',
+      },
+      hasteFS: {
+        matchFiles: jest.fn(() => []),
+      },
+    },
+    path: './test/path.js',
+  };
+
+  const tests = [test];
+  const setState = jest.fn();
+  await scheduler.scheduleTests(tests, {
+    isInterrupted: jest.fn(),
+    isWatchMode: () => true,
+    setState,
+  });
+  await mockSerialRunner.runTests.mock.calls[0][3](test, {
+    numFailingTests: 1,
+    snapshot: {},
+    testResults: [{}],
+  });
+  expect(setState).not.toBeCalled();
 });

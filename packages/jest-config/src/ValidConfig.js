@@ -17,7 +17,7 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 export default ({
   automock: false,
-  bail: false,
+  bail: (multipleValidOptions(false, 0): any),
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
@@ -40,6 +40,7 @@ export default ({
       statements: 100,
     },
   },
+  dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: 'project-name',
   errorOnDeprecated: false,
   expand: false,
@@ -50,6 +51,7 @@ export default ({
   globalTeardown: 'teardown.js',
   globals: {__DEV__: true},
   haste: {
+    computeSha1: true,
     defaultPlatform: 'ios',
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],

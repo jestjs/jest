@@ -12,35 +12,33 @@ import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
 import init from '../init';
-import getCacheDirectory from '../../../../jest-config/build/getCacheDirectory';
 
 jest.mock('prompts');
-jest.mock('../../../../jest-config/build/getCacheDirectory');
-
-// mocked to get the same snapshot on every machine
-getCacheDirectory.mockReturnValue('/tmp/jest');
+jest.mock('../../../../jest-config/build/getCacheDirectory', () => () =>
+  '/tmp/jest',
+);
+jest.mock('path', () => ({...jest.requireActual('path'), sep: '/'}));
 
 const resolveFromFixture = relativePath =>
   path.resolve(__dirname, 'fixtures', relativePath);
 
 const writeFileSync = fs.writeFileSync;
 const consoleLog = console.log;
-const sep = path.sep;
 
 describe('init', () => {
   beforeEach(() => {
     // $FlowFixMe mock console.log to reduce noise from the tests
     console.log = jest.fn();
+    // $FlowFixMe mock
     fs.writeFileSync = jest.fn();
-    path.sep = '/';
   });
 
   afterEach(() => {
     jest.clearAllMocks();
     // $FlowFixMe
     console.log = consoleLog;
+    // $FlowFixMe mock
     fs.writeFileSync = writeFileSync;
-    path.sep = sep;
   });
 
   describe('project with package.json and no jest config', () => {

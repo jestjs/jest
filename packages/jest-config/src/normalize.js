@@ -8,7 +8,13 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {InitialOptions, ReporterConfig} from 'types/Config';
+import type {
+  InitialOptions,
+  DefaultOptions,
+  ReporterConfig,
+  GlobalConfig,
+  ProjectConfig,
+} from 'types/Config';
 
 import crypto from 'crypto';
 import glob from 'glob';
@@ -419,9 +425,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   }
 
   const babelJest = setupBabelJest(options);
-  const newOptions = Object.assign({}, DEFAULT_CONFIG);
-  // Cast back to exact type
-  options = (options: InitialOptions);
+  const newOptions: $Shape<
+    DefaultOptions & ProjectConfig & GlobalConfig,
+  > = (Object.assign({}, DEFAULT_CONFIG): any);
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -431,7 +437,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     });
   }
 
-  Object.keys(options).reduce((newOptions, key) => {
+  Object.keys(options).reduce((newOptions, key: $Keys<InitialOptions>) => {
     // The resolver has been resolved separately; skip it
     if (key === 'resolver') {
       return newOptions;
@@ -477,6 +483,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
+      case 'dependencyExtractor':
       case 'globalSetup':
       case 'globalTeardown':
       case 'moduleLoader':
@@ -558,11 +565,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'projects':
         value = (options[key] || [])
-          .map(
-            project =>
-              typeof project === 'string'
-                ? _replaceRootDirTags(options.rootDir, project)
-                : project,
+          .map(project =>
+            typeof project === 'string'
+              ? _replaceRootDirTags(options.rootDir, project)
+              : project,
           )
           .reduce((projects, project) => {
             // Project can be specified as globs. If a glob matches any files,
@@ -611,8 +617,21 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
         break;
       }
+      case 'bail': {
+        if (typeof options[key] === 'boolean') {
+          value = options[key] ? 1 : 0;
+        } else if (typeof options[key] === 'string') {
+          value = 1;
+          // If Jest is invoked as `jest --bail someTestPattern` then need to
+          // move the pattern from the `bail` configuration and into `argv._`
+          // to be processed as an extra parameter
+          argv._.push(options[key]);
+        } else {
+          value = options[key];
+        }
+        break;
+      }
       case 'automock':
-      case 'bail':
       case 'browser':
       case 'cache':
       case 'changedSince':
@@ -687,6 +706,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         });
         break;
     }
+    // $FlowFixMe - automock is missing in GlobalConfig, so what
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
@@ -719,8 +739,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     argv.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-        ? 'all'
-        : 'new';
+      ? 'all'
+      : 'new';
 
   newOptions.maxWorkers = getMaxWorkers(argv);
 

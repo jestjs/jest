@@ -334,9 +334,8 @@ describe('setupFilesAfterEnv', () => {
   let Resolver;
   beforeEach(() => {
     Resolver = require('jest-resolve');
-    Resolver.findNodeModule = jest.fn(
-      name =>
-        name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+    Resolver.findNodeModule = jest.fn(name =>
+      name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
     );
   });
 
@@ -385,9 +384,8 @@ describe('setupTestFrameworkScriptFile', () => {
     console.warn = jest.fn();
     consoleWarn = console.warn;
     Resolver = require('jest-resolve');
-    Resolver.findNodeModule = jest.fn(
-      name =>
-        name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+    Resolver.findNodeModule = jest.fn(name =>
+      name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
     );
   });
 
@@ -724,11 +722,10 @@ describe('babel-jest', () => {
   let Resolver;
   beforeEach(() => {
     Resolver = require('jest-resolve');
-    Resolver.findNodeModule = jest.fn(
-      name =>
-        name.indexOf('babel-jest') === -1
-          ? path.sep + 'node_modules' + path.sep + name
-          : name,
+    Resolver.findNodeModule = jest.fn(name =>
+      name.indexOf('babel-jest') === -1
+        ? path.sep + 'node_modules' + path.sep + name
+        : name,
     );
   });
 
