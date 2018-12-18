@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "name": "example-async",
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "*",
+    "@babel/preset-env": "*",
+    "@babel/runtime": "*",
     "babel-jest": "*",
-    "babel-plugin-transform-runtime": "*",
-    "babel-preset-env": "*",
     "jest": "*"
   },
   "scripts": {

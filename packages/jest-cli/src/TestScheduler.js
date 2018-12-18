@@ -351,7 +351,10 @@ export default class TestScheduler {
     aggregatedResults: AggregatedResult,
     watcher: TestWatcher,
   ): Promise<void> {
-    if (this._globalConfig.bail && aggregatedResults.numFailedTests !== 0) {
+    if (
+      this._globalConfig.bail !== 0 &&
+      aggregatedResults.numFailedTests >= this._globalConfig.bail
+    ) {
       if (watcher.isWatchMode()) {
         watcher.setState({interrupted: true});
       } else {

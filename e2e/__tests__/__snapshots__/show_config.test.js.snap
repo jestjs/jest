@@ -77,7 +77,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     }
   ],
   \\"globalConfig\\": {
-    \\"bail\\": false,
+    \\"bail\\": 0,
     \\"changedFilesWithAncestor\\": false,
     \\"collectCoverage\\": false,
     \\"collectCoverageFrom\\": null,

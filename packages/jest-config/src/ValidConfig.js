@@ -17,7 +17,7 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 export default ({
   automock: false,
-  bail: false,
+  bail: (multipleValidOptions(false, 0): any),
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
