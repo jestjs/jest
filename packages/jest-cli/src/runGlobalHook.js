@@ -9,7 +9,7 @@
 import type {GlobalConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 
-export default async ({
+export default ({
   allTests,
   globalConfig,
   moduleName,
@@ -17,7 +17,7 @@ export default async ({
   allTests: Array<Test>,
   globalConfig: GlobalConfig,
   moduleName: 'globalSetup' | 'globalTeardown',
-}) => {
+}): Promise<?(any[])> => {
   const globalModulePaths = new Set(
     allTests.map(test => test.context.config[moduleName]),
   );
@@ -27,7 +27,7 @@ export default async ({
   }
 
   if (globalModulePaths.size > 0) {
-    await Promise.all(
+    return Promise.all(
       Array.from(globalModulePaths).map(async modulePath => {
         if (!modulePath) {
           return null;
@@ -46,4 +46,6 @@ export default async ({
       }),
     );
   }
+
+  return Promise.resolve();
 };
