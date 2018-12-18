@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`.hasAssertions() throws if expected is not undefined 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].hasAssertions(</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+
+Expected has type:  number
+Expected has value: <green>2</>"
+`;
