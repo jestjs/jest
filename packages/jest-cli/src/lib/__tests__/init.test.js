@@ -17,13 +17,13 @@ jest.mock('prompts');
 jest.mock('../../../../jest-config/build/getCacheDirectory', () => () =>
   '/tmp/jest',
 );
+jest.mock('path', () => ({...jest.requireActual('path'), sep: '/'}));
 
 const resolveFromFixture = relativePath =>
   path.resolve(__dirname, 'fixtures', relativePath);
 
 const writeFileSync = fs.writeFileSync;
 const consoleLog = console.log;
-const sep = path.sep;
 
 describe('init', () => {
   beforeEach(() => {
@@ -31,8 +31,6 @@ describe('init', () => {
     console.log = jest.fn();
     // $FlowFixMe mock
     fs.writeFileSync = jest.fn();
-    // $FlowFixMe mock
-    path.sep = '/';
   });
 
   afterEach(() => {
@@ -41,8 +39,6 @@ describe('init', () => {
     console.log = consoleLog;
     // $FlowFixMe mock
     fs.writeFileSync = writeFileSync;
-    // $FlowFixMe mock
-    path.sep = sep;
   });
 
   describe('project with package.json and no jest config', () => {

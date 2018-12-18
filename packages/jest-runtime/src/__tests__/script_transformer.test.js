@@ -17,11 +17,12 @@ jest
       ReadStream: jest.requireActual('fs').ReadStream,
       WriteStream: jest.requireActual('fs').WriteStream,
       readFileSync: jest.fn((path, options) => {
-        if (mockFs[path]) {
-          return mockFs[path];
+        const normalizedPath = slash(path);
+        if (mockFs[normalizedPath]) {
+          return mockFs[normalizedPath];
         }
 
-        throw new Error(`Cannot read path '${path}'.`);
+        throw new Error(`Cannot read path '${normalizedPath}'.`);
       }),
       statSync: path => ({
         isFile: () => !!mockFs[path],
@@ -166,12 +167,13 @@ describe('ScriptTransformer', () => {
     fs = require('graceful-fs');
     fs.readFileSync = jest.fn((path, options) => {
       expect(options).toBe('utf8');
+      const normalizedPath = slash(path);
 
-      if (mockFs[path]) {
-        return mockFs[path];
+      if (mockFs[normalizedPath]) {
+        return mockFs[normalizedPath];
       }
 
-      throw new Error(`Cannot read path '${path}'.`);
+      throw new Error(`Cannot read path '${normalizedPath}'.`);
     });
     fs.writeFileSync = jest.fn((path, data, options) => {
       expect(options).toBe('utf8');
