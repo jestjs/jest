@@ -12,6 +12,6 @@ const path = require('path');
 
 const DIR = path.join(os.tmpdir(), 'jest-global-teardown-project-2');
 
-test('should not exist teardown file', () => {
+test('teardown file should not exist', () => {
   expect(fs.existsSync(DIR)).toBe(false);
 });
