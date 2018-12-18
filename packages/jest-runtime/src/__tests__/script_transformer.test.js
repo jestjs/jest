@@ -17,7 +17,7 @@ jest
       ReadStream: jest.requireActual('fs').ReadStream,
       WriteStream: jest.requireActual('fs').WriteStream,
       readFileSync: jest.fn((path, options) => {
-        const normalizedPath = slash(path);
+        const normalizedPath = require('slash')(path);
         if (mockFs[normalizedPath]) {
           return mockFs[normalizedPath];
         }
