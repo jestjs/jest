@@ -34,5 +34,5 @@ it('instruments files', () => {
   // We can't really snapshot the resulting coverage, because it depends on
   // absolute path of the file, which will be different on different
   // machines
-  expect(vm.Script.mock.calls[0][0]).toMatch(`gcv = '__coverage__'`);
+  expect(vm.Script.mock.calls[0][0]).toMatch(`gcv = "__coverage__"`);
 });

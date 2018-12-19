@@ -81,6 +81,21 @@ you can use:
 npm test -- -u -t="ColorPicker"
 ```
 
+## Camelcase & dashed args support
+
+Jest supports both camelcase and dashed arg formats. The following examples will have equal result:
+
+```bash
+jest --collect-coverage
+jest --collectCoverage
+```
+
+Arguments can also be mixed:
+
+```bash
+jest --update-snapshot --detectOpenHandles
+```
+
 ## Options
 
 _Note: CLI options take precedence over values from the [Configuration](Configuration.md)._
@@ -193,9 +208,11 @@ Lists all tests as JSON that Jest will run given the arguments, and exits. This 
 
 Logs the heap usage after every test. Useful to debug memory leaks. Use together with `--runInBand` and `--expose-gc` in node.
 
-### `--maxWorkers=<num>`
+### `--maxWorkers=<num>|<string>`
 
 Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. This defaults to the number of the cores available on your machine. It may be useful to adjust this in resource limited environments like CIs but the default should be adequate for most use-cases.
+
+For environments with variable CPUs available, you can use percentage based configuration: `--maxWorkers=50%`
 
 ### `--noStackTrace`
 
