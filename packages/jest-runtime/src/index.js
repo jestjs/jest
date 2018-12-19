@@ -97,7 +97,9 @@ class Runtime {
   _mockFactories: {[key: string]: () => any, __proto__: null};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata, __proto__: null};
   _mockRegistry: {[key: string]: any, __proto__: null};
+  _isolatedMockRegistry: ?{[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
+  _isolatedModuleRegistry: ?ModuleRegistry;
   _moduleRegistry: ModuleRegistry;
   _needsCoverageMapped: Set<string>;
   _resolver: Resolver;
@@ -132,6 +134,7 @@ class Runtime {
     this._mockFactories = Object.create(null);
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
+    this._isolatedModuleRegistry = null;
     this._moduleRegistry = Object.create(null);
     this._needsCoverageMapped = new Set();
     this._resolver = resolver;
@@ -291,11 +294,6 @@ class Runtime {
     );
     let modulePath;
 
-    const moduleRegistry =
-      !options || !options.isInternalModule
-        ? this._moduleRegistry
-        : this._internalModuleRegistry;
-
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
     const moduleResource = moduleName && this._resolver.getModule(moduleName);
@@ -317,6 +315,18 @@ class Runtime {
 
     if (!modulePath) {
       modulePath = this._resolveModule(from, moduleName);
+    }
+
+    let moduleRegistry;
+
+    if (!options || !options.isInternalModule) {
+      if (this._moduleRegistry[modulePath] || !this._isolatedModuleRegistry) {
+        moduleRegistry = this._moduleRegistry;
+      } else {
+        moduleRegistry = this._isolatedModuleRegistry;
+      }
+    } else {
+      moduleRegistry = this._internalModuleRegistry;
     }
 
     if (!moduleRegistry[modulePath]) {
@@ -360,12 +370,16 @@ class Runtime {
       moduleName,
     );
 
-    if (this._mockRegistry[moduleID]) {
+    if (this._isolatedMockRegistry && this._isolatedMockRegistry[moduleID]) {
+      return this._isolatedMockRegistry[moduleID];
+    } else if (this._mockRegistry[moduleID]) {
       return this._mockRegistry[moduleID];
     }
 
+    const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
+
     if (moduleID in this._mockFactories) {
-      return (this._mockRegistry[moduleID] = this._mockFactories[moduleID]());
+      return (mockRegistry[moduleID] = this._mockFactories[moduleID]());
     }
 
     let manualMock = this._resolver.getMockModule(from, moduleName);
@@ -409,15 +423,15 @@ class Runtime {
 
       // Only include the fromPath if a moduleName is given. Else treat as root.
       const fromPath = moduleName ? from : null;
-      this._execModule(localModule, undefined, this._mockRegistry, fromPath);
-      this._mockRegistry[moduleID] = localModule.exports;
+      this._execModule(localModule, undefined, mockRegistry, fromPath);
+      mockRegistry[moduleID] = localModule.exports;
       localModule.loaded = true;
     } else {
       // Look for a real module to generate an automock from
-      this._mockRegistry[moduleID] = this._generateMock(from, moduleName);
+      mockRegistry[moduleID] = this._generateMock(from, moduleName);
     }
 
-    return this._mockRegistry[moduleID];
+    return mockRegistry[moduleID];
   }
 
   requireModuleOrMock(from: Path, moduleName: string) {
@@ -443,7 +457,22 @@ class Runtime {
     }
   }
 
+  isolateModules(fn: () => void) {
+    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
+      throw new Error(
+        'isolateModules cannot be nested inside another isolateModules.',
+      );
+    }
+    this._isolatedModuleRegistry = Object.create(null);
+    this._isolatedMockRegistry = Object.create(null);
+    fn();
+    this._isolatedModuleRegistry = null;
+    this._isolatedMockRegistry = null;
+  }
+
   resetModules() {
+    this._isolatedModuleRegistry = null;
+    this._isolatedMockRegistry = null;
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
 
@@ -902,6 +931,10 @@ class Runtime {
       this.resetModules();
       return jestObject;
     };
+    const isolateModules = (fn: () => void) => {
+      this.isolateModules(fn);
+      return jestObject;
+    };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
@@ -938,6 +971,7 @@ class Runtime {
         this._generateMock(from, moduleName),
       getTimerCount: () => this._environment.fakeTimers.getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
+      isolateModules,
       mock,
       requireActual: localRequire.requireActual,
       requireMock: localRequire.requireMock,

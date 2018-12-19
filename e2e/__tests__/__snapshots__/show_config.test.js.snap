@@ -33,6 +33,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
         \\"js\\",
         \\"json\\",
         \\"jsx\\",
+        \\"ts\\",
+        \\"tsx\\",
         \\"node\\"
       ],
       \\"moduleNameMapper\\": {},
@@ -56,8 +58,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"testEnvironmentOptions\\": {},
       \\"testLocationInResults\\": false,
       \\"testMatch\\": [
-        \\"**/__tests__/**/*.js?(x)\\",
-        \\"**/?(*.)+(spec|test).js?(x)\\"
+        \\"**/__tests__/**/*.[jt]s?(x)\\",
+        \\"**/?(*.)+(spec|test).[tj]s?(x)\\"
       ],
       \\"testPathIgnorePatterns\\": [
         \\"/node_modules/\\"
@@ -68,7 +70,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"timers\\": \\"real\\",
       \\"transform\\": [
         [
-          \\"^.+\\\\\\\\.jsx?$\\",
+          \\"^.+\\\\\\\\.[jt]sx?$\\",
           \\"<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js\\"
         ]
       ],

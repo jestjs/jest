@@ -371,11 +371,9 @@ An array of directory names to be searched recursively up from the requiring mod
 
 ### `moduleFileExtensions` [array<string>]
 
-Default: `["js", "json", "jsx", "node"]`
+Default: `["js", "json", "jsx", "ts", "tsx", "node"]`
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
-
-If you are using TypeScript this should be `["js", "jsx", "json", "ts", "tsx"]`, check [ts-jest's documentation](https://github.com/kulshekhar/ts-jest).
 
 ### `moduleNameMapper` [object<string, string>]
 
@@ -795,13 +793,14 @@ Example:
 const NodeEnvironment = require('jest-environment-node');
 
 class CustomEnvironment extends NodeEnvironment {
-  constructor(config) {
-    super(config);
+  constructor(config, context) {
+    super(config, context);
+    this.testPath = context.testPath;
   }
 
   async setup() {
     await super.setup();
-    await someSetupTasks();
+    await someSetupTasks(this.testPath);
     this.global.someGlobalObject = createGlobalObject();
   }
 
@@ -836,9 +835,9 @@ Test environment options that will be passed to the `testEnvironment`. The relev
 
 ### `testMatch` [array<string>]
 
-(default: `[ "**/__tests__/**/*.js?(x)", "**/?(*.)+(spec|test).js?(x)" ]`)
+(default: `[ "**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ]`)
 
-The glob patterns Jest uses to detect test files. By default it looks for `.js` and `.jsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`.
+The glob patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`.
 
 See the [micromatch](https://github.com/jonschlinkert/micromatch) package for details of the patterns you can specify.
 
@@ -854,9 +853,9 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `testRegex` [string | Array<string>]
 
-Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$`
+Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$`
 
-The pattern or patterns Jest uses to detect test files. By default it looks for `.js` and `.jsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array<string>]](#testmatch-array-string), but note that you cannot specify both options.
+The pattern or patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array<string>]](#testmatch-array-string), but note that you cannot specify both options.
 
 The following is a visualization of the default regex:
 
