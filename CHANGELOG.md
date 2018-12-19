@@ -13,6 +13,7 @@
 - `[jest-haste-map]` [**BREAKING**] Remove name from hash in `HasteMap.getCacheFilePath` ([#7218](https://github.com/facebook/jest/pull/7218))
 - `[babel-preset-jest]` [**BREAKING**] Export a function instead of an object for Babel 7 compatibility ([#7203](https://github.com/facebook/jest/pull/7203))
 - `[jest-haste-map]` [**BREAKING**] Expose relative paths when getting the file iterator ([#7321](https://github.com/facebook/jest/pull/7321))
+- `[jest-util]` Export `specialChars` containing Unicode characters and ANSI escapes for console output ([#7532](https://github.com/facebook/jest/pull/7532))
 - `[jest-config]` Handle typescript (`ts` and `tsx`) by default ([#7533](https://github.com/facebook/jest/pull/7533))
 - `[jest-validate]` Add support for comments in `package.json` using a `"//"` key ([#7295](https://github.com/facebook/jest/pull/7295))
 - `[jest-config]` Add shorthand for watch plugins and runners ([#7213](https://github.com/facebook/jest/pull/7213))

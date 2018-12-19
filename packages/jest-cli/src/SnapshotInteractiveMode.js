@@ -15,7 +15,9 @@ import ansiEscapes from 'ansi-escapes';
 import {KEYS} from 'jest-watcher';
 
 import {pluralize} from './reporters/utils';
-import {ARROW} from './constants';
+import {specialChars} from 'jest-util';
+
+const {ARROW} = specialChars;
 
 export default class SnapshotInteractiveMode {
   _pipe: stream$Writable | tty$WriteStream;
