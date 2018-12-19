@@ -31,7 +31,7 @@
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.11",
     "isbinaryfile": "^3.0.3",
-    "istanbul-api": "^2.0.6",
+    "istanbul-api": "^2.0.7",
     "istanbul-lib-coverage": "^2.0.1",
     "jasmine-reporters": "^2.2.0",
     "jest-junit": "^5.1.0",

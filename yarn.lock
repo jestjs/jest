@@ -7562,10 +7562,10 @@ isstream@~0.1.2:
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
   integrity sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=
 
-istanbul-api@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/istanbul-api/-/istanbul-api-2.0.6.tgz#cd7b33ee678f6c01531d05f5e567ebbcd25f8ecc"
-  integrity sha512-8W5oeAGWXhtTJjAyVfvavOLVyZCTNCKsyF6GON/INKlBdO7uJ/bv3qnPj5M6ERKzmMCJS1kntnjjGuJ86fn3rQ==
+istanbul-api@^2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/istanbul-api/-/istanbul-api-2.0.7.tgz#1a441c4fa61cd6e4291f54a38647022affea126e"
+  integrity sha512-zWq0o/UtDXqE0O2MHF88Yi83O5dFfAOfiVIzVz81uduwKNTKBXpZfsX9sL71owaI3jNpxKqmu9unHnT4HsS5YQ==
   dependencies:
     async "^2.6.1"
     compare-versions "^3.2.1"
@@ -7574,8 +7574,8 @@ istanbul-api@^2.0.6:
     istanbul-lib-hook "^2.0.1"
     istanbul-lib-instrument "^3.0.0"
     istanbul-lib-report "^2.0.2"
-    istanbul-lib-source-maps "^2.0.1"
-    istanbul-reports "^2.0.1"
+    istanbul-lib-source-maps "^3.0.0"
+    istanbul-reports "^2.0.2"
     js-yaml "^3.12.0"
     make-dir "^1.3.0"
     once "^1.4.0"
@@ -7614,10 +7614,10 @@ istanbul-lib-report@^2.0.2:
     make-dir "^1.3.0"
     supports-color "^5.4.0"
 
-istanbul-lib-source-maps@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/istanbul-lib-source-maps/-/istanbul-lib-source-maps-2.0.1.tgz#ce8b45131d8293fdeaa732f4faf1852d13d0a97e"
-  integrity sha512-30l40ySg+gvBLcxTrLzR4Z2XTRj3HgRCA/p2rnbs/3OiTaoj054gAbuP5DcLOtwqmy4XW8qXBHzrmP2/bQ9i3A==
+istanbul-lib-source-maps@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/istanbul-lib-source-maps/-/istanbul-lib-source-maps-3.0.0.tgz#f01f7388b7e9079832f7a9d54980413dff232659"
+  integrity sha512-8mTTW1xhk3s21KX3awhWMB+GUx9z0MPtW9Z0dpchok5NAn6IaVjxws2dV98ZvLvL+Kc2HLRxIV8XRptchKN8VQ==
   dependencies:
     debug "^3.1.0"
     istanbul-lib-coverage "^2.0.1"
@@ -7625,10 +7625,10 @@ istanbul-lib-source-maps@^2.0.1:
     rimraf "^2.6.2"
     source-map "^0.6.1"
 
-istanbul-reports@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/istanbul-reports/-/istanbul-reports-2.0.1.tgz#fb8d6ea850701a3984350b977a969e9a556116a7"
-  integrity sha512-CT0QgMBJqs6NJLF678ZHcquUAZIoBIUNzdJrRJfpkI9OnzG6MkUfHxbJC3ln981dMswC7/B1mfX3LNkhgJxsuw==
+istanbul-reports@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/istanbul-reports/-/istanbul-reports-2.0.2.tgz#6393e43ebfc3708c75584ae78014de945ea2dff4"
+  integrity sha512-4e7KB6S7iP8J7+h1+ZzPIFX+Je2v/WhUnN6HUi7VSAXhv/dOUC69aHR5Foo3OxGhXudxnbEOaVC8tgtAqsiudg==
   dependencies:
     handlebars "^4.0.11"
 
