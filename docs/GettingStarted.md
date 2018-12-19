@@ -125,6 +125,6 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 
 ### Using TypeScript
 
-Jest support TypeScript out of the box, via Babel.
+Jest supports TypeScript out of the box, via Babel.
 
 However, there are some caveats to using Typescript with Babel, see http://artsy.github.io/blog/2017/11/27/Babel-7-and-TypeScript/. Another caveat is that Jest will not typecheck your tests. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
