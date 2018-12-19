@@ -27,10 +27,10 @@ exports[`cannot have describe with no implementation 1`] = `
 
       1 | 
     > 2 |     describe('describe, no implementation');
-        |     ^
+        |              ^
       3 |   
 
-      at __tests__/only-constructs.test.js:2:5
+      at __tests__/only-constructs.test.js:2:14
 
 "
 `;
