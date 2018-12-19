@@ -181,37 +181,4 @@ describe('init', () => {
       expect(questionsNames).not.toContain('scripts');
     });
   });
-
-  describe('typescript project', () => {
-    it('should ask "typescript question" when has typescript in dependencies', async () => {
-      prompts.mockReturnValueOnce({});
-
-      await init(resolveFromFixture('typescript_in_dependencies'));
-
-      const typescriptQuestion = prompts.mock.calls[0][0][0];
-
-      expect(typescriptQuestion).toMatchSnapshot();
-    });
-
-    it('should ask "typescript question" when has typescript in devDependencies', async () => {
-      prompts.mockReturnValueOnce({});
-
-      await init(resolveFromFixture('typescript_in_dev_dependencies'));
-
-      const typescriptQuestion = prompts.mock.calls[0][0][0];
-
-      expect(typescriptQuestion).toMatchSnapshot();
-    });
-
-    it('should create configuration for {typescript: true}', async () => {
-      prompts.mockReturnValueOnce({typescript: true});
-
-      await init(resolveFromFixture('typescript_in_dev_dependencies'));
-
-      const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-      const evaluatedConfig = eval(writtenJestConfig);
-
-      expect(evaluatedConfig).toMatchSnapshot();
-    });
-  });
 });

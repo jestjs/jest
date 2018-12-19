@@ -134,7 +134,7 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 
 ### Using TypeScript
 
-To use TypeScript in your tests you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+To use TypeScript in your tests install `@babel/preset-typescript` and add it to your Babel config.
 
 <!-- generated_getting_started_end -->
 
