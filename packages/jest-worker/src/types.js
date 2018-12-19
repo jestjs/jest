@@ -29,7 +29,8 @@ export type PARENT_MESSAGE_ERROR =
 
 // Option objects.
 
-import type Worker from './Worker';
+import type {Readable} from 'stream';
+const EventEmitter = require('events');
 
 export type ForkOptions = {
   cwd?: string,
@@ -42,6 +43,24 @@ export type ForkOptions = {
   gid?: number,
 };
 
+export interface WorkerPoolInterface {
+  getStderr(): Readable;
+  getStdout(): Readable;
+  getWorkers(): Array<WorkerInterface>;
+  createWorker(WorkerOptions): WorkerInterface;
+  send(number, ChildMessage, Function, Function): void;
+  end(): void;
+}
+
+export interface WorkerInterface {
+  send(ChildMessage, Function, Function): void;
+  getWorkerId(): number;
+  getStderr(): Readable;
+  getStdout(): Readable;
+  onExit(number): void;
+  onMessage(any): void;
+}
+
 export type FarmOptions = {
   computeWorkerKey?: (string, ...Array<any>) => ?string,
   exposedMethods?: $ReadOnlyArray<string>,
@@ -49,7 +68,18 @@ export type FarmOptions = {
   setupArgs?: Array<mixed>,
   maxRetries?: number,
   numWorkers?: number,
+  WorkerPool?: (
+    workerPath: string,
+    options?: WorkerPoolOptions,
+  ) => WorkerPoolInterface,
 };
+
+export type WorkerPoolOptions = {|
+  setupArgs: Array<mixed>,
+  forkOptions: ForkOptions,
+  maxRetries: number,
+  numWorkers: number,
+|};
 
 export type WorkerOptions = {|
   forkOptions: ForkOptions,
@@ -61,11 +91,22 @@ export type WorkerOptions = {|
 
 // Messages passed from the parent to the children.
 
+export type MessagePort = {
+  ...typeof EventEmitter,
+  postMessage(any): void,
+};
+
+export type MessageChannel = {
+  port1: MessagePort,
+  port2: MessagePort,
+};
+
 export type ChildMessageInitialize = [
   typeof CHILD_MESSAGE_INITIALIZE, // type
   boolean, // processed
   string, // file
   ?Array<mixed>, // setupArgs
+  ?MessagePort, // MessagePort
 ];
 
 export type ChildMessageCall = [
@@ -103,13 +144,12 @@ export type ParentMessageError = [
 export type ParentMessage = ParentMessageOk | ParentMessageError;
 
 // Queue types.
-
-export type OnProcessStart = Worker => void;
-export type OnProcessEnd = (?Error, ?any) => void;
+export type OnStart = WorkerInterface => void;
+export type OnEnd = (?Error, ?any) => void;
 
 export type QueueChildMessage = {|
   request: ChildMessage,
-  onProcessStart: OnProcessStart,
-  onProcessEnd: OnProcessEnd,
-  next: ?QueueChildMessage,
+  onStart: OnStart,
+  onEnd: OnEnd,
+  next?: QueueChildMessage,
 |};

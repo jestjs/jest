@@ -85,8 +85,8 @@ export const options = {
   bail: {
     alias: 'b',
     default: undefined,
-    description: 'Exit the test suite immediately upon the first failing test.',
-    type: 'boolean',
+    description:
+      'Exit the test suite immediately after `n` number of failing tests.',
   },
   browser: {
     default: undefined,

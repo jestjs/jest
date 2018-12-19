@@ -39,6 +39,12 @@ export function hello(param) {
 }
 ```
 
+## Experimental worker
+
+Node 10 shipped with [worker-threads](https://nodejs.org/api/worker_threads.html), a "threading API" that uses SharedArrayBuffers to communicate between the main process and its child threads. This experimental Node feature can significantly improve the communication time between parent and child processes in `jest-worker`.
+
+We will use worker threads where available. To enable in Node 10+, run the Node process with the `--experimental-worker` flag.
+
 ## API
 
 The only exposed method is a constructor (`Worker`) that is initialized by passing the worker path, plus an options object.
@@ -74,6 +80,12 @@ The callback you provide is called with the method name, plus all the rest of th
 By default, no process is bound to any worker.
 
 #### `setupArgs: Array<mixed>` (optional)
+
+The arguments that will be passed to the `setup` method during initialization.
+
+#### `workerPool: (workerPath: string, options?: WorkerPoolOptions) => WorkerPoolInterface` (optional)
+
+Provide a custom worker pool to be used for spawning child processes. By default, Jest will use a node thread pool if available and fall back to child process threads.
 
 The arguments that will be passed to the `setup` method during initialization.
 
@@ -179,7 +191,7 @@ main();
 ### File `worker.js`
 
 ```javascript
-import babel from 'babel-core';
+import babel from '@babel/core';
 
 const cache = Object.create(null);
 
@@ -190,14 +202,10 @@ export function transform(filename) {
 
   // jest-worker can handle both immediate results and thenables. If a
   // thenable is returned, it will be await'ed until it resolves.
-  return new Promise((resolve, reject) => {
-    babel.transformFile(filename, (err, result) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve((cache[filename] = result));
-      }
-    });
+  return babel.transformFileAsync(filename).then(result => {
+    cache[filename] = result;
+
+    return result;
   });
 }
 ```

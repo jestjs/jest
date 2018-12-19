@@ -389,9 +389,9 @@ class Index extends React.Component {
                   content: (
                     <translate>
                       Jest works with any compile-to-JavaScript language and
-                      integrates seamlessly with [Babel](https://babeljs.io) and
-                      with TypeScript through
-                      [ts-jest](https://github.com/kulshekhar/ts-jest).
+                      integrates seamlessly with [Babel](https://babeljs.io)
+                      which means you can write React, TypeScript and much more
+                      without configuration
                     </translate>
                   ),
                   image: '/img/content/feature-typescript.png',
