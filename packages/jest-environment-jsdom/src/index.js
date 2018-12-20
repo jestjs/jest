@@ -8,7 +8,7 @@
 
 import type {Script} from 'vm';
 import type {ProjectConfig} from 'types/Config';
-import type {EnvironmentOptions} from 'types/Environment';
+import type {EnvironmentContext} from 'types/Environment';
 import type {Global} from 'types/Global';
 import type {ModuleMocker} from 'jest-mock';
 
@@ -23,7 +23,7 @@ class JSDOMEnvironment {
   errorEventListener: ?Function;
   moduleMocker: ?ModuleMocker;
 
-  constructor(config: ProjectConfig, options?: EnvironmentOptions = {}) {
+  constructor(config: ProjectConfig, options?: EnvironmentContext = {}) {
     this.dom = new JSDOM(
       '<!DOCTYPE html>',
       Object.assign(
