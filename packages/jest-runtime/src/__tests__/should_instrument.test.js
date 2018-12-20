@@ -6,9 +6,9 @@
  *
  */
 
-import shouldInstrument from '../should_instrument';
+import shouldInstrument from '../shouldInstrument';
 
-describe('should_instrument', () => {
+describe('shouldInstrument', () => {
   const defaultFilename = 'source_file.test.js';
   const defaultOptions = {
     collectCoverage: true,
