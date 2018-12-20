@@ -1,0 +1,44 @@
+#
+# CI build and test steps. See azure-pipelines.yml for job details.
+# 
+
+steps:
+- checkout: self
+
+# Ensure Node.js 10 is active
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Use Node.js 10'
+
+# Ensure Python 2.7 is active
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '2.7'
+  displayName: 'Use Python 2.7'
+
+# Workaround to move repo source files into a "jest" folder (see azure-pipelines.yml for details)
+- script: |
+    cd /
+    mv $(Build.Repository.LocalPath) $(JEST_DIR)
+    mkdir $(Build.Repository.LocalPath)
+  displayName: 'Move source into jest folder'
+
+# Run yarn to install dependencies and build
+- script: yarn
+  workingDirectory: $(JEST_DIR)
+  displayName: 'Install dependencies and build'
+
+# Run test-ci-partial
+- script: yarn run test-ci-partial
+  workingDirectory: $(JEST_DIR)
+  displayName: 'Run tests'
+
+# Publish CI test results
+- task: PublishTestResults@2
+  inputs:
+    testResultsFiles: '**/reports/junit/*.xml'
+    searchFolder: $(JEST_DIR)
+    testRunTitle: 'CI Tests $(Agent.OS)'
+  displayName: 'Publish test results'
+  condition: succeededOrFailed()
