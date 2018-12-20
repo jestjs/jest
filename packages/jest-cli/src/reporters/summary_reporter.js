@@ -162,7 +162,7 @@ export default class SummaryReporter extends BaseReporter {
       snapshotSummary.forEach(status => {
         //if status contains the word obsolete and the test have failed do
         //nothing otherwise log status.
-        if (!status.includes('obsolete') && anyTestFailures) {
+        if (status.includes('obsolete') && anyTestFailures) {
           return;
         }
         this.log(status);
