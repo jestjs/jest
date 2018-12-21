@@ -84,7 +84,7 @@ export default class TestScheduler {
       getEstimatedTime(timings, this._globalConfig.maxWorkers) / 1000,
     );
 
-    const runInBand = testSchedulerHelper.computeRunInBand(
+    const runInBand = testSchedulerHelper.shouldRunInBand(
       tests,
       this._globalConfig.watch || this._globalConfig.watchAll,
       this._globalConfig.maxWorkers,
