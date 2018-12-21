@@ -22,16 +22,26 @@ export type MockFunctionMetadata = {
 };
 
 /**
+ * Possible types of a MockFunctionResult.
+ * 'return': The call completed by returning normally.
+ * 'throw': The call completed by throwing a value.
+ * 'incomplete': The call has not completed yet. This is possible if you read
+ *               the  mock function result from within the mock function itself
+ *               (or a function called by the mock function).
+ */
+type MockFunctionResultType = 'return' | 'throw' | 'incomplete';
+
+/**
  * Represents the result of a single call to a mock function.
  */
 type MockFunctionResult = {
   /**
-   * True if the function threw.
-   * False if the function returned.
+   * Indicates how the call completed.
    */
-  isThrow: boolean,
+  type: MockFunctionResultType,
   /**
    * The value that was either thrown or returned by the function.
+   * Undefined when type === 'incomplete'.
    */
   value: any,
 };
@@ -173,31 +183,36 @@ function matchArity(fn: any, length: number): any {
   return mockConstructor;
 }
 
-function isA(typeName: string, value: any): boolean {
-  return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
+function getObjectType(value: any): string {
+  return Object.prototype.toString.apply(value).slice(8, -1);
 }
 
 function getType(ref?: any): string | null {
+  const typeName = getObjectType(ref);
   if (
-    isA('Function', ref) ||
-    isA('AsyncFunction', ref) ||
-    isA('GeneratorFunction', ref)
+    typeName === 'Function' ||
+    typeName === 'AsyncFunction' ||
+    typeName === 'GeneratorFunction'
   ) {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
-  } else if (isA('Object', ref)) {
+  } else if (typeName === 'Object') {
     return 'object';
   } else if (
-    isA('Number', ref) ||
-    isA('String', ref) ||
-    isA('Boolean', ref) ||
-    isA('Symbol', ref)
+    typeName === 'Number' ||
+    typeName === 'String' ||
+    typeName === 'Boolean' ||
+    typeName === 'Symbol'
   ) {
     return 'constant';
-  } else if (isA('Map', ref) || isA('WeakMap', ref) || isA('Set', ref)) {
+  } else if (
+    typeName === 'Map' ||
+    typeName === 'WeakMap' ||
+    typeName === 'Set'
+  ) {
     return 'collection';
-  } else if (isA('RegExp', ref)) {
+  } else if (typeName === 'RegExp') {
     return 'regexp';
   } else if (ref === undefined) {
     return 'undefined';
@@ -209,21 +224,31 @@ function getType(ref?: any): string | null {
 }
 
 function isReadonlyProp(object: any, prop: string): boolean {
-  return (
-    ((prop === 'arguments' ||
-      prop === 'caller' ||
-      prop === 'callee' ||
-      prop === 'name' ||
-      prop === 'length') &&
-      (isA('Function', object) ||
-        isA('AsyncFunction', object) ||
-        isA('GeneratorFunction', object))) ||
-    ((prop === 'source' ||
-      prop === 'global' ||
-      prop === 'ignoreCase' ||
-      prop === 'multiline') &&
-      isA('RegExp', object))
-  );
+  if (
+    prop === 'arguments' ||
+    prop === 'caller' ||
+    prop === 'callee' ||
+    prop === 'name' ||
+    prop === 'length'
+  ) {
+    const typeName = getObjectType(object);
+    return (
+      typeName === 'Function' ||
+      typeName === 'AsyncFunction' ||
+      typeName === 'GeneratorFunction'
+    );
+  }
+
+  if (
+    prop === 'source' ||
+    prop === 'global' ||
+    prop === 'ignoreCase' ||
+    prop === 'multiline'
+  ) {
+    return getObjectType(object) === 'RegExp';
+  }
+
+  return false;
 }
 
 class ModuleMockerClass {
@@ -364,6 +389,15 @@ class ModuleMockerClass {
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
+        // Create and record an "incomplete" mock result immediately upon
+        // calling rather than waiting for the mock to return. This avoids
+        // issues caused by recursion where results can be recorded in the
+        // wrong order.
+        const mockResult = {
+          type: 'incomplete',
+          value: undefined,
+        };
+        mockState.results.push(mockResult);
         mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
 
         // Will be set to the return value of the mock if an error is not thrown
@@ -442,11 +476,12 @@ class ModuleMockerClass {
           callDidThrowError = true;
           throw error;
         } finally {
-          // Record the result of the function
-          mockState.results.push({
-            isThrow: callDidThrowError,
-            value: callDidThrowError ? thrownError : finalReturnValue,
-          });
+          // Record the result of the function.
+          // NOTE: Intentionally NOT pushing/indexing into the array of mock
+          //       results here to avoid corrupting results data if mockClear()
+          //       is called during the execution of the mock.
+          mockResult.type = callDidThrowError ? 'throw' : 'return';
+          mockResult.value = callDidThrowError ? thrownError : finalReturnValue;
         }
 
         return finalReturnValue;

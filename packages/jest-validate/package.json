@@ -8,9 +8,13 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
+    "camelcase": "^5.0.0",
     "chalk": "^2.0.1",
     "jest-get-type": "^22.1.0",
     "leven": "^2.1.0",
     "pretty-format": "^23.6.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

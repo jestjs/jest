@@ -20,7 +20,7 @@ import path from 'path';
 import vm from 'vm';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
-import {transform as babelTransform} from 'babel-core';
+import {transformSync as babelTransform} from '@babel/core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
@@ -40,31 +40,47 @@ export type Options = {|
   isInternalModule?: boolean,
 |};
 
-const cache: Map<string, TransformResult> = new Map();
-const configToJsonMap = new Map();
-// Cache regular expressions to test whether the file needs to be preprocessed
-const ignoreCache: WeakMap<ProjectConfig, ?RegExp> = new WeakMap();
+type ProjectCache = {|
+  configString: string,
+  ignorePatternsRegExp: ?RegExp,
+  transformedFiles: Map<string, TransformResult>,
+|};
+
+// This data structure is used to avoid recalculating some data every time that
+// we need to transform a file. Since ScriptTransformer is instantiated for each
+// file we need to keep this object in the local scope of this module.
+const projectCaches: WeakMap<ProjectConfig, ProjectCache> = new WeakMap();
 
 // To reset the cache for specific changesets (rather than package version).
 const CACHE_VERSION = '1';
 
 export default class ScriptTransformer {
   static EVAL_RESULT_VARIABLE: string;
+  _cache: ProjectCache;
   _config: ProjectConfig;
   _transformCache: Map<Path, ?Transformer>;
 
   constructor(config: ProjectConfig) {
     this._config = config;
     this._transformCache = new Map();
+
+    let projectCache = projectCaches.get(config);
+
+    if (!projectCache) {
+      projectCache = {
+        configString: stableStringify(this._config),
+        ignorePatternsRegExp: calcIgnorePatternRegexp(this._config),
+        transformedFiles: new Map(),
+      };
+
+      projectCaches.set(config, projectCache);
+    }
+
+    this._cache = projectCache;
   }
 
   _getCacheKey(fileData: string, filename: Path, instrument: boolean): string {
-    if (!configToJsonMap.has(this._config)) {
-      // We only need this set of config options that can likely influence
-      // cached output instead of all config options.
-      configToJsonMap.set(this._config, stableStringify(this._config));
-    }
-    const configString = configToJsonMap.get(this._config) || '';
+    const configString = this._cache.configString;
     const transformer = this._getTransformer(filename);
 
     if (transformer && typeof transformer.getCacheKey === 'function') {
@@ -72,6 +88,7 @@ export default class ScriptTransformer {
         .createHash('md5')
         .update(
           transformer.getCacheKey(fileData, filename, configString, {
+            config: this._config,
             instrument,
             rootDir: this._config.rootDir,
           }),
@@ -152,9 +169,14 @@ export default class ScriptTransformer {
   }
 
   _instrumentFile(filename: Path, content: string): string {
-    return babelTransform(content, {
+    const result = babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
+      caller: {
+        name: 'jest-runtime',
+        supportsStaticESM: false,
+      },
+      configFile: false,
       filename,
       plugins: [
         [
@@ -168,7 +190,9 @@ export default class ScriptTransformer {
           },
         ],
       ],
-    }).code;
+    });
+
+    return result ? result.code : content;
   }
 
   _getRealPath(filepath: Path): Path {
@@ -187,8 +211,7 @@ export default class ScriptTransformer {
     // Ignore cache if `config.cache` is set (--no-cache)
     let code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
-    const shouldCallTransform =
-      transform && shouldTransform(filename, this._config);
+    const shouldCallTransform = transform && this._shouldTransform(filename);
 
     // That means that the transform has a custom instrumentation
     // logic and will handle it based on `config.collectCoverage` option
@@ -237,6 +260,7 @@ export default class ScriptTransformer {
       //Could be a potential freeze here.
       //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
       const inlineSourceMap = convertSourceMap.fromSource(transformed.code);
+
       if (inlineSourceMap) {
         transformed.map = inlineSourceMap.toJSON();
       }
@@ -286,7 +310,7 @@ export default class ScriptTransformer {
     const willTransform =
       !isInternalModule &&
       !isCoreModule &&
-      (shouldTransform(filename, this._config) || instrument);
+      (this._shouldTransform(filename) || instrument);
 
     try {
       if (willTransform) {
@@ -313,7 +337,7 @@ export default class ScriptTransformer {
       };
     } catch (e) {
       if (e.codeFrame) {
-        e.stack = e.codeFrame;
+        e.stack = e.message + '\n' + e.codeFrame;
       }
 
       if (
@@ -340,7 +364,7 @@ export default class ScriptTransformer {
     if (!options.isCoreModule) {
       instrument = shouldInstrument(filename, options, this._config);
       scriptCacheKey = getScriptCacheKey(filename, instrument);
-      result = cache.get(scriptCacheKey);
+      result = this._cache.transformedFiles.get(scriptCacheKey);
     }
 
     if (result) {
@@ -355,10 +379,19 @@ export default class ScriptTransformer {
     );
 
     if (scriptCacheKey) {
-      cache.set(scriptCacheKey, result);
+      this._cache.transformedFiles.set(scriptCacheKey, result);
     }
 
     return result;
+  }
+
+  _shouldTransform(filename: Path): boolean {
+    const ignoreRegexp = this._cache.ignorePatternsRegExp;
+    const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
+
+    return (
+      !!this._config.transform && !!this._config.transform.length && !isIgnored
+    );
   }
 }
 
@@ -481,24 +514,15 @@ const getScriptCacheKey = (filename, instrument: boolean) => {
   return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };
 
-const shouldTransform = (filename: Path, config: ProjectConfig): boolean => {
-  if (!ignoreCache.has(config)) {
-    if (
-      !config.transformIgnorePatterns ||
-      config.transformIgnorePatterns.length === 0
-    ) {
-      ignoreCache.set(config, null);
-    } else {
-      ignoreCache.set(
-        config,
-        new RegExp(config.transformIgnorePatterns.join('|')),
-      );
-    }
+const calcIgnorePatternRegexp = (config: ProjectConfig): ?RegExp => {
+  if (
+    !config.transformIgnorePatterns ||
+    config.transformIgnorePatterns.length === 0
+  ) {
+    return null;
   }
 
-  const ignoreRegexp = ignoreCache.get(config);
-  const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
-  return !!config.transform && !!config.transform.length && !isIgnored;
+  return new RegExp(config.transformIgnorePatterns.join('|'));
 };
 
 const wrap = content =>

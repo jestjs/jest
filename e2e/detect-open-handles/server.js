@@ -1,7 +1,9 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 'use strict';
 
-const http = require('http');
+import {Server} from 'http';
 
-const app = new http.Server();
+const app = new Server();
 
 app.listen({host: 'localhost', port: 0});

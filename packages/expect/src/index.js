@@ -23,11 +23,11 @@ import type {
 import * as matcherUtils from 'jest-matcher-utils';
 import {iterableEquality, subsetEquality} from './utils';
 import matchers from './matchers';
-import spyMatchers from './spy_matchers';
+import spyMatchers from './spyMatchers';
 import toThrowMatchers, {
   createMatcher as createThrowMatcher,
-} from './to_throw_matchers';
-import {equals} from './jasmine_utils';
+} from './toThrowMatchers';
+import {equals} from './jasmineUtils';
 import {
   any,
   anything,
@@ -39,15 +39,15 @@ import {
   stringNotContaining,
   stringMatching,
   stringNotMatching,
-} from './asymmetric_matchers';
+} from './asymmetricMatchers';
 import {
   INTERNAL_MATCHER_FLAG,
   getState,
   setState,
   getMatchers,
   setMatchers,
-} from './jest_matchers_object';
-import extractExpectedAssertionsErrors from './extract_expected_assertions_errors';
+} from './jestMatchersObject';
+import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 
 class JestAssertionError extends Error {
   matcherResult: any;
@@ -145,16 +145,15 @@ const makeResolveMatcher = (
   const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
-      matcherUtils.matcherHint(matcherStatement, 'received', '') +
-        '\n\n' +
-        `${matcherUtils.RECEIVED_COLOR(
-          'received',
-        )} value must be a Promise.\n` +
+      matcherUtils.matcherErrorMessage(
+        matcherUtils.matcherHint(matcherStatement, undefined, ''),
+        `${matcherUtils.RECEIVED_COLOR('received')} value must be a Promise`,
         matcherUtils.printWithType(
           'Received',
           actual,
           matcherUtils.printReceived,
         ),
+      ),
     );
   }
 
@@ -187,16 +186,15 @@ const makeRejectMatcher = (
   const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
-      matcherUtils.matcherHint(matcherStatement, 'received', '') +
-        '\n\n' +
-        `${matcherUtils.RECEIVED_COLOR(
-          'received',
-        )} value must be a Promise.\n` +
+      matcherUtils.matcherErrorMessage(
+        matcherUtils.matcherHint(matcherStatement, undefined, ''),
+        `${matcherUtils.RECEIVED_COLOR('received')} value must be a Promise`,
         matcherUtils.printWithType(
           'Received',
           actual,
           matcherUtils.printReceived,
         ),
+      ),
     );
   }
 

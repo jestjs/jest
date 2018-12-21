@@ -7,10 +7,10 @@
  * @flow
  */
 
-const path = require('path');
-const fs = require('fs');
-const {makeTemplate, writeFiles, cleanup} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import fs from 'fs';
+import {cleanup, makeTemplate, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../toThrowErrorMatchingSnapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
@@ -84,8 +84,8 @@ test('cannot be used with .not', () => {
 
 test('should support rejecting promises', () => {
   const filename = 'should-support-rejecting-promises.test.js';
-  const template = makeTemplate(`test('should support rejecting promises', async () => {
-      await expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingSnapshot();
+  const template = makeTemplate(`test('should support rejecting promises', () => {
+      return expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingSnapshot();
     });
   `);
 

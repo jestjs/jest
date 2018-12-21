@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import {json as runWithJson} from '../runJest';
 
 describe('Runtime Internal Module Registry', () => {
   // Previously, if Jest required a module (e.g. requiring `mkdirp` from
@@ -22,7 +22,7 @@ describe('Runtime Internal Module Registry', () => {
   // environment, and a "normal" module registry that's used by the actual test
   // code (and can safely be cleared after every test)
   it('correctly makes use of internal module registry when requiring modules', () => {
-    const {json} = runJest.json('runtime-internal-module-registry', []);
+    const {json} = runWithJson('runtime-internal-module-registry', []);
 
     expect(json.numTotalTests).toBe(1);
     expect(json.numPassedTests).toBe(1);

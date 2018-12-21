@@ -15,6 +15,8 @@ Or [`npm`](https://www.npmjs.com/):
 npm install --save-dev jest
 ```
 
+Note: Jest documentation uses `yarn` commands, but `npm` will also work. You can compare `yarn` and `npm` commands in the [yarn docs, here](https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison).
+
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
 ```javascript
@@ -44,7 +46,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `yarn test` and Jest will print this message:
+Finally, run `yarn test` or `npm run test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
@@ -57,7 +59,7 @@ This test used `expect` and `toBe` to test that two values were exactly identica
 
 ## Running from command line
 
-You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `yarn global add jest`) with a variety of useful options.
+You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `yarn global add jest` or `npm install jest --global`) with a variety of useful options.
 
 Here's how to run Jest on files matching `my-test`, using `config.json` as a configuration file and display a native OS notification after the run:
 
@@ -79,37 +81,21 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
+To use [Babel](http://babeljs.io/), install the `babel-jest` and `@babel/core` packages via `yarn`:
 
 ```bash
-yarn add --dev babel-jest babel-core regenerator-runtime
+yarn add --dev babel-jest @babel/core
 ```
 
-> Note: If you are using Babel version 7 then you need to install `babel-jest`, `babel-core@^7.0.0-bridge.0` and `@babel/core` with the following command:
->
-> ```bash
-> yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
-> ```
->
-> You will need to use `babel.config.js` in order to transpile `node_modules`. See https://babeljs.io/docs/en/next/config-files for more information.
->
-> You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/master/examples/babel-7
+Don't forget to add a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and [`@babel/preset-react`](https://babeljs.io/docs/en/babel-preset-react) presets:
 
-_Note: Explicitly installing `regenerator-runtime` is not needed if you use `npm` 3 or 4 or Yarn_
-
-Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://facebook.github.io/react/) with the [`babel-preset-env`](https://babeljs.io/docs/plugins/preset-env/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
-
-```json
-{
-  "presets": ["env", "react"]
-}
+```js
+module.exports = {
+  presets: ['@babel/preset-env', '@babel/preset-react'],
+};
 ```
 
 You are now set up to use all ES6 features and React specific syntax.
-
-> Note: If you are using a more complicated Babel configuration, using Babel's `env` option, keep in mind that Jest will automatically define `NODE_ENV` as `test`. It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
-
-> Note: If you've turned off transpilation of ES6 modules with the option `{ "modules": false }`, you have to make sure to turn this on in your test environment.
 
 ```json
 {
@@ -139,4 +125,6 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 
 ### Using TypeScript
 
-To use TypeScript in your tests you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+Jest supports TypeScript out of the box, via Babel.
+
+However, there are some caveats to using Typescript with Babel, see http://artsy.github.io/blog/2017/11/27/Babel-7-and-TypeScript/. Another caveat is that Jest will not typecheck your tests. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).

@@ -9,13 +9,25 @@ import path from 'path';
 
 module.exports = function createRuntime(filename, config) {
   const NodeEnvironment = require('jest-environment-node');
-  const Runtime = require('../');
+  const Runtime = require('../').default;
 
   const {normalize} = require('jest-config');
 
   config = normalize(
     Object.assign(
       {
+        haste: {
+          hasteImplModulePath: path.resolve(
+            __dirname,
+            '..',
+            '..',
+            '..',
+            'jest-haste-map',
+            'src',
+            '__tests__',
+            'haste_impl.js',
+          ),
+        },
         name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
         rootDir: path.resolve(path.dirname(filename), 'test_root'),
       },

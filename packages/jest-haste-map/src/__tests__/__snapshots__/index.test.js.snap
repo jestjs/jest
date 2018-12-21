@@ -3,25 +3,25 @@
 exports[`HasteMap file system changes processing recovery from duplicate module IDs recovers when the most recent duplicate is fixed 1`] = `
 "The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or blacklist files until there remains only one of these:
 
-  * \`/project/fruits/blueberry.js\` (module)
-  * \`/project/fruits/pear.js\` (module)
+  * \`/project/fruits/Pear.js\` (module)
+  * \`/project/fruits/another/Pear.js\` (module)
 "
 `;
 
 exports[`HasteMap file system changes processing recovery from duplicate module IDs recovers when the oldest version of the duplicates is fixed 1`] = `
 "The name \`Pear\` was looked up in the Haste module map. It cannot be resolved, because there exists several different files, or packages, that provide a module for that particular name and platform. The platform is generic (no extension). You must delete or blacklist files until there remains only one of these:
 
-  * \`/project/fruits/blueberry.js\` (module)
-  * \`/project/fruits/pear.js\` (module)
+  * \`/project/fruits/Pear.js\` (module)
+  * \`/project/fruits/another/Pear.js\` (module)
 "
 `;
 
 exports[`HasteMap throws on duplicate module ids if "throwOnModuleCollision" is set to true 1`] = `
-[Error: jest-haste-map: @providesModule naming collision:
+[Error: jest-haste-map: Haste module naming collision:
   Duplicate module name: Strawberry
-  Paths: /project/fruits/raspberry.js collides with /project/fruits/strawberry.js
+  Paths: /project/fruits/another/Strawberry.js collides with /project/fruits/Strawberry.js
 
-This error is caused by a @providesModule declaration with the same name across two different files.]
+This error is caused by \`hasteImpl\` returning the same name for different files.]
 `;
 
 exports[`HasteMap tries to crawl using node as a fallback 1`] = `
@@ -32,22 +32,22 @@ exports[`HasteMap tries to crawl using node as a fallback 1`] = `
 
 exports[`HasteMap warns on duplicate mock files 1`] = `
 "jest-haste-map: duplicate manual mock found:
-  Module name: subdir/blueberry
-  Duplicate Mock path: /project/fruits2/__mocks__/subdir/blueberry.js
+  Module name: subdir/Blueberry
+  Duplicate Mock path: /project/fruits2/__mocks__/subdir/Blueberry.js
 This warning is caused by two manual mock files with the same file name.
 Jest will use the mock file found in: 
-/project/fruits2/__mocks__/subdir/blueberry.js
+/project/fruits2/__mocks__/subdir/Blueberry.js
  Please delete one of the following two files: 
- /project/fruits1/__mocks__/subdir/blueberry.js
-/project/fruits2/__mocks__/subdir/blueberry.js
+ /project/fruits1/__mocks__/subdir/Blueberry.js
+/project/fruits2/__mocks__/subdir/Blueberry.js
 
 "
 `;
 
 exports[`HasteMap warns on duplicate module ids 1`] = `
-"jest-haste-map: @providesModule naming collision:
+"jest-haste-map: Haste module naming collision:
   Duplicate module name: Strawberry
-  Paths: /project/fruits/raspberry.js collides with /project/fruits/strawberry.js
+  Paths: /project/fruits/other/Strawberry.js collides with /project/fruits/Strawberry.js
 
-This warning is caused by a @providesModule declaration with the same name across two different files."
+This warning is caused by \`hasteImpl\` returning the same name for different files."
 `;

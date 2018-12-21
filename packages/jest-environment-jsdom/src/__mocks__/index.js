@@ -6,7 +6,7 @@
  */
 'use strict';
 
-const vm = require.requireActual('vm');
+const vm = jest.requireActual('vm');
 
 const JSDOMEnvironment = jest.genMockFromModule('../index');
 
@@ -14,7 +14,6 @@ JSDOMEnvironment.mockImplementation(function(config) {
   this.global = {
     JSON,
     console: {},
-    mockClearTimers: jest.fn(),
   };
 
   const globalValues = Object.assign({}, config.globals);

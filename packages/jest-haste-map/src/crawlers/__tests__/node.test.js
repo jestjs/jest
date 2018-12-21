@@ -8,7 +8,7 @@
 
 'use strict';
 
-const ConditionalTest = require('../../../../../scripts/ConditionalTest');
+import {skipSuiteOnWindows} from '../../../../../scripts/ConditionalTest';
 
 jest.mock('child_process', () => ({
   spawn: jest.fn((cmd, args) => {
@@ -76,7 +76,7 @@ let nodeCrawl;
 let childProcess;
 
 describe('node crawler', () => {
-  ConditionalTest.skipSuiteOnWindows();
+  skipSuiteOnWindows();
 
   beforeEach(() => {
     jest.resetModules();

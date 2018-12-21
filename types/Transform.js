@@ -26,6 +26,7 @@ export type TransformOptions = {|
 |};
 
 export type CacheKeyOptions = {|
+  config: ProjectConfig,
   instrument: boolean,
   rootDir: string,
 |};

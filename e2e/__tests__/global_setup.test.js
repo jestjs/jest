@@ -7,11 +7,11 @@
  */
 'use strict';
 
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const runJest = require('../runJest');
-const {cleanup} = require('../Utils');
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import runJest, {json as runWithJson} from '../runJest';
+import {cleanup} from '../Utils';
 
 const DIR = path.join(os.tmpdir(), 'jest-global-setup');
 
@@ -20,7 +20,7 @@ afterAll(() => cleanup(DIR));
 
 test('globalSetup is triggered once before all test suites', () => {
   const setupPath = path.resolve(__dirname, '../global-setup/setup.js');
-  const result = runJest.json('global-setup', [`--globalSetup=${setupPath}`]);
+  const result = runWithJson('global-setup', [`--globalSetup=${setupPath}`]);
   expect(result.status).toBe(0);
   const files = fs.readdirSync(DIR);
   expect(files).toHaveLength(1);

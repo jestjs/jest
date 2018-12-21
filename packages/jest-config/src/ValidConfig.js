@@ -10,13 +10,14 @@
 import type {InitialOptions} from 'types/Config';
 
 import {replacePathSepForRegex} from 'jest-regex-util';
+import {multipleValidOptions} from 'jest-validate';
 import {NODE_MODULES} from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 export default ({
   automock: false,
-  bail: false,
+  bail: (multipleValidOptions(false, 0): any),
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
@@ -39,6 +40,7 @@ export default ({
       statements: 100,
     },
   },
+  dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: 'project-name',
   errorOnDeprecated: false,
   expand: false,
@@ -49,6 +51,7 @@ export default ({
   globalTeardown: 'teardown.js',
   globals: {__DEV__: true},
   haste: {
+    computeSha1: true,
     defaultPlatform: 'ios',
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],
@@ -58,7 +61,7 @@ export default ({
   lastCommit: false,
   logHeapUsage: true,
   moduleDirectories: ['node_modules'],
-  moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
+  moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleLoader: '<rootDir>',
   moduleNameMapper: {
     '^React$': '<rootDir>/node_modules/react',
@@ -87,7 +90,7 @@ export default ({
   runTestsByPath: false,
   runner: 'jest-runner',
   setupFiles: ['<rootDir>/setup.js'],
-  setupTestFrameworkScriptFile: '<rootDir>/testSetupFile.js',
+  setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,
@@ -97,10 +100,13 @@ export default ({
   testEnvironmentOptions: {userAgent: 'Agent/007'},
   testFailureExitCode: 1,
   testLocationInResults: false,
-  testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+  testRegex: multipleValidOptions(
+    '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
+    ['/__tests__/\\.test\\.[jt]sx?$', '/__tests__/\\.spec\\.[jt]sx?$'],
+  ),
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
   testURL: 'http://localhost',

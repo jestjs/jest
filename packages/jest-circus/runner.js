@@ -9,5 +9,5 @@
  */
 
 // Allow people to use `jest-circus/runner` as a runner.
-const runner = require('./build/legacy_code_todo_rewrite/jest_adapter');
+const runner = require('./build/legacy-code-todo-rewrite/jestAdapter');
 module.exports = runner;

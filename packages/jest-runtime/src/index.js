@@ -30,6 +30,7 @@ import ScriptTransformer from './script_transformer';
 import shouldInstrument from './should_instrument';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
+import {findSiblingsWithFileExtension} from './helpers';
 
 type Module = {|
   children: Array<Module>,
@@ -96,7 +97,9 @@ class Runtime {
   _mockFactories: {[key: string]: () => any, __proto__: null};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata, __proto__: null};
   _mockRegistry: {[key: string]: any, __proto__: null};
+  _isolatedMockRegistry: ?{[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
+  _isolatedModuleRegistry: ?ModuleRegistry;
   _moduleRegistry: ModuleRegistry;
   _needsCoverageMapped: Set<string>;
   _resolver: Resolver;
@@ -131,6 +134,7 @@ class Runtime {
     this._mockFactories = Object.create(null);
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
+    this._isolatedModuleRegistry = null;
     this._moduleRegistry = Object.create(null);
     this._needsCoverageMapped = new Set();
     this._resolver = resolver;
@@ -223,13 +227,21 @@ class Runtime {
     config: ProjectConfig,
     options?: HasteMapOptions,
   ): HasteMap {
-    const ignorePattern = new RegExp(
-      [config.cacheDirectory].concat(config.modulePathIgnorePatterns).join('|'),
-    );
+    const ignorePatternParts = [
+      ...config.modulePathIgnorePatterns,
+      config.cacheDirectory.startsWith(config.rootDir + path.sep) &&
+        config.cacheDirectory,
+    ].filter(Boolean);
+    const ignorePattern =
+      ignorePatternParts.length > 0
+        ? new RegExp(ignorePatternParts.join('|'))
+        : null;
 
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
+      computeSha1: config.haste.computeSha1,
       console: options && options.console,
+      dependencyExtractor: config.dependencyExtractor,
       extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
@@ -282,11 +294,6 @@ class Runtime {
     );
     let modulePath;
 
-    const moduleRegistry =
-      !options || !options.isInternalModule
-        ? this._moduleRegistry
-        : this._internalModuleRegistry;
-
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
     const moduleResource = moduleName && this._resolver.getModule(moduleName);
@@ -308,6 +315,18 @@ class Runtime {
 
     if (!modulePath) {
       modulePath = this._resolveModule(from, moduleName);
+    }
+
+    let moduleRegistry;
+
+    if (!options || !options.isInternalModule) {
+      if (this._moduleRegistry[modulePath] || !this._isolatedModuleRegistry) {
+        moduleRegistry = this._moduleRegistry;
+      } else {
+        moduleRegistry = this._isolatedModuleRegistry;
+      }
+    } else {
+      moduleRegistry = this._internalModuleRegistry;
     }
 
     if (!moduleRegistry[modulePath]) {
@@ -351,12 +370,16 @@ class Runtime {
       moduleName,
     );
 
-    if (this._mockRegistry[moduleID]) {
+    if (this._isolatedMockRegistry && this._isolatedMockRegistry[moduleID]) {
+      return this._isolatedMockRegistry[moduleID];
+    } else if (this._mockRegistry[moduleID]) {
       return this._mockRegistry[moduleID];
     }
 
+    const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
+
     if (moduleID in this._mockFactories) {
-      return (this._mockRegistry[moduleID] = this._mockFactories[moduleID]());
+      return (mockRegistry[moduleID] = this._mockFactories[moduleID]());
     }
 
     let manualMock = this._resolver.getMockModule(from, moduleName);
@@ -400,43 +423,75 @@ class Runtime {
 
       // Only include the fromPath if a moduleName is given. Else treat as root.
       const fromPath = moduleName ? from : null;
-      this._execModule(localModule, undefined, this._mockRegistry, fromPath);
-      this._mockRegistry[moduleID] = localModule.exports;
+      this._execModule(localModule, undefined, mockRegistry, fromPath);
+      mockRegistry[moduleID] = localModule.exports;
       localModule.loaded = true;
     } else {
       // Look for a real module to generate an automock from
-      this._mockRegistry[moduleID] = this._generateMock(from, moduleName);
+      mockRegistry[moduleID] = this._generateMock(from, moduleName);
     }
 
-    return this._mockRegistry[moduleID];
+    return mockRegistry[moduleID];
   }
 
   requireModuleOrMock(from: Path, moduleName: string) {
-    if (this._shouldMock(from, moduleName)) {
-      return this.requireMock(from, moduleName);
-    } else {
-      return this.requireModule(from, moduleName);
+    try {
+      if (this._shouldMock(from, moduleName)) {
+        return this.requireMock(from, moduleName);
+      } else {
+        return this.requireModule(from, moduleName);
+      }
+    } catch (e) {
+      if (e.code === 'MODULE_NOT_FOUND') {
+        const appendedMessage = findSiblingsWithFileExtension(
+          this._config.moduleFileExtensions,
+          from,
+          moduleName,
+        );
+
+        if (appendedMessage) {
+          e.message += appendedMessage;
+        }
+      }
+      throw e;
     }
   }
 
+  isolateModules(fn: () => void) {
+    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
+      throw new Error(
+        'isolateModules cannot be nested inside another isolateModules.',
+      );
+    }
+    this._isolatedModuleRegistry = Object.create(null);
+    this._isolatedMockRegistry = Object.create(null);
+    fn();
+    this._isolatedModuleRegistry = null;
+    this._isolatedMockRegistry = null;
+  }
+
   resetModules() {
+    this._isolatedModuleRegistry = null;
+    this._isolatedMockRegistry = null;
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
 
-    if (this._environment && this._environment.global) {
-      const envGlobal = this._environment.global;
-      Object.keys(envGlobal).forEach(key => {
-        const globalMock = envGlobal[key];
-        if (
-          (typeof globalMock === 'object' && globalMock !== null) ||
-          typeof globalMock === 'function'
-        ) {
-          globalMock._isMockFunction === true && globalMock.mockClear();
-        }
-      });
+    if (this._environment) {
+      if (this._environment.global) {
+        const envGlobal = this._environment.global;
+        Object.keys(envGlobal).forEach(key => {
+          const globalMock = envGlobal[key];
+          if (
+            (typeof globalMock === 'object' && globalMock !== null) ||
+            typeof globalMock === 'function'
+          ) {
+            globalMock._isMockFunction === true && globalMock.mockClear();
+          }
+        });
+      }
 
-      if (envGlobal.mockClearTimers) {
-        envGlobal.mockClearTimers();
+      if (this._environment.fakeTimers) {
+        this._environment.fakeTimers.clearAllTimers();
       }
     }
   }
@@ -876,6 +931,10 @@ class Runtime {
       this.resetModules();
       return jestObject;
     };
+    const isolateModules = (fn: () => void) => {
+      this.isolateModules(fn);
+      return jestObject;
+    };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
@@ -910,7 +969,9 @@ class Runtime {
       fn,
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
+      getTimerCount: () => this._environment.fakeTimers.getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
+      isolateModules,
       mock,
       requireActual: localRequire.requireActual,
       requireMock: localRequire.requireMock,
@@ -939,4 +1000,5 @@ class Runtime {
 }
 
 Runtime.ScriptTransformer = ScriptTransformer;
-module.exports = Runtime;
+
+export default Runtime;

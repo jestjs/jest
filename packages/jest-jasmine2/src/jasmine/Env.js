@@ -31,16 +31,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
-import queueRunner from '../queue_runner';
-import treeProcessor from '../tree_processor';
-import checkIsError from '../is_error';
-import assertionErrorMessage from '../assert_support';
+import queueRunner from '../queueRunner';
+import treeProcessor from '../treeProcessor';
+import isError from '../isError';
+import assertionErrorMessage from '../assertionErrorMessage';
 import {ErrorWithStack} from 'jest-util';
-
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test. Async functions return it implicitly.
-// eslint-disable-next-line no-unused-vars
-const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
 
 export default function(j$) {
   function Env(options) {
@@ -325,6 +320,16 @@ export default function(j$) {
 
     this.describe = function(description, specDefinitions) {
       const suite = suiteFactory(description);
+      if (specDefinitions === undefined) {
+        throw new Error(
+          `Missing second argument. It must be a callback function.`,
+        );
+      }
+      if (typeof specDefinitions !== 'function') {
+        throw new Error(
+          `Invalid second argument, ${specDefinitions}. It must be a callback function.`,
+        );
+      }
       if (specDefinitions.length > 0) {
         throw new Error('describe does not expect any arguments');
       }
@@ -568,16 +573,16 @@ export default function(j$) {
     };
 
     this.fail = function(error) {
-      let isError;
+      let checkIsError;
       let message;
 
       if (error instanceof AssertionError) {
-        isError = false;
+        checkIsError = false;
         message = assertionErrorMessage(error, {expand: j$.Spec.expand});
       } else {
-        const check = checkIsError(error);
+        const check = isError(error);
 
-        isError = check.isError;
+        checkIsError = check.isError;
         message = check.message;
       }
 
@@ -587,7 +592,7 @@ export default function(j$) {
         expected: '',
         actual: '',
         message,
-        error: isError ? error : new Error(message),
+        error: checkIsError ? error : new Error(message),
       });
     };
   }

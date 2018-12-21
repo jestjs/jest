@@ -17,14 +17,14 @@ import type {
   TestWatcher,
 } from 'types/TestRunner';
 
-import typeof {worker} from './test_worker';
+import typeof {worker} from './testWorker';
 
 import exit from 'exit';
-import runTest from './run_test';
+import runTest from './runTest';
 import throat from 'throat';
 import Worker from 'jest-worker';
 
-const TEST_WORKER_PATH = require.resolve('./test_worker');
+const TEST_WORKER_PATH = require.resolve('./testWorker');
 
 type WorkerInterface = Worker & {worker: worker};
 
@@ -97,10 +97,13 @@ class TestRunner {
     // $FlowFixMe: class object is augmented with worker when instantiating.
     const worker: WorkerInterface = new Worker(TEST_WORKER_PATH, {
       exposedMethods: ['worker'],
-      forkOptions: {stdio: 'inherit'},
+      forkOptions: {stdio: 'pipe'},
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
     });
+
+    if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
+    if (worker.getStderr()) worker.getStderr().pipe(process.stderr);
 
     const mutex = throat(this._globalConfig.maxWorkers);
 

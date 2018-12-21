@@ -8,10 +8,10 @@
 
 'use strict';
 
-const path = require('path');
-const {extractSummary, cleanup, writeFiles} = require('../Utils');
-const runJest = require('../runJest');
-const ConditionalTest = require('../../scripts/ConditionalTest');
+import path from 'path';
+import {cleanup, extractSummary, writeFiles} from '../Utils';
+import runJest from '../runJest';
+import {skipSuiteOnJestCircus} from '../../scripts/ConditionalTest';
 
 /**
  * NOTE: This test should be removed once jest-circus is rolled out as a breaking change.
@@ -19,7 +19,7 @@ const ConditionalTest = require('../../scripts/ConditionalTest');
 
 const DIR = path.resolve(__dirname, '../timeouts-legacy');
 
-ConditionalTest.skipSuiteOnJestCircus();
+skipSuiteOnJestCircus();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));

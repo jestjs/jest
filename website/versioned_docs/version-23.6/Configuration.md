@@ -188,7 +188,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `coverageReporters` [array<string>]
 
-Default: `["json", "lcov", "text"]`
+Default: `["json", "lcov", "text", "clover"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib) can be used.
 
@@ -238,7 +238,7 @@ For example, with the following configuration:
         "statements": 40
       },
       "./src/reducers/**/*.js": {
-        "statements": 90,
+        "statements": 90
       },
       "./src/api/very-important-module.js": {
         "branches": 100,
@@ -629,9 +629,9 @@ If you need to restrict your test-runner to only run in serial rather then being
 
 Default: `[]`
 
-The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
+The paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
-It's worth noting that this code will execute _before_ [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
+It's also worth noting that `setupFiles` will execute _before_ [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
 
 ### `setupTestFrameworkScriptFile` [string]
 
@@ -755,6 +755,8 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+
+module.exports = CustomEnvironment;
 ```
 
 ```js
@@ -879,7 +881,7 @@ An example of such function can be found in our default [jasmine2 test runner pa
 
 ### `testURL` [string]
 
-Default: `about:blank`
+Default: `http://localhost`
 
 This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
 
@@ -936,3 +938,17 @@ Default: `[]`
 An array of RegExp patterns that are matched against all source file paths before re-running tests in watch mode. If the file path matches any of the patterns, when it is updated, it will not trigger a re-run of tests.
 
 These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
+
+### `watchPlugins` [array<string | [string, Object]>]
+
+Default: `[]`
+
+This option allows you to use a custom watch plugins. Read more about watch plugins [here](watch-plugins).
+
+Examples of watch plugins include:
+
+- [`jest-watch-master`](https://github.com/rickhanlonii/jest-watch-master)
+- [`jest-watch-select-projects`](https://github.com/rogeliog/jest-watch-select-projects)
+- [`jest-watch-suspend`](https://github.com/unional/jest-watch-suspend)
+- [`jest-watch-typeahead`](https://github.com/jest-community/jest-watch-typeahead)
+- [`jest-watch-yarn-workspaces`](https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces)

@@ -81,6 +81,21 @@ you can use:
 npm test -- -u -t="ColorPicker"
 ```
 
+## Camelcase & dashed args support
+
+Jest supports both camelcase and dashed arg formats. The following examples will have equal result:
+
+```bash
+jest --collect-coverage
+jest --collectCoverage
+```
+
+Arguments can also be mixed:
+
+```bash
+jest --update-snapshot --detectOpenHandles
+```
+
 ## Options
 
 _Note: CLI options take precedence over values from the [Configuration](Configuration.md)._
@@ -97,7 +112,7 @@ When you run `jest` with an argument, that argument is treated as a regular expr
 
 ### `--bail`
 
-Alias: `-b`. Exit the test suite immediately upon the first failing test suite.
+Alias: `-b`. Exit the test suite immediately upon `n` number of failing test suite. Defaults to `1`.
 
 ### `--cache`
 
@@ -131,7 +146,7 @@ Forces test results output highlighting even if stdout is not a TTY.
 
 ### `--config=<path>`
 
-Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the current directory is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
+Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
 
 ### `--coverage`
 
@@ -193,9 +208,11 @@ Lists all tests as JSON that Jest will run given the arguments, and exits. This 
 
 Logs the heap usage after every test. Useful to debug memory leaks. Use together with `--runInBand` and `--expose-gc` in node.
 
-### `--maxWorkers=<num>`
+### `--maxWorkers=<num>|<string>`
 
 Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. This defaults to the number of the cores available on your machine. It may be useful to adjust this in resource limited environments like CIs but the default should be adequate for most use-cases.
+
+For environments with variable CPUs available, you can use percentage based configuration: `--maxWorkers=50%`
 
 ### `--noStackTrace`
 
@@ -267,6 +284,10 @@ Note that `column` is 0-indexed while `line` is not.
 ### `--testPathPattern=<regex>`
 
 A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
+
+### `--testPathIgnorePatterns=[array]`
+
+An array of regexp pattern strings that is tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those test with a path that does not match with the provided regexp expressions.
 
 ### `--testRunner=<path>`
 

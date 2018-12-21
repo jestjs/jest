@@ -11,6 +11,7 @@ export type Path = string;
 export type Glob = string;
 
 export type HasteConfig = {|
+  computeSha1?: boolean,
   defaultPlatform?: ?string,
   hasteImplModulePath?: string,
   platforms?: Array<string>,
@@ -23,7 +24,7 @@ export type ConfigGlobals = Object;
 
 export type DefaultOptions = {|
   automock: boolean,
-  bail: boolean,
+  bail: number,
   browser: boolean,
   cache: boolean,
   cacheDirectory: Path,
@@ -35,6 +36,8 @@ export type DefaultOptions = {|
   coveragePathIgnorePatterns: Array<string>,
   coverageReporters: Array<string>,
   coverageThreshold: ?{global: {[key: string]: number}},
+  cwd: Path,
+  dependencyExtractor: ?string,
   errorOnDeprecated: boolean,
   expand: boolean,
   filter: ?Path,
@@ -64,7 +67,7 @@ export type DefaultOptions = {|
   runner: string,
   runTestsByPath: boolean,
   setupFiles: Array<Path>,
-  setupTestFrameworkScriptFile: ?Path,
+  setupFilesAfterEnv: Array<Path>,
   skipFilter: boolean,
   snapshotSerializers: Array<Path>,
   testEnvironment: string,
@@ -73,7 +76,7 @@ export type DefaultOptions = {|
   testLocationInResults: boolean,
   testMatch: Array<Glob>,
   testPathIgnorePatterns: Array<string>,
-  testRegex: string,
+  testRegex: Array<string>,
   testResultsProcessor: ?string,
   testRunner: ?string,
   testURL: string,
@@ -89,7 +92,7 @@ export type DefaultOptions = {|
 
 export type InitialOptions = {
   automock?: boolean,
-  bail?: boolean,
+  bail?: boolean | number,
   browser?: boolean,
   cache?: boolean,
   cacheDirectory?: Path,
@@ -103,6 +106,7 @@ export type InitialOptions = {
   coveragePathIgnorePatterns?: Array<string>,
   coverageReporters?: Array<string>,
   coverageThreshold?: {global: {[key: string]: number}},
+  dependencyExtractor?: string,
   detectLeaks?: boolean,
   detectOpenHandles?: boolean,
   displayName?: string,
@@ -150,6 +154,7 @@ export type InitialOptions = {
   scriptPreprocessor?: string,
   setupFiles?: Array<Path>,
   setupTestFrameworkScriptFile?: Path,
+  setupFilesAfterEnv?: Array<Path>,
   silent?: boolean,
   skipFilter?: boolean,
   skipNodeResolution?: boolean,
@@ -164,7 +169,7 @@ export type InitialOptions = {
   testNamePattern?: string,
   testPathDirs?: Array<Path>,
   testPathIgnorePatterns?: Array<string>,
-  testRegex?: string,
+  testRegex?: string | Array<string>,
   testResultsProcessor?: ?string,
   testRunner?: string,
   testURL?: string,
@@ -185,7 +190,7 @@ export type InitialOptions = {
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
 
 export type GlobalConfig = {|
-  bail: boolean,
+  bail: number,
   changedSince: string,
   changedFilesWithAncestor: boolean,
   collectCoverage: boolean,
@@ -247,6 +252,7 @@ export type ProjectConfig = {|
   clearMocks: boolean,
   coveragePathIgnorePatterns: Array<string>,
   cwd: Path,
+  dependencyExtractor?: string,
   detectLeaks: boolean,
   detectOpenHandles: boolean,
   displayName: ?string,
@@ -271,7 +277,7 @@ export type ProjectConfig = {|
   roots: Array<Path>,
   runner: string,
   setupFiles: Array<Path>,
-  setupTestFrameworkScriptFile: ?Path,
+  setupFilesAfterEnv: Array<Path>,
   skipFilter: boolean,
   skipNodeResolution: boolean,
   snapshotResolver: ?Path,
@@ -281,7 +287,7 @@ export type ProjectConfig = {|
   testMatch: Array<Glob>,
   testLocationInResults: boolean,
   testPathIgnorePatterns: Array<string>,
-  testRegex: string,
+  testRegex: Array<string>,
   testRunner: string,
   testURL: string,
   timers: 'real' | 'fake',

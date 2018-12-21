@@ -11,11 +11,10 @@ import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 
 import crypto from 'crypto';
 import path from 'path';
-import * as docblock from 'jest-docblock';
 import fs from 'graceful-fs';
 import blacklist from './blacklist';
 import H from './constants';
-import extractRequires from './lib/extract_requires';
+import * as dependencyExtractor from './lib/dependencyExtractor';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
@@ -75,13 +74,19 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
     // Process a random file that is returned as a MODULE.
     if (hasteImpl) {
       id = hasteImpl.getHasteName(filePath);
-    } else {
-      const doc = docblock.parse(docblock.extract(getContent()));
-      id = [].concat(doc.providesModule || doc.provides)[0];
     }
 
     if (computeDependencies) {
-      dependencies = extractRequires(getContent());
+      const content = getContent();
+      dependencies = Array.from(
+        data.dependencyExtractor
+          ? // $FlowFixMe
+            require(data.dependencyExtractor).extract(
+              content,
+              dependencyExtractor.extract,
+            )
+          : dependencyExtractor.extract(content),
+      );
     }
 
     if (id) {
