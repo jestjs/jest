@@ -29,7 +29,7 @@ import SummaryReporter from './reporters/summary_reporter';
 import TestRunner from 'jest-runner';
 import TestWatcher from './TestWatcher';
 import VerboseReporter from './reporters/verbose_reporter';
-import * as testSchedulerHelper from './testSchedulerHelper';
+import {shouldRunInBand} from './testSchedulerHelper';
 
 // The default jest-runner is required because it is the default test runner
 // and required implicitly through the `runner` ProjectConfig option.
@@ -84,7 +84,7 @@ export default class TestScheduler {
       getEstimatedTime(timings, this._globalConfig.maxWorkers) / 1000,
     );
 
-    const runInBand = testSchedulerHelper.shouldRunInBand(
+    const runInBand = shouldRunInBand(
       tests,
       this._globalConfig.watch || this._globalConfig.watchAll,
       this._globalConfig.maxWorkers,
