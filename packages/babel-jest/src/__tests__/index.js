@@ -6,12 +6,6 @@
  */
 const babelJest = require('../index');
 
-//Mock canCompile to always return true
-const babelCore = require('babel-core');
-babelCore.util = {
-  canCompile: () => true,
-};
-
 //Mock data for all the tests
 const sourceString = `
 const sum = (a, b) => a+b;

@@ -66,8 +66,10 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
     !newConfig.testNamePattern &&
     !newConfig.testPathPattern;
 
-  if (options.bail !== undefined) {
-    newConfig.bail = options.bail || false;
+  if (typeof options.bail === 'boolean') {
+    newConfig.bail = options.bail ? 1 : 0;
+  } else if (options.bail !== undefined) {
+    newConfig.bail = options.bail;
   }
 
   if (options.changedSince !== undefined) {

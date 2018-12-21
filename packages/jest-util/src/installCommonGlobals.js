@@ -20,10 +20,23 @@ export default function(globalObject: Global, globals: ConfigGlobals) {
 
   const symbol = globalObject.Symbol;
   // Keep a reference to some globals that Jest needs
-  globalObject[symbol.for('jest-native-promise')] = Promise;
-  globalObject[symbol.for('jest-native-now')] = globalObject.Date.now.bind(
-    globalObject.Date,
-  );
+  Object.defineProperties(globalObject, {
+    [symbol.for('jest-native-promise')]: {
+      enumerable: false,
+      value: Promise,
+      writable: false,
+    },
+    [symbol.for('jest-native-now')]: {
+      enumerable: false,
+      value: globalObject.Date.now.bind(globalObject.Date),
+      writable: false,
+    },
+    'jest-symbol-do-not-touch': {
+      enumerable: false,
+      value: symbol,
+      writable: false,
+    },
+  });
 
   // Forward some APIs.
   DTRACE.forEach(dtrace => {

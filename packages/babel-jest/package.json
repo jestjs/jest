@@ -9,14 +9,14 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "babel-plugin-istanbul": "^4.1.6",
+    "babel-plugin-istanbul": "^5.1.0",
     "babel-preset-jest": "^23.2.0"
   },
   "devDependencies": {
-    "babel-core": "^6.0.0"
+    "@babel/core": "^7.1.0"
   },
   "peerDependencies": {
-    "babel-core": "^6.0.0 || ^7.0.0-0"
+    "@babel/core": "^7.0.0"
   },
   "engines": {
     "node": ">= 6"

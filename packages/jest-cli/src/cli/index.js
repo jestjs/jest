@@ -35,6 +35,7 @@ import logDebugMessages from '../lib/log_debug_messages';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
+    // $FlowFixMe:`allow reduced return
     const argv: Argv = buildArgv(maybeArgv, project);
 
     if (argv.init) {
@@ -174,8 +175,9 @@ const readResultsAndExit = (
   }
 };
 
-const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
-  const argv: Argv = yargs(maybeArgv || process.argv.slice(2))
+export const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
+  const rawArgv: Argv | string[] = maybeArgv || process.argv.slice(2);
+  const argv: Argv = yargs(rawArgv)
     .usage(args.usage)
     .alias('help', 'h')
     .options(args.options)
@@ -185,9 +187,20 @@ const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
   validateCLIOptions(
     argv,
     Object.assign({}, args.options, {deprecationEntries}),
+    // strip leading dashes
+    Array.isArray(rawArgv)
+      ? rawArgv.map(rawArgv => rawArgv.replace(/^--?/, ''))
+      : Object.keys(rawArgv),
   );
 
-  return argv;
+  // strip dashed args
+  return Object.keys(argv).reduce((result, key) => {
+    if (!key.includes('-')) {
+      // $FlowFixMe:`allow reduced return
+      result[key] = argv[key];
+    }
+    return result;
+  }, {});
 };
 
 const getProjectListFromCLIArgs = (argv, project: ?Path) => {

@@ -11,10 +11,7 @@ import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
-import defaultQuestions, {
-  typescriptQuestion,
-  testScriptQuestion,
-} from './questions';
+import defaultQuestions, {testScriptQuestion} from './questions';
 import {NotFoundPackageJsonError, MalformedPackageJsonError} from './errors';
 import {PACKAGE_JSON, JEST_CONFIG} from '../../constants';
 import generateConfigFile from './generate_config_file';
@@ -25,7 +22,6 @@ type PromptsResults = {
   coverage: boolean,
   environment: boolean,
   scripts: boolean,
-  typescript: boolean,
 };
 
 export default async (rootDir: string = process.cwd()) => {
@@ -80,19 +76,6 @@ export default async (rootDir: string = process.cwd()) => {
     projectPackageJson.scripts.test !== 'jest'
   ) {
     questions.unshift(testScriptQuestion);
-  }
-
-  // Try to detect typescript and add a question if needed
-  const deps: Object = {};
-
-  Object.assign(
-    deps,
-    projectPackageJson.dependencies,
-    projectPackageJson.devDependencies,
-  );
-
-  if (Object.keys(deps).includes('typescript')) {
-    questions.unshift(typescriptQuestion);
   }
 
   // Start the init process
