@@ -12,7 +12,7 @@
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
-  bail: false,
+  bail: 0,
   changedFilesWithAncestor: false,
   changedSince: '',
   collectCoverage: false,
@@ -99,7 +99,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   roots: [],
   runner: 'jest-runner',
   setupFiles: [],
-  setupTestFrameworkScriptFile: null,
+  setupFilesAfterEnv: [],
   skipFilter: false,
   skipNodeResolution: false,
   snapshotResolver: null,
@@ -109,7 +109,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   testLocationInResults: false,
   testMatch: [],
   testPathIgnorePatterns: [],
-  testRegex: '.test.js$',
+  testRegex: ['\\.test\\.js$'],
   testRunner: 'jest-jasmine2',
   testURL: '',
   timers: 'real',

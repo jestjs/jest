@@ -7,8 +7,13 @@
 'use strict';
 
 const path = require('path');
+let cacheKey;
 
 module.exports = {
+  getCacheKey() {
+    return cacheKey;
+  },
+
   getHasteName(filename) {
     if (
       filename.includes('__mocks__') ||
@@ -22,5 +27,9 @@ module.exports = {
     return filename
       .substr(filename.lastIndexOf(path.sep) + 1)
       .replace(/(\.(android|ios|native))?\.js$/, '');
+  },
+
+  setCacheKey(key) {
+    cacheKey = key;
   },
 };

@@ -16,12 +16,12 @@ import type Runtime from 'jest-runtime';
 
 import path from 'path';
 import installEach from './each';
-import {installErrorOnPrivate} from './error_on_private';
+import {installErrorOnPrivate} from './errorOnPrivate';
 import {getCallsite} from 'jest-util';
 import JasmineReporter from './reporter';
-import {install as jasmineAsyncInstall} from './jasmine_async';
+import jasmineAsyncInstall from './jasmineAsyncInstall';
 
-const JASMINE = require.resolve('./jasmine/jasmine_light.js');
+const JASMINE = require.resolve('./jasmine/jasmineLight.js');
 
 async function jasmine2(
   globalConfig: GlobalConfig,
@@ -53,6 +53,26 @@ async function jasmine2(
       it.result.__callsite = stack;
 
       return it;
+    };
+
+    const originalXit = environment.global.xit;
+    environment.global.xit = (...args) => {
+      const stack = getCallsite(1, runtime.getSourceMaps());
+      const xit = originalXit(...args);
+
+      xit.result.__callsite = stack;
+
+      return xit;
+    };
+
+    const originalFit = environment.global.fit;
+    environment.global.fit = (...args) => {
+      const stack = getCallsite(1, runtime.getSourceMaps());
+      const fit = originalFit(...args);
+
+      fit.result.__callsite = stack;
+
+      return fit;
     };
   }
 
@@ -97,7 +117,7 @@ async function jasmine2(
   env.addReporter(reporter);
 
   runtime
-    .requireInternalModule(path.resolve(__dirname, './jest_expect.js'))
+    .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
     .default({
       expand: globalConfig.expand,
     });
@@ -127,9 +147,7 @@ async function jasmine2(
       testPath,
     });
 
-  if (config.setupTestFrameworkScriptFile) {
-    runtime.requireModule(config.setupTestFrameworkScriptFile);
-  }
+  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
 
   if (globalConfig.enabledTestsMap) {
     env.specFilter = spec => {

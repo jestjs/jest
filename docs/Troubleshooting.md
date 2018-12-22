@@ -132,7 +132,7 @@ If you are using Facebook's [`create-react-app`](https://github.com/facebookincu
 
 ## Caching Issues
 
-The transform script was changed or babel was updated and the changes aren't being recognized by Jest?
+The transform script was changed or Babel was updated and the changes aren't being recognized by Jest?
 
 Retry with [`--no-cache`](CLI.md#cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
@@ -144,7 +144,7 @@ If a promise doesn't resolve at all, this error might be thrown:
 - Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 ```
 
-Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `global.Promise = require.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
+Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `global.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
 
 If your test is long running, you may want to consider to increase the timeout by calling `jest.setTimeout`
 

@@ -1,5 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Repeated types within multiple valid examples are coalesced in error report 1`] = `
+"<red><bold><bold>●<bold> Validation Error</>:</>
+<red></>
+<red>  Option <bold>\\"foo\\"</> must be of type:</>
+<red>    <bold><green>string<red></> or <bold><green>number<red></></>
+<red>  but instead received:</>
+<red>    <bold><red>boolean<red></></>
+<red></>
+<red>  Example:</>
+<red>  {</>
+<red>    <bold>\\"foo\\"</>: <bold>\\"foo\\"</></>
+<red>  }</>
+<red></>
+<red>  or</>
+<red></>
+<red>  {</>
+<red>    <bold>\\"foo\\"</>: <bold>\\"bar\\"</></>
+<red>  }</>
+<red></>
+<red>  or</>
+<red></>
+<red>  {</>
+<red>    <bold>\\"foo\\"</>: <bold>2</></>
+<red>  }</>
+<red></>"
+`;
+
 exports[`displays warning for deprecated config options 1`] = `
 "<yellow><bold><bold>●<bold> Deprecation Warning</>:</>
 <yellow></>
@@ -103,6 +130,29 @@ exports[`pretty prints valid config for String 1`] = `
 <red>  Example:</>
 <red>  {</>
 <red>    <bold>\\"preset\\"</>: <bold>\\"react-native\\"</></>
+<red>  }</>
+<red></>"
+`;
+
+exports[`reports errors nicely when failing with multiple valid options 1`] = `
+"<red><bold><bold>●<bold> Validation Error</>:</>
+<red></>
+<red>  Option <bold>\\"foo\\"</> must be of type:</>
+<red>    <bold><green>string<red></> or <bold><green>array<red></></>
+<red>  but instead received:</>
+<red>    <bold><red>number<red></></>
+<red></>
+<red>  Example:</>
+<red>  {</>
+<red>    <bold>\\"foo\\"</>: <bold>\\"text\\"</></>
+<red>  }</>
+<red></>
+<red>  or</>
+<red></>
+<red>  {</>
+<red>    <bold>\\"foo\\"</>: <bold>[</></>
+<red><bold>      \\"text\\"</></>
+<red><bold>    ]</></>
 <red>  }</>
 <red></>"
 `;

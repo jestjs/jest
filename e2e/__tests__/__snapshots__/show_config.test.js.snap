@@ -13,6 +13,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         \\"/node_modules/\\"
       ],
       \\"cwd\\": \\"<<REPLACED_ROOT_DIR>>\\",
+      \\"dependencyExtractor\\": null,
       \\"detectLeaks\\": false,
       \\"detectOpenHandles\\": false,
       \\"errorOnDeprecated\\": false,
@@ -20,6 +21,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"forceCoverageMatch\\": [],
       \\"globals\\": {},
       \\"haste\\": {
+        \\"computeSha1\\": false,
         \\"providesModuleNodeModules\\": []
       },
       \\"moduleDirectories\\": [
@@ -29,12 +31,14 @@ exports[`--showConfig outputs config info and exits 1`] = `
         \\"js\\",
         \\"json\\",
         \\"jsx\\",
+        \\"ts\\",
+        \\"tsx\\",
         \\"node\\"
       ],
       \\"moduleNameMapper\\": {},
       \\"modulePathIgnorePatterns\\": [],
       \\"name\\": \\"[md5 hash]\\",
-      \\"prettierPath\\": null,
+      \\"prettierPath\\": \\"prettier\\",
       \\"resetMocks\\": false,
       \\"resetModules\\": false,
       \\"resolver\\": null,
@@ -45,26 +49,26 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       \\"runner\\": \\"jest-runner\\",
       \\"setupFiles\\": [],
-      \\"setupTestFrameworkScriptFile\\": null,
+      \\"setupFilesAfterEnv\\": [],
       \\"skipFilter\\": false,
       \\"snapshotSerializers\\": [],
       \\"testEnvironment\\": \\"jest-environment-jsdom\\",
       \\"testEnvironmentOptions\\": {},
       \\"testLocationInResults\\": false,
       \\"testMatch\\": [
-        \\"**/__tests__/**/*.js?(x)\\",
-        \\"**/?(*.)+(spec|test).js?(x)\\"
+        \\"**/__tests__/**/*.[jt]s?(x)\\",
+        \\"**/?(*.)+(spec|test).[tj]s?(x)\\"
       ],
       \\"testPathIgnorePatterns\\": [
         \\"/node_modules/\\"
       ],
-      \\"testRegex\\": \\"\\",
+      \\"testRegex\\": [],
       \\"testRunner\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js\\",
       \\"testURL\\": \\"http://localhost\\",
       \\"timers\\": \\"real\\",
       \\"transform\\": [
         [
-          \\"^.+\\\\\\\\.jsx?$\\",
+          \\"^.+\\\\\\\\.[jt]sx?$\\",
           \\"<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js\\"
         ]
       ],
@@ -75,7 +79,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     }
   ],
   \\"globalConfig\\": {
-    \\"bail\\": false,
+    \\"bail\\": 0,
     \\"changedFilesWithAncestor\\": false,
     \\"collectCoverage\\": false,
     \\"collectCoverageFrom\\": null,

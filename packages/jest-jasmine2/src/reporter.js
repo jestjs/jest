@@ -16,10 +16,6 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test.
-const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
-
 import {formatResultsErrors} from 'jest-message-util';
 
 type Suite = {

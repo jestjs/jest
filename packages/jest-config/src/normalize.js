@@ -8,7 +8,13 @@
  */
 
 import type {Argv} from 'types/Argv';
-import type {InitialOptions, ReporterConfig} from 'types/Config';
+import type {
+  InitialOptions,
+  DefaultOptions,
+  ReporterConfig,
+  GlobalConfig,
+  ProjectConfig,
+} from 'types/Config';
 
 import crypto from 'crypto';
 import glob from 'glob';
@@ -28,6 +34,8 @@ import {
   _replaceRootDirTags,
   escapeGlobCharacters,
   getTestEnvironment,
+  getRunner,
+  getWatchPlugin,
   resolve,
 } from './utils';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
@@ -129,6 +137,10 @@ const setupBabelJest = (options: InitialOptions) => {
       const regex = new RegExp(pattern);
       return regex.test('a.js') || regex.test('a.jsx');
     });
+    const customTSPattern = Object.keys(transform).find(pattern => {
+      const regex = new RegExp(pattern);
+      return regex.test('a.ts') || regex.test('a.tsx');
+    });
 
     if (customJSPattern) {
       const customJSTransformer = transform[customJSPattern];
@@ -138,6 +150,17 @@ const setupBabelJest = (options: InitialOptions) => {
         transform[customJSPattern] = babelJest;
       } else if (customJSTransformer.includes('babel-jest')) {
         babelJest = customJSTransformer;
+      }
+    }
+
+    if (customTSPattern) {
+      const customTSTransformer = transform[customTSPattern];
+
+      if (customTSTransformer === 'babel-jest') {
+        babelJest = require.resolve('babel-jest');
+        transform[customTSPattern] = babelJest;
+      } else if (customTSTransformer.includes('babel-jest')) {
+        babelJest = customTSTransformer;
       }
     }
   } else {
@@ -367,12 +390,37 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     ),
   );
 
+  if (!options.setupFilesAfterEnv) {
+    options.setupFilesAfterEnv = [];
+  }
+
+  if (
+    options.setupTestFrameworkScriptFile &&
+    options.setupFilesAfterEnv.length > 0
+  ) {
+    throw createConfigError(
+      `  Options: ${chalk.bold(
+        'setupTestFrameworkScriptFile',
+      )} and ${chalk.bold('setupFilesAfterEnv')} cannot be used together.
+  Please change your configuration to only use ${chalk.bold(
+    'setupFilesAfterEnv',
+  )}.`,
+    );
+  }
+
+  if (options.setupTestFrameworkScriptFile) {
+    options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
+  }
+
   if (options.preset) {
     options = setupPreset(options, options.preset);
   }
 
   if (options.testEnvironment) {
-    options.testEnvironment = getTestEnvironment(options);
+    options.testEnvironment = getTestEnvironment({
+      rootDir: options.rootDir,
+      testEnvironment: options.testEnvironment,
+    });
   }
 
   if (!options.roots && options.testPathDirs) {
@@ -392,9 +440,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   }
 
   const babelJest = setupBabelJest(options);
-  const newOptions = Object.assign({}, DEFAULT_CONFIG);
-  // Cast back to exact type
-  options = (options: InitialOptions);
+  const newOptions: $Shape<
+    DefaultOptions & ProjectConfig & GlobalConfig,
+  > = (Object.assign({}, DEFAULT_CONFIG): any);
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -404,7 +452,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     });
   }
 
-  Object.keys(options).reduce((newOptions, key) => {
+  Object.keys(options).reduce((newOptions, key: $Keys<InitialOptions>) => {
     // The resolver has been resolved separately; skip it
     if (key === 'resolver') {
       return newOptions;
@@ -415,6 +463,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeCollectCoverageOnlyFrom(options, key);
         break;
       case 'setupFiles':
+      case 'setupFilesAfterEnv':
       case 'snapshotSerializers':
         value =
           options[key] &&
@@ -449,11 +498,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
             replaceRootDirInPath(options.rootDir, options[key]),
           );
         break;
+      case 'dependencyExtractor':
       case 'globalSetup':
       case 'globalTeardown':
       case 'moduleLoader':
-      case 'runner':
-      case 'setupTestFrameworkScriptFile':
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
@@ -463,6 +511,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           resolve(newOptions.resolver, {
             filePath: options[key],
             key,
+            rootDir: options.rootDir,
+          });
+        break;
+      case 'runner':
+        value =
+          options[key] &&
+          getRunner(newOptions.resolver, {
+            filePath: options[key],
             rootDir: options.rootDir,
           });
         break;
@@ -524,11 +580,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'projects':
         value = (options[key] || [])
-          .map(
-            project =>
-              typeof project === 'string'
-                ? _replaceRootDirTags(options.rootDir, project)
-                : project,
+          .map(project =>
+            typeof project === 'string'
+              ? _replaceRootDirTags(options.rootDir, project)
+              : project,
           )
           .reduce((projects, project) => {
             // Project can be specified as globs. If a glob matches any files,
@@ -547,7 +602,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         );
         break;
       case 'testRegex':
-        value = options[key] && replacePathSepForRegex(options[key]);
+        value = options[key]
+          ? [].concat(options[key]).map(replacePathSepForRegex)
+          : [];
         break;
       case 'moduleFileExtensions': {
         value = options[key];
@@ -575,8 +632,21 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
         break;
       }
+      case 'bail': {
+        if (typeof options[key] === 'boolean') {
+          value = options[key] ? 1 : 0;
+        } else if (typeof options[key] === 'string') {
+          value = 1;
+          // If Jest is invoked as `jest --bail someTestPattern` then need to
+          // move the pattern from the `bail` configuration and into `argv._`
+          // to be processed as an extra parameter
+          argv._.push(options[key]);
+        } else {
+          value = options[key];
+        }
+        break;
+      }
       case 'automock':
-      case 'bail':
       case 'browser':
       case 'cache':
       case 'changedSince':
@@ -634,18 +704,16 @@ export default function normalize(options: InitialOptions, argv: Argv) {
           if (typeof watchPlugin === 'string') {
             return {
               config: {},
-              path: resolve(newOptions.resolver, {
+              path: getWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
-                key,
                 rootDir: options.rootDir,
               }),
             };
           } else {
             return {
               config: watchPlugin[1] || {},
-              path: resolve(newOptions.resolver, {
+              path: getWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
-                key,
                 rootDir: options.rootDir,
               }),
             };
@@ -653,6 +721,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         });
         break;
     }
+    // $FlowFixMe - automock is missing in GlobalConfig, so what
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
@@ -685,8 +754,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     argv.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-        ? 'all'
-        : 'new';
+      ? 'all'
+      : 'new';
 
   newOptions.maxWorkers = getMaxWorkers(argv);
 
@@ -701,14 +770,14 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     }
   }
 
-  if (options.testRegex && options.testMatch) {
+  if (newOptions.testRegex.length && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
         ` ${chalk.bold('testRegex')} cannot be used together.`,
     );
   }
 
-  if (options.testRegex && !options.testMatch) {
+  if (newOptions.testRegex.length && !options.testMatch) {
     // Prevent the default testMatch conflicting with any explicitly
     // configured `testRegex` value
     newOptions.testMatch = [];

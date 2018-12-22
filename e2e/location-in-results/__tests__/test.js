@@ -7,12 +7,30 @@
 // This file is missing 'use strict' to force babel into doing something
 // as we have `transform-strict-mode`
 
-it('no ancestors', () => {
+/* eslint jest/no-focused-tests: 0 */
+
+it('it no ancestors', () => {
+  expect(true).toBeTruthy();
+});
+
+xit('xit no ancestors', () => {
+  expect(true).toBeTruthy();
+});
+
+fit('fit no ancestors', () => {
   expect(true).toBeTruthy();
 });
 
 describe('nested', () => {
-  it('also works', () => {
+  it('it nested', () => {
+    expect(true).toBeTruthy();
+  });
+
+  xit('xit nested', () => {
+    expect(true).toBeTruthy();
+  });
+
+  fit('fit nested', () => {
     expect(true).toBeTruthy();
   });
 });

@@ -12,7 +12,7 @@ import {
   isA,
   isImmutableUnorderedKeyed,
   isImmutableUnorderedSet,
-} from './jasmine_utils';
+} from './jasmineUtils';
 
 type GetPath = {
   hasEndProp?: boolean,
@@ -21,9 +21,17 @@ type GetPath = {
   value?: any,
 };
 
-export const hasOwnProperty = (object: Object, value: string) =>
-  Object.prototype.hasOwnProperty.call(object, value) ||
-  Object.prototype.hasOwnProperty.call(object.constructor.prototype, value);
+export const hasOwnProperty = (object: Object, value: string) => {
+  // Account for objects created using unconventional means such as
+  // `Object.create(null)`, in which case the `object.constructor` is undefined
+  // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create#Custom_and_Null_objects
+  const objectConstructor = object.constructor || Object;
+
+  return (
+    Object.prototype.hasOwnProperty.call(object, value) ||
+    Object.prototype.hasOwnProperty.call(objectConstructor.prototype, value)
+  );
+};
 
 export const getPath = (
   object: Object,
@@ -213,7 +221,7 @@ export const subsetEquality = (object: Object, subset: Object) => {
 };
 
 export const typeEquality = (a: any, b: any) => {
-  if (a == null || b == null || a.constructor.name === b.constructor.name) {
+  if (a == null || b == null || a.constructor === b.constructor) {
     return undefined;
   }
 

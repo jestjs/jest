@@ -8,7 +8,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "babel-types": "^6.0.0",
+    "@babel/types": "^7.0.0",
     "chalk": "^2.0.1",
     "jest-diff": "^23.6.0",
     "jest-matcher-utils": "^23.6.0",
@@ -21,5 +21,8 @@
   },
   "devDependencies": {
     "prettier": "^1.13.4"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

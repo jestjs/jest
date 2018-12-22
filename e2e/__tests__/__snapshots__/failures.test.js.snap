@@ -13,9 +13,7 @@ exports[`not throwing Error objects 2`] = `
 "FAIL __tests__/throw_string.test.js
   ● Test suite failed to run
 
-    Error
-
-      banana
+    banana
 
 "
 `;
@@ -136,43 +134,43 @@ exports[`not throwing Error objects 5`] = `
 
     thrown: Promise {}
 
-       5 | };
-       6 | 
-    >  7 | test('Promise thrown during test', () => {
+       7 | };
+       8 | 
+    >  9 | test('Promise thrown during test', () => {
          | ^
-       8 |   throw Promise.resolve(5);
-       9 | });
-      10 | 
+      10 |   throw Promise.resolve(5);
+      11 | });
+      12 | 
 
-      at __tests__/during_tests.test.js:7:1
+      at __tests__/during_tests.test.js:9:1
 
   ● Boolean thrown during test
 
     thrown: false
 
-       9 | });
-      10 | 
-    > 11 | test('Boolean thrown during test', () => {
+      11 | });
+      12 | 
+    > 13 | test('Boolean thrown during test', () => {
          | ^
-      12 |   // eslint-disable-next-line no-throw-literal
-      13 |   throw false;
-      14 | });
+      14 |   // eslint-disable-next-line no-throw-literal
+      15 |   throw false;
+      16 | });
 
-      at __tests__/during_tests.test.js:11:1
+      at __tests__/during_tests.test.js:13:1
 
   ● undefined thrown during test
 
     thrown: undefined
 
-      14 | });
-      15 | 
-    > 16 | test('undefined thrown during test', () => {
+      16 | });
+      17 | 
+    > 18 | test('undefined thrown during test', () => {
          | ^
-      17 |   // eslint-disable-next-line no-throw-literal
-      18 |   throw undefined;
-      19 | });
+      19 |   // eslint-disable-next-line no-throw-literal
+      20 |   throw undefined;
+      21 | });
 
-      at __tests__/during_tests.test.js:16:1
+      at __tests__/during_tests.test.js:18:1
 
   ● Object thrown during test
 
@@ -185,43 +183,43 @@ exports[`not throwing Error objects 5`] = `
       ],
     }
 
-      19 | });
-      20 | 
-    > 21 | test('Object thrown during test', () => {
+      21 | });
+      22 | 
+    > 23 | test('Object thrown during test', () => {
          | ^
-      22 |   // eslint-disable-next-line no-throw-literal
-      23 |   throw deepObject;
-      24 | });
+      24 |   // eslint-disable-next-line no-throw-literal
+      25 |   throw deepObject;
+      26 | });
 
-      at __tests__/during_tests.test.js:21:1
+      at __tests__/during_tests.test.js:23:1
 
   ● Error during test
 
     ReferenceError: doesNotExist is not defined
 
-      26 | test('Error during test', () => {
-      27 |   // eslint-disable-next-line no-undef
-    > 28 |   doesNotExist.alsoThisNot;
+      28 | test('Error during test', () => {
+      29 |   // eslint-disable-next-line no-undef
+    > 30 |   doesNotExist.alsoThisNot;
          |   ^
-      29 | });
-      30 | 
-      31 | test('done(Error)', done => {
+      31 | });
+      32 | 
+      33 | test('done(Error)', done => {
 
-      at __tests__/during_tests.test.js:28:3
+      at __tests__/during_tests.test.js:30:3
 
   ● done(Error)
 
     this is an error
 
-      30 | 
-      31 | test('done(Error)', done => {
-    > 32 |   done(new Error('this is an error'));
+      32 | 
+      33 | test('done(Error)', done => {
+    > 34 |   done(new Error('this is an error'));
          |        ^
-      33 | });
-      34 | 
-      35 | test('done(non-error)', done => {
+      35 | });
+      36 | 
+      37 | test('done(non-error)', done => {
 
-      at __tests__/during_tests.test.js:32:8
+      at __tests__/during_tests.test.js:34:8
 
   ● done(non-error)
 
@@ -234,15 +232,15 @@ exports[`not throwing Error objects 5`] = `
       ],
     }
 
-      34 | 
-      35 | test('done(non-error)', done => {
-    > 36 |   done(deepObject);
+      36 | 
+      37 | test('done(non-error)', done => {
+    > 38 |   done(deepObject);
          |   ^
-      37 | });
-      38 | 
-      39 | test('returned promise rejection', () => Promise.reject(deepObject));
+      39 | });
+      40 | 
+      41 | test('returned promise rejection', () => Promise.reject(deepObject));
 
-      at __tests__/during_tests.test.js:36:3
+      at __tests__/during_tests.test.js:38:3
 
   ● returned promise rejection
 
@@ -255,13 +253,13 @@ exports[`not throwing Error objects 5`] = `
       ],
     }
 
-      37 | });
-      38 | 
-    > 39 | test('returned promise rejection', () => Promise.reject(deepObject));
-         | ^
+      39 | });
       40 | 
+    > 41 | test('returned promise rejection', () => Promise.reject(deepObject));
+         | ^
+      42 | 
 
-      at __tests__/during_tests.test.js:39:1
+      at __tests__/during_tests.test.js:41:1
 
 "
 `;
@@ -387,8 +385,8 @@ exports[`works with async failures 1`] = `
     > 21 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
          |   ^
       22 | 
-      23 | test(
-      24 |   'timeout',
+      23 | test('timeout', done => {
+      24 |   setTimeout(done, 50);
 
       at __tests__/async_failures.test.js:21:3
 
@@ -398,11 +396,11 @@ exports[`works with async failures 1`] = `
 
       21 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
       22 | 
-    > 23 | test(
+    > 23 | test('timeout', done => {
          | ^
-      24 |   'timeout',
-      25 |   done => {
-      26 |     setTimeout(done, 50);
+      24 |   setTimeout(done, 50);
+      25 | }, 5);
+      26 | 
 
       at __tests__/async_failures.test.js:23:1
 
@@ -843,9 +841,10 @@ exports[`works with node assert 1`] = `
       83 | 
 
       at __tests__/node_assertion_error.test.js:81:10
-      at __tests__/node_assertion_error.test.js:12:191
-      at __tests__/node_assertion_error.test.js:12:437
-      at __tests__/node_assertion_error.test.js:12:99
+      at __tests__/node_assertion_error.test.js:11:103
+      at __tests__/node_assertion_error.test.js:13:194
+      at __tests__/node_assertion_error.test.js:13:364
+      at __tests__/node_assertion_error.test.js:13:97
 
 "
 `;

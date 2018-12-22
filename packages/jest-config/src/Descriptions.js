@@ -9,7 +9,7 @@
 
 export default ({
   automock: 'All imported modules in your tests should be mocked automatically',
-  bail: 'Stop running tests after the first failure',
+  bail: 'Stop running tests after `n` failures',
   browser: 'Respect "browser" field in package.json when resolving modules',
   cacheDirectory:
     'The directory where Jest should store its cached dependency information',
@@ -26,6 +26,7 @@ export default ({
     'A list of reporter names that Jest uses when writing coverage reports',
   coverageThreshold:
     'An object that configures minimum threshold enforcement for coverage results',
+  dependencyExtractor: 'A path to a custom dependency extractor',
   errorOnDeprecated:
     'Make calling deprecated APIs throw helpful error messages',
   forceCoverageMatch:
@@ -61,8 +62,8 @@ export default ({
     "Allows you to use a custom runner instead of Jest's default test runner",
   setupFiles:
     'The paths to modules that run some code to configure or set up the testing environment before each test',
-  setupTestFrameworkScriptFile:
-    'The path to a module that runs some code to configure or set up the testing framework before each test',
+  setupFilesAfterEnv:
+    'A list of paths to modules that run some code to configure or set up the testing framework before each test',
   snapshotSerializers:
     'A list of paths to snapshot serializer modules Jest should use for snapshot testing',
   testEnvironment: 'The test environment that will be used for testing',
@@ -71,7 +72,8 @@ export default ({
   testMatch: 'The glob patterns Jest uses to detect test files',
   testPathIgnorePatterns:
     'An array of regexp pattern strings that are matched against all test paths, matched tests are skipped',
-  testRegex: 'The regexp pattern Jest uses to detect test files',
+  testRegex:
+    'The regexp pattern or array of patterns that Jest uses to detect test files',
   testResultsProcessor:
     'This option allows the use of a custom results processor',
   testRunner: 'This option allows use of a custom test runner',

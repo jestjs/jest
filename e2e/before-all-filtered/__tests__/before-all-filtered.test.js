@@ -1,3 +1,5 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 describe('test_1', () => {
   beforeAll(() => {
     console.log('beforeAll 1');

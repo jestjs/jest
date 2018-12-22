@@ -62,13 +62,10 @@ const TITLE_BULLET = chalk.bold('\u25cf ');
 const STACK_TRACE_COLOR = chalk.dim;
 const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
-const ERROR_TEXT = 'Error: ';
+const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
 const indentAllLines = (lines: string, indent: string) =>
-  lines
-    .split('\n')
-    .map(line => (line ? indent + line : line))
-    .join('\n');
+  lines.replace(NOT_EMPTY_LINE_REGEXP, indent);
 
 const trim = string => (string || '').trim();
 
@@ -337,13 +334,18 @@ export const separateMessageFromStack = (content: string) => {
     return {message: '', stack: ''};
   }
 
-  const messageMatch = content.match(/(^(.|\n)*?(?=\n\s*at\s.*\:\d*\:\d*))/);
-  let message = messageMatch ? messageMatch[0] : 'Error';
-  const stack = messageMatch ? content.slice(message.length) : content;
-  // If the error is a plain error instead of a SyntaxError or TypeError
-  // we remove it from the message because it is generally not useful.
-  if (message.startsWith(ERROR_TEXT)) {
-    message = message.substr(ERROR_TEXT.length);
+  // All lines up to what looks like a stack -- or if nothing looks like a stack
+  // (maybe it's a code frame instead), just the first non-empty line.
+  // If the error is a plain "Error:" instead of a SyntaxError or TypeError we
+  // remove the prefix from the message because it is generally not useful.
+  const messageMatch = content.match(
+    /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*\:\d*\:\d*)|\s*.*)([\s\S]*)$/,
+  );
+  if (!messageMatch) {
+    // For flow
+    throw new Error('If you hit this error, the regex above is buggy.');
   }
+  const message = messageMatch[1];
+  const stack = messageMatch[2];
   return {message, stack};
 };
