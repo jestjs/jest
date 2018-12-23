@@ -48,7 +48,7 @@ exports[`handles property matchers: initial write 1`] = `
 Object {
   \\"createdAt\\": Any<Date>,
 }
-\`,
+\`
   );
 });
 "
@@ -62,7 +62,7 @@ exports[`handles property matchers: snapshot failed 1`] = `
 Object {
   \\"createdAt\\": Any<Date>,
 }
-\`,
+\`
   );
 });
 "
@@ -76,7 +76,7 @@ exports[`handles property matchers: snapshot passed 1`] = `
 Object {
   \\"createdAt\\": Any<Date>,
 }
-\`,
+\`
   );
 });
 "
@@ -90,7 +90,7 @@ exports[`handles property matchers: snapshot updated 1`] = `
 Object {
   \\"createdAt\\": Any<String>,
 }
-\`,
+\`
   );
 });
 "
@@ -121,7 +121,7 @@ exports[`removes obsolete external snapshots: inline snapshot written 1`] = `
 exports[`supports async matchers 1`] = `
 "test('inline snapshots', async () => {
   expect(Promise.resolve('success')).resolves.toMatchInlineSnapshot(
-    \`\\"success\\"\`,
+    \`\\"success\\"\`
   );
   expect(Promise.reject('fail')).rejects.toMatchInlineSnapshot(\`\\"fail\\"\`);
 });
