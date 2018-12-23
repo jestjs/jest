@@ -3,11 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
+import {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {printListItems, printObjectProperties} from '../collections';
 
@@ -26,7 +24,7 @@ export const test = (val: any) =>
   testName(val.constructor.name);
 
 // Convert array of attribute objects to props object.
-const propsReducer = (props, attribute) => {
+const propsReducer = (props: any, attribute: any) => {
   props[attribute.name] = attribute.value;
   return props;
 };
@@ -72,4 +70,6 @@ export const serialize = (
   );
 };
 
-export default ({serialize, test}: NewPlugin);
+const plugin: NewPlugin = {serialize, test};
+
+export default plugin;

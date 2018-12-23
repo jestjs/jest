@@ -3,21 +3,18 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-'use strict';
+import prettyFormat from '../';
 
-const prettyFormat = require('../');
-
-function returnArguments(...args) {
+function returnArguments(..._args: Array<unknown>) {
   return arguments;
 }
 
 class MyArray<T> extends Array<T> {}
 
-function MyObject(value) {
+function MyObject(value: unknown) {
+  // @ts-ignore
   this.name = value;
 }
 
@@ -33,7 +30,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an empty array', () => {
-    const val = [];
+    const val: never[] = [];
     expect(prettyFormat(val)).toEqual('Array []');
   });
 
@@ -94,7 +91,7 @@ describe('prettyFormat()', () => {
 
   it('prints an anonymous callback function', () => {
     let val;
-    function f(cb) {
+    function f(cb: () => void) {
       val = cb;
     }
     f(() => {});
@@ -159,7 +156,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints a map with non-string keys', () => {
-    const val = new Map([
+    const val = new Map<any, any>([
       [false, 'boolean'],
       ['false', 'string'],
       [0, 'number'],
@@ -416,7 +413,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints circular references', () => {
-    const val = {};
+    const val: any = {};
     val.prop = val;
     expect(prettyFormat(val)).toEqual('Object {\n  "prop": [Circular],\n}');
   });
@@ -488,6 +485,7 @@ describe('prettyFormat()', () => {
         'map non-empty': new Map([['name', 'value']]),
         'object literal empty': {},
         'object literal non-empty': {name: 'value'},
+        // @ts-ignore
         'object with constructor': new MyObject('value'),
         'object without constructor': Object.create(null),
         'set empty': new Set(),
@@ -519,13 +517,13 @@ describe('prettyFormat()', () => {
 
   it('throws on invalid options', () => {
     expect(() => {
-      // $FlowFixMe
+      // @ts-ignore
       prettyFormat({}, {invalidOption: true});
     }).toThrow();
   });
 
   it('supports plugins', () => {
-    function Foo() {}
+    class Foo {}
 
     expect(
       prettyFormat(new Foo(), {
@@ -548,10 +546,10 @@ describe('prettyFormat()', () => {
     const options = {
       plugins: [
         {
-          print(val) {
+          print(val: any) {
             return val.payload;
           },
-          test(val) {
+          test(val: any) {
             return val && typeof val.payload === 'string';
           },
         },
@@ -565,7 +563,7 @@ describe('prettyFormat()', () => {
     const options = {
       plugins: [
         {
-          print(val) {
+          print(val: any) {
             return val;
           },
           test() {
@@ -646,7 +644,7 @@ describe('prettyFormat()', () => {
         plugins: [
           {
             print(val, print) {
-              return val.map(item => print(item)).join(' - ');
+              return val.map((item: any) => print(item)).join(' - ');
             },
             test(val) {
               return Array.isArray(val);
@@ -663,7 +661,7 @@ describe('prettyFormat()', () => {
       prettyFormat(val, {
         plugins: [
           {
-            print(val, print) {
+            print(_val, _print) {
               return '[called]';
             },
             test(val) {
@@ -728,7 +726,7 @@ describe('prettyFormat()', () => {
 
   it('calls toJSON on Sets', () => {
     const set = new Set([1]);
-    (set: Object).toJSON = () => 'map';
+    (set as any).toJSON = () => 'map';
     expect(prettyFormat(set)).toEqual('"map"');
   });
 
@@ -736,7 +734,7 @@ describe('prettyFormat()', () => {
     const value = {apple: 'banana', toJSON: jest.fn(() => '1')};
     const name = value.toJSON.name || 'anonymous';
     const set = new Set([value]);
-    (set: Object).toJSON = jest.fn(() => 'map');
+    (set as any).toJSON = jest.fn(() => 'map');
     expect(
       prettyFormat(set, {
         callToJSON: false,
@@ -746,7 +744,7 @@ describe('prettyFormat()', () => {
         name +
         '],\n  },\n}',
     );
-    expect((set: Object).toJSON).not.toBeCalled();
+    expect((set as any).toJSON).not.toBeCalled();
     expect(value.toJSON).not.toBeCalled();
   });
 
@@ -787,6 +785,7 @@ describe('prettyFormat()', () => {
         'map non-empty': new Map([['name', 'value']]),
         'object literal empty': {},
         'object literal non-empty': {name: 'value'},
+        // @ts-ignore
         'object with constructor': new MyObject('value'),
         'object without constructor': Object.create(null),
         'set empty': new Set(),
