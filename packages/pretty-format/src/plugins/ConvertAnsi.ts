@@ -3,17 +3,15 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Config, Printer, NewPlugin, Refs} from 'types/PrettyFormat';
+import {Config, Printer, NewPlugin, Refs} from '../';
 
 import ansiRegex from 'ansi-regex';
 import style from 'ansi-styles';
 
-const toHumanReadableAnsi = text =>
-  text.replace(ansiRegex(), (match, offset, string) => {
+const toHumanReadableAnsi = (text: string) =>
+  text.replace(ansiRegex(), match => {
     switch (match) {
       case style.red.close:
       case style.green.close:
@@ -59,8 +57,8 @@ const toHumanReadableAnsi = text =>
     }
   });
 
-export const test = (val: any) =>
-  typeof val === 'string' && val.match(ansiRegex());
+export const test = (val: any): boolean =>
+  typeof val === 'string' && !!val.match(ansiRegex());
 
 export const serialize = (
   val: string,
@@ -71,4 +69,6 @@ export const serialize = (
   printer: Printer,
 ) => printer(toHumanReadableAnsi(val), config, indentation, depth, refs);
 
-export default ({serialize, test}: NewPlugin);
+const plugin: NewPlugin = {serialize, test};
+
+export default plugin;

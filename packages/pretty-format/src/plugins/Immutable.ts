@@ -3,11 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Config, Printer, NewPlugin, Refs} from 'types/PrettyFormat';
+import {Config, Printer, NewPlugin, Refs} from '../';
 import {printIteratorEntries, printIteratorValues} from '../collections';
 
 // SENTINEL constants are from https://github.com/facebook/immutable-js
@@ -21,8 +19,8 @@ const IS_SEQ_SENTINEL = '@@__IMMUTABLE_SEQ__@@';
 const IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
 const IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
 
-const getImmutableName = name => 'Immutable.' + name;
-const printAsLeaf = name => '[' + name + ']';
+const getImmutableName = (name: string) => 'Immutable.' + name;
+const printAsLeaf = (name: string) => '[' + name + ']';
 const SPACE = ' ';
 const LAZY = '…'; // Seq is lazy if it calls a method like filter
 
@@ -52,7 +50,7 @@ const printImmutableEntries = (
 
 // Record has an entries method because it is a collection in immutable v3.
 // Return an iterator for Immutable Record from version v3 or v4.
-const getRecordEntries = val => {
+const getRecordEntries = (val: any) => {
   let i = 0;
   return {
     next() {
@@ -239,4 +237,6 @@ export const test = (val: any) =>
   val &&
   (val[IS_ITERABLE_SENTINEL] === true || val[IS_RECORD_SENTINEL] === true);
 
-export default ({serialize, test}: NewPlugin);
+const plugin: NewPlugin = {serialize, test};
+
+export default plugin;

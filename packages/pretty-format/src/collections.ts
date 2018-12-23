@@ -4,17 +4,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {Config, Printer, Refs} from 'types/PrettyFormat';
+import {Config, Printer, Refs} from './';
 
 const getKeysOfEnumerableProperties = (object: Object) => {
-  const keys = Object.keys(object).sort();
+  const keys: Array<string | symbol> = Object.keys(object).sort();
 
   if (Object.getOwnPropertySymbols) {
     Object.getOwnPropertySymbols(object).forEach(symbol => {
-      //$FlowFixMe because property enumerable is missing in undefined
+      // @ts-ignore: because property enumerable is missing in undefined
       if (Object.getOwnPropertyDescriptor(object, symbol).enumerable) {
         keys.push(symbol);
       }
@@ -180,7 +179,13 @@ export function printObjectProperties(
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
       const name = printer(key, config, indentationNext, depth, refs);
-      const value = printer(val[key], config, indentationNext, depth, refs);
+      const value = printer(
+        (val as any)[key],
+        config,
+        indentationNext,
+        depth,
+        refs,
+      );
 
       result += indentationNext + name + ': ' + value;
 

@@ -3,22 +3,119 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {
-  Colors,
-  Config,
-  Options,
-  OptionsReceived,
-  NewPlugin,
-  Plugin,
-  Plugins,
-  Refs,
-  StringOrNull,
-  Theme,
-} from 'types/PrettyFormat';
+type Colors = {
+  comment: {close: string; open: string};
+  content: {close: string; open: string};
+  prop: {close: string; open: string};
+  tag: {close: string; open: string};
+  value: {close: string; open: string};
+};
+type Indent = (arg0: string) => string;
+export type Refs = Array<any>;
+type Print = (arg0: any) => string;
+type StringOrNull = string | null;
+
+type Theme = {
+  comment: string;
+  content: string;
+  prop: string;
+  tag: string;
+  value: string;
+};
+
+type ThemeReceived = {
+  comment?: string;
+  content?: string;
+  prop?: string;
+  tag?: string;
+  value?: string;
+};
+
+type Options = {
+  callToJSON: boolean;
+  escapeRegex: boolean;
+  escapeString: boolean;
+  highlight: boolean;
+  indent: number;
+  maxDepth: number;
+  min: boolean;
+  plugins: Plugins;
+  printFunctionName: boolean;
+  theme: Theme;
+};
+
+type OptionsReceived = {
+  callToJSON?: boolean;
+  escapeRegex?: boolean;
+  escapeString?: boolean;
+  highlight?: boolean;
+  indent?: number;
+  maxDepth?: number;
+  min?: boolean;
+  plugins?: Plugins;
+  printFunctionName?: boolean;
+  theme?: ThemeReceived;
+};
+
+export type Config = {
+  callToJSON: boolean;
+  colors: Colors;
+  escapeRegex: boolean;
+  escapeString: boolean;
+  indent: string;
+  maxDepth: number;
+  min: boolean;
+  plugins: Plugins;
+  printFunctionName: boolean;
+  spacingInner: string;
+  spacingOuter: string;
+};
+
+export type Printer = (
+  val: any,
+  config: Config,
+  indentation: string,
+  depth: number,
+  refs: Refs,
+  hasCalledToJSON?: boolean,
+) => string;
+
+type Test = (arg0: any) => boolean;
+
+export type NewPlugin = {
+  serialize: (
+    val: any,
+    config: Config,
+    indentation: string,
+    depth: number,
+    refs: Refs,
+    printer: Printer,
+  ) => string;
+  test: Test;
+};
+
+type PluginOptions = {
+  edgeSpacing: string;
+  min: boolean;
+  spacing: string;
+};
+
+type OldPlugin = {
+  print: (
+    val: any,
+    print: Print,
+    indent: Indent,
+    options: PluginOptions,
+    colors: Colors,
+  ) => string;
+  test: Test;
+};
+
+type Plugin = NewPlugin | OldPlugin;
+
+type Plugins = Array<Plugin>;
 
 import style from 'ansi-styles';
 
@@ -45,18 +142,18 @@ const symbolToString = Symbol.prototype.toString;
 
 // Explicitly comparing typeof constructor to function avoids undefined as name
 // when mock identity-obj-proxy returns the key as the value for any key.
-const getConstructorName = val =>
+const getConstructorName = (val: any) =>
   (typeof val.constructor === 'function' && val.constructor.name) || 'Object';
 
 // Is val is equal to global window object? Works even if it does not exist :)
 /* global window */
-const isWindow = val => typeof window !== 'undefined' && val === window;
+const isWindow = (val: any) => typeof window !== 'undefined' && val === window;
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
 const NEWLINE_REGEXP = /\n/gi;
 
 class PrettyFormatPluginError extends Error {
-  constructor(message, stack) {
+  constructor(message: string, stack: string) {
     super(message);
     this.stack = stack;
     this.name = this.constructor.name;
@@ -255,6 +352,10 @@ function printComplexValue(
         '}';
 }
 
+function isNewPlugin(plugin: Plugin): plugin is NewPlugin {
+  return (plugin as NewPlugin).serialize != null;
+}
+
 function printPlugin(
   plugin: Plugin,
   val: any,
@@ -266,7 +367,7 @@ function printPlugin(
   let printed;
 
   try {
-    printed = plugin.serialize
+    printed = isNewPlugin(plugin)
       ? plugin.serialize(val, config, indentation, depth, refs, printer)
       : plugin.print(
           val,
@@ -393,13 +494,12 @@ function validateOptions(options: OptionsReceived) {
 }
 
 const getColorsHighlight = (options: OptionsReceived): Colors =>
-  // $FlowFixMe: Flow thinks keys from `Colors` are missing from `DEFAULT_THEME_KEYS`
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
     const value =
-      options.theme && options.theme[key] !== undefined
-        ? options.theme[key]
-        : DEFAULT_THEME[key];
-    const color = style[value];
+      options.theme && (options.theme as any)[key] !== undefined
+        ? (options.theme as any)[key]
+        : (DEFAULT_THEME as any)[key];
+    const color = (style as any)[value];
     if (
       color &&
       typeof color.close === 'string' &&
