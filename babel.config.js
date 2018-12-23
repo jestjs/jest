@@ -2,6 +2,16 @@
 
 module.exports = {
   babelrcRoots: ['examples/*'],
+  overrides: [
+    {
+      presets: ['@babel/preset-flow'],
+      test: '**/*.js',
+    },
+    {
+      presets: ['@babel/preset-typescript'],
+      test: '**/*.ts',
+    },
+  ],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
     '@babel/plugin-transform-strict-mode',
@@ -14,6 +24,5 @@ module.exports = {
         targets: {node: 6},
       },
     ],
-    '@babel/preset-flow',
   ],
 };

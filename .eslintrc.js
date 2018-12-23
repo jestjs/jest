@@ -123,6 +123,7 @@ module.exports = {
           '^types/(.*)': './types/$1',
         },
       },
+      'eslint-import-resolver-typescript': true,
     },
   },
 };

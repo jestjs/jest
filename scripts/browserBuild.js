@@ -14,12 +14,15 @@ const rollupBuiltins = require('rollup-plugin-node-builtins');
 const rollupGlobals = require('rollup-plugin-node-globals');
 const rollupJson = require('rollup-plugin-json');
 const rollupBabel = require('rollup-plugin-babel');
-const rollupFlow = require('rollup-plugin-flow');
+
+const transformOptions = require('../babel.config.js');
 
 const babelEs5Options = {
   // Dont load other config files
   babelrc: false,
   configFile: false,
+  extensions: ['.js', '.jsx', '.ts', '.tsx'],
+  overrides: transformOptions.overrides,
   plugins: [
     '@babel/plugin-transform-strict-mode',
     '@babel/plugin-external-helpers',
@@ -28,14 +31,11 @@ const babelEs5Options = {
     [
       '@babel/preset-env',
       {
-        // Required for Rollup
-        modules: false,
         shippedProposals: true,
         // Target ES5
         targets: 'IE 11',
       },
     ],
-    '@babel/preset-flow',
   ],
   runtimeHelpers: true,
 };
@@ -52,13 +52,19 @@ function browserBuild(pkgName, entryPath, destination) {
             : undefined;
         },
       },
-      rollupFlow(),
-      rollupJson(),
+      // strip types
+      rollupBabel({
+        babelrc: false,
+        configFile: false,
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        overrides: transformOptions.overrides,
+      }),
       rollupCommonjs(),
+      rollupJson(),
       rollupBabel(babelEs5Options),
       rollupGlobals(),
       rollupBuiltins(),
-      rollupResolve(),
+      rollupResolve({extensions: ['.js', '.jsx', '.ts', '.tsx']}),
     ],
     strict: false,
   }).then(bundle =>

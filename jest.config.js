@@ -55,6 +55,6 @@ module.exports = {
     '/e2e/__tests__/iterator-to-null-test.js',
   ],
   transform: {
-    '^.+\\.js$': '<rootDir>/packages/babel-jest',
+    '^.+\\.[jt]s$': '<rootDir>/packages/babel-jest',
   },
 };
