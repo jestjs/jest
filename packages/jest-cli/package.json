@@ -43,6 +43,23 @@
     "which": "^1.2.12",
     "yargs": "^12.0.2"
   },
+  "devDependencies": {
+    "@types/ansi-escapes": "^3.0.0",
+    "@types/exit": "^0.1.30",
+    "@types/glob": "^7.1.1",
+    "@types/graceful-fs": "^4.1.2",
+    "@types/is-ci": "^1.1.0",
+    "@types/istanbul-lib-coverage": "^1.1.0",
+    "@types/istanbul-lib-instrument": "^1.7.2",
+    "@types/istanbul-lib-source-maps": "^1.2.1",
+    "@types/micromatch": "^3.1.0",
+    "@types/node-notifier": "^0.0.28",
+    "@types/prompts": "^1.2.0",
+    "@types/rimraf": "^2.0.2",
+    "@types/string-length": "^2.0.0",
+    "@types/which": "^1.3.1",
+    "@types/yargs": "^12.0.2"
+  },
   "bin": {
     "jest": "./bin/jest.js"
   },

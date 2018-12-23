@@ -15,6 +15,10 @@
     "leven": "^2.1.0",
     "pretty-format": "^24.0.0"
   },
+  "devDependencies":  {
+    "@types/camelcase": "^4.1.0",
+    "@types/leven": "^2.1.1"
+  },
   "engines": {
     "node": ">= 6"
   },
