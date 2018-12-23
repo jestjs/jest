@@ -103,7 +103,28 @@
     "bracketSpacing": false,
     "proseWrap": "never",
     "singleQuote": true,
-    "trailingComma": "all"
+    "trailingComma": "all",
+    "overrides": [
+      {
+        "excludeFiles": [
+          "e2e/__tests__/**/*",
+          "website/versioned_docs/**/*.md"
+        ],
+        "files": [
+          "examples/**/*",
+          "scripts/**/*",
+          "e2e/*/**/*",
+          "website/*.js",
+          "website/*/**/*",
+          "eslintImportResolver.js"
+        ],
+        "options": {
+          "printWidth": 80,
+          "singleQuote": true,
+          "trailingComma": "es5"
+        }
+      }
+    ]
   },
   "dependencies": {
     "opencollective": "^1.0.3"
