@@ -22,6 +22,7 @@
     "pretty-format": "^23.6.0"
   },
   "devDependencies": {
+    "@types/babel__traverse": "^7.0.4",
     "jest-runtime": "^23.6.0"
   },
   "engines": {

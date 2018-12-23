@@ -14,6 +14,7 @@
     "realpath-native": "^1.0.0"
   },
   "devDependencies": {
+    "@types/browser-resolve": "^0.0.5",
     "jest-haste-map": "^23.6.0"
   },
   "engines": {

@@ -32,6 +32,15 @@
     "yargs": "^12.0.2"
   },
   "devDependencies": {
+    "@types/babel__core": "^7.0.4",
+    "@types/convert-source-map": "^1.5.1",
+    "@types/exit": "^0.1.30",
+    "@types/glob": "^7.1.1",
+    "@types/graceful-fs": "^4.1.2",
+    "@types/micromatch": "^2.3.30",
+    "@types/strip-bom": "3.0.0",
+    "@types/write-file-atomic": "^2.1.1",
+    "@types/yargs": "^12.0.2",
     "jest-environment-jsdom": "^23.4.0",
     "jest-environment-node": "^23.4.0"
   },

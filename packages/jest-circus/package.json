@@ -23,6 +23,8 @@
     "stack-utils": "^1.0.1"
   },
   "devDependencies": {
+    "@types/babel__traverse": "^7.0.4",
+    "@types/stack-utils": "^1.0.1",
     "execa": "^1.0.0",
     "jest-runtime": "^23.6.0"
   },

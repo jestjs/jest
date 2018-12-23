@@ -23,6 +23,11 @@
     "micromatch": "^2.3.11",
     "pretty-format": "^23.6.0"
   },
+  "devDependencies":  {
+    "@types/babel__core": "^7.0.4",
+    "@types/glob": "^7.1.1",
+    "@types/micromatch": "^2.3.30"
+  },
   "engines": {
     "node": ">= 6"
   }

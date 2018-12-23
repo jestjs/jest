@@ -16,5 +16,10 @@
     "micromatch": "^2.3.11",
     "slash": "^2.0.0",
     "stack-utils": "^1.0.1"
+  },
+  "devDependencies":  {
+    "@types/babel__code-frame": "^7.0.0",
+    "@types/micromatch": "^2.3.30",
+    "@types/stack-utils": "^1.0.1"
   }
 }

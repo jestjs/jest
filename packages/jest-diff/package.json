@@ -13,6 +13,9 @@
     "jest-get-type": "^22.1.0",
     "pretty-format": "^23.6.0"
   },
+  "devDependencies": {
+    "@types/diff": "^3.5.2"
+  },
   "engines": {
     "node": ">= 6"
   }
