@@ -273,6 +273,23 @@ Default: `false`
 
 Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
 
+### `extraGlobals` [array<string>]
+
+Default: `undefined`
+
+Test files run inside a [vm](https://nodejs.org/api/vm.html), which slows calls to global context properties (e.g. `Math`). With this option you can specify extra properties to be defined inside the vm for faster lookups.
+
+For example, if your tests call `Math` often, you can pass it by setting `extraGlobals`.
+
+```json
+{
+  ...
+  "jest": {
+    "extraGlobals": ["Math"]
+  }
+}
+```
+
 ### `forceCoverageMatch` [array<string>]
 
 Default: `['']`
