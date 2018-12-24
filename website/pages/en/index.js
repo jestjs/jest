@@ -133,9 +133,6 @@ class HomeSplash extends React.Component {
       <div className="homeContainer">
         <div className="homeSplashFade">
           <div className="wrapper homeWrapper">
-            <div className="projectLogo">
-              <img src={siteConfig.baseUrl + 'img/jest.svg'} alt="Jest" />
-            </div>
             <div className="inner">
               <h2 className="projectTitle">
                 {siteConfig.title}
@@ -389,9 +386,9 @@ class Index extends React.Component {
                   content: (
                     <translate>
                       Jest works with any compile-to-JavaScript language and
-                      integrates seamlessly with [Babel](https://babeljs.io) and
-                      with TypeScript through
-                      [ts-jest](https://github.com/kulshekhar/ts-jest).
+                      integrates seamlessly with [Babel](https://babeljs.io)
+                      which means you can write React, TypeScript and much more
+                      without configuration
                     </translate>
                   ),
                   image: '/img/content/feature-typescript.png',

@@ -12,7 +12,7 @@
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
-  bail: false,
+  bail: 0,
   changedFilesWithAncestor: false,
   changedSince: '',
   collectCoverage: false,
@@ -26,6 +26,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   enabledTestsMap: null,
   errorOnDeprecated: false,
   expand: false,
+  extraGlobals: [],
   filter: null,
   findRelatedTests: false,
   forceExit: false,
@@ -77,6 +78,7 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   detectOpenHandles: false,
   displayName: undefined,
   errorOnDeprecated: false,
+  extraGlobals: [],
   filter: null,
   forceCoverageMatch: [],
   globals: {},

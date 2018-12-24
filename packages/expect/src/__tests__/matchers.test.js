@@ -894,6 +894,28 @@ describe('.toBeCloseTo()', () => {
     });
   });
 
+  [[Infinity, Infinity], [-Infinity, -Infinity]].forEach(([n1, n2]) => {
+    it(`{pass: true} expect(${n1})toBeCloseTo( ${n2})`, () => {
+      jestExpect(n1).toBeCloseTo(n2);
+
+      expect(() =>
+        jestExpect(n1).not.toBeCloseTo(n2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [[Infinity, -Infinity], [Infinity, 1.23], [-Infinity, -1.23]].forEach(
+    ([n1, n2]) => {
+      it(`{pass: false} expect(${n1})toBeCloseTo( ${n2})`, () => {
+        jestExpect(n1).not.toBeCloseTo(n2);
+
+        expect(() =>
+          jestExpect(n1).toBeCloseTo(n2),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    },
+  );
+
   [[0, 0.1, 0], [0, 0.0001, 3], [0, 0.000004, 5]].forEach(([n1, n2, p]) => {
     it(`accepts an optional precision argument: [${n1}, ${n2}, ${p}]`, () => {
       jestExpect(n1).toBeCloseTo(n2, p);
@@ -996,6 +1018,12 @@ describe('.toHaveLength', () => {
     expect(() => jestExpect(0).toHaveLength(1)).toThrowErrorMatchingSnapshot();
     expect(() =>
       jestExpect(undefined).toHaveLength(1),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('matcher error expected length', () => {
+    expect(() =>
+      jestExpect('abc').toHaveLength('3'),
     ).toThrowErrorMatchingSnapshot();
   });
 });

@@ -126,11 +126,12 @@ const isEmptyTable = table => table.length === 0;
 const isEmptyString = str => typeof str === 'string' && str.trim() === '';
 
 const getPrettyIndexes = placeholders =>
-  placeholders.reduce(
-    (indexes, placeholder, index) =>
-      placeholder === PRETTY_PLACEHOLDER ? indexes.concat(index) : indexes,
-    [],
-  );
+  placeholders.reduce((indexes, placeholder, index) => {
+    if (placeholder === PRETTY_PLACEHOLDER) {
+      indexes.push(index);
+    }
+    return indexes;
+  }, []);
 
 const arrayFormat = (title, rowIndex, ...args) => {
   const placeholders = title.match(SUPPORTED_PLACEHOLDERS) || [];

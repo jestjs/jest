@@ -145,16 +145,15 @@ const makeResolveMatcher = (
   const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
-      matcherUtils.matcherHint(matcherStatement, 'received', '') +
-        '\n\n' +
-        `${matcherUtils.RECEIVED_COLOR(
-          'received',
-        )} value must be a Promise.\n` +
+      matcherUtils.matcherErrorMessage(
+        matcherUtils.matcherHint(matcherStatement, undefined, ''),
+        `${matcherUtils.RECEIVED_COLOR('received')} value must be a Promise`,
         matcherUtils.printWithType(
           'Received',
           actual,
           matcherUtils.printReceived,
         ),
+      ),
     );
   }
 
@@ -187,16 +186,15 @@ const makeRejectMatcher = (
   const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
-      matcherUtils.matcherHint(matcherStatement, 'received', '') +
-        '\n\n' +
-        `${matcherUtils.RECEIVED_COLOR(
-          'received',
-        )} value must be a Promise.\n` +
+      matcherUtils.matcherErrorMessage(
+        matcherUtils.matcherHint(matcherStatement, undefined, ''),
+        `${matcherUtils.RECEIVED_COLOR('received')} value must be a Promise`,
         matcherUtils.printWithType(
           'Received',
           actual,
           matcherUtils.printReceived,
         ),
+      ),
     );
   }
 
