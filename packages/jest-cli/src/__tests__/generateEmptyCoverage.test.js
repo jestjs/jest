@@ -62,5 +62,6 @@ it('generates an empty coverage object for a file without running it', () => {
     coverage = sourceMapStore.transformCoverage(coverageMap).map;
   }
 
-  expect(coverage).toMatchSnapshot();
+  // $FlowFixMe: IDK...
+  expect(coverage.data).toMatchSnapshot({path: expect.any(String)});
 });
