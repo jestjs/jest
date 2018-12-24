@@ -14,6 +14,9 @@ module.exports = ({template}) => {
   const promiseDeclaration = template(`
     var Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
   `);
+  const symbolDeclaration = template(`
+    var Symbol = global['jest-symbol-do-not-touch'] || global.Symbol;
+  `);
   const nowDeclaration = template(`
     var jestNow = global[Symbol.for('jest-native-now')] || global.Date.now;
   `);
@@ -27,6 +30,15 @@ module.exports = ({template}) => {
           path
             .findParent(p => p.isProgram())
             .unshiftContainer('body', promiseDeclaration());
+          path
+            .findParent(p => p.isProgram())
+            .unshiftContainer('body', symbolDeclaration());
+        }
+        if (path.node.name === 'Symbol' && !state.jestInjectedSymbol) {
+          state.jestInjectedSymbol = true;
+          path
+            .findParent(p => p.isProgram())
+            .unshiftContainer('body', symbolDeclaration());
         }
         if (
           path.node.name === 'Date' &&
@@ -38,6 +50,9 @@ module.exports = ({template}) => {
             path
               .findParent(p => p.isProgram())
               .unshiftContainer('body', nowDeclaration());
+            path
+              .findParent(p => p.isProgram())
+              .unshiftContainer('body', symbolDeclaration());
           }
 
           path.parentPath.replaceWithSourceString('jestNow');
