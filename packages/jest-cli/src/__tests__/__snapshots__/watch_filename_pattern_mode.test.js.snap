@@ -92,7 +92,7 @@ Object {
 
 exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
 "[MOCK - cursorHide]
-[MOCK - clearScreen]
+[MOCK - clear]
 
 <bold>Pattern Mode Usage</>
  <dim>› Press</> Esc <dim>to exit pattern mode.</>
