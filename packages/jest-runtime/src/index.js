@@ -671,8 +671,10 @@ class Runtime {
         (localModule.require: LocalModuleRequire),
       ), // jest object
       ...extraGlobals.map(globalVariable => {
-        if (this._environment.global[globalVariable])
+        if (this._environment.global[globalVariable]) {
           return this._environment.global[globalVariable];
+        }
+
         throw new Error(
           `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
         );
