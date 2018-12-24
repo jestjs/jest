@@ -29,7 +29,7 @@ When using the `--config` option, the JSON file must not contain a "jest" key:
 
 ```json
 {
-  "bail": true,
+  "bail": 1,
   "verbose": true
 }
 ```
@@ -99,11 +99,11 @@ _Note: Core modules, like `fs`, are not mocked by default. They can be mocked ex
 
 _Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
 
-### `bail` [boolean]
+### `bail` [number | boolean]
 
-Default: `false`
+Default: `0`
 
-By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
+By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after `n` failures. Setting bail to `true` is the same as setting bail to `1`.
 
 ### `browser` [boolean]
 
@@ -350,6 +350,26 @@ Default: `undefined`
 
 This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
+_Note: Any global variables that are defined through `globalSetup` can only be read in `globalTeardown`. You cannot retrieve globals defined here in your test suites._
+
+Example:
+
+```js
+// setup.js
+module.exports = async () => {
+  // ...
+  // Set reference to mongod in order to close the server during teardown.
+  global.__MONGOD__ = mongod;
+};
+```
+
+```js
+// teardown.js
+module.exports = async function() {
+  await global.__MONGOD__.stop();
+};
+```
+
 ### `globalTeardown` [string]
 
 Default: `undefined`
@@ -364,11 +384,9 @@ An array of directory names to be searched recursively up from the requiring mod
 
 ### `moduleFileExtensions` [array<string>]
 
-Default: `["js", "json", "jsx", "node"]`
+Default: `["js", "json", "jsx", "ts", "tsx", "node"]`
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
-
-If you are using TypeScript this should be `["js", "jsx", "json", "ts", "tsx"]`, check [ts-jest's documentation](https://github.com/kulshekhar/ts-jest).
 
 ### `moduleNameMapper` [object<string, string>]
 
@@ -788,13 +806,14 @@ Example:
 const NodeEnvironment = require('jest-environment-node');
 
 class CustomEnvironment extends NodeEnvironment {
-  constructor(config) {
-    super(config);
+  constructor(config, context) {
+    super(config, context);
+    this.testPath = context.testPath;
   }
 
   async setup() {
     await super.setup();
-    await someSetupTasks();
+    await someSetupTasks(this.testPath);
     this.global.someGlobalObject = createGlobalObject();
   }
 
@@ -829,9 +848,9 @@ Test environment options that will be passed to the `testEnvironment`. The relev
 
 ### `testMatch` [array<string>]
 
-(default: `[ "**/__tests__/**/*.js?(x)", "**/?(*.)+(spec|test).js?(x)" ]`)
+(default: `[ "**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ]`)
 
-The glob patterns Jest uses to detect test files. By default it looks for `.js` and `.jsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`.
+The glob patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`.
 
 See the [micromatch](https://github.com/jonschlinkert/micromatch) package for details of the patterns you can specify.
 
@@ -847,9 +866,9 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 ### `testRegex` [string | Array<string>]
 
-Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$`
+Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$`
 
-The pattern or patterns Jest uses to detect test files. By default it looks for `.js` and `.jsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array<string>]](#testmatch-array-string), but note that you cannot specify both options.
+The pattern or patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array<string>]](#testmatch-array-string), but note that you cannot specify both options.
 
 The following is a visualization of the default regex:
 

@@ -84,8 +84,8 @@ test('cannot be used with .not', () => {
 
 test('should support rejecting promises', () => {
   const filename = 'should-support-rejecting-promises.test.js';
-  const template = makeTemplate(`test('should support rejecting promises', async () => {
-      await expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingSnapshot();
+  const template = makeTemplate(`test('should support rejecting promises', () => {
+      return expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingSnapshot();
     });
   `);
 

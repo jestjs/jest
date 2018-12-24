@@ -1020,6 +1020,12 @@ describe('.toHaveLength', () => {
       jestExpect(undefined).toHaveLength(1),
     ).toThrowErrorMatchingSnapshot();
   });
+
+  test('matcher error expected length', () => {
+    expect(() =>
+      jestExpect('abc').toHaveLength('3'),
+    ).toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('.toHaveProperty()', () => {

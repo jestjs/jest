@@ -34,10 +34,10 @@ describe('.hasAssertions()', () => {
     jestExpect('a').toBe('a');
   });
 
-  it('throws if passed parameters', () => {
+  it('throws if expected is not undefined', () => {
     jestExpect(() => {
       jestExpect.hasAssertions(2);
-    }).toThrow(/does not accept any arguments/);
+    }).toThrowErrorMatchingSnapshot();
   });
 
   it('hasAssertions not leaking to global state', () => {});

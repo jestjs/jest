@@ -57,28 +57,6 @@ module.exports = {
       },
     },
     {
-      excludedFiles: ['e2e/__tests__/**/*', 'website/versioned_docs/**/*.md'],
-      files: [
-        'examples/**/*',
-        'scripts/**/*',
-        'e2e/*/**/*',
-        'website/*.js',
-        'website/*/**/*',
-        'eslintImportResolver.js',
-      ],
-      rules: {
-        'prettier/prettier': [
-          2,
-          {
-            bracketSpacing: false,
-            printWidth: 80,
-            singleQuote: true,
-            trailingComma: 'es5',
-          },
-        ],
-      },
-    },
-    {
       files: [
         'e2e/__tests__/**/*',
         'packages/babel-jest/**/*.test.js',
@@ -136,15 +114,6 @@ module.exports = {
     'import/order': 0,
     'no-console': 0,
     'no-unused-vars': 2,
-    'prettier/prettier': [
-      2,
-      {
-        bracketSpacing: false,
-        printWidth: 80,
-        singleQuote: true,
-        trailingComma: 'all',
-      },
-    ],
   },
   settings: {
     'import/resolver': {

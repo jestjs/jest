@@ -24,7 +24,7 @@ export type ConfigGlobals = Object;
 
 export type DefaultOptions = {|
   automock: boolean,
-  bail: boolean,
+  bail: number,
   browser: boolean,
   cache: boolean,
   cacheDirectory: Path,
@@ -92,7 +92,7 @@ export type DefaultOptions = {|
 
 export type InitialOptions = {
   automock?: boolean,
-  bail?: boolean,
+  bail?: boolean | number,
   browser?: boolean,
   cache?: boolean,
   cacheDirectory?: Path,
@@ -191,7 +191,7 @@ export type InitialOptions = {
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
 
 export type GlobalConfig = {|
-  bail: boolean,
+  bail: number,
   changedSince: string,
   changedFilesWithAncestor: boolean,
   collectCoverage: boolean,

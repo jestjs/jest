@@ -12,7 +12,7 @@
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
-  bail: false,
+  bail: 0,
   changedFilesWithAncestor: false,
   changedSince: '',
   collectCoverage: false,

@@ -8,14 +8,23 @@
 
 'use strict';
 
-const slash = require('slash');
-
 jest
   .mock('fs', () =>
     // Node 10.5.x compatibility
     Object.assign({}, jest.genMockFromModule('fs'), {
       ReadStream: jest.requireActual('fs').ReadStream,
       WriteStream: jest.requireActual('fs').WriteStream,
+      readFileSync: jest.fn((path, options) => {
+        if (mockFs[path]) {
+          return mockFs[path];
+        }
+
+        throw new Error(`Cannot read path '${path}'.`);
+      }),
+      statSync: path => ({
+        isFile: () => !!mockFs[path],
+        mtime: {getTime: () => 42, toString: () => '42'},
+      }),
     }),
   )
   .mock('graceful-fs')
@@ -27,7 +36,8 @@ jest
     util.createDirectory = jest.fn();
     return util;
   })
-  .mock('vm');
+  .mock('vm')
+  .mock('path', () => jest.requireActual('path').posix);
 
 jest.mock(
   'test_preprocessor',
@@ -126,8 +136,7 @@ let writeFileAtomic;
 
 jest.mock('write-file-atomic', () => ({
   sync: jest.fn().mockImplementation((filePath, data) => {
-    const normalizedPath = require('slash')(filePath);
-    mockFs[normalizedPath] = data;
+    mockFs[filePath] = data;
   }),
 }));
 
@@ -145,6 +154,7 @@ describe('ScriptTransformer', () => {
         'module.exports = function () { return "grapefruit"; }',
       ].join('\n'),
       '/fruits/kiwi.js': ['module.exports = () => "kiwi";'].join('\n'),
+      '/fruits/package.json': ['{"name": "fruits"}'].join('\n'),
       '/node_modules/react.js': ['module.exports = "react";'].join('\n'),
       '/styles/App.css': ['root {', '  font-family: Helvetica;', '}'].join(
         '\n',
@@ -154,7 +164,6 @@ describe('ScriptTransformer', () => {
     fs = require('graceful-fs');
     fs.readFileSync = jest.fn((path, options) => {
       expect(options).toBe('utf8');
-
       if (mockFs[path]) {
         return mockFs[path];
       }
@@ -163,14 +172,13 @@ describe('ScriptTransformer', () => {
     });
     fs.writeFileSync = jest.fn((path, data, options) => {
       expect(options).toBe('utf8');
-      const normalizedPath = slash(path);
-      mockFs[normalizedPath] = data;
+      mockFs[path] = data;
     });
 
     fs.unlinkSync = jest.fn();
     fs.statSync = jest.fn(path => ({
       isFile: () => !!mockFs[path],
-      mtime: {getTime: () => 42},
+      mtime: {getTime: () => 42, toString: () => '42'},
     }));
 
     fs.existsSync = jest.fn(path => !!mockFs[path]);

@@ -20,7 +20,7 @@ import path from 'path';
 import vm from 'vm';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
-import {transform as babelTransform} from 'babel-core';
+import {transformSync as babelTransform} from '@babel/core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
@@ -170,9 +170,14 @@ export default class ScriptTransformer {
   }
 
   _instrumentFile(filename: Path, content: string): string {
-    return babelTransform(content, {
+    const result = babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
+      caller: {
+        name: 'jest-runtime',
+        supportsStaticESM: false,
+      },
+      configFile: false,
       filename,
       plugins: [
         [
@@ -186,7 +191,9 @@ export default class ScriptTransformer {
           },
         ],
       ],
-    }).code;
+    });
+
+    return result ? result.code : content;
   }
 
   _getRealPath(filepath: Path): Path {
@@ -254,6 +261,7 @@ export default class ScriptTransformer {
       //Could be a potential freeze here.
       //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
       const inlineSourceMap = convertSourceMap.fromSource(transformed.code);
+
       if (inlineSourceMap) {
         transformed.map = inlineSourceMap.toJSON();
       }
