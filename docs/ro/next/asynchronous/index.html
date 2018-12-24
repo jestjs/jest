@@ -82,7 +82,7 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>Asiguraţi-vă că returnați o promisiune - dacă omiteţi declaraţia <code>return</code>, testul se va termina înainte ca <code>fetchData</code> să se finalizeze.</p>
+<p>Be sure to return the promise - if you omit this <code>return</code> statement, your test will complete before the promise returned from <code>fetchData</code> resolves and then() has a chance to execute the callback.</p>
 <p>Dacă vă aşteptaţi ca o promisiune să fie respinsă utilizați metoda <code>.catch</code>. Asiguraţi-vă că utilizați <code>expect.assertions</code> pentru a verifica că un anumit număr de aserțiuni sunt executate. Altfel o promisiune rezolvată nu ar eşua testul.</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
@@ -95,7 +95,7 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
   <span class="hljs-keyword">return</span> expect(fetchData()).resolves.toBe(<span class="hljs-string">'peanut butter'</span>);
 });
 </code></pre>
-<p>Asiguraţi-vă că returnați aserțiunea - dacă omiteţi declaraţia <code>return</code>, testul se va termina înainte ca <code>fetchData</code> să se finalizeze.</p>
+<p>Be sure to return the assertion—if you omit this <code>return</code> statement, your test will complete before the promise returned from <code>fetchData</code> is resolved and then() has a chance to execute the callback.</p>
 <p>Dacă vă aşteptaţi ca promisiunea să fie respinsă utilizați validatorul <code>.rejects</code>. Funcționează exact ca validatorul <code>.resolves</code>. În cazul în care promisiunea este îndeplinită, testul va eşua automat.</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
   <span class="hljs-keyword">return</span> expect(fetchData()).rejects.toMatch(<span class="hljs-string">'error'</span>);
