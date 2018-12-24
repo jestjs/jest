@@ -95,6 +95,7 @@
 - `[jest-cli]` Support dashed args ([#7497](https://github.com/facebook/jest/pull/7497))
 - `[jest-cli]` Fix to run in band tests if watch mode enable when runInBand arg used ([#7518](https://github.com/facebook/jest/pull/7518))
 - `[jest-runtime]` Fix mistake as test files when run coverage issue. ([#7506](https://github.com/facebook/jest/pull/7506))
+- `[jest-cli]` print info about passWithNoTests flag ([#7309](https://github.com/facebook/jest/pull/7309))
 
 ### Chore & Maintenance
 
