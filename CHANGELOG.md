@@ -13,6 +13,9 @@
 - `[jest-haste-map]` [**BREAKING**] Remove name from hash in `HasteMap.getCacheFilePath` ([#7218](https://github.com/facebook/jest/pull/7218))
 - `[babel-preset-jest]` [**BREAKING**] Export a function instead of an object for Babel 7 compatibility ([#7203](https://github.com/facebook/jest/pull/7203))
 - `[jest-haste-map]` [**BREAKING**] Expose relative paths when getting the file iterator ([#7321](https://github.com/facebook/jest/pull/7321))
+- `[jest-runtime]` Add `extraGlobals` to config to load extra global variables into the execution vm ([#7454](https://github.com/facebook/jest/pull/7454))
+- `[jest-util]` Export `specialChars` containing Unicode characters and ANSI escapes for console output ([#7532](https://github.com/facebook/jest/pull/7532))
+- `[jest-config]` Handle typescript (`ts` and `tsx`) by default ([#7533](https://github.com/facebook/jest/pull/7533))
 - `[jest-validate]` Add support for comments in `package.json` using a `"//"` key ([#7295](https://github.com/facebook/jest/pull/7295))
 - `[jest-config]` Add shorthand for watch plugins and runners ([#7213](https://github.com/facebook/jest/pull/7213))
 - `[jest-jasmine2/jest-circus/jest-cli]` Add test.todo ([#6996](https://github.com/facebook/jest/pull/6996))
@@ -38,14 +41,17 @@
 - `[jest-worker]` Add node worker-thread support to jest-worker ([#7408](https://github.com/facebook/jest/pull/7408))
 - `[jest-config]` Allow `bail` setting to be configured with a number allowing tests to abort after `n` of failures ([#7335](https://github.com/facebook/jest/pull/7335))
 - `[jest-config]` Allow % based configuration of `--max-workers` ([#7494](https://github.com/facebook/jest/pull/7494))
+- `[jest-runner]` Instantiate the test environment class with the current `testPath` ([#7442](https://github.com/facebook/jest/pull/7442))
 
 ### Fixes
 
+- `[jest-cli]` Fix empty coverage data for untested files ([#7388](https://github.com/facebook/jest/pull/7388))
 - `[jest-cli]` [**BREAKING**] Do not use `text-summary` coverage reporter by default if other reporters are configured ([#7058](https://github.com/facebook/jest/pull/7058))
 - `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381))
 - `[jest-haste-map]` [**BREAKING**] Recover files correctly after haste name collisions are fixed ([#7329](https://github.com/facebook/jest/pull/7329))
 - `[pretty-format]` [**BREAKING**] Omit non-enumerable symbol properties ([#7448](https://github.com/facebook/jest/pull/7448))
 - `[*]` [**BREAKING**] Upgrade to Babel 7, dropping support for Babel 6 ([#7016](https://github.com/facebook/jest/pull/7016))
+- `[jest-cli]` Avoid watch mode causing bad terminal behavior in some cases ([#7523](https://github.com/facebook/jest/pull/7523))
 - `[jest-runner/jest-worker]` Fix missing console output in verbose mode ([#6871](https://github.com/facebook/jest/pull/6871))
 - `[expect]` Standardize file naming in `expect` ([#7306](https://github.com/facebook/jest/pull/7306))
 - `[jest-each]` Add empty array validation check ([#7249](https://github.com/facebook/jest/pull/7249))
@@ -65,6 +71,7 @@
 - `[jest-jasmine2]` Pending calls inside async tests are reported as pending not failed ([#6782](https://github.com/facebook/jest/pull/6782))
 - `[jest-circus]` Better error message when a describe block is empty ([#6372](https://github.com/facebook/jest/pull/6372))
 - `[jest-jasmine2]` Add missing testLocationResults for `xit` and `fit`([#6482](https://github.com/facebook/jest/pull/6482))
+- `[expect]` Return false from asymmetric matchers if received value isn’t string ([#7107](https://github.com/facebook/jest/pull/7107))
 - `[jest-cli]` Fix unhandled error when a bad revision is provided to `changedSince` ([#7115](https://github.com/facebook/jest/pull/7115))
 - `[jest-config]` Moved dynamically assigned `cwd` from `jest-cli` to default configuration in `jest-config` ([#7146](https://github.com/facebook/jest/pull/7146))
 - `[jest-config]` Fix `getMaxWorkers` on termux ([#7154](https://github.com/facebook/jest/pull/7154))
@@ -85,7 +92,11 @@
 - `[jest-haste-map]` Remove legacy condition for duplicate module detection ([#7333](https://github.com/facebook/jest/pull/7333))
 - `[jest-haste-map]` Fix `require` detection with trailing commas and ignore `import typeof` modules ([#7385](https://github.com/facebook/jest/pull/7385))
 - `[jest-cli]` Fix to set prettierPath via config file ([#7412](https://github.com/facebook/jest/pull/7412))
+- `[expect]` Test more precisely for class instance getters ([#7477](https://github.com/facebook/jest/pull/7477))
 - `[jest-cli]` Support dashed args ([#7497](https://github.com/facebook/jest/pull/7497))
+- `[jest-cli]` Fix to run in band tests if watch mode enable when runInBand arg used ([#7518](https://github.com/facebook/jest/pull/7518))
+- `[jest-runtime]` Fix mistake as test files when run coverage issue. ([#7506](https://github.com/facebook/jest/pull/7506))
+- `[jest-cli]` print info about passWithNoTests flag ([#7309](https://github.com/facebook/jest/pull/7309))
 - `[pretty-format]` Omit unnecessary symbol filter for object keys ([#7457](https://github.com/facebook/jest/pull/7457))
 
 ### Chore & Maintenance

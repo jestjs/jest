@@ -137,6 +137,10 @@ const setupBabelJest = (options: InitialOptions) => {
       const regex = new RegExp(pattern);
       return regex.test('a.js') || regex.test('a.jsx');
     });
+    const customTSPattern = Object.keys(transform).find(pattern => {
+      const regex = new RegExp(pattern);
+      return regex.test('a.ts') || regex.test('a.tsx');
+    });
 
     if (customJSPattern) {
       const customJSTransformer = transform[customJSPattern];
@@ -146,6 +150,17 @@ const setupBabelJest = (options: InitialOptions) => {
         transform[customJSPattern] = babelJest;
       } else if (customJSTransformer.includes('babel-jest')) {
         babelJest = customJSTransformer;
+      }
+    }
+
+    if (customTSPattern) {
+      const customTSTransformer = transform[customTSPattern];
+
+      if (customTSTransformer === 'babel-jest') {
+        babelJest = require.resolve('babel-jest');
+        transform[customTSPattern] = babelJest;
+      } else if (customTSTransformer.includes('babel-jest')) {
+        babelJest = customTSTransformer;
       }
     }
   } else {
@@ -645,6 +660,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'displayName':
       case 'errorOnDeprecated':
       case 'expand':
+      case 'extraGlobals':
       case 'globals':
       case 'findRelatedTests':
       case 'forceCoverageMatch':

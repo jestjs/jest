@@ -645,13 +645,14 @@ class Runtime {
     Object.defineProperty(localModule, 'require', {
       value: this._createRequireImplementation(localModule, options),
     });
-
+    const extraGlobals = this._config.extraGlobals || [];
     const transformedFile = this._scriptTransformer.transform(
       filename,
       {
         collectCoverage: this._coverageOptions.collectCoverage,
         collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
         collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
+        extraGlobals,
         isInternalModule,
       },
       this._cacheFS[filename],
@@ -686,8 +687,7 @@ class Runtime {
     }
 
     const wrapper = runScript[ScriptTransformer.EVAL_RESULT_VARIABLE];
-    wrapper.call(
-      localModule.exports, // module context
+    const moduleArguments = new Set([
       localModule, // module object
       localModule.exports, // module exports
       localModule.require, // require implementation
@@ -699,7 +699,17 @@ class Runtime {
         // $FlowFixMe
         (localModule.require: LocalModuleRequire),
       ), // jest object
-    );
+      ...extraGlobals.map(globalVariable => {
+        if (this._environment.global[globalVariable]) {
+          return this._environment.global[globalVariable];
+        }
+
+        throw new Error(
+          `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
+        );
+      }),
+    ]);
+    wrapper.call(localModule.exports, ...Array.from(moduleArguments));
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;

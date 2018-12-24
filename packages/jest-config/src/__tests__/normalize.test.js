@@ -1456,7 +1456,14 @@ describe('moduleFileExtensions', () => {
   it('defaults to something useful', () => {
     const {options} = normalize({rootDir: '/root'}, {});
 
-    expect(options.moduleFileExtensions).toEqual(['js', 'json', 'jsx', 'node']);
+    expect(options.moduleFileExtensions).toEqual([
+      'js',
+      'json',
+      'jsx',
+      'ts',
+      'tsx',
+      'node',
+    ]);
   });
 
   it('throws if missing `js`', () => {

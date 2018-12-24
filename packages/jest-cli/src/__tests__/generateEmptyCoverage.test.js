@@ -8,9 +8,12 @@
  */
 'use strict';
 
+import istanbulCoverage from 'istanbul-lib-coverage';
+import libSourceMaps from 'istanbul-lib-source-maps';
 import generateEmptyCoverage from '../generateEmptyCoverage';
 import Runtime from 'jest-runtime';
 
+const path = require('path');
 const os = require('os');
 const {makeGlobalConfig, makeProjectConfig} = require('../../../../TestUtils');
 
@@ -32,14 +35,32 @@ module.exports = {
 };`;
 
 it('generates an empty coverage object for a file without running it', () => {
+  const coverageMap = istanbulCoverage.createCoverageMap({});
+  const sourceMapStore = libSourceMaps.createSourceMapStore();
+  const rootDir = '/tmp';
+  const filepath = path.join(rootDir, './sum.js');
+
   const emptyCoverage = generateEmptyCoverage(
     src,
-    '/sum.js',
+    filepath,
     makeGlobalConfig(),
     makeProjectConfig({
       cacheDirectory: os.tmpdir(),
-      rootDir: os.tmpdir(),
+      rootDir,
+      transform: [['^.+\\.js$', require.resolve('babel-jest')]],
     }),
   );
-  expect(emptyCoverage && emptyCoverage.coverage).toMatchSnapshot();
+
+  expect(typeof emptyCoverage).toBe('object');
+
+  let coverage = emptyCoverage && emptyCoverage.coverage;
+
+  if (emptyCoverage && emptyCoverage.sourceMapPath) {
+    coverageMap.addFileCoverage(emptyCoverage.coverage);
+    sourceMapStore.registerURL(filepath, emptyCoverage.sourceMapPath);
+
+    coverage = sourceMapStore.transformCoverage(coverageMap).map;
+  }
+
+  expect(coverage).toMatchSnapshot();
 });

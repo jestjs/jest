@@ -33,24 +33,9 @@ const stringifyOption = (
 };
 
 const generateConfigFile = (results: {[string]: boolean}): string => {
-  const {typescript, coverage, clearMocks, environment} = results;
+  const {coverage, clearMocks, environment} = results;
 
   const overrides: Object = {};
-
-  if (typescript) {
-    Object.assign(overrides, {
-      globals: {
-        'ts-jest': {
-          tsConfigFile: 'tsconfig.json',
-        },
-      },
-      moduleFileExtensions: ['ts', 'tsx', 'js'],
-      testMatch: ['**/__tests__/*.+(ts|tsx|js)'],
-      transform: {
-        '^.+\\.(ts|tsx)$': 'ts-jest',
-      },
-    });
-  }
 
   if (coverage) {
     Object.assign(overrides, {
