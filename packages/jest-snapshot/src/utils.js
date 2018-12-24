@@ -11,12 +11,11 @@ import type {Path, SnapshotUpdateState} from 'types/Config';
 
 import {getSerializers} from './plugins';
 import chalk from 'chalk';
+import fs from 'fs';
 import mkdirp from 'mkdirp';
 import naturalCompare from 'natural-compare';
 import path from 'path';
 import prettyFormat from 'pretty-format';
-
-import {boundReadFile, boundWriteFile, boundExistsSync} from './bound_fs';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
@@ -100,9 +99,9 @@ export const getSnapshotData = (
   let snapshotContents = '';
   let dirty = false;
 
-  if (boundExistsSync(snapshotPath)) {
+  if (fs.existsSync(snapshotPath)) {
     try {
-      snapshotContents = boundReadFile(snapshotPath, 'utf8');
+      snapshotContents = fs.readFileSync(snapshotPath, 'utf8');
       // eslint-disable-next-line no-new-func
       const populate = new Function('exports', snapshotContents);
       // $FlowFixMe
@@ -173,7 +172,7 @@ export const saveSnapshotFile = (
     );
 
   ensureDirectoryExists(snapshotPath);
-  boundWriteFile(
+  fs.writeFileSync(
     snapshotPath,
     writeSnapshotVersion() + '\n\n' + snapshots.join('\n\n') + '\n',
   );
