@@ -196,7 +196,7 @@ const _toMatchSnapshot = ({
           '\n' +
           RECEIVED_COLOR('+ ' + actual));
   }
-  // Passing the the actual and expected objects so that a custom reporter
+  // Passing the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
   // or create a different error message
   return {
