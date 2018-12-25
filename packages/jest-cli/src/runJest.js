@@ -21,6 +21,7 @@ import {Console, formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
+import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
 import TestScheduler from './TestScheduler';
 import TestSequencer from './TestSequencer';
@@ -254,19 +255,8 @@ export default (async function runJest({
     collectHandles = collectNodeHandles();
   }
 
-  if (globalConfig.globalSetup) {
-    // $FlowFixMe
-    const globalSetup = require(globalConfig.globalSetup);
-    if (typeof globalSetup !== 'function') {
-      throw new TypeError(
-        `globalSetup file must export a function at ${
-          globalConfig.globalSetup
-        }`,
-      );
-    }
+  await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
 
-    await globalSetup(globalConfig);
-  }
   const results = await new TestScheduler(
     globalConfig,
     {
@@ -277,19 +267,12 @@ export default (async function runJest({
 
   sequencer.cacheResults(allTests, results);
 
-  if (globalConfig.globalTeardown) {
-    // $FlowFixMe
-    const globalTeardown = require(globalConfig.globalTeardown);
-    if (typeof globalTeardown !== 'function') {
-      throw new TypeError(
-        `globalTeardown file must export a function at ${
-          globalConfig.globalTeardown
-        }`,
-      );
-    }
+  await runGlobalHook({
+    allTests,
+    globalConfig,
+    moduleName: 'globalTeardown',
+  });
 
-    await globalTeardown(globalConfig);
-  }
   return processResults(results, {
     collectHandles,
     isJSON: globalConfig.json,
