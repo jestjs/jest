@@ -43,7 +43,7 @@ export const run = async (
 
     if (argv.init) {
       await init();
-      return Promise.resolve(results);
+      return results;
     }
 
     const projects = getProjectListFromCLIArgs(argv, project);
