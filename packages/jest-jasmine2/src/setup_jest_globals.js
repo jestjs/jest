@@ -107,7 +107,7 @@ export default ({
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getBabelTraverse: () => require('babel-traverse').default,
+    getBabelTraverse: () => require('@babel/traverse').default,
     getPrettier: () =>
       // $FlowFixMe dynamic require
       config.prettierPath ? require(config.prettierPath) : null,

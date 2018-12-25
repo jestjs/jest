@@ -24,6 +24,7 @@ import getCallsite from './getCallsite';
 import setGlobal from './setGlobal';
 import deepCyclicCopy from './deepCyclicCopy';
 import convertDescriptorToString from './convertDescriptorToString';
+import * as specialChars from './specialChars';
 
 const createDirectory = (path: string) => {
   try {
@@ -52,4 +53,5 @@ module.exports = {
   installCommonGlobals,
   isInteractive,
   setGlobal,
+  specialChars,
 };
