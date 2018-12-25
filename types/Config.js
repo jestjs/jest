@@ -262,6 +262,8 @@ export type ProjectConfig = {|
   extraGlobals: Array<string>,
   filter: ?Path,
   forceCoverageMatch: Array<Glob>,
+  globalSetup: ?string,
+  globalTeardown: ?string,
   globals: ConfigGlobals,
   haste: HasteConfig,
   moduleDirectories: Array<string>,
