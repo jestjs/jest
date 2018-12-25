@@ -44,7 +44,7 @@ export default function runJest(
       Make sure you have a local package.json file at
         "${localPackageJson}".
       Otherwise Jest will try to traverse the directory tree and find the
-      the global package.json, which will send Jest into infinite loop.
+      global package.json, which will send Jest into infinite loop.
     `,
     );
   }
