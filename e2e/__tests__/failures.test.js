@@ -43,7 +43,7 @@ test('works with node assert', () => {
 
   // Node 9 started to include the error for `doesNotThrow`
   // https://github.com/nodejs/node/pull/12167
-  if (nodeMajorVersion >= 8) {
+  if (nodeMajorVersion >= 9) {
     expect(summary).toContain(`
     assert.doesNotThrow(function)
 
@@ -71,7 +71,7 @@ test('works with node assert', () => {
       Got unwanted exception.
 `;
 
-    if (nodeMajorVersion === 8 || nodeMajorVersion === 9) {
+    if (nodeMajorVersion === 9) {
       const specificErrorMessage = `Message:
       Got unwanted exception.
     err!

@@ -24,7 +24,7 @@ export type ConfigGlobals = Object;
 
 export type DefaultOptions = {|
   automock: boolean,
-  bail: boolean,
+  bail: number,
   browser: boolean,
   cache: boolean,
   cacheDirectory: Path,
@@ -92,7 +92,7 @@ export type DefaultOptions = {|
 
 export type InitialOptions = {
   automock?: boolean,
-  bail?: boolean,
+  bail?: boolean | number,
   browser?: boolean,
   cache?: boolean,
   cacheDirectory?: Path,
@@ -111,6 +111,7 @@ export type InitialOptions = {
   detectOpenHandles?: boolean,
   displayName?: string,
   expand?: boolean,
+  extraGlobals?: Array<string>,
   filter?: Path,
   findRelatedTests?: boolean,
   forceCoverageMatch?: Array<Glob>,
@@ -190,7 +191,7 @@ export type InitialOptions = {
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
 
 export type GlobalConfig = {|
-  bail: boolean,
+  bail: number,
   changedSince: string,
   changedFilesWithAncestor: boolean,
   collectCoverage: boolean,
@@ -204,6 +205,7 @@ export type GlobalConfig = {|
   detectOpenHandles: boolean,
   enabledTestsMap: ?{[key: string]: {[key: string]: boolean}},
   expand: boolean,
+  extraGlobals: Array<string>,
   filter: ?Path,
   findRelatedTests: boolean,
   forceExit: boolean,
@@ -257,6 +259,7 @@ export type ProjectConfig = {|
   detectOpenHandles: boolean,
   displayName: ?string,
   errorOnDeprecated: boolean,
+  extraGlobals: Array<string>,
   filter: ?Path,
   forceCoverageMatch: Array<Glob>,
   globals: ConfigGlobals,

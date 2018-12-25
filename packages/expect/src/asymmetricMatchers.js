@@ -210,12 +210,8 @@ class StringContaining extends AsymmetricMatcher {
     this.inverse = inverse;
   }
 
-  asymmetricMatch(other: string) {
-    if (!isA('String', other)) {
-      throw new Error('Actual is not a string');
-    }
-
-    const result = other.includes(this.sample);
+  asymmetricMatch(other: any) {
+    const result = isA('String', other) && other.includes(this.sample);
 
     return this.inverse ? !result : result;
   }
@@ -242,12 +238,8 @@ class StringMatching extends AsymmetricMatcher {
     this.inverse = inverse;
   }
 
-  asymmetricMatch(other: string) {
-    if (!isA('String', other)) {
-      throw new Error('Actual is not a string');
-    }
-
-    const result = this.sample.test(other);
+  asymmetricMatch(other: any) {
+    const result = isA('String', other) && this.sample.test(other);
 
     return this.inverse ? !result : result;
   }

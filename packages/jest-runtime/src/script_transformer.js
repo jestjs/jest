@@ -20,7 +20,7 @@ import path from 'path';
 import vm from 'vm';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
-import {transform as babelTransform} from 'babel-core';
+import {transformSync as babelTransform} from '@babel/core';
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
@@ -36,6 +36,7 @@ export type Options = {|
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
+  extraGlobals?: Array<string>,
   isCoreModule?: boolean,
   isInternalModule?: boolean,
 |};
@@ -169,9 +170,14 @@ export default class ScriptTransformer {
   }
 
   _instrumentFile(filename: Path, content: string): string {
-    return babelTransform(content, {
+    const result = babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
+      caller: {
+        name: 'jest-runtime',
+        supportsStaticESM: false,
+      },
+      configFile: false,
       filename,
       plugins: [
         [
@@ -185,7 +191,9 @@ export default class ScriptTransformer {
           },
         ],
       ],
-    }).code;
+    });
+
+    return result ? result.code : content;
   }
 
   _getRealPath(filepath: Path): Path {
@@ -253,6 +261,7 @@ export default class ScriptTransformer {
       //Could be a potential freeze here.
       //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
       const inlineSourceMap = convertSourceMap.fromSource(transformed.code);
+
       if (inlineSourceMap) {
         transformed.map = inlineSourceMap.toJSON();
       }
@@ -305,6 +314,8 @@ export default class ScriptTransformer {
       (this._shouldTransform(filename) || instrument);
 
     try {
+      const extraGlobals = (options && options.extraGlobals) || [];
+
       if (willTransform) {
         const transformedSource = this.transformSource(
           filename,
@@ -312,11 +323,11 @@ export default class ScriptTransformer {
           instrument,
         );
 
-        wrappedCode = wrap(transformedSource.code);
+        wrappedCode = wrap(transformedSource.code, ...extraGlobals);
         sourceMapPath = transformedSource.sourceMapPath;
         mapCoverage = transformedSource.mapCoverage;
       } else {
-        wrappedCode = wrap(content);
+        wrappedCode = wrap(content, ...extraGlobals);
       }
 
       return {
@@ -517,11 +528,25 @@ const calcIgnorePatternRegexp = (config: ProjectConfig): ?RegExp => {
   return new RegExp(config.transformIgnorePatterns.join('|'));
 };
 
-const wrap = content =>
-  '({"' +
-  ScriptTransformer.EVAL_RESULT_VARIABLE +
-  '":function(module,exports,require,__dirname,__filename,global,jest){' +
-  content +
-  '\n}});';
+const wrap = (content, ...extras) => {
+  const globals = new Set([
+    'module',
+    'exports',
+    'require',
+    '__dirname',
+    '__filename',
+    'global',
+    'jest',
+    ...extras,
+  ]);
+
+  return (
+    '({"' +
+    ScriptTransformer.EVAL_RESULT_VARIABLE +
+    `":function(${Array.from(globals).join(',')}){` +
+    content +
+    '\n}});'
+  );
+};
 
 ScriptTransformer.EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
