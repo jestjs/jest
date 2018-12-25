@@ -48,7 +48,9 @@ export default function getNoTestFoundVerbose(
   }
 
   return (
-    chalk.bold('No tests found') +
+    chalk.bold('No tests found, exiting with code 1') +
+    '\n' +
+    'Run with `--passWithNoTests` to exit with code 0' +
     '\n' +
     individualResults.join('\n') +
     '\n' +

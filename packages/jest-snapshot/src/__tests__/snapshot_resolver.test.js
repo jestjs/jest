@@ -99,6 +99,15 @@ describe('malformed custom resolver in project config', () => {
     }).toThrowErrorMatchingSnapshot();
   });
 
+  it('missing testPathForConsistencyCheck throws ', () => {
+    const projectConfig = newProjectConfig(
+      'customSnapshotResolver-missing-test-path-for-consistency-check.js',
+    );
+    expect(() => {
+      buildSnapshotResolver(projectConfig);
+    }).toThrowErrorMatchingSnapshot();
+  });
+
   it('inconsistent functions throws ', () => {
     const projectConfig = newProjectConfig(
       'customSnapshotResolver-inconsistent-fns.js',

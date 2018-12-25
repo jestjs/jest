@@ -79,7 +79,7 @@ const matchers: MatchersObject = {
           );
         };
 
-    // Passing the the actual and expected objects so that a custom reporter
+    // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
     return {actual: received, expected, message, name: 'toBe', pass};
@@ -406,7 +406,7 @@ const matchers: MatchersObject = {
           );
         };
 
-    // Passing the the actual and expected objects so that a custom reporter
+    // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
     return {actual: received, expected, message, name: 'toEqual', pass};
@@ -685,7 +685,7 @@ const matchers: MatchersObject = {
           return hint + (diffString ? `\n\nDifference:\n\n${diffString}` : '');
         };
 
-    // Passing the the actual and expected objects so that a custom reporter
+    // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
     return {actual: received, expected, message, name: 'toStrictEqual', pass};

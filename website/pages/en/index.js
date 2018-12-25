@@ -133,9 +133,6 @@ class HomeSplash extends React.Component {
       <div className="homeContainer">
         <div className="homeSplashFade">
           <div className="wrapper homeWrapper">
-            <div className="projectLogo">
-              <img src={siteConfig.baseUrl + 'img/jest.svg'} alt="Jest" />
-            </div>
             <div className="inner">
               <h2 className="projectTitle">
                 {siteConfig.title}

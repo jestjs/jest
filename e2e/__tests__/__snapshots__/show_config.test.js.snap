@@ -54,7 +54,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"setupFilesAfterEnv\\": [],
       \\"skipFilter\\": false,
       \\"snapshotSerializers\\": [],
-      \\"testEnvironment\\": \\"jest-environment-jsdom\\",
+      \\"testEnvironment\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-jsdom/build/index.js\\",
       \\"testEnvironmentOptions\\": {},
       \\"testLocationInResults\\": false,
       \\"testMatch\\": [

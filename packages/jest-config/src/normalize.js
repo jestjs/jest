@@ -416,12 +416,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     options = setupPreset(options, options.preset);
   }
 
-  if (options.testEnvironment) {
-    options.testEnvironment = getTestEnvironment({
-      rootDir: options.rootDir,
-      testEnvironment: options.testEnvironment,
-    });
-  }
+  options.testEnvironment = getTestEnvironment({
+    rootDir: options.rootDir,
+    testEnvironment: options.testEnvironment || 'jsdom',
+  });
 
   if (!options.roots && options.testPathDirs) {
     options.roots = options.testPathDirs;
@@ -660,6 +658,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'displayName':
       case 'errorOnDeprecated':
       case 'expand':
+      case 'extraGlobals':
       case 'globals':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
