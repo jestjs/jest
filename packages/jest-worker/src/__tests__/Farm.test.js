@@ -239,7 +239,7 @@ describe('Farm', () => {
     // Note that the worker is sending a start response synchronously.
     const p1 = farm.doWork('foo', 'bar');
 
-    // The first call is sent the the worker, the second is queued
+    // The first call is sent the worker, the second is queued
     expect(callback).toHaveBeenCalledTimes(1);
 
     // Flush the queue
