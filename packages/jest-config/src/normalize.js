@@ -418,7 +418,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   options.testEnvironment = getTestEnvironment({
     rootDir: options.rootDir,
-    testEnvironment: options.testEnvironment || 'jsdom',
+    testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
   });
 
   if (!options.roots && options.testPathDirs) {
