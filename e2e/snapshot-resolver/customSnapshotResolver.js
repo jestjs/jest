@@ -8,4 +8,6 @@ module.exports = {
     snapshotFilePath
       .replace('__snapshots__', '__tests__')
       .slice(0, -snapshotExtension.length),
+
+  testPathForConsistencyCheck: 'foo/__tests__/bar.test.js',
 };
