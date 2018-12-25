@@ -2,4 +2,5 @@
 
 module.exports = {
   resolveSnapshotPath: () => {},
+  testPathForConsistencyCheck: 'foo/__tests__/bar.test.js',
 };

@@ -700,7 +700,6 @@ The path to a module that can resolve test<->snapshot path. This config option l
 Example snapshot resolver module:
 
 ```js
-// my-snapshot-resolver-module
 module.exports = {
   // resolves from test to snapshot path
   resolveSnapshotPath: (testPath, snapshotExtension) =>
@@ -711,6 +710,9 @@ module.exports = {
     snapshotFilePath
       .replace('__snapshots__', '__tests__')
       .slice(0, -snapshotExtension.length),
+
+  // Example test path, used for preflight concistency check of the implementation above
+  testPathForConsistencyCheck: 'some/__tests__/example.test.js',
 };
 ```
 
