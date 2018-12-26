@@ -40,66 +40,73 @@ beforeEach(() => {
   });
 });
 
-test('resolves no dependencies for non-existent path', () => {
-  const resolved = dependencyResolver.resolve('/non/existent/path');
-  expect(resolved.length).toEqual(0);
+describe('resolve', () => {
+  test('resolves no dependencies for non-existent path', () => {
+    const resolved = dependencyResolver.resolve('/non/existent/path');
+    expect(resolved.length).toEqual(0);
+  });
+
+  test('resolves dependencies for existing path', () => {
+    const resolved = dependencyResolver.resolve(
+      path.resolve(__dirname, '__fixtures__', 'file.js'),
+    );
+    expect(resolved).toEqual([
+      expect.stringContaining('jest-resolve-dependencies'),
+      expect.stringContaining('jest-regex-util'),
+    ]);
+  });
+
+  test('resolves dependencies for scoped packages', () => {
+    const resolved = dependencyResolver.resolve(
+      path.resolve(__dirname, '__fixtures__', 'scoped.js'),
+    );
+    expect(resolved).toEqual([
+      expect.stringContaining(path.join('@myorg', 'pkg')),
+    ]);
+  });
 });
 
-test('resolves dependencies for existing path', () => {
-  const resolved = dependencyResolver.resolve(
-    path.resolve(__dirname, '__fixtures__', 'file.js'),
-  );
-  expect(resolved).toEqual([
-    expect.stringContaining('jest-resolve-dependencies'),
-    expect.stringContaining('jest-regex-util'),
-  ]);
-});
+describe('resolveInverse', () => {
+  test('resolves no inverse dependencies for empty paths set', () => {
+    const paths = new Set();
+    const resolved = dependencyResolver.resolveInverse(paths, filter);
+    expect(resolved.length).toEqual(0);
+  });
 
-test('resolves dependencies for scoped packages', () => {
-  const resolved = dependencyResolver.resolve(
-    path.resolve(__dirname, '__fixtures__', 'scoped.js'),
-  );
-  expect(resolved).toEqual([
-    expect.stringContaining(path.join('@myorg', 'pkg')),
-  ]);
-});
+  test('resolves no inverse dependencies for set of non-existent paths', () => {
+    const paths = new Set(['/non/existent/path', '/another/one']);
+    const resolved = dependencyResolver.resolveInverse(paths, filter);
+    expect(resolved.length).toEqual(0);
+  });
 
-test('resolves no inverse dependencies for empty paths set', () => {
-  const paths = new Set();
-  const resolved = dependencyResolver.resolveInverse(paths, filter);
-  expect(resolved.length).toEqual(0);
-});
-
-test('resolves no inverse dependencies for set of non-existent paths', () => {
-  const paths = new Set(['/non/existent/path', '/another/one']);
-  const resolved = dependencyResolver.resolveInverse(paths, filter);
-  expect(resolved.length).toEqual(0);
-});
-
-test('resolves inverse dependencies for existing path', () => {
-  const paths = new Set([path.resolve(__dirname, '__fixtures__/file.js')]);
-  const resolved = dependencyResolver.resolveInverse(paths, filter);
-  expect(resolved).toEqual([
-    expect.stringContaining(
-      path.join('__tests__', '__fixtures__', 'file.test.js'),
-    ),
-  ]);
-});
-
-test('resolves inverse dependencies from available snapshot', () => {
-  const paths = new Set([
-    path.resolve(__dirname, '__fixtures__/file.js'),
-    path.resolve(__dirname, '__fixtures__/__snapshots__/related.test.js.snap'),
-  ]);
-  const resolved = dependencyResolver.resolveInverse(paths, filter);
-  expect(resolved).toEqual(
-    expect.arrayContaining([
+  test('resolves inverse dependencies for existing path', () => {
+    const paths = new Set([path.resolve(__dirname, '__fixtures__/file.js')]);
+    const resolved = dependencyResolver.resolveInverse(paths, filter);
+    expect(resolved).toEqual([
       expect.stringContaining(
         path.join('__tests__', '__fixtures__', 'file.test.js'),
       ),
-      expect.stringContaining(
-        path.join('__tests__', '__fixtures__', 'related.test.js'),
+    ]);
+  });
+
+  test('resolves inverse dependencies from available snapshot', () => {
+    const paths = new Set([
+      path.resolve(__dirname, '__fixtures__/file.js'),
+      path.resolve(
+        __dirname,
+        '__fixtures__/__snapshots__/related.test.js.snap',
       ),
-    ]),
-  );
+    ]);
+    const resolved = dependencyResolver.resolveInverse(paths, filter);
+    expect(resolved).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining(
+          path.join('__tests__', '__fixtures__', 'file.test.js'),
+        ),
+        expect.stringContaining(
+          path.join('__tests__', '__fixtures__', 'related.test.js'),
+        ),
+      ]),
+    );
+  });
 });
