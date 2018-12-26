@@ -8,7 +8,7 @@
 
 'use strict';
 
-const {stringify, ensureNumbers, pluralize, ensureNoExpected} = require('../');
+import {ensureNoExpected, ensureNumbers, pluralize, stringify} from '../';
 
 describe('.stringify()', () => {
   [

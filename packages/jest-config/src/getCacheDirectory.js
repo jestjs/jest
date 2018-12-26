@@ -7,8 +7,8 @@
  * @flow
  */
 
-const path = require('path');
-const os = require('os');
+import path from 'path';
+import os from 'os';
 
 const getCacheDirectory = () => {
   const {getuid} = process;

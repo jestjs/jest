@@ -8,7 +8,8 @@
 
 'use strict';
 
-const vm = require('vm');
+import vm from 'vm';
+import mock from '../';
 
 describe('moduleMocker', () => {
   let moduleMocker;
@@ -16,7 +17,6 @@ describe('moduleMocker', () => {
   let mockGlobals;
 
   beforeEach(() => {
-    const mock = require('../');
     mockContext = vm.createContext();
     mockGlobals = vm.runInNewContext('this', mockContext);
     moduleMocker = new mock.ModuleMocker(mockGlobals);

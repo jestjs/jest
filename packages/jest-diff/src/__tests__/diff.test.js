@@ -7,8 +7,8 @@
  * @flow
  */
 
-const stripAnsi = require('strip-ansi');
-const diff = require('../');
+import stripAnsi from 'strip-ansi';
+import diff from '../';
 
 const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
 

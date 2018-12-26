@@ -12,8 +12,7 @@ import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
 import fs from 'fs';
-// $FlowFixMe: Missing ESM export
-import {getCacheFilePath} from 'jest-haste-map';
+import HasteMap from 'jest-haste-map';
 
 const FAIL = 0;
 const SUCCESS = 1;
@@ -31,7 +30,10 @@ export default class TestSequencer {
 
   _getCachePath(context: Context) {
     const {config} = context;
-    return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
+    return HasteMap.getCacheFilePath(
+      config.cacheDirectory,
+      'perf-cache-' + config.name,
+    );
   }
 
   _getCache(test: Test) {
