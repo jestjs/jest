@@ -23,6 +23,8 @@
 
 ### Performance
 
+- `[jest-cli]` Better test order heuristics on first run without cache ([#7553](https://github.com/facebook/jest/pull/7553))
+
 ## 24.1.0
 
 ### Features

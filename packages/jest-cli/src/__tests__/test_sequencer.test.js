@@ -12,10 +12,39 @@ jest.mock('fs');
 
 const fs = require('fs');
 const path = require('path');
+const mockResolveRecursive = jest.fn(
+  (path, options) =>
+    ({
+      '/test-a.js': ['/sut-a.js', '/test-util.js'],
+      '/test-ab.js': ['/sut-ab.js'],
+      '/test-b.js': ['/sut-b0.js'],
+      '/test-cp.js': ['child_process'],
+      '/test-e.js': ['/sut-e.js'],
+      '/test-fs.js': ['fs'],
+      '/test-http.js': ['http'],
+    }[path] || []),
+);
+afterEach(() => {
+  mockResolveRecursive.mockClear();
+});
+jest.mock(
+  'jest-resolve-dependencies',
+  () =>
+    class {
+      constructor() {
+        this.resolveRecursive = mockResolveRecursive;
+      }
+    },
+);
+
 const FAIL = 0;
 const SUCCESS = 1;
 
 let sequencer;
+
+const resolver = {
+  isCoreModule: path => !path.startsWith('/'),
+};
 
 const context = {
   config: {
@@ -26,6 +55,7 @@ const context = {
   hasteFS: {
     getSize: path => path.length,
   },
+  resolver,
 };
 
 const secondContext = {
@@ -37,6 +67,7 @@ const secondContext = {
   hasteFS: {
     getSize: path => path.length,
   },
+  resolver,
 };
 
 const toTests = paths =>
@@ -54,11 +85,40 @@ beforeEach(() => {
   fs.writeFileSync = jest.fn();
 });
 
-test('sorts by file size if there is no timing information', () => {
-  expect(sequencer.sort(toTests(['/test-a.js', '/test-ab.js']))).toEqual([
+test('sorts by dependency file sizes if there is no timing information', () => {
+  expect(sequencer.sort(toTests(['/test-ab.js', '/test-a.js']))).toEqual([
+    {context, duration: undefined, path: '/test-a.js'},
     {context, duration: undefined, path: '/test-ab.js'},
+  ]);
+  expect(mockResolveRecursive).toHaveBeenCalledWith(expect.any(String), {
+    includeCoreModules: true,
+  });
+});
+
+test('includes the test file itself during size calculation', () => {
+  expect(sequencer.sort(toTests(['/test-b.js', '/test-ab.js']))).toEqual([
+    {context, duration: undefined, path: '/test-ab.js'},
+    {context, duration: undefined, path: '/test-b.js'},
+  ]);
+  expect(mockResolveRecursive).toHaveBeenCalledWith(expect.any(String), {
+    includeCoreModules: true,
+  });
+});
+
+test('prioritizes tests that depend on certain core modules', () => {
+  expect(
+    sequencer.sort(
+      toTests(['/test-a.js', '/test-cp.js', '/test-fs.js', '/test-http.js']),
+    ),
+  ).toEqual([
+    {context, duration: undefined, path: '/test-cp.js'},
+    {context, duration: undefined, path: '/test-fs.js'},
+    {context, duration: undefined, path: '/test-http.js'},
     {context, duration: undefined, path: '/test-a.js'},
   ]);
+  expect(mockResolveRecursive).toHaveBeenCalledWith(expect.any(String), {
+    includeCoreModules: true,
+  });
 });
 
 test('sorts based on timing information', () => {
@@ -95,14 +155,14 @@ test('sorts based on failures and timing information', () => {
   ]);
 });
 
-test('sorts based on failures, timing information and file size', () => {
+test('sorts based on failures, timing information and dependency file sizes', () => {
   fs.readFileSync = jest.fn(() =>
     JSON.stringify({
       '/test-a.js': [SUCCESS, 5],
       '/test-ab.js': [FAIL, 1],
-      '/test-c.js': [FAIL],
+      '/test-cd.js': [FAIL],
       '/test-d.js': [SUCCESS, 2],
-      '/test-efg.js': [FAIL],
+      '/test-e.js': [FAIL],
     }),
   );
   expect(
@@ -110,14 +170,14 @@ test('sorts based on failures, timing information and file size', () => {
       toTests([
         '/test-a.js',
         '/test-ab.js',
-        '/test-c.js',
+        '/test-cd.js',
         '/test-d.js',
-        '/test-efg.js',
+        '/test-e.js',
       ]),
     ),
   ).toEqual([
-    {context, duration: undefined, path: '/test-efg.js'},
-    {context, duration: undefined, path: '/test-c.js'},
+    {context, duration: undefined, path: '/test-e.js'},
+    {context, duration: undefined, path: '/test-cd.js'},
     {context, duration: 1, path: '/test-ab.js'},
     {context, duration: 5, path: '/test-a.js'},
     {context, duration: 2, path: '/test-d.js'},

@@ -10,16 +10,32 @@
 import type {AggregatedResult} from 'types/TestResult';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
+import type {Path} from 'types/Config';
+import type {Resolver} from 'types/Resolve';
+import type {HasteFS} from 'types/HasteMap';
 
 import fs from 'fs';
 // $FlowFixMe: Missing ESM export
 import {getCacheFilePath} from 'jest-haste-map';
+import DependencyResolver from 'jest-resolve-dependencies';
+import {buildSnapshotResolver} from 'jest-snapshot';
 
 const FAIL = 0;
 const SUCCESS = 1;
 
 type Cache = {
   [key: string]: [0 | 1, number],
+};
+
+// If a test depends on one of these core modules,
+// we assume that the test may be slower because it is an "integration test"
+// that spawn child processes, accesses the file system, etc.
+// The weights are in bytes, just as the file sizes of regular modules.
+const coreModuleWeights = {
+  child_process: 1000000,
+  fs: 100000,
+  http: 10000,
+  https: 10000,
 };
 
 export default class TestSequencer {
@@ -57,6 +73,46 @@ export default class TestSequencer {
     return cache;
   }
 
+  _fileSize(
+    path: Path,
+    sizes: Map<Path, number>,
+    resolver: Resolver,
+    hasteFS: HasteFS,
+  ): number {
+    const cachedSize = sizes.get(path);
+    if (cachedSize != null) {
+      return cachedSize;
+    }
+
+    const size =
+      (resolver.isCoreModule(path)
+        ? coreModuleWeights[path]
+        : hasteFS.getSize(path)) || 0;
+    sizes.set(path, size);
+    return size;
+  }
+
+  _fileSizeRecurseDependencies(test: Test, sizes: Map<Path, number>): number {
+    const {resolver, hasteFS, config} = test.context;
+
+    const dependencyResolver = new DependencyResolver(
+      resolver,
+      hasteFS,
+      buildSnapshotResolver(config),
+    );
+    const recursiveDependencies = dependencyResolver.resolveRecursive(
+      test.path,
+      {includeCoreModules: true},
+    );
+    const size =
+      Array.from(recursiveDependencies).reduce(
+        (sum, path) => sum + this._fileSize(path, sizes, resolver, hasteFS),
+        0,
+      ) + this._fileSize(test.path, sizes, resolver, hasteFS);
+
+    return size;
+  }
+
   // When running more tests than we have workers available, sort the tests
   // by size - big test files usually take longer to complete, so we run
   // them first in an effort to minimize worker idle time at the end of a
@@ -66,9 +122,7 @@ export default class TestSequencer {
   // subsequent runs we use that to run the slowest tests first, yielding the
   // fastest results.
   sort(tests: Array<Test>): Array<Test> {
-    const stats = {};
-    const fileSize = ({path, context: {hasteFS}}) =>
-      stats[path] || (stats[path] = hasteFS.getSize(path) || 0);
+    const sizes = new Map();
     const hasFailed = (cache, test) =>
       cache[test.path] && cache[test.path][0] === FAIL;
     const time = (cache, test) => cache[test.path] && cache[test.path][1];
@@ -88,7 +142,10 @@ export default class TestSequencer {
       } else if (testA.duration != null && testB.duration != null) {
         return testA.duration < testB.duration ? 1 : -1;
       } else {
-        return fileSize(testA) < fileSize(testB) ? 1 : -1;
+        return this._fileSizeRecurseDependencies(testA, sizes) <
+          this._fileSizeRecurseDependencies(testB, sizes)
+          ? 1
+          : -1;
       }
     });
   }
