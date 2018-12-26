@@ -8,8 +8,9 @@
  */
 
 import ansiStyle from 'ansi-styles';
-import prettyFormat, {plugins} from '../';
-const {ConvertAnsi} = plugins;
+import prettyFormat from '../';
+
+const {ConvertAnsi} = prettyFormat.plugins;
 
 const prettyFormatResult = (val: string) =>
   prettyFormat(val, {

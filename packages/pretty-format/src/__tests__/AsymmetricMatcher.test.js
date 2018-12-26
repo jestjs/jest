@@ -9,9 +9,9 @@
 
 import type {OptionsReceived} from 'types/PrettyFormat';
 
-import prettyFormat, {plugins} from '../';
+import prettyFormat from '../';
 
-const {AsymmetricMatcher} = plugins;
+const {AsymmetricMatcher} = prettyFormat.plugins;
 let options: OptionsReceived;
 
 function fnNameFor(func) {

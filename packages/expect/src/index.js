@@ -8,6 +8,7 @@
  */
 
 import type {
+  Expect,
   ExpectationObject,
   AsyncExpectationResult,
   SyncExpectationResult,
@@ -46,12 +47,7 @@ import {
   getMatchers,
   setMatchers,
 } from './jestMatchersObject';
-
-export {
-  default as extractExpectedAssertionsErrors,
-} from './extractExpectedAssertionsErrors';
-
-export {getState, setState};
+import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 
 class JestAssertionError extends Error {
   matcherResult: any;
@@ -320,10 +316,8 @@ const makeThrowingMatcher = (
     }
   };
 
-export const extend = (matchers: MatchersObject): void =>
+expect.extend = (matchers: MatchersObject): void =>
   setMatchers(matchers, false, expect);
-
-expect.extend = extend;
 
 expect.anything = anything;
 expect.any = any;
@@ -358,7 +352,7 @@ const _validateResult = result => {
   }
 };
 
-export function assertions(expected: number) {
+function assertions(expected: number) {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, assertions);
@@ -367,7 +361,7 @@ export function assertions(expected: number) {
   getState().expectedAssertionsNumber = expected;
   getState().expectedAssertionsNumberError = error;
 }
-export function hasAssertions(...args: Array<any>) {
+function hasAssertions(...args: Array<any>) {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, hasAssertions);
@@ -383,6 +377,11 @@ setMatchers(matchers, true, expect);
 setMatchers(spyMatchers, true, expect);
 setMatchers(toThrowMatchers, true, expect);
 
-export const addSnapshotSerializer = () => void 0;
+expect.addSnapshotSerializer = () => void 0;
+expect.assertions = assertions;
+expect.hasAssertions = hasAssertions;
+expect.getState = getState;
+expect.setState = setState;
+expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
-export default expect;
+export default (expect: Expect);

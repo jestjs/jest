@@ -11,10 +11,10 @@
 
 import React from 'react';
 import Immutable from 'immutable';
-import {plugins as prettyPlugins} from '..'
+import prettyFormat from '..'
 import getPrettyPrint from './getPrettyPrint';
 
-const {Immutable: ImmutablePlugin, ReactElement} = prettyPlugins;
+const {Immutable: ImmutablePlugin, ReactElement} = prettyFormat.plugins;
 
 const toPrettyPrintTo = getPrettyPrint([ReactElement, ImmutablePlugin]);
 

@@ -9,7 +9,7 @@
 
 import chalk from 'chalk';
 import getType from 'jest-get-type';
-import prettyFormat, {plugins as prettyPlugins} from 'pretty-format';
+import prettyFormat from 'pretty-format';
 const {
   AsymmetricMatcher,
   DOMCollection,
@@ -17,7 +17,7 @@ const {
   Immutable,
   ReactElement,
   ReactTestComponent,
-} = prettyPlugins;
+} = prettyFormat.plugins;
 
 const PLUGINS = [
   ReactTestComponent,

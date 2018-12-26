@@ -11,7 +11,7 @@ import type {AssertionResult, TestResult, Status} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Event, RunResult, TestEntry} from 'types/Circus';
 
-import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
+import expect from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
   SnapshotState,
@@ -106,7 +106,7 @@ export const initialize = ({
     getPrettier,
     updateSnapshot,
   });
-  setState({snapshotState, testPath});
+  expect.setState({snapshotState, testPath});
 
   // Return it back to the outer scope (test runner outside the VM).
   return {globals, snapshotState};
@@ -221,7 +221,7 @@ export const runAndTransformResultsToJestFormat = async ({
 const eventHandler = (event: Event) => {
   switch (event.name) {
     case 'test_start': {
-      setState({currentTestName: getTestID(event.test)});
+      expect.setState({currentTestName: getTestID(event.test)});
       break;
     }
     case 'test_done': {
@@ -233,17 +233,17 @@ const eventHandler = (event: Event) => {
 };
 
 const _addExpectedAssertionErrors = (test: TestEntry) => {
-  const failures = extractExpectedAssertionsErrors();
+  const failures = expect.extractExpectedAssertionsErrors();
   const errors = failures.map(failure => failure.error);
   test.errors = test.errors.concat(errors);
 };
 
-// Get suppressed errors from ``jest-matchers`` that weren't throw during
+// Get suppressed errors from `expect` that weren't throw during
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const _addSuppressedErrors = (test: TestEntry) => {
-  const {suppressedErrors} = getState();
-  setState({suppressedErrors: []});
+  const {suppressedErrors} = expect.getState();
+  expect.setState({suppressedErrors: []});
   if (suppressedErrors.length) {
     test.errors = test.errors.concat(suppressedErrors);
   }

@@ -11,12 +11,12 @@ import type {OptionsReceived} from 'types/PrettyFormat';
 
 import React from 'react';
 import renderer from 'react-test-renderer';
-import prettyFormat, {plugins} from '../';
+import prettyFormat from '../';
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');
 const testSymbol = Symbol.for('react.test.json');
-const {ReactElement, ReactTestComponent} = plugins;
+const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
 const formatElement = (element: any, options?: OptionsReceived) =>
   prettyFormat(

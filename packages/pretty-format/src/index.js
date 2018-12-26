@@ -12,6 +12,7 @@ import type {
   Config,
   Options,
   OptionsReceived,
+  NewPlugin,
   Plugin,
   Plugins,
   Refs,
@@ -496,7 +497,7 @@ export default function prettyFormat(val: any, options?: OptionsReceived): strin
   return printComplexValue(val, getConfig(options), '', 0, []);
 }
 
-export const plugins = {
+const plugins: {[s: string]: NewPlugin} = {
   AsymmetricMatcher,
   ConvertAnsi,
   DOMCollection,
@@ -506,5 +507,5 @@ export const plugins = {
   ReactTestComponent,
 };
 
-// TODO: Remove at some point (currently breaks `dom-testing-library`)
+// TODO: Consider exporting as ESM
 prettyFormat.plugins = plugins;

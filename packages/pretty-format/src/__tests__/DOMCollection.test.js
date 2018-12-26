@@ -11,9 +11,10 @@
 
 'use strict';
 
-import {plugins} from '../';
+import prettyFormat from '../';
 import getPrettyPrint from './getPrettyPrint';
-const {DOMCollection, DOMElement} = plugins;
+
+const {DOMCollection, DOMElement} = prettyFormat.plugins;
 const toPrettyPrintTo = getPrettyPrint([DOMCollection, DOMElement]);
 
 const expect: any = global.expect;

@@ -9,7 +9,7 @@
 
 import type {Plugin} from 'types/PrettyFormat';
 
-import {plugins as prettyPlugins} from 'pretty-format';
+import prettyFormat from 'pretty-format';
 import jestMockSerializer from './mock_serializer';
 
 const {
@@ -19,7 +19,7 @@ const {
   ReactElement,
   ReactTestComponent,
   AsymmetricMatcher,
-} = prettyPlugins;
+} = prettyFormat.plugins;
 
 let PLUGINS: Array<Plugin> = [
   ReactTestComponent,

@@ -9,7 +9,7 @@
 
 import type {DiffOptions} from './diffStrings';
 
-import prettyFormat, {plugins as prettyPlugins} from 'pretty-format';
+import prettyFormat from 'pretty-format';
 import chalk from 'chalk';
 import getType from 'jest-get-type';
 import diffStrings from './diffStrings';
@@ -22,7 +22,7 @@ const {
   Immutable,
   ReactElement,
   ReactTestComponent,
-} = prettyPlugins;
+} = prettyFormat.plugins;
 
 const PLUGINS = [
   ReactTestComponent,
