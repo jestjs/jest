@@ -17,7 +17,7 @@ import {isSnapshotPath} from 'jest-snapshot';
  * DependencyResolver is used to resolve the direct dependencies of a module or
  * to retrieve a list of all transitive inverse dependencies.
  */
-class DependencyResolver {
+export default class DependencyResolver {
   _hasteFS: HasteFS;
   _resolver: Resolver;
   _snapshotResolver: SnapshotResolver;
@@ -118,5 +118,3 @@ class DependencyResolver {
     return Array.from(collectModules(relatedPaths, modules, changed));
   }
 }
-
-module.exports = DependencyResolver;

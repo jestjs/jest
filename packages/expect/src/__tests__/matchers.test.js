@@ -6,10 +6,11 @@
  *
  */
 
-const {stringify} = require('jest-matcher-utils');
-const jestExpect = require('../');
-const Immutable = require('immutable');
-const chalk = require('chalk');
+import {stringify} from 'jest-matcher-utils';
+import jestExpect from '../';
+import Immutable from 'immutable';
+import chalk from 'chalk';
+
 const chalkEnabled = chalk.enabled;
 
 beforeAll(() => {

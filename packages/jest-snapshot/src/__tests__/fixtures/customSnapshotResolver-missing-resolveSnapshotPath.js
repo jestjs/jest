@@ -2,4 +2,5 @@
 
 module.exports = {
   resolveTestPath: () => {},
+  testPathForConsistencyCheck: 'foo/__tests__/bar.test.js',
 };

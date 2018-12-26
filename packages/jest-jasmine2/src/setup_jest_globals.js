@@ -10,12 +10,13 @@
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Plugin} from 'types/PrettyFormat';
 
-import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
+import expect from 'expect';
 import {
   buildSnapshotResolver,
   SnapshotState,
   addSerializer,
 } from 'jest-snapshot';
+import {interopRequireDefault} from 'jest-util';
 
 export type SetupOptions = {|
   config: ProjectConfig,
@@ -28,8 +29,8 @@ export type SetupOptions = {|
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const addSuppressedErrors = result => {
-  const {suppressedErrors} = getState();
-  setState({suppressedErrors: []});
+  const {suppressedErrors} = expect.getState();
+  expect.setState({suppressedErrors: []});
   if (suppressedErrors.length) {
     result.status = 'failed';
 
@@ -46,7 +47,7 @@ const addSuppressedErrors = result => {
 };
 
 const addAssertionErrors = result => {
-  const assertionErrors = extractExpectedAssertionsErrors();
+  const assertionErrors = expect.extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
     const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
       actual,
@@ -70,7 +71,7 @@ const patchJasmine = () => {
       };
       const onStart = attr.onStart;
       attr.onStart = context => {
-        setState({currentTestName: context.getFullName()});
+        expect.setState({currentTestName: context.getFullName()});
         onStart && onStart.call(attr, context);
       };
       realSpec.call(this, attr);
@@ -107,13 +108,16 @@ export default ({
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getBabelTraverse: () => require('@babel/traverse').default,
+    getBabelTraverse: () =>
+      interopRequireDefault(require('@babel/traverse')).default,
     getPrettier: () =>
-      // $FlowFixMe dynamic require
-      config.prettierPath ? require(config.prettierPath) : null,
+      config.prettierPath
+        ? // $FlowFixMe dynamic require
+          interopRequireDefault(require(config.prettierPath)).default
+        : null,
     updateSnapshot,
   });
-  setState({snapshotState, testPath});
+  expect.setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;
 };

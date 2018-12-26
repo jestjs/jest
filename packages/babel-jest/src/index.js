@@ -24,7 +24,7 @@ import babelIstanbulPlugin from 'babel-plugin-istanbul';
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
 
-const createTransformer = (options: any): Transformer => {
+export const createTransformer = (options: any): Transformer => {
   options = Object.assign({}, options, {
     compact: false,
     plugins: (options && options.plugins) || [],
@@ -110,5 +110,4 @@ const createTransformer = (options: any): Transformer => {
   };
 };
 
-module.exports = createTransformer();
-(module.exports: any).createTransformer = createTransformer;
+export default createTransformer();

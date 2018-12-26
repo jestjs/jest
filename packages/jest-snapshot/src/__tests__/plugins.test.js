@@ -7,10 +7,11 @@
  */
 'use strict';
 
+import {addSerializer, getSerializers} from '../plugins';
+
 beforeEach(() => jest.resetModules());
 
 const testPath = names => {
-  const {addSerializer, getSerializers} = require('../plugins');
   const prev = getSerializers();
   const added = names.map(name =>
     require(require.resolve(`./plugins/${name}`)),
@@ -29,7 +30,6 @@ const testPath = names => {
 };
 
 it('gets plugins', () => {
-  const {getSerializers} = require('../plugins');
   const plugins = getSerializers();
   expect(plugins).toHaveLength(5);
 });

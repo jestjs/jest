@@ -8,7 +8,7 @@
 
 'use strict';
 
-const path = require('path');
+import path from 'path';
 
 jest.mock('fb-watchman', () => {
   const normalizePathSep = require('../../lib/normalizePathSep').default;
@@ -61,7 +61,7 @@ const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
 describe('watchman watch', () => {
   beforeEach(() => {
-    watchmanCrawl = require('../watchman');
+    watchmanCrawl = require('../watchman').default;
 
     watchman = require('fb-watchman');
 

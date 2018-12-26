@@ -21,6 +21,7 @@ import {
   ErrorWithStack,
   NullConsole,
   getConsoleOutput,
+  interopRequireDefault,
   setGlobal,
 } from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
@@ -64,16 +65,22 @@ async function runTestInternal(
     );
   }
 
-  /* $FlowFixMe */
-  const TestEnvironment = (require(testEnvironment): EnvironmentClass);
+  const TestEnvironment: EnvironmentClass = interopRequireDefault(
+    // $FlowFixMe: dynamic import
+    require(testEnvironment),
+  ).default;
   const testFramework = ((process.env.JEST_CIRCUS === '1'
-    ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
-    : /* $FlowFixMe */
-      require(config.testRunner)): TestFramework);
-  const Runtime = ((config.moduleLoader
-    ? /* $FlowFixMe */
-      require(config.moduleLoader)
-    : require('jest-runtime').default): Class<RuntimeClass>);
+    ? // eslint-disable-next-line import/no-extraneous-dependencies
+      require('jest-circus/runner')
+    : interopRequireDefault(
+        // $FlowFixMe: dynamic import
+        require(config.testRunner),
+      )
+  ).default: TestFramework);
+  const Runtime = (interopRequireDefault(
+    // $FlowFixMe: dynamic import
+    require(config.moduleLoader || 'jest-runtime'),
+  ).default: Class<RuntimeClass>);
 
   let runtime = undefined;
 

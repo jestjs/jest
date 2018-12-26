@@ -6,15 +6,13 @@
  *
  */
 
-'use strict';
-
-const {
+import {
   ensureNumbers,
   ensureNoExpected,
   getLabelPrinter,
   pluralize,
   stringify,
-} = require('../');
+} from '../';
 
 describe('.stringify()', () => {
   [

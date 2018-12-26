@@ -17,8 +17,10 @@ import type {
 import type {Test} from 'types/TestRunner';
 
 import chalk from 'chalk';
-import {ICONS} from '../constants';
+import {specialChars} from 'jest-util';
 import DefaultReporter from './default_reporter';
+
+const {ICONS} = specialChars;
 
 export default class VerboseReporter extends DefaultReporter {
   _globalConfig: GlobalConfig;

@@ -125,7 +125,7 @@ function findNative(
   });
 }
 
-module.exports = function nodeCrawl(
+export default function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
   if (options.mapper) {

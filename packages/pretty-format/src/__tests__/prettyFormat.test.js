@@ -9,7 +9,7 @@
 
 'use strict';
 
-const prettyFormat = require('../');
+import prettyFormat from '../';
 
 function returnArguments(...args) {
   return arguments;

@@ -49,7 +49,7 @@ const FALLBACK_FORMAT_OPTIONS_0 = Object.assign({}, FALLBACK_FORMAT_OPTIONS, {
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
-function diff(a: any, b: any, options: ?DiffOptions): ?string {
+export default function diff(a: any, b: any, options: ?DiffOptions): ?string {
   if (a === b) {
     return NO_DIFF_MESSAGE;
   }
@@ -144,5 +144,3 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
 
   return diffMessage;
 }
-
-module.exports = diff;

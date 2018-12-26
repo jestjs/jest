@@ -36,6 +36,7 @@ export type Options = {|
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
+  extraGlobals?: Array<string>,
   isCoreModule?: boolean,
   isInternalModule?: boolean,
 |};
@@ -313,6 +314,8 @@ export default class ScriptTransformer {
       (this._shouldTransform(filename) || instrument);
 
     try {
+      const extraGlobals = (options && options.extraGlobals) || [];
+
       if (willTransform) {
         const transformedSource = this.transformSource(
           filename,
@@ -320,11 +323,11 @@ export default class ScriptTransformer {
           instrument,
         );
 
-        wrappedCode = wrap(transformedSource.code);
+        wrappedCode = wrap(transformedSource.code, ...extraGlobals);
         sourceMapPath = transformedSource.sourceMapPath;
         mapCoverage = transformedSource.mapCoverage;
       } else {
-        wrappedCode = wrap(content);
+        wrappedCode = wrap(content, ...extraGlobals);
       }
 
       return {
@@ -525,11 +528,25 @@ const calcIgnorePatternRegexp = (config: ProjectConfig): ?RegExp => {
   return new RegExp(config.transformIgnorePatterns.join('|'));
 };
 
-const wrap = content =>
-  '({"' +
-  ScriptTransformer.EVAL_RESULT_VARIABLE +
-  '":function(module,exports,require,__dirname,__filename,global,jest){' +
-  content +
-  '\n}});';
+const wrap = (content, ...extras) => {
+  const globals = new Set([
+    'module',
+    'exports',
+    'require',
+    '__dirname',
+    '__filename',
+    'global',
+    'jest',
+    ...extras,
+  ]);
+
+  return (
+    '({"' +
+    ScriptTransformer.EVAL_RESULT_VARIABLE +
+    `":function(${Array.from(globals).join(',')}){` +
+    content +
+    '\n}});'
+  );
+};
 
 ScriptTransformer.EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
