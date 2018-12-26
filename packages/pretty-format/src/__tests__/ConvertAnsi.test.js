@@ -7,8 +7,9 @@
  * @flow
  */
 
-const ansiStyle = require('ansi-styles');
-const prettyFormat = require('../');
+import ansiStyle from 'ansi-styles';
+import prettyFormat from '../';
+
 const {ConvertAnsi} = prettyFormat.plugins;
 
 const prettyFormatResult = (val: string) =>

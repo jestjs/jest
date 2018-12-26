@@ -1,7 +1,7 @@
 // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 
-const path = require('path');
-const {buildSnapshotResolver} = require('../snapshot_resolver');
+import path from 'path';
+import {buildSnapshotResolver} from '../snapshot_resolver';
 
 describe('defaults', () => {
   let snapshotResolver;

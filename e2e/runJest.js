@@ -12,7 +12,7 @@ import path from 'path';
 import fs from 'fs';
 import execa, {sync as spawnSync} from 'execa';
 import {Writable} from 'readable-stream';
-const stripAnsi = require('strip-ansi');
+import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');

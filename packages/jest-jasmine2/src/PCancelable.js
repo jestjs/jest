@@ -2,14 +2,14 @@
 
 'use strict';
 
-class CancelError extends Error {
+export class CancelError extends Error {
   constructor() {
     super('Promise was canceled');
     this.name = 'CancelError';
   }
 }
 
-class PCancelable {
+export default class PCancelable {
   static fn(fn) {
     return function() {
       const args = [].slice.apply(arguments);
@@ -74,6 +74,3 @@ class PCancelable {
 }
 
 Object.setPrototypeOf(PCancelable.prototype, Promise.prototype);
-
-module.exports = PCancelable;
-module.exports.CancelError = CancelError;
