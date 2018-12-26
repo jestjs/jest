@@ -7,10 +7,9 @@
 
 'use strict';
 
+require('./dummy.test.js');
+
 it("isn't actually run", () => {
   // (because it is only used for --listTests)
   expect(true).toBe(false);
 });
-
-// Because of this comment, other.test.js is slightly larger than dummy.test.js.
-// This matters for the order in which tests are sequenced.

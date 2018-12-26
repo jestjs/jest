@@ -35,6 +35,16 @@ describe('--listTests flag', () => {
     ).toMatchSnapshot();
   });
 
+  it('prints tests in the execution order determined by their dependency sizes', () => {
+    const {status, stdout} = runJest('list-tests', ['--listTests']);
+    expect(status).toBe(0);
+    expect(normalizePaths(stdout).split('\n')).toEqual([
+      expect.stringContaining('/with-dep.test.js'),
+      expect.stringContaining('/other.test.js'),
+      expect.stringContaining('/dummy.test.js'),
+    ]);
+  });
+
   it('causes tests to be printed out as JSON when using the --json flag', () => {
     const {status, stdout} = runJest('list-tests', ['--listTests', '--json']);
 
