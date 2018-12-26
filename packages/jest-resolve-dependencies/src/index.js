@@ -18,8 +18,10 @@ import type {SnapshotResolver} from 'types/SnapshotResolver';
 import {isSnapshotPath} from 'jest-snapshot';
 
 /**
- * DependencyResolver is used to resolve the direct dependencies of a module or
- * to retrieve a list of all transitive inverse dependencies.
+ * DependencyResolver is used
+ * to resolve the direct dependencies of a module (resolve) or
+ * to resolve the transitive (direct and indirect) dependencies of a module (resolveRecursive) or
+ * to retrieve a list of all transitive inverse dependencies (resolveInverse{,ModuleMap}).
  */
 class DependencyResolver {
   _hasteFS: HasteFS;
@@ -63,6 +65,21 @@ class DependencyResolver {
 
       return acc;
     }, []);
+  }
+
+  resolveRecursive(rootFile: Path, options?: ResolveModuleConfig): Set<Path> {
+    const known = new Set();
+    const recurse = (file: Path) => {
+      if (known.has(file)) {
+        return;
+      }
+      if (file !== rootFile) {
+        known.add(file);
+      }
+      this.resolve(file, options).forEach(recurse);
+    };
+    recurse(rootFile);
+    return known;
   }
 
   resolveInverseModuleMap(

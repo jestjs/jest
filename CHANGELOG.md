@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-resolve-dependencies]` Add `DependencyResolver.resolveRecursive` ([#7553](https://github.com/facebook/jest/pull/7553))
+
 ### Fixes
 
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))

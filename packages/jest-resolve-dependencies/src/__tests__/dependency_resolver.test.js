@@ -43,7 +43,7 @@ beforeEach(() => {
 describe('resolve', () => {
   test('resolves no dependencies for non-existent path', () => {
     const resolved = dependencyResolver.resolve('/non/existent/path');
-    expect(resolved.length).toEqual(0);
+    expect(resolved).toHaveLength(0);
   });
 
   test('resolves dependencies for existing path', () => {
@@ -66,17 +66,45 @@ describe('resolve', () => {
   });
 });
 
+describe('resolveRecursive', () => {
+  test('resolves no dependencies for non-existent path', () => {
+    const resolved = dependencyResolver.resolveRecursive('/non/existent/path');
+    expect(Array.from(resolved)).toHaveLength(0);
+  });
+
+  test('resolves dependencies for existing path', () => {
+    const resolved = dependencyResolver.resolveRecursive(
+      path.resolve(__dirname, '__fixtures__', 'recursive', 'a.js'),
+    );
+    expect(Array.from(resolved)).toEqual([
+      expect.stringContaining('b.js'),
+      expect.stringContaining('c1.js'),
+      expect.stringContaining('c2.js'),
+    ]);
+  });
+
+  test('resolves circular dependencies', () => {
+    const resolved = dependencyResolver.resolveRecursive(
+      path.resolve(__dirname, '__fixtures__', 'circular', 'a.js'),
+    );
+    expect(Array.from(resolved)).toEqual([
+      expect.stringContaining('b.js'),
+      expect.stringContaining('c.js'),
+    ]);
+  });
+});
+
 describe('resolveInverse', () => {
   test('resolves no inverse dependencies for empty paths set', () => {
     const paths = new Set();
     const resolved = dependencyResolver.resolveInverse(paths, filter);
-    expect(resolved.length).toEqual(0);
+    expect(resolved).toHaveLength(0);
   });
 
   test('resolves no inverse dependencies for set of non-existent paths', () => {
     const paths = new Set(['/non/existent/path', '/another/one']);
     const resolved = dependencyResolver.resolveInverse(paths, filter);
-    expect(resolved.length).toEqual(0);
+    expect(resolved).toHaveLength(0);
   });
 
   test('resolves inverse dependencies for existing path', () => {
