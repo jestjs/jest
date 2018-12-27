@@ -30,4 +30,4 @@ export default function() {
   argv._ = [REPL_SCRIPT];
 
   Runtime.runCLI(argv, [`Jest REPL v${VERSION}`]);
-};
+}
