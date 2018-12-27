@@ -80,3 +80,11 @@ export type ExpectationObject = {
   },
   not: {[id: string]: ThrowingMatcherFn},
 };
+
+export type MatcherHintOptions = {
+  comment?: string,
+  isDirectExpectCall?: boolean,
+  isNot?: boolean,
+  promise?: string,
+  secondArgument?: ?string,
+};

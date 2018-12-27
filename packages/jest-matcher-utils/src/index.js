@@ -7,6 +7,8 @@
  * @flow
  */
 
+import type {MatcherHintOptions} from 'types/Matchers';
+
 import chalk from 'chalk';
 import getType from 'jest-get-type';
 import prettyFormat from 'pretty-format';
@@ -30,6 +32,7 @@ const PLUGINS = [
 
 export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
+const DIM_COLOR = chalk.dim;
 
 const NUMBERS = [
   'zero',
@@ -102,12 +105,20 @@ export const printWithType = (
   return hasType + hasValue;
 };
 
-export const ensureNoExpected = (expected: any, matcherName: string) => {
-  matcherName || (matcherName = 'This');
+export const ensureNoExpected = (
+  expected: any,
+  matcherName: string, // required because optional was probably non-use case
+  options?: MatcherHintOptions,
+) => {
   if (typeof expected !== 'undefined') {
     throw new Error(
       matcherErrorMessage(
-        matcherHint('[.not]' + matcherName, undefined, ''),
+        matcherHint(
+          (options ? '' : '[.not]') + matcherName, // backward compatibility
+          undefined,
+          '',
+          options,
+        ),
         `${EXPECTED_COLOR('expected')} value must be omitted or undefined`,
         printWithType('Expected', expected, printExpected),
       ),
@@ -159,28 +170,67 @@ export const matcherErrorMessage = (
   specific: string, // incorrect value returned from call to printWithType
 ) => `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}\n\n${specific}`;
 
+// Display assertion for the report when a test fails.
+// New format: rejects/resolves, not, and matcher name have black color
+// Old format: matcher name has dim color
 export const matcherHint = (
   matcherName: string,
   received: string = 'received',
   expected: string = 'expected',
-  options: {
-    comment?: string,
-    isDirectExpectCall?: boolean,
-    isNot?: boolean,
-    secondArgument?: ?string,
-  } = {},
+  options: MatcherHintOptions = {},
 ) => {
-  const {comment, isDirectExpectCall, isNot, secondArgument} = options;
-  return (
-    chalk.dim('expect' + (isDirectExpectCall ? '' : '(')) +
-    RECEIVED_COLOR(received) +
-    (isNot
-      ? `${chalk.dim(').')}not${chalk.dim(matcherName + '(')}`
-      : chalk.dim((isDirectExpectCall ? '' : ')') + matcherName + '(')) +
-    EXPECTED_COLOR(expected) +
-    (secondArgument
-      ? `${chalk.dim(', ')}${EXPECTED_COLOR(secondArgument)}`
-      : '') +
-    chalk.dim(`)${comment ? ` // ${comment}` : ''}`)
-  );
+  const {
+    comment = '',
+    isDirectExpectCall = false,
+    isNot = false,
+    promise = '',
+    secondArgument = '',
+  } = options;
+  let hint = '';
+  let dimString = 'expect'; // concatenate adjacent dim substrings
+
+  if (!isDirectExpectCall && received !== '') {
+    hint += DIM_COLOR(dimString + '(') + RECEIVED_COLOR(received);
+    dimString = ')';
+  }
+
+  if (promise !== '') {
+    hint += DIM_COLOR(dimString + '.') + promise;
+    dimString = '';
+  }
+
+  if (isNot) {
+    hint += DIM_COLOR(dimString + '.') + 'not';
+    dimString = '';
+  }
+
+  if (matcherName.includes('.')) {
+    // Old format: for backward compatibility,
+    // especially without promise or isNot options
+    dimString += matcherName;
+  } else {
+    // New format: omit period from matcherName arg
+    hint += DIM_COLOR(dimString + '.') + matcherName;
+    dimString = '';
+  }
+
+  if (expected === '') {
+    dimString += '()';
+  } else {
+    hint += DIM_COLOR(dimString + '(') + EXPECTED_COLOR(expected);
+    if (secondArgument) {
+      hint += DIM_COLOR(', ') + EXPECTED_COLOR(secondArgument);
+    }
+    dimString = ')';
+  }
+
+  if (comment !== '') {
+    dimString += ' // ' + comment;
+  }
+
+  if (dimString !== '') {
+    hint += DIM_COLOR(dimString);
+  }
+
+  return hint;
 };

@@ -94,8 +94,8 @@ const expect = (actual: any, ...rest: Array<any>): ExpectationObject => {
   Object.keys(allMatchers).forEach(name => {
     const matcher = allMatchers[name];
     const promiseMatcher = getPromiseMatcher(name, matcher) || matcher;
-    expectation[name] = makeThrowingMatcher(matcher, false, actual);
-    expectation.not[name] = makeThrowingMatcher(matcher, true, actual);
+    expectation[name] = makeThrowingMatcher(matcher, false, '', actual);
+    expectation.not[name] = makeThrowingMatcher(matcher, true, '', actual);
 
     expectation.resolves[name] = makeResolveMatcher(
       name,
@@ -142,12 +142,16 @@ const makeResolveMatcher = (
   actual: Promise<any>,
   outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
-  const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
+  const options = {
+    isNot,
+    promise: 'resolves',
+  };
+
   if (!isPromise(actual)) {
     throw new JestAssertionError(
       matcherUtils.matcherErrorMessage(
-        matcherUtils.matcherHint(matcherStatement, undefined, ''),
-        `${matcherUtils.RECEIVED_COLOR('received')} value must be a Promise`,
+        matcherUtils.matcherHint(matcherName, undefined, '', options),
+        `${matcherUtils.RECEIVED_COLOR('received')} value must be a promise`,
         matcherUtils.printWithType(
           'Received',
           actual,
@@ -161,16 +165,16 @@ const makeResolveMatcher = (
 
   return actual.then(
     result =>
-      makeThrowingMatcher(matcher, isNot, result, innerErr).apply(null, args),
+      makeThrowingMatcher(matcher, isNot, 'resolves', result, innerErr).apply(
+        null,
+        args,
+      ),
     reason => {
       outerErr.message =
-        matcherUtils.matcherHint(matcherStatement, 'received', '') +
+        matcherUtils.matcherHint(matcherName, undefined, '', options) +
         '\n\n' +
-        `Expected ${matcherUtils.RECEIVED_COLOR(
-          'received',
-        )} Promise to resolve, ` +
-        'instead it rejected to value\n' +
-        `  ${matcherUtils.printReceived(reason)}`;
+        `Received promise rejects instead of resolves\n\n` +
+        `Received value: ${matcherUtils.printReceived(reason)}`;
       return Promise.reject(outerErr);
     },
   );
@@ -183,12 +187,16 @@ const makeRejectMatcher = (
   actual: Promise<any>,
   outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
-  const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
+  const options = {
+    isNot,
+    promise: 'rejects',
+  };
+
   if (!isPromise(actual)) {
     throw new JestAssertionError(
       matcherUtils.matcherErrorMessage(
-        matcherUtils.matcherHint(matcherStatement, undefined, ''),
-        `${matcherUtils.RECEIVED_COLOR('received')} value must be a Promise`,
+        matcherUtils.matcherHint(matcherName, undefined, '', options),
+        `${matcherUtils.RECEIVED_COLOR('received')} value must be a promise`,
         matcherUtils.printWithType(
           'Received',
           actual,
@@ -203,23 +211,24 @@ const makeRejectMatcher = (
   return actual.then(
     result => {
       outerErr.message =
-        matcherUtils.matcherHint(matcherStatement, 'received', '') +
+        matcherUtils.matcherHint(matcherName, undefined, '', options) +
         '\n\n' +
-        `Expected ${matcherUtils.RECEIVED_COLOR(
-          'received',
-        )} Promise to reject, ` +
-        'instead it resolved to value\n' +
-        `  ${matcherUtils.printReceived(result)}`;
+        `Received promise resolves instead of rejects\n\n` +
+        `Received value: ${matcherUtils.printReceived(result)}`;
       return Promise.reject(outerErr);
     },
     reason =>
-      makeThrowingMatcher(matcher, isNot, reason, innerErr).apply(null, args),
+      makeThrowingMatcher(matcher, isNot, 'rejects', reason, innerErr).apply(
+        null,
+        args,
+      ),
   );
 };
 
 const makeThrowingMatcher = (
   matcher: RawMatcherFn,
   isNot: boolean,
+  promise: string,
   actual: any,
   err?: JestAssertionError,
 ): ThrowingMatcherFn =>
@@ -242,6 +251,7 @@ const makeThrowingMatcher = (
         equals,
         error: err,
         isNot,
+        promise,
         utils,
       },
     );
