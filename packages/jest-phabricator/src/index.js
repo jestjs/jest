@@ -46,4 +46,4 @@ export default function(results: AggregatedResult): PhabricatorReport {
   return Object.assign({}, results, {
     coverageMap: results.coverageMap && summarize(results.coverageMap),
   });
-};
+}

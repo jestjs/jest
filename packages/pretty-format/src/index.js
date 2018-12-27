@@ -473,7 +473,10 @@ function createIndent(indent: number): string {
   return new Array(indent + 1).join(' ');
 }
 
-export default function prettyFormat(val: any, options?: OptionsReceived): string {
+export default function prettyFormat(
+  val: any,
+  options?: OptionsReceived,
+): string {
   if (options) {
     validateOptions(options);
     if (options.plugins) {
