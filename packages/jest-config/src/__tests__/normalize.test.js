@@ -14,9 +14,7 @@ import normalize from '../normalize';
 import resolve from 'jest-resolve';
 import {DEFAULT_JS_PATTERN} from '../constants';
 
-jest
-  .mock('jest-resolve')
-  .mock('path', () => jest.requireActual('path').posix);
+jest.mock('jest-resolve').mock('path', () => jest.requireActual('path').posix);
 const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 
 let root;

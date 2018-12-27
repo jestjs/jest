@@ -217,4 +217,4 @@ export default async function watchmanCrawl(
 
   data.files = files;
   return data;
-};
+}
