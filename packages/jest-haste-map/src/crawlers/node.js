@@ -166,4 +166,4 @@ export default function nodeCrawl(
       findNative(roots, extensions, ignore, callback);
     }
   });
-};
+}
