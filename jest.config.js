@@ -32,6 +32,8 @@ module.exports = {
     '/node_modules/',
     '/examples/',
     '/e2e/.*/__tests__',
+    '/e2e/global-setup',
+    '/e2e/global-teardown',
     '\\.snap$',
     '/packages/.*/build',
     '/packages/.*/build-es5',

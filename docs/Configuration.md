@@ -273,6 +273,23 @@ Default: `false`
 
 Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
 
+### `extraGlobals` [array<string>]
+
+Default: `undefined`
+
+Test files run inside a [vm](https://nodejs.org/api/vm.html), which slows calls to global context properties (e.g. `Math`). With this option you can specify extra properties to be defined inside the vm for faster lookups.
+
+For example, if your tests call `Math` often, you can pass it by setting `extraGlobals`.
+
+```json
+{
+  ...
+  "jest": {
+    "extraGlobals": ["Math"]
+  }
+}
+```
+
 ### `forceCoverageMatch` [array<string>]
 
 Default: `['']`
@@ -333,6 +350,8 @@ Default: `undefined`
 
 This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
+_Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
+
 _Note: Any global variables that are defined through `globalSetup` can only be read in `globalTeardown`. You cannot retrieve globals defined here in your test suites._
 
 Example:
@@ -358,6 +377,8 @@ module.exports = async function() {
 Default: `undefined`
 
 This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
+
+_Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
 ### `moduleDirectories` [array<string>]
 
@@ -683,7 +704,6 @@ The path to a module that can resolve test<->snapshot path. This config option l
 Example snapshot resolver module:
 
 ```js
-// my-snapshot-resolver-module
 module.exports = {
   // resolves from test to snapshot path
   resolveSnapshotPath: (testPath, snapshotExtension) =>
@@ -694,6 +714,9 @@ module.exports = {
     snapshotFilePath
       .replace('__snapshots__', '__tests__')
       .slice(0, -snapshotExtension.length),
+
+  // Example test path, used for preflight concistency check of the implementation above
+  testPathForConsistencyCheck: 'some/__tests__/example.test.js',
 };
 ```
 

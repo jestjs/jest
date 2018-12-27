@@ -9,11 +9,20 @@
 
 import type {Config, Printer, Refs} from 'types/PrettyFormat';
 
-const getSymbols = Object.getOwnPropertySymbols || (obj => []);
+const getKeysOfEnumerableProperties = (object: Object) => {
+  const keys = Object.keys(object).sort();
 
-const isSymbol = key =>
-  // $FlowFixMe string literal `symbol`. This value is not a valid `typeof` return value
-  typeof key === 'symbol' || toString.call(key) === '[object Symbol]';
+  if (Object.getOwnPropertySymbols) {
+    Object.getOwnPropertySymbols(object).forEach(symbol => {
+      //$FlowFixMe because property enumerable is missing in undefined
+      if (Object.getOwnPropertyDescriptor(object, symbol).enumerable) {
+        keys.push(symbol);
+      }
+    });
+  }
+
+  return keys;
+};
 
 // Return entries (for example, of a map)
 // with spacing, indentation, and comma
@@ -161,15 +170,7 @@ export function printObjectProperties(
   printer: Printer,
 ): string {
   let result = '';
-  let keys = Object.keys(val).sort();
-  const symbols = getSymbols(val).filter(
-    //$FlowFixMe because property enumerable is missing in undefined
-    symbol => Object.getOwnPropertyDescriptor(val, symbol).enumerable,
-  );
-
-  if (symbols.length) {
-    keys = keys.filter(key => !isSymbol(key)).concat(symbols);
-  }
+  const keys = getKeysOfEnumerableProperties(val);
 
   if (keys.length) {
     result += config.spacingOuter;

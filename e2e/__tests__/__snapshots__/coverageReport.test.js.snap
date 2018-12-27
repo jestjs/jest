@@ -88,10 +88,10 @@ All files                            |    59.09 |        0 |       50 |    58.82
 exports[`outputs coverage report when text and text-summary is requested 1`] = `
 "
 =============================== Coverage summary ===============================
-Statements   : 59.09% ( 13/22 )
+Statements   : 56.52% ( 13/23 )
 Branches     : 0% ( 0/4 )
 Functions    : 50% ( 3/6 )
-Lines        : 58.82% ( 10/17 )
+Lines        : 55.56% ( 10/18 )
 ================================================================================
 -------------------------------------|----------|----------|----------|----------|-------------------|
 File                                 |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
@@ -129,9 +129,9 @@ All files                            |    59.09 |        0 |       50 |    58.82
 exports[`outputs coverage report when text-summary is requested 1`] = `
 "
 =============================== Coverage summary ===============================
-Statements   : 59.09% ( 13/22 )
+Statements   : 56.52% ( 13/23 )
 Branches     : 0% ( 0/4 )
 Functions    : 50% ( 3/6 )
-Lines        : 58.82% ( 10/17 )
+Lines        : 55.56% ( 10/18 )
 ================================================================================"
 `;
