@@ -46,9 +46,9 @@ exports[`generates coverage when using the testRegex config param  1`] = `
 "-------------------------------------|----------|----------|----------|----------|-------------------|
 File                                 |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 -------------------------------------|----------|----------|----------|----------|-------------------|
-All files                            |    59.09 |        0 |       50 |    58.82 |                   |
- coverage-report                     |    43.75 |        0 |       25 |    46.15 |                   |
-  notRequiredInTestSuite.js          |        0 |        0 |        0 |        0 |       15,16,17,19 |
+All files                            |    56.52 |        0 |       50 |    55.56 |                   |
+ coverage-report                     |    41.18 |        0 |       25 |    42.86 |                   |
+  notRequiredInTestSuite.js          |        0 |        0 |        0 |        0 |     8,15,16,17,19 |
   otherFile.js                       |      100 |      100 |      100 |      100 |                   |
   sum.js                             |    85.71 |      100 |       50 |      100 |                   |
   sumDependency.js                   |        0 |        0 |        0 |        0 |           8,10,12 |
@@ -72,9 +72,9 @@ exports[`outputs coverage report 1`] = `
 "-------------------------------------|----------|----------|----------|----------|-------------------|
 File                                 |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 -------------------------------------|----------|----------|----------|----------|-------------------|
-All files                            |    59.09 |        0 |       50 |    58.82 |                   |
- coverage-report                     |    43.75 |        0 |       25 |    46.15 |                   |
-  notRequiredInTestSuite.js          |        0 |        0 |        0 |        0 |       15,16,17,19 |
+All files                            |    56.52 |        0 |       50 |    55.56 |                   |
+ coverage-report                     |    41.18 |        0 |       25 |    42.86 |                   |
+  notRequiredInTestSuite.js          |        0 |        0 |        0 |        0 |     8,15,16,17,19 |
   otherFile.js                       |      100 |      100 |      100 |      100 |                   |
   sum.js                             |    85.71 |      100 |       50 |      100 |                   |
   sumDependency.js                   |        0 |        0 |        0 |        0 |           8,10,12 |
@@ -96,9 +96,9 @@ Lines        : 55.56% ( 10/18 )
 -------------------------------------|----------|----------|----------|----------|-------------------|
 File                                 |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 -------------------------------------|----------|----------|----------|----------|-------------------|
-All files                            |    59.09 |        0 |       50 |    58.82 |                   |
- coverage-report                     |    43.75 |        0 |       25 |    46.15 |                   |
-  notRequiredInTestSuite.js          |        0 |        0 |        0 |        0 |       15,16,17,19 |
+All files                            |    56.52 |        0 |       50 |    55.56 |                   |
+ coverage-report                     |    41.18 |        0 |       25 |    42.86 |                   |
+  notRequiredInTestSuite.js          |        0 |        0 |        0 |        0 |     8,15,16,17,19 |
   otherFile.js                       |      100 |      100 |      100 |      100 |                   |
   sum.js                             |    85.71 |      100 |       50 |      100 |                   |
   sumDependency.js                   |        0 |        0 |        0 |        0 |           8,10,12 |
@@ -113,9 +113,9 @@ exports[`outputs coverage report when text is requested 1`] = `
 "-------------------------------------|----------|----------|----------|----------|-------------------|
 File                                 |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 -------------------------------------|----------|----------|----------|----------|-------------------|
-All files                            |    59.09 |        0 |       50 |    58.82 |                   |
- coverage-report                     |    43.75 |        0 |       25 |    46.15 |                   |
-  notRequiredInTestSuite.js          |        0 |        0 |        0 |        0 |       15,16,17,19 |
+All files                            |    56.52 |        0 |       50 |    55.56 |                   |
+ coverage-report                     |    41.18 |        0 |       25 |    42.86 |                   |
+  notRequiredInTestSuite.js          |        0 |        0 |        0 |        0 |     8,15,16,17,19 |
   otherFile.js                       |      100 |      100 |      100 |      100 |                   |
   sum.js                             |    85.71 |      100 |       50 |      100 |                   |
   sumDependency.js                   |        0 |        0 |        0 |        0 |           8,10,12 |
