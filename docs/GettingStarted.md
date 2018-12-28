@@ -87,6 +87,8 @@ To use [Babel](http://babeljs.io/), install the `babel-jest` and `@babel/core` p
 yarn add --dev babel-jest @babel/core
 ```
 
+Find working example here: https://github.com/kevinsimper/babel-jest-example
+
 Don't forget to add a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and [`@babel/preset-react`](https://babeljs.io/docs/en/babel-preset-react) presets:
 
 ```js
