@@ -38,7 +38,7 @@ test('not throwing Error objects', () => {
 
 test('works with node assert', () => {
   const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
-  const {stderr} = runJest(dir, ['node_assertion_error.test.js']);
+  const {stderr} = runJest(dir, ['assertionError.test.js']);
   let summary = normalizeDots(cleanStderr(stderr));
 
   // Node 9 started to include the error for `doesNotThrow`
@@ -64,7 +64,7 @@ test('works with node assert', () => {
       73 |   });
       74 | });
 
-      at __tests__/node_assertion_error.test.js:71:10
+      at __tests__/assertionError.test.js:71:10
 `);
 
     const commonErrorMessage = `Message:
@@ -114,7 +114,7 @@ test('works with node assert', () => {
       69 | 
       70 | test('assert.doesNotThrow', () => {
 
-      at __tests__/node_assertion_error.test.js:67:10
+      at __tests__/assertionError.test.js:67:10
 `;
 
     expect(summary).toContain(ifErrorMessage);
@@ -131,7 +131,7 @@ test('works with node assert', () => {
       68 | });
       69 | 
 
-      at __tests__/node_assertion_error.test.js:66:1
+      at __tests__/assertionError.test.js:66:1
 `;
 
     expect(summary).toContain(ifErrorMessage);

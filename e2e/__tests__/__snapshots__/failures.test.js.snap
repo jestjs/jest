@@ -437,7 +437,7 @@ exports[`works with named snapshot failures 1`] = `
 `;
 
 exports[`works with node assert 1`] = `
-"FAIL __tests__/node_assertion_error.test.js
+"FAIL __tests__/assertionError.test.js
   ✕ assert
   ✕ assert with a message
   ✕ assert.ok
@@ -473,7 +473,7 @@ exports[`works with node assert 1`] = `
       17 | 
       18 | test('assert with a message', () => {
 
-      at __tests__/node_assertion_error.test.js:15:3
+      at __tests__/assertionError.test.js:15:3
 
   ● assert with a message
 
@@ -495,7 +495,7 @@ exports[`works with node assert 1`] = `
       21 | 
       22 | test('assert.ok', () => {
 
-      at __tests__/node_assertion_error.test.js:19:3
+      at __tests__/assertionError.test.js:19:3
 
   ● assert.ok
 
@@ -514,7 +514,7 @@ exports[`works with node assert 1`] = `
       25 | 
       26 | test('assert.ok with a message', () => {
 
-      at __tests__/node_assertion_error.test.js:23:10
+      at __tests__/assertionError.test.js:23:10
 
   ● assert.ok with a message
 
@@ -536,7 +536,7 @@ exports[`works with node assert 1`] = `
       29 | 
       30 | test('assert.equal', () => {
 
-      at __tests__/node_assertion_error.test.js:27:10
+      at __tests__/assertionError.test.js:27:10
 
   ● assert.equal
 
@@ -555,7 +555,7 @@ exports[`works with node assert 1`] = `
       33 | 
       34 | test('assert.notEqual', () => {
 
-      at __tests__/node_assertion_error.test.js:31:10
+      at __tests__/assertionError.test.js:31:10
 
   ● assert.notEqual
 
@@ -578,7 +578,7 @@ exports[`works with node assert 1`] = `
       37 | 
       38 | test('assert.deepEqual', () => {
 
-      at __tests__/node_assertion_error.test.js:35:10
+      at __tests__/assertionError.test.js:35:10
 
   ● assert.deepEqual
 
@@ -611,7 +611,7 @@ exports[`works with node assert 1`] = `
       41 | 
       42 | test('assert.deepEqual with a message', () => {
 
-      at __tests__/node_assertion_error.test.js:39:10
+      at __tests__/assertionError.test.js:39:10
 
   ● assert.deepEqual with a message
 
@@ -647,7 +647,7 @@ exports[`works with node assert 1`] = `
       45 | 
       46 | test('assert.notDeepEqual', () => {
 
-      at __tests__/node_assertion_error.test.js:43:10
+      at __tests__/assertionError.test.js:43:10
 
   ● assert.notDeepEqual
 
@@ -670,7 +670,7 @@ exports[`works with node assert 1`] = `
       49 | 
       50 | test('assert.strictEqual', () => {
 
-      at __tests__/node_assertion_error.test.js:47:10
+      at __tests__/assertionError.test.js:47:10
 
   ● assert.strictEqual
 
@@ -689,7 +689,7 @@ exports[`works with node assert 1`] = `
       53 | 
       54 | test('assert.notStrictEqual', () => {
 
-      at __tests__/node_assertion_error.test.js:51:10
+      at __tests__/assertionError.test.js:51:10
 
   ● assert.notStrictEqual
 
@@ -715,7 +715,7 @@ exports[`works with node assert 1`] = `
       57 | 
       58 | test('assert.deepStrictEqual', () => {
 
-      at __tests__/node_assertion_error.test.js:55:10
+      at __tests__/assertionError.test.js:55:10
 
   ● assert.deepStrictEqual
 
@@ -744,7 +744,7 @@ exports[`works with node assert 1`] = `
       61 | 
       62 | test('assert.notDeepStrictEqual', () => {
 
-      at __tests__/node_assertion_error.test.js:59:10
+      at __tests__/assertionError.test.js:59:10
 
   ● assert.notDeepStrictEqual
 
@@ -767,7 +767,7 @@ exports[`works with node assert 1`] = `
       65 | 
       66 | test('assert.ifError', () => {
 
-      at __tests__/node_assertion_error.test.js:63:10
+      at __tests__/assertionError.test.js:63:10
 
   ● assert.ifError
 
@@ -790,7 +790,7 @@ exports[`works with node assert 1`] = `
       73 |   });
       74 | });
 
-      at __tests__/node_assertion_error.test.js:71:10
+      at __tests__/assertionError.test.js:71:10
 
   ● assert.throws
 
@@ -810,7 +810,7 @@ exports[`works with node assert 1`] = `
       79 | 
       80 | test('async', async () => {
 
-      at __tests__/node_assertion_error.test.js:77:10
+      at __tests__/assertionError.test.js:77:10
 
   ● async
 
@@ -840,11 +840,11 @@ exports[`works with node assert 1`] = `
       82 | });
       83 | 
 
-      at __tests__/node_assertion_error.test.js:81:10
-      at __tests__/node_assertion_error.test.js:11:103
-      at __tests__/node_assertion_error.test.js:13:194
-      at __tests__/node_assertion_error.test.js:13:364
-      at __tests__/node_assertion_error.test.js:13:97
+      at __tests__/assertionError.test.js:81:10
+      at __tests__/assertionError.test.js:11:103
+      at __tests__/assertionError.test.js:13:194
+      at __tests__/assertionError.test.js:13:364
+      at __tests__/assertionError.test.js:13:97
 
 "
 `;
