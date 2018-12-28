@@ -2,6 +2,8 @@
 
 [Babel](https://github.com/babel/babel) [jest](https://github.com/facebook/jest) plugin
 
+Working example can be found here: https://github.com/kevinsimper/babel-jest-example/
+
 ## Usage
 
 If you are already using `jest-cli`, just add `babel-jest` and it will automatically compile JavaScript code using Babel.
