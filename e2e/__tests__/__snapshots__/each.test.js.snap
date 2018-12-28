@@ -35,7 +35,7 @@ exports[`formats args with pretty format when given %p 1`] = `
 `;
 
 exports[`runs only the describe.only.each tests 1`] = `
-"PASS __tests__/describe-only.test.js
+"PASS __tests__/describeOnly.test.js
   passes all rows expected true == true
     ✓ passes
     ✓ passes
@@ -46,7 +46,7 @@ exports[`runs only the describe.only.each tests 1`] = `
 `;
 
 exports[`shows error message when not enough arguments are supplied to tests 1`] = `
-"FAIL __tests__/each-exception.test.js
+"FAIL __tests__/eachException.test.js
   ✕ throws exception when one argument too few are supplied $left == $right
   ✕ throws exception when not enough arguments are supplied $left == $right
 
@@ -72,7 +72,7 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
       10 |   \${true} | \${true}
       11 |   \${true}
 
-      at __tests__/each-exception.test.js:8:1
+      at __tests__/eachException.test.js:8:1
 
   ● throws exception when not enough arguments are supplied $left == $right
 
@@ -95,13 +95,13 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
       21 |   \${true} | \${true}
       22 | \`(
 
-      at __tests__/each-exception.test.js:19:1
+      at __tests__/eachException.test.js:19:1
 
 "
 `;
 
 exports[`shows only the tests with .only as being ran 1`] = `
-"PASS __tests__/each-only.test.js
+"PASS __tests__/eachOnly.test.js
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
@@ -112,7 +112,7 @@ exports[`shows only the tests with .only as being ran 1`] = `
 `;
 
 exports[`shows only the tests without .skip as being ran 1`] = `
-"PASS __tests__/each-skip.test.js
+"PASS __tests__/eachSkip.test.js
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true

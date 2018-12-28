@@ -6,7 +6,7 @@
  */
 'use strict';
 
-test('DEFAULT_TIMEOUT_INTERVAL', () => {
+test('Default Timeout Interval', () => {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
   expect(true).toBe(true);
 });

@@ -26,7 +26,7 @@ const testFiles = [
   'pending.test.js',
   'spyOn.test.js',
   'spyOnProperty.test.js',
-  'DEFAULT_TIMEOUT_INTERVAL.test.js',
+  'defaultTimeoutInterval.test.js',
 ];
 
 const SHOULD_NOT_PASS_IN_JEST = new Set([

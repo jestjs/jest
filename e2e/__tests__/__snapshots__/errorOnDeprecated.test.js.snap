@@ -1,22 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DEFAULT_TIMEOUT_INTERVAL.test.js errors in errorOnDeprecated mode 1`] = `
-"FAIL __tests__/DEFAULT_TIMEOUT_INTERVAL.test.js
-  ✕ DEFAULT_TIMEOUT_INTERVAL
+exports[`defaultTimeoutInterval.test.js errors in errorOnDeprecated mode 1`] = `
+"FAIL __tests__/defaultTimeoutInterval.test.js
+  ✕ Default Timeout Interval
 
-  ● DEFAULT_TIMEOUT_INTERVAL
+  ● Default Timeout Interval
 
     Illegal usage of \`jasmine.DEFAULT_TIMEOUT_INTERVAL\`, prefer \`jest.setTimeout\`.
 
        8 | 
-       9 | test('DEFAULT_TIMEOUT_INTERVAL', () => {
+       9 | test('Default Timeout Interval', () => {
     > 10 |   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
          |   ^
       11 |   expect(true).toBe(true);
       12 | });
       13 | 
 
-      at __tests__/DEFAULT_TIMEOUT_INTERVAL.test.js:10:3
+      at __tests__/defaultTimeoutInterval.test.js:10:3
 
 "
 `;
