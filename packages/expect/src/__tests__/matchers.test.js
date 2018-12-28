@@ -564,7 +564,9 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
   it('does not accept arguments', () => {
     expect(() => jestExpect(0).toBeTruthy(null)).toThrowErrorMatchingSnapshot();
 
-    expect(() => jestExpect(0).toBeFalsy(null)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect(0).not.toBeFalsy(null),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {

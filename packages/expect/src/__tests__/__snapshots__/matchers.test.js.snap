@@ -1531,7 +1531,7 @@ Expected has value: <green>null</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() does not accept arguments 2`] = `
-"<dim>expect(</><red>received</><dim>).</>toBeFalsy<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeFalsy<dim>()</>
 
 <bold>Matcher error</>: <green>expected</> value must be omitted or undefined
 

@@ -107,18 +107,15 @@ export const printWithType = (
 
 export const ensureNoExpected = (
   expected: any,
-  matcherName: string, // required because optional was probably non-use case
+  matcherName: string,
   options?: MatcherHintOptions,
 ) => {
   if (typeof expected !== 'undefined') {
+    // Prepend maybe not only for backward compatibility.
+    const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
       matcherErrorMessage(
-        matcherHint(
-          (options ? '' : '[.not]') + matcherName, // backward compatibility
-          undefined,
-          '',
-          options,
-        ),
+        matcherHint(matcherString, undefined, '', options),
         `${EXPECTED_COLOR('expected')} value must be omitted or undefined`,
         printWithType('Expected', expected, printExpected),
       ),
@@ -181,7 +178,7 @@ export const matcherHint = (
 ) => {
   const {
     comment = '',
-    isDirectExpectCall = false,
+    isDirectExpectCall = false, // seems redundant with received === ''
     isNot = false,
     promise = '',
     secondArgument = '',
