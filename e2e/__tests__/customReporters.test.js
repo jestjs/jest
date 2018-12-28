@@ -97,7 +97,7 @@ describe('Custom Reporters Integration', () => {
 
   test('TestReporter with all tests failing', () => {
     const {stdout, status, stderr} = runJest('custom-reporters', [
-      'add_fail.test.js',
+      'addFail.test.js',
     ]);
 
     const parsedJSON = JSON.parse(stdout);
