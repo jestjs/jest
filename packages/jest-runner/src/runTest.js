@@ -230,7 +230,7 @@ async function runTestInternal(
 
     // Delay the resolution to allow log messages to be output and some cleanup in case of leak detector.
     await new Promise(resolve => {
-      leakDetector ? setTimeout(resolve, 100) : setImmediate(resolve);
+      leakDetector ? setTimeout(resolve, 100) : process.nextTick(resolve);
     });
 
     return {leakDetector, result};
