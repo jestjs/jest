@@ -600,7 +600,7 @@ But the first call returned exactly:
 exports[`toBeCalled .not fails with any argument passed 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalled()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
@@ -615,7 +615,7 @@ Expected mock function to have been called, but it was not called."
 exports[`toBeCalled fails with any argument passed 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toBeCalled()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
@@ -922,7 +922,7 @@ Expected mock function to have been called with:
 exports[`toHaveBeenCalled .not fails with any argument passed 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
@@ -937,7 +937,7 @@ Expected mock function to have been called, but it was not called."
 exports[`toHaveBeenCalled fails with any argument passed 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
@@ -1841,7 +1841,7 @@ But the first call returned exactly:
 exports[`toHaveReturned .not fails with any argument passed 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturned()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
@@ -1868,7 +1868,7 @@ Expected mock function to have returned."
 exports[`toHaveReturned fails with any argument passed 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toHaveReturned()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
@@ -2236,7 +2236,7 @@ But it returned exactly:
 exports[`toReturn .not fails with any argument passed 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturn()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
@@ -2263,7 +2263,7 @@ Expected mock function to have returned."
 exports[`toReturn fails with any argument passed 1`] = `
 "<dim>expect(</><red>received</><dim>)[.not].toReturn()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"

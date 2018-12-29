@@ -116,7 +116,9 @@ export const ensureNoExpected = (
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherString, undefined, '', options),
-        `${EXPECTED_COLOR('expected')} value must be omitted or undefined`,
+        // Because expected is omitted in hint above,
+        // expected is black instead of green in message below.
+        'this matcher must not have an expected argument',
         printWithType('Expected', expected, printExpected),
       ),
     );

@@ -1525,7 +1525,7 @@ Received: <red>undefined</>"
 exports[`.toBeTruthy(), .toBeFalsy() does not accept arguments 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeTruthy<dim>()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has value: <green>null</>"
 `;
@@ -1533,7 +1533,7 @@ Expected has value: <green>null</>"
 exports[`.toBeTruthy(), .toBeFalsy() does not accept arguments 2`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeFalsy<dim>()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has value: <green>null</>"
 `;
