@@ -1,3 +1,5 @@
+// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+
 import chalk from 'chalk';
 import pluralize from './pluralize';
 
@@ -19,7 +21,9 @@ export default function getNoTestFound(testRunData, globalConfig): string {
   }
 
   return (
-    chalk.bold('No tests found') +
+    chalk.bold('No tests found, exiting with code 1') +
+    '\n' +
+    'Run with `--passWithNoTests` to exit with code 0' +
     '\n' +
     `In ${chalk.bold(process.cwd())}` +
     '\n' +

@@ -49,14 +49,13 @@ For example, let's say that `fetchData`, instead of using a callback, returns a 
 
 ```js
 test('the data is peanut butter', () => {
-  expect.assertions(1);
   return fetchData().then(data => {
     expect(data).toBe('peanut butter');
   });
 });
 ```
 
-Be sure to return the promise - if you omit this `return` statement, your test will complete before `fetchData` completes.
+Be sure to return the promise - if you omit this `return` statement, your test will complete before the promise returned from `fetchData` resolves and then() has a chance to execute the callback.
 
 If you expect a promise to be rejected use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.
 
@@ -73,18 +72,16 @@ You can also use the `.resolves` matcher in your expect statement, and Jest will
 
 ```js
 test('the data is peanut butter', () => {
-  expect.assertions(1);
   return expect(fetchData()).resolves.toBe('peanut butter');
 });
 ```
 
-Be sure to return the assertion—if you omit this `return` statement, your test will complete before `fetchData` completes.
+Be sure to return the assertion—if you omit this `return` statement, your test will complete before the promise returned from `fetchData` is resolved and then() has a chance to execute the callback.
 
 If you expect a promise to be rejected use the `.rejects` matcher. It works analogically to the `.resolves` matcher. If the promise is fulfilled, the test will automatically fail.
 
 ```js
 test('the fetch fails with an error', () => {
-  expect.assertions(1);
   return expect(fetchData()).rejects.toMatch('error');
 });
 ```
@@ -114,13 +111,11 @@ Of course, you can combine `async` and `await` with `.resolves` or `.rejects`.
 
 ```js
 test('the data is peanut butter', async () => {
-  expect.assertions(1);
   await expect(fetchData()).resolves.toBe('peanut butter');
 });
 
 test('the fetch fails with an error', async () => {
-  expect.assertions(1);
-  await expect(fetchData()).rejects.toMatch('error');
+  await expect(fetchData()).rejects.toThrow('error');
 });
 ```
 

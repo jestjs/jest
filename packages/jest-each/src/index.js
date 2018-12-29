@@ -36,11 +36,11 @@ const install = (g: GlobalCallbacks, ...args: Array<mixed>) => {
   const xtest = bind(g.xtest)(...args);
 
   const describe = (title: string, suite: Function, timeout: number) =>
-    bind(g.describe)(...args)(title, suite, timeout);
-  describe.skip = bind(g.describe.skip)(...args);
-  describe.only = bind(g.describe.only)(...args);
-  const fdescribe = bind(g.fdescribe)(...args);
-  const xdescribe = bind(g.xdescribe)(...args);
+    bind(g.describe, false)(...args)(title, suite, timeout);
+  describe.skip = bind(g.describe.skip, false)(...args);
+  describe.only = bind(g.describe.only, false)(...args);
+  const fdescribe = bind(g.fdescribe, false)(...args);
+  const xdescribe = bind(g.xdescribe, false)(...args);
 
   return {describe, fdescribe, fit, it, test, xdescribe, xit, xtest};
 };

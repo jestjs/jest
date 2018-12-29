@@ -6,7 +6,7 @@
  */
 'use strict';
 
-const NodeEnvironment = require.requireActual('../');
+import NodeEnvironment from '../';
 
 describe('NodeEnvironment', () => {
   it('uses a copy of the process object', () => {

@@ -7,17 +7,27 @@
  */
 'use strict';
 
-const fs = require('fs');
-const mkdirp = require('mkdirp');
-const os = require('os');
-const path = require('path');
-const runJest = require('../runJest');
-const {cleanup} = require('../Utils');
+import fs from 'fs';
+import mkdirp from 'mkdirp';
+import os from 'os';
+import path from 'path';
+import runJest, {json as runWithJson} from '../runJest';
+import {cleanup} from '../Utils';
 
 const DIR = path.join(os.tmpdir(), 'jest-global-teardown');
+const project1DIR = path.join(os.tmpdir(), 'jest-global-teardown-project-1');
+const project2DIR = path.join(os.tmpdir(), 'jest-global-teardown-project-2');
 
-beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+beforeEach(() => {
+  cleanup(DIR);
+  cleanup(project1DIR);
+  cleanup(project2DIR);
+});
+afterAll(() => {
+  cleanup(DIR);
+  cleanup(project1DIR);
+  cleanup(project2DIR);
+});
 
 test('globalTeardown is triggered once after all test suites', () => {
   mkdirp.sync(DIR);
@@ -25,9 +35,11 @@ test('globalTeardown is triggered once after all test suites', () => {
     __dirname,
     '../global-teardown/teardown.js',
   );
-  const result = runJest.json('global-teardown', [
+  const result = runWithJson('global-teardown', [
     `--globalTeardown=${teardownPath}`,
+    `--testPathPattern=__tests__`,
   ]);
+
   expect(result.status).toBe(0);
   const files = fs.readdirSync(DIR);
   expect(files).toHaveLength(1);
@@ -42,6 +54,7 @@ test('jest throws an error when globalTeardown does not export a function', () =
   );
   const {status, stderr} = runJest('global-teardown', [
     `--globalTeardown=${teardownPath}`,
+    `--testPathPattern=__tests__`,
   ]);
 
   expect(status).toBe(1);
@@ -64,4 +77,37 @@ test('globalTeardown function gets jest config object as a parameter', () => {
   ]);
 
   expect(result.stdout).toBe(testPathPattern);
+});
+
+test('should call globalTeardown function of multiple projects', () => {
+  const configPath = path.resolve(
+    __dirname,
+    '../global-teardown/projects.jest.config.js',
+  );
+
+  const result = runWithJson('global-teardown', [`--config=${configPath}`]);
+
+  expect(result.status).toBe(0);
+
+  expect(fs.existsSync(DIR)).toBe(true);
+  expect(fs.existsSync(project1DIR)).toBe(true);
+  expect(fs.existsSync(project2DIR)).toBe(true);
+});
+
+test('should not call a globalTeardown of a project if there are no tests to run from this project', () => {
+  const configPath = path.resolve(
+    __dirname,
+    '../global-teardown/projects.jest.config.js',
+  );
+
+  const result = runWithJson('global-teardown', [
+    `--config=${configPath}`,
+    '--testPathPattern=project-1',
+  ]);
+
+  expect(result.status).toBe(0);
+
+  expect(fs.existsSync(DIR)).toBe(true);
+  expect(fs.existsSync(project1DIR)).toBe(true);
+  expect(fs.existsSync(project2DIR)).toBe(false);
 });

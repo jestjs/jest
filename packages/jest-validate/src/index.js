@@ -7,20 +7,12 @@
  * @flow
  */
 
-import {
+export {
   createDidYouMeanMessage,
   format,
   logValidationWarning,
   ValidationError,
 } from './utils';
-import validate from './validate';
-import validateCLIOptions from './validate_cli_options';
-
-module.exports = {
-  ValidationError,
-  createDidYouMeanMessage,
-  format,
-  logValidationWarning,
-  validate,
-  validateCLIOptions,
-};
+export {default as validate} from './validate';
+export {default as validateCLIOptions} from './validateCLIOptions';
+export {multipleValidOptions} from './condition';

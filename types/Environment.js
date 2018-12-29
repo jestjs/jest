@@ -12,12 +12,13 @@ import type {Global} from './Global';
 import type {Script} from 'vm';
 import type {ModuleMocker} from 'jest-mock';
 
-export type EnvironmentOptions = {
+export type EnvironmentContext = {
   console?: Object,
+  testPath?: string,
 };
 
 declare class $JestEnvironment {
-  constructor(config: ProjectConfig, options?: EnvironmentOptions): void;
+  constructor(config: ProjectConfig, context?: EnvironmentContext): void;
   runScript(script: Script): any;
   global: Global;
   fakeTimers: {
@@ -28,6 +29,7 @@ declare class $JestEnvironment {
     advanceTimersByTime(msToRun: number): void,
     runOnlyPendingTimers(): void,
     runWithRealTimers(callback: any): void,
+    getTimerCount(): number,
     useFakeTimers(): void,
     useRealTimers(): void,
   };

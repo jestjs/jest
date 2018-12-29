@@ -16,7 +16,7 @@
     "rename-version": "docusaurus-rename-version"
   },
   "dependencies": {
-    "docusaurus": "^1.3.2"
+    "docusaurus": "^1.6.0"
   },
   "devDependencies": {
     "crowdin-cli": "^0.3.0"

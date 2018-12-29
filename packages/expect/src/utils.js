@@ -12,7 +12,7 @@ import {
   isA,
   isImmutableUnorderedKeyed,
   isImmutableUnorderedSet,
-} from './jasmine_utils';
+} from './jasmineUtils';
 
 type GetPath = {
   hasEndProp?: boolean,
@@ -21,9 +21,32 @@ type GetPath = {
   value?: any,
 };
 
-export const hasOwnProperty = (object: Object, value: string) =>
-  Object.prototype.hasOwnProperty.call(object, value) ||
-  Object.prototype.hasOwnProperty.call(object.constructor.prototype, value);
+// Return whether object instance inherits getter from its class.
+const hasGetterFromConstructor = (object: Object, key: string) => {
+  const constructor = object.constructor;
+  if (constructor === Object) {
+    // A literal object has Object as constructor.
+    // Therefore, it cannot inherit application-specific getters.
+    // Furthermore, Object has __proto__ getter which is not relevant.
+    // Array, Boolean, Number, String constructors don’t have any getters.
+    return false;
+  }
+  if (typeof constructor !== 'function') {
+    // Object.create(null) constructs object with no constructor nor prototype.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create#Custom_and_Null_objects
+    return false;
+  }
+
+  const descriptor = Object.getOwnPropertyDescriptor(
+    constructor.prototype,
+    key,
+  );
+  return descriptor !== undefined && typeof descriptor.get === 'function';
+};
+
+export const hasOwnProperty = (object: Object, key: string) =>
+  Object.prototype.hasOwnProperty.call(object, key) ||
+  hasGetterFromConstructor(object, key);
 
 export const getPath = (
   object: Object,
@@ -213,7 +236,7 @@ export const subsetEquality = (object: Object, subset: Object) => {
 };
 
 export const typeEquality = (a: any, b: any) => {
-  if (a == null || b == null || a.constructor.name === b.constructor.name) {
+  if (a == null || b == null || a.constructor === b.constructor) {
     return undefined;
   }
 

@@ -10,7 +10,8 @@
 import type {InternalHasteMap} from 'types/HasteMap';
 import type {CrawlerOptions} from '../types';
 
-import normalizePathSep from '../lib/normalize_path_sep';
+import * as fastPath from '../lib/fast_path';
+import normalizePathSep from '../lib/normalizePathSep';
 import path from 'path';
 import watchman from 'fb-watchman';
 import H from '../constants';
@@ -25,11 +26,11 @@ function WatchmanError(error: Error): Error {
   return error;
 }
 
-module.exports = async function watchmanCrawl(
+export default async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
   const fields = ['name', 'exists', 'mtime_ms'];
-  const {data, extensions, ignore, roots} = options;
+  const {data, extensions, ignore, rootDir, roots} = options;
   const defaultWatchExpression = [
     'allof',
     ['type', 'f'],
@@ -43,10 +44,8 @@ module.exports = async function watchmanCrawl(
 
   const cmd = (...args) =>
     new Promise((resolve, reject) =>
-      client.command(
-        args,
-        (error, result) =>
-          error ? reject(WatchmanError(error)) : resolve(result),
+      client.command(args, (error, result) =>
+        error ? reject(WatchmanError(error)) : resolve(result),
       ),
     );
 
@@ -112,9 +111,10 @@ module.exports = async function watchmanCrawl(
             }
           }
 
-          const query = clocks[root]
+          const relativeRoot = fastPath.relative(rootDir, root);
+          const query = clocks.has(relativeRoot)
             ? // Use the `since` generator if we have a clock available
-              {expression, fields, since: clocks[root]}
+              {expression, fields, since: clocks.get(relativeRoot)}
             : // Otherwise use the `glob` filter
               {expression, fields, glob};
 
@@ -145,7 +145,7 @@ module.exports = async function watchmanCrawl(
     // Reset the file map if watchman was restarted and sends us a list of
     // files.
     if (watchmanFileResults.isFresh) {
-      files = Object.create(null);
+      files = new Map();
     }
 
     watchmanFiles = watchmanFileResults.files;
@@ -159,29 +159,57 @@ module.exports = async function watchmanCrawl(
 
   for (const [watchRoot, response] of watchmanFiles) {
     const fsRoot = normalizePathSep(watchRoot);
-    clocks[fsRoot] = response.clock;
+    const relativeFsRoot = fastPath.relative(rootDir, fsRoot);
+    clocks.set(relativeFsRoot, response.clock);
+
     for (const fileData of response.files) {
-      const name = fsRoot + path.sep + normalizePathSep(fileData.name);
+      const filePath = fsRoot + path.sep + normalizePathSep(fileData.name);
+      const relativeFilePath = fastPath.relative(rootDir, filePath);
+
       if (!fileData.exists) {
-        delete files[name];
-      } else if (!ignore(name)) {
+        files.delete(relativeFilePath);
+      } else if (!ignore(filePath)) {
         const mtime =
           typeof fileData.mtime_ms === 'number'
             ? fileData.mtime_ms
             : fileData.mtime_ms.toNumber();
-        const existingFileData = data.files[name];
-        const isOld = existingFileData && existingFileData[H.MTIME] === mtime;
-        if (isOld) {
-          files[name] = existingFileData;
+
+        let sha1hex = fileData['content.sha1hex'];
+        if (typeof sha1hex !== 'string' || sha1hex.length !== 40) {
+          sha1hex = null;
+        }
+
+        const existingFileData = data.files.get(relativeFilePath);
+        let nextData;
+
+        if (existingFileData && existingFileData[H.MTIME] === mtime) {
+          nextData = existingFileData;
+        } else if (
+          existingFileData &&
+          sha1hex &&
+          existingFileData[H.SHA1] === sha1hex
+        ) {
+          nextData = [...existingFileData];
+          nextData[1] = mtime;
         } else {
-          let sha1hex = fileData['content.sha1hex'];
-
-          if (typeof sha1hex !== 'string' || sha1hex.length !== 40) {
-            sha1hex = null;
-          }
-
           // See ../constants.js
-          files[name] = ['', mtime, 0, [], sha1hex];
+          nextData = ['', mtime, 0, [], sha1hex];
+        }
+
+        const mappings = options.mapper ? options.mapper(filePath) : null;
+
+        if (mappings) {
+          for (const absoluteVirtualFilePath of mappings) {
+            if (!ignore(absoluteVirtualFilePath)) {
+              const relativeVirtualFilePath = fastPath.relative(
+                rootDir,
+                absoluteVirtualFilePath,
+              );
+              files.set(relativeVirtualFilePath, nextData);
+            }
+          }
+        } else {
+          files.set(relativeFilePath, nextData);
         }
       }
     }
@@ -189,4 +217,4 @@ module.exports = async function watchmanCrawl(
 
   data.files = files;
   return data;
-};
+}

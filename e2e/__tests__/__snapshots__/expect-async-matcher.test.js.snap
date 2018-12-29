@@ -9,9 +9,8 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
 
   ● fail with expected non promise values
 
-    Error
+    Expected value to have length:
 
-      Error: Expected value to have length:
         2
       Received:
         1
@@ -20,9 +19,8 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
 
   ● fail with expected non promise values and not
 
-    Error
+    Expected value to not have length:
 
-      Error: Expected value to not have length:
         2
       Received:
         1,2
@@ -47,9 +45,10 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       27 | });
 
       at __tests__/failure.test.js:24:54
-      at __tests__/failure.test.js:11:191
-      at __tests__/failure.test.js:11:437
-      at __tests__/failure.test.js:11:99
+      at __tests__/failure.test.js:11:103
+      at __tests__/failure.test.js:13:194
+      at __tests__/failure.test.js:13:364
+      at __tests__/failure.test.js:13:97
 
   ● fail with expected promise values and not
 
@@ -69,9 +68,10 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       33 | });
 
       at __tests__/failure.test.js:30:61
-      at __tests__/failure.test.js:11:191
-      at __tests__/failure.test.js:11:437
-      at __tests__/failure.test.js:11:99
+      at __tests__/failure.test.js:11:103
+      at __tests__/failure.test.js:13:194
+      at __tests__/failure.test.js:13:364
+      at __tests__/failure.test.js:13:97
 
 "
 `;

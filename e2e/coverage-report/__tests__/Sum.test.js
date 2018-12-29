@@ -8,7 +8,7 @@
 
 jest.mock('../SumDependency.js'); // call mock explicitly
 
-const sum = require('../Sum').sum;
+const {sum} = require('../Sum');
 
 if (!global.setup) {
   throw new Error('setup.js was not called.');

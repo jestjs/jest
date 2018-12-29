@@ -22,16 +22,26 @@ export type MockFunctionMetadata = {
 };
 
 /**
+ * Possible types of a MockFunctionResult.
+ * 'return': The call completed by returning normally.
+ * 'throw': The call completed by throwing a value.
+ * 'incomplete': The call has not completed yet. This is possible if you read
+ *               the  mock function result from within the mock function itself
+ *               (or a function called by the mock function).
+ */
+type MockFunctionResultType = 'return' | 'throw' | 'incomplete';
+
+/**
  * Represents the result of a single call to a mock function.
  */
 type MockFunctionResult = {
   /**
-   * True if the function threw.
-   * False if the function returned.
+   * Indicates how the call completed.
    */
-  isThrow: boolean,
+  type: MockFunctionResultType,
   /**
    * The value that was either thrown or returned by the function.
+   * Undefined when type === 'incomplete'.
    */
   value: any,
 };
@@ -173,31 +183,36 @@ function matchArity(fn: any, length: number): any {
   return mockConstructor;
 }
 
-function isA(typeName: string, value: any): boolean {
-  return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
+function getObjectType(value: any): string {
+  return Object.prototype.toString.apply(value).slice(8, -1);
 }
 
 function getType(ref?: any): string | null {
+  const typeName = getObjectType(ref);
   if (
-    isA('Function', ref) ||
-    isA('AsyncFunction', ref) ||
-    isA('GeneratorFunction', ref)
+    typeName === 'Function' ||
+    typeName === 'AsyncFunction' ||
+    typeName === 'GeneratorFunction'
   ) {
     return 'function';
   } else if (Array.isArray(ref)) {
     return 'array';
-  } else if (isA('Object', ref)) {
+  } else if (typeName === 'Object') {
     return 'object';
   } else if (
-    isA('Number', ref) ||
-    isA('String', ref) ||
-    isA('Boolean', ref) ||
-    isA('Symbol', ref)
+    typeName === 'Number' ||
+    typeName === 'String' ||
+    typeName === 'Boolean' ||
+    typeName === 'Symbol'
   ) {
     return 'constant';
-  } else if (isA('Map', ref) || isA('WeakMap', ref) || isA('Set', ref)) {
+  } else if (
+    typeName === 'Map' ||
+    typeName === 'WeakMap' ||
+    typeName === 'Set'
+  ) {
     return 'collection';
-  } else if (isA('RegExp', ref)) {
+  } else if (typeName === 'RegExp') {
     return 'regexp';
   } else if (ref === undefined) {
     return 'undefined';
@@ -209,47 +224,31 @@ function getType(ref?: any): string | null {
 }
 
 function isReadonlyProp(object: any, prop: string): boolean {
-  return (
-    ((prop === 'arguments' ||
-      prop === 'caller' ||
-      prop === 'callee' ||
-      prop === 'name' ||
-      prop === 'length') &&
-      (isA('Function', object) ||
-        isA('AsyncFunction', object) ||
-        isA('GeneratorFunction', object))) ||
-    ((prop === 'source' ||
-      prop === 'global' ||
-      prop === 'ignoreCase' ||
-      prop === 'multiline') &&
-      isA('RegExp', object))
-  );
-}
-
-function getSlots(object?: Object): Array<string> {
-  const slots = {};
-  if (!object) {
-    return [];
+  if (
+    prop === 'arguments' ||
+    prop === 'caller' ||
+    prop === 'callee' ||
+    prop === 'name' ||
+    prop === 'length'
+  ) {
+    const typeName = getObjectType(object);
+    return (
+      typeName === 'Function' ||
+      typeName === 'AsyncFunction' ||
+      typeName === 'GeneratorFunction'
+    );
   }
 
-  let parent = Object.getPrototypeOf(object);
-  do {
-    if (object === Object.getPrototypeOf(Function)) {
-      break;
-    }
-    const ownNames = Object.getOwnPropertyNames(object);
-    for (let i = 0; i < ownNames.length; i++) {
-      const prop = ownNames[i];
-      if (!isReadonlyProp(object, prop)) {
-        const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-        if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
-          slots[prop] = true;
-        }
-      }
-    }
-    object = parent;
-  } while (object && (parent = Object.getPrototypeOf(object)) !== null);
-  return Object.keys(slots);
+  if (
+    prop === 'source' ||
+    prop === 'global' ||
+    prop === 'ignoreCase' ||
+    prop === 'multiline'
+  ) {
+    return getObjectType(object) === 'RegExp';
+  }
+
+  return false;
 }
 
 class ModuleMockerClass {
@@ -272,6 +271,53 @@ class ModuleMockerClass {
     this._spyState = new Set();
     this.ModuleMocker = ModuleMockerClass;
     this._invocationCallCounter = 1;
+  }
+
+  _getSlots(object?: Object): Array<string> {
+    if (!object) {
+      return [];
+    }
+
+    const slots = new Set();
+    const EnvObjectProto = this._environmentGlobal.Object.prototype;
+    const EnvFunctionProto = this._environmentGlobal.Function.prototype;
+    const EnvRegExpProto = this._environmentGlobal.RegExp.prototype;
+
+    // Also check the builtins in the current context as they leak through
+    // core node modules.
+    const ObjectProto = Object.prototype;
+    const FunctionProto = Function.prototype;
+    const RegExpProto = RegExp.prototype;
+
+    // Properties of Object.prototype, Function.prototype and RegExp.prototype
+    // are never reported as slots
+    while (
+      object != null &&
+      object !== EnvObjectProto &&
+      object !== EnvFunctionProto &&
+      object !== EnvRegExpProto &&
+      object !== ObjectProto &&
+      object !== FunctionProto &&
+      object !== RegExpProto
+    ) {
+      const ownNames = Object.getOwnPropertyNames(object);
+
+      for (let i = 0; i < ownNames.length; i++) {
+        const prop = ownNames[i];
+
+        if (!isReadonlyProp(object, prop)) {
+          const propDesc = Object.getOwnPropertyDescriptor(object, prop);
+
+          if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
+            slots.add(prop);
+          }
+        }
+      }
+
+      object = Object.getPrototypeOf(object);
+    }
+
+    return Array.from(slots);
   }
 
   _ensureMockConfig(f: Mock): MockFunctionConfig {
@@ -336,13 +382,22 @@ class ModuleMockerClass {
           metadata.members.prototype &&
           metadata.members.prototype.members) ||
         {};
-      const prototypeSlots = getSlots(prototype);
+      const prototypeSlots = this._getSlots(prototype);
       const mocker = this;
       const mockConstructor = matchArity(function() {
         const mockState = mocker._ensureMockState(f);
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
+        // Create and record an "incomplete" mock result immediately upon
+        // calling rather than waiting for the mock to return. This avoids
+        // issues caused by recursion where results can be recorded in the
+        // wrong order.
+        const mockResult = {
+          type: 'incomplete',
+          value: undefined,
+        };
+        mockState.results.push(mockResult);
         mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
 
         // Will be set to the return value of the mock if an error is not thrown
@@ -421,11 +476,12 @@ class ModuleMockerClass {
           callDidThrowError = true;
           throw error;
         } finally {
-          // Record the result of the function
-          mockState.results.push({
-            isThrow: callDidThrowError,
-            value: callDidThrowError ? thrownError : finalReturnValue,
-          });
+          // Record the result of the function.
+          // NOTE: Intentionally NOT pushing/indexing into the array of mock
+          //       results here to avoid corrupting results data if mockClear()
+          //       is called during the execution of the mock.
+          mockResult.type = callDidThrowError ? 'throw' : 'return';
+          mockResult.value = callDidThrowError ? thrownError : finalReturnValue;
         }
 
         return finalReturnValue;
@@ -606,7 +662,7 @@ class ModuleMockerClass {
       refs[metadata.refID] = mock;
     }
 
-    getSlots(metadata.members).forEach(slot => {
+    this._getSlots(metadata.members).forEach(slot => {
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
       if (slotMetadata.ref != null) {
         callbacks.push(() => (mock[slot] = refs[slotMetadata.ref]));
@@ -666,7 +722,7 @@ class ModuleMockerClass {
       return metadata;
     } else if (type === 'function') {
       metadata.name = component.name;
-      if (component._isMockFunction) {
+      if (component._isMockFunction === true) {
         metadata.mockImpl = component.getMockImplementation();
       }
     }
@@ -678,40 +734,23 @@ class ModuleMockerClass {
     // Leave arrays alone
     if (type !== 'array') {
       if (type !== 'undefined') {
-        getSlots(component).forEach(slot => {
+        this._getSlots(component).forEach(slot => {
           if (
             type === 'function' &&
-            component._isMockFunction &&
+            component._isMockFunction === true &&
             slot.match(/^mock/)
           ) {
             return;
           }
 
-          if (
-            (!component.hasOwnProperty && component[slot] !== undefined) ||
-            (component.hasOwnProperty && component.hasOwnProperty(slot)) ||
-            (type === 'object' && component[slot] != Object.prototype[slot])
-          ) {
-            const slotMetadata = this.getMetadata(component[slot], refs);
-            if (slotMetadata) {
-              if (!members) {
-                members = {};
-              }
-              members[slot] = slotMetadata;
+          const slotMetadata = this.getMetadata(component[slot], refs);
+          if (slotMetadata) {
+            if (!members) {
+              members = {};
             }
+            members[slot] = slotMetadata;
           }
         });
-      }
-
-      // If component is native code function, prototype might be undefined
-      if (type === 'function' && component.prototype) {
-        const prototype = this.getMetadata(component.prototype, refs);
-        if (prototype && prototype.members) {
-          if (!members) {
-            members = {};
-          }
-          members.prototype = prototype;
-        }
       }
     }
 
@@ -723,7 +762,7 @@ class ModuleMockerClass {
   }
 
   isMockFunction(fn: any): boolean {
-    return !!(fn && fn._isMockFunction);
+    return !!fn && fn._isMockFunction === true;
   }
 
   fn(implementation?: any): any {
@@ -859,4 +898,4 @@ class ModuleMockerClass {
 }
 
 export type ModuleMocker = ModuleMockerClass;
-module.exports = new ModuleMockerClass(global);
+export default new ModuleMockerClass(global);

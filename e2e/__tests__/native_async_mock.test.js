@@ -9,9 +9,9 @@
 
 'use strict';
 
-const path = require('path');
-const {run, extractSummary} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import {extractSummary, run} from '../Utils';
+import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '..', 'native-async-mock');
 

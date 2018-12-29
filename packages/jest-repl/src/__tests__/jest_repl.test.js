@@ -7,14 +7,13 @@
  */
 'use strict';
 
-const {spawnSync} = require('child_process');
-const path = require('path');
-const ConditionalTest = require('../../../../scripts/ConditionalTest');
+import {spawnSync} from 'child_process';
+import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
-const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
+const JEST_RUNTIME = require.resolve('../../bin/jest-repl.js');
 
 describe('Repl', () => {
-  ConditionalTest.skipSuiteOnWindows();
+  skipSuiteOnWindows();
 
   describe('cli', () => {
     it('runs without errors', () => {
@@ -23,6 +22,7 @@ describe('Repl', () => {
         encoding: 'utf8',
         env: process.env,
       });
+      expect(output.stderr.trim()).toBe('');
       expect(output.stdout.trim()).toMatch(/›/);
     });
   });

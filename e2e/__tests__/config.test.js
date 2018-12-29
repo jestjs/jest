@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('config as JSON', () => {
   const result = runJest('verbose-reporter', [

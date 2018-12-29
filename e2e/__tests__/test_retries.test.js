@@ -8,13 +8,12 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const runJest = require('../runJest');
+import fs from 'fs';
+import path from 'path';
+import runJest from '../runJest';
+import {skipSuiteOnJasmine} from '../../scripts/ConditionalTest';
 
-const ConditionalTest = require('../../scripts/ConditionalTest');
-
-ConditionalTest.skipSuiteOnJasmine();
+skipSuiteOnJasmine();
 
 describe('Test Retries', () => {
   const outputFileName = 'retries.result.json';

@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 it('prints a usable stack trace even if no Error.captureStackTrace', () => {
   const {stderr, status} = runJest('stack-trace-no-capture-stack-trace');

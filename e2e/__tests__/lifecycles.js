@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('suite with invalid assertions in afterAll', () => {
   const {stderr, status} = runJest('lifecycles');

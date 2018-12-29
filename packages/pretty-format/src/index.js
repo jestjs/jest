@@ -12,6 +12,7 @@ import type {
   Config,
   Options,
   OptionsReceived,
+  NewPlugin,
   Plugin,
   Plugins,
   Refs,
@@ -28,13 +29,13 @@ import {
   printObjectProperties,
 } from './collections';
 
-import AsymmetricMatcher from './plugins/asymmetric_matcher';
-import ConvertAnsi from './plugins/convert_ansi';
-import DOMCollection from './plugins/dom_collection';
-import DOMElement from './plugins/dom_element';
-import Immutable from './plugins/immutable';
-import ReactElement from './plugins/react_element';
-import ReactTestComponent from './plugins/react_test_component';
+import AsymmetricMatcher from './plugins/AsymmetricMatcher';
+import ConvertAnsi from './plugins/ConvertAnsi';
+import DOMCollection from './plugins/DOMCollection';
+import DOMElement from './plugins/DOMElement';
+import Immutable from './plugins/Immutable';
+import ReactElement from './plugins/ReactElement';
+import ReactTestComponent from './plugins/ReactTestComponent';
 
 const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
@@ -102,6 +103,7 @@ function printBasicValue(
   val: any,
   printFunctionName: boolean,
   escapeRegex: boolean,
+  escapeString: boolean,
 ): StringOrNull {
   if (val === true || val === false) {
     return '' + val;
@@ -119,7 +121,10 @@ function printBasicValue(
     return printNumber(val);
   }
   if (typeOf === 'string') {
-    return '"' + val.replace(/"|\\/g, '\\$&') + '"';
+    if (escapeString) {
+      return '"' + val.replace(/"|\\/g, '\\$&') + '"';
+    }
+    return '"' + val + '"';
   }
   if (typeOf === 'function') {
     return printFunction(val, printFunctionName);
@@ -146,7 +151,7 @@ function printBasicValue(
     return printSymbol(val);
   }
   if (toStringed === '[object Date]') {
-    return toISOString.call(val);
+    return isNaN(+val) ? 'Date { NaN }' : toISOString.call(val);
   }
   if (toStringed === '[object Error]') {
     return printError(val);
@@ -322,6 +327,7 @@ function printer(
     val,
     config.printFunctionName,
     config.escapeRegex,
+    config.escapeString,
   );
   if (basicResult !== null) {
     return basicResult;
@@ -350,6 +356,7 @@ const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME);
 const DEFAULT_OPTIONS: Options = {
   callToJSON: true,
   escapeRegex: false,
+  escapeString: true,
   highlight: false,
   indent: 2,
   maxDepth: Infinity,
@@ -424,6 +431,11 @@ const getEscapeRegex = (options?: OptionsReceived) =>
     ? options.escapeRegex
     : DEFAULT_OPTIONS.escapeRegex;
 
+const getEscapeString = (options?: OptionsReceived) =>
+  options && options.escapeString !== undefined
+    ? options.escapeString
+    : DEFAULT_OPTIONS.escapeString;
+
 const getConfig = (options?: OptionsReceived): Config => ({
   callToJSON:
     options && options.callToJSON !== undefined
@@ -434,6 +446,7 @@ const getConfig = (options?: OptionsReceived): Config => ({
       ? getColorsHighlight(options)
       : getColorsEmpty(),
   escapeRegex: getEscapeRegex(options),
+  escapeString: getEscapeString(options),
   indent:
     options && options.min
       ? ''
@@ -460,7 +473,10 @@ function createIndent(indent: number): string {
   return new Array(indent + 1).join(' ');
 }
 
-function prettyFormat(val: any, options?: OptionsReceived): string {
+export default function prettyFormat(
+  val: any,
+  options?: OptionsReceived,
+): string {
   if (options) {
     validateOptions(options);
     if (options.plugins) {
@@ -475,6 +491,7 @@ function prettyFormat(val: any, options?: OptionsReceived): string {
     val,
     getPrintFunctionName(options),
     getEscapeRegex(options),
+    getEscapeString(options),
   );
   if (basicResult !== null) {
     return basicResult;
@@ -483,7 +500,7 @@ function prettyFormat(val: any, options?: OptionsReceived): string {
   return printComplexValue(val, getConfig(options), '', 0, []);
 }
 
-prettyFormat.plugins = {
+const plugins: {[s: string]: NewPlugin} = {
   AsymmetricMatcher,
   ConvertAnsi,
   DOMCollection,
@@ -493,4 +510,5 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-module.exports = prettyFormat;
+// TODO: Consider exporting as ESM
+prettyFormat.plugins = plugins;

@@ -10,7 +10,7 @@ aliases:
       - node_modules
       - website/node_modules
     key: v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-  
+
   - &filter-ignore-gh-pages
     branches:
       ignore: gh-pages
@@ -26,7 +26,7 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn lint --format junit -o reports/junit/js-lint-results.xml && yarn typecheck && yarn lint-es5-build --format junit -o reports/junit/js-es5-lint-results.xml  && yarn lint:md:ci
+      - run: yarn lint --format junit -o reports/junit/js-lint-results.xml && yarn typecheck && yarn lint-es5-build --format junit -o reports/junit/js-es5-lint-results.xml  && yarn lint:md:ci && yarn check-copyright-headers
       - store_test_results:
           path: reports/junit
 
@@ -51,11 +51,9 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci-partial
-          environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+          command: yarn test-ci
       - store_test_results:
-                path: reports/junit
+          path: reports/junit
 
   test-jest-circus:
     working_directory: ~/jest
@@ -68,10 +66,8 @@ jobs:
       - save-cache: *save-cache
       - run:
           command: JEST_CIRCUS=1 yarn test-ci-partial
-          environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
       - store_test_results:
-                path: reports/junit
+          path: reports/junit
 
   test-node-8:
     working_directory: ~/jest
@@ -83,11 +79,9 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci
-          environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+          command: yarn test-ci-partial
       - store_test_results:
-                path: reports/junit
+          path: reports/junit
 
   test-node-6:
     working_directory: ~/jest
@@ -96,14 +90,13 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: yarn --no-progress
+      - run: yarn --no-progress --ignore-engines
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci-partial
-          environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+          # react-native does not work with node 6
+          command: rm -rf examples/react-native && yarn test-ci-partial
       - store_test_results:
-                path: reports/junit
+          path: reports/junit
 
   test-or-deploy-website:
     working_directory: ~/jest

@@ -14,9 +14,10 @@ import type {ErrorWithCode} from 'types/Errors';
 
 import fs from 'fs';
 import path from 'path';
-import nodeModulesPaths from './node_modules_paths';
-import isBuiltinModule from './is_builtin_module';
-import defaultResolver from './default_resolver.js';
+import {interopRequireDefault} from 'jest-util';
+import nodeModulesPaths from './nodeModulesPaths';
+import isBuiltinModule from './isBuiltinModule';
+import defaultResolver from './defaultResolver';
 import chalk from 'chalk';
 
 type ResolverConfig = {|
@@ -61,12 +62,13 @@ const nodePaths = process.env.NODE_PATH
       .map(p => path.resolve(resolvedCwd, p))
   : null;
 
-class Resolver {
+export default class Resolver {
   _options: ResolverConfig;
   _moduleMap: ModuleMap;
   _moduleIDCache: {[key: string]: string, __proto__: null};
   _moduleNameCache: {[name: string]: Path, __proto__: null};
   _modulePathCache: {[path: Path]: Array<Path>, __proto__: null};
+  _supportsNativePlatform: boolean;
 
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {
@@ -82,6 +84,9 @@ class Resolver {
       resolver: options.resolver,
       rootDir: options.rootDir,
     };
+    this._supportsNativePlatform = options.platforms
+      ? options.platforms.includes(NATIVE_PLATFORM)
+      : false;
     this._moduleMap = moduleMap;
     this._moduleIDCache = Object.create(null);
     this._moduleNameCache = Object.create(null);
@@ -90,8 +95,10 @@ class Resolver {
 
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
     const resolver = options.resolver
-      ? /* $FlowFixMe */
-        require(options.resolver)
+      ? interopRequireDefault(
+          // $FlowFixMe
+          require(options.resolver),
+        ).default
       : defaultResolver;
     const paths = options.paths;
 
@@ -118,7 +125,7 @@ class Resolver {
     const key = dirname + path.delimiter + moduleName;
     const defaultPlatform = this._options.defaultPlatform;
     const extensions = this._options.extensions.slice();
-    if (this._supportsNativePlatform()) {
+    if (this._supportsNativePlatform) {
       extensions.unshift(
         ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
       );
@@ -221,7 +228,7 @@ class Resolver {
     return this._moduleMap.getModule(
       name,
       this._options.defaultPlatform,
-      this._supportsNativePlatform(),
+      this._supportsNativePlatform,
     );
   }
 
@@ -236,7 +243,7 @@ class Resolver {
     return this._moduleMap.getPackage(
       name,
       this._options.defaultPlatform,
-      this._supportsNativePlatform(),
+      this._supportsNativePlatform,
     );
   }
 
@@ -324,8 +331,8 @@ class Resolver {
     return virtualMocks[virtualMockPath]
       ? virtualMockPath
       : moduleName
-        ? this.resolveModule(from, moduleName)
-        : from;
+      ? this.resolveModule(from, moduleName)
+      : from;
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {
@@ -337,10 +344,23 @@ class Resolver {
   _resolveStubModuleName(from: Path, moduleName: string): ?Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
-    const extensions = this._options.extensions;
+    const extensions = this._options.extensions.slice();
     const moduleDirectory = this._options.moduleDirectories;
     const moduleNameMapper = this._options.moduleNameMapper;
     const resolver = this._options.resolver;
+    const defaultPlatform = this._options.defaultPlatform;
+
+    if (this._supportsNativePlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + NATIVE_PLATFORM + ext),
+      );
+    }
+
+    if (defaultPlatform) {
+      extensions.unshift(
+        ...this._options.extensions.map(ext => '.' + defaultPlatform + ext),
+      );
+    }
 
     if (moduleNameMapper) {
       for (const {moduleName: mappedModuleName, regex} of moduleNameMapper) {
@@ -381,10 +401,6 @@ class Resolver {
     }
     return null;
   }
-
-  _supportsNativePlatform() {
-    return (this._options.platforms || []).indexOf(NATIVE_PLATFORM) !== -1;
-  }
 }
 
 const createNoMappedModuleFoundError = (
@@ -413,5 +429,3 @@ Please check your configuration for these entries:
 
   return error;
 };
-
-module.exports = Resolver;

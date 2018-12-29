@@ -6,5 +6,5 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-import resolver from 'jest-resolve/build/default_resolver.js';
+import resolver from 'jest-resolve/build/defaultResolver.js';
 module.exports = resolver;

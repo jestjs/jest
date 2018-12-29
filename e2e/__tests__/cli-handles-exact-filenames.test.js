@@ -9,14 +9,14 @@
 
 'use strict';
 
-const path = require('path');
-const ConditionalTest = require('../../scripts/ConditionalTest');
-const {extractSummary, cleanup, writeFiles} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
+import {cleanup, extractSummary, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../cli_accepts_exact_filenames');
 
-ConditionalTest.skipSuiteOnWindows();
+skipSuiteOnWindows();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));

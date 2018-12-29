@@ -1,6 +1,6 @@
 {
   "name": "diff-sequences",
-  "version": "23.2.0",
+  "version": "23.6.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git"
@@ -14,5 +14,8 @@
     "callback",
     "diff"
   ],
+  "engines": {
+    "node": ">= 6"
+  },
   "main": "build/index.js"
 }

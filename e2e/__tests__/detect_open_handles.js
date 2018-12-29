@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest, {until} from '../runJest';
 
 try {
   // $FlowFixMe: Node core
@@ -29,7 +29,7 @@ function getTextAfterTest(stderr) {
 }
 
 it('prints message about flag on slow tests', async () => {
-  const {stderr} = await runJest.until(
+  const {stderr} = await until(
     'detect-open-handles',
     ['outside'],
     'Jest did not exit one second after the test run has completed.',
@@ -40,7 +40,7 @@ it('prints message about flag on slow tests', async () => {
 });
 
 it('prints message about flag on forceExit', async () => {
-  const {stderr} = await runJest.until(
+  const {stderr} = await until(
     'detect-open-handles',
     ['outside', '--forceExit'],
     'Force exiting Jest',
@@ -51,32 +51,18 @@ it('prints message about flag on forceExit', async () => {
 });
 
 it('prints out info about open handlers', async () => {
-  const {stderr} = await runJest.until(
+  const {stderr} = await until(
     'detect-open-handles',
     ['outside', '--detectOpenHandles'],
     'Jest has detected',
   );
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(textAfterTest).toContain('Jest has detected the following');
-  expect(textAfterTest).toContain(
-    `
-  ●  GETADDRINFOREQWRAP
-
-      5 | const app = new http.Server();
-      6 | 
-    > 7 | app.listen({host: 'localhost', port: 0});
-        |     ^
-      8 | 
-
-      at Object.<anonymous> (server.js:7:5)
-      at Object.<anonymous> (__tests__/outside.js:1:1)
-`.trim(),
-  );
+  expect(textAfterTest).toMatchSnapshot();
 });
 
 it('does not report promises', () => {
-  // The test here is basically that it exits cleanly without reporting anything (does not need `runJest.until`)
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
   const {stderr} = runJest('detect-open-handles', [
     'promise',
     '--detectOpenHandles',
@@ -87,7 +73,7 @@ it('does not report promises', () => {
 });
 
 it('prints out info about open handlers from inside tests', async () => {
-  const {stderr} = await runJest.until(
+  const {stderr} = await until(
     'detect-open-handles',
     ['inside', '--detectOpenHandles'],
     'Jest has detected',

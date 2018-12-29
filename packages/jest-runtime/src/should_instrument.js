@@ -35,16 +35,24 @@ export default function shouldInstrument(
     return true;
   }
 
-  if (config.testRegex && filename.match(config.testRegex)) {
-    return false;
-  }
-
   if (
-    config.testMatch &&
-    config.testMatch.length &&
-    micromatch.any(filename, config.testMatch)
+    !config.testPathIgnorePatterns ||
+    !config.testPathIgnorePatterns.some(pattern => filename.match(pattern))
   ) {
-    return false;
+    if (
+      config.testRegex &&
+      config.testRegex.some(regex => new RegExp(regex).test(filename))
+    ) {
+      return false;
+    }
+
+    if (
+      config.testMatch &&
+      config.testMatch.length &&
+      micromatch([filename], config.testMatch).length
+    ) {
+      return false;
+    }
   }
 
   if (

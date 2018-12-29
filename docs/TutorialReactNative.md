@@ -134,7 +134,7 @@ The preset sets up the environment and is very opinionated and based on what we 
 
 ### transformIgnorePatterns customization
 
-The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-array-string) option can be used to whitelist or blacklist files from being transformed with babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
+The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-array-string) option can be used to whitelist or blacklist files from being transformed with Babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
 
 By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by whitelisting modules other than react-native:
 
@@ -185,7 +185,7 @@ Or if you'd like to create your own manual mock, you can do something like this:
 
 ```js
 jest.mock('Text', () => {
-  const RealComponent = require.requireActual('Text');
+  const RealComponent = jest.requireActual('Text');
   const React = require('React');
   class Text extends React.Component {
     render() {
@@ -200,22 +200,3 @@ jest.mock('Text', () => {
 In other cases you may want to mock a native module that isn't a React component. The same technique can be applied. We recommend inspecting the native module's source code and logging the module when running a react native app on a real device and then modeling a manual mock after the real module.
 
 If you end up mocking the same modules over and over it is recommended to define these mocks in a separate file and add it to the list of `setupFiles`.
-
-### `@providesModule`
-
-If you'd like to use Facebook's `@providesModule` module system through an npm package, the default haste config option must be overwritten and npm modules must be added to `providesModuleNodeModules`:
-
-```json
-"haste": {
-  "defaultPlatform": "ios",
-  "platforms": ["android", "ios"],
-  "providesModuleNodeModules": [
-    "react",
-    "react-native",
-    "my-awesome-module",
-    "my-text-component"
-  ]
-},
-```
-
-If you'd like to test a different default platform or if you are building for other platforms, the `defaultPlatform` and `platforms` configuration option can be updated.

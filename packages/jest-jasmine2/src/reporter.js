@@ -16,10 +16,6 @@ import type {
   TestResult,
 } from 'types/TestResult';
 
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test.
-const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
-
 import {formatResultsErrors} from 'jest-message-util';
 
 type Suite = {
@@ -85,12 +81,15 @@ export default class Jasmine2Reporter {
     let numFailingTests = 0;
     let numPassingTests = 0;
     let numPendingTests = 0;
+    let numTodoTests = 0;
     const testResults = this._testResults;
     testResults.forEach(testResult => {
       if (testResult.status === 'failed') {
         numFailingTests++;
       } else if (testResult.status === 'pending') {
         numPendingTests++;
+      } else if (testResult.status === 'todo') {
+        numTodoTests++;
       } else {
         numPassingTests++;
       }
@@ -107,6 +106,7 @@ export default class Jasmine2Reporter {
       numFailingTests,
       numPassingTests,
       numPendingTests,
+      numTodoTests,
       perfStats: {
         end: 0,
         start: 0,

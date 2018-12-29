@@ -8,8 +8,8 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
-const path = require('path');
+import runJest from '../runJest';
+import path from 'path';
 
 const testRootDir = path.resolve(__dirname, '..', '..');
 

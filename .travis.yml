@@ -1,9 +1,7 @@
 language: node_js
 
 node_js:
-  - "10"
-
-sudo: false
+  - '10'
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
@@ -12,8 +10,8 @@ before_install:
 cache:
   yarn: true
   directories:
-    - ".eslintcache"
-    - "node_modules"
+    - '.eslintcache'
+    - 'node_modules'
 
 script:
   - yarn run test-ci-partial

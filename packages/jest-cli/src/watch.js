@@ -18,7 +18,7 @@ import getChangedFilesPromise from './getChangedFilesPromise';
 import exit from 'exit';
 import HasteMap from 'jest-haste-map';
 import isValidPath from './lib/is_valid_path';
-import {isInteractive} from 'jest-util';
+import {isInteractive, specialChars} from 'jest-util';
 import {print as preRunMessagePrint} from './preRunMessage';
 import createContext from './lib/create_context';
 import runJest from './runJest';
@@ -26,7 +26,6 @@ import updateGlobalConfig from './lib/update_global_config';
 import SearchSource from './SearchSource';
 import TestWatcher from './TestWatcher';
 import FailedTestsCache from './FailedTestsCache';
-import {CLEAR} from './constants';
 import {KEYS, JestHook} from 'jest-watcher';
 import TestPathPatternPlugin from './plugins/test_path_pattern';
 import TestNamePatternPlugin from './plugins/test_name_pattern';
@@ -82,6 +81,7 @@ export default function watch(
 
   const updateConfigAndRun = ({
     bail,
+    changedSince,
     collectCoverage,
     collectCoverageFrom,
     collectCoverageOnlyFrom,
@@ -100,6 +100,7 @@ export default function watch(
     const previousUpdateSnapshot = globalConfig.updateSnapshot;
     globalConfig = updateGlobalConfig(globalConfig, {
       bail,
+      changedSince,
       collectCoverage,
       collectCoverageFrom,
       collectCoverageOnlyFrom,
@@ -234,7 +235,7 @@ export default function watch(
     }
 
     testWatcher = new TestWatcher({isWatchMode: true});
-    isInteractive && outputStream.write(CLEAR);
+    isInteractive && outputStream.write(specialChars.CLEAR);
     preRunMessagePrint(outputStream);
     isRunning = true;
     const configs = contexts.map(context => context.config);
@@ -319,6 +320,10 @@ export default function watch(
     ).find(plugin => getPluginKey(plugin, globalConfig) === key);
 
     if (matchingWatchPlugin != null) {
+      if (isRunning) {
+        testWatcher.setState({interrupted: true});
+        return;
+      }
       // "activate" the plugin, which has jest ignore keystrokes so the plugin
       // can handle them
       activePlugin = matchingWatchPlugin;
@@ -389,7 +394,7 @@ export default function watch(
 
   const onCancelPatternPrompt = () => {
     outputStream.write(ansiEscapes.cursorHide);
-    outputStream.write(ansiEscapes.clearScreen);
+    outputStream.write(specialChars.CLEAR);
     outputStream.write(usage(globalConfig, watchPlugins));
     outputStream.write(ansiEscapes.cursorShow);
   };

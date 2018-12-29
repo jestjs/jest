@@ -17,7 +17,6 @@ import naturalCompare from 'natural-compare';
 import path from 'path';
 import prettyFormat from 'pretty-format';
 
-export const SNAPSHOT_EXTENSION = 'snap';
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
 export const SNAPSHOT_GUIDE_LINK = 'https://goo.gl/fbAQLP';
@@ -91,12 +90,6 @@ export const keyToTestName = (key: string) => {
 
   return key.replace(/ \d+$/, '');
 };
-
-export const getSnapshotPath = (testPath: Path) =>
-  path.join(
-    path.join(path.dirname(testPath), '__snapshots__'),
-    path.basename(testPath) + '.' + SNAPSHOT_EXTENSION,
-  );
 
 export const getSnapshotData = (
   snapshotPath: Path,

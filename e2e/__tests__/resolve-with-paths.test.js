@@ -8,10 +8,9 @@
  */
 'use strict';
 
-const {resolve} = require('path');
-
-const runJest = require('../runJest');
-const {writeFiles, cleanup} = require('../Utils');
+import {resolve} from 'path';
+import runJest from '../runJest';
+import {cleanup, writeFiles} from '../Utils';
 
 const workdirNodeModules = resolve(
   __dirname,

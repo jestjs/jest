@@ -9,8 +9,8 @@
 
 'use strict';
 
-const {extractSummary} = require('../Utils');
-const runJest = require('../runJest');
+import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 test('console printing', () => {
   const {stderr, status} = runJest('console');

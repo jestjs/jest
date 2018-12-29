@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('suite without mock name, mock called', () => {
   const {stderr, status} = runJest('mock-names/without-mock-name');

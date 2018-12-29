@@ -8,7 +8,7 @@
 
 import type {Script} from 'vm';
 import type {ProjectConfig} from 'types/Config';
-import type {EnvironmentOptions} from 'types/Environment';
+import type {EnvironmentContext} from 'types/Environment';
 import type {Global} from 'types/Global';
 import type {ModuleMocker} from 'jest-mock';
 
@@ -16,14 +16,14 @@ import {FakeTimers, installCommonGlobals} from 'jest-util';
 import mock from 'jest-mock';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
-class JSDOMEnvironment {
+export default class JSDOMEnvironment {
   dom: ?Object;
   fakeTimers: ?FakeTimers<number>;
   global: ?Global;
   errorEventListener: ?Function;
   moduleMocker: ?ModuleMocker;
 
-  constructor(config: ProjectConfig, options?: EnvironmentOptions = {}) {
+  constructor(config: ProjectConfig, options?: EnvironmentContext = {}) {
     this.dom = new JSDOM(
       '<!DOCTYPE html>',
       Object.assign(
@@ -115,5 +115,3 @@ class JSDOMEnvironment {
     return null;
   }
 }
-
-module.exports = JSDOMEnvironment;

@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import runJest from '../runJest';
 
 test('mock works with generator', () => {
   const {status} = runJest('generator-mock');

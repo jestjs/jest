@@ -8,11 +8,11 @@
  */
 'use strict';
 
-const path = require('path');
-const runJest = require('../runJest');
+import path from 'path';
+import {json as runWithJson} from '../runJest';
 
 it('runs tests in only test.js and spec.js', () => {
-  const result = runJest.json('test-in-root').json;
+  const {json: result} = runWithJson('test-in-root');
 
   expect(result.success).toBe(true);
   expect(result.numTotalTests).toBe(2);
