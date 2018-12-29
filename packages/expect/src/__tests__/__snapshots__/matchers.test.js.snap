@@ -3,9 +3,9 @@
 exports[`.rejects fails for promise that resolves 1`] = `
 "<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBe<dim>()</>
 
-Received promise resolves instead of rejects
+Received promise resolved instead of rejected
 
-Received value: <red>4</>"
+Received promise resolved to value: <red>4</>"
 `;
 
 exports[`.rejects fails non-promise value "a" 1`] = `
@@ -81,9 +81,9 @@ Received has value: <red>undefined</>"
 exports[`.resolves fails for promise that rejects 1`] = `
 "<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBe<dim>()</>
 
-Received promise rejects instead of resolves
+Received promise rejected instead of resolved
 
-Received value: <red>4</>"
+Received promise rejected to value: <red>4</>"
 `;
 
 exports[`.resolves fails non-promise value "a" 1`] = `
