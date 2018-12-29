@@ -86,6 +86,8 @@ class MongoEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+
+module.exports = MongoEnvironment;
 ```
 
 Finally we can shut down mongodb server
