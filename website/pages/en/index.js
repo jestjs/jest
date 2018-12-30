@@ -193,7 +193,7 @@ class Index extends React.Component {
       <div>
         <HomeSplash language={this.props.language} config={siteConfig} />
         <div className="mainContainer">
-          {/* <Container padding={['bottom', 'top']} background="light">
+          <Container padding={['bottom', 'top']} background="light">
             <GridBlock
               align="center"
               contents={[
@@ -254,8 +254,8 @@ class Index extends React.Component {
                 </translate>
               </MarkdownBlock>
             </div>
-          </Container> */}
-          {/* <Container padding={['bottom', 'top']} className="section-container">
+          </Container>
+          <Container padding={['bottom', 'top']} className="section-container">
             <GridBlock
               className="rotate-right"
               contents={[
@@ -392,7 +392,7 @@ class Index extends React.Component {
                 </div>
               </div>
             </div>
-          </Container> */}
+          </Container>
           <div className="container section-container imageAlignSide lightBackground twoByGridBlock">
             <div className="wrapper">
               <div className="gridBlock">
