@@ -110,3 +110,21 @@ h3.rotate-right {
 .gridBlock > *:first-child {
   margin: 0 12px;
 }
+
+
+.fixedHeaderContainer {
+  background-color: #ffffff;
+}
+
+.navigationSlider .slidingNav ul li a,
+.fixedHeaderContainer header h3 {
+  color: #545454;
+}
+
+.headerWrapper img {
+  display: none;
+}
+
+.headerWrapper h2 {
+  color: #545454;
+}
