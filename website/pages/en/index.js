@@ -13,12 +13,12 @@ const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
 const translate = require('../../server/translate.js').translate;
-const translation = require('../../server/translation.js');
+// const translation = require('../../server/translation.js');
 const backers = require(process.cwd() + '/backers.json');
 
 const siteConfig = require(process.cwd() + '/siteConfig.js');
-const idx = (target, path) =>
-  path.reduce((obj, key) => (obj && obj[key] ? obj[key] : null), target);
+// const idx = (target, path) =>
+//   path.reduce((obj, key) => (obj && obj[key] ? obj[key] : null), target);
 
 class Button extends React.Component {
   render() {
@@ -127,7 +127,7 @@ class Card extends React.Component {
             <div className="jest-card-label jest-card-label-reverse">JEST</div>
           </div>
           <div className="jest-card-back">
-            <svg viewBox="0 0 200 200" style={{width: 150, height: 150}}>
+            <svg viewBox="0 0 200 200" style={{height: 150, width: 150}}>
               <defs>
                 <path
                   d="M100 100 m -75 0 a75 75 0 1 0 150 0 a 75 75 0 1 0 -150 0"
