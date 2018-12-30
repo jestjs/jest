@@ -344,7 +344,7 @@ class Index extends React.Component {
             className="section-container"
           >
             <GridBlock
-              className="rotate-left"
+              className="rotate-right"
               contents={[
                 {
                   content: (
@@ -360,10 +360,20 @@ class Index extends React.Component {
               ]}
             />
           </Container>
-          <Container padding={['bottom', 'top']}>
+          <Container padding={['bottom', 'top']} className="debu">
             <a className="anchor" name="watch" />
             <a className="hash-link" href="#watch" />
-            <div className="blockElement imageAlignSide twoByGridBlock">
+            <GridBlock
+              className="rotate-left"
+              contents={[
+                {
+                  image: true,
+                  imageAlign: 'right',
+                  title: <translate>Docs and talks</translate>,
+                },
+              ]}
+            />
+            <div className="blockElement imageAlignSide gridBlock threeByGridBlock">
               <div className="video">
                 <iframe
                   width="560"
@@ -374,31 +384,33 @@ class Index extends React.Component {
                   allowFullScreen
                 />
               </div>
-              <GridBlock
-                className="rotate-left"
-                contents={[
-                  {
-                    content: (
-                      <translate>
-                        The Jest core team and contributors regularly speak
-                        about [Jest and Delightful JavaScript
-                        Testing](https://www.youtube.com/watch?v=cAKYQpTC7MA).
-                        Check out our talk about [Building High-Quality
-                        JavaScript
-                        Tools](https://www.youtube.com/watch?v=PvabBs_utr8) at
-                        jsconf.eu 2017 and our talk about [Jest as a
-                        Platform](https://www.youtube.com/watch?v=NtjyeojAOBs)
-                        at ReactiveConf 2017.
-                      </translate>
-                    ),
-                    title: <translate>Docs and talks</translate>,
-                  },
-                ]}
-              />
+              <div className="blockContent">
+                <MarkdownBlock>
+                  <translate>
+                    The Jest core team and contributors regularly speak about
+                    [Jest and Delightful JavaScript
+                    Testing](https://www.youtube.com/watch?v=cAKYQpTC7MA). Check
+                    out our talk about [Building High-Quality JavaScript
+                    Tools](https://www.youtube.com/watch?v=PvabBs_utr8) at
+                    jsconf.eu 2017 and our talk about [Jest as a
+                    Platform](https://www.youtube.com/watch?v=NtjyeojAOBs) at
+                    ReactiveConf 2017.
+                  </translate>
+                </MarkdownBlock>
+              </div>
+              <div className="blockContent">
+                <div>
+                  Cupiditate repellendus sit rerum est minus nam. Velit placeat
+                  reiciendis placeat cumque. Sint et voluptatibus neque ad
+                  dolore sunt. Esse est odio possimus nulla. Ipsam voluptate
+                  maiores quo sed maiores excepturi. Quisquam sed sint incidunt
+                  placeat est.
+                </div>
+              </div>
             </div>
           </Container>
 
-          <div className="productShowcaseSection paddingBottom">
+          {/* <div className="productShowcaseSection paddingBottom">
             <h2>
               <translate>Who's using Jest?</translate>
             </h2>
@@ -410,7 +422,7 @@ class Index extends React.Component {
             </p>
             <div className="logos">{showcase}</div>
             <Contributors />
-          </div>
+          </div> */}
         </div>
       </div>
     );
