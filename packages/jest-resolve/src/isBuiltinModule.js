@@ -17,12 +17,12 @@ declare var process: {
 
 const EXPERIMENTAL_MODULES = ['worker_threads'];
 
-const BUILTIN_MODULES =
-  builtinModules.concat(EXPERIMENTAL_MODULES) ||
-  Object.keys(process.binding('natives'))
-    .filter((module: string) => !/^internal\//.test(module))
-    .concat(EXPERIMENTAL_MODULES);
+const BUILTIN_MODULES = builtinModules
+  ? builtinModules.concat(EXPERIMENTAL_MODULES)
+  : Object.keys(process.binding('natives'))
+      .filter((module: string) => !/^internal\//.test(module))
+      .concat(EXPERIMENTAL_MODULES);
 
 export default function isBuiltinModule(module: string): boolean {
-  return BUILTIN_MODULES.indexOf(module) !== -1;
+  return BUILTIN_MODULES.includes(module);
 }
