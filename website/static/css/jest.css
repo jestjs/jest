@@ -1,4 +1,7 @@
 /* Copyright (c) 2014-present, Facebook, Inc. All rights reserved. */
+.debug * {
+  outline: 1px solid rebeccapurple;
+}
 
 .sponsor-item {
   margin: 10px;
@@ -67,4 +70,17 @@
 
 .container .wrapper .imageAlignSide p {
   margin-bottom: 0;
+}
+
+.container.section-container {
+  padding: 20px 0 0 0;
+}
+
+.section-container .blockImage {
+  overflow: hidden;
+  height: 280px;
+}
+
+.section-container .blockImage img {
+  padding-top: 10px;
 }

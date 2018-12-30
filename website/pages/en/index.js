@@ -271,9 +271,9 @@ class Index extends React.Component {
               </MarkdownBlock>
             </div>
           </Container> */}
-          <Container padding={['bottom', 'top']} background="light">
+          <Container padding={['bottom', 'top']} className="section-container">
             <GridBlock
-              className="rotate-left"
+              className="rotate-right"
               contents={[
                 {
                   content: (
@@ -285,15 +285,19 @@ class Index extends React.Component {
                     </translate>
                   ),
                   image: '/img/content/feature-fast.png',
-                  imageAlign: 'right',
+                  imageAlign: 'left',
                   title: <translate>Fast and safe</translate>,
                 },
               ]}
             />
           </Container>
-          <Container padding={['bottom', 'top']}>
+          <Container
+            padding={['bottom', 'top']}
+            background="light"
+            className="section-container"
+          >
             <GridBlock
-              className="rotate-right"
+              className="rotate-left"
               contents={[
                 {
                   content: (
@@ -306,15 +310,15 @@ class Index extends React.Component {
                     </translate>
                   ),
                   image: '/img/content/feature-coverage.png',
-                  imageAlign: 'left',
+                  imageAlign: 'right',
                   title: <translate>Code coverage</translate>,
                 },
               ]}
             />
           </Container>
-          <Container padding={['bottom', 'top']} background="light">
+          <Container padding={['bottom', 'top']} className="section-container">
             <GridBlock
-              className="rotate-left"
+              className="rotate-right"
               contents={[
                 {
                   content: (
@@ -328,15 +332,19 @@ class Index extends React.Component {
                     </translate>
                   ),
                   image: '/img/content/feature-config-react.png',
-                  imageAlign: 'right',
+                  imageAlign: 'left',
                   title: <translate>Mocking with ease</translate>,
                 },
               ]}
             />
           </Container>
-          <Container padding={['bottom', 'top']}>
+          <Container
+            padding={['bottom', 'top']}
+            background="light"
+            className="section-container"
+          >
             <GridBlock
-              className="rotate-right"
+              className="rotate-left"
               contents={[
                 {
                   content: (
@@ -346,7 +354,7 @@ class Index extends React.Component {
                     </translate>
                   ),
                   image: '/img/content/feature-mocking.png',
-                  imageAlign: 'left',
+                  imageAlign: 'right',
                   title: <translate>Excellent exceptions</translate>,
                 },
               ]}
