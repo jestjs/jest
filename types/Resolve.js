@@ -13,6 +13,7 @@ import type {Path} from './Config';
 
 export type ResolveModuleConfig = {|
   skipNodeResolution?: boolean,
+  includeCoreModules?: boolean,
   paths?: Path[],
 |};
 

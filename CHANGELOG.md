@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-resolve-dependencies]` Add `DependencyResolver.resolveRecursive` ([#7553](https://github.com/facebook/jest/pull/7553))
+- `[jest-resolve-dependencies]` Add `DependencyResolver includeCoreModules` option ([#7553](https://github.com/facebook/jest/pull/7553))
 
 ### Fixes
 

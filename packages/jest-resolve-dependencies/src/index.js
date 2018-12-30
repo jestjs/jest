@@ -44,8 +44,10 @@ class DependencyResolver {
       return [];
     }
 
+    const includeCoreModules = options && options.includeCoreModules;
+
     return dependencies.reduce((acc, dependency) => {
-      if (this._resolver.isCoreModule(dependency)) {
+      if (!includeCoreModules && this._resolver.isCoreModule(dependency)) {
         return acc;
       }
       let resolvedDependency;

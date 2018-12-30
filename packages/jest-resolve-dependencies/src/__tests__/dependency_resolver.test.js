@@ -64,6 +64,23 @@ describe('resolve', () => {
       expect.stringContaining(path.join('@myorg', 'pkg')),
     ]);
   });
+
+  describe('includeCoreModules', () => {
+    test('does not include core modules without the option', () => {
+      const resolved = dependencyResolver.resolve(
+        path.resolve(__dirname, '__fixtures__', 'core.test.js'),
+      );
+      expect(Array.from(resolved)).toEqual([]);
+    });
+
+    test('includes core modules with the option', () => {
+      const resolved = dependencyResolver.resolve(
+        path.resolve(__dirname, '__fixtures__', 'core.test.js'),
+        {includeCoreModules: true},
+      );
+      expect(Array.from(resolved)).toEqual(['fs']);
+    });
+  });
 });
 
 describe('resolveRecursive', () => {
@@ -91,6 +108,23 @@ describe('resolveRecursive', () => {
       expect.stringContaining('b.js'),
       expect.stringContaining('c.js'),
     ]);
+  });
+
+  describe('includeCoreModules', () => {
+    test('does not include core modules without the option', () => {
+      const resolved = dependencyResolver.resolveRecursive(
+        path.resolve(__dirname, '__fixtures__', 'core.test.js'),
+      );
+      expect(Array.from(resolved)).toEqual([]);
+    });
+
+    test('includes core modules with the option', () => {
+      const resolved = dependencyResolver.resolveRecursive(
+        path.resolve(__dirname, '__fixtures__', 'core.test.js'),
+        {includeCoreModules: true},
+      );
+      expect(Array.from(resolved)).toEqual(['fs']);
+    });
   });
 });
 
