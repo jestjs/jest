@@ -209,7 +209,7 @@ class Index extends React.Component {
       <div>
         <HomeSplash language={this.props.language} config={siteConfig} />
         <div className="mainContainer">
-          <Container padding={['bottom', 'top']} background="light">
+          {/* <Container padding={['bottom', 'top']} background="light">
             <GridBlock
               align="center"
               contents={[
@@ -270,135 +270,88 @@ class Index extends React.Component {
                 </translate>
               </MarkdownBlock>
             </div>
-          </Container>
+          </Container> */}
           <Container padding={['bottom', 'top']} background="light">
             <GridBlock
+              className="rotate-left"
               contents={[
                 {
                   content: (
                     <translate>
-                      Jest parallelizes test runs across workers to maximize
-                      performance. Console messages are buffered and printed
-                      together with test results. Sandboxed test files and
-                      automatic global state resets for every test so no two
-                      tests conflict with each other.
+                      By ensuring your tests have unique global state, Jest can
+                      reliably run tests in parallel. To make things quick, Jest
+                      runs previously failed tests first and re-organizes runs
+                      based on how long test files take.
                     </translate>
                   ),
                   image: '/img/content/feature-fast.png',
                   imageAlign: 'right',
-                  title: <translate>Fast and sandboxed</translate>,
+                  title: <translate>Fast and safe</translate>,
                 },
               ]}
             />
           </Container>
           <Container padding={['bottom', 'top']}>
             <GridBlock
+              className="rotate-right"
               contents={[
                 {
                   content: (
                     <translate>
-                      Easily create code coverage reports using
+                      Generate code coverage by adding the flag
                       [`--coverage`](https://jestjs.io/docs/en/cli.html#coverage).
-                      No additional setup or libraries needed! Jest can collect
-                      code coverage information from entire projects, including
-                      untested files.
+                      No additional setup needed. Jest can collect code coverage
+                      information from entire projects, including untested
+                      files.
                     </translate>
                   ),
                   image: '/img/content/feature-coverage.png',
                   imageAlign: 'left',
-                  title: <translate>Built-in code coverage reports</translate>,
+                  title: <translate>Code coverage</translate>,
                 },
               ]}
             />
           </Container>
           <Container padding={['bottom', 'top']} background="light">
             <GridBlock
+              className="rotate-left"
               contents={[
                 {
                   content: (
                     <translate>
-                      Jest is already configured when you use
-                      [`create-react-app`](https://facebook.github.io/react/blog/2016/07/22/create-apps-with-no-configuration.html)
-                      or [`react-native
-                      init`](http://facebook.github.io/react-native/docs/getting-started.html)
-                      to create your React and React Native projects. Place your
-                      tests in a `__tests__` folder, or name your test files
-                      with a `.spec.js` or `.test.js` extension. Whatever you
-                      prefer, Jest will find and run your tests.
+                      Jest uses a custom resolver for imports in your tests
+                      making it simple to mock any object outsided of your
+                      test’s scope. You can use mocked imports with the rich
+                      [Mock
+                      Functions](https://jestjs.io/docs/en/mock-functions.html)
+                      API to spy on function calls with readable test syntax.
                     </translate>
                   ),
                   image: '/img/content/feature-config-react.png',
                   imageAlign: 'right',
-                  title: <translate>Zero configuration</translate>,
+                  title: <translate>Mocking with ease</translate>,
                 },
               ]}
             />
           </Container>
-          <Container background="dark" padding={['bottom', 'top']}>
-            <a className="anchor" name="use" />
-            <a className="hash-link" href="#use" />
-            <div className="blockElement imageAlignSide twoByGridBlock">
-              <div className="blockContent">
-                <h2>
-                  <translate>Try it out!</translate>
-                </h2>
-                <div>
-                  <MarkdownBlock>
-                    <translate>
-                      You can try out a real version of Jest using
-                      [repl.it](https://repl.it/languages/jest). Consider a
-                      function, `add()`, that adds two numbers. We can use a
-                      basic test in `add-test.js` to verify that 1 + 2 equals 3.
-                      Hit \"run\" to try it out!
-                    </translate>
-                  </MarkdownBlock>
-                </div>
-              </div>
-              <div className="jest-repl">
-                <iframe src="https://repl.it/@amasad/try-jest?lite=true" />
-              </div>
-            </div>
-          </Container>
-
           <Container padding={['bottom', 'top']}>
             <GridBlock
+              className="rotate-right"
               contents={[
                 {
                   content: (
                     <translate>
-                      Powerful [mocking library](/docs/en/mock-functions.html)
-                      for functions and modules. Mock React Native components
-                      using `jest-react-native`.
+                      When a test has failed, Jest puts in a lot of effort to
+                      give you as much context as possible. here’s some examples
                     </translate>
                   ),
                   image: '/img/content/feature-mocking.png',
                   imageAlign: 'left',
-                  title: <translate>Powerful mocking library</translate>,
+                  title: <translate>Excellent exceptions</translate>,
                 },
               ]}
             />
           </Container>
-
-          <Container padding={['bottom', 'top']} background="light">
-            <GridBlock
-              contents={[
-                {
-                  content: (
-                    <translate>
-                      Jest works with any compile-to-JavaScript language and
-                      integrates seamlessly with [Babel](https://babeljs.io)
-                      which means you can write React, TypeScript and much more
-                      without configuration
-                    </translate>
-                  ),
-                  image: '/img/content/feature-typescript.png',
-                  imageAlign: 'right',
-                  title: <translate>Works with TypeScript</translate>,
-                },
-              ]}
-            />
-          </Container>
-
           <Container padding={['bottom', 'top']}>
             <a className="anchor" name="watch" />
             <a className="hash-link" href="#watch" />
@@ -413,37 +366,27 @@ class Index extends React.Component {
                   allowFullScreen
                 />
               </div>
-              <div className="blockContent">
-                <h2>
-                  <translate>Watch Talks about Jest</translate>
-                </h2>
-                <div>
-                  <MarkdownBlock>
-                    <translate>
-                      The Jest core team and contributors regularly speak about
-                      [Jest and Delightful JavaScript
-                      Testing](https://www.youtube.com/watch?v=cAKYQpTC7MA).
-                      Check out our talk about [Building High-Quality JavaScript
-                      Tools](https://www.youtube.com/watch?v=PvabBs_utr8) at
-                      jsconf.eu 2017 and our talk about [Jest as a
-                      Platform](https://www.youtube.com/watch?v=NtjyeojAOBs) at
-                      ReactiveConf 2017.
-                    </translate>
-                  </MarkdownBlock>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="productShowcaseSection paddingTop"
-              style={{textAlign: 'center'}}
-            >
-              <a
-                className="button"
-                href={siteConfig.baseUrl + this.props.language + '/videos.html'}
-              >
-                <translate>Watch more videos</translate>
-              </a>
+              <GridBlock
+                className="rotate-left"
+                contents={[
+                  {
+                    content: (
+                      <translate>
+                        The Jest core team and contributors regularly speak
+                        about [Jest and Delightful JavaScript
+                        Testing](https://www.youtube.com/watch?v=cAKYQpTC7MA).
+                        Check out our talk about [Building High-Quality
+                        JavaScript
+                        Tools](https://www.youtube.com/watch?v=PvabBs_utr8) at
+                        jsconf.eu 2017 and our talk about [Jest as a
+                        Platform](https://www.youtube.com/watch?v=NtjyeojAOBs)
+                        at ReactiveConf 2017.
+                      </translate>
+                    ),
+                    title: <translate>Docs and talks</translate>,
+                  },
+                ]}
+              />
             </div>
           </Container>
 

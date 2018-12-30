@@ -53,7 +53,6 @@ const users = [
     image: '/img/logos/facebook.png',
     infoLink: 'https://code.facebook.com',
   },
-
   {
     caption: 'Twitter',
     image: '/img/logos/twitter.png',
