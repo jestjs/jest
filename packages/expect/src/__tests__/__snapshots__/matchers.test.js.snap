@@ -398,136 +398,136 @@ exports[`.toBeCloseTo() {pass: false} expect(-Infinity)toBeCloseTo( -1.23) 1`] =
 "<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>-1.23</>
-Received: <red>-Infinity</>"
+Expected:  <green>-1.23</>
+Received:  <red>-Infinity</>"
 `;
 
 exports[`.toBeCloseTo() {pass: false} expect(Infinity)toBeCloseTo( -Infinity) 1`] = `
 "<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>-Infinity</>
-Received: <red>Infinity</>"
+Expected:  <green>-Infinity</>
+Received:  <red>Infinity</>"
 `;
 
 exports[`.toBeCloseTo() {pass: false} expect(Infinity)toBeCloseTo( 1.23) 1`] = `
 "<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>1.23</>
-Received: <red>Infinity</>"
+Expected:  <green>1.23</>
+Received:  <red>Infinity</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(-Infinity)toBeCloseTo( -Infinity) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>-Infinity</>
-Received: <red>-Infinity</>"
+Expected:  <green>-Infinity</>
+Received:  <red>-Infinity</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(0)toBeCloseTo( 0) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>0</>
-Received: <red>0</>"
+Expected:  <green>0</>
+Received:  <red>0</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(0)toBeCloseTo( 0.001) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>0.001</>
-Received: <red>0</>"
+Expected:  <green>0.001</>
+Received:  <red>0</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.225) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>1.225</>
-Received: <red>1.23</>"
+Expected:  <green>1.225</>
+Received:  <red>1.23</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.226) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>1.226</>
-Received: <red>1.23</>"
+Expected:  <green>1.226</>
+Received:  <red>1.23</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.229) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>1.229</>
-Received: <red>1.23</>"
+Expected:  <green>1.229</>
+Received:  <red>1.23</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.234) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>1.234</>
-Received: <red>1.23</>"
+Expected:  <green>1.234</>
+Received:  <red>1.23</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(Infinity)toBeCloseTo( Infinity) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>Infinity</>
-Received: <red>Infinity</>"
+Expected:  <green>Infinity</>
+Received:  <red>Infinity</>"
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.000004, 5] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
 Precision: <green>5</>-digit
-Expected: <green>0.000004</>
-Received: <red>0</>"
+Expected:  <green>0.000004</>
+Received:  <red>0</>"
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.0001, 3] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
 Precision: <green>3</>-digit
-Expected: <green>0.0001</>
-Received: <red>0</>"
+Expected:  <green>0.0001</>
+Received:  <red>0</>"
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.1, 0] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
 Precision: <green>0</>-digit
-Expected: <green>0.1</>
-Received: <red>0</>"
+Expected:  <green>0.1</>
+Received:  <red>0</>"
 `;
 
 exports[`.toBeCloseTo() throws: [0, 0.01] 1`] = `
 "<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>0.01</>
-Received: <red>0</>"
+Expected:  <green>0.01</>
+Received:  <red>0</>"
 `;
 
 exports[`.toBeCloseTo() throws: [1, 1.23] 1`] = `
 "<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>1.23</>
-Received: <red>1</>"
+Expected:  <green>1.23</>
+Received:  <red>1</>"
 `;
 
 exports[`.toBeCloseTo() throws: [1.23, 1.2249999] 1`] = `
 "<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
 
 Precision: <green>2</>-digit
-Expected: <green>1.2249999</>
-Received: <red>1.23</>"
+Expected:  <green>1.2249999</>
+Received:  <red>1.23</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '"a"' is defined 1`] = `
@@ -1539,222 +1539,161 @@ Expected has value: <green>null</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '"11112111"' contains '"2"' 1`] = `
-"<dim>expect(</><red>string</><dim>).not.toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>string</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected string:
-  <red>\\"11112111\\"</>
-Not to contain value:
-  <green>\\"2\\"</>
-"
+Expected value:  <green>\\"2\\"</>
+Received string: <red>\\"11112111\\"</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '"abcdef"' contains '"abc"' 1`] = `
-"<dim>expect(</><red>string</><dim>).not.toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>string</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected string:
-  <red>\\"abcdef\\"</>
-Not to contain value:
-  <green>\\"abc\\"</>
-"
+Expected value:  <green>\\"abc\\"</>
+Received string: <red>\\"abcdef\\"</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '["a", "b", "c", "d"]' contains '"a"' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected array:
-  <red>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
-Not to contain value:
-  <green>\\"a\\"</>
-"
+Expected value: <green>\\"a\\"</>
+Received array: <red>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '["a", "b", "c", "d"]' contains a value equal to '"a"' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
 
-Expected array:
-  <red>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
-Not to contain a value equal to:
-  <green>\\"a\\"</>
-"
+Expected value: <green>\\"a\\"</>
+Received array: <red>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[{"a": "b"}, {"a": "c"}]' contains a value equal to '{"a": "b"}' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
 
-Expected array:
-  <red>[{\\"a\\": \\"b\\"}, {\\"a\\": \\"c\\"}]</>
-Not to contain a value equal to:
-  <green>{\\"a\\": \\"b\\"}</>
-"
+Expected value: <green>{\\"a\\": \\"b\\"}</>
+Received array: <red>[{\\"a\\": \\"b\\"}, {\\"a\\": \\"c\\"}]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[{"a": "b"}, {"a": "c"}]' does not contain a value equal to'{"a": "d"}' 1`] = `
-"<dim>expect(</><red>array</><dim>).toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).toContainEqual(</><green>value</><dim>) // deep equality</>
 
-Expected array:
-  <red>[{\\"a\\": \\"b\\"}, {\\"a\\": \\"c\\"}]</>
-To contain a value equal to:
-  <green>{\\"a\\": \\"d\\"}</>"
+Expected value: <green>{\\"a\\": \\"d\\"}</>
+Received array: <red>[{\\"a\\": \\"b\\"}, {\\"a\\": \\"c\\"}]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '[]' 1`] = `
-"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>) // indexOf</>
 
-Expected array:
-  <red>[{}, []]</>
-To contain value:
-  <green>[]</>
+Expected value: <green>[]</>
+Received array: <red>[{}, []]</>
 
 <dim>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '{}' 1`] = `
-"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>) // indexOf</>
 
-Expected array:
-  <red>[{}, []]</>
-To contain value:
-  <green>{}</>
+Expected value: <green>{}</>
+Received array: <red>[{}, []]</>
 
 <dim>Looks like you wanted to test for object/array equality with the stricter \`toContain\` matcher. You probably need to use \`toContainEqual\` instead.</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[0, 1]' contains '1' 1`] = `
-"<dim>expect(</><red>object</><dim>).not.toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected object:
-  <red>[0, 1]</>
-Not to contain value:
-  <green>1</>
-"
+Expected value:  <green>1</>
+Received object: <red>[0, 1]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[0, 1]' contains a value equal to '1' 1`] = `
-"<dim>expect(</><red>object</><dim>).not.toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>object</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
 
-Expected object:
-  <red>[0, 1]</>
-Not to contain a value equal to:
-  <green>1</>
-"
+Expected value:  <green>1</>
+Received object: <red>[0, 1]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[1, 2, 3, 4]' contains '1' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected array:
-  <red>[1, 2, 3, 4]</>
-Not to contain value:
-  <green>1</>
-"
+Expected value: <green>1</>
+Received array: <red>[1, 2, 3, 4]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[1, 2, 3, 4]' contains a value equal to '1' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
 
-Expected array:
-  <red>[1, 2, 3, 4]</>
-Not to contain a value equal to:
-  <green>1</>
-"
+Expected value: <green>1</>
+Received array: <red>[1, 2, 3, 4]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[1, 2, 3]' does not contain '4' 1`] = `
-"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>) // indexOf</>
 
-Expected array:
-  <red>[1, 2, 3]</>
-To contain value:
-  <green>4</>"
+Expected value: <green>4</>
+Received array: <red>[1, 2, 3]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[Symbol(a)]' contains 'Symbol(a)' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected array:
-  <red>[Symbol(a)]</>
-Not to contain value:
-  <green>Symbol(a)</>
-"
+Expected value: <green>Symbol(a)</>
+Received array: <red>[Symbol(a)]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[Symbol(a)]' contains a value equal to 'Symbol(a)' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
 
-Expected array:
-  <red>[Symbol(a)]</>
-Not to contain a value equal to:
-  <green>Symbol(a)</>
-"
+Expected value: <green>Symbol(a)</>
+Received array: <red>[Symbol(a)]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[null, undefined]' does not contain '1' 1`] = `
-"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>) // indexOf</>
 
-Expected array:
-  <red>[null, undefined]</>
-To contain value:
-  <green>1</>"
+Expected value: <green>1</>
+Received array: <red>[null, undefined]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains 'null' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected array:
-  <red>[undefined, null]</>
-Not to contain value:
-  <green>null</>
-"
+Expected value: <green>null</>
+Received array: <red>[undefined, null]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains 'undefined' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected array:
-  <red>[undefined, null]</>
-Not to contain value:
-  <green>undefined</>
-"
+Expected value: <green>undefined</>
+Received array: <red>[undefined, null]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains a value equal to 'null' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
 
-Expected array:
-  <red>[undefined, null]</>
-Not to contain a value equal to:
-  <green>null</>
-"
+Expected value: <green>null</>
+Received array: <red>[undefined, null]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains a value equal to 'undefined' 1`] = `
-"<dim>expect(</><red>array</><dim>).not.toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
 
-Expected array:
-  <red>[undefined, null]</>
-Not to contain a value equal to:
-  <green>undefined</>
-"
+Expected value: <green>undefined</>
+Received array: <red>[undefined, null]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() 'Set {"abc", "def"}' contains '"abc"' 1`] = `
-"<dim>expect(</><red>set</><dim>).not.toContain(</><green>value</><dim>)</>
+"<dim>expect(</><red>set</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
 
-Expected set:
-  <red>Set {\\"abc\\", \\"def\\"}</>
-Not to contain value:
-  <green>\\"abc\\"</>
-"
+Expected value: <green>\\"abc\\"</>
+Received set:   <red>Set {\\"abc\\", \\"def\\"}</>"
 `;
 
 exports[`.toContain(), .toContainEqual() 'Set {1, 2, 3, 4}' contains a value equal to '1' 1`] = `
-"<dim>expect(</><red>set</><dim>).not.toContainEqual(</><green>value</><dim>)</>
+"<dim>expect(</><red>set</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
 
-Expected set:
-  <red>Set {1, 2, 3, 4}</>
-Not to contain a value equal to:
-  <green>1</>
-"
+Expected value: <green>1</>
+Received set:   <red>Set {1, 2, 3, 4}</>"
 `;
 
 exports[`.toContain(), .toContainEqual() error cases 1`] = `
@@ -2814,111 +2753,81 @@ Received:
 exports[`.toHaveLength {pass: false} expect("").toHaveLength(1) 1`] = `
 "<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
 
-Expected value to have length:
-  <green>1</>
-Received:
-  <red>\\"\\"</>
-received.length:
-  <red>0</>"
+Expected length: <green>1</>
+Received length: <red>0</>
+Received string: <red>\\"\\"</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect("abc").toHaveLength(66) 1`] = `
 "<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
 
-Expected value to have length:
-  <green>66</>
-Received:
-  <red>\\"abc\\"</>
-received.length:
-  <red>3</>"
+Expected length: <green>66</>
+Received length: <red>3</>
+Received string: <red>\\"abc\\"</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect(["a", "b"]).toHaveLength(99) 1`] = `
 "<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
 
-Expected value to have length:
-  <green>99</>
-Received:
-  <red>[\\"a\\", \\"b\\"]</>
-received.length:
-  <red>2</>"
+Expected length: <green>99</>
+Received length: <red>2</>
+Received array:  <red>[\\"a\\", \\"b\\"]</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect([]).toHaveLength(1) 1`] = `
 "<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
 
-Expected value to have length:
-  <green>1</>
-Received:
-  <red>[]</>
-received.length:
-  <red>0</>"
+Expected length: <green>1</>
+Received length: <red>0</>
+Received array:  <red>[]</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect([1, 2]).toHaveLength(3) 1`] = `
 "<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
 
-Expected value to have length:
-  <green>3</>
-Received:
-  <red>[1, 2]</>
-received.length:
-  <red>2</>"
+Expected length: <green>3</>
+Received length: <red>2</>
+Received array:  <red>[1, 2]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect("").toHaveLength(0) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toHaveLength(</><green>length</><dim>)</>
 
-Expected value to not have length:
-  <green>0</>
-Received:
-  <red>\\"\\"</>
-received.length:
-  <red>0</>"
+Expected length: <green>0</>
+Received length: <red>0</>
+Received string: <red>\\"\\"</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect("abc").toHaveLength(3) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toHaveLength(</><green>length</><dim>)</>
 
-Expected value to not have length:
-  <green>3</>
-Received:
-  <red>\\"abc\\"</>
-received.length:
-  <red>3</>"
+Expected length: <green>3</>
+Received length: <red>3</>
+Received string: <red>\\"abc\\"</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect(["a", "b"]).toHaveLength(2) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toHaveLength(</><green>length</><dim>)</>
 
-Expected value to not have length:
-  <green>2</>
-Received:
-  <red>[\\"a\\", \\"b\\"]</>
-received.length:
-  <red>2</>"
+Expected length: <green>2</>
+Received length: <red>2</>
+Received array:  <red>[\\"a\\", \\"b\\"]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect([]).toHaveLength(0) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toHaveLength(</><green>length</><dim>)</>
 
-Expected value to not have length:
-  <green>0</>
-Received:
-  <red>[]</>
-received.length:
-  <red>0</>"
+Expected length: <green>0</>
+Received length: <red>0</>
+Received array:  <red>[]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect([1, 2]).toHaveLength(2) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toHaveLength(</><green>length</><dim>)</>
 
-Expected value to not have length:
-  <green>2</>
-Received:
-  <red>[1, 2]</>
-received.length:
-  <red>2</>"
+Expected length: <green>2</>
+Received length: <red>2</>
+Received array:  <red>[1, 2]</>"
 `;
 
 exports[`.toHaveLength error cases 1`] = `

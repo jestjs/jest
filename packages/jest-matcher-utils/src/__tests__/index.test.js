@@ -6,9 +6,13 @@
  *
  */
 
-'use strict';
-
-import {ensureNoExpected, ensureNumbers, pluralize, stringify} from '../';
+import {
+  ensureNumbers,
+  ensureNoExpected,
+  getLabelPrinter,
+  pluralize,
+  stringify,
+} from '../';
 
 describe('.stringify()', () => {
   [
@@ -129,4 +133,54 @@ describe('.pluralize()', () => {
   test('one', () => expect(pluralize('apple', 1)).toEqual('one apple'));
   test('two', () => expect(pluralize('apple', 2)).toEqual('two apples'));
   test('20', () => expect(pluralize('apple', 20)).toEqual('20 apples'));
+});
+
+describe('getLabelPrinter', () => {
+  test('0 args', () => {
+    const printLabel = getLabelPrinter();
+    expect(printLabel('')).toBe(': ');
+  });
+  test('1 empty string', () => {
+    const printLabel = getLabelPrinter();
+    expect(printLabel('')).toBe(': ');
+  });
+  test('1 non-empty string', () => {
+    const string = 'Expected';
+    const printLabel = getLabelPrinter(string);
+    expect(printLabel(string)).toBe('Expected: ');
+  });
+  test('2 equal lengths', () => {
+    const stringExpected = 'Expected value';
+    const collectionType = 'array';
+    const stringReceived = `Received ${collectionType}`;
+    const printLabel = getLabelPrinter(stringExpected, stringReceived);
+    expect(printLabel(stringExpected)).toBe('Expected value: ');
+    expect(printLabel(stringReceived)).toBe('Received array: ');
+  });
+  test('2 unequal lengths', () => {
+    const stringExpected = 'Expected value';
+    const collectionType = 'set';
+    const stringReceived = `Received ${collectionType}`;
+    const printLabel = getLabelPrinter(stringExpected, stringReceived);
+    expect(printLabel(stringExpected)).toBe('Expected value: ');
+    expect(printLabel(stringReceived)).toBe('Received set:   ');
+  });
+  test('returns incorrect padding if inconsistent arg is shorter', () => {
+    const stringConsistent = 'Expected';
+    const stringInconsistent = 'Received value';
+    const stringInconsistentShorter = 'Received set';
+    const printLabel = getLabelPrinter(stringConsistent, stringInconsistent);
+    expect(printLabel(stringConsistent)).toBe('Expected:       ');
+    expect(printLabel(stringInconsistentShorter)).toBe('Received set:   ');
+  });
+  test('throws if inconsistent arg is longer', () => {
+    const stringConsistent = 'Expected';
+    const stringInconsistent = 'Received value';
+    const stringInconsistentLonger = 'Received string';
+    const printLabel = getLabelPrinter(stringConsistent, stringInconsistent);
+    expect(printLabel(stringConsistent)).toBe('Expected:       ');
+    expect(() => {
+      printLabel(stringInconsistentLonger);
+    }).toThrow();
+  });
 });

@@ -163,6 +163,21 @@ export const ensureNumbers = (
 export const pluralize = (word: string, count: number) =>
   (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
 
+// To display lines of labeled values as two columns with monospace alignment:
+// given the strings which will describe the values,
+// return function which given each string, returns the label:
+// string, colon, space, and enough padding spaces to align the value.
+
+type PrintLabel = string => string;
+
+export const getLabelPrinter = (...strings: Array<string>): PrintLabel => {
+  const maxLength = strings.reduce(
+    (max, string) => (string.length > max ? string.length : max),
+    0,
+  );
+  return string => `${string}: ${' '.repeat(maxLength - string.length)}`;
+};
+
 export const matcherErrorMessage = (
   hint: string, // assertion returned from call to matcherHint
   generic: string, // condition which correct value must fulfill
