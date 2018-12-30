@@ -46,12 +46,23 @@
   color: #ffffff;
 }
 
-.rotate-left h2 {
+.rotate-left h2,
+h3.rotate-left {
   transform: rotate(-2deg);
 }
 
-.rotate-right h2 {
+.rotate-right h2,
+h3.rotate-right {
   transform: rotate(2deg);
+}
+
+.opencollective h3 {
+  display: inline-block;
+  background-color: #c9868e;
+  font-weight: normal;
+  color: #ffffff;
+  padding: 0 30px 8px 15px;
+  letter-spacing: 1px;
 }
 
 .blockContent h2 {
@@ -83,4 +94,19 @@
 
 .section-container .blockImage img {
   padding-top: 10px;
+}
+
+.logos {
+  padding: 0 50px;
+  align-items: center;
+}
+
+.logos img {
+  max-height: 56px;
+  padding: 10px;
+  width: 56px;
+}
+
+.gridBlock > *:first-child {
+  margin: 0 12px;
 }

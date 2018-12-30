@@ -39,10 +39,10 @@ Button.defaultProps = {
 class Contributors extends React.Component {
   render() {
     return (
-      <div>
-        <h2>
+      <div className="opencollective">
+        <h3 className="rotate-left">
           <translate>Sponsors</translate>
-        </h2>
+        </h3>
         <p>
           <translate>
             Sponsors are those who contribute $100 or more per month to Jest
@@ -73,17 +73,9 @@ class Contributors extends React.Component {
               </a>
             ))}
         </div>
-        <div className="support">
-          <a
-            className="support-button"
-            href="https://opencollective.com/jest#support"
-          >
-            <translate>Become a sponsor</translate>
-          </a>
-        </div>
-        <h2>
+        <h3 className="rotate-left">
           <translate>Backers</translate>
-        </h2>
+        </h3>
         <p>
           <translate>
             Backers are those who contribute $2 or more per month to Jest
@@ -113,14 +105,6 @@ class Contributors extends React.Component {
                 }
               </a>
             ))}
-          <div>
-            <a
-              className="support-button"
-              href="https://opencollective.com/jest#support"
-            >
-              <translate>Become a backer</translate>
-            </a>
-          </div>
         </div>
       </div>
     );
@@ -271,7 +255,7 @@ class Index extends React.Component {
               </MarkdownBlock>
             </div>
           </Container> */}
-          <Container padding={['bottom', 'top']} className="section-container">
+          {/* <Container padding={['bottom', 'top']} className="section-container">
             <GridBlock
               className="rotate-right"
               contents={[
@@ -408,21 +392,45 @@ class Index extends React.Component {
                 </div>
               </div>
             </div>
-          </Container>
-
-          {/* <div className="productShowcaseSection paddingBottom">
-            <h2>
-              <translate>Who's using Jest?</translate>
-            </h2>
-            <p>
-              <translate>
-                Jest is used by teams of all sizes to test web applications,
-                node.js services, mobile apps, and APIs.
-              </translate>
-            </p>
-            <div className="logos">{showcase}</div>
-            <Contributors />
-          </div> */}
+          </Container> */}
+          <div className="container section-container imageAlignSide lightBackground twoByGridBlock">
+            <div className="wrapper">
+              <div className="gridBlock">
+                <div className="blockContent rotate-right">
+                  <h2>
+                    <translate>Open Collective</translate>
+                  </h2>
+                  <MarkdownBlock>
+                    <translate>
+                      With so many users, the core team of Jest uses an [Open
+                      Collective](https://opencollective.com/jest) for
+                      non-Facebook contributors.
+                    </translate>
+                  </MarkdownBlock>
+                  <Contributors />
+                </div>
+                <div className="blockContent rotate-left">
+                  <h2>
+                    <translate>Who uses Jest?</translate>
+                  </h2>
+                  <MarkdownBlock>
+                    <translate>
+                      A lot of people! With
+                      [8.5m](https://www.npmjs.com/package/jest) downloads in
+                      the last 30 days, and used on over
+                      [500,000](https://github.com/facebook/jest/network/dependents)
+                      public repos on GitHub. Jest is used extensively at these
+                      companies:
+                    </translate>
+                  </MarkdownBlock>
+                  <div className="gridBlock logos">
+                    {showcase}
+                    <p>And many others</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
