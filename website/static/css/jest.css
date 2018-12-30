@@ -42,3 +42,29 @@
   background: #99424f;
   color: #ffffff;
 }
+
+.rotate-left h2 {
+  transform: rotate(-2deg);
+}
+
+.rotate-right h2 {
+  transform: rotate(2deg);
+}
+
+.blockContent h2 {
+  display: inline-block;
+  background-color: #545454;
+  font-weight: normal;
+  text-transform: uppercase;
+  color: #ffffff;
+  padding: 0 30px 8px 15px;
+  letter-spacing: 1px;
+}
+
+.blockContent > div {
+  margin-top: 16px;
+}
+
+.container .wrapper .imageAlignSide p {
+  margin-bottom: 0;
+}
