@@ -23,11 +23,13 @@ const idx = (target, path) =>
 class Button extends React.Component {
   render() {
     return (
-      <div className="pluginWrapper buttonWrapper">
-        <a className="button" href={this.props.href} target={this.props.target}>
-          {this.props.children}
-        </a>
-      </div>
+      <a
+        className="jest-button"
+        href={this.props.href}
+        target={this.props.target}
+      >
+        {this.props.children}
+      </a>
     );
   }
 }
@@ -111,70 +113,242 @@ class Contributors extends React.Component {
   }
 }
 
-class HomeSplash extends React.Component {
+class Card extends React.Component {
+  render() {
+    const {index} = this.props;
+    return (
+      <div key={index} className="jest-card-hitslop">
+        <div className="jest-card jest-card-running" data-index={index}>
+          <div className="jest-card-front">
+            <div className="jest-card-label">JEST</div>
+            <div className="jest-card-logo-container">
+              <div className="jest-card-logo" />
+            </div>
+            <div className="jest-card-label jest-card-label-reverse">JEST</div>
+          </div>
+          <div className="jest-card-back">
+            <svg viewBox="0 0 200 200" style={{width: 150, height: 150}}>
+              <defs>
+                <path
+                  d="M100 100 m -75 0 a75 75 0 1 0 150 0 a 75 75 0 1 0 -150 0"
+                  id="runs-path"
+                />
+              </defs>
+              <circle
+                cx="100"
+                cy="100"
+                r="88"
+                stroke="#fff"
+                strokeWidth="8"
+                fill="#777311"
+              />
+              <g className="run-circle">
+                <circle cx="100" cy="100" r="50" fill="#fff" />
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="45"
+                  fill="#777311"
+                  className="run-circle"
+                />
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="35"
+                  fill="#fff"
+                  className="run-circle"
+                />
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="25"
+                  fill="#777311"
+                  className="run-circle"
+                />
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="15"
+                  fill="#fff"
+                  className="run-circle"
+                />
+              </g>
+              <path hrf="runs-path" stroke="green" strokeWidth="3" />
+              <g
+                fill="#fff"
+                fontWeight="bold"
+                fontSize={26}
+                letterSpacing="0.2em"
+                className="run-text"
+              >
+                <text>
+                  <textPath href="#runs-path">RUNS</textPath>
+                </text>
+                <text transform="rotate(90,100,100)">
+                  <textPath href="#runs-path">RUNS</textPath>
+                </text>
+                <text transform="rotate(180,100,100)">
+                  <textPath href="#runs-path">RUNS</textPath>
+                </text>
+                <text transform="rotate(270,100,100)">
+                  <textPath href="#runs-path">RUNS</textPath>
+                </text>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+class Hand extends React.Component {
+  render() {
+    const cards = [0, 1, 2, 3, 4].map(i => <Card key={i} index={i} />);
+    return (
+      <div className="jest-hand">
+        {cards}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            document.addEventListener("DOMContentLoaded", function() {
+              var hand = document.querySelector(".jest-hand");
+              var cards = hand.querySelectorAll(".jest-card");
+              function cardTransform(offset, handWidth) {
+                var transform = "rotate(" + (offset * 4) + "deg) translateY(" + (offset * -2) + "px) translateX(" + ((offset - (Math.abs(offset) *  offset/7)) * Math.min(140, handWidth / 8)) + "px)";
+                return transform;
+              }
+              function positionCards() {
+                var handWidth = hand.offsetWidth;
+                cards.forEach(function(card) {
+                  var offset = parseInt(card.dataset.index) - 2;
+                  card.parentElement.style.transform = cardTransform(offset, handWidth);
+                });
+              }
+              var results = [];
+              function resolveRun(card, index) {
+                setTimeout(function() {
+                  if (index === 2) {
+                    results[index] = null;
+                    card.classList.add("jest-card-run");
+                  } else if (results[index]) {
+                    card.classList.remove("jest-card-fail");
+                    card.classList.add("jest-card-pass");
+                    card.querySelectorAll(".jest-card-label").forEach(function(el) {
+                      el.innerHTML = "PASS";
+                    });
+                  } else {
+                    card.classList.remove("jest-card-pass");
+                    card.classList.add("jest-card-fail");
+                    card.querySelectorAll(".jest-card-label").forEach(function(el) {
+                      el.innerHTML = "FAIL";
+                    });
+                  }
+                  card.classList.remove("jest-card-running");
+                  card.classList.add("jest-card-popping");
+                  setTimeout(function() {
+                    results[index] = results[index] || null;
+                    card.classList.remove("jest-card-popping");
+                  }, 400);
+                }, index === 2 ? 3000 : Math.random() * 2500 + 500);
+              }
+              function forceRun() {
+                cards.forEach(function(card, index) {
+                  card.classList.add("jest-card-running");
+                  results[index] = Math.random() > 0.4;
+                  resolveRun(card, index);
+                });
+              }
+              function runTest(card, index) {
+                if (index === 2) {
+                  forceRun();
+                } else if (!card.classList.contains("jest-card-running") && !results[index]) {
+                  card.classList.add("jest-card-running");
+                  if (results[index] == null) {
+                    results[index] = Math.random() > 0.2;
+                    resolveRun(card, index);
+                  }
+                }
+              }
+              hand.addEventListener("click", function(ev) {
+                var card;
+                if (ev.target.classList.contains("jest-card-hitslop")) {
+                  card = ev.target.firstChild;
+                } else if (ev.target.classList.contains("jest-card")) {
+                  card = ev.target;
+                } else if (ev.target.classList.contains("jest-card-front")) {
+                  card = ev.target.parentElement;
+                }
+                var index = parseInt(card.dataset.index);
+                runTest(card, index);
+              });
+              var resizeTimeout;
+              window.addEventListener("resize", function() {
+                if (!resizeTimeout) {
+                  resizeTimeout = setTimeout(function() {
+                    resizeTimeout = null;
+                    positionCards();
+                  }, 500);
+                }
+              });
+              forceRun();
+              positionCards();
+            });
+          `,
+          }}
+        />
+      </div>
+    );
+  }
+}
+
+class HeroInteractive extends React.Component {
   render() {
     return (
-      <div className="homeContainer">
-        <div className="homeSplashFade">
-          <div className="wrapper homeWrapper">
-            <div className="inner">
-              <h2 className="projectTitle">
-                {siteConfig.title}
-                <small>
-                  {idx(translation, [
-                    this.props.language,
-                    'localized-strings',
-                    'tagline',
-                  ]) || siteConfig.tagline}
-                </small>
-              </h2>
-              <div className="section promoSection">
-                <div className="promoRow">
-                  <div className="pluginRowBlock">
-                    <Button href="#use">
-                      <translate>Try Out Jest</translate>
-                    </Button>
-                    <Button
-                      href={
-                        siteConfig.baseUrl +
-                        'docs/' +
-                        this.props.language +
-                        '/getting-started.html'
-                      }
-                    >
-                      <translate>Get Started</translate>
-                    </Button>
-                    <Button href={'#watch'}>
-                      <translate>Watch Talks</translate>
-                    </Button>
-                    <Button
-                      href={
-                        siteConfig.baseUrl +
-                        'docs/' +
-                        this.props.language +
-                        '/snapshot-testing.html'
-                      }
-                    >
-                      <translate>Learn More</translate>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="githubButton" style={{minHeight: '20px'}}>
-                <a
-                  className="github-button"
-                  href={this.props.config.repoUrl}
-                  data-icon="octicon-star"
-                  data-count-href="/facebook/jest/stargazers"
-                  data-show-count={true}
-                  data-count-aria-label="# stargazers on GitHub"
-                  aria-label="Star facebook/jest on GitHub"
-                >
-                  Star
-                </a>
-              </div>
-            </div>
-          </div>
+      <div className="jest-hero-interactive">
+        <div
+          style={{minHeight: '20px', position: 'absolute', right: 30, top: 20}}
+        >
+          <a
+            className="github-button"
+            href={this.props.config.repoUrl}
+            data-icon="octicon-star"
+            data-count-href="/facebook/jest/stargazers"
+            data-show-count={true}
+            data-count-aria-label="# stargazers on GitHub"
+            aria-label="Star facebook/jest on GitHub"
+          >
+            Star
+          </a>
+        </div>
+        <Hand />
+        <div className="jest-button-container">
+          <Button
+            href={
+              siteConfig.baseUrl +
+              'docs/' +
+              this.props.language +
+              '/getting-started.html'
+            }
+          >
+            <translate>Get Started</translate>
+          </Button>
+          <Button href="#use">
+            <translate>Try Out Jest</translate>
+          </Button>
+          <Button href={'#watch'}>
+            <translate>Watch Talks</translate>
+          </Button>
+          <Button
+            href={
+              siteConfig.baseUrl +
+              'docs/' +
+              this.props.language +
+              '/snapshot-testing.html'
+            }
+          >
+            <translate>Learn More</translate>
+          </Button>
         </div>
       </div>
     );
@@ -191,7 +365,7 @@ class Index extends React.Component {
 
     return (
       <div>
-        <HomeSplash language={this.props.language} config={siteConfig} />
+        <HeroInteractive language={this.props.language} config={siteConfig} />
         <div className="mainContainer">
           <Container padding={['bottom', 'top']} background="light">
             <GridBlock
