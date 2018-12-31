@@ -14,6 +14,7 @@
 - `[jest-haste-map]` [**BREAKING**] Remove name from hash in `HasteMap.getCacheFilePath` ([#7218](https://github.com/facebook/jest/pull/7218))
 - `[babel-preset-jest]` [**BREAKING**] Export a function instead of an object for Babel 7 compatibility ([#7203](https://github.com/facebook/jest/pull/7203))
 - `[jest-haste-map]` [**BREAKING**] Expose relative paths when getting the file iterator ([#7321](https://github.com/facebook/jest/pull/7321))
+- `[jest-cli]` [**BREAKING**] Run code transforms over `global{Setup,Teardown}` ([#7562](https://github.com/facebook/jest/pull/7562))
 - `[jest-haste-map]` Add `hasteFS.getSize(path)` ([#7580](https://github.com/facebook/jest/pull/7580))
 - `[jest-cli]` Print version ending in `-dev` when running a local Jest clone ([#7582](https://github.com/facebook/jest/pull/7582))
 - `[jest-cli]` Add Support for `globalSetup` and `globalTeardown` in projects ([#6865](https://github.com/facebook/jest/pull/6865))
@@ -49,7 +50,6 @@
 - `[jest-config]` Allow % based configuration of `--max-workers` ([#7494](https://github.com/facebook/jest/pull/7494))
 - `[jest-runner]` Instantiate the test environment class with the current `testPath` ([#7442](https://github.com/facebook/jest/pull/7442))
 - `[jest-config]` Always resolve jest-environment-jsdom from jest-config ([#7476](https://github.com/facebook/jest/pull/7476))
-- `[jest-cli]` Run code transforms over `global{Setup,Teardown}` ([#7562](https://github.com/facebook/jest/pull/7562))
 
 ### Fixes
 

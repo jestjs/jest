@@ -10,17 +10,10 @@
 import type {GlobalConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 
-import {extname, resolve, sep} from 'path';
+import {extname} from 'path';
 import pEachSeries from 'p-each-series';
 import {addHook} from 'pirates';
 import {ScriptTransformer} from 'jest-runtime';
-
-const inJestsSource = __dirname.includes(`packages${sep}jest-cli`);
-let packagesRoot;
-
-if (inJestsSource) {
-  packagesRoot = resolve(__dirname, '../../');
-}
 
 export default ({
   allTests,
@@ -59,13 +52,7 @@ export default ({
           transformer.transformSource(filename, code, false).code || code,
         {
           exts: [extname(modulePath)],
-          matcher(filename) {
-            // `babel-jest` etc would normally be caught by `node_modules`, but not in Jest's own repo
-            if (inJestsSource && filename.includes(packagesRoot)) {
-              return false;
-            }
-            return transformer._shouldTransform(filename);
-          },
+          matcher: transformer._shouldTransform.bind(transformer),
         },
       );
 
