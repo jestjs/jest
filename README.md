@@ -19,6 +19,7 @@
     <a href="#sponsors"><img src="https://opencollective.com/jest/sponsors/badge.svg" alt="Sponsors on Open Collective"></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
      <a href="https://snyk.io/test/github/facebook/jest?targetFile=packages/jest/package.json"><img src="https://snyk.io/test/github/facebook/jest/badge.svg?targetFile=packages/jest/package.json" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/facebook/jest?targetFile=packages/jest/package.json" style="max-width:100%;"></a>
+    <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow" alt="Follow on Twitter"></a>  
 </p>
 
 **👩🏻‍💻 Developer Ready**: Complete and ready to set-up JavaScript testing solution. Works out of the box for any React project.
