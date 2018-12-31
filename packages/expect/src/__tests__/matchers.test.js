@@ -52,7 +52,7 @@ describe('.rejects', () => {
     await jestExpect(fn()).rejects.toThrow('some error');
   });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
+  ['a', [1], () => {}, {a: 1}].forEach(value => {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
       try {
@@ -62,13 +62,34 @@ describe('.rejects', () => {
       }
       expect(error).toBeDefined();
     });
-  });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
     it(`fails non-promise value ${stringify(value)}`, async () => {
       let error;
       try {
         await jestExpect(value).rejects.toBeDefined();
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
+  });
+
+  [4, null, true, undefined].forEach(value => {
+    it(`fails non-promise value ${stringify(value)} synchronously`, () => {
+      let error;
+      try {
+        jestExpect(value).rejects.not.toBe(111);
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+    });
+
+    it(`fails non-promise value ${stringify(value)}`, async () => {
+      let error;
+      try {
+        await jestExpect(value).rejects.not.toBeDefined();
       } catch (e) {
         error = e;
       }
@@ -108,7 +129,7 @@ describe('.resolves', () => {
     ).resolves.toThrow();
   });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
+  ['a', [1], () => {}, {a: 1}].forEach(value => {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
       try {
@@ -119,13 +140,35 @@ describe('.resolves', () => {
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
     });
-  });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
     it(`fails non-promise value ${stringify(value)}`, async () => {
       let error;
       try {
         await jestExpect(value).resolves.toBeDefined();
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
+  });
+
+  [4, null, true, undefined].forEach(value => {
+    it(`fails non-promise value ${stringify(value)} synchronously`, () => {
+      let error;
+      try {
+        jestExpect(value).resolves.not.toBeDefined();
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
+
+    it(`fails non-promise value ${stringify(value)}`, async () => {
+      let error;
+      try {
+        await jestExpect(value).resolves.not.toBeDefined();
       } catch (e) {
         error = e;
       }

@@ -45,7 +45,7 @@ Received has value: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.rejects fails non-promise value 4 1`] = `
-"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -54,7 +54,7 @@ Received has value: <red>4</>"
 `;
 
 exports[`.rejects fails non-promise value null 1`] = `
-"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -62,7 +62,7 @@ Received has value: <red>null</>"
 `;
 
 exports[`.rejects fails non-promise value true 1`] = `
-"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -71,7 +71,7 @@ Received has value: <red>true</>"
 `;
 
 exports[`.rejects fails non-promise value undefined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -159,7 +159,7 @@ Received has value: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.resolves fails non-promise value 4 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -168,7 +168,7 @@ Received has value: <red>4</>"
 `;
 
 exports[`.resolves fails non-promise value 4 synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -177,7 +177,7 @@ Received has value: <red>4</>"
 `;
 
 exports[`.resolves fails non-promise value null 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -185,7 +185,7 @@ Received has value: <red>null</>"
 `;
 
 exports[`.resolves fails non-promise value null synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -193,7 +193,7 @@ Received has value: <red>null</>"
 `;
 
 exports[`.resolves fails non-promise value true 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -202,7 +202,7 @@ Received has value: <red>true</>"
 `;
 
 exports[`.resolves fails non-promise value true synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -211,7 +211,7 @@ Received has value: <red>true</>"
 `;
 
 exports[`.resolves fails non-promise value undefined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
@@ -219,7 +219,7 @@ Received has value: <red>undefined</>"
 `;
 
 exports[`.resolves fails non-promise value undefined synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
 <bold>Matcher error</>: <red>received</> value must be a promise
 
