@@ -189,7 +189,6 @@ class Card extends React.Component {
                   className="run-circle"
                 />
               </g>
-              <path hrf="runs-path" stroke="green" strokeWidth="3" />
               <g
                 fill="#fff"
                 fontWeight="bold"
@@ -198,16 +197,24 @@ class Card extends React.Component {
                 className="run-text"
               >
                 <text>
-                  <textPath href="#runs-path">RUNS</textPath>
+                  <textPath xlinkHref="#runs-path" href="#runs-path">
+                    RUNS
+                  </textPath>
                 </text>
                 <text transform="rotate(90,100,100)">
-                  <textPath href="#runs-path">RUNS</textPath>
+                  <textPath xlinkHref="#runs-path" href="#runs-path">
+                    RUNS
+                  </textPath>
                 </text>
                 <text transform="rotate(180,100,100)">
-                  <textPath href="#runs-path">RUNS</textPath>
+                  <textPath xlinkHref="#runs-path" href="#runs-path">
+                    RUNS
+                  </textPath>
                 </text>
                 <text transform="rotate(270,100,100)">
-                  <textPath href="#runs-path">RUNS</textPath>
+                  <textPath xlinkHref="#runs-path" href="#runs-path">
+                    RUNS
+                  </textPath>
                 </text>
               </g>
             </svg>
@@ -242,7 +249,9 @@ class Hand extends React.Component {
                 });
               }
               var results = [];
-              function resolveRun(card, index) {
+              var timeouts = [];
+              function resolveRun(card, index, minTime) {
+                minTime = minTime || 500;
                 setTimeout(function() {
                   if (index === 2) {
                     results[index] = null;
@@ -260,25 +269,31 @@ class Hand extends React.Component {
                       el.innerHTML = "FAIL";
                     });
                   }
+                }, minTime);
+                if (timeouts[index]) {
+                  clearTimeout(timeouts[index]);
+                }
+                timeouts[index] = setTimeout(function() {
                   card.classList.remove("jest-card-running");
                   card.classList.add("jest-card-popping");
                   setTimeout(function() {
                     results[index] = results[index] || null;
                     card.classList.remove("jest-card-popping");
                   }, 400);
-                }, index === 2 ? 3000 : Math.random() * 2500 + 500);
+                }, index === 2 ? 3000 + minTime : Math.random() * 3000 + minTime);
               }
-              function forceRun() {
+              function forceRun(minTime) {
                 cards.forEach(function(card, index) {
                   card.classList.add("jest-card-running");
                   results[index] = Math.random() > 0.4;
-                  resolveRun(card, index);
+                  resolveRun(card, index, minTime);
                 });
               }
               function runTest(card, index) {
-                if (index === 2) {
-                  forceRun();
-                } else if (!card.classList.contains("jest-card-running") && !results[index]) {
+                if (!card.classList.contains("jest-card-running") && !results[index]) {
+                  if (index === 2) {
+                    return forceRun(1000);
+                  }
                   card.classList.add("jest-card-running");
                   if (results[index] == null) {
                     results[index] = Math.random() > 0.2;
@@ -307,7 +322,7 @@ class Hand extends React.Component {
                   }, 500);
                 }
               });
-              forceRun();
+              forceRun(4000);
               positionCards();
             });
           `,
@@ -322,9 +337,7 @@ class HeroInteractive extends React.Component {
   render() {
     return (
       <div className="jest-hero-interactive">
-        <div
-          style={{minHeight: '20px', position: 'absolute', right: 30, top: 20}}
-        >
+        <div className="hero-github-button-container">
           <a
             className="github-button"
             href={this.props.config.repoUrl}
