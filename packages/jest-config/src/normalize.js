@@ -165,12 +165,21 @@ const setupBabelJest = (options: InitialOptions) => {
 
     if (customTSPattern) {
       const customTSTransformer = transform[customTSPattern];
+      if (Array.isArray(customTSTransformer)) {
+        if (customTSTransformer[0] === 'babel-jest') {
+          babelJest = require.resolve('babel-jest');
 
-      if (customTSTransformer === 'babel-jest') {
-        babelJest = require.resolve('babel-jest');
-        transform[customTSPattern] = babelJest;
-      } else if (customTSTransformer.includes('babel-jest')) {
-        babelJest = customTSTransformer;
+          customTSTransformer[0] = babelJest;
+        } else if (customTSTransformer[0].includes('babel-jest')) {
+          babelJest = customTSTransformer[0];
+        }
+      } else {
+        if (customTSTransformer === 'babel-jest') {
+          babelJest = require.resolve('babel-jest');
+          transform[customTSPattern] = babelJest;
+        } else if (customTSTransformer.includes('babel-jest')) {
+          babelJest = customTSTransformer;
+        }
       }
     }
   } else {
