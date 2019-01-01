@@ -19,7 +19,7 @@ const dir = path.resolve(__dirname, '../empty-describe-with-hooks');
 skipSuiteOnJasmine();
 
 test('hook in empty describe', () => {
-  const result = runJest(dir, ['hook-in-empty-describe.test.js']);
+  const result = runJest(dir, ['hookInEmptyDescribe.test.js']);
   expect(result.status).toBe(1);
   expect(extractSummary(result.stderr)).toMatchSnapshot();
 });
