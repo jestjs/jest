@@ -142,7 +142,7 @@ div.jest-card-running {
 }
 
 div.jest-card-hitslop:hover div.jest-card:not(.jest-card-running):not(.jest-card-pass) {
-  transform: translateY(-60px);
+  transform: translateY(-40px);
 }
 
 div.jest-card.jest-card-popping {
