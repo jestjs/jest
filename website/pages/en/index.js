@@ -156,7 +156,7 @@ class Card extends React.Component {
                 r="88"
                 stroke="#fff"
                 strokeWidth="8"
-                fill="#777311"
+                fill="#C2A813"
               />
               <g className="run-circle">
                 <circle cx="100" cy="100" r="50" fill="#fff" />
@@ -164,7 +164,7 @@ class Card extends React.Component {
                   cx="100"
                   cy="100"
                   r="45"
-                  fill="#777311"
+                  fill="#C2A813"
                   className="run-circle"
                 />
                 <circle
@@ -178,7 +178,7 @@ class Card extends React.Component {
                   cx="100"
                   cy="100"
                   r="25"
-                  fill="#777311"
+                  fill="#C2A813"
                   className="run-circle"
                 />
                 <circle
