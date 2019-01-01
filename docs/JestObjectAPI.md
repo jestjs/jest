@@ -3,7 +3,7 @@ id: jest-object
 title: The Jest Object
 ---
 
-The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior.
+The `jest` object is automatically in scope within every test file (although it can also be imported as an [ES6 module](Es6Import.md)). The methods in the `jest` object help create mocks and let you control Jest's overall behavior.
 
 ## Mock Modules
 

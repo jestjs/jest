@@ -7,4 +7,20 @@
  * @flow
  */
 
-export {default} from 'jest-cli';
+import cli from 'jest-cli';
+
+const obj = {
+  ...jest,
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  fdescribe: describe.only,
+  it: test,
+  test,
+  xdescribe: describe.skip,
+};
+
+export default (process.env.JEST_WORKER_ID !== undefined ? obj : cli);

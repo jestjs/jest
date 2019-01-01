@@ -57,6 +57,8 @@ PASS  ./sum.test.js
 
 This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](UsingMatchers.md).
 
+If you prefer to import functions instead of using them globally, see [ES6 Import](Es6Import.md).
+
 ## Running from command line
 
 You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `yarn global add jest` or `npm install jest --global`) with a variety of useful options.

@@ -3,7 +3,7 @@ id: api
 title: Globals
 ---
 
-In your test files, Jest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them.
+In your test files, Jest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them (though they still can be [imported](Es6Import.md) if you prefer).
 
 ## Methods
 
