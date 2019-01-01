@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest]` Export globals as an ES6 module ([./docs/Es6Import.md](./docs/Es6Import.md)).
 - `[jest-runtime]` Add `jest.isolateModules` for scoped module initialization ([#6701](https://github.com/facebook/jest/pull/6701))
 - `[jest-cli]` [**BREAKING**] Only set error process error codes when they are non-zero ([#7363](https://github.com/facebook/jest/pull/7363))
 - `[jest-config]` [**BREAKING**] Deprecate `setupTestFrameworkScriptFile` in favor of new `setupFilesAfterEnv` ([#7119](https://github.com/facebook/jest/pull/7119))
