@@ -238,7 +238,7 @@ class Hand extends React.Component {
               var hand = document.querySelector(".jest-hand");
               var cards = hand.querySelectorAll(".jest-card");
               function cardTransform(offset, handWidth) {
-                var transform = "rotate(" + (offset * 4) + "deg) translateY(" + (offset * -2) + "px) translateX(" + ((offset - (Math.abs(offset) *  offset/7)) * Math.min(140, handWidth / 8)) + "px)";
+                var transform = "rotate(" + (offset * 4) + "deg) translateX(" + ((offset - (Math.abs(offset) *  offset/7)) * Math.min(140, handWidth / 8)) + "px)";
                 return transform;
               }
               function positionCards() {
