@@ -379,7 +379,7 @@ class Index extends React.Component {
     return (
       <div>
         <HeroInteractive language={this.props.language} config={siteConfig} />
-        <div className="mainContainer">
+        <div className="mainContainer" style={{ paddingTop: 0}}>
           <Container padding={['bottom', 'top']} background="light">
             <GridBlock
               align="center"
