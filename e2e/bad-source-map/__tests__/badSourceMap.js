@@ -12,4 +12,4 @@ it('should fail with a proper stacktrace', () => {
   expect(true).toBe(false);
 });
 
-//# sourceMappingURL=bad_source_map.js.map
+//# sourceMappingURL=badSourceMap.js.map
