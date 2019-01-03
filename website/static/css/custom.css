@@ -281,6 +281,9 @@ div.jest-card-run .jest-card-logo {
   50% {
     transform: scale(1);
   }
+  90% {
+    transform: scale(0.9);
+  }
   100% {
     transform: scale(0.8);
   }
