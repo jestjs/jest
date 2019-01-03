@@ -267,9 +267,14 @@ class Hand extends React.Component {
                 }, index === 2 ? 3000 + minTime : Math.random() * 3000 + minTime);
               }
               function forceRun(minTime) {
+                var fails = 0;
                 cards.forEach(function(card, index) {
                   card.classList.add("jest-card-running");
-                  results[index] = Math.random() > 0.4;
+                  var result = index === 2 || fails > 1 || Math.random() > 0.25;
+                  if (!result) {
+                    fails += 1;
+                  }
+                  results[index] = result;
                   resolveRun(card, index, minTime);
                 });
               }
@@ -306,7 +311,7 @@ class Hand extends React.Component {
                   }, 500);
                 }
               });
-              forceRun(4000);
+              forceRun(2000);
               positionCards();
             });
           `,
