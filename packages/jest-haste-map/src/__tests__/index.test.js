@@ -148,6 +148,9 @@ describe('HasteMap', () => {
 
     mockEmitters = Object.create(null);
     mockFs = object({
+      '/project/fruits/.gitignore': `
+        .git
+      `,
       '/project/fruits/Banana.js': `
         const Strawberry = require("Strawberry");
       `,
@@ -272,6 +275,7 @@ describe('HasteMap', () => {
   it('matches files against a pattern', () =>
     new HasteMap(defaultConfig).build().then(({hasteFS}) => {
       expect(hasteFS.matchFiles(/project\/fruits/)).toEqual([
+        '/project/fruits/.gitignore',
         '/project/fruits/Banana.js',
         '/project/fruits/Pear.js',
         '/project/fruits/Strawberry.js',
@@ -337,6 +341,7 @@ describe('HasteMap', () => {
 
       expect(data.files).toEqual(
         createMap({
+          'fruits/.gitignore': ['.gitignore', 32, 1, [], null],
           'fruits/Banana.js': ['Banana', 32, 1, ['Strawberry'], null],
           'fruits/Pear.js': ['Pear', 32, 1, ['Banana', 'Strawberry'], null],
           'fruits/Strawberry.js': ['Strawberry', 32, 1, [], null],
@@ -362,6 +367,7 @@ describe('HasteMap', () => {
 
       expect(data.map).toEqual(
         createMap({
+          ".gitignore": {[H.GENERIC_PLATFORM]: ['fruits/.gitignore', H.MODULE]},
           Banana: {[H.GENERIC_PLATFORM]: ['fruits/Banana.js', H.MODULE]},
           Melon: {[H.GENERIC_PLATFORM]: ['vegetables/Melon.js', H.MODULE]},
           Pear: {[H.GENERIC_PLATFORM]: ['fruits/Pear.js', H.MODULE]},
@@ -405,6 +411,7 @@ describe('HasteMap', () => {
 
           // The node crawler returns "null" for the SHA-1.
           data.files = createMap({
+            'fruits/.gitgignore': ['.gitignore', 32, 0, [], null],
             'fruits/Banana.js': ['Banana', 32, 0, ['Strawberry'], null],
             'fruits/Pear.js': ['Pear', 32, 0, ['Banana', 'Strawberry'], null],
             'fruits/Strawberry.js': ['Strawberry', 32, 0, [], null],
@@ -427,6 +434,13 @@ describe('HasteMap', () => {
 
         expect(data.files).toEqual(
           createMap({
+            'fruits/.gitignore': [
+              '.gitignore',
+              32,
+              1,
+              [],
+              '1cf51edc93c6fa4d695a1fc0bcb3a5df95b731ff',
+            ],
             'fruits/Banana.js': [
               'Banana',
               32,
@@ -515,7 +529,7 @@ describe('HasteMap', () => {
       expect(data.map.get('fbjs')).not.toBeDefined();
 
       // cache file + 5 modules - the node_module
-      expect(fs.readFileSync.mock.calls.length).toBe(6);
+      expect(fs.readFileSync.mock.calls.length).toBe(7);
     });
   });
 
@@ -637,7 +651,7 @@ describe('HasteMap', () => {
       .then(({__hasteMapForTest: initialData}) => {
         // The first run should access the file system once for the (empty)
         // cache file and five times for the files in the system.
-        expect(fs.readFileSync.mock.calls.length).toBe(6);
+        expect(fs.readFileSync.mock.calls.length).toBe(7);
 
         fs.readFileSync.mockClear();
 
@@ -969,7 +983,7 @@ describe('HasteMap', () => {
     return new HasteMap(defaultConfig)
       .build()
       .then(({__hasteMapForTest: data}) => {
-        expect(data.files.size).toBe(5);
+        expect(data.files.size).toBe(6);
 
         // Ensure this file is not part of the file list.
         expect(data.files.get('fruits/invalid/file.js')).toBe(undefined);
@@ -991,9 +1005,19 @@ describe('HasteMap', () => {
       .then(({__hasteMapForTest: data}) => {
         expect(jestWorker.mock.calls.length).toBe(1);
 
-        expect(mockWorker.mock.calls.length).toBe(5);
+        expect(mockWorker.mock.calls.length).toBe(6);
 
         expect(mockWorker.mock.calls).toEqual([
+          [
+            {
+              computeDependencies: true,
+              computeSha1: false,
+              dependencyExtractor,
+              filePath: '/project/fruits/.gitignore',
+              hasteImplModulePath: undefined,
+              rootDir: '/project',
+            },
+          ],
           [
             {
               computeDependencies: true,
