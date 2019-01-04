@@ -7,9 +7,11 @@
  * @flow
  */
 
-const os = require('os');
-const path = require('path');
-const chalk = require('chalk');
+import os from 'os';
+import path from 'path';
+import chalk from 'chalk';
+import prettyFormat from 'pretty-format';
+
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
@@ -20,9 +22,9 @@ const replacePathSepForRegex = (string: string) => {
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
-const defaultConfig = {
+export const defaultConfig = {
   automock: false,
-  bail: false,
+  bail: 0,
   browser: false,
   cacheDirectory: path.join(os.tmpdir(), 'jest'),
   clearMocks: false,
@@ -49,7 +51,7 @@ const defaultConfig = {
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
   testResultsProcessor: null,
   testURL: 'http://localhost',
   timers: 'real',
@@ -60,9 +62,9 @@ const defaultConfig = {
   watchPathIgnorePatterns: [],
 };
 
-const validConfig = {
+export const validConfig = {
   automock: false,
-  bail: false,
+  bail: 0,
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
@@ -113,7 +115,7 @@ const validConfig = {
   testEnvironment: 'jest-environment-jsdom',
   testNamePattern: 'test signature',
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
   testURL: 'http://localhost',
@@ -131,9 +133,9 @@ const validConfig = {
   watchman: true,
 };
 
-const format = (value: string) => require('pretty-format')(value, {min: true});
+const format = (value: string) => prettyFormat(value, {min: true});
 
-const deprecatedConfig = {
+export const deprecatedConfig = {
   preprocessorIgnorePatterns: (config: Object) =>
     `  Option ${chalk.bold(
       'preprocessorIgnorePatterns',
@@ -163,10 +165,4 @@ const deprecatedConfig = {
   }
 
   Please update your configuration.`,
-};
-
-module.exports = {
-  defaultConfig,
-  deprecatedConfig,
-  validConfig,
 };

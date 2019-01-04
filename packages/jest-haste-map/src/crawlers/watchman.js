@@ -26,7 +26,7 @@ function WatchmanError(error: Error): Error {
   return error;
 }
 
-module.exports = async function watchmanCrawl(
+export default async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
   const fields = ['name', 'exists', 'mtime_ms'];
@@ -44,10 +44,8 @@ module.exports = async function watchmanCrawl(
 
   const cmd = (...args) =>
     new Promise((resolve, reject) =>
-      client.command(
-        args,
-        (error, result) =>
-          error ? reject(WatchmanError(error)) : resolve(result),
+      client.command(args, (error, result) =>
+        error ? reject(WatchmanError(error)) : resolve(result),
       ),
     );
 
@@ -219,4 +217,4 @@ module.exports = async function watchmanCrawl(
 
   data.files = files;
   return data;
-};
+}

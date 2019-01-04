@@ -59,13 +59,12 @@ export default function nodeModulesPaths(
     .reduce(
       (dirs, aPath) =>
         dirs.concat(
-          modules.map(
-            moduleDir =>
-              path.isAbsolute(moduleDir)
-                ? aPath === basedirAbs
-                  ? moduleDir
-                  : ''
-                : path.join(prefix, aPath, moduleDir),
+          modules.map(moduleDir =>
+            path.isAbsolute(moduleDir)
+              ? aPath === basedirAbs
+                ? moduleDir
+                : ''
+              : path.join(prefix, aPath, moduleDir),
           ),
         ),
       [],

@@ -14,6 +14,7 @@ import type {ErrorWithCode} from 'types/Errors';
 
 import fs from 'fs';
 import path from 'path';
+import {interopRequireDefault} from 'jest-util';
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver from './defaultResolver';
@@ -61,7 +62,7 @@ const nodePaths = process.env.NODE_PATH
       .map(p => path.resolve(resolvedCwd, p))
   : null;
 
-class Resolver {
+export default class Resolver {
   _options: ResolverConfig;
   _moduleMap: ModuleMap;
   _moduleIDCache: {[key: string]: string, __proto__: null};
@@ -94,8 +95,10 @@ class Resolver {
 
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
     const resolver = options.resolver
-      ? /* $FlowFixMe */
-        require(options.resolver)
+      ? interopRequireDefault(
+          // $FlowFixMe
+          require(options.resolver),
+        ).default
       : defaultResolver;
     const paths = options.paths;
 
@@ -328,8 +331,8 @@ class Resolver {
     return virtualMocks[virtualMockPath]
       ? virtualMockPath
       : moduleName
-        ? this.resolveModule(from, moduleName)
-        : from;
+      ? this.resolveModule(from, moduleName)
+      : from;
   }
 
   _isModuleResolved(from: Path, moduleName: string): boolean {
@@ -426,5 +429,3 @@ Please check your configuration for these entries:
 
   return error;
 };
-
-module.exports = Resolver;

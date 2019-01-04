@@ -9,16 +9,9 @@
 
 import {version as VERSION} from '../package.json';
 
-import SearchSource from './SearchSource';
-import TestScheduler from './TestScheduler';
-import TestWatcher from './TestWatcher';
-import {run, runCLI} from './cli';
+export {default as SearchSource} from './SearchSource';
+export {default as TestScheduler} from './TestScheduler';
+export {default as TestWatcher} from './TestWatcher';
+export {run, runCLI} from './cli';
 
-module.exports = {
-  SearchSource,
-  TestScheduler,
-  TestWatcher,
-  getVersion: () => VERSION,
-  run,
-  runCLI,
-};
+export const getVersion = () => VERSION;

@@ -6,12 +6,12 @@
  */
 'use strict';
 
+import fs from 'fs';
+import path from 'path';
 import TestSequencer from '../TestSequencer';
 
 jest.mock('fs');
 
-const fs = require('fs');
-const path = require('path');
 const FAIL = 0;
 const SUCCESS = 1;
 
@@ -203,16 +203,15 @@ test('writes the cache based on the results', () => {
 });
 
 test('works with multiple contexts', () => {
-  fs.readFileSync = jest.fn(
-    cacheName =>
-      cacheName.startsWith(path.sep + 'cache' + path.sep)
-        ? JSON.stringify({
-            '/test-a.js': [SUCCESS, 5],
-            '/test-b.js': [FAIL, 1],
-          })
-        : JSON.stringify({
-            '/test-c.js': [FAIL],
-          }),
+  fs.readFileSync = jest.fn(cacheName =>
+    cacheName.startsWith(path.sep + 'cache' + path.sep)
+      ? JSON.stringify({
+          '/test-a.js': [SUCCESS, 5],
+          '/test-b.js': [FAIL, 1],
+        })
+      : JSON.stringify({
+          '/test-c.js': [FAIL],
+        }),
   );
 
   const testPaths = [

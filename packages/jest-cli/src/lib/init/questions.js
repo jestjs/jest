@@ -49,10 +49,3 @@ export const testScriptQuestion: Question = {
   name: 'scripts',
   type: 'confirm',
 };
-
-export const typescriptQuestion: Question = {
-  initial: true,
-  message: 'Typescript detected, would you like to setup Jest for Typescript?',
-  name: 'typescript',
-  type: 'confirm',
-};

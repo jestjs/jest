@@ -21,7 +21,7 @@ const CIRCUS_PATH = require.resolve('../../build/index');
 const CIRCUS_RUN_PATH = require.resolve('../../build/run');
 const CIRCUS_STATE_PATH = require.resolve('../../build/state');
 const TEST_EVENT_HANDLER_PATH = require.resolve('./testEventHandler');
-const BABEL_REGISTER_PATH = require.resolve('babel-register');
+const BABEL_REGISTER_PATH = require.resolve('@babel/register');
 
 skipSuiteOnWindows();
 

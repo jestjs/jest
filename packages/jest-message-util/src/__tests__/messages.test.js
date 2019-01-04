@@ -8,7 +8,7 @@
 
 'use strict';
 
-const {formatResultsErrors, formatExecError} = require('..');
+import {formatExecError, formatResultsErrors} from '..';
 
 const unixStackTrace =
   `  ` +

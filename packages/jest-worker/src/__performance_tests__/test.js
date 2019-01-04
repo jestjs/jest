@@ -1,16 +1,21 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+/**
+ * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 'use strict';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-const workerFarm = require('worker-farm');
-const assert = require('assert');
-const JestWorker = require('../../build').default;
+import workerFarm from 'worker-farm';
+import assert from 'assert';
+import JestWorker from '../../';
 
 // Typical tests: node --expose-gc test.js empty 100000
 //                node --expose-gc test.js loadTest 10000
 assert(process.argv[2], 'Pass a child method name');
-assert(process.argv[3], 'Pass the number of iteratitons');
+assert(process.argv[3], 'Pass the number of iterations');
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const method = process.argv[2];

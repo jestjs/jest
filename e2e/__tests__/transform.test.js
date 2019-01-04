@@ -29,7 +29,7 @@ describe('babel-jest', () => {
     // --no-cache because babel can cache stuff and result in false green
     const {json} = runWithJson(dir, ['--no-cache']);
     expect(json.success).toBe(true);
-    expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
+    expect(json.numTotalTests).toBeGreaterThanOrEqual(2);
   });
 
   it('instruments only specific files and collects coverage', () => {

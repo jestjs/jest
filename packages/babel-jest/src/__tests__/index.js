@@ -4,13 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const babelJest = require('../index');
 
-//Mock canCompile to always return true
-const babelCore = require('babel-core');
-babelCore.util = {
-  canCompile: () => true,
-};
+import babelJest from '../index';
 
 //Mock data for all the tests
 const sourceString = `

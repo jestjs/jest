@@ -137,6 +137,10 @@ const setupBabelJest = (options: InitialOptions) => {
       const regex = new RegExp(pattern);
       return regex.test('a.js') || regex.test('a.jsx');
     });
+    const customTSPattern = Object.keys(transform).find(pattern => {
+      const regex = new RegExp(pattern);
+      return regex.test('a.ts') || regex.test('a.tsx');
+    });
 
     if (customJSPattern) {
       const customJSTransformer = transform[customJSPattern];
@@ -146,6 +150,17 @@ const setupBabelJest = (options: InitialOptions) => {
         transform[customJSPattern] = babelJest;
       } else if (customJSTransformer.includes('babel-jest')) {
         babelJest = customJSTransformer;
+      }
+    }
+
+    if (customTSPattern) {
+      const customTSTransformer = transform[customTSPattern];
+
+      if (customTSTransformer === 'babel-jest') {
+        babelJest = require.resolve('babel-jest');
+        transform[customTSPattern] = babelJest;
+      } else if (customTSTransformer.includes('babel-jest')) {
+        babelJest = customTSTransformer;
       }
     }
   } else {
@@ -401,12 +416,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     options = setupPreset(options, options.preset);
   }
 
-  if (options.testEnvironment) {
-    options.testEnvironment = getTestEnvironment({
-      rootDir: options.rootDir,
-      testEnvironment: options.testEnvironment,
-    });
-  }
+  options.testEnvironment = getTestEnvironment({
+    rootDir: options.rootDir,
+    testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
+  });
 
   if (!options.roots && options.testPathDirs) {
     options.roots = options.testPathDirs;
@@ -565,11 +578,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'projects':
         value = (options[key] || [])
-          .map(
-            project =>
-              typeof project === 'string'
-                ? _replaceRootDirTags(options.rootDir, project)
-                : project,
+          .map(project =>
+            typeof project === 'string'
+              ? _replaceRootDirTags(options.rootDir, project)
+              : project,
           )
           .reduce((projects, project) => {
             // Project can be specified as globs. If a glob matches any files,
@@ -618,8 +630,21 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
         break;
       }
+      case 'bail': {
+        if (typeof options[key] === 'boolean') {
+          value = options[key] ? 1 : 0;
+        } else if (typeof options[key] === 'string') {
+          value = 1;
+          // If Jest is invoked as `jest --bail someTestPattern` then need to
+          // move the pattern from the `bail` configuration and into `argv._`
+          // to be processed as an extra parameter
+          argv._.push(options[key]);
+        } else {
+          value = options[key];
+        }
+        break;
+      }
       case 'automock':
-      case 'bail':
       case 'browser':
       case 'cache':
       case 'changedSince':
@@ -633,6 +658,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'displayName':
       case 'errorOnDeprecated':
       case 'expand':
+      case 'extraGlobals':
       case 'globals':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
@@ -727,8 +753,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     argv.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-        ? 'all'
-        : 'new';
+      ? 'all'
+      : 'new';
 
   newOptions.maxWorkers = getMaxWorkers(argv);
 

@@ -7,15 +7,14 @@
  * @flow
  */
 
+import fs from 'fs';
+import path from 'path';
+import prettier from 'prettier';
+import babelTraverse from '@babel/traverse';
+import {saveInlineSnapshots} from '../inline_snapshots';
+
 jest.mock('fs');
 jest.mock('prettier');
-
-const fs = require('fs');
-const path = require('path');
-const prettier = require('prettier');
-const babelTraverse = require('babel-traverse').default;
-
-const {saveInlineSnapshots} = require('../inline_snapshots');
 
 const writeFileSync = fs.writeFileSync;
 const readFileSync = fs.readFileSync;

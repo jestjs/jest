@@ -17,7 +17,7 @@ import {isSnapshotPath} from 'jest-snapshot';
  * DependencyResolver is used to resolve the direct dependencies of a module or
  * to retrieve a list of all transitive inverse dependencies.
  */
-class DependencyResolver {
+export default class DependencyResolver {
   _hasteFS: HasteFS;
   _resolver: Resolver;
   _snapshotResolver: SnapshotResolver;
@@ -38,17 +38,27 @@ class DependencyResolver {
       return [];
     }
 
-    return dependencies
-      .map(dependency => {
-        if (this._resolver.isCoreModule(dependency)) {
-          return null;
-        }
-        try {
-          return this._resolver.resolveModule(file, dependency, options);
-        } catch (e) {}
-        return this._resolver.getMockModule(file, dependency);
-      })
-      .filter(Boolean);
+    return dependencies.reduce((acc, dependency) => {
+      if (this._resolver.isCoreModule(dependency)) {
+        return acc;
+      }
+      let resolvedDependency;
+      try {
+        resolvedDependency = this._resolver.resolveModule(
+          file,
+          dependency,
+          options,
+        );
+      } catch (e) {
+        resolvedDependency = this._resolver.getMockModule(file, dependency);
+      }
+
+      if (resolvedDependency) {
+        acc.push(resolvedDependency);
+      }
+
+      return acc;
+    }, []);
   }
 
   resolveInverse(
@@ -64,20 +74,22 @@ class DependencyResolver {
       const visitedModules = new Set();
       while (changed.size) {
         changed = new Set(
-          moduleMap
-            .filter(
-              module =>
-                !visitedModules.has(module.file) &&
-                module.dependencies.some(dep => dep && changed.has(dep)),
-            )
-            .map(module => {
-              const file = module.file;
-              if (filter(file)) {
-                relatedPaths.add(file);
-              }
-              visitedModules.add(file);
-              return module.file;
-            }),
+          moduleMap.reduce((acc, module) => {
+            if (
+              visitedModules.has(module.file) ||
+              !module.dependencies.some(dep => dep && changed.has(dep))
+            ) {
+              return acc;
+            }
+
+            const file = module.file;
+            if (filter(file)) {
+              relatedPaths.add(file);
+            }
+            visitedModules.add(file);
+            acc.push(module.file);
+            return acc;
+          }, []),
         );
       }
       return relatedPaths;
@@ -106,5 +118,3 @@ class DependencyResolver {
     return Array.from(collectModules(relatedPaths, modules, changed));
   }
 }
-
-module.exports = DependencyResolver;

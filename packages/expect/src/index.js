@@ -77,7 +77,7 @@ const getPromiseMatcher = (name, matcher) => {
   return null;
 };
 
-const expect = (actual: any, ...rest): ExpectationObject => {
+const expect = (actual: any, ...rest: Array<any>): ExpectationObject => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
   }
@@ -145,16 +145,15 @@ const makeResolveMatcher = (
   const matcherStatement = `.resolves.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
-      matcherUtils.matcherHint(matcherStatement, 'received', '') +
-        '\n\n' +
-        `${matcherUtils.RECEIVED_COLOR(
-          'received',
-        )} value must be a Promise.\n` +
+      matcherUtils.matcherErrorMessage(
+        matcherUtils.matcherHint(matcherStatement, undefined, ''),
+        `${matcherUtils.RECEIVED_COLOR('received')} value must be a Promise`,
         matcherUtils.printWithType(
           'Received',
           actual,
           matcherUtils.printReceived,
         ),
+      ),
     );
   }
 
@@ -187,16 +186,15 @@ const makeRejectMatcher = (
   const matcherStatement = `.rejects.${isNot ? 'not.' : ''}${matcherName}`;
   if (!isPromise(actual)) {
     throw new JestAssertionError(
-      matcherUtils.matcherHint(matcherStatement, 'received', '') +
-        '\n\n' +
-        `${matcherUtils.RECEIVED_COLOR(
-          'received',
-        )} value must be a Promise.\n` +
+      matcherUtils.matcherErrorMessage(
+        matcherUtils.matcherHint(matcherStatement, undefined, ''),
+        `${matcherUtils.RECEIVED_COLOR('received')} value must be a Promise`,
         matcherUtils.printWithType(
           'Received',
           actual,
           matcherUtils.printReceived,
         ),
+      ),
     );
   }
 
@@ -363,7 +361,7 @@ function assertions(expected: number) {
   getState().expectedAssertionsNumber = expected;
   getState().expectedAssertionsNumberError = error;
 }
-function hasAssertions(...args) {
+function hasAssertions(...args: Array<any>) {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, hasAssertions);
@@ -386,4 +384,4 @@ expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
-module.exports = (expect: Expect);
+export default (expect: Expect);
