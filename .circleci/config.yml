@@ -26,7 +26,7 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress
       - save-cache: *save-cache
-      - run: yarn lint --format junit -o reports/junit/js-lint-results.xml && yarn typecheck && yarn lint-es5-build --format junit -o reports/junit/js-es5-lint-results.xml  && yarn lint:md:ci
+      - run: yarn lint --format junit -o reports/junit/js-lint-results.xml && yarn typecheck && yarn lint-es5-build --format junit -o reports/junit/js-es5-lint-results.xml  && yarn lint:md:ci && yarn check-copyright-headers
       - store_test_results:
           path: reports/junit
 
@@ -51,7 +51,7 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci-partial
+          command: yarn test-ci
       - store_test_results:
           path: reports/junit
 
@@ -79,7 +79,7 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci
+          command: yarn test-ci-partial
       - store_test_results:
           path: reports/junit
 
@@ -90,10 +90,11 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: yarn --no-progress
+      - run: yarn --no-progress --ignore-engines
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci-partial
+          # react-native does not work with node 6
+          command: rm -rf examples/react-native && yarn test-ci-partial
       - store_test_results:
           path: reports/junit
 

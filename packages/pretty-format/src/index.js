@@ -12,6 +12,7 @@ import type {
   Config,
   Options,
   OptionsReceived,
+  NewPlugin,
   Plugin,
   Plugins,
   Refs,
@@ -28,13 +29,13 @@ import {
   printObjectProperties,
 } from './collections';
 
-import AsymmetricMatcher from './plugins/asymmetric_matcher';
-import ConvertAnsi from './plugins/convert_ansi';
-import DOMCollection from './plugins/dom_collection';
-import DOMElement from './plugins/dom_element';
-import Immutable from './plugins/immutable';
-import ReactElement from './plugins/react_element';
-import ReactTestComponent from './plugins/react_test_component';
+import AsymmetricMatcher from './plugins/AsymmetricMatcher';
+import ConvertAnsi from './plugins/ConvertAnsi';
+import DOMCollection from './plugins/DOMCollection';
+import DOMElement from './plugins/DOMElement';
+import Immutable from './plugins/Immutable';
+import ReactElement from './plugins/ReactElement';
+import ReactTestComponent from './plugins/ReactTestComponent';
 
 const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
@@ -472,7 +473,10 @@ function createIndent(indent: number): string {
   return new Array(indent + 1).join(' ');
 }
 
-function prettyFormat(val: any, options?: OptionsReceived): string {
+export default function prettyFormat(
+  val: any,
+  options?: OptionsReceived,
+): string {
   if (options) {
     validateOptions(options);
     if (options.plugins) {
@@ -496,7 +500,7 @@ function prettyFormat(val: any, options?: OptionsReceived): string {
   return printComplexValue(val, getConfig(options), '', 0, []);
 }
 
-prettyFormat.plugins = {
+const plugins: {[s: string]: NewPlugin} = {
   AsymmetricMatcher,
   ConvertAnsi,
   DOMCollection,
@@ -506,4 +510,5 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-module.exports = prettyFormat;
+// TODO: Consider exporting as ESM
+prettyFormat.plugins = plugins;

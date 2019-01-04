@@ -8,7 +8,7 @@
 
 'use strict';
 
-const getType = require('..');
+import getType from '..';
 
 describe('.getType()', () => {
   test('null', () => expect(getType(null)).toBe('null'));

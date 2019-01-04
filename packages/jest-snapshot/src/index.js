@@ -10,45 +10,49 @@
 import type {HasteFS} from 'types/HasteMap';
 import type {MatcherState} from 'types/Matchers';
 import type {Path, SnapshotUpdateState} from 'types/Config';
+import type {SnapshotResolver} from 'types/SnapshotResolver';
 
 import fs from 'fs';
-import path from 'path';
 import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
-import SnapshotState from './State';
-import {addSerializer, getSerializers} from './plugins';
+import {EXTENSION} from './snapshot_resolver';
+export {
+  buildSnapshotResolver,
+  isSnapshotPath,
+  EXTENSION,
+} from './snapshot_resolver';
+export {default as SnapshotState} from './State';
+export {addSerializer, getSerializers} from './plugins';
 import * as utils from './utils';
+export {utils};
 
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
-const cleanup = (hasteFS: HasteFS, update: SnapshotUpdateState) => {
-  const pattern = '\\.' + utils.SNAPSHOT_EXTENSION + '$';
+export const cleanup = (
+  hasteFS: HasteFS,
+  update: SnapshotUpdateState,
+  snapshotResolver: SnapshotResolver,
+) => {
+  const pattern = '\\.' + EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
-  const filesRemoved = files
-    .filter(
-      snapshotFile =>
-        !fileExists(
-          path.resolve(
-            path.dirname(snapshotFile),
-            '..',
-            path.basename(snapshotFile, '.' + utils.SNAPSHOT_EXTENSION),
-          ),
-          hasteFS,
-        ),
-    )
-    .map(snapshotFile => {
+  const filesRemoved = files.reduce((acc, snapshotFile) => {
+    if (!fileExists(snapshotResolver.resolveTestPath(snapshotFile), hasteFS)) {
       if (update === 'all') {
         fs.unlinkSync(snapshotFile);
       }
-    }).length;
+      return acc + 1;
+    }
+
+    return acc;
+  }, 0);
 
   return {
     filesRemoved,
   };
 };
 
-const toMatchSnapshot = function(
+export const toMatchSnapshot = function(
   received: any,
   propertyMatchers?: any,
   testName?: string,
@@ -67,7 +71,7 @@ const toMatchSnapshot = function(
   });
 };
 
-const toMatchInlineSnapshot = function(
+export const toMatchInlineSnapshot = function(
   received: any,
   propertyMatchersOrInlineSnapshot?: any,
   inlineSnapshot?: string,
@@ -194,7 +198,7 @@ const _toMatchSnapshot = ({
           '\n' +
           RECEIVED_COLOR('+ ' + actual));
   }
-  // Passing the the actual and expected objects so that a custom reporter
+  // Passing the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
   // or create a different error message
   return {
@@ -208,7 +212,7 @@ const _toMatchSnapshot = ({
   };
 };
 
-const toThrowErrorMatchingSnapshot = function(
+export const toThrowErrorMatchingSnapshot = function(
   received: any,
   testName?: string,
   fromPromise: boolean,
@@ -221,7 +225,7 @@ const toThrowErrorMatchingSnapshot = function(
   });
 };
 
-const toThrowErrorMatchingInlineSnapshot = function(
+export const toThrowErrorMatchingInlineSnapshot = function(
   received: any,
   inlineSnapshot?: string,
   fromPromise?: boolean,
@@ -287,17 +291,4 @@ const _toThrowErrorMatchingSnapshot = ({
     received: error.message,
     testName,
   });
-};
-
-module.exports = {
-  EXTENSION: utils.SNAPSHOT_EXTENSION,
-  SnapshotState,
-  addSerializer,
-  cleanup,
-  getSerializers,
-  toMatchInlineSnapshot,
-  toMatchSnapshot,
-  toThrowErrorMatchingInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
-  utils,
 };

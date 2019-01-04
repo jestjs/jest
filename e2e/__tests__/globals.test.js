@@ -9,18 +9,22 @@
 
 'use strict';
 
-const path = require('path');
-const os = require('os');
-const runJest = require('../runJest');
-const {extractSummary} = require('../Utils');
-const {createEmptyPackage, writeFiles, cleanup} = require('../Utils');
+import path from 'path';
+import os from 'os';
+import runJest from '../runJest';
+import {
+  cleanup,
+  createEmptyPackage,
+  extractSummary,
+  writeFiles,
+} from '../Utils';
 
 const DIR = path.resolve(os.tmpdir(), 'global-variables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
 function cleanStderr(stderr) {
   const {rest} = extractSummary(stderr);
-  return rest.replace(/.*(jest-jasmine2|jest-circus).*\n/g, '');
+  return rest.replace(/.*(jest-jasmine2).*\n/g, '');
 }
 
 beforeEach(() => {
@@ -108,6 +112,22 @@ test('only', () => {
   expect(status).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
+});
+
+test('cannot have describe with no implementation', () => {
+  const filename = 'only-constructs.test.js';
+  const content = `
+    describe('describe, no implementation');
+  `;
+
+  writeFiles(TEST_DIR, {[filename]: content});
+  const {stderr, status} = runJest(DIR);
+  expect(status).toBe(1);
+
+  const rest = cleanStderr(stderr);
+  const {summary} = extractSummary(stderr);
   expect(rest).toMatchSnapshot();
   expect(summary).toMatchSnapshot();
 });

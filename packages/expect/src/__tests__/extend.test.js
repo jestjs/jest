@@ -6,10 +6,10 @@
  *
  */
 
-const matcherUtils = require('jest-matcher-utils');
-const {iterableEquality, subsetEquality} = require('../utils');
-const {equals} = require('../jasmine_utils');
-const jestExpect = require('../');
+import * as matcherUtils from 'jest-matcher-utils';
+import {iterableEquality, subsetEquality} from '../utils';
+import {equals} from '../jasmineUtils';
+import jestExpect from '../';
 
 jestExpect.extend({
   toBeDivisibleBy(actual, expected) {

@@ -8,7 +8,8 @@
 
 'use strict';
 
-const vm = require('vm');
+import vm from 'vm';
+import mock from '../';
 
 describe('moduleMocker', () => {
   let moduleMocker;
@@ -16,7 +17,6 @@ describe('moduleMocker', () => {
   let mockGlobals;
 
   beforeEach(() => {
-    const mock = require('../');
     mockContext = vm.createContext();
     mockGlobals = vm.runInNewContext('this', mockContext);
     moduleMocker = new mock.ModuleMocker(mockGlobals);
@@ -579,11 +579,11 @@ describe('moduleMocker', () => {
 
         expect(fn.mock.results).toEqual([
           {
-            isThrow: false,
+            type: 'return',
             value: 2,
           },
           {
-            isThrow: false,
+            type: 'return',
             value: 4,
           },
         ]);
@@ -598,11 +598,11 @@ describe('moduleMocker', () => {
 
         expect(fn.mock.results).toEqual([
           {
-            isThrow: false,
+            type: 'return',
             value: 'MOCKED!',
           },
           {
-            isThrow: false,
+            type: 'return',
             value: 4,
           },
         ]);
@@ -618,11 +618,11 @@ describe('moduleMocker', () => {
 
         expect(fn.mock.results).toEqual([
           {
-            isThrow: false,
+            type: 'return',
             value: 2,
           },
           {
-            isThrow: false,
+            type: 'return',
             value: 4,
           },
         ]);
@@ -662,15 +662,15 @@ describe('moduleMocker', () => {
       // Results are tracked
       expect(fn.mock.results).toEqual([
         {
-          isThrow: false,
+          type: 'return',
           value: 8,
         },
         {
-          isThrow: true,
+          type: 'throw',
           value: error,
         },
         {
-          isThrow: false,
+          type: 'return',
           value: 18,
         },
       ]);
@@ -693,8 +693,126 @@ describe('moduleMocker', () => {
       // Results are tracked
       expect(fn.mock.results).toEqual([
         {
-          isThrow: true,
+          type: 'throw',
           value: undefined,
+        },
+      ]);
+    });
+
+    it('results of recursive calls are tracked properly', () => {
+      // sums up all integers from 0 -> value, using recursion
+      const fn = moduleMocker.fn(value => {
+        if (value === 0) {
+          return 0;
+        } else {
+          return value + fn(value - 1);
+        }
+      });
+
+      fn(4);
+
+      // All call args tracked
+      expect(fn.mock.calls).toEqual([[4], [3], [2], [1], [0]]);
+      // Results are tracked
+      // (in correct order of calls, rather than order of returns)
+      expect(fn.mock.results).toEqual([
+        {
+          type: 'return',
+          value: 10,
+        },
+        {
+          type: 'return',
+          value: 6,
+        },
+        {
+          type: 'return',
+          value: 3,
+        },
+        {
+          type: 'return',
+          value: 1,
+        },
+        {
+          type: 'return',
+          value: 0,
+        },
+      ]);
+    });
+
+    it('test results of recursive calls from within the recursive call', () => {
+      // sums up all integers from 0 -> value, using recursion
+      const fn = moduleMocker.fn(value => {
+        if (value === 0) {
+          return 0;
+        } else {
+          const recursiveResult = fn(value - 1);
+
+          if (value === 3) {
+            // All recursive calls have been made at this point.
+            expect(fn.mock.calls).toEqual([[4], [3], [2], [1], [0]]);
+            // But only the last 3 calls have returned at this point.
+            expect(fn.mock.results).toEqual([
+              {
+                type: 'incomplete',
+                value: undefined,
+              },
+              {
+                type: 'incomplete',
+                value: undefined,
+              },
+              {
+                type: 'return',
+                value: 3,
+              },
+              {
+                type: 'return',
+                value: 1,
+              },
+              {
+                type: 'return',
+                value: 0,
+              },
+            ]);
+          }
+
+          return value + recursiveResult;
+        }
+      });
+
+      fn(4);
+    });
+
+    it('call mockClear inside recursive mock', () => {
+      // sums up all integers from 0 -> value, using recursion
+      const fn = moduleMocker.fn(value => {
+        if (value === 3) {
+          fn.mockClear();
+        }
+
+        if (value === 0) {
+          return 0;
+        } else {
+          return value + fn(value - 1);
+        }
+      });
+
+      fn(3);
+
+      // All call args (after the call that cleared the mock) are tracked
+      expect(fn.mock.calls).toEqual([[2], [1], [0]]);
+      // Results (after the call that cleared the mock) are tracked
+      expect(fn.mock.results).toEqual([
+        {
+          type: 'return',
+          value: 3,
+        },
+        {
+          type: 'return',
+          value: 1,
+        },
+        {
+          type: 'return',
+          value: 0,
         },
       ]);
     });

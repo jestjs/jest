@@ -21,6 +21,7 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
   numPendingTestSuites: 0,
   numPendingTests: 0,
   numRuntimeErrorTestSuites: 0,
+  numTodoTests: 0,
   numTotalTestSuites: 0,
   numTotalTests: 0,
   openHandles: [],
@@ -57,6 +58,7 @@ export const buildFailureTestResult = (
   numFailingTests: 0,
   numPassingTests: 0,
   numPendingTests: 0,
+  numTodoTests: 0,
   openHandles: [],
   perfStats: {
     end: 0,
@@ -87,10 +89,12 @@ export const addResult = (
   aggregatedResults.numTotalTests +=
     testResult.numPassingTests +
     testResult.numFailingTests +
-    testResult.numPendingTests;
+    testResult.numPendingTests +
+    testResult.numTodoTests;
   aggregatedResults.numFailedTests += testResult.numFailingTests;
   aggregatedResults.numPassedTests += testResult.numPassingTests;
   aggregatedResults.numPendingTests += testResult.numPendingTests;
+  aggregatedResults.numTodoTests += testResult.numTodoTests;
 
   if (testResult.testExecError) {
     aggregatedResults.numRuntimeErrorTestSuites++;

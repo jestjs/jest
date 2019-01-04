@@ -21,6 +21,7 @@ import {Console, formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
+import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
 import TestScheduler from './TestScheduler';
 import TestSequencer from './TestSequencer';
@@ -28,14 +29,6 @@ import {makeEmptyAggregatedTestResult} from './testResultHelpers';
 import FailedTestsCache from './FailedTestsCache';
 import {JestHook} from 'jest-watcher';
 import collectNodeHandles from './collectHandles';
-
-const setConfig = (contexts, newConfig) =>
-  contexts.forEach(
-    context =>
-      (context.config = Object.freeze(
-        Object.assign({}, context.config, newConfig),
-      )),
-  );
 
 const getTestPaths = async (
   globalConfig,
@@ -256,34 +249,14 @@ export default (async function runJest({
     globalConfig = Object.freeze(newConfig);
   }
 
-  // When using more than one context, make all printed paths relative to the
-  // current cwd. Do not modify rootDir, since will be used by custom resolvers.
-  // If --runInBand is true, the resolver saved a copy during initialization,
-  // however, if it is running on spawned processes, the initiation of the
-  // custom resolvers is done within each spawned process and it needs the
-  // original value of rootDir. Instead, use the {cwd: Path} property to resolve
-  // paths when printing.
-  setConfig(contexts, {cwd: process.cwd()});
-
   let collectHandles;
 
   if (globalConfig.detectOpenHandles) {
     collectHandles = collectNodeHandles();
   }
 
-  if (globalConfig.globalSetup) {
-    // $FlowFixMe
-    const globalSetup = require(globalConfig.globalSetup);
-    if (typeof globalSetup !== 'function') {
-      throw new TypeError(
-        `globalSetup file must export a function at ${
-          globalConfig.globalSetup
-        }`,
-      );
-    }
+  await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
 
-    await globalSetup(globalConfig);
-  }
   const results = await new TestScheduler(
     globalConfig,
     {
@@ -294,19 +267,12 @@ export default (async function runJest({
 
   sequencer.cacheResults(allTests, results);
 
-  if (globalConfig.globalTeardown) {
-    // $FlowFixMe
-    const globalTeardown = require(globalConfig.globalTeardown);
-    if (typeof globalTeardown !== 'function') {
-      throw new TypeError(
-        `globalTeardown file must export a function at ${
-          globalConfig.globalTeardown
-        }`,
-      );
-    }
+  await runGlobalHook({
+    allTests,
+    globalConfig,
+    moduleName: 'globalTeardown',
+  });
 
-    await globalTeardown(globalConfig);
-  }
   return processResults(results, {
     collectHandles,
     isJSON: globalConfig.json,

@@ -89,27 +89,28 @@ export const printExpected = (value: any) =>
   EXPECTED_COLOR(highlightTrailingWhitespace(stringify(value)));
 
 export const printWithType = (
-  name: string,
-  received: any,
-  print: (value: any) => string,
+  name: string, // 'Expected' or 'Received'
+  value: any,
+  print: (value: any) => string, // printExpected or printReceived
 ) => {
-  const type = getType(received);
-  return (
-    name +
-    ':' +
-    (type !== 'null' && type !== 'undefined' ? '\n  ' + type + ': ' : ' ') +
-    print(received)
-  );
+  const type = getType(value);
+  const hasType =
+    type !== 'null' && type !== 'undefined'
+      ? `${name} has type:  ${type}\n`
+      : '';
+  const hasValue = `${name} has value: ${print(value)}`;
+  return hasType + hasValue;
 };
 
 export const ensureNoExpected = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This');
   if (typeof expected !== 'undefined') {
     throw new Error(
-      matcherHint('[.not]' + matcherName, undefined, '') +
-        '\n\n' +
-        'Matcher does not accept any arguments.\n' +
-        printWithType('Got', expected, printExpected),
+      matcherErrorMessage(
+        matcherHint('[.not]' + matcherName, undefined, ''),
+        `${EXPECTED_COLOR('expected')} value must be omitted or undefined`,
+        printWithType('Expected', expected, printExpected),
+      ),
     );
   }
 };
@@ -118,10 +119,11 @@ export const ensureActualIsNumber = (actual: any, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof actual !== 'number') {
     throw new Error(
-      matcherHint('[.not]' + matcherName) +
-        '\n\n' +
-        `Received value must be a number.\n` +
+      matcherErrorMessage(
+        matcherHint('[.not]' + matcherName),
+        `${RECEIVED_COLOR('received')} value must be a number`,
         printWithType('Received', actual, printReceived),
+      ),
     );
   }
 };
@@ -130,10 +132,11 @@ export const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof expected !== 'number') {
     throw new Error(
-      matcherHint('[.not]' + matcherName) +
-        '\n\n' +
-        `Expected value must be a number.\n` +
-        printWithType('Got', expected, printExpected),
+      matcherErrorMessage(
+        matcherHint('[.not]' + matcherName),
+        `${EXPECTED_COLOR('expected')} value must be a number`,
+        printWithType('Expected', expected, printExpected),
+      ),
     );
   }
 };
@@ -149,6 +152,27 @@ export const ensureNumbers = (
 
 export const pluralize = (word: string, count: number) =>
   (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
+
+// To display lines of labeled values as two columns with monospace alignment:
+// given the strings which will describe the values,
+// return function which given each string, returns the label:
+// string, colon, space, and enough padding spaces to align the value.
+
+type PrintLabel = string => string;
+
+export const getLabelPrinter = (...strings: Array<string>): PrintLabel => {
+  const maxLength = strings.reduce(
+    (max, string) => (string.length > max ? string.length : max),
+    0,
+  );
+  return string => `${string}: ${' '.repeat(maxLength - string.length)}`;
+};
+
+export const matcherErrorMessage = (
+  hint: string, // assertion returned from call to matcherHint
+  generic: string, // condition which correct value must fulfill
+  specific: string, // incorrect value returned from call to printWithType
+) => `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}\n\n${specific}`;
 
 export const matcherHint = (
   matcherName: string,

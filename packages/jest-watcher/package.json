@@ -6,6 +6,7 @@
   "dependencies": {
     "ansi-escapes": "^3.0.0",
     "chalk": "^2.0.1",
+    "jest-util": "^23.4.0",
     "string-length": "^2.0.0"
   },
   "repository": {
@@ -14,6 +15,9 @@
   },
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"
+  },
+  "engines": {
+    "node": ">= 6"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT"

@@ -7,10 +7,10 @@
  * @flow
  */
 
-const fs = require('fs');
-const path = require('path');
-const {makeTemplate, writeFiles, cleanup} = require('../Utils');
-const runJest = require('../runJest');
+import fs from 'fs';
+import path from 'path';
+import {cleanup, makeTemplate, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../toMatchInlineSnapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
@@ -47,9 +47,6 @@ test('basic support', () => {
     expect(fileAfter).toMatchSnapshot('snapshot passed');
   }
 
-  // This test below also covers how jest-editor-support creates terse messages
-  // for letting a Snapshot update, so if the wording is updated, please edit
-  // /packages/jest-editor-support/src/test_reconciler.js
   {
     writeFiles(TESTS_DIR, {
       [filename]: readFile(filename).replace('original value', 'updated value'),

@@ -14,5 +14,8 @@
     "callback",
     "diff"
   ],
+  "engines": {
+    "node": ">= 6"
+  },
   "main": "build/index.js"
 }

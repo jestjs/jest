@@ -7,15 +7,15 @@
  */
 'use strict';
 
-const runJest = require('../runJest');
+import path from 'path';
+import {json as runWithJson} from '../runJest';
 
 test('testNamePattern', () => {
-  const path = require('path');
   const processorPath = path.resolve(
     __dirname,
     '../testResultsProcessor/processor.js',
   );
-  const result = runJest.json('testResultsProcessor', [
+  const result = runWithJson('testResultsProcessor', [
     '--json',
     `--testResultsProcessor=${processorPath}`,
   ]);

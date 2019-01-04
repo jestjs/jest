@@ -24,7 +24,7 @@ This example covers the minimal usage:
 import Worker from 'jest-worker';
 
 async function main() {
-  const worker = new Worker(require.resolve('./worker'));
+  const worker = new Worker(require.resolve('./Worker'));
   const result = await worker.hello('Alice'); // "Hello, Alice"
 }
 
@@ -38,6 +38,12 @@ export function hello(param) {
   return 'Hello, ' + param;
 }
 ```
+
+## Experimental worker
+
+Node 10 shipped with [worker-threads](https://nodejs.org/api/worker_threads.html), a "threading API" that uses SharedArrayBuffers to communicate between the main process and its child threads. This experimental Node feature can significantly improve the communication time between parent and child processes in `jest-worker`.
+
+We will use worker threads where available. To enable in Node 10+, run the Node process with the `--experimental-worker` flag.
 
 ## API
 
@@ -74,6 +80,12 @@ The callback you provide is called with the method name, plus all the rest of th
 By default, no process is bound to any worker.
 
 #### `setupArgs: Array<mixed>` (optional)
+
+The arguments that will be passed to the `setup` method during initialization.
+
+#### `workerPool: (workerPath: string, options?: WorkerPoolOptions) => WorkerPoolInterface` (optional)
+
+Provide a custom worker pool to be used for spawning child processes. By default, Jest will use a node thread pool if available and fall back to child process threads.
 
 The arguments that will be passed to the `setup` method during initialization.
 
@@ -114,7 +126,7 @@ This example covers the standard usage:
 import Worker from 'jest-worker';
 
 async function main() {
-  const myWorker = new Worker(require.resolve('./worker'), {
+  const myWorker = new Worker(require.resolve('./Worker'), {
     exposedMethods: ['foo', 'bar', 'getWorkerId'],
     numWorkers: 4,
   });
@@ -155,7 +167,7 @@ This example covers the usage with a `computeWorkerKey` method:
 import Worker from 'jest-worker';
 
 async function main() {
-  const myWorker = new Worker(require.resolve('./worker'), {
+  const myWorker = new Worker(require.resolve('./Worker'), {
     computeWorkerKey: (method, filename) => filename,
   });
 
@@ -179,7 +191,7 @@ main();
 ### File `worker.js`
 
 ```javascript
-import babel from 'babel-core';
+import babel from '@babel/core';
 
 const cache = Object.create(null);
 
@@ -190,14 +202,10 @@ export function transform(filename) {
 
   // jest-worker can handle both immediate results and thenables. If a
   // thenable is returned, it will be await'ed until it resolves.
-  return new Promise((resolve, reject) => {
-    babel.transformFile(filename, (err, result) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve((cache[filename] = result));
-      }
-    });
+  return babel.transformFileAsync(filename).then(result => {
+    cache[filename] = result;
+
+    return result;
   });
 }
 ```

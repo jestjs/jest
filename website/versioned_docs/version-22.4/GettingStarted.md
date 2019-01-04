@@ -72,7 +72,7 @@ If you'd like to learn more about running `jest` through the command line, take 
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
+To use [Babel](https://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
 
 ```bash
 yarn add --dev babel-jest babel-core regenerator-runtime

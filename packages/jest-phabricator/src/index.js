@@ -41,9 +41,9 @@ function summarize(coverageMap: CoverageMap) {
   return summaries;
 }
 
-module.exports = function(results: AggregatedResult): PhabricatorReport {
+export default function(results: AggregatedResult): PhabricatorReport {
   // $FlowFixMe: This should work, but it does not.
   return Object.assign({}, results, {
     coverageMap: results.coverageMap && summarize(results.coverageMap),
   });
-};
+}

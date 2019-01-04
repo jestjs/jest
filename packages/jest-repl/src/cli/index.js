@@ -19,7 +19,7 @@ import * as args from './args';
 
 const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
 
-module.exports = function() {
+export default function() {
   const argv = yargs.usage(args.usage).options(args.options).argv;
 
   validateCLIOptions(
@@ -30,4 +30,4 @@ module.exports = function() {
   argv._ = [REPL_SCRIPT];
 
   Runtime.runCLI(argv, [`Jest REPL v${VERSION}`]);
-};
+}

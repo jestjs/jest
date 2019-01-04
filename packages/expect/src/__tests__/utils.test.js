@@ -8,13 +8,14 @@
 
 'use strict';
 
-const {stringify} = require('jest-matcher-utils');
-const {
+import {stringify} from 'jest-matcher-utils';
+import {
   emptyObject,
   getObjectSubset,
   getPath,
+  hasOwnProperty,
   subsetEquality,
-} = require('../utils');
+} from '../utils';
 
 describe('getPath()', () => {
   test('property exists', () => {
@@ -91,6 +92,45 @@ describe('getPath()', () => {
       traversedPath: ['a', 'b', 'c'],
       value: undefined,
     });
+  });
+});
+
+describe('hasOwnProperty', () => {
+  it('does inherit getter from class', () => {
+    class MyClass {
+      get key() {
+        return 'value';
+      }
+    }
+    expect(hasOwnProperty(new MyClass(), 'key')).toBe(true);
+  });
+
+  it('does not inherit setter from class', () => {
+    class MyClass {
+      set key(value) {}
+    }
+    expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
+  });
+
+  it('does not inherit method from class', () => {
+    class MyClass {
+      key() {}
+    }
+    expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
+  });
+
+  it('does not inherit property from constructor prototype', () => {
+    function MyClass() {}
+    MyClass.prototype.key = 'value';
+    expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
+  });
+
+  it('does not inherit __proto__ getter from Object', () => {
+    expect(hasOwnProperty({}, '__proto__')).toBe(false);
+  });
+
+  it('does not inherit toString method from Object', () => {
+    expect(hasOwnProperty({}, 'toString')).toBe(false);
   });
 });
 

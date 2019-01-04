@@ -8,7 +8,7 @@
 
 'use strict';
 
-const {formatResultsErrors, formatExecError} = require('..');
+import {formatExecError, formatResultsErrors} from '..';
 
 const unixStackTrace =
   `  ` +
@@ -56,6 +56,19 @@ const vendorStack =
 
       at Object.it (__tests__/vendor/cool_test.js:6:666)
       at Object.asyncFn (__tests__/vendor/sulu/node_modules/sulu-content-bundle/best_component.js:1:5)
+`;
+
+const babelStack =
+  '  ' +
+  `
+    packages/react/src/forwardRef.js: Unexpected token, expected , (20:10)
+    \u001b[0m \u001b[90m 18 | \u001b[39m        \u001b[36mfalse\u001b[39m\u001b[33m,\u001b[39m
+     \u001b[90m 19 | \u001b[39m        \u001b[32m'forwardRef requires a render function but received a \`memo\` '\u001b[39m 
+    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 20 | \u001b[39m          \u001b[32m'component. Instead of forwardRef(memo(...)), use '\u001b[39m \u001b[33m+\u001b[39m
+     \u001b[90m    | \u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m
+     \u001b[90m 21 | \u001b[39m          \u001b[32m'memo(forwardRef(...)).'\u001b[39m\u001b[33m,\u001b[39m
+     \u001b[90m 22 | \u001b[39m      )\u001b[33m;\u001b[39m
+     \u001b[90m 23 | \u001b[39m    } \u001b[36melse\u001b[39m \u001b[36mif\u001b[39m (\u001b[36mtypeof\u001b[39m render \u001b[33m!==\u001b[39m \u001b[32m'function'\u001b[39m) {\u001b[0m
 `;
 
 it('should exclude jasmine from stack trace for Unix paths.', () => {
@@ -122,6 +135,26 @@ it('should not exclude vendor from stack trace', () => {
         ancestorTitles: [],
         failureMessages: [vendorStack],
         title: 'Vendor test',
+      },
+    ],
+    {
+      rootDir: '',
+    },
+    {
+      noStackTrace: false,
+    },
+  );
+
+  expect(messages).toMatchSnapshot();
+});
+
+it('retains message in babel code frame error', () => {
+  const messages = formatResultsErrors(
+    [
+      {
+        ancestorTitles: [],
+        failureMessages: [babelStack],
+        title: 'Babel test',
       },
     ],
     {

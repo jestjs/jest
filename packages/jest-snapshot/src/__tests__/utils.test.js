@@ -5,24 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs');
-
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-
-const {
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
+import {
+  deepMerge,
   getSnapshotData,
-  getSnapshotPath,
   keyToTestName,
   saveSnapshotFile,
   serialize,
-  testNameToKey,
-  deepMerge,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
-} = require('../utils');
+  testNameToKey,
+} from '../utils';
+
+jest.mock('fs');
 
 const writeFileSync = fs.writeFileSync;
 const readFileSync = fs.readFileSync;
@@ -49,12 +47,6 @@ test('keyToTestName()', () => {
 test('testNameToKey', () => {
   expect(testNameToKey('abc cde', 1)).toBe('abc cde 1');
   expect(testNameToKey('abc cde ', 12)).toBe('abc cde  12');
-});
-
-test('getSnapshotPath()', () => {
-  expect(getSnapshotPath('/abc/cde/a.test.js')).toBe(
-    path.join('/abc', 'cde', '__snapshots__', 'a.test.js.snap'),
-  );
 });
 
 test('saveSnapshotFile() works with \r\n', () => {

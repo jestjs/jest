@@ -23,10 +23,7 @@ import {
   getTestID,
   invariant,
   makeRunResult,
-  getOriginalPromise,
 } from './utils';
-
-const Promise = getOriginalPromise();
 
 const run = async (): Promise<RunResult> => {
   const {rootDescribeBlock} = getState();
@@ -94,6 +91,11 @@ const _runTest = async (test: TestEntry): Promise<void> => {
 
   if (isSkipped) {
     dispatch({name: 'test_skip', test});
+    return;
+  }
+
+  if (test.mode === 'todo') {
+    dispatch({name: 'test_todo', test});
     return;
   }
 

@@ -8,23 +8,29 @@
  */
 
 import mkdirp from 'mkdirp';
+import * as specialChars from './specialChars';
 
-import BufferedConsole from './buffered_console';
-import clearLine from './clear_line';
-import Console from './Console';
-import FakeTimers from './fake_timers';
-import formatTestResults from './format_test_results';
-import getFailedSnapshotTests from './get_failed_snapshot_tests';
-import getConsoleOutput from './get_console_output';
-import installCommonGlobals from './install_common_globals';
-import NullConsole from './null_console';
-import isInteractive from './is_interative';
-import getCallsite from './get_callsite';
-import setGlobal from './set_global';
-import deepCyclicCopy from './deep_cyclic_copy';
-import convertDescriptorToString from './convert_descriptor_to_string';
+export {default as BufferedConsole} from './BufferedConsole';
+export {default as clearLine} from './clearLine';
+export {default as Console} from './CustomConsole';
+export {default as ErrorWithStack} from './ErrorWithStack';
+export {default as FakeTimers} from './FakeTimers';
+export {default as formatTestResults} from './formatTestResults';
+export {default as getFailedSnapshotTests} from './getFailedSnapshotTests';
+export {default as getConsoleOutput} from './getConsoleOutput';
+export {default as installCommonGlobals} from './installCommonGlobals';
+export {default as NullConsole} from './NullConsole';
+export {default as isInteractive} from './isInteractive';
+export {default as getCallsite} from './getCallsite';
+export {default as setGlobal} from './setGlobal';
+export {default as deepCyclicCopy} from './deepCyclicCopy';
+export {
+  default as convertDescriptorToString,
+} from './convertDescriptorToString';
+export {specialChars};
+export {default as interopRequireDefault} from './interopRequireDefault';
 
-const createDirectory = (path: string) => {
+export const createDirectory = (path: string) => {
   try {
     mkdirp.sync(path, '777');
   } catch (e) {
@@ -32,22 +38,4 @@ const createDirectory = (path: string) => {
       throw e;
     }
   }
-};
-
-module.exports = {
-  BufferedConsole,
-  Console,
-  FakeTimers,
-  NullConsole,
-  clearLine,
-  convertDescriptorToString,
-  createDirectory,
-  deepCyclicCopy,
-  formatTestResults,
-  getCallsite,
-  getConsoleOutput,
-  getFailedSnapshotTests,
-  installCommonGlobals,
-  isInteractive,
-  setGlobal,
 };

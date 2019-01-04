@@ -13,28 +13,14 @@ import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
 import stripAnsi from 'strip-ansi';
+import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
 
-const {cleanup, extractSummary, writeFiles} = require('../Utils');
 const DIR = path.resolve(os.tmpdir(), 'multi_project_runner_test');
 
-const fileContentWithProvidesModule = name => `/*
- * @providesModule ${name}
- */
-
-module.exports = {};
-`;
+const SAMPLE_FILE_CONTENT = 'module.exports = {};';
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
-
-// Since Jest does not guarantee the order of tests we'll sort the output.
-const sortLines = output =>
-  output
-    .split(/\n/)
-    .sort()
-    .map(str => str.trim())
-    .filter(str => Boolean(str))
-    .join('\n');
 
 test('--listTests doesnt duplicate the test files', () => {
   writeFiles(DIR, {
@@ -55,29 +41,52 @@ test('--listTests doesnt duplicate the test files', () => {
 test('can pass projects or global config', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
+    'base_config.js': `
+      module.exports = {
+        haste: {
+          hasteImplModulePath: '<rootDir>/hasteImpl.js',
+        },
+      };
+    `,
+    'hasteImpl.js': `
+      const path = require('path');
+      module.exports = {
+        getHasteName(filename) {
+          return filename
+            .substr(filename.lastIndexOf(path.sep) + 1)
+            .replace(/\.js$/, '');
+        },
+      };
+    `,
     'package.json': '{}',
     'project1/__tests__/file1.test.js': `
       const file1 = require('file1');
       test('file1', () => {});
     `,
-    'project1/file1.js': fileContentWithProvidesModule('file1'),
-    'project1/jest.config.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
+    'project1/file1.js': SAMPLE_FILE_CONTENT,
+    'project1/jest.config.js': `module.exports = {rootDir: './', displayName: 'BACKEND',         haste: {
+              hasteImplModulePath: '<rootDir>/../hasteImpl.js',
+            },}`,
     'project2/__tests__/file1.test.js': `
       const file1 = require('file1');
       test('file1', () => {});
     `,
-    'project2/file1.js': fileContentWithProvidesModule('file1'),
-    'project2/jest.config.js': `module.exports = {rootDir: './'}`,
+    'project2/file1.js': SAMPLE_FILE_CONTENT,
+    'project2/jest.config.js': `module.exports = {rootDir: './',         haste: {
+              hasteImplModulePath: '<rootDir>/../hasteImpl.js',
+            },}`,
     'project3/__tests__/file1.test.js': `
       const file1 = require('file1');
       test('file1', () => {});
     `,
-    'project3/file1.js': fileContentWithProvidesModule('file1'),
-    'project3/jest.config.js': `module.exports = {rootDir: './', displayName: 'UI'}`,
+    'project3/file1.js': SAMPLE_FILE_CONTENT,
+    'project3/jest.config.js': `module.exports = {rootDir: './', displayName: 'UI',         haste: {
+              hasteImplModulePath: '<rootDir>/../hasteImpl.js',
+            },}`,
   });
   let stderr;
 
-  ({stderr} = runJest(DIR, ['--no-watchman']));
+  ({stderr} = runJest(DIR, ['--no-watchman', '--config', 'base_config.js']));
   expect(stderr).toMatch(
     'The name `file1` was looked up in the Haste module map. It cannot be resolved, because there exists several different files',
   );
@@ -88,6 +97,9 @@ test('can pass projects or global config', () => {
     'global_config.js': `
       module.exports = {
         projects: ['project1/', 'project2/', 'project3/'],
+        haste: {
+          hasteImplModulePath: '<rootDir>/hasteImpl.js',
+        },
       };
     `,
   });
@@ -99,6 +111,8 @@ test('can pass projects or global config', () => {
     'project1',
     'project2',
     'project3',
+    '--config',
+    'base_config.js',
   ]));
 
   const result1 = extractSummary(stderr);
@@ -126,16 +140,16 @@ test('"No tests found" message for projects', () => {
     '.watchmanconfig': '',
     'package.json': '{}',
     'project1/__tests__/file1.test.js': `
-      const file1 = require('file1');
+      const file1 = require('../file1');
       test('file1', () => {});
     `,
-    'project1/file1.js': fileContentWithProvidesModule('file1'),
+    'project1/file1.js': SAMPLE_FILE_CONTENT,
     'project1/jest.config.js': `module.exports = {rootDir: './'}`,
     'project2/__tests__/file1.test.js': `
-      const file1 = require('file1');
+      const file1 = require('../file1');
       test('file1', () => {});
     `,
-    'project2/file1.js': fileContentWithProvidesModule('file1'),
+    'project2/file1.js': SAMPLE_FILE_CONTENT,
     'project2/jest.config.js': `module.exports = {rootDir: './'}`,
   });
   const {stdout: verboseOutput} = runJest(DIR, [
@@ -170,16 +184,16 @@ test('projects can be workspaces with non-JS/JSON files', () => {
     'packages/README.md': '# Packages README',
     'packages/project1/README.md': '# Project1 README',
     'packages/project1/__tests__/file1.test.js': `
-    const file1 = require('file1');
+    const file1 = require('../file1');
     test('file1', () => {});
     `,
-    'packages/project1/file1.js': fileContentWithProvidesModule('file1'),
+    'packages/project1/file1.js': SAMPLE_FILE_CONTENT,
     'packages/project1/package.json': '{}',
     'packages/project2/__tests__/file2.test.js': `
-    const file2 = require('file2');
+    const file2 = require('../file2');
     test('file2', () => {});
     `,
-    'packages/project2/file2.js': fileContentWithProvidesModule('file2'),
+    'packages/project2/file2.js': SAMPLE_FILE_CONTENT,
     'packages/project2/package.json': '{}',
   });
 
@@ -335,4 +349,54 @@ test('resolves projects and their <rootDir> properly', () => {
     `Can't find a root directory while resolving a config file path.`,
   );
   expect(stderr).toMatch(/banana/);
+});
+
+test('Does transform files with the corresponding project transformer', () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    'file.js': SAMPLE_FILE_CONTENT,
+    'package.json': '{}',
+    'project1/__tests__/project1.test.js': `
+      const file = require('../../file.js');
+      test('file', () => expect(file).toBe('PROJECT1'));
+    `,
+    'project1/jest.config.js': `
+      module.exports = {
+        rootDir: './',
+        transform: {'file\.js': './transformer.js'},
+      };`,
+    'project1/transformer.js': `
+      module.exports = {
+        process: () => 'module.exports = "PROJECT1";',
+        getCacheKey: () => 'PROJECT1_CACHE_KEY',
+      }
+    `,
+    'project2/__tests__/project2.test.js': `
+      const file = require('../../file.js');
+      test('file', () => expect(file).toBe('PROJECT2'));
+    `,
+    'project2/jest.config.js': `
+      module.exports = {
+        rootDir: './',
+        transform: {'file\.js': './transformer.js'},
+      };`,
+    'project2/transformer.js': `
+      module.exports = {
+        process: () => 'module.exports = "PROJECT2";',
+        getCacheKey: () => 'PROJECT2_CACHE_KEY',
+      }
+    `,
+  });
+
+  const {stderr} = runJest(DIR, [
+    '--no-watchman',
+    '-i',
+    '--projects',
+    'project1',
+    'project2',
+  ]);
+
+  expect(stderr).toMatch('Ran all test suites in 2 projects.');
+  expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
+  expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
 });

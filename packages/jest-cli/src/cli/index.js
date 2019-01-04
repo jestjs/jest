@@ -9,20 +9,18 @@
 
 import type {AggregatedResult} from 'types/TestResult';
 import type {Argv} from 'types/Argv';
-import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
+import type {GlobalConfig, Path} from 'types/Config';
 
 import {Console, clearLine, createDirectory} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
-import {readConfig, deprecationEntries} from 'jest-config';
+import {readConfigs, deprecationEntries} from 'jest-config';
 import * as args from './args';
 import chalk from 'chalk';
 import createContext from '../lib/create_context';
 import exit from 'exit';
 import getChangedFilesPromise from '../getChangedFilesPromise';
 import {formatHandleErrors} from '../collectHandles';
-import fs from 'fs';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
-import logDebugMessages from '../lib/log_debug_messages';
 import {print as preRunMessagePrint} from '../preRunMessage';
 import runJest from '../runJest';
 import Runtime from 'jest-runtime';
@@ -33,9 +31,11 @@ import yargs from 'yargs';
 import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
 import init from '../lib/init';
+import logDebugMessages from '../lib/log_debug_messages';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
+    // $FlowFixMe:`allow reduced return
     const argv: Argv = buildArgv(maybeArgv, project);
 
     if (argv.init) {
@@ -71,11 +71,19 @@ export const runCLI = async (
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  const {globalConfig, configs, hasDeprecationWarnings} = getConfigs(
-    projects,
+  const {globalConfig, configs, hasDeprecationWarnings} = readConfigs(
     argv,
-    outputStream,
+    projects,
   );
+
+  if (argv.debug) {
+    logDebugMessages(globalConfig, configs, outputStream);
+  }
+
+  if (argv.showConfig) {
+    logDebugMessages(globalConfig, configs, process.stdout);
+    exit(0);
+  }
 
   if (argv.clearCache) {
     configs.forEach(config => {
@@ -131,7 +139,12 @@ const readResultsAndExit = (
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
 
-  process.on('exit', () => (process.exitCode = code));
+  // Only exit if needed
+  process.on('exit', () => {
+    if (typeof code === 'number' && code !== 0) {
+      process.exitCode = code;
+    }
+  });
 
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
@@ -162,8 +175,9 @@ const readResultsAndExit = (
   }
 };
 
-const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
-  const argv: Argv = yargs(maybeArgv || process.argv.slice(2))
+export const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
+  const rawArgv: Argv | string[] = maybeArgv || process.argv.slice(2);
+  const argv: Argv = yargs(rawArgv)
     .usage(args.usage)
     .alias('help', 'h')
     .options(args.options)
@@ -173,9 +187,20 @@ const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
   validateCLIOptions(
     argv,
     Object.assign({}, args.options, {deprecationEntries}),
+    // strip leading dashes
+    Array.isArray(rawArgv)
+      ? rawArgv.map(rawArgv => rawArgv.replace(/^--?/, ''))
+      : Object.keys(rawArgv),
   );
 
-  return argv;
+  // strip dashed args
+  return Object.keys(argv).reduce((result, key) => {
+    if (!key.includes('-')) {
+      // $FlowFixMe:`allow reduced return
+      result[key] = argv[key];
+    }
+    return result;
+  }, {});
 };
 
 const getProjectListFromCLIArgs = (argv, project: ?Path) => {
@@ -199,138 +224,6 @@ const getProjectListFromCLIArgs = (argv, project: ?Path) => {
   }
 
   return projects;
-};
-
-const printDebugInfoAndExitIfNeeded = (
-  argv,
-  globalConfig,
-  configs,
-  outputStream,
-) => {
-  if (argv.debug) {
-    logDebugMessages(globalConfig, configs, outputStream);
-    return;
-  }
-
-  if (argv.showConfig) {
-    logDebugMessages(globalConfig, configs, process.stdout);
-    exit(0);
-  }
-};
-
-const ensureNoDuplicateConfigs = (parsedConfigs, projects, rootConfigPath) => {
-  const configPathMap = new Map();
-
-  for (const config of parsedConfigs) {
-    const {configPath} = config;
-    if (configPathMap.has(configPath)) {
-      const message = `Whoops! Two projects resolved to the same config path: ${chalk.bold(
-        String(configPath),
-      )}:
-
-  Project 1: ${chalk.bold(projects[parsedConfigs.findIndex(x => x === config)])}
-  Project 2: ${chalk.bold(
-    projects[parsedConfigs.findIndex(x => x === configPathMap.get(configPath))],
-  )}
-
-This usually means that your ${chalk.bold(
-        '"projects"',
-      )} config includes a directory that doesn't have any configuration recognizable by Jest. Please fix it.
-`;
-
-      throw new Error(message);
-    }
-    if (configPath !== null) {
-      configPathMap.set(configPath, config);
-    }
-  }
-};
-
-// Possible scenarios:
-//  1. jest --config config.json
-//  2. jest --projects p1 p2
-//  3. jest --projects p1 p2 --config config.json
-//  4. jest --projects p1
-//  5. jest
-//
-// If no projects are specified, process.cwd() will be used as the default
-// (and only) project.
-const getConfigs = (
-  projectsFromCLIArgs: Array<Path>,
-  argv: Argv,
-  outputStream,
-): {
-  globalConfig: GlobalConfig,
-  configs: Array<ProjectConfig>,
-  hasDeprecationWarnings: boolean,
-} => {
-  let globalConfig;
-  let hasDeprecationWarnings;
-  let configs: Array<ProjectConfig> = [];
-  let projects = projectsFromCLIArgs;
-  let configPath: ?Path;
-
-  if (projectsFromCLIArgs.length === 1) {
-    const parsedConfig = readConfig(argv, projects[0]);
-    configPath = parsedConfig.configPath;
-
-    if (parsedConfig.globalConfig.projects) {
-      // If this was a single project, and its config has `projects`
-      // settings, use that value instead.
-      projects = parsedConfig.globalConfig.projects;
-    }
-
-    hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
-    globalConfig = parsedConfig.globalConfig;
-    configs = [parsedConfig.projectConfig];
-    if (globalConfig.projects && globalConfig.projects.length) {
-      // Even though we had one project in CLI args, there might be more
-      // projects defined in the config.
-      projects = globalConfig.projects;
-    }
-  }
-
-  if (projects.length > 1) {
-    const parsedConfigs = projects
-      .filter(root => {
-        // Ignore globbed files that cannot be `require`d.
-        if (
-          fs.existsSync(root) &&
-          !fs.lstatSync(root).isDirectory() &&
-          !root.endsWith('.js') &&
-          !root.endsWith('.json')
-        ) {
-          return false;
-        }
-
-        return true;
-      })
-      .map(root => readConfig(argv, root, true, configPath));
-
-    ensureNoDuplicateConfigs(parsedConfigs, projects, configPath);
-    configs = parsedConfigs.map(({projectConfig}) => projectConfig);
-    if (!hasDeprecationWarnings) {
-      hasDeprecationWarnings = parsedConfigs.some(
-        ({hasDeprecationWarnings}) => !!hasDeprecationWarnings,
-      );
-    }
-    // If no config was passed initially, use the one from the first project
-    if (!globalConfig) {
-      globalConfig = parsedConfigs[0].globalConfig;
-    }
-  }
-
-  if (!globalConfig || !configs.length) {
-    throw new Error('jest: No configuration found for any project.');
-  }
-
-  printDebugInfoAndExitIfNeeded(argv, globalConfig, configs, outputStream);
-
-  return {
-    configs,
-    globalConfig,
-    hasDeprecationWarnings: !!hasDeprecationWarnings,
-  };
 };
 
 const buildContextsAndHasteMaps = async (

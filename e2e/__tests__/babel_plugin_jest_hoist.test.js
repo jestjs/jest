@@ -8,9 +8,9 @@
  */
 'use strict';
 
-const path = require('path');
-const {run} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import {json as runWithJson} from '../runJest';
+import {run} from '../Utils';
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-hoist');
 
@@ -19,7 +19,7 @@ beforeEach(() => {
 });
 
 it('sucessfully runs the tests inside `babel-plugin-jest-hoist/`', () => {
-  const {json} = runJest.json(DIR, ['--no-cache', '--coverage']);
+  const {json} = runWithJson(DIR, ['--no-cache', '--coverage']);
   expect(json.success).toBe(true);
   expect(json.numTotalTestSuites).toBe(2);
 });

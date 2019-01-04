@@ -7,12 +7,12 @@
  * @flow
  */
 
-import type {DiffOptions} from './diff_strings';
+import type {DiffOptions} from './diffStrings';
 
 import prettyFormat from 'pretty-format';
 import chalk from 'chalk';
 import getType from 'jest-get-type';
-import diffStrings from './diff_strings';
+import diffStrings from './diffStrings';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 
 const {
@@ -49,7 +49,7 @@ const FALLBACK_FORMAT_OPTIONS_0 = Object.assign({}, FALLBACK_FORMAT_OPTIONS, {
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
-function diff(a: any, b: any, options: ?DiffOptions): ?string {
+export default function diff(a: any, b: any, options: ?DiffOptions): ?string {
   if (a === b) {
     return NO_DIFF_MESSAGE;
   }
@@ -144,5 +144,3 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
 
   return diffMessage;
 }
-
-module.exports = diff;

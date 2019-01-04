@@ -9,11 +9,12 @@
 'use strict';
 
 import path from 'path';
+import Runtime from 'jest-runtime';
+import {normalize} from 'jest-config';
+import SearchSource from '../SearchSource';
+import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
 jest.setTimeout(15000);
-
-const ConditionalTest = require('../../../../scripts/ConditionalTest');
-
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
 const testMatch = ['**/__testtests__/**/*'];
@@ -22,21 +23,12 @@ const maxWorkers = 1;
 const toPaths = tests => tests.map(({path}) => path);
 
 let findMatchingTests;
-let normalize;
 
 describe('SearchSource', () => {
-  ConditionalTest.skipSuiteOnWindows();
+  skipSuiteOnWindows();
 
   const name = 'SearchSource';
-  let Runtime;
-  let SearchSource;
   let searchSource;
-
-  beforeEach(() => {
-    Runtime = require('jest-runtime');
-    SearchSource = require('../SearchSource').default;
-    normalize = require('jest-config').normalize;
-  });
 
   describe('isTestFilePath', () => {
     let config;
@@ -262,7 +254,7 @@ describe('SearchSource', () => {
     it('finds tests with similar but custom file extensions', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['jsx'],
+          moduleFileExtensions: ['js', 'jsx'],
           name,
           rootDir,
           testMatch,
@@ -273,14 +265,17 @@ describe('SearchSource', () => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
-        expect(relPaths).toEqual([path.normalize('__testtests__/test.jsx')]);
+        expect(relPaths.sort()).toEqual([
+          path.normalize('__testtests__/test.js'),
+          path.normalize('__testtests__/test.jsx'),
+        ]);
       });
     });
 
     it('finds tests with totally custom foobar file extensions', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['foobar'],
+          moduleFileExtensions: ['js', 'foobar'],
           name,
           rootDir,
           testMatch,
@@ -291,7 +286,10 @@ describe('SearchSource', () => {
         const relPaths = toPaths(data.tests).map(absPath =>
           path.relative(rootDir, absPath),
         );
-        expect(relPaths).toEqual([path.normalize('__testtests__/test.foobar')]);
+        expect(relPaths.sort()).toEqual([
+          path.normalize('__testtests__/test.foobar'),
+          path.normalize('__testtests__/test.js'),
+        ]);
       });
     });
 
@@ -375,6 +373,18 @@ describe('SearchSource', () => {
     beforeEach(done => {
       const {options: config} = normalize(
         {
+          haste: {
+            hasteImplModulePath: path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'jest-haste-map',
+              'src',
+              '__tests__',
+              'haste_impl.js',
+            ),
+          },
           name: 'SearchSource-findRelatedTests-tests',
           rootDir,
         },
