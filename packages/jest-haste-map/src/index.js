@@ -753,8 +753,8 @@ class HasteMap extends EventEmitter {
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
         : os.platform() === 'darwin'
-          ? sane.FSEventsWatcher
-          : sane.NodeWatcher;
+        ? sane.FSEventsWatcher
+        : sane.NodeWatcher;
     const {extensions, ignorePattern, rootDir} = this._options;
     const hiddenFiles = ['.gitignore', '.hgignore'];
     let changeQueue = Promise.resolve();
