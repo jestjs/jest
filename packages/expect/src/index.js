@@ -173,10 +173,8 @@ const makeResolveMatcher = (
       outerErr.message =
         matcherUtils.matcherHint(matcherName, undefined, '', options) +
         '\n\n' +
-        `Received promise rejected instead of resolved\n\n` +
-        `Received promise rejected to value: ${matcherUtils.printReceived(
-          reason,
-        )}`;
+        `Received promise rejected instead of resolved\n` +
+        `Rejected to value: ${matcherUtils.printReceived(reason)}`;
       return Promise.reject(outerErr);
     },
   );
@@ -215,10 +213,8 @@ const makeRejectMatcher = (
       outerErr.message =
         matcherUtils.matcherHint(matcherName, undefined, '', options) +
         '\n\n' +
-        `Received promise resolved instead of rejected\n\n` +
-        `Received promise resolved to value: ${matcherUtils.printReceived(
-          result,
-        )}`;
+        `Received promise resolved instead of rejected\n` +
+        `Resolved to value: ${matcherUtils.printReceived(result)}`;
       return Promise.reject(outerErr);
     },
     reason =>
