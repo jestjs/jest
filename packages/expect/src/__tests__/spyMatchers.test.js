@@ -6,8 +6,8 @@
  *
  */
 
-const Immutable = require('immutable');
-const jestExpect = require('../');
+import Immutable from 'immutable';
+import jestExpect from '../';
 
 ['toBeCalled', 'toHaveBeenCalled'].forEach(called => {
   describe(`${called}`, () => {

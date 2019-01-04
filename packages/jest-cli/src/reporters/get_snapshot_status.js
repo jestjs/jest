@@ -9,9 +9,8 @@
 
 import type {TestResult} from 'types/TestResult';
 
-const chalk = require('chalk');
-
-const {pluralize} = require('./utils');
+import chalk from 'chalk';
+import {pluralize} from './utils';
 
 const ARROW = ' \u203A ';
 const DOT = ' \u2022 ';

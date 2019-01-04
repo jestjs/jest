@@ -81,6 +81,8 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   extraGlobals: [],
   filter: null,
   forceCoverageMatch: [],
+  globalSetup: null,
+  globalTeardown: null,
   globals: {},
   haste: {
     providesModuleNodeModules: [],

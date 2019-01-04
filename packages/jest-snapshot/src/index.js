@@ -15,19 +15,21 @@ import type {SnapshotResolver} from 'types/SnapshotResolver';
 import fs from 'fs';
 import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
-import {
+import {EXTENSION} from './snapshot_resolver';
+export {
   buildSnapshotResolver,
   isSnapshotPath,
   EXTENSION,
 } from './snapshot_resolver';
-import SnapshotState from './State';
-import {addSerializer, getSerializers} from './plugins';
+export {default as SnapshotState} from './State';
+export {addSerializer, getSerializers} from './plugins';
 import * as utils from './utils';
+export {utils};
 
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
-const cleanup = (
+export const cleanup = (
   hasteFS: HasteFS,
   update: SnapshotUpdateState,
   snapshotResolver: SnapshotResolver,
@@ -50,7 +52,7 @@ const cleanup = (
   };
 };
 
-const toMatchSnapshot = function(
+export const toMatchSnapshot = function(
   received: any,
   propertyMatchers?: any,
   testName?: string,
@@ -69,7 +71,7 @@ const toMatchSnapshot = function(
   });
 };
 
-const toMatchInlineSnapshot = function(
+export const toMatchInlineSnapshot = function(
   received: any,
   propertyMatchersOrInlineSnapshot?: any,
   inlineSnapshot?: string,
@@ -210,7 +212,7 @@ const _toMatchSnapshot = ({
   };
 };
 
-const toThrowErrorMatchingSnapshot = function(
+export const toThrowErrorMatchingSnapshot = function(
   received: any,
   testName?: string,
   fromPromise: boolean,
@@ -223,7 +225,7 @@ const toThrowErrorMatchingSnapshot = function(
   });
 };
 
-const toThrowErrorMatchingInlineSnapshot = function(
+export const toThrowErrorMatchingInlineSnapshot = function(
   received: any,
   inlineSnapshot?: string,
   fromPromise?: boolean,
@@ -289,19 +291,4 @@ const _toThrowErrorMatchingSnapshot = ({
     received: error.message,
     testName,
   });
-};
-
-module.exports = {
-  EXTENSION,
-  SnapshotState,
-  addSerializer,
-  buildSnapshotResolver,
-  cleanup,
-  getSerializers,
-  isSnapshotPath,
-  toMatchInlineSnapshot,
-  toMatchSnapshot,
-  toThrowErrorMatchingInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
-  utils,
 };

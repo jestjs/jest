@@ -26,7 +26,7 @@ function WatchmanError(error: Error): Error {
   return error;
 }
 
-module.exports = async function watchmanCrawl(
+export default async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
   const fields = ['name', 'exists', 'mtime_ms'];
@@ -217,4 +217,4 @@ module.exports = async function watchmanCrawl(
 
   data.files = files;
   return data;
-};
+}

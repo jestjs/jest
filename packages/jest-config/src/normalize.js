@@ -416,12 +416,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     options = setupPreset(options, options.preset);
   }
 
-  if (options.testEnvironment) {
-    options.testEnvironment = getTestEnvironment({
-      rootDir: options.rootDir,
-      testEnvironment: options.testEnvironment,
-    });
-  }
+  options.testEnvironment = getTestEnvironment({
+    rootDir: options.rootDir,
+    testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
+  });
 
   if (!options.roots && options.testPathDirs) {
     options.roots = options.testPathDirs;

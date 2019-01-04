@@ -95,7 +95,7 @@ describe('node crawler', () => {
     process.platform = 'linux';
 
     childProcess = require('child_process');
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').default;
 
     mockResponse = [
       '/project/fruits/pear.js',
@@ -144,7 +144,7 @@ describe('node crawler', () => {
   it('updates only changed files', () => {
     process.platform = 'linux';
 
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').default;
 
     // In this test sample, strawberry is changed and tomato is unchanged
     const tomato = ['', 33, 1, [], null];
@@ -175,7 +175,7 @@ describe('node crawler', () => {
   it('uses node fs APIs on windows', () => {
     process.platform = 'win32';
 
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').default;
 
     return nodeCrawl({
       data: {
@@ -198,7 +198,7 @@ describe('node crawler', () => {
   it('uses node fs APIs if "forceNodeFilesystemAPI" is set to true, regardless of platform', () => {
     process.platform = 'linux';
 
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').default;
 
     const files = new Map();
     return nodeCrawl({
@@ -221,7 +221,7 @@ describe('node crawler', () => {
   it('completes with empty roots', () => {
     process.platform = 'win32';
 
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').default;
 
     const files = new Map();
     return nodeCrawl({
@@ -239,7 +239,7 @@ describe('node crawler', () => {
   it('completes with fs.readdir throwing an error', () => {
     process.platform = 'win32';
 
-    nodeCrawl = require('../node');
+    nodeCrawl = require('../node').default;
 
     const files = new Map();
     return nodeCrawl({

@@ -12,10 +12,9 @@ import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
 import generateEmptyCoverage from '../generateEmptyCoverage';
 import Runtime from 'jest-runtime';
-
-const path = require('path');
-const os = require('os');
-const {makeGlobalConfig, makeProjectConfig} = require('../../../../TestUtils');
+import os from 'os';
+import path from 'path';
+import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
 jest.spyOn(Runtime, 'shouldInstrument').mockImplementation(() => true);
 

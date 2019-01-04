@@ -8,8 +8,8 @@
 
 'use strict';
 
-const jestExpect = require('../');
-const {
+import jestExpect from '../';
+import {
   any,
   anything,
   arrayContaining,
@@ -17,10 +17,10 @@ const {
   objectContaining,
   objectNotContaining,
   stringContaining,
-  stringNotContaining,
   stringMatching,
+  stringNotContaining,
   stringNotMatching,
-} = require('../asymmetricMatchers');
+} from '../asymmetricMatchers';
 
 test('Any.asymmetricMatch()', () => {
   const Thing = function() {};

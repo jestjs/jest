@@ -14,13 +14,27 @@ import runJest, {json as runWithJson} from '../runJest';
 import {cleanup} from '../Utils';
 
 const DIR = path.join(os.tmpdir(), 'jest-global-setup');
+const project1DIR = path.join(os.tmpdir(), 'jest-global-setup-project-1');
+const project2DIR = path.join(os.tmpdir(), 'jest-global-setup-project-2');
 
-beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+beforeEach(() => {
+  cleanup(DIR);
+  cleanup(project1DIR);
+  cleanup(project2DIR);
+});
+afterAll(() => {
+  cleanup(DIR);
+  cleanup(project1DIR);
+  cleanup(project2DIR);
+});
 
 test('globalSetup is triggered once before all test suites', () => {
   const setupPath = path.resolve(__dirname, '../global-setup/setup.js');
-  const result = runWithJson('global-setup', [`--globalSetup=${setupPath}`]);
+  const result = runWithJson('global-setup', [
+    `--globalSetup=${setupPath}`,
+    `--testPathPattern=__tests__`,
+  ]);
+
   expect(result.status).toBe(0);
   const files = fs.readdirSync(DIR);
   expect(files).toHaveLength(1);
@@ -32,6 +46,7 @@ test('jest throws an error when globalSetup does not export a function', () => {
   const setupPath = path.resolve(__dirname, '../global-setup/invalid_setup.js');
   const {status, stderr} = runJest('global-setup', [
     `--globalSetup=${setupPath}`,
+    `--testPathPattern=__tests__`,
   ]);
 
   expect(status).toBe(1);
@@ -54,4 +69,37 @@ test('globalSetup function gets jest config object as a parameter', () => {
   ]);
 
   expect(result.stdout).toBe(testPathPattern);
+});
+
+test('should call globalSetup function of multiple projects', () => {
+  const configPath = path.resolve(
+    __dirname,
+    '../global-setup/projects.jest.config.js',
+  );
+
+  const result = runWithJson('global-setup', [`--config=${configPath}`]);
+
+  expect(result.status).toBe(0);
+
+  expect(fs.existsSync(DIR)).toBe(true);
+  expect(fs.existsSync(project1DIR)).toBe(true);
+  expect(fs.existsSync(project2DIR)).toBe(true);
+});
+
+test('should not call a globalSetup of a project if there are no tests to run from this project', () => {
+  const configPath = path.resolve(
+    __dirname,
+    '../global-setup/projects.jest.config.js',
+  );
+
+  const result = runWithJson('global-setup', [
+    `--config=${configPath}`,
+    '--testPathPattern=project-1',
+  ]);
+
+  expect(result.status).toBe(0);
+
+  expect(fs.existsSync(DIR)).toBe(true);
+  expect(fs.existsSync(project1DIR)).toBe(true);
+  expect(fs.existsSync(project2DIR)).toBe(false);
 });

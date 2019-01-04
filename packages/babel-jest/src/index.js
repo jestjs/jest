@@ -19,13 +19,19 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import {transformSync as babelTransform, loadPartialConfig} from '@babel/core';
-import babelIstanbulPlugin from 'babel-plugin-istanbul';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
+const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
+const cwd = process.cwd();
 
-const createTransformer = (options: any): Transformer => {
-  options = Object.assign({}, options, {
+export const createTransformer = (options: any): Transformer => {
+  // Allow incoming options to override `cwd`
+  options = Object.assign({cwd}, options, {
+    caller: {
+      name: 'babel-jest',
+      supportsStaticESM: false,
+    },
     compact: false,
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat(jestPresetPath),
@@ -35,16 +41,6 @@ const createTransformer = (options: any): Transformer => {
   delete options.cacheDirectory;
   delete options.filename;
 
-  const loadBabelOptions = filename =>
-    loadPartialConfig({
-      ...options,
-      caller: {
-        name: 'babel-jest',
-        supportsStaticESM: false,
-      },
-      filename,
-    });
-
   return {
     canInstrument: true,
     getCacheKey(
@@ -53,7 +49,7 @@ const createTransformer = (options: any): Transformer => {
       configString: string,
       {instrument, rootDir}: CacheKeyOptions,
     ): string {
-      const babelOptions = loadBabelOptions(filename);
+      const babelOptions = loadPartialConfig({...options, filename});
       const configPath = [
         babelOptions.config || '',
         babelOptions.babelrc || '',
@@ -86,7 +82,9 @@ const createTransformer = (options: any): Transformer => {
       config: ProjectConfig,
       transformOptions?: TransformOptions,
     ): string | TransformedSource {
-      const babelOptions = {...loadBabelOptions(filename).options};
+      const babelOptions = {
+        ...loadPartialConfig({...options, filename}).options,
+      };
 
       if (transformOptions && transformOptions.instrument) {
         babelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
@@ -110,5 +108,4 @@ const createTransformer = (options: any): Transformer => {
   };
 };
 
-module.exports = createTransformer();
-(module.exports: any).createTransformer = createTransformer;
+export default createTransformer();

@@ -8,25 +8,29 @@
  */
 
 import mkdirp from 'mkdirp';
-
-import BufferedConsole from './BufferedConsole';
-import clearLine from './clearLine';
-import CustomConsole from './CustomConsole';
-import ErrorWithStack from './ErrorWithStack';
-import FakeTimers from './FakeTimers';
-import formatTestResults from './formatTestResults';
-import getFailedSnapshotTests from './getFailedSnapshotTests';
-import getConsoleOutput from './getConsoleOutput';
-import installCommonGlobals from './installCommonGlobals';
-import NullConsole from './NullConsole';
-import isInteractive from './isInteractive';
-import getCallsite from './getCallsite';
-import setGlobal from './setGlobal';
-import deepCyclicCopy from './deepCyclicCopy';
-import convertDescriptorToString from './convertDescriptorToString';
 import * as specialChars from './specialChars';
 
-const createDirectory = (path: string) => {
+export {default as BufferedConsole} from './BufferedConsole';
+export {default as clearLine} from './clearLine';
+export {default as Console} from './CustomConsole';
+export {default as ErrorWithStack} from './ErrorWithStack';
+export {default as FakeTimers} from './FakeTimers';
+export {default as formatTestResults} from './formatTestResults';
+export {default as getFailedSnapshotTests} from './getFailedSnapshotTests';
+export {default as getConsoleOutput} from './getConsoleOutput';
+export {default as installCommonGlobals} from './installCommonGlobals';
+export {default as NullConsole} from './NullConsole';
+export {default as isInteractive} from './isInteractive';
+export {default as getCallsite} from './getCallsite';
+export {default as setGlobal} from './setGlobal';
+export {default as deepCyclicCopy} from './deepCyclicCopy';
+export {
+  default as convertDescriptorToString,
+} from './convertDescriptorToString';
+export {specialChars};
+export {default as interopRequireDefault} from './interopRequireDefault';
+
+export const createDirectory = (path: string) => {
   try {
     mkdirp.sync(path, '777');
   } catch (e) {
@@ -34,24 +38,4 @@ const createDirectory = (path: string) => {
       throw e;
     }
   }
-};
-
-module.exports = {
-  BufferedConsole,
-  Console: CustomConsole,
-  ErrorWithStack,
-  FakeTimers,
-  NullConsole,
-  clearLine,
-  convertDescriptorToString,
-  createDirectory,
-  deepCyclicCopy,
-  formatTestResults,
-  getCallsite,
-  getConsoleOutput,
-  getFailedSnapshotTests,
-  installCommonGlobals,
-  isInteractive,
-  setGlobal,
-  specialChars,
 };
