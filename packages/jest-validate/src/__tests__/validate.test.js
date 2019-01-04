@@ -12,12 +12,11 @@ import validate from '../validate';
 import {multipleValidOptions} from '../condition';
 import jestValidateExampleConfig from '../exampleConfig';
 import jestValidateDefaultConfig from '../defaultConfig';
-
-const {
+import {
   defaultConfig,
-  validConfig,
   deprecatedConfig,
-} = require('./fixtures/jestConfig');
+  validConfig,
+} from './fixtures/jestConfig';
 
 test('recursively validates default Jest config', () => {
   expect(

@@ -23,7 +23,7 @@ import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import Resolver from 'jest-resolve';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
-import Snapshot from 'jest-snapshot';
+import {EXTENSION as SNAPSHOT_EXTENSION} from 'jest-snapshot';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import ScriptTransformer from './ScriptTransformer';
@@ -83,7 +83,7 @@ const getModuleNameMapper = (config: ProjectConfig) => {
 
 const unmockRegExpCache = new WeakMap();
 
-class Runtime {
+export default class Runtime {
   static ScriptTransformer: Class<ScriptTransformer>;
 
   _cacheFS: CacheFS;
@@ -242,7 +242,7 @@ class Runtime {
       computeSha1: config.haste.computeSha1,
       console: options && options.console,
       dependencyExtractor: config.dependencyExtractor,
-      extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
+      extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
@@ -286,6 +286,7 @@ class Runtime {
     from: Path,
     moduleName?: string,
     options: ?InternalModuleOptions,
+    isRequireActual: ?boolean,
   ) {
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
@@ -301,6 +302,7 @@ class Runtime {
       moduleName && this._resolver.getMockModule(from, moduleName);
     if (
       (!options || !options.isInternalModule) &&
+      !isRequireActual &&
       !moduleResource &&
       manualMock &&
       manualMock !== this._isCurrentlyExecutingManualMock &&
@@ -361,6 +363,10 @@ class Runtime {
 
   requireInternalModule(from: Path, to?: string) {
     return this.requireModule(from, to, {isInternalModule: true});
+  }
+
+  requireActual(from: Path, moduleName: string) {
+    return this.requireModule(from, moduleName, undefined, true);
   }
 
   requireMock(from: Path, moduleName: string) {
@@ -645,13 +651,14 @@ class Runtime {
     Object.defineProperty(localModule, 'require', {
       value: this._createRequireImplementation(localModule, options),
     });
-
+    const extraGlobals = this._config.extraGlobals || [];
     const transformedFile = this._scriptTransformer.transform(
       filename,
       {
         collectCoverage: this._coverageOptions.collectCoverage,
         collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
         collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
+        extraGlobals,
         isInternalModule,
       },
       this._cacheFS[filename],
@@ -686,8 +693,7 @@ class Runtime {
     }
 
     const wrapper = runScript[ScriptTransformer.EVAL_RESULT_VARIABLE];
-    wrapper.call(
-      localModule.exports, // module context
+    const moduleArguments = new Set([
       localModule, // module object
       localModule.exports, // module exports
       localModule.require, // require implementation
@@ -699,7 +705,17 @@ class Runtime {
         // $FlowFixMe
         (localModule.require: LocalModuleRequire),
       ), // jest object
-    );
+      ...extraGlobals.map(globalVariable => {
+        if (this._environment.global[globalVariable]) {
+          return this._environment.global[globalVariable];
+        }
+
+        throw new Error(
+          `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
+        );
+      }),
+    ]);
+    wrapper.call(localModule.exports, ...Array.from(moduleArguments));
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
@@ -831,7 +847,7 @@ class Runtime {
         : this.requireModuleOrMock.bind(this, from.filename);
     moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
-    moduleRequire.requireActual = this.requireModule.bind(this, from.filename);
+    moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = (moduleName, options) =>
       this._requireResolve(from.filename, moduleName, options);
@@ -1001,4 +1017,4 @@ class Runtime {
 
 Runtime.ScriptTransformer = ScriptTransformer;
 
-export default Runtime;
+export {ScriptTransformer};

@@ -125,7 +125,7 @@ function findNative(
   });
 }
 
-module.exports = function nodeCrawl(
+export default function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
   if (options.mapper) {
@@ -166,4 +166,4 @@ module.exports = function nodeCrawl(
       findNative(roots, extensions, ignore, callback);
     }
   });
-};
+}

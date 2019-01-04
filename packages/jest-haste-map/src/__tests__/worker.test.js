@@ -14,7 +14,7 @@ import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
 import H from '../constants';
 
-const {worker, getSha1} = require('../worker');
+import {getSha1, worker} from '../worker';
 
 const rootDir = '/project';
 let mockFs;

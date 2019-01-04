@@ -7,7 +7,7 @@
  * @flow
  */
 
-const path = require('path');
+import path from 'path';
 
 let normalizePathSep;
 if (path.sep === '/') {

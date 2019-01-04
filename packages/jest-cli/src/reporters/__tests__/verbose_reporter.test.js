@@ -8,14 +8,11 @@
 
 'use strict';
 
+import VerboseReporter from '../verbose_reporter';
+
 const wrap = obj => ({suites: obj, tests: [], title: ''});
 
-let groupTestsBySuites;
-
-beforeEach(() => {
-  const VerboseReporter = require('../verbose_reporter').default;
-  groupTestsBySuites = VerboseReporter.groupTestsBySuites;
-});
+const {groupTestsBySuites} = VerboseReporter;
 
 describe('groupTestsBySuites', () => {
   it('should handle empty results', () => {

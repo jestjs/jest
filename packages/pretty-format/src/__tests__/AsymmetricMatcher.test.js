@@ -9,7 +9,8 @@
 
 import type {OptionsReceived} from 'types/PrettyFormat';
 
-const prettyFormat = require('../');
+import prettyFormat from '../';
+
 const {AsymmetricMatcher} = prettyFormat.plugins;
 let options: OptionsReceived;
 

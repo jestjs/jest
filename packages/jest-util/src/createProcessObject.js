@@ -7,6 +7,7 @@
  * @flow
  */
 
+import process from 'process';
 import deepCyclicCopy from './deepCyclicCopy';
 
 const BLACKLIST = new Set(['env', 'mainModule', '_events']);
@@ -71,7 +72,6 @@ function createProcessEnv() {
 }
 
 export default function() {
-  const process = require('process');
   const newProcess = deepCyclicCopy(process, {
     blacklist: BLACKLIST,
     keepPrototype: true,

@@ -51,7 +51,7 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci-partial
+          command: yarn test-ci
       - store_test_results:
           path: reports/junit
 
@@ -79,7 +79,7 @@ jobs:
       - run: yarn --no-progress
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci
+          command: yarn test-ci-partial
       - store_test_results:
           path: reports/junit
 
