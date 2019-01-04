@@ -228,12 +228,10 @@ async function runTestInternal(
       result.memoryUsage = process.memoryUsage().heapUsed;
     }
 
-    // Delay the resolution to allow log messages to be output and some cleanup in case of leak detector.
-    await new Promise(resolve => {
-      leakDetector ? setTimeout(resolve, 100) : process.nextTick(resolve);
+    // Delay the resolution to allow log messages to be output.
+    return new Promise(resolve => {
+      setImmediate(() => resolve({leakDetector, result}));
     });
-
-    return {leakDetector, result};
   } finally {
     await environment.teardown();
 
@@ -254,8 +252,15 @@ export default async function runTest(
     resolver,
   );
 
-  // Resolve leak detector, outside the "runTestInternal" closure.
-  result.leaks = leakDetector ? leakDetector.isLeaking() : false;
+  if (leakDetector) {
+    // We wanna allow a tiny but time to pass to allow last-minute cleanup
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Resolve leak detector, outside the "runTestInternal" closure.
+    result.leaks = leakDetector.isLeaking();
+  } else {
+    result.leaks = false;
+  }
 
   return result;
 }
