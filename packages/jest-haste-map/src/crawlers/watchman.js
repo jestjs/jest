@@ -29,7 +29,7 @@ function WatchmanError(error: Error): Error {
 export default async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
-  const fields = ['name', 'exists', 'mtime_ms'];
+  const fields = ['name', 'exists', 'mtime_ms', 'size'];
   const {data, extensions, ignore, rootDir, roots} = options;
   const defaultWatchExpression = [
     'allof',
@@ -173,6 +173,7 @@ export default async function watchmanCrawl(
           typeof fileData.mtime_ms === 'number'
             ? fileData.mtime_ms
             : fileData.mtime_ms.toNumber();
+        const size = fileData.size;
 
         let sha1hex = fileData['content.sha1hex'];
         if (typeof sha1hex !== 'string' || sha1hex.length !== 40) {
@@ -193,7 +194,7 @@ export default async function watchmanCrawl(
           nextData[1] = mtime;
         } else {
           // See ../constants.js
-          nextData = ['', mtime, 0, [], sha1hex];
+          nextData = ['', mtime, size, 0, [], sha1hex];
         }
 
         const mappings = options.mapper ? options.mapper(filePath) : null;

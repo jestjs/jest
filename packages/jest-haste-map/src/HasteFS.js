@@ -28,6 +28,11 @@ export default class HasteFS {
     return (fileMetadata && fileMetadata[H.ID]) || null;
   }
 
+  getSize(file: Path): ?number {
+    const fileMetadata = this._getFileData(file);
+    return (fileMetadata && fileMetadata[H.SIZE]) || null;
+  }
+
   getDependencies(file: Path): ?Array<string> {
     const fileMetadata = this._getFileData(file);
     return (fileMetadata && fileMetadata[H.DEPENDENCIES]) || null;

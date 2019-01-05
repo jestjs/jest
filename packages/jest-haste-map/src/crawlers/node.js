@@ -16,7 +16,9 @@ import {spawn} from 'child_process';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 
-type Callback = (result: Array<[/* id */ string, /* mtime */ number]>) => void;
+type Callback = (
+  result: Array<[/* id */ string, /* mtime */ number, /* size */ number]>,
+) => void;
 
 function find(
   roots: Array<string>,
@@ -51,7 +53,7 @@ function find(
             } else {
               const ext = path.extname(file).substr(1);
               if (extensions.indexOf(ext) !== -1) {
-                result.push([file, stat.mtime.getTime()]);
+                result.push([file, stat.mtime.getTime(), stat.size]);
               }
             }
           }
@@ -114,7 +116,7 @@ function findNative(
       lines.forEach(path => {
         fs.stat(path, (err, stat) => {
           if (!err && stat) {
-            result.push([path, stat.mtime.getTime()]);
+            result.push([path, stat.mtime.getTime(), stat.size]);
           }
           if (--count === 0) {
             callback(result);
@@ -148,12 +150,13 @@ export default function nodeCrawl(
         const filePath = fileData[0];
         const relativeFilePath = fastPath.relative(rootDir, filePath);
         const mtime = fileData[1];
+        const size = fileData[2];
         const existingFile = data.files.get(relativeFilePath);
         if (existingFile && existingFile[H.MTIME] === mtime) {
           files.set(relativeFilePath, existingFile);
         } else {
           // See ../constants.js; SHA-1 will always be null and fulfilled later.
-          files.set(relativeFilePath, ['', mtime, 0, [], null]);
+          files.set(relativeFilePath, ['', mtime, size, 0, [], null]);
         }
       });
       data.files = files;
