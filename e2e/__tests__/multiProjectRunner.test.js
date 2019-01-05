@@ -15,7 +15,7 @@ import path from 'path';
 import stripAnsi from 'strip-ansi';
 import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'multi_project_runner_test');
+const DIR = path.resolve(os.tmpdir(), 'multi-project-runner-test');
 
 const SAMPLE_FILE_CONTENT = 'module.exports = {};';
 
@@ -27,7 +27,7 @@ test('--listTests doesnt duplicate the test files', () => {
     '.watchmanconfig': '',
     '/project1.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
     '/project2.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
-    '__tests__/in_both_projects-test.js': `test('test', () => {});`,
+    '__tests__/inBothProjectsTest.js': `test('test', () => {});`,
     'package.json': JSON.stringify({
       jest: {projects: ['<rootDir>/project1.js', '<rootDir>/project2.js']},
     }),
@@ -35,7 +35,7 @@ test('--listTests doesnt duplicate the test files', () => {
 
   const {stdout} = runJest(DIR, ['--listTests']);
   expect(stdout.split('\n')).toHaveLength(1);
-  expect(stdout).toMatch('in_both_projects-test.js');
+  expect(stdout).toMatch('inBothProjectsTest.js');
 });
 
 test('can pass projects or global config', () => {
