@@ -26,6 +26,7 @@
 - `[jest-snapshot]` Enable configurable snapshot paths ([#6143](https://github.com/facebook/jest/pull/6143))
 - `[pretty-format]` Support HTMLCollection and NodeList in DOMCollection plugin ([#7125](https://github.com/facebook/jest/pull/7125))
 - `[jest-runtime]` Pass the normalized configuration to script transformers ([#7148](https://github.com/facebook/jest/pull/7148))
+- `[expect]` Improve report when assertion fails, part 3 ([#7152](https://github.com/facebook/jest/pull/7152))
 - `[jest-runtime]` If `require` fails without a file extension, print all files that match with one ([#7160](https://github.com/facebook/jest/pull/7160))
 - `[jest-haste-map]` Make `ignorePattern` optional ([#7166](https://github.com/facebook/jest/pull/7166))
 - `[jest-haste-map]` Add `getCacheFilePath` to get the path to the cache file for a `HasteMap` instance ([#7217](https://github.com/facebook/jest/pull/7217))
@@ -101,6 +102,8 @@
 - `[jest-cli]` print info about passWithNoTests flag ([#7309](https://github.com/facebook/jest/pull/7309))
 - `[pretty-format]` Omit unnecessary symbol filter for object keys ([#7457](https://github.com/facebook/jest/pull/7457))
 - `[jest-runtime]` Fix `requireActual` on node_modules with mock present ([#7404](https://github.com/facebook/jest/pull/7404))
+- `[jest-resolve]` Fix `isBuiltinModule` to support versions of node without `module.builtinModules` ([#7565](https://github.com/facebook/jest/pull/7565))
+- `[babel-jest]` Set `cwd` to be resilient to it changing during the runtime of the tests ([#7574](https://github.com/facebook/jest/pull/7574))
 
 ### Chore & Maintenance
 

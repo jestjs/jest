@@ -252,8 +252,15 @@ export default async function runTest(
     resolver,
   );
 
-  // Resolve leak detector, outside the "runTestInternal" closure.
-  result.leaks = leakDetector ? leakDetector.isLeaking() : false;
+  if (leakDetector) {
+    // We wanna allow a tiny but time to pass to allow last-minute cleanup
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Resolve leak detector, outside the "runTestInternal" closure.
+    result.leaks = leakDetector.isLeaking();
+  } else {
+    result.leaks = false;
+  }
 
   return result;
 }

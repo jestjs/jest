@@ -19,12 +19,12 @@ exports[`works with custom matchers 1`] = `
       47 | 
       48 |     // This expecation fails due to an error we throw (intentionally)
 
-      at __tests__/customMatcher.test.js:45:13
-      at __tests__/customMatcher.test.js:43:23
-      at __tests__/customMatcher.test.js:42:23
-      at __tests__/customMatcher.test.js:52:7
-      at __tests__/customMatcher.test.js:11:18
-      at __tests__/customMatcher.test.js:53:8
+      at Error (__tests__/customMatcher.test.js:45:13)
+      at baz (__tests__/customMatcher.test.js:43:23)
+      at bar (__tests__/customMatcher.test.js:42:23)
+      at foo (__tests__/customMatcher.test.js:52:7)
+      at Object.callback (__tests__/customMatcher.test.js:11:18)
+      at Object.toCustomMatch (__tests__/customMatcher.test.js:53:8)
 
 "
 `;

@@ -16,7 +16,7 @@ exports[`defaultTimeoutInterval.test.js errors in errorOnDeprecated mode 1`] = `
       12 | });
       13 | 
 
-      at __tests__/defaultTimeoutInterval.test.js:10:3
+      at Object.<anonymous>.test (__tests__/defaultTimeoutInterval.test.js:10:3)
 
 "
 `;
@@ -37,7 +37,7 @@ exports[`fail.test.js errors in errorOnDeprecated mode 1`] = `
       15 | });
       16 | 
 
-      at __tests__/fail.test.js:13:5
+      at Object.fail (__tests__/fail.test.js:13:5)
 
 "
 `;
@@ -56,7 +56,7 @@ exports[`jasmine.addMatchers.test.js errors in errorOnDeprecated mode 1`] = `
       11 |     compare: (actual, expected) => ({
       12 |       message: 'Nobdy expects the Spanish Inquisition!',
 
-      at __tests__/jasmine.addMatchers.test.js:9:9
+      at Object.addMatchers (__tests__/jasmine.addMatchers.test.js:9:9)
 
 "
 `;
@@ -76,7 +76,7 @@ exports[`jasmine.any.test.js errors in errorOnDeprecated mode 1`] = `
       11 | });
       12 | 
 
-      at __tests__/jasmine.any.test.js:10:51
+      at Object.any (__tests__/jasmine.any.test.js:10:51)
 
 "
 `;
@@ -96,7 +96,7 @@ exports[`jasmine.anything.test.js errors in errorOnDeprecated mode 1`] = `
       11 | });
       12 | 
 
-      at __tests__/jasmine.anything.test.js:10:62
+      at Object.anything (__tests__/jasmine.anything.test.js:10:62)
 
 "
 `;
@@ -116,7 +116,7 @@ exports[`jasmine.arrayContaining.test.js errors in errorOnDeprecated mode 1`] = 
       11 | });
       12 | 
 
-      at __tests__/jasmine.arrayContaining.test.js:10:45
+      at Object.arrayContaining (__tests__/jasmine.arrayContaining.test.js:10:45)
 
 "
 `;
@@ -137,7 +137,7 @@ exports[`jasmine.createSpy.test.js errors in errorOnDeprecated mode 1`] = `
       12 |   expect(mySpy).toHaveBeenCalledWith('hello?');
       13 | });
 
-      at __tests__/jasmine.createSpy.test.js:10:25
+      at Object.createSpy (__tests__/jasmine.createSpy.test.js:10:25)
 
 "
 `;
@@ -158,7 +158,7 @@ exports[`jasmine.objectContaining.test.js errors in errorOnDeprecated mode 1`] =
       13 | });
       14 | 
 
-      at __tests__/jasmine.objectContaining.test.js:11:13
+      at Object.objectContaining (__tests__/jasmine.objectContaining.test.js:11:13)
 
 "
 `;
@@ -178,7 +178,7 @@ exports[`jasmine.stringMatching.test.js errors in errorOnDeprecated mode 1`] = `
       11 | });
       12 | 
 
-      at __tests__/jasmine.stringMatching.test.js:10:50
+      at Object.stringMatching (__tests__/jasmine.stringMatching.test.js:10:50)
 
 "
 `;
@@ -199,7 +199,7 @@ exports[`pending.test.js errors in errorOnDeprecated mode 1`] = `
       13 |   expect(false).toBe(true);
       14 | });
 
-      at __tests__/pending.test.js:11:5
+      at Object.pending (__tests__/pending.test.js:11:5)
 
 "
 `;
@@ -220,7 +220,7 @@ exports[`spyOn.test.js errors in errorOnDeprecated mode 1`] = `
       17 | });
       18 | 
 
-      at __tests__/spyOn.test.js:15:3
+      at Object.spyOn (__tests__/spyOn.test.js:15:3)
 
 "
 `;
@@ -241,7 +241,7 @@ exports[`spyOnProperty.test.js errors in errorOnDeprecated mode 1`] = `
       26 |   obj.method();
       27 | 
 
-      at __tests__/spyOnProperty.test.js:24:15
+      at Object.spyOnProperty (__tests__/spyOnProperty.test.js:24:15)
 
 "
 `;

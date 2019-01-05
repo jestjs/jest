@@ -30,7 +30,7 @@ exports[`cannot have describe with no implementation 1`] = `
         |              ^
       3 |   
 
-      at __tests__/onlyConstructs.test.js:2:14
+      at Object.<anonymous> (__tests__/onlyConstructs.test.js:2:14)
 
 "
 `;
@@ -57,7 +57,7 @@ exports[`cannot test with no implementation 1`] = `
       4 |     test('test, no implementation');
       5 |   
 
-      at __tests__/onlyConstructs.test.js:3:5
+      at Object.it (__tests__/onlyConstructs.test.js:3:5)
 
 "
 `;
@@ -84,7 +84,7 @@ exports[`cannot test with no implementation with expand arg 1`] = `
       4 |     test('test, no implementation');
       5 |   
 
-      at __tests__/onlyConstructs.test.js:3:5
+      at Object.it (__tests__/onlyConstructs.test.js:3:5)
 
 "
 `;
