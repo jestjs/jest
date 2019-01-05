@@ -44,11 +44,11 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       26 |   );
       27 | });
 
-      at __tests__/failure.test.js:24:54
-      at __tests__/failure.test.js:11:103
-      at __tests__/failure.test.js:13:194
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:24:54)
+      at asyncGeneratorStep (__tests__/failure.test.js:11:103)
+      at _next (__tests__/failure.test.js:13:194)
       at __tests__/failure.test.js:13:364
-      at __tests__/failure.test.js:13:97
+      at Object.<anonymous> (__tests__/failure.test.js:13:97)
 
   ● fail with expected promise values and not
 
@@ -67,11 +67,11 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       32 |   );
       33 | });
 
-      at __tests__/failure.test.js:30:61
-      at __tests__/failure.test.js:11:103
-      at __tests__/failure.test.js:13:194
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:30:61)
+      at asyncGeneratorStep (__tests__/failure.test.js:11:103)
+      at _next (__tests__/failure.test.js:13:194)
       at __tests__/failure.test.js:13:364
-      at __tests__/failure.test.js:13:97
+      at Object.<anonymous> (__tests__/failure.test.js:13:97)
 
 "
 `;
