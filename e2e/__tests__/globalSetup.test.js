@@ -43,7 +43,7 @@ test('globalSetup is triggered once before all test suites', () => {
 });
 
 test('jest throws an error when globalSetup does not export a function', () => {
-  const setupPath = path.resolve(__dirname, '../global-setup/invalid_setup.js');
+  const setupPath = path.resolve(__dirname, '../global-setup/invalidSetup.js');
   const {status, stderr} = runJest('global-setup', [
     `--globalSetup=${setupPath}`,
     `--testPathPattern=__tests__`,
@@ -58,7 +58,7 @@ test('jest throws an error when globalSetup does not export a function', () => {
 test('globalSetup function gets jest config object as a parameter', () => {
   const setupPath = path.resolve(
     __dirname,
-    '../global-setup/setup-with-config.js',
+    '../global-setup/setupWithConfig.js',
   );
 
   const testPathPattern = 'pass';

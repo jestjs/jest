@@ -14,7 +14,7 @@ import os from 'os';
 import path from 'path';
 import {cleanup, writeFiles} from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'force_exit_test');
+const DIR = path.resolve(os.tmpdir(), 'force-exit-test');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

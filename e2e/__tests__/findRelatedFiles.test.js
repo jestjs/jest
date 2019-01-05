@@ -14,7 +14,7 @@ import os from 'os';
 import path from 'path';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'find_related_tests_test');
+const DIR = path.resolve(os.tmpdir(), 'find-related-tests-test');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

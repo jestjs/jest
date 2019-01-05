@@ -21,7 +21,7 @@ import runJest from '../runJest';
 
 skipSuiteOnWindows();
 
-const DIR = path.resolve(os.tmpdir(), 'jest_changed_files_test_dir');
+const DIR = path.resolve(os.tmpdir(), 'jest-changed-files-test-dir');
 
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
@@ -31,23 +31,23 @@ afterEach(() => cleanup(DIR));
 
 test('gets hg SCM roots and dedups them', async () => {
   writeFiles(DIR, {
-    'first_repo/file1.txt': 'file1',
-    'first_repo/nested_dir/file2.txt': 'file2',
-    'first_repo/nested_dir/second_nested_dir/file3.txt': 'file3',
-    'second_repo/file1.txt': 'file1',
-    'second_repo/nested_dir/file2.txt': 'file2',
-    'second_repo/nested_dir/second_nested_dir/file3.txt': 'file3',
+    'first-repo/file1.txt': 'file1',
+    'first-repo/nested-dir/file2.txt': 'file2',
+    'first-repo/nested-dir/second-nested-dir/file3.txt': 'file3',
+    'second-repo/file1.txt': 'file1',
+    'second-repo/nested-dir/file2.txt': 'file2',
+    'second-repo/nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${HG} init`, path.resolve(DIR, 'first_repo'));
-  run(`${HG} init`, path.resolve(DIR, 'second_repo'));
+  run(`${HG} init`, path.resolve(DIR, 'first-repo'));
+  run(`${HG} init`, path.resolve(DIR, 'second-repo'));
 
   const roots = [
     '',
-    'first_repo/nested_dir',
-    'first_repo/nested_dir/second_nested_dir',
-    'second_repo/nested_dir',
-    'second_repo/nested_dir/second_nested_dir',
+    'first-repo/nested-dir',
+    'first-repo/nested-dir/second-nested-dir',
+    'second-repo/nested-dir',
+    'second-repo/nested-dir/second-nested-dir',
   ].map(filename => path.resolve(DIR, filename));
 
   const repos = await findRepos(roots);
@@ -60,29 +60,29 @@ test('gets hg SCM roots and dedups them', async () => {
   // NOTE: This test can break if you have a .hg repo initialized inside your
   // os tmp directory.
   expect(hgRepos).toHaveLength(2);
-  expect(hgRepos[0]).toMatch(/\/jest_changed_files_test_dir\/first_repo$/);
-  expect(hgRepos[1]).toMatch(/\/jest_changed_files_test_dir\/second_repo$/);
+  expect(hgRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo$/);
+  expect(hgRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo$/);
 });
 
 test('gets git SCM roots and dedups them', async () => {
   writeFiles(DIR, {
-    'first_repo/file1.txt': 'file1',
-    'first_repo/nested_dir/file2.txt': 'file2',
-    'first_repo/nested_dir/second_nested_dir/file3.txt': 'file3',
-    'second_repo/file1.txt': 'file1',
-    'second_repo/nested_dir/file2.txt': 'file2',
-    'second_repo/nested_dir/second_nested_dir/file3.txt': 'file3',
+    'first-repo/file1.txt': 'file1',
+    'first-repo/nested-dir/file2.txt': 'file2',
+    'first-repo/nested-dir/second-nested-dir/file3.txt': 'file3',
+    'second-repo/file1.txt': 'file1',
+    'second-repo/nested-dir/file2.txt': 'file2',
+    'second-repo/nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init`, path.resolve(DIR, 'first_repo'));
-  run(`${GIT} init`, path.resolve(DIR, 'second_repo'));
+  run(`${GIT} init`, path.resolve(DIR, 'first-repo'));
+  run(`${GIT} init`, path.resolve(DIR, 'second-repo'));
 
   const roots = [
     '',
-    'first_repo/nested_dir',
-    'first_repo/nested_dir/second_nested_dir',
-    'second_repo/nested_dir',
-    'second_repo/nested_dir/second_nested_dir',
+    'first-repo/nested-dir',
+    'first-repo/nested-dir/second-nested-dir',
+    'second-repo/nested-dir',
+    'second-repo/nested-dir/second-nested-dir',
   ].map(filename => path.resolve(DIR, filename));
 
   const repos = await findRepos(roots);
@@ -94,29 +94,29 @@ test('gets git SCM roots and dedups them', async () => {
   // NOTE: This test can break if you have a .git repo initialized inside your
   // os tmp directory.
   expect(gitRepos).toHaveLength(2);
-  expect(gitRepos[0]).toMatch(/\/jest_changed_files_test_dir\/first_repo$/);
-  expect(gitRepos[1]).toMatch(/\/jest_changed_files_test_dir\/second_repo$/);
+  expect(gitRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo$/);
+  expect(gitRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo$/);
 });
 
 test('gets mixed git and hg SCM roots and dedups them', async () => {
   writeFiles(DIR, {
-    'first_repo/file1.txt': 'file1',
-    'first_repo/nested_dir/file2.txt': 'file2',
-    'first_repo/nested_dir/second_nested_dir/file3.txt': 'file3',
-    'second_repo/file1.txt': 'file1',
-    'second_repo/nested_dir/file2.txt': 'file2',
-    'second_repo/nested_dir/second_nested_dir/file3.txt': 'file3',
+    'first-repo/file1.txt': 'file1',
+    'first-repo/nested-dir/file2.txt': 'file2',
+    'first-repo/nested-dir/second-nested-dir/file3.txt': 'file3',
+    'second-repo/file1.txt': 'file1',
+    'second-repo/nested-dir/file2.txt': 'file2',
+    'second-repo/nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init`, path.resolve(DIR, 'first_repo'));
-  run(`${HG} init`, path.resolve(DIR, 'second_repo'));
+  run(`${GIT} init`, path.resolve(DIR, 'first-repo'));
+  run(`${HG} init`, path.resolve(DIR, 'second-repo'));
 
   const roots = [
     '',
-    'first_repo/nested_dir',
-    'first_repo/nested_dir/second_nested_dir',
-    'second_repo/nested_dir',
-    'second_repo/nested_dir/second_nested_dir',
+    'first-repo/nested-dir',
+    'first-repo/nested-dir/second-nested-dir',
+    'second-repo/nested-dir',
+    'second-repo/nested-dir/second-nested-dir',
   ].map(filename => path.resolve(DIR, filename));
 
   const repos = await findRepos(roots);
@@ -127,20 +127,20 @@ test('gets mixed git and hg SCM roots and dedups them', async () => {
   // inside your os tmp directory.
   expect(gitRepos).toHaveLength(1);
   expect(hgRepos).toHaveLength(1);
-  expect(gitRepos[0]).toMatch(/\/jest_changed_files_test_dir\/first_repo$/);
-  expect(hgRepos[0]).toMatch(/\/jest_changed_files_test_dir\/second_repo$/);
+  expect(gitRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo$/);
+  expect(hgRepos[0]).toMatch(/\/jest-changed-files-test-dir\/second-repo$/);
 });
 
 test('gets changed files for git', async () => {
   writeFiles(DIR, {
     'file1.txt': 'file1',
-    'nested_dir/file2.txt': 'file2',
-    'nested_dir/second_nested_dir/file3.txt': 'file3',
+    'nested-dir/file2.txt': 'file2',
+    'nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
   run(`${GIT} init`, DIR);
 
-  const roots = ['', 'nested_dir', 'nested_dir/second_nested_dir'].map(
+  const roots = ['', 'nested-dir', 'nested-dir/second-nested-dir'].map(
     filename => path.resolve(DIR, filename),
   );
 
@@ -228,13 +228,13 @@ test('gets changed files for git', async () => {
 test('monitors only root paths for git', async () => {
   writeFiles(DIR, {
     'file1.txt': 'file1',
-    'nested_dir/file2.txt': 'file2',
-    'nested_dir/second_nested_dir/file3.txt': 'file3',
+    'nested-dir/file2.txt': 'file2',
+    'nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
   run(`${GIT} init`, DIR);
 
-  const roots = [path.resolve(DIR, 'nested_dir')];
+  const roots = [path.resolve(DIR, 'nested-dir')];
 
   const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
@@ -272,13 +272,13 @@ test('gets changed files for hg', async () => {
   }
   writeFiles(DIR, {
     'file1.txt': 'file1',
-    'nested_dir/file2.txt': 'file2',
-    'nested_dir/second_nested_dir/file3.txt': 'file3',
+    'nested-dir/file2.txt': 'file2',
+    'nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
   run(`${HG} init`, DIR);
 
-  const roots = ['', 'nested_dir', 'nested_dir/second_nested_dir'].map(
+  const roots = ['', 'nested-dir', 'nested-dir/second-nested-dir'].map(
     filename => path.resolve(DIR, filename),
   );
 
@@ -375,13 +375,13 @@ test('monitors only root paths for hg', async () => {
   }
   writeFiles(DIR, {
     'file1.txt': 'file1',
-    'nested_dir/file2.txt': 'file2',
-    'nested_dir/second_nested_dir/file3.txt': 'file3',
+    'nested-dir/file2.txt': 'file2',
+    'nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
   run(`${HG} init`, DIR);
 
-  const roots = [path.resolve(DIR, 'nested_dir')];
+  const roots = [path.resolve(DIR, 'nested-dir')];
 
   const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(

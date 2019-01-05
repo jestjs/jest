@@ -24,8 +24,8 @@ test('exits the process after test are done but before timers complete', async (
     'file.android.js': '"foo android"',
     'file.ios.js': '"foo ios"',
     'file.js': '"foo default"',
-    'file_with_extension.ignored': '"ignored file"',
-    'node_modules/bar/file_with_extension.ignored': '"ignored node modules"',
+    'fileWithExtension.ignored': '"ignored file"',
+    'node_modules/bar/fileWithExtension.ignored': '"ignored node modules"',
     'node_modules/bar/image.png': '"an image"',
     'node_modules/bar/index.js': '"node modules bar"',
   });
@@ -70,13 +70,13 @@ test('exits the process after test are done but before timers complete', async (
 
   // Ignored files do not get the SHA-1 computed.
 
-  expect(hasteFS.getSha1(path.join(DIR, 'file_with_extension.ignored'))).toBe(
+  expect(hasteFS.getSha1(path.join(DIR, 'fileWithExtension.ignored'))).toBe(
     null,
   );
 
   expect(
     hasteFS.getSha1(
-      path.join(DIR, 'node_modules/bar/file_with_extension.ignored'),
+      path.join(DIR, 'node_modules/bar/fileWithExtension.ignored'),
     ),
   ).toBe(null);
 });

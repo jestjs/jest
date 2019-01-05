@@ -50,7 +50,7 @@ test('globalTeardown is triggered once after all test suites', () => {
 test('jest throws an error when globalTeardown does not export a function', () => {
   const teardownPath = path.resolve(
     __dirname,
-    '../global-teardown/invalid_teardown.js',
+    '../global-teardown/invalidTeardown.js',
   );
   const {status, stderr} = runJest('global-teardown', [
     `--globalTeardown=${teardownPath}`,
@@ -66,7 +66,7 @@ test('jest throws an error when globalTeardown does not export a function', () =
 test('globalTeardown function gets jest config object as a parameter', () => {
   const teardownPath = path.resolve(
     __dirname,
-    '../global-teardown/teardown-with-config.js',
+    '../global-teardown/teardownWithConfig.js',
   );
 
   const testPathPattern = 'pass';

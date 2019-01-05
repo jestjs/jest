@@ -13,7 +13,7 @@ import runJest, {json as runWithJson} from '../runJest';
 
 describe('async jasmine', () => {
   it('works with beforeAll', () => {
-    const result = runWithJson('jasmine-async', ['promise_before_all.test.js']);
+    const result = runWithJson('jasmine-async', ['promiseBeforeAll.test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(4);
@@ -29,9 +29,7 @@ describe('async jasmine', () => {
   });
 
   it('works with beforeEach', () => {
-    const result = runWithJson('jasmine-async', [
-      'promise_before_each.test.js',
-    ]);
+    const result = runWithJson('jasmine-async', ['promiseBeforeEach.test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(3);
@@ -45,7 +43,7 @@ describe('async jasmine', () => {
   });
 
   it('works with afterAll', () => {
-    const result = runWithJson('jasmine-async', ['promise_after_all.test.js']);
+    const result = runWithJson('jasmine-async', ['promiseAfterAll.test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(2);
@@ -58,7 +56,7 @@ describe('async jasmine', () => {
   });
 
   it('works with afterEach', () => {
-    const result = runWithJson('jasmine-async', ['promise_after_each.test.js']);
+    const result = runWithJson('jasmine-async', ['promiseAfterEach.test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(2);
@@ -69,7 +67,7 @@ describe('async jasmine', () => {
   });
 
   it('works with fit', () => {
-    const result = runWithJson('jasmine-async', ['promise_fit.test.js']);
+    const result = runWithJson('jasmine-async', ['promiseFit.test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(3);
@@ -80,7 +78,7 @@ describe('async jasmine', () => {
   });
 
   it('works with xit', () => {
-    const result = runWithJson('jasmine-async', ['promise_xit.test.js']);
+    const result = runWithJson('jasmine-async', ['promiseXit.test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(2);
@@ -90,7 +88,7 @@ describe('async jasmine', () => {
   });
 
   it('throws when not a promise is returned', () => {
-    const result = runWithJson('jasmine-async', ['returning_values.test.js']);
+    const result = runWithJson('jasmine-async', ['returningValues.test.js']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(11);
@@ -100,7 +98,7 @@ describe('async jasmine', () => {
   });
 
   it('tests async promise code', () => {
-    const result = runWithJson('jasmine-async', ['promise_it.test.js']);
+    const result = runWithJson('jasmine-async', ['promiseIt.test.js']);
     const json = result.json;
     const message = json.testResults[0].message;
 
@@ -130,7 +128,7 @@ describe('async jasmine', () => {
   });
 
   it('async test fails', () => {
-    const result = runWithJson('jasmine-async', ['async_test_fails.test.js']);
+    const result = runWithJson('jasmine-async', ['asyncTestFails.test.js']);
 
     expect(result.status).toBe(1);
     expect(result.json.testResults[0].message).toEqual(
