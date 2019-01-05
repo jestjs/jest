@@ -32,8 +32,8 @@ exports[`moduleNameMapper wrong configuration 1`] = `
       12 | module.exports = () => 'test';
       13 | 
 
-      at packages/jest-resolve/build/index.js:452:17
-      at index.js:10:1
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:452:17)
+      at Object.require (index.js:10:1)
 
 "
 `;

@@ -28,8 +28,8 @@ Object {
       11 | 
       12 | describe('another block with tests', () => {
 
-      at __tests__/hook-in-empty-describe.test.js:9:3
-      at __tests__/hook-in-empty-describe.test.js:8:1
+      at beforeEach (__tests__/hook-in-empty-describe.test.js:9:3)
+      at Object.describe (__tests__/hook-in-empty-describe.test.js:8:1)
 
 ",
   "summary": "Test Suites: 1 failed, 1 total
@@ -58,8 +58,8 @@ Object {
       11 | });
       12 | 
 
-      at __tests__/hook-in-empty-nested-describe.test.js:9:3
-      at __tests__/hook-in-empty-nested-describe.test.js:8:1
+      at beforeEach (__tests__/hook-in-empty-nested-describe.test.js:9:3)
+      at Object.describe (__tests__/hook-in-empty-nested-describe.test.js:8:1)
 
 ",
   "summary": "Test Suites: 1 failed, 1 total
@@ -88,8 +88,8 @@ Object {
       11 |   afterAll(() => {});
       12 |   beforeAll(() => {});
 
-      at __tests__/multiple-hooks-in-empty-describe.test.js:9:3
-      at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
+      at beforeEach (__tests__/multiple-hooks-in-empty-describe.test.js:9:3)
+      at Object.describe (__tests__/multiple-hooks-in-empty-describe.test.js:8:1)
 
   ● Test suite failed to run
 
@@ -103,8 +103,8 @@ Object {
       12 |   beforeAll(() => {});
       13 | });
 
-      at __tests__/multiple-hooks-in-empty-describe.test.js:10:3
-      at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
+      at afterEach (__tests__/multiple-hooks-in-empty-describe.test.js:10:3)
+      at Object.describe (__tests__/multiple-hooks-in-empty-describe.test.js:8:1)
 
   ● Test suite failed to run
 
@@ -118,8 +118,8 @@ Object {
       13 | });
       14 | 
 
-      at __tests__/multiple-hooks-in-empty-describe.test.js:11:3
-      at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
+      at afterAll (__tests__/multiple-hooks-in-empty-describe.test.js:11:3)
+      at Object.describe (__tests__/multiple-hooks-in-empty-describe.test.js:8:1)
 
   ● Test suite failed to run
 
@@ -133,8 +133,8 @@ Object {
       14 | 
       15 | describe('another block with tests', () => {
 
-      at __tests__/multiple-hooks-in-empty-describe.test.js:12:3
-      at __tests__/multiple-hooks-in-empty-describe.test.js:8:1
+      at beforeAll (__tests__/multiple-hooks-in-empty-describe.test.js:12:3)
+      at Object.describe (__tests__/multiple-hooks-in-empty-describe.test.js:8:1)
 
 ",
   "summary": "Test Suites: 1 failed, 1 total
