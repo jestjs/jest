@@ -69,8 +69,8 @@ export default class TestSequencer {
   // fastest results.
   sort(tests: Array<Test>): Array<Test> {
     const stats = {};
-    const fileSize = test =>
-      stats[test.path] || (stats[test.path] = fs.statSync(test.path).size);
+    const fileSize = ({path, context: {hasteFS}}) =>
+      stats[path] || (stats[path] = hasteFS.getSize(path) || 0);
     const hasFailed = (cache, test) =>
       cache[test.path] && cache[test.path][0] === FAIL;
     const time = (cache, test) => cache[test.path] && cache[test.path][1];
