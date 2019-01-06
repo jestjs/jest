@@ -1,4 +1,10 @@
 /* Copyright (c) 2014-present, Facebook, Inc. All rights reserved. */
+:root {
+  --yellow: #C2A813;
+  --green: #15C213;
+  --red: #C21325;
+}
+
 .debug * {
   outline: 1px solid rebeccapurple;
 }
@@ -46,16 +52,6 @@
   color: #ffffff;
 }
 
-.rotate-left h2,
-h3.rotate-left {
-  transform: rotate(-2deg);
-}
-
-.rotate-right h2,
-h3.rotate-right {
-  transform: rotate(2deg);
-}
-
 .opencollective h3 {
   display: inline-block;
   background-color: #c9868e;
@@ -67,12 +63,12 @@ h3.rotate-right {
 
 .blockContent h2 {
   display: inline-block;
-  background-color: #545454;
   font-weight: normal;
   text-transform: uppercase;
-  color: #ffffff;
   padding: 0 30px 8px 15px;
   letter-spacing: 1px;
+  border-left-width: 8px;
+  border-left-style: solid;
 }
 
 .blockContent > div {
@@ -127,4 +123,17 @@ h3.rotate-right {
 
 .headerWrapper h2 {
   color: #545454;
+}
+
+
+.yellow h2 {
+  color: var(--yellow);
+}
+
+.green h2 {
+  color: var(--green);
+}
+
+.red h2 {
+  color: var(--red);
 }

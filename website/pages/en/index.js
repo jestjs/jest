@@ -42,7 +42,7 @@ class Contributors extends React.Component {
   render() {
     return (
       <div className="opencollective">
-        <h3 className="rotate-left">
+        <h3>
           <translate>Sponsors</translate>
         </h3>
         <p>
@@ -75,7 +75,7 @@ class Contributors extends React.Component {
               </a>
             ))}
         </div>
-        <h3 className="rotate-left">
+        <h3>
           <translate>Backers</translate>
         </h3>
         <p>
@@ -449,7 +449,7 @@ class Index extends React.Component {
           </Container>
           <Container padding={['bottom', 'top']} className="section-container">
             <GridBlock
-              className="rotate-right"
+              className="yellow"
               contents={[
                 {
                   content: (
@@ -473,7 +473,7 @@ class Index extends React.Component {
             className="section-container"
           >
             <GridBlock
-              className="rotate-left"
+              className="red"
               contents={[
                 {
                   content: (
@@ -494,7 +494,7 @@ class Index extends React.Component {
           </Container>
           <Container padding={['bottom', 'top']} className="section-container">
             <GridBlock
-              className="rotate-right"
+              className="yellow"
               contents={[
                 {
                   content: (
@@ -520,7 +520,7 @@ class Index extends React.Component {
             className="section-container"
           >
             <GridBlock
-              className="rotate-right"
+              className="red"
               contents={[
                 {
                   content: (
@@ -536,11 +536,11 @@ class Index extends React.Component {
               ]}
             />
           </Container>
-          <Container padding={['bottom', 'top']} className="debu">
+          <Container padding={['bottom', 'top']}>
             <a className="anchor" name="watch" />
             <a className="hash-link" href="#watch" />
             <GridBlock
-              className="rotate-left"
+              className="green"
               contents={[
                 {
                   image: true,
@@ -587,8 +587,8 @@ class Index extends React.Component {
           </Container>
           <div className="container section-container imageAlignSide lightBackground twoByGridBlock">
             <div className="wrapper">
-              <div className="gridBlock">
-                <div className="blockContent rotate-right">
+              <div className="gridBlock yellow">
+                <div className="blockContent">
                   <h2>
                     <translate>Open Collective</translate>
                   </h2>
@@ -601,7 +601,7 @@ class Index extends React.Component {
                   </MarkdownBlock>
                   <Contributors />
                 </div>
-                <div className="blockContent rotate-left">
+                <div className="blockContent yellow">
                   <h2>
                     <translate>Who uses Jest?</translate>
                   </h2>
