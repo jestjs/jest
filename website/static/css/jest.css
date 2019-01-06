@@ -3,6 +3,8 @@
   --yellow: #C2A813;
   --green: #15C213;
   --red: #C21325;
+  --grey: #AAAAAA;
+  --grey2: #EDEDED;
 }
 
 .debug * {
@@ -121,11 +123,7 @@
   display: none;
 }
 
-.headerWrapper h2 {
-  color: #545454;
-}
-
-
+/* Section titles colors */
 .yellow h2 {
   color: var(--yellow);
 }
@@ -136,4 +134,18 @@
 
 .red h2 {
   color: var(--red);
+}
+
+/* Search input background color */
+.reactNavSearchWrapper input#search_input_react {
+  background-color: var(--grey);
+}
+
+
+/* Logo */
+.headerTitleWithLogo {
+  background-color: var(--red);
+  text-transform: uppercase;
+  color: var(--grey2);
+  padding: 6px 15px;
 }
