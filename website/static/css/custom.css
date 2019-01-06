@@ -186,6 +186,10 @@ div.jest-button-container {
   justify-content: center;
 }
 
+div.jest-button-container a {
+  text-transform: uppercase;
+}
+
 a.jest-button {
   color: #fff;
   background-color: red;

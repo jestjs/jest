@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
 const React = require('react');
 
 const CompLibrary = require('../../core/CompLibrary.js');
@@ -13,12 +12,9 @@ const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
 const translate = require('../../server/translate.js').translate;
-// const translation = require('../../server/translation.js');
 const backers = require(process.cwd() + '/backers.json');
-
 const siteConfig = require(process.cwd() + '/siteConfig.js');
-// const idx = (target, path) =>
-//   path.reduce((obj, key) => (obj && obj[key] ? obj[key] : null), target);
+const getUrl = (url, language) => siteConfig.baseUrl + 'docs/' + language + url;
 
 class Button extends React.Component {
   render() {
@@ -322,56 +318,38 @@ class Hand extends React.Component {
   }
 }
 
-class HeroInteractive extends React.Component {
-  render() {
-    return (
-      <div className="jest-hero-interactive">
-        <div className="hero-github-button-container">
-          <a
-            className="github-button"
-            href={this.props.config.repoUrl}
-            data-icon="octicon-star"
-            data-count-href="/facebook/jest/stargazers"
-            data-show-count={true}
-            data-count-aria-label="# stargazers on GitHub"
-            aria-label="Star facebook/jest on GitHub"
-          >
-            Star
-          </a>
-        </div>
-        <Hand />
-        <div className="jest-button-container">
-          <Button
-            href={
-              siteConfig.baseUrl +
-              'docs/' +
-              this.props.language +
-              '/getting-started.html'
-            }
-          >
-            <translate>Get Started</translate>
-          </Button>
-          <Button href="#use">
-            <translate>Try Out Jest</translate>
-          </Button>
-          <Button href={'#watch'}>
-            <translate>Watch Talks</translate>
-          </Button>
-          <Button
-            href={
-              siteConfig.baseUrl +
-              'docs/' +
-              this.props.language +
-              '/snapshot-testing.html'
-            }
-          >
-            <translate>Learn More</translate>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-}
+const HeroInteractive = ({config: {repoUrl}, language}) => (
+  <div className="jest-hero-interactive">
+    <div className="hero-github-button-container">
+      <a
+        className="github-button"
+        href={repoUrl}
+        data-icon="octicon-star"
+        data-count-href="/facebook/jest/stargazers"
+        data-show-count={true}
+        data-count-aria-label="# stargazers on GitHub"
+        aria-label="Star facebook/jest on GitHub"
+      >
+        Star
+      </a>
+    </div>
+    <Hand />
+    <div className="jest-button-container">
+      <Button href={getUrl('/getting-started.html', language)}>
+        <translate>Get Started</translate>
+      </Button>
+      <Button href={getUrl('/getting-started.html', language)}>
+        <translate>Docs</translate>
+      </Button>
+      <Button href={getUrl('/configuration', language)}>
+        <translate>Config</translate>
+      </Button>
+      <Button href={getUrl('/help', language)}>
+        <translate>Get help</translate>
+      </Button>
+    </div>
+  </div>
+);
 
 class Index extends React.Component {
   render() {
@@ -384,7 +362,7 @@ class Index extends React.Component {
     return (
       <div>
         <HeroInteractive language={this.props.language} config={siteConfig} />
-        <div className="mainContainer" style={{ paddingTop: 0}}>
+        <div className="mainContainer" style={{paddingTop: 0}}>
           <Container padding={['bottom', 'top']} background="light">
             <GridBlock
               align="center"
