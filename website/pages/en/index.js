@@ -363,43 +363,56 @@ class Index extends React.Component {
       <div>
         <HeroInteractive language={this.props.language} config={siteConfig} />
         <div className="mainContainer" style={{paddingTop: 0}}>
-          <Container padding={['bottom', 'top']} background="light">
+          <Container padding={['bottom', 'top']} className="features">
             <GridBlock
               align="center"
+              className="yellow"
               contents={[
                 {
                   content: (
                     <translate>
-                      Complete and ready to set-up JavaScript testing solution.
-                      Works out of the box for any React project.
+                      Jest’s core design philosophy is to work out of the box,
+                      config free, on most JavaScript projects.
                     </translate>
                   ),
-                  image: '/img/content/female-technologist.png',
-                  imageAlign: 'top',
-                  title: <translate>Developer Ready</translate>,
+                  title: <translate>Zero config</translate>,
                 },
                 {
                   content: (
                     <translate>
-                      Fast interactive watch mode runs only test files related
-                      to changed files and is optimized to give signal quickly.
+                      With a watch mode built into Jest, pressing save on a test
+                      file can trigger a re-run of your dependent tests.
                     </translate>
                   ),
-                  image: '/img/content/runner.png',
-                  imageAlign: 'top',
-                  title: <translate>Instant Feedback</translate>,
+                  title: <translate>Blazing</translate>,
                 },
                 {
                   content: (
                     <translate>
-                      Capture snapshots of React trees or other serializable
-                      values to simplify testing and to analyze how state
-                      changes over time.
+                      Make tests which keep track of large objects with ease.
+                      Snapshots live either alongside your tests, or embeddded
+                      inline.
                     </translate>
                   ),
-                  image: '/img/content/camera-with-flash.png',
-                  imageAlign: 'top',
-                  title: <translate>Snapshot Testing</translate>,
+                  title: <translate>Snapshots</translate>,
+                },
+                {
+                  content: (
+                    <translate>
+                      Tests runs parallel in their own processes to maximize
+                      performance.
+                    </translate>
+                  ),
+                  title: <translate>Isolated</translate>,
+                },
+                {
+                  content: (
+                    <translate>
+                      From “it” to “expect” - Jest has the entire toolkit in one
+                      place. Well documented, well maintained, well good.
+                    </translate>
+                  ),
+                  title: <translate>Great api</translate>,
                 },
               ]}
               layout="fourColumn"
@@ -514,10 +527,17 @@ class Index extends React.Component {
               ]}
             />
           </Container>
-          <Container padding={['bottom', 'top']}>
+          <Container padding={['bottom', 'top']} className="section-container">
             <a className="anchor" name="watch" />
             <a className="hash-link" href="#watch" />
-            <GridBlock
+            <div className="blockElement green">
+              <div className="blockContent">
+                <h2>
+                  <translate>Docs and talks</translate>
+                </h2>
+              </div>
+            </div>
+            {/* <GridBlock
               className="green"
               contents={[
                 {
@@ -526,7 +546,7 @@ class Index extends React.Component {
                   title: <translate>Docs and talks</translate>,
                 },
               ]}
-            />
+            /> */}
             <div className="blockElement imageAlignSide gridBlock threeByGridBlock">
               <div className="video">
                 <iframe

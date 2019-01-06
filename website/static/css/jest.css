@@ -56,25 +56,25 @@
 
 .opencollective h3 {
   display: inline-block;
-  background-color: #c9868e;
   font-weight: normal;
-  color: #ffffff;
-  padding: 0 30px 8px 15px;
+  color: var(--yellow);
   letter-spacing: 1px;
+  text-transform: lowercase;
 }
 
-.blockContent h2 {
+.section-container .blockContent h2 {
   display: inline-block;
+  font-size: 2rem;
   font-weight: normal;
   text-transform: uppercase;
-  padding: 0 30px 8px 15px;
+  padding-left: 10px;
   letter-spacing: 1px;
   border-left-width: 8px;
   border-left-style: solid;
 }
 
 .blockContent > div {
-  margin-top: 16px;
+  margin: 16px 0 0 18px;
 }
 
 .container .wrapper .imageAlignSide p {
@@ -124,15 +124,15 @@
 }
 
 /* Section titles colors */
-.yellow h2 {
+.section-container .yellow h2 {
   color: var(--yellow);
 }
 
-.green h2 {
+.section-container .green h2 {
   color: var(--green);
 }
 
-.red h2 {
+.section-container .red h2 {
   color: var(--red);
 }
 
@@ -141,11 +141,24 @@
   background-color: var(--grey);
 }
 
-
 /* Logo */
 .headerTitleWithLogo {
   background-color: var(--red);
   text-transform: uppercase;
   color: var(--grey2);
   padding: 6px 15px;
+}
+
+.features .gridBlock {
+  flex-wrap: nowrap;
+}
+
+.features .gridBlock .fourByGridBlock {
+  flex: initial;
+}
+
+.features h2 {
+  color: var(--yellow);
+  font-size: 20px;
+  text-transform: lowercase;
 }
