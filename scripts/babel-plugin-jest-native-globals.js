@@ -73,7 +73,10 @@ module.exports = ({template}) => {
             path.parent.property.name
           )
         ) {
-          if (!state.jestInjectedRead && path.parent.property.name === 'readFileSync') {
+          if (
+            !state.jestInjectedRead &&
+            path.parent.property.name === 'readFileSync'
+          ) {
             state.jestInjectedRead = true;
             path
               .findParent(p => p.isProgram())
@@ -84,7 +87,10 @@ module.exports = ({template}) => {
 
             path.parentPath.replaceWithSourceString('jestReadFile');
           }
-          if (!state.jestInjectedWrite && path.parent.property.name === 'writeFileSync') {
+          if (
+            !state.jestInjectedWrite &&
+            path.parent.property.name === 'writeFileSync'
+          ) {
             state.jestInjectedWrite = true;
             path
               .findParent(p => p.isProgram())
@@ -95,7 +101,10 @@ module.exports = ({template}) => {
 
             path.parentPath.replaceWithSourceString('jestWriteFile');
           }
-          if (!state.jestInjectedExists && path.parent.property.name === 'existsSync') {
+          if (
+            !state.jestInjectedExists &&
+            path.parent.property.name === 'existsSync'
+          ) {
             state.jestInjectedExists = true;
             path
               .findParent(p => p.isProgram())
