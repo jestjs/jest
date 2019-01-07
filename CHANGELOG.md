@@ -105,6 +105,7 @@
 - `[jest-runtime]` Fix `requireActual` on node_modules with mock present ([#7404](https://github.com/facebook/jest/pull/7404))
 - `[jest-resolve]` Fix `isBuiltinModule` to support versions of node without `module.builtinModules` ([#7565](https://github.com/facebook/jest/pull/7565))
 - `[babel-jest]` Set `cwd` to be resilient to it changing during the runtime of the tests ([#7574](https://github.com/facebook/jest/pull/7574))
+- `[jest-snapshot]` Write and read snapshots from disk even if `fs` is mocked ([#7080](https://github.com/facebook/jest/pull/7080))
 
 ### Chore & Maintenance
 

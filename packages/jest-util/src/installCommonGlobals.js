@@ -10,6 +10,7 @@
 import type {ConfigGlobals} from 'types/Config';
 import type {Global} from 'types/Global';
 
+import fs from 'fs';
 import createProcessObject from './createProcessObject';
 import deepCyclicCopy from './deepCyclicCopy';
 
@@ -29,6 +30,21 @@ export default function(globalObject: Global, globals: ConfigGlobals) {
     [symbol.for('jest-native-now')]: {
       enumerable: false,
       value: globalObject.Date.now.bind(globalObject.Date),
+      writable: false,
+    },
+    [symbol.for('jest-native-read-file')]: {
+      enumerable: false,
+      value: fs.readFileSync.bind(fs),
+      writable: false,
+    },
+    [symbol.for('jest-native-write-file')]: {
+      enumerable: false,
+      value: fs.writeFileSync.bind(fs),
+      writable: false,
+    },
+    [symbol.for('jest-native-exists-file')]: {
+      enumerable: false,
+      value: fs.existsSync.bind(fs),
       writable: false,
     },
     'jest-symbol-do-not-touch': {
