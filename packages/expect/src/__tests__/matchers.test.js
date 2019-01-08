@@ -271,6 +271,16 @@ describe('.toStrictEqual()', () => {
     expect(c.constructor.name).toEqual(d.constructor.name);
     expect({test: c}).not.toStrictEqual({test: d});
   });
+
+  it('does not pass when sparseness of arrays do not match', () => {
+    expect([, 1]).not.toStrictEqual([undefined, 1]); // eslint-disable-line no-sparse-arrays
+    expect([undefined, 1]).not.toStrictEqual([, 1]); // eslint-disable-line no-sparse-arrays
+    expect([, , , 1]).not.toStrictEqual([, 1]); // eslint-disable-line no-sparse-arrays
+  });
+
+  it('does not pass when equally sparse arrays have different values', () => {
+    expect([, 1]).not.toStrictEqual([, 2]); // eslint-disable-line no-sparse-arrays
+  });
 });
 
 describe('.toEqual()', () => {

@@ -30,6 +30,7 @@ import {
   getObjectSubset,
   getPath,
   iterableEquality,
+  sparseArrayEquality,
   subsetEquality,
   typeEquality,
   isOneline,
@@ -666,7 +667,7 @@ const matchers: MatchersObject = {
     const pass = equals(
       received,
       expected,
-      [iterableEquality, typeEquality],
+      [iterableEquality, typeEquality, sparseArrayEquality],
       true,
     );
 
