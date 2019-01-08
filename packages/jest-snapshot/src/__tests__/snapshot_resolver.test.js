@@ -1,4 +1,4 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
 import path from 'path';
 import {buildSnapshotResolver} from '../snapshot_resolver';
