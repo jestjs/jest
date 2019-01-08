@@ -20,7 +20,7 @@ afterEach(() => cleanup(DIR));
 test('', () => {
   writeFiles(DIR, {
     'package.json': '{}',
-    'promise_reject.test.js': `
+    'promiseReject.test.js': `
      test('test', () => {
        return Promise.reject(null)
      });
