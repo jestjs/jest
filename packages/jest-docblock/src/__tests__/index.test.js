@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  * All rights reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -165,7 +165,7 @@ describe('docblock', () => {
       '/**' +
       os.EOL +
       '' +
-      ' * Copyright 2004-present Facebook. All Rights Reserved.' +
+      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
       os.EOL +
       '' +
       ' * @team foo' +
@@ -214,7 +214,7 @@ describe('docblock', () => {
       '/**' +
       os.EOL +
       '' +
-      ' * Copyright 2004-present Facebook. All Rights Reserved.' +
+      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
       os.EOL +
       '' +
       ' * @class A long declaration of a class' +
@@ -246,7 +246,7 @@ describe('docblock', () => {
       '/**' +
       os.EOL +
       '' +
-      ' * Copyright 2004-present Facebook. All Rights Reserved.' +
+      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
       os.EOL +
       '' +
       ' * @class A long declaration of a class' +
@@ -268,7 +268,7 @@ describe('docblock', () => {
       ' */';
     expect(docblock.parseWithComments(code)).toEqual({
       comments:
-        'Copyright 2004-present Facebook. All Rights Reserved.' +
+        'Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
         os.EOL +
         os.EOL +
         'And some license here' +
@@ -480,7 +480,8 @@ describe('docblock', () => {
 
   it('prints docblocks with comments and no keys', () => {
     const pragmas = {};
-    const comments = 'Copyright 2004-present Facebook. All Rights Reserved.';
+    const comments =
+      'Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.';
     expect(docblock.print({comments, pragmas})).toEqual(
       '/**' + os.EOL + ' * ' + comments + os.EOL + ' */',
     );

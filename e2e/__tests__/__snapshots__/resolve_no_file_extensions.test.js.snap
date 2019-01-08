@@ -27,7 +27,7 @@ exports[`show error message with matching files 1`] = `
 
     See https://jestjs.io/docs/en/configuration#modulefileextensions-array-string
 
-      1 | // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+      1 | // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
       2 | 
     > 3 | module.exports = require('./some-json-file');
         |                  ^
