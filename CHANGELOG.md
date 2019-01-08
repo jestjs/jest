@@ -140,6 +140,7 @@
 - `[docs]` Add correct default value for `testUrl` config option ([#7277](https://github.com/facebook/jest/pull/7277))
 - `[docs]` Remove duplicate code in `MockFunctions` ([#7297](https://github.com/facebook/jest/pull/7297))
 - `[*]` Add check for Facebook copyright headers on CI ([#7370](https://github.com/facebook/jest/pull/7370))
+- `[*]` Update Facebook copyright headers ([#7589](https://github.com/facebook/jest/pull/7589))
 - `[jest-haste-map]` Refactor `dependencyExtractor` and tests ([#7385](https://github.com/facebook/jest/pull/7385))
 - `[docs]` Clearify conditional setting of `NODE_ENV` ([#7369](https://github.com/facebook/jest/pull/7369))
 - `[docs]` Clarify conditional setting of `NODE_ENV` ([#7369](https://github.com/facebook/jest/pull/7369))
