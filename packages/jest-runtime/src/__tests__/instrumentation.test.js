@@ -11,7 +11,7 @@
 import vm from 'vm';
 import path from 'path';
 import os from 'os';
-import ScriptTransformer from '../script_transformer';
+import ScriptTransformer from '../ScriptTransformer';
 
 jest.mock('vm');
 

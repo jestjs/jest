@@ -8,7 +8,7 @@
  */
 
 import type {Path, ProjectConfig} from 'types/Config';
-import type {Options} from './script_transformer';
+import type {Options} from './ScriptTransformer';
 
 import path from 'path';
 import {escapePathForRegex} from 'jest-regex-util';
