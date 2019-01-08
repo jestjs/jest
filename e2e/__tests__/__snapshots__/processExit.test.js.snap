@@ -3,7 +3,7 @@
 exports[`prints stack trace pointing to process.exit call 1`] = `
 "  ●  process.exit called with \\"1\\"
 
-      1 | // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+      1 | // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
       2 | 
     > 3 | process.exit(1);
         |         ^

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -27,7 +27,7 @@ import HasteMap from 'jest-haste-map';
 import stableStringify from 'fast-json-stable-stringify';
 import slash from 'slash';
 import {version as VERSION} from '../package.json';
-import shouldInstrument from './should_instrument';
+import shouldInstrument from './shouldInstrument';
 import writeFileAtomic from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
 import {enhanceUnexpectedTokenMessage} from './helpers';

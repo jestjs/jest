@@ -890,6 +890,17 @@ test('the best drink for octopus flavor is undefined', () => {
 
 You could write `expect(bestDrinkForFlavor('octopus')).toBe(undefined)`, but it's better practice to avoid referring to `undefined` directly in your code.
 
+### `.toBeNaN()`
+
+Use `.toBeNaN` when checking a value is `NaN`.
+
+```js
+test('passes when value is NaN', () => {
+  expect(NaN).toBeNaN();
+  expect(1).not.toBeNaN();
+});
+```
+
 ### `.toContain(item)`
 
 Use `.toContain` when you want to check that an item is in an array. For testing the items in the array, this uses `===`, a strict equality check. `.toContain` can also check whether a string is a substring of another string.

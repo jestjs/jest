@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,6 +11,7 @@ import type {AggregatedResult} from 'types/TestResult';
 import type {Argv} from 'types/Argv';
 import type {GlobalConfig, Path} from 'types/Config';
 
+import path from 'path';
 import {Console, clearLine, createDirectory} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfigs, deprecationEntries} from 'jest-config';
@@ -22,6 +23,7 @@ import getChangedFilesPromise from '../getChangedFilesPromise';
 import {formatHandleErrors} from '../collectHandles';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import {print as preRunMessagePrint} from '../preRunMessage';
+import {getVersion} from '../jest';
 import runJest from '../runJest';
 import Runtime from 'jest-runtime';
 import TestWatcher from '../TestWatcher';
@@ -176,9 +178,14 @@ const readResultsAndExit = (
 };
 
 export const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
+  const version =
+    getVersion() +
+    (__dirname.includes(`packages${path.sep}jest-cli`) ? '-dev' : '');
+
   const rawArgv: Argv | string[] = maybeArgv || process.argv.slice(2);
   const argv: Argv = yargs(rawArgv)
     .usage(args.usage)
+    .version(version)
     .alias('help', 'h')
     .options(args.options)
     .epilogue(args.docs)
