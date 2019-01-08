@@ -21,6 +21,6 @@ test('prints useful error for requires after test is done', () => {
 
   expect(interestingLines).toMatchSnapshot();
   expect(stderr.split('\n')[19]).toMatch(
-    new RegExp('(__tests__/late-require.test.js:11:20)'),
+    new RegExp('(__tests__/lateRequire.test.js:11:20)'),
   );
 });

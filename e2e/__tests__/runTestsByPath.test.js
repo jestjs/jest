@@ -14,7 +14,7 @@ import os from 'os';
 import path from 'path';
 import {cleanup, writeFiles} from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'run_tests_by_path_test');
+const DIR = path.resolve(os.tmpdir(), 'run-tests-by-path-test');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

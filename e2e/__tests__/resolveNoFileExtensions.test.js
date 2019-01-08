@@ -12,13 +12,13 @@ import path from 'path';
 import runJest from '../runJest';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 
-const DIR = path.resolve(__dirname, '../resolve_no_extensions-no-js');
+const DIR = path.resolve(__dirname, '../resolve-no-extensions-no-js');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 test('show error message with matching files', () => {
-  const {status, stderr} = runJest('resolve_no_extensions');
+  const {status, stderr} = runJest('resolve-no-extensions');
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(1);
@@ -46,7 +46,7 @@ test('show error message when no js moduleFileExtensions', () => {
     `,
   });
 
-  const {status, stderr} = runJest('resolve_no_extensions-no-js');
+  const {status, stderr} = runJest('resolve-no-extensions-no-js');
 
   expect(status).toBe(1);
   expect(stderr).toMatchSnapshot();

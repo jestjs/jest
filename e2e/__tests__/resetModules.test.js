@@ -11,6 +11,6 @@
 import runJest from '../runJest';
 
 test('jest.resetModules should not error when _isMockFunction is defined but not boolean', () => {
-  const result = runJest('reset_modules');
+  const result = runJest('reset-modules');
   expect(result.status).toBe(0);
 });
