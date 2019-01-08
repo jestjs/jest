@@ -33,8 +33,8 @@ exports[`show error message with matching files 1`] = `
         |                  ^
       4 | 
 
-      at packages/jest-resolve/build/index.js:217:17
-      at index.js:3:18
+      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:217:17)
+      at Object.require (index.js:3:18)
 
 "
 `;
