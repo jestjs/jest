@@ -99,7 +99,7 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <pre><code class="hljs css language-bash">yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
 </code></pre>
 <p>You will need to use <code>babel.config.js</code> in order to transpile <code>node_modules</code>. See <a href="https://babeljs.io/docs/en/next/config-files">https://babeljs.io/docs/en/next/config-files</a> for more information.</p>
-<p>You can also see the example in the Jest repository: <a href="https://github.com/facebook/jest/tree/master/examples/babel-7">https://github.com/facebook/jest/tree/master/examples/babel-7</a></p>
+<p>You can also see the example in the Jest repository: <a href="https://github.com/facebook/jest/tree/54f4d4ebd3d1a11d65962169f493ce41efdd784f/examples/babel-7">https://github.com/facebook/jest/tree/54f4d4ebd3d1a11d65962169f493ce41efdd784f/examples/babel-7</a></p>
 </blockquote>
 <p><em>Note: Explicitly installing <code>regenerator-runtime</code> is not needed if you use <code>npm</code> 3 or 4 or Yarn</em></p>
 <p>Don't forget to add a <a href="https://babeljs.io/docs/usage/babelrc/"><code>.babelrc</code></a> file in your project's root folder. For example, if you are using ES6 and <a href="https://facebook.github.io/react/">React.js</a> with the <a href="https://babeljs.io/docs/plugins/preset-env/"><code>babel-preset-env</code></a> and <a href="https://babeljs.io/docs/plugins/preset-react/"><code>babel-preset-react</code></a> presets:</p>
