@@ -13,7 +13,7 @@ import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import os from 'os';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'watch_mode_update_snapshot');
+const DIR = path.resolve(os.tmpdir(), 'watch-mode-update-snapshot');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));

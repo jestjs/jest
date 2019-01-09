@@ -13,7 +13,7 @@ import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import os from 'os';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'watch_mode_patterns');
+const DIR = path.resolve(os.tmpdir(), 'watch-mode-only-failed');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
@@ -27,12 +27,10 @@ expect.addSnapshotSerializer({
 const setupFiles = input => {
   writeFiles(DIR, {
     '__tests__/bar.spec.js': `
-      test('bar 1', () => { expect('bar').toBe('bar'); });
-      test('bar 2', () => { expect('bar').toBe('bar'); });
+      test('bar 1', () => { expect('bar').toBe('foo'); });
     `,
     '__tests__/foo.spec.js': `
       test('foo 1', () => { expect('foo').toBe('foo'); });
-      test('foo 2', () => { expect('foo').toBe('foo'); });
     `,
     'package.json': JSON.stringify({
       jest: {
@@ -43,36 +41,13 @@ const setupFiles = input => {
   });
 };
 
-test('can press "p" to filter by file name', () => {
-  const input = [{keys: ['p', 'b', 'a', 'r', '\r']}, {keys: ['q']}];
+test('can press "f" to run only failed tests', () => {
+  const input = [{keys: ['f']}, {keys: ['q']}];
   setupFiles(input);
 
-  const {status, stdout, stderr} = runJest(DIR, [
-    '--no-watchman',
-    '--watchAll',
-  ]);
+  const {status, stderr} = runJest(DIR, ['--no-watchman', '--watchAll']);
   const results = extractSummaries(stderr);
 
-  expect(stdout).toMatchSnapshot();
-  expect(results).toHaveLength(2);
-  results.forEach(({rest, summary}) => {
-    expect(rest).toMatchSnapshot('test results');
-    expect(summary).toMatchSnapshot('test summary');
-  });
-  expect(status).toBe(0);
-});
-
-test('can press "t" to filter by test name', () => {
-  const input = [{keys: ['t', '2', '\r']}, {keys: ['q']}];
-  setupFiles(input);
-
-  const {status, stdout, stderr} = runJest(DIR, [
-    '--no-watchman',
-    '--watchAll',
-  ]);
-  const results = extractSummaries(stderr);
-
-  expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
     expect(rest).toMatchSnapshot('test results');
