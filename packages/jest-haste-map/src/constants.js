@@ -20,9 +20,10 @@ export default {
   /* file map attributes */
   ID: 0,
   MTIME: 1,
-  VISITED: 2,
-  DEPENDENCIES: 3,
-  SHA1: 4,
+  SIZE: 2,
+  VISITED: 3,
+  DEPENDENCIES: 4,
+  SHA1: 5,
 
   /* module map attributes */
   PATH: 0,
