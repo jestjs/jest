@@ -500,6 +500,16 @@ describe('.toEqual()', () => {
     }
   });
 
+  test('failure message matches the expected snapshot', () => {
+    expect(() =>
+      jestExpect({a: 1}).toEqual({a: 2}),
+    ).toThrowErrorMatchingSnapshot();
+
+    expect(() =>
+      jestExpect({a: 1}).not.toEqual({a: 1}),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   test('symbol based keys in arrays are processed correctly', () => {
     const mySymbol = Symbol('test');
     const actual1 = [];
