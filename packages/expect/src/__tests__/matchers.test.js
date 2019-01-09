@@ -272,15 +272,21 @@ describe('.toStrictEqual()', () => {
     expect({test: c}).not.toStrictEqual({test: d});
   });
 
+  /* eslint-disable no-sparse-arrays */
+  it('passes for matching sparse arrays', () => {
+    expect([, 1]).toStrictEqual([, 1]);
+  });
+
   it('does not pass when sparseness of arrays do not match', () => {
-    expect([, 1]).not.toStrictEqual([undefined, 1]); // eslint-disable-line no-sparse-arrays
-    expect([undefined, 1]).not.toStrictEqual([, 1]); // eslint-disable-line no-sparse-arrays
-    expect([, , , 1]).not.toStrictEqual([, 1]); // eslint-disable-line no-sparse-arrays
+    expect([, 1]).not.toStrictEqual([undefined, 1]);
+    expect([undefined, 1]).not.toStrictEqual([, 1]);
+    expect([, , , 1]).not.toStrictEqual([, 1]);
   });
 
   it('does not pass when equally sparse arrays have different values', () => {
-    expect([, 1]).not.toStrictEqual([, 2]); // eslint-disable-line no-sparse-arrays
+    expect([, 1]).not.toStrictEqual([, 2]);
   });
+  /* eslint-enable */
 });
 
 describe('.toEqual()', () => {
