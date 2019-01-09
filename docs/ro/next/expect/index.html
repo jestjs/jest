@@ -857,6 +857,7 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 <p>Differences from <code>.toEqual</code>:</p>
 <ul>
 <li>Keys with <code>undefined</code> properties are checked. e.g. <code>{a: undefined, b: 2}</code> does not match <code>{b: 2}</code> when using <code>.toStrictEqual</code>.</li>
+<li>Array sparseness is checked. e.g. <code>[, 1]</code> does not match <code>[undefined, 1]</code> when using <code>.toStrictEqual</code>.</li>
 <li>Object types are checked to be equal. e.g. A class instance with fields <code>a</code> and <code>b</code> will not equal a literal object with fields <code>a</code> and <code>b</code>.</li>
 </ul>
 <pre><code class="hljs css language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LaCroix</span> </span>{
