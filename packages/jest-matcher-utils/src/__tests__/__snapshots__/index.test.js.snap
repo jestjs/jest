@@ -43,11 +43,6 @@ exports[`.stringify() reduces maxDepth if stringifying very large objects 2`] = 
 exports[`.stringify() toJSON errors when comparing two objects 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
-Expected value to equal:
-  <green>{\\"b\\": 1, \\"toJSON\\": [Function toJSON]}</>
-Received:
-  <red>{\\"a\\": 1, \\"toJSON\\": [Function toJSON]}</>
-
 Difference:
 
 <green>- Expected</>

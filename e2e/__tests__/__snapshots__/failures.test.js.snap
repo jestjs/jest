@@ -272,10 +272,8 @@ exports[`works with assertions in separate files 1`] = `
 
     expect(received).toEqual(expected)
 
-    Expected value to equal:
-      2
-    Received:
-      1
+    Expected: 2
+    Received: 1
 
       10 | 
       11 | module.exports = (one: any, two: any) => {
@@ -302,11 +300,6 @@ exports[`works with async failures 1`] = `
 
     expect(received).toEqual(expected)
 
-    Expected value to equal:
-      {\\"baz\\": \\"bar\\"}
-    Received:
-      {\\"foo\\": \\"bar\\"}
-
     Difference:
 
     - Expected
@@ -330,11 +323,6 @@ exports[`works with async failures 1`] = `
   ● reject, but fail
 
     expect(received).toEqual(expected)
-
-    Expected value to equal:
-      {\\"baz\\": \\"bar\\"}
-    Received:
-      {\\"foo\\": \\"bar\\"}
 
     Difference:
 
