@@ -12,7 +12,7 @@ import path from 'path';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(__dirname, '../toMatchInlineSnapshot');
+const DIR = path.resolve(__dirname, '../to-match-inline-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
 const readFile = filename =>

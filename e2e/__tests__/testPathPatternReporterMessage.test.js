@@ -13,7 +13,7 @@ import os from 'os';
 import path from 'path';
 import {cleanup, writeFiles} from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'jest_path_pattern_reporter_message');
+const DIR = path.resolve(os.tmpdir(), 'jest-path-pattern-reporter-message');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

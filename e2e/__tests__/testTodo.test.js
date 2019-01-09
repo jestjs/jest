@@ -22,21 +22,21 @@ test('works with all statuses', () => {
 });
 
 test('shows error messages when called with no arguments', () => {
-  const result = runJest(dir, ['todo_no_args.test.js']);
+  const result = runJest(dir, ['todoNoArgs.test.js']);
   expect(result.status).toBe(1);
   const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();
 });
 
 test('shows error messages when called with multiple arguments', () => {
-  const result = runJest(dir, ['todo_multiple_args.test.js']);
+  const result = runJest(dir, ['todoMultipleArgs.test.js']);
   expect(result.status).toBe(1);
   const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();
 });
 
 test('shows error messages when called with invalid argument', () => {
-  const result = runJest(dir, ['todo_non_string.test.js']);
+  const result = runJest(dir, ['todoNonString.test.js']);
   expect(result.status).toBe(1);
   const {rest} = extractSummary(result.stderr);
   expect(rest).toMatchSnapshot();

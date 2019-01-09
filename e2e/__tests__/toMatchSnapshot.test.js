@@ -11,7 +11,7 @@ import path from 'path';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(__dirname, '../toMatchSnapshot');
+const DIR = path.resolve(__dirname, '../to-match-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
 beforeEach(() => cleanup(TESTS_DIR));

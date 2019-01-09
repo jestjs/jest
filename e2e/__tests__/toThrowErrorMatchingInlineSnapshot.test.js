@@ -12,7 +12,10 @@ import fs from 'fs';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(__dirname, '../toThrowErrorMatchingInlineSnapshot');
+const DIR = path.resolve(
+  __dirname,
+  '../to-throw-error-matching-inline-snapshot',
+);
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
 const readFile = filename =>

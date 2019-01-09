@@ -13,7 +13,7 @@ beforeAll(() => {
   process.chdir(path.resolve(__dirname, '../some-dir'));
 
   // even though we change the cwd, correct config is still found
-  require('../this-directory-is-covered/ExcludedFromCoverage');
+  require('../this-directory-is-covered/excludedFromCoverage');
 });
 
 it('strips flowtypes using babel-jest and .babelrc', () => {

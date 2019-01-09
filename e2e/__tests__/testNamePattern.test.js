@@ -3,22 +3,21 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
  * @flow
  */
 'use strict';
 
-import path from 'path';
+import {extractSummary} from '../Utils';
 import {json as runWithJson} from '../runJest';
 
 test('testNamePattern', () => {
-  const processorPath = path.resolve(
-    __dirname,
-    '../testResultsProcessor/processor.js',
-  );
-  const result = runWithJson('testResultsProcessor', [
-    '--json',
-    `--testResultsProcessor=${processorPath}`,
+  const {stderr, status} = runWithJson('test-name-pattern', [
+    '--testNamePattern',
+    'should match',
   ]);
-  const json = result.json;
-  expect(json.processed).toBe(true);
+  const {summary} = extractSummary(stderr);
+
+  expect(status).toBe(0);
+  expect(summary).toMatchSnapshot();
 });

@@ -7,9 +7,6 @@
 
 'use strict';
 
-require('../this-directory-is-covered/ExcludedFromCoverage');
+require('../this-directory-is-covered/excludedFromCoverage');
 
-it('strips flowtypes using babel-jest and .babelrc', () => {
-  const a: string = 'a';
-  expect(a).toBe('a');
-});
+test('1', () => {});

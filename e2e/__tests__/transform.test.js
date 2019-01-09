@@ -37,8 +37,8 @@ describe('babel-jest', () => {
       stripAnsi: true,
     });
     expect(stdout).toMatch('Covered.js');
-    expect(stdout).not.toMatch('NotCovered.js');
-    expect(stdout).not.toMatch('ExcludedFromCoverage.js');
+    expect(stdout).not.toMatch('notCovered.js');
+    expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
     expect(stdout).toMatchSnapshot();
   });
@@ -60,7 +60,7 @@ describe('no babel-jest', () => {
 
   test('fails with syntax error on flow types', () => {
     const {stderr} = runJest(tempDir, ['--no-cache', '--no-watchman']);
-    expect(stderr).toMatch(/FAIL.*fails_with_syntax_error/);
+    expect(stderr).toMatch(/FAIL.*failsWithSyntaxError/);
     expect(stderr).toMatch('Unexpected token');
   });
 
@@ -71,7 +71,7 @@ describe('no babel-jest', () => {
       {stripAnsi: true},
     );
     expect(stdout).toMatch('Covered.js');
-    expect(stdout).not.toMatch('ExcludedFromCoverage.js');
+    expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
     expect(stdout).toMatchSnapshot();
   });

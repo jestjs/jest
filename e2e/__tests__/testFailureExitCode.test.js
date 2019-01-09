@@ -14,7 +14,7 @@ import os from 'os';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'test_failure_exit_code_test');
+const DIR = path.resolve(os.tmpdir(), 'test-failure-exit-code-test');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));

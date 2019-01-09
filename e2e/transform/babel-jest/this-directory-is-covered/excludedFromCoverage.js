@@ -5,8 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+require('./Covered');
+require('../NotCovered');
 
-require('../this-directory-is-covered/ExcludedFromCoverage');
+const thisFunctionIsNeverInstrumented = () => null;
 
-test('1', () => {});
+module.exports = {
+  thisFunctionIsNeverInstrumented,
+};

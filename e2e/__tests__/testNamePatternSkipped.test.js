@@ -12,7 +12,7 @@ import {extractSummary} from '../Utils';
 import {json as runWithJson} from '../runJest';
 
 test('testNamePattern skipped', () => {
-  const {stderr, status} = runWithJson('testNamePattern_skipped', [
+  const {stderr, status} = runWithJson('test-name-pattern-skipped', [
     '--testNamePattern',
     'false',
   ]);

@@ -2,7 +2,7 @@
   "jest": {
     "rootDir": "./",
     "transform": {
-      "^.+\\.(ts|js)$": "<rootDir>/TypescriptPreprocessor.js"
+      "^.+\\.(ts|js)$": "<rootDir>/typescriptPreprocessor.js"
     },
     "testMatch": [
       "**/__tests__/*.+(ts|tsx|js)"
