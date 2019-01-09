@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,15 +7,14 @@
  * @flow
  */
 
+import fs from 'fs';
+import path from 'path';
+import prettier from 'prettier';
+import babelTraverse from '@babel/traverse';
+import {saveInlineSnapshots} from '../inline_snapshots';
+
 jest.mock('fs');
 jest.mock('prettier');
-
-const fs = require('fs');
-const path = require('path');
-const prettier = require('prettier');
-const babelTraverse = require('babel-traverse').default;
-
-const {saveInlineSnapshots} = require('../inline_snapshots');
 
 const writeFileSync = fs.writeFileSync;
 const readFileSync = fs.readFileSync;

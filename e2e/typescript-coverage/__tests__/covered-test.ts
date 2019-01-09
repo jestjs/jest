@@ -1,4 +1,4 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
 it('adds 1 + 2 to equal 3 in TScript', () => {
   const sum = require('../covered.ts');

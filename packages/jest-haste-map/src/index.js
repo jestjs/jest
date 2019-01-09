@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,14 +19,12 @@ import H from './constants';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import invariant from 'invariant';
-// eslint-disable-next-line import/default
 import nodeCrawl from './crawlers/node';
 import normalizePathSep from './lib/normalizePathSep';
 import os from 'os';
 import path from 'path';
 import sane from 'sane';
 import serializer from 'jest-serializer';
-// eslint-disable-next-line import/default
 import watchmanCrawl from './crawlers/watchman';
 import WatchmanWatcher from './lib/WatchmanWatcher';
 import * as fastPath from './lib/fast_path';
@@ -172,6 +170,7 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  * type FileMetaData = {
  *   id: ?string, // used to look up module metadata objects in `map`.
  *   mtime: number, // check for outdated files.
+ *   size: number, // size of the file in bytes.
  *   visited: boolean, // whether the file has been parsed or not.
  *   dependencies: Array<string>, // all relative dependencies of this file.
  *   sha1: ?string, // SHA-1 of the file, if requested via options.
@@ -190,8 +189,8 @@ const getWhiteList = (list: ?Array<string>): ?RegExp => {
  *
  * Note that the data structures described above are conceptual only. The actual
  * implementation uses arrays and constant keys for metadata storage. Instead of
- * `{id: 'flatMap', mtime: 3421, visited: true, dependencies: []}` the real
- * representation is similar to `['flatMap', 3421, 1, []]` to save storage space
+ * `{id: 'flatMap', mtime: 3421, size: 42, visited: true, dependencies: []}` the real
+ * representation is similar to `['flatMap', 3421, 42, 1, []]` to save storage space
  * and reduce parse and write time of a big JSON blob.
  *
  * The HasteMap is created as follows:
@@ -261,10 +260,30 @@ class HasteMap extends EventEmitter {
           'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
       );
     }
+
     const rootDirHash = crypto
       .createHash('md5')
       .update(options.rootDir)
       .digest('hex');
+    let hasteImplHash = '';
+    let dependencyExtractorHash = '';
+
+    if (options.hasteImplModulePath) {
+      // $FlowFixMe: dynamic require
+      const hasteImpl = require(options.hasteImplModulePath);
+      if (hasteImpl.getCacheKey) {
+        hasteImplHash = String(hasteImpl.getCacheKey());
+      }
+    }
+
+    if (options.dependencyExtractor) {
+      // $FlowFixMe: dynamic require
+      const dependencyExtractor = require(options.dependencyExtractor);
+      if (dependencyExtractor.getCacheKey) {
+        dependencyExtractorHash = String(dependencyExtractor.getCacheKey());
+      }
+    }
+
     this._cachePath = HasteMap.getCacheFilePath(
       this._options.cacheDirectory,
       `haste-map-${this._options.name}-${rootDirHash}`,
@@ -278,6 +297,8 @@ class HasteMap extends EventEmitter {
       this._options.computeSha1.toString(),
       options.mocksPattern || '',
       (options.ignorePattern || '').toString(),
+      hasteImplHash,
+      dependencyExtractorHash,
     );
     this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
@@ -375,10 +396,9 @@ class HasteMap extends EventEmitter {
           cachedFiles.push({moduleName, path: relativeFilePath});
         }
         return this._crawl(cachedHasteMap).then(hasteMap => {
-          const deprecatedFiles = cachedFiles.filter(file => {
-            const fileData = hasteMap.files.get(file.path);
-            return fileData == null || file.moduleName !== fileData[H.ID];
-          });
+          const deprecatedFiles = cachedFiles.filter(
+            file => !hasteMap.files.has(file.path),
+          );
           return {deprecatedFiles, hasteMap};
         });
       });
@@ -430,20 +450,24 @@ class HasteMap extends EventEmitter {
         }
         let dupsByPlatform = hasteMap.duplicates.get(id);
         if (dupsByPlatform == null) {
-          dupsByPlatform = Object.create(null);
+          dupsByPlatform = new Map();
           hasteMap.duplicates.set(id, dupsByPlatform);
         }
-        const dups = (dupsByPlatform[platform] = Object.create(null));
-        dups[module[H.PATH]] = module[H.TYPE];
-        dups[existingModule[H.PATH]] = existingModule[H.TYPE];
+
+        const dups = new Map([
+          [module[H.PATH], module[H.TYPE]],
+          [existingModule[H.PATH], existingModule[H.TYPE]],
+        ]);
+        dupsByPlatform.set(platform, dups);
+
         return;
       }
 
       const dupsByPlatform = hasteMap.duplicates.get(id);
       if (dupsByPlatform != null) {
-        const dups = dupsByPlatform[platform];
+        const dups = dupsByPlatform.get(platform);
         if (dups != null) {
-          dups[module[H.PATH]] = module[H.TYPE];
+          dups.set(module[H.PATH], module[H.TYPE]);
         }
         return;
       }
@@ -730,8 +754,8 @@ class HasteMap extends EventEmitter {
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
         : os.platform() === 'darwin'
-          ? sane.FSEventsWatcher
-          : sane.NodeWatcher;
+        ? sane.FSEventsWatcher
+        : sane.NodeWatcher;
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     const rootDir = this._options.rootDir;
@@ -869,7 +893,14 @@ class HasteMap extends EventEmitter {
               stat,
               'since the file exists or changed, it should have stats',
             );
-            const fileMetadata = ['', stat.mtime.getTime(), 0, [], null];
+            const fileMetadata = [
+              '',
+              stat.mtime.getTime(),
+              stat.size,
+              0,
+              [],
+              null,
+            ];
             hasteMap.files.set(relativeFilePath, fileMetadata);
             const promise = this._processFile(
               hasteMap,
@@ -928,31 +959,37 @@ class HasteMap extends EventEmitter {
     const platform =
       getPlatformExtension(relativeFilePath, this._options.platforms) ||
       H.GENERIC_PLATFORM;
-    let dups = dupsByPlatform[platform];
+    let dups = dupsByPlatform.get(platform);
     if (dups == null) {
       return;
     }
 
-    dupsByPlatform = copy(dupsByPlatform);
+    dupsByPlatform = copyMap(dupsByPlatform);
     hasteMap.duplicates.set(moduleName, dupsByPlatform);
-    dups = copy(dups);
-    dupsByPlatform[platform] = dups;
 
-    const dedupType = dups[relativeFilePath];
-    delete dups[relativeFilePath];
-    const filePaths = Object.keys(dups);
-    if (filePaths.length > 1) {
+    dups = copyMap(dups);
+    dupsByPlatform.set(platform, dups);
+    dups.delete(relativeFilePath);
+
+    if (dups.size !== 1) {
+      return;
+    }
+
+    const uniqueModule = dups.entries().next().value;
+
+    if (!uniqueModule) {
       return;
     }
 
     let dedupMap = hasteMap.map.get(moduleName);
+
     if (dedupMap == null) {
       dedupMap = Object.create(null);
       hasteMap.map.set(moduleName, dedupMap);
     }
-    dedupMap[platform] = [filePaths[0], dedupType];
-    delete dupsByPlatform[platform];
-    if (Object.keys(dupsByPlatform).length === 0) {
+    dedupMap[platform] = uniqueModule;
+    dupsByPlatform.delete(platform);
+    if (dupsByPlatform.size === 0) {
       hasteMap.duplicates.delete(moduleName);
     }
   }
@@ -1026,7 +1063,12 @@ class HasteMap extends EventEmitter {
 
 const copy = object => Object.assign(Object.create(null), object);
 
+function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
+  return new Map(input);
+}
+
 HasteMap.H = H;
 HasteMap.ModuleMap = HasteModuleMap;
 
-module.exports = HasteMap;
+export {default as H} from './constants';
+export default HasteMap;

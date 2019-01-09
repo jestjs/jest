@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@
 
 import type {Config, Printer, Refs} from 'types/PrettyFormat';
 
-import escapeHTML from './escape_html';
+import escapeHTML from './escapeHTML';
 
 // Return empty string if keys is empty.
 export const printProps = (

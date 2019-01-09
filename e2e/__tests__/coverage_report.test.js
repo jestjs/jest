@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,7 +19,7 @@ test('outputs coverage report', () => {
   const {stdout, status} = runJest(DIR, ['--no-cache', '--coverage'], {
     stripAnsi: true,
   });
-  const coverageDir = path.resolve(__dirname, '../coverage-report/coverage');
+  const coverageDir = path.join(DIR, 'coverage');
 
   // - the `setup.js` file is ignored and should not be in the coverage report.
   // - `SumDependency.js` is mocked and the real module is never required but
@@ -99,14 +99,7 @@ test('outputs coverage report as json', () => {
     {stripAnsi: true},
   );
   expect(status).toBe(0);
-
-  try {
-    JSON.parse(stdout);
-  } catch (err) {
-    throw new Error(
-      "Can't parse the JSON result from stdout. " + err.toString(),
-    );
-  }
+  expect(() => JSON.parse(stdout)).not.toThrow();
 });
 
 test('outputs coverage report when text is requested', () => {

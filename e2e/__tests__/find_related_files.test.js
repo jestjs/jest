@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -53,14 +53,16 @@ describe('--findRelatedTests flag', () => {
       'a.js': 'module.exports = {foo: 5};',
       'dependencyExtractor.js': `
         const DYNAMIC_IMPORT_RE = /(?:^|[^.]\\s*)(\\bdynamicImport\\s*?\\(\\s*?)([\`'"])([^\`'"]+)(\\2\\s*?\\))/g;
-        module.exports = function dependencyExtractor(code) {
-          const dependencies = new Set();
-          const addDependency = (match, pre, quot, dep, post) => {
-            dependencies.add(dep);
-            return match;
-          };
-          code.replace(DYNAMIC_IMPORT_RE, addDependency);
-          return dependencies;
+        module.exports = {
+          extract(code) {
+            const dependencies = new Set();
+            const addDependency = (match, pre, quot, dep, post) => {
+              dependencies.add(dep);
+              return match;
+            };
+            code.replace(DYNAMIC_IMPORT_RE, addDependency);
+            return dependencies;
+          },
         };
       `,
       'package.json': JSON.stringify({

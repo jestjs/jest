@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,7 +17,7 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 export default ({
   automock: false,
-  bail: false,
+  bail: 0,
   browser: false,
   cache: true,
   cacheDirectory: getCacheDirectory(),
@@ -41,10 +41,11 @@ export default ({
   globalTeardown: null,
   globals: {},
   haste: {
+    computeSha1: false,
     providesModuleNodeModules: [],
   },
   moduleDirectories: ['node_modules'],
-  moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
+  moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
   noStackTrace: false,
@@ -69,7 +70,7 @@ export default ({
   testEnvironmentOptions: {},
   testFailureExitCode: 1,
   testLocationInResults: false,
-  testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: [],
   testResultsProcessor: null,

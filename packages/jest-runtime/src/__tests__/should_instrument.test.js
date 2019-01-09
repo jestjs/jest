@@ -1,14 +1,14 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-import shouldInstrument from '../should_instrument';
+import shouldInstrument from '../shouldInstrument';
 
-describe('should_instrument', () => {
+describe('shouldInstrument', () => {
   const defaultFilename = 'source_file.test.js';
   const defaultOptions = {
     collectCoverage: true,
@@ -27,7 +27,7 @@ describe('should_instrument', () => {
       expect(result).toBe(true);
     };
 
-    it('when testRegex provided and file is not a test file', () => {
+    it('when testRegex is provided and file is not a test file', () => {
       testShouldInstrument('source_file.js', defaultOptions, {
         testRegex: ['.*\\.(test)\\.(js)$'],
       });
@@ -42,6 +42,32 @@ describe('should_instrument', () => {
     it('when testMatch is provided and file is not a test file', () => {
       testShouldInstrument('source_file.js', defaultOptions, {
         testMatch: ['**/?(*.)(test).js', '!**/dont/**/*.js'],
+      });
+    });
+
+    it('when testPathIgnorePatterns is provided and file is not a test file', () => {
+      testShouldInstrument('src/test.js', defaultOptions, {
+        testPathIgnorePatterns: ['src/'],
+      });
+    });
+
+    it('when more than one testPathIgnorePatterns is provided and filename is not a test file', () => {
+      testShouldInstrument('src/test.js', defaultOptions, {
+        testPathIgnorePatterns: ['test/', 'src/'],
+      });
+    });
+
+    it('when testRegex and testPathIgnorePatterns are provided and file is not a test file', () => {
+      testShouldInstrument('src/source_file.js', defaultOptions, {
+        testPathIgnorePatterns: ['test/'],
+        testRegex: ['.*\\.(test)\\.(js)$'],
+      });
+    });
+
+    it('when testMatch and testPathIgnorePatterns are provided and file is not a test file', () => {
+      testShouldInstrument('src/source_file.js', defaultOptions, {
+        testMatch: ['**/?(*.)(test).js', '!**/dont/**/*.js'],
+        testPathIgnorePatterns: ['test/'],
       });
     });
 
@@ -119,7 +145,7 @@ describe('should_instrument', () => {
       );
     });
 
-    it('when testRegex provided and filename is a test file', () => {
+    it('when testRegex is provided and filename is a test file', () => {
       testShouldInstrument(defaultFilename, defaultOptions, {
         testRegex: ['.*\\.(test)\\.(js)$'],
       });
@@ -134,6 +160,20 @@ describe('should_instrument', () => {
     it('when testMatch is provided and file is a test file', () => {
       testShouldInstrument(defaultFilename, defaultOptions, {
         testMatch: ['**/?(*.)(test).js'],
+      });
+    });
+
+    it('when testRegex and testPathIgnorePatterns are provided and filename is a test file', () => {
+      testShouldInstrument('test/' + defaultFilename, defaultOptions, {
+        testPathIgnorePatterns: ['src/'],
+        testRegex: ['.*\\.(test)\\.(js)$'],
+      });
+    });
+
+    it('when testMatch and testPathIgnorePatterns are provided and file is a test file', () => {
+      testShouldInstrument('test/' + defaultFilename, defaultOptions, {
+        testMatch: ['**/?(*.)(test).js'],
+        testPathIgnorePatterns: ['src/'],
       });
     });
 

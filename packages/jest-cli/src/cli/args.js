@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -85,8 +85,8 @@ export const options = {
   bail: {
     alias: 'b',
     default: undefined,
-    description: 'Exit the test suite immediately upon the first failing test.',
-    type: 'boolean',
+    description:
+      'Exit the test suite immediately after `n` number of failing tests.',
   },
   browser: {
     default: undefined,
@@ -425,7 +425,7 @@ export const options = {
     type: 'string',
   },
   prettierPath: {
-    default: 'prettier',
+    default: undefined,
     description: 'The path to the "prettier" module used for inline snapshots.',
     type: 'string',
   },

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,6 +11,7 @@ import type {AggregatedResult} from 'types/TestResult';
 import type {Argv} from 'types/Argv';
 import type {GlobalConfig, Path} from 'types/Config';
 
+import path from 'path';
 import {Console, clearLine, createDirectory} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfigs, deprecationEntries} from 'jest-config';
@@ -22,6 +23,7 @@ import getChangedFilesPromise from '../getChangedFilesPromise';
 import {formatHandleErrors} from '../collectHandles';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import {print as preRunMessagePrint} from '../preRunMessage';
+import {getVersion} from '../jest';
 import runJest from '../runJest';
 import Runtime from 'jest-runtime';
 import TestWatcher from '../TestWatcher';
@@ -35,6 +37,7 @@ import logDebugMessages from '../lib/log_debug_messages';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
+    // $FlowFixMe:`allow reduced return
     const argv: Argv = buildArgv(maybeArgv, project);
 
     if (argv.init) {
@@ -138,7 +141,12 @@ const readResultsAndExit = (
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
 
-  process.on('exit', () => (process.exitCode = code));
+  // Only exit if needed
+  process.on('exit', () => {
+    if (typeof code === 'number' && code !== 0) {
+      process.exitCode = code;
+    }
+  });
 
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
@@ -169,9 +177,15 @@ const readResultsAndExit = (
   }
 };
 
-const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
-  const argv: Argv = yargs(maybeArgv || process.argv.slice(2))
+export const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
+  const version =
+    getVersion() +
+    (__dirname.includes(`packages${path.sep}jest-cli`) ? '-dev' : '');
+
+  const rawArgv: Argv | string[] = maybeArgv || process.argv.slice(2);
+  const argv: Argv = yargs(rawArgv)
     .usage(args.usage)
+    .version(version)
     .alias('help', 'h')
     .options(args.options)
     .epilogue(args.docs)
@@ -180,9 +194,20 @@ const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
   validateCLIOptions(
     argv,
     Object.assign({}, args.options, {deprecationEntries}),
+    // strip leading dashes
+    Array.isArray(rawArgv)
+      ? rawArgv.map(rawArgv => rawArgv.replace(/^--?/, ''))
+      : Object.keys(rawArgv),
   );
 
-  return argv;
+  // strip dashed args
+  return Object.keys(argv).reduce((result, key) => {
+    if (!key.includes('-')) {
+      // $FlowFixMe:`allow reduced return
+      result[key] = argv[key];
+    }
+    return result;
+  }, {});
 };
 
 const getProjectListFromCLIArgs = (argv, project: ?Path) => {

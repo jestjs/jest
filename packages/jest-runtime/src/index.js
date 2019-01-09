@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -23,11 +23,11 @@ import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import Resolver from 'jest-resolve';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
-import Snapshot from 'jest-snapshot';
+import {EXTENSION as SNAPSHOT_EXTENSION} from 'jest-snapshot';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
-import ScriptTransformer from './script_transformer';
-import shouldInstrument from './should_instrument';
+import ScriptTransformer from './ScriptTransformer';
+import shouldInstrument from './shouldInstrument';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
@@ -83,7 +83,7 @@ const getModuleNameMapper = (config: ProjectConfig) => {
 
 const unmockRegExpCache = new WeakMap();
 
-class Runtime {
+export default class Runtime {
   static ScriptTransformer: Class<ScriptTransformer>;
 
   _cacheFS: CacheFS;
@@ -97,7 +97,9 @@ class Runtime {
   _mockFactories: {[key: string]: () => any, __proto__: null};
   _mockMetaDataCache: {[key: string]: MockFunctionMetadata, __proto__: null};
   _mockRegistry: {[key: string]: any, __proto__: null};
+  _isolatedMockRegistry: ?{[key: string]: any, __proto__: null};
   _moduleMocker: ModuleMocker;
+  _isolatedModuleRegistry: ?ModuleRegistry;
   _moduleRegistry: ModuleRegistry;
   _needsCoverageMapped: Set<string>;
   _resolver: Resolver;
@@ -132,6 +134,7 @@ class Runtime {
     this._mockFactories = Object.create(null);
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
+    this._isolatedModuleRegistry = null;
     this._moduleRegistry = Object.create(null);
     this._needsCoverageMapped = new Set();
     this._resolver = resolver;
@@ -236,9 +239,10 @@ class Runtime {
 
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
+      computeSha1: config.haste.computeSha1,
       console: options && options.console,
       dependencyExtractor: config.dependencyExtractor,
-      extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
+      extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
@@ -282,6 +286,7 @@ class Runtime {
     from: Path,
     moduleName?: string,
     options: ?InternalModuleOptions,
+    isRequireActual: ?boolean,
   ) {
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
@@ -290,11 +295,6 @@ class Runtime {
     );
     let modulePath;
 
-    const moduleRegistry =
-      !options || !options.isInternalModule
-        ? this._moduleRegistry
-        : this._internalModuleRegistry;
-
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
     const moduleResource = moduleName && this._resolver.getModule(moduleName);
@@ -302,6 +302,7 @@ class Runtime {
       moduleName && this._resolver.getMockModule(from, moduleName);
     if (
       (!options || !options.isInternalModule) &&
+      !isRequireActual &&
       !moduleResource &&
       manualMock &&
       manualMock !== this._isCurrentlyExecutingManualMock &&
@@ -316,6 +317,18 @@ class Runtime {
 
     if (!modulePath) {
       modulePath = this._resolveModule(from, moduleName);
+    }
+
+    let moduleRegistry;
+
+    if (!options || !options.isInternalModule) {
+      if (this._moduleRegistry[modulePath] || !this._isolatedModuleRegistry) {
+        moduleRegistry = this._moduleRegistry;
+      } else {
+        moduleRegistry = this._isolatedModuleRegistry;
+      }
+    } else {
+      moduleRegistry = this._internalModuleRegistry;
     }
 
     if (!moduleRegistry[modulePath]) {
@@ -352,6 +365,10 @@ class Runtime {
     return this.requireModule(from, to, {isInternalModule: true});
   }
 
+  requireActual(from: Path, moduleName: string) {
+    return this.requireModule(from, moduleName, undefined, true);
+  }
+
   requireMock(from: Path, moduleName: string) {
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
@@ -359,12 +376,16 @@ class Runtime {
       moduleName,
     );
 
-    if (this._mockRegistry[moduleID]) {
+    if (this._isolatedMockRegistry && this._isolatedMockRegistry[moduleID]) {
+      return this._isolatedMockRegistry[moduleID];
+    } else if (this._mockRegistry[moduleID]) {
       return this._mockRegistry[moduleID];
     }
 
+    const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
+
     if (moduleID in this._mockFactories) {
-      return (this._mockRegistry[moduleID] = this._mockFactories[moduleID]());
+      return (mockRegistry[moduleID] = this._mockFactories[moduleID]());
     }
 
     let manualMock = this._resolver.getMockModule(from, moduleName);
@@ -408,15 +429,15 @@ class Runtime {
 
       // Only include the fromPath if a moduleName is given. Else treat as root.
       const fromPath = moduleName ? from : null;
-      this._execModule(localModule, undefined, this._mockRegistry, fromPath);
-      this._mockRegistry[moduleID] = localModule.exports;
+      this._execModule(localModule, undefined, mockRegistry, fromPath);
+      mockRegistry[moduleID] = localModule.exports;
       localModule.loaded = true;
     } else {
       // Look for a real module to generate an automock from
-      this._mockRegistry[moduleID] = this._generateMock(from, moduleName);
+      mockRegistry[moduleID] = this._generateMock(from, moduleName);
     }
 
-    return this._mockRegistry[moduleID];
+    return mockRegistry[moduleID];
   }
 
   requireModuleOrMock(from: Path, moduleName: string) {
@@ -442,7 +463,22 @@ class Runtime {
     }
   }
 
+  isolateModules(fn: () => void) {
+    if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
+      throw new Error(
+        'isolateModules cannot be nested inside another isolateModules.',
+      );
+    }
+    this._isolatedModuleRegistry = Object.create(null);
+    this._isolatedMockRegistry = Object.create(null);
+    fn();
+    this._isolatedModuleRegistry = null;
+    this._isolatedMockRegistry = null;
+  }
+
   resetModules() {
+    this._isolatedModuleRegistry = null;
+    this._isolatedMockRegistry = null;
     this._mockRegistry = Object.create(null);
     this._moduleRegistry = Object.create(null);
 
@@ -615,13 +651,14 @@ class Runtime {
     Object.defineProperty(localModule, 'require', {
       value: this._createRequireImplementation(localModule, options),
     });
-
+    const extraGlobals = this._config.extraGlobals || [];
     const transformedFile = this._scriptTransformer.transform(
       filename,
       {
         collectCoverage: this._coverageOptions.collectCoverage,
         collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
         collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
+        extraGlobals,
         isInternalModule,
       },
       this._cacheFS[filename],
@@ -656,8 +693,7 @@ class Runtime {
     }
 
     const wrapper = runScript[ScriptTransformer.EVAL_RESULT_VARIABLE];
-    wrapper.call(
-      localModule.exports, // module context
+    const moduleArguments = new Set([
       localModule, // module object
       localModule.exports, // module exports
       localModule.require, // require implementation
@@ -669,7 +705,17 @@ class Runtime {
         // $FlowFixMe
         (localModule.require: LocalModuleRequire),
       ), // jest object
-    );
+      ...extraGlobals.map(globalVariable => {
+        if (this._environment.global[globalVariable]) {
+          return this._environment.global[globalVariable];
+        }
+
+        throw new Error(
+          `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
+        );
+      }),
+    ]);
+    wrapper.call(localModule.exports, ...Array.from(moduleArguments));
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
@@ -801,7 +847,7 @@ class Runtime {
         : this.requireModuleOrMock.bind(this, from.filename);
     moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
-    moduleRequire.requireActual = this.requireModule.bind(this, from.filename);
+    moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = (moduleName, options) =>
       this._requireResolve(from.filename, moduleName, options);
@@ -901,6 +947,10 @@ class Runtime {
       this.resetModules();
       return jestObject;
     };
+    const isolateModules = (fn: () => void) => {
+      this.isolateModules(fn);
+      return jestObject;
+    };
     const fn = this._moduleMocker.fn.bind(this._moduleMocker);
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
@@ -937,6 +987,7 @@ class Runtime {
         this._generateMock(from, moduleName),
       getTimerCount: () => this._environment.fakeTimers.getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
+      isolateModules,
       mock,
       requireActual: localRequire.requireActual,
       requireMock: localRequire.requireMock,
@@ -965,4 +1016,5 @@ class Runtime {
 }
 
 Runtime.ScriptTransformer = ScriptTransformer;
-module.exports = Runtime;
+
+export {ScriptTransformer};

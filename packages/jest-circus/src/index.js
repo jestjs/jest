@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -23,7 +23,7 @@ import {dispatch} from './state';
 
 type THook = (fn: HookFn, timeout?: number) => void;
 
-const describe = (blockName: BlockName, blockFn: BlockFn) =>
+export const describe = (blockName: BlockName, blockFn: BlockFn) =>
   _dispatchDescribe(blockFn, blockName, describe);
 describe.only = (blockName: BlockName, blockFn: BlockFn) =>
   _dispatchDescribe(blockFn, blockName, describe.only, 'only');
@@ -69,18 +69,18 @@ const _addHook = (fn: HookFn, hookType: HookType, hookFn, timeout: ?number) => {
 };
 
 // Hooks have to pass themselves to the HOF in order for us to trim stack traces.
-const beforeEach: THook = (fn, timeout) =>
+export const beforeEach: THook = (fn, timeout) =>
   _addHook(fn, 'beforeEach', beforeEach, timeout);
-const beforeAll: THook = (fn, timeout) =>
+export const beforeAll: THook = (fn, timeout) =>
   _addHook(fn, 'beforeAll', beforeAll, timeout);
-const afterEach: THook = (fn, timeout) =>
+export const afterEach: THook = (fn, timeout) =>
   _addHook(fn, 'afterEach', afterEach, timeout);
-const afterAll: THook = (fn, timeout) =>
+export const afterAll: THook = (fn, timeout) =>
   _addHook(fn, 'afterAll', afterAll, timeout);
 
-const test = (testName: TestName, fn: TestFn, timeout?: number) =>
+export const test = (testName: TestName, fn: TestFn, timeout?: number) =>
   _addTest(testName, undefined, fn, test, timeout);
-const it = test;
+export const it = test;
 test.skip = (testName: TestName, fn?: TestFn, timeout?: number) =>
   _addTest(testName, 'skip', fn, test.skip, timeout);
 test.only = (testName: TestName, fn: TestFn, timeout?: number) =>
@@ -138,13 +138,3 @@ test.skip.each = bindEach(test.skip);
 describe.each = bindEach(describe, false);
 describe.only.each = bindEach(describe.only, false);
 describe.skip.each = bindEach(describe.skip, false);
-
-module.exports = {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  it,
-  test,
-};

@@ -19,8 +19,11 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"errorOnDeprecated\\": false,
       \\"filter\\": null,
       \\"forceCoverageMatch\\": [],
+      \\"globalSetup\\": null,
+      \\"globalTeardown\\": null,
       \\"globals\\": {},
       \\"haste\\": {
+        \\"computeSha1\\": false,
         \\"providesModuleNodeModules\\": []
       },
       \\"moduleDirectories\\": [
@@ -30,12 +33,14 @@ exports[`--showConfig outputs config info and exits 1`] = `
         \\"js\\",
         \\"json\\",
         \\"jsx\\",
+        \\"ts\\",
+        \\"tsx\\",
         \\"node\\"
       ],
       \\"moduleNameMapper\\": {},
       \\"modulePathIgnorePatterns\\": [],
       \\"name\\": \\"[md5 hash]\\",
-      \\"prettierPath\\": null,
+      \\"prettierPath\\": \\"prettier\\",
       \\"resetMocks\\": false,
       \\"resetModules\\": false,
       \\"resolver\\": null,
@@ -49,12 +54,12 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"setupFilesAfterEnv\\": [],
       \\"skipFilter\\": false,
       \\"snapshotSerializers\\": [],
-      \\"testEnvironment\\": \\"jest-environment-jsdom\\",
+      \\"testEnvironment\\": \\"<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-jsdom/build/index.js\\",
       \\"testEnvironmentOptions\\": {},
       \\"testLocationInResults\\": false,
       \\"testMatch\\": [
-        \\"**/__tests__/**/*.js?(x)\\",
-        \\"**/?(*.)+(spec|test).js?(x)\\"
+        \\"**/__tests__/**/*.[jt]s?(x)\\",
+        \\"**/?(*.)+(spec|test).[tj]s?(x)\\"
       ],
       \\"testPathIgnorePatterns\\": [
         \\"/node_modules/\\"
@@ -65,7 +70,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       \\"timers\\": \\"real\\",
       \\"transform\\": [
         [
-          \\"^.+\\\\\\\\.jsx?$\\",
+          \\"^.+\\\\\\\\.[jt]sx?$\\",
           \\"<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js\\"
         ]
       ],
@@ -76,7 +81,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     }
   ],
   \\"globalConfig\\": {
-    \\"bail\\": false,
+    \\"bail\\": 0,
     \\"changedFilesWithAncestor\\": false,
     \\"collectCoverage\\": false,
     \\"collectCoverageFrom\\": null,

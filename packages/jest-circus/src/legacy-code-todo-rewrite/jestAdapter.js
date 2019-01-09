@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,13 +15,13 @@ import type Runtime from 'jest-runtime';
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 import path from 'path';
 
-const jestAdapter = async (
+export default async function jestAdapter(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult> => {
+): Promise<TestResult> {
   const {
     initialize,
     runAndTransformResultsToJestFormat,
@@ -35,7 +35,7 @@ const jestAdapter = async (
 
   const getPrettier = () =>
     config.prettierPath ? require(config.prettierPath) : null;
-  const getBabelTraverse = () => require('babel-traverse').default;
+  const getBabelTraverse = () => require('@babel/traverse').default;
 
   const {globals, snapshotState} = initialize({
     config,
@@ -82,7 +82,7 @@ const jestAdapter = async (
     testPath,
   });
   return _addSnapshotData(results, snapshotState);
-};
+}
 
 const _addSnapshotData = (results: TestResult, snapshotState) => {
   results.testResults.forEach(({fullName, status}) => {
@@ -110,5 +110,3 @@ const _addSnapshotData = (results: TestResult, snapshotState) => {
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
   return results;
 };
-
-module.exports = jestAdapter;

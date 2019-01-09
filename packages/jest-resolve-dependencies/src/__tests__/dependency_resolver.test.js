@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,14 +7,14 @@
  */
 'use strict';
 
-const path = require('path');
-const {normalize} = require('jest-config');
-const {buildSnapshotResolver} = require('jest-snapshot');
-const DependencyResolver = require('../index');
+import path from 'path';
+import {normalize} from 'jest-config';
+import {buildSnapshotResolver} from 'jest-snapshot';
+import Runtime from 'jest-runtime';
+import DependencyResolver from '../index';
 
 const maxWorkers = 1;
 let dependencyResolver;
-let Runtime;
 let config;
 const cases = {
   fancyCondition: jest.fn(path => path.length > 10),
@@ -23,7 +23,6 @@ const cases = {
 const filter = path => Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(() => {
-  Runtime = require('jest-runtime');
   config = normalize(
     {
       rootDir: '.',

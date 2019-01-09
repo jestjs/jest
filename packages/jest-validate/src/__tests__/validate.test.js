@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,12 +12,11 @@ import validate from '../validate';
 import {multipleValidOptions} from '../condition';
 import jestValidateExampleConfig from '../exampleConfig';
 import jestValidateDefaultConfig from '../defaultConfig';
-
-const {
+import {
   defaultConfig,
-  validConfig,
   deprecatedConfig,
-} = require('./fixtures/jestConfig');
+  validConfig,
+} from './fixtures/jestConfig';
 
 test('recursively validates default Jest config', () => {
   expect(

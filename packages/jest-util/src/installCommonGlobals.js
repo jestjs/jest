@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,6 +10,7 @@
 import type {ConfigGlobals} from 'types/Config';
 import type {Global} from 'types/Global';
 
+import fs from 'fs';
 import createProcessObject from './createProcessObject';
 import deepCyclicCopy from './deepCyclicCopy';
 
@@ -20,10 +21,38 @@ export default function(globalObject: Global, globals: ConfigGlobals) {
 
   const symbol = globalObject.Symbol;
   // Keep a reference to some globals that Jest needs
-  globalObject[symbol.for('jest-native-promise')] = Promise;
-  globalObject[symbol.for('jest-native-now')] = globalObject.Date.now.bind(
-    globalObject.Date,
-  );
+  Object.defineProperties(globalObject, {
+    [symbol.for('jest-native-promise')]: {
+      enumerable: false,
+      value: Promise,
+      writable: false,
+    },
+    [symbol.for('jest-native-now')]: {
+      enumerable: false,
+      value: globalObject.Date.now.bind(globalObject.Date),
+      writable: false,
+    },
+    [symbol.for('jest-native-read-file')]: {
+      enumerable: false,
+      value: fs.readFileSync.bind(fs),
+      writable: false,
+    },
+    [symbol.for('jest-native-write-file')]: {
+      enumerable: false,
+      value: fs.writeFileSync.bind(fs),
+      writable: false,
+    },
+    [symbol.for('jest-native-exists-file')]: {
+      enumerable: false,
+      value: fs.existsSync.bind(fs),
+      writable: false,
+    },
+    'jest-symbol-do-not-touch': {
+      enumerable: false,
+      value: symbol,
+      writable: false,
+    },
+  });
 
   // Forward some APIs.
   DTRACE.forEach(dtrace => {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,6 +10,7 @@
 import type {Argv} from 'types/Argv';
 
 import chalk from 'chalk';
+import camelcase from 'camelcase';
 import {createDidYouMeanMessage, format, ValidationError} from './utils';
 import {deprecationWarning} from './deprecated';
 import defaultConfig from './defaultConfig';
@@ -65,7 +66,11 @@ const logDeprecatedOptions = (
   });
 };
 
-export default function validateCLIOptions(argv: Argv, options: Object) {
+export default function validateCLIOptions(
+  argv: Argv,
+  options: Object,
+  rawArgv: string[] = [],
+) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const deprecationEntries = options.deprecationEntries || {};
   const allowedOptions = Object.keys(options).reduce(
@@ -73,7 +78,10 @@ export default function validateCLIOptions(argv: Argv, options: Object) {
     new Set(yargsSpecialOptions),
   );
   const unrecognizedOptions = Object.keys(argv).filter(
-    arg => !allowedOptions.has(arg),
+    arg =>
+      !allowedOptions.has(camelcase(arg)) &&
+      (!rawArgv.length || rawArgv.includes(arg)),
+    [],
   );
 
   if (unrecognizedOptions.length) {

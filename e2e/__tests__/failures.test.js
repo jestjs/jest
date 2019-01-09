@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -64,7 +64,7 @@ test('works with node assert', () => {
       73 |   });
       74 | });
 
-      at __tests__/node_assertion_error.test.js:71:10
+      at Object.doesNotThrow (__tests__/node_assertion_error.test.js:71:10)
 `);
 
     const commonErrorMessage = `Message:
@@ -114,7 +114,7 @@ test('works with node assert', () => {
       69 | 
       70 | test('assert.doesNotThrow', () => {
 
-      at __tests__/node_assertion_error.test.js:67:10
+      at Object.ifError (__tests__/node_assertion_error.test.js:67:10)
 `;
 
     expect(summary).toContain(ifErrorMessage);
@@ -131,7 +131,7 @@ test('works with node assert', () => {
       68 | });
       69 | 
 
-      at __tests__/node_assertion_error.test.js:66:1
+      at Object.test (__tests__/node_assertion_error.test.js:66:1)
 `;
 
     expect(summary).toContain(ifErrorMessage);

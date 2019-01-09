@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -21,7 +21,8 @@ import type {
 import * as fastPath from './lib/fast_path';
 import H from './constants';
 
-const EMPTY_MAP = {};
+const EMPTY_OBJ = {};
+const EMPTY_MAP = new Map();
 
 export opaque type SerializableModuleMap = {
   // There is no easier way to extract the type of the entries of a Map
@@ -117,14 +118,14 @@ export default class ModuleMap {
     platform: ?string,
     supportsNativePlatform: boolean,
   ): ?ModuleMetaData {
-    const map = this._raw.map.get(name) || EMPTY_MAP;
+    const map = this._raw.map.get(name) || EMPTY_OBJ;
     const dupMap = this._raw.duplicates.get(name) || EMPTY_MAP;
     if (platform != null) {
       this._assertNoDuplicates(
         name,
         platform,
         supportsNativePlatform,
-        dupMap[platform],
+        dupMap.get(platform),
       );
       if (map[platform] != null) {
         return map[platform];
@@ -135,7 +136,7 @@ export default class ModuleMap {
         name,
         H.NATIVE_PLATFORM,
         supportsNativePlatform,
-        dupMap[H.NATIVE_PLATFORM],
+        dupMap.get(H.NATIVE_PLATFORM),
       );
       if (map[H.NATIVE_PLATFORM]) {
         return map[H.NATIVE_PLATFORM];
@@ -145,7 +146,7 @@ export default class ModuleMap {
       name,
       H.GENERIC_PLATFORM,
       supportsNativePlatform,
-      dupMap[H.GENERIC_PLATFORM],
+      dupMap.get(H.GENERIC_PLATFORM),
     );
     if (map[H.GENERIC_PLATFORM]) {
       return map[H.GENERIC_PLATFORM];
@@ -163,17 +164,19 @@ export default class ModuleMap {
       return;
     }
     // Force flow refinement
-    const previousSet: DuplicatesSet = relativePathSet;
-    const set = Object.keys(previousSet).reduce((set, relativePath) => {
+    const previousSet = relativePathSet;
+    const duplicates = new Map();
+
+    for (const [relativePath, type] of previousSet) {
       const duplicatePath = fastPath.resolve(this._raw.rootDir, relativePath);
-      set[duplicatePath] = previousSet[relativePath];
-      return set;
-    }, Object.create(null));
+      duplicates.set(duplicatePath, type);
+    }
+
     throw new DuplicateHasteCandidatesError(
       name,
       platform,
       supportsNativePlatform,
-      set,
+      duplicates,
     );
   }
 
@@ -206,12 +209,12 @@ class DuplicateHasteCandidatesError extends Error {
         `files, or packages, that provide a module for ` +
         `that particular name and platform. ${platformMessage} You must ` +
         `delete or blacklist files until there remains only one of these:\n\n` +
-        Object.keys(duplicatesSet)
+        Array.from(duplicatesSet)
+          .map(
+            ([dupFilePath, dupFileType]) =>
+              `  * \`${dupFilePath}\` (${getTypeMessage(dupFileType)})\n`,
+          )
           .sort()
-          .map(dupFilePath => {
-            const typeMessage = getTypeMessage(duplicatesSet[dupFilePath]);
-            return `  * \`${dupFilePath}\` (${typeMessage})\n`;
-          })
           .join(''),
     );
     this.hasteName = name;

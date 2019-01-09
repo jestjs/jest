@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,6 +26,11 @@ export default class HasteFS {
   getModuleName(file: Path): ?string {
     const fileMetadata = this._getFileData(file);
     return (fileMetadata && fileMetadata[H.ID]) || null;
+  }
+
+  getSize(file: Path): ?number {
+    const fileMetadata = this._getFileData(file);
+    return (fileMetadata && fileMetadata[H.SIZE]) || null;
   }
 
   getDependencies(file: Path): ?Array<string> {

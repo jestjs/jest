@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -84,8 +84,8 @@ test('cannot be used with .not', () => {
 
 test('should support rejecting promises', () => {
   const filename = 'should-support-rejecting-promises.test.js';
-  const template = makeTemplate(`test('should support rejecting promises', async () => {
-      await expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingSnapshot();
+  const template = makeTemplate(`test('should support rejecting promises', () => {
+      return expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingSnapshot();
     });
   `);
 

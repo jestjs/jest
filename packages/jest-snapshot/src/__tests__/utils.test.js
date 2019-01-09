@@ -1,27 +1,26 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs');
-
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
-
-const {
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
+import {
+  deepMerge,
   getSnapshotData,
   keyToTestName,
   saveSnapshotFile,
   serialize,
-  testNameToKey,
-  deepMerge,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
-} = require('../utils');
+  testNameToKey,
+} from '../utils';
+
+jest.mock('fs');
 
 const writeFileSync = fs.writeFileSync;
 const readFileSync = fs.readFileSync;

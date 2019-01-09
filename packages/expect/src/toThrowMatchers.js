@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,10 +13,13 @@ import getType from 'jest-get-type';
 import {escapeStrForRegex} from 'jest-regex-util';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
+  EXPECTED_COLOR,
   RECEIVED_COLOR,
   highlightTrailingWhitespace,
+  matcherErrorMessage,
   matcherHint,
   printExpected,
+  printReceived,
   printWithType,
 } from 'jest-matcher-utils';
 import {equals} from './jasmineUtils';
@@ -35,10 +38,11 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
     if (typeof actual !== 'function') {
       if (!fromPromise) {
         throw new Error(
-          matcherHint(matcherName, 'function', getType(value)) +
-            '\n\n' +
-            'Received value must be a function, but instead ' +
-            `"${getType(actual)}" was found`,
+          matcherErrorMessage(
+            matcherHint('[.not]' + matcherName, undefined, undefined),
+            `${RECEIVED_COLOR('received')} value must be a function`,
+            printWithType('Received', actual, printReceived),
+          ),
         );
       }
     } else {
@@ -83,13 +87,13 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
     };
   } else {
     throw new Error(
-      matcherHint('.not' + matcherName, 'function', getType(value)) +
-        '\n\n' +
-        'Unexpected argument passed.\nExpected: ' +
-        `${printExpected('string')}, ${printExpected(
-          'Error (type)',
-        )} or ${printExpected('regexp')}.\n` +
-        printWithType('Got', String(expected), printExpected),
+      matcherErrorMessage(
+        matcherHint('[.not]' + matcherName, undefined, undefined),
+        `${EXPECTED_COLOR(
+          'expected',
+        )} value must be a string or regular expression or Error`,
+        printWithType('Expected', expected, printExpected),
+      ),
     );
   }
 };

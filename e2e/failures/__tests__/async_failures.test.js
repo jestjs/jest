@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -20,10 +20,6 @@ test('expect reject', () =>
 test('expect resolve', () =>
   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
 
-test(
-  'timeout',
-  done => {
-    setTimeout(done, 50);
-  },
-  5
-);
+test('timeout', done => {
+  setTimeout(done, 50);
+}, 5);

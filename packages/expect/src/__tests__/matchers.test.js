@@ -1,15 +1,16 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-const {stringify} = require('jest-matcher-utils');
-const jestExpect = require('../');
-const Immutable = require('immutable');
-const chalk = require('chalk');
+import {stringify} from 'jest-matcher-utils';
+import jestExpect from '../';
+import Immutable from 'immutable';
+import chalk from 'chalk';
+
 const chalkEnabled = chalk.enabled;
 
 beforeAll(() => {
@@ -270,6 +271,22 @@ describe('.toStrictEqual()', () => {
     expect(c.constructor.name).toEqual(d.constructor.name);
     expect({test: c}).not.toStrictEqual({test: d});
   });
+
+  /* eslint-disable no-sparse-arrays */
+  it('passes for matching sparse arrays', () => {
+    expect([, 1]).toStrictEqual([, 1]);
+  });
+
+  it('does not pass when sparseness of arrays do not match', () => {
+    expect([, 1]).not.toStrictEqual([undefined, 1]);
+    expect([undefined, 1]).not.toStrictEqual([, 1]);
+    expect([, , , 1]).not.toStrictEqual([, 1]);
+  });
+
+  it('does not pass when equally sparse arrays have different values', () => {
+    expect([, 1]).not.toStrictEqual([, 2]);
+  });
+  /* eslint-enable */
 });
 
 describe('.toEqual()', () => {
@@ -904,6 +921,28 @@ describe('.toBeCloseTo()', () => {
     });
   });
 
+  [[Infinity, Infinity], [-Infinity, -Infinity]].forEach(([n1, n2]) => {
+    it(`{pass: true} expect(${n1})toBeCloseTo( ${n2})`, () => {
+      jestExpect(n1).toBeCloseTo(n2);
+
+      expect(() =>
+        jestExpect(n1).not.toBeCloseTo(n2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [[Infinity, -Infinity], [Infinity, 1.23], [-Infinity, -1.23]].forEach(
+    ([n1, n2]) => {
+      it(`{pass: false} expect(${n1})toBeCloseTo( ${n2})`, () => {
+        jestExpect(n1).not.toBeCloseTo(n2);
+
+        expect(() =>
+          jestExpect(n1).toBeCloseTo(n2),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    },
+  );
+
   [[0, 0.1, 0], [0, 0.0001, 3], [0, 0.000004, 5]].forEach(([n1, n2, p]) => {
     it(`accepts an optional precision argument: [${n1}, ${n2}, ${p}]`, () => {
       jestExpect(n1).toBeCloseTo(n2, p);
@@ -1006,6 +1045,12 @@ describe('.toHaveLength', () => {
     expect(() => jestExpect(0).toHaveLength(1)).toThrowErrorMatchingSnapshot();
     expect(() =>
       jestExpect(undefined).toHaveLength(1),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('matcher error expected length', () => {
+    expect(() =>
+      jestExpect('abc').toHaveLength('3'),
     ).toThrowErrorMatchingSnapshot();
   });
 });
@@ -1152,6 +1197,7 @@ describe('toMatchObject()', () => {
     [new Error('foo'), new Error('foo')],
     [new Error('bar'), {message: 'bar'}],
     [new Foo(), {a: undefined, b: 'b'}],
+    [Object.assign(Object.create(null), {a: 'b'}), {a: 'b'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,
@@ -1188,6 +1234,7 @@ describe('toMatchObject()', () => {
     [[1, 2, 3], [2, 3, 1]],
     [[1, 2, 3], [1, 2, 2]],
     [new Error('foo'), new Error('bar')],
+    [Object.assign(Object.create(null), {a: 'b'}), {c: 'd'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,

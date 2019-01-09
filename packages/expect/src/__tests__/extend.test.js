@@ -1,15 +1,15 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-const matcherUtils = require('jest-matcher-utils');
-const {iterableEquality, subsetEquality} = require('../utils');
-const {equals} = require('../jasmineUtils');
-const jestExpect = require('../');
+import * as matcherUtils from 'jest-matcher-utils';
+import {iterableEquality, subsetEquality} from '../utils';
+import {equals} from '../jasmineUtils';
+import jestExpect from '../';
 
 jestExpect.extend({
   toBeDivisibleBy(actual, expected) {
