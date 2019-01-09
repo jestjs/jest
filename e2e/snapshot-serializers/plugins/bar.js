@@ -8,6 +8,6 @@
 
 /* eslint-disable no-unused-vars */
 
-const createPlugin = require('../Utils').createPlugin;
+const createPlugin = require('../utils').createPlugin;
 
 // We inject the call to "createPlugin('bar') through the transformer"

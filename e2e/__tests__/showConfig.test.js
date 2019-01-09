@@ -17,7 +17,7 @@ import {cleanup, writeFiles} from '../Utils';
 
 skipSuiteOnWindows();
 
-const DIR = path.resolve(os.tmpdir(), 'show_config_test');
+const DIR = path.resolve(os.tmpdir(), 'show-config-test');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

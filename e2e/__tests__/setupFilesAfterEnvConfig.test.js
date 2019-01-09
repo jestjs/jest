@@ -50,7 +50,7 @@ describe('setupFilesAfterEnv', () => {
   it('requires setup files *after* the test runners are required', () => {
     const pkgJson = {
       jest: {
-        setupFilesAfterEnv: ['./setup_hooks_into_runner.js'],
+        setupFilesAfterEnv: ['./setupHooksIntoRunner.js'],
       },
     };
 
@@ -59,7 +59,7 @@ describe('setupFilesAfterEnv', () => {
     });
 
     const result = runWithJson('setup-files-after-env-config', [
-      'runner_patch.test.js',
+      'runnerPatch.test.js',
     ]);
 
     expect(result.json.numTotalTests).toBe(1);
