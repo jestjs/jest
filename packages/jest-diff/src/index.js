@@ -46,7 +46,7 @@ const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
 function diff(a: any, b: any, options: ?DiffOptions): ?string {
-  if (a === b) {
+  if (Object.is(a, b)) {
     return NO_DIFF_MESSAGE;
   }
 

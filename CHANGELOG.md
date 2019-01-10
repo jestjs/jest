@@ -54,6 +54,7 @@
 
 ### Fixes
 
+- `[jest-diff]` Do not claim that `-0` and `0` have no visual difference ([#7605](https://github.com/facebook/jest/pull/7605))
 - `[jest-mock]` Fix automock for numeric function names ([#7653](https://github.com/facebook/jest/pull/7653))
 - `[jest-config]` Ensure `existsSync` is only called with a string parameter ([#7607](https://github.com/facebook/jest/pull/7607))
 - `[expect]` `toStrictEqual` considers sparseness of arrays. ([#7591](https://github.com/facebook/jest/pull/7591))
