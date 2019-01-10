@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 // Make sure to run node with --expose-gc option!
 
 // The times are reliable if about 1% relative mean error if you run it:
