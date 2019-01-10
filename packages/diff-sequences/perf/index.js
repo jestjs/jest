@@ -70,20 +70,14 @@ const testImproved = function(a, b) {
 };
 
 const writeHeading2 = () => {
-  process.stdout.write(
-    '## Benchmark time for `diff-sequences` versus `diff`\n\n',
-  );
-  process.stdout.write(
-    'A ratio less than 1.0 means `diff-sequences` is faster.\n',
-  );
+  console.log('## Benchmark time for `diff-sequences` versus `diff`\n');
+  console.log('A ratio less than 1.0 means `diff-sequences` is faster.');
 };
 
 const writeHeading3 = n => {
-  process.stdout.write(`\n### n = ${n}\n\n`);
-  process.stdout.write(
-    '| name | % | ratio | improved | rme | baseline | rme |\n',
-  );
-  process.stdout.write('| :--- | ---: | :--- | :--- | ---: | :--- | ---: |\n');
+  console.log(`\n### n = ${n}\n`);
+  console.log('| name | % | ratio | improved | rme | baseline | rme |');
+  console.log('| :--- | ---: | :--- | :--- | ---: | :--- | ---: |');
 };
 
 const writeRow = (name, percent, statsImproved, statsBaseline) => {
@@ -91,12 +85,12 @@ const writeRow = (name, percent, statsImproved, statsBaseline) => {
   const {mean: meanBaseline, rme: rmeBaseline} = statsBaseline;
   const ratio = meanImproved / meanBaseline;
 
-  process.stdout.write(
+  console.log(
     `| ${name} | ${percent}% | ${ratio.toFixed(
       4,
     )} | ${meanImproved.toExponential(4)} | ${rmeImproved.toFixed(
       2,
-    )}% | ${meanBaseline.toExponential(4)} | ${rmeBaseline.toFixed(2)}% |\n`,
+    )}% | ${meanBaseline.toExponential(4)} | ${rmeBaseline.toFixed(2)}% |`,
   );
 };
 
