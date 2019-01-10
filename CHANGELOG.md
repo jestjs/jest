@@ -116,6 +116,7 @@
 - `[*]` [**BREAKING**] Require Node.js 6+ for all packages ([#7258](https://github.com/facebook/jest/pull/7258))
 - `[*]` [**BREAKING**] Use ESM `import` and `export` all over ([#7548](https://github.com/facebook/jest/pull/7548))
 - `[jest-util]` [**BREAKING**] Remove long-deprecated globals for fake timers ([#7285](https://github.com/facebook/jest/pull/7285))
+- `[diff-sequences]` Add performance benchmark to package ([#7603](https://github.com/facebook/jest/pull/7603))
 - `[docs]` Fix message property in custom matcher example to return a function instead of a constant. ([#7426](https://github.com/facebook/jest/pull/7426))
 - `[jest-circus]` Standardize file naming in `jest-circus` ([#7301](https://github.com/facebook/jest/pull/7301))
 - `[docs]` Add synchronous test.each setup ([#7150](https://github.com/facebook/jest/pull/7150))
