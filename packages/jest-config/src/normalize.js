@@ -25,6 +25,7 @@ import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './getMaxWorkers';
 import micromatch from 'micromatch';
+import {sync as realpath} from 'realpath-native';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {
@@ -287,7 +288,7 @@ const normalizeRootDir = (options: InitialOptions): InitialOptions => {
       `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
     );
   }
-  options.rootDir = path.normalize(options.rootDir);
+  options.rootDir = realpath(path.normalize(options.rootDir));
   return options;
 };
 
@@ -441,6 +442,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   const newOptions: $Shape<
     DefaultOptions & ProjectConfig & GlobalConfig,
   > = (Object.assign({}, DEFAULT_CONFIG): any);
+
+  newOptions.cwd = realpath(newOptions.cwd);
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
