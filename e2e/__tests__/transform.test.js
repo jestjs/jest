@@ -36,7 +36,7 @@ describe('babel-jest', () => {
     const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
       stripAnsi: true,
     });
-    expect(stdout).toMatch('Covered.js');
+    expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('notCovered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
@@ -70,7 +70,7 @@ describe('no babel-jest', () => {
       ['--no-cache', '--coverage', '--no-watchman'],
       {stripAnsi: true},
     );
-    expect(stdout).toMatch('Covered.js');
+    expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
     expect(stdout).toMatchSnapshot();
