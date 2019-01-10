@@ -12,7 +12,6 @@ import type {
   Config,
   Options,
   OptionsReceived,
-  NewPlugin,
   Plugin,
   Plugins,
   Refs,
@@ -473,10 +472,7 @@ function createIndent(indent: number): string {
   return new Array(indent + 1).join(' ');
 }
 
-export default function prettyFormat(
-  val: any,
-  options?: OptionsReceived,
-): string {
+function prettyFormat(val: any, options?: OptionsReceived): string {
   if (options) {
     validateOptions(options);
     if (options.plugins) {
@@ -500,7 +496,7 @@ export default function prettyFormat(
   return printComplexValue(val, getConfig(options), '', 0, []);
 }
 
-const plugins: {[s: string]: NewPlugin} = {
+prettyFormat.plugins = {
   AsymmetricMatcher,
   ConvertAnsi,
   DOMCollection,
@@ -510,5 +506,4 @@ const plugins: {[s: string]: NewPlugin} = {
   ReactTestComponent,
 };
 
-// TODO: Consider exporting as ESM
-prettyFormat.plugins = plugins;
+module.exports = prettyFormat;

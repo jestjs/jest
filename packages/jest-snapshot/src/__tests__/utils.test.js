@@ -5,22 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
-import chalk from 'chalk';
-import {
-  deepMerge,
+jest.mock('fs');
+
+const fs = require('fs');
+const path = require('path');
+const chalk = require('chalk');
+
+const {
   getSnapshotData,
   keyToTestName,
   saveSnapshotFile,
   serialize,
+  testNameToKey,
+  deepMerge,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
-  testNameToKey,
-} from '../utils';
-
-jest.mock('fs');
+} = require('../utils');
 
 const writeFileSync = fs.writeFileSync;
 const readFileSync = fs.readFileSync;

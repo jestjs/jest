@@ -17,7 +17,6 @@ declare var jest: Object;
 import path from 'path';
 import repl from 'repl';
 import vm from 'vm';
-import {interopRequireDefault} from 'jest-util';
 
 let transformer;
 
@@ -60,8 +59,8 @@ if (jestProjectConfig.transform) {
     }
   }
   if (transformerPath) {
-    // $FlowFixMe
-    transformer = interopRequireDefault(require(transformerPath)).default;
+    /* $FlowFixMe */
+    transformer = require(transformerPath);
     if (typeof transformer.process !== 'function') {
       throw new TypeError(
         'Jest: a transformer must export a `process` function.',

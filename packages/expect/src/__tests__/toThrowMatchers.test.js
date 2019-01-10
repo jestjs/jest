@@ -8,7 +8,7 @@
 
 'use strict';
 
-import jestExpect from '../';
+const jestExpect = require('../');
 
 // Custom Error class because node versions have different stack trace strings.
 class customError extends Error {

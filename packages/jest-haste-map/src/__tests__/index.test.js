@@ -9,7 +9,7 @@
 'use strict';
 
 import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
-import crypto from 'crypto';
+const crypto = require('crypto');
 
 function mockHashContents(contents) {
   return crypto
@@ -184,7 +184,7 @@ describe('HasteMap', () => {
     consoleWarn = console.warn;
     console.warn = jest.fn();
 
-    HasteMap = require('../').default;
+    HasteMap = require('../');
     H = HasteMap.H;
 
     getCacheFilePath = HasteMap.getCacheFilePath;
@@ -213,7 +213,7 @@ describe('HasteMap', () => {
 
   it('creates valid cache file paths', () => {
     jest.resetModuleRegistry();
-    HasteMap = require('../').default;
+    HasteMap = require('../');
 
     expect(
       HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
@@ -222,7 +222,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different roots', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
+    const HasteMap = require('../');
     const hasteMap1 = new HasteMap(
       Object.assign({}, defaultConfig, {rootDir: '/root1'}),
     );
@@ -234,7 +234,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different dependency extractor cache keys', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
+    const HasteMap = require('../');
     const dependencyExtractor = require('./dependencyExtractor');
     const config = Object.assign({}, defaultConfig, {
       dependencyExtractor: require.resolve('./dependencyExtractor'),
@@ -248,7 +248,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different hasteImplModulePath cache keys', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
+    const HasteMap = require('../');
     const hasteImpl = require('./haste_impl');
     hasteImpl.setCacheKey('foo');
     const hasteMap1 = new HasteMap(defaultConfig);
@@ -259,7 +259,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different projects', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
+    const HasteMap = require('../');
     const hasteMap1 = new HasteMap(
       Object.assign({}, defaultConfig, {name: '@scoped/package'}),
     );
@@ -400,7 +400,7 @@ describe('HasteMap', () => {
   describe('builds a haste map on a fresh cache with SHA-1s', () => {
     [false, true].forEach(useWatchman => {
       it('uses watchman: ' + useWatchman, async () => {
-        const node = require('../crawlers/node').default;
+        const node = require('../crawlers/node');
 
         node.mockImplementation(options => {
           const {data} = options;
@@ -1076,7 +1076,7 @@ describe('HasteMap', () => {
 
   it('tries to crawl using node as a fallback', () => {
     const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node').default;
+    const node = require('../crawlers/node');
 
     watchman.mockImplementation(() => {
       throw new Error('watchman error');
@@ -1107,7 +1107,7 @@ describe('HasteMap', () => {
 
   it('tries to crawl using node as a fallback when promise fails once', () => {
     const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node').default;
+    const node = require('../crawlers/node');
 
     watchman.mockImplementation(() =>
       Promise.reject(new Error('watchman error')),
@@ -1136,7 +1136,7 @@ describe('HasteMap', () => {
 
   it('stops crawling when both crawlers fail', () => {
     const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node').default;
+    const node = require('../crawlers/node');
 
     watchman.mockImplementation(() =>
       Promise.reject(new Error('watchman error')),

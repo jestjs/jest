@@ -9,9 +9,19 @@
 
 'use strict';
 
+let circusIt;
+let circusTest;
+
 // using jest-jasmine2's 'it' to test jest-circus's 'it'. Had to differentiate
 // the two with this alias.
-import {it as circusIt, test as circusTest} from '../index.js';
+
+const aliasCircusIt = () => {
+  const {it, test} = require('../index.js');
+  circusIt = it;
+  circusTest = test;
+};
+
+aliasCircusIt();
 
 // A few of these tests require incorrect types to throw errors and thus pass
 // the test. The typechecks on jest-circus would prevent that, so
