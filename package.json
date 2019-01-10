@@ -8,7 +8,6 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
-    "@babel/runtime": "^7.0.0",
     "ansi-regex": "^4.0.0",
     "ansi-styles": "^3.2.0",
     "babel-eslint": "^9.0.0",
