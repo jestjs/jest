@@ -288,7 +288,14 @@ const normalizeRootDir = (options: InitialOptions): InitialOptions => {
       `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
     );
   }
-  options.rootDir = realpath(path.normalize(options.rootDir));
+  options.rootDir = path.normalize(options.rootDir);
+
+  try {
+    options.rootDir = realpath(options.rootDir);
+  } catch (e) {
+    // ignored
+  }
+
   return options;
 };
 
@@ -443,7 +450,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     DefaultOptions & ProjectConfig & GlobalConfig,
   > = (Object.assign({}, DEFAULT_CONFIG): any);
 
-  newOptions.cwd = realpath(newOptions.cwd);
+  try {
+    newOptions.cwd = realpath(newOptions.cwd);
+  } catch (e) {
+    // ignored
+  }
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
