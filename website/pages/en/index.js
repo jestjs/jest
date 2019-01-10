@@ -317,24 +317,41 @@ class Index extends React.Component {
               layout="fourColumn"
             />
           </Container>
-          <Container padding={['bottom', 'top']}>
-            <div
-              className="productShowcaseSection paddingBottom"
-              style={{textAlign: 'center'}}
-            >
-              <h2>
-                <translate>Zero configuration testing platform</translate>
-              </h2>
-              <MarkdownBlock>
-                <translate>
-                  Jest is used by Facebook to test all JavaScript code including
-                  React applications. One of Jest's philosophies is to provide
-                  an integrated \"zero-configuration\" experience. We observed
-                  that when engineers are provided with ready-to-use tools, they
-                  end up writing more tests, which in turn results in more
-                  stable and healthy code bases.
-                </translate>
-              </MarkdownBlock>
+          <Container
+            padding={['bottom', 'top']}
+            background="light"
+            className="section-container philosophy"
+          >
+            <div className="blockElement green">
+              <div className="blockContent">
+                <h2>
+                  <translate>Philosophy</translate>
+                </h2>
+              </div>
+            </div>
+            <div className="blockElement imageAlignSide gridBlock threeByGridBlock">
+              <div className="blockContent">
+                <MarkdownBlock>
+                  <translate>
+                    Jest is a JavaScript testing framework designed to ensure
+                    correctness of any JavaScript codebase. It allows you to
+                    write tests with its approachable, familiar and feature-rich
+                    APIs that give you results quickly.
+                  </translate>
+                </MarkdownBlock>
+              </div>
+              <div className="blockContent">
+                <MarkdownBlock>
+                  <translate>
+                    Jest is extensively documented, requires little
+                    configuration and can be extended to match your
+                    requirements. Jest makes testing delightful.
+                  </translate>
+                </MarkdownBlock>
+              </div>
+              <div className="blockContent flex-end">
+                <translate>- Jest Core Team</translate>
+              </div>
             </div>
           </Container>
           <Container padding={['bottom', 'top']} className="section-container">

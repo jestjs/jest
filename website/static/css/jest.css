@@ -85,6 +85,14 @@
   padding: 20px 0 0 0;
 }
 
+.container.section-container.philosophy {
+  padding: 80px 0;
+}
+
+.blockContent.flex-end {
+  align-self: flex-end;
+}
+
 .section-container .blockImage {
   overflow: hidden;
   height: 280px;
