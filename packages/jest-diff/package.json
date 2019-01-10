@@ -12,7 +12,11 @@
     "chalk": "^2.0.1",
     "diff-sequences": "^24.0.0",
     "jest-get-type": "^24.0.0",
-    "pretty-format": "^24.0.0"
+    "pretty-format": "^24.0.0",
+    "yargs": "^12.0.5"
+  },
+  "bin": {
+    "jest-diff": "./bin/jest-diff.js"
   },
   "engines": {
     "node": ">= 6"

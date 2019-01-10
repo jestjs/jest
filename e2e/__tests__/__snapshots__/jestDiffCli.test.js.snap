@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`different 1`] = `
+- Expected
++ Received
+
+  Array [
+-   42,
++   1337,
+    Object {
+-     "a": true,
++     "b": false,
+    },
+  ]
+`;
+
+exports[`help 1`] = `
+jest-diff.js a.json b.json
+
+Options:
+  -v, --version  Show version number                                   [boolean]
+  -h, --help     Show help                                             [boolean]
+`;

@@ -71,6 +71,7 @@
     "clean-e2e": "find ./e2e -not \\( -path ./e2e/presets/js -prune \\) -not \\( -path ./e2e/presets/json -prune \\) -mindepth 2 -type d \\( -name node_modules -prune \\) -exec rm -r '{}' +",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn jest --coverage",
+    "jest-diff": "node ./packages/jest-diff/bin/jest-diff.js",
     "lint": "eslint . --cache --report-unused-disable-directives --ext js,md",
     "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
     "lint:md": "yarn --silent lint:md:ci --fix",

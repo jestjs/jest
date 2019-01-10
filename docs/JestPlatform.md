@@ -43,6 +43,14 @@ const result = diff(a, b);
 console.log(result);
 ```
 
+### CLI
+
+It also comes with a CLI, so if you install `jest-diff` globally, you can use it to compare JSON files similarly to the UNIX program `diff`:
+
+```sh-session
+$ jest-diff a.json b.json
+```
+
 ## jest-docblock
 
 Tool for extracting and parsing the comments at the top of a JavaScript file. Exports various functions to manipulate the data inside the comment block.
