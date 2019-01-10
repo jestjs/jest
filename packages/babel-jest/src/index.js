@@ -25,7 +25,7 @@ const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 const cwd = process.cwd();
 
-export const createTransformer = (options: any): Transformer => {
+const createTransformer = (options: any): Transformer => {
   // Allow incoming options to override `cwd`
   options = Object.assign({cwd}, options, {
     caller: {
@@ -108,4 +108,5 @@ export const createTransformer = (options: any): Transformer => {
   };
 };
 
-export default createTransformer();
+module.exports = createTransformer();
+(module.exports: any).createTransformer = createTransformer;

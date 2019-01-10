@@ -5,7 +5,7 @@
 const fs = require('fs');
 const os = require('os');
 const mkdirp = require('mkdirp');
-const JSDOMEnvironment = require('jest-environment-jsdom').default;
+const JSDOMEnvironment = require('jest-environment-jsdom');
 
 const DIR = os.tmpdir() + '/jest-test-environment';
 

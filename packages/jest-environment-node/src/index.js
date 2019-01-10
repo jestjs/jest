@@ -22,7 +22,7 @@ type Timer = {|
   unref: () => Timer,
 |};
 
-export default class NodeEnvironment {
+class NodeEnvironment {
   context: ?vm$Context;
   fakeTimers: ?FakeTimers<Timer>;
   global: ?Global;
@@ -96,3 +96,5 @@ export default class NodeEnvironment {
     return null;
   }
 }
+
+module.exports = NodeEnvironment;

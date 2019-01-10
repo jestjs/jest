@@ -7,18 +7,22 @@
 
 'use strict';
 
-import fs from 'fs';
-import generateEmptyCoverage from '../../generateEmptyCoverage';
-import {worker} from '../coverage_worker';
-
 jest.mock('fs').mock('../../generateEmptyCoverage');
 
 const globalConfig = {collectCoverage: true};
 const config = {};
 const workerOptions = {config, globalConfig, path: 'banana.js'};
 
+let fs;
+let generateEmptyCoverage;
+let worker;
+
 beforeEach(() => {
   jest.resetModules();
+
+  fs = require('fs');
+  generateEmptyCoverage = require('../../generateEmptyCoverage').default;
+  worker = require('../coverage_worker').worker;
 });
 
 test('resolves to the result of generateEmptyCoverage upon success', async () => {

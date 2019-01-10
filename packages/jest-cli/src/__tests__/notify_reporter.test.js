@@ -8,7 +8,6 @@
 
 'use strict';
 
-import notify from 'node-notifier';
 import TestScheduler from '../TestScheduler';
 import NotifyReporter from '../reporters/notify_reporter';
 import type {TestSchedulerContext} from '../TestScheduler';
@@ -83,6 +82,8 @@ test('.addReporter() .removeReporter()', () => {
 });
 
 const testModes = ({notifyMode, arl, rootDir, moduleName}) => {
+  const notify = require('node-notifier');
+
   let previousContext = initialContext;
   arl.forEach((ar, i) => {
     const newContext = Object.assign(previousContext, {

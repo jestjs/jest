@@ -11,8 +11,8 @@
 
 import type {OptionsReceived, Plugins} from 'types/PrettyFormat';
 
-import diff from 'jest-diff';
-import prettyFormat from '../';
+const diff = require('jest-diff');
+const prettyFormat = require('../');
 
 const getPrettyPrint = (plugins: Plugins) =>
   function(received: any, expected: any, options?: OptionsReceived) {

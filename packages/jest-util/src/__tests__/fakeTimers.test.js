@@ -8,14 +8,14 @@
 
 'use strict';
 
-import vm from 'vm';
-import FakeTimers from '../FakeTimers';
-import mock from 'jest-mock';
+const vm = require('vm');
 
 describe('FakeTimers', () => {
-  let moduleMocker, timerConfig;
+  let FakeTimers, moduleMocker, timerConfig;
 
   beforeEach(() => {
+    FakeTimers = require('../FakeTimers').default;
+    const mock = require('jest-mock');
     const global = vm.runInNewContext('this');
     moduleMocker = new mock.ModuleMocker(global);
 
@@ -26,6 +26,7 @@ describe('FakeTimers', () => {
   });
 
   describe('construction', () => {
+    /* eslint-disable no-new */
     it('installs setTimeout mock', () => {
       const global = {process};
       const timers = new FakeTimers({global, moduleMocker, timerConfig});

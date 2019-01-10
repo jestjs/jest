@@ -11,11 +11,9 @@
 
 'use strict';
 
-import prettyFormat from '../';
-import getPrettyPrint from './getPrettyPrint';
-
+const prettyFormat = require('../');
 const {DOMElement} = prettyFormat.plugins;
-const toPrettyPrintTo = getPrettyPrint([DOMElement]);
+const toPrettyPrintTo = require('./getPrettyPrint').default([DOMElement]);
 
 const expect: any = global.expect;
 expect.extend({toPrettyPrintTo});

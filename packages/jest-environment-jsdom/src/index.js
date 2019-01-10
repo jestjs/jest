@@ -16,7 +16,7 @@ import {FakeTimers, installCommonGlobals} from 'jest-util';
 import mock from 'jest-mock';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
-export default class JSDOMEnvironment {
+class JSDOMEnvironment {
   dom: ?Object;
   fakeTimers: ?FakeTimers<number>;
   global: ?Global;
@@ -115,3 +115,5 @@ export default class JSDOMEnvironment {
     return null;
   }
 }
+
+module.exports = JSDOMEnvironment;
