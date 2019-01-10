@@ -11,6 +11,7 @@
     "react-native": "0.57.3"
   },
   "devDependencies": {
+    "@babel/core": "*",
     "@babel/preset-env": "*",
     "babel-jest": "*",
     "jest": "*",
