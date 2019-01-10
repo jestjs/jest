@@ -169,8 +169,6 @@ const setupBabelJest = (options: InitialOptions) => {
       [DEFAULT_JS_PATTERN]: babelJest,
     };
   }
-
-  return babelJest;
 };
 
 const normalizeCollectCoverageOnlyFrom = (
@@ -437,7 +435,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     options.coverageDirectory = path.resolve(options.rootDir, 'coverage');
   }
 
-  const babelJest = setupBabelJest(options);
+  setupBabelJest(options);
   const newOptions: $Shape<
     DefaultOptions & ProjectConfig & GlobalConfig,
   > = (Object.assign({}, DEFAULT_CONFIG): any);
@@ -757,17 +755,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       : 'new';
 
   newOptions.maxWorkers = getMaxWorkers(argv);
-
-  if (babelJest) {
-    const regeneratorRuntimePath = Resolver.findNodeModule(
-      'regenerator-runtime/runtime',
-      {basedir: options.rootDir, resolver: newOptions.resolver},
-    );
-
-    if (regeneratorRuntimePath) {
-      newOptions.setupFiles.unshift(regeneratorRuntimePath);
-    }
-  }
 
   if (newOptions.testRegex.length && options.testMatch) {
     throw createConfigError(
