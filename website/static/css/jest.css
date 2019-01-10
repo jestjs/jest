@@ -1,10 +1,11 @@
 /* Copyright (c) 2014-present, Facebook, Inc. All rights reserved. */
 :root {
-  --yellow: #C2A813;
-  --green: #15C213;
-  --red: #C21325;
-  --grey: #AAAAAA;
-  --grey2: #EDEDED;
+  --yellow: #c2a813;
+  --green: #15c213;
+  --red: #c21325;
+  --grey: #aaaaaa;
+  --grey2: #ededed;
+  --grey3: #545454;
 }
 
 .debug * {
@@ -77,6 +78,11 @@
   margin: 16px 0 0 18px;
 }
 
+.container.intro p {
+  font-size: 1.5rem;
+  color: var(--grey3);
+}
+
 .container .wrapper .imageAlignSide p {
   margin-bottom: 0;
 }
@@ -86,7 +92,7 @@
 }
 
 .container.section-container.philosophy {
-  padding: 80px 0;
+  padding: 30px 0;
 }
 
 .blockContent.flex-end {
@@ -117,14 +123,13 @@
   margin: 0 12px;
 }
 
-
 .fixedHeaderContainer {
   background-color: #ffffff;
 }
 
 .navigationSlider .slidingNav ul li a,
 .fixedHeaderContainer header h3 {
-  color: #545454;
+  color: var(--grey3);
 }
 
 .headerWrapper img {
@@ -155,6 +160,10 @@
   text-transform: uppercase;
   color: var(--grey2);
   padding: 6px 15px;
+}
+
+.container.features {
+  padding: 40px 0;
 }
 
 .features .gridBlock {

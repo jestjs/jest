@@ -262,6 +262,29 @@ class Index extends React.Component {
       <div>
         <HeroInteractive language={this.props.language} config={siteConfig} />
         <div className="mainContainer" style={{paddingTop: 0}}>
+          <Container
+            padding={['bottom', 'top']}
+            background="light"
+            className="intro"
+          >
+            <p>
+              <translate>
+                Jest is a delightful JavaScript Testing Framework With a focus
+                on simplicity
+              </translate>
+            </p>
+            <p>
+              <MarkdownBlock>
+                <translate>
+                  It works with projects using: [Babel](https://babeljs.io/),
+                  [TypeScript](https://www.typescriptlang.org/),
+                  [Node](https://nodejs.org/en/), [React](https://reactjs.org),
+                  [Angular](https://angularjs.org), [Vue](https://vuejs.org) and
+                  more!
+                </translate>
+              </MarkdownBlock>
+            </p>
+          </Container>
           <Container padding={['bottom', 'top']} className="features">
             <GridBlock
               align="center"
