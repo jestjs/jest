@@ -19,6 +19,7 @@ import testPathPatternToRegExp from './testPathPatternToRegexp';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
+import {sync as realpath} from 'realpath-native';
 
 type SearchResult = {|
   noSCM?: boolean,

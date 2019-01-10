@@ -12,8 +12,6 @@ jobs:
 - job: Windows
   pool:
     vmImage: vs2017-win2016
-  variables:
-    VSTS_OVERWRITE_TEMP: true
   steps:
   - script: |
       git config --global core.autocrlf false
@@ -25,7 +23,7 @@ jobs:
   pool:
     vmImage: macos-10.13
   steps:
-  - script: brew install mercurial
+  - script: HOMEBREW_NO_AUTO_UPDATE=1 brew install mercurial
     displayName: 'Install Mercurial'
   - template: .azure-pipelines-steps.yml
 

@@ -137,9 +137,11 @@ export const createEmptyPackage = (
 };
 
 export const extractSummary = (stdout: string) => {
-  const match = stdout.replace(/(?:\\[rn])+/g, '\n').match(
-    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
-  );
+  const match = stdout
+    .replace(/(?:\\[rn])+/g, '\n')
+    .match(
+      /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm,
+    );
   if (!match) {
     throw new Error(
       `
