@@ -13,7 +13,8 @@
 - `[jest-haste-map]` [**BREAKING**] Remove name from hash in `HasteMap.getCacheFilePath` ([#7218](https://github.com/facebook/jest/pull/7218))
 - `[babel-preset-jest]` [**BREAKING**] Export a function instead of an object for Babel 7 compatibility ([#7203](https://github.com/facebook/jest/pull/7203))
 - `[jest-haste-map]` [**BREAKING**] Expose relative paths when getting the file iterator ([#7321](https://github.com/facebook/jest/pull/7321))
-- `[jest-cli]` Print version ending in `-dev` when running a local Jest clone
+- `[jest-haste-map]` Add `hasteFS.getSize(path)` ([#7580](https://github.com/facebook/jest/pull/7580))
+- `[jest-cli]` Print version ending in `-dev` when running a local Jest clone ([#7582](https://github.com/facebook/jest/pull/7582))
 - `[jest-cli]` Add Support for `globalSetup` and `globalTeardown` in projects ([#6865](https://github.com/facebook/jest/pull/6865))
 - `[jest-runtime]` Add `extraGlobals` to config to load extra global variables into the execution vm ([#7454](https://github.com/facebook/jest/pull/7454))
 - `[jest-util]` Export `specialChars` containing Unicode characters and ANSI escapes for console output ([#7532](https://github.com/facebook/jest/pull/7532))
@@ -49,6 +50,7 @@
 
 ### Fixes
 
+- `[expect]` `toStrictEqual` considers sparseness of arrays. ([#7591](https://github.com/facebook/jest/pull/7591))
 - `[jest-cli]` Fix empty coverage data for untested files ([#7388](https://github.com/facebook/jest/pull/7388))
 - `[jest-cli]` [**BREAKING**] Do not use `text-summary` coverage reporter by default if other reporters are configured ([#7058](https://github.com/facebook/jest/pull/7058))
 - `[jest-mock]` [**BREAKING**] Fix bugs with mock/spy result tracking of recursive functions ([#6381](https://github.com/facebook/jest/pull/6381))
@@ -88,6 +90,7 @@
 - `[jest-config]` Use strings instead of `RegExp` instances in normalized configuration ([#7251](https://github.com/facebook/jest/pull/7251))
 - `[jest-circus]` Make sure to display real duration even if time is mocked ([#7264](https://github.com/facebook/jest/pull/7264))
 - `[expect]` Improves the failing message for `toStrictEqual` matcher. ([#7224](https://github.com/facebook/jest/pull/7224))
+- `[expect]` Improves the failing message for `toEqual` matcher. ([#7325](https://github.com/facebook/jest/pull/7325))
 - `[jest-resolve]` Fix not being able to resolve path to mapped file with custom platform ([#7312](https://github.com/facebook/jest/pull/7312))
 - `[jest-message-util]` Improve parsing of error messages for unusually formatted stack traces ([#7319](https://github.com/facebook/jest/pull/7319))
 - `[jest-runtime]` Ensure error message text is not lost on errors with code frames ([#7319](https://github.com/facebook/jest/pull/7319))

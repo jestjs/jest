@@ -30,6 +30,7 @@ import {
   getObjectSubset,
   getPath,
   iterableEquality,
+  sparseArrayEquality,
   subsetEquality,
   typeEquality,
   isOneline,
@@ -383,24 +384,24 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint('.not.toEqual') +
+          matcherHint('.toEqual', undefined, undefined, {
+            isNot: this.isNot,
+          }) +
           '\n\n' +
-          `Expected value to not equal:\n` +
-          `  ${printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${printReceived(received)}`
+          `Expected: ${printExpected(expected)}\n` +
+          `Received: ${printReceived(received)}`
       : () => {
-          const oneline = isOneline(expected, received);
           const diffString = diff(expected, received, {expand: this.expand});
 
           return (
-            matcherHint('.toEqual') +
+            matcherHint('.toEqual', undefined, undefined, {
+              isNot: this.isNot,
+            }) +
             '\n\n' +
-            `Expected value to equal:\n` +
-            `  ${printExpected(expected)}\n` +
-            `Received:\n` +
-            `  ${printReceived(received)}` +
-            (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '')
+            (diffString && diffString.includes('- Expect')
+              ? `Difference:\n\n${diffString}`
+              : `Expected: ${printExpected(expected)}\n` +
+                `Received: ${printReceived(received)}`)
           );
         };
 
@@ -666,7 +667,7 @@ const matchers: MatchersObject = {
     const pass = equals(
       received,
       expected,
-      [iterableEquality, typeEquality],
+      [iterableEquality, typeEquality, sparseArrayEquality],
       true,
     );
 
