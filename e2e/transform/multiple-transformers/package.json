@@ -1,9 +1,9 @@
 {
   "jest": {
     "transform": {
-      "^.+\\.css$": "<rootDir>/CssPreprocessor.js",
-      "^.+\\.js$": "<rootDir>/JsPreprocessor.js",
-      "^.+\\.svg$": "<rootDir>/FilePreprocessor.js"
+      "^.+\\.css$": "<rootDir>/cssPreprocessor.js",
+      "^.+\\.js$": "<rootDir>/jsPreprocessor.js",
+      "^.+\\.svg$": "<rootDir>/filePreprocessor.js"
     },
     "testEnvironment": "node"
   },

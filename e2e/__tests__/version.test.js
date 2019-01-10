@@ -14,7 +14,7 @@ import os from 'os';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'version_test');
+const DIR = path.resolve(os.tmpdir(), 'version-test');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));

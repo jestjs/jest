@@ -8,10 +8,10 @@
 module.exports = config => {
   config.set({
     browsers: ['ChromeHeadless'],
-    files: ['e2e/browser-support/browser-test.js'],
+    files: ['e2e/browser-support/browserTest.js'],
     frameworks: ['mocha', 'browserify'],
     preprocessors: {
-      'e2e/browser-support/browser-test.js': ['browserify'],
+      'e2e/browser-support/browserTest.js': ['browserify'],
     },
   });
 };
