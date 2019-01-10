@@ -25,6 +25,7 @@ import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './getMaxWorkers';
 import micromatch from 'micromatch';
+import {sync as realpath} from 'realpath-native';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {
@@ -288,6 +289,14 @@ const normalizeRootDir = (options: InitialOptions): InitialOptions => {
     );
   }
   options.rootDir = path.normalize(options.rootDir);
+
+  try {
+    // try to resolve windows short paths, ignoring errors (permission errors, mostly)
+    options.rootDir = realpath(options.rootDir);
+  } catch (e) {
+    // ignored
+  }
+
   return options;
 };
 
@@ -441,6 +450,13 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   const newOptions: $Shape<
     DefaultOptions & ProjectConfig & GlobalConfig,
   > = (Object.assign({}, DEFAULT_CONFIG): any);
+
+  try {
+    // try to resolve windows short paths, ignoring errors (permission errors, mostly)
+    newOptions.cwd = realpath(newOptions.cwd);
+  } catch (e) {
+    // ignored
+  }
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
