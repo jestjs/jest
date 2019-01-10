@@ -17,5 +17,12 @@
   "engines": {
     "node": ">= 6"
   },
-  "main": "build/index.js"
+  "main": "build/index.js",
+  "scripts": {
+    "perf": "node --expose-gc perf/index.js"
+  },
+  "devDependencies": {
+    "benchmark": "^2.1.4",
+    "diff": "^4.0.1"
+  }
 }
