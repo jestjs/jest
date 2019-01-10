@@ -7,11 +7,9 @@
  * @flow
  */
 
-import os from 'os';
-import path from 'path';
-import chalk from 'chalk';
-import prettyFormat from 'pretty-format';
-
+const os = require('os');
+const path = require('path');
+const chalk = require('chalk');
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
@@ -22,7 +20,7 @@ const replacePathSepForRegex = (string: string) => {
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
-export const defaultConfig = {
+const defaultConfig = {
   automock: false,
   bail: 0,
   browser: false,
@@ -62,7 +60,7 @@ export const defaultConfig = {
   watchPathIgnorePatterns: [],
 };
 
-export const validConfig = {
+const validConfig = {
   automock: false,
   bail: 0,
   browser: false,
@@ -133,9 +131,9 @@ export const validConfig = {
   watchman: true,
 };
 
-const format = (value: string) => prettyFormat(value, {min: true});
+const format = (value: string) => require('pretty-format')(value, {min: true});
 
-export const deprecatedConfig = {
+const deprecatedConfig = {
   preprocessorIgnorePatterns: (config: Object) =>
     `  Option ${chalk.bold(
       'preprocessorIgnorePatterns',
@@ -165,4 +163,10 @@ export const deprecatedConfig = {
   }
 
   Please update your configuration.`,
+};
+
+module.exports = {
+  defaultConfig,
+  deprecatedConfig,
+  validConfig,
 };

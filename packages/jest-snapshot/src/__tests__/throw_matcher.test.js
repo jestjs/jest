@@ -7,7 +7,7 @@
  */
 'use strict';
 
-import {toThrowErrorMatchingSnapshot} from '../';
+const {toThrowErrorMatchingSnapshot} = require('../');
 
 let matchFn;
 

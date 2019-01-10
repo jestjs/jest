@@ -77,7 +77,7 @@ const getPromiseMatcher = (name, matcher) => {
   return null;
 };
 
-const expect = (actual: any, ...rest: Array<any>): ExpectationObject => {
+const expect = (actual: any, ...rest): ExpectationObject => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
   }
@@ -361,7 +361,7 @@ function assertions(expected: number) {
   getState().expectedAssertionsNumber = expected;
   getState().expectedAssertionsNumberError = error;
 }
-function hasAssertions(...args: Array<any>) {
+function hasAssertions(...args) {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, hasAssertions);
@@ -384,4 +384,4 @@ expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
-export default (expect: Expect);
+module.exports = (expect: Expect);

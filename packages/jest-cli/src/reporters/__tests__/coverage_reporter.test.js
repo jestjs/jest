@@ -8,18 +8,24 @@
 
 jest.mock('istanbul-lib-source-maps').mock('istanbul-api');
 
+let libCoverage;
+let libSourceMaps;
+let CoverageReporter;
+let istanbulApi;
+
 import path from 'path';
 import mock from 'mock-fs';
-import istanbulApi from 'istanbul-api';
-import CoverageReporter from '../coverage_reporter';
-import libCoverage from 'istanbul-lib-coverage';
-import libSourceMaps from 'istanbul-lib-source-maps';
 
 beforeEach(() => {
-  istanbulApi.createReporter.mockImplementation(() => ({
+  istanbulApi = require('istanbul-api');
+  istanbulApi.createReporter = jest.fn(() => ({
     addAll: jest.fn(),
     write: jest.fn(),
   }));
+
+  CoverageReporter = require('../coverage_reporter').default;
+  libCoverage = require('istanbul-lib-coverage');
+  libSourceMaps = require('istanbul-lib-source-maps');
 
   const fileTree = {};
   fileTree[process.cwd() + '/path-test-files'] = {

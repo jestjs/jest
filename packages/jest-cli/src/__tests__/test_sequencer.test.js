@@ -6,12 +6,12 @@
  */
 'use strict';
 
-import fs from 'fs';
-import path from 'path';
 import TestSequencer from '../TestSequencer';
 
 jest.mock('fs');
 
+const fs = require('fs');
+const path = require('path');
 const FAIL = 0;
 const SUCCESS = 1;
 

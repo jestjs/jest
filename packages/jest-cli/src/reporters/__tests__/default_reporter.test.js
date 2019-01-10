@@ -38,10 +38,9 @@ beforeEach(() => {
   jest.useFakeTimers();
 
   // This is not a CI environment, which removes all output by default.
-  jest.doMock('jest-util', () => ({
-    ...jest.requireActual('jest-util'),
-    isInteractive: true,
-  }));
+  jest.unmock('jest-util');
+  const util = require('jest-util');
+  util.isInteractive = true;
 
   oldIsTTY = process.stdin.isTTY;
   oldStdout = process.stdout.write;

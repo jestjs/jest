@@ -8,7 +8,7 @@
 
 'use strict';
 
-import jestExpect from '../';
+const jestExpect = require('../');
 
 describe('.assertions()', () => {
   it('does not throw', () => {

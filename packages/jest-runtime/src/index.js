@@ -23,7 +23,7 @@ import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import Resolver from 'jest-resolve';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
-import {EXTENSION as SNAPSHOT_EXTENSION} from 'jest-snapshot';
+import Snapshot from 'jest-snapshot';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import ScriptTransformer from './ScriptTransformer';
@@ -83,7 +83,7 @@ const getModuleNameMapper = (config: ProjectConfig) => {
 
 const unmockRegExpCache = new WeakMap();
 
-export default class Runtime {
+class Runtime {
   static ScriptTransformer: Class<ScriptTransformer>;
 
   _cacheFS: CacheFS;
@@ -242,7 +242,7 @@ export default class Runtime {
       computeSha1: config.haste.computeSha1,
       console: options && options.console,
       dependencyExtractor: config.dependencyExtractor,
-      extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
+      extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
@@ -1017,4 +1017,4 @@ export default class Runtime {
 
 Runtime.ScriptTransformer = ScriptTransformer;
 
-export {ScriptTransformer};
+export default Runtime;

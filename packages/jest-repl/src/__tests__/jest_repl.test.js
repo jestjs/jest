@@ -8,9 +8,10 @@
 'use strict';
 
 import {spawnSync} from 'child_process';
+import path from 'path';
 import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
-const JEST_RUNTIME = require.resolve('../../bin/jest-repl.js');
+const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
 
 describe('Repl', () => {
   skipSuiteOnWindows();
@@ -22,7 +23,6 @@ describe('Repl', () => {
         encoding: 'utf8',
         env: process.env,
       });
-      expect(output.stderr.trim()).toBe('');
       expect(output.stdout.trim()).toMatch(/›/);
     });
   });

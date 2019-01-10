@@ -14,9 +14,10 @@ import chalk from 'chalk';
 import os from 'os';
 import path from 'path';
 import yargs from 'yargs';
-import {Console, interopRequireDefault, setGlobal} from 'jest-util';
+import {Console, setGlobal} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfig, deprecationEntries} from 'jest-config';
+// eslint-disable-next-line import/default
 import Runtime from '../';
 import * as args from './args';
 
@@ -79,10 +80,8 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
     watchman: globalConfig.watchman,
   })
     .then(hasteMap => {
-      const Environment: EnvironmentClass = interopRequireDefault(
-        // $FlowFixMe
-        require(config.testEnvironment),
-      ).default;
+      /* $FlowFixMe */
+      const Environment = (require(config.testEnvironment): EnvironmentClass);
       const environment = new Environment(config);
       setGlobal(
         environment.global,
