@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -16,32 +16,29 @@ const rollupJson = require('rollup-plugin-json');
 const rollupBabel = require('rollup-plugin-babel');
 const rollupFlow = require('rollup-plugin-flow');
 
-const babelEs5Options = Object.assign(
-  {},
-  {
-    babelrc: false,
-    exclude: 'node_modules/!(ansi-styles|chalk|ansi-regex|slash)/**',
-    plugins: [
-      'syntax-trailing-function-commas',
-      'transform-flow-strip-types',
-      'transform-es2015-destructuring',
-      'transform-es2015-parameters',
-      'transform-async-to-generator',
-      'transform-strict-mode',
-      'external-helpers',
-      'transform-runtime',
+const babelEs5Options = {
+  // Dont load other config files
+  babelrc: false,
+  configFile: false,
+  plugins: [
+    '@babel/plugin-transform-strict-mode',
+    '@babel/plugin-external-helpers',
+  ],
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        // Required for Rollup
+        modules: false,
+        shippedProposals: true,
+        // Target ES5
+        targets: 'IE 11',
+      },
     ],
-    presets: [
-      [
-        'env',
-        {
-          modules: false,
-        },
-      ],
-    ],
-    runtimeHelpers: true,
-  }
-);
+    '@babel/preset-flow',
+  ],
+  runtimeHelpers: true,
+};
 
 function browserBuild(pkgName, entryPath, destination) {
   return rollup({
@@ -51,7 +48,7 @@ function browserBuild(pkgName, entryPath, destination) {
       {
         resolveId(id) {
           return id === 'chalk'
-            ? path.resolve(__dirname, '../packages/expect/build/fake_chalk.js')
+            ? path.resolve(__dirname, '../packages/expect/build/fakeChalk.js')
             : undefined;
         },
       },

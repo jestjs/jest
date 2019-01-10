@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
  */
 // This file is a heavily modified fork of Jasmine. Original license:
 /*
-Copyright (c) 2008-2016 Pivotal Labs
+Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -30,14 +30,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
-import queueRunner from '../queue_runner';
-import treeProcessor from '../tree_processor';
-import checkIsError from '../is_error';
-
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test. Async functions return it implicitly.
-// eslint-disable-next-line no-unused-vars
-const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
+import {AssertionError} from 'assert';
+import queueRunner from '../queueRunner';
+import treeProcessor from '../treeProcessor';
+import isError from '../isError';
+import assertionErrorMessage from '../assertionErrorMessage';
+import {ErrorWithStack} from 'jest-util';
 
 export default function(j$) {
   function Env(options) {
@@ -322,11 +320,24 @@ export default function(j$) {
 
     this.describe = function(description, specDefinitions) {
       const suite = suiteFactory(description);
+      if (specDefinitions === undefined) {
+        throw new Error(
+          `Missing second argument. It must be a callback function.`,
+        );
+      }
+      if (typeof specDefinitions !== 'function') {
+        throw new Error(
+          `Invalid second argument, ${specDefinitions}. It must be a callback function.`,
+        );
+      }
       if (specDefinitions.length > 0) {
         throw new Error('describe does not expect any arguments');
       }
       if (currentDeclarationSuite.markedPending) {
         suite.pend();
+      }
+      if (currentDeclarationSuite.markedTodo) {
+        suite.todo();
       }
       addSpecsToSuite(suite, specDefinitions);
       return suite;
@@ -450,7 +461,7 @@ export default function(j$) {
       }
       if (fn === undefined) {
         throw new Error(
-          'Missing second argument. It must be a callback function.',
+          'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
         );
       }
       if (typeof fn !== 'function') {
@@ -486,6 +497,21 @@ export default function(j$) {
     this.xit = function() {
       const spec = this.it.apply(this, arguments);
       spec.pend('Temporarily disabled with xit');
+      return spec;
+    };
+
+    this.todo = function() {
+      const description = arguments[0];
+      if (arguments.length !== 1 || typeof description !== 'string') {
+        throw new ErrorWithStack(
+          'Todo must be called with only a description.',
+          test.todo,
+        );
+      }
+
+      const spec = specFactory(description, () => {}, currentDeclarationSuite);
+      spec.todo();
+      currentDeclarationSuite.addChild(spec);
       return spec;
     };
 
@@ -547,7 +573,18 @@ export default function(j$) {
     };
 
     this.fail = function(error) {
-      const {isError, message} = checkIsError(error);
+      let checkIsError;
+      let message;
+
+      if (error instanceof AssertionError) {
+        checkIsError = false;
+        message = assertionErrorMessage(error, {expand: j$.Spec.expand});
+      } else {
+        const check = isError(error);
+
+        checkIsError = check.isError;
+        message = check.message;
+      }
 
       currentRunnable().addExpectationResult(false, {
         matcherName: '',
@@ -555,7 +592,7 @@ export default function(j$) {
         expected: '',
         actual: '',
         message,
-        error: isError ? error : new Error(message),
+        error: checkIsError ? error : new Error(message),
       });
     };
   }

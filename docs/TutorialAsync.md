@@ -50,13 +50,12 @@ const users = {
 export default function request(url) {
   return new Promise((resolve, reject) => {
     const userID = parseInt(url.substr('/users/'.length), 10);
-    process.nextTick(
-      () =>
-        users[userID]
-          ? resolve(users[userID])
-          : reject({
-              error: 'User with ' + userID + ' not found.',
-            }),
+    process.nextTick(() =>
+      users[userID]
+        ? resolve(users[userID])
+        : reject({
+            error: 'User with ' + userID + ' not found.',
+          }),
     );
   });
 }
@@ -109,7 +108,7 @@ it('works with async/await and resolves', async () => {
 });
 ```
 
-To enable async/await in your project, install [`babel-preset-env`](http://babeljs.io/docs/plugins/preset-env/) and enable the feature in your `.babelrc` file.
+To enable async/await in your project, install [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and enable the feature in your `babel.config.js` file.
 
 ## Error handling
 

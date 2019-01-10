@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="http://dp.hanlon.io/313y3u2D0p38/jest.png" height="150" width="150"/>
+  <img src="https://jestjs.io/img/jest.png" height="150" width="150"/>
   <p align="center">Jest</p>
   <p align="center" style="font-size: 0.5em">🃏 Delightful JavaScript Testing</p>
 </h1>
@@ -16,8 +16,12 @@
 <p align="center">
     <a href="#backers"><img src="https://opencollective.com/jest/backers/badge.svg" alt="Backers on Open Collective"></a>
     <a href="#sponsors"><img src="https://opencollective.com/jest/sponsors/badge.svg" alt="Sponsors on Open Collective"></a>
+    <a href="https://github.com/facebook/jest/blob/master/CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg" alt="PR's welcome"></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
      <a href="https://snyk.io/test/github/facebook/jest?targetFile=packages/jest/package.json"><img src="https://snyk.io/test/github/facebook/jest/badge.svg?targetFile=packages/jest/package.json" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/facebook/jest?targetFile=packages/jest/package.json" style="max-width:100%;"></a>
+</p>
+<p align="center">
+    <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>  
 </p>
 
 **👩🏻‍💻 Developer Ready**: Complete and ready to set-up JavaScript testing solution. Works out of the box for any React project.
@@ -100,38 +104,21 @@ If you'd like to learn more about running `jest` through the command line, take 
 
 ### Using Babel
 
-[Babel](http://babeljs.io/) is automatically handled by Jest using `babel-jest`. You don't need install anything extra for using Babel.
+To use [Babel](http://babeljs.io/), install the `babel-jest` and `@babel/core` packages:
 
-> Note: If you are using Babel version 7 then you need to install `babel-jest`, `babel-core@^7.0.0-bridge.0` and `@babel/core` with the following command:
->
-> ```bash
-> yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime
-> ```
+```bash
+yarn add --dev babel-jest @babel/core
+```
 
-Don't forget to add a [`.babelrc`](https://babeljs.io/docs/usage/babelrc/) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`babel-preset-env`](https://babeljs.io/docs/plugins/preset-env/) and [`babel-preset-react`](https://babeljs.io/docs/plugins/preset-react/) presets:
+Don't forget to add a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and [`@babel/preset-react`](https://babeljs.io/docs/en/babel-preset-react) presets:
 
-```json
-{
-  "presets": ["env", "react"]
-}
+```js
+module.exports = {
+  presets: ['@babel/preset-env', '@babel/preset-react'],
+};
 ```
 
 You are now set up to use all ES6 features and React specific syntax.
-
-> Note: If you are using a more complicated Babel configuration, using Babel's `env` option, keep in mind that Jest will automatically define `NODE_ENV` as `test`. It will not use `development` section like Babel does by default when no `NODE_ENV` is set.
-
-> Note: If you've turned off transpilation of ES modules with the option `{ "modules": false }`, you have to make sure to turn this on in your test environment.
-
-```json
-{
-  "presets": [["env", {"modules": false}], "react"],
-  "env": {
-    "test": {
-      "presets": [["env"], "react"]
-    }
-  }
-}
-```
 
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
@@ -150,7 +137,7 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 
 ### Using TypeScript
 
-To use TypeScript in your tests you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+To use TypeScript in your tests install `@babel/preset-typescript` and add it to your Babel config.
 
 <!-- generated_getting_started_end -->
 
@@ -183,9 +170,9 @@ Facebook has adopted a Code of Conduct that we expect project participants to ad
 
 Read our [contributing guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Jest.
 
-### [Good First Issues](https://github.com/facebook/jest/labels/Good%20First%20Issue%20%3Awave%3A)
+### [Good First Issues](https://github.com/facebook/jest/labels/%3Awave%3A%20Good%20First%20Issue)
 
-To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/jest/labels/Good%20First%20Issue%20%3Awave%3A) that contain bugs which have a relatively limited scope. This is a great place to get started.
+To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/jest/labels/%3Awave%3A%20Good%20First%20Issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
 
 ## Credits
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -137,7 +137,7 @@ export default class SummaryReporter extends BaseReporter {
         typeof process.env.npm_lifecycle_script === 'string' &&
         process.env.npm_lifecycle_script.indexOf('jest') !== -1;
 
-      if (globalConfig.watch) {
+      if (globalConfig.watch || globalConfig.watchAll) {
         updateCommand = 'press `u`';
       } else if (event && scriptUsesJest) {
         updateCommand = `run \`${client +

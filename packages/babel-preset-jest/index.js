@@ -1,14 +1,13 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = {
+module.exports = () => ({
   plugins: [
-    // Cannot be `import` as this file is not compiled
-    require('babel-plugin-jest-hoist'),
-    require('babel-plugin-syntax-object-rest-spread'),
+    require.resolve('babel-plugin-jest-hoist'),
+    require.resolve('@babel/plugin-syntax-object-rest-spread'),
   ],
-};
+});

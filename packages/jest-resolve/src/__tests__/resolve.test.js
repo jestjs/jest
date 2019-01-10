@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,14 +8,16 @@
 
 'use strict';
 
-jest.mock('../__mocks__/userResolver');
+import fs from 'fs';
+import path from 'path';
+import HasteMap from 'jest-haste-map';
+import Resolver from '../';
+import userResolver from '../__mocks__/userResolver';
+import nodeModulesPaths from '../nodeModulesPaths';
 
-const fs = require('fs');
-const path = require('path');
-const ModuleMap = require('jest-haste-map').ModuleMap;
-const Resolver = require('../');
-const userResolver = require('../__mocks__/userResolver');
-const nodeModulesPaths = require('../node_modules_paths').default;
+const {ModuleMap} = HasteMap;
+
+jest.mock('../__mocks__/userResolver');
 
 beforeEach(() => {
   userResolver.mockClear();
@@ -23,7 +25,7 @@ beforeEach(() => {
 
 describe('isCoreModule', () => {
   it('returns false if `hasCoreModules` is false.', () => {
-    const moduleMap = ModuleMap.create();
+    const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
       hasCoreModules: false,
     });
@@ -32,14 +34,14 @@ describe('isCoreModule', () => {
   });
 
   it('returns true if `hasCoreModules` is true and `moduleName` is a core module.', () => {
-    const moduleMap = ModuleMap.create();
+    const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {});
     const isCore = resolver.isCoreModule('assert');
     expect(isCore).toEqual(true);
   });
 
   it('returns false if `hasCoreModules` is true and `moduleName` is not a core module.', () => {
-    const moduleMap = ModuleMap.create();
+    const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {});
     const isCore = resolver.isCoreModule('not-a-core-module');
     expect(isCore).toEqual(false);
@@ -82,7 +84,7 @@ describe('findNodeModule', () => {
 describe('resolveModule', () => {
   let moduleMap;
   beforeEach(() => {
-    moduleMap = ModuleMap.create();
+    moduleMap = ModuleMap.create('/');
   });
 
   it('is possible to resolve node modules', () => {
@@ -159,8 +161,9 @@ describe('getMockModule', () => {
   it('is possible to use custom resolver to resolve deps inside mock modules with moduleNameMapper', () => {
     userResolver.mockImplementation(() => 'module');
 
-    const moduleMap = ModuleMap.create();
+    const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
       moduleNameMapper: [
         {
           moduleName: '$1',
@@ -196,7 +199,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   beforeEach(() => {
     jest.resetModules();
 
-    moduleMap = ModuleMap.create();
+    moduleMap = ModuleMap.create('/');
 
     // Mocking realpath to function the old way, where it just looks at
     // pathstrings instead of actually trying to access the physical directory.
@@ -215,7 +218,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Windows platforms', () => {
     jest.doMock('path', () => _path.win32);
     const path = require('path');
-    const Resolver = require('../');
+    const Resolver = require('../').default;
 
     const cwd = 'D:\\temp\\project';
     const src = 'C:\\path\\to\\node_modules';
@@ -235,7 +238,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Posix platforms', () => {
     jest.doMock('path', () => _path.posix);
     const path = require('path');
-    const Resolver = require('../');
+    const Resolver = require('../').default;
 
     const cwd = '/temp/project';
     const src = '/path/to/node_modules';

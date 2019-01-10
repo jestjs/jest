@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,7 +26,7 @@ export type ValueType =
 
 // get the type of a value with handling the edge cases like `typeof []`
 // and `typeof null`
-const getType = (value: any): ValueType => {
+export default function getType(value: any): ValueType {
   if (value === undefined) {
     return 'undefined';
   } else if (value === null) {
@@ -58,6 +58,4 @@ const getType = (value: any): ValueType => {
   }
 
   throw new Error(`value of unknown type: ${value}`);
-};
-
-module.exports = getType;
+}

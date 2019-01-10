@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,11 +8,11 @@
  */
 'use strict';
 
-const path = require('path');
-const {sync: spawnSync} = require('execa');
-const ConditionalTest = require('../../../../scripts/ConditionalTest');
+import path from 'path';
+import {sync as spawnSync} from 'execa';
+import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
-ConditionalTest.skipSuiteOnWindows();
+skipSuiteOnWindows();
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');
 

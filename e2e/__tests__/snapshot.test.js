@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,10 +8,10 @@
  */
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const {extractSummary} = require('../Utils');
-const runJest = require('../runJest');
+import fs from 'fs';
+import path from 'path';
+import {extractSummary} from '../Utils';
+import runJest, {json as runWithJson} from '../runJest';
 
 const emptyTest = 'describe("", () => {it("", () => {})})';
 const snapshotDir = path.resolve(
@@ -21,7 +21,7 @@ const snapshotDir = path.resolve(
 const snapshotFile = path.resolve(snapshotDir, 'snapshot.test.js.snap');
 const secondSnapshotFile = path.resolve(
   snapshotDir,
-  'second_snapshot.test.js.snap',
+  'secondSnapshot.test.js.snap',
 );
 const snapshotOfCopy = path.resolve(snapshotDir, 'snapshot.test_copy.js.snap');
 const originalTestPath = path.resolve(
@@ -49,11 +49,11 @@ const snapshotEscapeFile = path.resolve(
 );
 const snapshotEscapeRegexFile = path.resolve(
   snapshotEscapeSnapshotDir,
-  'snapshot_escape_regex.js.snap',
+  'snapshotEscapeRegex.js.snap',
 );
 const snapshotEscapeSubstitutionFile = path.resolve(
   snapshotEscapeSnapshotDir,
-  'snapshot_escape_substitution.test.js.snap',
+  'snapshotEscapeSubstitution.test.js.snap',
 );
 
 const initialTestData = fs.readFileSync(snapshotEscapeTestFile, 'utf8');
@@ -100,7 +100,7 @@ describe('Snapshot', () => {
   afterAll(cleanup);
 
   it('stores new snapshots on the first run', () => {
-    const result = runJest.json('snapshot', ['-w=1', '--ci=false']);
+    const result = runWithJson('snapshot', ['-w=1', '--ci=false']);
     const json = result.json;
 
     expect(json.numTotalTests).toBe(5);
@@ -170,7 +170,7 @@ describe('Snapshot', () => {
     let result = runJest('snapshot-escape', [
       '-w=1',
       '--ci=false',
-      'snapshot_escape_regex.js',
+      'snapshotEscapeRegex.js',
     ]);
     let stderr = result.stderr;
 
@@ -181,7 +181,7 @@ describe('Snapshot', () => {
     result = runJest('snapshot-escape', [
       '-w=1',
       '--ci=false',
-      'snapshot_escape_regex.js',
+      'snapshotEscapeRegex.js',
     ]);
     stderr = result.stderr;
 
@@ -197,7 +197,7 @@ describe('Snapshot', () => {
     let result = runJest('snapshot-escape', [
       '-w=1',
       '--ci=false',
-      'snapshot_escape_substitution.test.js',
+      'snapshotEscapeSubstitution.test.js',
     ]);
     let stderr = result.stderr;
 
@@ -208,7 +208,7 @@ describe('Snapshot', () => {
     result = runJest('snapshot-escape', [
       '-w=1',
       '--ci=false',
-      'snapshot_escape_substitution.test.js',
+      'snapshotEscapeSubstitution.test.js',
     ]);
     stderr = result.stderr;
 
@@ -225,7 +225,7 @@ describe('Snapshot', () => {
     });
 
     it('does not save snapshots in CI mode by default', () => {
-      const result = runJest.json('snapshot', ['-w=1', '--ci=true']);
+      const result = runWithJson('snapshot', ['-w=1', '--ci=true']);
 
       expect(result.json.success).toBe(false);
       expect(result.json.numTotalTests).toBe(9);
@@ -238,12 +238,12 @@ describe('Snapshot', () => {
     });
 
     it('works on subsequent runs without `-u`', () => {
-      const firstRun = runJest.json('snapshot', ['-w=1', '--ci=false']);
+      const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
 
       // $FlowFixMe dynamic require
       const content = require(snapshotOfCopy);
       expect(content).not.toBe(undefined);
-      const secondRun = runJest.json('snapshot', []);
+      const secondRun = runWithJson('snapshot', []);
 
       expect(firstRun.json.numTotalTests).toBe(9);
       expect(secondRun.json.numTotalTests).toBe(9);
@@ -256,13 +256,13 @@ describe('Snapshot', () => {
     });
 
     it('deletes the snapshot if the test suite has been removed', () => {
-      const firstRun = runJest.json('snapshot', ['-w=1', '--ci=false']);
+      const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
       fs.unlinkSync(copyOfTestPath);
 
       // $FlowFixMe dynamic require
       const content = require(snapshotOfCopy);
       expect(content).not.toBe(undefined);
-      const secondRun = runJest.json('snapshot', ['-w=1', '--ci=false', '-u']);
+      const secondRun = runWithJson('snapshot', ['-w=1', '--ci=false', '-u']);
 
       expect(firstRun.json.numTotalTests).toBe(9);
       expect(secondRun.json.numTotalTests).toBe(5);
@@ -277,10 +277,10 @@ describe('Snapshot', () => {
     });
 
     it('deletes a snapshot when a test does removes all the snapshots', () => {
-      const firstRun = runJest.json('snapshot', ['-w=1', '--ci=false']);
+      const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
 
       fs.writeFileSync(copyOfTestPath, emptyTest);
-      const secondRun = runJest.json('snapshot', ['-w=1', '--ci=false', '-u']);
+      const secondRun = runWithJson('snapshot', ['-w=1', '--ci=false', '-u']);
       fs.unlinkSync(copyOfTestPath);
 
       expect(firstRun.json.numTotalTests).toBe(9);
@@ -296,7 +296,7 @@ describe('Snapshot', () => {
     });
 
     it('updates the snapshot when a test removes some snapshots', () => {
-      const firstRun = runJest.json('snapshot', ['-w=1', '--ci=false']);
+      const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
       fs.unlinkSync(copyOfTestPath);
       const beforeRemovingSnapshot = getSnapshotOfCopy();
 
@@ -307,7 +307,7 @@ describe('Snapshot', () => {
           '.not.toBe(undefined)',
         ),
       );
-      const secondRun = runJest.json('snapshot', ['-w=1', '--ci=false', '-u']);
+      const secondRun = runWithJson('snapshot', ['-w=1', '--ci=false', '-u']);
       fs.unlinkSync(copyOfTestPath);
 
       expect(firstRun.json.numTotalTests).toBe(9);

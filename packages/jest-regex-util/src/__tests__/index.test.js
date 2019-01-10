@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+
 jest.mock('path');
 
 import {replacePathSepForRegex} from '../index';

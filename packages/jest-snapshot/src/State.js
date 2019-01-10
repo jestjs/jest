@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,7 +14,6 @@ import {getTopFrame, getStackTraceLines} from 'jest-message-util';
 import {
   saveSnapshotFile,
   getSnapshotData,
-  getSnapshotPath,
   keyToTestName,
   serialize,
   testNameToKey,
@@ -26,7 +25,6 @@ export type SnapshotStateOptions = {|
   updateSnapshot: SnapshotUpdateState,
   getPrettier: () => null | any,
   getBabelTraverse: () => Function,
-  snapshotPath?: string,
   expand?: boolean,
 |};
 
@@ -55,8 +53,8 @@ export default class SnapshotState {
   unmatched: number;
   updated: number;
 
-  constructor(testPath: Path, options: SnapshotStateOptions) {
-    this._snapshotPath = options.snapshotPath || getSnapshotPath(testPath);
+  constructor(snapshotPath: Path, options: SnapshotStateOptions) {
+    this._snapshotPath = snapshotPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
       options.updateSnapshot,

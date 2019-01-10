@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,10 +14,9 @@ import chalk from 'chalk';
 import os from 'os';
 import path from 'path';
 import yargs from 'yargs';
-import {Console, setGlobal} from 'jest-util';
+import {Console, interopRequireDefault, setGlobal} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfig, deprecationEntries} from 'jest-config';
-// eslint-disable-next-line import/default
 import Runtime from '../';
 import * as args from './args';
 
@@ -76,12 +75,14 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
     unmockedModulePathPatterns: null,
   });
   Runtime.createContext(config, {
-    maxWorkers: os.cpus().length - 1,
+    maxWorkers: Math.max(os.cpus().length - 1, 1),
     watchman: globalConfig.watchman,
   })
     .then(hasteMap => {
-      /* $FlowFixMe */
-      const Environment = (require(config.testEnvironment): EnvironmentClass);
+      const Environment: EnvironmentClass = interopRequireDefault(
+        // $FlowFixMe
+        require(config.testEnvironment),
+      ).default;
       const environment = new Environment(config);
       setGlobal(
         environment.global,

@@ -10,9 +10,13 @@
   "dependencies": {
     "browser-resolve": "^1.11.3",
     "chalk": "^2.0.1",
+    "jest-util": "^23.4.0",
     "realpath-native": "^1.0.0"
   },
   "devDependencies": {
     "jest-haste-map": "^23.6.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

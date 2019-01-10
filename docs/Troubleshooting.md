@@ -132,7 +132,7 @@ If you are using Facebook's [`create-react-app`](https://github.com/facebookincu
 
 ## Caching Issues
 
-The transform script was changed or babel was updated and the changes aren't being recognized by Jest?
+The transform script was changed or Babel was updated and the changes aren't being recognized by Jest?
 
 Retry with [`--no-cache`](CLI.md#cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
@@ -144,7 +144,7 @@ If a promise doesn't resolve at all, this error might be thrown:
 - Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 ```
 
-Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `global.Promise = require.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
+Most commonly this is being caused by conflicting Promise implementations. Consider replacing the global promise implementation with your own, for example `global.Promise = jest.requireActual('promise');` and/or consolidate the used Promise libraries to a single one.
 
 If your test is long running, you may want to consider to increase the timeout by calling `jest.setTimeout`
 
@@ -191,6 +191,23 @@ Jest takes advantage of new features added to Node 6. We recommend that you upgr
 ## `coveragePathIgnorePatterns` seems to not have any effect.
 
 Make sure you are not using the `babel-plugin-istanbul` plugin. Jest wraps Istanbul, and therefore also tells Istanbul what files to instrument with coverage collection. When using `babel-plugin-istanbul`, every file that is processed by Babel will have coverage collection code, hence it is not being ignored by `coveragePathIgnorePatterns`.
+
+## Defining Tests
+
+Tests must be defined synchronously for Jest to be able to collect your tests.
+
+As an example to show why this is the case, imagine we wrote a test like so:
+
+```js
+// Don't do this it will not work
+setTimeout(() => {
+  it('passes', () => expect(1).toBe(1));
+}, 0);
+```
+
+When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
+
+_Note:_ This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
 
 ## Still unresolved?
 

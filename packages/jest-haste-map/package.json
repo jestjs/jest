@@ -9,12 +9,14 @@
   "main": "build/index.js",
   "dependencies": {
     "fb-watchman": "^2.0.0",
-    "graceful-fs": "^4.1.11",
+    "graceful-fs": "^4.1.15",
     "invariant": "^2.2.4",
-    "jest-docblock": "^23.2.0",
     "jest-serializer": "^23.0.1",
     "jest-worker": "^23.2.0",
     "micromatch": "^2.3.11",
     "sane": "^3.0.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

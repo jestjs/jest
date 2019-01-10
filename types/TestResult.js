@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -83,7 +83,13 @@ export type AssertionLocation = {|
   path: string,
 |};
 
-export type Status = 'passed' | 'failed' | 'skipped' | 'pending';
+export type Status =
+  | 'passed'
+  | 'failed'
+  | 'skipped'
+  | 'pending'
+  | 'todo'
+  | 'disabled';
 
 export type Bytes = number;
 export type Milliseconds = number;
@@ -98,6 +104,7 @@ export type AssertionResult = {|
   duration?: ?Milliseconds,
   failureMessages: Array<string>,
   fullName: string,
+  invocations?: number,
   location: ?Callsite,
   numPassingAsserts: number,
   status: Status,
@@ -118,6 +125,7 @@ export type AggregatedResultWithoutCoverage = {
   numPassedTests: number,
   numPassedTestSuites: number,
   numPendingTests: number,
+  numTodoTests: number,
   numPendingTestSuites: number,
   numRuntimeErrorTestSuites: number,
   numTotalTests: number,
@@ -150,6 +158,7 @@ export type TestResult = {|
   numFailingTests: number,
   numPassingTests: number,
   numPendingTests: number,
+  numTodoTests: number,
   openHandles: Array<Error>,
   perfStats: {|
     end: Milliseconds,

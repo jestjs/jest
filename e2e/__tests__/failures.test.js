@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,9 +7,9 @@
  * @flow
  */
 
-const path = require('path');
-const {extractSummary} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
 
@@ -24,21 +24,21 @@ function cleanStderr(stderr) {
 
 test('not throwing Error objects', () => {
   let stderr;
-  stderr = runJest(dir, ['throw_number.test.js']).stderr;
+  stderr = runJest(dir, ['throwNumber.test.js']).stderr;
   expect(cleanStderr(stderr)).toMatchSnapshot();
-  stderr = runJest(dir, ['throw_string.test.js']).stderr;
+  stderr = runJest(dir, ['throwString.test.js']).stderr;
   expect(cleanStderr(stderr)).toMatchSnapshot();
-  stderr = runJest(dir, ['throw_object.test.js']).stderr;
+  stderr = runJest(dir, ['throwObject.test.js']).stderr;
   expect(cleanStderr(stderr)).toMatchSnapshot();
-  stderr = runJest(dir, ['assertion_count.test.js']).stderr;
+  stderr = runJest(dir, ['assertionCount.test.js']).stderr;
   expect(cleanStderr(stderr)).toMatchSnapshot();
-  stderr = runJest(dir, ['during_tests.test.js']).stderr;
+  stderr = runJest(dir, ['duringTests.test.js']).stderr;
   expect(cleanStderr(stderr)).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
   const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
-  const {stderr} = runJest(dir, ['node_assertion_error.test.js']);
+  const {stderr} = runJest(dir, ['assertionError.test.js']);
   let summary = normalizeDots(cleanStderr(stderr));
 
   // Node 9 started to include the error for `doesNotThrow`
@@ -64,7 +64,7 @@ test('works with node assert', () => {
       73 |   });
       74 | });
 
-      at __tests__/node_assertion_error.test.js:71:10
+      at Object.doesNotThrow (__tests__/assertionError.test.js:71:10)
 `);
 
     const commonErrorMessage = `Message:
@@ -114,7 +114,7 @@ test('works with node assert', () => {
       69 | 
       70 | test('assert.doesNotThrow', () => {
 
-      at __tests__/node_assertion_error.test.js:67:10
+      at Object.ifError (__tests__/assertionError.test.js:67:10)
 `;
 
     expect(summary).toContain(ifErrorMessage);
@@ -131,7 +131,7 @@ test('works with node assert', () => {
       68 | });
       69 | 
 
-      at __tests__/node_assertion_error.test.js:66:1
+      at Object.test (__tests__/assertionError.test.js:66:1)
 `;
 
     expect(summary).toContain(ifErrorMessage);
@@ -142,13 +142,13 @@ test('works with node assert', () => {
 });
 
 test('works with assertions in separate files', () => {
-  const {stderr} = runJest(dir, ['test_macro.test.js']);
+  const {stderr} = runJest(dir, ['testMacro.test.js']);
 
   expect(normalizeDots(cleanStderr(stderr))).toMatchSnapshot();
 });
 
 test('works with async failures', () => {
-  const {stderr} = runJest(dir, ['async_failures.test.js']);
+  const {stderr} = runJest(dir, ['asyncFailures.test.js']);
 
   const rest = cleanStderr(stderr)
     .split('\n')
@@ -175,7 +175,7 @@ test('works with snapshot failures', () => {
 });
 
 test('works with named snapshot failures', () => {
-  const {stderr} = runJest(dir, ['snapshot_named.test.js']);
+  const {stderr} = runJest(dir, ['snapshotNamed.test.js']);
 
   const result = normalizeDots(cleanStderr(stderr));
 

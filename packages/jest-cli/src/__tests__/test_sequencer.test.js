@@ -1,17 +1,17 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
 'use strict';
 
+import fs from 'fs';
+import path from 'path';
 import TestSequencer from '../TestSequencer';
 
 jest.mock('fs');
 
-const fs = require('fs');
-const path = require('path');
 const FAIL = 0;
 const SUCCESS = 1;
 
@@ -23,6 +23,9 @@ const context = {
     cacheDirectory: '/cache',
     name: 'test',
   },
+  hasteFS: {
+    getSize: path => path.length,
+  },
 };
 
 const secondContext = {
@@ -30,6 +33,9 @@ const secondContext = {
     cache: true,
     cacheDirectory: '/cache2',
     name: 'test2',
+  },
+  hasteFS: {
+    getSize: path => path.length,
   },
 };
 
@@ -45,7 +51,6 @@ beforeEach(() => {
 
   fs.readFileSync = jest.fn(() => '{}');
   fs.existsSync = () => true;
-  fs.statSync = jest.fn(filePath => ({size: filePath.length}));
   fs.writeFileSync = jest.fn();
 });
 
@@ -203,16 +208,15 @@ test('writes the cache based on the results', () => {
 });
 
 test('works with multiple contexts', () => {
-  fs.readFileSync = jest.fn(
-    cacheName =>
-      cacheName.startsWith(path.sep + 'cache' + path.sep)
-        ? JSON.stringify({
-            '/test-a.js': [SUCCESS, 5],
-            '/test-b.js': [FAIL, 1],
-          })
-        : JSON.stringify({
-            '/test-c.js': [FAIL],
-          }),
+  fs.readFileSync = jest.fn(cacheName =>
+    cacheName.startsWith(path.sep + 'cache' + path.sep)
+      ? JSON.stringify({
+          '/test-a.js': [SUCCESS, 5],
+          '/test-b.js': [FAIL, 1],
+        })
+      : JSON.stringify({
+          '/test-c.js': [FAIL],
+        }),
   );
 
   const testPaths = [

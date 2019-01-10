@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,14 +9,14 @@
 'use strict';
 
 import validate from '../validate';
-import jestValidateExampleConfig from '../example_config';
-import jestValidateDefaultConfig from '../default_config';
-
-const {
+import {multipleValidOptions} from '../condition';
+import jestValidateExampleConfig from '../exampleConfig';
+import jestValidateDefaultConfig from '../defaultConfig';
+import {
   defaultConfig,
-  validConfig,
   deprecatedConfig,
-} = require('./fixtures/jest_config');
+  validConfig,
+} from './fixtures/jestConfig';
 
 test('recursively validates default Jest config', () => {
   expect(
@@ -205,4 +205,83 @@ test('works with custom deprecations', () => {
 
   expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   console.warn = warn;
+});
+
+test('works with multiple valid types', () => {
+  const exampleConfig = {
+    foo: multipleValidOptions('text', ['text']),
+  };
+
+  expect(
+    validate(
+      {foo: 'foo'},
+      {
+        exampleConfig,
+      },
+    ),
+  ).toEqual({
+    hasDeprecationWarnings: false,
+    isValid: true,
+  });
+  expect(
+    validate(
+      {foo: ['foo']},
+      {
+        exampleConfig,
+      },
+    ),
+  ).toEqual({
+    hasDeprecationWarnings: false,
+    isValid: true,
+  });
+});
+
+test('reports errors nicely when failing with multiple valid options', () => {
+  const exampleConfig = {
+    foo: multipleValidOptions('text', ['text']),
+  };
+
+  expect(() =>
+    validate(
+      {foo: 2},
+      {
+        exampleConfig,
+      },
+    ),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+test('Repeated types within multiple valid examples are coalesced in error report', () => {
+  const exampleConfig = {
+    foo: multipleValidOptions('foo', 'bar', 2),
+  };
+
+  expect(() =>
+    validate(
+      {foo: false},
+      {
+        exampleConfig,
+      },
+    ),
+  ).toThrowErrorMatchingSnapshot();
+});
+
+test('Comments in config JSON using "//" key are not warned', () => {
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+  const config = {'//': 'a comment'};
+
+  validate(config, {
+    exampleConfig: validConfig,
+  });
+  expect(console.warn).not.toBeCalled();
+
+  console.warn.mockReset();
+
+  validate(config, {
+    exampleConfig: validConfig,
+    recursiveBlacklist: [('myCustomKey': "don't validate this")],
+  });
+  expect(console.warn).not.toBeCalled();
+
+  console.warn.mockRestore();
 });

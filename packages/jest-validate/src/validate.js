@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@
 
 import type {ValidationOptions} from './types';
 
-import defaultConfig from './default_config';
+import defaultConfig from './defaultConfig';
 
 let hasDeprecationWarnings = false;
 
@@ -81,10 +81,17 @@ const _validate = (
 const validate = (config: Object, options: ValidationOptions) => {
   hasDeprecationWarnings = false;
 
+  // Preserve default blacklist entries even with user-supplied blacklist
+  const combinedBlacklist: Array<string> = [].concat(
+    defaultConfig.recursiveBlacklist || [],
+    options.recursiveBlacklist || [],
+  );
+
   const defaultedOptions: ValidationOptions = Object.assign(
     {},
     defaultConfig,
     options,
+    {recursiveBlacklist: combinedBlacklist},
     {title: Object.assign({}, defaultConfig.title, options.title)},
   );
 

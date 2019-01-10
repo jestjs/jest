@@ -43,11 +43,11 @@ There are two levels of support for the collective: Backer and Sponsor.
 
 ### Backers
 
-Backers of the collective are individuals contributing at least $2/month. We'll include a list of backers on the Jest homepage, README on github/yarn/npm, and Contributors page.
+Backers of the collective are individuals contributing at least \$2/month. We'll include a list of backers on the Jest homepage, README on github/yarn/npm, and Contributors page.
 
 ### Sponsors
 
-Sponsors of the collective are individuals and organizations contributing at least $100/month. We'll place sponsor logos with a link to their site on the Jest homepage, README on github/yarn/npm, and Contributors page.
+Sponsors of the collective are individuals and organizations contributing at least \$100/month. We'll place sponsor logos with a link to their site on the Jest homepage, README on github/yarn/npm, and Contributors page.
 
 ## What is the goal of the collective
 

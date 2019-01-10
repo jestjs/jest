@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  * All rights reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -18,7 +18,7 @@ describe('docblock', () => {
     const code =
       '/**' +
       os.EOL +
-      ' * @providesModule foo' +
+      ' * @team foo' +
       os.EOL +
       '* // TODO: test' +
       os.EOL +
@@ -28,7 +28,7 @@ describe('docblock', () => {
     expect(docblock.extract(code)).toBe(
       '/**' +
         os.EOL +
-        ' * @providesModule foo' +
+        ' * @team foo' +
         os.EOL +
         '* // TODO: test' +
         os.EOL +
@@ -40,13 +40,13 @@ describe('docblock', () => {
     const code =
       '/**' +
       os.EOL +
-      ' * @providesModule foo' +
+      ' * @team foo' +
       os.EOL +
       '*/' +
       os.EOL +
       'const x = foo;';
     expect(docblock.extract(code)).toBe(
-      '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
+      '/**' + os.EOL + ' * @team foo' + os.EOL + '*/',
     );
   });
 
@@ -54,7 +54,7 @@ describe('docblock', () => {
     const code =
       '/**' +
       os.EOL +
-      ' * @providesModule foo' +
+      ' * @team foo' +
       os.EOL +
       '*/' +
       os.EOL +
@@ -62,7 +62,7 @@ describe('docblock', () => {
       os.EOL +
       '/**foo*/';
     expect(docblock.extract(code)).toBe(
-      '/**' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
+      '/**' + os.EOL + ' * @team foo' + os.EOL + '*/',
     );
   });
 
@@ -70,13 +70,13 @@ describe('docblock', () => {
     const code =
       '/*' +
       os.EOL +
-      ' * @providesModule foo' +
+      ' * @team foo' +
       os.EOL +
       '*/' +
       os.EOL +
       'const x = foo;';
     expect(docblock.extract(code)).toBe(
-      '/*' + os.EOL + ' * @providesModule foo' + os.EOL + '*/',
+      '/*' + os.EOL + ' * @team foo' + os.EOL + '*/',
     );
   });
 
@@ -102,7 +102,7 @@ describe('docblock', () => {
       '/**' +
       os.EOL +
       '' +
-      ' * @providesModule foo' +
+      ' * @team foo' +
       os.EOL +
       '' +
       ' * @css a b' +
@@ -115,7 +115,7 @@ describe('docblock', () => {
     expect(docblock.parse(code)).toEqual({
       css: 'a b',
       'preserve-whitespace': '',
-      providesModule: 'foo',
+      team: 'foo',
     });
   });
 
@@ -165,10 +165,10 @@ describe('docblock', () => {
       '/**' +
       os.EOL +
       '' +
-      ' * Copyright 2004-present Facebook. All Rights Reserved.' +
+      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
       os.EOL +
       '' +
-      ' * @providesModule foo' +
+      ' * @team foo' +
       os.EOL +
       '' +
       ' * @css a b' +
@@ -187,7 +187,7 @@ describe('docblock', () => {
     expect(docblock.parse(code)).toEqual({
       css: 'a b',
       'preserve-whitespace': '',
-      providesModule: 'foo',
+      team: 'foo',
     });
   });
 
@@ -196,7 +196,7 @@ describe('docblock', () => {
       '/**' +
       os.EOL +
       '' +
-      ' * @providesModule foo' +
+      ' * @team foo' +
       os.EOL +
       '' +
       ' * // TODO: test' +
@@ -205,7 +205,7 @@ describe('docblock', () => {
       ' */';
     expect(docblock.parseWithComments(code)).toEqual({
       comments: '// TODO: test',
-      pragmas: {providesModule: 'foo'},
+      pragmas: {team: 'foo'},
     });
   });
 
@@ -214,7 +214,7 @@ describe('docblock', () => {
       '/**' +
       os.EOL +
       '' +
-      ' * Copyright 2004-present Facebook. All Rights Reserved.' +
+      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
       os.EOL +
       '' +
       ' * @class A long declaration of a class' +
@@ -246,7 +246,7 @@ describe('docblock', () => {
       '/**' +
       os.EOL +
       '' +
-      ' * Copyright 2004-present Facebook. All Rights Reserved.' +
+      ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
       os.EOL +
       '' +
       ' * @class A long declaration of a class' +
@@ -268,7 +268,7 @@ describe('docblock', () => {
       ' */';
     expect(docblock.parseWithComments(code)).toEqual({
       comments:
-        'Copyright 2004-present Facebook. All Rights Reserved.' +
+        'Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.' +
         os.EOL +
         os.EOL +
         'And some license here' +
@@ -283,17 +283,10 @@ describe('docblock', () => {
     });
   });
 
-  it('supports slashes in @providesModule directive', () => {
-    const code =
-      '/**' +
-      os.EOL +
-      '' +
-      ' * @providesModule apple/banana' +
-      os.EOL +
-      '' +
-      ' */';
+  it('supports slashes in @team directive', () => {
+    const code = '/**' + os.EOL + ' * @team apple/banana' + os.EOL + ' */';
     expect(docblock.parse(code)).toEqual({
-      providesModule: 'apple/banana',
+      team: 'apple/banana',
     });
   });
 
@@ -456,14 +449,14 @@ describe('docblock', () => {
   it('prints docblocks with pragmas', () => {
     const pragmas = {
       flow: 'foo',
-      providesModule: 'x/y/z',
+      team: 'x/y/z',
     };
     expect(docblock.print({pragmas})).toEqual(
       '/**' +
         os.EOL +
         ' * @flow foo' +
         os.EOL +
-        ' * @providesModule x/y/z' +
+        ' * @team x/y/z' +
         os.EOL +
         ' */',
     );
@@ -487,7 +480,8 @@ describe('docblock', () => {
 
   it('prints docblocks with comments and no keys', () => {
     const pragmas = {};
-    const comments = 'Copyright 2004-present Facebook. All Rights Reserved.';
+    const comments =
+      'Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.';
     expect(docblock.print({comments, pragmas})).toEqual(
       '/**' + os.EOL + ' * ' + comments + os.EOL + ' */',
     );

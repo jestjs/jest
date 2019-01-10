@@ -1,4 +1,6 @@
-const prettier = require.requireActual('prettier');
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+
+const prettier = jest.requireActual('prettier');
 
 module.exports = {
   format: (text, opts) =>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -49,25 +49,29 @@ class Contributors extends React.Component {
           </translate>
         </p>
         <div>
-          {backers.filter(b => b.tier === 'sponsor').map(b => (
-            <a
-              key={b.id}
-              className="sponsor-item"
-              title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
-              target="_blank"
-              href={b.website || `https://opencollective.com/${b.slug}`}
-            >
-              {
-                <img
-                  className="sponsor-avatar"
-                  src={b.avatar}
-                  alt={
-                    b.name || b.slug ? `${b.name || b.slug}'s avatar` : 'avatar'
-                  }
-                />
-              }
-            </a>
-          ))}
+          {backers
+            .filter(b => b.tier === 'sponsor')
+            .map(b => (
+              <a
+                key={b.id}
+                className="sponsor-item"
+                title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
+                target="_blank"
+                href={b.website || `https://opencollective.com/${b.slug}`}
+              >
+                {
+                  <img
+                    className="sponsor-avatar"
+                    src={b.avatar}
+                    alt={
+                      b.name || b.slug
+                        ? `${b.name || b.slug}'s avatar`
+                        : 'avatar'
+                    }
+                  />
+                }
+              </a>
+            ))}
         </div>
         <div className="support">
           <a
@@ -86,25 +90,29 @@ class Contributors extends React.Component {
           </translate>
         </p>
         <div>
-          {backers.filter(b => b.tier === 'backer').map(b => (
-            <a
-              key={b.id}
-              className="backer-item"
-              title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
-              target="_blank"
-              href={b.website || `https://opencollective.com/${b.slug}`}
-            >
-              {
-                <img
-                  className="backer-avatar"
-                  src={b.avatar}
-                  alt={
-                    b.name || b.slug ? `${b.name || b.slug}'s avatar` : 'avatar'
-                  }
-                />
-              }
-            </a>
-          ))}
+          {backers
+            .filter(b => b.tier === 'backer')
+            .map(b => (
+              <a
+                key={b.id}
+                className="backer-item"
+                title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
+                target="_blank"
+                href={b.website || `https://opencollective.com/${b.slug}`}
+              >
+                {
+                  <img
+                    className="backer-avatar"
+                    src={b.avatar}
+                    alt={
+                      b.name || b.slug
+                        ? `${b.name || b.slug}'s avatar`
+                        : 'avatar'
+                    }
+                  />
+                }
+              </a>
+            ))}
           <div>
             <a
               className="support-button"
@@ -125,9 +133,6 @@ class HomeSplash extends React.Component {
       <div className="homeContainer">
         <div className="homeSplashFade">
           <div className="wrapper homeWrapper">
-            <div className="projectLogo">
-              <img src={siteConfig.baseUrl + 'img/jest.svg'} alt="Jest" />
-            </div>
             <div className="inner">
               <h2 className="projectTitle">
                 {siteConfig.title}
@@ -381,9 +386,9 @@ class Index extends React.Component {
                   content: (
                     <translate>
                       Jest works with any compile-to-JavaScript language and
-                      integrates seamlessly with [Babel](https://babeljs.io) and
-                      with TypeScript through
-                      [ts-jest](https://github.com/kulshekhar/ts-jest).
+                      integrates seamlessly with [Babel](https://babeljs.io)
+                      which means you can write React, TypeScript and much more
+                      without configuration
                     </translate>
                   ),
                   image: '/img/content/feature-typescript.png',

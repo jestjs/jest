@@ -35,7 +35,7 @@ exports[`formats args with pretty format when given %p 1`] = `
 `;
 
 exports[`runs only the describe.only.each tests 1`] = `
-"PASS __tests__/describe-only.test.js
+"PASS __tests__/describeOnly.test.js
   passes all rows expected true == true
     ✓ passes
     ✓ passes
@@ -46,7 +46,7 @@ exports[`runs only the describe.only.each tests 1`] = `
 `;
 
 exports[`shows error message when not enough arguments are supplied to tests 1`] = `
-"FAIL __tests__/each-exception.test.js
+"FAIL __tests__/eachException.test.js
   ✕ throws exception when one argument too few are supplied $left == $right
   ✕ throws exception when not enough arguments are supplied $left == $right
 
@@ -72,7 +72,7 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
       10 |   \${true} | \${true}
       11 |   \${true}
 
-      at __tests__/each-exception.test.js:8:1
+      at Object.<anonymous> (__tests__/eachException.test.js:8:1)
 
   ● throws exception when not enough arguments are supplied $left == $right
 
@@ -95,13 +95,13 @@ exports[`shows error message when not enough arguments are supplied to tests 1`]
       21 |   \${true} | \${true}
       22 | \`(
 
-      at __tests__/each-exception.test.js:19:1
+      at Object.<anonymous> (__tests__/eachException.test.js:19:1)
 
 "
 `;
 
 exports[`shows only the tests with .only as being ran 1`] = `
-"PASS __tests__/each-only.test.js
+"PASS __tests__/eachOnly.test.js
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
@@ -112,7 +112,7 @@ exports[`shows only the tests with .only as being ran 1`] = `
 `;
 
 exports[`shows only the tests without .skip as being ran 1`] = `
-"PASS __tests__/each-skip.test.js
+"PASS __tests__/eachSkip.test.js
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
@@ -161,7 +161,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       13 | );
       14 |
 
-      at __tests__/failure.test.js:11:18
+      at toBe (__tests__/failure.test.js:11:18)
 
   ● array table fails on all rows expected 1 == 2
 
@@ -178,7 +178,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       20 | );
       21 |
 
-      at __tests__/failure.test.js:18:18
+      at toBe (__tests__/failure.test.js:18:18)
 
   ● array table fails on all rows expected 3 == 4
 
@@ -195,7 +195,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       20 | );
       21 |
 
-      at __tests__/failure.test.js:18:18
+      at toBe (__tests__/failure.test.js:18:18)
 
   ● template table fails on one row expected: true == false
 
@@ -212,7 +212,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       31 | );
       32 |
 
-      at __tests__/failure.test.js:29:18
+      at toBe (__tests__/failure.test.js:29:18)
 
   ● template table fails on all rows expected: 1 == 2
 
@@ -229,7 +229,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       42 | );
       43 |
 
-      at __tests__/failure.test.js:40:18
+      at toBe (__tests__/failure.test.js:40:18)
 
   ● template table fails on all rows expected: 3 == 4
 
@@ -246,7 +246,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       42 | );
       43 |
 
-      at __tests__/failure.test.js:40:18
+      at toBe (__tests__/failure.test.js:40:18)
 
   ● The word red contains the letter 'z'
 
@@ -263,7 +263,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       49 | );
       50 |
 
-      at __tests__/failure.test.js:47:28
+      at toBe (__tests__/failure.test.js:47:28)
 
   ● The word green contains the letter 'z'
 
@@ -280,7 +280,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       49 | );
       50 |
 
-      at __tests__/failure.test.js:47:28
+      at toBe (__tests__/failure.test.js:47:28)
 
   ● The word bean contains the letter 'z'
 
@@ -297,7 +297,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       49 | );
       50 |
 
-      at __tests__/failure.test.js:47:28
+      at toBe (__tests__/failure.test.js:47:28)
 
   ● template table describe fails on all rows expected \\"a\\" == \\"b\\" › fails
 
@@ -314,7 +314,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       61 |   }
       62 | );
 
-      at __tests__/failure.test.js:59:20
+      at Object.toBe (__tests__/failure.test.js:59:20)
 
   ● template table describe fails on all rows expected \\"c\\" == \\"d\\" › fails
 
@@ -331,7 +331,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       61 |   }
       62 | );
 
-      at __tests__/failure.test.js:59:20
+      at Object.toBe (__tests__/failure.test.js:59:20)
 
   ● array table describe fails on all rows expected a == b › fails
 
@@ -348,7 +348,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       70 |   }
       71 | );
 
-      at __tests__/failure.test.js:68:20
+      at Object.toBe (__tests__/failure.test.js:68:20)
 
   ● array table describe fails on all rows expected c == d › fails
 
@@ -365,7 +365,7 @@ exports[`shows the correct errors in stderr when failing tests 1`] = `
       70 |   }
       71 | );
 
-      at __tests__/failure.test.js:68:20
+      at Object.toBe (__tests__/failure.test.js:68:20)
 
 "
 `;

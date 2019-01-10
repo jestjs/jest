@@ -8,7 +8,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "babel-core": "^6.0.0",
+    "@babel/core": "^7.1.0",
     "babel-jest": "^23.6.0",
     "chalk": "^2.0.1",
     "glob": "^7.1.1",
@@ -21,6 +21,10 @@
     "jest-util": "^23.4.0",
     "jest-validate": "^23.6.0",
     "micromatch": "^2.3.11",
-    "pretty-format": "^23.6.0"
+    "pretty-format": "^23.6.0",
+    "realpath-native": "^1.0.2"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

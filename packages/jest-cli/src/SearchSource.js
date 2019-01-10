@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -18,6 +18,7 @@ import DependencyResolver from 'jest-resolve-dependencies';
 import testPathPatternToRegExp from './testPathPatternToRegexp';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
+import {buildSnapshotResolver} from 'jest-snapshot';
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -50,13 +51,12 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
   return path => micromatch([path], globs, {dot: true}).length > 0;
 };
 
-const regexToMatcher = (testRegex: string) => {
-  if (!testRegex) {
+const regexToMatcher = (testRegex: Array<string>) => {
+  if (!testRegex.length) {
     return () => true;
   }
 
-  const regex = new RegExp(testRegex);
-  return path => regex.test(path);
+  return path => testRegex.some(testRegex => new RegExp(testRegex).test(path));
 };
 
 const toTests = (context, tests) =>
@@ -153,6 +153,7 @@ export default class SearchSource {
     const dependencyResolver = new DependencyResolver(
       this._context.resolver,
       this._context.hasteFS,
+      buildSnapshotResolver(this._context.config),
     );
 
     const tests = toTests(

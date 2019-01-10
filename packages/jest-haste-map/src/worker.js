@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,11 +11,10 @@ import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 
 import crypto from 'crypto';
 import path from 'path';
-import * as docblock from 'jest-docblock';
 import fs from 'graceful-fs';
 import blacklist from './blacklist';
 import H from './constants';
-import extractRequires from './lib/extract_requires';
+import * as dependencyExtractor from './lib/dependencyExtractor';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
@@ -48,7 +47,8 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   let module;
   let sha1;
 
-  const {computeDependencies, computeSha1, filePath} = data;
+  const {computeDependencies, computeSha1, rootDir, filePath} = data;
+
   const getContent = (): string => {
     if (content === undefined) {
       content = fs.readFileSync(filePath, 'utf8');
@@ -63,8 +63,9 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
       const fileData = JSON.parse(getContent());
 
       if (fileData.name) {
+        const relativeFilePath = path.relative(rootDir, filePath);
         id = fileData.name;
-        module = [filePath, H.PACKAGE];
+        module = [relativeFilePath, H.PACKAGE];
       }
     } catch (err) {
       throw new Error(`Cannot parse ${filePath} as JSON: ${err.message}`);
@@ -73,17 +74,24 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
     // Process a random file that is returned as a MODULE.
     if (hasteImpl) {
       id = hasteImpl.getHasteName(filePath);
-    } else {
-      const doc = docblock.parse(docblock.extract(getContent()));
-      id = [].concat(doc.providesModule || doc.provides)[0];
     }
 
     if (computeDependencies) {
-      dependencies = extractRequires(getContent());
+      const content = getContent();
+      dependencies = Array.from(
+        data.dependencyExtractor
+          ? // $FlowFixMe
+            require(data.dependencyExtractor).extract(
+              content,
+              dependencyExtractor.extract,
+            )
+          : dependencyExtractor.extract(content),
+      );
     }
 
     if (id) {
-      module = [filePath, H.MODULE];
+      const relativeFilePath = path.relative(rootDir, filePath);
+      module = [relativeFilePath, H.MODULE];
     }
   }
 

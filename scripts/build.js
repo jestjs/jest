@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,9 +7,9 @@
 
 /**
  * script to build (transpile) files.
- * By default it transpiles all files for all packages and writes them
+ * By default it transpiles js files for all packages and writes them
  * into `build/` directory.
- * Non-js or files matching IGNORE_PATTERN will be copied without transpiling.
+ * Non-js files not matching IGNORE_PATTERN will be copied without transpiling.
  *
  * Example:
  *  node ./scripts/build.js
@@ -25,7 +25,7 @@ const path = require('path');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
 
-const babel = require('babel-core');
+const babel = require('@babel/core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
 const prettier = require('prettier');
@@ -43,10 +43,9 @@ const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
 const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
-const transformOptions = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, '..', '.babelrc'), 'utf8')
-);
+const transformOptions = require('../babel.config.js');
 transformOptions.babelrc = false;
+
 const prettierConfig = prettier.resolveConfig.sync(__filename);
 prettierConfig.trailingComma = 'none';
 prettierConfig.parser = 'babylon';
@@ -124,7 +123,6 @@ function buildBrowserPackage(p) {
 function buildFile(file, silent) {
   const destPath = getBuildPath(file, BUILD_DIR);
 
-  mkdirp.sync(path.dirname(destPath));
   if (micromatch.isMatch(file, IGNORE_PATTERN)) {
     silent ||
       process.stdout.write(
@@ -132,7 +130,11 @@ function buildFile(file, silent) {
           path.relative(PACKAGES_DIR, file) +
           ' (ignore)\n'
       );
-  } else if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
+    return;
+  }
+
+  mkdirp.sync(path.dirname(destPath));
+  if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
     fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
     silent ||
       process.stdout.write(
@@ -147,26 +149,30 @@ function buildFile(file, silent) {
     const options = Object.assign({}, transformOptions);
     options.plugins = options.plugins.slice();
 
-    if (!INLINE_REQUIRE_BLACKLIST.test(file)) {
-      // Remove normal plugin.
-      options.plugins = options.plugins.filter(
-        plugin =>
-          !(
-            Array.isArray(plugin) &&
-            plugin[0] === 'transform-es2015-modules-commonjs'
-          )
+    if (INLINE_REQUIRE_BLACKLIST.test(file)) {
+      // The modules in the blacklist are injected into the user's sandbox
+      // We need to guard some globals there.
+      options.plugins.push(
+        require.resolve('./babel-plugin-jest-native-globals')
       );
-      options.plugins.push([
-        'transform-inline-imports-commonjs',
-        {
-          allowTopLevelThis: true,
-        },
-      ]);
+    } else {
+      options.plugins = options.plugins.map(plugin => {
+        if (
+          Array.isArray(plugin) &&
+          plugin[0] === '@babel/plugin-transform-modules-commonjs'
+        ) {
+          return [plugin[0], Object.assign({}, plugin[1], {lazy: true})];
+        }
+
+        return plugin;
+      });
     }
 
     const transformed = babel.transformFileSync(file, options).code;
     const prettyCode = prettier.format(transformed, prettierConfig);
+
     fs.writeFileSync(destPath, prettyCode);
+
     silent ||
       process.stdout.write(
         chalk.green('  \u2022 ') +

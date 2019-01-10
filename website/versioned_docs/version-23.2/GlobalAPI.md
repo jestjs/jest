@@ -172,7 +172,7 @@ If you only need to run some setup code once, before any tests run, use `beforeA
 
 ### `describe(name, fn)`
 
-`describe(name, fn)` creates a block that groups together several related tests in one "test suite". For example, if you have a `myBeverage` object that is supposed to be delicious but not sour, you could test it with:
+`describe(name, fn)` creates a block that groups together several related tests. For example, if you have a `myBeverage` object that is supposed to be delicious but not sour, you could test it with:
 
 ```js
 const myBeverage = {
@@ -431,14 +431,6 @@ test('will be ran', () => {
   expect(1 / 0).toBe(Infinity);
 });
 ```
-
-### `require.requireActual(moduleName)`
-
-Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
-
-### `require.requireMock(moduleName)`
-
-Returns a mock module instead of the actual module, bypassing all checks on whether the module should be required normally or not.
 
 ### `test(name, fn, timeout)`
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,6 +10,7 @@
 import type {ProjectConfig} from 'types/Config';
 
 import {formatExecError} from 'jest-message-util';
+import {ErrorWithStack} from 'jest-util';
 import stripAnsi from 'strip-ansi';
 
 function stackIsFromUser(stack) {
@@ -43,11 +44,7 @@ export default function collectHandles(): () => Array<Error> {
     if (type === 'PROMISE' || type === 'TIMERWRAP') {
       return;
     }
-    const error = new Error(type);
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(error, initHook);
-    }
+    const error = new ErrorWithStack(type, initHook);
 
     if (stackIsFromUser(error.stack)) {
       activeHandles.set(asyncId, error);

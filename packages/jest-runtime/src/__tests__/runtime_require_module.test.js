@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -18,7 +18,7 @@ describe('Runtime requireModule', () => {
     createRuntime = require('createRuntime');
   });
 
-  it('finds @providesModule modules', () =>
+  it('finds haste modules', () =>
     createRuntime(__filename).then(runtime => {
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -142,7 +142,7 @@ describe('Runtime requireModule', () => {
       });
     }));
 
-  it('throws on non-existent @providesModule modules', () =>
+  it('throws on non-existent haste modules', () =>
     createRuntime(__filename).then(runtime => {
       expect(() => {
         runtime.requireModule(runtime.__mockRootPath, 'DoesntExist');

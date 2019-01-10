@@ -1,13 +1,13 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  * @flow
  */
 
-const path = require('path');
-const runJest = require('../runJest');
+import path from 'path';
+import runJest from '../runJest';
 
 describe('jest --debug', () => {
   const dir = path.resolve(__dirname, '..', 'verbose-reporter');
