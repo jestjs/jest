@@ -8,7 +8,7 @@
     "chalk": "^2.0.1",
     "exit": "^0.1.2",
     "glob": "^7.1.2",
-    "graceful-fs": "^4.1.11",
+    "graceful-fs": "^4.1.15",
     "import-local": "^2.0.0",
     "is-ci": "^1.0.10",
     "istanbul-api": "^2.0.8",
