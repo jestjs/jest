@@ -7,7 +7,7 @@ const {
 const exportedModules = new Map([
   ['foo', 'foo'],
   ['bar', 'bar'],
-  ['regenerator-runtime/runtime', 'fake-regenerator'],
+  ['regenerator-runtime/runtime', 'fakeRegenerator'],
 ]);
 
 module.exports = (name, options) => {
