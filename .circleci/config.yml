@@ -104,7 +104,7 @@ jobs:
   test-browser:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:8-browsers
+      - image: circleci/node:10-browsers
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -115,7 +115,7 @@ jobs:
   test-or-deploy-website:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:10
     resource_class: large
     steps:
       - checkout
