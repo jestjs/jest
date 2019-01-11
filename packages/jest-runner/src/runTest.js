@@ -73,7 +73,7 @@ async function runTestInternal(
   const Runtime = ((config.moduleLoader
     ? /* $FlowFixMe */
       require(config.moduleLoader)
-    : require('jest-runtime').default): Class<RuntimeClass>);
+    : require('jest-runtime')): Class<RuntimeClass>);
 
   let runtime = undefined;
 
