@@ -133,7 +133,14 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
 </code></pre>
 <p>These helper functions and properties can be found on <code>this</code> inside a custom matcher:</p>
 <h4><a class="anchor" aria-hidden="true" id="thisisnot"></a><a href="#thisisnot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.isNot</code></h4>
-<p>Um valor booleano para que você saiba que este &quot;matcher&quot; foi chamado com o modificador negado <code>.not</code> permitindo você inverter sua verificação.</p>
+<p>A boolean to let you know this matcher was called with the negated <code>.not</code> modifier allowing you to flip your assertion and display a clear and correct matcher hint (see example code).</p>
+<h4><a class="anchor" aria-hidden="true" id="thispromise"></a><a href="#thispromise" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.promise</code></h4>
+<p>A string allowing you to display a clear and correct matcher hint:</p>
+<ul>
+<li><code>'rejects'</code> if matcher was called with the promise <code>.rejects</code> modifier</li>
+<li><code>'resolves'</code> if matcher was called with the promise <code>.resolves</code> modifier</li>
+<li><code>''</code> if matcher was not called with a promise modifier</li>
+</ul>
 <h4><a class="anchor" aria-hidden="true" id="thisequalsa-b"></a><a href="#thisequalsa-b" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.equals(a, b)</code></h4>
 <p>Esta é uma função de igualdade profunda que retornará <code>true</code> se dois objetos têm os mesmos valores (recursivamente).</p>
 <h4><a class="anchor" aria-hidden="true" id="thisexpand"></a><a href="#thisexpand" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.expand</code></h4>
@@ -144,28 +151,31 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> diff = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-diff'</span>);
 expect.extend({
   toBe(received, expected) {
+    <span class="hljs-keyword">const</span> options = {
+      <span class="hljs-attr">comment</span>: <span class="hljs-string">'Object.is equality'</span>,
+      <span class="hljs-attr">isNot</span>: <span class="hljs-keyword">this</span>.isNot,
+      <span class="hljs-attr">promise</span>: <span class="hljs-keyword">this</span>.promise,
+    };
+
     <span class="hljs-keyword">const</span> pass = <span class="hljs-built_in">Object</span>.is(received, expected);
 
     <span class="hljs-keyword">const</span> message = pass
       ? <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
-          <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'.not.toBe'</span>) +
+          <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'toBe'</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, options) +
           <span class="hljs-string">'\n\n'</span> +
-          <span class="hljs-string">`Expected value to not be (using Object.is):\n`</span> +
-          <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
-          <span class="hljs-string">`Received:\n`</span> +
-          <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>
+          <span class="hljs-string">`Expected: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
+          <span class="hljs-string">`Received: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>
       : <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-          <span class="hljs-keyword">const</span> diffString = diff(expected, received, {
+          <span class="hljs-keyword">const</span> difference = diff(expected, received, {
             <span class="hljs-attr">expand</span>: <span class="hljs-keyword">this</span>.expand,
           });
           <span class="hljs-keyword">return</span> (
-            <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'.toBe'</span>) +
+            <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'toBe'</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, options) +
             <span class="hljs-string">'\n\n'</span> +
-            <span class="hljs-string">`Expected value to be (using Object.is):\n`</span> +
-            <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
-            <span class="hljs-string">`Received:\n`</span> +
-            <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span> +
-            (diffString ? <span class="hljs-string">`\n\nDifference:\n\n<span class="hljs-subst">${diffString}</span>`</span> : <span class="hljs-string">''</span>)
+            (difference &amp;&amp; difference.includes(<span class="hljs-string">'- Expect'</span>)
+              ? <span class="hljs-string">`Difference:\n\n<span class="hljs-subst">${diffString}</span>`</span>
+              : <span class="hljs-string">`Expected: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
+                <span class="hljs-string">`Received: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>)
           );
         };
 
