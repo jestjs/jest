@@ -17,8 +17,6 @@ import yargs from 'yargs';
 import {Console, setGlobal} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfig, deprecationEntries} from 'jest-config';
-// eslint-disable-next-line import/default
-import Runtime from '../';
 import * as args from './args';
 
 const VERSION = (require('../../package.json').version: string);
@@ -75,6 +73,10 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
     automock: false,
     unmockedModulePathPatterns: null,
   });
+
+  // Break circular dependency
+  const Runtime = require('..');
+
   Runtime.createContext(config, {
     maxWorkers: Math.max(os.cpus().length - 1, 1),
     watchman: globalConfig.watchman,
