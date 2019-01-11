@@ -33,17 +33,22 @@ export const getSortedUsageRows = (
 ): Array<UsageData> =>
   filterInteractivePlugins(watchPlugins, globalConfig)
     .sort((a: WatchPlugin, b: WatchPlugin) => {
-      if (a.isInternal) {
-        return -1;
+      if (a.isInternal && b.isInternal) {
+        // internal plugins in the order we specify them
+        return 0;
+      }
+      if (a.isInternal !== b.isInternal) {
+        // external plugins afterwards
+        return a.isInternal ? -1 : 1;
       }
 
       const usageInfoA = a.getUsageInfo && a.getUsageInfo(globalConfig);
       const usageInfoB = b.getUsageInfo && b.getUsageInfo(globalConfig);
 
       if (usageInfoA && usageInfoB) {
+        // external plugins in alphabetical order
         return usageInfoA.key.localeCompare(usageInfoB.key);
       }
-
       return 0;
     })
     .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))

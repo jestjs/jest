@@ -83,8 +83,8 @@ export default class TestSequencer {
       if (failedA !== failedB) {
         return failedA ? -1 : 1;
       } else if (hasTimeA != (testB.duration != null)) {
-        // Check if only one of two tests has timing information
-        return hasTimeA != null ? 1 : -1;
+        // If only one of two tests has timing information, run it last
+        return hasTimeA ? 1 : -1;
       } else if (testA.duration != null && testB.duration != null) {
         return testA.duration < testB.duration ? 1 : -1;
       } else {
