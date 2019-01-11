@@ -31,7 +31,7 @@ describe('SearchSource', () => {
   let searchSource;
 
   beforeEach(() => {
-    Runtime = require('jest-runtime').default;
+    Runtime = require('jest-runtime');
     SearchSource = require('../SearchSource').default;
     normalize = require('jest-config').normalize;
   });
