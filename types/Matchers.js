@@ -36,6 +36,7 @@ export type MatcherState = {
   expectedAssertionsNumber: ?number,
   isExpectingAssertions: ?boolean,
   isNot: boolean,
+  promise: string,
   snapshotState: SnapshotState,
   suppressedErrors: Array<Error>,
   testPath?: Path,
