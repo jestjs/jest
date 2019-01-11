@@ -286,6 +286,7 @@ export function readConfigs(
       .filter(root => {
         // Ignore globbed files that cannot be `require`d.
         if (
+          typeof root === 'string' &&
           fs.existsSync(root) &&
           !fs.lstatSync(root).isDirectory() &&
           !root.endsWith('.js') &&
