@@ -1794,9 +1794,9 @@ Difference:
 <red>+ Received</>
 
 <dim>  Array [</>
-<red>+   1,</>
-<dim>    2,</>
-<green>-   1,</>
+<green>-   2,</>
+<dim>    1,</>
+<red>+   2,</>
 <dim>  ]</>"
 `;
 
@@ -1963,9 +1963,9 @@ Difference:
 <red>+ Received</>
 
 <dim>  Immutable.List [</>
-<red>+   1,</>
-<dim>    2,</>
-<green>-   1,</>
+<green>-   2,</>
+<dim>    1,</>
+<red>+   2,</>
 <dim>  ]</>"
 `;
 
@@ -2080,9 +2080,9 @@ Difference:
 <red>+ Received</>
 
 <dim>  Immutable.OrderedMap {</>
-<red>+   1: \\"one\\",</>
-<dim>    2: \\"two\\",</>
-<green>-   1: \\"one\\",</>
+<green>-   2: \\"two\\",</>
+<dim>    1: \\"one\\",</>
+<red>+   2: \\"two\\",</>
 <dim>  }</>"
 `;
 
@@ -2109,9 +2109,9 @@ Difference:
 <red>+ Received</>
 
 <dim>  Immutable.OrderedSet [</>
-<red>+   1,</>
-<dim>    2,</>
-<green>-   1,</>
+<green>-   2,</>
+<dim>    1,</>
+<red>+   2,</>
 <dim>  ]</>"
 `;
 
