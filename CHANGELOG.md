@@ -37,6 +37,7 @@
 - `[jest-validate]` Add syntax to validate multiple permitted types ([#7207](https://github.com/facebook/jest/pull/7207))
 - `[jest-config]` Accept an array as as well as a string for `testRegex`([#7209]https://github.com/facebook/jest/pull/7209))
 - `[expect/jest-matcher-utils]` Improve report when assertion fails, part 4 ([#7241](https://github.com/facebook/jest/pull/7241))
+- `[expect/jest-matcher-utils]` Improve report when assertion fails, part 5 ([#7557](https://github.com/facebook/jest/pull/7557))
 - `[expect]` Check constructor equality in .toStrictEqual() ([#7005](https://github.com/facebook/jest/pull/7005))
 - `[jest-util]` Add `jest.getTimerCount()` to get the count of scheduled fake timers ([#7285](https://github.com/facebook/jest/pull/7285))
 - `[jest-config]` Add `dependencyExtractor` option to use a custom module to extract dependencies from files ([#7313](https://github.com/facebook/jest/pull/7313), [#7349](https://github.com/facebook/jest/pull/7349), [#7350](https://github.com/facebook/jest/pull/7350))

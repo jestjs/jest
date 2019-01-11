@@ -1,18 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`.ensureNoExpected() throws error when expected is not undefined 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not]This(</><dim>)</>
+exports[`.ensureNoExpected() throws error when expected is not undefined with matcherName 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeDefined()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  object
 Expected has value: <green>{\\"a\\": 1}</>"
 `;
 
-exports[`.ensureNoExpected() throws error when expected is not undefined with matcherName 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toBeDefined(</><dim>)</>
+exports[`.ensureNoExpected() throws error when expected is not undefined with matcherName and options 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  object
 Expected has value: <green>{\\"a\\": 1}</>"
