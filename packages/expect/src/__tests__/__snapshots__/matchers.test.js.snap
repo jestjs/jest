@@ -1,225 +1,225 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`.rejects fails for promise that resolves 1`] = `
-"<dim>expect(</><red>received</><dim>).rejects.toBe(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBe<dim>()</>
 
-Expected <red>received</> Promise to reject, instead it resolved to value
-  <red>4</>"
+Received promise resolved instead of rejected
+Resolved to value: <red>4</>"
 `;
 
 exports[`.rejects fails non-promise value "a" 1`] = `
-"<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  string
 Received has value: <red>\\"a\\"</>"
 `;
 
 exports[`.rejects fails non-promise value [1] 1`] = `
-"<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  array
 Received has value: <red>[1]</>"
 `;
 
 exports[`.rejects fails non-promise value [Function anonymous] 1`] = `
-"<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  function
 Received has value: <red>[Function anonymous]</>"
 `;
 
 exports[`.rejects fails non-promise value {"a": 1} 1`] = `
-"<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  object
 Received has value: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.rejects fails non-promise value 4 1`] = `
-"<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  number
 Received has value: <red>4</>"
 `;
 
 exports[`.rejects fails non-promise value null 1`] = `
-"<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has value: <red>null</>"
 `;
 
 exports[`.rejects fails non-promise value true 1`] = `
-"<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  boolean
 Received has value: <red>true</>"
 `;
 
 exports[`.rejects fails non-promise value undefined 1`] = `
-"<dim>expect(</><red>received</><dim>).rejects.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has value: <red>undefined</>"
 `;
 
 exports[`.resolves fails for promise that rejects 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBe(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBe<dim>()</>
 
-Expected <red>received</> Promise to resolve, instead it rejected to value
-  <red>4</>"
+Received promise rejected instead of resolved
+Rejected to value: <red>4</>"
 `;
 
 exports[`.resolves fails non-promise value "a" 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  string
 Received has value: <red>\\"a\\"</>"
 `;
 
 exports[`.resolves fails non-promise value "a" synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  string
 Received has value: <red>\\"a\\"</>"
 `;
 
 exports[`.resolves fails non-promise value [1] 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  array
 Received has value: <red>[1]</>"
 `;
 
 exports[`.resolves fails non-promise value [1] synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  array
 Received has value: <red>[1]</>"
 `;
 
 exports[`.resolves fails non-promise value [Function anonymous] 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  function
 Received has value: <red>[Function anonymous]</>"
 `;
 
 exports[`.resolves fails non-promise value [Function anonymous] synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  function
 Received has value: <red>[Function anonymous]</>"
 `;
 
 exports[`.resolves fails non-promise value {"a": 1} 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  object
 Received has value: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.resolves fails non-promise value {"a": 1} synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  object
 Received has value: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.resolves fails non-promise value 4 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  number
 Received has value: <red>4</>"
 `;
 
 exports[`.resolves fails non-promise value 4 synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  number
 Received has value: <red>4</>"
 `;
 
 exports[`.resolves fails non-promise value null 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has value: <red>null</>"
 `;
 
 exports[`.resolves fails non-promise value null synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has value: <red>null</>"
 `;
 
 exports[`.resolves fails non-promise value true 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  boolean
 Received has value: <red>true</>"
 `;
 
 exports[`.resolves fails non-promise value true synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has type:  boolean
 Received has value: <red>true</>"
 `;
 
 exports[`.resolves fails non-promise value undefined 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has value: <red>undefined</>"
 `;
 
 exports[`.resolves fails non-promise value undefined synchronously 1`] = `
-"<dim>expect(</><red>received</><dim>).resolves.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeDefined<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a Promise
+<bold>Matcher error</>: <red>received</> value must be a promise
 
 Received has value: <red>undefined</>"
 `;
@@ -529,121 +529,121 @@ Received:  <red>1.23</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '"a"' is defined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
 Received: <red>\\"a\\"</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '"a"' is defined 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeUndefined<dim>()</>
 
 Received: <red>\\"a\\"</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '[]' is defined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
 Received: <red>[]</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '[]' is defined 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeUndefined<dim>()</>
 
 Received: <red>[]</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '[Function anonymous]' is defined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
 Received: <red>[Function anonymous]</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '[Function anonymous]' is defined 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeUndefined<dim>()</>
 
 Received: <red>[Function anonymous]</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '{}' is defined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
 Received: <red>{}</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '{}' is defined 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeUndefined<dim>()</>
 
 Received: <red>{}</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '0.5' is defined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
 Received: <red>0.5</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '0.5' is defined 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeUndefined<dim>()</>
 
 Received: <red>0.5</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '1' is defined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
 Received: <red>1</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '1' is defined 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeUndefined<dim>()</>
 
 Received: <red>1</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() 'Infinity' is defined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
 Received: <red>Infinity</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() 'Infinity' is defined 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeUndefined<dim>()</>
 
 Received: <red>Infinity</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() 'Map {}' is defined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
 Received: <red>Map {}</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() 'Map {}' is defined 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeUndefined<dim>()</>
 
 Received: <red>Map {}</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() 'true' is defined 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
 Received: <red>true</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() 'true' is defined 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeUndefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeUndefined<dim>()</>
 
 Received: <red>true</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() undefined is undefined 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeDefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeDefined<dim>()</>
 
 Received: <red>undefined</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() undefined is undefined 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeUndefined(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeUndefined<dim>()</>
 
 Received: <red>undefined</>"
 `;
@@ -1197,341 +1197,341 @@ Expected has value: <green>4</>"
 `;
 
 exports[`.toBeNaN() {pass: true} expect(NaN).toBeNaN() 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeNaN<dim>()</>
 
 Received: <red>NaN</>"
 `;
 
 exports[`.toBeNaN() {pass: true} expect(NaN).toBeNaN() 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeNaN<dim>()</>
 
 Received: <red>NaN</>"
 `;
 
 exports[`.toBeNaN() {pass: true} expect(NaN).toBeNaN() 3`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeNaN<dim>()</>
 
 Received: <red>NaN</>"
 `;
 
 exports[`.toBeNaN() {pass: true} expect(NaN).toBeNaN() 4`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeNaN<dim>()</>
 
 Received: <red>NaN</>"
 `;
 
 exports[`.toBeNaN() throws 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeNaN<dim>()</>
 
 Received: <red>1</>"
 `;
 
 exports[`.toBeNaN() throws 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeNaN<dim>()</>
 
 Received: <red>\\"\\"</>"
 `;
 
 exports[`.toBeNaN() throws 3`] = `
-"<dim>expect(</><red>received</><dim>).toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeNaN<dim>()</>
 
 Received: <red>null</>"
 `;
 
 exports[`.toBeNaN() throws 4`] = `
-"<dim>expect(</><red>received</><dim>).toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeNaN<dim>()</>
 
 Received: <red>undefined</>"
 `;
 
 exports[`.toBeNaN() throws 5`] = `
-"<dim>expect(</><red>received</><dim>).toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeNaN<dim>()</>
 
 Received: <red>{}</>"
 `;
 
 exports[`.toBeNaN() throws 6`] = `
-"<dim>expect(</><red>received</><dim>).toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeNaN<dim>()</>
 
 Received: <red>[]</>"
 `;
 
 exports[`.toBeNaN() throws 7`] = `
-"<dim>expect(</><red>received</><dim>).toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeNaN<dim>()</>
 
 Received: <red>0.2</>"
 `;
 
 exports[`.toBeNaN() throws 8`] = `
-"<dim>expect(</><red>received</><dim>).toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeNaN<dim>()</>
 
 Received: <red>0</>"
 `;
 
 exports[`.toBeNaN() throws 9`] = `
-"<dim>expect(</><red>received</><dim>).toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeNaN<dim>()</>
 
 Received: <red>Infinity</>"
 `;
 
 exports[`.toBeNaN() throws 10`] = `
-"<dim>expect(</><red>received</><dim>).toBeNaN(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeNaN<dim>()</>
 
 Received: <red>-Infinity</>"
 `;
 
-exports[`.toBeNull() fails for '"a"' with .not 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+exports[`.toBeNull() fails for '"a"' 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeNull<dim>()</>
 
 Received: <red>\\"a\\"</>"
 `;
 
-exports[`.toBeNull() fails for '[]' with .not 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+exports[`.toBeNull() fails for '[]' 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeNull<dim>()</>
 
 Received: <red>[]</>"
 `;
 
-exports[`.toBeNull() fails for '[Function anonymous]' with .not 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+exports[`.toBeNull() fails for '[Function anonymous]' 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeNull<dim>()</>
 
 Received: <red>[Function anonymous]</>"
 `;
 
-exports[`.toBeNull() fails for '{}' with .not 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+exports[`.toBeNull() fails for '{}' 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeNull<dim>()</>
 
 Received: <red>{}</>"
 `;
 
-exports[`.toBeNull() fails for '0.5' with .not 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+exports[`.toBeNull() fails for '0.5' 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeNull<dim>()</>
 
 Received: <red>0.5</>"
 `;
 
-exports[`.toBeNull() fails for '1' with .not 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+exports[`.toBeNull() fails for '1' 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeNull<dim>()</>
 
 Received: <red>1</>"
 `;
 
-exports[`.toBeNull() fails for 'Infinity' with .not 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+exports[`.toBeNull() fails for 'Infinity' 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeNull<dim>()</>
 
 Received: <red>Infinity</>"
 `;
 
-exports[`.toBeNull() fails for 'Map {}' with .not 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+exports[`.toBeNull() fails for 'Map {}' 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeNull<dim>()</>
 
 Received: <red>Map {}</>"
 `;
 
-exports[`.toBeNull() fails for 'true' with .not 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeNull(</><dim>)</>
+exports[`.toBeNull() fails for 'true' 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeNull<dim>()</>
 
 Received: <red>true</>"
 `;
 
-exports[`.toBeNull() pass for null 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeNull(</><dim>)</>
+exports[`.toBeNull() fails for null with .not 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeNull<dim>()</>
 
 Received: <red>null</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '""' is falsy 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeTruthy<dim>()</>
 
 Received: <red>\\"\\"</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '""' is falsy 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeFalsy<dim>()</>
 
 Received: <red>\\"\\"</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '"a"' is truthy 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeTruthy<dim>()</>
 
 Received: <red>\\"a\\"</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '"a"' is truthy 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeFalsy<dim>()</>
 
 Received: <red>\\"a\\"</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '[]' is truthy 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeTruthy<dim>()</>
 
 Received: <red>[]</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '[]' is truthy 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeFalsy<dim>()</>
 
 Received: <red>[]</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '[Function anonymous]' is truthy 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeTruthy<dim>()</>
 
 Received: <red>[Function anonymous]</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '[Function anonymous]' is truthy 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeFalsy<dim>()</>
 
 Received: <red>[Function anonymous]</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '{}' is truthy 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeTruthy<dim>()</>
 
 Received: <red>{}</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '{}' is truthy 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeFalsy<dim>()</>
 
 Received: <red>{}</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '0' is falsy 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeTruthy<dim>()</>
 
 Received: <red>0</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '0' is falsy 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeFalsy<dim>()</>
 
 Received: <red>0</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '0.5' is truthy 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeTruthy<dim>()</>
 
 Received: <red>0.5</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '0.5' is truthy 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeFalsy<dim>()</>
 
 Received: <red>0.5</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '1' is truthy 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeTruthy<dim>()</>
 
 Received: <red>1</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() '1' is truthy 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeFalsy<dim>()</>
 
 Received: <red>1</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'Infinity' is truthy 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeTruthy<dim>()</>
 
 Received: <red>Infinity</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'Infinity' is truthy 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeFalsy<dim>()</>
 
 Received: <red>Infinity</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'Map {}' is truthy 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeTruthy<dim>()</>
 
 Received: <red>Map {}</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'Map {}' is truthy 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeFalsy<dim>()</>
 
 Received: <red>Map {}</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'NaN' is falsy 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeTruthy<dim>()</>
 
 Received: <red>NaN</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'NaN' is falsy 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeFalsy<dim>()</>
 
 Received: <red>NaN</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'false' is falsy 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeTruthy<dim>()</>
 
 Received: <red>false</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'false' is falsy 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeFalsy<dim>()</>
 
 Received: <red>false</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'null' is falsy 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeTruthy<dim>()</>
 
 Received: <red>null</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'null' is falsy 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeFalsy<dim>()</>
 
 Received: <red>null</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'true' is truthy 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeTruthy<dim>()</>
 
 Received: <red>true</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'true' is truthy 2`] = `
-"<dim>expect(</><red>received</><dim>).toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeFalsy<dim>()</>
 
 Received: <red>true</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'undefined' is falsy 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeTruthy<dim>()</>
 
 Received: <red>undefined</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() 'undefined' is falsy 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeFalsy<dim>()</>
 
 Received: <red>undefined</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() does not accept arguments 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toBeTruthy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeTruthy<dim>()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has value: <green>null</>"
 `;
 
 exports[`.toBeTruthy(), .toBeFalsy() does not accept arguments 2`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toBeFalsy(</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeFalsy<dim>()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has value: <green>null</>"
 `;

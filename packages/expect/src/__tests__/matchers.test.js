@@ -51,7 +51,7 @@ describe('.rejects', () => {
     await jestExpect(fn()).rejects.toThrow('some error');
   });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
+  ['a', [1], () => {}, {a: 1}].forEach(value => {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
       try {
@@ -61,13 +61,34 @@ describe('.rejects', () => {
       }
       expect(error).toBeDefined();
     });
-  });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
     it(`fails non-promise value ${stringify(value)}`, async () => {
       let error;
       try {
         await jestExpect(value).rejects.toBeDefined();
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
+  });
+
+  [4, null, true, undefined].forEach(value => {
+    it(`fails non-promise value ${stringify(value)} synchronously`, () => {
+      let error;
+      try {
+        jestExpect(value).rejects.not.toBe(111);
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+    });
+
+    it(`fails non-promise value ${stringify(value)}`, async () => {
+      let error;
+      try {
+        await jestExpect(value).rejects.not.toBeDefined();
       } catch (e) {
         error = e;
       }
@@ -107,7 +128,7 @@ describe('.resolves', () => {
     ).resolves.toThrow();
   });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
+  ['a', [1], () => {}, {a: 1}].forEach(value => {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
       try {
@@ -118,13 +139,35 @@ describe('.resolves', () => {
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
     });
-  });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
     it(`fails non-promise value ${stringify(value)}`, async () => {
       let error;
       try {
         await jestExpect(value).resolves.toBeDefined();
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
+  });
+
+  [4, null, true, undefined].forEach(value => {
+    it(`fails non-promise value ${stringify(value)} synchronously`, () => {
+      let error;
+      try {
+        jestExpect(value).resolves.not.toBeDefined();
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
+
+    it(`fails non-promise value ${stringify(value)}`, async () => {
+      let error;
+      try {
+        await jestExpect(value).resolves.not.toBeDefined();
       } catch (e) {
         error = e;
       }
@@ -589,7 +632,9 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
   it('does not accept arguments', () => {
     expect(() => jestExpect(0).toBeTruthy(null)).toThrowErrorMatchingSnapshot();
 
-    expect(() => jestExpect(0).toBeFalsy(null)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect(0).not.toBeFalsy(null),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
@@ -639,19 +684,21 @@ describe('.toBeNaN()', () => {
 
 describe('.toBeNull()', () => {
   [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
-    test(`fails for '${stringify(v)}' with .not`, () => {
+    test(`fails for '${stringify(v)}'`, () => {
       jestExpect(v).not.toBeNull();
 
       expect(() => jestExpect(v).toBeNull()).toThrowErrorMatchingSnapshot();
     });
   });
 
-  it('pass for null', () => {
-    jestExpect(null).toBeNull();
-
+  it('fails for null with .not', () => {
     expect(() =>
       jestExpect(null).not.toBeNull(),
     ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('pass for null', () => {
+    jestExpect(null).toBeNull();
   });
 });
 
