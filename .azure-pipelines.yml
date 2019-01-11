@@ -1,5 +1,5 @@
 #
-# Azure Pipelines CI configuration for Linux, Windows, and macOS.
+# Azure Pipelines configuration for building and testing Jest on Linux, Windows, and macOS.
 #
 
 jobs:
@@ -23,14 +23,18 @@ jobs:
   pool:
     vmImage: macos-10.13
   steps:
+  # This step can be removed once Mercurial gets installed on the macOS image. See https://github.com/Microsoft/azure-pipelines-image-generation/issues/604
   - script: HOMEBREW_NO_AUTO_UPDATE=1 brew install mercurial
     displayName: 'Install Mercurial'
   - template: .azure-pipelines-steps.yml
 
 variables:
-  # Ensures output produced by Jest for certain tests includes ANSI escape characters (needed to match snapshots)
+  # Used by chalk. Ensures output from Jest includes ANSI escape characters that are needed to match test snapshots.
   FORCE_COLOR: 1
-  # Default checkout directory is "s", but inline snapshot tests will fail due to assumption that Jest is running under a "jest" folder
-  # (see packages/jest-message-util/src/index.js PATH_JEST_PACKAGES)
+
+  # By default, Azure Pipelines clones to an "s" directory, which causes tests to fail due to assumption of Jest being run from a "jest" directory.
+  # See packages/jest-message-util/src/index.js PATH_JEST_PACKAGES for more details.
   JEST_DIR: $(Agent.BuildDirectory)/jest
+  
+  # Ensures the handful of tests that should be skipped during CI are
   CI: true
