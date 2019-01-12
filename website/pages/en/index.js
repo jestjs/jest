@@ -530,7 +530,7 @@ class Index extends React.Component {
                   </MarkdownBlock>
                   <Contributors />
                 </div>
-                <div className="blockContent yellow debug">
+                <div className="blockContent yellow">
                   <h2>
                     <translate>Who uses Jest?</translate>
                   </h2>
