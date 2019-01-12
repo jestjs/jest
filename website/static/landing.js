@@ -1,3 +1,5 @@
+/* global document, window */
+
 document.addEventListener('DOMContentLoaded', () => {
   const hand = document.querySelector('.jest-hand');
   const cards = hand.querySelectorAll('.jest-card');
@@ -16,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function positionCards() {
     const handWidth = hand.offsetWidth;
     cards.forEach(card => {
-      const offset = parseInt(card.dataset.index) - 2;
+      const offset = parseInt(card.dataset.index, 10) - 2;
       card.parentElement.style.transform = cardTransform(offset, handWidth);
     });
   }
@@ -86,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resolveRun(card, index);
       }
     }
+    return undefined;
   }
 
   hand.addEventListener('click', ev => {
@@ -97,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (ev.target.classList.contains('jest-card-front')) {
       card = ev.target.parentElement;
     }
-    const index = parseInt(card.dataset.index);
+    const index = parseInt(card.dataset.index, 10);
     runTest(card, index);
   });
 
