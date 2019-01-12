@@ -117,7 +117,7 @@ describe('--findRelatedTests flag', () => {
     });
 
     const {stderr} = runJest(DIR, ['--findRelatedTests', 'c.js']);
-    expect(stderr).toMatch('SyntaxError: Unexpected token {');
+    expect(stderr).toMatch('SyntaxError: Unexpected token');
   });
 
   test('generates coverage report for filename', () => {
