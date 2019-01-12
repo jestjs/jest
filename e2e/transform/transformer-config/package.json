@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "babel-plugin-transform-flow-strip-types": "6.8.0"
+    "@babel/preset-flow": "7.0.0"
   },
   "jest": {
     "collectCoverageOnlyFrom": {
@@ -15,8 +15,8 @@
       "\\.js$": [
         "babel-jest",
         {
-          "plugins": [
-            "babel-plugin-transform-flow-strip-types"
+          "presets": [
+            "@babel/preset-flow"
           ]
         }
       ]
