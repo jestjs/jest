@@ -9,6 +9,7 @@
 
 import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 
+import * as babel from '@babel/core';
 import crypto from 'crypto';
 import path from 'path';
 import fs from 'graceful-fs';
@@ -17,6 +18,7 @@ import H from './constants';
 import * as dependencyExtractor from './lib/dependencyExtractor';
 
 const PACKAGE_JSON = path.sep + 'package.json';
+const TYPESCRIPT_EXTENSION = '.ts';
 
 let hasteImpl: ?HasteImpl = null;
 let hasteImplModulePath: ?string = null;
@@ -49,18 +51,35 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
 
   const {computeDependencies, computeSha1, rootDir, filePath} = data;
 
-  const getContent = (): string => {
+  const getJSONContent = (): string => {
     if (content === undefined) {
       content = fs.readFileSync(filePath, 'utf8');
     }
-
+    return content;
+  };
+  const getContent = (): string => {
+    if (content === undefined) {
+      if (filePath.endsWith(TYPESCRIPT_EXTENSION)) {
+        try {
+          const transformed = babel.transformFileSync(filePath, {
+            cwd: __dirname,
+            plugins: ['@babel/plugin-transform-typescript'],
+          });
+          content = transformed.code;
+        } catch (e) {
+          content = fs.readFileSync(filePath, 'utf8');
+        }
+      } else {
+        content = fs.readFileSync(filePath, 'utf8');
+      }
+    }
     return content;
   };
 
   if (filePath.endsWith(PACKAGE_JSON)) {
     // Process a package.json that is returned as a PACKAGE type with its name.
     try {
-      const fileData = JSON.parse(getContent());
+      const fileData = JSON.parse(getJSONContent());
 
       if (fileData.name) {
         const relativeFilePath = path.relative(rootDir, filePath);

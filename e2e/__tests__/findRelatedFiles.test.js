@@ -83,6 +83,43 @@ describe('--findRelatedTests flag', () => {
     expect(stderr).toMatch(summaryMsg);
   });
 
+  test('ignores imports of types for typescript', () => {
+    writeFiles(DIR, {
+      '.watchmanconfig': '',
+      '__tests__/test.test.ts': `
+      import {SomeClassType} from "../c";
+      test('a', () => {});
+    `,
+      'c.ts': `
+      class SomeClass {}
+      export type SomeClassType = SomeClass;
+      `,
+      'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
+    });
+
+    const {stderr, stdout} = runJest(DIR, ['--findRelatedTests', 'c.ts']);
+    expect(stdout).toMatch('Pattern: c.ts - 0 matches');
+    expect(stderr).toEqual('');
+  });
+
+  test('skips typescript type stripping for .js files', () => {
+    writeFiles(DIR, {
+      '.watchmanconfig': '',
+      '__tests__/test.test.js': `
+      import {SomeClassType} from "../c";
+      test('a', () => {});
+    `,
+      'c.js': `
+      class SomeClass {}
+      export type SomeClassType = SomeClass;
+      `,
+      'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
+    });
+
+    const {stderr} = runJest(DIR, ['--findRelatedTests', 'c.js']);
+    expect(stderr).toMatch('SyntaxError: Unexpected token {');
+  });
+
   test('generates coverage report for filename', () => {
     writeFiles(DIR, {
       '.watchmanconfig': '',
