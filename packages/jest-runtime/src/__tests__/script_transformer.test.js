@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -193,11 +193,11 @@ describe('ScriptTransformer', () => {
       transformIgnorePatterns: ['/node_modules/'],
     };
 
-    ScriptTransformer = require('../script_transformer').default;
+    ScriptTransformer = require('../ScriptTransformer').default;
   };
 
   beforeEach(reset);
-  afterEach(() => jest.unmock('../should_instrument'));
+  afterEach(() => jest.unmock('../shouldInstrument'));
 
   it('transforms a file properly', () => {
     const scriptTransformer = new ScriptTransformer(config);
@@ -241,9 +241,9 @@ describe('ScriptTransformer', () => {
   });
 
   it('does not transform Node core modules', () => {
-    jest.mock('../should_instrument');
+    jest.mock('../shouldInstrument');
 
-    const shouldInstrument = require('../should_instrument').default;
+    const shouldInstrument = require('../shouldInstrument').default;
     const scriptTransformer = new ScriptTransformer(config);
     const fsSourceCode = process.binding('natives').fs;
 

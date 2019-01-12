@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,7 +19,7 @@ import * as args from './args';
 
 const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
 
-export default function() {
+module.exports = function() {
   const argv = yargs.usage(args.usage).options(args.options).argv;
 
   validateCLIOptions(
@@ -30,4 +30,4 @@ export default function() {
   argv._ = [REPL_SCRIPT];
 
   Runtime.runCLI(argv, [`Jest REPL v${VERSION}`]);
-}
+};

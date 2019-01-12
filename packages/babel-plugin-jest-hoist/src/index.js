@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -139,7 +139,7 @@ FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = args =>
   args.length === 0;
 
-export default () => {
+module.exports = () => {
   const isJest = callee =>
     callee.get('object').isIdentifier(JEST_GLOBAL) ||
     (callee.isMemberExpression() && isJest(callee.get('object')));

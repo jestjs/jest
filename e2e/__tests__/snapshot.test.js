@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -21,7 +21,7 @@ const snapshotDir = path.resolve(
 const snapshotFile = path.resolve(snapshotDir, 'snapshot.test.js.snap');
 const secondSnapshotFile = path.resolve(
   snapshotDir,
-  'second_snapshot.test.js.snap',
+  'secondSnapshot.test.js.snap',
 );
 const snapshotOfCopy = path.resolve(snapshotDir, 'snapshot.test_copy.js.snap');
 const originalTestPath = path.resolve(
@@ -49,11 +49,11 @@ const snapshotEscapeFile = path.resolve(
 );
 const snapshotEscapeRegexFile = path.resolve(
   snapshotEscapeSnapshotDir,
-  'snapshot_escape_regex.js.snap',
+  'snapshotEscapeRegex.js.snap',
 );
 const snapshotEscapeSubstitutionFile = path.resolve(
   snapshotEscapeSnapshotDir,
-  'snapshot_escape_substitution.test.js.snap',
+  'snapshotEscapeSubstitution.test.js.snap',
 );
 
 const initialTestData = fs.readFileSync(snapshotEscapeTestFile, 'utf8');
@@ -170,7 +170,7 @@ describe('Snapshot', () => {
     let result = runJest('snapshot-escape', [
       '-w=1',
       '--ci=false',
-      'snapshot_escape_regex.js',
+      'snapshotEscapeRegex.js',
     ]);
     let stderr = result.stderr;
 
@@ -181,7 +181,7 @@ describe('Snapshot', () => {
     result = runJest('snapshot-escape', [
       '-w=1',
       '--ci=false',
-      'snapshot_escape_regex.js',
+      'snapshotEscapeRegex.js',
     ]);
     stderr = result.stderr;
 
@@ -197,7 +197,7 @@ describe('Snapshot', () => {
     let result = runJest('snapshot-escape', [
       '-w=1',
       '--ci=false',
-      'snapshot_escape_substitution.test.js',
+      'snapshotEscapeSubstitution.test.js',
     ]);
     let stderr = result.stderr;
 
@@ -208,7 +208,7 @@ describe('Snapshot', () => {
     result = runJest('snapshot-escape', [
       '-w=1',
       '--ci=false',
-      'snapshot_escape_substitution.test.js',
+      'snapshotEscapeSubstitution.test.js',
     ]);
     stderr = result.stderr;
 

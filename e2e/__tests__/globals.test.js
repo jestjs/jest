@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,7 +19,7 @@ import {
   writeFiles,
 } from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'global-variables.test');
+const DIR = path.resolve(os.tmpdir(), 'globalVariables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
 function cleanStderr(stderr) {
@@ -35,7 +35,7 @@ beforeEach(() => {
 afterAll(() => cleanup(DIR));
 
 test('basic test constructs', () => {
-  const filename = 'basic.test-constructs.test.js';
+  const filename = 'basic.testConstructs.test.js';
   const content = `
     it('it', () => {});
     test('test', () => {});
@@ -56,7 +56,7 @@ test('basic test constructs', () => {
 });
 
 test('skips', () => {
-  const filename = 'skips-constructs.test.js';
+  const filename = 'skipsConstructs.test.js';
   const content = `
     it('it', () => {});
     xtest('xtest', () => {});
@@ -87,7 +87,7 @@ test('skips', () => {
 });
 
 test('only', () => {
-  const filename = 'only-constructs.test.js';
+  const filename = 'onlyConstructs.test.js';
   const content = `
     it('it', () => {});
     test.only('test.only', () => {});
@@ -117,7 +117,7 @@ test('only', () => {
 });
 
 test('cannot have describe with no implementation', () => {
-  const filename = 'only-constructs.test.js';
+  const filename = 'onlyConstructs.test.js';
   const content = `
     describe('describe, no implementation');
   `;
@@ -133,7 +133,7 @@ test('cannot have describe with no implementation', () => {
 });
 
 test('cannot test with no implementation', () => {
-  const filename = 'only-constructs.test.js';
+  const filename = 'onlyConstructs.test.js';
   const content = `
     it('it', () => {});
     it('it, no implementation');
@@ -150,7 +150,7 @@ test('cannot test with no implementation', () => {
 });
 
 test('skips with expand arg', () => {
-  const filename = 'skips-constructs.test.js';
+  const filename = 'skipsConstructs.test.js';
   const content = `
     it('it', () => {});
     xtest('xtest', () => {});
@@ -181,7 +181,7 @@ test('skips with expand arg', () => {
 });
 
 test('only with expand arg', () => {
-  const filename = 'only-constructs.test.js';
+  const filename = 'onlyConstructs.test.js';
   const content = `
     it('it', () => {});
     test.only('test.only', () => {});
@@ -211,7 +211,7 @@ test('only with expand arg', () => {
 });
 
 test('cannot test with no implementation with expand arg', () => {
-  const filename = 'only-constructs.test.js';
+  const filename = 'onlyConstructs.test.js';
   const content = `
     it('it', () => {});
     it('it, no implementation');
@@ -228,7 +228,7 @@ test('cannot test with no implementation with expand arg', () => {
 });
 
 test('function as descriptor', () => {
-  const filename = 'function-as-descriptor.test.js';
+  const filename = 'functionAsDescriptor.test.js';
   const content = `
     function Foo() {}
     describe(Foo, () => {

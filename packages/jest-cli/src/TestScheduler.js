@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,7 +14,6 @@ import type {Reporter, Test} from 'types/TestRunner';
 
 import chalk from 'chalk';
 import {formatExecError} from 'jest-message-util';
-import {interopRequireDefault} from 'jest-util';
 import {
   addResult,
   buildFailureTestResult,
@@ -25,7 +24,7 @@ import DefaultReporter from './reporters/default_reporter';
 import exit from 'exit';
 import NotifyReporter from './reporters/notify_reporter';
 import ReporterDispatcher from './ReporterDispatcher';
-import {cleanup as snapshotCleanup, buildSnapshotResolver} from 'jest-snapshot';
+import snapshot from 'jest-snapshot';
 import SummaryReporter from './reporters/summary_reporter';
 import TestRunner from 'jest-runner';
 import TestWatcher from './TestWatcher';
@@ -145,10 +144,10 @@ export default class TestScheduler {
 
     const updateSnapshotState = () => {
       contexts.forEach(context => {
-        const status = snapshotCleanup(
+        const status = snapshot.cleanup(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
-          buildSnapshotResolver(context.config),
+          snapshot.buildSnapshotResolver(context.config),
         );
 
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
@@ -171,12 +170,10 @@ export default class TestScheduler {
     const testRunners = Object.create(null);
     contexts.forEach(({config}) => {
       if (!testRunners[config.runner]) {
-        const Runner: TestRunner = interopRequireDefault(
-          // $FlowFixMe: dynamic import
-          require(config.runner),
-        ).default;
         // $FlowFixMe
-        testRunners[config.runner] = new Runner(this._globalConfig);
+        testRunners[config.runner] = new (require(config.runner): TestRunner)(
+          this._globalConfig,
+        );
       }
     });
 

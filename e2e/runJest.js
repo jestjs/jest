@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,7 +12,7 @@ import path from 'path';
 import fs from 'fs';
 import execa, {sync as spawnSync} from 'execa';
 import {Writable} from 'readable-stream';
-import stripAnsi from 'strip-ansi';
+const stripAnsi = require('strip-ansi');
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');

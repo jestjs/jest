@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@
 'use strict';
 
 import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
-import crypto from 'crypto';
+const crypto = require('crypto');
 
 function mockHashContents(contents) {
   return crypto
@@ -51,7 +51,7 @@ jest.mock('../crawlers/watchman', () =>
         if (list[file]) {
           const hash = computeSha1 ? mockHashContents(list[file]) : null;
 
-          data.files.set(relativeFilePath, ['', 32, 0, [], hash]);
+          data.files.set(relativeFilePath, ['', 32, 42, 0, [], hash]);
         } else {
           data.files.delete(relativeFilePath);
         }
@@ -184,7 +184,7 @@ describe('HasteMap', () => {
     consoleWarn = console.warn;
     console.warn = jest.fn();
 
-    HasteMap = require('../').default;
+    HasteMap = require('../');
     H = HasteMap.H;
 
     getCacheFilePath = HasteMap.getCacheFilePath;
@@ -213,7 +213,7 @@ describe('HasteMap', () => {
 
   it('creates valid cache file paths', () => {
     jest.resetModuleRegistry();
-    HasteMap = require('../').default;
+    HasteMap = require('../');
 
     expect(
       HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
@@ -222,7 +222,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different roots', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
+    const HasteMap = require('../');
     const hasteMap1 = new HasteMap(
       Object.assign({}, defaultConfig, {rootDir: '/root1'}),
     );
@@ -234,7 +234,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different dependency extractor cache keys', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
+    const HasteMap = require('../');
     const dependencyExtractor = require('./dependencyExtractor');
     const config = Object.assign({}, defaultConfig, {
       dependencyExtractor: require.resolve('./dependencyExtractor'),
@@ -248,7 +248,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different hasteImplModulePath cache keys', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
+    const HasteMap = require('../');
     const hasteImpl = require('./haste_impl');
     hasteImpl.setCacheKey('foo');
     const hasteMap1 = new HasteMap(defaultConfig);
@@ -259,7 +259,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different projects', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
+    const HasteMap = require('../');
     const hasteMap1 = new HasteMap(
       Object.assign({}, defaultConfig, {name: '@scoped/package'}),
     );
@@ -337,14 +337,15 @@ describe('HasteMap', () => {
 
       expect(data.files).toEqual(
         createMap({
-          'fruits/Banana.js': ['Banana', 32, 1, ['Strawberry'], null],
-          'fruits/Pear.js': ['Pear', 32, 1, ['Banana', 'Strawberry'], null],
-          'fruits/Strawberry.js': ['Strawberry', 32, 1, [], null],
-          'fruits/__mocks__/Pear.js': ['', 32, 1, ['Melon'], null],
+          'fruits/Banana.js': ['Banana', 32, 42, 1, ['Strawberry'], null],
+          'fruits/Pear.js': ['Pear', 32, 42, 1, ['Banana', 'Strawberry'], null],
+          'fruits/Strawberry.js': ['Strawberry', 32, 42, 1, [], null],
+          'fruits/__mocks__/Pear.js': ['', 32, 42, 1, ['Melon'], null],
           // node modules
           'fruits/node_modules/fbjs/lib/flatMap.js': [
             'flatMap',
             32,
+            42,
             1,
             [],
             null,
@@ -352,11 +353,12 @@ describe('HasteMap', () => {
           'fruits/node_modules/react/React.js': [
             'React',
             32,
+            42,
             1,
             ['Component'],
             null,
           ],
-          'vegetables/Melon.js': ['Melon', 32, 1, [], null],
+          'vegetables/Melon.js': ['Melon', 32, 42, 1, [], null],
         }),
       );
 
@@ -398,18 +400,25 @@ describe('HasteMap', () => {
   describe('builds a haste map on a fresh cache with SHA-1s', () => {
     [false, true].forEach(useWatchman => {
       it('uses watchman: ' + useWatchman, async () => {
-        const node = require('../crawlers/node').default;
+        const node = require('../crawlers/node');
 
         node.mockImplementation(options => {
           const {data} = options;
 
           // The node crawler returns "null" for the SHA-1.
           data.files = createMap({
-            'fruits/Banana.js': ['Banana', 32, 0, ['Strawberry'], null],
-            'fruits/Pear.js': ['Pear', 32, 0, ['Banana', 'Strawberry'], null],
-            'fruits/Strawberry.js': ['Strawberry', 32, 0, [], null],
-            'fruits/__mocks__/Pear.js': ['', 32, 0, ['Melon'], null],
-            'vegetables/Melon.js': ['Melon', 32, 0, [], null],
+            'fruits/Banana.js': ['Banana', 32, 42, 0, ['Strawberry'], null],
+            'fruits/Pear.js': [
+              'Pear',
+              32,
+              42,
+              0,
+              ['Banana', 'Strawberry'],
+              null,
+            ],
+            'fruits/Strawberry.js': ['Strawberry', 32, 42, 0, [], null],
+            'fruits/__mocks__/Pear.js': ['', 32, 42, 0, ['Melon'], null],
+            'vegetables/Melon.js': ['Melon', 32, 42, 0, [], null],
           });
 
           return Promise.resolve(data);
@@ -430,6 +439,7 @@ describe('HasteMap', () => {
             'fruits/Banana.js': [
               'Banana',
               32,
+              42,
               1,
               ['Strawberry'],
               '7772b628e422e8cf59c526be4bb9f44c0898e3d1',
@@ -437,6 +447,7 @@ describe('HasteMap', () => {
             'fruits/Pear.js': [
               'Pear',
               32,
+              42,
               1,
               ['Banana', 'Strawberry'],
               '89d0c2cc11dcc5e1df50b8af04ab1b597acfba2f',
@@ -444,6 +455,7 @@ describe('HasteMap', () => {
             'fruits/Strawberry.js': [
               'Strawberry',
               32,
+              42,
               1,
               [],
               'e8aa38e232b3795f062f1d777731d9240c0f8c25',
@@ -451,6 +463,7 @@ describe('HasteMap', () => {
             'fruits/__mocks__/Pear.js': [
               '',
               32,
+              42,
               1,
               ['Melon'],
               '8d40afbb6e2dc78e1ba383b6d02cafad35cceef2',
@@ -458,6 +471,7 @@ describe('HasteMap', () => {
             'vegetables/Melon.js': [
               'Melon',
               32,
+              42,
               1,
               [],
               'f16ccf6f2334ceff2ddb47628a2c5f2d748198ca',
@@ -507,6 +521,7 @@ describe('HasteMap', () => {
       expect(data.files.get('fruits/node_modules/fbjs/fbjs.js')).toEqual([
         '',
         32,
+        42,
         0,
         [],
         null,
@@ -604,6 +619,7 @@ describe('HasteMap', () => {
             'fruits/Strawberry.android.js': [
               'Strawberry',
               32,
+              42,
               1,
               ['Blackberry'],
               null,
@@ -611,11 +627,12 @@ describe('HasteMap', () => {
             'fruits/Strawberry.ios.js': [
               'Strawberry',
               32,
+              42,
               1,
               ['Raspberry'],
               null,
             ],
-            'fruits/Strawberry.js': ['Strawberry', 32, 1, ['Banana'], null],
+            'fruits/Strawberry.js': ['Strawberry', 32, 42, 1, ['Banana'], null],
           }),
         );
 
@@ -702,7 +719,14 @@ describe('HasteMap', () => {
             expect(useBuitinsInContext(data.clocks)).toEqual(mockClocks);
 
             const files = new Map(initialData.files);
-            files.set('fruits/Banana.js', ['Banana', 32, 1, ['Kiwi'], null]);
+            files.set('fruits/Banana.js', [
+              'Banana',
+              32,
+              42,
+              1,
+              ['Kiwi'],
+              null,
+            ]);
 
             expect(useBuitinsInContext(data.files)).toEqual(files);
 
@@ -962,7 +986,7 @@ describe('HasteMap', () => {
     watchman.mockImplementation(options =>
       mockImpl(options).then(() => {
         const {data} = options;
-        data.files.set('fruits/invalid/file.js', ['', 34, 0, []]);
+        data.files.set('fruits/invalid/file.js', ['', 34, 44, 0, []]);
         return data;
       }),
     );
@@ -1052,7 +1076,7 @@ describe('HasteMap', () => {
 
   it('tries to crawl using node as a fallback', () => {
     const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node').default;
+    const node = require('../crawlers/node');
 
     watchman.mockImplementation(() => {
       throw new Error('watchman error');
@@ -1060,7 +1084,7 @@ describe('HasteMap', () => {
     node.mockImplementation(options => {
       const {data} = options;
       data.files = createMap({
-        'fruits/Banana.js': ['', 32, 0, [], null],
+        'fruits/Banana.js': ['', 32, 42, 0, [], null],
       });
       return Promise.resolve(data);
     });
@@ -1073,7 +1097,7 @@ describe('HasteMap', () => {
 
         expect(data.files).toEqual(
           createMap({
-            'fruits/Banana.js': ['Banana', 32, 1, ['Strawberry'], null],
+            'fruits/Banana.js': ['Banana', 32, 42, 1, ['Strawberry'], null],
           }),
         );
 
@@ -1083,7 +1107,7 @@ describe('HasteMap', () => {
 
   it('tries to crawl using node as a fallback when promise fails once', () => {
     const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node').default;
+    const node = require('../crawlers/node');
 
     watchman.mockImplementation(() =>
       Promise.reject(new Error('watchman error')),
@@ -1091,7 +1115,7 @@ describe('HasteMap', () => {
     node.mockImplementation(options => {
       const {data} = options;
       data.files = createMap({
-        'fruits/Banana.js': ['', 32, 0, [], null],
+        'fruits/Banana.js': ['', 32, 42, 0, [], null],
       });
       return Promise.resolve(data);
     });
@@ -1104,7 +1128,7 @@ describe('HasteMap', () => {
 
         expect(data.files).toEqual(
           createMap({
-            'fruits/Banana.js': ['Banana', 32, 1, ['Strawberry'], null],
+            'fruits/Banana.js': ['Banana', 32, 42, 1, ['Strawberry'], null],
           }),
         );
       });
@@ -1112,7 +1136,7 @@ describe('HasteMap', () => {
 
   it('stops crawling when both crawlers fail', () => {
     const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node').default;
+    const node = require('../crawlers/node');
 
     watchman.mockImplementation(() =>
       Promise.reject(new Error('watchman error')),
@@ -1184,11 +1208,13 @@ describe('HasteMap', () => {
     const MOCK_STAT_FILE = {
       isDirectory: () => false,
       mtime: {getTime: () => 45},
+      size: 55,
     };
 
     const MOCK_STAT_FOLDER = {
       isDirectory: () => true,
       mtime: {getTime: () => 45},
+      size: 55,
     };
 
     hm_it('handles several change events at once', async hm => {

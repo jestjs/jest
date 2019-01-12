@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,18 +7,22 @@
 
 'use strict';
 
-import fs from 'fs';
-import generateEmptyCoverage from '../../generateEmptyCoverage';
-import {worker} from '../coverage_worker';
-
 jest.mock('fs').mock('../../generateEmptyCoverage');
 
 const globalConfig = {collectCoverage: true};
 const config = {};
 const workerOptions = {config, globalConfig, path: 'banana.js'};
 
+let fs;
+let generateEmptyCoverage;
+let worker;
+
 beforeEach(() => {
   jest.resetModules();
+
+  fs = require('fs');
+  generateEmptyCoverage = require('../../generateEmptyCoverage').default;
+  worker = require('../coverage_worker').worker;
 });
 
 test('resolves to the result of generateEmptyCoverage upon success', async () => {

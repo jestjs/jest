@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,11 +10,12 @@
 import os from 'os';
 import path from 'path';
 import resolveConfigPath from '../resolveConfigPath';
-import {cleanup, writeFiles} from '../../../../e2e/Utils';
+
+const {cleanup, writeFiles} = require('../../../../e2e/Utils');
 
 const DIR = path.resolve(os.tmpdir(), 'resolve_config_path_test');
 const ERROR_PATTERN = /Could not find a config file based on provided values/;
-const NO_ROOT_DIR_ERROR_PATTERN = /Can't find a root directory/;
+const NO_ROOT_DIR_ERROR_PATTERN = /Can\'t find a root directory/;
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

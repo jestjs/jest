@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -16,7 +16,7 @@ import {FakeTimers, installCommonGlobals} from 'jest-util';
 import mock from 'jest-mock';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
-export default class JSDOMEnvironment {
+class JSDOMEnvironment {
   dom: ?Object;
   fakeTimers: ?FakeTimers<number>;
   global: ?Global;
@@ -115,3 +115,5 @@ export default class JSDOMEnvironment {
     return null;
   }
 }
+
+module.exports = JSDOMEnvironment;

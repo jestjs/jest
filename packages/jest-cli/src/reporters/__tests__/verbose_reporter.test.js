@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,11 +8,14 @@
 
 'use strict';
 
-import VerboseReporter from '../verbose_reporter';
-
 const wrap = obj => ({suites: obj, tests: [], title: ''});
 
-const {groupTestsBySuites} = VerboseReporter;
+let groupTestsBySuites;
+
+beforeEach(() => {
+  const VerboseReporter = require('../verbose_reporter').default;
+  groupTestsBySuites = VerboseReporter.groupTestsBySuites;
+});
 
 describe('groupTestsBySuites', () => {
   it('should handle empty results', () => {

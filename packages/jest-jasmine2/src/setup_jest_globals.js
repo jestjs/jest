@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,13 +10,12 @@
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Plugin} from 'types/PrettyFormat';
 
-import expect from 'expect';
+import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
   buildSnapshotResolver,
   SnapshotState,
   addSerializer,
 } from 'jest-snapshot';
-import {interopRequireDefault} from 'jest-util';
 
 export type SetupOptions = {|
   config: ProjectConfig,
@@ -29,8 +28,8 @@ export type SetupOptions = {|
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const addSuppressedErrors = result => {
-  const {suppressedErrors} = expect.getState();
-  expect.setState({suppressedErrors: []});
+  const {suppressedErrors} = getState();
+  setState({suppressedErrors: []});
   if (suppressedErrors.length) {
     result.status = 'failed';
 
@@ -47,7 +46,7 @@ const addSuppressedErrors = result => {
 };
 
 const addAssertionErrors = result => {
-  const assertionErrors = expect.extractExpectedAssertionsErrors();
+  const assertionErrors = extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
     const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
       actual,
@@ -71,7 +70,7 @@ const patchJasmine = () => {
       };
       const onStart = attr.onStart;
       attr.onStart = context => {
-        expect.setState({currentTestName: context.getFullName()});
+        setState({currentTestName: context.getFullName()});
         onStart && onStart.call(attr, context);
       };
       realSpec.call(this, attr);
@@ -108,16 +107,13 @@ export default ({
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getBabelTraverse: () =>
-      interopRequireDefault(require('@babel/traverse')).default,
+    getBabelTraverse: () => require('@babel/traverse').default,
     getPrettier: () =>
-      config.prettierPath
-        ? // $FlowFixMe dynamic require
-          interopRequireDefault(require(config.prettierPath)).default
-        : null,
+      // $FlowFixMe dynamic require
+      config.prettierPath ? require(config.prettierPath) : null,
     updateSnapshot,
   });
-  expect.setState({snapshotState, testPath});
+  setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;
 };

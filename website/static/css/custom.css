@@ -1,10 +1,20 @@
-/* Copyright (c) 2014-present, Facebook, Inc. All rights reserved. */
+/* Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved. */
 
 .fixedHeaderContainer header img.logo {
   height: 60px;
   margin-top: -20px;
   margin-bottom: -20px;
   margin-right: -20px;
+}
+
+.fixedHeaderContainer header .headerTitleWithLogo {
+  font-size: 1.1em;
+}
+
+.fixedHeaderContainer header h3 {
+  font-size: 14px;
+  margin-top: 2px;
+  text-decoration: none;
 }
 
 div.jest-repl {

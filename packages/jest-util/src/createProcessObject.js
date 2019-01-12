@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,6 @@
  * @flow
  */
 
-import process from 'process';
 import deepCyclicCopy from './deepCyclicCopy';
 
 const BLACKLIST = new Set(['env', 'mainModule', '_events']);
@@ -72,6 +71,7 @@ function createProcessEnv() {
 }
 
 export default function() {
+  const process = require('process');
   const newProcess = deepCyclicCopy(process, {
     blacklist: BLACKLIST,
     keepPrototype: true,

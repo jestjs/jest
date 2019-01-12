@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,8 +9,9 @@
 
 import type {TestResult} from 'types/TestResult';
 
-import chalk from 'chalk';
-import {pluralize} from './utils';
+const chalk = require('chalk');
+
+const {pluralize} = require('./utils');
 
 const ARROW = ' \u203A ';
 const DOT = ' \u2022 ';

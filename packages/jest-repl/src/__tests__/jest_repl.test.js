@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,9 +8,10 @@
 'use strict';
 
 import {spawnSync} from 'child_process';
+import path from 'path';
 import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
-const JEST_RUNTIME = require.resolve('../../bin/jest-repl.js');
+const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
 
 describe('Repl', () => {
   skipSuiteOnWindows();
@@ -22,7 +23,6 @@ describe('Repl', () => {
         encoding: 'utf8',
         env: process.env,
       });
-      expect(output.stderr.trim()).toBe('');
       expect(output.stdout.trim()).toMatch(/›/);
     });
   });

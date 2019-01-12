@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@
 
 'use strict';
 
-import * as circus from '../index.js';
+const circus = require('../index.js');
 
 describe.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
   '%s hooks error throwing',
@@ -27,7 +27,6 @@ describe.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
       `${fn} throws an error when %p is provided as a first argument to it`,
       el => {
         expect(() => {
-          // eslint-disable-next-line import/namespace
           circus[fn](el);
         }).toThrowError(
           'Invalid first argument. It must be a callback function.',

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -241,6 +241,17 @@ export const typeEquality = (a: any, b: any) => {
   }
 
   return false;
+};
+
+export const sparseArrayEquality = (a: any, b: any) => {
+  if (!Array.isArray(a) || !Array.isArray(b)) {
+    return undefined;
+  }
+
+  // A sparse array [, , 1] will have keys ["2"] whereas [undefined, undefined, 1] will have keys ["0", "1", "2"]
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  return equals(a, b) && equals(aKeys, bKeys);
 };
 
 export const partition = <T>(

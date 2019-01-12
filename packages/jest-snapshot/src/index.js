@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,21 +15,19 @@ import type {SnapshotResolver} from 'types/SnapshotResolver';
 import fs from 'fs';
 import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
-import {EXTENSION} from './snapshot_resolver';
-export {
+import {
   buildSnapshotResolver,
   isSnapshotPath,
   EXTENSION,
 } from './snapshot_resolver';
-export {default as SnapshotState} from './State';
-export {addSerializer, getSerializers} from './plugins';
+import SnapshotState from './State';
+import {addSerializer, getSerializers} from './plugins';
 import * as utils from './utils';
-export {utils};
 
 const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
-export const cleanup = (
+const cleanup = (
   hasteFS: HasteFS,
   update: SnapshotUpdateState,
   snapshotResolver: SnapshotResolver,
@@ -52,7 +50,7 @@ export const cleanup = (
   };
 };
 
-export const toMatchSnapshot = function(
+const toMatchSnapshot = function(
   received: any,
   propertyMatchers?: any,
   testName?: string,
@@ -71,7 +69,7 @@ export const toMatchSnapshot = function(
   });
 };
 
-export const toMatchInlineSnapshot = function(
+const toMatchInlineSnapshot = function(
   received: any,
   propertyMatchersOrInlineSnapshot?: any,
   inlineSnapshot?: string,
@@ -212,7 +210,7 @@ const _toMatchSnapshot = ({
   };
 };
 
-export const toThrowErrorMatchingSnapshot = function(
+const toThrowErrorMatchingSnapshot = function(
   received: any,
   testName?: string,
   fromPromise: boolean,
@@ -225,7 +223,7 @@ export const toThrowErrorMatchingSnapshot = function(
   });
 };
 
-export const toThrowErrorMatchingInlineSnapshot = function(
+const toThrowErrorMatchingInlineSnapshot = function(
   received: any,
   inlineSnapshot?: string,
   fromPromise?: boolean,
@@ -291,4 +289,19 @@ const _toThrowErrorMatchingSnapshot = ({
     received: error.message,
     testName,
   });
+};
+
+module.exports = {
+  EXTENSION,
+  SnapshotState,
+  addSerializer,
+  buildSnapshotResolver,
+  cleanup,
+  getSerializers,
+  isSnapshotPath,
+  toMatchInlineSnapshot,
+  toMatchSnapshot,
+  toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
+  utils,
 };

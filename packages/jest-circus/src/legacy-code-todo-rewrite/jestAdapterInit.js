@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,7 +11,7 @@ import type {AssertionResult, TestResult, Status} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Event, RunResult, TestEntry} from 'types/Circus';
 
-import expect from 'expect';
+import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
   SnapshotState,
@@ -21,7 +21,8 @@ import {
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
-import * as globals from '../index';
+// eslint-disable-next-line import/default
+import globals from '../index';
 
 export const initialize = ({
   config,
@@ -106,7 +107,7 @@ export const initialize = ({
     getPrettier,
     updateSnapshot,
   });
-  expect.setState({snapshotState, testPath});
+  setState({snapshotState, testPath});
 
   // Return it back to the outer scope (test runner outside the VM).
   return {globals, snapshotState};
@@ -221,7 +222,7 @@ export const runAndTransformResultsToJestFormat = async ({
 const eventHandler = (event: Event) => {
   switch (event.name) {
     case 'test_start': {
-      expect.setState({currentTestName: getTestID(event.test)});
+      setState({currentTestName: getTestID(event.test)});
       break;
     }
     case 'test_done': {
@@ -233,17 +234,17 @@ const eventHandler = (event: Event) => {
 };
 
 const _addExpectedAssertionErrors = (test: TestEntry) => {
-  const failures = expect.extractExpectedAssertionsErrors();
+  const failures = extractExpectedAssertionsErrors();
   const errors = failures.map(failure => failure.error);
   test.errors = test.errors.concat(errors);
 };
 
-// Get suppressed errors from `expect` that weren't throw during
+// Get suppressed errors from ``jest-matchers`` that weren't throw during
 // test execution and add them to the test result, potentially failing
 // a passing test.
 const _addSuppressedErrors = (test: TestEntry) => {
-  const {suppressedErrors} = expect.getState();
-  expect.setState({suppressedErrors: []});
+  const {suppressedErrors} = getState();
+  setState({suppressedErrors: []});
   if (suppressedErrors.length) {
     test.errors = test.errors.concat(suppressedErrors);
   }
