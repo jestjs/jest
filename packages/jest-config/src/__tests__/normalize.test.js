@@ -298,7 +298,7 @@ describe('transform', () => {
       ['abs-path', '/qux/quux'],
     ]);
   });
-  it('pulls in config if its passed as an array', () => {
+  it("pulls in config if it's passed as an array", () => {
     const {options} = normalize(
       {
         rootDir: '/root/',
