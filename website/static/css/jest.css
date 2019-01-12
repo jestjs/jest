@@ -16,6 +16,10 @@
   margin: 10px;
 }
 
+.sponsor-item img {
+  background: grey;
+}
+
 .sponsor-avatar {
   display: inline-block;
   width: 100px;
@@ -130,6 +134,10 @@
 .navigationSlider .slidingNav ul li a,
 .fixedHeaderContainer header h3 {
   color: var(--grey3);
+}
+
+.navigationSlider .slidingNav ul {
+  background: #ffffff;
 }
 
 .headerWrapper img {

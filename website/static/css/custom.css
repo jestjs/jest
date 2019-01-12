@@ -190,19 +190,17 @@ div.jest-button-container {
   bottom: 0;
   background-color: rgba(255,255,255,0.5);
   width: 100%;
-  height: 56px;
+  /* height: 56px; */
   margin: 0 auto;
   display: flex;
   justify-content: center;
-}
-
-div.jest-button-container a {
-  text-transform: uppercase;
+  flex-wrap: wrap;
 }
 
 a.jest-button {
+  text-transform: uppercase;
   color: #fff;
-  background-color: red;
+  background-color: var(--red);
   margin: 10px;
   padding: 0 1em;
   font-size: 16px;
@@ -214,7 +212,7 @@ div.jest-card-label {
   top: 15px;
   left: 15px;
   color: white;
-  background-color: #C21325;
+  background-color:var(--red);
   font-size: 16px;
   font-weight: bold;
   display: inline;
@@ -248,11 +246,11 @@ div.jest-card-pass {
 }
 
 div.jest-card-pass .jest-card-label {
-  background-color: #15C213;
+  background-color: var(--green);
 }
 
 div.jest-card-pass .jest-card-logo-container {
-  background-color: #15C213;
+  background-color: var(--green);
   transform: rotate(45deg);
 }
 
@@ -266,7 +264,7 @@ div.jest-card-pass .jest-card-logo {
 }
 
 div.jest-card-fail .jest-card-logo-container {
-  background-color: #C21325;
+  background-color:var(--red);
 }
 
 div.jest-card-fail .jest-card-logo {

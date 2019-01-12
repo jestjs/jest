@@ -269,7 +269,7 @@ class Index extends React.Component {
           >
             <p>
               <translate>
-                Jest is a delightful JavaScript Testing Framework With a focus
+                Jest is a delightful JavaScript Testing Framework with a focus
                 on simplicity
               </translate>
             </p>
@@ -330,7 +330,7 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      From “it” to “expect” - Jest has the entire toolkit in one
+                      From `it` to `expect` - Jest has the entire toolkit in one
                       place. Well documented, well maintained, well good.
                     </translate>
                   ),
