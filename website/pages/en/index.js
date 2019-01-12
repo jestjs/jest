@@ -218,34 +218,36 @@ class Hand extends React.Component {
 }
 
 const HeroInteractive = ({config: {repoUrl}, language}) => (
-  <div className="jest-hero-interactive">
-    <div className="hero-github-button-container">
-      <a
-        className="github-button"
-        href={repoUrl}
-        data-icon="octicon-star"
-        data-count-href="/facebook/jest/stargazers"
-        data-show-count={true}
-        data-count-aria-label="# stargazers on GitHub"
-        aria-label="Star facebook/jest on GitHub"
-      >
-        Star
-      </a>
-    </div>
-    <Hand />
-    <div className="jest-button-container">
-      <Button href={getUrl('/getting-started.html', language)}>
-        <translate>Get Started</translate>
-      </Button>
-      <Button href={getUrl('/getting-started.html', language)}>
-        <translate>Docs</translate>
-      </Button>
-      <Button href={getUrl('/configuration', language)}>
-        <translate>Config</translate>
-      </Button>
-      <Button href={getUrl('/help', language)}>
-        <translate>Get help</translate>
-      </Button>
+  <div className="wrapper">
+    <div className="jest-hero-interactive">
+      <div className="hero-github-button-container">
+        <a
+          className="github-button"
+          href={repoUrl}
+          data-icon="octicon-star"
+          data-count-href="/facebook/jest/stargazers"
+          data-show-count={true}
+          data-count-aria-label="# stargazers on GitHub"
+          aria-label="Star facebook/jest on GitHub"
+        >
+          Star
+        </a>
+      </div>
+      <Hand />
+      <div className="jest-button-container">
+        <Button href={getUrl('/getting-started.html', language)}>
+          <translate>Get Started</translate>
+        </Button>
+        <Button href={getUrl('/getting-started.html', language)}>
+          <translate>Docs</translate>
+        </Button>
+        <Button href={getUrl('/configuration', language)}>
+          <translate>Config</translate>
+        </Button>
+        <Button href={getUrl('/help', language)}>
+          <translate>Get help</translate>
+        </Button>
+      </div>
     </div>
   </div>
 );
@@ -528,7 +530,7 @@ class Index extends React.Component {
                   </MarkdownBlock>
                   <Contributors />
                 </div>
-                <div className="blockContent yellow">
+                <div className="blockContent yellow debug">
                   <h2>
                     <translate>Who uses Jest?</translate>
                   </h2>
