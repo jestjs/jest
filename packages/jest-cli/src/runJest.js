@@ -11,6 +11,7 @@ import type {Context} from 'types/Context';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
+import type {TestRunData} from 'types/TestRunner';
 import type {JestHookEmitter} from 'types/JestHooks';
 import type TestWatcher from './TestWatcher';
 
@@ -62,10 +63,7 @@ const getTestPaths = async (
 
   const filteredTests = data.tests.filter((test, i) => shouldTestArray[i]);
 
-  return Object.assign({}, data, {
-    allTests: filteredTests.length,
-    tests: filteredTests,
-  });
+  return {...data, allTests: filteredTests.length, tests: filteredTests};
 };
 
 const processResults = (runResults, options) => {
@@ -75,6 +73,7 @@ const processResults = (runResults, options) => {
     onComplete,
     outputStream,
     testResultsProcessor,
+    rootDir,
     collectHandles,
   } = options;
 
@@ -90,12 +89,11 @@ const processResults = (runResults, options) => {
   }
   if (isJSON) {
     if (outputFile) {
-      const filePath = path.resolve(process.cwd(), outputFile);
+      const filePath = path.resolve(rootDir, outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
       outputStream.write(
-        `Test results written to: ` +
-          `${path.relative(process.cwd(), filePath)}\n`,
+        `Test results written to: ${path.relative(rootDir, filePath)}\n`,
       );
     } else {
       process.stdout.write(JSON.stringify(formatTestResults(runResults)));
@@ -150,7 +148,7 @@ export default (async function runJest({
 
   let collectCoverageFrom = [];
 
-  const testRunData = await Promise.all(
+  const testRunData: TestRunData = await Promise.all(
     contexts.map(async context => {
       const matches = await getTestPaths(
         globalConfig,
@@ -242,10 +240,7 @@ export default (async function runJest({
     globalConfig.silent !== true &&
     globalConfig.verbose !== false
   ) {
-    // $FlowFixMe Object.assign
-    const newConfig: GlobalConfig = Object.assign({}, globalConfig, {
-      verbose: true,
-    });
+    const newConfig: GlobalConfig = {...globalConfig, verbose: true};
     globalConfig = Object.freeze(newConfig);
   }
 
@@ -279,6 +274,7 @@ export default (async function runJest({
     onComplete,
     outputFile: globalConfig.outputFile,
     outputStream,
+    rootDir: globalConfig.rootDir,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
 });

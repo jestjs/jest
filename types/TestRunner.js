@@ -60,3 +60,8 @@ export type TestFramework = (
 export type TestRunnerOptions = {
   serial: boolean,
 };
+
+export type TestRunData = Array<{
+  context: Context,
+  matches: {allTests: number, tests: Array<Test>, total: number},
+}>;
