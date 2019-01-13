@@ -1,6 +1,7 @@
 [ignore]
 .*/examples/.*
 .*/node_modules/metro-bundler/.*
+.*/node_modules/metro/.*
 .*/node_modules/module-deps/.*
 
 [options]
@@ -18,4 +19,4 @@ untyped-import
 untyped-type-import
 
 [version]
-^0.85.0
+^0.90.0

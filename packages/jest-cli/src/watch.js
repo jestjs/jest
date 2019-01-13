@@ -287,6 +287,7 @@ export default function watch(
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
       if (typeof stdin.setRawMode === 'function') {
+        // $FlowFixMe
         stdin.setRawMode(false);
       }
       outputStream.write('\n');
@@ -400,6 +401,7 @@ export default function watch(
   };
 
   if (typeof stdin.setRawMode === 'function') {
+    // $FlowFixMe
     stdin.setRawMode(true);
     stdin.resume();
     stdin.setEncoding('utf8');
