@@ -9,7 +9,6 @@
 'use strict';
 
 import path from 'path';
-import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
 jest.setTimeout(15000);
 
