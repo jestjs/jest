@@ -14,12 +14,15 @@ import type {ChangedFilesPromise} from 'types/ChangedFiles';
 
 import path from 'path';
 import micromatch from 'micromatch';
-import slash from 'slash';
 import DependencyResolver from 'jest-resolve-dependencies';
 import testPathPatternToRegExp from './testPathPatternToRegexp';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
+
+// Copied from `jest-config`
+const replacePathSepForGlob = (glob: Glob): Glob =>
+  glob.replace(/\\(?![{}()+?.^$])/g, '/');
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -49,7 +52,8 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
     return () => true;
   }
 
-  return path => micromatch.some(slash(path), globs, {dot: true});
+  return path =>
+    micromatch.some(replacePathSepForGlob(path), globs, {dot: true});
 };
 
 const regexToMatcher = (testRegex: Array<string>) => {

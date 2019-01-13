@@ -32,6 +32,7 @@ import {replacePathSepForRegex} from 'jest-regex-util';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
+  replacePathSepForGlob,
   replaceRootDirInPath,
   _replaceRootDirTags,
   escapeGlobCharacters,
@@ -611,11 +612,20 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'moduleDirectories':
       case 'testMatch':
-        value = _replaceRootDirTags(
-          escapeGlobCharacters(options.rootDir),
-          options[key],
-          // $FlowFixMe This is an array, shaddap flow
-        ).map(slash);
+        {
+          const replacedRootDirTags = _replaceRootDirTags(
+            escapeGlobCharacters(options.rootDir),
+            options[key],
+          );
+
+          if (replacedRootDirTags) {
+            value = Array.isArray(replacedRootDirTags)
+              ? replacedRootDirTags.map(replacePathSepForGlob)
+              : replacePathSepForGlob(replacedRootDirTags);
+          } else {
+            value = replacedRootDirTags;
+          }
+        }
         break;
       case 'testRegex':
         value = options[key]
