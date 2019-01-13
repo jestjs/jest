@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -40,29 +40,6 @@ test('exceeds the timeout', () => {
   expect(status).toBe(1);
 });
 
-test('exceeds the timeout synchronously', () => {
-  writeFiles(DIR, {
-    '__tests__/a-banana.js': `
-      jest.setTimeout(20);
-
-      test('banana', () => {
-        const startTime = Date.now();
-        while (Date.now() - startTime < 100) {
-        }
-      });
-    `,
-    'package.json': '{}',
-  });
-
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
-  const {rest, summary} = extractSummary(stderr);
-  expect(rest).toMatch(
-    /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
-  );
-  expect(summary).toMatchSnapshot();
-  expect(status).toBe(1);
-});
-
 test('does not exceed the timeout', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
@@ -73,78 +50,6 @@ test('does not exceed the timeout', () => {
           setTimeout(resolve, 20);
         });
       });
-    `,
-    'package.json': '{}',
-  });
-
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
-  const {rest, summary} = extractSummary(stderr);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-  expect(status).toBe(0);
-});
-
-test('before hook exceeds the timeout', () => {
-  writeFiles(DIR, {
-    '__tests__/a-banana.js': `
-      jest.setTimeout(20);
-
-      beforeEach(() => {
-        return new Promise(resolve => {
-          setTimeout(resolve, 100);
-        });
-      })
-
-      test('banana', () => {});
-    `,
-    'package.json': '{}',
-  });
-
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
-  const {rest, summary} = extractSummary(stderr);
-  expect(rest).toMatch(
-    /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
-  );
-  expect(summary).toMatchSnapshot();
-  expect(status).toBe(1);
-});
-
-test('before hook exceeds the timeout synchronously', () => {
-  writeFiles(DIR, {
-    '__tests__/a-banana.js': `
-      jest.setTimeout(20);
-
-      beforeEach(() => {
-        const startTime = Date.now();
-        while (Date.now() - startTime < 100) {}
-      })
-
-      test('banana', () => {});
-    `,
-    'package.json': '{}',
-  });
-
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
-  const {rest, summary} = extractSummary(stderr);
-  expect(rest).toMatch(
-    /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
-  );
-  expect(summary).toMatchSnapshot();
-  expect(status).toBe(1);
-});
-
-test('before hook does not exceed the timeout', () => {
-  writeFiles(DIR, {
-    '__tests__/a-banana.js': `
-      jest.setTimeout(100);
-
-      beforeEach(() => {
-        return new Promise(resolve => {
-          setTimeout(resolve, 20);
-        });
-      })
-
-      test('banana', () => {});
     `,
     'package.json': '{}',
   });

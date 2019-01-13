@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+
 // @flow
 
 import type {Path} from 'types/Config';

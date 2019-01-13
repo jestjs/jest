@@ -1,0 +1,2629 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`lastCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to not have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`lastCalledWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].lastCalledWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`lastCalledWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
+`;
+
+exports[`lastCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
+`;
+
+exports[`lastCalledWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`lastCalledWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
+`;
+
+exports[`lastCalledWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`lastCalledWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
+`;
+
+exports[`lastCalledWith works with arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`lastCalledWith works with arguments that match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`lastCalledWith works with many arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`lastCalledWith works with many arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar3\\"</>."
+`;
+
+exports[`lastCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`lastReturnedWith a call that throws is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>undefined</>
+But the last call <red>threw an error</>"
+`;
+
+exports[`lastReturnedWith a call that throws undefined is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>undefined</>
+But the last call <red>threw an error</>"
+`;
+
+exports[`lastReturnedWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have last returned:
+  <green>\\"foo\\"</>
+But it was <red>not called</>"
+`;
+
+exports[`lastReturnedWith incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>0</>
+But the last call <red>has not returned yet</>"
+`;
+
+exports[`lastReturnedWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].lastReturnedWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`lastReturnedWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>\\"foo\\"</>
+But it was <red>not called</>"
+`;
+
+exports[`lastReturnedWith works with Immutable.js objects directly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But it last returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`lastReturnedWith works with Immutable.js objects indirectly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But it last returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`lastReturnedWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>Map {1 => 2, 2 => 1}</>
+But it last returned exactly:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`lastReturnedWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+But the last call returned:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`lastReturnedWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>Set {1, 2}</>
+But it last returned exactly:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`lastReturnedWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>Set {3, 4}</>
+But the last call returned:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`lastReturnedWith works with argument that does match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>\\"foo\\"</>
+But it last returned exactly:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`lastReturnedWith works with argument that does not match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>\\"bar\\"</>
+But the last call returned:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`lastReturnedWith works with three calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>\\"foo3\\"</>
+But it last returned exactly:
+  <red>\\"foo3\\"</>"
+`;
+
+exports[`lastReturnedWith works with undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.lastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>undefined</>
+But it last returned exactly:
+  <red>undefined</>"
+`;
+
+exports[`nthCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" first call to not have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`nthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+
+exports[`nthCalledWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
+
+exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>\\"foo\\"</>
+as argument 1, but it was called with
+  <red>\\"foo1\\"</>."
+`;
+
+exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo1\\", \\"bar\\"]</>"
+`;
+
+exports[`nthCalledWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].nthCalledWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`nthCalledWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
+`;
+
+exports[`nthCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
+`;
+
+exports[`nthCalledWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`nthCalledWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
+`;
+
+exports[`nthCalledWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`nthCalledWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
+`;
+
+exports[`nthCalledWith works with arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`nthCalledWith works with arguments that match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`nthCalledWith works with three calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo1\\", \\"bar\\"]</>"
+`;
+
+exports[`nthCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`nthReturnedWith a call that throws is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>undefined</>
+But the first call <red>threw an error</>"
+`;
+
+exports[`nthReturnedWith a call that throws undefined is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>undefined</>
+But the first call <red>threw an error</>"
+`;
+
+exports[`nthReturnedWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" first call to have returned with:
+  <green>\\"foo\\"</>
+But it was <red>not called</>"
+`;
+
+exports[`nthReturnedWith incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>6</>
+But the first call <red>has not returned yet</>"
+`;
+
+exports[`nthReturnedWith incomplete recursive calls are handled properly 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function second call to have returned with:
+  <green>3</>
+But the second call <red>has not returned yet</>"
+`;
+
+exports[`nthReturnedWith incomplete recursive calls are handled properly 3`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function third call to not have returned with:
+  <green>1</>
+But the third call returned exactly:
+  <red>1</>"
+`;
+
+exports[`nthReturnedWith incomplete recursive calls are handled properly 4`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function 4th call to not have returned with:
+  <green>0</>
+But the 4th call returned exactly:
+  <red>0</>"
+`;
+
+exports[`nthReturnedWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+
+exports[`nthReturnedWith should reject nth value greater than number of calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function 4th call to have returned with:
+  <green>\\"foo\\"</>
+But it was only called <red>3</> times"
+`;
+
+exports[`nthReturnedWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
+
+exports[`nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>\\"bar1\\"</>
+But the first call returned with:
+  <red>\\"foo1\\"</>"
+`;
+
+exports[`nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>\\"foo1\\"</>
+But the first call returned exactly:
+  <red>\\"foo1\\"</>"
+`;
+
+exports[`nthReturnedWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].nthReturnedWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`nthReturnedWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>\\"foo\\"</>
+But it was <red>not called</>"
+`;
+
+exports[`nthReturnedWith works with Immutable.js objects directly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But the first call returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`nthReturnedWith works with Immutable.js objects indirectly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But the first call returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`nthReturnedWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>Map {1 => 2, 2 => 1}</>
+But the first call returned exactly:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`nthReturnedWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+But the first call returned with:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`nthReturnedWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>Set {1, 2}</>
+But the first call returned exactly:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`nthReturnedWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>Set {3, 4}</>
+But the first call returned with:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`nthReturnedWith works with argument that does match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>\\"foo\\"</>
+But the first call returned exactly:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`nthReturnedWith works with argument that does not match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>\\"bar\\"</>
+But the first call returned with:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`nthReturnedWith works with three calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>\\"foo1\\"</>
+But the first call returned exactly:
+  <red>\\"foo1\\"</>"
+`;
+
+exports[`nthReturnedWith works with undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>undefined</>
+But the first call returned exactly:
+  <red>undefined</>"
+`;
+
+exports[`toBeCalled .not fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalled()</>
+
+<bold>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  number
+Expected has value: <green>555</>"
+`;
+
+exports[`toBeCalled .not passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalled()</>
+
+Expected mock function to have been called, but it was not called."
+`;
+
+exports[`toBeCalled fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalled()</>
+
+<bold>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  number
+Expected has value: <green>555</>"
+`;
+
+exports[`toBeCalled includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toBeCalled()</>
+
+Expected mock function \\"named-mock\\" not to be called but it was called with:
+  <red>[]</>"
+`;
+
+exports[`toBeCalled passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalled()</>
+
+Expected mock function not to be called but it was called with:
+  <red>[]</>"
+`;
+
+exports[`toBeCalled works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalled()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  object
+Expected has value: <green>{}</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  array
+Expected has value: <green>[]</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  boolean
+Expected has value: <green>true</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  string
+Expected has value: <green>\\"a\\"</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  map
+Expected has value: <green>Map {}</>"
+`;
+
+exports[`toBeCalledTimes .not only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  function
+Expected has value: <green>[Function anonymous]</>"
+`;
+
+exports[`toBeCalledTimes .not passes if function called less than expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function to have been called <green>two times</>, but it was called <red>one time</>."
+`;
+
+exports[`toBeCalledTimes .not passes if function called more than expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function to have been called <green>two times</>, but it was called <red>three times</>."
+`;
+
+exports[`toBeCalledTimes includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toBeCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have been called <green>two times</>, but it was called <red>one time</>."
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  object
+Expected has value: <green>{}</>"
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  array
+Expected has value: <green>[]</>"
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  boolean
+Expected has value: <green>true</>"
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  string
+Expected has value: <green>\\"a\\"</>"
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  map
+Expected has value: <green>Map {}</>"
+`;
+
+exports[`toBeCalledTimes only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  function
+Expected has value: <green>[Function anonymous]</>"
+`;
+
+exports[`toBeCalledTimes passes if function called equal to expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function not to be called <green>two times</>, but it was called exactly <red>two times</>."
+`;
+
+exports[`toBeCalledTimes works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledTimes()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toBeCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toBeCalledWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toBeCalledWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
+`;
+
+exports[`toBeCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
+`;
+
+exports[`toBeCalledWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`toBeCalledWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
+`;
+
+exports[`toBeCalledWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`toBeCalledWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
+`;
+
+exports[`toBeCalledWith works with arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`toBeCalledWith works with arguments that match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toBeCalledWith works with many arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toBeCalledWith works with many arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar3\\"</>.
+
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar2\\"</>.
+
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`toBeCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`toHaveBeenCalled .not fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled()</>
+
+<bold>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  number
+Expected has value: <green>555</>"
+`;
+
+exports[`toHaveBeenCalled .not passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalled()</>
+
+Expected mock function to have been called, but it was not called."
+`;
+
+exports[`toHaveBeenCalled fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled()</>
+
+<bold>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  number
+Expected has value: <green>555</>"
+`;
+
+exports[`toHaveBeenCalled includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenCalled()</>
+
+Expected mock function \\"named-mock\\" not to be called but it was called with:
+  <red>[]</>"
+`;
+
+exports[`toHaveBeenCalled passes when called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalled()</>
+
+Expected mock function not to be called but it was called with:
+  <red>[]</>"
+`;
+
+exports[`toHaveBeenCalled works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalled()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  object
+Expected has value: <green>{}</>"
+`;
+
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  array
+Expected has value: <green>[]</>"
+`;
+
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  boolean
+Expected has value: <green>true</>"
+`;
+
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  string
+Expected has value: <green>\\"a\\"</>"
+`;
+
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  map
+Expected has value: <green>Map {}</>"
+`;
+
+exports[`toHaveBeenCalledTimes .not only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  function
+Expected has value: <green>[Function anonymous]</>"
+`;
+
+exports[`toHaveBeenCalledTimes .not passes if function called less than expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function to have been called <green>two times</>, but it was called <red>one time</>."
+`;
+
+exports[`toHaveBeenCalledTimes .not passes if function called more than expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function to have been called <green>two times</>, but it was called <red>three times</>."
+`;
+
+exports[`toHaveBeenCalledTimes includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have been called <green>two times</>, but it was called <red>one time</>."
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  object
+Expected has value: <green>{}</>"
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  array
+Expected has value: <green>[]</>"
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  boolean
+Expected has value: <green>true</>"
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  string
+Expected has value: <green>\\"a\\"</>"
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  map
+Expected has value: <green>Map {}</>"
+`;
+
+exports[`toHaveBeenCalledTimes only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalledTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  function
+Expected has value: <green>[Function anonymous]</>"
+`;
+
+exports[`toHaveBeenCalledTimes passes if function called equal to expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledTimes(</><green>2</><dim>)</>
+
+Expected mock function not to be called <green>two times</>, but it was called exactly <red>two times</>."
+`;
+
+exports[`toHaveBeenCalledTimes works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledTimes()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toHaveBeenCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenCalledWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toHaveBeenCalledWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
+`;
+
+exports[`toHaveBeenCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
+`;
+
+exports[`toHaveBeenCalledWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`toHaveBeenCalledWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
+`;
+
+exports[`toHaveBeenCalledWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`toHaveBeenCalledWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
+`;
+
+exports[`toHaveBeenCalledWith works with arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`toHaveBeenCalledWith works with arguments that match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenCalledWith works with many arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenCalledWith works with many arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar3\\"</>.
+
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar2\\"</>.
+
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`toHaveBeenCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`toHaveBeenLastCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to not have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenLastCalledWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
+`;
+
+exports[`toHaveBeenLastCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`toHaveBeenLastCalledWith works with arguments that match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with many arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have been last called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenLastCalledWith works with many arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar3\\"</>."
+`;
+
+exports[`toHaveBeenLastCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function to have been last called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`toHaveBeenNthCalledWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" first call to not have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+
+exports[`toHaveBeenNthCalledWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
+
+exports[`toHaveBeenNthCalledWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>\\"foo\\"</>
+as argument 1, but it was called with
+  <red>\\"foo1\\"</>."
+`;
+
+exports[`toHaveBeenNthCalledWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo1\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenNthCalledWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>
+But it was <red>not called</>."
+`;
+
+exports[`toHaveBeenNthCalledWith works with Immutable.js objects 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}, Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[Map {1 => 2, 2 => 1}]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+as argument 1, but it was called with
+  <red>Map {1 => 2, 2 => 1}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Map {</>
+<green>-   \\"a\\" => \\"b\\",</>
+<green>-   \\"b\\" => \\"a\\",</>
+<red>+   1 => 2,</>
+<red>+   2 => 1,</>
+<dim>  }</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[Set {1, 2}]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>Set {3, 4}</>
+as argument 1, but it was called with
+  <red>Set {1, 2}</>.
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Set {</>
+<green>-   3,</>
+<green>-   4,</>
+<red>+   1,</>
+<red>+   2,</>
+<dim>  }</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with arguments that don't match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  <green>\\"bar\\"</>
+as argument 2, but it was called with
+  <red>\\"bar1\\"</>."
+`;
+
+exports[`toHaveBeenNthCalledWith works with arguments that match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with three calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have been called with:
+  <green>[\\"foo1\\", \\"bar\\"]</>"
+`;
+
+exports[`toHaveBeenNthCalledWith works with trailing undefined arguments 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have been called with:
+  Did not expect argument 2 but it was called with <red>undefined</>."
+`;
+
+exports[`toHaveLastReturnedWith a call that throws is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>undefined</>
+But the last call <red>threw an error</>"
+`;
+
+exports[`toHaveLastReturnedWith a call that throws undefined is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>undefined</>
+But the last call <red>threw an error</>"
+`;
+
+exports[`toHaveLastReturnedWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have last returned:
+  <green>\\"foo\\"</>
+But it was <red>not called</>"
+`;
+
+exports[`toHaveLastReturnedWith incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>0</>
+But the last call <red>has not returned yet</>"
+`;
+
+exports[`toHaveLastReturnedWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveLastReturnedWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toHaveLastReturnedWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>\\"foo\\"</>
+But it was <red>not called</>"
+`;
+
+exports[`toHaveLastReturnedWith works with Immutable.js objects directly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But it last returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`toHaveLastReturnedWith works with Immutable.js objects indirectly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But it last returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`toHaveLastReturnedWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>Map {1 => 2, 2 => 1}</>
+But it last returned exactly:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`toHaveLastReturnedWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+But the last call returned:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`toHaveLastReturnedWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>Set {1, 2}</>
+But it last returned exactly:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`toHaveLastReturnedWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>Set {3, 4}</>
+But the last call returned:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`toHaveLastReturnedWith works with argument that does match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>\\"foo\\"</>
+But it last returned exactly:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`toHaveLastReturnedWith works with argument that does not match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have last returned:
+  <green>\\"bar\\"</>
+But the last call returned:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`toHaveLastReturnedWith works with three calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>\\"foo3\\"</>
+But it last returned exactly:
+  <red>\\"foo3\\"</>"
+`;
+
+exports[`toHaveLastReturnedWith works with undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to not have last returned:
+  <green>undefined</>
+But it last returned exactly:
+  <red>undefined</>"
+`;
+
+exports[`toHaveNthReturnedWith a call that throws is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>undefined</>
+But the first call <red>threw an error</>"
+`;
+
+exports[`toHaveNthReturnedWith a call that throws undefined is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>undefined</>
+But the first call <red>threw an error</>"
+`;
+
+exports[`toHaveNthReturnedWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" first call to have returned with:
+  <green>\\"foo\\"</>
+But it was <red>not called</>"
+`;
+
+exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>6</>
+But the first call <red>has not returned yet</>"
+`;
+
+exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function second call to have returned with:
+  <green>3</>
+But the second call <red>has not returned yet</>"
+`;
+
+exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly 3`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function third call to not have returned with:
+  <green>1</>
+But the third call returned exactly:
+  <red>1</>"
+`;
+
+exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly 4`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function 4th call to not have returned with:
+  <green>0</>
+But the 4th call returned exactly:
+  <red>0</>"
+`;
+
+exports[`toHaveNthReturnedWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+
+exports[`toHaveNthReturnedWith should reject nth value greater than number of calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function 4th call to have returned with:
+  <green>\\"foo\\"</>
+But it was only called <red>3</> times"
+`;
+
+exports[`toHaveNthReturnedWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
+
+exports[`toHaveNthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>\\"bar1\\"</>
+But the first call returned with:
+  <red>\\"foo1\\"</>"
+`;
+
+exports[`toHaveNthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>\\"foo1\\"</>
+But the first call returned exactly:
+  <red>\\"foo1\\"</>"
+`;
+
+exports[`toHaveNthReturnedWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveNthReturnedWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toHaveNthReturnedWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>\\"foo\\"</>
+But it was <red>not called</>"
+`;
+
+exports[`toHaveNthReturnedWith works with Immutable.js objects directly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But the first call returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`toHaveNthReturnedWith works with Immutable.js objects indirectly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But the first call returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`toHaveNthReturnedWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>Map {1 => 2, 2 => 1}</>
+But the first call returned exactly:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`toHaveNthReturnedWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+But the first call returned with:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`toHaveNthReturnedWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>Set {1, 2}</>
+But the first call returned exactly:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`toHaveNthReturnedWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>Set {3, 4}</>
+But the first call returned with:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`toHaveNthReturnedWith works with argument that does match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>\\"foo\\"</>
+But the first call returned exactly:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`toHaveNthReturnedWith works with argument that does not match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to have returned with:
+  <green>\\"bar\\"</>
+But the first call returned with:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`toHaveNthReturnedWith works with three calls 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>\\"foo1\\"</>
+But the first call returned exactly:
+  <red>\\"foo1\\"</>"
+`;
+
+exports[`toHaveNthReturnedWith works with undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function first call to not have returned with:
+  <green>undefined</>
+But the first call returned exactly:
+  <red>undefined</>"
+`;
+
+exports[`toHaveReturned .not fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturned()</>
+
+<bold>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  number
+Expected has value: <green>555</>"
+`;
+
+exports[`toHaveReturned .not passes when a call throws undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
+
+Expected mock function to have returned."
+`;
+
+exports[`toHaveReturned .not passes when all calls throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
+
+Expected mock function to have returned."
+`;
+
+exports[`toHaveReturned .not passes when not returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
+
+Expected mock function to have returned."
+`;
+
+exports[`toHaveReturned fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturned()</>
+
+<bold>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  number
+Expected has value: <green>555</>"
+`;
+
+exports[`toHaveReturned includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveReturned()</>
+
+Expected mock function \\"named-mock\\" not to have returned, but it returned:
+  <red>42</>"
+`;
+
+exports[`toHaveReturned incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
+
+Expected mock function to have returned."
+`;
+
+exports[`toHaveReturned passes when at least one call does not throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned()</>
+
+Expected mock function not to have returned, but it returned:
+  <red>42</>
+
+  <red>42</>"
+`;
+
+exports[`toHaveReturned passes when returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned()</>
+
+Expected mock function not to have returned, but it returned:
+  <red>42</>"
+`;
+
+exports[`toHaveReturned passes when undefined is returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned()</>
+
+Expected mock function not to have returned, but it returned:
+  <red>undefined</>"
+`;
+
+exports[`toHaveReturned works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturned()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toHaveReturnedTimes .not only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  object
+Expected has value: <green>{}</>"
+`;
+
+exports[`toHaveReturnedTimes .not only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  array
+Expected has value: <green>[]</>"
+`;
+
+exports[`toHaveReturnedTimes .not only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  boolean
+Expected has value: <green>true</>"
+`;
+
+exports[`toHaveReturnedTimes .not only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  string
+Expected has value: <green>\\"a\\"</>"
+`;
+
+exports[`toHaveReturnedTimes .not only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  map
+Expected has value: <green>Map {}</>"
+`;
+
+exports[`toHaveReturnedTimes .not only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  function
+Expected has value: <green>[Function anonymous]</>"
+`;
+
+exports[`toHaveReturnedTimes .not passes if function called less than expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedTimes(</><green>2</><dim>)</>
+
+Expected mock function to have returned <green>two times</>, but it returned <red>one time</>."
+`;
+
+exports[`toHaveReturnedTimes .not passes if function returned more than expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedTimes(</><green>2</><dim>)</>
+
+Expected mock function to have returned <green>two times</>, but it returned <red>three times</>."
+`;
+
+exports[`toHaveReturnedTimes calls that return undefined are counted as returns 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
+exports[`toHaveReturnedTimes calls that throw are not counted 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
+exports[`toHaveReturnedTimes calls that throw undefined are not counted 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
+exports[`toHaveReturnedTimes includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toHaveReturnedTimes(</><green>1</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
+`;
+
+exports[`toHaveReturnedTimes incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
+exports[`toHaveReturnedTimes only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  object
+Expected has value: <green>{}</>"
+`;
+
+exports[`toHaveReturnedTimes only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  array
+Expected has value: <green>[]</>"
+`;
+
+exports[`toHaveReturnedTimes only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  boolean
+Expected has value: <green>true</>"
+`;
+
+exports[`toHaveReturnedTimes only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  string
+Expected has value: <green>\\"a\\"</>"
+`;
+
+exports[`toHaveReturnedTimes only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  map
+Expected has value: <green>Map {}</>"
+`;
+
+exports[`toHaveReturnedTimes only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturnedTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  function
+Expected has value: <green>[Function anonymous]</>"
+`;
+
+exports[`toHaveReturnedTimes passes if function returned equal to expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
+exports[`toHaveReturnedTimes works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturnedTimes()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toHaveReturnedWith a call that throws is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>undefined</>
+But it did <red>not return</>."
+`;
+
+exports[`toHaveReturnedWith a call that throws undefined is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>undefined</>
+But it did <red>not return</>."
+`;
+
+exports[`toHaveReturnedWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have returned:
+  <green>\\"foo\\"</>
+But it did <red>not return</>."
+`;
+
+exports[`toHaveReturnedWith incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>undefined</>
+But it did <red>not return</>."
+`;
+
+exports[`toHaveReturnedWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturnedWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toHaveReturnedWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>\\"foo\\"</>
+But it did <red>not return</>."
+`;
+
+exports[`toHaveReturnedWith works with Immutable.js objects directly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But it returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`toHaveReturnedWith works with Immutable.js objects indirectly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But it returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`toHaveReturnedWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>Map {1 => 2, 2 => 1}</>
+But it returned exactly:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`toHaveReturnedWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+But it returned:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`toHaveReturnedWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>Set {1, 2}</>
+But it returned exactly:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`toHaveReturnedWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>Set {3, 4}</>
+But it returned:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`toHaveReturnedWith works with argument that does match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>\\"foo\\"</>
+But it returned exactly:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`toHaveReturnedWith works with argument that does not match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>\\"bar\\"</>
+But it returned:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`toHaveReturnedWith works with more calls than the limit 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>\\"bar\\"</>
+But it returned:
+  <red>\\"foo1\\"</>
+
+  <red>\\"foo2\\"</>
+
+  <red>\\"foo3\\"</>
+
+  <red>\\"foo4\\"</>
+
+  <red>\\"foo5\\"</>
+
+  ...and <red>1</> more"
+`;
+
+exports[`toHaveReturnedWith works with undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>undefined</>
+But it returned exactly:
+  <red>undefined</>"
+`;
+
+exports[`toReturn .not fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturn()</>
+
+<bold>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  number
+Expected has value: <green>555</>"
+`;
+
+exports[`toReturn .not passes when a call throws undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
+
+Expected mock function to have returned."
+`;
+
+exports[`toReturn .not passes when all calls throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
+
+Expected mock function to have returned."
+`;
+
+exports[`toReturn .not passes when not returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
+
+Expected mock function to have returned."
+`;
+
+exports[`toReturn fails with any argument passed 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturn()</>
+
+<bold>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  number
+Expected has value: <green>555</>"
+`;
+
+exports[`toReturn includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).not.toReturn()</>
+
+Expected mock function \\"named-mock\\" not to have returned, but it returned:
+  <red>42</>"
+`;
+
+exports[`toReturn incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
+
+Expected mock function to have returned."
+`;
+
+exports[`toReturn passes when at least one call does not throw 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn()</>
+
+Expected mock function not to have returned, but it returned:
+  <red>42</>
+
+  <red>42</>"
+`;
+
+exports[`toReturn passes when returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn()</>
+
+Expected mock function not to have returned, but it returned:
+  <red>42</>"
+`;
+
+exports[`toReturn passes when undefined is returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn()</>
+
+Expected mock function not to have returned, but it returned:
+  <red>undefined</>"
+`;
+
+exports[`toReturn works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturn()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toReturnTimes .not only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  object
+Expected has value: <green>{}</>"
+`;
+
+exports[`toReturnTimes .not only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  array
+Expected has value: <green>[]</>"
+`;
+
+exports[`toReturnTimes .not only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  boolean
+Expected has value: <green>true</>"
+`;
+
+exports[`toReturnTimes .not only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  string
+Expected has value: <green>\\"a\\"</>"
+`;
+
+exports[`toReturnTimes .not only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  map
+Expected has value: <green>Map {}</>"
+`;
+
+exports[`toReturnTimes .not only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  function
+Expected has value: <green>[Function anonymous]</>"
+`;
+
+exports[`toReturnTimes .not passes if function called less than expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnTimes(</><green>2</><dim>)</>
+
+Expected mock function to have returned <green>two times</>, but it returned <red>one time</>."
+`;
+
+exports[`toReturnTimes .not passes if function returned more than expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnTimes(</><green>2</><dim>)</>
+
+Expected mock function to have returned <green>two times</>, but it returned <red>three times</>."
+`;
+
+exports[`toReturnTimes calls that return undefined are counted as returns 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
+exports[`toReturnTimes calls that throw are not counted 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
+exports[`toReturnTimes calls that throw undefined are not counted 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
+exports[`toReturnTimes includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toReturnTimes(</><green>1</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
+`;
+
+exports[`toReturnTimes incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
+exports[`toReturnTimes only accepts a number argument 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  object
+Expected has value: <green>{}</>"
+`;
+
+exports[`toReturnTimes only accepts a number argument 2`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  array
+Expected has value: <green>[]</>"
+`;
+
+exports[`toReturnTimes only accepts a number argument 3`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  boolean
+Expected has value: <green>true</>"
+`;
+
+exports[`toReturnTimes only accepts a number argument 4`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  string
+Expected has value: <green>\\"a\\"</>"
+`;
+
+exports[`toReturnTimes only accepts a number argument 5`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  map
+Expected has value: <green>Map {}</>"
+`;
+
+exports[`toReturnTimes only accepts a number argument 6`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toReturnTimes(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  function
+Expected has value: <green>[Function anonymous]</>"
+`;
+
+exports[`toReturnTimes passes if function returned equal to expected times 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+
+Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+`;
+
+exports[`toReturnTimes works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturnTimes()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toReturnWith a call that throws is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>undefined</>
+But it did <red>not return</>."
+`;
+
+exports[`toReturnWith a call that throws undefined is not considered to have returned 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>undefined</>
+But it did <red>not return</>."
+`;
+
+exports[`toReturnWith includes the custom mock name in the error message 1`] = `
+"<dim>expect(</><red>named-mock</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function \\"named-mock\\" to have returned:
+  <green>\\"foo\\"</>
+But it did <red>not return</>."
+`;
+
+exports[`toReturnWith incomplete recursive calls are handled properly 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>undefined</>
+But it did <red>not return</>."
+`;
+
+exports[`toReturnWith works only on spies or jest.fn 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturnWith()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+
+Received has type:  function
+Received has value: <red>[Function fn]</>"
+`;
+
+exports[`toReturnWith works when not called 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>\\"foo\\"</>
+But it did <red>not return</>."
+`;
+
+exports[`toReturnWith works with Immutable.js objects directly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But it returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`toReturnWith works with Immutable.js objects indirectly created 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
+But it returned exactly:
+  <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>"
+`;
+
+exports[`toReturnWith works with Map 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>Map {1 => 2, 2 => 1}</>
+But it returned exactly:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`toReturnWith works with Map 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
+But it returned:
+  <red>Map {1 => 2, 2 => 1}</>"
+`;
+
+exports[`toReturnWith works with Set 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>Set {1, 2}</>
+But it returned exactly:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`toReturnWith works with Set 2`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>Set {3, 4}</>
+But it returned:
+  <red>Set {1, 2}</>"
+`;
+
+exports[`toReturnWith works with argument that does match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>\\"foo\\"</>
+But it returned exactly:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`toReturnWith works with argument that does not match 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>\\"bar\\"</>
+But it returned:
+  <red>\\"foo\\"</>"
+`;
+
+exports[`toReturnWith works with more calls than the limit 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function to have returned:
+  <green>\\"bar\\"</>
+But it returned:
+  <red>\\"foo1\\"</>
+
+  <red>\\"foo2\\"</>
+
+  <red>\\"foo3\\"</>
+
+  <red>\\"foo4\\"</>
+
+  <red>\\"foo5\\"</>
+
+  ...and <red>1</> more"
+`;
+
+exports[`toReturnWith works with undefined 1`] = `
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnWith(</><green>expected</><dim>)</>
+
+Expected mock function not to have returned:
+  <green>undefined</>
+But it returned exactly:
+  <red>undefined</>"
+`;

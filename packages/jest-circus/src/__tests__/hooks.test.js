@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
@@ -10,7 +10,7 @@
 
 'use strict';
 
-import {runTest} from '../__mocks__/test_utils';
+import {runTest} from '../__mocks__/testUtils';
 
 test('beforeEach is executed before each test in current/child describe blocks', () => {
   const {stdout} = runTest(`

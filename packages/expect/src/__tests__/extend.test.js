@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,7 +8,7 @@
 
 const matcherUtils = require('jest-matcher-utils');
 const {iterableEquality, subsetEquality} = require('../utils');
-const {equals} = require('../jasmine_utils');
+const {equals} = require('../jasmineUtils');
 const jestExpect = require('../');
 
 jestExpect.extend({

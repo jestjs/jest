@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -31,11 +31,41 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
 
       if (!Array.isArray(tableArg)) {
         const error = new ErrorWithStack(
-          '`.each` must be called with an Array or Tagged Template String.\n\n' +
+          '`.each` must be called with an Array or Tagged Template Literal.\n\n' +
             `Instead was called with: ${pretty(tableArg, {
               maxDepth: 1,
               min: true,
             })}\n`,
+          eachBind,
+        );
+        return cb(title, () => {
+          throw error;
+        });
+      }
+
+      if (isTaggedTemplateLiteral(tableArg)) {
+        if (isEmptyString(tableArg[0])) {
+          const error = new ErrorWithStack(
+            'Error: `.each` called with an empty Tagged Template Literal of table data.\n',
+            eachBind,
+          );
+          return cb(title, () => {
+            throw error;
+          });
+        }
+
+        const error = new ErrorWithStack(
+          'Error: `.each` called with a Tagged Template Literal with no data, remember to interpolate with ${expression} syntax.\n',
+          eachBind,
+        );
+        return cb(title, () => {
+          throw error;
+        });
+      }
+
+      if (isEmptyTable(tableArg)) {
+        const error = new ErrorWithStack(
+          'Error: `.each` called with an empty Array of table data.\n',
           eachBind,
         );
         return cb(title, () => {
@@ -91,12 +121,17 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
     );
   };
 
+const isTaggedTemplateLiteral = array => array.raw !== undefined;
+const isEmptyTable = table => table.length === 0;
+const isEmptyString = str => typeof str === 'string' && str.trim() === '';
+
 const getPrettyIndexes = placeholders =>
-  placeholders.reduce(
-    (indexes, placeholder, index) =>
-      placeholder === PRETTY_PLACEHOLDER ? indexes.concat(index) : indexes,
-    [],
-  );
+  placeholders.reduce((indexes, placeholder, index) => {
+    if (placeholder === PRETTY_PLACEHOLDER) {
+      indexes.push(index);
+    }
+    return indexes;
+  }, []);
 
 const arrayFormat = (title, rowIndex, ...args) => {
   const placeholders = title.match(SUPPORTED_PLACEHOLDERS) || [];

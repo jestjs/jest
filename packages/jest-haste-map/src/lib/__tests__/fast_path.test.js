@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-present, Facebook, Inc.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  * All rights reserved.
  *
  * This source code is licensed under the MIT license found in the
@@ -24,6 +24,13 @@ describe('fastPath.relative', () => {
     const root = path.join(__dirname, 'foo', 'bar');
     const filename = path.join(__dirname, 'foo', 'baz', 'foobar');
     const relativeFilename = path.join('..', 'baz', 'foobar');
+    expect(relative(root, filename)).toBe(relativeFilename);
+  });
+
+  it('should get relative paths outside the root when start with same word', () => {
+    const root = path.join(__dirname, 'foo', 'bar');
+    const filename = path.join(__dirname, 'foo', 'barbaz', 'foobar');
+    const relativeFilename = path.join('..', 'barbaz', 'foobar');
     expect(relative(root, filename)).toBe(relativeFilename);
   });
 });

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -31,12 +31,6 @@ import StackUtils from 'stack-utils';
 import prettyFormat from 'pretty-format';
 
 import {getState} from './state';
-
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test. Async functions return it implicitly.
-// eslint-disable-next-line no-unused-vars
-const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
-export const getOriginalPromise = () => Promise;
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
@@ -155,7 +149,7 @@ export const getEachHooksForTest = (
 export const describeBlockHasTests = (describe: DescribeBlock) =>
   describe.tests.length || describe.children.some(describeBlockHasTests);
 
-const _makeTimeoutMessage = (timeout: number, isHook: ?boolean) =>
+const _makeTimeoutMessage = (timeout, isHook) =>
   `Exceeded timeout of ${timeout}ms for a ${
     isHook ? 'hook' : 'test'
   }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
@@ -167,10 +161,9 @@ const {setTimeout, clearTimeout} = global;
 export const callAsyncCircusFn = (
   fn: AsyncFn,
   testContext: ?TestContext,
-  {isHook, timeout}: {isHook: ?boolean, timeout: number},
+  {isHook, timeout}: {isHook?: ?boolean, timeout: number},
 ): Promise<mixed> => {
   let timeoutID;
-  const startedAt = getTimestamp();
 
   return new Promise((resolve, reject) => {
     timeoutID = setTimeout(
@@ -237,9 +230,6 @@ export const callAsyncCircusFn = (
       // it's resolved.
       timeoutID.unref && timeoutID.unref();
       clearTimeout(timeoutID);
-      if (getTimestamp() - startedAt > timeout) {
-        throw new Error(_makeTimeoutMessage(timeout, isHook));
-      }
     })
     .catch(error => {
       timeoutID.unref && timeoutID.unref();
@@ -248,11 +238,9 @@ export const callAsyncCircusFn = (
     });
 };
 
-export const getTimestamp = Date.now.bind(Date);
-
 export const getTestDuration = (test: TestEntry): ?number => {
   const {startedAt} = test;
-  return startedAt ? getTimestamp() - startedAt : null;
+  return typeof startedAt === 'number' ? Date.now() - startedAt : null;
 };
 
 export const makeRunResult = (

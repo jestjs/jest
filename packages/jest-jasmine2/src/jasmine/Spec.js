@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,7 +7,7 @@
  */
 // This file is a heavily modified fork of Jasmine. Original license:
 /*
-Copyright (c) 2008-2016 Pivotal Labs
+Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -33,11 +33,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import {AssertionError} from 'assert';
 
-import ExpectationFailed from '../expectation_failed';
+import ExpectationFailed from '../ExpectationFailed';
 
-import expectationResultFactory from '../expectation_result_factory';
+import expectationResultFactory from '../expectationResultFactory';
 
-import assertionErrorMessage from '../assert_support';
+import assertionErrorMessage from '../assertionErrorMessage';
 
 export default function Spec(attrs: Object) {
   this.resultCallback = attrs.resultCallback || function() {};

@@ -80,7 +80,7 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
+To use [Babel](https://babeljs.io/), install the `babel-jest` and `regenerator-runtime` packages:
 
 ```bash
 yarn add --dev babel-jest babel-core regenerator-runtime
@@ -94,7 +94,7 @@ yarn add --dev babel-jest babel-core regenerator-runtime
 >
 > You will need to use `babel.config.js` in order to transpile `node_modules`. See https://babeljs.io/docs/en/next/config-files for more information.
 >
-> You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/master/examples/babel-7
+> You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/54f4d4ebd3d1a11d65962169f493ce41efdd784f/examples/babel-7
 
 _Note: Explicitly installing `regenerator-runtime` is not needed if you use `npm` 3 or 4 or Yarn_
 

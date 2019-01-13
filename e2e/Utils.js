@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -152,19 +152,37 @@ export const extractSummary = (stdout: string) => {
 
   const summary = replaceTime(match[0]);
 
-  const rest = cleanupStackTrace(
+  const rest = stdout
+    .replace(match[0], '')
     // remove all timestamps
-    stdout.replace(match[0], '').replace(/\s*\(\d*\.?\d+m?s\)$/gm, ''),
-  );
+    .replace(/\s*\(\d*\.?\d+m?s\)$/gm, '');
 
   return {rest, summary};
 };
 
+const sortTests = (stdout: string) =>
+  stdout
+    .split('\n')
+    .reduce((tests, line, i) => {
+      if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
+        tests.push([line.trimRight()]);
+      } else if (line) {
+        tests[tests.length - 1].push(line.trimRight());
+      }
+      return tests;
+    }, [])
+    .sort(([a], [b]) => (a > b ? 1 : -1))
+    .reduce(
+      (array, lines = []) =>
+        lines.length > 1 ? array.concat(lines, '') : array.concat(lines),
+      [],
+    )
+    .join('\n');
+
 export const extractSortedSummary = (stdout: string) => {
   const {rest, summary} = extractSummary(stdout);
-
   return {
-    rest: sortLines(replaceTime(rest)),
+    rest: sortTests(replaceTime(rest)),
     summary,
   };
 };
@@ -191,14 +209,6 @@ export const extractSummaries = (
     })
     .map(({start, end}) => extractSortedSummary(stdout.slice(start, end)));
 };
-
-// different versions of Node print different stack traces. This function
-// unifies their output to make it possible to snapshot them.
-// TODO: Remove when we drop support for node 4
-export const cleanupStackTrace = (output: string) =>
-  output
-    .replace(/.*(?=packages)/g, '      at ')
-    .replace(/^.*at.*[\s][\(]?(\S*\:\d*\:\d*).*$/gm, '      at $1');
 
 export const normalizeIcons = (str: string) => {
   if (!str) {

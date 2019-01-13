@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,7 +9,7 @@
 
 export type DoneFn = (reason?: string | Error) => void;
 export type BlockFn = () => void;
-export type BlockName = string | Function;
+export type BlockName = string;
 export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = string;
@@ -153,6 +153,7 @@ export type TestStatus = 'skip' | 'done' | 'todo';
 export type TestResult = {|
   duration: ?number,
   errors: Array<FormattedError>,
+  invocations: number,
   status: TestStatus,
   location: ?{|column: number, line: number|},
   testPath: Array<TestName | BlockName>,

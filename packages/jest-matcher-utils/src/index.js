@@ -1,11 +1,13 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @flow
  */
+
+import type {MatcherHintOptions} from 'types/Matchers';
 
 import chalk from 'chalk';
 import getType from 'jest-get-type';
@@ -30,6 +32,7 @@ const PLUGINS = [
 
 export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
+const DIM_COLOR = chalk.dim;
 
 const NUMBERS = [
   'zero',
@@ -89,27 +92,35 @@ export const printExpected = (value: any) =>
   EXPECTED_COLOR(highlightTrailingWhitespace(stringify(value)));
 
 export const printWithType = (
-  name: string,
-  received: any,
-  print: (value: any) => string,
+  name: string, // 'Expected' or 'Received'
+  value: any,
+  print: (value: any) => string, // printExpected or printReceived
 ) => {
-  const type = getType(received);
-  return (
-    name +
-    ':' +
-    (type !== 'null' && type !== 'undefined' ? '\n  ' + type + ': ' : ' ') +
-    print(received)
-  );
+  const type = getType(value);
+  const hasType =
+    type !== 'null' && type !== 'undefined'
+      ? `${name} has type:  ${type}\n`
+      : '';
+  const hasValue = `${name} has value: ${print(value)}`;
+  return hasType + hasValue;
 };
 
-export const ensureNoExpected = (expected: any, matcherName: string) => {
-  matcherName || (matcherName = 'This');
+export const ensureNoExpected = (
+  expected: any,
+  matcherName: string,
+  options?: MatcherHintOptions,
+) => {
   if (typeof expected !== 'undefined') {
+    // Prepend maybe not only for backward compatibility.
+    const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
-      matcherHint('[.not]' + matcherName, undefined, '') +
-        '\n\n' +
-        'Matcher does not accept any arguments.\n' +
-        printWithType('Got', expected, printExpected),
+      matcherErrorMessage(
+        matcherHint(matcherString, undefined, '', options),
+        // Because expected is omitted in hint above,
+        // expected is black instead of green in message below.
+        'this matcher must not have an expected argument',
+        printWithType('Expected', expected, printExpected),
+      ),
     );
   }
 };
@@ -118,10 +129,11 @@ export const ensureActualIsNumber = (actual: any, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof actual !== 'number') {
     throw new Error(
-      matcherHint('[.not]' + matcherName) +
-        '\n\n' +
-        `Received value must be a number.\n` +
+      matcherErrorMessage(
+        matcherHint('[.not]' + matcherName),
+        `${RECEIVED_COLOR('received')} value must be a number`,
         printWithType('Received', actual, printReceived),
+      ),
     );
   }
 };
@@ -130,10 +142,11 @@ export const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof expected !== 'number') {
     throw new Error(
-      matcherHint('[.not]' + matcherName) +
-        '\n\n' +
-        `Expected value must be a number.\n` +
-        printWithType('Got', expected, printExpected),
+      matcherErrorMessage(
+        matcherHint('[.not]' + matcherName),
+        `${EXPECTED_COLOR('expected')} value must be a number`,
+        printWithType('Expected', expected, printExpected),
+      ),
     );
   }
 };
@@ -150,28 +163,88 @@ export const ensureNumbers = (
 export const pluralize = (word: string, count: number) =>
   (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
 
+// To display lines of labeled values as two columns with monospace alignment:
+// given the strings which will describe the values,
+// return function which given each string, returns the label:
+// string, colon, space, and enough padding spaces to align the value.
+
+type PrintLabel = string => string;
+
+export const getLabelPrinter = (...strings: Array<string>): PrintLabel => {
+  const maxLength = strings.reduce(
+    (max, string) => (string.length > max ? string.length : max),
+    0,
+  );
+  return string => `${string}: ${' '.repeat(maxLength - string.length)}`;
+};
+
+export const matcherErrorMessage = (
+  hint: string, // assertion returned from call to matcherHint
+  generic: string, // condition which correct value must fulfill
+  specific: string, // incorrect value returned from call to printWithType
+) => `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}\n\n${specific}`;
+
+// Display assertion for the report when a test fails.
+// New format: rejects/resolves, not, and matcher name have black color
+// Old format: matcher name has dim color
 export const matcherHint = (
   matcherName: string,
   received: string = 'received',
   expected: string = 'expected',
-  options: {
-    comment?: string,
-    isDirectExpectCall?: boolean,
-    isNot?: boolean,
-    secondArgument?: ?string,
-  } = {},
+  options: MatcherHintOptions = {},
 ) => {
-  const {comment, isDirectExpectCall, isNot, secondArgument} = options;
-  return (
-    chalk.dim('expect' + (isDirectExpectCall ? '' : '(')) +
-    RECEIVED_COLOR(received) +
-    (isNot
-      ? `${chalk.dim(').')}not${chalk.dim(matcherName + '(')}`
-      : chalk.dim((isDirectExpectCall ? '' : ')') + matcherName + '(')) +
-    EXPECTED_COLOR(expected) +
-    (secondArgument
-      ? `${chalk.dim(', ')}${EXPECTED_COLOR(secondArgument)}`
-      : '') +
-    chalk.dim(`)${comment ? ` // ${comment}` : ''}`)
-  );
+  const {
+    comment = '',
+    isDirectExpectCall = false, // seems redundant with received === ''
+    isNot = false,
+    promise = '',
+    secondArgument = '',
+  } = options;
+  let hint = '';
+  let dimString = 'expect'; // concatenate adjacent dim substrings
+
+  if (!isDirectExpectCall && received !== '') {
+    hint += DIM_COLOR(dimString + '(') + RECEIVED_COLOR(received);
+    dimString = ')';
+  }
+
+  if (promise !== '') {
+    hint += DIM_COLOR(dimString + '.') + promise;
+    dimString = '';
+  }
+
+  if (isNot) {
+    hint += DIM_COLOR(dimString + '.') + 'not';
+    dimString = '';
+  }
+
+  if (matcherName.includes('.')) {
+    // Old format: for backward compatibility,
+    // especially without promise or isNot options
+    dimString += matcherName;
+  } else {
+    // New format: omit period from matcherName arg
+    hint += DIM_COLOR(dimString + '.') + matcherName;
+    dimString = '';
+  }
+
+  if (expected === '') {
+    dimString += '()';
+  } else {
+    hint += DIM_COLOR(dimString + '(') + EXPECTED_COLOR(expected);
+    if (secondArgument) {
+      hint += DIM_COLOR(', ') + EXPECTED_COLOR(secondArgument);
+    }
+    dimString = ')';
+  }
+
+  if (comment !== '') {
+    dimString += ' // ' + comment;
+  }
+
+  if (dimString !== '') {
+    hint += DIM_COLOR(dimString);
+  }
+
+  return hint;
 };

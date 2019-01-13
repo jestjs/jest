@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -53,13 +53,12 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
       .length > 0;
 };
 
-const regexToMatcher = (testRegex: string) => {
-  if (!testRegex) {
+const regexToMatcher = (testRegex: Array<string>) => {
+  if (!testRegex.length) {
     return () => true;
   }
 
-  const regex = new RegExp(testRegex);
-  return path => regex.test(path);
+  return path => testRegex.some(testRegex => new RegExp(testRegex).test(path));
 };
 
 const toTests = (context, tests) =>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,10 +26,7 @@ const stackUtils = new StackUtils({
 let nodeInternals = [];
 
 try {
-  nodeInternals = StackUtils.nodeInternals()
-    // this is to have the tests be the same in node 4 and node 6.
-    // TODO: Remove when we drop support for node 4
-    .concat(new RegExp('internal/process/next_tick.js'));
+  nodeInternals = StackUtils.nodeInternals();
 } catch (e) {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.
@@ -62,7 +59,6 @@ const TITLE_BULLET = chalk.bold('\u25cf ');
 const STACK_TRACE_COLOR = chalk.dim;
 const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
-const ERROR_TEXT = 'Error: ';
 const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
 const indentAllLines = (lines: string, indent: string) =>
@@ -335,13 +331,18 @@ export const separateMessageFromStack = (content: string) => {
     return {message: '', stack: ''};
   }
 
-  const messageMatch = content.match(/(^(.|\n)*?(?=\n\s*at\s.*\:\d*\:\d*))/);
-  let message = messageMatch ? messageMatch[0] : 'Error';
-  const stack = messageMatch ? content.slice(message.length) : content;
-  // If the error is a plain error instead of a SyntaxError or TypeError
-  // we remove it from the message because it is generally not useful.
-  if (message.startsWith(ERROR_TEXT)) {
-    message = message.substr(ERROR_TEXT.length);
+  // All lines up to what looks like a stack -- or if nothing looks like a stack
+  // (maybe it's a code frame instead), just the first non-empty line.
+  // If the error is a plain "Error:" instead of a SyntaxError or TypeError we
+  // remove the prefix from the message because it is generally not useful.
+  const messageMatch = content.match(
+    /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*\:\d*\:\d*)|\s*.*)([\s\S]*)$/,
+  );
+  if (!messageMatch) {
+    // For flow
+    throw new Error('If you hit this error, the regex above is buggy.');
   }
+  const message = messageMatch[1];
+  const stack = messageMatch[2];
   return {message, stack};
 };

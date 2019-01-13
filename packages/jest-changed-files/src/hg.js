@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -41,7 +41,7 @@ const adapter: SCMAdapter = {
     } else if (options && options.changedSince) {
       args.push('--rev', `ancestor(., ${options.changedSince})`);
     } else if (options && options.lastCommit === true) {
-      args.push('-A');
+      args.push('--change', '.');
     }
     args.push(...includePaths);
 

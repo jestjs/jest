@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -32,6 +32,7 @@ describe('worker', () => {
       '/project/fruits/Pear.js': `
         const Banana = require("Banana");
         const Strawberry = require('Strawberry');
+        const Lime = loadModule('Lime');
       `,
       '/project/fruits/Strawberry.js': `
         // Strawberry!
@@ -92,6 +93,19 @@ describe('worker', () => {
       }),
     ).toEqual({
       dependencies: [],
+    });
+  });
+
+  it('accepts a custom dependency extractor', async () => {
+    expect(
+      await worker({
+        computeDependencies: true,
+        dependencyExtractor: path.join(__dirname, 'dependencyExtractor.js'),
+        filePath: '/project/fruits/Pear.js',
+        rootDir,
+      }),
+    ).toEqual({
+      dependencies: ['Banana', 'Strawberry', 'Lime'],
     });
   });
 
@@ -179,7 +193,7 @@ describe('worker', () => {
         filePath: '/project/fruits/Pear.js',
         rootDir,
       }),
-    ).toEqual({sha1: '0cb0930919e068f146da84d9a0ad0182e4bdb673'});
+    ).toEqual({sha1: 'c7a7a68a1c8aaf452669dd2ca52ac4a434d25552'});
 
     await expect(
       getSha1({computeSha1: true, filePath: '/i/dont/exist.js', rootDir}),

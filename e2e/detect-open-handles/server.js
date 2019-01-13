@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+
 'use strict';
 
 import {Server} from 'http';

@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+
 const fs = require('fs');
 const request = require('request');
 const path = require('path');

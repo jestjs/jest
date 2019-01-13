@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,7 +14,7 @@ import path from 'path';
 import fs from 'graceful-fs';
 import blacklist from './blacklist';
 import H from './constants';
-import extractRequires from './lib/extract_requires';
+import * as dependencyExtractor from './lib/dependencyExtractor';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
@@ -77,7 +77,16 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
     }
 
     if (computeDependencies) {
-      dependencies = extractRequires(getContent());
+      const content = getContent();
+      dependencies = Array.from(
+        data.dependencyExtractor
+          ? // $FlowFixMe
+            require(data.dependencyExtractor).extract(
+              content,
+              dependencyExtractor.extract,
+            )
+          : dependencyExtractor.extract(content),
+      );
     }
 
     if (id) {

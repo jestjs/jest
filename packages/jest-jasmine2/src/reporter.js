@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,10 +15,6 @@ import type {
   Status,
   TestResult,
 } from 'types/TestResult';
-
-// Try getting the real promise object from the context, if available. Someone
-// could have overridden it in a test.
-const Promise = global[Symbol.for('jest-native-promise')] || global.Promise;
 
 import {formatResultsErrors} from 'jest-message-util';
 

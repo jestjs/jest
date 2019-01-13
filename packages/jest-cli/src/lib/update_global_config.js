@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -66,8 +66,10 @@ export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
     !newConfig.testNamePattern &&
     !newConfig.testPathPattern;
 
-  if (options.bail !== undefined) {
-    newConfig.bail = options.bail || false;
+  if (typeof options.bail === 'boolean') {
+    newConfig.bail = options.bail ? 1 : 0;
+  } else if (options.bail !== undefined) {
+    newConfig.bail = options.bail;
   }
 
   if (options.changedSince !== undefined) {

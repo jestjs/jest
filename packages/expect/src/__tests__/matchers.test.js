@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -51,7 +51,7 @@ describe('.rejects', () => {
     await jestExpect(fn()).rejects.toThrow('some error');
   });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
+  ['a', [1], () => {}, {a: 1}].forEach(value => {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
       try {
@@ -61,13 +61,34 @@ describe('.rejects', () => {
       }
       expect(error).toBeDefined();
     });
-  });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
     it(`fails non-promise value ${stringify(value)}`, async () => {
       let error;
       try {
         await jestExpect(value).rejects.toBeDefined();
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
+  });
+
+  [4, null, true, undefined].forEach(value => {
+    it(`fails non-promise value ${stringify(value)} synchronously`, () => {
+      let error;
+      try {
+        jestExpect(value).rejects.not.toBe(111);
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+    });
+
+    it(`fails non-promise value ${stringify(value)}`, async () => {
+      let error;
+      try {
+        await jestExpect(value).rejects.not.toBeDefined();
       } catch (e) {
         error = e;
       }
@@ -107,7 +128,7 @@ describe('.resolves', () => {
     ).resolves.toThrow();
   });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
+  ['a', [1], () => {}, {a: 1}].forEach(value => {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
       try {
@@ -118,13 +139,35 @@ describe('.resolves', () => {
       expect(error).toBeDefined();
       expect(error.message).toMatchSnapshot();
     });
-  });
 
-  [4, [1], {a: 1}, 'a', true, null, undefined, () => {}].forEach(value => {
     it(`fails non-promise value ${stringify(value)}`, async () => {
       let error;
       try {
         await jestExpect(value).resolves.toBeDefined();
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
+  });
+
+  [4, null, true, undefined].forEach(value => {
+    it(`fails non-promise value ${stringify(value)} synchronously`, () => {
+      let error;
+      try {
+        jestExpect(value).resolves.not.toBeDefined();
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeDefined();
+      expect(error.message).toMatchSnapshot();
+    });
+
+    it(`fails non-promise value ${stringify(value)}`, async () => {
+      let error;
+      try {
+        await jestExpect(value).resolves.not.toBeDefined();
       } catch (e) {
         error = e;
       }
@@ -205,12 +248,31 @@ describe('.toBe()', () => {
 });
 
 describe('.toStrictEqual()', () => {
-  class TestClass {
+  class TestClassA {
     constructor(a, b) {
       this.a = a;
       this.b = b;
     }
   }
+
+  class TestClassB {
+    constructor(a, b) {
+      this.a = a;
+      this.b = b;
+    }
+  }
+
+  const TestClassC = class Child extends TestClassA {
+    constructor(a, b) {
+      super(a, b);
+    }
+  };
+
+  const TestClassD = class Child extends TestClassB {
+    constructor(a, b) {
+      super(a, b);
+    }
+  };
 
   it('does not ignore keys with undefined values', () => {
     expect({
@@ -221,15 +283,52 @@ describe('.toStrictEqual()', () => {
 
   it('passes when comparing same type', () => {
     expect({
-      test: new TestClass(1, 2),
-    }).toStrictEqual({test: new TestClass(1, 2)});
+      test: new TestClassA(1, 2),
+    }).toStrictEqual({test: new TestClassA(1, 2)});
+  });
+
+  it('matches the expected snapshot when it fails', () => {
+    expect(() =>
+      jestExpect({
+        test: 2,
+      }).toStrictEqual({test: new TestClassA(1, 2)}),
+    ).toThrowErrorMatchingSnapshot();
+
+    expect(() =>
+      jestExpect({
+        test: new TestClassA(1, 2),
+      }).not.toStrictEqual({test: new TestClassA(1, 2)}),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   it('does not pass for different types', () => {
     expect({
-      test: new TestClass(1, 2),
-    }).not.toStrictEqual({test: {a: 1, b: 2}});
+      test: new TestClassA(1, 2),
+    }).not.toStrictEqual({test: new TestClassB(1, 2)});
   });
+
+  it('does not simply compare constructor names', () => {
+    const c = new TestClassC(1, 2);
+    const d = new TestClassD(1, 2);
+    expect(c.constructor.name).toEqual(d.constructor.name);
+    expect({test: c}).not.toStrictEqual({test: d});
+  });
+
+  /* eslint-disable no-sparse-arrays */
+  it('passes for matching sparse arrays', () => {
+    expect([, 1]).toStrictEqual([, 1]);
+  });
+
+  it('does not pass when sparseness of arrays do not match', () => {
+    expect([, 1]).not.toStrictEqual([undefined, 1]);
+    expect([undefined, 1]).not.toStrictEqual([, 1]);
+    expect([, , , 1]).not.toStrictEqual([, 1]);
+  });
+
+  it('does not pass when equally sparse arrays have different values', () => {
+    expect([, 1]).not.toStrictEqual([, 2]);
+  });
+  /* eslint-enable */
 });
 
 describe('.toEqual()', () => {
@@ -443,6 +542,16 @@ describe('.toEqual()', () => {
     }
   });
 
+  test('failure message matches the expected snapshot', () => {
+    expect(() =>
+      jestExpect({a: 1}).toEqual({a: 2}),
+    ).toThrowErrorMatchingSnapshot();
+
+    expect(() =>
+      jestExpect({a: 1}).not.toEqual({a: 1}),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   test('symbol based keys in arrays are processed correctly', () => {
     const mySymbol = Symbol('test');
     const actual1 = [];
@@ -523,7 +632,9 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
   it('does not accept arguments', () => {
     expect(() => jestExpect(0).toBeTruthy(null)).toThrowErrorMatchingSnapshot();
 
-    expect(() => jestExpect(0).toBeFalsy(null)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect(0).not.toBeFalsy(null),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
@@ -573,19 +684,21 @@ describe('.toBeNaN()', () => {
 
 describe('.toBeNull()', () => {
   [{}, [], true, 1, 'a', 0.5, new Map(), () => {}, Infinity].forEach(v => {
-    test(`fails for '${stringify(v)}' with .not`, () => {
+    test(`fails for '${stringify(v)}'`, () => {
       jestExpect(v).not.toBeNull();
 
       expect(() => jestExpect(v).toBeNull()).toThrowErrorMatchingSnapshot();
     });
   });
 
-  it('pass for null', () => {
-    jestExpect(null).toBeNull();
-
+  it('fails for null with .not', () => {
     expect(() =>
       jestExpect(null).not.toBeNull(),
     ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('pass for null', () => {
+    jestExpect(null).toBeNull();
   });
 });
 
@@ -854,6 +967,28 @@ describe('.toBeCloseTo()', () => {
     });
   });
 
+  [[Infinity, Infinity], [-Infinity, -Infinity]].forEach(([n1, n2]) => {
+    it(`{pass: true} expect(${n1})toBeCloseTo( ${n2})`, () => {
+      jestExpect(n1).toBeCloseTo(n2);
+
+      expect(() =>
+        jestExpect(n1).not.toBeCloseTo(n2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [[Infinity, -Infinity], [Infinity, 1.23], [-Infinity, -1.23]].forEach(
+    ([n1, n2]) => {
+      it(`{pass: false} expect(${n1})toBeCloseTo( ${n2})`, () => {
+        jestExpect(n1).not.toBeCloseTo(n2);
+
+        expect(() =>
+          jestExpect(n1).toBeCloseTo(n2),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    },
+  );
+
   [[0, 0.1, 0], [0, 0.0001, 3], [0, 0.000004, 5]].forEach(([n1, n2, p]) => {
     it(`accepts an optional precision argument: [${n1}, ${n2}, ${p}]`, () => {
       jestExpect(n1).toBeCloseTo(n2, p);
@@ -956,6 +1091,12 @@ describe('.toHaveLength', () => {
     expect(() => jestExpect(0).toHaveLength(1)).toThrowErrorMatchingSnapshot();
     expect(() =>
       jestExpect(undefined).toHaveLength(1),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  test('matcher error expected length', () => {
+    expect(() =>
+      jestExpect('abc').toHaveLength('3'),
     ).toThrowErrorMatchingSnapshot();
   });
 });
@@ -1102,6 +1243,7 @@ describe('toMatchObject()', () => {
     [new Error('foo'), new Error('foo')],
     [new Error('bar'), {message: 'bar'}],
     [new Foo(), {a: undefined, b: 'b'}],
+    [Object.assign(Object.create(null), {a: 'b'}), {a: 'b'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,
@@ -1138,6 +1280,7 @@ describe('toMatchObject()', () => {
     [[1, 2, 3], [2, 3, 1]],
     [[1, 2, 3], [1, 2, 2]],
     [new Error('foo'), new Error('bar')],
+    [Object.assign(Object.create(null), {a: 'b'}), {c: 'd'}],
   ].forEach(([n1, n2]) => {
     it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
       n2,

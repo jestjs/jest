@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,7 +11,7 @@ import path from 'path';
 
 // rootDir and filename must be absolute paths (resolved)
 export function relative(rootDir: string, filename: string): string {
-  return filename.indexOf(rootDir) === 0
+  return filename.indexOf(rootDir + path.sep) === 0
     ? filename.substr(rootDir.length + 1)
     : path.relative(rootDir, filename);
 }

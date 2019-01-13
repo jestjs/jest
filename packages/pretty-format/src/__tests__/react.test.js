@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -272,12 +272,7 @@ test('supports a single element with custom React elements with props (using dis
 test('supports a single element with custom React elements with props (using anonymous function)', () => {
   assertPrintedJSX(
     React.createElement('Mouse', {
-      prop: React.createElement(
-        () => {
-          React.createElement('div');
-        },
-        {foo: 'bar'},
-      ),
+      prop: React.createElement(() => React.createElement('div'), {foo: 'bar'}),
     }),
     '<Mouse\n  prop={\n    <Unknown\n      foo="bar"\n    />\n  }\n/>',
   );

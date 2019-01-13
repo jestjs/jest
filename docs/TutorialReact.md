@@ -24,7 +24,7 @@ If you have an existing application you'll need to install a few packages to mak
 Run
 
 ```bash
-yarn add --dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
+yarn add --dev jest babel-jest @babel/preset-env @babel/preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>` is the actual latest version number for the package). Please add the scripts and jest configuration entries:
@@ -36,9 +36,9 @@ Your `package.json` should look something like this (where `<current-version>` i
     "react-dom": "<current-version>"
   },
   "devDependencies": {
+    "@babel/preset-env": "<current-version>",
+    "@babel/preset-react": "<current-version>",
     "babel-jest": "<current-version>",
-    "babel-preset-env": "<current-version>",
-    "babel-preset-react": "<current-version>",
     "jest": "<current-version>",
     "react-test-renderer": "<current-version>"
   },
@@ -47,11 +47,11 @@ Your `package.json` should look something like this (where `<current-version>` i
   }
 ```
 
-```json
-// .babelrc
-{
-  "presets": ["env", "react"]
-}
+```js
+// babel.config.js
+module.exports = {
+  presets: ['@babel/preset-env', '@babel/preset-react'],
+};
 ```
 
 **And you're good to go!**
@@ -197,20 +197,22 @@ React 16 triggers these warnings due to how it checks element types, and the moc
     ```
 2.  Render as a custom element. DOM "custom elements" aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
     ```js
-    jest.mock('./Widget', () => 'mock-widget');
+    jest.mock('./Widget', () => () => <mock-widget />);
     ```
 3.  Use `react-test-renderer`. The test renderer doesn't care about element types and will happily accept e.g. `SomeComponent`. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.
 4.  Disable warnings all together (should be done in your jest setup file):
     ```js
     jest.mock('fbjs/lib/warning', () => require('fbjs/lib/emptyFunction'));
     ```
-    This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzling console.warn and supress specific warnings.
+    This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzling console.warn and suppress specific warnings.
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [Enzyme](http://airbnb.io/enzyme/) or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme for this example.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
-You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+#### react-testing-library
+
+You have to run `yarn add --dev react-testing-library` to use react-testing-library.
 
 Let's implement a simple checkbox which swaps between two labels:
 
@@ -248,7 +250,35 @@ export default class CheckboxWithLabel extends React.Component {
 }
 ```
 
-We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
+```javascript
+// __tests__/CheckboxWithLabel-test.js
+import React from 'react';
+import {render, fireEvent, cleanup} from 'react-testing-library';
+import CheckboxWithLabel from '../CheckboxWithLabel';
+
+// automatically unmount and cleanup DOM after the test is finished.
+afterEach(cleanup);
+
+it('CheckboxWithLabel changes the text after click', () => {
+  const {queryByLabelText, getByLabelText} = render(
+    <CheckboxWithLabel labelOn="On" labelOff="Off" />,
+  );
+
+  expect(queryByLabelText(/off/i)).toBeTruthy();
+
+  fireEvent.click(getByLabelText(/off/i));
+
+  expect(queryByLabelText(/on/i)).toBeTruthy();
+});
+```
+
+The code for this example is available at [examples/react-testing-library](https://github.com/facebook/jest/tree/master/examples/react-testing-library).
+
+#### Enzyme
+
+You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+
+Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
@@ -279,23 +309,22 @@ If you need more advanced functionality, you can also build your own transformer
 // custom-transformer.js
 'use strict';
 
-const babel = require('babel-core');
+const {transform} = require('@babel/core');
 const jestPreset = require('babel-preset-jest');
 
 module.exports = {
   process(src, filename) {
-    if (babel.util.canCompile(filename)) {
-      return babel.transform(src, {
-        filename,
-        presets: [jestPreset],
-      });
-    }
-    return src;
+    const result = transform(src, {
+      filename,
+      presets: [jestPreset],
+    });
+
+    return result ? result.code : src;
   },
 };
 ```
 
-Don't forget to install the `babel-core` and `babel-preset-jest` packages for this example to work.
+Don't forget to install the `@babel/core` and `babel-preset-jest` packages for this example to work.
 
 To make this work with Jest you need to update your Jest configuration with this: `"transform": {"\\.js$": "path/to/custom-transformer.js"}`.
 

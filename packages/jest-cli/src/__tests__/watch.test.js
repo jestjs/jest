@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -105,7 +105,7 @@ describe('Watch mode flows', () => {
   let stdin;
 
   beforeEach(() => {
-    const config = {roots: [], testPathIgnorePatterns: [], testRegex: ''};
+    const config = {roots: [], testPathIgnorePatterns: [], testRegex: []};
     pipe = {write: jest.fn()};
     globalConfig = {watch: true};
     hasteMapInstances = [{on: () => {}}];

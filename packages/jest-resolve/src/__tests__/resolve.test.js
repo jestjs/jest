@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,7 +15,7 @@ const path = require('path');
 const ModuleMap = require('jest-haste-map').ModuleMap;
 const Resolver = require('../');
 const userResolver = require('../__mocks__/userResolver');
-const nodeModulesPaths = require('../node_modules_paths').default;
+const nodeModulesPaths = require('../nodeModulesPaths').default;
 
 beforeEach(() => {
   userResolver.mockClear();
@@ -161,6 +161,7 @@ describe('getMockModule', () => {
 
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
       moduleNameMapper: [
         {
           moduleName: '$1',

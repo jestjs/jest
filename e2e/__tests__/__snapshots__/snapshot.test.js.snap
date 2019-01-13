@@ -110,7 +110,7 @@ exports[`Snapshot works with escaped regex 1`] = `
 Tests:       2 passed, 2 total
 Snapshots:   2 written, 2 total
 Time:        <<REPLACED>>
-Ran all test suites matching /snapshot_escape_regex.js/i."
+Ran all test suites matching /snapshotEscapeRegex.js/i."
 `;
 
 exports[`Snapshot works with escaped regex 2`] = `
@@ -118,7 +118,7 @@ exports[`Snapshot works with escaped regex 2`] = `
 Tests:       2 passed, 2 total
 Snapshots:   2 passed, 2 total
 Time:        <<REPLACED>>
-Ran all test suites matching /snapshot_escape_regex.js/i."
+Ran all test suites matching /snapshotEscapeRegex.js/i."
 `;
 
 exports[`Snapshot works with template literal substitutions 1`] = `
@@ -126,7 +126,7 @@ exports[`Snapshot works with template literal substitutions 1`] = `
 Tests:       1 passed, 1 total
 Snapshots:   1 written, 1 total
 Time:        <<REPLACED>>
-Ran all test suites matching /snapshot_escape_substitution.test.js/i."
+Ran all test suites matching /snapshotEscapeSubstitution.test.js/i."
 `;
 
 exports[`Snapshot works with template literal substitutions 2`] = `
@@ -134,5 +134,5 @@ exports[`Snapshot works with template literal substitutions 2`] = `
 Tests:       1 passed, 1 total
 Snapshots:   1 passed, 1 total
 Time:        <<REPLACED>>
-Ran all test suites matching /snapshot_escape_substitution.test.js/i."
+Ran all test suites matching /snapshotEscapeSubstitution.test.js/i."
 `;

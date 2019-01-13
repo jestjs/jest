@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,7 +11,7 @@ import type {InternalHasteMap} from 'types/HasteMap';
 import type {CrawlerOptions} from '../types';
 
 import * as fastPath from '../lib/fast_path';
-import normalizePathSep from '../lib/normalize_path_sep';
+import normalizePathSep from '../lib/normalizePathSep';
 import path from 'path';
 import watchman from 'fb-watchman';
 import H from '../constants';
@@ -29,7 +29,7 @@ function WatchmanError(error: Error): Error {
 module.exports = async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
-  const fields = ['name', 'exists', 'mtime_ms'];
+  const fields = ['name', 'exists', 'mtime_ms', 'size'];
   const {data, extensions, ignore, rootDir, roots} = options;
   const defaultWatchExpression = [
     'allof',
@@ -44,10 +44,8 @@ module.exports = async function watchmanCrawl(
 
   const cmd = (...args) =>
     new Promise((resolve, reject) =>
-      client.command(
-        args,
-        (error, result) =>
-          error ? reject(WatchmanError(error)) : resolve(result),
+      client.command(args, (error, result) =>
+        error ? reject(WatchmanError(error)) : resolve(result),
       ),
     );
 
@@ -175,29 +173,44 @@ module.exports = async function watchmanCrawl(
           typeof fileData.mtime_ms === 'number'
             ? fileData.mtime_ms
             : fileData.mtime_ms.toNumber();
+        const size = fileData.size;
+
         let sha1hex = fileData['content.sha1hex'];
         if (typeof sha1hex !== 'string' || sha1hex.length !== 40) {
           sha1hex = null;
         }
 
         const existingFileData = data.files.get(relativeFilePath);
+        let nextData;
+
         if (existingFileData && existingFileData[H.MTIME] === mtime) {
-          files.set(relativeFilePath, existingFileData);
+          nextData = existingFileData;
         } else if (
           existingFileData &&
           sha1hex &&
           existingFileData[H.SHA1] === sha1hex
         ) {
-          files.set(relativeFilePath, [
-            existingFileData[0],
-            mtime,
-            existingFileData[2],
-            existingFileData[3],
-            existingFileData[4],
-          ]);
+          nextData = [...existingFileData];
+          nextData[1] = mtime;
         } else {
           // See ../constants.js
-          files.set(relativeFilePath, ['', mtime, 0, [], sha1hex]);
+          nextData = ['', mtime, size, 0, [], sha1hex];
+        }
+
+        const mappings = options.mapper ? options.mapper(filePath) : null;
+
+        if (mappings) {
+          for (const absoluteVirtualFilePath of mappings) {
+            if (!ignore(absoluteVirtualFilePath)) {
+              const relativeVirtualFilePath = fastPath.relative(
+                rootDir,
+                absoluteVirtualFilePath,
+              );
+              files.set(relativeVirtualFilePath, nextData);
+            }
+          }
+        } else {
+          files.set(relativeFilePath, nextData);
         }
       }
     }

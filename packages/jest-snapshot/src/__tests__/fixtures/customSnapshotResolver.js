@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+
 module.exports = {
   resolveSnapshotPath: (testPath, snapshotExtension) =>
     testPath.replace('__tests__', '__snapshots__') + snapshotExtension,
@@ -6,4 +8,6 @@ module.exports = {
     snapshotFilePath
       .replace('__snapshots__', '__tests__')
       .slice(0, -snapshotExtension.length),
+
+  testPathForConsistencyCheck: 'foo/__tests__/bar.test.js',
 };

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -101,7 +101,7 @@ test('indent option', () => {
     '],',
     '"results": Array [',
     'Object {',
-    '"isThrow": false,',
+    '"type": "return",',
     '"value": Object {',
     '"key": "value",',
     '},',
@@ -116,7 +116,7 @@ test('min option', () => {
   const fn = jest.fn(val => val);
   fn({key: 'value'});
   const expected =
-    '[MockFunction] {"calls": [[{"key": "value"}]], "results": [{"isThrow": false, "value": {"key": "value"}}]}';
+    '[MockFunction] {"calls": [[{"key": "value"}]], "results": [{"type": "return", "value": {"key": "value"}}]}';
   expect(prettyFormat(fn, {min: true, plugins: [plugin]})).toBe(expected);
 });
 
@@ -150,7 +150,7 @@ test('maxDepth option', () => {
     '    ],',
     '    "results": Array [', // ++depth === 2
     '      Object {', // ++depth === 3
-    '        "isThrow": false,',
+    '        "type": "return",',
     '        "value": undefined,',
     '      },',
     '    ],',

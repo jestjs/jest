@@ -10,7 +10,7 @@
   "dependencies": {
     "callsites": "^2.0.0",
     "chalk": "^2.0.1",
-    "graceful-fs": "^4.1.11",
+    "graceful-fs": "^4.1.15",
     "is-ci": "^1.0.10",
     "jest-message-util": "^23.4.0",
     "mkdirp": "^0.5.1",
@@ -19,5 +19,8 @@
   },
   "devDependencies": {
     "jest-mock": "^23.2.0"
+  },
+  "engines": {
+    "node": ">= 6"
   }
 }

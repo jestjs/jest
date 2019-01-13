@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -46,6 +46,23 @@ describe('jest-each', () => {
     ['describe', 'only'],
   ].forEach(keyPath => {
     describe(`.${keyPath.join('.')}`, () => {
+      test('throws error when there are no arguments for given headings', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | expected
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('this will blow up :(', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+        expect(testCallBack).not.toHaveBeenCalled();
+      });
+
       test('throws error when there are fewer arguments than headings when given one row', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`
@@ -71,6 +88,21 @@ describe('jest-each', () => {
           ${0} | ${1} | ${1}
           ${1} | ${1} |
         `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('this will blow up :(', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+        expect(testCallBack).not.toHaveBeenCalled();
+      });
+
+      test('throws an error when called with an empty string', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`   `;
         const testFunction = get(eachObject, keyPath);
         const testCallBack = jest.fn();
         testFunction('this will blow up :(', testCallBack);

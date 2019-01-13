@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,16 +22,26 @@ export type MockFunctionMetadata = {
 };
 
 /**
+ * Possible types of a MockFunctionResult.
+ * 'return': The call completed by returning normally.
+ * 'throw': The call completed by throwing a value.
+ * 'incomplete': The call has not completed yet. This is possible if you read
+ *               the  mock function result from within the mock function itself
+ *               (or a function called by the mock function).
+ */
+type MockFunctionResultType = 'return' | 'throw' | 'incomplete';
+
+/**
  * Represents the result of a single call to a mock function.
  */
 type MockFunctionResult = {
   /**
-   * True if the function threw.
-   * False if the function returned.
+   * Indicates how the call completed.
    */
-  isThrow: boolean,
+  type: MockFunctionResultType,
   /**
    * The value that was either thrown or returned by the function.
+   * Undefined when type === 'incomplete'.
    */
   value: any,
 };
@@ -379,6 +389,15 @@ class ModuleMockerClass {
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
         mockState.calls.push(Array.prototype.slice.call(arguments));
+        // Create and record an "incomplete" mock result immediately upon
+        // calling rather than waiting for the mock to return. This avoids
+        // issues caused by recursion where results can be recorded in the
+        // wrong order.
+        const mockResult = {
+          type: 'incomplete',
+          value: undefined,
+        };
+        mockState.results.push(mockResult);
         mockState.invocationCallOrder.push(mocker._invocationCallCounter++);
 
         // Will be set to the return value of the mock if an error is not thrown
@@ -457,11 +476,12 @@ class ModuleMockerClass {
           callDidThrowError = true;
           throw error;
         } finally {
-          // Record the result of the function
-          mockState.results.push({
-            isThrow: callDidThrowError,
-            value: callDidThrowError ? thrownError : finalReturnValue,
-          });
+          // Record the result of the function.
+          // NOTE: Intentionally NOT pushing/indexing into the array of mock
+          //       results here to avoid corrupting results data if mockClear()
+          //       is called during the execution of the mock.
+          mockResult.type = callDidThrowError ? 'throw' : 'return';
+          mockResult.value = callDidThrowError ? thrownError : finalReturnValue;
         }
 
         return finalReturnValue;

@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+
 const path = require('path');
 const {buildSnapshotResolver} = require('../snapshot_resolver');
 
@@ -91,6 +93,15 @@ describe('malformed custom resolver in project config', () => {
   it('missing resolveTestPath throws ', () => {
     const projectConfig = newProjectConfig(
       'customSnapshotResolver-missing-resolveTestPath.js',
+    );
+    expect(() => {
+      buildSnapshotResolver(projectConfig);
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  it('missing testPathForConsistencyCheck throws ', () => {
+    const projectConfig = newProjectConfig(
+      'customSnapshotResolver-missing-test-path-for-consistency-check.js',
     );
     expect(() => {
       buildSnapshotResolver(projectConfig);
