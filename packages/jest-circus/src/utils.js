@@ -69,10 +69,12 @@ export const makeTest = (
     _mode = parent.mode;
   }
 
+  const errors: Array<[?Exception, Exception]> = [];
+
   return {
     asyncError,
     duration: null,
-    errors: [],
+    errors,
     fn,
     invocations: 0,
     mode: _mode,
