@@ -431,7 +431,7 @@ class Index extends React.Component {
                       API to spy on function calls with readable test syntax.
                     </translate>
                   ),
-                  image: '/img/content/feature-config-react.png',
+                  image: '/img/content/feature-mocking.png',
                   imageAlign: 'left',
                   title: <translate>Mocking with ease</translate>,
                 },
