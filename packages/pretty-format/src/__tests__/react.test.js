@@ -719,7 +719,6 @@ test('supports forwardRef with a child', () => {
   }
 
   expect(
-    // $FlowFixMe - https://github.com/facebook/flow/issues/6103
     formatElement(React.createElement(React.forwardRef(Cat), null, 'mouse')),
   ).toEqual('<ForwardRef(Cat)>\n  mouse\n</ForwardRef(Cat)>');
 });
