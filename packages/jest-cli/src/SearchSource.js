@@ -14,6 +14,7 @@ import type {ChangedFilesPromise} from 'types/ChangedFiles';
 
 import path from 'path';
 import micromatch from 'micromatch';
+import slash from 'slash';
 import DependencyResolver from 'jest-resolve-dependencies';
 import testPathPatternToRegExp from './testPathPatternToRegexp';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -48,10 +49,7 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
     return () => true;
   }
 
-  return path =>
-    micromatch.some(path.replace(/\\(?![{}()+?.^$])/g, '/'), globs, {
-      dot: true,
-    });
+  return path => micromatch.some(slash(path), globs, {dot: true});
 };
 
 const regexToMatcher = (testRegex: Array<string>) => {
