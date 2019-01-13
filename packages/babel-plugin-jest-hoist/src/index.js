@@ -140,9 +140,6 @@ FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = args =>
   args.length === 0;
 
 module.exports = () => {
-  const isJest = callee =>
-    callee.get('object').isIdentifier(JEST_GLOBAL) ||
-    (callee.isMemberExpression() && isJest(callee.get('object')));
   const shouldHoistExpression = expr => {
     if (!expr.isCallExpression()) {
       return false;
