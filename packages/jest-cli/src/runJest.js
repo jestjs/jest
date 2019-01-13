@@ -167,10 +167,10 @@ export default (async function runJest({
           matches.collectCoverageFrom.filter(filename => {
             if (
               globalConfig.collectCoverageFrom &&
-              !micromatch(
-                [slash(path.relative(globalConfig.rootDir, filename))],
+              !micromatch.some(
+                slash(path.relative(globalConfig.rootDir, filename)),
                 globalConfig.collectCoverageFrom,
-              ).length
+              )
             ) {
               return false;
             }

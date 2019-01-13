@@ -49,7 +49,7 @@ export default function shouldInstrument(
     if (
       config.testMatch &&
       config.testMatch.length &&
-      micromatch([filename], config.testMatch).length
+      micromatch.some(filename, config.testMatch)
     ) {
       return false;
     }
@@ -68,10 +68,10 @@ export default function shouldInstrument(
     // still cover if `only` is specified
     !options.collectCoverageOnlyFrom &&
     options.collectCoverageFrom &&
-    !micromatch(
-      [path.relative(config.rootDir, filename)],
+    !micromatch.some(
+      path.relative(config.rootDir, filename),
       options.collectCoverageFrom,
-    ).length
+    )
   ) {
     return false;
   }

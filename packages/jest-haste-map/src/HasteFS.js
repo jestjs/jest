@@ -78,7 +78,7 @@ export default class HasteFS {
     const files = new Set();
     for (const file of this.getAbsoluteFileIterator()) {
       const filePath = root ? fastPath.relative(root, file) : file;
-      if (micromatch([filePath], globs).length) {
+      if (micromatch.some(filePath, globs)) {
         files.add(file);
       }
     }

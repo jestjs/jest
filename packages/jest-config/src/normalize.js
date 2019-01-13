@@ -825,10 +825,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          !micromatch(
-            [slash(path.relative(options.rootDir, filename))],
+          !micromatch.some(
+            slash(path.relative(options.rootDir, filename)),
             newOptions.collectCoverageFrom,
-          ).length
+          )
         ) {
           return patterns;
         }
