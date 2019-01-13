@@ -82,7 +82,6 @@ export default class ChildProcessWorker implements WorkerInterface {
     child.on('message', this.onMessage.bind(this));
     child.on('exit', this.onExit.bind(this));
 
-    // $FlowFixMe: wrong "ChildProcess.send" signature.
     child.send([
       CHILD_MESSAGE_INITIALIZE,
       false,
@@ -165,7 +164,6 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._onProcessEnd = onProcessEnd;
 
     this._retries = 0;
-    // $FlowFixMe
     this._child.send(request);
   }
 
