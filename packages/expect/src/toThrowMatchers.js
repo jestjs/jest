@@ -87,37 +87,6 @@ const matchers: MatchersObject = {
   toThrowError: createMatcher('toThrowError'),
 };
 
-const toThrowExpectedString = (
-  matcherName: string,
-  options: MatcherHintOptions,
-  error?: Error,
-  expected: string,
-) => {
-  const pass = error !== undefined && error.message.includes(expected);
-
-  const message = pass
-    ? () =>
-        matcherHint(matcherName, undefined, undefined, options) +
-        '\n\n' +
-        `Expected error pattern: ${printExpected(expected)}\n` +
-        // Possible improvement also for toMatch
-        // inverse highlight matching substring:
-        // $FlowFixMe: Cannot get error.message because property message is missing in undefined
-        `Received error message: ${printReceived(error.message)}\n` +
-        // $FlowFixMe: Cannot get error.stack because property stack is missing in undefined
-        formatErrorStack(error.stack)
-    : () =>
-        matcherHint(matcherName, undefined, undefined, options) +
-        '\n\n' +
-        `Expected error pattern: ${printExpected(expected)}\n` +
-        (error !== undefined
-          ? `Received error message: ${printReceived(error.message)}\n` +
-            formatErrorStack(error.stack)
-          : '\n' + DID_NOT_THROW);
-
-  return {message, pass};
-};
-
 const toThrowExpectedRegExp = (
   matcherName: string,
   options: MatcherHintOptions,
@@ -131,8 +100,7 @@ const toThrowExpectedRegExp = (
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `Expected error pattern: ${printExpected(expected)}\n` +
-        // Possible improvement also for toMatch
-        // inverse highlight matching substring:
+        // Possible improvement also for toMatch inverse highlight matching substring.
         // $FlowFixMe: Cannot get error.message because property message is missing in undefined
         `Received error message: ${printReceived(error.message)}\n` +
         // $FlowFixMe: Cannot get error.stack because property stack is missing in undefined
@@ -195,6 +163,36 @@ const toThrowExpectedClass = (
         `Received error message: ${printReceived(error.message)}\n` +
         formatErrorStack(error.stack)
       : '\n' + DID_NOT_THROW);
+
+  return {message, pass};
+};
+
+const toThrowExpectedString = (
+  matcherName: string,
+  options: MatcherHintOptions,
+  error?: Error,
+  expected: string,
+) => {
+  const pass = error !== undefined && error.message.includes(expected);
+
+  const message = pass
+    ? () =>
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        `Expected error pattern: ${printExpected(expected)}\n` +
+        // Possible improvement also for toMatch inverse highlight matching substring.
+        // $FlowFixMe: Cannot get error.message because property message is missing in undefined
+        `Received error message: ${printReceived(error.message)}\n` +
+        // $FlowFixMe: Cannot get error.stack because property stack is missing in undefined
+        formatErrorStack(error.stack)
+    : () =>
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        `Expected error pattern: ${printExpected(expected)}\n` +
+        (error !== undefined
+          ? `Received error message: ${printReceived(error.message)}\n` +
+            formatErrorStack(error.stack)
+          : '\n' + DID_NOT_THROW);
 
   return {message, pass};
 };
