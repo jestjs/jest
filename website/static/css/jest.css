@@ -117,7 +117,7 @@
   width:25%;
 }
 
-.container .yellow.blockElement h2, .container .yellow.blockElement p {
+.container.features .yellow.blockElement h2, .container.features .yellow.blockElement p {
    text-align: left;
    margin: 16px 0 0 18px;
 }
@@ -209,4 +209,14 @@
   font-size: 20px;
   text-transform: lowercase;
   font-family: Monaco, Courier, monospace;
+}
+
+.button.landing {
+  margin: 4px 10px;
+  cursor: pointer;
+}
+
+.button.landing.active {
+  background: #99424f;
+  color: #fff;
 }

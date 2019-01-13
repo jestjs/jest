@@ -295,7 +295,8 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Jest aims to work out of the box, config free, on most JavaScript projects.
+                      Jest aims to work out of the box, config free, on most
+                      JavaScript projects.
                     </translate>
                   ),
                   title: <translate>Zero config</translate>,
@@ -365,7 +366,7 @@ class Index extends React.Component {
                 </MarkdownBlock>
               </div>
               <div className="blockContent flex-end">
-                <p style={{ fontFamily: "Monaco, Courier, monospace"}}>
+                <p style={{fontFamily: 'Monaco, Courier, monospace'}}>
                   <translate>- Jest Core Team</translate>
                 </p>
               </div>
@@ -390,6 +391,7 @@ class Index extends React.Component {
                 },
               ]}
             />
+            {/* Wondering where the image + buttons come from? That's  client-side code in landing.js */}
           </Container>
           <Container
             padding={['bottom', 'top']}
@@ -424,9 +426,8 @@ class Index extends React.Component {
                   content: (
                     <translate>
                       Jest uses a custom resolver for imports in your tests
-                      making it simple to mock any object outside of your
-                      test’s scope. You can use mocked imports with the rich
-                      [Mock
+                      making it simple to mock any object outside of your test’s
+                      scope. You can use mocked imports with the rich [Mock
                       Functions](https://jestjs.io/docs/en/mock-functions.html)
                       API to spy on function calls with readable test syntax.
                     </translate>
@@ -444,16 +445,16 @@ class Index extends React.Component {
             className="section-container"
           >
             <GridBlock
-              className="red"
+              className="red matchers"
               contents={[
                 {
                   content: (
                     <translate>
-                      When a test has failed, Jest puts in a lot of effort to
-                      give you as much context as possible. here’s some examples
+                      Tests fail, when they do Jest provides a more context,
+                      here’s some examples:
                     </translate>
                   ),
-                  image: '/img/content/feature-mocking.png',
+                  image: '/img/content/matchers/different-types.png',
                   imageAlign: 'right',
                   title: <translate>Excellent exceptions</translate>,
                 },

@@ -117,6 +117,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  function setUpMatcherButtons() {
+    const matcherSection = document.querySelector('.matchers .blockContent');
+    const screenshotImg = document.querySelector('.matchers img');
+    const buttonWrapper = document.createElement('p');
+
+    const buttons = [
+      {
+        title: 'String Matching',
+        url: '/img/content/matchers/different-types.png',
+      },
+      {title: 'Types', url: '/img/content/matchers/different-types.png'},
+      {title: 'Snapshots', url: '/img/content/matchers/snapshot.png'},
+      {
+        title: 'Properties',
+        url: '/img/content/matchers/missing-properties.png',
+      },
+      {
+        title: 'Inline Snapshots',
+        url: '/img/content/matchers/inline-snapshot.png',
+      },
+      {title: 'Functions', url: '/img/content/matchers/inline-snapshot.png'},
+    ];
+
+    for (const button of buttons) {
+      const clickButton = document.createElement('a');
+      clickButton.text = button.title;
+      clickButton.className = 'button landing';
+      clickButton.onclick = () => {
+        document
+          .querySelectorAll('.matchers .button.landing')
+          .forEach(b => (b.className = 'button landing'));
+        clickButton.className = 'button landing active';
+        screenshotImg.src = button.url;
+      };
+      buttonWrapper.appendChild(clickButton);
+    }
+
+    matcherSection.appendChild(buttonWrapper);
+
+    const firstButton = document.querySelector(
+      '.matchers .blockContent .button'
+    );
+    firstButton.onclick();
+  }
+
   forceRun(2000);
   positionCards();
+  setUpMatcherButtons();
 });
