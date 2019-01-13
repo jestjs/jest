@@ -201,7 +201,7 @@ class customError extends Error {
       test('did not throw at all', async () => {
         let err;
         try {
-          await jestExpect(asyncFn()).rejects.toThrow();
+          await jestExpect(asyncFn()).rejects[toThrow]();
         } catch (error) {
           err = error;
         }
@@ -211,7 +211,7 @@ class customError extends Error {
       test('threw, but class did not match', async () => {
         let err;
         try {
-          await jestExpect(asyncFn(true)).rejects.toThrow(Err2);
+          await jestExpect(asyncFn(true)).rejects[toThrow](Err2);
         } catch (error) {
           err = error;
         }
@@ -221,7 +221,7 @@ class customError extends Error {
       test('threw, but should not have', async () => {
         let err;
         try {
-          await jestExpect(asyncFn(true)).rejects.not.toThrow();
+          await jestExpect(asyncFn(true)).rejects.not[toThrow]();
         } catch (error) {
           err = error;
         }
@@ -231,7 +231,7 @@ class customError extends Error {
 
     test('invalid arguments', () => {
       expect(() =>
-        jestExpect(() => {})[toThrow](111),
+        jestExpect(() => {}).not[toThrow](111),
       ).toThrowErrorMatchingSnapshot();
     });
 

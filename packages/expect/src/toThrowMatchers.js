@@ -9,201 +9,227 @@
 
 import type {MatchersObject} from 'types/Matchers';
 
-import getType from 'jest-get-type';
-import {escapeStrForRegex} from 'jest-regex-util';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
-  highlightTrailingWhitespace,
   matcherErrorMessage,
   matcherHint,
   printExpected,
   printReceived,
   printWithType,
 } from 'jest-matcher-utils';
-import {equals} from './jasmineUtils';
 import {isError} from './utils';
 
-export const createMatcher = (matcherName: string, fromPromise?: boolean) => (
-  actual: Function,
-  expected: string | Error | RegExp,
-) => {
-  const value = expected;
-  let error;
+const DID_NOT_THROW = 'Received function did not throw an exception';
 
-  if (fromPromise && isError(actual)) {
-    error = actual;
-  } else {
-    if (typeof actual !== 'function') {
-      if (!fromPromise) {
-        throw new Error(
-          matcherErrorMessage(
-            matcherHint('[.not]' + matcherName, undefined, undefined),
-            `${RECEIVED_COLOR('received')} value must be a function`,
-            printWithType('Received', actual, printReceived),
-          ),
-        );
-      }
+export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
+  function(received: Function, expected: string | Error | RegExp) {
+    const options = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+
+    let error;
+
+    if (fromPromise && isError(received)) {
+      error = received;
     } else {
-      try {
-        actual();
-      } catch (e) {
-        error = e;
+      if (typeof received !== 'function') {
+        if (!fromPromise) {
+          const placeholder = expected === undefined ? '' : 'expected';
+          throw new Error(
+            matcherErrorMessage(
+              matcherHint(matcherName, undefined, placeholder, options),
+              `${RECEIVED_COLOR('received')} value must be a function`,
+              printWithType('Received', received, printReceived),
+            ),
+          );
+        }
+      } else {
+        try {
+          received();
+        } catch (e) {
+          error = e;
+        }
       }
     }
-  }
 
-  if (typeof expected === 'string') {
-    expected = new RegExp(escapeStrForRegex(expected));
-  }
+    if (error && !error.message && !error.name) {
+      error = new Error(error);
+    }
 
-  if (typeof expected === 'function') {
-    return toThrowMatchingError(matcherName, error, expected);
-  } else if (expected && typeof expected.test === 'function') {
-    return toThrowMatchingStringOrRegexp(
-      matcherName,
-      error,
-      (expected: any),
-      value,
-    );
-  } else if (expected && typeof expected === 'object') {
-    return toThrowMatchingErrorInstance(matcherName, error, (expected: any));
-  } else if (expected === undefined) {
-    const pass = error !== undefined;
-    return {
-      message: pass
-        ? () =>
-            matcherHint('.not' + matcherName, 'function', '') +
-            '\n\n' +
-            'Expected the function not to throw an error.\n' +
-            printActualErrorMessage(error)
-        : () =>
-            matcherHint(matcherName, 'function', getType(value)) +
-            '\n\n' +
-            'Expected the function to throw an error.\n' +
-            printActualErrorMessage(error),
-      pass,
-    };
-  } else {
-    throw new Error(
-      matcherErrorMessage(
-        matcherHint('[.not]' + matcherName, undefined, undefined),
-        `${EXPECTED_COLOR(
-          'expected',
-        )} value must be a string or regular expression or Error`,
-        printWithType('Expected', expected, printExpected),
-      ),
-    );
-  }
-};
+    const expectedType = typeof expected;
+    if (expectedType === 'undefined') {
+      return toThrow(matcherName, options, error);
+    } else if (expectedType === 'function') {
+      return toThrowExpectedClass(matcherName, options, error, expected);
+    } else if (expectedType === 'string') {
+      return toThrowExpectedString(matcherName, options, error, expected);
+    } else if (expected && typeof expected.test === 'function') {
+      return toThrowExpectedRegExp(matcherName, options, error, expected);
+    } else if (expected && expectedType === 'object') {
+      return toThrowExpectedObject(matcherName, options, error, expected);
+    } else {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, undefined, options),
+          `${EXPECTED_COLOR(
+            'expected',
+          )} value must be a string or regular expression or class or error`,
+          printWithType('Expected', expected, printExpected),
+        ),
+      );
+    }
+  };
 
 const matchers: MatchersObject = {
-  toThrow: createMatcher('.toThrow'),
-  toThrowError: createMatcher('.toThrowError'),
+  toThrow: createMatcher('toThrow'),
+  toThrowError: createMatcher('toThrowError'),
 };
 
-const toThrowMatchingStringOrRegexp = (
-  name: string,
-  error: ?Error,
-  pattern: RegExp,
-  value: RegExp | string | Error,
+const toThrowExpectedString = (
+  matcherName: string,
+  options: MatcherHintOptions,
+  error?: Error,
+  expected: string,
 ) => {
-  if (error && !error.message && !error.name) {
-    error = new Error(error);
-  }
+  const isDefined = error !== undefined;
+  const pass = isDefined && error.message.includes(expected);
 
-  const pass = !!(error && error.message.match(pattern));
   const message = pass
     ? () =>
-        matcherHint('.not' + name, 'function', getType(value)) +
+        matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected the function not to throw an error matching:\n` +
-        `  ${printExpected(value)}\n` +
-        printActualErrorMessage(error)
+        `Expected error pattern: ${printExpected(expected)}\n` +
+        // Possible improvement also for toMatch
+        // inverse highlight matching substring:
+        `Received error message: ${printReceived(error.message)}\n` +
+        formatErrorStack(error.stack)
     : () =>
-        matcherHint(name, 'function', getType(value)) +
+        matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected the function to throw an error matching:\n` +
-        `  ${printExpected(value)}\n` +
-        printActualErrorMessage(error);
+        `Expected error pattern: ${printExpected(expected)}\n` +
+        (isDefined
+          ? `Received error message: ${printReceived(error.message)}\n` +
+            formatErrorStack(error.stack)
+          : '\n' + DID_NOT_THROW);
 
   return {message, pass};
 };
 
-const toThrowMatchingErrorInstance = (
-  name: string,
-  error: ?Error,
-  expectedError: Error,
+const toThrowExpectedRegExp = (
+  matcherName: string,
+  options: MatcherHintOptions,
+  error?: Error,
+  expected: RegExp,
 ) => {
-  if (error && !error.message && !error.name) {
-    error = new Error(error);
-  }
+  const isDefined = error !== undefined;
+  const pass = isDefined && expected.test(error.message);
 
-  const pass = equals(error, expectedError);
   const message = pass
     ? () =>
-        matcherHint('.not' + name, 'function', 'error') +
+        matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected the function not to throw an error matching:\n` +
-        `  ${printExpected(expectedError)}\n` +
-        printActualErrorMessage(error)
+        `Expected error pattern: ${printExpected(expected)}\n` +
+        // Possible improvement also for toMatch
+        // inverse highlight matching substring:
+        `Received error message: ${printReceived(error.message)}\n` +
+        formatErrorStack(error.stack)
     : () =>
-        matcherHint(name, 'function', 'error') +
+        matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected the function to throw an error matching:\n` +
-        `  ${printExpected(expectedError)}\n` +
-        printActualErrorMessage(error);
+        `Expected error pattern: ${printExpected(expected)}\n` +
+        (isDefined
+          ? `Received error message: ${printReceived(error.message)}\n` +
+            formatErrorStack(error.stack)
+          : '\n' + DID_NOT_THROW);
 
   return {message, pass};
 };
 
-const toThrowMatchingError = (
-  name: string,
-  error: ?Error,
-  ErrorClass: typeof Error,
+const toThrowExpectedObject = (
+  matcherName: string,
+  options: MatcherHintOptions,
+  error?: Error,
+  expected: Object,
 ) => {
-  const pass = !!(error && error instanceof ErrorClass);
+  const isDefined = error !== undefined;
+  const pass = isDefined && error.message === expected.message;
+
   const message = pass
     ? () =>
-        matcherHint('.not' + name, 'function', 'type') +
+        matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected the function not to throw an error of type:\n` +
-        `  ${printExpected(ErrorClass.name)}\n` +
-        printActualErrorMessage(error)
+        `Expected error message: ${printReceived(expected.message)}\n` +
+        `Received error message: ${printReceived(error.message)}\n` +
+        formatErrorStack(error.stack)
     : () =>
-        matcherHint(name, 'function', 'type') +
+        matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected the function to throw an error of type:\n` +
-        `  ${printExpected(ErrorClass.name)}\n` +
-        printActualErrorMessage(error);
+        `Expected error message: ${printReceived(expected.message)}\n` +
+        (isDefined
+          ? `Received error message: ${printReceived(error.message)}\n` +
+            formatErrorStack(error.stack)
+          : '\n' + DID_NOT_THROW);
 
   return {message, pass};
 };
 
-const printActualErrorMessage = error => {
-  if (error) {
-    const {message, stack} = separateMessageFromStack(error.stack);
-    return (
-      `Instead, it threw:\n` +
-      RECEIVED_COLOR(
-        '  ' +
-          highlightTrailingWhitespace(message) +
-          formatStackTrace(
-            stack,
-            {
-              rootDir: process.cwd(),
-              testMatch: [],
-            },
-            {
-              noStackTrace: false,
-            },
-          ),
-      )
-    );
-  }
+const toThrowExpectedClass = (
+  matcherName: string,
+  options: MatcherHintOptions,
+  error?: Error,
+  expected: typeof Error,
+) => {
+  const isDefined = error !== undefined;
+  const pass = isDefined && error instanceof expected;
 
-  return `But it didn't throw anything.`;
+  const message = () =>
+    matcherHint(matcherName, undefined, undefined, options) +
+    '\n\n' +
+    `Expected error name: ${printExpected(expected.name)}\n` +
+    (isDefined
+      ? `Received error name: ${printReceived(error.name)}\n\n` +
+        `Received error message: ${printReceived(error.message)}\n` +
+        formatErrorStack(error.stack)
+      : '\n' + DID_NOT_THROW);
+
+  return {message, pass};
 };
+
+const toThrow = (
+  matcherName: string,
+  options: MatcherHintOptions,
+  error?: Error,
+) => {
+  const pass = error !== undefined;
+
+  const message = pass
+    ? () =>
+        matcherHint(matcherName, undefined, '', options) +
+        '\n\n' +
+        `Received error name:    ${printReceived(error.name)}\n` +
+        `Received error message: ${printReceived(error.message)}\n` +
+        formatErrorStack(error.stack)
+    : () =>
+        matcherHint(matcherName, undefined, '', options) +
+        '\n\n' +
+        DID_NOT_THROW;
+
+  return {message, pass};
+};
+
+const formatErrorStack = stack =>
+  formatStackTrace(
+    separateMessageFromStack(stack).stack,
+    {
+      rootDir: process.cwd(),
+      testMatch: [],
+    },
+    {
+      noStackTrace: false,
+    },
+  );
 
 export default matchers;
