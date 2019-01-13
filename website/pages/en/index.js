@@ -295,8 +295,7 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Jest’s core design philosophy is to work out of the box,
-                      config free, on most JavaScript projects.
+                      Jest aims to work out of the box, config free, on most JavaScript projects.
                     </translate>
                   ),
                   title: <translate>Zero config</translate>,
@@ -304,17 +303,8 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      With a watch mode built into Jest, pressing save on a test
-                      file can trigger a re-run of your dependent tests.
-                    </translate>
-                  ),
-                  title: <translate>Blazing</translate>,
-                },
-                {
-                  content: (
-                    <translate>
                       Make tests which keep track of large objects with ease.
-                      Snapshots live either alongside your tests, or embeddded
+                      Snapshots live either alongside your tests, or embedded
                       inline.
                     </translate>
                   ),
@@ -375,7 +365,9 @@ class Index extends React.Component {
                 </MarkdownBlock>
               </div>
               <div className="blockContent flex-end">
-                <translate>- Jest Core Team</translate>
+                <p style={{ fontFamily: "Monaco, Courier, monospace"}}>
+                  <translate>- Jest Core Team</translate>
+                </p>
               </div>
             </div>
           </Container>
@@ -432,7 +424,7 @@ class Index extends React.Component {
                   content: (
                     <translate>
                       Jest uses a custom resolver for imports in your tests
-                      making it simple to mock any object outsided of your
+                      making it simple to mock any object outside of your
                       test’s scope. You can use mocked imports with the rich
                       [Mock
                       Functions](https://jestjs.io/docs/en/mock-functions.html)

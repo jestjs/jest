@@ -84,10 +84,14 @@
 }
 
 .container.intro p {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  font-family: Monaco, Courier, monospace;
   color: var(--grey3);
 }
 
+.container.intro .wrapper {
+  max-width: 960px;
+}
 .container .wrapper .imageAlignSide p {
   margin-bottom: 0;
 }
@@ -107,6 +111,15 @@
 .section-container .blockImage {
   overflow: hidden;
   height: 280px;
+}
+
+.container .yellow.blockElement {
+  width:25%;
+}
+
+.container .yellow.blockElement h2, .container .yellow.blockElement p {
+   text-align: left;
+   margin: 16px 0 0 18px;
 }
 
 .section-container .blockImage img {
@@ -152,14 +165,17 @@
 
 /* Section titles colors */
 .section-container .yellow h2 {
+  font-family: Monaco, Courier, monospace;
   color: var(--yellow);
 }
 
 .section-container .green h2 {
+  font-family: Monaco, Courier, monospace;
   color: var(--green);
 }
 
 .section-container .red h2 {
+  font-family: Monaco, Courier, monospace;
   color: var(--red);
 }
 
@@ -170,7 +186,7 @@
 
 /* Logo */
 .headerTitleWithLogo {
-  background-color: var(--red);
+  background-color: var(--green);
   text-transform: uppercase;
   color: var(--grey2);
   padding: 6px 15px;
@@ -192,4 +208,5 @@
   color: var(--yellow);
   font-size: 20px;
   text-transform: lowercase;
+  font-family: Monaco, Courier, monospace;
 }
