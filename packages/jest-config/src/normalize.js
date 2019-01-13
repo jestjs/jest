@@ -19,6 +19,7 @@ import type {
 import crypto from 'crypto';
 import glob from 'glob';
 import path from 'path';
+import slash from 'slash';
 import {ValidationError, validate} from 'jest-validate';
 import validatePattern from './validatePattern';
 import {clearLine} from 'jest-util';
@@ -613,7 +614,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = _replaceRootDirTags(
           escapeGlobCharacters(options.rootDir),
           options[key],
-        );
+          // $FlowFixMe This is an array, shaddap flow
+        ).map(slash);
         break;
       case 'testRegex':
         value = options[key]
@@ -824,7 +826,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
           !micromatch(
-            [path.relative(options.rootDir, filename)],
+            [slash(path.relative(options.rootDir, filename))],
             newOptions.collectCoverageFrom,
           ).length
         ) {
