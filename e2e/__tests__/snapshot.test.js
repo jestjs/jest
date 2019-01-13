@@ -29,10 +29,7 @@ const originalTestPath = path.resolve(
   '../snapshot/__tests__/snapshot.test.js',
 );
 const originalTestContent = fs.readFileSync(originalTestPath, 'utf8');
-const copyOfTestPath = path.resolve(
-  __dirname,
-  '../snapshot/__tests__/snapshot.test_copy.js',
-);
+const copyOfTestPath = originalTestPath.replace(/\.js$/, '_copy.js');
 
 const snapshotEscapeDir = path.resolve(
   __dirname,
