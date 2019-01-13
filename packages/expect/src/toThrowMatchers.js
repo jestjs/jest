@@ -7,7 +7,7 @@
  * @flow
  */
 
-import type {MatchersObject} from 'types/Matchers';
+import type {MatcherHintOptions, MatchersObject} from 'types/Matchers';
 
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
@@ -24,7 +24,7 @@ import {isError} from './utils';
 const DID_NOT_THROW = 'Received function did not throw an exception';
 
 export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
-  function(received: Function, expected: string | Error | RegExp) {
+  function(received: Function, expected: any) {
     const options = {
       isNot: this.isNot,
       promise: this.promise,
@@ -59,16 +59,15 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
       error = new Error(error);
     }
 
-    const expectedType = typeof expected;
-    if (expectedType === 'undefined') {
+    if (expected === undefined) {
       return toThrow(matcherName, options, error);
-    } else if (expectedType === 'function') {
+    } else if (typeof expected === 'function') {
       return toThrowExpectedClass(matcherName, options, error, expected);
-    } else if (expectedType === 'string') {
+    } else if (typeof expected === 'string') {
       return toThrowExpectedString(matcherName, options, error, expected);
-    } else if (expected && typeof expected.test === 'function') {
+    } else if (expected !== null && typeof expected.test === 'function') {
       return toThrowExpectedRegExp(matcherName, options, error, expected);
-    } else if (expected && expectedType === 'object') {
+    } else if (expected !== null && typeof expected === 'object') {
       return toThrowExpectedObject(matcherName, options, error, expected);
     } else {
       throw new Error(
@@ -94,8 +93,7 @@ const toThrowExpectedString = (
   error?: Error,
   expected: string,
 ) => {
-  const isDefined = error !== undefined;
-  const pass = isDefined && error.message.includes(expected);
+  const pass = error !== undefined && error.message.includes(expected);
 
   const message = pass
     ? () =>
@@ -104,13 +102,15 @@ const toThrowExpectedString = (
         `Expected error pattern: ${printExpected(expected)}\n` +
         // Possible improvement also for toMatch
         // inverse highlight matching substring:
+        // $FlowFixMe: Cannot get error.message because property message is missing in undefined
         `Received error message: ${printReceived(error.message)}\n` +
+        // $FlowFixMe: Cannot get error.stack because property stack is missing in undefined
         formatErrorStack(error.stack)
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `Expected error pattern: ${printExpected(expected)}\n` +
-        (isDefined
+        (error !== undefined
           ? `Received error message: ${printReceived(error.message)}\n` +
             formatErrorStack(error.stack)
           : '\n' + DID_NOT_THROW);
@@ -124,8 +124,7 @@ const toThrowExpectedRegExp = (
   error?: Error,
   expected: RegExp,
 ) => {
-  const isDefined = error !== undefined;
-  const pass = isDefined && expected.test(error.message);
+  const pass = error !== undefined && expected.test(error.message);
 
   const message = pass
     ? () =>
@@ -134,13 +133,15 @@ const toThrowExpectedRegExp = (
         `Expected error pattern: ${printExpected(expected)}\n` +
         // Possible improvement also for toMatch
         // inverse highlight matching substring:
+        // $FlowFixMe: Cannot get error.message because property message is missing in undefined
         `Received error message: ${printReceived(error.message)}\n` +
+        // $FlowFixMe: Cannot get error.stack because property stack is missing in undefined
         formatErrorStack(error.stack)
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `Expected error pattern: ${printExpected(expected)}\n` +
-        (isDefined
+        (error !== undefined
           ? `Received error message: ${printReceived(error.message)}\n` +
             formatErrorStack(error.stack)
           : '\n' + DID_NOT_THROW);
@@ -154,21 +155,22 @@ const toThrowExpectedObject = (
   error?: Error,
   expected: Object,
 ) => {
-  const isDefined = error !== undefined;
-  const pass = isDefined && error.message === expected.message;
+  const pass = error !== undefined && error.message === expected.message;
 
   const message = pass
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `Expected error message: ${printReceived(expected.message)}\n` +
+        // $FlowFixMe: Cannot get error.message because property message is missing in undefined
         `Received error message: ${printReceived(error.message)}\n` +
+        // $FlowFixMe: Cannot get error.stack because property stack is missing in undefined
         formatErrorStack(error.stack)
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `Expected error message: ${printReceived(expected.message)}\n` +
-        (isDefined
+        (error !== undefined
           ? `Received error message: ${printReceived(error.message)}\n` +
             formatErrorStack(error.stack)
           : '\n' + DID_NOT_THROW);
@@ -182,14 +184,13 @@ const toThrowExpectedClass = (
   error?: Error,
   expected: typeof Error,
 ) => {
-  const isDefined = error !== undefined;
-  const pass = isDefined && error instanceof expected;
+  const pass = error !== undefined && error instanceof expected;
 
   const message = () =>
     matcherHint(matcherName, undefined, undefined, options) +
     '\n\n' +
     `Expected error name: ${printExpected(expected.name)}\n` +
-    (isDefined
+    (error !== undefined
       ? `Received error name: ${printReceived(error.name)}\n\n` +
         `Received error message: ${printReceived(error.message)}\n` +
         formatErrorStack(error.stack)
@@ -205,17 +206,14 @@ const toThrow = (
 ) => {
   const pass = error !== undefined;
 
-  const message = pass
-    ? () =>
-        matcherHint(matcherName, undefined, '', options) +
-        '\n\n' +
-        `Received error name:    ${printReceived(error.name)}\n` +
+  const message = () =>
+    matcherHint(matcherName, undefined, '', options) +
+    '\n\n' +
+    (error !== undefined
+      ? `Received error name:    ${printReceived(error.name)}\n` +
         `Received error message: ${printReceived(error.message)}\n` +
         formatErrorStack(error.stack)
-    : () =>
-        matcherHint(matcherName, undefined, '', options) +
-        '\n\n' +
-        DID_NOT_THROW;
+      : DID_NOT_THROW);
 
   return {message, pass};
 };
