@@ -144,4 +144,3 @@ it('should aggregate docs from collection', async () => {
   ]);
 });
 ```
-
