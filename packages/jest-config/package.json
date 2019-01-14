@@ -22,7 +22,6 @@
     "jest-validate": "^23.6.0",
     "micromatch": "^3.1.10",
     "pretty-format": "^23.6.0",
-    "slash": "^2.0.0",
     "realpath-native": "^1.0.2"
   },
   "engines": {

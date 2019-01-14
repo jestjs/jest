@@ -19,7 +19,6 @@ import type {
 import crypto from 'crypto';
 import glob from 'glob';
 import path from 'path';
-import slash from 'slash';
 import {ValidationError, validate} from 'jest-validate';
 import validatePattern from './validatePattern';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
@@ -835,7 +834,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
           !micromatch.some(
-            slash(path.relative(options.rootDir, filename)),
+            replacePathSepForGlob(path.relative(options.rootDir, filename)),
             newOptions.collectCoverageFrom,
           )
         ) {

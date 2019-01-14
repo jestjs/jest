@@ -12,6 +12,7 @@ import type {Options} from './ScriptTransformer';
 
 import path from 'path';
 import {escapePathForRegex} from 'jest-regex-util';
+import {replacePathSepForGlob} from 'jest-util';
 import micromatch from 'micromatch';
 
 const MOCKS_PATTERN = new RegExp(
@@ -49,7 +50,7 @@ export default function shouldInstrument(
     if (
       config.testMatch &&
       config.testMatch.length &&
-      micromatch.some(filename, config.testMatch)
+      micromatch.some(replacePathSepForGlob(filename), config.testMatch)
     ) {
       return false;
     }
@@ -69,7 +70,7 @@ export default function shouldInstrument(
     !options.collectCoverageOnlyFrom &&
     options.collectCoverageFrom &&
     !micromatch.some(
-      path.relative(config.rootDir, filename),
+      replacePathSepForGlob(path.relative(config.rootDir, filename)),
       options.collectCoverageFrom,
     )
   ) {

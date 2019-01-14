@@ -17,9 +17,8 @@ import type TestWatcher from './TestWatcher';
 import micromatch from 'micromatch';
 import chalk from 'chalk';
 import path from 'path';
-import {Console, formatTestResults} from 'jest-util';
+import {Console, formatTestResults, replacePathSepForGlob} from 'jest-util';
 import exit from 'exit';
-import slash from 'slash';
 import fs from 'graceful-fs';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
@@ -168,7 +167,9 @@ export default (async function runJest({
             if (
               globalConfig.collectCoverageFrom &&
               !micromatch.some(
-                slash(path.relative(globalConfig.rootDir, filename)),
+                replacePathSepForGlob(
+                  path.relative(globalConfig.rootDir, filename),
+                ),
                 globalConfig.collectCoverageFrom,
               )
             ) {
