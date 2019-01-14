@@ -13,6 +13,7 @@ import type {EnvironmentClass} from 'types/Environment';
 import chalk from 'chalk';
 import os from 'os';
 import path from 'path';
+import {sync as realpath} from 'realpath-native';
 import yargs from 'yargs';
 import {Console, setGlobal} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
@@ -59,7 +60,7 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
     return;
   }
 
-  const root = process.cwd();
+  const root = realpath(process.cwd());
   const filePath = path.resolve(root, argv._[0]);
 
   if (argv.debug) {
