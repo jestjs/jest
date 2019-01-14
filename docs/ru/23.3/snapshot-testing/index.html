@@ -108,7 +108,7 @@ it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
 <p>Inline snapshots behave identically to external snapshots (<code>.snap</code> files), except the snapshot values are written automatically back into the source code. This means you can get the benefits of automatically generated snapshots without having to switch to an external file to make sure the correct value was written.</p>
 <blockquote>
 <p>Inline snapshots are powered by <a href="https://prettier.io">Prettier</a>. To use inline snapshots you must have <code>prettier</code> installed in your project. Your Prettier configuration will be respected when writing to test files.</p>
-<p>If you have <code>prettier</code> installed in a location where Jest can't find it, you can tell Jest how to find it using the <a href="/docs/ru/23.3/configuration#prettierpath-string"><code>&quot;prettierPath&quot;</code></a> configuration property.</p>
+<p>If you have <code>prettier</code> installed in a location where Jest can't find it, you can tell Jest how to find it using the <a href="./Configuration.md#prettierpath-string"><code>&quot;prettierPath&quot;</code></a> configuration property.</p>
 </blockquote>
 <p><strong>Пример:</strong></p>
 <p>First, you write a test, calling <code>.toMatchInlineSnapshot()</code> with no arguments:</p>
