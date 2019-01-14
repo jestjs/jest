@@ -261,9 +261,28 @@ Jest will fail if:
 
 Default: `undefined`
 
-This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function expecting a string as the first argument for the code to analyze and Jest's dependency extractor as the second argument (in case you only want to extend it).
+This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function. E.g.:
 
-The function should return an iterable (`Array`, `Set`, etc.) with the dependencies found in the code.
+```javascript
+const fs = require('fs');
+const crypto = require('crypto');
+
+module.exports = {
+  extract(code, filePath, defaultExtract) {
+    const deps = defaultExtract(code, filePath);
+    // Scan the file and add dependencies in `deps` (which is a `Set`)
+    return deps;
+  },
+  getCacheKey() {
+    return crypto
+      .createHash('md5')
+      .update(fs.readFileSync(__filename))
+      .digest('hex');
+  },
+};
+```
+
+The `extract` function should return an iterable (`Array`, `Set`, etc.) with the dependencies found in the code.
 
 That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
 

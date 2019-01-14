@@ -44,6 +44,12 @@ describe('--findRelatedTests flag', () => {
   test('runs tests related to filename with a custom dependency extractor', () => {
     writeFiles(DIR, {
       '.watchmanconfig': '',
+      '__tests__/test-skip-deps.test.js': `
+      const dynamicImport = path => Promise.resolve(require(path));
+      test('a', () => dynamicImport('../a').then(a => {
+        expect(a.foo).toBe(5);
+      }));
+      `,
       '__tests__/test.test.js': `
         const dynamicImport = path => Promise.resolve(require(path));
         test('a', () => dynamicImport('../a').then(a => {
@@ -54,8 +60,12 @@ describe('--findRelatedTests flag', () => {
       'dependencyExtractor.js': `
         const DYNAMIC_IMPORT_RE = /(?:^|[^.]\\s*)(\\bdynamicImport\\s*?\\(\\s*?)([\`'"])([^\`'"]+)(\\2\\s*?\\))/g;
         module.exports = {
-          extract(code) {
+          extract(code, filePath) {
             const dependencies = new Set();
+            if (filePath.includes('skip-deps')) {
+              return dependencies;
+            }
+
             const addDependency = (match, pre, quot, dep, post) => {
               dependencies.add(dep);
               return match;
@@ -78,6 +88,7 @@ describe('--findRelatedTests flag', () => {
 
     const {stderr} = runJest(DIR, ['--findRelatedTests', 'a.js']);
     expect(stderr).toMatch('PASS __tests__/test.test.js');
+    expect(stderr).not.toMatch('PASS __tests__/test-skip-deps.test.js');
 
     const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
     expect(stderr).toMatch(summaryMsg);
