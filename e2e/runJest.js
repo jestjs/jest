@@ -49,7 +49,7 @@ export default function runJest(
     );
   }
 
-  const env = Object.assign({}, process.env, {FORCE_COLOR: 0});
+  const env = {...process.env, FORCE_COLOR: 0};
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
   const result = spawnSync(JEST_PATH, args || [], {
     cwd: dir,
@@ -119,7 +119,7 @@ export const until = async function(
     );
   }
 
-  const env = Object.assign({}, process.env, {FORCE_COLOR: 0});
+  const env = {...process.env, FORCE_COLOR: 0};
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
   const jestPromise = execa(JEST_PATH, args || [], {

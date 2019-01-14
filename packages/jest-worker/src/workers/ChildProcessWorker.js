@@ -57,27 +57,18 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   initialize() {
     const forceColor = supportsColor.stdout ? {FORCE_COLOR: '1'} : {};
-    const child = childProcess.fork(
-      require.resolve('./processChild'),
-      // $FlowFixMe: Flow does not work well with Object.assign.
-      Object.assign(
-        {
-          cwd: process.cwd(),
-          env: Object.assign(
-            {},
-            process.env,
-            {
-              JEST_WORKER_ID: this._options.workerId,
-            },
-            forceColor,
-          ),
-          // Suppress --debug / --inspect flags while preserving others (like --harmony).
-          execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
-          silent: true,
-        },
-        this._options.forkOptions,
-      ),
-    );
+    const child = childProcess.fork(require.resolve('./processChild'), {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        JEST_WORKER_ID: this._options.workerId,
+        ...forceColor,
+      },
+      // Suppress --debug / --inspect flags while preserving others (like --harmony).
+      execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
+      silent: true,
+      ...this._options.forkOptions,
+    });
 
     child.on('message', this.onMessage.bind(this));
     child.on('exit', this.onExit.bind(this));

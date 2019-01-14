@@ -87,13 +87,12 @@ const validate = (config: Object, options: ValidationOptions) => {
     options.recursiveBlacklist || [],
   );
 
-  const defaultedOptions: ValidationOptions = Object.assign(
-    {},
-    defaultConfig,
-    options,
-    {recursiveBlacklist: combinedBlacklist},
-    {title: Object.assign({}, defaultConfig.title, options.title)},
-  );
+  const defaultedOptions: ValidationOptions = Object.assign({
+    ...defaultConfig,
+    ...options,
+    recursiveBlacklist: combinedBlacklist,
+    title: options.title || defaultConfig.title,
+  });
 
   const {hasDeprecationWarnings: hdw} = _validate(
     config,

@@ -59,12 +59,11 @@ const mergeOptionWithPreset = (
   optionName: string,
 ) => {
   if (options[optionName] && preset[optionName]) {
-    options[optionName] = Object.assign(
-      {},
-      options[optionName],
-      preset[optionName],
-      options[optionName],
-    );
+    options[optionName] = {
+      ...options[optionName],
+      ...preset[optionName],
+      ...options[optionName],
+    };
   }
 };
 
@@ -127,7 +126,7 @@ const setupPreset = (
   mergeOptionWithPreset(options, preset, 'moduleNameMapper');
   mergeOptionWithPreset(options, preset, 'transform');
 
-  return Object.assign({}, preset, options);
+  return {...preset, ...options};
 };
 
 const setupBabelJest = (options: InitialOptions) => {
@@ -447,9 +446,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   }
 
   const babelJest = setupBabelJest(options);
-  const newOptions: $Shape<
-    DefaultOptions & ProjectConfig & GlobalConfig,
-  > = (Object.assign({}, DEFAULT_CONFIG): any);
+  const newOptions: $Shape<DefaultOptions & ProjectConfig & GlobalConfig> = {
+    ...DEFAULT_CONFIG,
+  };
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
@@ -580,7 +579,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeUnmockedModulePathPatterns(options, key);
         break;
       case 'haste':
-        value = Object.assign({}, options[key]);
+        value = {...options[key]};
         if (value.hasteImplModulePath != null) {
           value.hasteImplModulePath = resolve(newOptions.resolver, {
             filePath: replaceRootDirInPath(
