@@ -446,9 +446,9 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   }
 
   const babelJest = setupBabelJest(options);
-  const newOptions: $Shape<DefaultOptions & ProjectConfig & GlobalConfig> = ({
+  const newOptions: $Shape<DefaultOptions & ProjectConfig & GlobalConfig> = {
     ...DEFAULT_CONFIG,
-  }: any);
+  };
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
