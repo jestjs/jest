@@ -239,7 +239,7 @@ export default class FakeTimers<TimerRef> {
   }
 
   runOnlyPendingTimers() {
-    const timers = Object.assign({}, this._timers);
+    const timers = {...this._timers};
     this._checkFakeTimers();
     this._immediates.forEach(this._runImmediate, this);
     Object.keys(timers)

@@ -234,27 +234,22 @@ const makeThrowingMatcher = (
 ): ThrowingMatcherFn =>
   function throwingMatcher(...args): any {
     let throws = true;
-    const utils = Object.assign({}, matcherUtils, {
-      iterableEquality,
-      subsetEquality,
-    });
+    const utils = {...matcherUtils, iterableEquality, subsetEquality};
 
-    const matcherContext: MatcherState = Object.assign(
+    const matcherContext: MatcherState = {
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
       // snapshot matcher uses it because we want to log all snapshot
       // failures in a test.
-      {dontThrow: () => (throws = false)},
-      getState(),
-      {
-        equals,
-        error: err,
-        isNot,
-        promise,
-        utils,
-      },
-    );
+      dontThrow: () => (throws = false),
+      ...getState(),
+      equals,
+      error: err,
+      isNot,
+      promise,
+      utils,
+    };
 
     const processResult = (result: SyncExpectationResult) => {
       _validateResult(result);

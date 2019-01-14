@@ -20,26 +20,13 @@ const prettyFormat = require('..');
 const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
 const formatElement = (element: any, options?: OptionsReceived) =>
-  prettyFormat(
-    element,
-    Object.assign(
-      ({
-        plugins: [ReactElement],
-      }: OptionsReceived),
-      options,
-    ),
-  );
+  prettyFormat(element, {plugins: [ReactElement], ...options});
 
 const formatTestObject = (object: any, options?: OptionsReceived) =>
-  prettyFormat(
-    object,
-    Object.assign(
-      ({
-        plugins: [ReactTestComponent, ReactElement],
-      }: OptionsReceived),
-      options,
-    ),
-  );
+  prettyFormat(object, {
+    plugins: [ReactTestComponent, ReactElement],
+    ...options,
+  });
 
 function assertPrintedJSX(
   val: any,
