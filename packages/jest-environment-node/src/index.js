@@ -39,6 +39,7 @@ class NodeEnvironment {
     global.clearTimeout = clearTimeout;
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
+    global.ArrayBuffer = ArrayBuffer;
     // URL and URLSearchParams are global in Node >= 10
     if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
       /* global URL, URLSearchParams */
