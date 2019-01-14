@@ -14,16 +14,15 @@ import {sync as realpath} from 'realpath-native';
 
 const getCacheDirectory = () => {
   const {getuid} = process;
+  const tmpdir = path.join(realpath(os.tmpdir()), 'jest');
   if (getuid == null) {
-    return path.join(realpath(os.tmpdir()), 'jest');
+    return tmpdir;
+  } else {
+    // On some platforms tmpdir() is `/tmp`, causing conflicts between different
+    // users and permission issues. Adding an additional subdivision by UID can
+    // help.
+    return `${tmpdir}_${getuid.call(process).toString(36)}`;
   }
-  // On some platforms tmpdir() is `/tmp`, causing conflicts between different
-  // users and permission issues. Adding an additional subdivision by UID can
-  // help.
-  return path.join(
-    realpath(os.tmpdir()),
-    'jest_' + getuid.call(process).toString(36),
-  );
 };
 
 export default getCacheDirectory;
