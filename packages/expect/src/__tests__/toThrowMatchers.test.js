@@ -205,7 +205,7 @@ class customError extends Error {
         } catch (error) {
           err = error;
         }
-        expect(err).toMatchSnapshot();
+        expect(err && err.message).toMatchSnapshot();
       });
 
       test('threw, but class did not match', async () => {
@@ -215,7 +215,7 @@ class customError extends Error {
         } catch (error) {
           err = error;
         }
-        expect(err).toMatchSnapshot();
+        expect(err && err.message).toMatchSnapshot();
       });
 
       test('threw, but should not have', async () => {
@@ -225,7 +225,7 @@ class customError extends Error {
         } catch (error) {
           err = error;
         }
-        expect(err).toMatchSnapshot();
+        expect(err && err.message).toMatchSnapshot();
       });
     });
 

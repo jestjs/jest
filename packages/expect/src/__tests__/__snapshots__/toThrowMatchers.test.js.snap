@@ -49,29 +49,29 @@ Expected has value: <green>111</>"
 `;
 
 exports[`.toThrow() promise/async throws if Error-like object is returned did not throw at all 1`] = `
-[Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m()[22m
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrow<dim>()</>
 
-Received function did not throw an exception]
+Received function did not throw an exception"
 `;
 
 exports[`.toThrow() promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
-[Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrow[2m([22m[32mexpected[39m[2m)[22m
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
 
-Expected error name: [32m"Err2"[39m
-Received error name: [31m"Error"[39m
+Expected error name: <green>\\"Err2\\"</>
+Received error name: <red>\\"Error\\"</>
 
-Received error message: [31m"async apple"[39m
+Received error message: <red>\\"async apple\\"</>
 
-      [2mat jestExpect ([22mpackages/expect/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m]
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
 `;
 
 exports[`.toThrow() promise/async throws if Error-like object is returned threw, but should not have 1`] = `
-[Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mnot[2m.[22mtoThrow[2m()[22m
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toThrow<dim>()</>
 
-Received error name:    [31m"Error"[39m
-Received error message: [31m"async apple"[39m
+Received error name:    <red>\\"Error\\"</>
+Received error message: <red>\\"async apple\\"</>
 
-      [2mat jestExpect ([22mpackages/expect/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m]
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
 `;
 
 exports[`.toThrow() regexp did not throw at all 1`] = `
@@ -175,29 +175,29 @@ Expected has value: <green>111</>"
 `;
 
 exports[`.toThrowError() promise/async throws if Error-like object is returned did not throw at all 1`] = `
-[Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrowError[2m()[22m
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrowError<dim>()</>
 
-Received function did not throw an exception]
+Received function did not throw an exception"
 `;
 
 exports[`.toThrowError() promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
-[Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mtoThrowError[2m([22m[32mexpected[39m[2m)[22m
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
 
-Expected error name: [32m"Err2"[39m
-Received error name: [31m"Error"[39m
+Expected error name: <green>\\"Err2\\"</>
+Received error name: <red>\\"Error\\"</>
 
-Received error message: [31m"async apple"[39m
+Received error message: <red>\\"async apple\\"</>
 
-      [2mat jestExpect ([22mpackages/expect/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m]
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
 `;
 
 exports[`.toThrowError() promise/async throws if Error-like object is returned threw, but should not have 1`] = `
-[Error: [2mexpect([22m[31mreceived[39m[2m).[22mrejects[2m.[22mnot[2m.[22mtoThrowError[2m()[22m
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toThrowError<dim>()</>
 
-Received error name:    [31m"Error"[39m
-Received error message: [31m"async apple"[39m
+Received error name:    <red>\\"Error\\"</>
+Received error message: <red>\\"async apple\\"</>
 
-      [2mat jestExpect ([22mpackages/expect/src/__tests__/toThrowMatchers-test.js[2m:24:74)[22m]
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
 `;
 
 exports[`.toThrowError() regexp did not throw at all 1`] = `
