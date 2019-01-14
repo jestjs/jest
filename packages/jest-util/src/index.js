@@ -25,6 +25,7 @@ import setGlobal from './setGlobal';
 import deepCyclicCopy from './deepCyclicCopy';
 import convertDescriptorToString from './convertDescriptorToString';
 import * as specialChars from './specialChars';
+import replacePathSepForGlob from './replacePathSepForGlob';
 
 const createDirectory = (path: string) => {
   try {
@@ -52,6 +53,7 @@ module.exports = {
   getFailedSnapshotTests,
   installCommonGlobals,
   isInteractive,
+  replacePathSepForGlob,
   setGlobal,
   specialChars,
 };

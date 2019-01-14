@@ -58,9 +58,6 @@ export const resolve = (
 export const escapeGlobCharacters = (path: Path): Glob =>
   path.replace(/([()*{}\[\]!?\\])/g, '\\$1');
 
-export const replacePathSepForGlob = (glob: Glob): Glob =>
-  glob.replace(/\\(?![{}()+?.^$])/g, '/');
-
 export const replaceRootDirInPath = (
   rootDir: string,
   filePath: Path,

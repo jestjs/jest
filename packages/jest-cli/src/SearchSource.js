@@ -19,10 +19,7 @@ import testPathPatternToRegExp from './testPathPatternToRegexp';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
-
-// Copied from `jest-config`
-const replacePathSepForGlob = (glob: Glob): Glob =>
-  glob.replace(/\\(?![{}()+?.^$])/g, '/');
+import {replacePathSepForGlob} from 'jest-util';
 
 type SearchResult = {|
   noSCM?: boolean,

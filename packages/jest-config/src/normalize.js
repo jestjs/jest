@@ -22,7 +22,7 @@ import path from 'path';
 import slash from 'slash';
 import {ValidationError, validate} from 'jest-validate';
 import validatePattern from './validatePattern';
-import {clearLine} from 'jest-util';
+import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './getMaxWorkers';
 import micromatch from 'micromatch';
@@ -32,7 +32,6 @@ import {replacePathSepForRegex} from 'jest-regex-util';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
-  replacePathSepForGlob,
   replaceRootDirInPath,
   _replaceRootDirTags,
   escapeGlobCharacters,
