@@ -52,10 +52,9 @@ export default function setFromArgv(
       return options;
     }, {});
 
-  return Object.assign(
-    {},
-    options,
-    isJSONString(argv.config) ? JSON.parse(argv.config) : null,
-    argvToOptions,
-  );
+  return {
+    ...options,
+    ...(isJSONString(argv.config) ? JSON.parse(argv.config) : null),
+    ...argvToOptions,
+  };
 }

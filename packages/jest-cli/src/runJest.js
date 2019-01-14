@@ -192,10 +192,7 @@ export default (async function runJest({
   );
 
   if (collectCoverageFrom.length) {
-    // $FlowFixMe Object.assign
-    const newConfig: GlobalConfig = Object.assign({}, globalConfig, {
-      collectCoverageFrom,
-    });
+    const newConfig: GlobalConfig = {...globalConfig, collectCoverageFrom};
     globalConfig = Object.freeze(newConfig);
   }
 

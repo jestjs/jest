@@ -96,7 +96,7 @@ function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
     error.message,
     error.stack,
     // $FlowFixMe: this is safe to just inherit from Object.
-    typeof error === 'object' ? Object.assign({}, error) : error,
+    typeof error === 'object' ? {...error} : error,
   ]);
 }
 

@@ -74,7 +74,7 @@ export default class JestWorker {
   _workerPool: WorkerPoolInterface;
 
   constructor(workerPath: string, options?: FarmOptions) {
-    this._options = Object.assign({}, options);
+    this._options = {...options};
 
     const workerPoolOptions: WorkerPoolOptions = {
       forkOptions: this._options.forkOptions || {},

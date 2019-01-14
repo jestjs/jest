@@ -43,7 +43,7 @@ import Suite from './Suite';
 import Timer from './Timer';
 
 exports.create = function(createOptions: Object) {
-  const j$ = Object.assign({}, createOptions);
+  const j$ = {...createOptions};
 
   j$._DEFAULT_TIMEOUT_INTERVAL = 5000;
 

@@ -37,10 +37,7 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
       .version(false)
       .options(args.options).argv;
 
-    validateCLIOptions(
-      argv,
-      Object.assign({}, args.options, {deprecationEntries}),
-    );
+    validateCLIOptions(argv, {...args.options, deprecationEntries});
   }
 
   if (argv.help) {
@@ -70,10 +67,11 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
   const options = readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
-  const config = Object.assign({}, options.projectConfig, {
+  const config = {
+    ...options.projectConfig,
     automock: false,
     unmockedModulePathPatterns: null,
-  });
+  };
 
   // Break circular dependency
   const Runtime = require('..');
