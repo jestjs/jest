@@ -144,5 +144,3 @@ it('should aggregate docs from collection', async () => {
   ]);
 });
 ```
-
-Here's the code of [full working example](https://github.com/vladgolubev/jest-mongodb).

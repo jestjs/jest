@@ -55,14 +55,10 @@ const logDeprecatedOptions = (
   argv: Argv,
 ) => {
   deprecatedOptions.forEach(opt => {
-    deprecationWarning(
-      argv,
-      opt,
-      deprecationEntries,
-      Object.assign({}, defaultConfig, {
-        comment: DOCUMENTATION_NOTE,
-      }),
-    );
+    deprecationWarning(argv, opt, deprecationEntries, {
+      ...defaultConfig,
+      comment: DOCUMENTATION_NOTE,
+    });
   });
 };
 

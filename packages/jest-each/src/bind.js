@@ -184,7 +184,7 @@ const buildTable = (
     .map((_, index) => data.slice(index * rowSize, index * rowSize + rowSize))
     .map(row =>
       row.reduce(
-        (acc, value, index) => Object.assign({}, acc, {[keys[index]]: value}),
+        (acc, value, index) => Object.assign(acc, {[keys[index]]: value}),
         {},
       ),
     );
