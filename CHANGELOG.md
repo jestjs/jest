@@ -49,6 +49,7 @@
 - `[jest-config]` Allow % based configuration of `--max-workers` ([#7494](https://github.com/facebook/jest/pull/7494))
 - `[jest-runner]` Instantiate the test environment class with the current `testPath` ([#7442](https://github.com/facebook/jest/pull/7442))
 - `[jest-config]` Always resolve jest-environment-jsdom from jest-config ([#7476](https://github.com/facebook/jest/pull/7476))
+- `[expect]` Improve report when assertion fails, part 6 ([#7621](https://github.com/facebook/jest/pull/7621))
 
 ### Fixes
 
