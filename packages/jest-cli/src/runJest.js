@@ -18,6 +18,7 @@ import type TestWatcher from './TestWatcher';
 import micromatch from 'micromatch';
 import chalk from 'chalk';
 import path from 'path';
+import {sync as realpath} from 'realpath-native';
 import {Console, formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
@@ -73,7 +74,6 @@ const processResults = (runResults, options) => {
     onComplete,
     outputStream,
     testResultsProcessor,
-    rootDir,
     collectHandles,
   } = options;
 
@@ -89,11 +89,12 @@ const processResults = (runResults, options) => {
   }
   if (isJSON) {
     if (outputFile) {
-      const filePath = path.resolve(rootDir, outputFile);
+      const cwd = realpath(process.cwd());
+      const filePath = path.resolve(cwd, outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
       outputStream.write(
-        `Test results written to: ${path.relative(rootDir, filePath)}\n`,
+        `Test results written to: ${path.relative(cwd, filePath)}\n`,
       );
     } else {
       process.stdout.write(JSON.stringify(formatTestResults(runResults)));
@@ -274,7 +275,6 @@ export default (async function runJest({
     onComplete,
     outputFile: globalConfig.outputFile,
     outputStream,
-    rootDir: globalConfig.rootDir,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
 });
