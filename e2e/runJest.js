@@ -31,7 +31,7 @@ export default function runJest(
   args?: Array<string>,
   options: RunJestOptions = {},
 ) {
-  const isRelative = dir[0] !== '/';
+  const isRelative = !path.isAbsolute(dir);
 
   if (isRelative) {
     dir = path.resolve(__dirname, dir);
@@ -101,7 +101,7 @@ export const until = async function(
   text: string,
   options: RunJestOptions = {},
 ) {
-  const isRelative = dir[0] !== '/';
+  const isRelative = !path.isAbsolute(dir);
 
   if (isRelative) {
     dir = path.resolve(__dirname, dir);
