@@ -491,8 +491,11 @@ describe('ScriptTransformer', () => {
   });
 
   it('reads values from the cache', () => {
-    config = {...config, transform: [['^.+\\.js$', 'test_preprocessor']]};
-    let scriptTransformer = new ScriptTransformer(config);
+    const transformConfig = {
+      ...config,
+      transform: [['^.+\\.js$', 'test_preprocessor']],
+    };
+    let scriptTransformer = new ScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', {});
 
     const cachePath = getCachePath(mockFs, config);
@@ -506,7 +509,7 @@ describe('ScriptTransformer', () => {
 
     // Restore the cached fs
     mockFs = mockFsCopy;
-    scriptTransformer = new ScriptTransformer(config);
+    scriptTransformer = new ScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', {});
 
     expect(fs.readFileSync.mock.calls.length).toBe(2);
@@ -518,8 +521,8 @@ describe('ScriptTransformer', () => {
     jest.resetModuleRegistry();
     reset();
     mockFs = mockFsCopy;
-    config.cache = false;
-    scriptTransformer = new ScriptTransformer(config);
+    transformConfig.cache = false;
+    scriptTransformer = new ScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', {});
 
     expect(fs.readFileSync.mock.calls.length).toBe(1);
