@@ -199,33 +199,21 @@ class customError extends Error {
       });
 
       test('did not throw at all', async () => {
-        let err;
-        try {
-          await jestExpect(asyncFn()).rejects[toThrow]();
-        } catch (error) {
-          err = error;
-        }
-        expect(err && err.message).toMatchSnapshot();
+        await expect(
+          jestExpect(asyncFn()).rejects[toThrow](),
+        ).rejects.toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but class did not match', async () => {
-        let err;
-        try {
-          await jestExpect(asyncFn(true)).rejects[toThrow](Err2);
-        } catch (error) {
-          err = error;
-        }
-        expect(err && err.message).toMatchSnapshot();
+        await expect(
+          jestExpect(asyncFn(true)).rejects[toThrow](Err2),
+        ).rejects.toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but should not have', async () => {
-        let err;
-        try {
-          await jestExpect(asyncFn(true)).rejects.not[toThrow]();
-        } catch (error) {
-          err = error;
-        }
-        expect(err && err.message).toMatchSnapshot();
+        await expect(
+          jestExpect(asyncFn(true)).rejects.not[toThrow](),
+        ).rejects.toThrowErrorMatchingSnapshot();
       });
     });
 
