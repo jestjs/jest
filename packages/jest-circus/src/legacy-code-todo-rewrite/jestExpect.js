@@ -27,7 +27,9 @@ type JasmineMatcher = {
 
 export default (config: {expand: boolean}) => {
   global.expect = expect;
-  expect.setState({expand: config.expand});
+  expect.setState({
+    expand: config.expand,
+  });
   expect.extend({
     toMatchInlineSnapshot,
     toMatchSnapshot,

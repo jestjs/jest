@@ -6,7 +6,7 @@
  */
 'use strict';
 
-import NodeEnvironment from '../';
+const NodeEnvironment = jest.requireActual('../');
 
 describe('NodeEnvironment', () => {
   it('uses a copy of the process object', () => {

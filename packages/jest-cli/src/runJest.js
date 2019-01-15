@@ -11,12 +11,14 @@ import type {Context} from 'types/Context';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
+import type {TestRunData} from 'types/TestRunner';
 import type {JestHookEmitter} from 'types/JestHooks';
 import type TestWatcher from './TestWatcher';
 
 import micromatch from 'micromatch';
 import chalk from 'chalk';
 import path from 'path';
+import {sync as realpath} from 'realpath-native';
 import {Console, formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
@@ -62,10 +64,7 @@ const getTestPaths = async (
 
   const filteredTests = data.tests.filter((test, i) => shouldTestArray[i]);
 
-  return Object.assign({}, data, {
-    allTests: filteredTests.length,
-    tests: filteredTests,
-  });
+  return {...data, allTests: filteredTests.length, tests: filteredTests};
 };
 
 const processResults = (runResults, options) => {
@@ -90,12 +89,12 @@ const processResults = (runResults, options) => {
   }
   if (isJSON) {
     if (outputFile) {
-      const filePath = path.resolve(process.cwd(), outputFile);
+      const cwd = realpath(process.cwd());
+      const filePath = path.resolve(cwd, outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
       outputStream.write(
-        `Test results written to: ` +
-          `${path.relative(process.cwd(), filePath)}\n`,
+        `Test results written to: ${path.relative(cwd, filePath)}\n`,
       );
     } else {
       process.stdout.write(JSON.stringify(formatTestResults(runResults)));
@@ -150,7 +149,7 @@ export default (async function runJest({
 
   let collectCoverageFrom = [];
 
-  const testRunData = await Promise.all(
+  const testRunData: TestRunData = await Promise.all(
     contexts.map(async context => {
       const matches = await getTestPaths(
         globalConfig,
@@ -193,10 +192,7 @@ export default (async function runJest({
   );
 
   if (collectCoverageFrom.length) {
-    // $FlowFixMe Object.assign
-    const newConfig: GlobalConfig = Object.assign({}, globalConfig, {
-      collectCoverageFrom,
-    });
+    const newConfig: GlobalConfig = {...globalConfig, collectCoverageFrom};
     globalConfig = Object.freeze(newConfig);
   }
 
@@ -242,10 +238,7 @@ export default (async function runJest({
     globalConfig.silent !== true &&
     globalConfig.verbose !== false
   ) {
-    // $FlowFixMe Object.assign
-    const newConfig: GlobalConfig = Object.assign({}, globalConfig, {
-      verbose: true,
-    });
+    const newConfig: GlobalConfig = {...globalConfig, verbose: true};
     globalConfig = Object.freeze(newConfig);
   }
 

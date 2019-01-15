@@ -9,9 +9,6 @@
 'use strict';
 
 import path from 'path';
-import Runtime from 'jest-runtime';
-import {normalize} from 'jest-config';
-import SearchSource from '../SearchSource';
 import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
 jest.setTimeout(15000);
@@ -23,12 +20,21 @@ const maxWorkers = 1;
 const toPaths = tests => tests.map(({path}) => path);
 
 let findMatchingTests;
+let normalize;
 
 describe('SearchSource', () => {
   skipSuiteOnWindows();
 
   const name = 'SearchSource';
+  let Runtime;
+  let SearchSource;
   let searchSource;
+
+  beforeEach(() => {
+    Runtime = require('jest-runtime');
+    SearchSource = require('../SearchSource').default;
+    normalize = require('jest-config').normalize;
+  });
 
   describe('isTestFilePath', () => {
     let config;

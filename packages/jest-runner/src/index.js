@@ -28,7 +28,7 @@ const TEST_WORKER_PATH = require.resolve('./testWorker');
 
 type WorkerInterface = Worker & {worker: worker};
 
-export default class TestRunner {
+class TestRunner {
   _globalConfig: GlobalConfig;
 
   constructor(globalConfig: GlobalConfig) {
@@ -165,3 +165,5 @@ class CancelRun extends Error {
     this.name = 'CancelRun';
   }
 }
+
+module.exports = TestRunner;

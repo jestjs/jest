@@ -35,21 +35,17 @@ const PLUGINS = [
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
 };
-const FORMAT_OPTIONS_0 = Object.assign({}, FORMAT_OPTIONS, {
-  indent: 0,
-});
+const FORMAT_OPTIONS_0 = {...FORMAT_OPTIONS, indent: 0};
 const FALLBACK_FORMAT_OPTIONS = {
   callToJSON: false,
   maxDepth: 10,
   plugins: PLUGINS,
 };
-const FALLBACK_FORMAT_OPTIONS_0 = Object.assign({}, FALLBACK_FORMAT_OPTIONS, {
-  indent: 0,
-});
+const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
-export default function diff(a: any, b: any, options: ?DiffOptions): ?string {
+function diff(a: any, b: any, options: ?DiffOptions): ?string {
   if (a === b) {
     return NO_DIFF_MESSAGE;
   }
@@ -144,3 +140,5 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
 
   return diffMessage;
 }
+
+module.exports = diff;

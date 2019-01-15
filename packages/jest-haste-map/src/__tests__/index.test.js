@@ -9,7 +9,7 @@
 'use strict';
 
 import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
-import crypto from 'crypto';
+const crypto = require('crypto');
 
 function mockHashContents(contents) {
   return crypto
@@ -184,7 +184,7 @@ describe('HasteMap', () => {
     consoleWarn = console.warn;
     console.warn = jest.fn();
 
-    HasteMap = require('../').default;
+    HasteMap = require('../');
     H = HasteMap.H;
 
     getCacheFilePath = HasteMap.getCacheFilePath;
@@ -213,7 +213,7 @@ describe('HasteMap', () => {
 
   it('creates valid cache file paths', () => {
     jest.resetModuleRegistry();
-    HasteMap = require('../').default;
+    HasteMap = require('../');
 
     expect(
       HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
@@ -222,23 +222,20 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different roots', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
-    const hasteMap1 = new HasteMap(
-      Object.assign({}, defaultConfig, {rootDir: '/root1'}),
-    );
-    const hasteMap2 = new HasteMap(
-      Object.assign({}, defaultConfig, {rootDir: '/root2'}),
-    );
+    const HasteMap = require('../');
+    const hasteMap1 = new HasteMap({...defaultConfig, rootDir: '/root1'});
+    const hasteMap2 = new HasteMap({...defaultConfig, rootDir: '/root2'});
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
 
   it('creates different cache file paths for different dependency extractor cache keys', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
+    const HasteMap = require('../');
     const dependencyExtractor = require('./dependencyExtractor');
-    const config = Object.assign({}, defaultConfig, {
+    const config = {
+      ...defaultConfig,
       dependencyExtractor: require.resolve('./dependencyExtractor'),
-    });
+    };
     dependencyExtractor.setCacheKey('foo');
     const hasteMap1 = new HasteMap(config);
     dependencyExtractor.setCacheKey('bar');
@@ -248,7 +245,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different hasteImplModulePath cache keys', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
+    const HasteMap = require('../');
     const hasteImpl = require('./haste_impl');
     hasteImpl.setCacheKey('foo');
     const hasteMap1 = new HasteMap(defaultConfig);
@@ -259,13 +256,9 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different projects', () => {
     jest.resetModuleRegistry();
-    const HasteMap = require('../').default;
-    const hasteMap1 = new HasteMap(
-      Object.assign({}, defaultConfig, {name: '@scoped/package'}),
-    );
-    const hasteMap2 = new HasteMap(
-      Object.assign({}, defaultConfig, {name: '-scoped-package'}),
-    );
+    const HasteMap = require('../');
+    const hasteMap1 = new HasteMap({...defaultConfig, name: '@scoped/package'});
+    const hasteMap2 = new HasteMap({...defaultConfig, name: '-scoped-package'});
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
 
@@ -284,7 +277,7 @@ describe('HasteMap', () => {
     }));
 
   it('ignores files given a pattern', () => {
-    const config = Object.assign({}, defaultConfig, {ignorePattern: /Kiwi/});
+    const config = {...defaultConfig, ignorePattern: /Kiwi/};
     mockFs['/project/fruits/Kiwi.js'] = `
       // Kiwi!
     `;
@@ -325,12 +318,11 @@ describe('HasteMap', () => {
       // fbjs2
     `;
 
-    const hasteMap = new HasteMap(
-      Object.assign({}, defaultConfig, {
-        mocksPattern: '/__mocks__/',
-        providesModuleNodeModules: ['react', 'fbjs'],
-      }),
-    );
+    const hasteMap = new HasteMap({
+      ...defaultConfig,
+      mocksPattern: '/__mocks__/',
+      providesModuleNodeModules: ['react', 'fbjs'],
+    });
 
     return hasteMap.build().then(({__hasteMapForTest: data}) => {
       expect(data.clocks).toEqual(mockClocks);
@@ -400,7 +392,7 @@ describe('HasteMap', () => {
   describe('builds a haste map on a fresh cache with SHA-1s', () => {
     [false, true].forEach(useWatchman => {
       it('uses watchman: ' + useWatchman, async () => {
-        const node = require('../crawlers/node').default;
+        const node = require('../crawlers/node');
 
         node.mockImplementation(options => {
           const {data} = options;
@@ -424,13 +416,12 @@ describe('HasteMap', () => {
           return Promise.resolve(data);
         });
 
-        const hasteMap = new HasteMap(
-          Object.assign({}, defaultConfig, {
-            computeSha1: true,
-            maxWorkers: 1,
-            useWatchman,
-          }),
-        );
+        const hasteMap = new HasteMap({
+          ...defaultConfig,
+          computeSha1: true,
+          maxWorkers: 1,
+          useWatchman,
+        });
 
         const data = (await hasteMap.build()).__hasteMapForTest;
 
@@ -489,12 +480,11 @@ describe('HasteMap', () => {
       module.exports = require("./video.mp4");
     `;
 
-    const hasteMap = new HasteMap(
-      Object.assign({}, defaultConfig, {
-        extensions: [...defaultConfig.extensions],
-        roots: [...defaultConfig.roots, '/project/video'],
-      }),
-    );
+    const hasteMap = new HasteMap({
+      ...defaultConfig,
+      extensions: [...defaultConfig.extensions],
+      roots: [...defaultConfig.roots, '/project/video'],
+    });
 
     const {__hasteMapForTest: data} = await hasteMap.build();
 
@@ -508,12 +498,11 @@ describe('HasteMap', () => {
       // fbjs!
     `;
 
-    const hasteMap = new HasteMap(
-      Object.assign({}, defaultConfig, {
-        mocksPattern: '/__mocks__/',
-        retainAllFiles: true,
-      }),
-    );
+    const hasteMap = new HasteMap({
+      ...defaultConfig,
+      mocksPattern: '/__mocks__/',
+      retainAllFiles: true,
+    });
 
     return hasteMap.build().then(({__hasteMapForTest: data}) => {
       // Expect the node module to be part of files but make sure it wasn't
@@ -543,9 +532,7 @@ describe('HasteMap', () => {
       // Blueberry too!
     `;
 
-    return new HasteMap(
-      Object.assign({mocksPattern: '__mocks__'}, defaultConfig),
-    )
+    return new HasteMap({mocksPattern: '__mocks__', ...defaultConfig})
       .build()
       .then(({__hasteMapForTest: data}) => {
         expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
@@ -588,9 +575,7 @@ describe('HasteMap', () => {
       const Banana = require("Banana");
     `;
 
-    return new HasteMap(
-      Object.assign({throwOnModuleCollision: true}, defaultConfig),
-    )
+    return new HasteMap({throwOnModuleCollision: true, ...defaultConfig})
       .build()
       .catch(err => {
         expect(err).toMatchSnapshot();
@@ -970,9 +955,7 @@ describe('HasteMap', () => {
         vegetables: 'c:fake-clock:4',
       });
 
-      const config = Object.assign({}, defaultConfig, {
-        ignorePattern: /Kiwi|Pear/,
-      });
+      const config = {...defaultConfig, ignorePattern: /Kiwi|Pear/};
       return new HasteMap(config).build().then(({moduleMap}) => {
         expect(moduleMap.getModule('Pear')).toBe(null);
       });
@@ -1004,13 +987,12 @@ describe('HasteMap', () => {
     const jestWorker = require('jest-worker');
     const path = require('path');
     const dependencyExtractor = path.join(__dirname, 'dependencyExtractor.js');
-    return new HasteMap(
-      Object.assign({}, defaultConfig, {
-        dependencyExtractor,
-        hasteImplModulePath: undefined,
-        maxWorkers: 4,
-      }),
-    )
+    return new HasteMap({
+      ...defaultConfig,
+      dependencyExtractor,
+      hasteImplModulePath: undefined,
+      maxWorkers: 4,
+    })
       .build()
       .then(({__hasteMapForTest: data}) => {
         expect(jestWorker.mock.calls.length).toBe(1);
@@ -1076,7 +1058,7 @@ describe('HasteMap', () => {
 
   it('tries to crawl using node as a fallback', () => {
     const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node').default;
+    const node = require('../crawlers/node');
 
     watchman.mockImplementation(() => {
       throw new Error('watchman error');
@@ -1107,7 +1089,7 @@ describe('HasteMap', () => {
 
   it('tries to crawl using node as a fallback when promise fails once', () => {
     const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node').default;
+    const node = require('../crawlers/node');
 
     watchman.mockImplementation(() =>
       Promise.reject(new Error('watchman error')),
@@ -1136,7 +1118,7 @@ describe('HasteMap', () => {
 
   it('stops crawling when both crawlers fail', () => {
     const watchman = require('../crawlers/watchman');
-    const node = require('../crawlers/node').default;
+    const node = require('../crawlers/node');
 
     watchman.mockImplementation(() =>
       Promise.reject(new Error('watchman error')),
@@ -1176,7 +1158,7 @@ describe('HasteMap', () => {
         if (options.mockFs) {
           mockFs = options.mockFs;
         }
-        const watchConfig = Object.assign({}, defaultConfig, {watch: true});
+        const watchConfig = {...defaultConfig, watch: true};
         const hm = new HasteMap(watchConfig);
         await hm.build();
         try {

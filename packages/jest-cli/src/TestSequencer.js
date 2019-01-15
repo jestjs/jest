@@ -12,7 +12,8 @@ import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
 import fs from 'fs';
-import HasteMap from 'jest-haste-map';
+// $FlowFixMe: Missing ESM export
+import {getCacheFilePath} from 'jest-haste-map';
 
 const FAIL = 0;
 const SUCCESS = 1;
@@ -30,10 +31,7 @@ export default class TestSequencer {
 
   _getCachePath(context: Context) {
     const {config} = context;
-    return HasteMap.getCacheFilePath(
-      config.cacheDirectory,
-      'perf-cache-' + config.name,
-    );
+    return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
   }
 
   _getCache(test: Test) {
@@ -85,8 +83,8 @@ export default class TestSequencer {
       if (failedA !== failedB) {
         return failedA ? -1 : 1;
       } else if (hasTimeA != (testB.duration != null)) {
-        // Check if only one of two tests has timing information
-        return hasTimeA != null ? 1 : -1;
+        // If only one of two tests has timing information, run it last
+        return hasTimeA ? 1 : -1;
       } else if (testA.duration != null && testB.duration != null) {
         return testA.duration < testB.duration ? 1 : -1;
       } else {

@@ -20,10 +20,7 @@ const babelEs5Options = {
   // Dont load other config files
   babelrc: false,
   configFile: false,
-  plugins: [
-    '@babel/plugin-transform-strict-mode',
-    '@babel/plugin-external-helpers',
-  ],
+  plugins: ['@babel/plugin-transform-strict-mode'],
   presets: [
     [
       '@babel/preset-env',
@@ -42,8 +39,7 @@ const babelEs5Options = {
 
 function browserBuild(pkgName, entryPath, destination) {
   return rollup({
-    entry: entryPath,
-    onwarn: () => {},
+    input: entryPath,
     plugins: [
       {
         resolveId(id) {
@@ -60,7 +56,6 @@ function browserBuild(pkgName, entryPath, destination) {
       rollupBuiltins(),
       rollupResolve(),
     ],
-    strict: false,
   }).then(bundle =>
     bundle.write({
       file: destination,

@@ -27,7 +27,7 @@ export const getChangedFilesForRoots = async (
 ): ChangedFilesPromise => {
   const repos = await findRepos(roots);
 
-  const changedFilesOptions = Object.assign({}, {includePaths: roots}, options);
+  const changedFilesOptions = {includePaths: roots, ...options};
 
   const gitPromises = Array.from(repos.git).map(repo =>
     git.findChangedFiles(repo, changedFilesOptions),

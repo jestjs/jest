@@ -9,9 +9,17 @@
 
 'use strict';
 
+let circusIt;
+
 // using jest-jasmine2's 'it' to test jest-circus's 'it'. Had to differentiate
 // the two with this alias.
-import {it as circusIt} from '../index.js';
+
+const aliasCircusIt = () => {
+  const {it} = require('../index.js');
+  circusIt = it;
+};
+
+aliasCircusIt();
 
 describe('test/it.todo error throwing', () => {
   it('todo throws error when given no arguments', () => {

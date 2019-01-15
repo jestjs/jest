@@ -117,7 +117,15 @@ These helper functions and properties can be found on `this` inside a custom mat
 
 #### `this.isNot`
 
-A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion.
+A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion and display a clear and correct matcher hint (see example code).
+
+#### `this.promise`
+
+A string allowing you to display a clear and correct matcher hint:
+
+- `'rejects'` if matcher was called with the promise `.rejects` modifier
+- `'resolves'` if matcher was called with the promise `.resolves` modifier
+- `''` if matcher was not called with a promise modifier
 
 #### `this.equals(a, b)`
 
@@ -137,28 +145,31 @@ The most useful ones are `matcherHint`, `printExpected` and `printReceived` to f
 const diff = require('jest-diff');
 expect.extend({
   toBe(received, expected) {
+    const options = {
+      comment: 'Object.is equality',
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+
     const pass = Object.is(received, expected);
 
     const message = pass
       ? () =>
-          this.utils.matcherHint('.not.toBe') +
+          this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
-          `Expected value to not be (using Object.is):\n` +
-          `  ${this.utils.printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${this.utils.printReceived(received)}`
+          `Expected: ${this.utils.printExpected(expected)}\n` +
+          `Received: ${this.utils.printReceived(received)}`
       : () => {
-          const diffString = diff(expected, received, {
+          const difference = diff(expected, received, {
             expand: this.expand,
           });
           return (
-            this.utils.matcherHint('.toBe') +
+            this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
-            `Expected value to be (using Object.is):\n` +
-            `  ${this.utils.printExpected(expected)}\n` +
-            `Received:\n` +
-            `  ${this.utils.printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+            (difference && difference.includes('- Expect')
+              ? `Difference:\n\n${diffString}`
+              : `Expected: ${this.utils.printExpected(expected)}\n` +
+                `Received: ${this.utils.printReceived(received)}`)
           );
         };
 

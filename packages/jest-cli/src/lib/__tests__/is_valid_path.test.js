@@ -8,8 +8,12 @@
  */
 
 import isValidPath from '../is_valid_path';
-import path from 'path';
-import {makeGlobalConfig, makeProjectConfig} from '../../../../../TestUtils';
+
+const path = require('path');
+const {
+  makeGlobalConfig,
+  makeProjectConfig,
+} = require('../../../../../TestUtils');
 
 const rootDir = path.resolve(path.sep, 'root');
 

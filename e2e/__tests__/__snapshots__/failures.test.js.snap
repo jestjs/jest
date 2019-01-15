@@ -348,8 +348,8 @@ exports[`works with async failures 1`] = `
 
     expect(received).rejects.toEqual()
 
-    Expected received Promise to reject, instead it resolved to value
-      {\\"foo\\": \\"bar\\"}
+    Received promise resolved instead of rejected
+    Resolved to value: {\\"foo\\": \\"bar\\"}
 
       16 | 
       17 | test('expect reject', () =>
@@ -365,8 +365,8 @@ exports[`works with async failures 1`] = `
 
     expect(received).resolves.toEqual()
 
-    Expected received Promise to resolve, instead it rejected to value
-      {\\"foo\\": \\"bar\\"}
+    Received promise rejected instead of resolved
+    Rejected to value: {\\"foo\\": \\"bar\\"}
 
       19 | 
       20 | test('expect resolve', () =>
