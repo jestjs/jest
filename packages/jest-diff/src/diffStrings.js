@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,7 +8,8 @@
  */
 
 import chalk from 'chalk';
-import {diffLines, structuredPatch} from 'diff';
+import type {Chalk} from 'chalk';
+import diff from 'diff-sequences';
 import {NO_DIFF_MESSAGE} from './constants.js';
 
 const DIFF_CONTEXT_DEFAULT = 5;
@@ -25,57 +26,20 @@ type Original = {|
   b: string,
 |};
 
-type Diff = string | null;
-
-type Hunk = {|
-  lines: Array<string>,
-  newLines: number,
-  newStart: number,
-  oldLines: number,
-  oldStart: number,
-|};
-
-type DIFF_DIGIT = -1 | 1 | 0; // removed | added | equal
-
-// Given diff digit, return array which consists of:
-// if compared line is removed or added: corresponding original line
-// if compared line is equal: original received and expected lines
-type GetOriginal = (digit: DIFF_DIGIT) => Array<string>;
-
-// Given chunk, return diff character.
-const getDiffChar = (chunk): string =>
-  chunk.removed ? '-' : chunk.added ? '+' : ' ';
-
-// Given diff character in line of hunk or computed from properties of chunk.
-const getDiffDigit = (char: string): DIFF_DIGIT =>
-  char === '-' ? -1 : char === '+' ? 1 : 0;
-
-// Color for text of line.
-const getColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) => {
-  if (digit === -1) {
-    return chalk.green; // removed
-  }
-  if (digit === 1) {
-    return chalk.red; // added
-  }
-  return onlyIndentationChanged ? chalk.cyan : chalk.dim;
-};
-
-// Do NOT color leading or trailing spaces if original lines are equal:
-
-// Background color for leading or trailing spaces.
-const getBgColor = (digit: DIFF_DIGIT, onlyIndentationChanged?: boolean) =>
-  digit === 0 && !onlyIndentationChanged ? chalk.bgYellow : chalk.inverse;
+const fgPatchMark = chalk.yellow;
+const fgDelete = chalk.green;
+const fgInsert = chalk.red;
+const fgCommon = chalk.dim; // common lines (even indentation same)
+const fgIndent = chalk.cyan; // common lines (only indentation different)
+const bgCommon = chalk.bgYellow; // edge spaces in common line (even indentation same)
+const bgInverse = chalk.inverse; // edge spaces in any other lines
 
 // ONLY trailing if expected value is snapshot or multiline string.
-const highlightTrailingSpaces = (line: string, bgColor: Function): string =>
+const highlightTrailingSpaces = (line: string, bgColor: Chalk): string =>
   line.replace(/\s+$/, bgColor('$&'));
 
 // BOTH leading AND trailing if expected value is data structure.
-const highlightLeadingTrailingSpaces = (
-  line: string,
-  bgColor: Function,
-): string =>
+const highlightLeadingTrailingSpaces = (line: string, bgColor: Chalk): string =>
   // If line consists of ALL spaces: highlight all of them.
   highlightTrailingSpaces(line, bgColor).replace(
     // If line has an ODD length of leading spaces: highlight only the LAST.
@@ -83,188 +47,293 @@ const highlightLeadingTrailingSpaces = (
     '$1' + bgColor('$2'),
   );
 
+type Highlight = (line: string, bgColor: Chalk) => string;
+
+const getHighlightSpaces = (bothEdges: boolean): Highlight =>
+  bothEdges ? highlightLeadingTrailingSpaces : highlightTrailingSpaces;
+
 const getAnnotation = (options: ?DiffOptions): string =>
-  chalk.green('- ' + ((options && options.aAnnotation) || 'Expected')) +
+  fgDelete('- ' + ((options && options.aAnnotation) || 'Expected')) +
   '\n' +
-  chalk.red('+ ' + ((options && options.bAnnotation) || 'Received')) +
+  fgInsert('+ ' + ((options && options.bAnnotation) || 'Received')) +
   '\n\n';
 
-// Given string, return array of its lines.
-const splitIntoLines = string => {
-  const lines = string.split('\n');
+type Put = (line: string) => void;
 
-  if (lines.length !== 0 && lines[lines.length - 1] === '') {
-    lines.pop();
-  }
-
-  return lines;
-};
-
-// Given diff character and compared line, return original line with colors.
-const formatLine = (
-  char: string,
-  lineCompared: string,
-  getOriginal?: GetOriginal,
+// Given index interval in expected lines, put formatted delete lines.
+const formatDelete = (
+  aStart: number,
+  aEnd: number,
+  aLinesUn: Array<string>,
+  aLinesIn: Array<string>,
+  put: Put,
 ) => {
-  const digit = getDiffDigit(char);
+  const highlightSpaces = getHighlightSpaces(aLinesUn !== aLinesIn);
+  for (let aIndex = aStart; aIndex !== aEnd; aIndex += 1) {
+    const aLineUn = aLinesUn[aIndex];
+    const aLineIn = aLinesIn[aIndex];
+    const indentation = aLineIn.slice(0, aLineIn.length - aLineUn.length);
 
-  if (getOriginal) {
-    // Compared without indentation if expected value is data structure.
-    const lineArray = getOriginal(digit);
-    const lineOriginal = lineArray[0];
-    const onlyIndentationChanged =
-      digit === 0 && lineOriginal.length !== lineArray[1].length;
-
-    return getColor(digit, onlyIndentationChanged)(
-      char +
-        ' ' +
-        // Prepend indentation spaces from original to compared line.
-        lineOriginal.slice(0, lineOriginal.length - lineCompared.length) +
-        highlightLeadingTrailingSpaces(
-          lineCompared,
-          getBgColor(digit, onlyIndentationChanged),
-        ),
-    );
+    put(fgDelete('- ' + indentation + highlightSpaces(aLineUn, bgInverse)));
   }
-
-  // Format compared line when expected is snapshot or multiline string.
-  return getColor(digit)(
-    char + ' ' + highlightTrailingSpaces(lineCompared, getBgColor(digit)),
-  );
 };
 
-// Given original lines, return callback function
-// which given diff digit, returns array.
-const getterForChunks = (original: Original) => {
-  const linesExpected = splitIntoLines(original.a);
-  const linesReceived = splitIntoLines(original.b);
+// Given index interval in received lines, put formatted insert lines.
+const formatInsert = (
+  bStart: number,
+  bEnd: number,
+  bLinesUn: Array<string>,
+  bLinesIn: Array<string>,
+  put: Put,
+) => {
+  const highlightSpaces = getHighlightSpaces(bLinesUn !== bLinesIn);
+  for (let bIndex = bStart; bIndex !== bEnd; bIndex += 1) {
+    const bLineUn = bLinesUn[bIndex];
+    const bLineIn = bLinesIn[bIndex];
+    const indentation = bLineIn.slice(0, bLineIn.length - bLineUn.length);
 
-  let iExpected = 0;
-  let iReceived = 0;
+    put(fgInsert('+ ' + indentation + highlightSpaces(bLineUn, bgInverse)));
+  }
+};
 
-  return (digit: DIFF_DIGIT) => {
-    if (digit === -1) {
-      return [linesExpected[iExpected++]];
-    }
-    if (digit === 1) {
-      return [linesReceived[iReceived++]];
-    }
-    // Because compared line is equal: original received and expected lines.
-    return [linesReceived[iReceived++], linesExpected[iExpected++]];
-  };
+// Given the number of items and starting indexes of a common subsequence,
+// put formatted common lines.
+const formatCommon = (
+  nCommon: number,
+  aCommon: number,
+  bCommon: number,
+  // aLinesUn has lines that are equal to bLinesUn within a common subsequence
+  aLinesIn: Array<string>,
+  bLinesUn: Array<string>,
+  bLinesIn: Array<string>,
+  put: Put,
+) => {
+  const highlightSpaces = getHighlightSpaces(bLinesUn !== bLinesIn);
+  for (; nCommon !== 0; nCommon -= 1, aCommon += 1, bCommon += 1) {
+    const bLineUn = bLinesUn[bCommon];
+    const bLineIn = bLinesIn[bCommon];
+    const bLineInLength = bLineIn.length;
+
+    // For common lines, received indentation seems more intuitive.
+    const indentation = bLineIn.slice(0, bLineInLength - bLineUn.length);
+
+    // Color shows whether expected and received line has same indentation.
+    const hasSameIndentation = aLinesIn[aCommon].length === bLineInLength;
+    const fg = hasSameIndentation ? fgCommon : fgIndent;
+    const bg = hasSameIndentation ? bgCommon : bgInverse;
+
+    put(fg('  ' + indentation + highlightSpaces(bLineUn, bg)));
+  }
 };
 
 // jest --expand
-const formatChunks = (a: string, b: string, original?: Original): Diff => {
-  const chunks = diffLines(a, b);
-  if (chunks.every(chunk => !chunk.removed && !chunk.added)) {
-    return null;
-  }
+// Return formatted diff as joined string of all lines.
+const diffExpand = (
+  aLinesUn: Array<string>,
+  bLinesUn: Array<string>,
+  aLinesIn: Array<string>,
+  bLinesIn: Array<string>,
+): string => {
+  const isCommon = (aIndex, bIndex) => aLinesUn[aIndex] === bLinesUn[bIndex];
 
-  const getOriginal = original && getterForChunks(original);
-  return chunks
-    .reduce((lines, chunk) => {
-      const char = getDiffChar(chunk);
-
-      splitIntoLines(chunk.value).forEach(line => {
-        lines.push(formatLine(char, line, getOriginal));
-      });
-
-      return lines;
-    }, [])
-    .join('\n');
-};
-
-// Only show patch marks ("@@ ... @@") if the diff is big.
-// To determine this, we need to compare either the original string (a) to
-// `hunk.oldLines` or a new string to `hunk.newLines`.
-// If the `oldLinesCount` is greater than `hunk.oldLines`
-// we can be sure that at least 1 line has been "hidden".
-const shouldShowPatchMarks = (hunk: Hunk, oldLinesCount: number): boolean =>
-  oldLinesCount > hunk.oldLines;
-
-const createPatchMark = (hunk: Hunk): string => {
-  const markOld = `-${hunk.oldStart},${hunk.oldLines}`;
-  const markNew = `+${hunk.newStart},${hunk.newLines}`;
-  return chalk.yellow(`@@ ${markOld} ${markNew} @@`);
-};
-
-// Given original lines, return callback function which given indexes for hunk,
-// returns another callback function which given diff digit, returns array.
-const getterForHunks = (original: Original) => {
-  const linesExpected = splitIntoLines(original.a);
-  const linesReceived = splitIntoLines(original.b);
-
-  return (iExpected: number, iReceived: number) => (digit: DIFF_DIGIT) => {
-    if (digit === -1) {
-      return [linesExpected[iExpected++]];
-    }
-    if (digit === 1) {
-      return [linesReceived[iReceived++]];
-    }
-    // Because compared line is equal: original received and expected lines.
-    return [linesReceived[iReceived++], linesExpected[iExpected++]];
+  const array = [];
+  const put = (line: string) => {
+    array.push(line);
   };
+
+  let aStart = 0;
+  let bStart = 0;
+
+  const foundSubsequence = (nCommon, aCommon, bCommon) => {
+    formatDelete(aStart, aCommon, aLinesUn, aLinesIn, put);
+    formatInsert(bStart, bCommon, bLinesUn, bLinesIn, put);
+    formatCommon(nCommon, aCommon, bCommon, aLinesIn, bLinesUn, bLinesIn, put);
+    aStart = aCommon + nCommon;
+    bStart = bCommon + nCommon;
+  };
+
+  const aLength = aLinesUn.length;
+  const bLength = bLinesUn.length;
+
+  diff(aLength, bLength, isCommon, foundSubsequence);
+
+  // After the last common subsequence, format remaining change lines.
+  formatDelete(aStart, aLength, aLinesUn, aLinesIn, put);
+  formatInsert(bStart, bLength, bLinesUn, bLinesIn, put);
+
+  return array.join('\n');
 };
+
+// In GNU diff format, indexes are one-based instead of zero-based.
+const createPatchMark = (
+  aStart: number,
+  aEnd: number,
+  bStart: number,
+  bEnd: number,
+): string =>
+  fgPatchMark(
+    `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
+  );
+
+const getContextLines = (options: ?DiffOptions): number =>
+  options &&
+  typeof options.contextLines === 'number' &&
+  options.contextLines >= 0
+    ? options.contextLines
+    : DIFF_CONTEXT_DEFAULT;
 
 // jest --no-expand
-const formatHunks = (
-  a: string,
-  b: string,
-  contextLines?: number,
-  original?: Original,
-): Diff => {
-  const options = {
-    context:
-      typeof contextLines === 'number' && contextLines >= 0
-        ? contextLines
-        : DIFF_CONTEXT_DEFAULT,
+// Return joined string of formatted diff for all change lines,
+// but if some common lines are omitted because there are more than the context,
+// then a “patch mark” precedes each set of adjacent changed and common lines.
+const diffNoExpand = (
+  aLinesUn: Array<string>,
+  bLinesUn: Array<string>,
+  aLinesIn: Array<string>,
+  bLinesIn: Array<string>,
+  nContextLines: number,
+): string => {
+  const isCommon = (aIndex, bIndex) => aLinesUn[aIndex] === bLinesUn[bIndex];
+
+  let iPatchMark = 0; // index of placeholder line for patch mark
+  const array = [''];
+  const put = (line: string) => {
+    array.push(line);
   };
 
-  const {hunks} = structuredPatch('', '', a, b, '', '', options);
-  if (hunks.length === 0) {
-    return null;
+  let isAtEnd = false;
+  const aLength = aLinesUn.length;
+  const bLength = bLinesUn.length;
+  const nContextLines2 = nContextLines + nContextLines;
+
+  // Initialize the first patch for changes at the start,
+  // especially for edge case in which there is no common subsequence.
+  let aStart = 0;
+  let aEnd = 0;
+  let bStart = 0;
+  let bEnd = 0;
+
+  // Given the number of items and starting indexes of each common subsequence,
+  // format any preceding change lines, and then common context lines.
+  const foundSubsequence = (nCommon, aStartCommon, bStartCommon) => {
+    const aEndCommon = aStartCommon + nCommon;
+    const bEndCommon = bStartCommon + nCommon;
+    isAtEnd = aEndCommon === aLength && bEndCommon === bLength;
+
+    // If common subsequence is at start, re-initialize the first patch.
+    if (aStartCommon === 0 && bStartCommon === 0) {
+      const nLines = nContextLines < nCommon ? nContextLines : nCommon;
+      aStart = aEndCommon - nLines;
+      bStart = bEndCommon - nLines;
+
+      formatCommon(nLines, aStart, bStart, aLinesIn, bLinesUn, bLinesIn, put);
+      aEnd = aEndCommon;
+      bEnd = bEndCommon;
+      return;
+    }
+
+    // Format preceding change lines.
+    formatDelete(aEnd, aStartCommon, aLinesUn, aLinesIn, put);
+    formatInsert(bEnd, bStartCommon, bLinesUn, bLinesIn, put);
+    aEnd = aStartCommon;
+    bEnd = bStartCommon;
+
+    // If common subsequence is at end, then context follows preceding changes;
+    // else context follows preceding changes AND precedes following changes.
+    const maxContextLines = isAtEnd ? nContextLines : nContextLines2;
+
+    if (nCommon <= maxContextLines) {
+      // The patch includes all lines in the common subsequence.
+      formatCommon(nCommon, aEnd, bEnd, aLinesIn, bLinesUn, bLinesIn, put);
+      aEnd += nCommon;
+      bEnd += nCommon;
+      return;
+    }
+
+    // The patch ends because context is less than number of common lines.
+    formatCommon(nContextLines, aEnd, bEnd, aLinesIn, bLinesUn, bLinesIn, put);
+    aEnd += nContextLines;
+    bEnd += nContextLines;
+
+    array[iPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd);
+
+    // If common subsequence is not at end, another patch follows it.
+    if (!isAtEnd) {
+      iPatchMark = array.length; // index of placeholder line
+      array[iPatchMark] = '';
+
+      const nLines = nContextLines < nCommon ? nContextLines : nCommon;
+      aStart = aEndCommon - nLines;
+      bStart = bEndCommon - nLines;
+
+      formatCommon(nLines, aStart, bStart, aLinesIn, bLinesUn, bLinesIn, put);
+      aEnd = aEndCommon;
+      bEnd = bEndCommon;
+    }
+  };
+
+  diff(aLength, bLength, isCommon, foundSubsequence);
+
+  // If no common subsequence or last was not at end, format remaining change lines.
+  if (!isAtEnd) {
+    formatDelete(aEnd, aLength, aLinesUn, aLinesIn, put);
+    formatInsert(bEnd, bLength, bLinesUn, bLinesIn, put);
+    aEnd = aLength;
+    bEnd = bLength;
   }
 
-  const getter = original && getterForHunks(original);
-  const oldLinesCount = (a.match(/\n/g) || []).length;
-  return hunks
-    .reduce((lines, hunk: Hunk) => {
-      if (shouldShowPatchMarks(hunk, oldLinesCount)) {
-        lines.push(createPatchMark(hunk));
-      }
+  if (aStart === 0 && aEnd === aLength && bStart === 0 && bEnd === bLength) {
+    array.splice(0, 1); // delete placeholder line for patch mark
+  } else {
+    array[iPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd);
+  }
 
-      // Hunk properties are one-based but index args are zero-based.
-      const getOriginal =
-        getter && getter(hunk.oldStart - 1, hunk.newStart - 1);
-      hunk.lines.forEach(line => {
-        lines.push(formatLine(line[0], line.slice(1), getOriginal));
-      });
-
-      return lines;
-    }, [])
-    .join('\n');
+  return array.join('\n');
 };
 
-export default function diffStrings(
+export default (
   a: string,
   b: string,
   options: ?DiffOptions,
   original?: Original,
-): string {
-  // Because `formatHunks` and `formatChunks` ignore one trailing newline,
-  // always append newline to strings:
-  a += '\n';
-  b += '\n';
+): string => {
+  if (a === b) {
+    return NO_DIFF_MESSAGE;
+  }
 
-  // `diff` uses the Myers LCS diff algorithm which runs in O(n+d^2) time
-  // (where "d" is the edit distance) and can get very slow for large edit
-  // distances. Mitigate the cost by switching to a lower-resolution diff
-  // whenever linebreaks are involved.
-  const result =
-    options && options.expand === false
-      ? formatHunks(a, b, options && options.contextLines, original)
-      : formatChunks(a, b, original);
+  let aLinesUn = a.split('\n');
+  let bLinesUn = b.split('\n');
 
-  return result === null ? NO_DIFF_MESSAGE : getAnnotation(options) + result;
-}
+  // Indentation is unknown if expected value is snapshot or multiline string.
+  let aLinesIn = aLinesUn;
+  let bLinesIn = bLinesUn;
+
+  if (original) {
+    // Indentation is known if expected value is data structure:
+    // Compare lines without indentation and format lines with indentation.
+    aLinesIn = original.a.split('\n');
+    bLinesIn = original.b.split('\n');
+
+    if (
+      aLinesUn.length !== aLinesIn.length ||
+      bLinesUn.length !== bLinesIn.length
+    ) {
+      // Fall back if unindented and indented lines are inconsistent.
+      aLinesUn = aLinesIn;
+      bLinesUn = bLinesIn;
+    }
+  }
+
+  return (
+    getAnnotation(options) +
+    (options && options.expand === false
+      ? diffNoExpand(
+          aLinesUn,
+          bLinesUn,
+          aLinesIn,
+          bLinesIn,
+          getContextLines(options),
+        )
+      : diffExpand(aLinesUn, bLinesUn, aLinesIn, bLinesIn))
+  );
+};

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
 const {
   default: defaultResolver,
@@ -7,7 +7,7 @@ const {
 const exportedModules = new Map([
   ['foo', 'foo'],
   ['bar', 'bar'],
-  ['regenerator-runtime/runtime', 'fake-regenerator'],
+  ['regenerator-runtime/runtime', 'fakeRegenerator'],
 ]);
 
 module.exports = (name, options) => {

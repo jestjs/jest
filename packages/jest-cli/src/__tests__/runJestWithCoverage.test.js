@@ -1,4 +1,4 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
 import runJest from '../runJest';
 
@@ -70,13 +70,12 @@ describe('collectCoverageFrom patterns', () => {
   it('should apply collectCoverageFrom patterns coming from SearchSource', async () => {
     expect.assertions(1);
 
-    await runJest(
-      Object.assign({}, defaults, {
-        globalConfig: {
-          rootDir: '',
-        },
-      }),
-    );
+    await runJest({
+      ...defaults,
+      globalConfig: {
+        rootDir: '',
+      },
+    });
     expect(globalConfig.collectCoverageFrom).toEqual([
       'foo.js',
       'dont/cover.js',
@@ -86,29 +85,27 @@ describe('collectCoverageFrom patterns', () => {
   it('excludes coverage from files outside the global collectCoverageFrom config', async () => {
     expect.assertions(1);
 
-    await runJest(
-      Object.assign({}, defaults, {
-        globalConfig: {
-          collectCoverageFrom: ['**/dont/*.js'],
-          rootDir: '',
-        },
-      }),
-    );
+    await runJest({
+      ...defaults,
+      globalConfig: {
+        collectCoverageFrom: ['**/dont/*.js'],
+        rootDir: '',
+      },
+    });
     expect(globalConfig.collectCoverageFrom).toEqual(['dont/cover.js']);
   });
 
   it('respects coveragePathIgnorePatterns', async () => {
     expect.assertions(1);
 
-    await runJest(
-      Object.assign({}, defaults, {
-        globalConfig: {
-          collectCoverageFrom: ['**/*.js'],
-          coveragePathIgnorePatterns: ['dont'],
-          rootDir: '',
-        },
-      }),
-    );
+    await runJest({
+      ...defaults,
+      globalConfig: {
+        collectCoverageFrom: ['**/*.js'],
+        coveragePathIgnorePatterns: ['dont'],
+        rootDir: '',
+      },
+    });
     expect(globalConfig.collectCoverageFrom).toEqual(['foo.js']);
   });
 });

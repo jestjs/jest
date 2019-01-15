@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -25,6 +25,7 @@ import {clearLine} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './getMaxWorkers';
 import micromatch from 'micromatch';
+import {sync as realpath} from 'realpath-native';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {
@@ -58,12 +59,11 @@ const mergeOptionWithPreset = (
   optionName: string,
 ) => {
   if (options[optionName] && preset[optionName]) {
-    options[optionName] = Object.assign(
-      {},
-      options[optionName],
-      preset[optionName],
-      options[optionName],
-    );
+    options[optionName] = {
+      ...options[optionName],
+      ...preset[optionName],
+      ...options[optionName],
+    };
   }
 };
 
@@ -126,7 +126,7 @@ const setupPreset = (
   mergeOptionWithPreset(options, preset, 'moduleNameMapper');
   mergeOptionWithPreset(options, preset, 'transform');
 
-  return Object.assign({}, preset, options);
+  return {...preset, ...options};
 };
 
 const setupBabelJest = (options: InitialOptions) => {
@@ -137,6 +137,10 @@ const setupBabelJest = (options: InitialOptions) => {
       const regex = new RegExp(pattern);
       return regex.test('a.js') || regex.test('a.jsx');
     });
+    const customTSPattern = Object.keys(transform).find(pattern => {
+      const regex = new RegExp(pattern);
+      return regex.test('a.ts') || regex.test('a.tsx');
+    });
 
     if (customJSPattern) {
       const customJSTransformer = transform[customJSPattern];
@@ -146,6 +150,17 @@ const setupBabelJest = (options: InitialOptions) => {
         transform[customJSPattern] = babelJest;
       } else if (customJSTransformer.includes('babel-jest')) {
         babelJest = customJSTransformer;
+      }
+    }
+
+    if (customTSPattern) {
+      const customTSTransformer = transform[customTSPattern];
+
+      if (customTSTransformer === 'babel-jest') {
+        babelJest = require.resolve('babel-jest');
+        transform[customTSPattern] = babelJest;
+      } else if (customTSTransformer.includes('babel-jest')) {
+        babelJest = customTSTransformer;
       }
     }
   } else {
@@ -273,6 +288,14 @@ const normalizeRootDir = (options: InitialOptions): InitialOptions => {
     );
   }
   options.rootDir = path.normalize(options.rootDir);
+
+  try {
+    // try to resolve windows short paths, ignoring errors (permission errors, mostly)
+    options.rootDir = realpath(options.rootDir);
+  } catch (e) {
+    // ignored
+  }
+
   return options;
 };
 
@@ -401,12 +424,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     options = setupPreset(options, options.preset);
   }
 
-  if (options.testEnvironment) {
-    options.testEnvironment = getTestEnvironment({
-      rootDir: options.rootDir,
-      testEnvironment: options.testEnvironment,
-    });
-  }
+  options.testEnvironment = getTestEnvironment({
+    rootDir: options.rootDir,
+    testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
+  });
 
   if (!options.roots && options.testPathDirs) {
     options.roots = options.testPathDirs;
@@ -425,9 +446,16 @@ export default function normalize(options: InitialOptions, argv: Argv) {
   }
 
   const babelJest = setupBabelJest(options);
-  const newOptions: $Shape<
-    DefaultOptions & ProjectConfig & GlobalConfig,
-  > = (Object.assign({}, DEFAULT_CONFIG): any);
+  const newOptions: $Shape<DefaultOptions & ProjectConfig & GlobalConfig> = {
+    ...DEFAULT_CONFIG,
+  };
+
+  try {
+    // try to resolve windows short paths, ignoring errors (permission errors, mostly)
+    newOptions.cwd = realpath(newOptions.cwd);
+  } catch (e) {
+    // ignored
+  }
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -551,7 +579,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeUnmockedModulePathPatterns(options, key);
         break;
       case 'haste':
-        value = Object.assign({}, options[key]);
+        value = {...options[key]};
         if (value.hasteImplModulePath != null) {
           value.hasteImplModulePath = resolve(newOptions.resolver, {
             filePath: replaceRootDirInPath(
@@ -565,11 +593,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'projects':
         value = (options[key] || [])
-          .map(
-            project =>
-              typeof project === 'string'
-                ? _replaceRootDirTags(options.rootDir, project)
-                : project,
+          .map(project =>
+            typeof project === 'string'
+              ? _replaceRootDirTags(options.rootDir, project)
+              : project,
           )
           .reduce((projects, project) => {
             // Project can be specified as globs. If a glob matches any files,
@@ -618,8 +645,21 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
         break;
       }
+      case 'bail': {
+        if (typeof options[key] === 'boolean') {
+          value = options[key] ? 1 : 0;
+        } else if (typeof options[key] === 'string') {
+          value = 1;
+          // If Jest is invoked as `jest --bail someTestPattern` then need to
+          // move the pattern from the `bail` configuration and into `argv._`
+          // to be processed as an extra parameter
+          argv._.push(options[key]);
+        } else {
+          value = options[key];
+        }
+        break;
+      }
       case 'automock':
-      case 'bail':
       case 'browser':
       case 'cache':
       case 'changedSince':
@@ -633,6 +673,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'displayName':
       case 'errorOnDeprecated':
       case 'expand':
+      case 'extraGlobals':
       case 'globals':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
@@ -727,8 +768,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     argv.ci && !argv.updateSnapshot
       ? 'none'
       : argv.updateSnapshot
-        ? 'all'
-        : 'new';
+      ? 'all'
+      : 'new';
 
   newOptions.maxWorkers = getMaxWorkers(argv);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -18,7 +18,7 @@ import getChangedFilesPromise from './getChangedFilesPromise';
 import exit from 'exit';
 import HasteMap from 'jest-haste-map';
 import isValidPath from './lib/is_valid_path';
-import {isInteractive} from 'jest-util';
+import {isInteractive, specialChars} from 'jest-util';
 import {print as preRunMessagePrint} from './preRunMessage';
 import createContext from './lib/create_context';
 import runJest from './runJest';
@@ -26,7 +26,6 @@ import updateGlobalConfig from './lib/update_global_config';
 import SearchSource from './SearchSource';
 import TestWatcher from './TestWatcher';
 import FailedTestsCache from './FailedTestsCache';
-import {CLEAR} from './constants';
 import {KEYS, JestHook} from 'jest-watcher';
 import TestPathPatternPlugin from './plugins/test_path_pattern';
 import TestNamePatternPlugin from './plugins/test_name_pattern';
@@ -236,7 +235,7 @@ export default function watch(
     }
 
     testWatcher = new TestWatcher({isWatchMode: true});
-    isInteractive && outputStream.write(CLEAR);
+    isInteractive && outputStream.write(specialChars.CLEAR);
     preRunMessagePrint(outputStream);
     isRunning = true;
     const configs = contexts.map(context => context.config);
@@ -288,6 +287,7 @@ export default function watch(
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
       if (typeof stdin.setRawMode === 'function') {
+        // $FlowFixMe
         stdin.setRawMode(false);
       }
       outputStream.write('\n');
@@ -395,12 +395,13 @@ export default function watch(
 
   const onCancelPatternPrompt = () => {
     outputStream.write(ansiEscapes.cursorHide);
-    outputStream.write(ansiEscapes.clearScreen);
+    outputStream.write(specialChars.CLEAR);
     outputStream.write(usage(globalConfig, watchPlugins));
     outputStream.write(ansiEscapes.cursorShow);
   };
 
   if (typeof stdin.setRawMode === 'function') {
+    // $FlowFixMe
     stdin.setRawMode(true);
     stdin.resume();
     stdin.setEncoding('utf8');

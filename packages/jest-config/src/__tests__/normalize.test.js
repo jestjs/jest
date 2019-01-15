@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,7 +10,6 @@ import {escapeStrForRegex} from 'jest-regex-util';
 import normalize from '../normalize';
 
 jest.mock('jest-resolve');
-
 jest.mock('path', () => jest.requireActual('path').posix);
 
 const crypto = require('crypto');
@@ -334,9 +333,8 @@ describe('setupFilesAfterEnv', () => {
   let Resolver;
   beforeEach(() => {
     Resolver = require('jest-resolve');
-    Resolver.findNodeModule = jest.fn(
-      name =>
-        name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+    Resolver.findNodeModule = jest.fn(name =>
+      name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
     );
   });
 
@@ -385,9 +383,8 @@ describe('setupTestFrameworkScriptFile', () => {
     console.warn = jest.fn();
     consoleWarn = console.warn;
     Resolver = require('jest-resolve');
-    Resolver.findNodeModule = jest.fn(
-      name =>
-        name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
+    Resolver.findNodeModule = jest.fn(name =>
+      name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
     );
   });
 
@@ -724,11 +721,10 @@ describe('babel-jest', () => {
   let Resolver;
   beforeEach(() => {
     Resolver = require('jest-resolve');
-    Resolver.findNodeModule = jest.fn(
-      name =>
-        name.indexOf('babel-jest') === -1
-          ? path.sep + 'node_modules' + path.sep + name
-          : name,
+    Resolver.findNodeModule = jest.fn(name =>
+      name.indexOf('babel-jest') === -1
+        ? path.sep + 'node_modules' + path.sep + name
+        : name,
     );
   });
 
@@ -1459,7 +1455,14 @@ describe('moduleFileExtensions', () => {
   it('defaults to something useful', () => {
     const {options} = normalize({rootDir: '/root'}, {});
 
-    expect(options.moduleFileExtensions).toEqual(['js', 'json', 'jsx', 'node']);
+    expect(options.moduleFileExtensions).toEqual([
+      'js',
+      'json',
+      'jsx',
+      'ts',
+      'tsx',
+      'node',
+    ]);
   });
 
   it('throws if missing `js`', () => {

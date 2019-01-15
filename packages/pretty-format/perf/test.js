@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,7 +12,7 @@ const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
 const leftPad = require('left-pad');
 const prettyFormat = require('../build');
-const ReactTestComponent = require('../build/plugins/react_test_component');
+const ReactTestComponent = require('../build/plugins/ReactTestComponent');
 const worldGeoJson = require('./world.geo.json');
 
 const NANOSECONDS = 1000000000;

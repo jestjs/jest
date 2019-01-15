@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,7 +12,7 @@
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 
 const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
-  bail: false,
+  bail: 0,
   changedFilesWithAncestor: false,
   changedSince: '',
   collectCoverage: false,
@@ -26,6 +26,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   enabledTestsMap: null,
   errorOnDeprecated: false,
   expand: false,
+  extraGlobals: [],
   filter: null,
   findRelatedTests: false,
   forceExit: false,
@@ -77,8 +78,11 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   detectOpenHandles: false,
   displayName: undefined,
   errorOnDeprecated: false,
+  extraGlobals: [],
   filter: null,
   forceCoverageMatch: [],
+  globalSetup: null,
+  globalTeardown: null,
   globals: {},
   haste: {
     providesModuleNodeModules: [],
@@ -130,7 +134,7 @@ export const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
     `);
   }
 
-  return Object.assign({}, DEFAULT_GLOBAL_CONFIG, overrides);
+  return {...DEFAULT_GLOBAL_CONFIG, ...overrides};
 };
 
 export const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
@@ -144,5 +148,5 @@ export const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
     `);
   }
 
-  return Object.assign({}, DEFAULT_PROJECT_CONFIG, overrides);
+  return {...DEFAULT_GLOBAL_CONFIG, ...overrides};
 };

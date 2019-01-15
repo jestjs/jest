@@ -30,7 +30,7 @@ For example: A mock function `f` that has been called twice, with the arguments 
 
 ### `mockFn.mock.results`
 
-An array containing the results of all calls that have been made to this mock function. Each entry in this array is an object containing a boolean `isThrow` property, and a `value` property. `isThrow` is true if the call terminated due to a `throw`, or false if the the call returned normally. The `value` property contains the value that was thrown or returned.
+An array containing the results of all calls that have been made to this mock function. Each entry in this array is an object containing a boolean `isThrow` property, and a `value` property. `isThrow` is true if the call terminated due to a `throw`, or false if the call returned normally. The `value` property contains the value that was thrown or returned.
 
 For example: A mock function `f` that has been called three times, returning `result1`, throwing an error, and then returning `result2`, would have a `mock.results` array that looks like this:
 

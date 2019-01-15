@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -20,26 +20,13 @@ const prettyFormat = require('..');
 const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
 const formatElement = (element: any, options?: OptionsReceived) =>
-  prettyFormat(
-    element,
-    Object.assign(
-      ({
-        plugins: [ReactElement],
-      }: OptionsReceived),
-      options,
-    ),
-  );
+  prettyFormat(element, {plugins: [ReactElement], ...options});
 
 const formatTestObject = (object: any, options?: OptionsReceived) =>
-  prettyFormat(
-    object,
-    Object.assign(
-      ({
-        plugins: [ReactTestComponent, ReactElement],
-      }: OptionsReceived),
-      options,
-    ),
-  );
+  prettyFormat(object, {
+    plugins: [ReactTestComponent, ReactElement],
+    ...options,
+  });
 
 function assertPrintedJSX(
   val: any,
@@ -719,7 +706,6 @@ test('supports forwardRef with a child', () => {
   }
 
   expect(
-    // $FlowFixMe - https://github.com/facebook/flow/issues/6103
     formatElement(React.createElement(React.forwardRef(Cat), null, 'mouse')),
   ).toEqual('<ForwardRef(Cat)>\n  mouse\n</ForwardRef(Cat)>');
 });

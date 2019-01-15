@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,7 +13,10 @@ import type {ScrollOptions} from 'types/Watch';
 
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
+import {specialChars} from 'jest-util';
 import Prompt from './lib/Prompt';
+
+const {CLEAR} = specialChars;
 
 const usage = (entity: string) =>
   `\n${chalk.bold('Pattern Mode Usage')}\n` +
@@ -38,7 +41,7 @@ export default class PatternPrompt {
 
   run(onSuccess: Function, onCancel: Function, options?: {header: string}) {
     this._pipe.write(ansiEscapes.cursorHide);
-    this._pipe.write(ansiEscapes.clearScreen);
+    this._pipe.write(CLEAR);
 
     if (options && options.header) {
       this._pipe.write(options.header + '\n');
