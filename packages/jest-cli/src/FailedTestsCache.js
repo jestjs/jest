@@ -41,8 +41,7 @@ export default class FailedTestsCache {
     if (!this._enabledTestsMap) {
       return globalConfig;
     }
-    // $FlowFixMe Object.assign
-    const newConfig: GlobalConfig = Object.assign({}, globalConfig);
+    const newConfig: GlobalConfig = {...globalConfig};
     newConfig.enabledTestsMap = this._enabledTestsMap;
     return Object.freeze(newConfig);
   }

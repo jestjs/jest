@@ -23,11 +23,10 @@ import {transformSync as babelTransform, loadPartialConfig} from '@babel/core';
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
-const cwd = process.cwd();
 
 const createTransformer = (options: any): Transformer => {
-  // Allow incoming options to override `cwd`
-  options = Object.assign({cwd}, options, {
+  options = {
+    ...options,
     caller: {
       name: 'babel-jest',
       supportsStaticESM: false,
@@ -36,10 +35,14 @@ const createTransformer = (options: any): Transformer => {
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat(jestPresetPath),
     sourceMaps: 'both',
-  });
+  };
 
   delete options.cacheDirectory;
   delete options.filename;
+
+  const loadBabelConfig = (cwd, filename) =>
+    // `cwd` first to allow incoming options to override it
+    loadPartialConfig({cwd, ...options, filename});
 
   return {
     canInstrument: true,
@@ -47,9 +50,9 @@ const createTransformer = (options: any): Transformer => {
       fileData: string,
       filename: Path,
       configString: string,
-      {instrument, rootDir}: CacheKeyOptions,
+      {config, instrument, rootDir}: {config: ProjectConfig} & CacheKeyOptions,
     ): string {
-      const babelOptions = loadPartialConfig({...options, filename});
+      const babelOptions = loadBabelConfig(config.cwd, filename);
       const configPath = [
         babelOptions.config || '',
         babelOptions.babelrc || '',
@@ -82,9 +85,7 @@ const createTransformer = (options: any): Transformer => {
       config: ProjectConfig,
       transformOptions?: TransformOptions,
     ): string | TransformedSource {
-      const babelOptions = {
-        ...loadPartialConfig({...options, filename}).options,
-      };
+      const babelOptions = {...loadBabelConfig(config.cwd, filename).options};
 
       if (transformOptions && transformOptions.instrument) {
         babelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';

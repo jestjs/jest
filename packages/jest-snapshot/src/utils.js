@@ -179,7 +179,7 @@ export const saveSnapshotFile = (
 };
 
 export const deepMerge = (target: any, source: any) => {
-  const mergedOutput = Object.assign({}, target);
+  const mergedOutput = {...target};
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach(key => {
       if (isObject(source[key]) && !source[key].$$typeof) {

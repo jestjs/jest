@@ -31,9 +31,7 @@ export default function convertDescriptorToString(
   const stringified = descriptor.toString();
   const typeDescriptorMatch = stringified.match(/class|function/);
   const indexOfNameSpace =
-    // $FlowFixMe
     typeDescriptorMatch.index + typeDescriptorMatch[0].length;
-  // $FlowFixMe
   const indexOfNameAfterSpace = stringified.search(/\(|\{/, indexOfNameSpace);
   const name = stringified.substring(indexOfNameSpace, indexOfNameAfterSpace);
   return name.trim();

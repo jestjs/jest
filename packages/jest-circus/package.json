@@ -12,7 +12,7 @@
     "chalk": "^2.0.1",
     "co": "^4.6.0",
     "expect": "^23.6.0",
-    "is-generator-fn": "^1.0.0",
+    "is-generator-fn": "^2.0.0",
     "jest-diff": "^23.6.0",
     "jest-each": "^23.6.0",
     "jest-matcher-utils": "^23.6.0",

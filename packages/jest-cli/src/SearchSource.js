@@ -186,7 +186,7 @@ export default class SearchSource {
       tests: toTests(
         this._context,
         paths
-          .map(p => path.resolve(process.cwd(), p))
+          .map(p => path.resolve(this._context.config.cwd, p))
           .filter(this.isTestFilePath.bind(this)),
       ),
     };
@@ -197,7 +197,9 @@ export default class SearchSource {
     collectCoverage: boolean,
   ): SearchResult {
     if (Array.isArray(paths) && paths.length) {
-      const resolvedPaths = paths.map(p => path.resolve(process.cwd(), p));
+      const resolvedPaths = paths.map(p =>
+        path.resolve(this._context.config.cwd, p),
+      );
       return this.findRelatedTests(new Set(resolvedPaths), collectCoverage);
     }
     return {tests: []};
@@ -273,10 +275,10 @@ export default class SearchSource {
         filterResult.filtered.map(result => result.test),
       );
 
-      // $FlowFixMe: Object.assign with empty object causes troubles to Flow.
-      return Object.assign({}, searchResult, {
+      return {
+        ...searchResult,
         tests: tests.filter(test => filteredSet.has(test.path)),
-      });
+      };
     }
 
     return searchResult;

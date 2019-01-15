@@ -12,8 +12,8 @@ import type {ModuleMap} from 'types/HasteMap';
 import type {ResolveModuleConfig} from 'types/Resolve';
 import type {ErrorWithCode} from 'types/Errors';
 
-import fs from 'fs';
 import path from 'path';
+import {sync as realpath} from 'realpath-native';
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver from './defaultResolver';
@@ -53,7 +53,7 @@ const NATIVE_PLATFORM = 'native';
 
 // We might be inside a symlink.
 const cwd = process.cwd();
-const resolvedCwd = fs.realpathSync(cwd) || cwd;
+const resolvedCwd = realpath(cwd) || cwd;
 const nodePaths = process.env.NODE_PATH
   ? process.env.NODE_PATH.split(path.delimiter)
       .filter(Boolean)

@@ -36,8 +36,7 @@ export type Options = {
 };
 
 export default (globalConfig: GlobalConfig, options: Options): GlobalConfig => {
-  // $FlowFixMe Object.assign
-  const newConfig: GlobalConfig = Object.assign({}, globalConfig);
+  const newConfig: GlobalConfig = {...globalConfig};
 
   if (!options) {
     options = {};
