@@ -113,7 +113,7 @@
 - `[jest-snapshot]` Write and read snapshots from disk even if `fs` is mocked ([#7080](https://github.com/facebook/jest/pull/7080))
 - `[jest-config]` Normalize `config.cwd` and `config.rootDir` using `realpath ([#7598](https://github.com/facebook/jest/pull/7598))
 - `[jest-environment-node]` Fix buffer property is not ArrayBuffer issue. ([#7626](https://github.com/facebook/jest/pull/7626))
-- `[babel-plugin-jest-hoist]` Run as `exit` visitor to strip out type imports before verifying scope
+- `[babel-plugin-jest-hoist]` Run as `exit` visitor to strip out type imports before verifying scope ([#7634](https://github.com/facebook/jest/pull/7634)
 
 ### Chore & Maintenance
 
