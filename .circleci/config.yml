@@ -87,20 +87,6 @@ jobs:
       - store_test_results:
           path: reports/junit
 
-  test-jest-workers:
-    working_directory: ~/jest
-    docker:
-      - image: circleci/node:10
-    steps:
-      - checkout
-      - restore-cache: *restore-cache
-      - run: yarn --no-progress
-      - save-cache: *save-cache
-      - run:
-          command: NODE_OPTIONS=--experimental-worker yarn test-ci-partial
-      - store_test_results:
-          path: reports/junit
-
   test-node-11:
     working_directory: ~/jest
     docker:
@@ -150,7 +136,6 @@ workflows:
       - test-node-8
       - test-node-10
       - test-jest-circus
-      - test-jest-workers
       - test-node-11 # current
       - test-browser
       - test-or-deploy-website:
