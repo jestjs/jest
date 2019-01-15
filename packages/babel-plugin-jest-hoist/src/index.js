@@ -158,10 +158,12 @@ module.exports = () => {
   };
   return {
     visitor: {
-      ExpressionStatement(path: any) {
-        if (shouldHoistExpression(path.get('expression'))) {
-          path.node._blockHoist = Infinity;
-        }
+      ExpressionStatement: {
+        exit(path: any) {
+          if (shouldHoistExpression(path.get('expression'))) {
+            path.node._blockHoist = Infinity;
+          }
+        },
       },
     },
   };
