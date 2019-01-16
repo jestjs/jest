@@ -5,7 +5,7 @@ exports[`.toThrow() error class did not throw at all 1`] = `
 
 Expected name: <green>\\"Err\\"</>
 
-Received function did not throw an exception"
+Received function did not throw"
 `;
 
 exports[`.toThrow() error class threw, but class did not match (error) 1`] = `
@@ -67,7 +67,7 @@ Expected has value: <green>111</>"
 exports[`.toThrow() promise/async throws if Error-like object is returned did not throw at all 1`] = `
 "<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrow<dim>()</>
 
-Received function did not throw an exception"
+Received function did not throw"
 `;
 
 exports[`.toThrow() promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
@@ -95,7 +95,7 @@ exports[`.toThrow() regexp did not throw at all 1`] = `
 
 Expected pattern: <green>/apple/</>
 
-Received function did not throw an exception"
+Received function did not throw"
 `;
 
 exports[`.toThrow() regexp threw, but message did not match (error) 1`] = `
@@ -137,7 +137,7 @@ exports[`.toThrow() strings did not throw at all 1`] = `
 
 Expected substring: <green>\\"apple\\"</>
 
-Received function did not throw an exception"
+Received function did not throw"
 `;
 
 exports[`.toThrow() strings threw, but message did not match (error) 1`] = `
@@ -179,7 +179,7 @@ exports[`.toThrowError() error class did not throw at all 1`] = `
 
 Expected name: <green>\\"Err\\"</>
 
-Received function did not throw an exception"
+Received function did not throw"
 `;
 
 exports[`.toThrowError() error class threw, but class did not match (error) 1`] = `
@@ -241,7 +241,7 @@ Expected has value: <green>111</>"
 exports[`.toThrowError() promise/async throws if Error-like object is returned did not throw at all 1`] = `
 "<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrowError<dim>()</>
 
-Received function did not throw an exception"
+Received function did not throw"
 `;
 
 exports[`.toThrowError() promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
@@ -269,7 +269,7 @@ exports[`.toThrowError() regexp did not throw at all 1`] = `
 
 Expected pattern: <green>/apple/</>
 
-Received function did not throw an exception"
+Received function did not throw"
 `;
 
 exports[`.toThrowError() regexp threw, but message did not match (error) 1`] = `
@@ -311,7 +311,7 @@ exports[`.toThrowError() strings did not throw at all 1`] = `
 
 Expected substring: <green>\\"apple\\"</>
 
-Received function did not throw an exception"
+Received function did not throw"
 `;
 
 exports[`.toThrowError() strings threw, but message did not match (error) 1`] = `

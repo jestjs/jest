@@ -21,7 +21,7 @@ import {
 } from 'jest-matcher-utils';
 import {isError} from './utils';
 
-const DID_NOT_THROW = 'Received function did not throw an exception';
+const DID_NOT_THROW = 'Received function did not throw';
 
 type Thrown =
   | {
