@@ -1168,7 +1168,7 @@ test('throws on octopus', () => {
 });
 ```
 
-To test that a specific error it thrown, you can provide an argument:
+To test that a specific error is thrown, you can provide an argument:
 
 - regular expression: error message **matches** the pattern
 - string: error message **includes** the substring
