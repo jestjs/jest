@@ -1040,7 +1040,7 @@ These patterns match against the full path. Use the `<rootDir>` string token to 
 
 Default: `[]`
 
-This option allows you to use a custom watch plugins. Read more about watch plugins [here](WatchPlugins.md).
+This option allows you to use a custom watch plugins. Read more about watch plugins [here](watch-plugins).
 
 Examples of watch plugins include:
 
