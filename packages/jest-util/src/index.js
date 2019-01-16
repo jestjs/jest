@@ -7,11 +7,10 @@
  * @flow
  */
 
-import mkdirp from 'mkdirp';
-
 import BufferedConsole from './BufferedConsole';
 import clearLine from './clearLine';
 import CustomConsole from './CustomConsole';
+import createDirectory from './createDirectory';
 import ErrorWithStack from './ErrorWithStack';
 import FakeTimers from './FakeTimers';
 import formatTestResults from './formatTestResults';
@@ -25,16 +24,6 @@ import setGlobal from './setGlobal';
 import deepCyclicCopy from './deepCyclicCopy';
 import convertDescriptorToString from './convertDescriptorToString';
 import * as specialChars from './specialChars';
-
-const createDirectory = (path: string) => {
-  try {
-    mkdirp.sync(path, '777');
-  } catch (e) {
-    if (e.code !== 'EEXIST') {
-      throw e;
-    }
-  }
-};
 
 module.exports = {
   BufferedConsole,
