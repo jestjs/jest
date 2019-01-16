@@ -11,6 +11,9 @@
     "merge-stream": "^1.0.1",
     "supports-color": "^6.1.0"
   },
+  "devDependencies":  {
+    "worker-farm": "^1.6.0"
+  },
   "engines": {
     "node": ">= 6"
   }

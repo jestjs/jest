@@ -111,7 +111,6 @@ export default class JestWorker {
     });
   }
 
-  // eslint-disable-next-line no-unclear-flowtypes
   _callFunctionWithArgs(method: string, ...args: Array<any>): Promise<any> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
