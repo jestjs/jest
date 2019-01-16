@@ -23,6 +23,35 @@ import {isError} from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw an exception';
 
+type Thrown =
+  | {
+      isError: true,
+      message: string,
+      value: Error,
+    }
+  | {
+      isError: false,
+      message: string,
+      value: any,
+    };
+
+const getThrown = (e: any): Thrown =>
+  e !== null &&
+  e !== undefined &&
+  typeof e.message === 'string' &&
+  typeof e.name === 'string' &&
+  typeof e.stack === 'string'
+    ? {
+        isError: true,
+        message: e.message,
+        value: e,
+      }
+    : {
+        isError: false,
+        message: typeof e === 'string' ? e : String(e),
+        value: e,
+      };
+
 export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
   function(received: Function, expected: any) {
     const options = {
@@ -30,10 +59,10 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
       promise: this.promise,
     };
 
-    let error;
+    let thrown = null;
 
     if (fromPromise && isError(received)) {
-      error = received;
+      thrown = getThrown(received);
     } else {
       if (typeof received !== 'function') {
         if (!fromPromise) {
@@ -50,25 +79,21 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
         try {
           received();
         } catch (e) {
-          error = e;
+          thrown = getThrown(e);
         }
       }
     }
 
-    if (error && !error.message && !error.name) {
-      error = new Error(error);
-    }
-
     if (expected === undefined) {
-      return toThrow(matcherName, options, error);
+      return toThrow(matcherName, options, thrown);
     } else if (typeof expected === 'function') {
-      return toThrowExpectedClass(matcherName, options, error, expected);
+      return toThrowExpectedClass(matcherName, options, thrown, expected);
     } else if (typeof expected === 'string') {
-      return toThrowExpectedString(matcherName, options, error, expected);
+      return toThrowExpectedString(matcherName, options, thrown, expected);
     } else if (expected !== null && typeof expected.test === 'function') {
-      return toThrowExpectedRegExp(matcherName, options, error, expected);
+      return toThrowExpectedRegExp(matcherName, options, thrown, expected);
     } else if (expected !== null && typeof expected === 'object') {
-      return toThrowExpectedObject(matcherName, options, error, expected);
+      return toThrowExpectedObject(matcherName, options, thrown, expected);
     } else {
       throw new Error(
         matcherErrorMessage(
@@ -90,29 +115,31 @@ const matchers: MatchersObject = {
 const toThrowExpectedRegExp = (
   matcherName: string,
   options: MatcherHintOptions,
-  error?: Error,
+  thrown: Thrown | null,
   expected: RegExp,
 ) => {
-  const pass = error !== undefined && expected.test(error.message);
+  const pass = thrown !== null && expected.test(thrown.message);
+  const isNotError = thrown !== null && !thrown.isError;
 
   const message = pass
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected error pattern: ${printExpected(expected)}\n` +
-        // Possible improvement also for toMatch inverse highlight matching substring.
-        // $FlowFixMe: Cannot get error.message because property message is missing in undefined
-        `Received error message: ${printReceived(error.message)}\n` +
-        // $FlowFixMe: Cannot get error.stack because property stack is missing in undefined
-        formatErrorStack(error.stack)
+        formatExpected('Expected pattern: ', expected) +
+        (isNotError
+          ? formatReceived('Received value:   ', thrown, 'value')
+          : formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected error pattern: ${printExpected(expected)}\n` +
-        (error !== undefined
-          ? `Received error message: ${printReceived(error.message)}\n` +
-            formatErrorStack(error.stack)
-          : '\n' + DID_NOT_THROW);
+        formatExpected('Expected pattern: ', expected) +
+        (thrown === null
+          ? '\n' + DID_NOT_THROW
+          : isNotError
+          ? formatReceived('Received value:   ', thrown, 'value')
+          : formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown));
 
   return {message, pass};
 };
@@ -120,28 +147,31 @@ const toThrowExpectedRegExp = (
 const toThrowExpectedObject = (
   matcherName: string,
   options: MatcherHintOptions,
-  error?: Error,
+  thrown: Thrown | null,
   expected: Object,
 ) => {
-  const pass = error !== undefined && error.message === expected.message;
+  const pass = thrown !== null && thrown.message === expected.message;
+  const isNotError = thrown !== null && !thrown.isError;
 
   const message = pass
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected error message: ${printReceived(expected.message)}\n` +
-        // $FlowFixMe: Cannot get error.message because property message is missing in undefined
-        `Received error message: ${printReceived(error.message)}\n` +
-        // $FlowFixMe: Cannot get error.stack because property stack is missing in undefined
-        formatErrorStack(error.stack)
+        formatExpected('Expected message: ', expected.message) +
+        (isNotError
+          ? formatReceived('Received value:   ', thrown, 'value')
+          : formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected error message: ${printReceived(expected.message)}\n` +
-        (error !== undefined
-          ? `Received error message: ${printReceived(error.message)}\n` +
-            formatErrorStack(error.stack)
-          : '\n' + DID_NOT_THROW);
+        formatExpected('Expected message: ', expected.message) +
+        (thrown === null
+          ? '\n' + DID_NOT_THROW
+          : isNotError
+          ? formatReceived('Received value:   ', thrown, 'value')
+          : formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown));
 
   return {message, pass};
 };
@@ -149,20 +179,33 @@ const toThrowExpectedObject = (
 const toThrowExpectedClass = (
   matcherName: string,
   options: MatcherHintOptions,
-  error?: Error,
+  thrown: Thrown | null,
   expected: typeof Error,
 ) => {
-  const pass = error !== undefined && error instanceof expected;
+  const pass = thrown !== null && thrown.value instanceof expected;
+  const isNotError = thrown !== null && !thrown.isError;
 
-  const message = () =>
-    matcherHint(matcherName, undefined, undefined, options) +
-    '\n\n' +
-    `Expected error name: ${printExpected(expected.name)}\n` +
-    (error !== undefined
-      ? `Received error name: ${printReceived(error.name)}\n\n` +
-        `Received error message: ${printReceived(error.message)}\n` +
-        formatErrorStack(error.stack)
-      : '\n' + DID_NOT_THROW);
+  const message = pass
+    ? () =>
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected name: ', expected.name) +
+        formatReceived('Received name: ', thrown, 'name') +
+        '\n' +
+        formatReceived('Received message: ', thrown, 'message') +
+        formatStack(thrown)
+    : () =>
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected name: ', expected.name) +
+        (thrown === null
+          ? '\n' + DID_NOT_THROW
+          : isNotError
+          ? '\n' + formatReceived('Received value: ', thrown, 'value')
+          : formatReceived('Received name: ', thrown, 'name') +
+            '\n' +
+            formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown));
 
   return {message, pass};
 };
@@ -170,29 +213,31 @@ const toThrowExpectedClass = (
 const toThrowExpectedString = (
   matcherName: string,
   options: MatcherHintOptions,
-  error?: Error,
+  thrown: Thrown | null,
   expected: string,
 ) => {
-  const pass = error !== undefined && error.message.includes(expected);
+  const pass = thrown !== null && thrown.message.includes(expected);
+  const isNotError = thrown !== null && !thrown.isError;
 
   const message = pass
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected error pattern: ${printExpected(expected)}\n` +
-        // Possible improvement also for toMatch inverse highlight matching substring.
-        // $FlowFixMe: Cannot get error.message because property message is missing in undefined
-        `Received error message: ${printReceived(error.message)}\n` +
-        // $FlowFixMe: Cannot get error.stack because property stack is missing in undefined
-        formatErrorStack(error.stack)
+        formatExpected('Expected substring: ', expected) +
+        (isNotError
+          ? formatReceived('Received value:     ', thrown, 'value')
+          : formatReceived('Received message:   ', thrown, 'message') +
+            formatStack(thrown))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        `Expected error pattern: ${printExpected(expected)}\n` +
-        (error !== undefined
-          ? `Received error message: ${printReceived(error.message)}\n` +
-            formatErrorStack(error.stack)
-          : '\n' + DID_NOT_THROW);
+        formatExpected('Expected substring: ', expected) +
+        (thrown === null
+          ? '\n' + DID_NOT_THROW
+          : isNotError
+          ? formatReceived('Received value:     ', thrown, 'value')
+          : formatReceived('Received message:   ', thrown, 'message') +
+            formatStack(thrown));
 
   return {message, pass};
 };
@@ -200,32 +245,65 @@ const toThrowExpectedString = (
 const toThrow = (
   matcherName: string,
   options: MatcherHintOptions,
-  error?: Error,
+  thrown: Thrown | null,
 ) => {
-  const pass = error !== undefined;
+  const pass = thrown !== null;
+  const isNotError = thrown !== null && !thrown.isError;
 
-  const message = () =>
-    matcherHint(matcherName, undefined, '', options) +
-    '\n\n' +
-    (error !== undefined
-      ? `Received error name:    ${printReceived(error.name)}\n` +
-        `Received error message: ${printReceived(error.message)}\n` +
-        formatErrorStack(error.stack)
-      : DID_NOT_THROW);
+  const message = pass
+    ? () =>
+        matcherHint(matcherName, undefined, '', options) +
+        '\n\n' +
+        (isNotError
+          ? formatReceived('Thrown value: ', thrown, 'value')
+          : formatReceived('Error name:    ', thrown, 'name') +
+            formatReceived('Error message: ', thrown, 'message') +
+            formatStack(thrown))
+    : () =>
+        matcherHint(matcherName, undefined, '', options) +
+        '\n\n' +
+        DID_NOT_THROW;
 
   return {message, pass};
 };
 
-const formatErrorStack = stack =>
-  formatStackTrace(
-    separateMessageFromStack(stack).stack,
-    {
-      rootDir: process.cwd(),
-      testMatch: [],
-    },
-    {
-      noStackTrace: false,
-    },
-  );
+const formatExpected = (label: string, expected: any) =>
+  label + printExpected(expected) + '\n';
+
+const formatReceived = (label: string, thrown: Thrown | null, key: string) => {
+  if (thrown === null) {
+    return '';
+  }
+
+  if (key === 'message') {
+    return label + printReceived(thrown.message) + '\n';
+  }
+
+  if (key === 'name') {
+    return thrown.isError
+      ? label + printReceived(thrown.value.name) + '\n'
+      : '';
+  }
+
+  if (key === 'value') {
+    return thrown.isError ? '' : label + printReceived(thrown.value) + '\n';
+  }
+
+  return '';
+};
+
+const formatStack = (thrown: Thrown | null) =>
+  thrown === null || !thrown.isError
+    ? ''
+    : formatStackTrace(
+        separateMessageFromStack(thrown.value.stack).stack,
+        {
+          rootDir: process.cwd(),
+          testMatch: [],
+        },
+        {
+          noStackTrace: false,
+        },
+      );
 
 export default matchers;
