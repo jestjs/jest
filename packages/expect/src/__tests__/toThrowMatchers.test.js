@@ -270,7 +270,7 @@ class customError extends Error {
             throw null;
           }).not[toThrow]();
         }).toThrowErrorMatchingSnapshot();
-      })
+      });
     });
 
     test('invalid arguments', () => {
