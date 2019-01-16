@@ -76,7 +76,7 @@ const IDVisitor = {
   ReferencedIdentifier(path) {
     this.ids.add(path);
   },
-  blacklist: ['TypeAnnotation'],
+  blacklist: ['TypeAnnotation', 'TSTypeAnnotation'],
 };
 
 const FUNCTIONS: Object = Object.create(null);
@@ -158,12 +158,10 @@ module.exports = () => {
   };
   return {
     visitor: {
-      ExpressionStatement: {
-        exit(path: any) {
-          if (shouldHoistExpression(path.get('expression'))) {
-            path.node._blockHoist = Infinity;
-          }
-        },
+      ExpressionStatement(path: any) {
+        if (shouldHoistExpression(path.get('expression'))) {
+          path.node._blockHoist = Infinity;
+        }
       },
     },
   };
