@@ -13,8 +13,6 @@
 // coming from any of the other processes cannot be typed. Thus, many types
 // include "any" as a flow type, which is (unfortunately) correct here.
 
-/* eslint-disable no-unclear-flowtypes */
-
 export const CHILD_MESSAGE_INITIALIZE: 0 = 0;
 export const CHILD_MESSAGE_CALL: 1 = 1;
 export const CHILD_MESSAGE_END: 2 = 2;
