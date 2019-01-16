@@ -1168,7 +1168,14 @@ test('throws on octopus', () => {
 });
 ```
 
-If you want to test that a specific error gets thrown, you can provide an argument to `toThrow`. The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. For example, let's say that `drinkFlavor` is coded like this:
+If you want to test that a specific error gets thrown, you can provide an argument to `toThrow`
+
+- regular expression: error message **matches** the pattern
+- string: error message **includes** the substring
+- error object: error message is **equal to** the message property of the object
+- error class: error object is **instance of** class
+
+For example, let's say that `drinkFlavor` is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
@@ -1193,6 +1200,7 @@ test('throws on octopus', () => {
 
   // Test the exact error message
   expect(drinkOctopus).toThrowError(/^yuck, octopus flavor$/);
+  expect(drinkOctopus).toThrowError(new Error('yuck, octopus flavor'));
 
   // Test that we get a DisgustingFlavorError
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
