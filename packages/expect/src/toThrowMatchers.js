@@ -180,7 +180,7 @@ const toThrowExpectedClass = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
-  expected: typeof Error,
+  expected: Function,
 ) => {
   const pass = thrown !== null && thrown.value instanceof expected;
   const isNotError = thrown !== null && !thrown.isError;
@@ -192,8 +192,10 @@ const toThrowExpectedClass = (
         formatExpected('Expected name: ', expected.name) +
         formatReceived('Received name: ', thrown, 'name') +
         '\n' +
-        formatReceived('Received message: ', thrown, 'message') +
-        formatStack(thrown)
+        (isNotError
+          ? formatReceived('Received value: ', thrown, 'value')
+          : formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
