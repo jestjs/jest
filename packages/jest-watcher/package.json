@@ -11,7 +11,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest"
+    "url": "https://github.com/facebook/jest",
+    "directory": "packages/jest-watcher"
   },
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"
