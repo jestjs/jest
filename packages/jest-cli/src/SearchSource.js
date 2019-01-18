@@ -19,6 +19,7 @@ import testPathPatternToRegExp from './testPathPatternToRegexp';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
+import {replacePathSepForGlob} from 'jest-util';
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -48,7 +49,8 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
     return () => true;
   }
 
-  return path => micromatch([path], globs, {dot: true}).length > 0;
+  return path =>
+    micromatch.some(replacePathSepForGlob(path), globs, {dot: true});
 };
 
 const regexToMatcher = (testRegex: Array<string>) => {

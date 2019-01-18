@@ -19,7 +19,7 @@ import micromatch from 'micromatch';
 import chalk from 'chalk';
 import path from 'path';
 import {sync as realpath} from 'realpath-native';
-import {Console, formatTestResults} from 'jest-util';
+import {Console, formatTestResults, replacePathSepForGlob} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
@@ -165,10 +165,12 @@ export default (async function runJest({
           matches.collectCoverageFrom.filter(filename => {
             if (
               globalConfig.collectCoverageFrom &&
-              !micromatch(
-                [path.relative(globalConfig.rootDir, filename)],
+              !micromatch.some(
+                replacePathSepForGlob(
+                  path.relative(globalConfig.rootDir, filename),
+                ),
                 globalConfig.collectCoverageFrom,
-              ).length
+              )
             ) {
               return false;
             }
