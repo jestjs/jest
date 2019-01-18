@@ -3,7 +3,8 @@
   "version": "23.3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-regex-util"
   },
   "engines": {
     "node": ">= 6"
