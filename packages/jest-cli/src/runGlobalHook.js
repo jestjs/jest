@@ -13,7 +13,7 @@ import type {Test} from 'types/TestRunner';
 import {extname} from 'path';
 import pEachSeries from 'p-each-series';
 import {addHook} from 'pirates';
-import {ScriptTransformer} from 'jest-runtime';
+import Runtime from 'jest-runtime';
 
 export default ({
   allTests,
@@ -47,7 +47,7 @@ export default ({
         : // Fallback to first config
           allTests[0].context.config;
 
-      const transformer = new ScriptTransformer(projectConfig);
+      const transformer = new Runtime.ScriptTransformer(projectConfig);
 
       const revertHook = addHook(
         (code, filename) =>
