@@ -133,7 +133,7 @@ function buildFile(file, silent) {
     return;
   }
 
-  mkdirp.sync(path.dirname(destPath));
+  mkdirp.sync(path.dirname(destPath), '777');
   if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
     fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
     silent ||

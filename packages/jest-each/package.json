@@ -5,7 +5,8 @@
   "main": "build/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-each"
   },
   "keywords": [
     "jest",

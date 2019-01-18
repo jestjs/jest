@@ -11,7 +11,6 @@ const rollup = require('rollup').rollup;
 const rollupResolve = require('rollup-plugin-node-resolve');
 const rollupCommonjs = require('rollup-plugin-commonjs');
 const rollupBuiltins = require('rollup-plugin-node-builtins');
-const rollupGlobals = require('rollup-plugin-node-globals');
 const rollupJson = require('rollup-plugin-json');
 const rollupBabel = require('rollup-plugin-babel');
 const rollupFlow = require('rollup-plugin-flow');
@@ -52,7 +51,6 @@ function browserBuild(pkgName, entryPath, destination) {
       rollupJson(),
       rollupCommonjs(),
       rollupBabel(babelEs5Options),
-      rollupGlobals(),
       rollupBuiltins(),
       rollupResolve(),
     ],

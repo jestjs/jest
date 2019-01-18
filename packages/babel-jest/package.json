@@ -4,7 +4,8 @@
   "version": "23.6.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/babel-jest"
   },
   "license": "MIT",
   "main": "build/index.js",

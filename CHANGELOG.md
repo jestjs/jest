@@ -14,6 +14,7 @@
 - `[jest-haste-map]` [**BREAKING**] Remove name from hash in `HasteMap.getCacheFilePath` ([#7218](https://github.com/facebook/jest/pull/7218))
 - `[babel-preset-jest]` [**BREAKING**] Export a function instead of an object for Babel 7 compatibility ([#7203](https://github.com/facebook/jest/pull/7203))
 - `[jest-haste-map]` [**BREAKING**] Expose relative paths when getting the file iterator ([#7321](https://github.com/facebook/jest/pull/7321))
+- `[jest-cli]` [**BREAKING**] Run code transforms over `global{Setup,Teardown}` ([#7562](https://github.com/facebook/jest/pull/7562))
 - `[jest-haste-map]` Add `hasteFS.getSize(path)` ([#7580](https://github.com/facebook/jest/pull/7580))
 - `[jest-cli]` Print version ending in `-dev` when running a local Jest clone ([#7582](https://github.com/facebook/jest/pull/7582))
 - `[jest-cli]` Add Support for `globalSetup` and `globalTeardown` in projects ([#6865](https://github.com/facebook/jest/pull/6865))
@@ -52,6 +53,7 @@
 
 ### Fixes
 
+- `[jest-config]` Ensure `existsSync` is only called with a string parameter ([#7607](https://github.com/facebook/jest/pull/7607))
 - `[expect]` `toStrictEqual` considers sparseness of arrays. ([#7591](https://github.com/facebook/jest/pull/7591))
 - `[jest-cli]` Fix empty coverage data for untested files ([#7388](https://github.com/facebook/jest/pull/7388))
 - `[jest-cli]` [**BREAKING**] Do not use `text-summary` coverage reporter by default if other reporters are configured ([#7058](https://github.com/facebook/jest/pull/7058))
@@ -113,11 +115,13 @@
 - `[jest-snapshot]` Write and read snapshots from disk even if `fs` is mocked ([#7080](https://github.com/facebook/jest/pull/7080))
 - `[jest-config]` Normalize `config.cwd` and `config.rootDir` using `realpath ([#7598](https://github.com/facebook/jest/pull/7598))
 - `[jest-environment-node]` Fix buffer property is not ArrayBuffer issue. ([#7626](https://github.com/facebook/jest/pull/7626))
+- `[babel-plugin-jest-hoist]` Ignore TS type annotations when looking for out-of-scope references ([#7641](https://github.com/facebook/jest/pull/7641))
 
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Require Node.js 6+ for all packages ([#7258](https://github.com/facebook/jest/pull/7258))
 - `[jest-util]` [**BREAKING**] Remove long-deprecated globals for fake timers ([#7285](https://github.com/facebook/jest/pull/7285))
+- `[*]` [**BREAKING**] Upgrade to Micromatch 3 ([#6650](https://github.com/facebook/jest/pull/6650))
 - `[*]` [**BREAKING**] Remove regenerator-runtime injection ([#7595](https://github.com/facebook/jest/pull/7595))
 - `[docs]` Fix message property in custom matcher example to return a function instead of a constant. ([#7426](https://github.com/facebook/jest/pull/7426))
 - `[jest-circus]` Standardize file naming in `jest-circus` ([#7301](https://github.com/facebook/jest/pull/7301))

@@ -8,7 +8,7 @@
 'use strict';
 
 import fs from 'fs';
-import mkdirp from 'mkdirp';
+import {createDirectory} from 'jest-util';
 import os from 'os';
 import path from 'path';
 import runJest, {json as runWithJson} from '../runJest';
@@ -30,7 +30,7 @@ afterAll(() => {
 });
 
 test('globalTeardown is triggered once after all test suites', () => {
-  mkdirp.sync(DIR);
+  createDirectory(DIR);
   const teardownPath = path.resolve(
     __dirname,
     '../global-teardown/teardown.js',
