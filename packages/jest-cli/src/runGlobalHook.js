@@ -6,8 +6,14 @@
  *
  * @flow
  */
+
 import type {GlobalConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
+
+import {extname} from 'path';
+import pEachSeries from 'p-each-series';
+import {addHook} from 'pirates';
+import Runtime from 'jest-runtime';
 
 export default ({
   allTests,
@@ -17,7 +23,7 @@ export default ({
   allTests: Array<Test>,
   globalConfig: GlobalConfig,
   moduleName: 'globalSetup' | 'globalTeardown',
-}): Promise<?(any[])> => {
+}): Promise<void> => {
   const globalModulePaths = new Set(
     allTests.map(test => test.context.config[moduleName]),
   );
@@ -27,24 +33,44 @@ export default ({
   }
 
   if (globalModulePaths.size > 0) {
-    return Promise.all(
-      Array.from(globalModulePaths).map(async modulePath => {
-        if (!modulePath) {
-          return null;
-        }
+    return pEachSeries(Array.from(globalModulePaths), async modulePath => {
+      if (!modulePath) {
+        return;
+      }
 
-        // $FlowFixMe
-        const globalModule = require(modulePath);
+      const correctConfig = allTests.find(
+        t => t.context.config[moduleName] === modulePath,
+      );
 
-        if (typeof globalModule !== 'function') {
-          throw new TypeError(
-            `${moduleName} file must export a function at ${modulePath}`,
-          );
-        }
+      const projectConfig = correctConfig
+        ? correctConfig.context.config
+        : // Fallback to first config
+          allTests[0].context.config;
 
-        return globalModule(globalConfig);
-      }),
-    );
+      const transformer = new Runtime.ScriptTransformer(projectConfig);
+
+      const revertHook = addHook(
+        (code, filename) =>
+          transformer.transformSource(filename, code, false).code || code,
+        {
+          exts: [extname(modulePath)],
+          matcher: transformer._shouldTransform.bind(transformer),
+        },
+      );
+
+      // $FlowFixMe
+      const globalModule = require(modulePath);
+
+      if (typeof globalModule !== 'function') {
+        throw new TypeError(
+          `${moduleName} file must export a function at ${modulePath}`,
+        );
+      }
+
+      await globalModule(globalConfig);
+
+      revertHook();
+    });
   }
 
   return Promise.resolve();
