@@ -38,12 +38,14 @@ export default ({
         return;
       }
 
-      const projectConfig =
-        allTests
-          .map(t => t.context.config)
-          .find(c => c[moduleName] === modulePath) ||
-        // Fallback to first one
-        allTests[0].context.config;
+      const correctConfig = allTests.find(
+        t => t.context.config[moduleName] === modulePath,
+      );
+
+      const projectConfig = correctConfig
+        ? correctConfig.context.config
+        : // Fallback to first config
+          allTests[0].context.config;
 
       const transformer = new ScriptTransformer(projectConfig);
 
