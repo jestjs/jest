@@ -2,7 +2,13 @@
 
 import runJest from '../runJest';
 
-jest.mock('jest-util');
+jest.mock('jest-util', () => {
+  const util = jest.requireActual('jest-util');
+  return {
+    ...jest.genMockFromModule('jest-util'),
+    replacePathSepForGlob: util.replacePathSepForGlob,
+  };
+});
 
 jest.mock(
   '../TestScheduler',

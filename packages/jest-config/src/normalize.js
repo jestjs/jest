@@ -21,7 +21,7 @@ import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
 import validatePattern from './validatePattern';
-import {clearLine} from 'jest-util';
+import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './getMaxWorkers';
 import micromatch from 'micromatch';
@@ -609,10 +609,20 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'moduleDirectories':
       case 'testMatch':
-        value = _replaceRootDirTags(
-          escapeGlobCharacters(options.rootDir),
-          options[key],
-        );
+        {
+          const replacedRootDirTags = _replaceRootDirTags(
+            escapeGlobCharacters(options.rootDir),
+            options[key],
+          );
+
+          if (replacedRootDirTags) {
+            value = Array.isArray(replacedRootDirTags)
+              ? replacedRootDirTags.map(replacePathSepForGlob)
+              : replacePathSepForGlob(replacedRootDirTags);
+          } else {
+            value = replacedRootDirTags;
+          }
+        }
         break;
       case 'testRegex':
         value = options[key]
@@ -822,10 +832,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          !micromatch(
-            [path.relative(options.rootDir, filename)],
+          !micromatch.some(
+            replacePathSepForGlob(path.relative(options.rootDir, filename)),
             newOptions.collectCoverageFrom,
-          ).length
+          )
         ) {
           return patterns;
         }

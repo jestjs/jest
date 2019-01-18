@@ -30,7 +30,7 @@
     "jest-validate": "^23.6.0",
     "jest-watcher": "^23.4.0",
     "jest-worker": "^23.2.0",
-    "micromatch": "^2.3.11",
+    "micromatch": "^3.1.10",
     "node-notifier": "^5.2.1",
     "p-each-series": "^1.0.0",
     "pirates": "^4.0.0",
