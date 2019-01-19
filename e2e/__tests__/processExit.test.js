@@ -8,7 +8,7 @@
  */
 
 import runJest from '../runJest';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 it('prints stack trace pointing to process.exit call', async () => {
   const {stderr} = await runJest('process-exit');

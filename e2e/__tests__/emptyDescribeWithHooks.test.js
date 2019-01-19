@@ -11,7 +11,7 @@ import path from 'path';
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
 import {skipSuiteOnJasmine} from '../../scripts/ConditionalTest';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const dir = path.resolve(__dirname, '../empty-describe-with-hooks');
 

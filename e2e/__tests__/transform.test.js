@@ -17,7 +17,7 @@ import {
 } from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 import os from 'os';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');

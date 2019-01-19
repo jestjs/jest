@@ -12,7 +12,7 @@ import runJest from '../runJest';
 import os from 'os';
 import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 import {cleanup, writeFiles} from '../Utils';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 skipSuiteOnWindows();
 

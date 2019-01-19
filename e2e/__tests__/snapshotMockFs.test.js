@@ -9,7 +9,7 @@
 
 import path from 'path';
 import rimraf from 'rimraf';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import {json as runJestJson} from '../runJest';
 

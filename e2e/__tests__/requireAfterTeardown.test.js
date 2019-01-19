@@ -8,7 +8,7 @@
  */
 
 import runJest from '../runJest';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 test('prints useful error for requires after test is done', () => {
   const {stderr} = runJest('require-after-teardown');

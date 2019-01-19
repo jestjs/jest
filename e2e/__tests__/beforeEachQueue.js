@@ -8,7 +8,7 @@
  */
 
 import runJest from '../runJest';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 describe('Correct beforeEach order', () => {
   it('ensures the correct order for beforeEach', () => {

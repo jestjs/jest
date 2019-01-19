@@ -11,7 +11,7 @@ import path from 'path';
 import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../cli_accepts_exact_filenames');
 

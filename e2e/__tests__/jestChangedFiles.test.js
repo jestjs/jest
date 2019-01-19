@@ -16,7 +16,7 @@ import {
 import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 import {cleanup, run, writeFiles} from '../Utils';
 import runJest from '../runJest';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 skipSuiteOnWindows();
 

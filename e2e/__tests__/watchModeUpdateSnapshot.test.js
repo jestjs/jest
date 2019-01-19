@@ -11,7 +11,7 @@ import path from 'path';
 import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import os from 'os';
 import runJest from '../runJest';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(os.tmpdir(), 'watch-mode-update-snapshot');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');

@@ -10,7 +10,7 @@
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
 import {skipSuiteOnJestCircus} from '../../scripts/ConditionalTest';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 skipSuiteOnJestCircus();
 

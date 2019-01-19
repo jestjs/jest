@@ -10,7 +10,7 @@
 import path from 'path';
 import runJest from '../runJest';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../jest.config.js');
 

@@ -9,7 +9,7 @@
 
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 describe('Stack Trace', () => {
   it('prints a stack trace for runtime errors', () => {

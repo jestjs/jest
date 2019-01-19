@@ -10,7 +10,7 @@
 import path from 'path';
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 const dir = path.resolve(__dirname, '../expect-async-matcher');
 
 test('works with passing tests', () => {

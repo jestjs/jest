@@ -11,7 +11,7 @@ import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(os.tmpdir(), 'custom-reporters-test-dir');
 

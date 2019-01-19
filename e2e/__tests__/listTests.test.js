@@ -9,7 +9,7 @@
 
 import runJest from '../runJest';
 import path from 'path';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const testRootDir = path.resolve(__dirname, '..', '..');
 

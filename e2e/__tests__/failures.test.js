@@ -10,7 +10,7 @@
 import path from 'path';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const dir = path.resolve(__dirname, '../failures');
 

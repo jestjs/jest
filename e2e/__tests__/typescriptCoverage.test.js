@@ -10,7 +10,7 @@
 import path from 'path';
 import {run} from '../Utils';
 import runJest from '../runJest';
-import wrap from 'jest-snapshot-serializer-raw';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 it('instruments and collects coverage for typescript files', () => {
   const dir = path.resolve(__dirname, '../typescript-coverage');
