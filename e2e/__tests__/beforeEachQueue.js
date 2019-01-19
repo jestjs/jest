@@ -6,13 +6,13 @@
  *
  * @flow
  */
-'use strict';
 
 import runJest from '../runJest';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 describe('Correct beforeEach order', () => {
   it('ensures the correct order for beforeEach', () => {
     const result = runJest('before-each-queue');
-    expect(result.stdout.replace(/\\/g, '/')).toMatchSnapshot();
+    expect(wrap(result.stdout.replace(/\\/g, '/'))).toMatchSnapshot();
   });
 });

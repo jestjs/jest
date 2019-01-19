@@ -7,12 +7,11 @@
  * @flow
  */
 
-'use strict';
-
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(os.tmpdir(), 'find-related-tests-test');
 
@@ -120,17 +119,19 @@ describe('--findRelatedTests flag', () => {
     let summary;
     let rest;
     ({summary, rest} = extractSummary(stderr));
-    expect(summary).toMatchSnapshot();
+    expect(wrap(summary)).toMatchSnapshot();
     expect(
-      rest
-        .split('\n')
-        .map(s => s.trim())
-        .sort()
-        .join('\n'),
+      wrap(
+        rest
+          .split('\n')
+          .map(s => s.trim())
+          .sort()
+          .join('\n'),
+      ),
     ).toMatchSnapshot();
 
     // both a.js and b.js should be in the coverage
-    expect(stdout).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchSnapshot();
 
     ({stdout, stderr} = runJest(DIR, ['--findRelatedTests', 'a.js'], {
       stripAnsi: true,
@@ -138,11 +139,11 @@ describe('--findRelatedTests flag', () => {
 
     ({summary, rest} = extractSummary(stderr));
 
-    expect(summary).toMatchSnapshot();
+    expect(wrap(summary)).toMatchSnapshot();
     // should only run a.js
-    expect(rest).toMatchSnapshot();
+    expect(wrap(rest)).toMatchSnapshot();
     // coverage should be collected only for a.js
-    expect(stdout).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchSnapshot();
   });
 
   test('coverage configuration is applied correctly', () => {
@@ -170,17 +171,19 @@ describe('--findRelatedTests flag', () => {
     }));
 
     const {summary, rest} = extractSummary(stderr);
-    expect(summary).toMatchSnapshot();
+    expect(wrap(summary)).toMatchSnapshot();
     expect(
-      rest
-        .split('\n')
-        .map(s => s.trim())
-        .sort()
-        .join('\n'),
+      wrap(
+        rest
+          .split('\n')
+          .map(s => s.trim())
+          .sort()
+          .join('\n'),
+      ),
     ).toMatchSnapshot();
 
     // Only a.js should be in the report
-    expect(stdout).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchSnapshot();
     expect(stdout).toMatch('a.js');
     expect(stdout).not.toMatch('b.js');
 

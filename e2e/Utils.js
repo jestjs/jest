@@ -159,7 +159,10 @@ export const extractSummary = (stdout: string) => {
     // remove all timestamps
     .replace(/\s*\(\d*\.?\d+m?s\)$/gm, '');
 
-  return {rest, summary};
+  return {
+    rest: rest.trim(),
+    summary: summary.trim(),
+  };
 };
 
 const sortTests = (stdout: string) =>
