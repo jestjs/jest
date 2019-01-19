@@ -53,6 +53,7 @@
 
 ### Fixes
 
+- `[jest-mock]` Fix automock for numeric function names (TODO)
 - `[jest-config]` Ensure `existsSync` is only called with a string parameter ([#7607](https://github.com/facebook/jest/pull/7607))
 - `[expect]` `toStrictEqual` considers sparseness of arrays. ([#7591](https://github.com/facebook/jest/pull/7591))
 - `[jest-cli]` Fix empty coverage data for untested files ([#7388](https://github.com/facebook/jest/pull/7388))
