@@ -409,7 +409,9 @@ An array of directory names to be searched recursively up from the requiring mod
 
 Default: `["js", "json", "jsx", "ts", "tsx", "node"]`
 
-An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
+An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.
+
+We recommend placing the extensions most commonly used in your project on the left, so if you are using TypeScript, you may want to consider moving "ts" and/or "tsx" to the beginning of the array.
 
 ### `moduleNameMapper` [object<string, string>]
 
