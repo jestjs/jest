@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import path from 'path';
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';

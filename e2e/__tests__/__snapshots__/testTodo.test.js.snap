@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`shows error messages when called with invalid argument 1`] = `
-"FAIL __tests__/todoNonString.test.js
+FAIL __tests__/todoNonString.test.js
   ● Test suite failed to run
 
     Todo must be called with only a description.
@@ -13,12 +13,10 @@ exports[`shows error messages when called with invalid argument 1`] = `
       9 | 
 
       at Object.todo (__tests__/todoNonString.test.js:8:4)
-
-"
 `;
 
 exports[`shows error messages when called with multiple arguments 1`] = `
-"FAIL __tests__/todoMultipleArgs.test.js
+FAIL __tests__/todoMultipleArgs.test.js
   ● Test suite failed to run
 
     Todo must be called with only a description.
@@ -30,12 +28,10 @@ exports[`shows error messages when called with multiple arguments 1`] = `
       9 | 
 
       at Object.todo (__tests__/todoMultipleArgs.test.js:8:4)
-
-"
 `;
 
 exports[`shows error messages when called with no arguments 1`] = `
-"FAIL __tests__/todoNoArgs.test.js
+FAIL __tests__/todoNoArgs.test.js
   ● Test suite failed to run
 
     Todo must be called with only a description.
@@ -47,12 +43,10 @@ exports[`shows error messages when called with no arguments 1`] = `
       9 | 
 
       at Object.todo (__tests__/todoNoArgs.test.js:8:4)
-
-"
 `;
 
 exports[`works with all statuses 1`] = `
-"FAIL __tests__/statuses.test.js
+FAIL __tests__/statuses.test.js
   ✓ passes
   ✕ fails
   ○ skipped 1 test
@@ -74,6 +68,4 @@ exports[`works with all statuses 1`] = `
       16 | it.skip('skips', () => {
 
       at Object.toBe (__tests__/statuses.test.js:13:14)
-
-"
 `;

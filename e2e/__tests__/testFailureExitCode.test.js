@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import path from 'path';
 import os from 'os';
 import {cleanup, writeFiles} from '../Utils';

@@ -7,9 +7,8 @@
  * @flow
  */
 
-'use strict';
-
 import runJest from '../runJest';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 test('prints useful error for requires after test is done', () => {
   const {stderr} = runJest('require-after-teardown');
@@ -19,7 +18,7 @@ test('prints useful error for requires after test is done', () => {
     .slice(9, 18)
     .join('\n');
 
-  expect(interestingLines).toMatchSnapshot();
+  expect(wrap(interestingLines)).toMatchSnapshot();
   expect(stderr.split('\n')[19]).toMatch(
     new RegExp('(__tests__/lateRequire.test.js:11:20)'),
   );
