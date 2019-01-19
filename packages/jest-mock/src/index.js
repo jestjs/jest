@@ -623,9 +623,13 @@ class ModuleMockerClass {
       return mockConstructor;
     }
 
-    // It's a syntax error to define functions with a reserved keyword
-    // as name.
-    if (RESERVED_KEYWORDS[name]) {
+    if (
+      // It's a syntax error to define functions with a reserved keyword
+      // as name.
+      RESERVED_KEYWORDS[name] ||
+      // It's also a syntax error to define functions with a name that starts with a number
+      /^\d/.test(name)
+    ) {
       name = '$' + name;
     }
 
