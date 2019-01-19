@@ -74,6 +74,7 @@
   font-weight: normal;
   text-transform: uppercase;
   padding-left: 10px;
+  margin-top: 1.6rem;
   letter-spacing: 1px;
   border-left-width: 8px;
   border-left-style: solid;
@@ -96,6 +97,27 @@
   margin-bottom: 0;
 }
 
+/*  On mobile, show the screenshot under the body */
+@media only screen and (max-width: 780px) {
+  /* Ensure the consistent order of text first, then image */
+  .container .wrapper .imageAlignLeft {
+    flex-flow: row wrap-reverse;
+  }
+
+  /* Makes the image is alway visible and has space to center correctly */
+  .imageAlignSide .blockImage {
+    display: block;
+    max-width: 100%;
+    flex: 0 1 100%;
+    margin: 0;
+  }
+
+  /* Makes sure that it's always centered */
+  .imageAlignSide .blockImage img {
+    margin: auto 0;
+  }
+}
+
 .container.section-container {
   padding: 20px 0 0 0;
 }
@@ -113,13 +135,10 @@
   height: 280px;
 }
 
-.container .yellow.blockElement {
-  width:25%;
-}
-
-.container.features .yellow.blockElement h2, .container.features .yellow.blockElement p {
-   text-align: left;
-   margin: 16px 0 0 18px;
+.container.features .yellow.blockElement h2,
+.container.features .yellow.blockElement p {
+  text-align: left;
+  margin: 16px 0 0 18px;
 }
 
 .section-container .blockImage img {
@@ -128,6 +147,13 @@
 
 .logos {
   align-items: center;
+}
+
+@media only screen and (min-width: 736px) {
+  /* Medium desktop and up */
+  .container .yellow.blockElement {
+    width: 25%;
+  }
 }
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {

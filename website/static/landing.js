@@ -124,21 +124,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const buttons = [
       {
-        title: 'String Matching',
+        title: 'Equals',
+        url: '/img/content/matchers/equals.png',
+      },
+      {
+        title: 'Mocks',
+        url: '/img/content/matchers/mocks.png',
+      },
+      {
+        title: 'Types',
         url: '/img/content/matchers/different-types.png',
       },
-      {title: 'Types', url: '/img/content/matchers/different-types.png'},
-      {title: 'Snapshots', url: '/img/content/matchers/snapshot.png'},
       {
         title: 'Properties',
         url: '/img/content/matchers/missing-properties.png',
       },
       {
+        title: 'Snapshots',
+        url: '/img/content/matchers/snapshot.png',
+      },
+      {
         title: 'Inline Snapshots',
         url: '/img/content/matchers/inline-snapshot.png',
       },
-      {title: 'Functions', url: '/img/content/matchers/inline-snapshot.png'},
+      {
+        title: 'Functions',
+        url: '/img/content/matchers/functions.png',
+      },
     ];
+
+    screenshotImg.onload = () => {
+      screenshotImg.style.opacity = 1;
+    };
 
     for (const button of buttons) {
       const clickButton = document.createElement('a');
@@ -149,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
           .querySelectorAll('.matchers .button.landing')
           .forEach(b => (b.className = 'button landing'));
         clickButton.className = 'button landing active';
+        screenshotImg.opacity = 0.5;
         screenshotImg.src = button.url;
       };
       buttonWrapper.appendChild(clickButton);
@@ -162,7 +180,21 @@ document.addEventListener('DOMContentLoaded', () => {
     firstButton.onclick();
   }
 
+  // Without forking Docusaurus which is on route to a breaking major semver,
+  // we can't make the screenshots clickable. This fixes that with client-side
+  // JS. Let's call it progressive enhancement, sure.
+  function makeScreenshotsClickable() {
+    document.querySelectorAll('.blockImage img').forEach(img => {
+      console.log('-');
+      img.style.cursor = 'pointer';
+      img.onclick = () => {
+        document.location = img.src;
+      };
+    });
+  }
+
   forceRun(2000);
   positionCards();
   setUpMatcherButtons();
+  makeScreenshotsClickable();
 });

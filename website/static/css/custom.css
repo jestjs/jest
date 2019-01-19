@@ -120,7 +120,8 @@ div.jest-card {
   transform-style: preserve-3d;
 }
 
-div.jest-card-front,.jest-card-back {
+div.jest-card-front,
+.jest-card-back {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -138,10 +139,10 @@ div.jest-card-front {
 }
 
 div.jest-card-back {
-  background-color: #C2A813;
+  background-color: #c2a813;
   background-image: url(/img/running-card-background.png);
   background-size: 20px;
-  border: 5px solid #C2A813;
+  border: 5px solid #c2a813;
   backface-visibility: hidden;
   transform: rotateY(180deg) translateZ(1px);
 }
@@ -151,7 +152,8 @@ div.jest-card-running {
   transform: translateY(-10px) rotateY(180deg);
 }
 
-div.jest-card-hitslop:hover div.jest-card:not(.jest-card-running):not(.jest-card-pass) {
+div.jest-card-hitslop:hover
+  div.jest-card:not(.jest-card-running):not(.jest-card-pass) {
   transform: translateY(-40px);
 }
 
@@ -188,7 +190,7 @@ div.jest-card-hitslop:nth-child(5) {
 div.jest-button-container {
   position: absolute;
   bottom: 0;
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255, 255, 255, 0.5);
   width: 100%;
   /* height: 56px; */
   margin: 0 auto;
@@ -212,7 +214,7 @@ div.jest-card-label {
   top: 15px;
   left: 15px;
   color: white;
-  background-color:var(--red);
+  background-color: var(--red);
   font-size: 16px;
   font-weight: bold;
   display: inline;
@@ -245,7 +247,7 @@ div.jest-card-pass {
   cursor: auto;
 }
 
-div.jest-card-pass .jest-card-label {
+div.jest-card-pass .jest-card-label, div.jest-card-run .jest-card-label {
   background-color: var(--green);
 }
 
@@ -264,7 +266,7 @@ div.jest-card-pass .jest-card-logo {
 }
 
 div.jest-card-fail .jest-card-logo-container {
-  background-color:var(--red);
+  background-color: var(--red);
 }
 
 div.jest-card-fail .jest-card-logo {

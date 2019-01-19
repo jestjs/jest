@@ -333,46 +333,8 @@ class Index extends React.Component {
               layout="fourColumn"
             />
           </Container>
-          <Container
-            padding={['bottom', 'top']}
-            background="light"
-            className="section-container philosophy"
-          >
-            <div className="blockElement green">
-              <div className="blockContent">
-                <h2>
-                  <translate>Philosophy</translate>
-                </h2>
-              </div>
-            </div>
-            <div className="blockElement imageAlignSide gridBlock threeByGridBlock">
-              <div className="blockContent">
-                <MarkdownBlock>
-                  <translate>
-                    Jest is a JavaScript testing framework designed to ensure
-                    correctness of any JavaScript codebase. It allows you to
-                    write tests with its approachable, familiar and feature-rich
-                    APIs that give you results quickly.
-                  </translate>
-                </MarkdownBlock>
-              </div>
-              <div className="blockContent">
-                <MarkdownBlock>
-                  <translate>
-                    Jest is extensively documented, requires little
-                    configuration and can be extended to match your
-                    requirements. Jest makes testing delightful.
-                  </translate>
-                </MarkdownBlock>
-              </div>
-              <div className="blockContent flex-end">
-                <p style={{fontFamily: 'Monaco, Courier, monospace'}}>
-                  <translate>- Jest Core Team</translate>
-                </p>
-              </div>
-            </div>
-          </Container>
-          <Container padding={['bottom', 'top']} className="section-container">
+
+          <Container padding={['bottom', 'top']} className="section-container lightBackground">
             <GridBlock
               className="yellow"
               contents={[
@@ -395,7 +357,7 @@ class Index extends React.Component {
           </Container>
           <Container
             padding={['bottom', 'top']}
-            background="light"
+
             className="section-container"
           >
             <GridBlock
@@ -418,7 +380,7 @@ class Index extends React.Component {
               ]}
             />
           </Container>
-          <Container padding={['bottom', 'top']} className="section-container">
+          <Container padding={['bottom', 'top']} className="section-container lightBackground">
             <GridBlock
               className="yellow"
               contents={[
@@ -441,7 +403,6 @@ class Index extends React.Component {
           </Container>
           <Container
             padding={['bottom', 'top']}
-            background="light"
             className="section-container"
           >
             <GridBlock
@@ -450,7 +411,7 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Tests fail, when they do Jest provides a more context,
+                      Tests fail, when they do Jest provides rich context why,
                       here’s some examples:
                     </translate>
                   ),
@@ -460,6 +421,49 @@ class Index extends React.Component {
                 },
               ]}
             />
+          </Container>
+          <Container
+            padding={['bottom', 'top']}
+            background="light"
+            className="section-container philosophy"
+          >
+            <div className="blockElement green">
+              <div className="blockContent">
+                <h2>
+                  <translate>Philosophy</translate>
+                </h2>
+              </div>
+            </div>
+            <div className="blockElement imageAlignSide gridBlock threeByGridBlock">
+              <div className="blockContent">
+                <MarkdownBlock>
+                  <translate>
+                    Jest is a JavaScript testing framework designed to ensure
+                    correctness of any JavaScript codebase. It allows you to
+                    write tests with an approachable, familiar and feature-rich
+                    API that gives you results quickly.
+                  </translate>
+                </MarkdownBlock>
+              </div>
+              <div className="blockContent">
+                <MarkdownBlock>
+                  <translate>
+                    Jest is well-documented, requires little configuration and
+                    can be extended to match your requirements.
+                  </translate>
+                </MarkdownBlock>
+                <MarkdownBlock>
+                  <translate>
+                  Jest makes testing delightful.
+                  </translate>
+                </MarkdownBlock>
+              </div>
+              <div className="blockContent flex-end">
+                <p style={{fontFamily: 'Monaco, Courier, monospace'}}>
+                  <translate>- Jest Core Team</translate>
+                </p>
+              </div>
+            </div>
           </Container>
           <Container padding={['bottom', 'top']} className="section-container">
             <a className="anchor" name="watch" />
@@ -471,7 +475,7 @@ class Index extends React.Component {
                 </h2>
               </div>
             </div>
-            <div className="blockElement imageAlignSide gridBlock threeByGridBlock">
+            <div className="blockElement imageAlignSide gridBlock">
               <div className="video">
                 <iframe
                   width="560"
@@ -496,18 +500,10 @@ class Index extends React.Component {
                   </translate>
                 </MarkdownBlock>
               </div>
-              <div className="blockContent">
-                <div>
-                  Cupiditate repellendus sit rerum est minus nam. Velit placeat
-                  reiciendis placeat cumque. Sint et voluptatibus neque ad
-                  dolore sunt. Esse est odio possimus nulla. Ipsam voluptate
-                  maiores quo sed maiores excepturi. Quisquam sed sint incidunt
-                  placeat est.
-                </div>
-              </div>
             </div>
           </Container>
-          <div className="container section-container imageAlignSide lightBackground twoByGridBlock">
+
+          <div className="container section-container imageAlignSide twoByGridBlock lightBackground">
             <div className="wrapper">
               <div className="gridBlock yellow">
                 <div className="blockContent">
