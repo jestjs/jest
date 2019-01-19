@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import os from 'os';
 import path from 'path';
 import {
@@ -18,6 +16,7 @@ import {
 import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 import {cleanup, run, writeFiles} from '../Utils';
 import runJest from '../runJest';
+import wrap from 'jest-snapshot-serializer-raw';
 
 skipSuiteOnWindows();
 
@@ -259,7 +258,7 @@ test('handles a bad revision for "changedSince", for git', async () => {
   const {status, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
   expect(status).toBe(1);
-  expect(stderr).toMatchSnapshot();
+  expect(wrap(stderr)).toMatchSnapshot();
 });
 
 test('gets changed files for hg', async () => {
@@ -406,5 +405,5 @@ test('handles a bad revision for "changedSince", for hg', async () => {
   const {status, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
   expect(status).toBe(1);
-  expect(stderr).toMatchSnapshot();
+  expect(wrap(stderr)).toMatchSnapshot();
 });

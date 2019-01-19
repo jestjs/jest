@@ -12,6 +12,7 @@ import path from 'path';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 import {skipSuiteOnJestCircus} from '../../scripts/ConditionalTest';
+import wrap from 'jest-snapshot-serializer-raw';
 
 /**
  * NOTE: This test should be removed once jest-circus is rolled out as a breaking change.
@@ -43,7 +44,7 @@ test('exceeds the timeout set using jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
   expect(rest).toMatch(
     /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
   );
-  expect(summary).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
   expect(status).toBe(1);
 });
 
@@ -63,8 +64,8 @@ test('does not exceed the timeout using jasmine.DEFAULT_TIMEOUT_INTERVAL', () =>
 
   const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
   expect(status).toBe(0);
 });
 
@@ -85,6 +86,6 @@ test('can read and write jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
 
   const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
   const {summary} = extractSummary(stderr);
-  expect(summary).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
   expect(status).toBe(0);
 });

@@ -7,11 +7,10 @@
  * @flow
  */
 
-'use strict';
-
 import path from 'path';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
+import wrap from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../console-log-output-when-run-in-band');
 
@@ -33,7 +32,7 @@ test('prints console.logs when run with forceExit', () => {
   ]);
   const {rest, summary} = extractSummary(stderr);
   expect(status).toBe(0);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });

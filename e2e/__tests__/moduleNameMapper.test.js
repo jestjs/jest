@@ -6,17 +6,17 @@
  *
  * @flow
  */
-'use strict';
 
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import wrap from 'jest-snapshot-serializer-raw';
 
 test('moduleNameMapper wrong configuration', () => {
   const {stderr, status} = runJest('module-name-mapper-wrong-config');
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(1);
-  expect(rest).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration', () => {
@@ -26,5 +26,5 @@ test('moduleNameMapper correct configuration', () => {
   const {rest} = extractSummary(stderr);
 
   expect(status).toBe(0);
-  expect(rest).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
 });

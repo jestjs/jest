@@ -7,13 +7,12 @@
  * @flow
  */
 
-'use strict';
-
 import path from 'path';
 import runJest from '../runJest';
 import os from 'os';
 import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 import {cleanup, writeFiles} from '../Utils';
+import wrap from 'jest-snapshot-serializer-raw';
 
 skipSuiteOnWindows();
 
@@ -43,5 +42,5 @@ test('--showConfig outputs config info and exits', () => {
     .replace(/\"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
     .replace(/\"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
 
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });

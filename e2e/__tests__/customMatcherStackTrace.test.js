@@ -6,10 +6,10 @@
  *
  * @flow
  */
-'use strict';
 
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import wrap from 'jest-snapshot-serializer-raw';
 
 test('works with custom matchers', () => {
   const {stderr} = runJest('custom-matcher-stack-trace');
@@ -21,5 +21,5 @@ test('works with custom matchers', () => {
     .filter(line => line.indexOf('at Error (native)') < 0)
     .join('\n');
 
-  expect(rest).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
 });

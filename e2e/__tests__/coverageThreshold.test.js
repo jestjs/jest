@@ -7,11 +7,10 @@
  * @flow
  */
 
-'use strict';
-
 import path from 'path';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
+import wrap from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../coverage-threshold');
 
@@ -50,9 +49,9 @@ test('exits with 1 if coverage threshold is not met', () => {
   const {rest, summary} = extractSummary(stderr);
 
   expect(status).toBe(1);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-  expect(stdout).toMatchSnapshot('stdout');
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot('stdout');
 });
 
 test('exits with 1 if path threshold group is not found in coverage data', () => {
@@ -87,9 +86,9 @@ test('exits with 1 if path threshold group is not found in coverage data', () =>
   const {rest, summary} = extractSummary(stderr);
 
   expect(status).toBe(1);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-  expect(stdout).toMatchSnapshot('stdout');
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot('stdout');
 });
 
 test('exits with 0 if global threshold group is not found in coverage data', () => {
@@ -126,7 +125,7 @@ test('exits with 0 if global threshold group is not found in coverage data', () 
   });
 
   expect(status).toBe(0);
-  expect(stdout).toMatchSnapshot('stdout');
+  expect(wrap(stdout)).toMatchSnapshot('stdout');
 });
 
 test('excludes tests matched by path threshold groups from global group', () => {
@@ -169,9 +168,9 @@ test('excludes tests matched by path threshold groups from global group', () => 
   const {rest, summary} = extractSummary(stderr);
 
   expect(status).toBe(1);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-  expect(stdout).toMatchSnapshot('stdout');
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot('stdout');
 });
 
 test('file is matched by all path and glob threshold groups', () => {
@@ -219,7 +218,7 @@ test('file is matched by all path and glob threshold groups', () => {
   );
 
   expect(status).toBe(1);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
-  expect(stdout).toMatchSnapshot('stdout');
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot('stdout');
 });

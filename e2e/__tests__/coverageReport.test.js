@@ -6,12 +6,12 @@
  *
  * @flow
  */
-'use strict';
 
 import fs from 'fs';
 import path from 'path';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
+import wrap from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../coverage-report');
 
@@ -26,7 +26,7 @@ test('outputs coverage report', () => {
   //  is listed with 0 % coverage.
   // - `notRequiredInTestSuite.js` is not required but it is listed
   //  with 0 % coverage.
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 
   expect(() => fs.accessSync(coverageDir, fs.F_OK)).not.toThrow();
   expect(status).toBe(0);
@@ -45,7 +45,7 @@ test('collects coverage only from specified file', () => {
   );
 
   // Coverage report should only have `setup.js` coverage info
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });
 
 test('collects coverage only from multiple specified files', () => {
@@ -62,7 +62,7 @@ test('collects coverage only from multiple specified files', () => {
     {stripAnsi: true},
   );
 
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });
 
 test('collects coverage only from specified files avoiding dependencies', () => {
@@ -80,7 +80,7 @@ test('collects coverage only from specified files avoiding dependencies', () => 
   );
 
   // Coverage report should only have `sum.js` coverage info
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });
 
 test('json reporter printing with --coverage', () => {
@@ -89,7 +89,7 @@ test('json reporter printing with --coverage', () => {
   });
   const {summary} = extractSummary(stderr);
   expect(status).toBe(1);
-  expect(summary).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('outputs coverage report as json', () => {
@@ -115,7 +115,7 @@ test('outputs coverage report when text is requested', () => {
   );
   expect(status).toBe(0);
   expect(stdout).toMatch(/Stmts | . Branch/);
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });
 
 test('outputs coverage report when text-summary is requested', () => {
@@ -126,7 +126,7 @@ test('outputs coverage report when text-summary is requested', () => {
   );
   expect(status).toBe(0);
   expect(stdout).toMatch(/Coverage summary/);
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });
 
 test('outputs coverage report when text and text-summary is requested', () => {
@@ -143,7 +143,7 @@ test('outputs coverage report when text and text-summary is requested', () => {
   expect(status).toBe(0);
   expect(stdout).toMatch(/Stmts | . Branch/);
   expect(stdout).toMatch(/Coverage summary/);
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });
 
 test('does not output coverage report when html is requested', () => {
@@ -154,7 +154,7 @@ test('does not output coverage report when html is requested', () => {
   );
   expect(status).toBe(0);
   expect(stdout).toMatch(/^$/);
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });
 
 test('collects coverage from duplicate files avoiding shared cache', () => {
@@ -175,7 +175,7 @@ test('collects coverage from duplicate files avoiding shared cache', () => {
 
   // Run for the second time
   const {stdout, status} = runJest(DIR, args, {stripAnsi: true});
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
   expect(status).toBe(0);
 });
 
@@ -185,6 +185,6 @@ test('generates coverage when using the testRegex config param ', () => {
     '--testRegex=__tests__',
     '--coverage',
   ]);
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
   expect(status).toBe(0);
 });

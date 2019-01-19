@@ -7,11 +7,10 @@
  * @flow
  */
 
-'use strict';
-
 import path from 'path';
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import wrap from 'jest-snapshot-serializer-raw';
 const dir = path.resolve(__dirname, '../expect-async-matcher');
 
 test('works with passing tests', () => {
@@ -29,5 +28,5 @@ test('shows the correct errors in stderr when failing tests', () => {
     .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
     .join('\n');
 
-  expect(rest).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
 });

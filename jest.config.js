@@ -26,6 +26,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotSerializers: [
     '<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js',
+    'jest-snapshot-serializer-raw',
   ],
   testEnvironment: './packages/jest-environment-node',
   testPathIgnorePatterns: [

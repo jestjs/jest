@@ -6,9 +6,9 @@
  *
  * @flow
  */
-'use strict';
 
 import runJest, {until} from '../runJest';
+import wrap from 'jest-snapshot-serializer-raw';
 
 try {
   // $FlowFixMe: Node core
@@ -36,7 +36,7 @@ it('prints message about flag on slow tests', async () => {
   );
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(textAfterTest).toMatchSnapshot();
+  expect(wrap(textAfterTest)).toMatchSnapshot();
 });
 
 it('prints message about flag on forceExit', async () => {
@@ -47,7 +47,7 @@ it('prints message about flag on forceExit', async () => {
   );
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(textAfterTest).toMatchSnapshot();
+  expect(wrap(textAfterTest)).toMatchSnapshot();
 });
 
 it('prints out info about open handlers', async () => {
@@ -58,7 +58,7 @@ it('prints out info about open handlers', async () => {
   );
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(textAfterTest).toMatchSnapshot();
+  expect(wrap(textAfterTest)).toMatchSnapshot();
 });
 
 it('does not report promises', () => {
@@ -80,5 +80,5 @@ it('prints out info about open handlers from inside tests', async () => {
   );
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(textAfterTest).toMatchSnapshot();
+  expect(wrap(textAfterTest)).toMatchSnapshot();
 });

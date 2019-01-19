@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import {readFileSync} from 'fs';
 import path from 'path';
 import {cleanup, run} from '../Utils';

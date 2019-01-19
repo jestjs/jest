@@ -11,6 +11,7 @@ import fs from 'fs';
 import path from 'path';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
+import wrap from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../to-match-inline-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
@@ -35,7 +36,7 @@ test('basic support', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(status).toBe(0);
-    expect(fileAfter).toMatchSnapshot('initial write');
+    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
   }
 
   {
@@ -44,7 +45,7 @@ test('basic support', () => {
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
     expect(status).toBe(0);
-    expect(fileAfter).toMatchSnapshot('snapshot passed');
+    expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
   }
 
   {
@@ -55,7 +56,7 @@ test('basic support', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Received value does not match stored snapshot');
     expect(status).toBe(1);
-    expect(fileAfter).toMatchSnapshot('snapshot mismatch');
+    expect(wrap(fileAfter)).toMatchSnapshot('snapshot mismatch');
   }
 
   {
@@ -68,7 +69,7 @@ test('basic support', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
     expect(status).toBe(0);
-    expect(fileAfter).toMatchSnapshot('snapshot updated');
+    expect(wrap(fileAfter)).toMatchSnapshot('snapshot updated');
   }
 });
 
@@ -85,7 +86,7 @@ test('handles property matchers', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(status).toBe(0);
-    expect(fileAfter).toMatchSnapshot('initial write');
+    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
   }
 
   {
@@ -93,7 +94,7 @@ test('handles property matchers', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(status).toBe(0);
-    expect(fileAfter).toMatchSnapshot('snapshot passed');
+    expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
   }
 
   {
@@ -107,7 +108,7 @@ test('handles property matchers', () => {
     );
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(status).toBe(1);
-    expect(fileAfter).toMatchSnapshot('snapshot failed');
+    expect(wrap(fileAfter)).toMatchSnapshot('snapshot failed');
   }
 
   {
@@ -123,7 +124,7 @@ test('handles property matchers', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
     expect(status).toBe(0);
-    expect(fileAfter).toMatchSnapshot('snapshot updated');
+    expect(wrap(fileAfter)).toMatchSnapshot('snapshot updated');
   }
 });
 
@@ -146,7 +147,7 @@ test('removes obsolete external snapshots', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(status).toBe(0);
-    expect(fileAfter).toMatchSnapshot('initial write');
+    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
     expect(fs.existsSync(snapshotPath)).toEqual(true);
   }
 
@@ -156,7 +157,7 @@ test('removes obsolete external snapshots', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 obsolete, 1 written, 1 total');
     expect(status).toBe(1);
-    expect(fileAfter).toMatchSnapshot('inline snapshot written');
+    expect(wrap(fileAfter)).toMatchSnapshot('inline snapshot written');
     expect(fs.existsSync(snapshotPath)).toEqual(true);
   }
 
@@ -170,7 +171,7 @@ test('removes obsolete external snapshots', () => {
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 file removed, 1 passed, 1 total');
     expect(status).toBe(0);
-    expect(fileAfter).toMatchSnapshot('external snapshot cleaned');
+    expect(wrap(fileAfter)).toMatchSnapshot('external snapshot cleaned');
     expect(fs.existsSync(snapshotPath)).toEqual(false);
   }
 });
@@ -189,7 +190,7 @@ test('supports async matchers', () => {
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('2 snapshots written from 1 test suite.');
   expect(status).toBe(0);
-  expect(fileAfter).toMatchSnapshot();
+  expect(wrap(fileAfter)).toMatchSnapshot();
 });
 
 test('supports async tests', () => {
@@ -206,7 +207,7 @@ test('supports async tests', () => {
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(status).toBe(0);
-  expect(fileAfter).toMatchSnapshot();
+  expect(wrap(fileAfter)).toMatchSnapshot();
 });
 
 test('writes snapshots with non-literals in expect(...)', () => {
@@ -223,7 +224,7 @@ test('writes snapshots with non-literals in expect(...)', () => {
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(status).toBe(0);
-  expect(fileAfter).toMatchSnapshot();
+  expect(wrap(fileAfter)).toMatchSnapshot();
 });
 
 // issue: https://github.com/facebook/jest/issues/6702

@@ -7,11 +7,10 @@
  * @flow
  */
 
-'use strict';
-
 import path from 'path';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
+import wrap from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../execute-tests-once-in-mpr');
 
@@ -58,6 +57,6 @@ test('Tests are executed only once even in an MPR', () => {
 
   // We have only one test passed, so total should equal to one, despite we have
   // three projects.
-  expect(rest).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
   expect(summary).toMatch(/1 total/);
 });

@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import {json as runWithJson} from '../runJest';
 import {skipSuiteOnJestCircus} from '../../scripts/ConditionalTest';
 

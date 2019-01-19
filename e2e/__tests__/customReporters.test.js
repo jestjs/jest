@@ -6,12 +6,12 @@
  *
  * @flow
  */
-'use strict';
 
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
+import wrap from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(os.tmpdir(), 'custom-reporters-test-dir');
 
@@ -46,7 +46,7 @@ describe('Custom Reporters Integration', () => {
       'add.test.js',
     ]);
 
-    expect(stdout).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchSnapshot();
     expect(status).toBe(0);
   });
 
@@ -62,7 +62,7 @@ describe('Custom Reporters Integration', () => {
     ]);
 
     expect(status).toBe(1);
-    expect(stderr).toMatchSnapshot();
+    expect(wrap(stderr)).toMatchSnapshot();
   });
 
   test('default reporters enabled', () => {
@@ -78,8 +78,8 @@ describe('Custom Reporters Integration', () => {
     const parsedJSON = JSON.parse(stdout);
 
     expect(status).toBe(0);
-    expect(rest).toMatchSnapshot();
-    expect(summary).toMatchSnapshot();
+    expect(wrap(rest)).toMatchSnapshot();
+    expect(wrap(summary)).toMatchSnapshot();
     expect(parsedJSON).toMatchSnapshot();
   });
 
@@ -120,7 +120,7 @@ describe('Custom Reporters Integration', () => {
     expect(status).toBe(0);
     expect(stderr).toBe('');
 
-    expect(stdout).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchSnapshot();
   });
 
   test('prints reporter errors', () => {

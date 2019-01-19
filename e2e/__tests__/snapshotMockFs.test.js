@@ -6,12 +6,12 @@
  *
  * @flow
  */
-'use strict';
 
-const rimraf = require('rimraf');
-const path = require('path');
-const {extractSummary} = require('../Utils');
-const runJest = require('../runJest');
+import path from 'path';
+import rimraf from 'rimraf';
+import wrap from 'jest-snapshot-serializer-raw';
+import {extractSummary} from '../Utils';
+import {json as runJestJson} from '../runJest';
 
 const DIR = path.resolve(__dirname, '../snapshot-mock-fs');
 const snapshotDir = path.resolve(DIR, '__tests__/__snapshots__');
@@ -21,14 +21,14 @@ beforeEach(() => rimraf.sync(snapshotDir));
 afterAll(() => rimraf.sync(snapshotDir));
 
 test('store snapshot even if fs is mocked', () => {
-  const {json, status, stderr} = runJest.json(DIR, ['--ci=false']);
+  const {json, status, stderr} = runJestJson(DIR, ['--ci=false']);
 
   expect(status).toBe(0);
   expect(json.numTotalTests).toBe(1);
   expect(json.numPassedTests).toBe(1);
 
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-  expect(extractSummary(stderr).summary).toMatchSnapshot();
+  expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
 
   // $FlowFixMe dynamic require
   const content = require(snapshotFile);
