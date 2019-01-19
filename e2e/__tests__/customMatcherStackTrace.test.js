@@ -12,7 +12,7 @@ import runJest from '../runJest';
 import {extractSummary} from '../Utils';
 
 test('works with custom matchers', () => {
-  const {stderr} = runJest('custom-matcher-stack-trace');
+  const {stderr} = runJest('custom-matcher-stack-trace', ['sync.test.js']);
 
   let {rest} = extractSummary(stderr);
 
@@ -22,4 +22,12 @@ test('works with custom matchers', () => {
     .join('\n');
 
   expect(rest).toMatchSnapshot();
+});
+
+test('custom async matchers', () => {
+  const {stderr} = runJest('custom-matcher-stack-trace', ['async.test.js']);
+
+  const result = extractSummary(stderr);
+
+  expect(result).toMatchSnapshot();
 });
