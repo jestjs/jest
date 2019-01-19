@@ -628,7 +628,7 @@ class ModuleMockerClass {
       // as name.
       RESERVED_KEYWORDS[name] ||
       // It's also a syntax error to define functions with a name that starts with a number
-      /^[0-9]/.test(name)
+      /^\d/.test(name)
     ) {
       name = '$' + name;
     }
