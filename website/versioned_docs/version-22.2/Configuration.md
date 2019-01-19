@@ -276,7 +276,7 @@ Default: `["js", "json", "jsx", "node"]`
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.
 
-If you are using TypeScript, you will want to add `"ts"` and/or `"tsx"` to above default. Where you place these is up to you - we recommend placing the extensions most commonly used in your project on the left.
+If you are using TypeScript, you will want to add `"ts"` and/or `"tsx"` to the above default. Where you place these is up to you - we recommend placing the extensions most commonly used in your project on the left.
 
 ### `moduleDirectories` [array<string>]
 
