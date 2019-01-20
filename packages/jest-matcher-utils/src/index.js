@@ -10,6 +10,7 @@
 import type {MatcherHintOptions} from 'types/Matchers';
 
 import chalk from 'chalk';
+import jestDiff from 'jest-diff';
 import getType from 'jest-get-type';
 import prettyFormat from 'pretty-format';
 const {
@@ -159,6 +160,21 @@ export const ensureNumbers = (
   ensureActualIsNumber(actual, matcherName);
   ensureExpectedIsNumber(expected, matcherName);
 };
+
+// Sometimes, e.g. when comparing two numbers, the output from jest-diff
+// does not contain more information than the `Expected:` / `Received:` already gives.
+// In those cases, we do not print a diff to make the output shorter and not redundant.
+const shouldPrintDiff = (actual: any, expected: any) => {
+  if (typeof actual === 'number' && typeof expected === 'number') {
+    return false;
+  }
+  if (typeof actual === 'boolean' && typeof expected === 'boolean') {
+    return false;
+  }
+  return true;
+};
+export const diff: typeof jestDiff = (a, b, options) =>
+  shouldPrintDiff(a, b) ? jestDiff(a, b, options) : null;
 
 export const pluralize = (word: string, count: number) =>
   (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');

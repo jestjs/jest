@@ -7,6 +7,7 @@
  */
 
 import {
+  diff,
   ensureNumbers,
   ensureNoExpected,
   getLabelPrinter,
@@ -126,6 +127,31 @@ describe('.ensureNoExpected()', () => {
     expect(() => {
       ensureNoExpected({a: 1}, 'toBeDefined', {isNot: true});
     }).toThrowErrorMatchingSnapshot();
+  });
+});
+
+jest.mock('jest-diff', () => () => 'diff output');
+describe('diff', () => {
+  test('forwards to jest-diff', () => {
+    [
+      ['a', 'b'],
+      ['a', {}],
+      ['a', null],
+      ['a', undefined],
+      ['a', 1],
+      ['a', true],
+      [1, true],
+    ].forEach(([actual, expected]) =>
+      expect(diff(actual, expected)).toBe('diff output'),
+    );
+  });
+
+  test('two booleans', () => {
+    expect(diff(false, true)).toBe(null);
+  });
+
+  test('two numbers', () => {
+    expect(diff(1, 2)).toBe(null);
   });
 });
 
