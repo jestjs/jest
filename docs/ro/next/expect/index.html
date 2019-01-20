@@ -892,7 +892,14 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
   }).toThrow();
 });
 </code></pre>
-<p>Dacă doriţi să testaţi că este aruncată o eroare specifică, puteți pasa un argument la <code>toThrow</code>. The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. De exemplu, să presupunem că <code>drinkFlavor</code> este implementată în felul următor:</p>
+<p>To test that a specific error is thrown, you can provide an argument:</p>
+<ul>
+<li>regular expression: error message <strong>matches</strong> the pattern</li>
+<li>string: error message <strong>includes</strong> the substring</li>
+<li>error object: error message is <strong>equal to</strong> the message property of the object</li>
+<li>error class: error object is <strong>instance of</strong> class</li>
+</ul>
+<p>De exemplu, să presupunem că <code>drinkFlavor</code> este implementată în felul următor:</p>
 <pre><code class="hljs css language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">drinkFlavor</span>(<span class="hljs-params">flavor</span>) </span>{
   <span class="hljs-keyword">if</span> (flavor == <span class="hljs-string">'octopus'</span>) {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> DisgustingFlavorError(<span class="hljs-string">'yuck, octopus flavor'</span>);
@@ -912,6 +919,7 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
 
   <span class="hljs-comment">// Test the exact error message</span>
   expect(drinkOctopus).toThrowError(<span class="hljs-regexp">/^yuck, octopus flavor$/</span>);
+  expect(drinkOctopus).toThrowError(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'yuck, octopus flavor'</span>));
 
   <span class="hljs-comment">// Test that we get a DisgustingFlavorError</span>
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
