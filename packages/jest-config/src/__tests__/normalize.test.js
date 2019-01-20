@@ -59,19 +59,6 @@ it('assigns a random 32-byte hash as a name to avoid clashes', () => {
   expect(name1).not.toBe(name2);
 });
 
-it('keeps custom project name based on the projects rootDir', () => {
-  const name = 'test';
-  const {options} = normalize(
-    {
-      projects: [{name, rootDir: '/path/to/foo'}],
-      rootDir: '/root/path/baz',
-    },
-    {},
-  );
-
-  expect(options.projects[0].name).toBe(name);
-});
-
 it('keeps custom names based on the rootDir', () => {
   expect(
     normalize(
