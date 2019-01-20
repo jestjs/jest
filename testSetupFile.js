@@ -10,8 +10,3 @@ const jasmineReporters = require('jasmine-reporters');
 // Some of the `jest-runtime` tests are very slow and cause
 // timeouts on travis
 jest.setTimeout(70000);
-
-if (global.jasmine && process.env.APPVEYOR_API_URL) {
-  // Running on AppVeyor, add the custom reporter.
-  jasmine.getEnv().addReporter(new jasmineReporters.AppVeyorReporter());
-}
