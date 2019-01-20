@@ -893,7 +893,14 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
   }).toThrow();
 });
 </code></pre>
-<p>Si deseas verificar que se arroja cierto error en especifico, se le puede proveer un argumento a <code>toThrow</code>. The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. Por ejemplo, digamos que el código de <code>beberSabor</code> es el siguiente:</p>
+<p>To test that a specific error is thrown, you can provide an argument:</p>
+<ul>
+<li>regular expression: error message <strong>matches</strong> the pattern</li>
+<li>string: error message <strong>includes</strong> the substring</li>
+<li>error object: error message is <strong>equal to</strong> the message property of the object</li>
+<li>error class: error object is <strong>instance of</strong> class</li>
+</ul>
+<p>Por ejemplo, digamos que el código de <code>beberSabor</code> es el siguiente:</p>
 <pre><code class="hljs css language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">beberSabor</span>(<span class="hljs-params">sabor</span>) </span>{
   <span class="hljs-keyword">if</span> (sabor == <span class="hljs-string">'pulpo'</span>) {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ErrorSaborRepugnante(<span class="hljs-string">'guac! sabor a pulpo'</span>);
@@ -913,6 +920,7 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
 
   <span class="hljs-comment">// Test the exact error message</span>
   expect(drinkOctopus).toThrowError(<span class="hljs-regexp">/^yuck, octopus flavor$/</span>);
+  expect(drinkOctopus).toThrowError(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'yuck, octopus flavor'</span>));
 
   <span class="hljs-comment">// Test that we get a DisgustingFlavorError</span>
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
