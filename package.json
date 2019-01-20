@@ -33,7 +33,6 @@
     "isbinaryfile": "^3.0.3",
     "istanbul-api": "^2.0.8",
     "istanbul-lib-coverage": "^2.0.2",
-    "jasmine-reporters": "^2.2.0",
     "jest-junit": "^6.0.1",
     "jest-silent-reporter": "^0.1.1",
     "jest-snapshot-serializer-raw": "^1.1.0",
