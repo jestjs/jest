@@ -7,13 +7,13 @@
  * @flow
  */
 
-type Question = {
+type Question = {|
   initial?: boolean | number,
   message: string,
   name: string,
   type: string,
   choices?: Array<{title: string, value: string}>,
-};
+|};
 
 const defaultQuestions: Array<Question> = [
   {
