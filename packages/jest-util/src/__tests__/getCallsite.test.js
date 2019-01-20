@@ -1,16 +1,15 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
 import fs from 'fs';
 import SourceMap from 'source-map';
 import getCallsite from '../getCallsite';
 
 // Node 10.5.x compatibility
-jest.mock('fs', () =>
-  Object.assign({}, jest.genMockFromModule('fs'), {
-    ReadStream: jest.requireActual('fs').ReadStream,
-    WriteStream: jest.requireActual('fs').WriteStream,
-  }),
-);
+jest.mock('fs', () => ({
+  ...jest.genMockFromModule('fs'),
+  ReadStream: jest.requireActual('fs').ReadStream,
+  WriteStream: jest.requireActual('fs').WriteStream,
+}));
 
 describe('getCallsite', () => {
   test('without source map', () => {

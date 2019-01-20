@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,8 +12,6 @@
 // Because of the dynamic nature of a worker communication process, all messages
 // coming from any of the other processes cannot be typed. Thus, many types
 // include "any" as a flow type, which is (unfortunately) correct here.
-
-/* eslint-disable no-unclear-flowtypes */
 
 export const CHILD_MESSAGE_INITIALIZE: 0 = 0;
 export const CHILD_MESSAGE_CALL: 1 = 1;

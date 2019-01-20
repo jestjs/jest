@@ -7,20 +7,15 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "16.6.0-alpha.8af6728",
-    "react-native": "0.57.3"
+    "react": "16.6.3",
+    "react-native": "0.57.8"
   },
   "devDependencies": {
+    "@babel/core": "*",
     "@babel/preset-env": "*",
     "babel-jest": "*",
     "jest": "*",
     "metro-react-native-babel-preset": "*",
     "react-test-renderer": "*"
-  },
-  "jest": {
-    "preset": "react-native",
-    "transform": {
-      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
-    }
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -116,15 +116,15 @@ describe('.ensureNoExpected()', () => {
     }).not.toThrow();
   });
 
-  test('throws error when expected is not undefined', () => {
-    expect(() => {
-      ensureNoExpected({a: 1});
-    }).toThrowErrorMatchingSnapshot();
-  });
-
   test('throws error when expected is not undefined with matcherName', () => {
     expect(() => {
       ensureNoExpected({a: 1}, '.toBeDefined');
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('throws error when expected is not undefined with matcherName and options', () => {
+    expect(() => {
+      ensureNoExpected({a: 1}, 'toBeDefined', {isNot: true});
     }).toThrowErrorMatchingSnapshot();
   });
 });

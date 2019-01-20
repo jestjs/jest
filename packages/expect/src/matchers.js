@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -30,6 +30,7 @@ import {
   getObjectSubset,
   getPath,
   iterableEquality,
+  sparseArrayEquality,
   subsetEquality,
   typeEquality,
   isOneline,
@@ -109,27 +110,37 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeDefined(actual: any, expected: void) {
-    ensureNoExpected(expected, '.toBeDefined');
-    const pass = actual !== void 0;
+  toBeDefined(received: any, expected: void) {
+    const options = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+    ensureNoExpected(expected, 'toBeDefined', options);
+
+    const pass = received !== void 0;
+
     const message = () =>
-      matcherHint('.toBeDefined', 'received', '', {
-        isNot: this.isNot,
-      }) +
+      matcherHint('toBeDefined', undefined, '', options) +
       '\n\n' +
-      `Received: ${printReceived(actual)}`;
+      `Received: ${printReceived(received)}`;
+
     return {message, pass};
   },
 
-  toBeFalsy(actual: any, expected: void) {
-    ensureNoExpected(expected, '.toBeFalsy');
-    const pass = !actual;
+  toBeFalsy(received: any, expected: void) {
+    const options = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+    ensureNoExpected(expected, 'toBeFalsy', options);
+
+    const pass = !received;
+
     const message = () =>
-      matcherHint('.toBeFalsy', 'received', '', {
-        isNot: this.isNot,
-      }) +
+      matcherHint('toBeFalsy', undefined, '', options) +
       '\n\n' +
-      `Received: ${printReceived(actual)}`;
+      `Received: ${printReceived(received)}`;
+
     return {message, pass};
   },
 
@@ -229,51 +240,70 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeNaN(actual: any, expected: void) {
-    ensureNoExpected(expected, '.toBeNaN');
-    const pass = Number.isNaN(actual);
+  toBeNaN(received: any, expected: void) {
+    const options = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+    ensureNoExpected(expected, 'toBeNaN', options);
+
+    const pass = Number.isNaN(received);
+
     const message = () =>
-      matcherHint('.toBeNaN', 'received', '', {
-        isNot: this.isNot,
-      }) +
+      matcherHint('toBeNaN', undefined, '', options) +
       '\n\n' +
-      `Received: ${printReceived(actual)}`;
+      `Received: ${printReceived(received)}`;
+
     return {message, pass};
   },
 
-  toBeNull(actual: any, expected: void) {
-    ensureNoExpected(expected, '.toBeNull');
-    const pass = actual === null;
+  toBeNull(received: any, expected: void) {
+    const options = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+    ensureNoExpected(expected, 'toBeNull', options);
+
+    const pass = received === null;
+
     const message = () =>
-      matcherHint('.toBeNull', 'received', '', {
-        isNot: this.isNot,
-      }) +
+      matcherHint('toBeNull', undefined, '', options) +
       '\n\n' +
-      `Received: ${printReceived(actual)}`;
+      `Received: ${printReceived(received)}`;
+
     return {message, pass};
   },
 
-  toBeTruthy(actual: any, expected: void) {
-    ensureNoExpected(expected, '.toBeTruthy');
-    const pass = !!actual;
+  toBeTruthy(received: any, expected: void) {
+    const options = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+    ensureNoExpected(expected, 'toBeTruthy', options);
+
+    const pass = !!received;
+
     const message = () =>
-      matcherHint('.toBeTruthy', 'received', '', {
-        isNot: this.isNot,
-      }) +
+      matcherHint('toBeTruthy', undefined, '', options) +
       '\n\n' +
-      `Received: ${printReceived(actual)}`;
+      `Received: ${printReceived(received)}`;
+
     return {message, pass};
   },
 
-  toBeUndefined(actual: any, expected: void) {
-    ensureNoExpected(expected, '.toBeUndefined');
-    const pass = actual === void 0;
+  toBeUndefined(received: any, expected: void) {
+    const options = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+    ensureNoExpected(expected, 'toBeUndefined', options);
+
+    const pass = received === void 0;
+
     const message = () =>
-      matcherHint('.toBeUndefined', 'received', '', {
-        isNot: this.isNot,
-      }) +
+      matcherHint('toBeUndefined', undefined, '', options) +
       '\n\n' +
-      `Received: ${printReceived(actual)}`;
+      `Received: ${printReceived(received)}`;
 
     return {message, pass};
   },
@@ -383,24 +413,24 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint('.not.toEqual') +
+          matcherHint('.toEqual', undefined, undefined, {
+            isNot: this.isNot,
+          }) +
           '\n\n' +
-          `Expected value to not equal:\n` +
-          `  ${printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${printReceived(received)}`
+          `Expected: ${printExpected(expected)}\n` +
+          `Received: ${printReceived(received)}`
       : () => {
-          const oneline = isOneline(expected, received);
           const diffString = diff(expected, received, {expand: this.expand});
 
           return (
-            matcherHint('.toEqual') +
+            matcherHint('.toEqual', undefined, undefined, {
+              isNot: this.isNot,
+            }) +
             '\n\n' +
-            `Expected value to equal:\n` +
-            `  ${printExpected(expected)}\n` +
-            `Received:\n` +
-            `  ${printReceived(received)}` +
-            (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '')
+            (diffString && diffString.includes('- Expect')
+              ? `Difference:\n\n${diffString}`
+              : `Expected: ${printExpected(expected)}\n` +
+                `Received: ${printReceived(received)}`)
           );
         };
 
@@ -666,7 +696,7 @@ const matchers: MatchersObject = {
     const pass = equals(
       received,
       expected,
-      [iterableEquality, typeEquality],
+      [iterableEquality, typeEquality, sparseArrayEquality],
       true,
     );
 

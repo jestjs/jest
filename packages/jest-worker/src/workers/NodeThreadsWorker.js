@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -46,19 +46,14 @@ export default class ExperimentalWorker implements WorkerInterface {
       eval: false,
       stderr: true,
       stdout: true,
-      // $FlowFixMe: Flow does not work well with Object.assign.
-      workerData: Object.assign(
-        {
-          cwd: process.cwd(),
-          env: Object.assign({}, process.env, {
-            JEST_WORKER_ID: this._options.workerId,
-          }),
-          // Suppress --debug / --inspect flags while preserving others (like --harmony).
-          execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
-          silent: true,
-        },
-        this._options.forkOptions,
-      ),
+      workerData: {
+        cwd: process.cwd(),
+        env: {...process.env, JEST_WORKER_ID: this._options.workerId},
+        // Suppress --debug / --inspect flags while preserving others (like --harmony).
+        execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
+        silent: true,
+        ...this._options.forkOptions,
+      },
     });
 
     this._worker.on('message', this.onMessage.bind(this));

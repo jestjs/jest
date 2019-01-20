@@ -3,15 +3,16 @@
   "version": "23.4.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-util"
   },
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "callsites": "^2.0.0",
+    "callsites": "^3.0.0",
     "chalk": "^2.0.1",
-    "graceful-fs": "^4.1.11",
-    "is-ci": "^1.0.10",
+    "graceful-fs": "^4.1.15",
+    "is-ci": "^2.0.0",
     "jest-message-util": "^23.4.0",
     "mkdirp": "^0.5.1",
     "slash": "^2.0.0",

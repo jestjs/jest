@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -21,7 +21,6 @@ import {
   ErrorWithStack,
   NullConsole,
   getConsoleOutput,
-  interopRequireDefault,
   setGlobal,
 } from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
@@ -57,30 +56,23 @@ async function runTestInternal(
   let testEnvironment = config.testEnvironment;
 
   if (customEnvironment) {
-    testEnvironment = getTestEnvironment(
-      Object.assign({}, config, {
-        // $FlowFixMe
-        testEnvironment: customEnvironment,
-      }),
-    );
+    testEnvironment = getTestEnvironment({
+      ...config,
+      // $FlowFixMe
+      testEnvironment: customEnvironment,
+    });
   }
 
-  const TestEnvironment: EnvironmentClass = interopRequireDefault(
-    // $FlowFixMe: dynamic import
-    require(testEnvironment),
-  ).default;
+  /* $FlowFixMe */
+  const TestEnvironment = (require(testEnvironment): EnvironmentClass);
   const testFramework = ((process.env.JEST_CIRCUS === '1'
-    ? // eslint-disable-next-line import/no-extraneous-dependencies
-      require('jest-circus/runner')
-    : interopRequireDefault(
-        // $FlowFixMe: dynamic import
-        require(config.testRunner),
-      )
-  ).default: TestFramework);
-  const Runtime = (interopRequireDefault(
-    // $FlowFixMe: dynamic import
-    require(config.moduleLoader || 'jest-runtime'),
-  ).default: Class<RuntimeClass>);
+    ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
+    : /* $FlowFixMe */
+      require(config.testRunner)): TestFramework);
+  const Runtime = ((config.moduleLoader
+    ? /* $FlowFixMe */
+      require(config.moduleLoader)
+    : require('jest-runtime')): Class<RuntimeClass>);
 
   let runtime = undefined;
 
@@ -252,8 +244,15 @@ export default async function runTest(
     resolver,
   );
 
-  // Resolve leak detector, outside the "runTestInternal" closure.
-  result.leaks = leakDetector ? leakDetector.isLeaking() : false;
+  if (leakDetector) {
+    // We wanna allow a tiny but time to pass to allow last-minute cleanup
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Resolve leak detector, outside the "runTestInternal" closure.
+    result.leaks = leakDetector.isLeaking();
+  } else {
+    result.leaks = false;
+  }
 
   return result;
 }

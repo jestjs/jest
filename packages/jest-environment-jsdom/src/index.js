@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -16,7 +16,7 @@ import {FakeTimers, installCommonGlobals} from 'jest-util';
 import mock from 'jest-mock';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
-export default class JSDOMEnvironment {
+class JSDOMEnvironment {
   dom: ?Object;
   fakeTimers: ?FakeTimers<number>;
   global: ?Global;
@@ -24,20 +24,13 @@ export default class JSDOMEnvironment {
   moduleMocker: ?ModuleMocker;
 
   constructor(config: ProjectConfig, options?: EnvironmentContext = {}) {
-    this.dom = new JSDOM(
-      '<!DOCTYPE html>',
-      Object.assign(
-        {
-          pretendToBeVisual: true,
-          runScripts: 'dangerously',
-          url: config.testURL,
-          virtualConsole: new VirtualConsole().sendTo(
-            options.console || console,
-          ),
-        },
-        config.testEnvironmentOptions,
-      ),
-    );
+    this.dom = new JSDOM('<!DOCTYPE html>', {
+      pretendToBeVisual: true,
+      runScripts: 'dangerously',
+      url: config.testURL,
+      virtualConsole: new VirtualConsole().sendTo(options.console || console),
+      ...config.testEnvironmentOptions,
+    });
     const global = (this.global = this.dom.window.document.defaultView);
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
@@ -115,3 +108,5 @@ export default class JSDOMEnvironment {
     return null;
   }
 }
+
+module.exports = JSDOMEnvironment;

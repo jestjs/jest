@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -69,10 +69,12 @@ export const makeTest = (
     _mode = parent.mode;
   }
 
+  const errors: Array<[?Exception, Exception]> = [];
+
   return {
     asyncError,
     duration: null,
-    errors: [],
+    errors,
     fn,
     invocations: 0,
     mode: _mode,

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -65,9 +65,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
   expect(childProcess.fork.mock.calls[0][0]).toBe(child);
   expect(childProcess.fork.mock.calls[0][1]).toEqual({
     cwd: '/tmp', // Overridden default option.
-    env: Object.assign({}, process.env, {
-      FORCE_COLOR: supportsColor.stdout ? '1' : undefined,
-    }), // Default option.
+    env: {...process.env, FORCE_COLOR: supportsColor.stdout ? '1' : undefined}, // Default option.
     execArgv: ['-p'], // Filtered option.
     execPath: 'hello', // Added option.
     silent: true, // Default option.

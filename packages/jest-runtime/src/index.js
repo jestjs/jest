@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -23,11 +23,11 @@ import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import Resolver from 'jest-resolve';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
-import {EXTENSION as SNAPSHOT_EXTENSION} from 'jest-snapshot';
+import Snapshot from 'jest-snapshot';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
-import ScriptTransformer from './script_transformer';
-import shouldInstrument from './should_instrument';
+import ScriptTransformer from './ScriptTransformer';
+import shouldInstrument from './shouldInstrument';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
@@ -83,7 +83,7 @@ const getModuleNameMapper = (config: ProjectConfig) => {
 
 const unmockRegExpCache = new WeakMap();
 
-export default class Runtime {
+class Runtime {
   static ScriptTransformer: Class<ScriptTransformer>;
 
   _cacheFS: CacheFS;
@@ -242,7 +242,7 @@ export default class Runtime {
       computeSha1: config.haste.computeSha1,
       console: options && options.console,
       dependencyExtractor: config.dependencyExtractor,
-      extensions: [SNAPSHOT_EXTENSION].concat(config.moduleFileExtensions),
+      extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
       ignorePattern,
       maxWorkers: (options && options.maxWorkers) || 1,
@@ -1017,4 +1017,4 @@ export default class Runtime {
 
 Runtime.ScriptTransformer = ScriptTransformer;
 
-export {ScriptTransformer};
+module.exports = Runtime;

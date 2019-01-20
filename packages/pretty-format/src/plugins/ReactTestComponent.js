@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -49,9 +49,6 @@ export const serialize = (
         object.props
           ? printProps(
               getPropKeys(object),
-              // Despite ternary expression, Flow 0.51.0 found incorrect error:
-              // undefined is incompatible with the expected param type of Object
-              // $FlowFixMe
               object.props,
               config,
               indentation + config.indent,

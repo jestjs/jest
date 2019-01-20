@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -21,10 +21,11 @@ import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
 import validatePattern from './validatePattern';
-import {clearLine} from 'jest-util';
+import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './getMaxWorkers';
 import micromatch from 'micromatch';
+import {sync as realpath} from 'realpath-native';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {
@@ -58,12 +59,11 @@ const mergeOptionWithPreset = (
   optionName: string,
 ) => {
   if (options[optionName] && preset[optionName]) {
-    options[optionName] = Object.assign(
-      {},
-      options[optionName],
-      preset[optionName],
-      options[optionName],
-    );
+    options[optionName] = {
+      ...options[optionName],
+      ...preset[optionName],
+      ...options[optionName],
+    };
   }
 };
 
@@ -126,7 +126,7 @@ const setupPreset = (
   mergeOptionWithPreset(options, preset, 'moduleNameMapper');
   mergeOptionWithPreset(options, preset, 'transform');
 
-  return Object.assign({}, preset, options);
+  return {...preset, ...options};
 };
 
 const setupBabelJest = (options: InitialOptions) => {
@@ -169,8 +169,6 @@ const setupBabelJest = (options: InitialOptions) => {
       [DEFAULT_JS_PATTERN]: babelJest,
     };
   }
-
-  return babelJest;
 };
 
 const normalizeCollectCoverageOnlyFrom = (
@@ -308,6 +306,14 @@ const normalizeRootDir = (options: InitialOptions): InitialOptions => {
     );
   }
   options.rootDir = path.normalize(options.rootDir);
+
+  try {
+    // try to resolve windows short paths, ignoring errors (permission errors, mostly)
+    options.rootDir = realpath(options.rootDir);
+  } catch (e) {
+    // ignored
+  }
+
   return options;
 };
 
@@ -457,10 +463,18 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     options.coverageDirectory = path.resolve(options.rootDir, 'coverage');
   }
 
-  const babelJest = setupBabelJest(options);
-  const newOptions: $Shape<
-    DefaultOptions & ProjectConfig & GlobalConfig,
-  > = (Object.assign({}, DEFAULT_CONFIG): any);
+  setupBabelJest(options);
+
+  const newOptions: $Shape<DefaultOptions & ProjectConfig & GlobalConfig> = {
+    ...DEFAULT_CONFIG,
+  };
+
+  try {
+    // try to resolve windows short paths, ignoring errors (permission errors, mostly)
+    newOptions.cwd = realpath(newOptions.cwd);
+  } catch (e) {
+    // ignored
+  }
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -584,7 +598,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeUnmockedModulePathPatterns(options, key);
         break;
       case 'haste':
-        value = Object.assign({}, options[key]);
+        value = {...options[key]};
         if (value.hasteImplModulePath != null) {
           value.hasteImplModulePath = resolve(newOptions.resolver, {
             filePath: replaceRootDirInPath(
@@ -614,10 +628,20 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'moduleDirectories':
       case 'testMatch':
-        value = _replaceRootDirTags(
-          escapeGlobCharacters(options.rootDir),
-          options[key],
-        );
+        {
+          const replacedRootDirTags = _replaceRootDirTags(
+            escapeGlobCharacters(options.rootDir),
+            options[key],
+          );
+
+          if (replacedRootDirTags) {
+            value = Array.isArray(replacedRootDirTags)
+              ? replacedRootDirTags.map(replacePathSepForGlob)
+              : replacePathSepForGlob(replacedRootDirTags);
+          } else {
+            value = replacedRootDirTags;
+          }
+        }
         break;
       case 'testRegex':
         value = options[key]
@@ -778,17 +802,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   newOptions.maxWorkers = getMaxWorkers(argv);
 
-  if (babelJest) {
-    const regeneratorRuntimePath = Resolver.findNodeModule(
-      'regenerator-runtime/runtime',
-      {basedir: options.rootDir, resolver: newOptions.resolver},
-    );
-
-    if (regeneratorRuntimePath) {
-      newOptions.setupFiles.unshift(regeneratorRuntimePath);
-    }
-  }
-
   if (newOptions.testRegex.length && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
@@ -827,10 +840,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          !micromatch(
-            [path.relative(options.rootDir, filename)],
+          !micromatch.some(
+            replacePathSepForGlob(path.relative(options.rootDir, filename)),
             newOptions.collectCoverageFrom,
-          ).length
+          )
         ) {
           return patterns;
         }

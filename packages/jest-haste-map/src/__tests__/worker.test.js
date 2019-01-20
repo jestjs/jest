@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -14,7 +14,7 @@ import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
 import H from '../constants';
 
-import {getSha1, worker} from '../worker';
+const {worker, getSha1} = require('../worker');
 
 const rootDir = '/project';
 let mockFs;

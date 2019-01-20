@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,16 +8,14 @@
 
 'use strict';
 
-import fs from 'fs';
-import path from 'path';
-import HasteMap from 'jest-haste-map';
-import Resolver from '../';
-import userResolver from '../__mocks__/userResolver';
-import nodeModulesPaths from '../nodeModulesPaths';
-
-const {ModuleMap} = HasteMap;
-
 jest.mock('../__mocks__/userResolver');
+
+const fs = require('fs');
+const path = require('path');
+const ModuleMap = require('jest-haste-map').ModuleMap;
+const Resolver = require('../');
+const userResolver = require('../__mocks__/userResolver');
+const nodeModulesPaths = require('../nodeModulesPaths').default;
 
 beforeEach(() => {
   userResolver.mockClear();
@@ -218,7 +216,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Windows platforms', () => {
     jest.doMock('path', () => _path.win32);
     const path = require('path');
-    const Resolver = require('../').default;
+    const Resolver = require('../');
 
     const cwd = 'D:\\temp\\project';
     const src = 'C:\\path\\to\\node_modules';
@@ -238,7 +236,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Posix platforms', () => {
     jest.doMock('path', () => _path.posix);
     const path = require('path');
-    const Resolver = require('../').default;
+    const Resolver = require('../');
 
     const cwd = '/temp/project';
     const src = '/path/to/node_modules';

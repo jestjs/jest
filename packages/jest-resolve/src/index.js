@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,9 +12,8 @@ import type {ModuleMap} from 'types/HasteMap';
 import type {ResolveModuleConfig} from 'types/Resolve';
 import type {ErrorWithCode} from 'types/Errors';
 
-import fs from 'fs';
 import path from 'path';
-import {interopRequireDefault} from 'jest-util';
+import {sync as realpath} from 'realpath-native';
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver from './defaultResolver';
@@ -54,7 +53,7 @@ const NATIVE_PLATFORM = 'native';
 
 // We might be inside a symlink.
 const cwd = process.cwd();
-const resolvedCwd = fs.realpathSync(cwd) || cwd;
+const resolvedCwd = realpath(cwd) || cwd;
 const nodePaths = process.env.NODE_PATH
   ? process.env.NODE_PATH.split(path.delimiter)
       .filter(Boolean)
@@ -62,7 +61,7 @@ const nodePaths = process.env.NODE_PATH
       .map(p => path.resolve(resolvedCwd, p))
   : null;
 
-export default class Resolver {
+class Resolver {
   _options: ResolverConfig;
   _moduleMap: ModuleMap;
   _moduleIDCache: {[key: string]: string, __proto__: null};
@@ -95,10 +94,8 @@ export default class Resolver {
 
   static findNodeModule(path: Path, options: FindNodeModuleConfig): ?Path {
     const resolver = options.resolver
-      ? interopRequireDefault(
-          // $FlowFixMe
-          require(options.resolver),
-        ).default
+      ? /* $FlowFixMe */
+        require(options.resolver)
       : defaultResolver;
     const paths = options.paths;
 
@@ -429,3 +426,5 @@ Please check your configuration for these entries:
 
   return error;
 };
+
+module.exports = Resolver;

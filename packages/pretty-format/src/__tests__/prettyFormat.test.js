@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -9,15 +9,13 @@
 
 'use strict';
 
-import prettyFormat from '../';
+const prettyFormat = require('../');
 
 function returnArguments(...args) {
   return arguments;
 }
 
-// Node.js 4 does not support the following:
-// class MyArray extends Array {
-// }
+class MyArray<T> extends Array<T> {}
 
 function MyObject(value) {
   this.name = value;
@@ -485,8 +483,7 @@ describe('prettyFormat()', () => {
         'arguments non-empty': returnArguments('arg'),
         'array literal empty': [],
         'array literal non-empty': ['item'],
-        // Node.js 4 does not support the following:
-        // 'extended array empty': new MyArray(),
+        'extended array empty': new MyArray(),
         'map empty': new Map(),
         'map non-empty': new Map([['name', 'value']]),
         'object literal empty': {},
@@ -505,8 +502,7 @@ describe('prettyFormat()', () => {
         '    "arguments non-empty": [Arguments],',
         '    "array literal empty": [Array],',
         '    "array literal non-empty": [Array],',
-        // Node.js 4 does not support the following:
-        // '    "extended array empty": [MyArray],',
+        '    "extended array empty": [MyArray],',
         '    "map empty": [Map],',
         '    "map non-empty": [Map],',
         '    "object literal empty": [Object],',
@@ -786,8 +782,7 @@ describe('prettyFormat()', () => {
         'arguments non-empty': returnArguments('arg'),
         'array literal empty': [],
         'array literal non-empty': ['item'],
-        // Node.js 4 does not support the following:
-        // 'extended array empty': new MyArray(),
+        'extended array empty': new MyArray(),
         'map empty': new Map(),
         'map non-empty': new Map([['name', 'value']]),
         'object literal empty': {},
@@ -808,8 +803,7 @@ describe('prettyFormat()', () => {
             '"arguments non-empty": ["arg"]',
             '"array literal empty": []',
             '"array literal non-empty": ["item"]',
-            // Node.js 4 does not support the following:
-            // '"extended array empty": []',
+            '"extended array empty": []',
             '"map empty": Map {}',
             '"map non-empty": Map {"name" => "value"}',
             '"object literal empty": {}',

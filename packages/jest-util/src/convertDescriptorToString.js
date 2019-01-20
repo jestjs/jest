@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -31,9 +31,7 @@ export default function convertDescriptorToString(
   const stringified = descriptor.toString();
   const typeDescriptorMatch = stringified.match(/class|function/);
   const indexOfNameSpace =
-    // $FlowFixMe
     typeDescriptorMatch.index + typeDescriptorMatch[0].length;
-  // $FlowFixMe
   const indexOfNameAfterSpace = stringified.search(/\(|\{/, indexOfNameSpace);
   const name = stringified.substring(indexOfNameSpace, indexOfNameAfterSpace);
   return name.trim();

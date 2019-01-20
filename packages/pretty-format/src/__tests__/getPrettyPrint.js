@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -11,20 +11,12 @@
 
 import type {OptionsReceived, Plugins} from 'types/PrettyFormat';
 
-import diff from 'jest-diff';
-import prettyFormat from '../';
+const diff = require('jest-diff');
+const prettyFormat = require('../');
 
 const getPrettyPrint = (plugins: Plugins) =>
   function(received: any, expected: any, options?: OptionsReceived) {
-    const prettyFormatted = prettyFormat(
-      received,
-      Object.assign(
-        ({
-          plugins,
-        }: OptionsReceived),
-        options,
-      ),
-    );
+    const prettyFormatted = prettyFormat(received, {plugins, ...options});
     const pass = prettyFormatted === expected;
 
     const message = pass

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -26,10 +26,7 @@ const stackUtils = new StackUtils({
 let nodeInternals = [];
 
 try {
-  nodeInternals = StackUtils.nodeInternals()
-    // this is to have the tests be the same in node 4 and node 6.
-    // TODO: Remove when we drop support for node 4
-    .concat(new RegExp('internal/process/next_tick.js'));
+  nodeInternals = StackUtils.nodeInternals();
 } catch (e) {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.
@@ -213,7 +210,7 @@ const formatPaths = (config: StackTraceConfig, relativeTestPath, line) => {
   if (
     (config.testMatch &&
       config.testMatch.length &&
-      micromatch(filePath, config.testMatch)) ||
+      micromatch.some(filePath, config.testMatch)) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);

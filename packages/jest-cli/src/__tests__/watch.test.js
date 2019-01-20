@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -112,7 +112,6 @@ describe('Watch mode flows', () => {
     contexts = [{config}];
     stdin = new MockStdin();
     results = {snapshot: {}};
-    jest.resetModules();
   });
 
   it('Correctly passing test path pattern', () => {
@@ -144,10 +143,9 @@ describe('Watch mode flows', () => {
   });
 
   it('Runs Jest once by default and shows usage', () => {
-    jest.doMock('jest-util', () => ({
-      ...jest.requireActual('jest-util'),
-      isInteractive: true,
-    }));
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
 
     const ci_watch = require('../watch').default;
     ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
@@ -162,10 +160,9 @@ describe('Watch mode flows', () => {
   });
 
   it('Runs Jest in a non-interactive environment not showing usage', () => {
-    jest.doMock('jest-util', () => ({
-      ...jest.requireActual('jest-util'),
-      isInteractive: false,
-    }));
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = false;
 
     const ci_watch = require('../watch').default;
     ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
@@ -182,10 +179,11 @@ describe('Watch mode flows', () => {
   it('resolves relative to the package root', () => {
     expect(async () => {
       await watch(
-        Object.assign({}, globalConfig, {
+        {
+          ...globalConfig,
           rootDir: __dirname,
           watchPlugins: [{config: {}, path: watchPluginPath}],
-        }),
+        },
         contexts,
         pipe,
         hasteMapInstances,
@@ -195,20 +193,20 @@ describe('Watch mode flows', () => {
   });
 
   it('shows prompts for WatchPlugins in alphabetical order', async () => {
-    jest.doMock('jest-util', () => ({
-      ...jest.requireActual('jest-util'),
-      isInteractive: true,
-    }));
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
 
     const ci_watch = require('../watch').default;
     ci_watch(
-      Object.assign({}, globalConfig, {
+      {
+        ...globalConfig,
         rootDir: __dirname,
         watchPlugins: [
           {config: {}, path: watchPluginPath},
           {config: {}, path: watchPlugin2Path},
         ],
-      }),
+      },
       contexts,
       pipe,
       hasteMapInstances,
@@ -225,18 +223,18 @@ describe('Watch mode flows', () => {
   });
 
   it('shows update snapshot prompt (without interactive)', async () => {
-    jest.doMock('jest-util', () => ({
-      ...jest.requireActual('jest-util'),
-      isInteractive: true,
-    }));
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
     results = {snapshot: {failure: true}};
 
     const ci_watch = require('../watch').default;
     ci_watch(
-      Object.assign({}, globalConfig, {
+      {
+        ...globalConfig,
         rootDir: __dirname,
         watchPlugins: [],
-      }),
+      },
       contexts,
       pipe,
       hasteMapInstances,
@@ -253,10 +251,9 @@ describe('Watch mode flows', () => {
   });
 
   it('shows update snapshot prompt (with interactive)', async () => {
-    jest.doMock('jest-util', () => ({
-      ...jest.requireActual('jest-util'),
-      isInteractive: true,
-    }));
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
     results = {
       numFailedTests: 1,
       snapshot: {
@@ -280,10 +277,11 @@ describe('Watch mode flows', () => {
 
     const ci_watch = require('../watch').default;
     ci_watch(
-      Object.assign({}, globalConfig, {
+      {
+        ...globalConfig,
         rootDir: __dirname,
         watchPlugins: [],
-      }),
+      },
       contexts,
       pipe,
       hasteMapInstances,
@@ -314,10 +312,11 @@ describe('Watch mode flows', () => {
     );
 
     watch(
-      Object.assign({}, globalConfig, {
+      {
+        ...globalConfig,
         rootDir: __dirname,
         watchPlugins: [{config: {}, path: pluginPath}],
-      }),
+      },
       contexts,
       pipe,
       hasteMapInstances,
@@ -348,13 +347,13 @@ describe('Watch mode flows', () => {
         },
       {virtual: true},
     );
-    const ci_watch = require('../watch').default;
 
-    ci_watch(
-      Object.assign({}, globalConfig, {
+    watch(
+      {
+        ...globalConfig,
         rootDir: __dirname,
         watchPlugins: [{config: {}, path: pluginPath}],
-      }),
+      },
       contexts,
       pipe,
       hasteMapInstances,
@@ -401,10 +400,11 @@ describe('Watch mode flows', () => {
 
         expect(() => {
           watch(
-            Object.assign({}, globalConfig, {
+            {
+              ...globalConfig,
               rootDir: __dirname,
               watchPlugins: [{config: {}, path: pluginPath}],
-            }),
+            },
             contexts,
             pipe,
             hasteMapInstances,
@@ -448,10 +448,11 @@ describe('Watch mode flows', () => {
         );
 
         watch(
-          Object.assign({}, globalConfig, {
+          {
+            ...globalConfig,
             rootDir: __dirname,
             watchPlugins: [{config: {}, path: pluginPath}],
-          }),
+          },
           contexts,
           pipe,
           hasteMapInstances,
@@ -488,10 +489,11 @@ describe('Watch mode flows', () => {
 
       expect(() => {
         watch(
-          Object.assign({}, globalConfig, {
+          {
+            ...globalConfig,
             rootDir: __dirname,
             watchPlugins: pluginPaths.map(path => ({config: {}, path})),
-          }),
+          },
           contexts,
           pipe,
           hasteMapInstances,
@@ -525,10 +527,9 @@ describe('Watch mode flows', () => {
       {virtual: true},
     );
 
-    const ci_watch = require('../watch').default;
-
-    ci_watch(
-      Object.assign({}, globalConfig, {
+    watch(
+      {
+        ...globalConfig,
         rootDir: __dirname,
         watchPlugins: [
           {
@@ -536,7 +537,7 @@ describe('Watch mode flows', () => {
             path: pluginPath,
           },
         ],
-      }),
+      },
       contexts,
       pipe,
       hasteMapInstances,
@@ -561,10 +562,11 @@ describe('Watch mode flows', () => {
     );
 
     watch(
-      Object.assign({}, globalConfig, {
+      {
+        ...globalConfig,
         rootDir: __dirname,
         watchPlugins: [{config: {}, path: pluginPath}],
-      }),
+      },
       contexts,
       pipe,
       hasteMapInstances,
@@ -656,10 +658,11 @@ describe('Watch mode flows', () => {
         {virtual: true},
       );
 
-      const config = Object.assign({}, globalConfig, {
+      const config = {
+        ...globalConfig,
         rootDir: __dirname,
         watchPlugins: [{config: {}, path: pluginPath}],
-      });
+      };
 
       watch(config, contexts, pipe, hasteMapInstances, stdin);
       await nextTick();
@@ -699,10 +702,11 @@ describe('Watch mode flows', () => {
     );
 
     watch(
-      Object.assign({}, globalConfig, {
+      {
+        ...globalConfig,
         rootDir: __dirname,
         watchPlugins: [{config: {}, path: pluginPath}],
-      }),
+      },
       contexts,
       pipe,
       hasteMapInstances,
@@ -759,13 +763,14 @@ describe('Watch mode flows', () => {
     );
 
     watch(
-      Object.assign({}, globalConfig, {
+      {
+        ...globalConfig,
         rootDir: __dirname,
         watchPlugins: [
           {config: {}, path: pluginPath},
           {config: {}, path: pluginPath2},
         ],
-      }),
+      },
       contexts,
       pipe,
       hasteMapInstances,
@@ -933,10 +938,9 @@ describe('Watch mode flows', () => {
   });
 
   it('shows the correct usage for the f key in "only failed tests" mode', () => {
-    jest.doMock('jest-util', () => ({
-      ...jest.requireActual('jest-util'),
-      isInteractive: true,
-    }));
+    jest.unmock('jest-util');
+    const util = require('jest-util');
+    util.isInteractive = true;
     const ci_watch = require('../watch').default;
     ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 

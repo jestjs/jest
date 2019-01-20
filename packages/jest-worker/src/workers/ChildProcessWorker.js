@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -57,32 +57,22 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   initialize() {
     const forceColor = supportsColor.stdout ? {FORCE_COLOR: '1'} : {};
-    const child = childProcess.fork(
-      require.resolve('./processChild'),
-      // $FlowFixMe: Flow does not work well with Object.assign.
-      Object.assign(
-        {
-          cwd: process.cwd(),
-          env: Object.assign(
-            {},
-            process.env,
-            {
-              JEST_WORKER_ID: this._options.workerId,
-            },
-            forceColor,
-          ),
-          // Suppress --debug / --inspect flags while preserving others (like --harmony).
-          execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
-          silent: true,
-        },
-        this._options.forkOptions,
-      ),
-    );
+    const child = childProcess.fork(require.resolve('./processChild'), {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        JEST_WORKER_ID: this._options.workerId,
+        ...forceColor,
+      },
+      // Suppress --debug / --inspect flags while preserving others (like --harmony).
+      execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
+      silent: true,
+      ...this._options.forkOptions,
+    });
 
     child.on('message', this.onMessage.bind(this));
     child.on('exit', this.onExit.bind(this));
 
-    // $FlowFixMe: wrong "ChildProcess.send" signature.
     child.send([
       CHILD_MESSAGE_INITIALIZE,
       false,
@@ -165,7 +155,6 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._onProcessEnd = onProcessEnd;
 
     this._retries = 0;
-    // $FlowFixMe
     this._child.send(request);
   }
 

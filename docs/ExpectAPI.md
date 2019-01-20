@@ -117,7 +117,15 @@ These helper functions and properties can be found on `this` inside a custom mat
 
 #### `this.isNot`
 
-A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion.
+A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion and display a clear and correct matcher hint (see example code).
+
+#### `this.promise`
+
+A string allowing you to display a clear and correct matcher hint:
+
+- `'rejects'` if matcher was called with the promise `.rejects` modifier
+- `'resolves'` if matcher was called with the promise `.resolves` modifier
+- `''` if matcher was not called with a promise modifier
 
 #### `this.equals(a, b)`
 
@@ -137,28 +145,31 @@ The most useful ones are `matcherHint`, `printExpected` and `printReceived` to f
 const diff = require('jest-diff');
 expect.extend({
   toBe(received, expected) {
+    const options = {
+      comment: 'Object.is equality',
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+
     const pass = Object.is(received, expected);
 
     const message = pass
       ? () =>
-          this.utils.matcherHint('.not.toBe') +
+          this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
-          `Expected value to not be (using Object.is):\n` +
-          `  ${this.utils.printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${this.utils.printReceived(received)}`
+          `Expected: ${this.utils.printExpected(expected)}\n` +
+          `Received: ${this.utils.printReceived(received)}`
       : () => {
-          const diffString = diff(expected, received, {
+          const difference = diff(expected, received, {
             expand: this.expand,
           });
           return (
-            this.utils.matcherHint('.toBe') +
+            this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
-            `Expected value to be (using Object.is):\n` +
-            `  ${this.utils.printExpected(expected)}\n` +
-            `Received:\n` +
-            `  ${this.utils.printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+            (difference && difference.includes('- Expect')
+              ? `Difference:\n\n${diffString}`
+              : `Expected: ${this.utils.printExpected(expected)}\n` +
+                `Received: ${this.utils.printReceived(received)}`)
           );
         };
 
@@ -890,6 +901,17 @@ test('the best drink for octopus flavor is undefined', () => {
 
 You could write `expect(bestDrinkForFlavor('octopus')).toBe(undefined)`, but it's better practice to avoid referring to `undefined` directly in your code.
 
+### `.toBeNaN()`
+
+Use `.toBeNaN` when checking a value is `NaN`.
+
+```js
+test('passes when value is NaN', () => {
+  expect(NaN).toBeNaN();
+  expect(1).not.toBeNaN();
+});
+```
+
 ### `.toContain(item)`
 
 Use `.toContain` when you want to check that an item is in an array. For testing the items in the array, this uses `===`, a strict equality check. `.toContain` can also check whether a string is a substring of another string.
@@ -1114,6 +1136,7 @@ Use `.toStrictEqual` to test that objects have the same types as well as structu
 Differences from `.toEqual`:
 
 - Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does not match `{b: 2}` when using `.toStrictEqual`.
+- Array sparseness is checked. e.g. `[, 1]` does not match `[undefined, 1]` when using `.toStrictEqual`.
 - Object types are checked to be equal. e.g. A class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
 
 ```js
@@ -1145,7 +1168,14 @@ test('throws on octopus', () => {
 });
 ```
 
-If you want to test that a specific error gets thrown, you can provide an argument to `toThrow`. The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. For example, let's say that `drinkFlavor` is coded like this:
+To test that a specific error is thrown, you can provide an argument:
+
+- regular expression: error message **matches** the pattern
+- string: error message **includes** the substring
+- error object: error message is **equal to** the message property of the object
+- error class: error object is **instance of** class
+
+For example, let's say that `drinkFlavor` is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
@@ -1170,6 +1200,7 @@ test('throws on octopus', () => {
 
   // Test the exact error message
   expect(drinkOctopus).toThrowError(/^yuck, octopus flavor$/);
+  expect(drinkOctopus).toThrowError(new Error('yuck, octopus flavor'));
 
   // Test that we get a DisgustingFlavorError
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -12,9 +12,10 @@ import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
 import generateEmptyCoverage from '../generateEmptyCoverage';
 import Runtime from 'jest-runtime';
-import os from 'os';
-import path from 'path';
-import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
+
+const path = require('path');
+const os = require('os');
+const {makeGlobalConfig, makeProjectConfig} = require('../../../../TestUtils');
 
 jest.spyOn(Runtime, 'shouldInstrument').mockImplementation(() => true);
 

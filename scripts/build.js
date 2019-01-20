@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -133,7 +133,7 @@ function buildFile(file, silent) {
     return;
   }
 
-  mkdirp.sync(path.dirname(destPath));
+  mkdirp.sync(path.dirname(destPath), '777');
   if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
     fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
     silent ||

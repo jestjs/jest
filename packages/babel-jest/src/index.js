@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,31 +19,30 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import {transformSync as babelTransform, loadPartialConfig} from '@babel/core';
-import babelIstanbulPlugin from 'babel-plugin-istanbul';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
+const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 
-export const createTransformer = (options: any): Transformer => {
-  options = Object.assign({}, options, {
+const createTransformer = (options: any): Transformer => {
+  options = {
+    ...options,
+    caller: {
+      name: 'babel-jest',
+      supportsStaticESM: false,
+    },
     compact: false,
     plugins: (options && options.plugins) || [],
     presets: ((options && options.presets) || []).concat(jestPresetPath),
     sourceMaps: 'both',
-  });
+  };
 
   delete options.cacheDirectory;
   delete options.filename;
 
-  const loadBabelOptions = filename =>
-    loadPartialConfig({
-      ...options,
-      caller: {
-        name: 'babel-jest',
-        supportsStaticESM: false,
-      },
-      filename,
-    });
+  const loadBabelConfig = (cwd, filename) =>
+    // `cwd` first to allow incoming options to override it
+    loadPartialConfig({cwd, ...options, filename});
 
   return {
     canInstrument: true,
@@ -51,9 +50,9 @@ export const createTransformer = (options: any): Transformer => {
       fileData: string,
       filename: Path,
       configString: string,
-      {instrument, rootDir}: CacheKeyOptions,
+      {config, instrument, rootDir}: {config: ProjectConfig} & CacheKeyOptions,
     ): string {
-      const babelOptions = loadBabelOptions(filename);
+      const babelOptions = loadBabelConfig(config.cwd, filename);
       const configPath = [
         babelOptions.config || '',
         babelOptions.babelrc || '',
@@ -86,7 +85,7 @@ export const createTransformer = (options: any): Transformer => {
       config: ProjectConfig,
       transformOptions?: TransformOptions,
     ): string | TransformedSource {
-      const babelOptions = {...loadBabelOptions(filename).options};
+      const babelOptions = {...loadBabelConfig(config.cwd, filename).options};
 
       if (transformOptions && transformOptions.instrument) {
         babelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
@@ -110,4 +109,5 @@ export const createTransformer = (options: any): Transformer => {
   };
 };
 
-export default createTransformer();
+module.exports = createTransformer();
+(module.exports: any).createTransformer = createTransformer;

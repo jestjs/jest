@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -74,7 +74,7 @@ export default class JestWorker {
   _workerPool: WorkerPoolInterface;
 
   constructor(workerPath: string, options?: FarmOptions) {
-    this._options = Object.assign({}, options);
+    this._options = {...options};
 
     const workerPoolOptions: WorkerPoolOptions = {
       forkOptions: this._options.forkOptions || {},
@@ -111,7 +111,6 @@ export default class JestWorker {
     });
   }
 
-  // eslint-disable-next-line no-unclear-flowtypes
   _callFunctionWithArgs(method: string, ...args: Array<any>): Promise<any> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
