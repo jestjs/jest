@@ -52,7 +52,6 @@
     "progress": "^2.0.0",
     "promise": "^8.0.2",
     "readable-stream": "^3.0.3",
-    "regenerator-runtime": "^0.12.1",
     "resolve": "^1.4.0",
     "rimraf": "^2.6.2",
     "rollup": "^1.1.0",

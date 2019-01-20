@@ -4,11 +4,7 @@ const {
   default: defaultResolver,
 } = require('jest-resolve/build/defaultResolver');
 
-const exportedModules = new Map([
-  ['foo', 'foo'],
-  ['bar', 'bar'],
-  ['regenerator-runtime/runtime', 'fakeRegenerator'],
-]);
+const exportedModules = new Map([['foo', 'foo'], ['bar', 'bar']]);
 
 module.exports = (name, options) => {
   const resolution = exportedModules.get(name);
