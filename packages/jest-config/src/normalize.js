@@ -17,6 +17,7 @@ import type {
 } from 'types/Config';
 
 import crypto from 'crypto';
+import uuid from 'uuid/v4';
 import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
@@ -268,6 +269,7 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
     options.name = crypto
       .createHash('md5')
       .update(options.rootDir)
+      .update(uuid())
       .digest('hex');
   }
 

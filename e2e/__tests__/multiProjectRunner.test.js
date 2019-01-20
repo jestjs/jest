@@ -399,3 +399,41 @@ test('Does transform files with the corresponding project transformer', () => {
   expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
   expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
 });
+
+test("doesn't bleed module file extensions resolution with multiple workers", () => {
+  writeFiles(DIR, {
+    '.watchmanconfig': '',
+    'file.js': 'module.exports = "file1"',
+    'file.p2.js': 'module.exports = "file2"',
+    'package.json': '{}',
+    'project1/__tests__/project1.test.js': `
+      const file = require('../../file');
+      test('file 1', () => expect(file).toBe('file1'));
+    `,
+    'project1/jest.config.js': `
+      module.exports = {
+        rootDir: '..',
+      };`,
+    'project2/__tests__/project2.test.js': `
+      const file = require('../../file');
+      test('file 2', () => expect(file).toBe('file2'));
+    `,
+    'project2/jest.config.js': `
+      module.exports = {
+        rootDir: '..',
+        moduleFileExtensions: ['p2.js', 'js']
+      };`,
+  });
+
+  const {stderr} = runJest(DIR, [
+    '--no-watchman',
+    '-w=2',
+    '--projects',
+    'project1',
+    'project2',
+  ]);
+
+  expect(stderr).toMatch('Ran all test suites in 2 projects.');
+  expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
+  expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
+});

@@ -120,6 +120,7 @@
 - `[jest-config]` Normalize `config.cwd` and `config.rootDir` using `realpath ([#7598](https://github.com/facebook/jest/pull/7598))
 - `[jest-environment-node]` Fix buffer property is not ArrayBuffer issue. ([#7626](https://github.com/facebook/jest/pull/7626))
 - `[babel-plugin-jest-hoist]` Ignore TS type annotations when looking for out-of-scope references ([#7641](https://github.com/facebook/jest/pull/7641))
+- `[jest-config]` Add name to project if one does not exist to pick correct resolver ([#5862](https://github.com/facebook/jest/pull/5862))
 
 ### Chore & Maintenance
 
