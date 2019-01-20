@@ -83,9 +83,9 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
   switch (aType) {
     case 'string':
       return diffStrings(a, b, options);
-    case 'number':
     case 'boolean':
-      return null;
+    case 'number':
+      return comparePrimitive(a, b, options);
     case 'map':
       return compareObjects(sortMap(a), sortMap(b), options);
     case 'set':
@@ -93,6 +93,18 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
     default:
       return compareObjects(a, b, options);
   }
+}
+
+function comparePrimitive(
+  a: number | boolean,
+  b: number | boolean,
+  options: ?DiffOptions,
+) {
+  return diffStrings(
+    prettyFormat(a, FORMAT_OPTIONS),
+    prettyFormat(b, FORMAT_OPTIONS),
+    options,
+  );
 }
 
 function sortMap(map) {

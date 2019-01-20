@@ -11,6 +11,7 @@ import {
   ensureNoExpected,
   getLabelPrinter,
   pluralize,
+  shouldPrintDiff,
   stringify,
 } from '../';
 
@@ -126,6 +127,30 @@ describe('.ensureNoExpected()', () => {
     expect(() => {
       ensureNoExpected({a: 1}, 'toBeDefined', {isNot: true});
     }).toThrowErrorMatchingSnapshot();
+  });
+});
+
+describe('shouldPrintDiff', () => {
+  test('true', () => {
+    [
+      ['a', 'b'],
+      ['a', {}],
+      ['a', null],
+      ['a', undefined],
+      ['a', 1],
+      ['a', true],
+      [1, true],
+    ].forEach(([actual, expected]) =>
+      expect(shouldPrintDiff(actual, expected)).toBe(true),
+    );
+  });
+
+  test('two booleans', () => {
+    expect(shouldPrintDiff(false, true)).toBe(false);
+  });
+
+  test('two numbers', () => {
+    expect(shouldPrintDiff(1, 2)).toBe(false);
   });
 });
 

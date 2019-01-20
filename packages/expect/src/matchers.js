@@ -9,7 +9,7 @@
 
 import type {MatchersObject} from 'types/Matchers';
 
-import diff from 'jest-diff';
+import jestDiff from 'jest-diff';
 import getType from 'jest-get-type';
 import {escapeStrForRegex} from 'jest-regex-util';
 import {
@@ -25,6 +25,7 @@ import {
   printReceived,
   printExpected,
   printWithType,
+  shouldPrintDiff,
 } from 'jest-matcher-utils';
 import {
   getObjectSubset,
@@ -43,6 +44,9 @@ type ContainIterable =
   | NodeList<any>
   | DOMTokenList
   | HTMLCollection<any>;
+
+const diff: typeof jestDiff = (a, b, options) =>
+  shouldPrintDiff(a, b) ? jestDiff(a, b, options) : null;
 
 const matchers: MatchersObject = {
   toBe(received: any, expected: any) {
