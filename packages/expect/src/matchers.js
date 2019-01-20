@@ -9,7 +9,6 @@
 
 import type {MatchersObject} from 'types/Matchers';
 
-import diff from 'jest-diff';
 import getType from 'jest-get-type';
 import {escapeStrForRegex} from 'jest-regex-util';
 import {
@@ -17,6 +16,7 @@ import {
   RECEIVED_COLOR,
   SUGGEST_TO_EQUAL,
   SUGGEST_TO_CONTAIN_EQUAL,
+  diff,
   ensureNoExpected,
   ensureNumbers,
   getLabelPrinter,

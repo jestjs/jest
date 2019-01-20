@@ -10,9 +10,8 @@
 import type {DiffOptions} from 'jest-diff/src/diffStrings';
 import type {Event, State} from 'types/Circus';
 
-import {printExpected, printReceived} from 'jest-matcher-utils';
+import {diff, printExpected, printReceived} from 'jest-matcher-utils';
 import chalk from 'chalk';
-import diff from 'jest-diff';
 import prettyFormat from 'pretty-format';
 
 type AssertionError = {|
