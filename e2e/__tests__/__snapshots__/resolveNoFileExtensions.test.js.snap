@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`show error message when no js moduleFileExtensions 1`] = `
-"● Validation Error:
+● Validation Error:
 
   moduleFileExtensions must include 'js':
   but instead received:
-    [\\"jsx\\"]
+    ["jsx"]
   Please change your configuration to include 'js'.
 
   Configuration Documentation:
   https://jestjs.io/docs/configuration.html
 
-"
+
 `;
 
 exports[`show error message with matching files 1`] = `
-"FAIL __tests__/test.js
+FAIL __tests__/test.js
   ● Test suite failed to run
 
     Cannot find module './some-json-file' from 'index.js'
@@ -35,6 +35,4 @@ exports[`show error message with matching files 1`] = `
 
       at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:200:17)
       at Object.require (index.js:3:18)
-
-"
 `;

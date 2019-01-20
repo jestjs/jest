@@ -6,11 +6,11 @@
  *
  * @flow
  */
-'use strict';
 
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
 import {skipSuiteOnJestCircus} from '../../scripts/ConditionalTest';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 skipSuiteOnJestCircus();
 
@@ -42,7 +42,7 @@ testFiles.forEach(testFile => {
     ]);
     expect(result.status).toBe(1);
     const {rest} = extractSummary(result.stderr);
-    expect(rest).toMatchSnapshot();
+    expect(wrap(rest)).toMatchSnapshot();
   });
 });
 

@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import runJest from '../runJest';
 
 test('expect works correctly with RegExps created inside a VM', () => {

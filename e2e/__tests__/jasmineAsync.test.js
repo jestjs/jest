@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import runJest, {json as runWithJson} from '../runJest';
 
 describe('async jasmine', () => {

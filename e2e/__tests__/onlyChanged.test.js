@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
