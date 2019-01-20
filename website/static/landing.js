@@ -102,8 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (ev.target.classList.contains('jest-card-front')) {
       card = ev.target.parentElement;
     }
-    const index = parseInt(card.dataset.index, 10);
-    runTest(card, index);
+    if (card) {
+      const index = parseInt(card.dataset.index, 10);
+      runTest(card, index);
+    }
   });
 
   let resizeTimeout;
@@ -121,7 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const matcherSection = document.querySelector('.matchers .blockContent');
     const screenshotImg = document.querySelector('.matchers img');
     const buttonWrapper = document.createElement('p');
-
+    buttonWrapper.className = "buttons-wrapper"
+    
     const buttons = [
       {
         title: 'Equals',

@@ -18,7 +18,7 @@
 }
 
 .sponsor-item img {
-  background: grey;
+  background: #095708;
 }
 
 .sponsor-avatar {
@@ -176,15 +176,6 @@
   background-color: #ffffff;
 }
 
-.navigationSlider .slidingNav ul li a,
-.fixedHeaderContainer header h3 {
-  color: var(--grey3);
-}
-
-.navigationSlider .slidingNav ul {
-  background: #ffffff;
-}
-
 .headerWrapper img {
   display: none;
 }
@@ -237,12 +228,34 @@
   font-family: Monaco, Courier, monospace;
 }
 
+.features .blockElement {
+  margin: 0;
+}
+
 .button.landing {
   margin: 4px 10px;
   cursor: pointer;
 }
 
+.container .gridBlock .blockContent p.buttons-wrapper {
+  margin: 8px;
+}
+
 .button.landing.active {
-  background: #99424f;
+  background: var(green);
   color: #fff;
 }
+
+.navigationSlider .slidingNav ul li a,
+.fixedHeaderContainer header h3 {
+  color: var(--grey3);
+}
+
+div.navigationSlider .slidingNav ul {
+  background: #ffffff;
+}
+
+div.navigationSlider .slidingNav ul .siteNavItemActive {
+  background:  var(green);
+}
+

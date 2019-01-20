@@ -11,6 +11,7 @@
   font-size: 1.1em;
 }
 
+
 .fixedHeaderContainer header h3 {
   font-size: 14px;
   margin-top: 2px;
@@ -30,35 +31,30 @@ div.jest-repl iframe {
   width: 100%;
 }
 
-@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
-  div.jest-repl {
-    display: none;
-  }
+
+div.bottom-margin {
+  margin-bottom: 40px;
 }
 
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  div.jest-repl {
-    display: none;
-  }
+.docs .wrapper {
+  display: flex;
 }
 
-@media only screen and (max-width: 1023px) {
-  div.jest-repl {
-    display: none;
-  }
+.docs .blockElement {
+  width: 50%;
 }
 
-div.video {
-  margin: 0 2%;
-  position: relative;
+.blockContent div.video {
   width: 100%;
-  max-width: 300px;
+  height: 280px;
+  margin-top: 20px;
+  padding-right: 80px;
 }
 
 div.video iframe {
   display: block;
   margin: 0 auto 10px;
-  min-height: 170px;
+  min-height: 280px;
   width: 100%;
   height: auto;
 }
@@ -70,9 +66,13 @@ div.video iframe {
 }
 
 @media only screen and (max-width: 1023px) {
-  div.video {
+  div.video, div.video-block {
     display: none;
   }
+
+  .docs .blockElement {
+    width: 100%;
+  }  
 }
 
 div.jest-hero-interactive {
@@ -86,6 +86,11 @@ div.hero-github-button-container {
   right: 10px;
   top: 20px;
   visibility: hidden;
+}
+
+/* Means the links doesn't push the vertical */
+.hash-link {
+  position: absolute;
 }
 
 @media only screen and (min-width: 580px) {
@@ -207,6 +212,10 @@ a.jest-button {
   padding: 0 1em;
   font-size: 16px;
   line-height: 2.2em;
+}
+
+a.jest-button:hover, a.jest-button:active {
+  background-color: #910e1b;
 }
 
 div.jest-card-label {

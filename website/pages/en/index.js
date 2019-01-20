@@ -60,7 +60,7 @@ class Contributors extends React.Component {
                 {
                   <img
                     className="sponsor-avatar"
-                    src={b.avatar}
+                    src={b.avatar + "&width=96"}
                     alt={
                       b.name || b.slug
                         ? `${b.name || b.slug}'s avatar`
@@ -93,7 +93,7 @@ class Contributors extends React.Component {
                 {
                   <img
                     className="backer-avatar"
-                    src={b.avatar}
+                    src={b.avatar + "&width=96"}
                     alt={
                       b.name || b.slug
                         ? `${b.name || b.slug}'s avatar`
@@ -336,7 +336,7 @@ class Index extends React.Component {
 
           <Container padding={['bottom', 'top']} className="section-container lightBackground">
             <GridBlock
-              className="yellow"
+              className="green"
               contents={[
                 {
                   content: (
@@ -361,7 +361,7 @@ class Index extends React.Component {
             className="section-container"
           >
             <GridBlock
-              className="red"
+              className="yellow"
               contents={[
                 {
                   content: (
@@ -382,7 +382,7 @@ class Index extends React.Component {
           </Container>
           <Container padding={['bottom', 'top']} className="section-container lightBackground">
             <GridBlock
-              className="yellow"
+              className="red"
               contents={[
                 {
                   content: (
@@ -406,7 +406,7 @@ class Index extends React.Component {
             className="section-container"
           >
             <GridBlock
-              className="red matchers"
+              className="green matchers"
               contents={[
                 {
                   content: (
@@ -427,14 +427,14 @@ class Index extends React.Component {
             background="light"
             className="section-container philosophy"
           >
-            <div className="blockElement green">
+            <div className="blockElement yellow">
               <div className="blockContent">
                 <h2>
                   <translate>Philosophy</translate>
                 </h2>
               </div>
             </div>
-            <div className="blockElement imageAlignSide gridBlock threeByGridBlock">
+            <div className="blockElement imageAlignSide gridBlock threeByGridBlock bottom-margin">
               <div className="blockContent">
                 <MarkdownBlock>
                   <translate>
@@ -465,28 +465,26 @@ class Index extends React.Component {
               </div>
             </div>
           </Container>
-          <Container padding={['bottom', 'top']} className="section-container">
-            <a className="anchor" name="watch" />
-            <a className="hash-link" href="#watch" />
-            <div className="blockElement green">
+          <Container padding={['bottom', 'top']} className="section-container bottom-margin docs">
+            <div className="blockElement imageAlignSide gridBlock video-block" >
+              <div className="blockContent ">
+                <div className="video">
+                  <iframe
+                    width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/cAKYQpTC7MA"
+                    frameBorder="0"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="blockElement red bottom-margin">
               <div className="blockContent">
                 <h2>
                   <translate>Docs and talks</translate>
                 </h2>
-              </div>
-            </div>
-            <div className="blockElement imageAlignSide gridBlock">
-              <div className="video">
-                <iframe
-                  width="560"
-                  height="315"
-                  src="https://www.youtube.com/embed/cAKYQpTC7MA"
-                  frameBorder="0"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                />
-              </div>
-              <div className="blockContent">
                 <MarkdownBlock>
                   <translate>
                     The Jest core team and contributors regularly speak about

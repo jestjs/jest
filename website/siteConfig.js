@@ -118,8 +118,8 @@ const siteConfig = {
   },
   gaTrackingId: 'UA-44373548-17',
   colors: {
-    primaryColor: '#99424f',
-    secondaryColor: '#7f2c39',
+    primaryColor: '#10910e',
+    secondaryColor: '#095708',
     prismColor: 'rgba(153, 66, 79, 0.03)',
   },
   scripts: ['https://buttons.github.io/buttons.js'],
