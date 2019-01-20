@@ -78,7 +78,7 @@
     "lint": "eslint . --cache --report-unused-disable-directives --ext js,md",
     "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
     "lint:md": "yarn --silent lint:md:ci --fix",
-    "lint:md:ci": "prettylint '**/*.md' --ignore-path .gitignore",
+    "lint:md:ci": "prettylint '**/*.{md,yml,yaml}' --ignore-path .gitignore",
     "postinstall": "opencollective postinstall && yarn build",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
