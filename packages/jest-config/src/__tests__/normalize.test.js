@@ -738,14 +738,6 @@ describe('babel-jest', () => {
 
     expect(options.transform[0][0]).toBe(DEFAULT_JS_PATTERN);
     expect(options.transform[0][1]).toEqual(require.resolve('babel-jest'));
-    expect(options.setupFiles).toEqual([
-      path.sep +
-        'node_modules' +
-        path.sep +
-        'regenerator-runtime' +
-        path.sep +
-        'runtime',
-    ]);
   });
 
   it('uses babel-jest if babel-jest is explicitly specified in a custom transform options', () => {
@@ -762,38 +754,6 @@ describe('babel-jest', () => {
 
     expect(options.transform[0][0]).toBe(customJSPattern);
     expect(options.transform[0][1]).toEqual(require.resolve('babel-jest'));
-    expect(options.setupFiles).toEqual([
-      path.sep +
-        'node_modules' +
-        path.sep +
-        'regenerator-runtime' +
-        path.sep +
-        'runtime',
-    ]);
-  });
-
-  it('uses regenerator if babel-jest is explicitly specified', () => {
-    const ROOT_DIR = '<rootDir>' + path.sep;
-
-    const {options} = normalize(
-      {
-        rootDir: '/root',
-        transform: {
-          [DEFAULT_JS_PATTERN]:
-            ROOT_DIR + Resolver.findNodeModule('babel-jest'),
-        },
-      },
-      {},
-    );
-
-    expect(options.setupFiles).toEqual([
-      path.sep +
-        'node_modules' +
-        path.sep +
-        'regenerator-runtime' +
-        path.sep +
-        'runtime',
-    ]);
   });
 });
 
@@ -1188,12 +1148,7 @@ describe('preset without setupFiles', () => {
     );
 
     expect(options).toEqual(
-      expect.objectContaining({
-        setupFiles: [
-          '/node_modules/regenerator-runtime/runtime',
-          '/node_modules/a',
-        ],
-      }),
+      expect.objectContaining({setupFiles: ['/node_modules/a']}),
     );
   });
 });
