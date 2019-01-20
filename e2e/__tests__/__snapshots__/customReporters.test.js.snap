@@ -141,7 +141,7 @@ exports[`Custom Reporters Integration valid array format for adding reporters 1`
         "path": false
     },
     "options": {
-        "Dmitrii Abramov": "Awesome"
+        "Aaron Abramov": "Awesome"
     }
 }
 `;
