@@ -264,7 +264,7 @@ const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
 };
 
 const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
-  const knownRootDirs = {};
+  const knownRootDirs = new Set();
   if (!options.name) {
     options.name = crypto
       .createHash('md5')
@@ -276,11 +276,11 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
     options.projects = options.projects.map((project, index) => {
       if (typeof project !== 'string' && !project.name) {
         let rootDir = project.rootDir || options.rootDir;
-        if (knownRootDirs[rootDir]) {
+        if (knownRootDirs.has(rootDir)) {
           rootDir = `${rootDir}:${index}`;
         }
 
-        knownRootDirs[rootDir] = true;
+        knownRootDirs.add(rootDir);
         project.name = crypto
           .createHash('md5')
           .update(rootDir)
