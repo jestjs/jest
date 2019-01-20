@@ -10,7 +10,7 @@
     "ansi-regex": "^4.0.0",
     "ansi-styles": "^3.2.0",
     "babel-eslint": "^9.0.0",
-    "browserify": "^16.1.0",
+    "babel-loader": "^8.0.5",
     "chalk": "^2.0.1",
     "codecov": "^3.0.0",
     "debug": "^4.0.1",
@@ -38,9 +38,9 @@
     "jest-snapshot-serializer-raw": "^1.1.0",
     "jquery": "^3.2.1",
     "karma": "^3.1.4",
-    "karma-browserify": "^6.0.0",
     "karma-chrome-launcher": "^2.1.1",
     "karma-mocha": "^1.3.0",
+    "karma-webpack": "4.0.0-rc.5",
     "left-pad": "^1.1.1",
     "lerna": "3.10.5",
     "micromatch": "^3.1.10",
@@ -65,7 +65,7 @@
     "string-length": "^2.0.0",
     "strip-ansi": "^5.0.0",
     "typescript": "^3.0.3",
-    "watchify": "^3.9.0"
+    "webpack": "^4.28.4"
   },
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
