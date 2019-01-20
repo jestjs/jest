@@ -13,9 +13,7 @@ import type {Options, SCMAdapter} from 'types/ChangedFiles';
 import path from 'path';
 import execa from 'execa';
 
-const env = Object.assign({}, process.env, {
-  HGPLAIN: 1,
-});
+const env = {...process.env, HGPLAIN: 1};
 
 const ANCESTORS = [
   // Parent commit to this one.

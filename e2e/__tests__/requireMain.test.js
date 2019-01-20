@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import runJest from '../runJest';
 
 test('provides `require.main` set to test suite module', () => {

@@ -3,7 +3,8 @@
   "version": "23.4.2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-changed-files"
   },
   "license": "MIT",
   "main": "build/index.js",

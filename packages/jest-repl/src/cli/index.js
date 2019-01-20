@@ -22,10 +22,7 @@ const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
 module.exports = function() {
   const argv = yargs.usage(args.usage).options(args.options).argv;
 
-  validateCLIOptions(
-    argv,
-    Object.assign({}, args.options, {deprecationEntries}),
-  );
+  validateCLIOptions(argv, {...args.options, deprecationEntries});
 
   argv._ = [REPL_SCRIPT];
 

@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import runJest from '../runJest';
 
 test('overriding native promise does not freeze Jest', () => {

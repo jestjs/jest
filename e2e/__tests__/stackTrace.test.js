@@ -6,16 +6,16 @@
  *
  * @flow
  */
-'use strict';
 
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 describe('Stack Trace', () => {
   it('prints a stack trace for runtime errors', () => {
     const {status, stderr} = runJest('stack-trace', ['runtimeError.test.js']);
 
-    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
 
     expect(status).toBe(1);
     expect(stderr).toMatch(
@@ -33,7 +33,7 @@ describe('Stack Trace', () => {
       '--noStackTrace',
     ]);
 
-    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
     expect(status).toBe(1);
 
     expect(stderr).toMatch(
@@ -47,7 +47,7 @@ describe('Stack Trace', () => {
   it('prints a stack trace for matching errors', () => {
     const {status, stderr} = runJest('stack-trace', ['stackTrace.test.js']);
 
-    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
     expect(status).toBe(1);
 
     expect(stderr).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/stackTrace.test\.js/);
@@ -59,7 +59,7 @@ describe('Stack Trace', () => {
       '--noStackTrace',
     ]);
 
-    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
     expect(status).toBe(1);
 
     expect(stderr).not.toMatch(
@@ -70,7 +70,7 @@ describe('Stack Trace', () => {
   it('prints a stack trace for errors', () => {
     const {status, stderr} = runJest('stack-trace', ['testError.test.js']);
 
-    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
     expect(status).toBe(1);
 
     expect(stderr).toMatch(/this is unexpected\./);
@@ -93,7 +93,7 @@ describe('Stack Trace', () => {
       'stackTraceWithoutMessage.test.js',
     ]);
 
-    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
     expect(status).toBe(1);
 
     expect(stderr).toMatch(/important message/);
@@ -108,7 +108,7 @@ describe('Stack Trace', () => {
       '--noStackTrace',
     ]);
 
-    expect(extractSummary(stderr).summary).toMatchSnapshot();
+    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
     expect(status).toBe(1);
 
     expect(stderr).not.toMatch(

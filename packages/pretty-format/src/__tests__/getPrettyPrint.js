@@ -16,15 +16,7 @@ const prettyFormat = require('../');
 
 const getPrettyPrint = (plugins: Plugins) =>
   function(received: any, expected: any, options?: OptionsReceived) {
-    const prettyFormatted = prettyFormat(
-      received,
-      Object.assign(
-        ({
-          plugins,
-        }: OptionsReceived),
-        options,
-      ),
-    );
+    const prettyFormatted = prettyFormat(received, {plugins, ...options});
     const pass = prettyFormatted === expected;
 
     const message = pass

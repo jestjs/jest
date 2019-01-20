@@ -14,25 +14,24 @@ module.exports = function createRuntime(filename, config) {
   const {normalize} = require('jest-config');
 
   config = normalize(
-    Object.assign(
-      {
-        haste: {
-          hasteImplModulePath: path.resolve(
-            __dirname,
-            '..',
-            '..',
-            '..',
-            'jest-haste-map',
-            'src',
-            '__tests__',
-            'haste_impl.js',
-          ),
-        },
-        name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
-        rootDir: path.resolve(path.dirname(filename), 'test_root'),
+    {
+      haste: {
+        hasteImplModulePath: path.resolve(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          'jest-haste-map',
+          'src',
+          '__tests__',
+          'haste_impl.js',
+        ),
       },
-      config,
-    ),
+      name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
+      rootDir: path.resolve(path.dirname(filename), 'test_root'),
+      ...config,
+    },
+
     {},
   ).options;
 

@@ -6,13 +6,13 @@
  *
  * @flow
  */
-'use strict';
 
 import runJest from '../runJest';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 describe('Correct BeforeAll run', () => {
   it('ensures the BeforeAll of ignored suite is not run', () => {
     const result = runJest('before-all-filtered');
-    expect(result.stdout.replace(/\\/g, '/')).toMatchSnapshot();
+    expect(wrap(result.stdout.replace(/\\/g, '/'))).toMatchSnapshot();
   });
 });

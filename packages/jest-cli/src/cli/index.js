@@ -194,7 +194,7 @@ export const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
 
   validateCLIOptions(
     argv,
-    Object.assign({}, args.options, {deprecationEntries}),
+    {...args.options, deprecationEntries},
     // strip leading dashes
     Array.isArray(rawArgv)
       ? rawArgv.map(rawArgv => rawArgv.replace(/^--?/, ''))

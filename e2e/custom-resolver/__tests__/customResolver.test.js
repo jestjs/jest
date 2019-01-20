@@ -10,10 +10,6 @@ test('should use the custom resolver', () => {
   require('foo');
 });
 
-test('should have regenerator injected', () => {
-  expect(global.fakeRegeneratorInjected).toEqual(true);
-});
-
 test('should work with automock', () => {
   jest.mock('foo');
 
