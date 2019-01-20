@@ -2,6 +2,9 @@
   "private": true,
   "version": "0.0.0",
   "name": "example-async",
+  "dependencies": {
+    "@babel/runtime": "*"
+  },
   "devDependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "*",
