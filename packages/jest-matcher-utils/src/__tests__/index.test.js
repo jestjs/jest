@@ -7,11 +7,11 @@
  */
 
 import {
+  diff,
   ensureNumbers,
   ensureNoExpected,
   getLabelPrinter,
   pluralize,
-  shouldPrintDiff,
   stringify,
 } from '../';
 
@@ -130,8 +130,9 @@ describe('.ensureNoExpected()', () => {
   });
 });
 
-describe('shouldPrintDiff', () => {
-  test('true', () => {
+jest.mock('jest-diff', () => () => 'diff output');
+describe('diff', () => {
+  test('forwards to jest-diff', () => {
     [
       ['a', 'b'],
       ['a', {}],
@@ -141,16 +142,16 @@ describe('shouldPrintDiff', () => {
       ['a', true],
       [1, true],
     ].forEach(([actual, expected]) =>
-      expect(shouldPrintDiff(actual, expected)).toBe(true),
+      expect(diff(actual, expected)).toBe('diff output'),
     );
   });
 
   test('two booleans', () => {
-    expect(shouldPrintDiff(false, true)).toBe(false);
+    expect(diff(false, true)).toBe(null);
   });
 
   test('two numbers', () => {
-    expect(shouldPrintDiff(1, 2)).toBe(false);
+    expect(diff(1, 2)).toBe(null);
   });
 });
 

@@ -540,10 +540,6 @@ FAIL __tests__/assertionError.test.js
     Received:
       1
 
-    Difference:
-
-    Compared values have no visual difference.
-
       33 | 
       34 | test('assert.notEqual', () => {
     > 35 |   assert.notEqual(1, 1);
@@ -676,10 +672,6 @@ FAIL __tests__/assertionError.test.js
 
     Message:
       My custom error message
-
-    Difference:
-
-    Compared values have no visual difference.
 
       53 | 
       54 | test('assert.notStrictEqual', () => {
