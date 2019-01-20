@@ -8,7 +8,7 @@
  */
 
 type Question = {
-  intial?: boolean | number,
+  initial?: boolean | number,
   message: string,
   name: string,
   type: string,
