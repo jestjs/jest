@@ -8,7 +8,7 @@ Expected mock function \\"named-mock\\" to not have been last called with:
 `;
 
 exports[`lastCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].lastCalledWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].lastCalledWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -159,7 +159,7 @@ But the last call <red>has not returned yet</>"
 `;
 
 exports[`lastReturnedWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].lastReturnedWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].lastReturnedWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -293,7 +293,7 @@ Expected mock function first call to not have been called with:
 `;
 
 exports[`nthCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].nthCalledWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].nthCalledWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -491,7 +491,7 @@ But the first call returned exactly:
 `;
 
 exports[`nthReturnedWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].nthReturnedWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].nthReturnedWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -598,45 +598,45 @@ But the first call returned exactly:
 `;
 
 exports[`toBeCalled .not fails with any argument passed 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toBeCalled(</><dim>)</>
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalled()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
 `;
 
 exports[`toBeCalled .not passes when called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalled(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).toBeCalled()</>
 
 Expected mock function to have been called, but it was not called."
 `;
 
 exports[`toBeCalled fails with any argument passed 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toBeCalled(</><dim>)</>
+"<dim>expect(</><red>received</><dim>)[.not].toBeCalled()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
 `;
 
 exports[`toBeCalled includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).not.toBeCalled(</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).not.toBeCalled()</>
 
 Expected mock function \\"named-mock\\" not to be called but it was called with:
   <red>[]</>"
 `;
 
 exports[`toBeCalled passes when called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalled(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalled()</>
 
 Expected mock function not to be called but it was called with:
   <red>[]</>"
 `;
 
 exports[`toBeCalled works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalled(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalled()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -777,7 +777,7 @@ Expected mock function not to be called <green>two times</>, but it was called e
 `;
 
 exports[`toBeCalledTimes works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledTimes(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledTimes()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -793,7 +793,7 @@ Expected mock function \\"named-mock\\" not to have been called with:
 `;
 
 exports[`toBeCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toBeCalledWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -920,45 +920,45 @@ Expected mock function to have been called with:
 `;
 
 exports[`toHaveBeenCalled .not fails with any argument passed 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled(</><dim>)</>
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
 `;
 
 exports[`toHaveBeenCalled .not passes when called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalled(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalled()</>
 
 Expected mock function to have been called, but it was not called."
 `;
 
 exports[`toHaveBeenCalled fails with any argument passed 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled(</><dim>)</>
+"<dim>expect(</><red>received</><dim>)[.not].toHaveBeenCalled()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
 `;
 
 exports[`toHaveBeenCalled includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenCalled(</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenCalled()</>
 
 Expected mock function \\"named-mock\\" not to be called but it was called with:
   <red>[]</>"
 `;
 
 exports[`toHaveBeenCalled passes when called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalled(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalled()</>
 
 Expected mock function not to be called but it was called with:
   <red>[]</>"
 `;
 
 exports[`toHaveBeenCalled works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalled(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalled()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -1099,7 +1099,7 @@ Expected mock function not to be called <green>two times</>, but it was called e
 `;
 
 exports[`toHaveBeenCalledTimes works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledTimes(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledTimes()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -1115,7 +1115,7 @@ Expected mock function \\"named-mock\\" not to have been called with:
 `;
 
 exports[`toHaveBeenCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenCalledWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -1249,7 +1249,7 @@ Expected mock function \\"named-mock\\" to not have been last called with:
 `;
 
 exports[`toHaveBeenLastCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenLastCalledWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenLastCalledWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -1395,7 +1395,7 @@ Expected mock function first call to not have been called with:
 `;
 
 exports[`toHaveBeenNthCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenNthCalledWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveBeenNthCalledWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -1537,7 +1537,7 @@ But the last call <red>has not returned yet</>"
 `;
 
 exports[`toHaveLastReturnedWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveLastReturnedWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveLastReturnedWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -1732,7 +1732,7 @@ But the first call returned exactly:
 `;
 
 exports[`toHaveNthReturnedWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveNthReturnedWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveNthReturnedWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -1839,56 +1839,56 @@ But the first call returned exactly:
 `;
 
 exports[`toHaveReturned .not fails with any argument passed 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturned()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
 `;
 
 exports[`toHaveReturned .not passes when a call throws undefined 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
 
 Expected mock function to have returned."
 `;
 
 exports[`toHaveReturned .not passes when all calls throw 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
 
 Expected mock function to have returned."
 `;
 
 exports[`toHaveReturned .not passes when not returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
 
 Expected mock function to have returned."
 `;
 
 exports[`toHaveReturned fails with any argument passed 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>received</><dim>)[.not].toHaveReturned()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
 `;
 
 exports[`toHaveReturned includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).not.toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).not.toHaveReturned()</>
 
 Expected mock function \\"named-mock\\" not to have returned, but it returned:
   <red>42</>"
 `;
 
 exports[`toHaveReturned incomplete recursive calls are handled properly 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
 
 Expected mock function to have returned."
 `;
 
 exports[`toHaveReturned passes when at least one call does not throw 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned()</>
 
 Expected mock function not to have returned, but it returned:
   <red>42</>
@@ -1897,21 +1897,21 @@ Expected mock function not to have returned, but it returned:
 `;
 
 exports[`toHaveReturned passes when returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned()</>
 
 Expected mock function not to have returned, but it returned:
   <red>42</>"
 `;
 
 exports[`toHaveReturned passes when undefined is returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned()</>
 
 Expected mock function not to have returned, but it returned:
   <red>undefined</>"
 `;
 
 exports[`toHaveReturned works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturned(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturned()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -2076,7 +2076,7 @@ Expected mock function not to have returned <green>two times</>, but it returned
 `;
 
 exports[`toHaveReturnedTimes works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturnedTimes(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturnedTimes()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -2117,7 +2117,7 @@ But it did <red>not return</>."
 `;
 
 exports[`toHaveReturnedWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturnedWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toHaveReturnedWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -2234,56 +2234,56 @@ But it returned exactly:
 `;
 
 exports[`toReturn .not fails with any argument passed 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toReturn(</><dim>)</>
+"<dim>expect(</><red>received</><dim>)[.not].toReturn()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
 `;
 
 exports[`toReturn .not passes when a call throws undefined 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toReturn(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
 
 Expected mock function to have returned."
 `;
 
 exports[`toReturn .not passes when all calls throw 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toReturn(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
 
 Expected mock function to have returned."
 `;
 
 exports[`toReturn .not passes when not returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toReturn(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
 
 Expected mock function to have returned."
 `;
 
 exports[`toReturn fails with any argument passed 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toReturn(</><dim>)</>
+"<dim>expect(</><red>received</><dim>)[.not].toReturn()</>
 
-<bold>Matcher error</>: <green>expected</> value must be omitted or undefined
+<bold>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  number
 Expected has value: <green>555</>"
 `;
 
 exports[`toReturn includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).not.toReturn(</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).not.toReturn()</>
 
 Expected mock function \\"named-mock\\" not to have returned, but it returned:
   <red>42</>"
 `;
 
 exports[`toReturn incomplete recursive calls are handled properly 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toReturn(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
 
 Expected mock function to have returned."
 `;
 
 exports[`toReturn passes when at least one call does not throw 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn()</>
 
 Expected mock function not to have returned, but it returned:
   <red>42</>
@@ -2292,21 +2292,21 @@ Expected mock function not to have returned, but it returned:
 `;
 
 exports[`toReturn passes when returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn()</>
 
 Expected mock function not to have returned, but it returned:
   <red>42</>"
 `;
 
 exports[`toReturn passes when undefined is returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn()</>
 
 Expected mock function not to have returned, but it returned:
   <red>undefined</>"
 `;
 
 exports[`toReturn works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturn(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturn()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -2471,7 +2471,7 @@ Expected mock function not to have returned <green>two times</>, but it returned
 `;
 
 exports[`toReturnTimes works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturnTimes(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturnTimes()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -2512,7 +2512,7 @@ But it did <red>not return</>."
 `;
 
 exports[`toReturnWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturnWith(</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>)[.not].toReturnWith()</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 

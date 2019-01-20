@@ -76,7 +76,7 @@ const IDVisitor = {
   ReferencedIdentifier(path) {
     this.ids.add(path);
   },
-  blacklist: ['TypeAnnotation'],
+  blacklist: ['TypeAnnotation', 'TSTypeAnnotation'],
 };
 
 const FUNCTIONS: Object = Object.create(null);
@@ -139,10 +139,7 @@ FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = args =>
   args.length === 0;
 
-export default () => {
-  const isJest = callee =>
-    callee.get('object').isIdentifier(JEST_GLOBAL) ||
-    (callee.isMemberExpression() && isJest(callee.get('object')));
+module.exports = () => {
   const shouldHoistExpression = expr => {
     if (!expr.isCallExpression()) {
       return false;

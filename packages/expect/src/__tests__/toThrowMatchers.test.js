@@ -8,7 +8,7 @@
 
 'use strict';
 
-import jestExpect from '../';
+const jestExpect = require('../');
 
 // Custom Error class because node versions have different stack trace strings.
 class customError extends Error {
@@ -52,11 +52,20 @@ class customError extends Error {
         ).toThrowErrorMatchingSnapshot();
       });
 
-      test('threw, but message did not match', () => {
+      test('threw, but message did not match (error)', () => {
         expect(() => {
           jestExpect(() => {
             throw new customError('apple');
           })[toThrow]('banana');
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('threw, but message did not match (non-error falsey)', () => {
+        expect(() => {
+          jestExpect(() => {
+            // eslint-disable-next-line no-throw-literal
+            throw '';
+          })[toThrow]('Server Error');
         }).toThrowErrorMatchingSnapshot();
       });
 
@@ -66,11 +75,20 @@ class customError extends Error {
         })[toThrow]('"this"? throws.');
       });
 
-      test('threw, but should not have', () => {
+      test('threw, but message should not match (error)', () => {
         expect(() => {
           jestExpect(() => {
             throw new customError('apple');
           }).not[toThrow]('apple');
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('threw, but message should not match (non-error truthy)', () => {
+        expect(() => {
+          jestExpect(() => {
+            // eslint-disable-next-line no-throw-literal
+            throw 'Internal Server Error';
+          }).not[toThrow]('Server Error');
         }).toThrowErrorMatchingSnapshot();
       });
     });
@@ -92,7 +110,7 @@ class customError extends Error {
         ).toThrowErrorMatchingSnapshot();
       });
 
-      test('threw, but message did not match', () => {
+      test('threw, but message did not match (error)', () => {
         expect(() => {
           jestExpect(() => {
             throw new customError('apple');
@@ -100,11 +118,29 @@ class customError extends Error {
         }).toThrowErrorMatchingSnapshot();
       });
 
-      test('threw, but should not have', () => {
+      test('threw, but message did not match (non-error falsey)', () => {
+        expect(() => {
+          jestExpect(() => {
+            // eslint-disable-next-line no-throw-literal
+            throw 0;
+          })[toThrow](/^[123456789]\d*/);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('threw, but message should not match (error)', () => {
         expect(() => {
           jestExpect(() => {
             throw new customError('apple');
           }).not[toThrow](/apple/);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('threw, but message should not match (non-error truthy)', () => {
+        expect(() => {
+          jestExpect(() => {
+            // eslint-disable-next-line no-throw-literal
+            throw 404;
+          }).not[toThrow](/^[123456789]\d*/);
         }).toThrowErrorMatchingSnapshot();
       });
     });
@@ -129,7 +165,7 @@ class customError extends Error {
         ).toThrowErrorMatchingSnapshot();
       });
 
-      test('threw, but class did not match', () => {
+      test('threw, but class did not match (error)', () => {
         expect(() => {
           jestExpect(() => {
             throw new Err('apple');
@@ -137,7 +173,16 @@ class customError extends Error {
         }).toThrowErrorMatchingSnapshot();
       });
 
-      test('threw, but should not have', () => {
+      test('threw, but class did not match (non-error falsey)', () => {
+        expect(() => {
+          jestExpect(() => {
+            // eslint-disable-next-line no-throw-literal
+            throw undefined;
+          })[toThrow](Err2);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('threw, but class should not match (error)', () => {
         expect(() => {
           jestExpect(() => {
             throw new Err('apple');
@@ -199,39 +244,38 @@ class customError extends Error {
       });
 
       test('did not throw at all', async () => {
-        let err;
-        try {
-          await jestExpect(asyncFn()).rejects.toThrow();
-        } catch (error) {
-          err = error;
-        }
-        expect(err).toMatchSnapshot();
+        await expect(
+          jestExpect(asyncFn()).rejects[toThrow](),
+        ).rejects.toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but class did not match', async () => {
-        let err;
-        try {
-          await jestExpect(asyncFn(true)).rejects.toThrow(Err2);
-        } catch (error) {
-          err = error;
-        }
-        expect(err).toMatchSnapshot();
+        await expect(
+          jestExpect(asyncFn(true)).rejects[toThrow](Err2),
+        ).rejects.toThrowErrorMatchingSnapshot();
       });
 
       test('threw, but should not have', async () => {
-        let err;
-        try {
-          await jestExpect(asyncFn(true)).rejects.not.toThrow();
-        } catch (error) {
-          err = error;
-        }
-        expect(err).toMatchSnapshot();
+        await expect(
+          jestExpect(asyncFn(true)).rejects.not[toThrow](),
+        ).rejects.toThrowErrorMatchingSnapshot();
+      });
+    });
+
+    describe('expected is undefined', () => {
+      test('threw, but should not have (non-error falsey)', () => {
+        expect(() => {
+          jestExpect(() => {
+            // eslint-disable-next-line no-throw-literal
+            throw null;
+          }).not[toThrow]();
+        }).toThrowErrorMatchingSnapshot();
       });
     });
 
     test('invalid arguments', () => {
       expect(() =>
-        jestExpect(() => {})[toThrow](111),
+        jestExpect(() => {}).not[toThrow](111),
       ).toThrowErrorMatchingSnapshot();
     });
 

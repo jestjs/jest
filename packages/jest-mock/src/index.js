@@ -73,56 +73,56 @@ const FUNCTION_NAME_RESERVED_REPLACE = new RegExp(
   'g',
 );
 
-const RESERVED_KEYWORDS = Object.assign(Object.create(null), {
-  arguments: true,
-  await: true,
-  break: true,
-  case: true,
-  catch: true,
-  class: true,
-  const: true,
-  continue: true,
-  debugger: true,
-  default: true,
-  delete: true,
-  do: true,
-  else: true,
-  enum: true,
-  eval: true,
-  export: true,
-  extends: true,
-  false: true,
-  finally: true,
-  for: true,
-  function: true,
-  if: true,
-  implements: true,
-  import: true,
-  in: true,
-  instanceof: true,
-  interface: true,
-  let: true,
-  new: true,
-  null: true,
-  package: true,
-  private: true,
-  protected: true,
-  public: true,
-  return: true,
-  static: true,
-  super: true,
-  switch: true,
-  this: true,
-  throw: true,
-  true: true,
-  try: true,
-  typeof: true,
-  var: true,
-  void: true,
-  while: true,
-  with: true,
-  yield: true,
-});
+const RESERVED_KEYWORDS = new Set([
+  'arguments',
+  'await',
+  'break',
+  'case',
+  'catch',
+  'class',
+  'const',
+  'continue',
+  'debugger',
+  'default',
+  'delete',
+  'do',
+  'else',
+  'enum',
+  'eval',
+  'export',
+  'extends',
+  'false',
+  'finally',
+  'for',
+  'function',
+  'if',
+  'implements',
+  'import',
+  'in',
+  'instanceof',
+  'interface',
+  'let',
+  'new',
+  'null',
+  'package',
+  'private',
+  'protected',
+  'public',
+  'return',
+  'static',
+  'super',
+  'switch',
+  'this',
+  'throw',
+  'true',
+  'try',
+  'typeof',
+  'var',
+  'void',
+  'while',
+  'with',
+  'yield',
+]);
 
 function matchArity(fn: any, length: number): any {
   let mockConstructor;
@@ -623,9 +623,13 @@ class ModuleMockerClass {
       return mockConstructor;
     }
 
-    // It's a syntax error to define functions with a reserved keyword
-    // as name.
-    if (RESERVED_KEYWORDS[name]) {
+    if (
+      // It's a syntax error to define functions with a reserved keyword
+      // as name.
+      RESERVED_KEYWORDS.has(name) ||
+      // It's also a syntax error to define functions with a name that starts with a number
+      /^\d/.test(name)
+    ) {
       name = '$' + name;
     }
 
@@ -684,7 +688,7 @@ class ModuleMockerClass {
 
   /**
    * @see README.md
-   * @param metadata Metadata for the mock in the schema returned by the
+   * @param _metadata Metadata for the mock in the schema returned by the
    * getMetadata method of this module.
    */
   generateFromMetadata(_metadata: MockFunctionMetadata): Mock {
@@ -898,4 +902,4 @@ class ModuleMockerClass {
 }
 
 export type ModuleMocker = ModuleMockerClass;
-export default new ModuleMockerClass(global);
+module.exports = new ModuleMockerClass(global);

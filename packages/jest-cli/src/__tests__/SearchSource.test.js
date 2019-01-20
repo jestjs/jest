@@ -9,12 +9,9 @@
 'use strict';
 
 import path from 'path';
-import Runtime from 'jest-runtime';
-import {normalize} from 'jest-config';
-import SearchSource from '../SearchSource';
-import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
 jest.setTimeout(15000);
+
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
 const testMatch = ['**/__testtests__/**/*'];
@@ -23,12 +20,19 @@ const maxWorkers = 1;
 const toPaths = tests => tests.map(({path}) => path);
 
 let findMatchingTests;
+let normalize;
 
 describe('SearchSource', () => {
-  skipSuiteOnWindows();
-
   const name = 'SearchSource';
+  let Runtime;
+  let SearchSource;
   let searchSource;
+
+  beforeEach(() => {
+    Runtime = require('jest-runtime');
+    SearchSource = require('../SearchSource').default;
+    normalize = require('jest-config').normalize;
+  });
 
   describe('isTestFilePath', () => {
     let config;
@@ -475,22 +479,24 @@ describe('SearchSource', () => {
     });
 
     it('does not mistake roots folders with prefix names', async () => {
-      const config = normalize(
-        {
-          name,
-          rootDir: '.',
-          roots: ['/foo/bar/prefix'],
-        },
-        {},
-      ).options;
+      if (process.platform !== 'win32') {
+        const config = normalize(
+          {
+            name,
+            rootDir: '.',
+            roots: ['/foo/bar/prefix'],
+          },
+          {},
+        ).options;
 
-      searchSource = new SearchSource(
-        await Runtime.createContext(config, {maxWorkers}),
-      );
+        searchSource = new SearchSource(
+          await Runtime.createContext(config, {maxWorkers}),
+        );
 
-      const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];
-      const data = searchSource.findTestsByPaths(input);
-      expect(data.tests).toEqual([]);
+        const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];
+        const data = searchSource.findTestsByPaths(input);
+        expect(data.tests).toEqual([]);
+      }
     });
   });
 });

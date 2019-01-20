@@ -8,8 +8,7 @@
 
 'use strict';
 
-import vm from 'vm';
-import mock from '../';
+const vm = require('vm');
 
 describe('moduleMocker', () => {
   let moduleMocker;
@@ -17,6 +16,7 @@ describe('moduleMocker', () => {
   let mockGlobals;
 
   beforeEach(() => {
+    const mock = require('../');
     mockContext = vm.createContext();
     mockGlobals = vm.runInNewContext('this', mockContext);
     moduleMocker = new mock.ModuleMocker(mockGlobals);
@@ -70,7 +70,7 @@ describe('moduleMocker', () => {
       expect(mock.name).toBe('foo');
     });
 
-    it('escapes illegal characters in function name property', () => {
+    it('fixes illegal function name properties', () => {
       function getMockFnWithOriginalName(name) {
         const fn = () => {};
         Object.defineProperty(fn, 'name', {value: name});
@@ -78,21 +78,12 @@ describe('moduleMocker', () => {
         return moduleMocker.generateFromMetadata(moduleMocker.getMetadata(fn));
       }
 
-      expect(
-        getMockFnWithOriginalName('foo-bar').name === 'foo$bar',
-      ).toBeTruthy();
-      expect(
-        getMockFnWithOriginalName('foo-bar-2').name === 'foo$bar$2',
-      ).toBeTruthy();
-      expect(
-        getMockFnWithOriginalName('foo-bar-3').name === 'foo$bar$3',
-      ).toBeTruthy();
-      expect(
-        getMockFnWithOriginalName('foo/bar').name === 'foo$bar',
-      ).toBeTruthy();
-      expect(
-        getMockFnWithOriginalName('foo𠮷bar').name === 'foo𠮷bar',
-      ).toBeTruthy();
+      expect(getMockFnWithOriginalName('1').name).toBe('$1');
+      expect(getMockFnWithOriginalName('foo-bar').name).toBe('foo$bar');
+      expect(getMockFnWithOriginalName('foo-bar-2').name).toBe('foo$bar$2');
+      expect(getMockFnWithOriginalName('foo-bar-3').name).toBe('foo$bar$3');
+      expect(getMockFnWithOriginalName('foo/bar').name).toBe('foo$bar');
+      expect(getMockFnWithOriginalName('foo𠮷bar').name).toBe('foo𠮷bar');
     });
 
     it('special cases the mockConstructor name', () => {
@@ -346,6 +337,18 @@ describe('moduleMocker', () => {
       expect(() =>
         moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/)),
       ).not.toThrow();
+    });
+
+    it('mocks functions with numeric names', () => {
+      const obj = {
+        1: () => {},
+      };
+
+      const objMock = moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(obj),
+      );
+
+      expect(typeof objMock[1]).toBe('function');
     });
 
     describe('mocked functions', () => {

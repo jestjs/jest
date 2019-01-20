@@ -11,6 +11,8 @@ We would also like to welcome both [Babel](https://babeljs.io/) and [Webpack](ht
 
 Here's are some of the Jest 23 highlights and breaking changes.
 
+<!--truncate-->
+
 For a full list see the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).
 
 ## Interactive Snapshot Mode

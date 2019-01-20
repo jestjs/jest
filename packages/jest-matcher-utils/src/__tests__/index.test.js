@@ -116,15 +116,15 @@ describe('.ensureNoExpected()', () => {
     }).not.toThrow();
   });
 
-  test('throws error when expected is not undefined', () => {
-    expect(() => {
-      ensureNoExpected({a: 1});
-    }).toThrowErrorMatchingSnapshot();
-  });
-
   test('throws error when expected is not undefined with matcherName', () => {
     expect(() => {
       ensureNoExpected({a: 1}, '.toBeDefined');
+    }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('throws error when expected is not undefined with matcherName and options', () => {
+    expect(() => {
+      ensureNoExpected({a: 1}, 'toBeDefined', {isNot: true});
     }).toThrowErrorMatchingSnapshot();
   });
 });

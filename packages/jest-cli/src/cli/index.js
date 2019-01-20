@@ -23,7 +23,6 @@ import getChangedFilesPromise from '../getChangedFilesPromise';
 import {formatHandleErrors} from '../collectHandles';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import {print as preRunMessagePrint} from '../preRunMessage';
-import {getVersion} from '../jest';
 import runJest from '../runJest';
 import Runtime from 'jest-runtime';
 import TestWatcher from '../TestWatcher';
@@ -34,6 +33,8 @@ import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
 import init from '../lib/init';
 import logDebugMessages from '../lib/log_debug_messages';
+
+const {getVersion} = require('../jest');
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
@@ -193,7 +194,7 @@ export const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
 
   validateCLIOptions(
     argv,
-    Object.assign({}, args.options, {deprecationEntries}),
+    {...args.options, deprecationEntries},
     // strip leading dashes
     Array.isArray(rawArgv)
       ? rawArgv.map(rawArgv => rawArgv.replace(/^--?/, ''))

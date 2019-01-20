@@ -6,7 +6,7 @@
  */
 'use strict';
 
-const JSDomEnvironment = jest.requireActual('../').default;
+const JSDomEnvironment = jest.requireActual('../');
 
 describe('JSDomEnvironment', () => {
   it('should configure setTimeout/setInterval to use the browser api', () => {

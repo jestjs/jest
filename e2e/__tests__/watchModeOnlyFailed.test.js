@@ -6,12 +6,12 @@
  *
  * @flow
  */
-'use strict';
 
 import path from 'path';
 import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import os from 'os';
 import runJest from '../runJest';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(os.tmpdir(), 'watch-mode-only-failed');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
@@ -50,8 +50,8 @@ test('can press "f" to run only failed tests', () => {
 
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(rest).toMatchSnapshot('test results');
-    expect(summary).toMatchSnapshot('test summary');
+    expect(wrap(rest)).toMatchSnapshot('test results');
+    expect(wrap(summary)).toMatchSnapshot('test summary');
   });
   expect(status).toBe(0);
 });

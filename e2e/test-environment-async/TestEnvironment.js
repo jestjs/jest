@@ -4,8 +4,8 @@
 
 const fs = require('fs');
 const os = require('os');
-const mkdirp = require('mkdirp');
-const JSDOMEnvironment = require('jest-environment-jsdom').default;
+const {createDirectory} = require('jest-util');
+const JSDOMEnvironment = require('jest-environment-jsdom');
 
 const DIR = os.tmpdir() + '/jest-test-environment';
 
@@ -24,7 +24,7 @@ class TestEnvironment extends JSDOMEnvironment {
 
   teardown() {
     return super.teardown().then(() => {
-      mkdirp.sync(DIR);
+      createDirectory(DIR);
       fs.writeFileSync(DIR + '/teardown', 'teardown');
     });
   }

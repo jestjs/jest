@@ -3,13 +3,14 @@
   "version": "23.6.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-diff"
   },
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^2.0.1",
-    "diff": "^3.2.0",
+    "diff-sequences": "^23.6.0",
     "jest-get-type": "^22.1.0",
     "pretty-format": "^23.6.0"
   },

@@ -75,13 +75,11 @@ const saveSnapshotsForFile = (
     : (config && config.parser) || simpleDetectParser(sourceFilePath);
 
   // Format the source code using the custom parser API.
-  const newSourceFile = prettier.format(
-    sourceFile,
-    Object.assign({}, config, {
-      filepath: sourceFilePath,
-      parser: createParser(snapshots, inferredParser, babelTraverse),
-    }),
-  );
+  const newSourceFile = prettier.format(sourceFile, {
+    ...config,
+    filepath: sourceFilePath,
+    parser: createParser(snapshots, inferredParser, babelTraverse),
+  });
 
   if (newSourceFile !== sourceFile) {
     fs.writeFileSync(sourceFilePath, newSourceFile);
@@ -93,9 +91,7 @@ const groupSnapshotsBy = (createKey: InlineSnapshot => string) => (
 ) =>
   snapshots.reduce((object, inlineSnapshot) => {
     const key = createKey(inlineSnapshot);
-    return Object.assign(object, {
-      [key]: (object[key] || []).concat(inlineSnapshot),
-    });
+    return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
   }, {});
 
 const groupSnapshotsByFrame = groupSnapshotsBy(

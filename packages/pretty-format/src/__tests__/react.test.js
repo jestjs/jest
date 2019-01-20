@@ -9,36 +9,24 @@
 
 import type {OptionsReceived} from 'types/PrettyFormat';
 
-import React from 'react';
-import renderer from 'react-test-renderer';
-import prettyFormat from '../';
+const React = require('react');
+const renderer = require('react-test-renderer');
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');
 const testSymbol = Symbol.for('react.test.json');
+
+const prettyFormat = require('..');
 const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
 const formatElement = (element: any, options?: OptionsReceived) =>
-  prettyFormat(
-    element,
-    Object.assign(
-      ({
-        plugins: [ReactElement],
-      }: OptionsReceived),
-      options,
-    ),
-  );
+  prettyFormat(element, {plugins: [ReactElement], ...options});
 
 const formatTestObject = (object: any, options?: OptionsReceived) =>
-  prettyFormat(
-    object,
-    Object.assign(
-      ({
-        plugins: [ReactTestComponent, ReactElement],
-      }: OptionsReceived),
-      options,
-    ),
-  );
+  prettyFormat(object, {
+    plugins: [ReactTestComponent, ReactElement],
+    ...options,
+  });
 
 function assertPrintedJSX(
   val: any,
@@ -718,7 +706,6 @@ test('supports forwardRef with a child', () => {
   }
 
   expect(
-    // $FlowFixMe - https://github.com/facebook/flow/issues/6103
     formatElement(React.createElement(React.forwardRef(Cat), null, 'mouse')),
   ).toEqual('<ForwardRef(Cat)>\n  mouse\n</ForwardRef(Cat)>');
 });

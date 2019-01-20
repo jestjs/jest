@@ -19,9 +19,7 @@ import setGlobal from './setGlobal';
  * we are disabling the flowtype/no-weak-types rule here.
  */
 
-/* eslint-disable flowtype/no-weak-types */
 type Callback = (...args: any) => void;
-/* eslint-enable flowtype/no-weak-types */
 
 type TimerID = string;
 
@@ -50,11 +48,9 @@ type TimerAPI = {
    * here.
    */
 
-  /* eslint-disable flowtype/no-weak-types */
   setImmediate(callback: Callback, ms?: number, ...args: Array<any>): number,
   setInterval(callback: Callback, ms?: number, ...args: Array<any>): number,
   setTimeout(callback: Callback, ms?: number, ...args: Array<any>): number,
-  /* eslint-enable flowtype/no-weak-types */
 };
 
 type TimerConfig<Ref> = {|
@@ -239,7 +235,7 @@ export default class FakeTimers<TimerRef> {
   }
 
   runOnlyPendingTimers() {
-    const timers = Object.assign({}, this._timers);
+    const timers = {...this._timers};
     this._checkFakeTimers();
     this._immediates.forEach(this._runImmediate, this);
     Object.keys(timers)

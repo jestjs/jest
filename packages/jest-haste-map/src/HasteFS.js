@@ -10,6 +10,7 @@
 import type {Glob, Path} from 'types/Config';
 import type {FileData} from 'types/HasteMap';
 
+import {replacePathSepForGlob} from 'jest-util';
 import * as fastPath from './lib/fast_path';
 import micromatch from 'micromatch';
 import H from './constants';
@@ -78,7 +79,7 @@ export default class HasteFS {
     const files = new Set();
     for (const file of this.getAbsoluteFileIterator()) {
       const filePath = root ? fastPath.relative(root, file) : file;
-      if (micromatch([filePath], globs).length) {
+      if (micromatch.some(replacePathSepForGlob(filePath), globs)) {
         files.add(file);
       }
     }

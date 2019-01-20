@@ -7,7 +7,7 @@
  */
 'use strict';
 
-import {toMatchSnapshot} from '../';
+const {toMatchSnapshot} = require('../');
 
 it(`matcher returns matcher name, expected and actual values`, () => {
   const actual = 'a';

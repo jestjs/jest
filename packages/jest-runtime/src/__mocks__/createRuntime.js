@@ -6,31 +6,32 @@
  */
 
 import path from 'path';
-import NodeEnvironment from 'jest-environment-node';
-import {normalize} from 'jest-config';
-import Runtime from '../';
 
 module.exports = function createRuntime(filename, config) {
+  const NodeEnvironment = require('jest-environment-node');
+  const Runtime = require('../');
+
+  const {normalize} = require('jest-config');
+
   config = normalize(
-    Object.assign(
-      {
-        haste: {
-          hasteImplModulePath: path.resolve(
-            __dirname,
-            '..',
-            '..',
-            '..',
-            'jest-haste-map',
-            'src',
-            '__tests__',
-            'haste_impl.js',
-          ),
-        },
-        name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
-        rootDir: path.resolve(path.dirname(filename), 'test_root'),
+    {
+      haste: {
+        hasteImplModulePath: path.resolve(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          'jest-haste-map',
+          'src',
+          '__tests__',
+          'haste_impl.js',
+        ),
       },
-      config,
-    ),
+      name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
+      rootDir: path.resolve(path.dirname(filename), 'test_root'),
+      ...config,
+    },
+
     {},
   ).options;
 

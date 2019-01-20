@@ -10,6 +10,7 @@
 import path from 'path';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const dir = path.resolve(__dirname, '../failures');
 
@@ -25,15 +26,15 @@ function cleanStderr(stderr) {
 test('not throwing Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throwNumber.test.js']).stderr;
-  expect(cleanStderr(stderr)).toMatchSnapshot();
+  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['throwString.test.js']).stderr;
-  expect(cleanStderr(stderr)).toMatchSnapshot();
+  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['throwObject.test.js']).stderr;
-  expect(cleanStderr(stderr)).toMatchSnapshot();
+  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['assertionCount.test.js']).stderr;
-  expect(cleanStderr(stderr)).toMatchSnapshot();
+  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['duringTests.test.js']).stderr;
-  expect(cleanStderr(stderr)).toMatchSnapshot();
+  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
@@ -138,13 +139,13 @@ test('works with node assert', () => {
     summary = summary.replace(ifErrorMessage, '');
   }
 
-  expect(summary).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('works with assertions in separate files', () => {
   const {stderr} = runJest(dir, ['testMacro.test.js']);
 
-  expect(normalizeDots(cleanStderr(stderr))).toMatchSnapshot();
+  expect(wrap(normalizeDots(cleanStderr(stderr)))).toMatchSnapshot();
 });
 
 test('works with async failures', () => {
@@ -161,7 +162,7 @@ test('works with async failures', () => {
     .replace(/.*Use jest\.setTimeout\(newTimeout\).*/, '<REPLACED>')
     .replace(/.*Timeout - Async callback was not.*/, '<REPLACED>');
 
-  expect(result).toMatchSnapshot();
+  expect(wrap(result)).toMatchSnapshot();
 });
 
 test('works with snapshot failures', () => {
@@ -170,7 +171,7 @@ test('works with snapshot failures', () => {
   const result = normalizeDots(cleanStderr(stderr));
 
   expect(
-    result.substring(0, result.indexOf('Snapshot Summary')),
+    wrap(result.substring(0, result.indexOf('Snapshot Summary'))),
   ).toMatchSnapshot();
 });
 
@@ -180,6 +181,6 @@ test('works with named snapshot failures', () => {
   const result = normalizeDots(cleanStderr(stderr));
 
   expect(
-    result.substring(0, result.indexOf('Snapshot Summary')),
+    wrap(result.substring(0, result.indexOf('Snapshot Summary'))),
   ).toMatchSnapshot();
 });

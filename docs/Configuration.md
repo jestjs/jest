@@ -261,9 +261,28 @@ Jest will fail if:
 
 Default: `undefined`
 
-This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function expecting a string as the first argument for the code to analyze and Jest's dependency extractor as the second argument (in case you only want to extend it).
+This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function. E.g.:
 
-The function should return an iterable (`Array`, `Set`, etc.) with the dependencies found in the code.
+```javascript
+const fs = require('fs');
+const crypto = require('crypto');
+
+module.exports = {
+  extract(code, filePath, defaultExtract) {
+    const deps = defaultExtract(code, filePath);
+    // Scan the file and add dependencies in `deps` (which is a `Set`)
+    return deps;
+  },
+  getCacheKey() {
+    return crypto
+      .createHash('md5')
+      .update(fs.readFileSync(__filename))
+      .digest('hex');
+  },
+};
+```
+
+The `extract` function should return an iterable (`Array`, `Set`, etc.) with the dependencies found in the code.
 
 That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
 
@@ -354,6 +373,8 @@ _Note: A global setup module configured in a project (using multi-project runner
 
 _Note: Any global variables that are defined through `globalSetup` can only be read in `globalTeardown`. You cannot retrieve globals defined here in your test suites._
 
+_Note: While code transformation is applied to the linked setup-file, Jest will **not** transform any code in `node_modules`. This is due to the need to load the actual transformers (e.g. `babel` or `typescript`) to perform transformation._
+
 Example:
 
 ```js
@@ -380,6 +401,8 @@ This option allows the use of a custom global teardown module which exports an a
 
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
+_Node: The same caveat concerning transformation of `node_modules_ as for `globalSetup` applies to `globalTeardown`.
+
 ### `moduleDirectories` [array<string>]
 
 Default: `["node_modules"]`
@@ -390,7 +413,9 @@ An array of directory names to be searched recursively up from the requiring mod
 
 Default: `["js", "json", "jsx", "ts", "tsx", "node"]`
 
-An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for.
+An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.
+
+We recommend placing the extensions most commonly used in your project on the left, so if you are using TypeScript, you may want to consider moving "ts" and/or "tsx" to the beginning of the array.
 
 ### `moduleNameMapper` [object<string, string>]
 

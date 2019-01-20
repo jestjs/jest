@@ -8,9 +8,11 @@
     "typescript": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/core": "*",
     "@babel/preset-typescript": "*",
     "@babel/preset-react": "*",
     "@types/jest": "^23.1.1",
+    "babel-jest": "*",
     "jest": "*"
   },
   "scripts": {
