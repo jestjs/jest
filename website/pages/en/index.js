@@ -60,7 +60,7 @@ class Contributors extends React.Component {
                 {
                   <img
                     className="sponsor-avatar"
-                    src={b.avatar + "&width=96"}
+                    src={b.avatar + '&width=96'}
                     alt={
                       b.name || b.slug
                         ? `${b.name || b.slug}'s avatar`
@@ -93,7 +93,7 @@ class Contributors extends React.Component {
                 {
                   <img
                     className="backer-avatar"
-                    src={b.avatar + "&width=96"}
+                    src={b.avatar + '&width=96'}
                     alt={
                       b.name || b.slug
                         ? `${b.name || b.slug}'s avatar`
@@ -334,7 +334,10 @@ class Index extends React.Component {
             />
           </Container>
 
-          <Container padding={['bottom', 'top']} className="section-container lightBackground">
+          <Container
+            padding={['bottom', 'top']}
+            className="section-container lightBackground"
+          >
             <GridBlock
               className="green"
               contents={[
@@ -355,11 +358,7 @@ class Index extends React.Component {
             />
             {/* Wondering where the image + buttons come from? That's  client-side code in landing.js */}
           </Container>
-          <Container
-            padding={['bottom', 'top']}
-
-            className="section-container"
-          >
+          <Container padding={['bottom', 'top']} className="section-container">
             <GridBlock
               className="yellow"
               contents={[
@@ -380,7 +379,10 @@ class Index extends React.Component {
               ]}
             />
           </Container>
-          <Container padding={['bottom', 'top']} className="section-container lightBackground">
+          <Container
+            padding={['bottom', 'top']}
+            className="section-container lightBackground"
+          >
             <GridBlock
               className="red"
               contents={[
@@ -401,10 +403,7 @@ class Index extends React.Component {
               ]}
             />
           </Container>
-          <Container
-            padding={['bottom', 'top']}
-            className="section-container"
-          >
+          <Container padding={['bottom', 'top']} className="section-container">
             <GridBlock
               className="green matchers"
               contents={[
@@ -453,20 +452,26 @@ class Index extends React.Component {
                   </translate>
                 </MarkdownBlock>
                 <MarkdownBlock>
-                  <translate>
-                  Jest makes testing delightful.
-                  </translate>
+                  <translate>Jest makes testing delightful.</translate>
                 </MarkdownBlock>
+                <div class="show-small">
+                  <p style={{fontFamily: 'Monaco, Courier, monospace'}}>
+                    <translate>- Jest Core Team</translate>
+                  </p>
+                </div>
               </div>
-              <div className="blockContent flex-end">
+              <div className="blockContent flex-end hide-small">
                 <p style={{fontFamily: 'Monaco, Courier, monospace'}}>
                   <translate>- Jest Core Team</translate>
                 </p>
               </div>
             </div>
           </Container>
-          <Container padding={['bottom', 'top']} className="section-container bottom-margin docs">
-            <div className="blockElement imageAlignSide gridBlock video-block" >
+          <Container
+            padding={['bottom', 'top']}
+            className="section-container bottom-margin docs"
+          >
+            <div className="blockElement imageAlignSide gridBlock video-block">
               <div className="blockContent ">
                 <div className="video">
                   <iframe

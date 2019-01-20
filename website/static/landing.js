@@ -123,8 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const matcherSection = document.querySelector('.matchers .blockContent');
     const screenshotImg = document.querySelector('.matchers img');
     const buttonWrapper = document.createElement('p');
-    buttonWrapper.className = "buttons-wrapper"
-    
+    buttonWrapper.className = 'buttons-wrapper';
+
     const buttons = [
       {
         title: 'Equals',
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
           .querySelectorAll('.matchers .button.landing')
           .forEach(b => (b.className = 'button landing'));
         clickButton.className = 'button landing active';
-        screenshotImg.opacity = 0.5;
+        screenshotImg.style.opacity = 0.5;
         screenshotImg.src = button.url;
       };
       buttonWrapper.appendChild(clickButton);

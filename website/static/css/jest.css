@@ -242,7 +242,7 @@
 }
 
 .button.landing.active {
-  background: var(green);
+  background: var(--green);
   color: #fff;
 }
 
@@ -255,7 +255,35 @@ div.navigationSlider .slidingNav ul {
   background: #ffffff;
 }
 
-div.navigationSlider .slidingNav ul .siteNavItemActive {
-  background:  var(green);
+.navigationSlider .slidingNav ul li a:focus,
+.navigationSlider .slidingNav ul li a:hover,
+.navigationSlider .slidingNav ul li.siteNavGroupActive a {
+  background: #ffffff;
+  color: var(--grey3);
 }
 
+body
+  > div.fixedHeaderContainer
+  > div
+  > header
+  > div
+  > nav
+  > ul
+  > li.siteNavGroupActive.siteNavItemActive
+  > a {
+  background-color: #10910e;
+  color: white;
+}
+
+.hide-small {
+  display: none;
+}
+
+@media only screen and (min-width: 736px) {
+  .show-small {
+    display: none;
+  }
+  .hide-small {
+    display: block;
+  }
+}

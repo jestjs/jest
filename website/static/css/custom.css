@@ -1,5 +1,9 @@
 /* Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved. */
 
+.mainContainer a {
+  text-decoration: underline;
+}
+
 .fixedHeaderContainer header img.logo {
   height: 60px;
   margin-top: -20px;
@@ -11,11 +15,9 @@
   font-size: 1.1em;
 }
 
-
 .fixedHeaderContainer header h3 {
   font-size: 14px;
   margin-top: 2px;
-  text-decoration: none;
 }
 
 div.jest-repl {
@@ -30,7 +32,6 @@ div.jest-repl iframe {
   min-height: 420px;
   width: 100%;
 }
-
 
 div.bottom-margin {
   margin-bottom: 40px;
@@ -66,13 +67,14 @@ div.video iframe {
 }
 
 @media only screen and (max-width: 1023px) {
-  div.video, div.video-block {
+  div.video,
+  div.video-block {
     display: none;
   }
 
   .docs .blockElement {
     width: 100%;
-  }  
+  }
 }
 
 div.jest-hero-interactive {
@@ -86,6 +88,7 @@ div.hero-github-button-container {
   right: 10px;
   top: 20px;
   visibility: hidden;
+  z-index: 1000;
 }
 
 /* Means the links doesn't push the vertical */
@@ -197,7 +200,6 @@ div.jest-button-container {
   bottom: 0;
   background-color: rgba(255, 255, 255, 0.5);
   width: 100%;
-  /* height: 56px; */
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -214,7 +216,8 @@ a.jest-button {
   line-height: 2.2em;
 }
 
-a.jest-button:hover, a.jest-button:active {
+a.jest-button:hover,
+a.jest-button:active {
   background-color: #910e1b;
 }
 
@@ -256,7 +259,8 @@ div.jest-card-pass {
   cursor: auto;
 }
 
-div.jest-card-pass .jest-card-label, div.jest-card-run .jest-card-label {
+div.jest-card-pass .jest-card-label,
+div.jest-card-run .jest-card-label {
   background-color: var(--green);
 }
 
