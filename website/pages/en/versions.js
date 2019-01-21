@@ -82,7 +82,7 @@ class Versions extends React.Component {
                   version =>
                     version !== latestVersion && (
                       <tr key={version}>
-                        <th>{version === '22.x' ? '<=22.x' : version}</th>
+                        <th>{version}</th>
                         <td>
                           <a
                             href={`${
