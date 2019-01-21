@@ -1,5 +1,5 @@
 ---
-id: version-22.4-setup-teardown
+id: version-22.x-setup-teardown
 title: Setup and Teardown
 original_id: setup-teardown
 ---

@@ -1,5 +1,5 @@
 ---
-id: version-22.4-troubleshooting
+id: version-22.x-troubleshooting
 title: Troubleshooting
 original_id: troubleshooting
 ---

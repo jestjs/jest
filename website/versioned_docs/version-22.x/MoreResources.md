@@ -1,5 +1,5 @@
 ---
-id: version-22.4-more-resources
+id: version-22.x-more-resources
 title: More Resources
 original_id: more-resources
 ---

@@ -1,5 +1,5 @@
 ---
-id: version-22.4-timer-mocks
+id: version-22.x-timer-mocks
 title: Timer Mocks
 original_id: timer-mocks
 ---

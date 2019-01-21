@@ -1,5 +1,5 @@
 ---
-id: version-22.4-jest-object
+id: version-22.x-jest-object
 title: The Jest Object
 original_id: jest-object
 ---

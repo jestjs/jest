@@ -1,5 +1,5 @@
 ---
-id: version-22.4-migration-guide
+id: version-22.x-migration-guide
 title: Migrating to Jest
 original_id: migration-guide
 ---

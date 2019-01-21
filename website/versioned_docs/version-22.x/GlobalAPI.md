@@ -1,5 +1,5 @@
 ---
-id: version-22.4-api
+id: version-22.x-api
 title: Globals
 original_id: api
 ---

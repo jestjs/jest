@@ -1,5 +1,5 @@
 ---
-id: version-22.4-mock-function-api
+id: version-22.x-mock-function-api
 title: Mock Functions
 original_id: mock-function-api
 ---

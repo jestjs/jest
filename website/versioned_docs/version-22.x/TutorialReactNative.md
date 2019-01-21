@@ -1,5 +1,5 @@
 ---
-id: version-22.4-tutorial-react-native
+id: version-22.x-tutorial-react-native
 title: Testing React Native Apps
 original_id: tutorial-react-native
 ---

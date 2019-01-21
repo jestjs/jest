@@ -1,5 +1,5 @@
 ---
-id: version-22.4-testing-frameworks
+id: version-22.x-testing-frameworks
 title: Testing Web Frameworks
 original_id: testing-frameworks
 ---
