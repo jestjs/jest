@@ -1,5 +1,5 @@
 ---
-id: version-22.0-tutorial-react
+id: version-22.4-tutorial-react
 title: Testing React Apps
 original_id: tutorial-react
 ---
@@ -19,7 +19,7 @@ If you have an existing application you'll need to install a few packages to mak
 Run
 
 ```bash
-npm install --save-dev jest babel-jest babel-preset-es2015 babel-preset-react react-test-renderer
+yarn add --dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
 ```
 
 Your `package.json` should look something like this (where `<current-version>` is the actual latest version number for the package). Please add the scripts and jest configuration entries:
@@ -32,7 +32,7 @@ Your `package.json` should look something like this (where `<current-version>` i
   },
   "devDependencies": {
     "babel-jest": "<current-version>",
-    "babel-preset-es2015": "<current-version>",
+    "babel-preset-env": "<current-version>",
     "babel-preset-react": "<current-version>",
     "jest": "<current-version>",
     "react-test-renderer": "<current-version>"
@@ -45,7 +45,7 @@ Your `package.json` should look something like this (where `<current-version>` i
 ```json
 // .babelrc
 {
-  "presets": ["es2015", "react"]
+  "presets": ["env", "react"]
 }
 ```
 
@@ -128,7 +128,7 @@ test('Link changes the class when hovered', () => {
 });
 ```
 
-When you run `npm test` or `jest`, this will produce an output file like this:
+When you run `yarn test` or `jest`, this will produce an output file like this:
 
 ```javascript
 // __tests__/__snapshots__/Link.react.test.js.snap
@@ -167,11 +167,40 @@ The next time you run the tests, the rendered output will be compared to the pre
 
 The code for this example is available at [examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot).
 
+#### Snapshot Testing with Mocks, Enzyme and React 16
+
+There's a caveat around snapshot testing when using Enzyme and React 16+. If you mock out a module using the following style:
+
+```js
+jest.mock('../SomeDirectory/SomeComponent', () => 'SomeComponent');
+```
+
+Then you will see warnings in the console:
+
+```bash
+Warning: <SomeComponent /> is using uppercase HTML. Always use lowercase HTML tags in React.
+
+# Or:
+Warning: The tag <SomeComponent> is unrecognized in this browser. If you meant to render a React component, start its name with an uppercase letter.
+```
+
+React 16 triggers these warnings due to how it checks element types, and the mocked module fails these checks. Your options are:
+
+1.  Render as text. This way you won't see the props passed to the mock component in the snapshot, but it's straightforward:
+    ```js
+    jest.mock('./SomeComponent', () => () => 'SomeComponent');
+    ```
+2.  Render as a custom element. DOM "custom elements" aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
+    ```js
+    jest.mock('./Widget', () => 'mock-widget');
+    ```
+3.  Use `react-test-renderer`. The test renderer doesn't care about element types and will happily accept e.g. `SomeComponent`. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.
+
 ### DOM Testing
 
 If you'd like to assert, and manipulate your rendered components you can use [Enzyme](http://airbnb.io/enzyme/) or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme for this example.
 
-You have to run `npm install --save-dev enzyme` to use Enzyme. If you are using a React below version 15.5.0, you will also need to install `react-addons-test-utils`.
+You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
 
 Let's implement a simple checkbox which swaps between two labels:
 

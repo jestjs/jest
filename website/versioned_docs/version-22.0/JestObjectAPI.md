@@ -1,5 +1,5 @@
 ---
-id: version-22.0-jest-object
+id: version-22.4-jest-object
 title: The Jest Object
 original_id: jest-object
 ---
@@ -33,6 +33,7 @@ The `jest` object is automatically in scope within every test file. The methods 
 - [`jest.useFakeTimers()`](#jestusefaketimers)
 - [`jest.useRealTimers()`](#jestuserealtimers)
 - [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname)
+- [`jest.spyOn(object, methodName, accessType?)`](#jestspyonobject-methodname-accesstype)
 
 ---
 
@@ -48,7 +49,39 @@ This means, if any timers have been scheduled (but have not yet executed), they 
 
 Disables automatic mocking in the module loader.
 
+> See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
+
 After this method is called, all `require()`s will return the real versions of each module (rather than a mocked version).
+
+Jest configuration:
+
+```json
+"automock": true
+```
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    return 'token';
+  },
+};
+```
+
+```js
+// __tests__/disableAutomocking.js
+import utils from '../utils';
+
+jest.disableAutomock();
+
+test('original implementation', () => {
+  // now we have the original implementation,
+  // even if we set the automocking in a jest configuration
+  expect(utils.authorize()).toBe('token');
+});
+```
 
 This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
 
@@ -63,6 +96,33 @@ _Note: this method was previously called `autoMockOff`. When using `babel-jest`,
 Enables automatic mocking in the module loader.
 
 Returns the `jest` object for chaining.
+
+> See `automock` section of [configuration](Configuration.md#automock-boolean) for more information
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: secret => secret === 'wizard',
+};
+```
+
+```js
+// __tests__/disableAutomocking.js
+jest.enableAutomock();
+
+import utils from '../utils';
+
+test('original implementation', () => {
+  // now we have the mocked implementation,
+  expect(utils.authorize._isMockFunction).toBeTruthy();
+  expect(utils.isAuthorized._isMockFunction).toBeTruthy();
+});
+```
 
 _Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior._
 
@@ -89,6 +149,29 @@ Determines if the given function is a mocked function.
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
 This is useful when you want to create a [manual mock](ManualMocks.md) that extends the automatic mock's behavior.
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: secret => secret === 'wizard',
+};
+```
+
+```js
+// __tests__/genMockFromModule.test.js
+const utils = jest.genMockFromModule('../utils').default;
+utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
+
+test('implementation created by jest.genMockFromModule', () => {
+  expect(utils.authorize.mock).toBeTruthy();
+  expect(utils.isAuthorized('not wizard')).toEqual(true);
+});
+```
 
 ### `jest.mock(moduleName, factory, options)`
 
@@ -135,7 +218,7 @@ jest.mock(
 
 _Warning: Importing a module in a setup file (as specified by `setupTestFrameworkScriptFile`) will prevent mocking for the module in question, as well as all the modules that it imports._
 
-Modules that are mocked with `jest.mock` are mocked only for the file that calls `jest.mock`. Another file that imports the module will get the original implementation even if run after the test file that mocks the module.
+Modules that are mocked with `jest.mock` are mocked only for the file that calls `jest.mock`. Another file that imports the module will get the original implementation even if it runs after the test file that mocks the module.
 
 Returns the `jest` object for chaining.
 
@@ -196,8 +279,6 @@ Resets the state of all mocks. Equivalent to calling `.mockReset()` on every moc
 Returns the `jest` object for chaining.
 
 ### `jest.restoreAllMocks()`
-
-##### available in Jest **21.1.0+**
 
 Restores all mocks back to their original value. Equivalent to calling `.mockRestore` on every mocked function. Beware that `jest.restoreAllMocks()` only works when mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
 
@@ -260,7 +341,7 @@ Also under the alias: `.runTimersToTime()`
 
 Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
 
-When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this timeframe will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
+When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
 
 ### `jest.runOnlyPendingTimers()`
 
@@ -316,8 +397,6 @@ Returns the `jest` object for chaining.
 
 ### `jest.spyOn(object, methodName)`
 
-##### available in Jest **19.0.0+**
-
 Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest mock function.
 
 _Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`_
@@ -352,8 +431,6 @@ test('plays video', () => {
 ```
 
 ### `jest.spyOn(object, methodName, accessType?)`
-
-##### available in Jest **22.1.0+**
 
 Since Jest 22.1.0+, the `jest.spyOn` method takes an optional third argument of `accessType` that can be either `'get'` or `'set'`, which proves to be useful when you want to spy on a getter or a setter, respectively.
 

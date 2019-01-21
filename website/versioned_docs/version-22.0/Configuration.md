@@ -1,5 +1,5 @@
 ---
-id: version-22.0-configuration
+id: version-22.4-configuration
 title: Configuring Jest
 original_id: configuration
 ---
@@ -49,7 +49,38 @@ These options let you control Jest's behavior in your `package.json` file. The J
 
 Default: `false`
 
-This option is disabled by default. If you are introducing Jest to a large organization with an existing codebase but few tests, enabling this option can be helpful to introduce unit tests gradually. Modules can be explicitly auto-mocked using `jest.mock(moduleName)`.
+This option tells Jest that all imported modules in your tests should be mocked automatically. All modules used in your tests will have a replacement implementation, keeping the API surface.
+
+Example:
+
+```js
+// utils.js
+export default {
+  authorize: () => {
+    return 'token';
+  },
+  isAuthorized: secret => secret === 'wizard',
+};
+```
+
+```js
+//__tests__/automocking.test.js
+import utils from '../utils';
+
+test('if utils mocked automatically', () => {
+  // Public methods of `utils` are now mock functions
+  expect(utils.authorize.mock).toBeTruthy();
+  expect(utils.isAuthorized.mock).toBeTruthy();
+
+  // You can provide them with your own implementation
+  // or just pass the expected return value
+  utils.authorize.mockReturnValue('mocked_token');
+  utils.isAuthorized.mockReturnValue(true);
+
+  expect(utils.authorize()).toBe('mocked_token');
+  expect(utils.isAuthorized('not_wizard')).toBeTruthy();
+});
+```
 
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`._
 
@@ -241,7 +272,7 @@ For example, the following would create a global `__DEV__` variable set to `true
 }
 ```
 
-Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will _not_ be persisted across test runs for other test files.
+Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will _not_ be persisted across test runs for other test files. In addition the `globals` object must be json-serializable, so it can't be used to specify global functions. For that you should use `setupFiles`.
 
 ### `globalSetup` [string]
 
@@ -254,23 +285,6 @@ This option allows the use of a custom global setup module which exports an asyn
 Default: `undefined`
 
 This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites.
-
-### `mapCoverage` [boolean]
-
-##### available in Jest **20.0.0+**
-
-Default: `false`
-
-If you have [transformers](#transform-object-string-string) configured that emit source maps, Jest will use them to try and map code coverage against the original source code when writing [reports](#coveragereporters-array-string) and checking [thresholds](#coveragethreshold-object). This is done on a best-effort basis as some compile-to-JavaScript languages may provide more accurate source maps than others. This can also be resource-intensive. If Jest is taking a long time to calculate coverage at the end of a test run, try setting this option to `false`.
-
-Both inline source maps and source maps returned directly from a transformer are supported. Source map URLs are not supported because Jest may not be able to locate them. To return source maps from a transformer, the `process` function can return an object like the following. The `map` property may either be the source map object, or the source map object as a JSON string.
-
-```js
-return {
-  code: 'the code',
-  map: 'the source map',
-};
-```
 
 ### `moduleFileExtensions` [array<string>]
 
@@ -334,6 +348,21 @@ Default: `false`
 
 Activates notifications for test results.
 
+### `notifyMode` [string]
+
+Default: `always`
+
+Specifies notification mode. Requires `notify: true`.
+
+#### Modes
+
+- `always`: always send a notification.
+- `failure`: send a notification when tests fail.
+- `success`: send a notification when tests pass.
+- `change`: send a notification when the status changed.
+- `success-change`: send a notification when tests pass or once when it fails.
+- `failure-change`: send a notification when tests fails or once when it passes.
+
 ### `preset` [string]
 
 Default: `undefined`
@@ -371,6 +400,8 @@ The projects feature can also be used to run multiple configurations or multiple
 }
 ```
 
+_Note: When using multi project runner, it's recommended to add a `displayName` for each project. This will show the `displayName` of a project next to its tests._
+
 ### `clearMocks` [boolean]
 
 Default: `false`
@@ -380,8 +411,6 @@ Automatically clear mock calls and instances between every test. Equivalent to c
 ### `reporters` [array<moduleName | [moduleName, options]>]
 
 Default: `undefined`
-
-##### available in Jest **20.0.0+**
 
 Use this configuration option to add custom reporters to Jest. A custom reporter is a class that implements `onRunStart`, `onTestStart`, `onTestResult`, `onRunComplete` methods that will be called when any of those events occurs.
 
@@ -467,11 +496,9 @@ If enabled, the module registry for every test file will be reset before running
 
 Default: `undefined`
 
-##### available in Jest **20.0.0+**
-
 This option allows the use of a custom resolver. This resolver must be a node module that exports a function expecting a string as the first argument for the path to resolve and an object with the following structure as the second argument:
 
-```
+```json
 {
   "basedir": string,
   "browser": bool,
@@ -483,6 +510,12 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```
 
 The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
+
+### `restoreMocks` [boolean]
+
+Default: `false`
+
+Automatically restore mock state between every test. Equivalent to calling `jest.restoreAllMocks()` between each test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.
 
 ### `rootDir` [string]
 
@@ -507,8 +540,6 @@ _Note: While `rootDir` is mostly used as a token to be re-used in other configur
 _Note: By default, `roots` has a single entry `<rootDir>` but there are cases where you may want to have multiple roots within one project, for example `roots: ["<rootDir>/src/", "<rootDir>/tests/"]`._
 
 ### `runner` [string]
-
-##### available in Jest **21.0.0+**
 
 Default: `"jest-runner"`
 
@@ -601,7 +632,7 @@ test(() => {
 
 Rendered snapshot:
 
-```
+```json
 Pretty foo: Object {
   "x": 1,
   "y": 2,
@@ -618,8 +649,6 @@ The test environment that will be used for testing. The default environment in J
 
 If some tests require another environment, you can add a `@jest-environment` docblock.
 
-##### available in Jest **20.0.0+**
-
 ```js
 /**
  * @jest-environment jsdom
@@ -632,8 +661,6 @@ test('use jsdom in this test file', () => {
 ```
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables.
-
-##### available in Jest **22.0.0+**
 
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
 
@@ -679,15 +706,11 @@ _Note: Jest comes with JSDOM@11 by default. Due to JSDOM 12 and newer dropping s
 
 ### `testEnvironmentOptions` [Object]
 
-##### available in Jest **22.0.0+**
-
 Default: `{}`
 
 Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example you can override options given to [jsdom](https://github.com/tmpvar/jsdom) such as `{userAgent: "Agent/007"}`.
 
 ### `testMatch` [array<string>]
-
-##### available in Jest **19.0.0+**
 
 (default: `[ '**/__tests__/**/*.js?(x)', '**/?(*.)(spec|test).js?(x)' ]`)
 
@@ -713,7 +736,7 @@ The pattern Jest uses to detect test files. By default it looks for `.js` and `.
 
 The following is a visualization of the default regex:
 
-```
+```bash
 ├── __tests__
 │   └── component.spec.js # test
 │   └── anything # test
@@ -729,7 +752,7 @@ Default: `undefined`
 
 This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument and return it:
 
-```
+```json
 {
   "success": bool,
   "startTime": epoch,
@@ -778,13 +801,13 @@ This option allows use of a custom test runner. The default is jasmine2. A custo
 
 The test runner module must export a function with the following signature:
 
-```
+```ts
 function testRunner(
   config: Config,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult>
+): Promise<TestResult>;
 ```
 
 An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js).
@@ -844,8 +867,6 @@ Indicates whether each individual test should be reported during the run. All er
 ### `watchPathIgnorePatterns` [array<string>]
 
 Default: `[]`
-
-##### available in Jest **21.0.0+**
 
 An array of RegExp patterns that are matched against all source file paths before re-running tests in watch mode. If the file path matches any of the patterns, when it is updated, it will not trigger a re-run of tests.
 

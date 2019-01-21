@@ -1,12 +1,26 @@
 ---
-id: version-22.0-manual-mocks
+id: version-22.4-manual-mocks
 title: Manual Mocks
 original_id: manual-mocks
 ---
 
 Manual mocks are used to stub out functionality with mock data. For example, instead of accessing a remote resource like a website or a database, you might want to create a manual mock that allows you to use fake data. This ensures your tests will be fast and not flaky.
 
-Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. For example, to mock a module called `user` in the `models` directory, create a file called `user.js` and put it in the `models/__mocks__` directory. Note that the `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` will break on some systems. If the module you are mocking is a node module (eg: `fs`), the mock should be placed in the `__mocks__` directory adjacent to `node_modules` (unless you configured [`roots`](Configuration.md#roots-array-string) to point to a folder other than the project root). Eg:
+## Mocking user modules
+
+Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. For example, to mock a module called `user` in the `models` directory, create a file called `user.js` and put it in the `models/__mocks__` directory. Note that the `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
+
+> When we require that module in our tests, then explicitly calling `jest.mock('./moduleName')` is **required**.
+
+## Mocking Node modules
+
+If the module you are mocking is a Node module (e.g.: `lodash`), the mock should be placed in the `__mocks__` directory adjacent to `node_modules` (unless you configured [`roots`](Configuration.md#roots-array-string) to point to a folder other than the project root) and will be **automatically** mocked. There's no need to explicitly call `jest.mock('module_name')`.
+
+Scoped modules can be mocked by creating a file in a directory structure that matches the name of the scoped module. For example, to mock a scoped module called `@scope/project-name`, create a file at `__mocks__/@scope/project-name.js`, creating the `@scope/` directory accordingly.
+
+> Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because core Node modules are not mocked by default.
+
+## Examples
 
 ```bash
 .
@@ -23,7 +37,7 @@ Manual mocks are defined by writing a module in a `__mocks__/` subdirectory imme
 
 When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`. However, manual mocks will take precedence over node modules even if `jest.mock('moduleName')` is not called. To opt out of this behavior you will need to explicitly call `jest.unmock('moduleName')` in tests that should use the actual module implementation.
 
-Here's a contrived example where we have a module that provides a summary of all the files in a given directory.
+Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) `fs` module.
 
 ```javascript
 // FileSummarizer.js
@@ -79,7 +93,7 @@ fs.readdirSync = readdirSync;
 module.exports = fs;
 ```
 
-Now we write our test:
+Now we write our test. Note that we need to explicitly tell that we want to mock the `fs` module because it’s a core Node module:
 
 ```javascript
 // __tests__/FileSummarizer-test.js
@@ -113,7 +127,7 @@ The example mock shown here uses [`jest.genMockFromModule`](JestObjectAPI.md#jes
 
 To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using `jest.requireActual(moduleName)` in your manual mock and amending it with mock functions before exporting it.
 
-The code for this example is available at [examples/manual_mocks](https://github.com/facebook/jest/tree/master/examples/manual_mocks).
+The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/master/examples/manual-mocks).
 
 ## Using with ES module imports
 

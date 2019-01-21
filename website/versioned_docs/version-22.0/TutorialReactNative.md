@@ -1,5 +1,5 @@
 ---
-id: version-22.0-tutorial-react-native
+id: version-22.4-tutorial-react-native
 title: Testing React Native Apps
 original_id: tutorial-react-native
 ---
@@ -24,7 +24,7 @@ Starting from react-native version 0.38, a Jest setup is included by default whe
 
 _Note: If you are upgrading your react-native application and previously used the `jest-react-native` preset, remove the dependency from your `package.json` file and change the preset to `react-native` instead._
 
-Simply run `npm test` to run tests with Jest.
+Simply run `yarn test` to run tests with Jest.
 
 ## Snapshot Test
 
@@ -72,11 +72,9 @@ Now let's use React's test renderer and Jest's snapshot feature to interact with
 
 ```javascript
 // __tests__/Intro-test.js
-import 'react-native';
 import React from 'react';
 import Intro from '../Intro';
 
-// Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 
 test('renders correctly', () => {
@@ -85,7 +83,7 @@ test('renders correctly', () => {
 });
 ```
 
-When you run `npm test` or `jest`, this will produce an output file like this:
+When you run `yarn test` or `jest`, this will produce an output file like this:
 
 ```javascript
 // __tests__/__snapshots__/Intro-test.js.snap
@@ -173,7 +171,7 @@ For example, if your code depends on a third party native video component called
 jest.mock('react-native-video', () => 'Video');
 ```
 
-This will render the component as `<Video {...props} />` with all of its props in the snapshot output.
+This will render the component as `<Video {...props} />` with all of its props in the snapshot output. See also [caveats around Enzyme and React 16](tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16).
 
 Sometimes you need to provide a more complex manual mock. For example if you'd like to forward the prop types or static fields of a native component to a mock, you can return a different React component from a mock through this helper from jest-react-native:
 
@@ -203,16 +201,6 @@ jest.mock('Text', () => {
 In other cases you may want to mock a native module that isn't a React component. The same technique can be applied. We recommend inspecting the native module's source code and logging the module when running a react native app on a real device and then modeling a manual mock after the real module.
 
 If you end up mocking the same modules over and over it is recommended to define these mocks in a separate file and add it to the list of `setupFiles`.
-
-### require react-native before the test renderer
-
-Currently it is required to require react-native before loading the test renderer:
-
-```
-import 'react-native';
-// Require after react-native
-import renderer from 'react-test-renderer';
-```
 
 ### `@providesModule`
 

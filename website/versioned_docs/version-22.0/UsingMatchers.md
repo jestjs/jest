@@ -1,10 +1,10 @@
 ---
-id: version-22.0-using-matchers
+id: version-22.4-using-matchers
 title: Using Matchers
 original_id: using-matchers
 ---
 
-Jest uses "matchers" to let you test values in different ways. There are too many different matchers to memorize them all, so this document will only try to introduce the most useful ones.
+Jest uses "matchers" to let you test values in different ways. This document will introduce some commonly used matchers. For the full list, see the [`expect` API doc](ExpectAPI.md).
 
 ## Common Matchers
 

@@ -1,5 +1,5 @@
 ---
-id: version-22.0-troubleshooting
+id: version-22.4-troubleshooting
 title: Troubleshooting
 original_id: troubleshooting
 ---
@@ -12,7 +12,7 @@ Try using the debugging support built into Node.
 
 Place a `debugger;` statement in any of your tests, and then, in your project's directory, run:
 
-```
+```bash
 node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
 or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
@@ -32,7 +32,7 @@ There are multiple ways to debug Jest tests with [Visual Studio Code's](https://
 
 To attach the built-in debugger, run your tests as aforementioned:
 
-```
+```bash
 node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
 or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
@@ -139,7 +139,7 @@ Retry with [`--no-cache`](CLI.md#cache). Jest caches transformed module files to
 
 If a promise doesn't resolve at all, this error might be thrown:
 
-```
+```bash
 - Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 ```
 
@@ -147,7 +147,7 @@ Most commonly this is being caused by conflicting Promise implementations. Consi
 
 If your test is long running, you may want to consider to increase the timeout by calling `jest.setTimeout`
 
-```
+```js
 jest.setTimeout(10000); // 10 second timeout
 ```
 
@@ -169,8 +169,8 @@ In order to do this you can run tests in the same thread using [`--runInBand`](C
 # Using Jest CLI
 jest --runInBand
 
-# Using npm test (e.g. with create-react-app)
-npm test -- --runInBand
+# Using yarn test (e.g. with create-react-app)
+yarn test --runInBand
 ```
 
 Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~_4_. Specifically on Travis-CI, this can reduce test execution time in half. Note: The Travis CI _free_ plan available for open source projects only includes 2 CPU cores.
@@ -179,8 +179,8 @@ Another alternative to expediting test execution time on Continuous Integration 
 # Using Jest CLI
 jest --maxWorkers=4
 
-# Using npm test (e.g. with create-react-app)
-npm test -- --maxWorkers=4
+# Using yarn test (e.g. with create-react-app)
+yarn test --maxWorkers=4
 ```
 
 ## Tests are slow when leveraging automocking
@@ -232,7 +232,7 @@ If you would like to continue using Jasmine 1, set the `testRunner` config optio
 
 ## Compatibility issues
 
-Jest takes advantage of new features added to Node 4. We recommend that you upgrade to the latest stable release of Node. The minimum supported version is `v4.0.0`. Versions `0.x.x` are not supported.
+Jest takes advantage of new features added to Node 6. We recommend that you upgrade to the latest stable release of Node. The minimum supported version is `v6.0.0`. Versions `0.x.x` and `4.x.x` are not supported because the `jsdom` version used in Jest doesn't support Node 4. However, if you need to run Jest on Node 4, you can use the `testEnvironment` config to use a [custom environment](https://jestjs.io/docs/en/configuration.html#testenvironment-string) that supports Node 4, such as [`jest-environment-node`](https://yarnpkg.com/en/package/jest-environment-node).
 
 ## `coveragePathIgnorePatterns` seems to not have any effect.
 

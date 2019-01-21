@@ -1,5 +1,5 @@
 ---
-id: version-22.0-migration-guide
+id: version-22.4-migration-guide
 title: Migrating to Jest
 original_id: migration-guide
 ---
@@ -14,15 +14,15 @@ If you'd like to try out Jest with an existing codebase, there are a number of w
 
 If you are using [AVA](https://github.com/avajs/ava), [Chai](https://github.com/chaijs/chai), [Expect.js (by Automattic)](https://github.com/Automattic/expect.js), [Jasmine](https://github.com/jasmine/jasmine), [Mocha](https://github.com/mochajs/mocha), [proxyquire](https://github.com/thlorenz/proxyquire), [Should.js](https://github.com/tj/should.js/) or [Tape](https://github.com/substack/tape) you can use the third-party [jest-codemods](https://github.com/skovhus/jest-codemods) to do most of the dirty migration work. It runs a code transformation on your codebase using [jscodeshift](https://github.com/facebook/jscodeshift).
 
-Install Jest Codemods with `npm` by running:
+Install Jest Codemods with `yarn` by running:
 
-```
-npm install -g jest-codemods
+```bash
+yarn global add jest-codemods
 ```
 
 To transform your existing tests, navigate to the project containing the tests and run:
 
-```
+```bash
 jest-codemods
 ```
 
