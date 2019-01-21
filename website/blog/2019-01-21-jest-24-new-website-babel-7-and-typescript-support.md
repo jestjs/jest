@@ -1,5 +1,5 @@
 ---
-title: Jest 24: New Website, Babel 7 and TypeScript support
+title: Jest 24: New Website, out of the box TypeScript support, Improved Assertions and TODOs
 author: Simen Bekkhus
 authorURL: https://github.com/SimenB
 authorFBID: 100003004880942
@@ -17,11 +17,11 @@ For a full list of all changes see the [changelog](https://github.com/facebook/j
 
 The aim of the re-design was to highlight more of what makes Jest awesome, and to de-couple the idea that Jest is primarily a tool for testing React apps - you can use Jest with all sorts of projects and we want to make that obvious. You can read more about the ideas behind the re-design in [this issue](https://github.com/facebook/jest/issues/7265).
 
-## Babel 7
+## TypeScript support
+
+We've upgraded internally to Babel 7 for Jest 24, which comes with support for TypeScript projects. That means Jest can support transpiling TypeScript out of the box, as long as you configure Babel to use it with `@babel/preset-typescript`. One caveat to the default TypeScript support, similar to Flow, is that Babel will only strip out the type annotations to make your code valid JavaScript. It will _not_ typecheck your code.
 
 While Jest has supported Babel 7 since version 22 released in December 2017, it required usage of a bridge module in order to fit in with Jest's support of Babel 6. In Jest 24 we have migrated entirely over to Babel 7, with great help from community member [@milesj](https://github.com/milesj). This means that setup is now easier and we can take advantage of other Babel 7 features, such as config loading and automatic `modules` transpilation. Make sure to remove the `babel-core@^7.0.0-bridge.0` as it's not needed now.
-
-Another benefit of Babel 7 is that it comes with support for TypeScript projects. That means Jest can support transpiling TypeScript out of the box, as long as you configure Babel to use it with `@babel/preset-typescript`. One caveat to the default TypeScript support, similar to Flow, is that Babel will only strip out the type annotations to make your code valid JavaScript. It will _not_ typecheck your code.
 
 If you want to run typechecks while you test, you should use [`ts-jest`](https://github.com/kulshekhar/ts-jest). You will need to configure the transformer, as Jest by default applies Babel to `.ts` (and `.tsx`) files. Alternatively, you can run `tsc` or even use a Jest runner to simultaneously transpile your TypeScript whilst running your tests! See [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc) for more information.
 
@@ -43,7 +43,7 @@ test.todo('missing options should be normalized');
 
 When tests fail, you need to make confident and correct decisions which changes are expected progress and which changes are unexpected regressions. It is especially important not to miss a few regressions hidden among much progress. Jest 24 makes reports when assertions fail more clear and concise for several matchers. Because the effort will continue in Jest 25, you might notice some temporary inconsistencies. If your tests never fail, then you won't get to see them - for the rest of us, it'll be easier to debug why something isn't working as expected. Thanks for the hard work by [@ittordepam](https://twitter.com/ittordepam)[](https://twitter.com/ittordepam) and other contributors from the community.
 
-You can see these changes across all these PRs: [7557](https://github.com/facebook/jest/pull/7557), [7621](https://github.com/facebook/jest/pull/7621), [7557](https://github.com/facebook/jest/pull/7557), [7457](https://github.com/facebook/jest/pull/7457), [7448](https://github.com/facebook/jest/pull/7448), [7241](https://github.com/facebook/jest/pull/7241), [7152](https://github.com/facebook/jest/pull/7152), [7125](https://github.com/facebook/jest/pull/7125),[7107](https://github.com/facebook/jest/pull/7107), [6961](https://github.com/facebook/jest/pull/6961).
+You can see these changes across all these PRs: [7557](https://github.com/facebook/jest/pull/7557), [7621](https://github.com/facebook/jest/pull/7621), [7557](https://github.com/facebook/jest/pull/7557), [7457](https://github.com/facebook/jest/pull/7457), [7448](https://github.com/facebook/jest/pull/7448), [7241](https://github.com/facebook/jest/pull/7241), [7152](https://github.com/facebook/jest/pull/7152), [7125](https://github.com/facebook/jest/pull/7125), [7107](https://github.com/facebook/jest/pull/7107), [6961](https://github.com/facebook/jest/pull/6961).
 
 Examples:
 
