@@ -5,8 +5,6 @@ authorURL: https://github.com/SimenB
 authorFBID: 100003004880942
 ---
 
-# Jest 24 - New Website, Babel 7 and TypeScript support
-
 Today we are happy to announce the next major release of Jest - version 24! It's been 4 months since the last release (and 8 since Jest 23), so this is a meaty one. Highlights include upgrading to Babel 7 across the board (bringing with it built-in support for testing TypeScript) fixing some long standing issues with missing console output and performance issues when computing large diffs, as well as a brand new sparkling website. ✨
 
 For a full list of all changes see the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).
