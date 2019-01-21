@@ -229,6 +229,7 @@ class Runtime {
   ): HasteMap {
     const ignorePatternParts = [
       ...config.modulePathIgnorePatterns,
+      ...(options && options.watch ? config.watchPathIgnorePatterns : []),
       config.cacheDirectory.startsWith(config.rootDir + path.sep) &&
         config.cacheDirectory,
     ].filter(Boolean);
