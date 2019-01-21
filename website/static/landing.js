@@ -1,6 +1,11 @@
 /* Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved. */
 
-/* global document, window */
+/* global document, window, localStorage */
+
+// Allow taking a bit longer on the first run
+const firstRun = localStorage.getItem('firstRun');
+localStorage.setItem('firstRun', 'true');
+const baseMinimalTime = firstRun ? 3000 : 1500;
 
 document.addEventListener('DOMContentLoaded', () => {
   const hand = document.querySelector('.jest-hand');
@@ -62,7 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
           card.classList.remove('jest-card-popping');
         }, 400);
       },
-      index === 2 ? 3000 + minTime : Math.random() * 3000 + minTime
+      index === 2
+        ? baseMinimalTime + minTime
+        : Math.random() * baseMinimalTime + minTime
     );
   }
 
