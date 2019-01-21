@@ -5,7 +5,7 @@ authorURL: https://github.com/SimenB
 authorFBID: 100003004880942
 ---
 
-Today we are happy to announce the next major release of Jest - version 24! It's been 4 months since the last minor release, and 8 months since Jest 23, so this upgrade is a big one, with something for everyone! Highlights include built-in support for TypeScript by upgrading the Jest internals to Babel 7, fixing some long standing issues with missing console output and performance issues when computing large diffs, and a brand new sparkling website. ✨
+Today we are happy to announce the next major release of Jest - version 24! It's been 4 months since the last minor release, and 8 months since Jest 23, so this upgrade is a big one, with something for everyone! Highlights include built-in support for TypeScript by upgrading the Jest internals to Babel 7, fixing some long-standing issues with missing console output and performance issues when computing large diffs, and a brand new sparkling website. ✨
 
 For a full list of all changes see the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).
 
@@ -19,7 +19,7 @@ The aim of the redesign was to highlight more of what makes Jest awesome, and to
 
 ## TypeScript support
 
-We've upgraded internally to Babel 7 for Jest 24, which comes with support for TypeScript projects. That means Jest can support transpiling TypeScript out of the box, as long as you configure Babel to use it with `@babel/preset-typescript`. One caveat to the default TypeScript support, similar to Flow, is that Babel will only strip out the type annotations to make your code valid JavaScript. It will _not_ typecheck your code.
+We've upgraded to Babel 7 internally for Jest 24, which comes with support for TypeScript projects. That means Jest can support transpiling TypeScript out of the box, as long as you configure Babel to use it with `@babel/preset-typescript`. One caveat to the default TypeScript support, similar to Flow, is that Babel will only strip out the type annotations to make your code valid JavaScript. It will _not_ typecheck your code.
 
 While Jest has supported Babel 7 since version 22 released in December 2017, it required usage of a bridge module in order to fit in with Jest's support of Babel 6. In Jest 24 we have migrated entirely over to Babel 7, with great help from community member [@milesj](https://github.com/milesj). This means that setup is now easier and we can take advantage of other Babel 7 features, such as config loading and automatic `modules` transpilation. Make sure to remove the `babel-core@^7.0.0-bridge.0` as it's not needed now.
 
@@ -29,7 +29,7 @@ If you want to run typechecks while you test, you should use [`ts-jest`](https:/
 
 Jest 23 had a change that made tests missing an implementation throw instead of being skipped. This change was made due to feedback that accidentally skipped tests were hard to discover and hard to track down. However, this change broke the workflow for quite a few developers who used the feature to sketch out which tests to write.
 
-In Jest 24, we are addressing this issue by adding an explicit `test.todo` (inspired by the excellent Ava), which will be printed separately in the test summary. It allows you to quickly sketch out which tests you want to write. And, while it doesn't currently exist, an eslint rule could easily warn you that you have forgotten to write out some tests.
+In Jest 24, we are addressing this issue by adding an explicit `test.todo` (inspired by the excellent Ava), which will be printed separately in the test summary. It allows you to quickly sketch out which tests you want to write and in the future, an [ESLint](https://eslint.org/) rule might even be able to warn you that you have forgotten to write out some tests.
 
 ```js
 test.todo('invalid input should throw');
@@ -74,19 +74,19 @@ The second one is an issue where Jest runs out of memory if the difference in se
 - You can [configure](https://github.com/facebook/jest/pull/6143) Jest's snapshot location, this is mainly useful if you are building tools which use Jest in a larger build process.
 - A quirk of Jest's CLI has been that while some flags and options have been camel cased (such as `runInBand`), others have not been (such as `no-cache`). In Jest 24, both are recognized, meaning you can write your CLI arguments however you want.
 - We've renamed `setupTestFrameworkScriptFile` to `setupFilesAfterEnv`, and made it into an array. We hope this will make it more obvious what the options is for. We have plans to further overhaul the configuration in the next major, see the paragraph in the section below.
-- To reduce magic Jest performs to “just work™”, in this release we decided to drop automatic injection of `regenerator-runtime` for async code to work. It's not always necessary (e.g. in Node 8+) and we believe it's user's responsibility to handle it, which is already done if you use `@babel/preset-env` and `@babel/runtime`.
+- To reduce the amount of magic Jest performs to “just work™”, in this release we decided to drop automatic injection of `regenerator-runtime` for async code to work. It's not always necessary (e.g. in Node 8+) and we believe it's the user's responsibility to handle it, which is already done if you use `@babel/preset-env` and `@babel/runtime`.
 - Lastly, we've upgraded to Micromatch 3. While this might not affect every user, it is stricter in its parsing of globs than version 2, which is used in Jest 23. Please read through [this](https://github.com/micromatch/micromatch/issues/133#issuecomment-404211484) and linked issues for examples of invalid globs in case you have problems.
 
 ## The future
 
-We are incredibly humbled by the results in [State Of JS 2018](https://2018.stateofjs.com/awards/) where Jest won the “Highest Satisfaction” award. Another huge thing to happen in 2018 was in October, when Jest passed 2 million weekly downloads for the first time, actually passing the business stalwart that is Mocha for the first time.
+We are incredibly humbled by the results in [State Of JS 2018](https://2018.stateofjs.com/awards/), where Jest won the “Highest Satisfaction” award. Another huge thing to happen in 2018 was in October, when Jest passed 2 million weekly downloads for the first time, actually passing the business stalwart that is Mocha for the first time.
 
-We are very thankful for the trust shown in us by the community, and hope to build on it in the future. Hopefully this, and future, releases will continue to build upon this incredible foundation, and continue to be an integral part of JavaScript developer's toolkits.
+We are very thankful for the trust in us shown by the community, and hope to build on it in the future. Hopefully Jest 24 and future releases will continue to build upon this incredible foundation, and continue to be an integral part of JavaScript developers' toolkits.
 
-This has been the first release where we have explored the idea of using our Open Collective funding to create bug bounties. This worked well in getting non-core person involved in the implementation of the new landing page, and we're optimistic for a long running bug where Jest globals [are mismatched](https://github.com/facebook/jest/issues/2549) from Node globals. We'd like to do more, if you have a pet bug that's a good candidate for our bounty program, please let us know. In the meantime, you can find all the tickets with a bounty via [the issue label](https://github.com/facebook/jest/labels/Has%20Bounty).
+This has been the first release where we have explored the idea of using our Open Collective funding to create bug bounties. This worked well in getting non-core developers involved in the implementation of the new landing page, and we're optimistic for a long running bug where Jest globals [are mismatched](https://github.com/facebook/jest/issues/2549) from Node globals. We'd like to do more, if you have a pet bug that's a good candidate for our bounty program, please let us know. In the meantime, you can find all the tickets with a bounty via [the issue label](https://github.com/facebook/jest/labels/Has%20Bounty).
 
 We have already started to lay plans for the next release of Jest 25, with the biggest planned feature being an overhaul of our configuration, which is pretty hard to grok, mainly because of overlapping option and mixing globs and regular expressions. Feedback on how you want Jest's configuration to look is very much welcome, and can be submitted in [this](https://github.com/facebook/jest/issues/7185) issue.
 
-You might also have heard that we are planning to migrate the code base from Flow to TypeScript. We are hopeful that this migration will enable even more contributors to jump in and help make 2019 even better for JavaScript testing. The plan is to land this in a minor release in the not too distant future. Feedback on this choice can be added to the [RFC](https://github.com/facebook/jest/pull/7554).
+You might also have heard that we are planning to migrate the code base from Flow to TypeScript. We are hopeful that this migration will enable even more contributors to jump in and help make 2019 even better for JavaScript testing 🚀. The plan is to land this in a minor release in the not too distant future. Feedback on this choice can be added to the [RFC](https://github.com/facebook/jest/pull/7554).
 
 Lastly, if you've ever wondered about how Jest is built, [@cpojer](https://twitter.com/cpojer) has recorded a video with an architectural overview of how Jest is put together under the hood. Feel free to reach out if you have any further questions about it. The video is available on our [website](https://jestjs.io/docs/en/next/architecture).
