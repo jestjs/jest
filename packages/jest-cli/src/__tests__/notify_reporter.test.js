@@ -69,11 +69,7 @@ const notifyEvents = [
 ];
 
 test('.addReporter() .removeReporter()', () => {
-  const scheduler = new TestScheduler(
-    {},
-    {},
-    Object.assign({}, initialContext),
-  );
+  const scheduler = new TestScheduler({}, {}, {...initialContext});
   const reporter = new NotifyReporter();
   scheduler.addReporter(reporter);
   expect(scheduler._dispatcher._reporters).toContain(reporter);

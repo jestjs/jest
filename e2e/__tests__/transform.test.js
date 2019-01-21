@@ -17,6 +17,7 @@ import {
 } from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 import os from 'os';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
@@ -40,7 +41,7 @@ describe('babel-jest', () => {
     expect(stdout).not.toMatch('notCovered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    expect(stdout).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchSnapshot();
   });
 });
 
@@ -73,7 +74,7 @@ describe('no babel-jest', () => {
     expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    expect(stdout).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchSnapshot();
   });
 });
 
@@ -98,7 +99,7 @@ describe('custom transformer', () => {
       stripAnsi: true,
     });
     // coverage should be empty because there's no real instrumentation
-    expect(stdout).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchSnapshot();
     expect(status).toBe(0);
   });
 });

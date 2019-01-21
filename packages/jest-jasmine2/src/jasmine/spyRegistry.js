@@ -200,9 +200,7 @@ export default function SpyRegistry(options: Object) {
       restoreObjectToOriginalState: restoreStrategy,
     });
 
-    const spiedDescriptor = Object.assign({}, descriptor, {
-      [accessType]: spiedProperty,
-    });
+    const spiedDescriptor = {...descriptor, [accessType]: spiedProperty};
 
     Object.defineProperty(obj, propertyName, spiedDescriptor);
 

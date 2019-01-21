@@ -8,7 +8,7 @@
 
 import SummaryReporter from '../summary_reporter';
 
-const env = Object.assign({}, process.env);
+const env = {...process.env};
 const now = Date.now;
 const write = process.stderr.write;
 const globalConfig = {

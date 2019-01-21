@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 test('Symbol deletion', () => {
   global.Symbol = undefined;
 

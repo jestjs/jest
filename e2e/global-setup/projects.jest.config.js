@@ -15,12 +15,14 @@ module.exports = {
       globalSetup: '<rootDir>/setup.js',
       rootDir: path.resolve(__dirname, './project-1'),
       testMatch: ['<rootDir>/**/*.test.js'],
+      transformIgnorePatterns: ['/node_modules/', '/packages/'],
     },
     {
       displayName: 'project-2',
       globalSetup: '<rootDir>/setup.js',
       rootDir: path.resolve(__dirname, './project-2'),
       testMatch: ['<rootDir>/**/*.test.js'],
+      transformIgnorePatterns: ['/node_modules/', '/packages/'],
     },
   ],
 };

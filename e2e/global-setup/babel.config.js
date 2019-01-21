@@ -1,3 +1,5 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
-global.fakeRegeneratorInjected = true;
+module.exports = {
+  presets: ['@babel/preset-flow'],
+};

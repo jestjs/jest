@@ -49,9 +49,6 @@ export const serialize = (
         object.props
           ? printProps(
               getPropKeys(object),
-              // Despite ternary expression, Flow 0.51.0 found incorrect error:
-              // undefined is incompatible with the expected param type of Object
-              // $FlowFixMe
               object.props,
               config,
               indentation + config.indent,

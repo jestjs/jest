@@ -95,7 +95,7 @@ describe('onRunComplete', () => {
       ].reduce((c, f) => {
         const file = path.resolve(f[0]);
         const override = f[1];
-        const obj = Object.assign({}, covSummary, override);
+        const obj = {...covSummary, ...override};
         c[file] = libCoverage.createCoverageSummary(obj);
         return c;
       }, {});
