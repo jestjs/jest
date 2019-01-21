@@ -287,7 +287,6 @@ var jsonlint = (function() {
         preErrorSymbol,
         state,
         action,
-        a,
         r,
         yyval = {},
         p,
@@ -546,7 +545,7 @@ var jsonlint = (function() {
         }
         if (!this._input) this.done = true;
 
-        var token, match, tempMatch, index, col, lines;
+        var token, match, tempMatch, index, lines;
         if (!this._more) {
           this.yytext = '';
           this.match = '';
@@ -633,7 +632,6 @@ var jsonlint = (function() {
       $avoiding_name_collisions,
       YY_START,
     ) {
-      var YYSTATE = YY_START;
       switch ($avoiding_name_collisions) {
         case 0 /* skip whitespace */:
           break;
@@ -720,15 +718,16 @@ exports.parse = function() {
   return jsonlint.parse.apply(jsonlint, arguments);
 };
 exports.main = function commonjsMain(args) {
+  var source;
   if (!args[1]) throw new Error('Usage: ' + args[0] + ' FILE');
   if (typeof process !== 'undefined') {
-    var source = require('fs').readFileSync(
+    source = require('fs').readFileSync(
       require('path').join(process.cwd(), args[1]),
       'utf8',
     );
   } else {
     var cwd = require('file').path(require('file').cwd());
-    var source = cwd.join(args[1]).read({charset: 'utf-8'});
+    source = cwd.join(args[1]).read({charset: 'utf-8'});
   }
   return exports.parser.parse(source);
 };

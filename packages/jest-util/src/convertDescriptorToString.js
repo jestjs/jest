@@ -23,7 +23,7 @@ export default function convertDescriptorToString(
     throw new Error('describe expects a class, function, number, or string.');
   }
 
-  if (descriptor.name !== undefined) {
+  if (descriptor.name != undefined) {
     return descriptor.name;
   }
 
