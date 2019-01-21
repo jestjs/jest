@@ -272,7 +272,7 @@ class Index extends React.Component {
             <p>
               <translate>
                 Jest is a delightful JavaScript Testing Framework with a focus
-                on simplicity
+                on simplicity.
               </translate>
             </p>
             <p>
