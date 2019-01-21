@@ -732,6 +732,8 @@ beforeAll(() => {
 });
 ```
 
+_Note: Jest comes with JSDOM@11 by default. Due to JSDOM 12 and newer dropping support for Node 6, Jest is unable to upgrade for the time being. However, you can install a custom `testEnvironment` with whichever version of JSDOM you want. E.g. [jest-environment-jsdom-thirteen](https://www.npmjs.com/package/jest-environment-jsdom-thirteen), which has JSDOM@13._
+
 ### `testEnvironmentOptions` [Object]
 
 Default: `{}`
