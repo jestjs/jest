@@ -15,7 +15,7 @@ For a full list of all changes see the [changelog](https://github.com/facebook/j
 
 [@orta](https://twitter.com/orta) has provided a beautiful redesign of Jest's website, which has been implemented by community members [@montogeek](https://twitter.com/montogeek) and [@brainkim](https://github.com/brainkim).
 
-The aim of the re-design was to highlight more of what makes Jest awesome, and to de-couple the idea that Jest is primarily a tool for testing React apps - you can use Jest with all sorts of projects and we want to make that obvious. You can read more about the ideas behind the re-design in [this issue](https://github.com/facebook/jest/issues/7265).
+The aim of the redesign was to highlight more of what makes Jest awesome, and to decouple the idea that Jest is primarily a tool for testing React apps - you can use Jest with all sorts of projects and we want to make that obvious. You can read more about the ideas behind the redesign in [this issue](https://github.com/facebook/jest/issues/7265).
 
 ## TypeScript support
 
