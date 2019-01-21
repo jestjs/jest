@@ -454,7 +454,7 @@ class Index extends React.Component {
                 <MarkdownBlock>
                   <translate>Jest makes testing delightful.</translate>
                 </MarkdownBlock>
-                <div class="show-small">
+                <div className="show-small">
                   <p style={{fontFamily: 'Monaco, Courier, monospace'}}>
                     <translate>- Jest Core Team</translate>
                   </p>
