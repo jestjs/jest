@@ -1,5 +1,5 @@
 ---
-title: Jest 24: New Website, simpler TypeScript setup, Improved Assertions and TODOs
+title: Jest 24: 💅 Refreshing, Polished, TypeScript-friendly
 author: Simen Bekkhus
 authorURL: https://github.com/SimenB
 authorFBID: 100003004880942
