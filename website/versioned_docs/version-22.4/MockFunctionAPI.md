@@ -1,5 +1,5 @@
 ---
-id: version-22.0-mock-function-api
+id: version-22.4-mock-function-api
 title: Mock Functions
 original_id: mock-function-api
 ---
@@ -15,8 +15,6 @@ Mock functions are also known as "spies", because they let you spy on the behavi
 ## Reference
 
 ### `mockFn.getMockName()`
-
-##### available in Jest **22.0.0+**
 
 Returns the mock name string set by calling `mockFn.mockName(value)`.
 
@@ -145,8 +143,6 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 ```
 
 ### `mockFn.mockName(value)`
-
-##### available in Jest **22.0.0+**
 
 Accepts a string to use in test result output in place of "jest.fn()" to indicate which mock function is being referenced.
 

@@ -1,5 +1,5 @@
 ---
-id: version-22.0-snapshot-testing
+id: version-22.4-snapshot-testing
 title: Snapshot Testing
 original_id: snapshot-testing
 ---
