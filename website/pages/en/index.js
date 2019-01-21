@@ -211,7 +211,7 @@ class Hand extends React.Component {
     return (
       <div className="jest-hand">
         {cards}
-        <script src="landing.js" />
+        <script src="/landing.js" />
       </div>
     );
   }
