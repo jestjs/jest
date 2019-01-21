@@ -57,7 +57,7 @@ Type mismatch
 
 Mock function not called
 
-![mock functions](/img/blog/24-mock-functions.png)
+![mock functions](/img/blog/24-mock-function.png)
 
 ## Fixing old pain
 
