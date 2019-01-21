@@ -4,6 +4,11 @@
   text-decoration: underline;
 }
 
+.mainContainer a:hover,
+.mainContainer a:active {
+  text-decoration: underline;
+}
+
 .fixedHeaderContainer header img.logo {
   height: 60px;
   margin-top: -20px;

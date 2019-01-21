@@ -398,7 +398,7 @@ class Index extends React.Component {
                   ),
                   image: '/img/content/feature-mocking.png',
                   imageAlign: 'left',
-                  title: <translate>Mocking with ease</translate>,
+                  title: <translate>Easy Mocking</translate>,
                 },
               ]}
             />
@@ -416,7 +416,7 @@ class Index extends React.Component {
                   ),
                   image: '/img/content/matchers/different-types.png',
                   imageAlign: 'right',
-                  title: <translate>Excellent exceptions</translate>,
+                  title: <translate>Great Exceptions</translate>,
                 },
               ]}
             />
