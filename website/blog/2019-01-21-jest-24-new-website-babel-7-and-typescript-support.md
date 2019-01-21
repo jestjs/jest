@@ -1,5 +1,5 @@
 ---
-title: Jest 24: New Website, out of the box TypeScript support, Improved Assertions and TODOs
+title: Jest 24: New Website, simpler TypeScript setup, Improved Assertions and TODOs
 author: Simen Bekkhus
 authorURL: https://github.com/SimenB
 authorFBID: 100003004880942
@@ -43,7 +43,7 @@ test.todo('missing options should be normalized');
 
 When tests fail, you need to make confident and correct decisions which changes are expected progress and which changes are unexpected regressions. It is especially important not to miss a few regressions hidden among much progress. Jest 24 makes reports when assertions fail more clear and concise for several matchers. Because the effort will continue in Jest 25, you might notice some temporary inconsistencies. If your tests never fail, then you won't get to see them - for the rest of us, it'll be easier to debug why something isn't working as expected. Thanks for the hard work by [@ittordepam](https://twitter.com/ittordepam)[](https://twitter.com/ittordepam) and other contributors from the community.
 
-You can see these changes across all these PRs: [7557](https://github.com/facebook/jest/pull/7557), [7621](https://github.com/facebook/jest/pull/7621), [7557](https://github.com/facebook/jest/pull/7557), [7457](https://github.com/facebook/jest/pull/7457), [7448](https://github.com/facebook/jest/pull/7448), [7241](https://github.com/facebook/jest/pull/7241), [7152](https://github.com/facebook/jest/pull/7152), [7125](https://github.com/facebook/jest/pull/7125), [7107](https://github.com/facebook/jest/pull/7107), [6961](https://github.com/facebook/jest/pull/6961).
+You can see these changes across all these PRs: [7621](https://github.com/facebook/jest/pull/7621), [7557](https://github.com/facebook/jest/pull/7557), [7448](https://github.com/facebook/jest/pull/7448), [7325](https://github.com/facebook/jest/pull/7325), [7241](https://github.com/facebook/jest/pull/7241), [7152](https://github.com/facebook/jest/pull/7152), [7125](https://github.com/facebook/jest/pull/7125), [7107](https://github.com/facebook/jest/pull/7107), [6961](https://github.com/facebook/jest/pull/6961).
 
 Examples:
 
