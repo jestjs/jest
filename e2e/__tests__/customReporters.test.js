@@ -36,7 +36,7 @@ describe('Custom Reporters Integration', () => {
   test('valid array format for adding reporters', () => {
     const reporterConfig = {
       reporters: [
-        ['<rootDir>/reporters/TestReporter.js', {'Dmitrii Abramov': 'Awesome'}],
+        ['<rootDir>/reporters/TestReporter.js', {'Aaron Abramov': 'Awesome'}],
       ],
     };
 

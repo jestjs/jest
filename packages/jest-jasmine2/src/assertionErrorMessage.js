@@ -9,9 +9,8 @@
 
 import type {DiffOptions} from 'jest-diff/src/diffStrings';
 
-import {printReceived, printExpected} from 'jest-matcher-utils';
+import {diff, printReceived, printExpected} from 'jest-matcher-utils';
 import chalk from 'chalk';
-import diff from 'jest-diff';
 
 type AssertionError = {|
   actual: ?string,

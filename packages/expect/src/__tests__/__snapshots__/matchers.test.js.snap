@@ -360,11 +360,7 @@ exports[`.toBe() fails for: -0 and 0 1`] = `
 "<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>0</>
-Received: <red>-0</>
-
-Difference:
-
-<dim>Compared values have no visual difference.</>"
+Received: <red>-0</>"
 `;
 
 exports[`.toBe() fails for: 1 and 2 1`] = `

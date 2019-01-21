@@ -7,13 +7,9 @@
 'use strict';
 
 const path = require('path');
-const rollup = require('rollup').rollup;
-const rollupResolve = require('rollup-plugin-node-resolve');
-const rollupCommonjs = require('rollup-plugin-commonjs');
-const rollupBuiltins = require('rollup-plugin-node-builtins');
-const rollupJson = require('rollup-plugin-json');
-const rollupBabel = require('rollup-plugin-babel');
-const rollupFlow = require('rollup-plugin-flow');
+const webpack = require('webpack');
+const camelCase = require('camelcase');
+const rimraf = require('rimraf');
 
 const babelEs5Options = {
   // Dont load other config files
@@ -24,8 +20,8 @@ const babelEs5Options = {
     [
       '@babel/preset-env',
       {
-        // Required for Rollup
-        modules: false,
+        // Required for Webpack
+        modules: 'cjs',
         shippedProposals: true,
         // Target ES5
         targets: 'IE 11',
@@ -33,34 +29,55 @@ const babelEs5Options = {
     ],
     '@babel/preset-flow',
   ],
-  runtimeHelpers: true,
 };
 
 function browserBuild(pkgName, entryPath, destination) {
-  return rollup({
-    input: entryPath,
-    plugins: [
+  rimraf.sync(destination);
+
+  return new Promise((resolve, reject) => {
+    webpack(
+      /* eslint-disable sort-keys */
       {
-        resolveId(id) {
-          return id === 'chalk'
-            ? path.resolve(__dirname, '../packages/expect/build/fakeChalk.js')
-            : undefined;
+        mode: 'development',
+        devtool: 'source-map',
+        entry: entryPath,
+        output: {
+          path: path.dirname(destination),
+          library: camelCase(pkgName),
+          libraryTarget: 'umd',
+          filename: path.basename(destination),
+        },
+        module: {
+          rules: [
+            {
+              test: /\.[jt]sx?$/,
+              loader: 'babel-loader',
+              options: babelEs5Options,
+            },
+          ],
+        },
+        resolve: {
+          alias: {
+            chalk: path.resolve(
+              __dirname,
+              '../packages/expect/build/fakeChalk.js'
+            ),
+          },
+        },
+        node: {
+          fs: 'empty',
         },
       },
-      rollupFlow(),
-      rollupJson(),
-      rollupCommonjs(),
-      rollupBabel(babelEs5Options),
-      rollupBuiltins(),
-      rollupResolve(),
-    ],
-  }).then(bundle =>
-    bundle.write({
-      file: destination,
-      format: 'umd',
-      name: pkgName,
-    })
-  );
+      /* eslint-enable */
+      (err, stats) => {
+        if (err || stats.hasErrors()) {
+          reject(err || stats.toString());
+          return;
+        }
+        resolve(stats);
+      }
+    );
+  });
 }
 
 module.exports = browserBuild;

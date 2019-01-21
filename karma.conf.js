@@ -9,9 +9,17 @@ module.exports = config => {
   config.set({
     browsers: ['ChromeHeadless'],
     files: ['e2e/browser-support/browserTest.js'],
-    frameworks: ['mocha', 'browserify'],
+    frameworks: ['mocha'],
     preprocessors: {
-      'e2e/browser-support/browserTest.js': ['browserify'],
+      'e2e/browser-support/browserTest.js': ['webpack'],
+    },
+    webpack: {
+      mode: 'development',
+    },
+    webpackMiddleware: {
+      // webpack-dev-middleware configuration
+      // i. e.
+      stats: 'errors-only',
     },
   });
 };
