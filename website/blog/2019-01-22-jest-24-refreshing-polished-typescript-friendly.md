@@ -25,6 +25,8 @@ While Jest has supported Babel 7 since version 22 released in December 2017, it 
 
 If you want to run typechecks while you test, you should use [`ts-jest`](https://github.com/kulshekhar/ts-jest). You will need to configure the transformer, as Jest by default applies Babel to `.ts` (and `.tsx`) files. Alternatively, you can run `tsc` or even use a Jest runner to simultaneously transpile your TypeScript whilst running your tests! See [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc) for more information.
 
+_Note that if you for whatever reason cannot upgrade to Babel 7, you can still use Jest 24 with `babel@6` as long as you keep `babel-jest` at version 23._
+
 ## `test.todo`
 
 Jest 23 had a change that made tests missing an implementation throw instead of being skipped. This change was made due to feedback that accidentally skipped tests were hard to discover and hard to track down. However, this change broke the workflow for quite a few developers who used the feature to sketch out which tests to write.
