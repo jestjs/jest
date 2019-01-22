@@ -87,7 +87,7 @@ getChangedFilesForRoots([<span class="hljs-string">'./'</span>], {
  *
  * @flow
  */
- 
+
  console.log('Hello World!');
 `</span>;
 
@@ -150,7 +150,7 @@ getChangedFilesForRoots([<span class="hljs-string">'./'</span>], {
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">main</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">const</span> worker = <span class="hljs-keyword">new</span> Worker(<span class="hljs-built_in">require</span>.resolve(<span class="hljs-string">'./heavy-task.js'</span>));
 
-  <span class="hljs-comment">// run 2 tasks in parallel with different arguments</span>
+  <span class="hljs-comment">// run 2 tasks in parellel with different arguments</span>
   <span class="hljs-keyword">const</span> results = <span class="hljs-keyword">await</span> <span class="hljs-built_in">Promise</span>.all([
     worker.myHeavyTask({<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}),
     worker.myHeavyTask({<span class="hljs-attr">bar</span>: <span class="hljs-string">'foo'</span>}),

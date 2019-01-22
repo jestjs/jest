@@ -1,0 +1,159 @@
+<!DOCTYPE html><html lang="uk"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Getting Started · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;Встановіть Jest за допомогою &lt;a href=&quot;https://yarnpkg.com/en/package/jest&quot;&gt;&lt;code&gt;yarn&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+"/><meta name="docsearch:version" content="22.x"/><meta name="docsearch:language" content="uk"/><meta property="og:title" content="Getting Started · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/index.html"/><meta property="og:description" content="&lt;p&gt;Встановіть Jest за допомогою &lt;a href=&quot;https://yarnpkg.com/en/package/jest&quot;&gt;&lt;code&gt;yarn&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
+"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/uk"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/uk/versions"><h3>22.x</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive siteNavItemActive"><a href="/docs/uk/22.x/getting-started" target="_self">Документація</a></li><li class="siteNavGroupActive"><a href="/docs/uk/22.x/api" target="_self">API</a></li><li class=""><a href="/uk/help" target="_self">Допомога</a></li><li class=""><a href="/blog/" target="_self">Блог</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Українська</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/22.x/getting-started">English</a></li><li><a href="/docs/ja/22.x/getting-started">日本語</a></li><li><a href="/docs/es-ES/22.x/getting-started">Español</a></li><li><a href="/docs/pt-BR/22.x/getting-started">Português (Brasil)</a></li><li><a href="/docs/ro/22.x/getting-started">Română</a></li><li><a href="/docs/ru/22.x/getting-started">Русский</a></li><li><a href="/docs/zh-Hans/22.x/getting-started">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Introduction</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul><li class="navListItem navListItemActive"><a class="navItem" href="/docs/uk/22.x/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/snapshot-testing">Тестування з допомогою знімків</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/troubleshooting">Troubleshooting</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Фреймворк посібники</h3><ul><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/uk/22.x/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GettingStarted.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Getting Started</h1></header><article><div><span><p>Встановіть Jest за допомогою <a href="https://yarnpkg.com/en/package/jest"><code>yarn</code></a>:</p>
+<pre><code class="hljs css language-bash">yarn add --dev jest
+</code></pre>
+<p>Або <a href="https://www.npmjs.com/"><code>npm</code></a>:</p>
+<pre><code class="hljs css language-bash">npm install --save-dev jest
+</code></pre>
+<p>Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a <code>sum.js</code> file:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
+  <span class="hljs-keyword">return</span> a + b;
+}
+<span class="hljs-built_in">module</span>.exports = sum;
+</code></pre>
+<p>Then, create a file named <code>sum.test.js</code>. This will contain our actual test:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> sum = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./sum'</span>);
+
+test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
+  expect(sum(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>)).toBe(<span class="hljs-number">3</span>);
+});
+</code></pre>
+<p>Додайте наступну секцію до вашого <code>package.json</code>:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"scripts"</span>: {
+    <span class="hljs-attr">"test"</span>: <span class="hljs-string">"jest"</span>
+  }
+}
+</code></pre>
+<p>Нарешті, запустіть <code>yarn test</code> і Jest виведе це повідомлення:</p>
+<pre><code class="hljs css language-bash">PASS  ./sum.test.js
+✓ adds 1 + 2 to equal 3 (5ms)
+</code></pre>
+<p><strong>Ви тільки що успішно написали свій перший тест, використовуючи Jest!</strong></p>
+<p>Цей тест використовує <code>expect</code> and <code>toBe</code> для перевірки, що два значення абсолютно ідентичні. Щоб дізнатися про інші речі, які Jest може тестувати, перегляньте <a href="/docs/uk/22.x/using-matchers"> Використання Matchers</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="запуск-з-командного-рядка"></a><a href="#запуск-з-командного-рядка" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Запуск з командного рядка</h2>
+<p>You can run Jest directly from the CLI (if it's globally available in your <code>PATH</code>, e.g. by <code>yarn global add jest</code>) with variety of useful options.</p>
+<p>Ось як можна запустити Jest для файлів, назва яких відповідає шаблону <code>my-test</code>, використовуючи <code>config.json</code> як файл конфігурації та з відображенням нативних сповіщень ОС після запуску:</p>
+<pre><code class="hljs css language-bash">jest my-test --notify --config=config.json
+</code></pre>
+<p>Щоб дізнатися більше про запуск <code>jest</code> з командного рядка, відвідайте сторінку <a href="/docs/uk/22.x/cli">параметри командного рядка Jest</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="додаткові-налаштування"></a><a href="#додаткові-налаштування" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Додаткові налаштування</h2>
+<h3><a class="anchor" aria-hidden="true" id="високристання-babel"></a><a href="#високристання-babel" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Високристання Babel</h3>
+<p>Для використання <a href="https://babeljs.io/">Babel</a>, встановіть пакети <code>babel-jest</code> і <code>regenerator-runtime</code>:</p>
+<pre><code class="hljs css language-bash">yarn add --dev babel-jest babel-core regenerator-runtime
+</code></pre>
+<blockquote>
+<p>Note: If you are using Babel version 7 then you need to install <code>babel-jest</code>, <code>babel-core@^7.0.0-bridge.0</code> and <code>@babel/core</code> with the following command:</p>
+<pre><code class="hljs css language-bash"></code></pre>
+</blockquote>
+<p>yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime</p>
+<pre><code class="hljs">
+You will need to use <span class="hljs-code">`babel.config.js`</span> in order to transpile <span class="hljs-code">`node_modules`</span>. See https://babeljs.io/docs/en/next/config-files for more information.
+
+You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/54f4d4ebd3d1a11d65962169f493ce41efdd784f/examples/babel-7
+
+<span class="hljs-emphasis">*Примітка: безпосереднє встановлення `regenerator-runtime` не обов’язкове, якщо ви використовуєте `npm` 3 або 4 або Yarn*</span>
+
+Не забудьте додати файл [<span class="hljs-string"> `.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) в кореневу папку вашого проекту. Наприклад, якщо ви використовуєте ES6 і [<span class="hljs-string"> React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) з пресетами [<span class="hljs-string"> `babel-preset-env`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-env/</span>) і [<span class="hljs-string"> `babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>):
+
+<span class="hljs-code">```json
+{
+  "presets": ["env", "react"]
+}
+</span></code></pre>
+<p>Тепер усе готово для використання всіх ES6 функцій і синтаксису React.</p>
+<blockquote>
+<p>Примітка: Якщо ви використовуєте більш складну конфігурацію Babel з <code>env</code> блоками, майте на увазі, що Jest автоматично встановить <code>NODE_ENV</code> як <code>test</code>. Він не буде використовувати <code>development</code> розділ як це робить Babel за замовчуванням, коли <code>NODE_ENV</code> не вказано.</p>
+<p>Примітка: якщо ви відключили транспіляцію ES6 модулів параметром <code>{&quot;modules&quot;: false }</code>, ви повинні переконатися, що ця опція увімкнена в тестовому середовищі.</p>
+</blockquote>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}], <span class="hljs-string">"react"</span>],
+  <span class="hljs-attr">"env"</span>: {
+    <span class="hljs-attr">"test"</span>: {
+      <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>], <span class="hljs-string">"react"</span>]
+    }
+  }
+}
+</code></pre>
+<blockquote>
+<p>Примітка: <code>babel-jest</code> автоматично встановлюється під час встановлення Jest і буде автоматично транслювати файли, якщо конфігурація Babel існує у вашому проекті. Щоб відключити цю поведінку, ви можете явно очистити конфігураційни параметр <code>transform</code>:</p>
+</blockquote>
+<pre><code class="hljs css language-json">// package.json
+{
+  "jest": {
+    "transform": {}
+  }
+}
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="використання-webpack"></a><a href="#використання-webpack" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Використання webpack</h3>
+<p>Jest може застосовуватися в проектах, які використовують <a href="https://webpack.github.io/"> webpack</a> для керування ресурсами, стилями та компіляції коду. webpack кидає певні унікальні виклики для використання інших інструментів. Перегляньте <a href="Webpack.md">посібник по роботі з webpack</a> щоб почати його використовувати.</p>
+<h3><a class="anchor" aria-hidden="true" id="використання-typescript"></a><a href="#використання-typescript" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Використання TypeScript</h3>
+<p>Щоб використовувати TypeScript у своїх тестах, ви можете скористатися <a href="https://github.com/kulshekhar/ts-jest">ts-jest</a>.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="/docs/uk/22.x/using-matchers"><span>Using Matchers</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#запуск-з-командного-рядка">Запуск з командного рядка</a></li><li><a href="#додаткові-налаштування">Додаткові налаштування</a><ul class="toc-headings"><li><a href="#високристання-babel">Високристання Babel</a></li><li><a href="#використання-webpack">Використання webpack</a></li><li><a href="#використання-typescript">Використання TypeScript</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/uk/getting-started.html">Getting Started</a><a href="/docs/uk/snapshot-testing.html">Guides</a><a href="/docs/uk/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:uk","version:22.x"]}
+              });
+            </script></body></html>

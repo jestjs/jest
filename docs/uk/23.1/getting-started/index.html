@@ -53,13 +53,13 @@
 <p>Або <a href="https://www.npmjs.com/"><code>npm</code></a>:</p>
 <pre><code class="hljs css language-bash">npm install --save-dev jest
 </code></pre>
-<p>Давайте почнемо з написання тесту для гіпотетичної функції, яка додає два числа. По-перше, створіть файл <code>sum.js</code>:</p>
+<p>Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a <code>sum.js</code> file:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
   <span class="hljs-keyword">return</span> a + b;
 }
 <span class="hljs-built_in">module</span>.exports = sum;
 </code></pre>
-<p>Потім, cтворіть файл з назвою <code>sum.test.js</code>. Він буде містити наш тест:</p>
+<p>Then, create a file named <code>sum.test.js</code>. This will contain our actual test:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> sum = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./sum'</span>);
 
 test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
