@@ -212,30 +212,30 @@ export default class CoverageReporter extends BaseReporter {
   _checkThreshold(globalConfig: GlobalConfig, map: CoverageMap) {
     if (globalConfig.coverageThreshold) {
       function check(name, thresholds, actuals) {
-        return ['statements', 'branches', 'lines', 'functions'].reduce((
-          errors,
-          key,
-        ) => {
-          const actual = actuals[key].pct;
-          const actualUncovered = actuals[key].total - actuals[key].covered;
-          const threshold = thresholds[key];
+        return ['statements', 'branches', 'lines', 'functions'].reduce(
+          (errors, key) => {
+            const actual = actuals[key].pct;
+            const actualUncovered = actuals[key].total - actuals[key].covered;
+            const threshold = thresholds[key];
 
-          if (threshold != null) {
-            if (threshold < 0) {
-              if (threshold * -1 < actualUncovered) {
+            if (threshold != null) {
+              if (threshold < 0) {
+                if (threshold * -1 < actualUncovered) {
+                  errors.push(
+                    `Jest: Uncovered count for ${key} (${actualUncovered})` +
+                      `exceeds ${name} threshold (${-1 * threshold})`,
+                  );
+                }
+              } else if (actual < threshold) {
                 errors.push(
-                  `Jest: Uncovered count for ${key} (${actualUncovered})` +
-                    `exceeds ${name} threshold (${-1 * threshold})`,
+                  `Jest: "${name}" coverage threshold for ${key} (${threshold}%) not met: ${actual}%`,
                 );
               }
-            } else if (actual < threshold) {
-              errors.push(
-                `Jest: "${name}" coverage threshold for ${key} (${threshold}%) not met: ${actual}%`,
-              );
             }
-          }
-          return errors;
-        }, []);
+            return errors;
+          },
+          [],
+        );
       }
 
       const THRESHOLD_GROUP_TYPES = {
@@ -248,58 +248,58 @@ export default class CoverageReporter extends BaseReporter {
       const groupTypeByThresholdGroup = {};
       const filesByGlob = {};
 
-      const coveredFilesSortedIntoThresholdGroup = coveredFiles.reduce((
-        files,
-        file,
-      ) => {
-        const pathOrGlobMatches = thresholdGroups.reduce((
-          agg,
-          thresholdGroup,
-        ) => {
-          const absoluteThresholdGroup = path.resolve(thresholdGroup);
+      const coveredFilesSortedIntoThresholdGroup = coveredFiles.reduce(
+        (files, file) => {
+          const pathOrGlobMatches = thresholdGroups.reduce(
+            (agg, thresholdGroup) => {
+              const absoluteThresholdGroup = path.resolve(thresholdGroup);
 
-          // The threshold group might be a path:
+              // The threshold group might be a path:
 
-          if (file.indexOf(absoluteThresholdGroup) === 0) {
-            groupTypeByThresholdGroup[thresholdGroup] =
-              THRESHOLD_GROUP_TYPES.PATH;
-            return agg.concat([[file, thresholdGroup]]);
+              if (file.indexOf(absoluteThresholdGroup) === 0) {
+                groupTypeByThresholdGroup[thresholdGroup] =
+                  THRESHOLD_GROUP_TYPES.PATH;
+                return agg.concat([[file, thresholdGroup]]);
+              }
+
+              // If the threshold group is not a path it might be a glob:
+
+              // Note: glob.sync is slow. By memoizing the files matching each glob
+              // (rather than recalculating it for each covered file) we save a tonne
+              // of execution time.
+              if (filesByGlob[absoluteThresholdGroup] === undefined) {
+                filesByGlob[absoluteThresholdGroup] = glob
+                  .sync(absoluteThresholdGroup)
+                  .map(filePath => path.resolve(filePath));
+              }
+
+              if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
+                groupTypeByThresholdGroup[thresholdGroup] =
+                  THRESHOLD_GROUP_TYPES.GLOB;
+                return agg.concat([[file, thresholdGroup]]);
+              }
+
+              return agg;
+            },
+            [],
+          );
+
+          if (pathOrGlobMatches.length > 0) {
+            return files.concat(pathOrGlobMatches);
           }
 
-          // If the threshold group is not a path it might be a glob:
-
-          // Note: glob.sync is slow. By memoizing the files matching each glob
-          // (rather than recalculating it for each covered file) we save a tonne
-          // of execution time.
-          if (filesByGlob[absoluteThresholdGroup] === undefined) {
-            filesByGlob[absoluteThresholdGroup] = glob
-              .sync(absoluteThresholdGroup)
-              .map(filePath => path.resolve(filePath));
+          // Neither a glob or a path? Toss it in global if there's a global threshold:
+          if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
+            groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
+              THRESHOLD_GROUP_TYPES.GLOBAL;
+            return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);
           }
 
-          if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
-            groupTypeByThresholdGroup[thresholdGroup] =
-              THRESHOLD_GROUP_TYPES.GLOB;
-            return agg.concat([[file, thresholdGroup]]);
-          }
-
-          return agg;
-        }, []);
-
-        if (pathOrGlobMatches.length > 0) {
-          return files.concat(pathOrGlobMatches);
-        }
-
-        // Neither a glob or a path? Toss it in global if there's a global threshold:
-        if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
-          groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
-            THRESHOLD_GROUP_TYPES.GLOBAL;
-          return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);
-        }
-
-        // A covered file that doesn't have a threshold:
-        return files.concat([[file, undefined]]);
-      }, []);
+          // A covered file that doesn't have a threshold:
+          return files.concat([[file, undefined]]);
+        },
+        [],
+      );
 
       const getFilesInThresholdGroup = thresholdGroup =>
         coveredFilesSortedIntoThresholdGroup
