@@ -79,7 +79,7 @@ The second one is an issue where Jest runs out of memory if the difference in se
 
 ## The future
 
-We are incredibly humbled by the results in [State Of JS 2018](https://2018.stateofjs.com/awards/), where Jest won the “Highest Satisfaction” award. Another huge thing to happen in 2018 was in October, when Jest passed 2 million weekly downloads for the first time, actually passing the business stalwart that is Mocha for the first time.
+We are incredibly humbled by the results in [State Of JS 2018](https://2018.stateofjs.com/awards/), where Jest won the “Highest Satisfaction” award. Another huge thing to happen in 2018 was in October, when Jest passed 2 million weekly downloads for the first time. Thank you.
 
 We are very thankful for the trust in us shown by the community, and hope to build on it in the future. We will ensure Jest 24 and future releases will continue to build upon this incredible foundation, and continue to be an integral part of JavaScript developers' toolkits.
 
@@ -90,3 +90,5 @@ We have already started to make plans for the next release of Jest 25, with the 
 You might also have heard that we are planning to migrate the code base from Flow to TypeScript. We are hopeful that this migration will enable even more contributors to jump in and help make 2019 even better for JavaScript testing 🚀. The plan is to land this in a minor release in the not too distant future. Feedback on this choice can be added to the [RFC](https://github.com/facebook/jest/pull/7554).
 
 Lastly, if you've ever wondered about how Jest is built, [@cpojer](https://twitter.com/cpojer) has recorded a video with an architectural overview of how Jest is put together under the hood. Feel free to reach out if you have any further questions about it. The video is available on our [website](https://jestjs.io/docs/en/next/architecture).
+
+Happy Jesting! 🃏
