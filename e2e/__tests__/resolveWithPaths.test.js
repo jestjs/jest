@@ -6,7 +6,6 @@
  *
  * @flow
  */
-'use strict';
 
 import {resolve} from 'path';
 import runJest from '../runJest';

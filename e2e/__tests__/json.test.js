@@ -6,7 +6,6 @@
  *
  * @flow
  */
-'use strict';
 
 test('JSON is available in the global scope', () => {
   expect(JSON).toBe(global.JSON);

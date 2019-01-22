@@ -6,10 +6,10 @@
  *
  * @flow
  */
-'use strict';
 
 import runJest from '../runJest';
 import path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const testRootDir = path.resolve(__dirname, '..', '..');
 
@@ -26,10 +26,12 @@ describe('--listTests flag', () => {
 
     expect(status).toBe(0);
     expect(
-      normalizePaths(stdout)
-        .split('\n')
-        .sort()
-        .join('\n'),
+      wrap(
+        normalizePaths(stdout)
+          .split('\n')
+          .sort()
+          .join('\n'),
+      ),
     ).toMatchSnapshot();
   });
 
@@ -39,10 +41,12 @@ describe('--listTests flag', () => {
     expect(status).toBe(0);
     expect(() => JSON.parse(stdout)).not.toThrow();
     expect(
-      JSON.stringify(
-        JSON.parse(stdout)
-          .map(normalizePaths)
-          .sort(),
+      wrap(
+        JSON.stringify(
+          JSON.parse(stdout)
+            .map(normalizePaths)
+            .sort(),
+        ),
       ),
     ).toMatchSnapshot();
   });

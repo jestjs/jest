@@ -194,7 +194,7 @@ export default function watch(
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
       const validPaths = eventsQueue.filter(({filePath}) =>
-        isValidPath(globalConfig, contexts[index].config, filePath),
+        isValidPath(globalConfig, filePath),
       );
 
       if (validPaths.length) {

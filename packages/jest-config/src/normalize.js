@@ -17,11 +17,12 @@ import type {
 } from 'types/Config';
 
 import crypto from 'crypto';
+import uuid from 'uuid/v4';
 import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
 import validatePattern from './validatePattern';
-import {clearLine} from 'jest-util';
+import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './getMaxWorkers';
 import micromatch from 'micromatch';
@@ -169,8 +170,6 @@ const setupBabelJest = (options: InitialOptions) => {
       [DEFAULT_JS_PATTERN]: babelJest,
     };
   }
-
-  return babelJest;
 };
 
 const normalizeCollectCoverageOnlyFrom = (
@@ -270,6 +269,7 @@ const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
     options.name = crypto
       .createHash('md5')
       .update(options.rootDir)
+      .update(uuid())
       .digest('hex');
   }
 
@@ -445,7 +445,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     options.coverageDirectory = path.resolve(options.rootDir, 'coverage');
   }
 
-  const babelJest = setupBabelJest(options);
+  setupBabelJest(options);
+
   const newOptions: $Shape<DefaultOptions & ProjectConfig & GlobalConfig> = {
     ...DEFAULT_CONFIG,
   };
@@ -609,10 +610,20 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'moduleDirectories':
       case 'testMatch':
-        value = _replaceRootDirTags(
-          escapeGlobCharacters(options.rootDir),
-          options[key],
-        );
+        {
+          const replacedRootDirTags = _replaceRootDirTags(
+            escapeGlobCharacters(options.rootDir),
+            options[key],
+          );
+
+          if (replacedRootDirTags) {
+            value = Array.isArray(replacedRootDirTags)
+              ? replacedRootDirTags.map(replacePathSepForGlob)
+              : replacePathSepForGlob(replacedRootDirTags);
+          } else {
+            value = replacedRootDirTags;
+          }
+        }
         break;
       case 'testRegex':
         value = options[key]
@@ -773,17 +784,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   newOptions.maxWorkers = getMaxWorkers(argv);
 
-  if (babelJest) {
-    const regeneratorRuntimePath = Resolver.findNodeModule(
-      'regenerator-runtime/runtime',
-      {basedir: options.rootDir, resolver: newOptions.resolver},
-    );
-
-    if (regeneratorRuntimePath) {
-      newOptions.setupFiles.unshift(regeneratorRuntimePath);
-    }
-  }
-
   if (newOptions.testRegex.length && options.testMatch) {
     throw createConfigError(
       `  Configuration options ${chalk.bold('testMatch')} and` +
@@ -822,10 +822,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          !micromatch(
-            [path.relative(options.rootDir, filename)],
+          !micromatch.some(
+            replacePathSepForGlob(path.relative(options.rootDir, filename)),
             newOptions.collectCoverageFrom,
-          ).length
+          )
         ) {
           return patterns;
         }

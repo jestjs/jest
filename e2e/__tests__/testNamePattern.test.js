@@ -6,10 +6,10 @@
  *
  * @flow
  */
-'use strict';
 
 import {extractSummary} from '../Utils';
 import {json as runWithJson} from '../runJest';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 test('testNamePattern', () => {
   const {stderr, status} = runWithJson('test-name-pattern', [
@@ -19,5 +19,5 @@ test('testNamePattern', () => {
   const {summary} = extractSummary(stderr);
 
   expect(status).toBe(0);
-  expect(summary).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });

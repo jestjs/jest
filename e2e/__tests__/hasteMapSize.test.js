@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import os from 'os';
 import path from 'path';
 import HasteMap from 'jest-haste-map';

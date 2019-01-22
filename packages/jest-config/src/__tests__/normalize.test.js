@@ -12,7 +12,6 @@ import normalize from '../normalize';
 jest.mock('jest-resolve');
 jest.mock('path', () => jest.requireActual('path').posix);
 
-const crypto = require('crypto');
 const path = require('path');
 const DEFAULT_JS_PATTERN = require('../constants').DEFAULT_JS_PATTERN;
 const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
@@ -47,20 +46,16 @@ beforeEach(() => {
   require('jest-resolve').findNodeModule = findNodeModule;
 });
 
-it('picks a name based on the rootDir', () => {
+it('assigns a random 32-byte hash as a name to avoid clashes', () => {
   const rootDir = '/root/path/foo';
-  const expected = crypto
-    .createHash('md5')
-    .update('/root/path/foo')
-    .digest('hex');
-  expect(
-    normalize(
-      {
-        rootDir,
-      },
-      {},
-    ).options.name,
-  ).toBe(expected);
+  const {name: name1} = normalize({rootDir}, {}).options;
+  const {name: name2} = normalize({rootDir}, {}).options;
+
+  expect(name1).toEqual(expect.any(String));
+  expect(name1).toHaveLength(32);
+  expect(name2).toEqual(expect.any(String));
+  expect(name2).toHaveLength(32);
+  expect(name1).not.toBe(name2);
 });
 
 it('keeps custom names based on the rootDir', () => {
@@ -738,14 +733,6 @@ describe('babel-jest', () => {
 
     expect(options.transform[0][0]).toBe(DEFAULT_JS_PATTERN);
     expect(options.transform[0][1]).toEqual(require.resolve('babel-jest'));
-    expect(options.setupFiles).toEqual([
-      path.sep +
-        'node_modules' +
-        path.sep +
-        'regenerator-runtime' +
-        path.sep +
-        'runtime',
-    ]);
   });
 
   it('uses babel-jest if babel-jest is explicitly specified in a custom transform options', () => {
@@ -762,38 +749,6 @@ describe('babel-jest', () => {
 
     expect(options.transform[0][0]).toBe(customJSPattern);
     expect(options.transform[0][1]).toEqual(require.resolve('babel-jest'));
-    expect(options.setupFiles).toEqual([
-      path.sep +
-        'node_modules' +
-        path.sep +
-        'regenerator-runtime' +
-        path.sep +
-        'runtime',
-    ]);
-  });
-
-  it('uses regenerator if babel-jest is explicitly specified', () => {
-    const ROOT_DIR = '<rootDir>' + path.sep;
-
-    const {options} = normalize(
-      {
-        rootDir: '/root',
-        transform: {
-          [DEFAULT_JS_PATTERN]:
-            ROOT_DIR + Resolver.findNodeModule('babel-jest'),
-        },
-      },
-      {},
-    );
-
-    expect(options.setupFiles).toEqual([
-      path.sep +
-        'node_modules' +
-        path.sep +
-        'regenerator-runtime' +
-        path.sep +
-        'runtime',
-    ]);
   });
 });
 
@@ -1188,12 +1143,7 @@ describe('preset without setupFiles', () => {
     );
 
     expect(options).toEqual(
-      expect.objectContaining({
-        setupFiles: [
-          '/node_modules/regenerator-runtime/runtime',
-          '/node_modules/a',
-        ],
-      }),
+      expect.objectContaining({setupFiles: ['/node_modules/a']}),
     );
   });
 });

@@ -118,7 +118,7 @@ const _runTest = async (test: TestEntry): Promise<void> => {
 
   // `afterAll` hooks should not affect test status (pass or fail), because if
   // we had a global `afterAll` hook it would block all existing tests until
-  // this hook is executed. So we dispatche `test_done` right away.
+  // this hook is executed. So we dispatch `test_done` right away.
   dispatch({name: 'test_done', test});
 };
 

@@ -25,7 +25,7 @@
     "jest-snapshot": "^23.6.0",
     "jest-util": "^23.4.0",
     "jest-validate": "^23.6.0",
-    "micromatch": "^2.3.11",
+    "micromatch": "^3.1.10",
     "realpath-native": "^1.0.0",
     "slash": "^2.0.0",
     "strip-bom": "3.0.0",
