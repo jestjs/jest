@@ -77,7 +77,16 @@ The second one is an issue where Jest runs out of memory if the difference in se
 - A quirk of Jest's CLI has been that while some flags and options have been camel cased (such as `runInBand`), others have not been (such as `no-cache`). In Jest 24, both are recognized, meaning you can write your CLI arguments however you want.
 - We've renamed `setupTestFrameworkScriptFile` to `setupFilesAfterEnv`, and made it into an array. We hope this will make it more obvious what the options is for. We have plans to further overhaul the configuration in the next major, see the paragraph in the section below.
 - To reduce the amount of magic Jest performs to “just work™”, in this release we decided to drop automatic injection of `regenerator-runtime` for async code to work. It's not always necessary (e.g. in Node 8+) and we believe it's the user's responsibility to handle it, which is already done if you use `@babel/preset-env` and `@babel/runtime`.
-- Lastly, we've upgraded to Micromatch 3. While this might not affect every user, it is stricter in its parsing of globs than version 2, which is used in Jest 23. Please read through [this](https://github.com/micromatch/micromatch/issues/133#issuecomment-404211484) and linked issues for examples of invalid globs in case you have problems.
+
+## Breaking Changes
+
+While all breaking changes are listed in the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md), there's a few of them that are worth highlighting:
+
+- If you run a version of node with `worker_threads` unflagged, Jest will use it. We are hopeful that we do not need a flag to opt out of this, as it has some API caveats, see [Node.js' docs](https://nodejs.org/api/worker_threads.html#worker_threads_class_worker).
+- We've upgraded to Micromatch 3. While this might not affect every user, it is stricter in its parsing of globs than version 2, which is used in Jest 23. Please read through [this](https://github.com/micromatch/micromatch/issues/133#issuecomment-404211484) and linked issues for examples of invalid globs in case you have problems.
+- We've removed code remnants that was needed for Node 4. It was previously technically possible to run Jest 23 on Node 4 - that is no longer possible without polyfilling and transpiling.
+- Some changes to serialization of mock functions in snapshots - make sure to double check your updated snapshots after upgrading. Related [PR](https://github.com/facebook/jest/pull/6381).
+- Jest no longer automatically injects `regenerator-runtime` - if you get errors concering it, make sure to configure Babel to properly transpile `async` functions, using e.g. `@babel/preset-env`. Related [PR](https://github.com/facebook/jest/pull/7595).
 
 ## The future
 
