@@ -29,7 +29,7 @@ If you want to run typechecks while you test, you should use [`ts-jest`](https:/
 
 Jest 23 had a change that made tests missing an implementation throw instead of being skipped. This change was made due to feedback that accidentally skipped tests were hard to discover and hard to track down. However, this change broke the workflow for quite a few developers who used the feature to sketch out which tests to write.
 
-In Jest 24, we are addressing this issue by adding an explicit `test.todo` (inspired by the excellent Ava), which will be printed separately in the test summary. It allows you to quickly sketch out which tests you want to write and in the future, an [ESLint](https://eslint.org/) rule might even be able to warn you that you have forgotten to write out some tests.
+In Jest 24, we are addressing this issue by adding an explicit `test.todo` (inspired by the excellent AVA), which will be printed separately in the test summary. It allows you to quickly sketch out which tests you want to write and in the future, an [ESLint](https://eslint.org/) rule might even be able to warn you that you have forgotten to write out some tests.
 
 ```js
 test.todo('invalid input should throw');
