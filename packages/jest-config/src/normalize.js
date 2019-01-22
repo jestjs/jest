@@ -143,45 +143,26 @@ const setupBabelJest = (options: InitialOptions) => {
       return regex.test('a.ts') || regex.test('a.tsx');
     });
 
-    if (customJSPattern) {
-      const customJSTransformer = transform[customJSPattern];
-      if (Array.isArray(customJSTransformer)) {
-        if (customJSTransformer[0] === 'babel-jest') {
-          babelJest = require.resolve('babel-jest');
-
-          customJSTransformer[0] = babelJest;
-        } else if (customJSTransformer[0].includes('babel-jest')) {
-          babelJest = customJSTransformer[0];
-        }
-      } else {
-        if (customJSTransformer === 'babel-jest') {
-          babelJest = require.resolve('babel-jest');
-          transform[customJSPattern] = babelJest;
-        } else if (customJSTransformer.includes('babel-jest')) {
-          babelJest = customJSTransformer;
-        }
-      }
-    }
-
-    if (customTSPattern) {
-      const customTSTransformer = transform[customTSPattern];
-      if (Array.isArray(customTSTransformer)) {
-        if (customTSTransformer[0] === 'babel-jest') {
-          babelJest = require.resolve('babel-jest');
-
-          customTSTransformer[0] = babelJest;
-        } else if (customTSTransformer[0].includes('babel-jest')) {
-          babelJest = customTSTransformer[0];
-        }
-      } else {
-        if (customTSTransformer === 'babel-jest') {
-          babelJest = require.resolve('babel-jest');
-          transform[customTSPattern] = babelJest;
-        } else if (customTSTransformer.includes('babel-jest')) {
-          babelJest = customTSTransformer;
+    [customJSPattern, customTSPattern].forEach(pattern => {
+      if (pattern) {
+        const customTransformer = transform[pattern];
+        if (Array.isArray(customTransformer)) {
+          if (customTransformer[0] === 'babel-jest') {
+            babelJest = require.resolve('babel-jest');
+            customTransformer[0] = babelJest;
+          } else if (customTransformer[0].includes('babel-jest')) {
+            babelJest = customTransformer[0];
+          }
+        } else {
+          if (customTransformer === 'babel-jest') {
+            babelJest = require.resolve('babel-jest');
+            transform[pattern] = babelJest;
+          } else if (customTransformer.includes('babel-jest')) {
+            babelJest = customTransformer;
+          }
         }
       }
-    }
+    });
   } else {
     babelJest = require.resolve('babel-jest');
     options.transform = {
