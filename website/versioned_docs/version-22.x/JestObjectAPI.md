@@ -1,5 +1,5 @@
 ---
-id: version-23.0-jest-object
+id: version-22.x-jest-object
 title: The Jest Object
 original_id: jest-object
 ---
@@ -455,7 +455,7 @@ const audio = {
   },
 };
 
-module.exports = audio;
+module.exports = video;
 ```
 
 Example test:
@@ -474,14 +474,12 @@ test('plays video', () => {
   spy.mockRestore();
 });
 
-const audio = require('./audio');
-
 test('plays audio', () => {
-  const spy = jest.spyOn(audio, 'volume', 'set'); // we pass 'set'
-  audio.volume = 100;
+  const spy = jest.spyOn(video, 'play', 'set'); // we pass 'set'
+  video.volume = 100;
 
   expect(spy).toHaveBeenCalled();
-  expect(audio.volume).toBe(100);
+  expect(video.volume).toBe(100);
 
   spy.mockReset();
   spy.mockRestore();
