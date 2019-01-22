@@ -25,9 +25,11 @@ test('works with custom matchers', () => {
 });
 
 test('custom async matchers', () => {
-  const {stderr} = runJest('custom-matcher-stack-trace', ['async.test.js']);
+  const {stderr} = runJest('custom-matcher-stack-trace', [
+    'asynchronous.test.js',
+  ]);
 
-  const result = extractSummary(stderr);
+  const {rest} = extractSummary(stderr);
 
-  expect(result).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
 });
