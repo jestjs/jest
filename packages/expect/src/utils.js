@@ -81,7 +81,7 @@ export const getPath = (
     result.traversedPath.unshift(prop);
 
     if (lastProp) {
-      result.hasEndProp = hasOwnProperty(object, prop);
+      result.hasEndProp = prop in object;
       if (!result.hasEndProp) {
         result.traversedPath.shift();
       }
