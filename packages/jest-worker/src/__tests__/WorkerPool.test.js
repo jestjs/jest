@@ -101,4 +101,33 @@ describe('WorkerPool', () => {
       onEnd,
     );
   });
+
+  it('should avoid NodeThreadWorker if passed disableWorkerThreads', () => {
+    jest.mock('worker_threads', () => 'Defined');
+    const workerPool = new WorkerPool('/path', {
+      disableWorkerThreads: true,
+      forkOptions: {},
+      maxRetries: 1,
+      numWorkers: 1,
+      workerId: 0,
+      workerPath: '/path',
+    });
+
+    const onStart = () => {};
+    const onEnd = () => {};
+    workerPool.send(0, {foo: 'bar'}, onStart, onEnd);
+
+    expect(ChildProcessWorker).toBeCalledWith({
+      forkOptions: {},
+      maxRetries: 1,
+      workerId: 0,
+      workerPath: '/path',
+    });
+    expect(NodeThreadWorker).not.toBeCalled();
+    expect(workerPool._workers[0].send).toBeCalledWith(
+      {foo: 'bar'},
+      onStart,
+      onEnd,
+    );
+  });
 });

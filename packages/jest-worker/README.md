@@ -45,6 +45,8 @@ Node 10 shipped with [worker-threads](https://nodejs.org/api/worker_threads.html
 
 We will use worker threads where available. To enable in Node 10+, run the Node process with the `--experimental-worker` flag.
 
+You can explicitly opt-out of this by passing `disableWorkerThreads: true`.
+
 ## API
 
 The only exposed method is a constructor (`Worker`) that is initialized by passing the worker path, plus an options object.
@@ -88,6 +90,10 @@ The arguments that will be passed to the `setup` method during initialization.
 Provide a custom worker pool to be used for spawning child processes. By default, Jest will use a node thread pool if available and fall back to child process threads.
 
 The arguments that will be passed to the `setup` method during initialization.
+
+#### `disableWorkerThreads: boolean` (optional)
+
+`jest-worker` will automatically detect if `worker_threads` are available and use them. However, running under threads comes with [some caveats](https://nodejs.org/api/worker_threads.html#worker_threads_class_worker), and is still experimental, so you can `opt-out` of this and use `disableWorkerThreads: true`.
 
 ## Worker
 
