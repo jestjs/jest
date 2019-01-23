@@ -13167,10 +13167,10 @@ write-file-atomic@^1.2.0:
     imurmurhash "^0.1.4"
     slide "^1.1.5"
 
-write-file-atomic@^2.0.0, write-file-atomic@^2.3.0, write-file-atomic@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/write-file-atomic/-/write-file-atomic-2.4.0.tgz#cf0f9bc37c2d26c455161c3b75f407f5bd1cad64"
-  integrity sha512-rpYM0txDxd2GV1RJeyAEhDasBPUG51fFpSaW22JKulFA6mKrOYfht5mkq62TbTRfKdUDFj0b8TAz95+F5sc+Ow==
+write-file-atomic@^2.0.0, write-file-atomic@^2.3.0, write-file-atomic@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/write-file-atomic/-/write-file-atomic-2.4.1.tgz#d0b05463c188ae804396fd5ab2a370062af87529"
+  integrity sha512-TGHFeZEZMnv+gBFRfjAcxL5bPHrsGKtnb4qsFAws7/vlh+QfwAaySIw4AXP9ZskTTh5GWu3FLuJhsWVdiJPGvg==
   dependencies:
     graceful-fs "^4.1.11"
     imurmurhash "^0.1.4"
