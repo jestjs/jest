@@ -71,18 +71,17 @@ The second one is an issue where Jest runs out of memory if the difference in se
 
 ## Other highlights
 
-- Jest already provides a module called `jest-worker` which helps you parallelize work across CPUs. Node 10 came with an experimental module called `worker_threads`, which is similar to Worker threads in the browser. This was un-flagged in Node's latest 11.7.0 release, and `jest-worker` will automatically use that if available instead of spawning new processes via `child-process`. This makes it even faster! [Benchmarks](https://github.com/facebook/jest/pull/6676) show a 50% improvement. Note however that due to certain issues, this is not enabled by default inside of Jest for Jest 24.0. For details on that, please see [this PR](https://github.com/facebook/jest/pull/7681). We plan to enable it by default in a minor release of Jest 24.
 - We have some improvements for `globalSetup` and `globalTeardown` as well - code transformation will be applied to them similar to `setupFiles` and they are now supported as part of `projects`.
 - You can [configure](https://github.com/facebook/jest/pull/6143) Jest's snapshot location, this is mainly useful if you are building tools which use Jest in a larger build process.
 - A quirk of Jest's CLI has been that while some flags and options have been camel cased (such as `runInBand`), others have not been (such as `no-cache`). In Jest 24, both are recognized, meaning you can write your CLI arguments however you want.
 - We've renamed `setupTestFrameworkScriptFile` to `setupFilesAfterEnv`, and made it into an array. We hope this will make it more obvious what the options is for. We have plans to further overhaul the configuration in the next major, see the paragraph in the section below.
 - To reduce the amount of magic Jest performs to “just work™”, in this release we decided to drop automatic injection of `regenerator-runtime` for async code to work. It's not always necessary (e.g. in Node 8+) and we believe it's the user's responsibility to handle it, which is already done if you use `@babel/preset-env` and `@babel/runtime`.
+- Node 10 came with an experimental module [called `worker_threads`](https://nodejs.org/api/worker_threads.html), which is similar to Worker threads in the browser. `jest-worker`, part of the [Jest platform](/docs/en/jest-platform), will automatically use `worker_threads` if available instead of `child_process`, which makes it even faster! [Benchmarks](https://github.com/facebook/jest/pull/6676) show a 50% improvement. Due to its experimental nature, it's not enabled when using Jest as a test runner, but you can use it in your own projects today! We plan to enable it by default in a minor release of Jest 24.
 
 ## Breaking Changes
 
 While all breaking changes are listed in the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md), there's a few of them that are worth highlighting:
 
-- If you run a version of node with `worker_threads` unflagged, Jest will use it. We are hopeful that we do not need a flag to opt out of this, as it has some API caveats, see [Node.js' docs](https://nodejs.org/api/worker_threads.html#worker_threads_class_worker).
 - We've upgraded to Micromatch 3. While this might not affect every user, it is stricter in its parsing of globs than version 2, which is used in Jest 23. Please read through [this](https://github.com/micromatch/micromatch/issues/133#issuecomment-404211484) and linked issues for examples of invalid globs in case you have problems.
 - We've removed code remnants that was needed for Node 4. It was previously technically possible to run Jest 23 on Node 4 - that is no longer possible without polyfilling and transpiling.
 - Some changes to serialization of mock functions in snapshots - make sure to double check your updated snapshots after upgrading. Related [PR](https://github.com/facebook/jest/pull/6381).
