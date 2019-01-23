@@ -2,5 +2,5 @@
   "lerna": "3.10.5",
   "version": "23.6.0",
   "npmClient": "yarn",
-  "useWorkspaces": true
+  "packages": ["packages/*"]
 }
