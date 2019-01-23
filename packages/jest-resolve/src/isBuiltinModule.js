@@ -17,13 +17,7 @@ declare var process: {
 
 const EXPERIMENTAL_MODULES = ['worker_threads'];
 
-const BUILTIN_MODULES = new Set(
-  builtinModules
-    ? builtinModules.concat(EXPERIMENTAL_MODULES)
-    : Object.keys(process.binding('natives'))
-        .filter((module: string) => !/^internal\//.test(module))
-        .concat(EXPERIMENTAL_MODULES),
-);
+const BUILTIN_MODULES = new Set(builtinModules.concat(EXPERIMENTAL_MODULES));
 
 export default function isBuiltinModule(module: string): boolean {
   return BUILTIN_MODULES.has(module);
