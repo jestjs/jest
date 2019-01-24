@@ -81,13 +81,32 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and `@babel/core` packages via `yarn`:
+To use [Babel](http://babeljs.io/), install required development dependencies via `yarn`:
 
 ```bash
-yarn add --dev babel-jest @babel/core
+yarn add --dev @babel/core @babel/preset-env @babel/preset-react
 ```
 
-Don't forget to add a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder. For example, if you are using ES2018 and [React](https://reactjs.org) with the [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and [`@babel/preset-react`](https://babeljs.io/docs/en/babel-preset-react) presets:
+Install `@babel/polyfill`:
+
+```bash
+yarn add @babel/polyfill
+```
+
+Load the polyfill in your Jest configuration:
+
+```json
+// package.json
+{
+  "jest": {
+    "setupFiles": ["@babel/polyfill"]
+  }
+}
+```
+
+You should also import `@babel/polyfill` in your app. If you are creating a library you should look into using [`@babel/plugin-transform-runtime`](https://babeljs.io/docs/en/babel-plugin-transform-runtime) instead.
+
+Create a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder:
 
 ```js
 module.exports = {
@@ -95,7 +114,7 @@ module.exports = {
 };
 ```
 
-You are now set up to use all ES2018 features and React-specific syntax.
+You are now set up to use all ES2018 features and [React](https://reactjs.org) specific syntax. If you are not using React you can exclude `@babel/preset-react` from the above commands/config.
 
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
