@@ -130,8 +130,8 @@ describe('Jest Worker Process Integration', () => {
 
   it('sticks parallel calls to children', async () => {
     const farm = new Farm('/tmp/baz.js', {
-      enableWorkerThreads: true,
       computeWorkerKey: () => '1234567890abcdef',
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });
