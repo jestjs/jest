@@ -96,7 +96,6 @@ class TestRunner {
   ) {
     // $FlowFixMe: class object is augmented with worker when instantiating.
     const worker: WorkerInterface = new Worker(TEST_WORKER_PATH, {
-      disableWorkerThreads: true,
       exposedMethods: ['worker'],
       forkOptions: {stdio: 'pipe'},
       maxRetries: 3,

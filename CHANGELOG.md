@@ -52,7 +52,7 @@
 - `[jest-runner]` Instantiate the test environment class with the current `testPath` ([#7442](https://github.com/facebook/jest/pull/7442))
 - `[jest-config]` Always resolve jest-environment-jsdom from jest-config ([#7476](https://github.com/facebook/jest/pull/7476))
 - `[expect]` Improve report when assertion fails, part 6 ([#7621](https://github.com/facebook/jest/pull/7621))
-- `[jest-worker]` Add `disableWorkerThreads` option to explicitly opt out of `worker_threads` even if available ([#7681](https://github.com/facebook/jest/pull/7681))
+- `[jest-worker]` Add `enableWorkerThreads` option to explicitly opt into `worker_threads` if available ([#7681](https://github.com/facebook/jest/pull/7681))
 
 ### Fixes
 
