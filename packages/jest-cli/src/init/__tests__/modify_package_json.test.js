@@ -6,7 +6,7 @@
  *
  */
 
-import modifyPackageJson from '../init/modify_package_json';
+import modifyPackageJson from '../modify_package_json';
 
 test('should remove jest config if exists', () => {
   expect(

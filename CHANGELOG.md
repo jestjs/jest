@@ -17,6 +17,7 @@
 
 ### Chore & Maintenance
 
+- `[jest-cli]` [**BREAKING**] Move everything not related to CLI args parsing into a new `@jest/core` package ([#7696](https://github.com/facebook/jest/pull/7696))
 - `[*]`: Setup building, linting and testing of TypeScript ([#7808](https://github.com/facebook/jest/pull/7808), [#7855](https://github.com/facebook/jest/pull/7855))
 - `[pretty-format]`: Migrate to TypeScript ([#7809](https://github.com/facebook/jest/pull/7809))
 - `[diff-sequences]`: Migrate to Typescript ([#7820](https://github.com/facebook/jest/pull/7820))
@@ -42,6 +43,7 @@
 - `[jest-snapshot]`: Migrate to TypeScript ([#7899](https://github.com/facebook/jest/pull/7899))
 - `[@jest/transform]`: New package extracted from `jest-runtime` ([#7915](https://github.com/facebook/jest/pull/7915))
 - `[babel-plugin-jest-hoist]`: Migrate to TypeScript ([#7898](https://github.com/facebook/jest/pull/7898))
+- `[@jest/core]` Create new package, which is `jest-cli` minus `yargs` and `prompts` ([#7696](https://github.com/facebook/jest/pull/7696))
 
 ### Performance
 

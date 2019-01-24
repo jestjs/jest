@@ -7,6 +7,4 @@
  * @flow
  */
 
-import * as cli from 'jest-cli';
-
-module.exports = cli;
+export {run} from './cli';

@@ -6,10 +6,8 @@
  *
  */
 
-'use strict';
-
-const TestRunner = require('../index');
-const {TestWatcher} = require('jest-cli');
+import {TestWatcher} from '@jest/core';
+import TestRunner from '../index';
 
 let mockWorkerFarm;
 
