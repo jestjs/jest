@@ -77,6 +77,7 @@ describe('WorkerPool', () => {
   it('should create a NodeThreadWorker and send to it', () => {
     jest.mock('worker_threads', () => 'Defined');
     const workerPool = new WorkerPool('/path', {
+      enableWorkerThreads: true,
       forkOptions: {},
       maxRetries: 1,
       numWorkers: 1,
@@ -102,10 +103,9 @@ describe('WorkerPool', () => {
     );
   });
 
-  it('should avoid NodeThreadWorker if passed disableWorkerThreads', () => {
+  it('should avoid NodeThreadWorker if not passed enableWorkerThreads', () => {
     jest.mock('worker_threads', () => 'Defined');
     const workerPool = new WorkerPool('/path', {
-      disableWorkerThreads: true,
       forkOptions: {},
       maxRetries: 1,
       numWorkers: 1,

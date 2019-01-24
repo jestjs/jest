@@ -672,7 +672,6 @@ class HasteMap extends EventEmitter {
       } else {
         // $FlowFixMe: assignment of a worker with custom properties.
         this._worker = (new Worker(require.resolve('./worker'), {
-          disableWorkerThreads: true,
           exposedMethods: ['getSha1', 'worker'],
           maxRetries: 3,
           numWorkers: this._options.maxWorkers,

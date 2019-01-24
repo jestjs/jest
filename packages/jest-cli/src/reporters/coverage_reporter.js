@@ -155,7 +155,6 @@ export default class CoverageReporter extends BaseReporter {
     } else {
       // $FlowFixMe: assignment of a worker with custom properties.
       worker = new Worker(require.resolve('./coverage_worker'), {
-        disableWorkerThreads: true,
         exposedMethods: ['worker'],
         maxRetries: 2,
         numWorkers: this._globalConfig.maxWorkers,

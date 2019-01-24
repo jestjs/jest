@@ -52,7 +52,7 @@
 - `[jest-runner]` Instantiate the test environment class with the current `testPath` ([#7442](https://github.com/facebook/jest/pull/7442))
 - `[jest-config]` Always resolve jest-environment-jsdom from jest-config ([#7476](https://github.com/facebook/jest/pull/7476))
 - `[expect]` Improve report when assertion fails, part 6 ([#7621](https://github.com/facebook/jest/pull/7621))
-- `[jest-worker]` Add `disableWorkerThreads` option to explicitly opt out of `worker_threads` even if available ([#7681](https://github.com/facebook/jest/pull/7681))
+- `[jest-worker]` Add `enableWorkerThreads` option to explicitly opt-in to `worker_threads` if available ([#7681](https://github.com/facebook/jest/pull/7681))
 
 ### Fixes
 
@@ -124,6 +124,7 @@
 - `[babel-plugin-jest-hoist]` Ignore TS type annotations when looking for out-of-scope references ([#7641](https://github.com/facebook/jest/pull/7641))
 - `[jest-config]` Add name to project if one does not exist to pick correct resolver ([#5862](https://github.com/facebook/jest/pull/5862))
 - `[jest-runtime]` Pass `watchPathIgnorePatterns` to Haste instance ([#7585](https://github.com/facebook/jest/pull/7585))
+- `[jest-runtime]` Resolve mock files via Haste when using `require.resolve` ([#7687](https://github.com/facebook/jest/pull/7687))
 - `[expect]` fix regression in toThrow for message prop and asymmetric matchers ([#7697](https://github.com/facebook/jest/pull/7697))
 
 ### Chore & Maintenance
