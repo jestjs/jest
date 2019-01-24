@@ -43,9 +43,7 @@ export function hello(param) {
 
 Node 10 shipped with [worker-threads](https://nodejs.org/api/worker_threads.html), a "threading API" that uses SharedArrayBuffers to communicate between the main process and its child threads. This experimental Node feature can significantly improve the communication time between parent and child processes in `jest-worker`.
 
-We will use worker threads where available. To enable in Node 10+, run the Node process with the `--experimental-worker` flag.
-
-You can explicitly opt-out of this by passing `disableWorkerThreads: true`.
+Since `worker_threads` are considered experimental in Node, you have to opt-in to this behavior by passing `enableWorkerThreads: true` when instantiating the worker. While the feature was unflagged in Node 11.7.0, you'll need to run the Node process with the `--experimental-worker` flag for Node 10.
 
 ## API
 
@@ -91,9 +89,9 @@ Provide a custom worker pool to be used for spawning child processes. By default
 
 The arguments that will be passed to the `setup` method during initialization.
 
-#### `disableWorkerThreads: boolean` (optional)
+#### `enableWorkerThreads: boolean` (optional)
 
-`jest-worker` will automatically detect if `worker_threads` are available and use them. However, running under threads comes with [some caveats](https://nodejs.org/api/worker_threads.html#worker_threads_class_worker), and is still experimental, so you can `opt-out` of this and use `disableWorkerThreads: true`.
+`jest-worker` will automatically detect if `worker_threads` are available, but will not use them unless passed `enableWorkerThreads: true`.
 
 ## Worker
 
