@@ -24,7 +24,13 @@ const RECEIVED_COLOR = chalk.red;
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
-const PRIMITIVES = ['string', 'number', 'boolean', 'null', 'undefined'];
+const PRIMITIVES = new Set([
+  'string',
+  'number',
+  'boolean',
+  'null',
+  'undefined',
+]);
 
 export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
   function eachBind(title: string, test: Function, timeout: number): void {
@@ -199,7 +205,7 @@ const replaceKeyPathWithValue = data => (title, match) => {
   const value = getPath(data, keyPath);
   const valueType = getType(value);
 
-  if (PRIMITIVES.includes(valueType)) {
+  if (PRIMITIVES.has(valueType)) {
     return title.replace(match, value);
   }
   return title.replace(match, pretty(value, {maxDepth: 1, min: true}));
