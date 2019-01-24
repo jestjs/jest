@@ -25,32 +25,44 @@ const DID_NOT_THROW = 'Received function did not throw';
 
 type Thrown =
   | {
+      hasMessage: true,
       isError: true,
       message: string,
       value: Error,
     }
   | {
+      hasMessage: boolean,
       isError: false,
       message: string,
       value: any,
     };
 
-const getThrown = (e: any): Thrown =>
-  e !== null &&
-  e !== undefined &&
-  typeof e.message === 'string' &&
-  typeof e.name === 'string' &&
-  typeof e.stack === 'string'
-    ? {
-        isError: true,
-        message: e.message,
-        value: e,
-      }
-    : {
-        isError: false,
-        message: typeof e === 'string' ? e : String(e),
-        value: e,
-      };
+const getThrown = (e: any): Thrown => {
+  if (
+    e !== null &&
+    e !== undefined &&
+    typeof e.message === 'string' &&
+    typeof e.name === 'string' &&
+    typeof e.stack === 'string'
+  ) {
+    return {
+      hasMessage: true,
+      isError: true,
+      message: e.message,
+      value: e,
+    };
+  }
+
+  const hasMessage =
+    e !== null && e !== undefined && typeof e.message === 'string';
+
+  return {
+    hasMessage,
+    isError: false,
+    message: hasMessage ? e.message : typeof e === 'string' ? e : String(e),
+    value: e,
+  };
+};
 
 export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
   function(received: Function, expected: any) {
@@ -92,6 +104,11 @@ export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
       return toThrowExpectedString(matcherName, options, thrown, expected);
     } else if (expected !== null && typeof expected.test === 'function') {
       return toThrowExpectedRegExp(matcherName, options, thrown, expected);
+    } else if (
+      expected !== null &&
+      typeof expected.asymmetricMatch === 'function'
+    ) {
+      return toThrowExpectedAsymmetric(matcherName, options, thrown, expected);
     } else if (expected !== null && typeof expected === 'object') {
       return toThrowExpectedObject(matcherName, options, thrown, expected);
     } else {
@@ -119,27 +136,65 @@ const toThrowExpectedRegExp = (
   expected: RegExp,
 ) => {
   const pass = thrown !== null && expected.test(thrown.message);
-  const isNotError = thrown !== null && !thrown.isError;
 
   const message = pass
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         formatExpected('Expected pattern: ', expected) +
-        (isNotError
-          ? formatReceived('Received value:   ', thrown, 'value')
-          : formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown))
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value:   ', thrown, 'value'))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         formatExpected('Expected pattern: ', expected) +
         (thrown === null
           ? '\n' + DID_NOT_THROW
-          : isNotError
-          ? formatReceived('Received value:   ', thrown, 'value')
-          : formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown));
+          : thrown.hasMessage
+          ? formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value:   ', thrown, 'value'));
+
+  return {message, pass};
+};
+
+type AsymmetricMatcher = {
+  asymmetricMatch: (received: any) => boolean,
+};
+
+const toThrowExpectedAsymmetric = (
+  matcherName: string,
+  options: MatcherHintOptions,
+  thrown: Thrown | null,
+  expected: AsymmetricMatcher,
+) => {
+  const pass = thrown !== null && expected.asymmetricMatch(thrown.value);
+
+  const message = pass
+    ? () =>
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected asymmetric matcher: ', expected) +
+        '\n' +
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived('Error name:    ', thrown, 'name') +
+            formatReceived('Error message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Thrown value: ', thrown, 'value'))
+    : () =>
+        matcherHint(matcherName, undefined, undefined, options) +
+        '\n\n' +
+        formatExpected('Expected asymmetric matcher: ', expected) +
+        '\n' +
+        (thrown === null
+          ? DID_NOT_THROW
+          : thrown.hasMessage
+          ? formatReceived('Error name:    ', thrown, 'name') +
+            formatReceived('Error message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Thrown value: ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -151,27 +206,26 @@ const toThrowExpectedObject = (
   expected: Object,
 ) => {
   const pass = thrown !== null && thrown.message === expected.message;
-  const isNotError = thrown !== null && !thrown.isError;
 
   const message = pass
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         formatExpected('Expected message: ', expected.message) +
-        (isNotError
-          ? formatReceived('Received value:   ', thrown, 'value')
-          : formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown))
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value:   ', thrown, 'value'))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         formatExpected('Expected message: ', expected.message) +
         (thrown === null
           ? '\n' + DID_NOT_THROW
-          : isNotError
-          ? formatReceived('Received value:   ', thrown, 'value')
-          : formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown));
+          : thrown.hasMessage
+          ? formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -183,7 +237,6 @@ const toThrowExpectedClass = (
   expected: Function,
 ) => {
   const pass = thrown !== null && thrown.value instanceof expected;
-  const isNotError = thrown !== null && !thrown.isError;
 
   const message = pass
     ? () =>
@@ -192,22 +245,22 @@ const toThrowExpectedClass = (
         formatExpected('Expected name: ', expected.name) +
         formatReceived('Received name: ', thrown, 'name') +
         '\n' +
-        (isNotError
-          ? formatReceived('Received value: ', thrown, 'value')
-          : formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown))
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived('Received message: ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value: ', thrown, 'value'))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         formatExpected('Expected name: ', expected.name) +
         (thrown === null
           ? '\n' + DID_NOT_THROW
-          : isNotError
-          ? '\n' + formatReceived('Received value: ', thrown, 'value')
-          : formatReceived('Received name: ', thrown, 'name') +
+          : thrown.hasMessage
+          ? formatReceived('Received name: ', thrown, 'name') +
             '\n' +
             formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown));
+            formatStack(thrown)
+          : '\n' + formatReceived('Received value: ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -219,27 +272,26 @@ const toThrowExpectedString = (
   expected: string,
 ) => {
   const pass = thrown !== null && thrown.message.includes(expected);
-  const isNotError = thrown !== null && !thrown.isError;
 
   const message = pass
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         formatExpected('Expected substring: ', expected) +
-        (isNotError
-          ? formatReceived('Received value:     ', thrown, 'value')
-          : formatReceived('Received message:   ', thrown, 'message') +
-            formatStack(thrown))
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived('Received message:   ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value:     ', thrown, 'value'))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         formatExpected('Expected substring: ', expected) +
         (thrown === null
           ? '\n' + DID_NOT_THROW
-          : isNotError
-          ? formatReceived('Received value:     ', thrown, 'value')
-          : formatReceived('Received message:   ', thrown, 'message') +
-            formatStack(thrown));
+          : thrown.hasMessage
+          ? formatReceived('Received message:   ', thrown, 'message') +
+            formatStack(thrown)
+          : formatReceived('Received value:     ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -250,17 +302,16 @@ const toThrow = (
   thrown: Thrown | null,
 ) => {
   const pass = thrown !== null;
-  const isNotError = thrown !== null && !thrown.isError;
 
   const message = pass
     ? () =>
         matcherHint(matcherName, undefined, '', options) +
         '\n\n' +
-        (isNotError
-          ? formatReceived('Thrown value: ', thrown, 'value')
-          : formatReceived('Error name:    ', thrown, 'name') +
+        (thrown !== null && thrown.hasMessage
+          ? formatReceived('Error name:    ', thrown, 'name') +
             formatReceived('Error message: ', thrown, 'message') +
-            formatStack(thrown))
+            formatStack(thrown)
+          : formatReceived('Thrown value: ', thrown, 'value'))
     : () =>
         matcherHint(matcherName, undefined, '', options) +
         '\n\n' +
