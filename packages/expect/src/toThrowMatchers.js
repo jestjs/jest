@@ -179,8 +179,8 @@ const toThrowExpectedAsymmetric = (
         formatExpected('Expected asymmetric matcher: ', expected) +
         '\n' +
         (thrown !== null && thrown.hasMessage
-          ? formatReceived('Error name:    ', thrown, 'name') +
-            formatReceived('Error message: ', thrown, 'message') +
+          ? formatReceived('Received name:    ', thrown, 'name') +
+            formatReceived('Received message: ', thrown, 'message') +
             formatStack(thrown)
           : formatReceived('Thrown value: ', thrown, 'value'))
     : () =>
@@ -191,8 +191,8 @@ const toThrowExpectedAsymmetric = (
         (thrown === null
           ? DID_NOT_THROW
           : thrown.hasMessage
-          ? formatReceived('Error name:    ', thrown, 'name') +
-            formatReceived('Error message: ', thrown, 'message') +
+          ? formatReceived('Received name:    ', thrown, 'name') +
+            formatReceived('Received message: ', thrown, 'message') +
             formatStack(thrown)
           : formatReceived('Thrown value: ', thrown, 'value'));
 
