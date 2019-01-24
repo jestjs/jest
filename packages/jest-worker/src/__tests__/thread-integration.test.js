@@ -66,6 +66,7 @@ describe('Jest Worker Process Integration', () => {
 
   it('calls a single method from the worker', async () => {
     const farm = new Farm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });
@@ -79,6 +80,7 @@ describe('Jest Worker Process Integration', () => {
 
   it('distributes sequential calls across child processes', async () => {
     const farm = new Farm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });
@@ -100,6 +102,7 @@ describe('Jest Worker Process Integration', () => {
 
   it('distributes concurrent calls across child processes', async () => {
     const farm = new Farm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });
@@ -127,6 +130,7 @@ describe('Jest Worker Process Integration', () => {
 
   it('sticks parallel calls to children', async () => {
     const farm = new Farm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       computeWorkerKey: () => '1234567890abcdef',
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
