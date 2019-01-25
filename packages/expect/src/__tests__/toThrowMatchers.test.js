@@ -191,6 +191,218 @@ class customError extends Error {
       });
     });
 
+    describe('error-message', () => {
+      // Received message in report if object has message property.
+      class ErrorMessage {
+        // not extending Error!
+        constructor(message) {
+          this.message = message;
+        }
+      }
+      const expected = new ErrorMessage('apple');
+
+      describe('pass', () => {
+        test('isNot false', () => {
+          jestExpect(() => {
+            throw new ErrorMessage('apple');
+          })[toThrow](expected);
+        });
+
+        test('isNot true', () => {
+          jestExpect(() => {
+            throw new ErrorMessage('banana');
+          }).not[toThrow](expected);
+        });
+      });
+
+      describe('fail', () => {
+        test('isNot false', () => {
+          expect(() =>
+            jestExpect(() => {
+              throw new ErrorMessage('banana');
+            })[toThrow](expected),
+          ).toThrowErrorMatchingSnapshot();
+        });
+
+        test('isNot true', () => {
+          expect(() =>
+            jestExpect(() => {
+              throw new ErrorMessage('apple');
+            }).not[toThrow](expected),
+          ).toThrowErrorMatchingSnapshot();
+        });
+      });
+    });
+
+    describe('asymmetric', () => {
+      describe('any-Class', () => {
+        describe('pass', () => {
+          test('isNot false', () => {
+            jestExpect(() => {
+              throw new Err('apple');
+            })[toThrow](expect.any(Err));
+          });
+
+          test('isNot true', () => {
+            jestExpect(() => {
+              throw new Err('apple');
+            }).not[toThrow](expect.any(Err2));
+          });
+        });
+
+        describe('fail', () => {
+          test('isNot false', () => {
+            expect(() =>
+              jestExpect(() => {
+                throw new Err('apple');
+              })[toThrow](expect.any(Err2)),
+            ).toThrowErrorMatchingSnapshot();
+          });
+
+          test('isNot true', () => {
+            expect(() =>
+              jestExpect(() => {
+                throw new Err('apple');
+              }).not[toThrow](expect.any(Err)),
+            ).toThrowErrorMatchingSnapshot();
+          });
+        });
+      });
+
+      describe('anything', () => {
+        describe('pass', () => {
+          test('isNot false', () => {
+            jestExpect(() => {
+              throw new customError('apple');
+            })[toThrow](expect.anything());
+          });
+
+          test('isNot true', () => {
+            jestExpect(() => {}).not[toThrow](expect.anything());
+            jestExpect(() => {
+              // eslint-disable-next-line no-throw-literal
+              throw null;
+            }).not[toThrow](expect.anything());
+          });
+        });
+
+        describe('fail', () => {
+          test('isNot false', () => {
+            expect(() =>
+              jestExpect(() => {
+                // eslint-disable-next-line no-throw-literal
+                throw null;
+              })[toThrow](expect.anything()),
+            ).toThrowErrorMatchingSnapshot();
+          });
+
+          test('isNot true', () => {
+            expect(() =>
+              jestExpect(() => {
+                throw new customError('apple');
+              }).not[toThrow](expect.anything()),
+            ).toThrowErrorMatchingSnapshot();
+          });
+        });
+      });
+
+      describe('no-symbol', () => {
+        // Test serialization of asymmetric matcher which has no property:
+        // this.$$typeof = Symbol.for('jest.asymmetricMatcher')
+        const matchError = {
+          asymmetricMatch(received) {
+            return (
+              received !== null &&
+              received !== undefined &&
+              received.name === 'Error'
+            );
+          },
+        };
+        const matchNotError = {
+          asymmetricMatch(received) {
+            return (
+              received !== null &&
+              received !== undefined &&
+              received.name !== 'Error'
+            );
+          },
+        };
+
+        describe('pass', () => {
+          test('isNot false', () => {
+            jestExpect(() => {
+              throw new customError('apple');
+            })[toThrow](matchError);
+          });
+
+          test('isNot true', () => {
+            jestExpect(() => {
+              throw new customError('apple');
+            }).not[toThrow](matchNotError);
+          });
+        });
+
+        describe('fail', () => {
+          test('isNot false', () => {
+            expect(() =>
+              jestExpect(() => {
+                throw new customError('apple');
+              })[toThrow](matchNotError),
+            ).toThrowErrorMatchingSnapshot();
+          });
+
+          test('isNot true', () => {
+            expect(() =>
+              jestExpect(() => {
+                throw new customError('apple');
+              }).not[toThrow](matchError),
+            ).toThrowErrorMatchingSnapshot();
+          });
+        });
+      });
+
+      describe('objectContaining', () => {
+        const matchError = expect.objectContaining({
+          name: 'Error',
+        });
+        const matchNotError = expect.objectContaining({
+          name: 'NotError',
+        });
+
+        describe('pass', () => {
+          test('isNot false', () => {
+            jestExpect(() => {
+              throw new customError('apple');
+            })[toThrow](matchError);
+          });
+
+          test('isNot true', () => {
+            jestExpect(() => {
+              throw new customError('apple');
+            }).not[toThrow](matchNotError);
+          });
+        });
+
+        describe('fail', () => {
+          test('isNot false', () => {
+            expect(() =>
+              jestExpect(() => {
+                throw new customError('apple');
+              })[toThrow](matchNotError),
+            ).toThrowErrorMatchingSnapshot();
+          });
+
+          test('isNot true', () => {
+            expect(() =>
+              jestExpect(() => {
+                throw new customError('apple');
+              }).not[toThrow](matchError),
+            ).toThrowErrorMatchingSnapshot();
+          });
+        });
+      });
+    });
+
     describe('promise/async throws if Error-like object is returned', () => {
       const asyncFn = async (shouldThrow?: boolean, resolve?: boolean) => {
         let err;
