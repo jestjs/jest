@@ -197,6 +197,7 @@ const replaceKeyPathWithValue = data => (title, match) => {
   const keyPath = match.replace('$', '').split('.');
   const value = getPath(data, keyPath);
 
+  // $FlowFixMe https://github.com/facebook/flow/issues/1015
   if (typeof value !== 'symbol' && isPrimitive(value)) {
     return title.replace(match, value);
   }
