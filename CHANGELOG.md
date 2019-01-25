@@ -125,7 +125,6 @@
 - `[jest-config]` Add name to project if one does not exist to pick correct resolver ([#5862](https://github.com/facebook/jest/pull/5862))
 - `[jest-runtime]` Pass `watchPathIgnorePatterns` to Haste instance ([#7585](https://github.com/facebook/jest/pull/7585))
 - `[jest-runtime]` Resolve mock files via Haste when using `require.resolve` ([#7687](https://github.com/facebook/jest/pull/7687))
-- `[expect]` fix regression in toThrow for message prop and asymmetric matchers ([#7697](https://github.com/facebook/jest/pull/7697))
 
 ### Chore & Maintenance
 
