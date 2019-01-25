@@ -81,45 +81,65 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install required development dependencies via `yarn`:
+To use [Babel](http://babeljs.io/), install required dependencies via `yarn`:
 
 ```bash
-yarn add --dev @babel/core @babel/preset-env @babel/preset-react
+yarn add --dev babel-jest @babel/core @babel/preset-env @babel/preset-react
 ```
 
-Install `@babel/polyfill`:
+Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
 
-```bash
-yarn add @babel/polyfill
+```javascript
+// babel.config.js
+module.exports = {
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          node: 'current',
+        },
+      },
+    ],
+    '@babel/preset-react
+  ],
+};
 ```
 
-Load the polyfill and configure Babel in your `package.json` file:
+If you are not using React you can exclude `@babel/preset-react` from the above commands/config.
 
-```json
-// package.json
-{
-  "jest": {
-    "setupFiles": ["@babel/polyfill"]
-  },
-  "babel": {
-    "presets": ["@babel/preset-env", "@babel/preset-react"]
-  }
-}
+The ideal configuration for Babel will depend on your project. See [Babel's docs](https://babeljs.io/docs/en/babel-preset-env) for more details.
+
+Jest will set `process.env.NODE_ENV` to 'test' if it's not set to something else, you can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
+
+```javascript
+// babel.config.js
+module.exports =
+  process.env.NODE_ENV === 'test'
+    ? {
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets: {
+                node: 'current',
+              },
+            },
+          ],
+        ],
+      }
+    : {
+        // Configuration needed for production.
+      };
 ```
-
-You should also import `@babel/polyfill` in your app. If you are creating a library you should look into using [`@babel/plugin-transform-runtime`](https://babeljs.io/docs/en/babel-plugin-transform-runtime) instead.
-
-You are now set up to use all ES2018 features and [React](https://reactjs.org) specific syntax. If you are not using React you can exclude `@babel/preset-react` from the above commands/config.
 
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
-```json
-// package.json
-{
-  "jest": {
-    "transform": {}
-  }
-}
+```javascript
+// jest.config.js
+module.exports = {
+  transform: {},
+};
 ```
 
 #### Babel 6
