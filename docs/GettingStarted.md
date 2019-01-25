@@ -87,7 +87,7 @@ To use [Babel](http://babeljs.io/), install the `babel-jest` and `@babel/core` p
 yarn add --dev babel-jest @babel/core
 ```
 
-Don't forget to add a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder. For example, if you are using ES6 and [React.js](https://reactjs.org) with the [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and [`@babel/preset-react`](https://babeljs.io/docs/en/babel-preset-react) presets:
+Don't forget to add a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder. For example, if you are using ES2018 and [React](https://reactjs.org) with the [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and [`@babel/preset-react`](https://babeljs.io/docs/en/babel-preset-react) presets:
 
 ```js
 module.exports = {
@@ -95,18 +95,7 @@ module.exports = {
 };
 ```
 
-You are now set up to use all ES6 features and React specific syntax.
-
-```json
-{
-  "presets": [["env", {"modules": false}], "react"],
-  "env": {
-    "test": {
-      "presets": [["env"], "react"]
-    }
-  }
-}
-```
+You are now set up to use all ES2018 features and React-specific syntax.
 
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
@@ -118,6 +107,21 @@ You are now set up to use all ES6 features and React specific syntax.
   }
 }
 ```
+
+#### Babel 6
+
+Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel 7, which is actively maintained. However, if you cannot upgrade to Babel 7, either keep using Jest 23 or upgrade to Jest 24 with `babel-jest` locked at version 23, like in the example below:
+
+```
+"dependencies": {
+  "babel-core": "^6.26.3",
+  "babel-jest": "^23.6.0",
+  "babel-preset-env": "^1.7.0",
+  "jest": "^24.0.0"
+}
+```
+
+While we generally recommend using the same version of every Jest package, this workaround will allow you to continue using the latest version of Jest with Babel 6 for now.
 
 ### Using webpack
 
