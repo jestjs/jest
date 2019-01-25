@@ -14,7 +14,6 @@
     "co": "^4.6.0",
     "expect": "^23.6.0",
     "is-generator-fn": "^2.0.0",
-    "jest-diff": "^23.6.0",
     "jest-each": "^23.6.0",
     "jest-matcher-utils": "^23.6.0",
     "jest-message-util": "^23.4.0",
@@ -25,6 +24,7 @@
   },
   "devDependencies": {
     "execa": "^1.0.0",
+    "jest-diff": "^23.6.0",
     "jest-runtime": "^23.6.0"
   },
   "engines": {

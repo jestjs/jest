@@ -127,6 +127,9 @@ const siteConfig = {
   siteConfigUrl:
     'https://github.com/facebook/jest/edit/master/website/siteConfig.js',
   cleanUrl: true,
+  twitter: true,
+  twitterUsername: 'fbjest',
+  twitterImage: 'img/jest.png',
 };
 
 module.exports = siteConfig;

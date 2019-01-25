@@ -229,6 +229,7 @@ class Runtime {
   ): HasteMap {
     const ignorePatternParts = [
       ...config.modulePathIgnorePatterns,
+      ...(options && options.watch ? config.watchPathIgnorePatterns : []),
       config.cacheDirectory.startsWith(config.rootDir + path.sep) &&
         config.cacheDirectory,
     ].filter(Boolean);
@@ -588,8 +589,17 @@ class Runtime {
         )}'] from ${from}`,
       );
     }
+    try {
+      return this._resolveModule(from, moduleName);
+    } catch (err) {
+      const module = this._resolver.getMockModule(from, moduleName);
 
-    return this._resolveModule(from, moduleName);
+      if (module) {
+        return module;
+      } else {
+        throw err;
+      }
+    }
   }
 
   _requireResolvePaths(from: Path, moduleName?: string) {

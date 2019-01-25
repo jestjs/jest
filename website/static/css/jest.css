@@ -28,6 +28,7 @@
   border-radius: 50%;
   border: 1px solid white;
   overflow: hidden;
+  object-fit: contain;
 }
 
 .backer-item {
@@ -41,6 +42,7 @@
   border-radius: 50%;
   border: 1px solid white;
   overflow: hidden;
+  object-fit: contain;
 }
 
 .support-button {
