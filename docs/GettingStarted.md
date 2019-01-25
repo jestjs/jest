@@ -93,26 +93,21 @@ Install `@babel/polyfill`:
 yarn add @babel/polyfill
 ```
 
-Load the polyfill in your Jest configuration:
+Load the polyfill and configure Babel in your `package.json` file:
 
 ```json
 // package.json
 {
   "jest": {
     "setupFiles": ["@babel/polyfill"]
+  },
+  "babel": {
+    "presets": ["@babel/preset-env", "@babel/preset-react"]
   }
 }
 ```
 
 You should also import `@babel/polyfill` in your app. If you are creating a library you should look into using [`@babel/plugin-transform-runtime`](https://babeljs.io/docs/en/babel-plugin-transform-runtime) instead.
-
-Create a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder:
-
-```js
-module.exports = {
-  presets: ['@babel/preset-env', '@babel/preset-react'],
-};
-```
 
 You are now set up to use all ES2018 features and [React](https://reactjs.org) specific syntax. If you are not using React you can exclude `@babel/preset-react` from the above commands/config.
 
