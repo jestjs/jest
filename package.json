@@ -27,7 +27,7 @@
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "~0.0.19",
     "execa": "^1.0.0",
-    "flow-bin": "^0.90.0",
+    "flow-bin": "^0.91.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.15",
     "isbinaryfile": "^3.0.3",
