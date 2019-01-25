@@ -158,10 +158,9 @@
   }
 }
 
-@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
-  .gridBlock.logos > *:first-child {
-    margin-left: 0;
-  }
+.gridBlock.philosophy > *:first-child,
+.gridBlock.logos > *:first-child {
+  margin-left: 0;
 }
 
 .logos img {

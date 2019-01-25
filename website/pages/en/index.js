@@ -433,7 +433,7 @@ class Index extends React.Component {
                 </h2>
               </div>
             </div>
-            <div className="blockElement imageAlignSide gridBlock threeByGridBlock bottom-margin">
+            <div className="blockElement imageAlignSide gridBlock threeByGridBlock bottom-margin philosophy">
               <div className="blockContent">
                 <MarkdownBlock>
                   <translate>

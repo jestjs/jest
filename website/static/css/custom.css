@@ -16,6 +16,14 @@
   margin-right: -20px;
 }
 
+#languages-dropdown-items a {
+  color: white;
+}
+
+#languages-dropdown-items a:hover {
+  color: var(--green);
+}
+
 div.jest-repl {
   margin: 0 5%;
   position: relative;
