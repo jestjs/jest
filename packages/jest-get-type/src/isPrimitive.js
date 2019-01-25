@@ -9,5 +9,13 @@
 
 import getType from './getType';
 
-export default getType;
-export {default as isPrimitive} from './isPrimitive';
+const PRIMITIVES = new Set([
+  'string',
+  'number',
+  'boolean',
+  'null',
+  'undefined',
+  'symbol',
+]);
+
+export default (value: any): boolean => PRIMITIVES.has(getType(value));
