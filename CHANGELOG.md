@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[website]` Fix broken help link on homepage ([#7706](https://github.com/facebook/jest/pull/7706))
+
 ### Chore & Maintenance
 
 ### Performance
