@@ -293,8 +293,8 @@ FAIL __tests__/failure.test.js
 
     expect(received).toBe(expected) // Object.is equality
 
-    Expected: "\\"b\\""
-    Received: "\\"a\\""
+    Expected: "b"
+    Received: "a"
 
       57 |   ({left, right}) => {
       58 |     it('fails ', () => {
@@ -310,8 +310,8 @@ FAIL __tests__/failure.test.js
 
     expect(received).toBe(expected) // Object.is equality
 
-    Expected: "\\"d\\""
-    Received: "\\"c\\""
+    Expected: "d"
+    Received: "c"
 
       57 |   ({left, right}) => {
       58 |     it('fails ', () => {

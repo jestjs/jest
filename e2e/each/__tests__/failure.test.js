@@ -49,11 +49,11 @@ test.each(['red', 'green', 'bean'])(
 );
 
 describe.each`
-  left     | right
-  ${'"a"'} | ${'"b"'}
-  ${'"c"'} | ${'"d"'}
+  left   | right
+  ${'a'} | ${'b'}
+  ${'c'} | ${'d'}
 `(
-  'template table describe fails on all rows expected $left == $right',
+  'template table describe fails on all rows expected "$left" == "$right"',
   ({left, right}) => {
     it('fails ', () => {
       expect(left).toBe(right);
