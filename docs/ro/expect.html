@@ -1,5 +1,5 @@
-<!DOCTYPE html><html lang="ro"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Expect · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;Atunci când scrieți teste, adesea trebuie să verificaţi dacă valorile îndeplinesc anumite condiţii. &lt;code&gt;expect&lt;/code&gt; vă oferă acces la numeroși &amp;quot;validatori&amp;quot;, care vă permit să validați diferite lucruri.&lt;/p&gt;
-"/><meta name="docsearch:version" content="23.6"/><meta name="docsearch:language" content="ro"/><meta property="og:title" content="Expect · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/index.html"/><meta property="og:description" content="&lt;p&gt;Atunci când scrieți teste, adesea trebuie să verificaţi dacă valorile îndeplinesc anumite condiţii. &lt;code&gt;expect&lt;/code&gt; vă oferă acces la numeroși &amp;quot;validatori&amp;quot;, care vă permit să validați diferite lucruri.&lt;/p&gt;
+<!DOCTYPE html><html lang="ro"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Expect · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;When you&#x27;re writing tests, you often need to check that values meet certain conditions. &lt;code&gt;expect&lt;/code&gt; gives you access to a number of &amp;quot;matchers&amp;quot; that let you validate different things.&lt;/p&gt;
+"/><meta name="docsearch:version" content="24.0"/><meta name="docsearch:language" content="ro"/><meta property="og:title" content="Expect · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/index.html"/><meta property="og:description" content="&lt;p&gt;When you&#x27;re writing tests, you often need to check that values meet certain conditions. &lt;code&gt;expect&lt;/code&gt; gives you access to a number of &amp;quot;matchers&amp;quot; that let you validate different things.&lt;/p&gt;
 "/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -8,7 +8,7 @@
 
               ga('create', 'UA-44373548-17', 'auto');
               ga('send', 'pageview');
-            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ro"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ro/versions"><h3>23.6</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ro/getting-started" target="_self">Documentație</a></li><li class="siteNavGroupActive"><a href="/docs/ro/api" target="_self">API</a></li><li class=""><a href="/ro/help" target="_self">Ajutor</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Română</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/expect">English</a></li><li><a href="/docs/ja/expect">日本語</a></li><li><a href="/docs/es-ES/expect">Español</a></li><li><a href="/docs/pt-BR/expect">Português (Brasil)</a></li><li><a href="/docs/ru/expect">Русский</a></li><li><a href="/docs/uk/expect">Українська</a></li><li><a href="/docs/zh-Hans/expect">简体中文</a></li></ul></div></li><script>
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ro"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ro/versions"><h3>24.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ro/getting-started" target="_self">Documentație</a></li><li class="siteNavGroupActive"><a href="/docs/ro/api" target="_self">API</a></li><li class=""><a href="/ro/help" target="_self">Ajutor</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Română</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/expect">English</a></li><li><a href="/docs/ja/expect">日本語</a></li><li><a href="/docs/es-ES/expect">Español</a></li><li><a href="/docs/pt-BR/expect">Português (Brasil)</a></li><li><a href="/docs/ru/expect">Русский</a></li><li><a href="/docs/uk/expect">Українська</a></li><li><a href="/docs/zh-Hans/expect">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(event) {
@@ -20,7 +20,7 @@
             languagesDropDown.className = "hide";
           }
         });
-      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/snapshot-testing">Testarea de imagine</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/troubleshooting">Troubleshooting</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/api">Globals</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/ro/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/snapshot-testing">Testarea de imagine</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/api">Globals</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/ro/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
             var coll = document.getElementsByClassName('collapsible');
             var checkActiveCategory = true;
             for (var i = 0; i < coll.length; i++) {
@@ -70,7 +70,7 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/ExpectAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Expect</h1></header><article><div><span><p>Atunci când scrieți teste, adesea trebuie să verificaţi dacă valorile îndeplinesc anumite condiţii. <code>expect</code> vă oferă acces la numeroși &quot;validatori&quot;, care vă permit să validați diferite lucruri.</p>
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/ExpectAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Expect</h1></header><article><div><span><p>When you're writing tests, you often need to check that values meet certain conditions. <code>expect</code> gives you access to a number of &quot;matchers&quot; that let you validate different things.</p>
 <p>For additional Jest matchers maintained by the Jest Community check out <a href="https://github.com/jest-community/jest-extended"><code>jest-extended</code></a>.</p>
 <h2><a class="anchor" aria-hidden="true" id="metode"></a><a href="#metode" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Metode</h2>
 <p>&lt;autogenerated_table_of_contents&gt;</p>
@@ -83,7 +83,7 @@
   expect(bestLaCroixFlavor()).toBe(<span class="hljs-string">'grapefruit'</span>);
 });
 </code></pre>
-<p>În acest caz, <code>toBe</code> este funcţia comparator. Există o mulţime de astfel de funcţii, documentate mai jos, pentru a vă ajuta să testaţi diferite lucruri.</p>
+<p>In this case, <code>toBe</code> is the matcher function. There are a lot of different matcher functions, documented below, to help you test different things.</p>
 <p>Argumentul funcției <code>expect</code> trebuie să fie valoarea care produce codul şi orice argument pentru funcția comparator ar trebui să fie valoarea corectă. Dacă le amestecați, testele vor funcţiona în continuare, dar mesajele de eroare pentru testele eșuate vor arăta ciudat.</p>
 <h3><a class="anchor" aria-hidden="true" id="expectextendmatchers"></a><a href="#expectextendmatchers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.extend(matchers)</code></h3>
 <p>Utilizaţi <code>expect.extend</code> pentru a adăuga proprii comparatorii. For example, let's say that you're testing a number utility library and you're frequently asserting that numbers appear within particular ranges of other numbers. You could abstract that into a <code>toBeWithinRange</code> matcher:</p>
@@ -149,14 +149,21 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
   yourMatcher(x, y, z) {
     <span class="hljs-keyword">return</span> {
       <span class="hljs-attr">pass</span>: <span class="hljs-literal">true</span>,
-      <span class="hljs-attr">message</span>: <span class="hljs-string">''</span>,
+      <span class="hljs-attr">message</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">''</span>,
     };
   },
 });
 </code></pre>
 <p>These helper functions and properties can be found on <code>this</code> inside a custom matcher:</p>
 <h4><a class="anchor" aria-hidden="true" id="thisisnot"></a><a href="#thisisnot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.isNot</code></h4>
-<p>Un boolean care vă spune dacă comparatorul a fost chemat cu modificatorul de negație <code>.not</code> permiţându-vă să inversați afirmaţia.</p>
+<p>A boolean to let you know this matcher was called with the negated <code>.not</code> modifier allowing you to flip your assertion and display a clear and correct matcher hint (see example code).</p>
+<h4><a class="anchor" aria-hidden="true" id="thispromise"></a><a href="#thispromise" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.promise</code></h4>
+<p>A string allowing you to display a clear and correct matcher hint:</p>
+<ul>
+<li><code>'rejects'</code> if matcher was called with the promise <code>.rejects</code> modifier</li>
+<li><code>'resolves'</code> if matcher was called with the promise <code>.resolves</code> modifier</li>
+<li><code>''</code> if matcher was not called with a promise modifier</li>
+</ul>
 <h4><a class="anchor" aria-hidden="true" id="thisequalsa-b"></a><a href="#thisequalsa-b" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.equals(a, b)</code></h4>
 <p>Aceasta este o funcţie de egalitate-în-adâncime, care va returna <code>true</code> dacă două obiecte au aceleaşi valori (recursiv).</p>
 <h4><a class="anchor" aria-hidden="true" id="thisexpand"></a><a href="#thisexpand" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.expand</code></h4>
@@ -167,28 +174,31 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> diff = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-diff'</span>);
 expect.extend({
   toBe(received, expected) {
+    <span class="hljs-keyword">const</span> options = {
+      <span class="hljs-attr">comment</span>: <span class="hljs-string">'Object.is equality'</span>,
+      <span class="hljs-attr">isNot</span>: <span class="hljs-keyword">this</span>.isNot,
+      <span class="hljs-attr">promise</span>: <span class="hljs-keyword">this</span>.promise,
+    };
+
     <span class="hljs-keyword">const</span> pass = <span class="hljs-built_in">Object</span>.is(received, expected);
 
     <span class="hljs-keyword">const</span> message = pass
       ? <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
-          <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'.not.toBe'</span>) +
+          <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'toBe'</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, options) +
           <span class="hljs-string">'\n\n'</span> +
-          <span class="hljs-string">`Expected value to not be (using Object.is):\n`</span> +
-          <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
-          <span class="hljs-string">`Received:\n`</span> +
-          <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>
+          <span class="hljs-string">`Expected: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
+          <span class="hljs-string">`Received: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>
       : <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-          <span class="hljs-keyword">const</span> diffString = diff(expected, received, {
+          <span class="hljs-keyword">const</span> difference = diff(expected, received, {
             <span class="hljs-attr">expand</span>: <span class="hljs-keyword">this</span>.expand,
           });
           <span class="hljs-keyword">return</span> (
-            <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'.toBe'</span>) +
+            <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'toBe'</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, options) +
             <span class="hljs-string">'\n\n'</span> +
-            <span class="hljs-string">`Expected value to be (using Object.is):\n`</span> +
-            <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
-            <span class="hljs-string">`Received:\n`</span> +
-            <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span> +
-            (diffString ? <span class="hljs-string">`\n\nDifference:\n\n<span class="hljs-subst">${diffString}</span>`</span> : <span class="hljs-string">''</span>)
+            (difference &amp;&amp; difference.includes(<span class="hljs-string">'- Expect'</span>)
+              ? <span class="hljs-string">`Difference:\n\n<span class="hljs-subst">${diffString}</span>`</span>
+              : <span class="hljs-string">`Expected: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
+                <span class="hljs-string">`Received: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>)
           );
         };
 
@@ -334,23 +344,23 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="expectnotstringcontainingstring"></a><a href="#expectnotstringcontainingstring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringContaining(string)</code></h3>
-<p><code>expect.not.stringContaining(string)</code> matches the received string that does not contain the exact expected string.</p>
+<p><code>expect.not.stringContaining(string)</code> matches the received value if it is not a string or if it is a string that does not contain the exact expected string.</p>
 <p>It is the inverse of <code>expect.stringContaining</code>.</p>
 <pre><code class="hljs css language-js">describe(<span class="hljs-string">'not.stringContaining'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> expected = <span class="hljs-string">'Hello world!'</span>;
 
-  it(<span class="hljs-string">'matches if the actual string does not contain the expected substring'</span>, () =&gt; {
+  it(<span class="hljs-string">'matches if the received value does not contain the expected substring'</span>, () =&gt; {
     expect(<span class="hljs-string">'How are you?'</span>).toEqual(expect.not.stringContaining(expected));
   });
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="expectnotstringmatchingstring-regexp"></a><a href="#expectnotstringmatchingstring-regexp" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringMatching(string | regexp)</code></h3>
-<p><code>expect.not.stringMatching(string | regexp)</code> matches the received string that does not match the expected regexp.</p>
+<p><code>expect.not.stringMatching(string | regexp)</code> matches the received value if it is not a string or if it is a string that does not match the expected string or regular expression.</p>
 <p>It is the inverse of <code>expect.stringMatching</code>.</p>
 <pre><code class="hljs css language-js">describe(<span class="hljs-string">'not.stringMatching'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> expected = <span class="hljs-regexp">/Hello world!/</span>;
 
-  it(<span class="hljs-string">'matches if the actual string does not match the expected regex'</span>, () =&gt; {
+  it(<span class="hljs-string">'matches if the received value does not match the expected regex'</span>, () =&gt; {
     expect(<span class="hljs-string">'How are you?'</span>).toEqual(expect.not.stringMatching(expected));
   });
 });
@@ -371,9 +381,9 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="expectstringcontainingstring"></a><a href="#expectstringcontainingstring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringContaining(string)</code></h3>
-<p><code>expect.stringContaining(string)</code> matches the received string that contains the exact expected string.</p>
+<p><code>expect.stringContaining(string)</code> matches the received value if it is a string that contains the exact expected string.</p>
 <h3><a class="anchor" aria-hidden="true" id="expectstringmatchingstring-regexp"></a><a href="#expectstringmatchingstring-regexp" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringMatching(string | regexp)</code></h3>
-<p><code>expect.stringMatching(string | regexp)</code> matches the received string that matches the expected regexp.</p>
+<p><code>expect.stringMatching(string | regexp)</code> matches the received value if it is a string that matches the expected string or regular expression.</p>
 <p>Îl puteţi folosi în locul unei valori concrete:</p>
 <ul>
 <li>în <code>toEqual</code> sau <code>toBeCalledWith</code></li>
@@ -413,13 +423,13 @@ expect.addSnapshotSerializer(serializer);
 </ul>
 <p>A se vedea <a href="/docs/ro/configuration#snapshotserializers-array-string">configurarea Jest</a> pentru mai multe informaţii.</p>
 <h3><a class="anchor" aria-hidden="true" id="not"></a><a href="#not" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.not</code></h3>
-<p>Dacă știți cum să testați ceva, <code>.not</code> vă permite să testaţi opusul său. De exemplu, acest cod testează că cel mai bun gust La Croix nu este de nucă de cocos:</p>
+<p>If you know how to test something, <code>.not</code> lets you test its opposite. For example, this code tests that the best La Croix flavor is not coconut:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the best flavor is not coconut'</span>, () =&gt; {
   expect(bestLaCroixFlavor()).not.toBe(<span class="hljs-string">'coconut'</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="resolves"></a><a href="#resolves" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.resolves</code></h3>
-<p>Utilizaţi <code>resolves</code> pentru a desface valoarea unei promisiuni împlinite, astfel încât pot fi înlănțuiți alți validatori. În cazul în care promisiunea este respinsă, afirmaţia va eșua.</p>
+<p>Use <code>resolves</code> to unwrap the value of a fulfilled promise so any other matcher can be chained. If the promise is rejected the assertion fails.</p>
 <p>De exemplu, acest cod testează că promisiunea se rezolvă şi că valoarea rezultată este <code>'lemon'</code>:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'resolves to lemon'</span>, () =&gt; {
   <span class="hljs-comment">// make sure to add a return statement</span>
@@ -434,7 +444,7 @@ expect.addSnapshotSerializer(serializer);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="rejects"></a><a href="#rejects" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.rejects</code></h3>
-<p>Utilizaţi <code>.rejects</code> pentru a desface valoarea unei promisiuni împlinite, astfel încât pot fi înlănțuiți alți validatori. În cazul în care promisiunea este împlinită, afirmaţia va eșua.</p>
+<p>Use <code>.rejects</code> to unwrap the reason of a rejected promise so any other matcher can be chained. If the promise is fulfilled the assertion fails.</p>
 <p>For example, this code tests that the promise rejects with reason <code>'octopus'</code>:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'rejects to octopus'</span>, () =&gt; {
   <span class="hljs-comment">// make sure to add a return statement</span>
@@ -547,7 +557,7 @@ describe(<span class="hljs-string">'the can'</span>, () =&gt; {
 <h3><a class="anchor" aria-hidden="true" id="tohavereturnedtimesnumber"></a><a href="#tohavereturnedtimesnumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveReturnedTimes(number)</code></h3>
 <p>Also under the alias: <code>.toReturnTimes(number)</code></p>
 <p>Use <code>.toHaveReturnedTimes</code> to ensure that a mock function returned successfully (i.e., did not throw an error) an exact number of times. Any calls to the mock function that throw an error are not counted toward the number of times the function returned.</p>
-<p>For example, let's say you have a mock <code>drink</code> that returns <code>true</code>. You can write:</p>
+<p>For example, let's say you have a mock <code>drink</code> that returns <code>true</code>. Puteţi scrie:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'drink returns twice'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> drink = jest.fn(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-literal">true</span>);
 
@@ -560,7 +570,7 @@ describe(<span class="hljs-string">'the can'</span>, () =&gt; {
 <h3><a class="anchor" aria-hidden="true" id="tohavereturnedwithvalue"></a><a href="#tohavereturnedwithvalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveReturnedWith(value)</code></h3>
 <p>Also under the alias: <code>.toReturnWith(value)</code></p>
 <p>Use <code>.toHaveReturnedWith</code> to ensure that a mock function returned a specific value.</p>
-<p>For example, let's say you have a mock <code>drink</code> that returns the name of the beverage that was consumed. You can write:</p>
+<p>For example, let's say you have a mock <code>drink</code> that returns the name of the beverage that was consumed. Puteţi scrie:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'drink returns La Croix'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> beverage = {<span class="hljs-attr">name</span>: <span class="hljs-string">'La Croix'</span>};
   <span class="hljs-keyword">const</span> drink = jest.fn(<span class="hljs-function"><span class="hljs-params">beverage</span> =&gt;</span> beverage.name);
@@ -573,7 +583,7 @@ describe(<span class="hljs-string">'the can'</span>, () =&gt; {
 <h3><a class="anchor" aria-hidden="true" id="tohavelastreturnedwithvalue"></a><a href="#tohavelastreturnedwithvalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveLastReturnedWith(value)</code></h3>
 <p>Also under the alias: <code>.lastReturnedWith(value)</code></p>
 <p>Use <code>.toHaveLastReturnedWith</code> to test the specific value that a mock function last returned. If the last call to the mock function threw an error, then this matcher will fail no matter what value you provided as the expected return value.</p>
-<p>For example, let's say you have a mock <code>drink</code> that returns the name of the beverage that was consumed. You can write:</p>
+<p>For example, let's say you have a mock <code>drink</code> that returns the name of the beverage that was consumed. Puteţi scrie:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'drink returns La Croix (Orange) last'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> beverage1 = {<span class="hljs-attr">name</span>: <span class="hljs-string">'La Croix (Lemon)'</span>};
   <span class="hljs-keyword">const</span> beverage2 = {<span class="hljs-attr">name</span>: <span class="hljs-string">'La Croix (Orange)'</span>};
@@ -588,7 +598,7 @@ describe(<span class="hljs-string">'the can'</span>, () =&gt; {
 <h3><a class="anchor" aria-hidden="true" id="tohaventhreturnedwithnthcall-value"></a><a href="#tohaventhreturnedwithnthcall-value" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveNthReturnedWith(nthCall, value)</code></h3>
 <p>Also under the alias: <code>.nthReturnedWith(nthCall, value)</code></p>
 <p>Use <code>.toHaveNthReturnedWith</code> to test the specific value that a mock function returned for the nth call. If the nth call to the mock function threw an error, then this matcher will fail no matter what value you provided as the expected return value.</p>
-<p>For example, let's say you have a mock <code>drink</code> that returns the name of the beverage that was consumed. You can write:</p>
+<p>For example, let's say you have a mock <code>drink</code> that returns the name of the beverage that was consumed. Puteţi scrie:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'drink returns expected nth calls'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> beverage1 = {<span class="hljs-attr">name</span>: <span class="hljs-string">'La Croix (Lemon)'</span>};
   <span class="hljs-keyword">const</span> beverage2 = {<span class="hljs-attr">name</span>: <span class="hljs-string">'La Croix (Orange)'</span>};
@@ -603,12 +613,12 @@ describe(<span class="hljs-string">'the can'</span>, () =&gt; {
 </code></pre>
 <p>Note: the nth argument must be positive integer starting from 1.</p>
 <h3><a class="anchor" aria-hidden="true" id="tobeclosetonumber-numdigits"></a><a href="#tobeclosetonumber-numdigits" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeCloseTo(number, numDigits)</code></h3>
-<p>Folosind egalitatea la numere în virgulă mobilă este o idee rea. Rotunjirea înseamnă că lucrurile intuitive vor eșua. De exemplu, acest test nu trece:</p>
+<p>Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'adding works sanely with simple decimals'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBe(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// Fails!</span>
 });
 </code></pre>
-<p>Aceasta nu trece, deoarece în JavaScript, <code>0.2 + 0.1</code> este de fapt <code>0.30000000000000004</code>. Ne pare rău.</p>
+<p>It fails because in JavaScript, <code>0.2 + 0.1</code> is actually <code>0.30000000000000004</code>. Sorry.</p>
 <p>În schimb, utilizaţi <code>.toBeCloseTo</code>. Utilizaţi <code>numDigits</code> pentru a controla câte zecimale să fie verificate. De exemplu, dacă doriţi să vă asiguraţi că <code>0.2 + 0.1</code> este egal cu <code>0.3</code> cu o precizie de 5 cifre zecimale, se poate utiliza acest test:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'adding works sanely with simple decimals'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBeCloseTo(<span class="hljs-number">0.3</span>, <span class="hljs-number">5</span>);
@@ -623,7 +633,7 @@ describe(<span class="hljs-string">'the can'</span>, () =&gt; {
 </code></pre>
 <p>Ați putea scrie și <code>expect(fetchNewFlavorIdea()).not.toBe(undefined)</code>, dar este de preferat să evitați referința la <code>undefined</code> în mod direct în codul vostru.</p>
 <h3><a class="anchor" aria-hidden="true" id="tobefalsy"></a><a href="#tobefalsy" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeFalsy()</code></h3>
-<p>Utilizaţi <code>.toBeFalsy</code> atunci când nu vă pasă valoarea exacta, ci vreți doar să vă asigurați că valoarea este falsă într-un context boolean. De exemplu, să presupunem că aveţi următorul cod:</p>
+<p>Use <code>.toBeFalsy</code> when you don't care what a value is, you just want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:</p>
 <pre><code class="hljs css language-js">drinkSomeLaCroix();
 <span class="hljs-keyword">if</span> (!getErrors()) {
   drinkMoreLaCroix();
@@ -635,33 +645,33 @@ describe(<span class="hljs-string">'the can'</span>, () =&gt; {
   expect(getErrors()).toBeFalsy();
 });
 </code></pre>
-<p>În JavaScript, există şase valori false: <code>false</code>, <code>0</code>, <code>&quot;&quot;</code>, <code>null</code>, <code>undefined</code>, și <code>NaN</code>. Orice altceva este adevărat.</p>
+<p>In JavaScript, there are six falsy values: <code>false</code>, <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code>, and <code>NaN</code>. Everything else is truthy.</p>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthannumber"></a><a href="#tobegreaterthannumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThan(number)</code></h3>
-<p>Pentru comparea numerele în virgula mobilă, puteţi utiliza <code>toBeGreaterThan</code>. De exemplu, dacă doriţi să testaţi că <code>ouncesPerCan()</code> returnează o valoare de mai mult de 10 uncii, vom scrie:</p>
+<p>To compare floating point numbers, you can use <code>toBeGreaterThan</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of more than 10 ounces, write:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is more than 10'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThan(<span class="hljs-number">10</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthanorequalnumber"></a><a href="#tobegreaterthanorequalnumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThanOrEqual(number)</code></h3>
-<p>Pentru comparea numerele în virgula mobilă, puteţi utiliza <code>toBeGreaterThanOrEqual</code>. De exemplu, dacă doriţi să testaţi că <code>ouncesPerCan()</code> returnează o valoare de cel puțin 12 uncii, vom scrie:</p>
+<p>To compare floating point numbers, you can use <code>toBeGreaterThanOrEqual</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of at least 12 ounces, write:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is at least 12'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThanOrEqual(<span class="hljs-number">12</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobelessthannumber"></a><a href="#tobelessthannumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeLessThan(number)</code></h3>
-<p>Pentru comparea numerele în virgula mobilă, puteţi utiliza <code>toBeLessThan</code>. De exemplu, dacă doriţi să testaţi că <code>ouncesPerCan()</code> returnează o valoare mai mică decât 20 uncii, vom scrie:</p>
+<p>To compare floating point numbers, you can use <code>toBeLessThan</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of less than 20 ounces, write:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is less than 20'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeLessThan(<span class="hljs-number">20</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobelessthanorequalnumber"></a><a href="#tobelessthanorequalnumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeLessThanOrEqual(number)</code></h3>
-<p>Pentru comparea numerele în virgula mobilă, puteţi utiliza <code>toBeLessThanOrEqual</code>. De exemplu, dacă doriţi să testaţi că <code>ouncesPerCan()</code> returnează o valoare de cel mult 12 uncii, vom scrie:</p>
+<p>To compare floating point numbers, you can use <code>toBeLessThanOrEqual</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of at most 12 ounces, write:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is at most 12'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeLessThanOrEqual(<span class="hljs-number">12</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobeinstanceofclass"></a><a href="#tobeinstanceofclass" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeInstanceOf(Class)</code></h3>
-<p>Utilizaţi <code>.toBeInstanceOf(Class)</code> pentru a verifica dacă un obiect este o instanță a unei clase. Acest validator foloseste <code>instanceof</code> în spate.</p>
+<p>Use <code>.toBeInstanceOf(Class)</code> to check that an object is an instance of a class. This matcher uses <code>instanceof</code> underneath.</p>
 <pre><code class="hljs css language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span> </span>{}
 
 expect(<span class="hljs-keyword">new</span> A()).toBeInstanceOf(A);
@@ -669,7 +679,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 expect(<span class="hljs-keyword">new</span> A()).toBeInstanceOf(<span class="hljs-built_in">Function</span>); <span class="hljs-comment">// throws</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobenull"></a><a href="#tobenull" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeNull()</code></h3>
-<p><code>.toBeNull()</code> este la fel ca <code>.toBe(null)</code>, dar mesajele de eroare sunt puțin mai frumoase. Așadar folosiți <code>.toBeNull()</code> atunci când doriţi să verificați dacă ceva este null.</p>
+<p><code>.toBeNull()</code> is the same as <code>.toBe(null)</code> but the error messages are a bit nicer. So use <code>.toBeNull()</code> when you want to check that something is null.</p>
 <pre><code class="hljs css language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bloop</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
 }
@@ -679,7 +689,7 @@ test(<span class="hljs-string">'bloop returns null'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobetruthy"></a><a href="#tobetruthy" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeTruthy()</code></h3>
-<p>Utilizaţi <code>.toBeTruthy</code> atunci când nu vă pasă valoarea exacta, ci vreți doar să vă asigurați că valoarea este adevărată într-un context boolean. De exemplu, să presupunem că aveţi următorul cod:</p>
+<p>Use <code>.toBeTruthy</code> when you don't care what a value is, you just want to ensure a value is true in a boolean context. For example, let's say you have some application code that looks like:</p>
 <pre><code class="hljs css language-js">drinkSomeLaCroix();
 <span class="hljs-keyword">if</span> (thirstInfo()) {
   drinkMoreLaCroix();
@@ -691,7 +701,7 @@ test(<span class="hljs-string">'bloop returns null'</span>, () =&gt; {
   expect(thirstInfo()).toBeTruthy();
 });
 </code></pre>
-<p>În JavaScript, există şase valori false: <code>false</code>, <code>0</code>, <code>&quot;&quot;</code>, <code>null</code>, <code>undefined</code>, și <code>NaN</code>. Orice altceva este adevărat.</p>
+<p>In JavaScript, there are six falsy values: <code>false</code>, <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code>, and <code>NaN</code>. Everything else is truthy.</p>
 <h3><a class="anchor" aria-hidden="true" id="tobeundefined"></a><a href="#tobeundefined" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeUndefined()</code></h3>
 <p>Utilizaţi <code>.toBeUndefined</code> pentru a verifica dacă o variabilă este nedefinită. De exemplu, dacă doriţi să verificaţi dacă o funcţie <code>bestDrinkForFlavor(flavor)</code> returnează <code>undefined</code> pentru aroma <code>'octopus'</code>:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the best drink for octopus flavor is undefined'</span>, () =&gt; {
@@ -868,7 +878,7 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tomatchsnapshotpropertymatchers-snapshotname"></a><a href="#tomatchsnapshotpropertymatchers-snapshotname" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toMatchSnapshot(propertyMatchers, snapshotName)</code></h3>
-<p>Acesta asigură faptul că o valoare corespunde celei mai recente imagini salvate. Urmați <a href="/docs/ro/snapshot-testing">Ghidul pentru Testarea de imagine</a> pentru mai multe informaţii.</p>
+<p>This ensures that a value matches the most recent snapshot. Check out <a href="/docs/ro/snapshot-testing">the Snapshot Testing guide</a> for more information.</p>
 <p>The optional <code>propertyMatchers</code> argument allows you to specify asymmetric matchers which are verified instead of the exact values. Any value will be matched exactly if not provided as a matcher.</p>
 <p>The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.</p>
 <p><em>Notă: În timp ce testarea de imagine este utilizată cel mai frecvent cu componente React, orice valoare serializabilă poate fi folosită ca imagine.</em></p>
@@ -880,6 +890,7 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 <p>Differences from <code>.toEqual</code>:</p>
 <ul>
 <li>Keys with <code>undefined</code> properties are checked. e.g. <code>{a: undefined, b: 2}</code> does not match <code>{b: 2}</code> when using <code>.toStrictEqual</code>.</li>
+<li>Array sparseness is checked. e.g. <code>[, 1]</code> does not match <code>[undefined, 1]</code> when using <code>.toStrictEqual</code>.</li>
 <li>Object types are checked to be equal. e.g. A class instance with fields <code>a</code> and <code>b</code> will not equal a literal object with fields <code>a</code> and <code>b</code>.</li>
 </ul>
 <pre><code class="hljs css language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LaCroix</span> </span>{
@@ -904,7 +915,14 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
   }).toThrow();
 });
 </code></pre>
-<p>Dacă doriţi să testaţi că este aruncată o eroare specifică, puteți pasa un argument la <code>toThrow</code>. The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. De exemplu, să presupunem că <code>drinkFlavor</code> este implementată în felul următor:</p>
+<p>To test that a specific error is thrown, you can provide an argument:</p>
+<ul>
+<li>regular expression: error message <strong>matches</strong> the pattern</li>
+<li>string: error message <strong>includes</strong> the substring</li>
+<li>error object: error message is <strong>equal to</strong> the message property of the object</li>
+<li>error class: error object is <strong>instance of</strong> class</li>
+</ul>
+<p>De exemplu, să presupunem că <code>drinkFlavor</code> este implementată în felul următor:</p>
 <pre><code class="hljs css language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">drinkFlavor</span>(<span class="hljs-params">flavor</span>) </span>{
   <span class="hljs-keyword">if</span> (flavor == <span class="hljs-string">'octopus'</span>) {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> DisgustingFlavorError(<span class="hljs-string">'yuck, octopus flavor'</span>);
@@ -924,6 +942,7 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
 
   <span class="hljs-comment">// Test the exact error message</span>
   expect(drinkOctopus).toThrowError(<span class="hljs-regexp">/^yuck, octopus flavor$/</span>);
+  expect(drinkOctopus).toThrowError(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'yuck, octopus flavor'</span>));
 
   <span class="hljs-comment">// Test that we get a DisgustingFlavorError</span>
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
@@ -974,6 +993,6 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
                 apiKey: '833906d7486e4059359fa58823c4ef56',
                 indexName: 'jest',
                 inputSelector: '#search_input_react',
-                algoliaOptions: {"facetFilters":["language:ro","version:23.6"]}
+                algoliaOptions: {"facetFilters":["language:ro","version:24.0"]}
               });
             </script></body></html>

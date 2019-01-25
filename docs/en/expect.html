@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Expect · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;When you&#x27;re writing tests, you often need to check that values meet certain conditions. &lt;code&gt;expect&lt;/code&gt; gives you access to a number of &amp;quot;matchers&amp;quot; that let you validate different things.&lt;/p&gt;
-"/><meta name="docsearch:version" content="23.6"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Expect · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/index.html"/><meta property="og:description" content="&lt;p&gt;When you&#x27;re writing tests, you often need to check that values meet certain conditions. &lt;code&gt;expect&lt;/code&gt; gives you access to a number of &amp;quot;matchers&amp;quot; that let you validate different things.&lt;/p&gt;
+"/><meta name="docsearch:version" content="24.0"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Expect · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/index.html"/><meta property="og:description" content="&lt;p&gt;When you&#x27;re writing tests, you often need to check that values meet certain conditions. &lt;code&gt;expect&lt;/code&gt; gives you access to a number of &amp;quot;matchers&amp;quot; that let you validate different things.&lt;/p&gt;
 "/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -8,7 +8,7 @@
 
               ga('create', 'UA-44373548-17', 'auto');
               ga('send', 'pageview');
-            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/en"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/en/versions"><h3>23.6</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/en/getting-started" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/docs/en/api" target="_self">API</a></li><li class=""><a href="/en/help" target="_self">Help</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/ja/expect">日本語</a></li><li><a href="/docs/es-ES/expect">Español</a></li><li><a href="/docs/pt-BR/expect">Português (Brasil)</a></li><li><a href="/docs/ro/expect">Română</a></li><li><a href="/docs/ru/expect">Русский</a></li><li><a href="/docs/uk/expect">Українська</a></li><li><a href="/docs/zh-Hans/expect">简体中文</a></li></ul></div></li><script>
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/en"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/en/versions"><h3>24.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/en/getting-started" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/docs/en/api" target="_self">API</a></li><li class=""><a href="/en/help" target="_self">Help</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/ja/expect">日本語</a></li><li><a href="/docs/es-ES/expect">Español</a></li><li><a href="/docs/pt-BR/expect">Português (Brasil)</a></li><li><a href="/docs/ro/expect">Română</a></li><li><a href="/docs/ru/expect">Русский</a></li><li><a href="/docs/uk/expect">Українська</a></li><li><a href="/docs/zh-Hans/expect">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(event) {
@@ -20,7 +20,7 @@
             languagesDropDown.className = "hide";
           }
         });
-      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/en/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/en/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/en/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/en/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/en/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/en/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/en/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/en/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/en/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/en/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/en/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/en/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/en/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/en/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/en/troubleshooting">Troubleshooting</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/en/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/en/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/api">Globals</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/en/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/en/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/en/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/en/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/en/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/en/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/en/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/en/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/en/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/en/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/en/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/en/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/en/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/en/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/en/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/en/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/en/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/en/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/en/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/en/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/en/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/en/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/en/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/api">Globals</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/en/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/en/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/en/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/en/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/en/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
             var coll = document.getElementsByClassName('collapsible');
             var checkActiveCategory = true;
             for (var i = 0; i < coll.length; i++) {
@@ -204,14 +204,21 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
   yourMatcher(x, y, z) {
     <span class="hljs-keyword">return</span> {
       <span class="hljs-attr">pass</span>: <span class="hljs-literal">true</span>,
-      <span class="hljs-attr">message</span>: <span class="hljs-string">''</span>,
+      <span class="hljs-attr">message</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">''</span>,
     };
   },
 });
 </code></pre>
 <p>These helper functions and properties can be found on <code>this</code> inside a custom matcher:</p>
 <h4><a class="anchor" aria-hidden="true" id="thisisnot"></a><a href="#thisisnot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.isNot</code></h4>
-<p>A boolean to let you know this matcher was called with the negated <code>.not</code> modifier allowing you to flip your assertion.</p>
+<p>A boolean to let you know this matcher was called with the negated <code>.not</code> modifier allowing you to flip your assertion and display a clear and correct matcher hint (see example code).</p>
+<h4><a class="anchor" aria-hidden="true" id="thispromise"></a><a href="#thispromise" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.promise</code></h4>
+<p>A string allowing you to display a clear and correct matcher hint:</p>
+<ul>
+<li><code>'rejects'</code> if matcher was called with the promise <code>.rejects</code> modifier</li>
+<li><code>'resolves'</code> if matcher was called with the promise <code>.resolves</code> modifier</li>
+<li><code>''</code> if matcher was not called with a promise modifier</li>
+</ul>
 <h4><a class="anchor" aria-hidden="true" id="thisequalsa-b"></a><a href="#thisequalsa-b" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.equals(a, b)</code></h4>
 <p>This is a deep-equality function that will return <code>true</code> if two objects have the same values (recursively).</p>
 <h4><a class="anchor" aria-hidden="true" id="thisexpand"></a><a href="#thisexpand" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.expand</code></h4>
@@ -222,28 +229,31 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> diff = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-diff'</span>);
 expect.extend({
   toBe(received, expected) {
+    <span class="hljs-keyword">const</span> options = {
+      <span class="hljs-attr">comment</span>: <span class="hljs-string">'Object.is equality'</span>,
+      <span class="hljs-attr">isNot</span>: <span class="hljs-keyword">this</span>.isNot,
+      <span class="hljs-attr">promise</span>: <span class="hljs-keyword">this</span>.promise,
+    };
+
     <span class="hljs-keyword">const</span> pass = <span class="hljs-built_in">Object</span>.is(received, expected);
 
     <span class="hljs-keyword">const</span> message = pass
       ? <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
-          <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'.not.toBe'</span>) +
+          <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'toBe'</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, options) +
           <span class="hljs-string">'\n\n'</span> +
-          <span class="hljs-string">`Expected value to not be (using Object.is):\n`</span> +
-          <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
-          <span class="hljs-string">`Received:\n`</span> +
-          <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>
+          <span class="hljs-string">`Expected: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
+          <span class="hljs-string">`Received: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>
       : <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-          <span class="hljs-keyword">const</span> diffString = diff(expected, received, {
+          <span class="hljs-keyword">const</span> difference = diff(expected, received, {
             <span class="hljs-attr">expand</span>: <span class="hljs-keyword">this</span>.expand,
           });
           <span class="hljs-keyword">return</span> (
-            <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'.toBe'</span>) +
+            <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'toBe'</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, options) +
             <span class="hljs-string">'\n\n'</span> +
-            <span class="hljs-string">`Expected value to be (using Object.is):\n`</span> +
-            <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
-            <span class="hljs-string">`Received:\n`</span> +
-            <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span> +
-            (diffString ? <span class="hljs-string">`\n\nDifference:\n\n<span class="hljs-subst">${diffString}</span>`</span> : <span class="hljs-string">''</span>)
+            (difference &amp;&amp; difference.includes(<span class="hljs-string">'- Expect'</span>)
+              ? <span class="hljs-string">`Difference:\n\n<span class="hljs-subst">${diffString}</span>`</span>
+              : <span class="hljs-string">`Expected: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
+                <span class="hljs-string">`Received: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>)
           );
         };
 
@@ -389,23 +399,23 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="expectnotstringcontainingstring"></a><a href="#expectnotstringcontainingstring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringContaining(string)</code></h3>
-<p><code>expect.not.stringContaining(string)</code> matches the received string that does not contain the exact expected string.</p>
+<p><code>expect.not.stringContaining(string)</code> matches the received value if it is not a string or if it is a string that does not contain the exact expected string.</p>
 <p>It is the inverse of <code>expect.stringContaining</code>.</p>
 <pre><code class="hljs css language-js">describe(<span class="hljs-string">'not.stringContaining'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> expected = <span class="hljs-string">'Hello world!'</span>;
 
-  it(<span class="hljs-string">'matches if the actual string does not contain the expected substring'</span>, () =&gt; {
+  it(<span class="hljs-string">'matches if the received value does not contain the expected substring'</span>, () =&gt; {
     expect(<span class="hljs-string">'How are you?'</span>).toEqual(expect.not.stringContaining(expected));
   });
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="expectnotstringmatchingstring-regexp"></a><a href="#expectnotstringmatchingstring-regexp" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringMatching(string | regexp)</code></h3>
-<p><code>expect.not.stringMatching(string | regexp)</code> matches the received string that does not match the expected regexp.</p>
+<p><code>expect.not.stringMatching(string | regexp)</code> matches the received value if it is not a string or if it is a string that does not match the expected string or regular expression.</p>
 <p>It is the inverse of <code>expect.stringMatching</code>.</p>
 <pre><code class="hljs css language-js">describe(<span class="hljs-string">'not.stringMatching'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> expected = <span class="hljs-regexp">/Hello world!/</span>;
 
-  it(<span class="hljs-string">'matches if the actual string does not match the expected regex'</span>, () =&gt; {
+  it(<span class="hljs-string">'matches if the received value does not match the expected regex'</span>, () =&gt; {
     expect(<span class="hljs-string">'How are you?'</span>).toEqual(expect.not.stringMatching(expected));
   });
 });
@@ -426,9 +436,9 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="expectstringcontainingstring"></a><a href="#expectstringcontainingstring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringContaining(string)</code></h3>
-<p><code>expect.stringContaining(string)</code> matches the received string that contains the exact expected string.</p>
+<p><code>expect.stringContaining(string)</code> matches the received value if it is a string that contains the exact expected string.</p>
 <h3><a class="anchor" aria-hidden="true" id="expectstringmatchingstring-regexp"></a><a href="#expectstringmatchingstring-regexp" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringMatching(string | regexp)</code></h3>
-<p><code>expect.stringMatching(string | regexp)</code> matches the received string that matches the expected regexp.</p>
+<p><code>expect.stringMatching(string | regexp)</code> matches the received value if it is a string that matches the expected string or regular expression.</p>
 <p>You can use it instead of a literal value:</p>
 <ul>
 <li>in <code>toEqual</code> or <code>toBeCalledWith</code></li>
@@ -935,6 +945,7 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 <p>Differences from <code>.toEqual</code>:</p>
 <ul>
 <li>Keys with <code>undefined</code> properties are checked. e.g. <code>{a: undefined, b: 2}</code> does not match <code>{b: 2}</code> when using <code>.toStrictEqual</code>.</li>
+<li>Array sparseness is checked. e.g. <code>[, 1]</code> does not match <code>[undefined, 1]</code> when using <code>.toStrictEqual</code>.</li>
 <li>Object types are checked to be equal. e.g. A class instance with fields <code>a</code> and <code>b</code> will not equal a literal object with fields <code>a</code> and <code>b</code>.</li>
 </ul>
 <pre><code class="hljs css language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LaCroix</span> </span>{
@@ -959,7 +970,14 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
   }).toThrow();
 });
 </code></pre>
-<p>If you want to test that a specific error gets thrown, you can provide an argument to <code>toThrow</code>. The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. For example, let's say that <code>drinkFlavor</code> is coded like this:</p>
+<p>To test that a specific error is thrown, you can provide an argument:</p>
+<ul>
+<li>regular expression: error message <strong>matches</strong> the pattern</li>
+<li>string: error message <strong>includes</strong> the substring</li>
+<li>error object: error message is <strong>equal to</strong> the message property of the object</li>
+<li>error class: error object is <strong>instance of</strong> class</li>
+</ul>
+<p>For example, let's say that <code>drinkFlavor</code> is coded like this:</p>
 <pre><code class="hljs css language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">drinkFlavor</span>(<span class="hljs-params">flavor</span>) </span>{
   <span class="hljs-keyword">if</span> (flavor == <span class="hljs-string">'octopus'</span>) {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> DisgustingFlavorError(<span class="hljs-string">'yuck, octopus flavor'</span>);
@@ -979,6 +997,7 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
 
   <span class="hljs-comment">// Test the exact error message</span>
   expect(drinkOctopus).toThrowError(<span class="hljs-regexp">/^yuck, octopus flavor$/</span>);
+  expect(drinkOctopus).toThrowError(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'yuck, octopus flavor'</span>));
 
   <span class="hljs-comment">// Test that we get a DisgustingFlavorError</span>
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
@@ -1029,6 +1048,6 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
                 apiKey: '833906d7486e4059359fa58823c4ef56',
                 indexName: 'jest',
                 inputSelector: '#search_input_react',
-                algoliaOptions: {"facetFilters":["language:en","version:23.6"]}
+                algoliaOptions: {"facetFilters":["language:en","version:24.0"]}
               });
             </script></body></html>
