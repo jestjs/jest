@@ -14,7 +14,9 @@ const GridBlock = CompLibrary.GridBlock;
 const translate = require('../../server/translate.js').translate;
 const backers = require(process.cwd() + '/backers.json');
 const siteConfig = require(process.cwd() + '/siteConfig.js');
-const getUrl = (url, language) => siteConfig.baseUrl + 'docs/' + language + url;
+const getDocsUrl = (url, language) =>
+  siteConfig.baseUrl + 'docs/' + language + url;
+const getUrl = (url, language) => siteConfig.baseUrl + language + url;
 
 class Button extends React.Component {
   render() {
@@ -235,13 +237,13 @@ const HeroInteractive = ({config: {repoUrl}, language}) => (
       </div>
       <Hand />
       <div className="jest-button-container">
-        <Button href={getUrl('/getting-started.html', language)}>
+        <Button href={getDocsUrl('/getting-started.html', language)}>
           <translate>Get Started</translate>
         </Button>
-        <Button href={getUrl('/getting-started.html', language)}>
+        <Button href={getDocsUrl('/getting-started.html', language)}>
           <translate>Docs</translate>
         </Button>
-        <Button href={getUrl('/configuration', language)}>
+        <Button href={getDocsUrl('/configuration', language)}>
           <translate>Config</translate>
         </Button>
         <Button href={getUrl('/help', language)}>
