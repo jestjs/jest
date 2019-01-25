@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "23.6.0",
+  "version": "24.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,14 +17,14 @@
     "fast-json-stable-stringify": "^2.0.0",
     "glob": "^7.1.3",
     "graceful-fs": "^4.1.15",
-    "jest-config": "^23.6.0",
-    "jest-haste-map": "^23.6.0",
-    "jest-message-util": "^23.4.0",
-    "jest-regex-util": "^23.3.0",
-    "jest-resolve": "^23.6.0",
-    "jest-snapshot": "^23.6.0",
-    "jest-util": "^23.4.0",
-    "jest-validate": "^23.6.0",
+    "jest-config": "^24.0.0",
+    "jest-haste-map": "^24.0.0",
+    "jest-message-util": "^24.0.0",
+    "jest-regex-util": "^24.0.0",
+    "jest-resolve": "^24.0.0",
+    "jest-snapshot": "^24.0.0",
+    "jest-util": "^24.0.0",
+    "jest-validate": "^24.0.0",
     "micromatch": "^3.1.10",
     "realpath-native": "^1.0.0",
     "slash": "^2.0.0",
@@ -33,13 +33,14 @@
     "yargs": "^12.0.2"
   },
   "devDependencies": {
-    "jest-environment-jsdom": "^23.4.0",
-    "jest-environment-node": "^23.4.0"
+    "jest-environment-jsdom": "^24.0.0",
+    "jest-environment-node": "^24.0.0"
   },
   "bin": {
     "jest-runtime": "./bin/jest-runtime.js"
   },
   "engines": {
     "node": ">= 6"
-  }
+  },
+  "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
 }
