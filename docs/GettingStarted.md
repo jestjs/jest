@@ -84,7 +84,7 @@ jest --init
 To use [Babel](http://babeljs.io/), install required dependencies via `yarn`:
 
 ```bash
-yarn add --dev babel-jest @babel/core @babel/preset-env @babel/preset-react
+yarn add --dev babel-jest @babel/core @babel/preset-env
 ```
 
 Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
@@ -101,36 +101,22 @@ module.exports = {
         },
       },
     ],
-    '@babel/preset-react',
   ],
 };
 ```
 
-If you are not using React you can exclude `@babel/preset-react` from the above commands/config.
-
-The ideal configuration for Babel will depend on your project. See [Babel's docs](https://babeljs.io/docs/en/babel-preset-env) for more details.
+**The ideal configuration for Babel will depend on your project.** See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
 Jest will set `process.env.NODE_ENV` to `'test'` if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
 
 ```javascript
 // babel.config.js
-module.exports =
-  process.env.NODE_ENV === 'test'
-    ? {
-        presets: [
-          [
-            '@babel/preset-env',
-            {
-              targets: {
-                node: 'current',
-              },
-            },
-          ],
-        ],
-      }
-    : {
-        // Configuration needed for production.
-      };
+module.exports = api => {
+  const isTest = api.env('test');
+  // You can use isTest to determine what presets and plugins to use.
+
+  return ...
+};
 ```
 
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
