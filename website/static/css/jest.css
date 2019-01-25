@@ -253,11 +253,6 @@
   color: var(--grey3);
 }
 
-.navigationSlider .slidingNav ul li a:hover {
-  color: var(--green);
-  text-decoration: underline;
-}
-
 div.navigationSlider .slidingNav ul {
   background: #ffffff;
 }

@@ -1,12 +1,12 @@
 /* Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved. */
 
-.mainContainer .intro a {
+.mainContainer a {
   text-decoration: underline;
 }
 
 .mainContainer a:hover,
 .mainContainer a:active {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .fixedHeaderContainer header img.logo {
