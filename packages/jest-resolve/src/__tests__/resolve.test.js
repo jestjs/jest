@@ -8,14 +8,16 @@
 
 'use strict';
 
-jest.mock('../__mocks__/userResolver');
+import fs from 'fs';
+import path from 'path';
+import {ModuleMap} from 'jest-haste-map';
+// eslint-disable-next-line import/default
+import Resolver from '../';
+import userResolver from '../__mocks__/userResolver';
+import nodeModulesPaths from '../nodeModulesPaths';
+import defaultResolver from '../defaultResolver';
 
-const fs = require('fs');
-const path = require('path');
-const ModuleMap = require('jest-haste-map').ModuleMap;
-const Resolver = require('../');
-const userResolver = require('../__mocks__/userResolver');
-const nodeModulesPaths = require('../nodeModulesPaths').default;
+jest.mock('../__mocks__/userResolver');
 
 beforeEach(() => {
   userResolver.mockClear();
@@ -69,12 +71,14 @@ describe('findNodeModule', () => {
 
     expect(newPath).toBe('module');
     expect(userResolver.mock.calls[0][0]).toBe('test');
-    expect(userResolver.mock.calls[0][1]).toEqual({
+    expect(userResolver.mock.calls[0][1]).toStrictEqual({
       basedir: '/',
       browser: true,
+      defaultResolver,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
       paths: (nodePaths || []).concat(['/something']),
+      rootDir: undefined,
     });
   });
 });
