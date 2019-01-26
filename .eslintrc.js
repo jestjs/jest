@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const path = require('path');
-const customImportResolver = path.resolve('./eslintImportResolver');
+const customImportResolver = require.resolve('./eslintImportResolver');
 
 module.exports = {
   extends: [
