@@ -4,10 +4,11 @@
 
 ### Fixes
 
-- `[website]` Fix broken help link on homepage ([#7706](https://github.com/facebook/jest/pull/7706))
+- `[jest-cli]` Break dependency cycle when using Jest programmatically ([#7707](https://github.com/facebook/jest/pull/7707)
 
 ### Chore & Maintenance
 
+- `[website]` Fix broken help link on homepage ([#7706](https://github.com/facebook/jest/pull/7706))
 - `[docs]` Changed Babel setup documentation to correctly compile `async/await` ([#7701](https://github.com/facebook/jest/pull/7701))
 
 ### Performance

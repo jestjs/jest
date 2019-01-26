@@ -283,7 +283,7 @@ class Index extends React.Component {
                   It works with projects using: [Babel](https://babeljs.io/),
                   [TypeScript](https://www.typescriptlang.org/),
                   [Node](https://nodejs.org/en/), [React](https://reactjs.org),
-                  [Angular](https://angularjs.org), [Vue](https://vuejs.org) and
+                  [Angular](https://angular.io), [Vue](https://vuejs.org) and
                   more!
                 </translate>
               </MarkdownBlock>
