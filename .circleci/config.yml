@@ -37,7 +37,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: yarn --no-progress --ignore-engines --frozen-lockfile
+      - run: yarn --no-progress --frozen-lockfile --ignore-engines
       - save-cache: *save-cache
       - run:
           # react-native does not work with node 6
