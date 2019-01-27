@@ -7,14 +7,14 @@ PASS __tests__/console.test.js
   ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
     Attempted to log "hello!".
 
-       9 | test('throws error', () => {
-      10 |   new Promise(resolve => setTimeout(resolve, 500)).then(() => {
-    > 11 |     console.log('hello!');
+      11 |   // eslint-disable-next-line prefer-arrow-callback
+      12 |   new Promise(resolve => setTimeout(resolve, 500)).then(function log() {
+    > 13 |     console.log('hello!');
          |             ^
-      12 |   });
-      13 | });
-      14 |
+      14 |   });
+      15 | });
+      16 |
 
       at Function.write (../../packages/jest-util/build/BufferedConsole.js:82:12)
-      at log (__tests__/console.test.js:11:13)
+      at log (__tests__/console.test.js:13:13)
 `;
