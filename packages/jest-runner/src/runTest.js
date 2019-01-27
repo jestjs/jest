@@ -7,11 +7,13 @@
  * @flow
  */
 
+import type {ConsoleBuffer} from 'types/Console';
 import type {EnvironmentClass} from 'types/Environment';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Resolver} from 'types/Resolve';
 import type {TestFramework} from 'types/TestRunner';
 import type {TestResult} from 'types/TestResult';
+import type {SourceMapRegistry} from 'types/SourceMaps';
 import type RuntimeClass from 'jest-runtime';
 
 import fs from 'graceful-fs';
@@ -33,6 +35,27 @@ type RunTestInternalResult = {
   leakDetector: ?LeakDetector,
   result: TestResult,
 };
+
+function freezeConsole(buffer: ConsoleBuffer, config: ProjectConfig) {
+  // $FlowFixMe: overwrite it for pretty errors. `Object.freeze` works, but gives ugly errors
+  buffer.push = function fakeConsolePush({message}) {
+    const error = new ErrorWithStack(
+      `Cannot log after tests are done. Did you forget to wait for something async in your test?\nAttempted to log "${message}".`,
+      fakeConsolePush,
+    );
+
+    const formattedError = formatExecError(
+      error,
+      config,
+      {noStackTrace: false},
+      undefined,
+      true,
+    );
+
+    process.stderr.write(formattedError);
+    process.exitCode = 1;
+  };
+}
 
 // Keeping the core of "runTest" as a separate function (as "runTestInternal")
 // is key to be able to detect memory leaks. Since all variables are local to
@@ -76,29 +99,35 @@ async function runTestInternal(
 
   let runtime = undefined;
 
+  const getRuntimeSourceMaps: () => ?SourceMapRegistry = () =>
+    runtime && runtime.getSourceMaps();
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type, message) =>
     getConsoleOutput(
       config.cwd,
       !!globalConfig.verbose,
       // 4 = the console call is buried 4 stack frames deep
-      BufferedConsole.write(
-        [],
-        type,
-        message,
-        4,
-        runtime && runtime.getSourceMaps(),
-      ),
+      BufferedConsole.write([], type, message, 4, getRuntimeSourceMaps()),
     );
 
   let testConsole;
 
   if (globalConfig.silent) {
-    testConsole = new NullConsole(consoleOut, process.stderr, consoleFormatter);
+    testConsole = new NullConsole(
+      consoleOut,
+      process.stderr,
+      consoleFormatter,
+      getRuntimeSourceMaps,
+    );
   } else if (globalConfig.verbose) {
-    testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
+    testConsole = new Console(
+      consoleOut,
+      process.stderr,
+      consoleFormatter,
+      getRuntimeSourceMaps,
+    );
   } else {
-    testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
+    testConsole = new BufferedConsole(getRuntimeSourceMaps);
   }
 
   const environment = new TestEnvironment(config, {
@@ -196,6 +225,8 @@ async function runTestInternal(
 
       throw err;
     }
+
+    freezeConsole(testConsole.getBuffer(), config);
 
     const testCount =
       result.numPassingTests +

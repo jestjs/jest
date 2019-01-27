@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`console printing 1`] = `
+PASS __tests__/console.test.js
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "hello!".
+
+       9 | test('throws error', () => {
+      10 |   setTimeout(() => {
+    > 11 |     console.log('hello!');
+         |             ^
+      12 |   }, 500);
+      13 | });
+      14 |
+
+      at Function.write (../../packages/jest-util/build/BufferedConsole.js:82:12)
+      at Timeout.log [as _onTimeout] (__tests__/console.test.js:11:13)
+`;
