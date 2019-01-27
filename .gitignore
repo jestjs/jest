@@ -12,6 +12,8 @@
 /e2e/transform/*/node_modules
 
 /node_modules
+/.pnp.js
+/.pnp
 
 /packages/*/build/
 /packages/*/build-es5/

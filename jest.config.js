@@ -22,11 +22,12 @@ module.exports = {
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
-  projects: ['<rootDir>', '<rootDir>/examples/*/'],
+  projects: ['<rootDir>'], // TODO examples
+  resolver: require.resolve('jest-pnp-resolver'),
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotSerializers: [
     '<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js',
-    'jest-snapshot-serializer-raw',
+    require.resolve('jest-snapshot-serializer-raw'),
   ],
   testEnvironment: './packages/jest-environment-node',
   testPathIgnorePatterns: [

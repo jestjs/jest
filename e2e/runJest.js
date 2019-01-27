@@ -51,11 +51,16 @@ export default function runJest(
 
   const env = {...process.env, FORCE_COLOR: 0};
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
-  const result = spawnSync(JEST_PATH, args || [], {
-    cwd: dir,
-    env,
-    reject: false,
-  });
+  const result = spawnSync(
+    JEST_PATH,
+    // TODO this is ugly and a problem for e2e tests related to config/resolution
+    ['--resolver', require.resolve('jest-pnp-resolver'), ...(args || [])],
+    {
+      cwd: dir,
+      env,
+      reject: false,
+    },
+  );
 
   // For compat with cross-spawn
   result.status = result.code;

@@ -6,10 +6,12 @@
  */
 'use strict';
 
-const path = require('path');
-const webpack = require('webpack');
 const camelCase = require('camelcase');
+const path = require('path');
 const rimraf = require('rimraf');
+
+const webpack = require('webpack');
+const PnpWebpackPlugin = require(`pnp-webpack-plugin`);
 
 const babelEs5Options = {
   // Dont load other config files
@@ -57,12 +59,16 @@ function browserBuild(pkgName, entryPath, destination) {
           ],
         },
         resolve: {
+          plugins: [PnpWebpackPlugin],
           alias: {
             chalk: path.resolve(
               __dirname,
               '../packages/expect/build/fakeChalk.js'
             ),
           },
+        },
+        resolveLoader: {
+          plugins: [PnpWebpackPlugin.moduleLoader(module)],
         },
         node: {
           fs: 'empty',

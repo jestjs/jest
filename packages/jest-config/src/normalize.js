@@ -75,7 +75,8 @@ const setupPreset = (
   let preset;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
-    presetPath.startsWith('.')
+    // TODO test and document absolute path support
+    path.isAbsolute(presetPath) || presetPath.startsWith('.')
       ? presetPath
       : path.join(presetPath, PRESET_NAME),
     {

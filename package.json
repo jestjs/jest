@@ -3,6 +3,7 @@
   "devDependencies": {
     "@babel/core": "^7.1.0",
     "@babel/plugin-transform-strict-mode": "^7.0.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
@@ -26,6 +27,7 @@
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "~0.0.19",
+    "estraverse": "^4.2.0",
     "execa": "^1.0.0",
     "flow-bin": "^0.91.0",
     "glob": "^7.1.1",
@@ -35,6 +37,7 @@
     "istanbul-lib-coverage": "^2.0.2",
     "jasmine-reporters": "^2.2.0",
     "jest-junit": "^6.0.1",
+    "jest-pnp-resolver": "^1.0.2",
     "jest-silent-reporter": "^0.1.1",
     "jest-snapshot-serializer-raw": "^1.1.0",
     "jquery": "^3.2.1",
@@ -48,11 +51,14 @@
     "mkdirp": "^0.5.1",
     "mocha": "^5.0.1",
     "mock-fs": "^4.4.1",
+    "pnp-webpack-plugin": "^1.2.1",
     "prettier": "^1.16.1",
     "prettylint": "^1.0.0",
     "progress": "^2.0.0",
     "promise": "^8.0.2",
     "readable-stream": "^3.0.3",
+    "realpath-native": "^1.0.0",
+    "request": "^2.88.0",
     "resolve": "^1.4.0",
     "rimraf": "^2.6.2",
     "slash": "^2.0.0",
@@ -83,6 +89,9 @@
     "test": "yarn typecheck && yarn lint && yarn jest",
     "typecheck": "flow check --include-warnings",
     "watch": "yarn build && node ./scripts/watch.js"
+  },
+  "installConfig": {
+    "pnp": true
   },
   "workspaces": {
     "packages": [
