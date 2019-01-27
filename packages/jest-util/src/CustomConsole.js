@@ -73,7 +73,7 @@ export default class CustomConsole extends Console {
 
     this._storeInBuffer(type, message);
     this._logToParentConsole(
-      this._formatBuffer(type, '  '.repeat(this._groupDepth)),
+      this._formatBuffer(type, '  '.repeat(this._groupDepth) + message),
     );
 
     // I have no idea why this is needed. If not included, it breaks ./__tests__/console.test.js ¯\_(ツ)_/¯
