@@ -39,8 +39,8 @@ function freezeConsole(
   testConsole: BufferedConsole | Console | NullConsole,
   config: ProjectConfig,
 ) {
-  // $FlowFixMe: overwrite it for pretty errors. `Object.freeze` works, but gives ugly errors
-  testConsole._log = function fakeConsolePush({message}) {
+  // $FlowFixMe: overwrite it for pretty errors
+  testConsole._log = function fakeConsolePush(_type, message) {
     const error = new ErrorWithStack(
       chalk.red(
         `${chalk.bold(

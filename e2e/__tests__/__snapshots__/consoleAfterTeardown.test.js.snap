@@ -15,6 +15,6 @@ PASS __tests__/console.test.js
       15 | });
       16 |
 
-      at Function.write (../../packages/jest-util/build/BufferedConsole.js:82:12)
+      at BufferedConsole.log (../../packages/jest-util/build/BufferedConsole.js:169:10)
       at log (__tests__/console.test.js:13:13)
 `;
