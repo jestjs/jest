@@ -926,6 +926,7 @@ describe('preset', () => {
         moduleNameMapper: {b: 'b'},
         modulePathIgnorePatterns: ['b'],
         setupFiles: ['b'],
+        setupFilesAfterEnv: ['b'],
         transform: {b: 'b'},
       }),
       {virtual: true},
@@ -1105,6 +1106,18 @@ describe('preset', () => {
       ['c', '/node_modules/cc'],
       ['a', '/node_modules/aa'],
     ]);
+  });
+
+  test('extracts setupFilesAfterEnv from preset', () => {
+    const {options} = normalize(
+      {
+        preset: 'react-native',
+        rootDir: '/root/path/foo',
+      },
+      {},
+    );
+
+    expect(options.setupFilesAfterEnv).toEqual(['/node_modules/b']);
   });
 });
 
