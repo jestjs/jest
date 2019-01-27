@@ -140,7 +140,9 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> isTest = api.env(<span class="hljs-string">'test'</span>);
   <span class="hljs-comment">// You can use isTest to determine what presets and plugins to use.</span>
 
-  <span class="hljs-keyword">return</span> ...
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-comment">// ...</span>
+  };
 };
 </code></pre>
 <blockquote>
