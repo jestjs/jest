@@ -53,7 +53,8 @@ function freezeConsole(buffer: ConsoleBuffer, config: ProjectConfig) {
     );
 
     process.stderr.write(formattedError);
-    process.exitCode = 1;
+    // TODO: set exit code in Jest 25
+    // process.exitCode = 1;
   };
 }
 

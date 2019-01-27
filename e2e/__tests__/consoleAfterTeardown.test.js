@@ -15,6 +15,6 @@ test('console printing', () => {
   const {stderr, status} = runJest('console-after-teardown');
   const {rest} = extractSummary(stderr);
 
-  expect(status).toBe(1);
+  expect(status).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
 });
