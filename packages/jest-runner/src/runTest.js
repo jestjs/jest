@@ -7,13 +7,11 @@
  * @flow
  */
 
-import type {ConsoleBuffer} from 'types/Console';
 import type {EnvironmentClass} from 'types/Environment';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Resolver} from 'types/Resolve';
 import type {TestFramework} from 'types/TestRunner';
 import type {TestResult} from 'types/TestResult';
-import type {SourceMapRegistry} from 'types/SourceMaps';
 import type RuntimeClass from 'jest-runtime';
 
 import fs from 'graceful-fs';
@@ -37,9 +35,12 @@ type RunTestInternalResult = {
   result: TestResult,
 };
 
-function freezeConsole(buffer: ConsoleBuffer, config: ProjectConfig) {
+function freezeConsole(
+  testConsole: BufferedConsole | Console | NullConsole,
+  config: ProjectConfig,
+) {
   // $FlowFixMe: overwrite it for pretty errors. `Object.freeze` works, but gives ugly errors
-  buffer.push = function fakeConsolePush({message}) {
+  testConsole._log = function fakeConsolePush({message}) {
     const error = new ErrorWithStack(
       chalk.red(
         `${chalk.bold(
@@ -105,35 +106,29 @@ async function runTestInternal(
 
   let runtime = undefined;
 
-  const getRuntimeSourceMaps: () => ?SourceMapRegistry = () =>
-    runtime && runtime.getSourceMaps();
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type, message) =>
     getConsoleOutput(
       config.cwd,
       !!globalConfig.verbose,
       // 4 = the console call is buried 4 stack frames deep
-      BufferedConsole.write([], type, message, 4, getRuntimeSourceMaps()),
+      BufferedConsole.write(
+        [],
+        type,
+        message,
+        4,
+        runtime && runtime.getSourceMaps(),
+      ),
     );
 
   let testConsole;
 
   if (globalConfig.silent) {
-    testConsole = new NullConsole(
-      consoleOut,
-      process.stderr,
-      consoleFormatter,
-      getRuntimeSourceMaps,
-    );
+    testConsole = new NullConsole(consoleOut, process.stderr, consoleFormatter);
   } else if (globalConfig.verbose) {
-    testConsole = new Console(
-      consoleOut,
-      process.stderr,
-      consoleFormatter,
-      getRuntimeSourceMaps,
-    );
+    testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
   } else {
-    testConsole = new BufferedConsole(getRuntimeSourceMaps);
+    testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
   }
 
   const environment = new TestEnvironment(config, {
@@ -232,7 +227,7 @@ async function runTestInternal(
       throw err;
     }
 
-    freezeConsole(testConsole.getBuffer(), config);
+    freezeConsole(testConsole, config);
 
     const testCount =
       result.numPassingTests +

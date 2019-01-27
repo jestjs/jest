@@ -8,43 +8,29 @@
  */
 /* global stream$Writable */
 
-import type {
-  ConsoleBuffer,
-  LogCounters,
-  LogMessage,
-  LogTimers,
-  LogType,
-} from 'types/Console';
-import type {SourceMapRegistry} from 'types/SourceMaps';
+import type {LogType, LogMessage, LogCounters, LogTimers} from 'types/Console';
 
 import assert from 'assert';
 import {format} from 'util';
 import {Console} from 'console';
 import chalk from 'chalk';
 import clearLine from './clearLine';
-import getCallsite from './getCallsite';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
 export default class CustomConsole extends Console {
-  // This buffer exists so we can collect all logs for reporters
-  _buffer: ConsoleBuffer;
   _stdout: stream$Writable;
   _formatBuffer: Formatter;
   _counters: LogCounters;
   _timers: LogTimers;
   _groupDepth: number;
-  _getSourceMaps: ?() => ?SourceMapRegistry;
 
   constructor(
     stdout: stream$Writable,
     stderr: stream$Writable,
-    formatBuffer?: Formatter,
-    getSourceMaps?: () => ?SourceMapRegistry,
+    formatBuffer: ?Formatter,
   ) {
     super(stdout, stderr);
-    this._buffer = [];
-    this._getSourceMaps = getSourceMaps;
     this._formatBuffer = formatBuffer || ((type, message) => message);
     this._counters = {};
     this._timers = {};
@@ -55,23 +41,8 @@ export default class CustomConsole extends Console {
     super.log(message);
   }
 
-  _storeInBuffer(type: LogType, message: string) {
-    let origin = '';
-
-    if (this._getSourceMaps) {
-      const callsite = getCallsite(3, this._getSourceMaps());
-      origin = callsite.getFileName() + ':' + callsite.getLineNumber();
-    }
-
-    this._buffer.push({message, origin, type});
-    // we might want to keep this in the future for reporters (https://github.com/facebook/jest/issues/6441)
-    this._buffer.pop();
-  }
-
   _log(type: LogType, message: string) {
     clearLine(this._stdout);
-
-    this._storeInBuffer(type, message);
     this._logToParentConsole(
       this._formatBuffer(type, '  '.repeat(this._groupDepth) + message),
     );
@@ -167,6 +138,6 @@ export default class CustomConsole extends Console {
   }
 
   getBuffer() {
-    return this._buffer;
+    return null;
   }
 }
