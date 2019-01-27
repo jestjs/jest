@@ -397,6 +397,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     ),
   );
 
+  if (options.preset) {
+    options = setupPreset(options, options.preset);
+  }
+
   if (!options.setupFilesAfterEnv) {
     options.setupFilesAfterEnv = [];
   }
@@ -417,10 +421,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   if (options.setupTestFrameworkScriptFile) {
     options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
-  }
-
-  if (options.preset) {
-    options = setupPreset(options, options.preset);
   }
 
   options.testEnvironment = getTestEnvironment({

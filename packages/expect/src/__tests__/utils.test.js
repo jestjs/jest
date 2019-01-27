@@ -76,6 +76,18 @@ describe('getPath()', () => {
     });
   });
 
+  test('property is inherited', () => {
+    class A {}
+    A.prototype.a = 'a';
+
+    expect(getPath(new A(), 'a')).toEqual({
+      hasEndProp: true,
+      lastTraversedObject: new A(),
+      traversedPath: ['a'],
+      value: 'a',
+    });
+  });
+
   test('path breaks', () => {
     expect(getPath({a: {}}, 'a.b.c')).toEqual({
       hasEndProp: false,

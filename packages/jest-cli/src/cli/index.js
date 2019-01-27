@@ -33,8 +33,7 @@ import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
 import init from '../lib/init';
 import logDebugMessages from '../lib/log_debug_messages';
-
-const {getVersion} = require('../jest');
+import getVersion from '../version';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
