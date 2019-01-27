@@ -1,6 +1,7 @@
 [ignore]
 .*/examples/.*
 .*/node_modules/metro-bundler/.*
+.*/node_modules/metro-config/.*
 .*/node_modules/metro/.*
 .*/node_modules/module-deps/.*
 

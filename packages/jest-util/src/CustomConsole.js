@@ -27,20 +27,20 @@ import getCallsite from './getCallsite';
 type Formatter = (type: LogType, message: LogMessage) => string;
 
 export default class CustomConsole extends Console {
-  // This buffer exists so we can throw errors if it's changed after test env is torn down
+  // This buffer exists so we can collect all logs for reporters
   _buffer: ConsoleBuffer;
   _stdout: stream$Writable;
   _formatBuffer: Formatter;
   _counters: LogCounters;
   _timers: LogTimers;
   _groupDepth: number;
-  _getSourceMaps: () => ?SourceMapRegistry;
+  _getSourceMaps: ?() => ?SourceMapRegistry;
 
   constructor(
     stdout: stream$Writable,
     stderr: stream$Writable,
-    formatBuffer: ?Formatter,
-    getSourceMaps: () => ?SourceMapRegistry,
+    formatBuffer?: Formatter,
+    getSourceMaps?: () => ?SourceMapRegistry,
   ) {
     super(stdout, stderr);
     this._buffer = [];
@@ -56,8 +56,12 @@ export default class CustomConsole extends Console {
   }
 
   _storeInBuffer(message: string, type: LogType) {
-    const callsite = getCallsite(3, this._getSourceMaps());
-    const origin = callsite.getFileName() + ':' + callsite.getLineNumber();
+    let origin = '';
+
+    if (this._getSourceMaps) {
+      const callsite = getCallsite(3, this._getSourceMaps());
+      origin = callsite.getFileName() + ':' + callsite.getLineNumber();
+    }
 
     this._buffer.push({message, origin, type});
     // we might want to keep this in the future for reporters (https://github.com/facebook/jest/issues/6441)
