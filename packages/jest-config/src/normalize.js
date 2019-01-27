@@ -68,6 +68,16 @@ const mergeOptionWithPreset = (
   }
 };
 
+const concatOptionWithPreset = (
+  options: InitialOptions,
+  preset: InitialOptions,
+  optionName: string,
+) => {
+  if (options[optionName] && preset[optionName]) {
+    options[optionName] = [...options[optionName], ...preset[optionName]];
+  }
+};
+
 const setupPreset = (
   options: InitialOptions,
   optionsPreset: string,
@@ -116,14 +126,10 @@ const setupPreset = (
     throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
   }
 
-  if (options.setupFiles) {
-    options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
-  }
-  if (options.modulePathIgnorePatterns && preset.modulePathIgnorePatterns) {
-    options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
-      options.modulePathIgnorePatterns,
-    );
-  }
+  concatOptionWithPreset(options, preset, 'setupFiles');
+  concatOptionWithPreset(options, preset, 'modulePathIgnorePatterns');
+  concatOptionWithPreset(options, preset, 'setupFilesAfterEnv');
+
   mergeOptionWithPreset(options, preset, 'moduleNameMapper');
   mergeOptionWithPreset(options, preset, 'transform');
 
