@@ -9,6 +9,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
+    "chalk": "^2.4.2",
     "exit": "^0.1.2",
     "graceful-fs": "^4.1.15",
     "jest-config": "^24.0.0",

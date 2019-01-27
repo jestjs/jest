@@ -30,6 +30,7 @@ import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
 import sourcemapSupport from 'source-map-support';
+import chalk from 'chalk';
 
 type RunTestInternalResult = {
   leakDetector: ?LeakDetector,
@@ -40,7 +41,11 @@ function freezeConsole(buffer: ConsoleBuffer, config: ProjectConfig) {
   // $FlowFixMe: overwrite it for pretty errors. `Object.freeze` works, but gives ugly errors
   buffer.push = function fakeConsolePush({message}) {
     const error = new ErrorWithStack(
-      `Cannot log after tests are done. Did you forget to wait for something async in your test?\nAttempted to log "${message}".`,
+      chalk.red(
+        `${chalk.bold(
+          'Cannot log after tests are done.',
+        )} Did you forget to wait for something async in your test?`,
+      ) + `\nAttempted to log "${message}".`,
       fakeConsolePush,
     );
 
@@ -52,7 +57,7 @@ function freezeConsole(buffer: ConsoleBuffer, config: ProjectConfig) {
       true,
     );
 
-    process.stderr.write(formattedError);
+    process.stderr.write('\n' + formattedError + '\n');
     // TODO: set exit code in Jest 25
     // process.exitCode = 1;
   };
