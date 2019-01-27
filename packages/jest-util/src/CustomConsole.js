@@ -10,10 +10,10 @@
 
 import type {
   ConsoleBuffer,
-  LogType,
-  LogMessage,
   LogCounters,
+  LogMessage,
   LogTimers,
+  LogType,
 } from 'types/Console';
 import type {SourceMapRegistry} from 'types/SourceMaps';
 
@@ -55,7 +55,7 @@ export default class CustomConsole extends Console {
     super.log(message);
   }
 
-  _storeInBuffer(message: string, type: LogType) {
+  _storeInBuffer(type: LogType, message: string) {
     let origin = '';
 
     if (this._getSourceMaps) {
@@ -71,13 +71,10 @@ export default class CustomConsole extends Console {
   _log(type: LogType, message: string) {
     clearLine(this._stdout);
 
-    const formattedMessage = this._formatBuffer(
-      type,
-      '  '.repeat(this._groupDepth) + message,
+    this._storeInBuffer(type, message);
+    this._logToParentConsole(
+      this._formatBuffer(type, '  '.repeat(this._groupDepth)),
     );
-
-    this._storeInBuffer(formattedMessage, type);
-    this._logToParentConsole(formattedMessage);
 
     // I have no idea why this is needed. If not included, it breaks ./__tests__/console.test.js ¯\_(ツ)_/¯
     return undefined;
