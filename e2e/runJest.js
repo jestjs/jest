@@ -126,6 +126,8 @@ export const until = async function(
     cwd: dir,
     env,
     reject: false,
+    // this should never take more than 5-6 seconds, bailout after 30
+    timeout: 30000,
   });
 
   jestPromise.stderr.pipe(
