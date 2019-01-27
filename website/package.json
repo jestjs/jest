@@ -19,6 +19,7 @@
     "docusaurus": "^1.7.1"
   },
   "devDependencies": {
-    "crowdin-cli": "^0.3.0"
+    "crowdin-cli": "^0.3.0",
+    "request": "^2.88.0"
   }
 }
