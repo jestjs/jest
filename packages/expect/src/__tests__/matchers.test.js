@@ -587,6 +587,15 @@ describe('.toEqual()', () => {
     });
     expect(actual).toEqual({x: 3});
   });
+
+  test('cyclic object equality is symmetrical', () => {
+    const a = {};
+    a.x = {x: a};
+    const b = {};
+    b.x = b;
+    expect(a).not.toEqual(b);
+    expect(b).not.toEqual(a);
+  });
 });
 
 describe('.toBeInstanceOf()', () => {

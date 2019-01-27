@@ -35,7 +35,7 @@ export function equals(
   strictCheck?: boolean,
 ): boolean {
   customTesters = customTesters || [];
-  return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
+  return eq(a, b, undefined, customTesters, strictCheck ? hasKey : hasDefinedKey);
 }
 
 function isAsymmetric(obj) {
@@ -62,7 +62,7 @@ function asymmetricMatch(a, b) {
 
 // Equality function lovingly adapted from isEqual in
 //   [Underscore](http://underscorejs.org)
-function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
+function eq(a, b, memos, customTesters, hasKey): boolean {
   var result = true;
 
   var asymmetricResult = asymmetricMatch(a, b);
@@ -145,19 +145,30 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
     return false;
   }
 
-  // Assume equality for cyclic structures. The algorithm for detecting cyclic
-  // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
-  var length = aStack.length;
-  while (length--) {
-    // Linear search. Performance is inversely proportional to the number of
-    // unique nested structures.
-    if (aStack[length] == a) {
-      return bStack[length] == b;
+  // Use memos to handle cycles.
+  if (memos === undefined) {
+    memos = {
+      a: new Map(),
+      b: new Map(),
+      position: 0
+    };
+  } else {
+    // We prevent up to two map.has(x) calls by directly retrieving the value
+    // and checking for undefined. The map can only contain numbers, so it is
+    // safe to check for undefined only.
+    const bMemoA = memos.a.get(a);
+    if (bMemoA !== undefined) {
+      const bMemoB = memos.b.get(b);
+      if (bMemoB !== undefined) {
+        return bMemoA === bMemoB;
+      }
     }
+    memos.position++;
   }
-  // Add the first object to the stack of traversed objects.
-  aStack.push(a);
-  bStack.push(b);
+
+  memos.a.set(a, memos.position);
+  memos.b.set(b, memos.position);
+
   var size = 0;
   // Recursively compare objects and arrays.
   // Compare array lengths to determine if a deep comparison is necessary.
@@ -168,7 +179,7 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
     }
 
     while (size--) {
-      result = eq(a[size], b[size], aStack, bStack, customTesters, hasKey);
+      result = eq(a[size], b[size], memos, customTesters, hasKey);
       if (!result) {
         return false;
       }
@@ -191,15 +202,15 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
     // Deep compare each member
     result =
       hasKey(b, key) &&
-      eq(a[key], b[key], aStack, bStack, customTesters, hasKey);
+      eq(a[key], b[key], memos, customTesters, hasKey);
 
     if (!result) {
       return false;
     }
   }
-  // Remove the first object from the stack of traversed objects.
-  aStack.pop();
-  bStack.pop();
+
+  memos.a.delete(a);
+  memos.b.delete(b);
 
   return result;
 }
