@@ -316,7 +316,7 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Tests runs parallel in their own processes to maximize
+                      Tests run parallel in their own processes to maximize
                       performance.
                     </translate>
                   ),
