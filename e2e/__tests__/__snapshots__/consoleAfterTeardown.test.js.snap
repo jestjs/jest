@@ -8,13 +8,13 @@ PASS __tests__/console.test.js
     Attempted to log "hello!".
 
        9 | test('throws error', () => {
-      10 |   setTimeout(() => {
+      10 |   new Promise(resolve => setTimeout(resolve, 500)).then(() => {
     > 11 |     console.log('hello!');
          |             ^
-      12 |   }, 500);
+      12 |   });
       13 | });
       14 |
 
       at Function.write (../../packages/jest-util/build/BufferedConsole.js:82:12)
-      at Timeout.log [as _onTimeout] (__tests__/console.test.js:11:13)
+      at log (__tests__/console.test.js:11:13)
 `;

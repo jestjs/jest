@@ -78,6 +78,9 @@ export default class CustomConsole extends Console {
 
     this._storeInBuffer(formattedMessage, type);
     this._logToParentConsole(formattedMessage);
+
+    // I have no idea why this is needed. If not included, it breaks ./__tests__/console.test.js ¯\_(ツ)_/¯
+    return undefined;
   }
 
   assert(...args: Array<any>) {

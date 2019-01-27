@@ -7,7 +7,7 @@
 'use strict';
 
 test('throws error', () => {
-  setTimeout(() => {
+  new Promise(resolve => setTimeout(resolve, 500)).then(() => {
     console.log('hello!');
-  }, 500);
+  });
 });
