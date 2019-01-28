@@ -2,8 +2,8 @@
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.1.0",
-    "@babel/plugin-transform-strict-mode": "^7.0.0",
     "@babel/plugin-transform-modules-commonjs": "^7.1.0",
+    "@babel/plugin-transform-strict-mode": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
@@ -35,7 +35,7 @@
     "istanbul-api": "^2.0.8",
     "istanbul-lib-coverage": "^2.0.2",
     "jasmine-reporters": "^2.2.0",
-    "jest-junit": "^6.0.1",
+    "jest-junit": "^6.2.0",
     "jest-silent-reporter": "^0.1.1",
     "jest-snapshot-serializer-raw": "^1.1.0",
     "jquery": "^3.2.1",
