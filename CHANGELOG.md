@@ -9,6 +9,7 @@
 
 ### Chore & Maintenance
 
+- `[jest]` Update jest-junit to ^6.2.0 ([#7739](https://github.com/facebook/jest/pull/7739))
 - `[website]` Fix broken help link on homepage ([#7706](https://github.com/facebook/jest/pull/7706))
 - `[docs]` Changed Babel setup documentation to correctly compile `async/await` ([#7701](https://github.com/facebook/jest/pull/7701))
 
