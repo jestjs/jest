@@ -267,6 +267,7 @@ const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
 const normalizeMissingOptions = (
   options: InitialOptions,
   configPath: ?Path,
+  projectIndex: number,
 ): InitialOptions => {
   if (!options.name) {
     options.name = crypto
@@ -274,6 +275,7 @@ const normalizeMissingOptions = (
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
+      .update(String(projectIndex))
       .digest('hex');
   }
 
@@ -383,6 +385,7 @@ export default function normalize(
   options: InitialOptions,
   argv: Argv,
   configPath: ?Path,
+  projectIndex: number,
 ) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
@@ -405,6 +408,7 @@ export default function normalize(
       normalizeMissingOptions(
         normalizeRootDir(setFromArgv(options, argv)),
         configPath,
+        projectIndex,
       ),
     ),
   );

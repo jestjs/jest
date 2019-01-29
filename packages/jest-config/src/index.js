@@ -39,6 +39,7 @@ export function readConfig(
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
   parentConfigPath: ?Path,
+  projectIndex?: number = Infinity,
 ): {
   configPath: ?Path,
   globalConfig: GlobalConfig,
@@ -90,6 +91,7 @@ export function readConfig(
     rawOptions,
     argv,
     configPath,
+    projectIndex,
   );
 
   const {globalConfig, projectConfig} = groupOptions(options);
@@ -302,7 +304,9 @@ export function readConfigs(
 
         return true;
       })
-      .map(root => readConfig(argv, root, true, configPath));
+      .map((root, projectIndex) =>
+        readConfig(argv, root, true, configPath, projectIndex),
+      );
 
     ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
