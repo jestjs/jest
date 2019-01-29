@@ -39,6 +39,7 @@ export function readConfig(
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
   parentConfigPath: ?Path,
+  projectIndex?: number = Infinity,
 ): {
   configPath: ?Path,
   globalConfig: GlobalConfig,
@@ -86,7 +87,13 @@ export function readConfig(
     rawOptions = readConfigFileAndSetRootDir(configPath);
   }
 
-  const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
+  const {options, hasDeprecationWarnings} = normalize(
+    rawOptions,
+    argv,
+    configPath,
+    projectIndex,
+  );
+
   const {globalConfig, projectConfig} = groupOptions(options);
   return {
     configPath,
@@ -210,7 +217,7 @@ const groupOptions = (
   }),
 });
 
-const ensureNoDuplicateConfigs = (parsedConfigs, projects, rootConfigPath) => {
+const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
   const configPathMap = new Map();
 
   for (const config of parsedConfigs) {
@@ -297,9 +304,11 @@ export function readConfigs(
 
         return true;
       })
-      .map(root => readConfig(argv, root, true, configPath));
+      .map((root, projectIndex) =>
+        readConfig(argv, root, true, configPath, projectIndex),
+      );
 
-    ensureNoDuplicateConfigs(parsedConfigs, projects, configPath);
+    ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(

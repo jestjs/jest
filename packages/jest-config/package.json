@@ -23,8 +23,7 @@
     "jest-validate": "^24.0.0",
     "micromatch": "^3.1.10",
     "pretty-format": "^24.0.0",
-    "realpath-native": "^1.0.2",
-    "uuid": "^3.3.2"
+    "realpath-native": "^1.0.2"
   },
   "engines": {
     "node": ">= 6"
