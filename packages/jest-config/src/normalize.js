@@ -385,7 +385,7 @@ export default function normalize(
   options: InitialOptions,
   argv: Argv,
   configPath: ?Path,
-  projectIndex: number,
+  projectIndex?: number = Infinity,
 ) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,

@@ -52,6 +52,7 @@ it('picks a name based on the rootDir', () => {
   const expected = crypto
     .createHash('md5')
     .update('/root/path/foo')
+    .update(String(Infinity))
     .digest('hex');
   expect(
     normalize(
