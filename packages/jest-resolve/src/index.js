@@ -103,6 +103,7 @@ class Resolver {
       return resolver(path, {
         basedir: options.basedir,
         browser: options.browser,
+        defaultResolver,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
