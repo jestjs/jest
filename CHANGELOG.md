@@ -6,6 +6,7 @@
 
 - `[jest-cli]` Break dependency cycle when using Jest programmatically ([#7707](https://github.com/facebook/jest/pull/7707))
 - `[jest-config]` Extract setupFilesAfterEnv from preset ([#7724](https://github.com/facebook/jest/pull/7724))
+- `[jest-jasmine2]` Point to inline snapshot documentation is prettier is unavailable ([#7744](https://github.com/facebook/jest/pull/7744))
 
 ### Chore & Maintenance
 
