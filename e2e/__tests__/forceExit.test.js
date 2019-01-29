@@ -28,17 +28,25 @@ test('exits the process after test are done but before timers complete', () => {
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
 
+  let output;
+  let stdout;
   let stderr;
-  ({stderr} = runJest(DIR));
-  expect(stderr).toMatch(/PASS.*test\.test\.js/);
-  expect(stderr).toMatch(/TIMER_DONE/);
+  ({stdout, stderr} = runJest(DIR));
+
+  output = `${stdout}\n${stderr}`;
+
+  expect(output).toMatch(/PASS.*test\.test\.js/);
+  expect(output).toMatch(/TIMER_DONE/);
   writeFiles(DIR, {
     'package.json': JSON.stringify({
       jest: {forceExit: true, testEnvironment: 'node'},
     }),
   });
 
-  ({stderr} = runJest(DIR));
-  expect(stderr).toMatch(/PASS.*test\.test\.js/);
-  expect(stderr).not.toMatch(/TIMER_DONE/);
+  ({stdout, stderr} = runJest(DIR));
+
+  output = `${stdout}\n${stderr}`;
+
+  expect(output).toMatch(/PASS.*test\.test\.js/);
+  expect(output).not.toMatch(/TIMER_DONE/);
 });
