@@ -40,6 +40,7 @@ export default ({
       statements: 100,
     },
   },
+  cwd: '/root',
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: 'project-name',
   errorOnDeprecated: false,

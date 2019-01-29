@@ -46,8 +46,6 @@ export type DefaultOptions = {|
   globalSetup: ?string,
   globalTeardown: ?string,
   haste: HasteConfig,
-  detectLeaks: boolean,
-  detectOpenHandles: boolean,
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
   moduleNameMapper: {[key: string]: string},

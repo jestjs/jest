@@ -31,8 +31,6 @@ export default ({
   coverageThreshold: null,
   cwd: process.cwd(),
   dependencyExtractor: null,
-  detectLeaks: false,
-  detectOpenHandles: false,
   errorOnDeprecated: false,
   expand: false,
   filter: null,
