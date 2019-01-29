@@ -111,3 +111,36 @@ test('should not call a globalTeardown of a project if there are no tests to run
   expect(fs.existsSync(project1DIR)).toBe(true);
   expect(fs.existsSync(project2DIR)).toBe(false);
 });
+
+test('globalTeardown works with default export', () => {
+  const teardownPath = path.resolve(
+    __dirname,
+    '../global-teardown/teardownWithDefaultExport.js',
+  );
+
+  const testPathPattern = 'pass';
+
+  const result = runJest('global-teardown', [
+    `--globalTeardown=${teardownPath}`,
+    `--testPathPattern=${testPathPattern}`,
+  ]);
+
+  expect(result.stdout).toBe(testPathPattern);
+});
+
+test('globalTeardown throws with named export', () => {
+  const teardownPath = path.resolve(
+    __dirname,
+    '../global-teardown/invalidTeardownWithNamedExport.js',
+  );
+
+  const {status, stderr} = runJest('global-teardown', [
+    `--globalTeardown=${teardownPath}`,
+    `--testPathPattern=__tests__`,
+  ]);
+
+  expect(status).toBe(1);
+  expect(stderr).toMatch(
+    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
+  );
+});
