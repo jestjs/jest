@@ -652,7 +652,8 @@ export default function normalize(
 
         if (
           Array.isArray(value) && // If it's the wrong type, it can throw at a later time
-          options.runner === undefined && // Only require 'js' for the default jest-runner
+          (options.runner === undefined ||
+            options.runner === DEFAULT_CONFIG.runner) && // Only require 'js' for the default jest-runner
           !value.includes('js')
         ) {
           const errorMessage =
