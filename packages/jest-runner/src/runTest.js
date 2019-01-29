@@ -42,11 +42,11 @@ function freezeConsole(
   // $FlowFixMe: overwrite it for pretty errors
   testConsole._log = function fakeConsolePush(_type, message) {
     const error = new ErrorWithStack(
-      chalk.red(
+      `${chalk.red(
         `${chalk.bold(
           'Cannot log after tests are done.',
         )} Did you forget to wait for something async in your test?`,
-      ) + `\nAttempted to log "${message}".`,
+      )}\nAttempted to log "${message}".`,
       fakeConsolePush,
     );
 
