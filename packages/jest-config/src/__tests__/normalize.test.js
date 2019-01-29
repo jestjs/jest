@@ -10,6 +10,7 @@ import crypto from 'crypto';
 import path from 'path';
 import {escapeStrForRegex} from 'jest-regex-util';
 import normalize from '../normalize';
+import Defaults from '../Defaults';
 
 import {DEFAULT_JS_PATTERN} from '../constants';
 
@@ -45,6 +46,12 @@ beforeEach(() => {
   expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
 
   require('jest-resolve').findNodeModule = findNodeModule;
+
+  jest.spyOn(console, 'warn');
+});
+
+afterEach(() => {
+  console.warn.mockRestore();
 });
 
 it('picks a name based on the rootDir', () => {
@@ -122,8 +129,7 @@ describe('rootDir', () => {
 
 describe('automock', () => {
   it('falsy automock is not overwritten', () => {
-    const consoleWarn = console.warn;
-    console.warn = jest.fn();
+    console.warn.mockImplementation(() => {});
     const {options} = normalize(
       {
         automock: false,
@@ -133,8 +139,6 @@ describe('automock', () => {
     );
 
     expect(options.automock).toBe(false);
-
-    console.warn = consoleWarn;
   });
 });
 
@@ -401,19 +405,13 @@ describe('setupFilesAfterEnv', () => {
 
 describe('setupTestFrameworkScriptFile', () => {
   let Resolver;
-  let consoleWarn;
 
   beforeEach(() => {
-    console.warn = jest.fn();
-    consoleWarn = console.warn;
+    console.warn.mockImplementation(() => {});
     Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(name =>
       name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
     );
-  });
-
-  afterEach(() => {
-    console.warn = consoleWarn;
   });
 
   it('logs a deprecation warning when `setupTestFrameworkScriptFile` is used', () => {
@@ -425,7 +423,7 @@ describe('setupTestFrameworkScriptFile', () => {
       {},
     );
 
-    expect(consoleWarn.mock.calls[0][0]).toMatchSnapshot();
+    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   });
 
   it('logs an error when `setupTestFrameworkScriptFile` and `setupFilesAfterEnv` are used', () => {
@@ -782,11 +780,8 @@ describe('babel-jest', () => {
 });
 
 describe('Upgrade help', () => {
-  let consoleWarn;
-
   beforeEach(() => {
-    consoleWarn = console.warn;
-    console.warn = jest.fn();
+    console.warn.mockImplementation(() => {});
 
     const Resolver = require('jest-resolve');
     Resolver.findNodeModule = jest.fn(name => {
@@ -795,10 +790,6 @@ describe('Upgrade help', () => {
       }
       return findNodeModule(name);
     });
-  });
-
-  afterEach(() => {
-    console.warn = consoleWarn;
   });
 
   it('logs a warning when `scriptPreprocessor` and/or `preprocessorIgnorePatterns` are used', () => {
@@ -1467,5 +1458,13 @@ describe('moduleFileExtensions', () => {
         {},
       ),
     ).toThrowError("moduleFileExtensions must include 'js'");
+  });
+});
+
+describe('Defaults', () => {
+  it('should be accepted by normalize', () => {
+    normalize({...Defaults, rootDir: '/root'}, {});
+
+    expect(console.warn).not.toHaveBeenCalled();
   });
 });
