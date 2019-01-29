@@ -118,7 +118,7 @@ export default ({
             error.message = `
 ${error.message}
 
-If you are using inline snapshots, you need to install prettier.
+If you are using inline snapshots, you need to install Prettier.
 See more at https://jestjs.io/docs/en/snapshot-testing#inline-snapshots
 `.trim();
           }
