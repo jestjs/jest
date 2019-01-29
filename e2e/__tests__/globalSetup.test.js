@@ -152,6 +152,6 @@ test('globalSetup throws with named export', () => {
 
   expect(status).toBe(1);
   expect(stderr).toMatch(
-    `TypeError: globalSetup file must use a default export with ES Modules at ${setupPath}`,
+    `TypeError: globalSetup file must export a function at ${setupPath}`,
   );
 });

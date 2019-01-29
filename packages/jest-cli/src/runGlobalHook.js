@@ -15,6 +15,11 @@ import pEachSeries from 'p-each-series';
 import {addHook} from 'pirates';
 import Runtime from 'jest-runtime';
 
+// copied from https://github.com/babel/babel/blob/56044c7851d583d498f919e9546caddf8f80a72f/packages/babel-helpers/src/helpers.js#L558-L562
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {default: obj};
+}
+
 export default ({
   allTests,
   globalConfig,
@@ -59,20 +64,7 @@ export default ({
       );
 
       // $FlowFixMe
-      let globalModule = require(modulePath);
-
-      if (
-        typeof globalModule === 'object' &&
-        globalModule.__esModule === true
-      ) {
-        if (globalModule.default) {
-          globalModule = globalModule.default;
-        } else {
-          throw new TypeError(
-            `${moduleName} file must use a default export with ES Modules at ${modulePath}`,
-          );
-        }
-      }
+      const globalModule = _interopRequireDefault(require(modulePath)).default;
 
       if (typeof globalModule !== 'function') {
         throw new TypeError(
