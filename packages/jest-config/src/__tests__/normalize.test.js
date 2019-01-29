@@ -6,15 +6,16 @@
  *
  */
 
+import crypto from 'crypto';
+import path from 'path';
 import {escapeStrForRegex} from 'jest-regex-util';
 import normalize from '../normalize';
 
-jest.mock('jest-resolve');
-jest.mock('path', () => jest.requireActual('path').posix);
+import {DEFAULT_JS_PATTERN} from '../constants';
 
-const path = require('path');
-const DEFAULT_JS_PATTERN = require('../constants').DEFAULT_JS_PATTERN;
 const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
+
+jest.mock('jest-resolve').mock('path', () => jest.requireActual('path').posix);
 
 let root;
 let expectedPathFooBar;
@@ -46,16 +47,95 @@ beforeEach(() => {
   require('jest-resolve').findNodeModule = findNodeModule;
 });
 
-it('assigns a random 32-byte hash as a name to avoid clashes', () => {
+it('picks a name based on the rootDir', () => {
   const rootDir = '/root/path/foo';
-  const {name: name1} = normalize({rootDir}, {}).options;
-  const {name: name2} = normalize({rootDir}, {}).options;
+  const expected = crypto
+    .createHash('md5')
+    .update('/root/path/foo')
+    .digest('hex');
+  expect(
+    normalize(
+      {
+        rootDir,
+      },
+      {},
+    ).options.name,
+  ).toBe(expected);
+});
 
-  expect(name1).toEqual(expect.any(String));
-  expect(name1).toHaveLength(32);
-  expect(name2).toEqual(expect.any(String));
-  expect(name2).toHaveLength(32);
-  expect(name1).not.toBe(name2);
+it('picks a name for projects based on the main rootDir', () => {
+  const rootDir = '/root/path/foo';
+  const firstExpected = crypto
+    .createHash('md5')
+    .update('/root/path/foo')
+    .digest('hex');
+  const secondExpected = crypto
+    .createHash('md5')
+    .update('/root/path/foo:1')
+    .digest('hex');
+
+  const options = normalize(
+    {
+      projects: [{}, {}],
+      rootDir,
+    },
+    {},
+  );
+
+  expect(options.options.projects[0].name).toBe(firstExpected);
+  expect(options.options.projects[1].name).toBe(secondExpected);
+});
+
+it('picks a name for projects based on the projects rootDir', () => {
+  const firstRootDir = '/root/path/foo';
+  const secondRootDir = '/root/path/bar';
+  const firstExpected = crypto
+    .createHash('md5')
+    .update('/root/path/foo')
+    .digest('hex');
+  const secondExpected = crypto
+    .createHash('md5')
+    .update('/root/path/foo:1')
+    .digest('hex');
+  const thirdExpected = crypto
+    .createHash('md5')
+    .update('/root/path/bar')
+    .digest('hex');
+  const fourthExpected = crypto
+    .createHash('md5')
+    .update('/root/path/baz')
+    .digest('hex');
+
+  const options = normalize(
+    {
+      projects: [
+        {rootDir: firstRootDir},
+        {rootDir: firstRootDir},
+        {rootDir: secondRootDir},
+        {},
+      ],
+      rootDir: '/root/path/baz',
+    },
+    {},
+  );
+
+  expect(options.options.projects[0].name).toBe(firstExpected);
+  expect(options.options.projects[1].name).toBe(secondExpected);
+  expect(options.options.projects[2].name).toBe(thirdExpected);
+  expect(options.options.projects[3].name).toBe(fourthExpected);
+});
+
+it('keeps custom project name based on the projects rootDir', () => {
+  const name = 'test';
+  const options = normalize(
+    {
+      projects: [{name, rootDir: '/path/to/foo'}],
+      rootDir: '/root/path/baz',
+    },
+    {},
+  );
+
+  expect(options.options.projects[0].name).toBe(name);
 });
 
 it('keeps custom names based on the rootDir', () => {
@@ -68,6 +148,16 @@ it('keeps custom names based on the rootDir', () => {
       {},
     ).options.name,
   ).toBe('custom-name');
+});
+
+it('minimal config is stable across runs', () => {
+  const firstNormalization = normalize({rootDir: '/root/path/foo'}, {});
+  const secondNormalization = normalize({rootDir: '/root/path/foo'}, {});
+
+  expect(firstNormalization).toEqual(secondNormalization);
+  expect(JSON.stringify(firstNormalization)).toBe(
+    JSON.stringify(secondNormalization),
+  );
 });
 
 it('sets coverageReporters correctly when argv.json is set', () => {

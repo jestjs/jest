@@ -17,7 +17,6 @@ import type {
 } from 'types/Config';
 
 import crypto from 'crypto';
-import uuid from 'uuid/v4';
 import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
@@ -265,12 +264,31 @@ const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
 };
 
 const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
+  const knownRootDirs: Set<string> = new Set();
   if (!options.name) {
     options.name = crypto
       .createHash('md5')
       .update(options.rootDir)
-      .update(uuid())
       .digest('hex');
+  }
+
+  if (Array.isArray(options.projects)) {
+    options.projects = options.projects.map((project, index) => {
+      if (typeof project !== 'string' && !project.name) {
+        let rootDir = project.rootDir || options.rootDir;
+        if (knownRootDirs.has(rootDir)) {
+          rootDir = `${rootDir}:${index}`;
+        }
+
+        knownRootDirs.add(rootDir);
+        project.name = crypto
+          .createHash('md5')
+          .update(rootDir)
+          .digest('hex');
+      }
+
+      return project;
+    });
   }
 
   if (!options.setupFiles) {
