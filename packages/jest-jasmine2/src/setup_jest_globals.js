@@ -108,9 +108,27 @@ export default ({
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
     getBabelTraverse: () => require('@babel/traverse').default,
-    getPrettier: () =>
-      // $FlowFixMe dynamic require
-      config.prettierPath ? require(config.prettierPath) : null,
+    getPrettier: () => {
+      if (config.prettierPath) {
+        try {
+          // $FlowFixMe dynamic require
+          return require(config.prettierPath);
+        } catch (error) {
+          if (error.code === 'MODULE_NOT_FOUND') {
+            error.message = `
+${error.message}
+
+If you are using inline snapshots, you need to install prettier.
+See more at https://jestjs.io/docs/en/snapshot-testing#inline-snapshots
+`.trim();
+          }
+
+          throw error;
+        }
+      }
+
+      return null;
+    },
     updateSnapshot,
   });
   setState({snapshotState, testPath});
