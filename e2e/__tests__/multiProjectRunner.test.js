@@ -439,8 +439,8 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
 
     const [{name: name1}, {name: name2}] = configs;
 
-    expect(name1).toBeTruthy();
-    expect(name2).toBeTruthy();
+    expect(name1).toEqual(expect.any(String));
+    expect(name2).toEqual(expect.any(String));
     expect(name1).toHaveLength(32);
     expect(name2).toHaveLength(32);
     expect(name1).not.toEqual(name2);
@@ -484,8 +484,8 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
 
     const [{name: name1}, {name: name2}] = configs;
 
-    expect(name1).toBeTruthy();
-    expect(name2).toBeTruthy();
+    expect(name1).toEqual(expect.any(String));
+    expect(name2).toEqual(expect.any(String));
     expect(name1).toHaveLength(32);
     expect(name2).toHaveLength(32);
     expect(name1).not.toEqual(name2);
