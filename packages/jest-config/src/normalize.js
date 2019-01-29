@@ -13,6 +13,7 @@ import type {
   DefaultOptions,
   ReporterConfig,
   GlobalConfig,
+  Path,
   ProjectConfig,
 } from 'types/Config';
 
@@ -263,32 +264,17 @@ const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   return options;
 };
 
-const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
-  const knownRootDirs: Set<string> = new Set();
+const normalizeMissingOptions = (
+  options: InitialOptions,
+  configPath: ?Path,
+): InitialOptions => {
   if (!options.name) {
     options.name = crypto
       .createHash('md5')
       .update(options.rootDir)
+      // In case we load config from some path that has the same root dir
+      .update(configPath || '')
       .digest('hex');
-  }
-
-  if (Array.isArray(options.projects)) {
-    options.projects = options.projects.map((project, index) => {
-      if (typeof project !== 'string' && !project.name) {
-        let rootDir = project.rootDir || options.rootDir;
-        if (knownRootDirs.has(rootDir)) {
-          rootDir = `${rootDir}:${index}`;
-        }
-
-        knownRootDirs.add(rootDir);
-        project.name = crypto
-          .createHash('md5')
-          .update(rootDir)
-          .digest('hex');
-      }
-
-      return project;
-    });
   }
 
   if (!options.setupFiles) {
@@ -393,7 +379,11 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-export default function normalize(options: InitialOptions, argv: Argv) {
+export default function normalize(
+  options: InitialOptions,
+  argv: Argv,
+  configPath: ?Path,
+) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
@@ -412,7 +402,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   options = normalizePreprocessor(
     normalizeReporters(
-      normalizeMissingOptions(normalizeRootDir(setFromArgv(options, argv))),
+      normalizeMissingOptions(
+        normalizeRootDir(setFromArgv(options, argv)),
+        configPath,
+      ),
     ),
   );
 

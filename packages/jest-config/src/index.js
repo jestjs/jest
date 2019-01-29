@@ -86,7 +86,12 @@ export function readConfig(
     rawOptions = readConfigFileAndSetRootDir(configPath);
   }
 
-  const {options, hasDeprecationWarnings} = normalize(rawOptions, argv);
+  const {options, hasDeprecationWarnings} = normalize(
+    rawOptions,
+    argv,
+    configPath,
+  );
+
   const {globalConfig, projectConfig} = groupOptions(options);
   return {
     configPath,
@@ -210,7 +215,7 @@ const groupOptions = (
   }),
 });
 
-const ensureNoDuplicateConfigs = (parsedConfigs, projects, rootConfigPath) => {
+const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
   const configPathMap = new Map();
 
   for (const config of parsedConfigs) {
@@ -299,7 +304,7 @@ export function readConfigs(
       })
       .map(root => readConfig(argv, root, true, configPath));
 
-    ensureNoDuplicateConfigs(parsedConfigs, projects, configPath);
+    ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);
     if (!hasDeprecationWarnings) {
       hasDeprecationWarnings = parsedConfigs.some(

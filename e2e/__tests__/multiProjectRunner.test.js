@@ -425,6 +425,25 @@ test("doesn't bleed module file extensions resolution with multiple workers", ()
       };`,
   });
 
+  const {stdout: configOutput} = runJest(DIR, [
+    '--show-config',
+    '--projects',
+    'project1',
+    'project2',
+  ]);
+
+  const {configs} = JSON.parse(configOutput);
+
+  expect(configs).toHaveLength(2);
+
+  const [{name: name1}, {name: name2}] = configs;
+
+  expect(name1).toBeTruthy();
+  expect(name2).toBeTruthy();
+  expect(name1).toHaveLength(32);
+  expect(name2).toHaveLength(32);
+  expect(name1).not.toEqual(name2);
+
   const {stderr} = runJest(DIR, [
     '--no-watchman',
     '-w=2',

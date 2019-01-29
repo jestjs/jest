@@ -63,68 +63,6 @@ it('picks a name based on the rootDir', () => {
   ).toBe(expected);
 });
 
-it('picks a name for projects based on the main rootDir', () => {
-  const rootDir = '/root/path/foo';
-  const firstExpected = crypto
-    .createHash('md5')
-    .update('/root/path/foo')
-    .digest('hex');
-  const secondExpected = crypto
-    .createHash('md5')
-    .update('/root/path/foo:1')
-    .digest('hex');
-
-  const options = normalize(
-    {
-      projects: [{}, {}],
-      rootDir,
-    },
-    {},
-  );
-
-  expect(options.options.projects[0].name).toBe(firstExpected);
-  expect(options.options.projects[1].name).toBe(secondExpected);
-});
-
-it('picks a name for projects based on the projects rootDir', () => {
-  const firstRootDir = '/root/path/foo';
-  const secondRootDir = '/root/path/bar';
-  const firstExpected = crypto
-    .createHash('md5')
-    .update('/root/path/foo')
-    .digest('hex');
-  const secondExpected = crypto
-    .createHash('md5')
-    .update('/root/path/foo:1')
-    .digest('hex');
-  const thirdExpected = crypto
-    .createHash('md5')
-    .update('/root/path/bar')
-    .digest('hex');
-  const fourthExpected = crypto
-    .createHash('md5')
-    .update('/root/path/baz')
-    .digest('hex');
-
-  const options = normalize(
-    {
-      projects: [
-        {rootDir: firstRootDir},
-        {rootDir: firstRootDir},
-        {rootDir: secondRootDir},
-        {},
-      ],
-      rootDir: '/root/path/baz',
-    },
-    {},
-  );
-
-  expect(options.options.projects[0].name).toBe(firstExpected);
-  expect(options.options.projects[1].name).toBe(secondExpected);
-  expect(options.options.projects[2].name).toBe(thirdExpected);
-  expect(options.options.projects[3].name).toBe(fourthExpected);
-});
-
 it('keeps custom project name based on the projects rootDir', () => {
   const name = 'test';
   const options = normalize(
