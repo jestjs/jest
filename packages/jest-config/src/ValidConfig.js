@@ -42,8 +42,6 @@ export default ({
   },
   cwd: '/root',
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
-  detectLeaks: false,
-  detectOpenHandles: false,
   displayName: 'project-name',
   errorOnDeprecated: false,
   expand: false,
