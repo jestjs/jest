@@ -122,3 +122,36 @@ test('should not call any globalSetup if there are no tests to run', () => {
   expect(fs.existsSync(project1DIR)).toBe(false);
   expect(fs.existsSync(project2DIR)).toBe(false);
 });
+
+test('globalSetup works with default export', () => {
+  const setupPath = path.resolve(
+    __dirname,
+    '../global-setup/setupWithDefaultExport.js',
+  );
+
+  const testPathPattern = 'pass';
+
+  const result = runJest('global-setup', [
+    `--globalSetup=${setupPath}`,
+    `--testPathPattern=${testPathPattern}`,
+  ]);
+
+  expect(result.stdout).toBe(testPathPattern);
+});
+
+test('globalSetup throws with named export', () => {
+  const setupPath = path.resolve(
+    __dirname,
+    '../global-setup/invalidSetupWithNamedExport.js',
+  );
+
+  const {status, stderr} = runJest('global-setup', [
+    `--globalSetup=${setupPath}`,
+    `--testPathPattern=__tests__`,
+  ]);
+
+  expect(status).toBe(1);
+  expect(stderr).toMatch(
+    `TypeError: globalSetup file must use a default export with ES Modules at ${setupPath}`,
+  );
+});

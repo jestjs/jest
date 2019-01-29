@@ -59,7 +59,20 @@ export default ({
       );
 
       // $FlowFixMe
-      const globalModule = require(modulePath);
+      let globalModule = require(modulePath);
+
+      if (
+        typeof globalModule === 'object' &&
+        globalModule.__esModule === true
+      ) {
+        if (globalModule.default) {
+          globalModule = globalModule.default;
+        } else {
+          throw new TypeError(
+            `${moduleName} file must use a default export with ES Modules at ${modulePath}`,
+          );
+        }
+      }
 
       if (typeof globalModule !== 'function') {
         throw new TypeError(
