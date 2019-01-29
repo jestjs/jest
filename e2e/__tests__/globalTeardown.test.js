@@ -141,6 +141,6 @@ test('globalTeardown throws with named export', () => {
 
   expect(status).toBe(1);
   expect(stderr).toMatch(
-    `TypeError: globalTeardown file must use a default export with ES Modules at ${teardownPath}`,
+    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
   );
 });
