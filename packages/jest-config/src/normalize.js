@@ -200,7 +200,7 @@ const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
       value = JSON.parse(options[key]);
     } catch (e) {}
 
-    if (value && !Array.isArray(value)) {
+    if (options[key] && !Array.isArray(value)) {
       value = [options[key]];
     }
   } else {
