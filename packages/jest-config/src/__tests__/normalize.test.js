@@ -1448,7 +1448,7 @@ describe('moduleFileExtensions', () => {
     ]);
   });
 
-  it('throws if missing `js`', () => {
+  it('throws if missing `js` but using jest-runner', () => {
     expect(() =>
       normalize(
         {
@@ -1458,6 +1458,19 @@ describe('moduleFileExtensions', () => {
         {},
       ),
     ).toThrowError("moduleFileExtensions must include 'js'");
+  });
+
+  it('does not throw if missing `js` with a custom runner', () => {
+    expect(() =>
+      normalize(
+        {
+          rootDir: '/root/',
+          moduleFileExtensions: ['json', 'jsx'],
+          runner: './', // does not need to be a valid runner for this validation
+        },
+        {},
+      ),
+    ).not.toThrow();
   });
 });
 

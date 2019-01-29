@@ -650,8 +650,11 @@ export default function normalize(
       case 'moduleFileExtensions': {
         value = options[key];
 
-        // If it's the wrong type, it can throw at a later time
-        if (Array.isArray(value) && !value.includes('js')) {
+        if (
+          Array.isArray(value) && // If it's the wrong type, it can throw at a later time
+          options.runner === undefined && // Only require 'js' for the default jest-runner
+          !value.includes('js')
+        ) {
           const errorMessage =
             `  moduleFileExtensions must include 'js':\n` +
             `  but instead received:\n` +
