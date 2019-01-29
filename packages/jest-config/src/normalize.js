@@ -13,11 +13,11 @@ import type {
   DefaultOptions,
   ReporterConfig,
   GlobalConfig,
+  Path,
   ProjectConfig,
 } from 'types/Config';
 
 import crypto from 'crypto';
-import uuid from 'uuid/v4';
 import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
@@ -264,12 +264,18 @@ const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   return options;
 };
 
-const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
+const normalizeMissingOptions = (
+  options: InitialOptions,
+  configPath: ?Path,
+  projectIndex: number,
+): InitialOptions => {
   if (!options.name) {
     options.name = crypto
       .createHash('md5')
       .update(options.rootDir)
-      .update(uuid())
+      // In case we load config from some path that has the same root dir
+      .update(configPath || '')
+      .update(String(projectIndex))
       .digest('hex');
   }
 
@@ -375,7 +381,12 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-export default function normalize(options: InitialOptions, argv: Argv) {
+export default function normalize(
+  options: InitialOptions,
+  argv: Argv,
+  configPath: ?Path,
+  projectIndex?: number = Infinity,
+) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
@@ -394,7 +405,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   options = normalizePreprocessor(
     normalizeReporters(
-      normalizeMissingOptions(normalizeRootDir(setFromArgv(options, argv))),
+      normalizeMissingOptions(
+        normalizeRootDir(setFromArgv(options, argv)),
+        configPath,
+        projectIndex,
+      ),
     ),
   );
 

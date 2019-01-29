@@ -11,6 +11,7 @@
 - `[jest-cli]` Do not execute any `globalSetup` or `globalTeardown` if there are no tests to execute ([#7745](https://github.com/facebook/jest/pull/7745))
 - `[jest-runtime]` Lock down version of `write-file-atomic` ([#7725](https://github.com/facebook/jest/pull/7725))
 - `[jest-cli]` Print log entries when logging happens after test environment is torn down ([#7731](https://github.com/facebook/jest/pull/7731))
+- `[jest-config]` Do not use a uuid as `name` since that breaks caching ([#7746](https://github.com/facebook/jest/pull/7746))
 
 ### Chore & Maintenance
 
