@@ -43,7 +43,7 @@ export function hello(param) {
 
 Node shipped with [`worker_threads`](https://nodejs.org/api/worker_threads.html), a "threading API" that uses `SharedArrayBuffers` to communicate between the main process and its child threads. This feature can significantly improve the communication time between parent and child processes in `jest-worker`.
 
-To use `worker_threads` instead of default `child_process` you have to pass `enableWorkerThreads: true` when instantiating the worker.
+To disable the default `worker_threads` and instead use `child_process` you have to pass `enableWorkerThreads: false` when instantiating the worker.
 
 ## API
 
