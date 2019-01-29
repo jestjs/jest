@@ -17,6 +17,7 @@ import chalk from 'chalk';
 import getChangedFilesPromise from './getChangedFilesPromise';
 import exit from 'exit';
 import HasteMap from 'jest-haste-map';
+import {formatExecError} from 'jest-message-util';
 import isValidPath from './lib/is_valid_path';
 import {isInteractive, specialChars} from 'jest-util';
 import {print as preRunMessagePrint} from './preRunMessage';
@@ -280,7 +281,10 @@ export default function watch(
       // continuous watch mode execution. We need to reprint them to the
       // terminal and give just a little bit of extra space so they fit below
       // `preRunMessagePrint` message nicely.
-      console.error('\n\n' + chalk.red(error)),
+      console.error(
+        '\n\n' +
+          formatExecError(error, contexts[0].config, {noStackTrace: false}),
+      ),
     );
   };
 
