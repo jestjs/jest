@@ -13,7 +13,7 @@
 - `[jest-cli]` Print log entries when logging happens after test environment is torn down ([#7731](https://github.com/facebook/jest/pull/7731))
 - `[jest-config]` Do not use a uuid as `name` since that breaks caching ([#7746](https://github.com/facebook/jest/pull/7746))
 - `[jest-config]` Make sure `normalize` can consume `Defaults` without warnings ([#7742](https://github.com/facebook/jest/pull/7742))
-- `[jest-config]` Allow `moduleFileExtensions` without 'js' for custom runners (TODO)
+- `[jest-config]` Allow `moduleFileExtensions` without 'js' for custom runners ([#7736](https://github.com/facebook/jest/pull/7751))
 
 ### Chore & Maintenance
 
