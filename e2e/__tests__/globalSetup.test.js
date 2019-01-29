@@ -103,3 +103,22 @@ test('should not call a globalSetup of a project if there are no tests to run fr
   expect(fs.existsSync(project1DIR)).toBe(true);
   expect(fs.existsSync(project2DIR)).toBe(false);
 });
+
+test('should not call any globalSetup if there are no tests to run', () => {
+  const configPath = path.resolve(
+    __dirname,
+    '../global-setup/projects.jest.config.js',
+  );
+
+  const result = runWithJson('global-setup', [
+    `--config=${configPath}`,
+    // onlyChanged ensures there are no tests to run
+    '--onlyChanged',
+  ]);
+
+  expect(result.status).toBe(0);
+
+  expect(fs.existsSync(DIR)).toBe(false);
+  expect(fs.existsSync(project1DIR)).toBe(false);
+  expect(fs.existsSync(project2DIR)).toBe(false);
+});
