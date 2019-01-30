@@ -16,16 +16,22 @@ import {cleanup} from '../Utils';
 const DIR = path.join(os.tmpdir(), 'jest-global-setup');
 const project1DIR = path.join(os.tmpdir(), 'jest-global-setup-project-1');
 const project2DIR = path.join(os.tmpdir(), 'jest-global-setup-project-2');
+const customTransformDIR = path.join(
+  os.tmpdir(),
+  'jest-global-setup-custom-transform',
+);
 
 beforeEach(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
+  cleanup(customTransformDIR);
 });
 afterAll(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
+  cleanup(customTransformDIR);
 });
 
 test('globalSetup is triggered once before all test suites', () => {
@@ -154,4 +160,10 @@ test('globalSetup throws with named export', () => {
   expect(stderr).toMatch(
     `TypeError: globalSetup file must export a function at ${setupPath}`,
   );
+});
+
+test('should not transpile the transformer', () => {
+  const {status} = runJest('global-setup-custom-transform', [`--no-cache`]);
+
+  expect(status).toBe(0);
 });
