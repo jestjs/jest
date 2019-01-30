@@ -54,6 +54,10 @@ export default ({
 
       const transformer = new Runtime.ScriptTransformer(projectConfig);
 
+      // Load the transformer to avoid a cycle where we need to load a
+      // transformer in order to transform it in the require hooks
+      transformer.preloadTransformer(modulePath);
+
       const revertHook = addHook(
         (code, filename) =>
           transformer.transformSource(filename, code, false).code || code,
