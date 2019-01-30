@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-resolve]`: Pass default resolver into custom resolvers ([#7714](https://github.com/facebook/jest/pull/7714))
+- `[jest-runtime]` Better error messages when the jest environment is used after teardown by async code
 
 ### Fixes
 
