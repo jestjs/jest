@@ -11,7 +11,7 @@
   "dependencies": {
     "jest-mock": "^24.0.0",
     "jest-util": "^24.0.0",
-    "jsdom": "^11.5.1"
+    "jsdom": "^13.2.0"
   },
   "engines": {
     "node": ">= 6"
