@@ -16,16 +16,22 @@ import {cleanup} from '../Utils';
 const DIR = path.join(os.tmpdir(), 'jest-global-setup');
 const project1DIR = path.join(os.tmpdir(), 'jest-global-setup-project-1');
 const project2DIR = path.join(os.tmpdir(), 'jest-global-setup-project-2');
+const customTransformDIR = path.join(
+  os.tmpdir(),
+  'jest-global-setup-custom-transform',
+);
 
 beforeEach(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
+  cleanup(customTransformDIR);
 });
 afterAll(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
+  cleanup(customTransformDIR);
 });
 
 test('globalSetup is triggered once before all test suites', () => {
@@ -121,4 +127,43 @@ test('should not call any globalSetup if there are no tests to run', () => {
   expect(fs.existsSync(DIR)).toBe(false);
   expect(fs.existsSync(project1DIR)).toBe(false);
   expect(fs.existsSync(project2DIR)).toBe(false);
+});
+
+test('globalSetup works with default export', () => {
+  const setupPath = path.resolve(
+    __dirname,
+    '../global-setup/setupWithDefaultExport.js',
+  );
+
+  const testPathPattern = 'pass';
+
+  const result = runJest('global-setup', [
+    `--globalSetup=${setupPath}`,
+    `--testPathPattern=${testPathPattern}`,
+  ]);
+
+  expect(result.stdout).toBe(testPathPattern);
+});
+
+test('globalSetup throws with named export', () => {
+  const setupPath = path.resolve(
+    __dirname,
+    '../global-setup/invalidSetupWithNamedExport.js',
+  );
+
+  const {status, stderr} = runJest('global-setup', [
+    `--globalSetup=${setupPath}`,
+    `--testPathPattern=__tests__`,
+  ]);
+
+  expect(status).toBe(1);
+  expect(stderr).toMatch(
+    `TypeError: globalSetup file must export a function at ${setupPath}`,
+  );
+});
+
+test('should not transpile the transformer', () => {
+  const {status} = runJest('global-setup-custom-transform', [`--no-cache`]);
+
+  expect(status).toBe(0);
 });

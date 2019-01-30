@@ -204,6 +204,12 @@ export default class ScriptTransformer {
     }
   }
 
+  // We don't want to expose transformers to the outside - this function is just
+  // to warm up `this._transformCache`
+  preloadTransformer(filepath: Path): void {
+    this._getTransformer(filepath);
+  }
+
   transformSource(filepath: Path, content: string, instrument: boolean) {
     const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);

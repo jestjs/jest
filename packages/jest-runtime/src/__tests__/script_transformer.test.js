@@ -210,7 +210,7 @@ describe('ScriptTransformer', () => {
     expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
 
     // no-cache case
-    expect(fs.readFileSync.mock.calls.length).toBe(1);
+    expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
@@ -258,7 +258,7 @@ describe('ScriptTransformer', () => {
     expect(vm.Script.mock.calls[0][0]).toContain(fsSourceCode);
 
     // Native files should never be transformed.
-    expect(shouldInstrument.mock.calls.length).toBe(0);
+    expect(shouldInstrument).toHaveBeenCalledTimes(0);
   });
 
   it(
@@ -512,7 +512,7 @@ describe('ScriptTransformer', () => {
     scriptTransformer = new ScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', {});
 
-    expect(fs.readFileSync.mock.calls.length).toBe(2);
+    expect(fs.readFileSync).toHaveBeenCalledTimes(2);
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
     expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
     expect(writeFileAtomic.sync).not.toBeCalled();
@@ -525,7 +525,7 @@ describe('ScriptTransformer', () => {
     scriptTransformer = new ScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', {});
 
-    expect(fs.readFileSync.mock.calls.length).toBe(1);
+    expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
     expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
     expect(writeFileAtomic.sync).toBeCalled();
@@ -546,7 +546,24 @@ describe('ScriptTransformer', () => {
 
     anotherScriptTransformer.transform('/fruits/banana.js', {});
 
-    expect(fs.readFileSync.mock.calls.length).toBe(2);
+    expect(fs.readFileSync).toHaveBeenCalledTimes(2);
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+  });
+
+  it('preload transformer when using `preloadTransformer`', () => {
+    const scriptTransformer = new ScriptTransformer({
+      ...config,
+      transform: [['^.+\\.js$', 'test_preprocessor']],
+    });
+
+    expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([]);
+
+    expect(
+      scriptTransformer.preloadTransformer('/fruits/banana.js'),
+    ).toBeUndefined();
+
+    expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([
+      ['test_preprocessor', expect.any(Object)],
+    ]);
   });
 });
