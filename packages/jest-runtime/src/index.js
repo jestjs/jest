@@ -684,19 +684,8 @@ class Runtime {
     const runScript = this._environment.runScript(transformedFile.script);
 
     if (runScript === null) {
-      const originalStack = new ReferenceError(
+      this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
-      ).stack
-        .split('\n')
-        // Remove this file from the stack (jest-message-utils will keep one line)
-        .filter(line => line.indexOf(__filename) === -1)
-        .join('\n');
-
-      const {message, stack} = separateMessageFromStack(originalStack);
-
-      console.error(
-        `\n${message}\n` +
-          formatStackTrace(stack, this._config, {noStackTrace: false}),
       );
       process.exitCode = 1;
       return;
@@ -978,15 +967,26 @@ class Runtime {
       return jestObject;
     };
 
+    const _getFakeTimers = () => {
+      if (!this._environment.fakeTimers) {
+        this._logFormattedReferenceError(
+          'You are trying to access a property or method of the Jest environment after it has been torn down.',
+        );
+        process.exitCode = 1;
+      }
+
+      return this._environment.fakeTimers;
+    };
+
     const jestObject = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
-        this._environment.fakeTimers.advanceTimersByTime(msToRun),
+        _getFakeTimers().advanceTimersByTime(msToRun),
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
-      clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
+      clearAllTimers: () => _getFakeTimers().clearAllTimers(),
       deepUnmock,
       disableAutomock,
       doMock: mock,
@@ -995,7 +995,7 @@ class Runtime {
       fn,
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
-      getTimerCount: () => this._environment.fakeTimers.getTimerCount(),
+      getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
       mock,
@@ -1006,13 +1006,12 @@ class Runtime {
       resetModules,
       restoreAllMocks,
       retryTimes,
-      runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
-      runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
-      runAllTimers: () => this._environment.fakeTimers.runAllTimers(),
-      runOnlyPendingTimers: () =>
-        this._environment.fakeTimers.runOnlyPendingTimers(),
+      runAllImmediates: () => _getFakeTimers().runAllImmediates(),
+      runAllTicks: () => _getFakeTimers().runAllTicks(),
+      runAllTimers: () => _getFakeTimers().runAllTimers(),
+      runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
       runTimersToTime: (msToRun: number) =>
-        this._environment.fakeTimers.advanceTimersByTime(msToRun),
+        _getFakeTimers().advanceTimersByTime(msToRun),
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
       setTimeout,
@@ -1022,6 +1021,21 @@ class Runtime {
       useRealTimers,
     };
     return jestObject;
+  }
+
+  _logFormattedReferenceError(errorMessage: string) {
+    const originalStack = new ReferenceError(errorMessage).stack
+      .split('\n')
+      // Remove this file from the stack (jest-message-utils will keep one line)
+      .filter(line => line.indexOf(__filename) === -1)
+      .join('\n');
+
+    const {message, stack} = separateMessageFromStack(originalStack);
+
+    console.error(
+      `\n${message}\n` +
+        formatStackTrace(stack, this._config, {noStackTrace: false}),
+    );
   }
 }
 
