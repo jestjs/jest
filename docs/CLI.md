@@ -131,7 +131,7 @@ commit. Behaves similarly to `--onlyChanged`.
 
 ##### available in Jest **22.2.0+**
 
-Runs tests related the changes since the provided branch. If the current branch
+Runs tests related to the changes since the provided branch. If the current branch
 has diverged from the given branch, then only changes made locally will be
 tested. Behaves similarly to `--onlyChanged`.
 
