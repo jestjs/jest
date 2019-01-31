@@ -62,6 +62,7 @@ export default ({
   json: false,
   lastCommit: false,
   logHeapUsage: true,
+  maxConcurrency: 5,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleLoader: '<rootDir>',
