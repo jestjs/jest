@@ -14,8 +14,8 @@
 
 import type {Global} from 'types/Global';
 
-import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
+import isGeneratorFn from 'is-generator-fn';
 import isError from './isError';
 
 function isPromise(obj) {
@@ -125,21 +125,73 @@ function promisifyIt(originalFn, env, jasmine) {
   };
 }
 
-function makeConcurrent(originalFn: Function, env) {
+function makeQueue(max: number) {
+  const pending = [];
+  let running = 0;
+
+  const next = () => {
+    if (running >= max)
+      return;
+    if (pending.length === 0)
+      return;
+
+    const def = pending.shift();
+    const {fn, resolve, reject} = def;
+
+    let promise;
+    try {
+      running += 1;
+      promise = fn();
+    } catch (error) {
+      running -= 1;
+      reject(error);
+      return;
+    }
+
+    promise.then(value => {
+      running -= 1;
+      resolve(value);
+    }, error => {
+      running -= 1;
+      reject(error);
+    });
+  };
+
+  return fn => {
+    return new Promise((resolve, reject) => {
+      pending.push({
+        fn,
+        resolve: value => {
+          resolve(value);
+          next();
+        },
+        reject: error => {
+          reject(error);
+          next();
+        },
+      });
+      next();
+    });
+  };
+}
+
+function makeConcurrent(originalFn: Function, env, queue) {
   return function(specName, fn, timeout) {
     if (env != null && !env.specFilter({getFullName: () => specName || ''})) {
       return originalFn.call(env, specName, () => Promise.resolve(), timeout);
     }
 
     let promise;
-
     try {
-      promise = fn();
-      if (!isPromise(promise)) {
+      promise = queue(() => {
+        const promise = fn();
+        if (isPromise(promise)) {
+          return promise;
+        }
         throw new Error(
           `Jest: concurrent test "${specName}" must return a Promise.`,
         );
-      }
+      });
     } catch (error) {
       return originalFn.call(env, specName, () => Promise.reject(error));
     }
@@ -150,14 +202,15 @@ function makeConcurrent(originalFn: Function, env) {
 
 export default function jasmineAsyncInstall(global: Global) {
   const jasmine = global.jasmine;
+  const queue = makeQueue(5);
 
   const env = jasmine.getEnv();
   env.it = promisifyIt(env.it, env, jasmine);
   env.fit = promisifyIt(env.fit, env, jasmine);
-  global.it.concurrent = makeConcurrent(env.it, env);
-  global.it.concurrent.only = makeConcurrent(env.fit, env);
-  global.it.concurrent.skip = makeConcurrent(env.xit, env);
-  global.fit.concurrent = makeConcurrent(env.fit);
+  global.it.concurrent = makeConcurrent(env.it, env, queue);
+  global.it.concurrent.only = makeConcurrent(env.fit, env, queue);
+  global.it.concurrent.skip = makeConcurrent(env.xit, env, queue);
+  global.fit.concurrent = makeConcurrent(env.fit, env, queue);
   env.afterAll = promisifyLifeCycleFunction(env.afterAll, env);
   env.afterEach = promisifyLifeCycleFunction(env.afterEach, env);
   env.beforeAll = promisifyLifeCycleFunction(env.beforeAll, env);
