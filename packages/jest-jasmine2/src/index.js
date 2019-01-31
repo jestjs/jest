@@ -75,7 +75,7 @@ async function jasmine2(
     };
   }
 
-  jasmineAsyncInstall(environment.global);
+  jasmineAsyncInstall(globalConfig, environment.global);
 
   installEach(environment);
 

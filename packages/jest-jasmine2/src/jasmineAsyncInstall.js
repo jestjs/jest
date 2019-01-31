@@ -13,9 +13,11 @@
  */
 
 import type {Global} from 'types/Global';
+import type {GlobalConfig} from 'types/Config';
 
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
+import throat from 'throat';
 import isError from './isError';
 
 function isPromise(obj) {
@@ -125,57 +127,7 @@ function promisifyIt(originalFn, env, jasmine) {
   };
 }
 
-function makeQueue(max: number) {
-  const pending = [];
-  let running = 0;
-
-  const next = () => {
-    if (running >= max) return;
-    if (pending.length === 0) return;
-
-    const def = pending.shift();
-    const {fn, reject, resolve} = def;
-
-    let promise;
-    try {
-      running += 1;
-      promise = fn();
-    } catch (error) {
-      running -= 1;
-      reject(error);
-      return;
-    }
-
-    promise.then(
-      value => {
-        running -= 1;
-        resolve(value);
-      },
-      error => {
-        running -= 1;
-        reject(error);
-      },
-    );
-  };
-
-  return fn =>
-    new Promise((resolve, reject) => {
-      pending.push({
-        fn,
-        reject: error => {
-          reject(error);
-          next();
-        },
-        resolve: value => {
-          resolve(value);
-          next();
-        },
-      });
-      next();
-    });
-}
-
-function makeConcurrent(originalFn: Function, env, queue) {
+function makeConcurrent(originalFn: Function, env, mutex) {
   return function(specName, fn, timeout) {
     if (env != null && !env.specFilter({getFullName: () => specName || ''})) {
       return originalFn.call(env, specName, () => Promise.resolve(), timeout);
@@ -183,7 +135,7 @@ function makeConcurrent(originalFn: Function, env, queue) {
 
     let promise;
     try {
-      promise = queue(() => {
+      promise = mutex(() => {
         const promise = fn();
         if (isPromise(promise)) {
           return promise;
@@ -200,17 +152,20 @@ function makeConcurrent(originalFn: Function, env, queue) {
   };
 }
 
-export default function jasmineAsyncInstall(global: Global) {
+export default function jasmineAsyncInstall(
+  globalConfig: GlobalConfig,
+  global: Global,
+) {
   const jasmine = global.jasmine;
-  const queue = makeQueue(5);
+  const mutex = throat(globalConfig.maxConcurrency);
 
   const env = jasmine.getEnv();
   env.it = promisifyIt(env.it, env, jasmine);
   env.fit = promisifyIt(env.fit, env, jasmine);
-  global.it.concurrent = makeConcurrent(env.it, env, queue);
-  global.it.concurrent.only = makeConcurrent(env.fit, env, queue);
-  global.it.concurrent.skip = makeConcurrent(env.xit, env, queue);
-  global.fit.concurrent = makeConcurrent(env.fit, env, queue);
+  global.it.concurrent = makeConcurrent(env.it, env, mutex);
+  global.it.concurrent.only = makeConcurrent(env.fit, env, mutex);
+  global.it.concurrent.skip = makeConcurrent(env.xit, env, mutex);
+  global.fit.concurrent = makeConcurrent(env.fit, env, mutex);
   env.afterAll = promisifyLifeCycleFunction(env.afterAll, env);
   env.afterEach = promisifyLifeCycleFunction(env.afterEach, env);
   env.beforeAll = promisifyLifeCycleFunction(env.beforeAll, env);

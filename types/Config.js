@@ -213,6 +213,7 @@ export type GlobalConfig = {|
   lastCommit: boolean,
   logHeapUsage: boolean,
   listTests: boolean,
+  maxConcurrency: number,
   maxWorkers: number,
   noStackTrace: boolean,
   nonFlagArgs: Array<string>,

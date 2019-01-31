@@ -335,6 +335,13 @@ export const options = {
       'when transformers supply source maps.\n\nDEPRECATED',
     type: 'boolean',
   },
+  maxConcurrency: {
+    default: 5,
+    description:
+      'Specifies the maximum number of tests that are allowed to run' +
+      'concurrently. This only affects tests using `test.concurrent`.',
+    type: 'number',
+  },
   maxWorkers: {
     alias: 'w',
     description:
