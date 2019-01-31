@@ -11,17 +11,16 @@ const sleep = duration => new Promise(resolve => setTimeout(resolve, duration));
 let current = 0;
 
 for (let t = 0; t < 10; ++t) {
-  it.concurrent(`#${t}`, async () => {
+  it.concurrent(`#${t}`, () => {
     current += 1;
 
-    try {
-      if (current > 5) {
-        throw new Error(`Too many processes ran simultaneously`);
-      } else {
-        await sleep(20);
-      }
-    } finally {
+    if (current > 5) {
       current -= 1;
+      throw new Error(`Too many processes ran simultaneously`);
+    } else {
+      return sleep(20).then(() => {
+        current -= 1;
+      });
     }
   });
 }
