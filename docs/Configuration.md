@@ -403,6 +403,12 @@ _Note: A global teardown module configured in a project (using multi-project run
 
 _Node: The same caveat concerning transformation of `node_modules_ as for `globalSetup` applies to `globalTeardown`.
 
+### `maxConcurrency` [number]
+
+Default: `5`
+
+A number limiting the number of tests that are allowed to run at the same time when using `test.concurrent`. Any test above this limit will be queued and executed once a slot is released.
+
 ### `moduleDirectories` [array<string>]
 
 Default: `["node_modules"]`
