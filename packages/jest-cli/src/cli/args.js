@@ -118,7 +118,7 @@ export const options = {
   },
   changedSince: {
     description:
-      'Runs tests related the changes since the provided branch. If the ' +
+      'Runs tests related to the changes since the provided branch. If the ' +
       'current branch has diverged from the given branch, then only changes ' +
       'made locally will be tested. Behaves similarly to `--onlyChanged`.',
     nargs: 1,
