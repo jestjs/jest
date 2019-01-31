@@ -130,13 +130,11 @@ function makeQueue(max: number) {
   let running = 0;
 
   const next = () => {
-    if (running >= max)
-      return;
-    if (pending.length === 0)
-      return;
+    if (running >= max) return;
+    if (pending.length === 0) return;
 
     const def = pending.shift();
-    const {fn, resolve, reject} = def;
+    const {fn, reject, resolve} = def;
 
     let promise;
     try {
@@ -148,31 +146,33 @@ function makeQueue(max: number) {
       return;
     }
 
-    promise.then(value => {
-      running -= 1;
-      resolve(value);
-    }, error => {
-      running -= 1;
-      reject(error);
-    });
+    promise.then(
+      value => {
+        running -= 1;
+        resolve(value);
+      },
+      error => {
+        running -= 1;
+        reject(error);
+      },
+    );
   };
 
-  return fn => {
-    return new Promise((resolve, reject) => {
+  return fn =>
+    new Promise((resolve, reject) => {
       pending.push({
         fn,
-        resolve: value => {
-          resolve(value);
-          next();
-        },
         reject: error => {
           reject(error);
+          next();
+        },
+        resolve: value => {
+          resolve(value);
           next();
         },
       });
       next();
     });
-  };
 }
 
 function makeConcurrent(originalFn: Function, env, queue) {
