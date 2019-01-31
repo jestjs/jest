@@ -126,7 +126,7 @@ export type InitialOptions = {
   listTests?: boolean,
   mapCoverage?: boolean,
   maxConcurrency?: number,
-  moduleDirectories?: Array<string?>,
+  moduleDirectories?: Array<string>,
   moduleFileExtensions?: Array<string>,
   moduleLoader?: Path,
   moduleNameMapper?: {[key: string]: string},
