@@ -1039,7 +1039,7 @@ test('the house has my desired features', () => {
 ```
 
 ```js
-describe('toMatchObject applied to arrays arrays', () => {
+describe('toMatchObject applied to arrays', () => {
   test('the number of elements must match exactly', () => {
     expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}, {baz: 1}]);
   });
