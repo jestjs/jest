@@ -20,7 +20,8 @@
     "jest-snapshot": "^24.0.0",
     "jest-util": "^24.0.0",
     "pretty-format": "^24.0.0",
-    "stack-utils": "^1.0.1"
+    "stack-utils": "^1.0.1",
+    "throat": "^4.0.0"
   },
   "devDependencies": {
     "execa": "^1.0.0",

@@ -208,6 +208,10 @@ Lists all tests as JSON that Jest will run given the arguments, and exits. This 
 
 Logs the heap usage after every test. Useful to debug memory leaks. Use together with `--runInBand` and `--expose-gc` in node.
 
+### `--maxConcurrency=<num>`
+
+Prevents Jest from executing more than the specified amount of tests at the same time. Only affects tests that use `test.concurrent`.
+
 ### `--maxWorkers=<num>|<string>`
 
 Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. This defaults to the number of the cores available on your machine. It may be useful to adjust this in resource limited environments like CIs but the default should be adequate for most use-cases.

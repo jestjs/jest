@@ -131,6 +131,7 @@ const groupOptions = (
     lastCommit: options.lastCommit,
     listTests: options.listTests,
     logHeapUsage: options.logHeapUsage,
+    maxConcurrency: options.maxConcurrency,
     maxWorkers: options.maxWorkers,
     noSCM: undefined,
     noStackTrace: options.noStackTrace,
