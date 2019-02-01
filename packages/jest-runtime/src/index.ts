@@ -28,6 +28,7 @@ import type {
 } from '@jest/environment';
 import type * as JestGlobals from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
+import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -134,6 +135,10 @@ class Runtime {
   private _currentlyExecutingModulePath: string;
   private _environment: JestEnvironment;
   private _explicitShouldMock: BooleanMap;
+  private _fakeTimersImplementation:
+    | LegacyFakeTimers<unknown>
+    | ModernFakeTimers
+    | null;
   private _internalModuleRegistry: ModuleRegistry;
   private _isCurrentlyExecutingManualMock: string | null;
   private _mockFactories: Map<string, () => unknown>;
@@ -204,6 +209,11 @@ class Runtime {
     this._shouldMockModuleCache = new Map();
     this._shouldUnmockTransitiveDependenciesCache = new Map();
     this._transitiveShouldMock = new Map();
+
+    this._fakeTimersImplementation =
+      config.timers === 'modern'
+        ? this._environment.fakeTimersModern
+        : this._environment.fakeTimers;
 
     this._unmockList = unmockRegExpCache.get(config);
     if (!this._unmockList && config.unmockedModulePathPatterns) {
@@ -1410,8 +1420,25 @@ class Runtime {
       this.restoreAllMocks();
       return jestObject;
     };
-    const useFakeTimers = () => {
-      _getFakeTimers().useFakeTimers();
+    const _getFakeTimers = () => {
+      if (
+        !(this._environment.fakeTimers || this._environment.fakeTimersModern)
+      ) {
+        this._logFormattedReferenceError(
+          'You are trying to access a property or method of the Jest environment after it has been torn down.',
+        );
+        process.exitCode = 1;
+      }
+
+      return this._fakeTimersImplementation!;
+    };
+    const useFakeTimers = (type: string = 'legacy') => {
+      if (type === 'modern') {
+        this._fakeTimersImplementation = this._environment.fakeTimersModern;
+      } else {
+        this._fakeTimersImplementation = this._environment.fakeTimers;
+      }
+      this._fakeTimersImplementation!.useFakeTimers();
       return jestObject;
     };
     const useRealTimers = () => {
@@ -1445,18 +1472,6 @@ class Runtime {
       return jestObject;
     };
 
-    const _getFakeTimers = (): NonNullable<JestEnvironment['fakeTimers']> => {
-      if (!this._environment.fakeTimers) {
-        this._logFormattedReferenceError(
-          'You are trying to access a property or method of the Jest environment after it has been torn down.',
-        );
-        process.exitCode = 1;
-      }
-
-      // We've logged a user message above, so it doesn't matter if we return `null` here
-      return this._environment.fakeTimers!;
-    };
-
     const jestObject: Jest = {
       addMatchers: (matchers: Record<string, any>) =>
         this._environment.global.jasmine.addMatchers(matchers),
@@ -1476,6 +1491,17 @@ class Runtime {
       fn,
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
+      getRealSystemTime: () => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers instanceof ModernFakeTimers) {
+          return fakeTimers.getRealSystemTime();
+        } else {
+          throw new TypeError(
+            'getRealSystemTime is not available when not using modern timers',
+          );
+        }
+      },
       getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
@@ -1487,7 +1513,17 @@ class Runtime {
       resetModules,
       restoreAllMocks,
       retryTimes,
-      runAllImmediates: () => _getFakeTimers().runAllImmediates(),
+      runAllImmediates: () => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers instanceof LegacyFakeTimers) {
+          fakeTimers.runAllImmediates();
+        } else {
+          throw new TypeError(
+            'runAllImmediates is not available when using modern timers',
+          );
+        }
+      },
       runAllTicks: () => _getFakeTimers().runAllTicks(),
       runAllTimers: () => _getFakeTimers().runAllTimers(),
       runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
@@ -1495,6 +1531,17 @@ class Runtime {
         _getFakeTimers().advanceTimersByTime(msToRun),
       setMock: (moduleName: string, mock: unknown) =>
         setMockFactory(moduleName, () => mock),
+      setSystemTime: (now?: number) => {
+        const fakeTimers = _getFakeTimers();
+
+        if (fakeTimers instanceof ModernFakeTimers) {
+          fakeTimers.setSystemTime(now);
+        } else {
+          throw new TypeError(
+            'setSystemTime is not available when not using modern timers',
+          );
+        }
+      },
       setTimeout,
       spyOn,
       unmock,

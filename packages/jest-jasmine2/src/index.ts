@@ -93,8 +93,10 @@ async function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
-  if (config.timers === 'fake') {
+  if (config.timers === 'fake' || config.timers === 'legacy') {
     environment.fakeTimers!.useFakeTimers();
+  } else if (config.timers === 'modern') {
+    environment.fakeTimersModern!.useFakeTimers();
   }
 
   env.beforeEach(() => {
@@ -109,7 +111,7 @@ async function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'fake') {
+      if (config.timers === 'fake' || config.timers === 'legacy') {
         environment.fakeTimers!.useFakeTimers();
       }
     }

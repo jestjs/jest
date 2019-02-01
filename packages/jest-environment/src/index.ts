@@ -199,6 +199,8 @@ export interface Jest {
   retryTimes(numRetries: number): Jest;
   /**
    * Exhausts tasks queued by setImmediate().
+   *
+   * > Note: This function is not available when using Lolex as fake timers implementation
    */
   runAllImmediates(): void;
   /**
@@ -269,7 +271,7 @@ export interface Jest {
   /**
    * Instructs Jest to use fake versions of the standard timer functions.
    */
-  useFakeTimers(): Jest;
+  useFakeTimers(implementation?: 'modern' | 'legacy'): Jest;
   /**
    * Instructs Jest to use the real versions of the standard timer functions.
    */
@@ -281,4 +283,18 @@ export interface Jest {
    * every test so that local module state doesn't conflict between tests.
    */
   isolateModules(fn: () => void): Jest;
+
+  /**
+   * When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
+   *
+   * > Note: This function is only available when using Lolex as fake timers implementation
+   */
+  getRealSystemTime(): number;
+
+  /**
+   *  Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
+   *
+   *  > Note: This function is only available when using Lolex as fake timers implementation
+   */
+  setSystemTime(now?: number): void;
 }
