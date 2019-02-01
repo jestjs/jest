@@ -713,6 +713,7 @@ export default function normalize(
       case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
+      case 'maxConcurrency':
       case 'mapCoverage':
       case 'name':
       case 'noStackTrace':
@@ -803,6 +804,7 @@ export default function normalize(
       ? 'all'
       : 'new';
 
+  newOptions.maxConcurrency = parseInt(newOptions.maxConcurrency, 10);
   newOptions.maxWorkers = getMaxWorkers(argv);
 
   if (newOptions.testRegex.length && options.testMatch) {

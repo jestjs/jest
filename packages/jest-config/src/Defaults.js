@@ -42,6 +42,7 @@ export default ({
     computeSha1: false,
     providesModuleNodeModules: [],
   },
+  maxConcurrency: 5,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleNameMapper: {},
