@@ -156,29 +156,52 @@ export default class SearchSource {
       buildSnapshotResolver(this._context.config),
     );
 
-    const tests = toTests(
-      this._context,
-      dependencyResolver.resolveInverse(
-        allPaths,
-        this.isTestFilePath.bind(this),
-        {
-          skipNodeResolution: this._context.config.skipNodeResolution,
-        },
-      ),
-    );
-    let collectCoverageFrom;
+    if (!collectCoverage) {
+      return {
+        tests: toTests(
+          this._context,
+          dependencyResolver.resolveInverse(
+            allPaths,
+            this.isTestFilePath.bind(this),
+            {
+              skipNodeResolution: this._context.config.skipNodeResolution,
+            },
+          ),
+        ),
+      };
+    }
 
-    // If we are collecting coverage, also return collectCoverageFrom patterns
-    if (collectCoverage) {
-      collectCoverageFrom = Array.from(allPaths).map(filename => {
+    const testModulesMap = dependencyResolver.resolveInverseModuleMap(
+      allPaths,
+      this.isTestFilePath.bind(this),
+      {
+        skipNodeResolution: this._context.config.skipNodeResolution,
+      },
+    );
+
+    const allPathsAbsolute = Array.from(allPaths).map(p => path.resolve(p));
+
+    return {
+      collectCoverageFrom: Array.from(
+        testModulesMap.reduce((acc, testModule) => {
+          if (testModule.dependencies) {
+            testModule.dependencies
+              .filter(p => allPathsAbsolute.some(ap => ap === p))
+              .forEach(p => acc.add(p));
+          }
+          return acc;
+        }, new Set()),
+      ).map(filename => {
         filename = replaceRootDirInPath(this._context.config.rootDir, filename);
         return path.isAbsolute(filename)
           ? path.relative(this._context.config.rootDir, filename)
           : filename;
-      });
-    }
-
-    return {collectCoverageFrom, tests};
+      }),
+      tests: toTests(
+        this._context,
+        testModulesMap.map(testModule => testModule.file),
+      ),
+    };
   }
 
   findTestsByPaths(paths: Array<Path>): SearchResult {

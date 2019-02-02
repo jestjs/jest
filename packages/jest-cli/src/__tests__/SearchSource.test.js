@@ -421,6 +421,18 @@ describe('SearchSource', () => {
         rootPath,
       ]);
     });
+
+    it('excludes untested files from coverage', () => {
+      const unrelatedFile = path.join(rootDir, 'JSONFile.json');
+      const regular = path.join(rootDir, 'RegularModule.js');
+      const requireRegular = path.join(rootDir, 'RequireRegularMode.js');
+
+      const data = searchSource.findRelatedTests(
+        new Set([regular, requireRegular, unrelatedFile]),
+        true,
+      );
+      expect(data.collectCoverageFrom).toEqual(['RegularModule.js']);
+    });
   });
 
   describe('findRelatedTestsFromPattern', () => {

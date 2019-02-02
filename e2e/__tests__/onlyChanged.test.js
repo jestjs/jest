@@ -141,7 +141,7 @@ test('report test coverage for only changed files', () => {
   expect(stdout).not.toMatch('b.js');
 });
 
-test.skip('do not pickup non-tested files when reporting coverage on only changed files', () => {
+test('do not pickup non-tested files when reporting coverage on only changed files', () => {
   writeFiles(DIR, {
     'a.js': 'module.exports = {}',
     'b.test.js': 'module.exports = {}',
