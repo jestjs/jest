@@ -20,6 +20,7 @@
 - `[jest-config]` Make sure `normalize` can consume `Defaults` without warnings ([#7742](https://github.com/facebook/jest/pull/7742))
 - `[jest-config]` Allow `moduleFileExtensions` without 'js' for custom runners ([#7751](https://github.com/facebook/jest/pull/7751))
 - `[jest-cli]` Load transformers before installing require hooks ([#7752](https://github.com/facebook/jest/pull/7752)
+- `[jest-cli]` Only consider test files and their dependencies for coverage ([#7611](https://github.com/facebook/jest/pull/7611))
 
 ### Chore & Maintenance
 

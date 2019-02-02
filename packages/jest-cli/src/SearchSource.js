@@ -165,9 +165,7 @@ export default class SearchSource {
           dependencyResolver.resolveInverse(
             allPaths,
             this.isTestFilePath.bind(this),
-            {
-              skipNodeResolution: this._context.config.skipNodeResolution,
-            },
+            {skipNodeResolution: this._context.config.skipNodeResolution},
           ),
         ),
       };
@@ -176,9 +174,7 @@ export default class SearchSource {
     const testModulesMap = dependencyResolver.resolveInverseModuleMap(
       allPaths,
       this.isTestFilePath.bind(this),
-      {
-        skipNodeResolution: this._context.config.skipNodeResolution,
-      },
+      {skipNodeResolution: this._context.config.skipNodeResolution},
     );
 
     const allPathsAbsolute = Array.from(allPaths).map(p => path.resolve(p));
