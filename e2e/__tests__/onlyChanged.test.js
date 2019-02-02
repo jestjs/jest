@@ -151,7 +151,7 @@ test('do not pickup non-tested files when reporting coverage on only changed fil
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
   writeFiles(DIR, {
-    'b.test.js': 'it("passes", () => {})',
+    'b.test.js': 'require("./package.json"); it("passes", () => {})',
     'package.json': JSON.stringify({name: 'new name'}),
   });
 
