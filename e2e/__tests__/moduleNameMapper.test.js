@@ -31,7 +31,6 @@ test('moduleNameMapper correct configuration', () => {
 
 test('moduleNameMapper with mocking', () => {
   const {json} = runWithJson('module-name-mapper-mock');
-  console.log(json);
   expect(json.numTotalTests).toBe(2);
   expect(json.success).toBe(true);
 });

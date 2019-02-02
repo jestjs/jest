@@ -16,6 +16,7 @@ import type {Jest, LocalModuleRequire} from 'types/Jest';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 import type {SourceMapRegistry} from 'types/SourceMaps';
+import type {ErrorWithCode} from 'types/Errors';
 
 import path from 'path';
 import HasteMap from 'jest-haste-map';
@@ -376,7 +377,6 @@ class Runtime {
       from,
       moduleName,
     );
-
     if (this._isolatedMockRegistry && this._isolatedMockRegistry[moduleID]) {
       return this._isolatedMockRegistry[moduleID];
     } else if (this._mockRegistry[moduleID]) {
@@ -389,37 +389,41 @@ class Runtime {
       return (mockRegistry[moduleID] = this._mockFactories[moduleID]());
     }
 
-    let manualMock = this._resolver.getMockModule(from, moduleName);
+    const manualMockOrStub = this._resolver.getMockModule(from, moduleName);
     let modulePath;
-    if (manualMock) {
-      modulePath = this._resolveModule(from, manualMock);
+    if (manualMockOrStub) {
+      modulePath = this._resolveModule(from, manualMockOrStub);
     } else {
       modulePath = this._resolveModule(from, moduleName);
     }
-    // If the actual module file has a __mocks__ dir sitting immediately next
-    // to it, look to see if there is a manual mock for this file.
-    //
-    // subDir1/my_module.js
-    // subDir1/__mocks__/my_module.js
-    // subDir2/my_module.js
-    // subDir2/__mocks__/my_module.js
-    //
-    // Where some other module does a relative require into each of the
-    // respective subDir{1,2} directories and expects a manual mock
-    // corresponding to that particular my_module.js file.
-    const moduleDir = path.dirname(modulePath);
-    const moduleFileName = path.basename(modulePath);
-    const potentialManualMock = path.join(
-      moduleDir,
-      '__mocks__',
-      moduleFileName,
-    );
-    if (fs.existsSync(potentialManualMock)) {
-      manualMock = true;
-      modulePath = potentialManualMock;
-    }
 
-    if (manualMock) {
+    let isManualMock = manualMockOrStub && this._resolver.getModule(moduleName);
+    if (!isManualMock) {
+      // If the actual module file has a __mocks__ dir sitting immediately next
+      // to it, look to see if there is a manual mock for this file.
+      //
+      // subDir1/my_module.js
+      // subDir1/__mocks__/my_module.js
+      // subDir2/my_module.js
+      // subDir2/__mocks__/my_module.js
+      //
+      // Where some other module does a relative require into each of the
+      // respective subDir{1,2} directories and expects a manual mock
+      // corresponding to that particular my_module.js file.
+
+      const moduleDir = path.dirname(modulePath);
+      const moduleFileName = path.basename(modulePath);
+      const potentialManualMock = path.join(
+        moduleDir,
+        '__mocks__',
+        moduleFileName,
+      );
+      if (fs.existsSync(potentialManualMock)) {
+        isManualMock = true;
+        modulePath = potentialManualMock;
+      }
+    }
+    if (isManualMock) {
       const localModule: Module = {
         children: [],
         exports: {},
@@ -741,8 +745,20 @@ class Runtime {
   }
 
   _generateMock(from: Path, moduleName: string) {
-    const modulePath = this._resolveModule(from, moduleName);
-
+    const modulePath = this._resolver.getNormalizedPath(
+      this._virtualMocks,
+      from,
+      moduleName,
+    );
+    if (!modulePath) {
+      const dirname = path.dirname(from);
+      const relativePath = path.relative(dirname, from);
+      const err = new Error(
+        `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
+      );
+      (err: ErrorWithCode).code = 'MODULE_NOT_FOUND';
+      throw err;
+    }
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock

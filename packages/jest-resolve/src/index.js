@@ -272,6 +272,18 @@ class Resolver {
     return this._modulePathCache[from];
   }
 
+  getNormalizedPath(
+    virtualMocks: BooleanObject,
+    from: Path,
+    _moduleName?: ?string,
+  ) {
+    const moduleName = _moduleName || '';
+    return (
+      this._getAbsolutePath(virtualMocks, from, moduleName) ||
+      this._getMockPath(from, moduleName)
+    );
+  }
+
   getModuleID(
     virtualMocks: BooleanObject,
     from: Path,
