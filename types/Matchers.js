@@ -36,6 +36,7 @@ export type MatcherState = {
   expectedAssertionsNumber: ?number,
   isExpectingAssertions: ?boolean,
   isNot: boolean,
+  promise: string,
   snapshotState: SnapshotState,
   suppressedErrors: Array<Error>,
   testPath?: Path,
@@ -79,4 +80,12 @@ export type ExpectationObject = {
     not: {[id: string]: PromiseMatcherFn},
   },
   not: {[id: string]: ThrowingMatcherFn},
+};
+
+export type MatcherHintOptions = {
+  comment?: string,
+  isDirectExpectCall?: boolean,
+  isNot?: boolean,
+  promise?: string,
+  secondArgument?: ?string,
 };

@@ -16,7 +16,7 @@ JSDOMEnvironment.mockImplementation(function(config) {
     console: {},
   };
 
-  const globalValues = Object.assign({}, config.globals);
+  const globalValues = {...config.globals};
   for (const customGlobalKey in globalValues) {
     this.global[customGlobalKey] = globalValues[customGlobalKey];
   }

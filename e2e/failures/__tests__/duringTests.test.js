@@ -21,7 +21,6 @@ test('undefined thrown during test', () => {
 });
 
 test('Object thrown during test', () => {
-  // eslint-disable-next-line no-throw-literal
   throw deepObject;
 });
 

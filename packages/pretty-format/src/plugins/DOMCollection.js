@@ -51,7 +51,7 @@ export const serialize = (
         printObjectProperties(
           name === 'NamedNodeMap'
             ? Array.prototype.reduce.call(collection, propsReducer, {})
-            : Object.assign({}, collection),
+            : {...collection},
           config,
           indentation,
           depth,

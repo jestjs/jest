@@ -126,7 +126,7 @@ Runs tests related to the current changes and the changes made in the last commi
 
 ### `--changedSince`
 
-Runs tests related the changes since the provided branch. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
+Runs tests related to the changes since the provided branch. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
 
 ### `--ci`
 
@@ -207,6 +207,10 @@ Lists all tests as JSON that Jest will run given the arguments, and exits. This 
 ### `--logHeapUsage`
 
 Logs the heap usage after every test. Useful to debug memory leaks. Use together with `--runInBand` and `--expose-gc` in node.
+
+### `--maxConcurrency=<num>`
+
+Prevents Jest from executing more than the specified amount of tests at the same time. Only affects tests that use `test.concurrent`.
 
 ### `--maxWorkers=<num>|<string>`
 

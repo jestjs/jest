@@ -48,7 +48,7 @@ transformOptions.babelrc = false;
 
 const prettierConfig = prettier.resolveConfig.sync(__filename);
 prettierConfig.trailingComma = 'none';
-prettierConfig.parser = 'babylon';
+prettierConfig.parser = 'babel';
 
 const adjustToTerminalWidth = str => {
   const columns = process.stdout.columns || 80;
@@ -133,7 +133,7 @@ function buildFile(file, silent) {
     return;
   }
 
-  mkdirp.sync(path.dirname(destPath));
+  mkdirp.sync(path.dirname(destPath), '777');
   if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
     fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
     silent ||

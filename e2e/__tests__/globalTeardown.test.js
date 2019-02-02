@@ -8,7 +8,7 @@
 'use strict';
 
 import fs from 'fs';
-import mkdirp from 'mkdirp';
+import {createDirectory} from 'jest-util';
 import os from 'os';
 import path from 'path';
 import runJest, {json as runWithJson} from '../runJest';
@@ -30,7 +30,7 @@ afterAll(() => {
 });
 
 test('globalTeardown is triggered once after all test suites', () => {
-  mkdirp.sync(DIR);
+  createDirectory(DIR);
   const teardownPath = path.resolve(
     __dirname,
     '../global-teardown/teardown.js',
@@ -110,4 +110,37 @@ test('should not call a globalTeardown of a project if there are no tests to run
   expect(fs.existsSync(DIR)).toBe(true);
   expect(fs.existsSync(project1DIR)).toBe(true);
   expect(fs.existsSync(project2DIR)).toBe(false);
+});
+
+test('globalTeardown works with default export', () => {
+  const teardownPath = path.resolve(
+    __dirname,
+    '../global-teardown/teardownWithDefaultExport.js',
+  );
+
+  const testPathPattern = 'pass';
+
+  const result = runJest('global-teardown', [
+    `--globalTeardown=${teardownPath}`,
+    `--testPathPattern=${testPathPattern}`,
+  ]);
+
+  expect(result.stdout).toBe(testPathPattern);
+});
+
+test('globalTeardown throws with named export', () => {
+  const teardownPath = path.resolve(
+    __dirname,
+    '../global-teardown/invalidTeardownWithNamedExport.js',
+  );
+
+  const {status, stderr} = runJest('global-teardown', [
+    `--globalTeardown=${teardownPath}`,
+    `--testPathPattern=__tests__`,
+  ]);
+
+  expect(status).toBe(1);
+  expect(stderr).toMatch(
+    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
+  );
 });

@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import runJest, {json as runWithJson} from '../runJest';
 
 describe('async jasmine', () => {
@@ -125,6 +123,15 @@ describe('async jasmine', () => {
     expect(json.numFailedTests).toBe(1);
     expect(json.numPendingTests).toBe(1);
     expect(json.testResults[0].message).toMatch(/concurrent test fails/);
+  });
+
+  it("doesn't execute more than 5 tests simultaneously", () => {
+    const result = runWithJson('jasmine-async', ['concurrent-many.test.js']);
+    const json = result.json;
+    expect(json.numTotalTests).toBe(10);
+    expect(json.numPassedTests).toBe(10);
+    expect(json.numFailedTests).toBe(0);
+    expect(json.numPendingTests).toBe(0);
   });
 
   it('async test fails', () => {

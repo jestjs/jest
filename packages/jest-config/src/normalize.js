@@ -13,6 +13,7 @@ import type {
   DefaultOptions,
   ReporterConfig,
   GlobalConfig,
+  Path,
   ProjectConfig,
 } from 'types/Config';
 
@@ -21,7 +22,7 @@ import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
 import validatePattern from './validatePattern';
-import {clearLine} from 'jest-util';
+import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
 import getMaxWorkers from './getMaxWorkers';
 import micromatch from 'micromatch';
@@ -59,12 +60,11 @@ const mergeOptionWithPreset = (
   optionName: string,
 ) => {
   if (options[optionName] && preset[optionName]) {
-    options[optionName] = Object.assign(
-      {},
-      options[optionName],
-      preset[optionName],
-      options[optionName],
-    );
+    options[optionName] = {
+      ...options[optionName],
+      ...preset[optionName],
+      ...options[optionName],
+    };
   }
 };
 
@@ -127,7 +127,7 @@ const setupPreset = (
   mergeOptionWithPreset(options, preset, 'moduleNameMapper');
   mergeOptionWithPreset(options, preset, 'transform');
 
-  return Object.assign({}, preset, options);
+  return {...preset, ...options};
 };
 
 const setupBabelJest = (options: InitialOptions) => {
@@ -170,8 +170,6 @@ const setupBabelJest = (options: InitialOptions) => {
       [DEFAULT_JS_PATTERN]: babelJest,
     };
   }
-
-  return babelJest;
 };
 
 const normalizeCollectCoverageOnlyFrom = (
@@ -202,7 +200,9 @@ const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
       value = JSON.parse(options[key]);
     } catch (e) {}
 
-    Array.isArray(value) || (value = [options[key]]);
+    if (options[key] && !Array.isArray(value)) {
+      value = [options[key]];
+    }
   } else {
     value = options[key];
   }
@@ -266,11 +266,18 @@ const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   return options;
 };
 
-const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
+const normalizeMissingOptions = (
+  options: InitialOptions,
+  configPath: ?Path,
+  projectIndex: number,
+): InitialOptions => {
   if (!options.name) {
     options.name = crypto
       .createHash('md5')
       .update(options.rootDir)
+      // In case we load config from some path that has the same root dir
+      .update(configPath || '')
+      .update(String(projectIndex))
       .digest('hex');
   }
 
@@ -376,7 +383,12 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-export default function normalize(options: InitialOptions, argv: Argv) {
+export default function normalize(
+  options: InitialOptions,
+  argv: Argv,
+  configPath: ?Path,
+  projectIndex?: number = Infinity,
+) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
@@ -395,9 +407,17 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   options = normalizePreprocessor(
     normalizeReporters(
-      normalizeMissingOptions(normalizeRootDir(setFromArgv(options, argv))),
+      normalizeMissingOptions(
+        normalizeRootDir(setFromArgv(options, argv)),
+        configPath,
+        projectIndex,
+      ),
     ),
   );
+
+  if (options.preset) {
+    options = setupPreset(options, options.preset);
+  }
 
   if (!options.setupFilesAfterEnv) {
     options.setupFilesAfterEnv = [];
@@ -421,10 +441,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
   }
 
-  if (options.preset) {
-    options = setupPreset(options, options.preset);
-  }
-
   options.testEnvironment = getTestEnvironment({
     rootDir: options.rootDir,
     testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
@@ -446,10 +462,11 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     options.coverageDirectory = path.resolve(options.rootDir, 'coverage');
   }
 
-  const babelJest = setupBabelJest(options);
-  const newOptions: $Shape<
-    DefaultOptions & ProjectConfig & GlobalConfig,
-  > = (Object.assign({}, DEFAULT_CONFIG): any);
+  setupBabelJest(options);
+
+  const newOptions: $Shape<DefaultOptions & ProjectConfig & GlobalConfig> = {
+    ...DEFAULT_CONFIG,
+  };
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
@@ -580,7 +597,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         value = normalizeUnmockedModulePathPatterns(options, key);
         break;
       case 'haste':
-        value = Object.assign({}, options[key]);
+        value = {...options[key]};
         if (value.hasteImplModulePath != null) {
           value.hasteImplModulePath = resolve(newOptions.resolver, {
             filePath: replaceRootDirInPath(
@@ -610,10 +627,20 @@ export default function normalize(options: InitialOptions, argv: Argv) {
         break;
       case 'moduleDirectories':
       case 'testMatch':
-        value = _replaceRootDirTags(
-          escapeGlobCharacters(options.rootDir),
-          options[key],
-        );
+        {
+          const replacedRootDirTags = _replaceRootDirTags(
+            escapeGlobCharacters(options.rootDir),
+            options[key],
+          );
+
+          if (replacedRootDirTags) {
+            value = Array.isArray(replacedRootDirTags)
+              ? replacedRootDirTags.map(replacePathSepForGlob)
+              : replacePathSepForGlob(replacedRootDirTags);
+          } else {
+            value = replacedRootDirTags;
+          }
+        }
         break;
       case 'testRegex':
         value = options[key]
@@ -623,8 +650,12 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'moduleFileExtensions': {
         value = options[key];
 
-        // If it's the wrong type, it can throw at a later time
-        if (Array.isArray(value) && !value.includes('js')) {
+        if (
+          Array.isArray(value) && // If it's the wrong type, it can throw at a later time
+          (options.runner === undefined ||
+            options.runner === DEFAULT_CONFIG.runner) && // Only require 'js' for the default jest-runner
+          !value.includes('js')
+        ) {
           const errorMessage =
             `  moduleFileExtensions must include 'js':\n` +
             `  but instead received:\n` +
@@ -682,6 +713,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
+      case 'maxConcurrency':
       case 'mapCoverage':
       case 'name':
       case 'noStackTrace':
@@ -772,18 +804,8 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       ? 'all'
       : 'new';
 
+  newOptions.maxConcurrency = parseInt(newOptions.maxConcurrency, 10);
   newOptions.maxWorkers = getMaxWorkers(argv);
-
-  if (babelJest) {
-    const regeneratorRuntimePath = Resolver.findNodeModule(
-      'regenerator-runtime/runtime',
-      {basedir: options.rootDir, resolver: newOptions.resolver},
-    );
-
-    if (regeneratorRuntimePath) {
-      newOptions.setupFiles.unshift(regeneratorRuntimePath);
-    }
-  }
 
   if (newOptions.testRegex.length && options.testMatch) {
     throw createConfigError(
@@ -823,10 +845,10 @@ export default function normalize(options: InitialOptions, argv: Argv) {
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          !micromatch(
-            [path.relative(options.rootDir, filename)],
+          !micromatch.some(
+            replacePathSepForGlob(path.relative(options.rootDir, filename)),
             newOptions.collectCoverageFrom,
-          ).length
+          )
         ) {
           return patterns;
         }

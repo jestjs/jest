@@ -7,8 +7,6 @@
  * @flow
  */
 
-'use strict';
-
 import path from 'path';
 import os from 'os';
 import runJest from '../runJest';
@@ -18,6 +16,7 @@ import {
   extractSummary,
   writeFiles,
 } from '../Utils';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(os.tmpdir(), 'globalVariables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
@@ -51,8 +50,8 @@ test('basic test constructs', () => {
   expect(status).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('skips', () => {
@@ -81,8 +80,8 @@ test('skips', () => {
   const {stderr, status} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
   expect(status).toBe(0);
 });
 
@@ -112,8 +111,8 @@ test('only', () => {
   expect(status).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('cannot have describe with no implementation', () => {
@@ -128,8 +127,8 @@ test('cannot have describe with no implementation', () => {
 
   const rest = cleanStderr(stderr);
   const {summary} = extractSummary(stderr);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('cannot test with no implementation', () => {
@@ -145,8 +144,8 @@ test('cannot test with no implementation', () => {
   expect(status).toBe(1);
 
   const {summary} = extractSummary(stderr);
-  expect(cleanStderr(stderr)).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('skips with expand arg', () => {
@@ -176,8 +175,8 @@ test('skips with expand arg', () => {
   expect(status).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('only with expand arg', () => {
@@ -206,8 +205,8 @@ test('only with expand arg', () => {
   expect(status).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('cannot test with no implementation with expand arg', () => {
@@ -223,8 +222,8 @@ test('cannot test with no implementation with expand arg', () => {
   expect(status).toBe(1);
 
   const {summary} = extractSummary(stderr);
-  expect(cleanStderr(stderr)).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('function as descriptor', () => {
@@ -241,6 +240,6 @@ test('function as descriptor', () => {
   expect(status).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });

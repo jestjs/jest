@@ -6,7 +6,6 @@
  *
  * @flow
  */
-'use strict';
 
 import path from 'path';
 import {cleanup} from '../Utils';

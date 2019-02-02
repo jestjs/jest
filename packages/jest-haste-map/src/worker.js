@@ -83,6 +83,7 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
           ? // $FlowFixMe
             require(data.dependencyExtractor).extract(
               content,
+              filePath,
               dependencyExtractor.extract,
             )
           : dependencyExtractor.extract(content),

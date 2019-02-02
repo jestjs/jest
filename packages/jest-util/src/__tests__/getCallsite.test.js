@@ -5,12 +5,11 @@ import SourceMap from 'source-map';
 import getCallsite from '../getCallsite';
 
 // Node 10.5.x compatibility
-jest.mock('fs', () =>
-  Object.assign({}, jest.genMockFromModule('fs'), {
-    ReadStream: jest.requireActual('fs').ReadStream,
-    WriteStream: jest.requireActual('fs').WriteStream,
-  }),
-);
+jest.mock('fs', () => ({
+  ...jest.genMockFromModule('fs'),
+  ReadStream: jest.requireActual('fs').ReadStream,
+  WriteStream: jest.requireActual('fs').WriteStream,
+}));
 
 describe('getCallsite', () => {
   test('without source map', () => {

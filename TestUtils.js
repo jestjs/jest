@@ -36,6 +36,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   lastCommit: false,
   listTests: false,
   logHeapUsage: false,
+  maxConcurrency: 5,
   maxWorkers: 2,
   noSCM: null,
   noStackTrace: false,
@@ -134,7 +135,7 @@ export const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
     `);
   }
 
-  return Object.assign({}, DEFAULT_GLOBAL_CONFIG, overrides);
+  return {...DEFAULT_GLOBAL_CONFIG, ...overrides};
 };
 
 export const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
@@ -148,5 +149,5 @@ export const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
     `);
   }
 
-  return Object.assign({}, DEFAULT_PROJECT_CONFIG, overrides);
+  return {...DEFAULT_GLOBAL_CONFIG, ...overrides};
 };

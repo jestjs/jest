@@ -11,6 +11,7 @@ import path from 'path';
 import fs from 'fs';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../to-throw-error-matching-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
@@ -99,7 +100,7 @@ test('should support rejecting promises', () => {
     );
 
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(snapshot).toMatchSnapshot();
+    expect(wrap(snapshot)).toMatchSnapshot();
     expect(status).toBe(0);
   }
 });

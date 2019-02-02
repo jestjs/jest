@@ -118,7 +118,7 @@ export const options = {
   },
   changedSince: {
     description:
-      'Runs tests related the changes since the provided branch. If the ' +
+      'Runs tests related to the changes since the provided branch. If the ' +
       'current branch has diverged from the given branch, then only changes ' +
       'made locally will be tested. Behaves similarly to `--onlyChanged`.',
     nargs: 1,
@@ -334,6 +334,13 @@ export const options = {
       'Maps code coverage reports against original source code ' +
       'when transformers supply source maps.\n\nDEPRECATED',
     type: 'boolean',
+  },
+  maxConcurrency: {
+    default: 5,
+    description:
+      'Specifies the maximum number of tests that are allowed to run' +
+      'concurrently. This only affects tests using `test.concurrent`.',
+    type: 'number',
   },
   maxWorkers: {
     alias: 'w',

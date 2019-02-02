@@ -7,7 +7,7 @@
  * @flow strict-local
  */
 
-import type {EventHandler} from 'types/Circus';
+import type {EventHandler, Exception} from 'types/Circus';
 
 import {
   addErrorToEachTestUnderDescribe,
@@ -130,7 +130,8 @@ const eventHandler: EventHandler = (event, state): void => {
       break;
     }
     case 'test_retry': {
-      event.test.errors = [];
+      const errors: Array<[?Exception, Exception]> = [];
+      event.test.errors = errors;
       break;
     }
     case 'run_start': {

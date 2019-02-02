@@ -7,6 +7,7 @@
  */
 
 import {
+  diff,
   ensureNumbers,
   ensureNoExpected,
   getLabelPrinter,
@@ -116,16 +117,41 @@ describe('.ensureNoExpected()', () => {
     }).not.toThrow();
   });
 
-  test('throws error when expected is not undefined', () => {
-    expect(() => {
-      ensureNoExpected({a: 1});
-    }).toThrowErrorMatchingSnapshot();
-  });
-
   test('throws error when expected is not undefined with matcherName', () => {
     expect(() => {
       ensureNoExpected({a: 1}, '.toBeDefined');
     }).toThrowErrorMatchingSnapshot();
+  });
+
+  test('throws error when expected is not undefined with matcherName and options', () => {
+    expect(() => {
+      ensureNoExpected({a: 1}, 'toBeDefined', {isNot: true});
+    }).toThrowErrorMatchingSnapshot();
+  });
+});
+
+jest.mock('jest-diff', () => () => 'diff output');
+describe('diff', () => {
+  test('forwards to jest-diff', () => {
+    [
+      ['a', 'b'],
+      ['a', {}],
+      ['a', null],
+      ['a', undefined],
+      ['a', 1],
+      ['a', true],
+      [1, true],
+    ].forEach(([actual, expected]) =>
+      expect(diff(actual, expected)).toBe('diff output'),
+    );
+  });
+
+  test('two booleans', () => {
+    expect(diff(false, true)).toBe(null);
+  });
+
+  test('two numbers', () => {
+    expect(diff(1, 2)).toBe(null);
   });
 });
 

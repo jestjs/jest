@@ -12,7 +12,7 @@ import path from 'path';
 import fs from 'fs';
 import execa, {sync as spawnSync} from 'execa';
 import {Writable} from 'readable-stream';
-const stripAnsi = require('strip-ansi');
+import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
@@ -31,7 +31,7 @@ export default function runJest(
   args?: Array<string>,
   options: RunJestOptions = {},
 ) {
-  const isRelative = dir[0] !== '/';
+  const isRelative = !path.isAbsolute(dir);
 
   if (isRelative) {
     dir = path.resolve(__dirname, dir);
@@ -49,7 +49,7 @@ export default function runJest(
     );
   }
 
-  const env = Object.assign({}, process.env, {FORCE_COLOR: 0});
+  const env = {...process.env, FORCE_COLOR: 0};
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
   const result = spawnSync(JEST_PATH, args || [], {
     cwd: dir,
@@ -101,7 +101,7 @@ export const until = async function(
   text: string,
   options: RunJestOptions = {},
 ) {
-  const isRelative = dir[0] !== '/';
+  const isRelative = !path.isAbsolute(dir);
 
   if (isRelative) {
     dir = path.resolve(__dirname, dir);
@@ -119,13 +119,15 @@ export const until = async function(
     );
   }
 
-  const env = Object.assign({}, process.env, {FORCE_COLOR: 0});
+  const env = {...process.env, FORCE_COLOR: 0};
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
   const jestPromise = execa(JEST_PATH, args || [], {
     cwd: dir,
     env,
     reject: false,
+    // this should never take more than 5-6 seconds, bailout after 30
+    timeout: 30000,
   });
 
   jestPromise.stderr.pipe(

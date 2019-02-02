@@ -19,6 +19,7 @@ import nodeModulesPaths from './nodeModulesPaths';
 type ResolverOptions = {|
   basedir: Path,
   browser?: boolean,
+  defaultResolver: typeof defaultResolver,
   extensions?: Array<string>,
   moduleDirectory?: Array<string>,
   paths?: ?Array<Path>,
@@ -33,6 +34,7 @@ export default function defaultResolver(
 
   return resolve(path, {
     basedir: options.basedir,
+    defaultResolver,
     extensions: options.extensions,
     moduleDirectory: options.moduleDirectory,
     paths: options.paths,

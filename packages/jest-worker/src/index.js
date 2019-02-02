@@ -74,9 +74,10 @@ export default class JestWorker {
   _workerPool: WorkerPoolInterface;
 
   constructor(workerPath: string, options?: FarmOptions) {
-    this._options = Object.assign({}, options);
+    this._options = {...options};
 
     const workerPoolOptions: WorkerPoolOptions = {
+      enableWorkerThreads: this._options.enableWorkerThreads || false,
       forkOptions: this._options.forkOptions || {},
       maxRetries: this._options.maxRetries || 3,
       numWorkers: this._options.numWorkers || Math.max(os.cpus().length - 1, 1),
@@ -111,7 +112,6 @@ export default class JestWorker {
     });
   }
 
-  // eslint-disable-next-line no-unclear-flowtypes
   _callFunctionWithArgs(method: string, ...args: Array<any>): Promise<any> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');

@@ -19,6 +19,7 @@ import testPathPatternToRegExp from './testPathPatternToRegexp';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
+import {replacePathSepForGlob} from 'jest-util';
 
 type SearchResult = {|
   noSCM?: boolean,
@@ -48,7 +49,8 @@ const globsToMatcher = (globs: ?Array<Glob>) => {
     return () => true;
   }
 
-  return path => micromatch([path], globs, {dot: true}).length > 0;
+  return path =>
+    micromatch.some(replacePathSepForGlob(path), globs, {dot: true});
 };
 
 const regexToMatcher = (testRegex: Array<string>) => {
@@ -209,7 +211,7 @@ export default class SearchSource {
       tests: toTests(
         this._context,
         paths
-          .map(p => path.resolve(process.cwd(), p))
+          .map(p => path.resolve(this._context.config.cwd, p))
           .filter(this.isTestFilePath.bind(this)),
       ),
     };
@@ -220,7 +222,9 @@ export default class SearchSource {
     collectCoverage: boolean,
   ): SearchResult {
     if (Array.isArray(paths) && paths.length) {
-      const resolvedPaths = paths.map(p => path.resolve(process.cwd(), p));
+      const resolvedPaths = paths.map(p =>
+        path.resolve(this._context.config.cwd, p),
+      );
       return this.findRelatedTests(new Set(resolvedPaths), collectCoverage);
     }
     return {tests: []};
@@ -296,10 +300,10 @@ export default class SearchSource {
         filterResult.filtered.map(result => result.test),
       );
 
-      // $FlowFixMe: Object.assign with empty object causes troubles to Flow.
-      return Object.assign({}, searchResult, {
+      return {
+        ...searchResult,
         tests: tests.filter(test => filteredSet.has(test.path)),
-      });
+      };
     }
 
     return searchResult;

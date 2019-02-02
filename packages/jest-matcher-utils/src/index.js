@@ -7,7 +7,10 @@
  * @flow
  */
 
+import type {MatcherHintOptions} from 'types/Matchers';
+
 import chalk from 'chalk';
+import jestDiff from 'jest-diff';
 import getType from 'jest-get-type';
 import prettyFormat from 'pretty-format';
 const {
@@ -30,6 +33,7 @@ const PLUGINS = [
 
 export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
+const DIM_COLOR = chalk.dim;
 
 const NUMBERS = [
   'zero',
@@ -102,13 +106,20 @@ export const printWithType = (
   return hasType + hasValue;
 };
 
-export const ensureNoExpected = (expected: any, matcherName: string) => {
-  matcherName || (matcherName = 'This');
+export const ensureNoExpected = (
+  expected: any,
+  matcherName: string,
+  options?: MatcherHintOptions,
+) => {
   if (typeof expected !== 'undefined') {
+    // Prepend maybe not only for backward compatibility.
+    const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
       matcherErrorMessage(
-        matcherHint('[.not]' + matcherName, undefined, ''),
-        `${EXPECTED_COLOR('expected')} value must be omitted or undefined`,
+        matcherHint(matcherString, undefined, '', options),
+        // Because expected is omitted in hint above,
+        // expected is black instead of green in message below.
+        'this matcher must not have an expected argument',
         printWithType('Expected', expected, printExpected),
       ),
     );
@@ -150,6 +161,21 @@ export const ensureNumbers = (
   ensureExpectedIsNumber(expected, matcherName);
 };
 
+// Sometimes, e.g. when comparing two numbers, the output from jest-diff
+// does not contain more information than the `Expected:` / `Received:` already gives.
+// In those cases, we do not print a diff to make the output shorter and not redundant.
+const shouldPrintDiff = (actual: any, expected: any) => {
+  if (typeof actual === 'number' && typeof expected === 'number') {
+    return false;
+  }
+  if (typeof actual === 'boolean' && typeof expected === 'boolean') {
+    return false;
+  }
+  return true;
+};
+export const diff: typeof jestDiff = (a, b, options) =>
+  shouldPrintDiff(a, b) ? jestDiff(a, b, options) : null;
+
 export const pluralize = (word: string, count: number) =>
   (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
 
@@ -174,28 +200,67 @@ export const matcherErrorMessage = (
   specific: string, // incorrect value returned from call to printWithType
 ) => `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}\n\n${specific}`;
 
+// Display assertion for the report when a test fails.
+// New format: rejects/resolves, not, and matcher name have black color
+// Old format: matcher name has dim color
 export const matcherHint = (
   matcherName: string,
   received: string = 'received',
   expected: string = 'expected',
-  options: {
-    comment?: string,
-    isDirectExpectCall?: boolean,
-    isNot?: boolean,
-    secondArgument?: ?string,
-  } = {},
+  options: MatcherHintOptions = {},
 ) => {
-  const {comment, isDirectExpectCall, isNot, secondArgument} = options;
-  return (
-    chalk.dim('expect' + (isDirectExpectCall ? '' : '(')) +
-    RECEIVED_COLOR(received) +
-    (isNot
-      ? `${chalk.dim(').')}not${chalk.dim(matcherName + '(')}`
-      : chalk.dim((isDirectExpectCall ? '' : ')') + matcherName + '(')) +
-    EXPECTED_COLOR(expected) +
-    (secondArgument
-      ? `${chalk.dim(', ')}${EXPECTED_COLOR(secondArgument)}`
-      : '') +
-    chalk.dim(`)${comment ? ` // ${comment}` : ''}`)
-  );
+  const {
+    comment = '',
+    isDirectExpectCall = false, // seems redundant with received === ''
+    isNot = false,
+    promise = '',
+    secondArgument = '',
+  } = options;
+  let hint = '';
+  let dimString = 'expect'; // concatenate adjacent dim substrings
+
+  if (!isDirectExpectCall && received !== '') {
+    hint += DIM_COLOR(dimString + '(') + RECEIVED_COLOR(received);
+    dimString = ')';
+  }
+
+  if (promise !== '') {
+    hint += DIM_COLOR(dimString + '.') + promise;
+    dimString = '';
+  }
+
+  if (isNot) {
+    hint += DIM_COLOR(dimString + '.') + 'not';
+    dimString = '';
+  }
+
+  if (matcherName.includes('.')) {
+    // Old format: for backward compatibility,
+    // especially without promise or isNot options
+    dimString += matcherName;
+  } else {
+    // New format: omit period from matcherName arg
+    hint += DIM_COLOR(dimString + '.') + matcherName;
+    dimString = '';
+  }
+
+  if (expected === '') {
+    dimString += '()';
+  } else {
+    hint += DIM_COLOR(dimString + '(') + EXPECTED_COLOR(expected);
+    if (secondArgument) {
+      hint += DIM_COLOR(', ') + EXPECTED_COLOR(secondArgument);
+    }
+    dimString = ')';
+  }
+
+  if (comment !== '') {
+    dimString += ' // ' + comment;
+  }
+
+  if (dimString !== '') {
+    hint += DIM_COLOR(dimString);
+  }
+
+  return hint;
 };

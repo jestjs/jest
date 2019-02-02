@@ -9,7 +9,7 @@ const CheckboxWithLabel = require('../CheckboxWithLabel').default;
 it('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document
   const checkbox = TestUtils.renderIntoDocument(
-    <CheckboxWithLabel labelOn="On" labelOff="Off" />,
+    <CheckboxWithLabel labelOn="On" labelOff="Off" />
   );
 
   const checkboxNode = ReactDOM.findDOMNode(checkbox);
@@ -19,7 +19,7 @@ it('CheckboxWithLabel changes the text after click', () => {
 
   // Simulate a click and verify that it is now On
   TestUtils.Simulate.change(
-    TestUtils.findRenderedDOMComponentWithTag(checkbox, 'input'),
+    TestUtils.findRenderedDOMComponentWithTag(checkbox, 'input')
   );
   expect(checkboxNode.textContent).toEqual('On');
 });

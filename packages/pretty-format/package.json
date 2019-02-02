@@ -1,9 +1,10 @@
 {
   "name": "pretty-format",
-  "version": "23.6.0",
+  "version": "24.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/pretty-format"
   },
   "license": "MIT",
   "description": "Stringify any JavaScript value.",
@@ -22,5 +23,6 @@
   },
   "engines": {
     "node": ">= 6"
-  }
+  },
+  "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
 }

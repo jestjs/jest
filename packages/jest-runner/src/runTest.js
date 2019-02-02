@@ -28,11 +28,41 @@ import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
 import sourcemapSupport from 'source-map-support';
+import chalk from 'chalk';
 
 type RunTestInternalResult = {
   leakDetector: ?LeakDetector,
   result: TestResult,
 };
+
+function freezeConsole(
+  testConsole: BufferedConsole | Console | NullConsole,
+  config: ProjectConfig,
+) {
+  // $FlowFixMe: overwrite it for pretty errors
+  testConsole._log = function fakeConsolePush(_type, message) {
+    const error = new ErrorWithStack(
+      `${chalk.red(
+        `${chalk.bold(
+          'Cannot log after tests are done.',
+        )} Did you forget to wait for something async in your test?`,
+      )}\nAttempted to log "${message}".`,
+      fakeConsolePush,
+    );
+
+    const formattedError = formatExecError(
+      error,
+      config,
+      {noStackTrace: false},
+      undefined,
+      true,
+    );
+
+    process.stderr.write('\n' + formattedError + '\n');
+    // TODO: set exit code in Jest 25
+    // process.exitCode = 1;
+  };
+}
 
 // Keeping the core of "runTest" as a separate function (as "runTestInternal")
 // is key to be able to detect memory leaks. Since all variables are local to
@@ -56,12 +86,11 @@ async function runTestInternal(
   let testEnvironment = config.testEnvironment;
 
   if (customEnvironment) {
-    testEnvironment = getTestEnvironment(
-      Object.assign({}, config, {
-        // $FlowFixMe
-        testEnvironment: customEnvironment,
-      }),
-    );
+    testEnvironment = getTestEnvironment({
+      ...config,
+      // $FlowFixMe
+      testEnvironment: customEnvironment,
+    });
   }
 
   /* $FlowFixMe */
@@ -73,7 +102,7 @@ async function runTestInternal(
   const Runtime = ((config.moduleLoader
     ? /* $FlowFixMe */
       require(config.moduleLoader)
-    : require('jest-runtime').default): Class<RuntimeClass>);
+    : require('jest-runtime')): Class<RuntimeClass>);
 
   let runtime = undefined;
 
@@ -197,6 +226,8 @@ async function runTestInternal(
 
       throw err;
     }
+
+    freezeConsole(testConsole, config);
 
     const testCount =
       result.numPassingTests +

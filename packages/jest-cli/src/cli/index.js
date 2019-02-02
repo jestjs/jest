@@ -33,8 +33,7 @@ import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
 import init from '../lib/init';
 import logDebugMessages from '../lib/log_debug_messages';
-
-const {getVersion} = require('../jest');
+import getVersion from '../version';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
@@ -194,7 +193,7 @@ export const buildArgv = (maybeArgv: ?Argv, project: ?Path) => {
 
   validateCLIOptions(
     argv,
-    Object.assign({}, args.options, {deprecationEntries}),
+    {...args.options, deprecationEntries},
     // strip leading dashes
     Array.isArray(rawArgv)
       ? rawArgv.map(rawArgv => rawArgv.replace(/^--?/, ''))

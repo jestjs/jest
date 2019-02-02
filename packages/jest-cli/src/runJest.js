@@ -11,13 +11,15 @@ import type {Context} from 'types/Context';
 import type {ChangedFilesPromise} from 'types/ChangedFiles';
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
+import type {TestRunData} from 'types/TestRunner';
 import type {JestHookEmitter} from 'types/JestHooks';
 import type TestWatcher from './TestWatcher';
 
 import micromatch from 'micromatch';
 import chalk from 'chalk';
 import path from 'path';
-import {Console, formatTestResults} from 'jest-util';
+import {sync as realpath} from 'realpath-native';
+import {Console, formatTestResults, replacePathSepForGlob} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
@@ -62,10 +64,7 @@ const getTestPaths = async (
 
   const filteredTests = data.tests.filter((test, i) => shouldTestArray[i]);
 
-  return Object.assign({}, data, {
-    allTests: filteredTests.length,
-    tests: filteredTests,
-  });
+  return {...data, allTests: filteredTests.length, tests: filteredTests};
 };
 
 const processResults = (runResults, options) => {
@@ -90,12 +89,12 @@ const processResults = (runResults, options) => {
   }
   if (isJSON) {
     if (outputFile) {
-      const filePath = path.resolve(process.cwd(), outputFile);
+      const cwd = realpath(process.cwd());
+      const filePath = path.resolve(cwd, outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
       outputStream.write(
-        `Test results written to: ` +
-          `${path.relative(process.cwd(), filePath)}\n`,
+        `Test results written to: ${path.relative(cwd, filePath)}\n`,
       );
     } else {
       process.stdout.write(JSON.stringify(formatTestResults(runResults)));
@@ -150,7 +149,7 @@ export default (async function runJest({
 
   let collectCoverageFrom = [];
 
-  const testRunData = await Promise.all(
+  const testRunData: TestRunData = await Promise.all(
     contexts.map(async context => {
       const matches = await getTestPaths(
         globalConfig,
@@ -166,10 +165,12 @@ export default (async function runJest({
           matches.collectCoverageFrom.filter(filename => {
             if (
               globalConfig.collectCoverageFrom &&
-              !micromatch(
-                [path.relative(globalConfig.rootDir, filename)],
+              !micromatch.some(
+                replacePathSepForGlob(
+                  path.relative(globalConfig.rootDir, filename),
+                ),
                 globalConfig.collectCoverageFrom,
-              ).length
+              )
             ) {
               return false;
             }
@@ -193,10 +194,7 @@ export default (async function runJest({
   );
 
   if (collectCoverageFrom.length) {
-    // $FlowFixMe Object.assign
-    const newConfig: GlobalConfig = Object.assign({}, globalConfig, {
-      collectCoverageFrom,
-    });
+    const newConfig: GlobalConfig = {...globalConfig, collectCoverageFrom};
     globalConfig = Object.freeze(newConfig);
   }
 
@@ -219,7 +217,9 @@ export default (async function runJest({
     globalConfig = failedTestsCache.updateConfig(globalConfig);
   }
 
-  if (!allTests.length) {
+  const hasTests = allTests.length > 0;
+
+  if (!hasTests) {
     const noTestsFoundMessage = getNoTestsFoundMessage(
       testRunData,
       globalConfig,
@@ -242,10 +242,7 @@ export default (async function runJest({
     globalConfig.silent !== true &&
     globalConfig.verbose !== false
   ) {
-    // $FlowFixMe Object.assign
-    const newConfig: GlobalConfig = Object.assign({}, globalConfig, {
-      verbose: true,
-    });
+    const newConfig: GlobalConfig = {...globalConfig, verbose: true};
     globalConfig = Object.freeze(newConfig);
   }
 
@@ -255,7 +252,9 @@ export default (async function runJest({
     collectHandles = collectNodeHandles();
   }
 
-  await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
+  if (hasTests) {
+    await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
+  }
 
   const results = await new TestScheduler(
     globalConfig,
@@ -267,11 +266,9 @@ export default (async function runJest({
 
   sequencer.cacheResults(allTests, results);
 
-  await runGlobalHook({
-    allTests,
-    globalConfig,
-    moduleName: 'globalTeardown',
-  });
+  if (hasTests) {
+    await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
+  }
 
   return processResults(results, {
     collectHandles,

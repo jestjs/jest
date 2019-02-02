@@ -26,7 +26,6 @@ describe('FakeTimers', () => {
   });
 
   describe('construction', () => {
-    /* eslint-disable no-new */
     it('installs setTimeout mock', () => {
       const global = {process};
       const timers = new FakeTimers({global, moduleMocker, timerConfig});

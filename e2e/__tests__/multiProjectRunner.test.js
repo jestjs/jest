@@ -7,13 +7,12 @@
  * @flow
  */
 
-'use strict';
-
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
 import stripAnsi from 'strip-ansi';
 import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(os.tmpdir(), 'multi-project-runner-test');
 
@@ -91,7 +90,7 @@ test('can pass projects or global config', () => {
     'The name `file1` was looked up in the Haste module map. It cannot be resolved, because there exists several different files',
   );
 
-  expect(extractSummary(stderr).summary).toMatchSnapshot();
+  expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
 
   writeFiles(DIR, {
     'global_config.js': `
@@ -116,8 +115,8 @@ test('can pass projects or global config', () => {
   ]));
 
   const result1 = extractSummary(stderr);
-  expect(result1.summary).toMatchSnapshot();
-  expect(sortLines(result1.rest)).toMatchSnapshot();
+  expect(wrap(result1.summary)).toMatchSnapshot();
+  expect(wrap(sortLines(result1.rest))).toMatchSnapshot();
 
   ({stderr} = runJest(DIR, [
     '--no-watchman',
@@ -127,8 +126,8 @@ test('can pass projects or global config', () => {
   ]));
   const result2 = extractSummary(stderr);
 
-  expect(result2.summary).toMatchSnapshot();
-  expect(sortLines(result2.rest)).toMatchSnapshot();
+  expect(wrap(result2.summary)).toMatchSnapshot();
+  expect(wrap(sortLines(result2.rest))).toMatchSnapshot();
 
   // make sure different ways of passing projects work exactly the same
   expect(result1.summary).toBe(result2.summary);
@@ -399,4 +398,102 @@ test('Does transform files with the corresponding project transformer', () => {
   expect(stderr).toMatch('Ran all test suites in 2 projects.');
   expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
   expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
+});
+
+describe("doesn't bleed module file extensions resolution with multiple workers", () => {
+  test('external config files', () => {
+    writeFiles(DIR, {
+      '.watchmanconfig': '',
+      'file.js': 'module.exports = "file1"',
+      'file.p2.js': 'module.exports = "file2"',
+      'package.json': '{}',
+      'project1/__tests__/project1.test.js': `
+      const file = require('../../file');
+      test('file 1', () => expect(file).toBe('file1'));
+    `,
+      'project1/jest.config.js': `
+      module.exports = {
+        rootDir: '..',
+      };`,
+      'project2/__tests__/project2.test.js': `
+      const file = require('../../file');
+      test('file 2', () => expect(file).toBe('file2'));
+    `,
+      'project2/jest.config.js': `
+      module.exports = {
+        rootDir: '..',
+        moduleFileExtensions: ['p2.js', 'js']
+      };`,
+    });
+
+    const {stdout: configOutput} = runJest(DIR, [
+      '--show-config',
+      '--projects',
+      'project1',
+      'project2',
+    ]);
+
+    const {configs} = JSON.parse(configOutput);
+
+    expect(configs).toHaveLength(2);
+
+    const [{name: name1}, {name: name2}] = configs;
+
+    expect(name1).toEqual(expect.any(String));
+    expect(name2).toEqual(expect.any(String));
+    expect(name1).toHaveLength(32);
+    expect(name2).toHaveLength(32);
+    expect(name1).not.toEqual(name2);
+
+    const {stderr} = runJest(DIR, [
+      '--no-watchman',
+      '-w=2',
+      '--projects',
+      'project1',
+      'project2',
+    ]);
+
+    expect(stderr).toMatch('Ran all test suites in 2 projects.');
+    expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
+    expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
+  });
+
+  test('inline config files', () => {
+    writeFiles(DIR, {
+      '.watchmanconfig': '',
+      'file.js': 'module.exports = "file1"',
+      'file.p2.js': 'module.exports = "file2"',
+      'package.json': JSON.stringify({
+        jest: {projects: [{}, {moduleFileExtensions: ['p2.js', 'js']}]},
+      }),
+      'project1/__tests__/project1.test.js': `
+      const file = require('../../file');
+      test('file 1', () => expect(file).toBe('file1'));
+    `,
+      'project2/__tests__/project2.test.js': `
+      const file = require('../../file');
+      test('file 2', () => expect(file).toBe('file2'));
+    `,
+    });
+
+    const {stdout: configOutput} = runJest(DIR, ['--show-config']);
+
+    const {configs} = JSON.parse(configOutput);
+
+    expect(configs).toHaveLength(2);
+
+    const [{name: name1}, {name: name2}] = configs;
+
+    expect(name1).toEqual(expect.any(String));
+    expect(name2).toEqual(expect.any(String));
+    expect(name1).toHaveLength(32);
+    expect(name2).toHaveLength(32);
+    expect(name1).not.toEqual(name2);
+
+    const {stderr} = runJest(DIR, ['--no-watchman', '-w=2']);
+
+    expect(stderr).toMatch('Ran all test suites in 2 projects.');
+    expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
+    expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
+  });
 });

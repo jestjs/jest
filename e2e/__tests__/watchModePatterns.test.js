@@ -6,12 +6,12 @@
  *
  * @flow
  */
-'use strict';
 
 import path from 'path';
 import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import os from 'os';
 import runJest from '../runJest';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(os.tmpdir(), 'watch-mode-patterns');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
@@ -53,11 +53,12 @@ test('can press "p" to filter by file name', () => {
   ]);
   const results = extractSummaries(stderr);
 
+  // contains ansi characters, should not use `wrap`
   expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(rest).toMatchSnapshot('test results');
-    expect(summary).toMatchSnapshot('test summary');
+    expect(wrap(rest)).toMatchSnapshot('test results');
+    expect(wrap(summary)).toMatchSnapshot('test summary');
   });
   expect(status).toBe(0);
 });
@@ -72,11 +73,12 @@ test('can press "t" to filter by test name', () => {
   ]);
   const results = extractSummaries(stderr);
 
+  // contains ansi characters, should not use `wrap`
   expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
-    expect(rest).toMatchSnapshot('test results');
-    expect(summary).toMatchSnapshot('test summary');
+    expect(wrap(rest)).toMatchSnapshot('test results');
+    expect(wrap(summary)).toMatchSnapshot('test summary');
   });
   expect(status).toBe(0);
 });
