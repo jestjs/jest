@@ -497,3 +497,22 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
     expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
   });
 });
+
+describe('Babel config in individual project works in multi-project', () => {
+  it('Transpiles when running bar individually', () => {
+    const result = runJest('multi-project-babel/bar');
+    expect(result.stderr).toMatch('PASS ./bar.test.js');
+    expect(result.status).toBe(0);
+  });
+  it('Transpiles when running foo individually', () => {
+    const result = runJest('multi-project-babel/foo');
+    expect(result.stderr).toMatch('PASS ./foo.test.js');
+    expect(result.status).toBe(0);
+  });
+  it('Transpiles when running from multiproject', () => {
+    const result = runJest('multi-project-babel');
+    expect(result.stderr).toMatch('PASS bar/bar.test.js');
+    expect(result.stderr).toMatch('PASS foo/foo.test.js');
+    expect(result.status).toBe(0);
+  });
+});

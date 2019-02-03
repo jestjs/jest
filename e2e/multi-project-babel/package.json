@@ -1,0 +1,12 @@
+{
+  "jest": {
+    "projects": [
+      {
+        "rootDir": "<rootDir>/foo"
+      },
+      {
+        "rootDir": "<rootDir>/bar"
+      }
+    ]
+  }
+}
