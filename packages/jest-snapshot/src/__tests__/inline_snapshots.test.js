@@ -75,46 +75,102 @@ test('saveInlineSnapshots() replaces empty function call with a template literal
   );
 });
 
-test('saveInlineSnapshots() leaves formatting outside of snapshots alone', () => {
-    const filename = path.join(__dirname, 'my.test.js');
-    // $FlowFixMe mock
-    fs.readFileSync = (jest.fn(
-        () => `
+test('saveInlineSnapshots() without prettier leaves formatting outside of snapshots alone', () => {
+  const filename = path.join(__dirname, 'my.test.js');
+  // $FlowFixMe mock
+  fs.readFileSync = (jest.fn(
+    () => `
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
 snapshot\`);
 expect(a).toMatchInlineSnapshot();
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 `.trim() + '\n',
-    ): any);
+  ): any);
 
-    saveInlineSnapshots(
-        [
-            {
-                frame: { column: 11, file: filename, line: 2 },
-                snapshot: `[1, 2]`,
-            },
-            {
-                frame: { column: 11, file: filename, line: 4 },
-                snapshot: `[1, 2]`,
-            },
-            {
-                frame: { column: 11, file: filename, line: 5 },
-                snapshot: `[1, 2]`,
-            },
-        ],
-        prettier,
-        babelTraverse,
-    );
+  saveInlineSnapshots(
+    [2, 4, 5].map(line => ({
+      frame: { column: 11, file: filename, line },
+      snapshot: `[1, 2]`
+    })),
+    null,
+    babelTraverse,
+  );
 
-    expect(fs.writeFileSync).toHaveBeenCalledWith(
-        filename,
-        `const a = [1,            2];
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    `const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 `,
-    );
+  );
+});
+
+test('saveInlineSnapshots() can handle typescript without prettier', () => {
+  const filename = path.join(__dirname, 'my.test.ts');
+  // $FlowFixMe mock
+  fs.readFileSync = (jest.fn(
+    () => `
+interface Foo {
+  foo: string
+}
+const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
+expect(a).toMatchInlineSnapshot();
+`.trim() + '\n',
+  ): any);
+
+  saveInlineSnapshots(
+    [{
+      frame: { column: 11, file: filename, line: 5 },
+      snapshot: `[{ foo: 'one' }, { foo: 'two' }]`
+    }],
+    null,
+    babelTraverse,
+  );
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    `
+interface Foo {
+  foo: string
+}
+const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
+expect(a).toMatchInlineSnapshot(\`[{ foo: 'one' }, { foo: 'two' }]\`);
+`.trim() + '\n',
+  );
+});
+
+test('saveInlineSnapshots() can use prettier to fix formatting for whole file', () => {
+  const filename = path.join(__dirname, 'my.test.js');
+  // $FlowFixMe mock
+  fs.readFileSync = (jest.fn(
+    () => `
+const a = [1,            2];
+expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
+snapshot\`);
+expect(a).toMatchInlineSnapshot();
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+`.trim() + '\n',
+  ): any);
+
+  saveInlineSnapshots(
+    [2, 4, 5].map(line => ({
+      frame: { column: 11, file: filename, line },
+      snapshot: `[1, 2]`
+    })),
+    prettier,
+    babelTraverse,
+  );
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    `const a = [1, 2];
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+`,
+  );
 });
 
 test.each([['babylon'], ['flow'], ['typescript']])(

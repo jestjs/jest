@@ -10,6 +10,7 @@
 import fs from 'fs';
 import semver from 'semver';
 import path from 'path';
+import {parse} from '@babel/parser';
 import {templateElement, templateLiteral, file} from '@babel/types';
 
 import type {Path} from 'types/Config';
@@ -28,28 +29,13 @@ export const saveInlineSnapshots = (
   prettier: any,
   babelTraverse: Function,
 ) => {
-  if (!prettier) {
-    throw new Error(
-      `Jest: Inline Snapshots requires Prettier.\n` +
-        `Please ensure "prettier" is installed in your project.`,
-    );
-  }
-
-  // Custom parser API was added in 1.5.0
-  if (semver.lt(prettier.version, '1.5.0')) {
-    throw new Error(
-      `Jest: Inline Snapshots require prettier>=1.5.0.\n` +
-        `Please upgrade "prettier".`,
-    );
-  }
-
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
 
   for (const sourceFilePath of Object.keys(snapshotsByFile)) {
     saveSnapshotsForFile(
       snapshotsByFile[sourceFilePath],
       sourceFilePath,
-      prettier,
+      prettier && semver.gte(prettier.version, '1.5.0') ? prettier : null,
       babelTraverse,
     );
   }
@@ -63,39 +49,48 @@ const saveSnapshotsForFile = (
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
-  // Resolve project configuration.
-  // For older versions of Prettier, do not load configuration.
-  const config = prettier.resolveConfig
-    ? prettier.resolveConfig.sync(sourceFilePath, {
-        editorconfig: true,
-      })
-    : null;
+  let newSourceFile;
+  if (prettier) {
+    // Resolve project configuration.
+    // For older versions of Prettier, do not load configuration.
+    const config = prettier.resolveConfig
+      ? prettier.resolveConfig.sync(sourceFilePath, {
+          editorconfig: true,
+        })
+      : null;
 
-  // Detect the parser for the test file.
-  // For older versions of Prettier, fallback to a simple parser detection.
-  const inferredParser = prettier.getFileInfo
-    ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
-    : (config && config.parser) || simpleDetectParser(sourceFilePath);
+    // Detect the parser for the test file.
+    // For older versions of Prettier, fallback to a simple parser detection.
+    const inferredParser = prettier.getFileInfo
+      ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
+      : (config && config.parser) || simpleDetectParser(sourceFilePath);
 
-  // Format the source code using the custom parser API.
-  // The output isn't used, but prettier provides an ast
-  // which is used to calculate snapshot offsets.
-  prettier.format(sourceFile, {
-    ...config,
-    filepath: sourceFilePath,
-    parser: createParser(snapshots, inferredParser, babelTraverse),
-  });
+    // Format the source code using the custom parser API.
+    newSourceFile = prettier.format(sourceFile, {
+      ...config,
+      filepath: sourceFilePath,
+      parser: createParser(snapshots, inferredParser, babelTraverse),
+    });
+  } else {
+    const plugins = /\.tsx?$/.test(sourceFilePath) ? ['typescript'] : undefined;
+    const ast = parse(sourceFile, { plugins });
+    traverseAst(snapshots, ast, sourceFile, babelTraverse);
 
-  // substitute in the snapshots in reverse order, so the slice calculations aren't thrown off.
-  const newSourceFile = snapshots.reduceRight(
-    (sourceSoFar, nextSnapshot) =>
-      sourceSoFar.slice(0, nextSnapshot.sliceStart) +
-      (nextSnapshot.shouldHaveCommaPrefix ? ', `' : '`') +
-      escapeBacktickString(nextSnapshot.snapshot) +
-      '`' +
-      sourceSoFar.slice(nextSnapshot.sliceEnd),
-    sourceFile
-  );
+    // substitute in the snapshots in reverse order, so the slice calculations aren't thrown off.
+    newSourceFile = snapshots.reduceRight(
+      (sourceSoFar, nextSnapshot) => {
+        if (typeof nextSnapshot.sliceStart !== 'number' || typeof nextSnapshot.sliceEnd !== 'number') {
+          throw new Error('Jest: no snapshot insert location found');
+        }
+        return sourceSoFar.slice(0, nextSnapshot.sliceStart) +
+          (nextSnapshot.shouldHaveCommaPrefix ? ', `' : '`') +
+          escapeBacktickString(nextSnapshot.snapshot) +
+          '`' +
+          sourceSoFar.slice(nextSnapshot.sliceEnd);
+      },
+      sourceFile,
+    );
+  }
 
   if (newSourceFile !== sourceFile) {
     fs.writeFileSync(sourceFilePath, newSourceFile);
@@ -126,16 +121,25 @@ const createParser = (
 ) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
   options.parser = inferredParser;
+  const ast = parsers[inferredParser](text);
 
-  const groupedSnapshots = groupSnapshotsByFrame(snapshots);
-  const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
-  let ast = parsers[inferredParser](text);
+  return traverseAst(snapshots, ast, text, babelTraverse);
+};
 
+const traverseAst = (
+  snapshots: InlineSnapshot[],
+  ast: any,
+  text: string,
+  babelTraverse: Function,
+) => {
   // Flow uses a 'Program' parent node, babel expects a 'File'.
   if (ast.type !== 'File') {
     ast = file(ast, ast.comments, ast.tokens);
     delete ast.program.comments;
   }
+  
+  const groupedSnapshots = groupSnapshotsByFrame(snapshots);
+  const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
 
   babelTraverse(ast, {
     CallExpression({node: {arguments: args, callee}}) {
@@ -158,7 +162,7 @@ const createParser = (
       const snapshotIndex = args.findIndex(
         ({type}) => type === 'TemplateLiteral',
       );
-      snapshotsForFrame.forEach(inlineSnapshot => {
+      const values = snapshotsForFrame.map(inlineSnapshot => {
         const { snapshot } = inlineSnapshot
         if (snapshotIndex > -1) {
           inlineSnapshot.sliceStart = args[snapshotIndex].start;
@@ -172,7 +176,19 @@ const createParser = (
           inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
         }
         remainingSnapshots.delete(snapshot);
-      })
+
+        return templateLiteral(	
+          [templateElement({raw: escapeBacktickString(snapshot)})],	
+          [],	
+        );	
+      });	
+      const replacementNode = values[0];	
+
+      if (snapshotIndex > -1) {	
+        args[snapshotIndex] = replacementNode;	
+      } else {	
+        args.push(replacementNode);	
+      }
     },
   });
 
