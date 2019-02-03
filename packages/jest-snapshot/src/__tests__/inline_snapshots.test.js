@@ -222,7 +222,8 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
   );
 });
 
-test('saveInlineSnapshots() creates template literal with property matchers', () => {
+test.each([[prettier], [null]])(
+  'saveInlineSnapshots() creates template literal with property matchers', prettierModule => {
   const filename = path.join(__dirname, 'my.test.js');
   jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => 'expect(1).toMatchInlineSnapshot({});\n',
@@ -235,7 +236,7 @@ test('saveInlineSnapshots() creates template literal with property matchers', ()
         snapshot: `1`,
       },
     ],
-    prettier,
+    prettierModule,
     babelTraverse,
   );
 
