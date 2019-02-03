@@ -4,16 +4,20 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
+ * @flow
  */
+
+import type {Path, ProjectConfig} from 'types/Config';
+import type {Options} from '../ScriptTransformer';
 
 import shouldInstrument from '../shouldInstrument';
 
 describe('shouldInstrument', () => {
-  const defaultFilename = 'source_file.test.js';
-  const defaultOptions = {
+  const defaultFilename: Path = 'source_file.test.js';
+  const defaultOptions: Options = {
     collectCoverage: true,
   };
-  const defaultConfig = {
+  const defaultConfig: ProjectConfig = {
     rootDir: '/',
   };
 
