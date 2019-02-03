@@ -397,7 +397,7 @@ class Runtime {
 
     let isManualMock =
       manualMockOrStub &&
-      !this._resolver._resolveStubModuleName(from, moduleName);
+      !this._resolver.resolveStubModuleName(from, moduleName);
     if (!isManualMock) {
       // If the actual module file has a __mocks__ dir sitting immediately next
       // to it, look to see if there is a manual mock for this file.
@@ -446,7 +446,6 @@ class Runtime {
   }
 
   requireModuleOrMock(from: Path, moduleName: string) {
-    debugger;
     try {
       if (this._shouldMock(from, moduleName)) {
         return this.requireMock(from, moduleName);
@@ -747,8 +746,8 @@ class Runtime {
 
   _generateMock(from: Path, moduleName: string) {
     const modulePath =
-      this._resolver._resolveStubModuleName(from, moduleName) ||
-      this._resolver.resolveModule(from, moduleName);
+      this._resolver.resolveStubModuleName(from, moduleName) ||
+      this._resolveModule(from, moduleName);
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock

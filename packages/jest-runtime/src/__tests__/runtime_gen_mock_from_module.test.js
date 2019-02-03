@@ -10,6 +10,10 @@
 
 let createRuntime;
 
+const moduleNameMapper = {
+  'module/name/(.*)': '<rootDir>/mapped_module_$1.js',
+};
+
 describe('Runtime', () => {
   beforeEach(() => {
     createRuntime = require('createRuntime');
@@ -34,6 +38,16 @@ describe('Runtime', () => {
         // Make sure we get a mock.
         expect(mock.fn()).toBe(undefined);
         expect(module.getModuleStateValue()).toBe(origModuleStateValue);
+      }));
+
+    it('resolves stubbed modules correctly', () =>
+      createRuntime(__filename, {moduleNameMapper}).then(runtime => {
+        const root = runtime.requireModule(runtime.__mockRootPath);
+        const mockModule = root.jest.genMockFromModule(
+          'module/name/genMockFromModule',
+        );
+        console.log(mockModule);
+        expect(mockModule.test.mock).toBeTruthy();
       }));
   });
 
