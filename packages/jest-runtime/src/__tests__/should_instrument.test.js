@@ -198,5 +198,19 @@ describe('shouldInstrument', () => {
 
       testShouldInstrument(filename, defaultOptions, defaultConfig);
     });
+
+    it('if file is in setupFiles', () => {
+      testShouldInstrument('setupTest.js', defaultOptions, {
+        rootDir: '/',
+        setupFiles: ['setupTest.js'],
+      });
+    });
+
+    it('if file is in setupFilesAfterEnv', () => {
+      testShouldInstrument('setupTest.js', defaultOptions, {
+        rootDir: '/',
+        setupFilesAfterEnv: ['setupTest.js'],
+      });
+    });
   });
 });

@@ -84,6 +84,20 @@ export default function shouldInstrument(
     return false;
   }
 
+  if (
+    config.setupFiles &&
+    config.setupFiles.some(setupFile => setupFile === filename)
+  ) {
+    return false;
+  }
+
+  if (
+    config.setupFilesAfterEnv &&
+    config.setupFilesAfterEnv.some(setupFile => setupFile === filename)
+  ) {
+    return false;
+  }
+
   if (MOCKS_PATTERN.test(filename)) {
     return false;
   }
