@@ -46,7 +46,7 @@ describe('Runtime', () => {
         const mockModule = root.jest.genMockFromModule(
           'module/name/genMockFromModule',
         );
-        console.log(mockModule);
+
         expect(mockModule.test.mock).toBeTruthy();
       }));
   });

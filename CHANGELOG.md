@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- `[jest-runtime]` Fix for mocks not working with module name mapper ([#7787](https://github.com/facebook/jest/pull/7787))
 - `[jest-cli]` Break dependency cycle when using Jest programmatically ([#7707](https://github.com/facebook/jest/pull/7707))
 - `[jest-config]` Extract setupFilesAfterEnv from preset ([#7724](https://github.com/facebook/jest/pull/7724))
 
