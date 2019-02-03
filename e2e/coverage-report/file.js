@@ -5,15 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-require('./sumDependency.js');
-require('./otherFile');
-require('./file');
-
-const uncoveredFunction = () => 1 + 'abc';
-
-const sum = (a, b) => a + b;
-
-module.exports = {
-  sum,
-  uncoveredFunction,
-};
+module.exports = {a: 4};
