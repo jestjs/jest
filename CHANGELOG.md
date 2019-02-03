@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-snapshots]`: Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
 - `[jest-resolve]`: Pass default resolver into custom resolvers ([#7714](https://github.com/facebook/jest/pull/7714))
 - `[jest-cli]`: `global{Setup,Teardown}` use default export with es modules ([#7750](https://github.com/facebook/jest/pull/7750))
 - `[jest-runtime]` Better error messages when the jest environment is used after teardown by async code ([#7756](https://github.com/facebook/jest/pull/7756))
