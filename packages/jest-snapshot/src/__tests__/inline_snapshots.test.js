@@ -75,6 +75,48 @@ test('saveInlineSnapshots() replaces empty function call with a template literal
   );
 });
 
+test('saveInlineSnapshots() leaves formatting outside of snapshots alone', () => {
+    const filename = path.join(__dirname, 'my.test.js');
+    // $FlowFixMe mock
+    fs.readFileSync = (jest.fn(
+        () => `
+const a = [1,            2];
+expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
+snapshot\`);
+expect(a).toMatchInlineSnapshot();
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+`.trim() + '\n',
+    ): any);
+
+    saveInlineSnapshots(
+        [
+            {
+                frame: { column: 11, file: filename, line: 2 },
+                snapshot: `[1, 2]`,
+            },
+            {
+                frame: { column: 11, file: filename, line: 4 },
+                snapshot: `[1, 2]`,
+            },
+            {
+                frame: { column: 11, file: filename, line: 5 },
+                snapshot: `[1, 2]`,
+            },
+        ],
+        prettier,
+        babelTraverse,
+    );
+
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+        filename,
+        `const a = [1,            2];
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+`,
+    );
+});
+
 test.each([['babylon'], ['flow'], ['typescript']])(
   'saveInlineSnapshots() replaces existing template literal - %s parser',
   parser => {
@@ -111,6 +153,30 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
   // $FlowFixMe mock
   fs.readFileSync = (jest.fn(
     () => 'expect(1).toMatchInlineSnapshot({}, `2`);\n',
+  ): any);
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 11, file: filename, line: 1},
+        snapshot: `1`,
+      },
+    ],
+    prettier,
+    babelTraverse,
+  );
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    'expect(1).toMatchInlineSnapshot({}, `1`);\n',
+  );
+});
+
+test('saveInlineSnapshots() creates template literal with property matchers', () => {
+  const filename = path.join(__dirname, 'my.test.js');
+  // $FlowFixMe mock
+  fs.readFileSync = (jest.fn(
+    () => 'expect(1).toMatchInlineSnapshot({});\n',
   ): any);
 
   saveInlineSnapshots(

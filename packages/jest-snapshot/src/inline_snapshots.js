@@ -18,6 +18,9 @@ import { escapeBacktickString } from './utils';
 export type InlineSnapshot = {|
   snapshot: string,
     frame: { line: number, column: number, file: string },
+sliceStart ?: number,
+  sliceEnd ?: number,
+  shouldHaveCommaPrefix ?: boolean,
 |};
 
 export const saveInlineSnapshots = (
@@ -75,11 +78,24 @@ const saveSnapshotsForFile = (
     : (config && config.parser) || simpleDetectParser(sourceFilePath);
 
   // Format the source code using the custom parser API.
-  const newSourceFile = prettier.format(sourceFile, {
+  // The output isn't used, but prettier provides an ast
+  // which is used to calculate snapshot offsets.
+  prettier.format(sourceFile, {
     ...config,
     filepath: sourceFilePath,
     parser: createParser(snapshots, inferredParser, babelTraverse),
   });
+
+  // substitute in the snapshots in reverse order, so the slice calculations aren't thrown off.
+  const newSourceFile = snapshots.reduceRight(
+    (sourceSoFar, nextSnapshot) =>
+      sourceSoFar.slice(0, nextSnapshot.sliceStart) +
+      (nextSnapshot.shouldHaveCommaPrefix ? ', `' : '`') +
+      escapeBacktickString(nextSnapshot.snapshot) +
+      '`' +
+      sourceSoFar.slice(nextSnapshot.sliceEnd),
+    sourceFile
+  )
 
   if (newSourceFile !== sourceFile) {
     fs.writeFileSync(sourceFilePath, newSourceFile);
@@ -142,21 +158,21 @@ const createParser = (
         const snapshotIndex = args.findIndex(
           ({ type }) => type === 'TemplateLiteral',
         );
-        const values = snapshotsForFrame.map(({ snapshot }) => {
+        snapshotsForFrame.forEach(inlineSnapshot => {
+          const { snapshot } = inlineSnapshot
+          if (snapshotIndex > -1) {
+            inlineSnapshot.sliceStart = args[snapshotIndex].start;
+            inlineSnapshot.sliceEnd = args[snapshotIndex].end;
+          } else if (args.length > 0) {
+            inlineSnapshot.shouldHaveCommaPrefix = true;
+            inlineSnapshot.sliceStart = args[args.length - 1].end;
+            inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
+          } else {
+            inlineSnapshot.sliceStart = text.indexOf('(', callee.end) + 1;
+            inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
+          }
           remainingSnapshots.delete(snapshot);
-
-          return templateLiteral(
-            [templateElement({ raw: escapeBacktickString(snapshot) })],
-            [],
-          );
-        });
-        const replacementNode = values[0];
-
-        if (snapshotIndex > -1) {
-          args[snapshotIndex] = replacementNode;
-        } else {
-          args.push(replacementNode);
-        }
+        })
       },
     });
 
