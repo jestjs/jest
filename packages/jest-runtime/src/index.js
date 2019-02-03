@@ -16,7 +16,6 @@ import type {Jest, LocalModuleRequire} from 'types/Jest';
 import type {ModuleMap} from 'jest-haste-map';
 import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
 import type {SourceMapRegistry} from 'types/SourceMaps';
-import type {ErrorWithCode} from 'types/Errors';
 
 import path from 'path';
 import HasteMap from 'jest-haste-map';
@@ -296,7 +295,6 @@ class Runtime {
       moduleName,
     );
     let modulePath;
-
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
     const moduleResource = moduleName && this._resolver.getModule(moduleName);
@@ -397,7 +395,9 @@ class Runtime {
       modulePath = this._resolveModule(from, moduleName);
     }
 
-    let isManualMock = manualMockOrStub && this._resolver.getModule(moduleName);
+    let isManualMock =
+      manualMockOrStub &&
+      !this._resolver._resolveStubModuleName(from, moduleName);
     if (!isManualMock) {
       // If the actual module file has a __mocks__ dir sitting immediately next
       // to it, look to see if there is a manual mock for this file.
@@ -446,6 +446,7 @@ class Runtime {
   }
 
   requireModuleOrMock(from: Path, moduleName: string) {
+    debugger;
     try {
       if (this._shouldMock(from, moduleName)) {
         return this.requireMock(from, moduleName);
@@ -745,20 +746,9 @@ class Runtime {
   }
 
   _generateMock(from: Path, moduleName: string) {
-    const modulePath = this._resolver.getNormalizedPath(
-      this._virtualMocks,
-      from,
-      moduleName,
-    );
-    if (!modulePath) {
-      const dirname = path.dirname(from);
-      const relativePath = path.relative(dirname, from);
-      const err = new Error(
-        `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
-      );
-      (err: ErrorWithCode).code = 'MODULE_NOT_FOUND';
-      throw err;
-    }
+    const modulePath =
+      this._resolver._resolveStubModuleName(from, moduleName) ||
+      this._resolver.resolveModule(from, moduleName);
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
