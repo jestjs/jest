@@ -53,10 +53,9 @@ afterEach(() => {
 
 test('saveInlineSnapshots() replaces empty function call with a template literal', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  // $FlowFixMe mock
-  fs.readFileSync = (jest.fn(
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => `expect(1).toMatchInlineSnapshot();\n`,
-  ): any);
+  );
 
   saveInlineSnapshots(
     [
@@ -77,8 +76,7 @@ test('saveInlineSnapshots() replaces empty function call with a template literal
 
 test('saveInlineSnapshots() without prettier leaves formatting outside of snapshots alone', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  // $FlowFixMe mock
-  fs.readFileSync = (jest.fn(
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => `
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
@@ -86,7 +84,7 @@ snapshot\`);
 expect(a).toMatchInlineSnapshot();
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 `.trim() + '\n',
-  ): any);
+  );
 
   saveInlineSnapshots(
     [2, 4, 5].map(line => ({
@@ -109,8 +107,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 
 test('saveInlineSnapshots() can handle typescript without prettier', () => {
   const filename = path.join(__dirname, 'my.test.ts');
-  // $FlowFixMe mock
-  fs.readFileSync = (jest.fn(
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => `
 interface Foo {
   foo: string
@@ -118,7 +115,7 @@ interface Foo {
 const a: [Foo, Foo] = [{ foo: 'one' },            { foo: 'two' }];
 expect(a).toMatchInlineSnapshot();
 `.trim() + '\n',
-  ): any);
+  );
 
   saveInlineSnapshots(
     [{
@@ -143,8 +140,7 @@ expect(a).toMatchInlineSnapshot(\`[{ foo: 'one' }, { foo: 'two' }]\`);
 
 test('saveInlineSnapshots() can use prettier to fix formatting for whole file', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  // $FlowFixMe mock
-  fs.readFileSync = (jest.fn(
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => `
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
@@ -152,7 +148,7 @@ snapshot\`);
 expect(a).toMatchInlineSnapshot();
 expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 `.trim() + '\n',
-  ): any);
+  );
 
   saveInlineSnapshots(
     [2, 4, 5].map(line => ({
@@ -177,10 +173,9 @@ test.each([['babylon'], ['flow'], ['typescript']])(
   'saveInlineSnapshots() replaces existing template literal - %s parser',
   parser => {
     const filename = path.join(__dirname, 'my.test.js');
-    // $FlowFixMe mock
-    fs.readFileSync = (jest.fn(
+    jest.spyOn(fs, 'readFileSync').mockImplementation(
       () => 'expect(1).toMatchInlineSnapshot(`2`);\n',
-    ): any);
+    );
 
     prettier.resolveConfig.sync.mockReturnValue({parser});
 
@@ -206,10 +201,9 @@ test.each([['babylon'], ['flow'], ['typescript']])(
 
 test('saveInlineSnapshots() replaces existing template literal with property matchers', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  // $FlowFixMe mock
-  fs.readFileSync = (jest.fn(
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => 'expect(1).toMatchInlineSnapshot({}, `2`);\n',
-  ): any);
+  );
 
   saveInlineSnapshots(
     [
@@ -230,10 +224,9 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
 
 test('saveInlineSnapshots() creates template literal with property matchers', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  // $FlowFixMe mock
-  fs.readFileSync = (jest.fn(
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => 'expect(1).toMatchInlineSnapshot({});\n',
-  ): any);
+  );
 
   saveInlineSnapshots(
     [
@@ -254,10 +247,9 @@ test('saveInlineSnapshots() creates template literal with property matchers', ()
 
 test('saveInlineSnapshots() throws if frame does not match', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  // $FlowFixMe mock
-  fs.readFileSync = (jest.fn(
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => 'expect(1).toMatchInlineSnapshot();\n',
-  ): any);
+  );
 
   const save = () =>
     saveInlineSnapshots(
@@ -276,10 +268,9 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
 
 test('saveInlineSnapshots() throws if multiple calls to to the same location', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  // $FlowFixMe mock
-  fs.readFileSync = (jest.fn(
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => 'expect(1).toMatchInlineSnapshot();\n',
-  ): any);
+  );
 
   const frame = {column: 11, file: filename, line: 1};
   const save = () =>
@@ -296,10 +287,9 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
 
 test('saveInlineSnapshots() uses escaped backticks', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  // $FlowFixMe mock
-  fs.readFileSync = (jest.fn(
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => 'expect("`").toMatchInlineSnapshot();\n',
-  ): any);
+  );
 
   const frame = {column: 13, file: filename, line: 1};
   saveInlineSnapshots([{frame, snapshot: '`'}], prettier, babelTraverse);
@@ -312,10 +302,9 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
 
 test('saveInlineSnapshots() works with non-literals in expect call', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  // $FlowFixMe mock
-  fs.readFileSync = (jest.fn(
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
     () => `expect({a: 'a'}).toMatchInlineSnapshot();\n`,
-  ): any);
+  );
   prettier.resolveConfig.sync.mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
