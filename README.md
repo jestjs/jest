@@ -33,7 +33,7 @@
 
 ## Getting Started
 
-<!-- generated_getting_started_start -->
+<!-- copied from Getting Started docs, links updated to point to Jest website -->
 
 Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
 
@@ -87,7 +87,7 @@ PASS  ./sum.test.js
 
 **You just successfully wrote your first test using Jest!**
 
-This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](UsingMatchers.md).
+This test used `expect` and `toBe` to test that two values were exactly identical. To learn about the other things that Jest can test, see [Using Matchers](https://jestjs.io/docs/using-matchers).
 
 ## Running from command line
 
@@ -99,7 +99,7 @@ Here's how to run Jest on files matching `my-test`, using `config.json` as a con
 jest my-test --notify --config=config.json
 ```
 
-If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](CLI.md) page.
+If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://jestjs.io/docs/en/cli) page.
 
 ## Additional Configuration
 
@@ -179,7 +179,7 @@ While we generally recommend using the same version of every Jest package, this 
 
 ### Using webpack
 
-Jest can be used in projects that use [webpack](https://webpack.github.io/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](Webpack.md) to get started.
+Jest can be used in projects that use [webpack](https://webpack.github.io/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://jestjs.io/docs/en/webpack) to get started.
 
 ### Using TypeScript
 
@@ -187,7 +187,7 @@ Jest supports TypeScript out of the box, via Babel.
 
 However, there are some caveats to using Typescript with Babel, see http://artsy.github.io/blog/2017/11/27/Babel-7-and-TypeScript/. Another caveat is that Jest will not typecheck your tests. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
 
-<!-- generated_getting_started_end -->
+<!-- end copied -->
 
 ## Documentation
 
