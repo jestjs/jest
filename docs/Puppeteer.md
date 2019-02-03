@@ -32,7 +32,7 @@ describe('Google', () => {
   });
 
   it('should be titled "Google"', async () => {
-    await expect(page.title()).resolves.toMatch('Google')
+    await expect(page.title()).resolves.toMatch('Google');
   });
 });
 ```
