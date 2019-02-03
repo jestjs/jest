@@ -4,18 +4,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ *
  */
-
-import type {Path, ProjectConfig} from 'types/Config';
-import type {Options} from '../ScriptTransformer';
 
 import {normalize} from 'jest-config';
 import shouldInstrument from '../shouldInstrument';
 
 describe('shouldInstrument', () => {
-  const defaultFilename: Path = 'source_file.test.js';
-  const defaultOptions: Options = {
+  const defaultFilename = 'source_file.test.js';
+  const defaultOptions = {
     collectCoverage: true,
   };
   const defaultConfig = normalize(
@@ -209,15 +206,15 @@ describe('shouldInstrument', () => {
 
     it('if file is a globalSetup file', () => {
       testShouldInstrument('globalSetup.js', defaultOptions, {
-        rootDir: '/',
         globalSetup: 'globalSetup.js',
+        rootDir: '/',
       });
     });
 
     it('if file is globalTeardown file', () => {
       testShouldInstrument('globalTeardown.js', defaultOptions, {
-        rootDir: '/',
         globalTeardown: 'globalTeardown.js',
+        rootDir: '/',
       });
     });
 
