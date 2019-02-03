@@ -10,6 +10,7 @@
 import type {Path, ProjectConfig} from 'types/Config';
 import type {Options} from '../ScriptTransformer';
 
+import {normalize} from 'jest-config';
 import shouldInstrument from '../shouldInstrument';
 
 describe('shouldInstrument', () => {
@@ -17,9 +18,12 @@ describe('shouldInstrument', () => {
   const defaultOptions: Options = {
     collectCoverage: true,
   };
-  const defaultConfig: ProjectConfig = {
-    rootDir: '/',
-  };
+  const defaultConfig = normalize(
+    {
+      rootDir: '/',
+    },
+    {},
+  ).options;
 
   describe('should return true', () => {
     const testShouldInstrument = (
