@@ -10,15 +10,15 @@
 import fs from 'fs';
 import semver from 'semver';
 import path from 'path';
-import { templateElement, templateLiteral, file } from '@babel/types';
+import {templateElement, templateLiteral, file} from '@babel/types';
 
-import type { Path } from 'types/Config';
-import { escapeBacktickString } from './utils';
+import type {Path} from 'types/Config';
+import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {|
   snapshot: string,
-    frame: { line: number, column: number, file: string },
-sliceStart ?: number,
+  frame: {line: number, column: number, file: string},
+  sliceStart ?: number,
   sliceEnd ?: number,
   shouldHaveCommaPrefix ?: boolean,
 |};
@@ -31,7 +31,7 @@ export const saveInlineSnapshots = (
   if (!prettier) {
     throw new Error(
       `Jest: Inline Snapshots requires Prettier.\n` +
-      `Please ensure "prettier" is installed in your project.`,
+        `Please ensure "prettier" is installed in your project.`,
     );
   }
 
@@ -39,7 +39,7 @@ export const saveInlineSnapshots = (
   if (semver.lt(prettier.version, '1.5.0')) {
     throw new Error(
       `Jest: Inline Snapshots require prettier>=1.5.0.\n` +
-      `Please upgrade "prettier".`,
+        `Please upgrade "prettier".`,
     );
   }
 
@@ -67,8 +67,8 @@ const saveSnapshotsForFile = (
   // For older versions of Prettier, do not load configuration.
   const config = prettier.resolveConfig
     ? prettier.resolveConfig.sync(sourceFilePath, {
-      editorconfig: true,
-    })
+        editorconfig: true,
+      })
     : null;
 
   // Detect the parser for the test file.
@@ -95,7 +95,7 @@ const saveSnapshotsForFile = (
       '`' +
       sourceSoFar.slice(nextSnapshot.sliceEnd),
     sourceFile
-  )
+  );
 
   if (newSourceFile !== sourceFile) {
     fs.writeFileSync(sourceFilePath, newSourceFile);
@@ -107,13 +107,13 @@ const groupSnapshotsBy = (createKey: InlineSnapshot => string) => (
 ) =>
   snapshots.reduce((object, inlineSnapshot) => {
     const key = createKey(inlineSnapshot);
-    return { ...object, [key]: (object[key] || []).concat(inlineSnapshot) };
+    return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
   }, {});
 
 const groupSnapshotsByFrame = groupSnapshotsBy(
-  ({ frame: { line, column } }) => `${line}:${column - 1}`,
+  ({frame: {line, column}}) => `${line}:${column - 1}`,
 );
-const groupSnapshotsByFile = groupSnapshotsBy(({ frame: { file } }) => file);
+const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
 const createParser = (
   snapshots: InlineSnapshot[],
@@ -121,67 +121,67 @@ const createParser = (
   babelTraverse: Function,
 ) => (
   text: string,
-  parsers: { [key: string]: (string) => any },
+  parsers: {[key: string]: (string) => any},
   options: any,
-  ) => {
-    // Workaround for https://github.com/prettier/prettier/issues/3150
-    options.parser = inferredParser;
+) => {
+  // Workaround for https://github.com/prettier/prettier/issues/3150
+  options.parser = inferredParser;
 
-    const groupedSnapshots = groupSnapshotsByFrame(snapshots);
-    const remainingSnapshots = new Set(snapshots.map(({ snapshot }) => snapshot));
-    let ast = parsers[inferredParser](text);
+  const groupedSnapshots = groupSnapshotsByFrame(snapshots);
+  const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
+  let ast = parsers[inferredParser](text);
 
-    // Flow uses a 'Program' parent node, babel expects a 'File'.
-    if (ast.type !== 'File') {
-      ast = file(ast, ast.comments, ast.tokens);
-      delete ast.program.comments;
-    }
+  // Flow uses a 'Program' parent node, babel expects a 'File'.
+  if (ast.type !== 'File') {
+    ast = file(ast, ast.comments, ast.tokens);
+    delete ast.program.comments;
+  }
 
-    babelTraverse(ast, {
-      CallExpression({ node: { arguments: args, callee } }) {
-        if (
-          callee.type !== 'MemberExpression' ||
-          callee.property.type !== 'Identifier'
-        ) {
-          return;
-        }
-        const { line, column } = callee.property.loc.start;
-        const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
-        if (!snapshotsForFrame) {
-          return;
-        }
-        if (snapshotsForFrame.length > 1) {
-          throw new Error(
-            'Jest: Multiple inline snapshots for the same call are not supported.',
-          );
-        }
-        const snapshotIndex = args.findIndex(
-          ({ type }) => type === 'TemplateLiteral',
+  babelTraverse(ast, {
+    CallExpression({node: {arguments: args, callee}}) {
+      if (
+        callee.type !== 'MemberExpression' ||
+        callee.property.type !== 'Identifier'
+      ) {
+        return;
+      }
+      const {line, column} = callee.property.loc.start;
+      const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
+      if (!snapshotsForFrame) {
+        return;
+      }
+      if (snapshotsForFrame.length > 1) {
+        throw new Error(
+          'Jest: Multiple inline snapshots for the same call are not supported.',
         );
-        snapshotsForFrame.forEach(inlineSnapshot => {
-          const { snapshot } = inlineSnapshot
-          if (snapshotIndex > -1) {
-            inlineSnapshot.sliceStart = args[snapshotIndex].start;
-            inlineSnapshot.sliceEnd = args[snapshotIndex].end;
-          } else if (args.length > 0) {
-            inlineSnapshot.shouldHaveCommaPrefix = true;
-            inlineSnapshot.sliceStart = args[args.length - 1].end;
-            inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
-          } else {
-            inlineSnapshot.sliceStart = text.indexOf('(', callee.end) + 1;
-            inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
-          }
-          remainingSnapshots.delete(snapshot);
-        })
-      },
-    });
+      }
+      const snapshotIndex = args.findIndex(
+        ({type}) => type === 'TemplateLiteral',
+      );
+      snapshotsForFrame.forEach(inlineSnapshot => {
+        const { snapshot } = inlineSnapshot
+        if (snapshotIndex > -1) {
+          inlineSnapshot.sliceStart = args[snapshotIndex].start;
+          inlineSnapshot.sliceEnd = args[snapshotIndex].end;
+        } else if (args.length > 0) {
+          inlineSnapshot.shouldHaveCommaPrefix = true;
+          inlineSnapshot.sliceStart = args[args.length - 1].end;
+          inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
+        } else {
+          inlineSnapshot.sliceStart = text.indexOf('(', callee.end) + 1;
+          inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
+        }
+        remainingSnapshots.delete(snapshot);
+      })
+    },
+  });
 
-    if (remainingSnapshots.size) {
-      throw new Error(`Jest: Couldn't locate all inline snapshots.`);
-    }
+  if (remainingSnapshots.size) {
+    throw new Error(`Jest: Couldn't locate all inline snapshots.`);
+  }
 
-    return ast;
-  };
+  return ast;
+};
 
 const simpleDetectParser = (filePath: Path) => {
   const extname = path.extname(filePath);
