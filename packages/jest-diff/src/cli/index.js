@@ -73,7 +73,7 @@ export default async () => {
   } else if (diffMsg === NO_DIFF_MESSAGE) {
     process.exit(EXIT_CODES.EQUAL);
   } else {
-    process.stdout.write(diffMsg);
+    console.log(diffMsg);
     process.exit(EXIT_CODES.DIFFERENT);
   }
 };

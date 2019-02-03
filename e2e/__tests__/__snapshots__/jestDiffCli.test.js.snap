@@ -12,6 +12,7 @@ exports[`different 1`] = `
 +     "b": false,
     },
   ]
+
 `;
 
 exports[`help 1`] = `
