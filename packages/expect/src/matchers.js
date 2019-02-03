@@ -56,8 +56,8 @@ const matchers: MatchersObject = {
             isNot: true,
           }) +
           '\n\n' +
-          `Expected: ${printExpected(expected)}\n` +
-          `Received: ${printReceived(received)}`
+          `Received: ${printReceived(received)}\n` +
+          `Expected: ${EXPECTED_COLOR('any other value')}`
       : () => {
           const receivedType = getType(received);
           const expectedType = getType(expected);
@@ -189,16 +189,19 @@ const matchers: MatchersObject = {
     const message = pass
       ? () =>
           matcherHint('.toBeInstanceOf', 'value', 'constructor', {
-            isNot: this.isNot,
+            isNot: true,
           }) +
           '\n\n' +
-          `Expected constructor: ${EXPECTED_COLOR(
-            constructor.name || String(constructor),
+          `Received value: ${printReceived(received)}\n` +
+          `Received constructor: ${RECEIVED_COLOR(
+            received != null
+              ? received.constructor && received.constructor.name
+              : '',
           )}\n` +
-          `Received value: ${printReceived(received)}`
+          `Expected: ${EXPECTED_COLOR('any other constructor')}`
       : () =>
           matcherHint('.toBeInstanceOf', 'value', 'constructor', {
-            isNot: this.isNot,
+            isNot: false,
           }) +
           '\n\n' +
           `Expected constructor: ${EXPECTED_COLOR(
@@ -414,17 +417,17 @@ const matchers: MatchersObject = {
     const message = pass
       ? () =>
           matcherHint('.toEqual', undefined, undefined, {
-            isNot: this.isNot,
+            isNot: true,
           }) +
           '\n\n' +
-          `Expected: ${printExpected(expected)}\n` +
-          `Received: ${printReceived(received)}`
+          `Received: ${printReceived(received)}\n` +
+          `Expected: ${EXPECTED_COLOR('any different value')}`
       : () => {
           const diffString = diff(expected, received, {expand: this.expand});
 
           return (
             matcherHint('.toEqual', undefined, undefined, {
-              isNot: this.isNot,
+              isNot: false,
             }) +
             '\n\n' +
             (diffString && diffString.includes('- Expect')
@@ -470,28 +473,41 @@ const matchers: MatchersObject = {
       );
     }
 
-    const pass = received.length === length;
+    const receivedLength = received.length;
+    const pass = receivedLength === length;
     const message = () => {
-      const stringExpected = 'Expected length';
+      const stringExpected = 'Expected';
+      const stringExpectedLength = 'Expected length';
       const stringReceivedLength = 'Received length';
       const stringReceivedValue = `Received ${getType(received)}`;
       const printLabel = getLabelPrinter(
         stringExpected,
+        stringExpectedLength,
         stringReceivedLength,
         stringReceivedValue,
       );
 
-      return (
-        matcherHint('.toHaveLength', 'received', 'length', {
-          isNot: this.isNot,
-        }) +
-        '\n\n' +
-        `${printLabel(stringExpected)}${printExpected(length)}\n` +
-        `${printLabel(stringReceivedLength)}${printReceived(
-          received.length,
-        )}\n` +
-        `${printLabel(stringReceivedValue)}${printReceived(received)}`
-      );
+      return pass
+        ? matcherHint('.toHaveLength', 'received', 'length', {
+            isNot: true,
+          }) +
+            '\n\n' +
+            `${printLabel(stringReceivedValue)}${printReceived(received)}\n` +
+            `${printLabel(stringReceivedLength)}${printReceived(
+              receivedLength,
+            )}\n` +
+            `${printLabel(stringExpected)}${EXPECTED_COLOR(
+              'length !== ' + receivedLength,
+            )}`
+        : matcherHint('.toHaveLength', 'received', 'length', {
+            isNot: false,
+          }) +
+            '\n\n' +
+            `${printLabel(stringExpectedLength)}${printExpected(length)}\n` +
+            `${printLabel(stringReceivedLength)}${printReceived(
+              receivedLength,
+            )}\n` +
+            `${printLabel(stringReceivedValue)}${printReceived(received)}`;
     };
 
     return {message, pass};
@@ -707,8 +723,8 @@ const matchers: MatchersObject = {
       ? () =>
           hint +
           '\n\n' +
-          `Expected: ${printExpected(expected)}\n` +
-          `Received: ${printReceived(received)}`
+          `Received: ${printReceived(received)}\n` +
+          `Expected: ${EXPECTED_COLOR('any different value')}`
       : () => {
           const diffString = diff(expected, received, {
             expand: this.expand,

@@ -117,8 +117,8 @@ Received value: <red>undefined</>
 exports[`.toThrow() error class threw, but class should not match (error) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err\\"</>
 Received name: <red>\\"Error\\"</>
+Expected: <green>any other name</>
 
 Received message: <red>\\"apple\\"</>
 
@@ -136,8 +136,8 @@ Received message: <red>\\"banana\\"</>
 exports[`.toThrow() error-message fail isNot true 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
 
-Expected message: <green>\\"apple\\"</>
 Received message: <red>\\"apple\\"</>
+Expected: <green>any other message</>
 "
 `;
 
@@ -262,8 +262,8 @@ Received value:     <red>\\"\\"</>
 exports[`.toThrow() strings threw, but message should not match (error) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
 
-Expected substring: <green>\\"apple\\"</>
-Received message:   <red>\\"apple\\"</>
+Expected no substring: <green>\\"apple\\"</>
+Received message:      <red>\\"apple\\"</>
 
       <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
 `;
@@ -271,8 +271,8 @@ Received message:   <red>\\"apple\\"</>
 exports[`.toThrow() strings threw, but message should not match (non-error truthy) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
 
-Expected substring: <green>\\"Server Error\\"</>
-Received value:     <red>\\"Internal Server Error\\"</>
+Expected no substring: <green>\\"Server Error\\"</>
+Received value:        <red>\\"Internal Server Error\\"</>
 "
 `;
 
@@ -393,8 +393,8 @@ Received value: <red>undefined</>
 exports[`.toThrowError() error class threw, but class should not match (error) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err\\"</>
 Received name: <red>\\"Error\\"</>
+Expected: <green>any other name</>
 
 Received message: <red>\\"apple\\"</>
 
@@ -412,8 +412,8 @@ Received message: <red>\\"banana\\"</>
 exports[`.toThrowError() error-message fail isNot true 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
 
-Expected message: <green>\\"apple\\"</>
 Received message: <red>\\"apple\\"</>
+Expected: <green>any other message</>
 "
 `;
 
@@ -538,8 +538,8 @@ Received value:     <red>\\"\\"</>
 exports[`.toThrowError() strings threw, but message should not match (error) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
 
-Expected substring: <green>\\"apple\\"</>
-Received message:   <red>\\"apple\\"</>
+Expected no substring: <green>\\"apple\\"</>
+Received message:      <red>\\"apple\\"</>
 
       <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
 `;
@@ -547,7 +547,7 @@ Received message:   <red>\\"apple\\"</>
 exports[`.toThrowError() strings threw, but message should not match (non-error truthy) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
 
-Expected substring: <green>\\"Server Error\\"</>
-Received value:     <red>\\"Internal Server Error\\"</>
+Expected no substring: <green>\\"Server Error\\"</>
+Received value:        <red>\\"Internal Server Error\\"</>
 "
 `;

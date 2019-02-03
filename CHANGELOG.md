@@ -8,6 +8,7 @@
 - `[jest-jasmine2]` Will now only execute at most 5 concurrent tests _within the same testsuite_ when using `test.concurrent` ([#7770](https://github.com/facebook/jest/pull/7770))
 - `[jest-circus]` Same as `[jest-jasmine2]`, only 5 tests will run concurrently by default ([#7770](https://github.com/facebook/jest/pull/7770))
 - `[jest-config]` A new `maxConcurrency` option allows to change the number of tests allowed to run concurrently ([#7770](https://github.com/facebook/jest/pull/7770))
+- `[expect]` Clarify errors with `.not` and equal Expected and Received (TODO)
 
 ### Fixes
 

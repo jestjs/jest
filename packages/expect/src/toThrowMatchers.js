@@ -205,11 +205,12 @@ const toThrowExpectedObject = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected message: ', expected.message) +
         (thrown !== null && thrown.hasMessage
           ? formatReceived('Received message: ', thrown, 'message') +
+            `Expected: ${EXPECTED_COLOR('any other message')}\n` +
             formatStack(thrown)
-          : formatReceived('Received value:   ', thrown, 'value'))
+          : formatExpected('Expected message: ', expected.message) +
+            formatReceived('Received value:   ', thrown, 'value'))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
@@ -236,8 +237,8 @@ const toThrowExpectedClass = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected name: ', expected.name) +
         formatReceived('Received name: ', thrown, 'name') +
+        `Expected: ${EXPECTED_COLOR('any other name')}\n` +
         '\n' +
         (thrown !== null && thrown.hasMessage
           ? formatReceived('Received message: ', thrown, 'message') +
@@ -271,11 +272,11 @@ const toThrowExpectedString = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected substring: ', expected) +
+        formatExpected('Expected no substring: ', expected) +
         (thrown !== null && thrown.hasMessage
-          ? formatReceived('Received message:   ', thrown, 'message') +
+          ? formatReceived('Received message:      ', thrown, 'message') +
             formatStack(thrown)
-          : formatReceived('Received value:     ', thrown, 'value'))
+          : formatReceived('Received value:        ', thrown, 'value'))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
