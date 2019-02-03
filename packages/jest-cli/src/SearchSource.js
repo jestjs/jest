@@ -10,7 +10,7 @@
 import type {Context} from 'types/Context';
 import type {Glob, GlobalConfig, Path} from 'types/Config';
 import type {Test} from 'types/TestRunner';
-import type {ChangedFilesPromise} from 'types/ChangedFiles';
+import type {ChangedFilesInfo} from 'types/ChangedFiles';
 
 import path from 'path';
 import micromatch from 'micromatch';
@@ -226,11 +226,11 @@ export default class SearchSource {
     return {tests: []};
   }
 
-  async findTestRelatedToChangedFiles(
-    changedFilesPromise: ChangedFilesPromise,
+  findTestRelatedToChangedFiles(
+    changedFilesInfo: ChangedFilesInfo,
     collectCoverage: boolean,
   ) {
-    const {repos, changedFiles} = await changedFilesPromise;
+    const {repos, changedFiles} = changedFilesInfo;
     // no SCM (git/hg/...) is found in any of the roots.
     const noSCM = Object.keys(repos).every(scm => repos[scm].size === 0);
     return noSCM
@@ -240,42 +240,38 @@ export default class SearchSource {
 
   _getTestPaths(
     globalConfig: GlobalConfig,
-    changedFilesPromise: ?ChangedFilesPromise,
-  ): Promise<SearchResult> {
+    changedFiles: ?ChangedFilesInfo,
+  ): SearchResult {
     const paths = globalConfig.nonFlagArgs;
 
     if (globalConfig.onlyChanged) {
-      if (!changedFilesPromise) {
-        throw new Error('This promise must be present when running with -o.');
+      if (!changedFiles) {
+        throw new Error('Changed files must be set when running with -o.');
       }
 
       return this.findTestRelatedToChangedFiles(
-        changedFilesPromise,
+        changedFiles,
         globalConfig.collectCoverage,
       );
     } else if (globalConfig.runTestsByPath && paths && paths.length) {
-      return Promise.resolve(this.findTestsByPaths(paths));
+      return this.findTestsByPaths(paths);
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
-      return Promise.resolve(
-        this.findRelatedTestsFromPattern(paths, globalConfig.collectCoverage),
+      return this.findRelatedTestsFromPattern(
+        paths,
+        globalConfig.collectCoverage,
       );
     } else if (globalConfig.testPathPattern != null) {
-      return Promise.resolve(
-        this.findMatchingTests(globalConfig.testPathPattern),
-      );
+      return this.findMatchingTests(globalConfig.testPathPattern);
     } else {
-      return Promise.resolve({tests: []});
+      return {tests: []};
     }
   }
 
   async getTestPaths(
     globalConfig: GlobalConfig,
-    changedFilesPromise: ?ChangedFilesPromise,
+    changedFiles: ?ChangedFilesInfo,
   ): Promise<SearchResult> {
-    const searchResult = await this._getTestPaths(
-      globalConfig,
-      changedFilesPromise,
-    );
+    const searchResult = this._getTestPaths(globalConfig, changedFiles);
 
     const filterPath = globalConfig.filter;
 

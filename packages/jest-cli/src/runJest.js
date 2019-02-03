@@ -15,11 +15,10 @@ import type {TestRunData} from 'types/TestRunner';
 import type {JestHookEmitter} from 'types/JestHooks';
 import type TestWatcher from './TestWatcher';
 
-import micromatch from 'micromatch';
 import chalk from 'chalk';
 import path from 'path';
 import {sync as realpath} from 'realpath-native';
-import {Console, formatTestResults, replacePathSepForGlob} from 'jest-util';
+import {Console, formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
@@ -36,11 +35,11 @@ const getTestPaths = async (
   globalConfig,
   context,
   outputStream,
-  changedFilesPromise,
+  changedFiles,
   jestHooks,
 ) => {
   const source = new SearchSource(context);
-  const data = await source.getTestPaths(globalConfig, changedFilesPromise);
+  const data = await source.getTestPaths(globalConfig, changedFiles);
 
   if (!data.tests.length && globalConfig.onlyChanged && data.noSCM) {
     new Console(outputStream, outputStream).log(
@@ -135,6 +134,7 @@ export default (async function runJest({
 
   if (changedFilesPromise && globalConfig.watch) {
     const {repos} = await changedFilesPromise;
+
     const noSCM = Object.keys(repos).every(scm => repos[scm].size === 0);
     if (noSCM) {
       process.stderr.write(
@@ -147,7 +147,16 @@ export default (async function runJest({
     }
   }
 
-  let collectCoverageFrom = [];
+  if (changedFilesPromise) {
+    const {changedFiles} = await changedFilesPromise;
+    const newConfig: GlobalConfig = {
+      ...globalConfig,
+      changedFiles:
+        changedFiles &&
+        new Set(Array.from(changedFiles).map(p => path.resolve(p))),
+    };
+    globalConfig = Object.freeze(newConfig);
+  }
 
   const testRunData: TestRunData = await Promise.all(
     contexts.map(async context => {
@@ -155,48 +164,14 @@ export default (async function runJest({
         globalConfig,
         context,
         outputStream,
-        changedFilesPromise,
+        changedFilesPromise && (await changedFilesPromise),
         jestHooks,
       );
       allTests = allTests.concat(matches.tests);
 
-      if (matches.collectCoverageFrom) {
-        collectCoverageFrom = collectCoverageFrom.concat(
-          matches.collectCoverageFrom.filter(filename => {
-            if (
-              globalConfig.collectCoverageFrom &&
-              !micromatch.some(
-                replacePathSepForGlob(
-                  path.relative(globalConfig.rootDir, filename),
-                ),
-                globalConfig.collectCoverageFrom,
-              )
-            ) {
-              return false;
-            }
-
-            if (
-              globalConfig.coveragePathIgnorePatterns &&
-              globalConfig.coveragePathIgnorePatterns.some(pattern =>
-                filename.match(pattern),
-              )
-            ) {
-              return false;
-            }
-
-            return true;
-          }),
-        );
-      }
-
       return {context, matches};
     }),
   );
-
-  if (collectCoverageFrom.length) {
-    const newConfig: GlobalConfig = {...globalConfig, collectCoverageFrom};
-    globalConfig = Object.freeze(newConfig);
-  }
 
   allTests = sequencer.sort(allTests);
 

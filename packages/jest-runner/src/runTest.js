@@ -143,6 +143,7 @@ async function runTestInternal(
   setGlobal(environment.global, 'console', testConsole);
 
   runtime = new Runtime(config, environment, resolver, cacheFS, {
+    changedFiles: globalConfig.changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
