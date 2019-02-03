@@ -142,8 +142,7 @@ describe(
     }, timeout);
 
     it(<span class="hljs-string">'should load without error'</span>, <span class="hljs-keyword">async</span> () =&gt; {
-      <span class="hljs-keyword">const</span> text = <span class="hljs-keyword">await</span> page.evaluate(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">document</span>.body.textContent);
-      expect(text).toContain(<span class="hljs-string">'google'</span>);
+      <span class="hljs-keyword">await</span> expect(page.title()).resolves.toMatch(<span class="hljs-string">'Google'</span>);
     });
   },
   timeout,

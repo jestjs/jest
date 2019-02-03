@@ -96,8 +96,8 @@ Usar con puppeteer</h1></header><article><div><span><p>With the <a href="/docs/e
     <span class="hljs-keyword">await</span> page.goto(<span class="hljs-string">'https://google.com'</span>);
   });
 
-  it(<span class="hljs-string">'should display "google" text on page'</span>, <span class="hljs-keyword">async</span> () =&gt; {
-    <span class="hljs-keyword">await</span> expect(page).toMatch(<span class="hljs-string">'google'</span>);
+  it(<span class="hljs-string">'should be titled "Google"'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">await</span> expect(page.title()).resolves.toMatch(<span class="hljs-string">'Google'</span>);
   });
 });
 </code></pre>
