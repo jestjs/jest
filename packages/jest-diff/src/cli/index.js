@@ -8,7 +8,7 @@
  */
 
 import yargs from 'yargs';
-import {readFile} from 'fs';
+import {readFileSync} from 'fs';
 
 // eslint-disable-next-line import/default
 import jestDiff from '../';
@@ -28,35 +28,33 @@ const EXIT_CODES = {
 };
 /* eslint-enable sort-keys */
 
-const read = (path: string) =>
-  new Promise(resolve =>
-    readFile(path, (readErr, data) => {
-      if (readErr) {
-        console.error(`Failed to read file ${path}`, readErr);
-        process.exit(EXIT_CODES.IO_ERROR);
-      }
-      try {
-        const json = JSON.parse(String(data));
-        resolve(json);
-      } catch (parseErr) {
-        console.error(`Failed to parse file ${path} as JSON`, parseErr);
-        process.exit(EXIT_CODES.INVALID_JSON);
-      }
-    }),
-  );
+/* eslint-disable-next-line consistent-return */
+const read = (path: string) => {
+  try {
+    const data = readFileSync(path);
+    try {
+      return JSON.parse(String(data));
+    } catch (parseErr) {
+      console.error(`Failed to parse file ${path} as JSON`, parseErr);
+      process.exit(EXIT_CODES.INVALID_JSON);
+    }
+  } catch (readErr) {
+    console.error(`Failed to read file ${path}`, readErr);
+    process.exit(EXIT_CODES.IO_ERROR);
+  }
+};
 
 export default async () => {
   const parser = yargs(process.argv.slice(2))
-    // positional
-    .demandCommand(2, 2)
-    // version
+    .demandCommand(2, 2) // positional
+
     .version()
     .alias('v', 'version')
-    // help
+
     .usage('$0 a.json b.json')
     .help()
     .alias('h', 'help')
-    // error handling
+
     .fail((msg, err, yargs) => {
       if (err) throw err;
       console.error(yargs.help());
@@ -65,7 +63,8 @@ export default async () => {
     });
 
   const [aPath, bPath] = parser.argv._;
-  const [a, b] = await Promise.all([read(aPath), read(bPath)]);
+  const a = read(aPath);
+  const b = read(bPath);
 
   const diffMsg = jestDiff(a, b);
   if (diffMsg == null) {
