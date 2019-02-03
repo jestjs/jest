@@ -1117,7 +1117,7 @@ _Note: While snapshot testing is most commonly used with React components, any s
 
 Ensures that a value matches the most recent snapshot. Unlike [`.toMatchSnapshot()`](#tomatchsnapshotpropertymatchers-snapshotname), the snapshots will be written to the current source file, inline.
 
-Check out the section on [Inline Snapshots](./SnapshotTesting.md#inline-snapshots) for more info.
+Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots) for more info.
 
 ### `.toStrictEqual(value)`
 
@@ -1227,4 +1227,4 @@ Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-1
 
 This matcher is much like [`.toThrowErrorMatchingSnapshot`](#tothrowerrormatchingsnapshot), except instead of writing the snapshot value to a `.snap` file, it will be written into the source code automatically.
 
-Check out the section on [Inline Snapshots](./SnapshotTesting.md#inline-snapshots) for more info.
+Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots) for more info.
