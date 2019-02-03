@@ -40,7 +40,7 @@ describe('Runtime', () => {
         expect(module.getModuleStateValue()).toBe(origModuleStateValue);
       }));
 
-    it('resolves stubbed modules correctly', () =>
+    it('resolves mapped modules correctly', () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         const root = runtime.requireModule(runtime.__mockRootPath);
         const mockModule = root.jest.genMockFromModule(

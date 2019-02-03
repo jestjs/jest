@@ -295,6 +295,7 @@ class Runtime {
       moduleName,
     );
     let modulePath;
+
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
     const moduleResource = moduleName && this._resolver.getModule(moduleName);
@@ -375,6 +376,7 @@ class Runtime {
       from,
       moduleName,
     );
+
     if (this._isolatedMockRegistry && this._isolatedMockRegistry[moduleID]) {
       return this._isolatedMockRegistry[moduleID];
     } else if (this._mockRegistry[moduleID]) {
