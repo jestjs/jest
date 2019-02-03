@@ -89,8 +89,7 @@ describe(
     }, timeout);
 
     it('should load without error', async () => {
-      const text = await page.evaluate(() => document.body.textContent);
-      expect(text).toContain('google');
+      await expect(page.title()).resolves.toMatch('Google');
     });
   },
   timeout,
