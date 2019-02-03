@@ -177,17 +177,17 @@ const traverseAst = (
         }
         remainingSnapshots.delete(snapshot);
 
-        return templateLiteral(	
-          [templateElement({raw: escapeBacktickString(snapshot)})],	
-          [],	
-        );	
-      });	
-      const replacementNode = values[0];	
+        return templateLiteral(
+          [templateElement({raw: escapeBacktickString(snapshot)})],
+          [],
+        );
+      });
+      const replacementNode = values[0];
 
-      if (snapshotIndex > -1) {	
-        args[snapshotIndex] = replacementNode;	
-      } else {	
-        args.push(replacementNode);	
+      if (snapshotIndex > -1) {
+        args[snapshotIndex] = replacementNode;
+      } else {
+        args.push(replacementNode);
       }
     },
   });
