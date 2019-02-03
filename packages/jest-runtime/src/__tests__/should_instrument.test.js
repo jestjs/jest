@@ -199,6 +199,20 @@ describe('shouldInstrument', () => {
       testShouldInstrument(filename, defaultOptions, defaultConfig);
     });
 
+    it('if file is a globalSetup file', () => {
+      testShouldInstrument('globalSetup.js', defaultOptions, {
+        rootDir: '/',
+        globalSetup: 'globalSetup.js',
+      });
+    });
+
+    it('if file is globalTeardown file', () => {
+      testShouldInstrument('globalTeardown.js', defaultOptions, {
+        rootDir: '/',
+        globalTeardown: 'globalTeardown.js',
+      });
+    });
+
     it('if file is in setupFiles', () => {
       testShouldInstrument('setupTest.js', defaultOptions, {
         rootDir: '/',

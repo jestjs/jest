@@ -84,6 +84,14 @@ export default function shouldInstrument(
     return false;
   }
 
+  if (config.globalSetup === filename) {
+    return false;
+  }
+
+  if (config.globalTeardown === filename) {
+    return false;
+  }
+
   if (
     config.setupFiles &&
     config.setupFiles.some(setupFile => setupFile === filename)
