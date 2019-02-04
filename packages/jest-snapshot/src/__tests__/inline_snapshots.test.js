@@ -53,9 +53,9 @@ afterEach(() => {
 
 test('saveInlineSnapshots() replaces empty function call with a template literal', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  jest.spyOn(fs, 'readFileSync').mockImplementation(
-    () => `expect(1).toMatchInlineSnapshot();\n`,
-  );
+  jest
+    .spyOn(fs, 'readFileSync')
+    .mockImplementation(() => `expect(1).toMatchInlineSnapshot();\n`);
 
   saveInlineSnapshots(
     [
@@ -77,7 +77,8 @@ test('saveInlineSnapshots() replaces empty function call with a template literal
 test('saveInlineSnapshots() without prettier leaves formatting outside of snapshots alone', () => {
   const filename = path.join(__dirname, 'my.test.js');
   jest.spyOn(fs, 'readFileSync').mockImplementation(
-    () => `
+    () =>
+      `
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
 snapshot\`);
@@ -88,8 +89,8 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 
   saveInlineSnapshots(
     [2, 4, 5].map(line => ({
-      frame: { column: 11, file: filename, line },
-      snapshot: `[1, 2]`
+      frame: {column: 11, file: filename, line},
+      snapshot: `[1, 2]`,
     })),
     null,
     babelTraverse,
@@ -108,7 +109,8 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 test('saveInlineSnapshots() can handle typescript without prettier', () => {
   const filename = path.join(__dirname, 'my.test.ts');
   jest.spyOn(fs, 'readFileSync').mockImplementation(
-    () => `
+    () =>
+      `
 interface Foo {
   foo: string
 }
@@ -118,10 +120,12 @@ expect(a).toMatchInlineSnapshot();
   );
 
   saveInlineSnapshots(
-    [{
-      frame: { column: 11, file: filename, line: 5 },
-      snapshot: `[{ foo: 'one' }, { foo: 'two' }]`
-    }],
+    [
+      {
+        frame: {column: 11, file: filename, line: 5},
+        snapshot: `[{ foo: 'one' }, { foo: 'two' }]`,
+      },
+    ],
     null,
     babelTraverse,
   );
@@ -141,7 +145,8 @@ expect(a).toMatchInlineSnapshot(\`[{ foo: 'one' }, { foo: 'two' }]\`);
 test('saveInlineSnapshots() can use prettier to fix formatting for whole file', () => {
   const filename = path.join(__dirname, 'my.test.js');
   jest.spyOn(fs, 'readFileSync').mockImplementation(
-    () => `
+    () =>
+      `
 const a = [1,            2];
 expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
 snapshot\`);
@@ -152,8 +157,8 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 
   saveInlineSnapshots(
     [2, 4, 5].map(line => ({
-      frame: { column: 11, file: filename, line },
-      snapshot: `[1, 2]`
+      frame: {column: 11, file: filename, line},
+      snapshot: `[1, 2]`,
     })),
     prettier,
     babelTraverse,
@@ -173,9 +178,9 @@ test.each([['babylon'], ['flow'], ['typescript']])(
   'saveInlineSnapshots() replaces existing template literal - %s parser',
   parser => {
     const filename = path.join(__dirname, 'my.test.js');
-    jest.spyOn(fs, 'readFileSync').mockImplementation(
-      () => 'expect(1).toMatchInlineSnapshot(`2`);\n',
-    );
+    jest
+      .spyOn(fs, 'readFileSync')
+      .mockImplementation(() => 'expect(1).toMatchInlineSnapshot(`2`);\n');
 
     prettier.resolveConfig.sync.mockReturnValue({parser});
 
@@ -201,9 +206,9 @@ test.each([['babylon'], ['flow'], ['typescript']])(
 
 test('saveInlineSnapshots() replaces existing template literal with property matchers', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  jest.spyOn(fs, 'readFileSync').mockImplementation(
-    () => 'expect(1).toMatchInlineSnapshot({}, `2`);\n',
-  );
+  jest
+    .spyOn(fs, 'readFileSync')
+    .mockImplementation(() => 'expect(1).toMatchInlineSnapshot({}, `2`);\n');
 
   saveInlineSnapshots(
     [
@@ -223,34 +228,36 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
 });
 
 test.each([[prettier], [null]])(
-  'saveInlineSnapshots() creates template literal with property matchers', prettierModule => {
-  const filename = path.join(__dirname, 'my.test.js');
-  jest.spyOn(fs, 'readFileSync').mockImplementation(
-    () => 'expect(1).toMatchInlineSnapshot({});\n',
-  );
+  'saveInlineSnapshots() creates template literal with property matchers',
+  prettierModule => {
+    const filename = path.join(__dirname, 'my.test.js');
+    jest
+      .spyOn(fs, 'readFileSync')
+      .mockImplementation(() => 'expect(1).toMatchInlineSnapshot({});\n');
 
-  saveInlineSnapshots(
-    [
-      {
-        frame: {column: 11, file: filename, line: 1},
-        snapshot: `1`,
-      },
-    ],
-    prettierModule,
-    babelTraverse,
-  );
+    saveInlineSnapshots(
+      [
+        {
+          frame: {column: 11, file: filename, line: 1},
+          snapshot: `1`,
+        },
+      ],
+      prettierModule,
+      babelTraverse,
+    );
 
-  expect(fs.writeFileSync).toHaveBeenCalledWith(
-    filename,
-    'expect(1).toMatchInlineSnapshot({}, `1`);\n',
-  );
-});
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      filename,
+      'expect(1).toMatchInlineSnapshot({}, `1`);\n',
+    );
+  },
+);
 
 test('saveInlineSnapshots() throws if frame does not match', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  jest.spyOn(fs, 'readFileSync').mockImplementation(
-    () => 'expect(1).toMatchInlineSnapshot();\n',
-  );
+  jest
+    .spyOn(fs, 'readFileSync')
+    .mockImplementation(() => 'expect(1).toMatchInlineSnapshot();\n');
 
   const save = () =>
     saveInlineSnapshots(
@@ -269,9 +276,9 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
 
 test('saveInlineSnapshots() throws if multiple calls to to the same location', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  jest.spyOn(fs, 'readFileSync').mockImplementation(
-    () => 'expect(1).toMatchInlineSnapshot();\n',
-  );
+  jest
+    .spyOn(fs, 'readFileSync')
+    .mockImplementation(() => 'expect(1).toMatchInlineSnapshot();\n');
 
   const frame = {column: 11, file: filename, line: 1};
   const save = () =>
@@ -290,9 +297,7 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
   const filename = path.join(__dirname, 'my.test.js');
   jest
     .spyOn(fs, 'readFileSync')
-    .mockImplementation(
-      () => 'expect("`").toMatchInlineSnapshot();\n',
-    );
+    .mockImplementation(() => 'expect("`").toMatchInlineSnapshot();\n');
 
   const frame = {column: 13, file: filename, line: 1};
   saveInlineSnapshots([{frame, snapshot: '`'}], prettier, babelTraverse);
@@ -307,9 +312,7 @@ test('saveInlineSnapshots() works with non-literals in expect call', () => {
   const filename = path.join(__dirname, 'my.test.js');
   jest
     .spyOn(fs, 'readFileSync')
-    .mockImplementation(
-      () => `expect({a: 'a'}).toMatchInlineSnapshot();\n`,
-    );
+    .mockImplementation(() => `expect({a: 'a'}).toMatchInlineSnapshot();\n`);
   prettier.resolveConfig.sync.mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
