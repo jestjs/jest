@@ -288,9 +288,11 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
 
 test('saveInlineSnapshots() uses escaped backticks', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  jest.spyOn(fs, 'readFileSync').mockImplementation(
-    () => 'expect("`").toMatchInlineSnapshot();\n',
-  );
+  jest
+    .spyOn(fs, 'readFileSync')
+    .mockImplementation(
+      () => 'expect("`").toMatchInlineSnapshot();\n',
+    );
 
   const frame = {column: 13, file: filename, line: 1};
   saveInlineSnapshots([{frame, snapshot: '`'}], prettier, babelTraverse);
@@ -303,9 +305,11 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
 
 test('saveInlineSnapshots() works with non-literals in expect call', () => {
   const filename = path.join(__dirname, 'my.test.js');
-  jest.spyOn(fs, 'readFileSync').mockImplementation(
-    () => `expect({a: 'a'}).toMatchInlineSnapshot();\n`,
-  );
+  jest
+    .spyOn(fs, 'readFileSync')
+    .mockImplementation(
+      () => `expect({a: 'a'}).toMatchInlineSnapshot();\n`,
+    );
   prettier.resolveConfig.sync.mockReturnValue({
     bracketSpacing: false,
     singleQuote: true,
