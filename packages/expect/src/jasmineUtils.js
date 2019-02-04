@@ -125,28 +125,14 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
 
   var aIsDomNode = isDomNode(a);
   var bIsDomNode = isDomNode(b);
-  var hasElementCtor = typeof Element !== 'undefined';
-  if (aIsDomNode && bIsDomNode) {
-    // At first try to use DOM3 method isEqualNode
-    if (a.isEqualNode) {
-      return a.isEqualNode(b);
-    }
-    // In some test environments (e.g. "node") there is no `Element` even though
-    // we might be comparing things that look like DOM nodes
-    if (hasElementCtor) {
-      // IE8 doesn't support isEqualNode, try to use outerHTML && innerText
-      var aIsElement = a instanceof Element;
-      var bIsElement = b instanceof Element;
-      if (aIsElement && bIsElement) {
-        return a.outerHTML == b.outerHTML;
-      }
-      if (aIsElement || bIsElement) {
-        return false;
-      }
-      return a.innerText == b.innerText && a.textContent == b.textContent;
-    }
+  // Use DOM3 method isEqualNode (IE>=9)
+  if (aIsDomNode && a.isEqualNode && bIsDomNode) {
+    return a.isEqualNode(b);
   }
-  if (hasElementCtor && (aIsDomNode || bIsDomNode)) {
+  // In some test environments (e.g. "node") there is no `Element` even though
+  // we might be comparing things that look like DOM nodes. In these cases we
+  // fall back to deep equality because we just don't know better at this point
+  if (typeof Element !== 'undefined' && (aIsDomNode || bIsDomNode)) {
     return false;
   }
 
