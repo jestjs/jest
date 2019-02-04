@@ -12,7 +12,8 @@
   "dependencies": {
     "babel-plugin-istanbul": "^5.1.0",
     "babel-preset-jest": "^24.0.0",
-    "chalk": "^2.4.2"
+    "chalk": "^2.4.2",
+    "slash": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0"

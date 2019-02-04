@@ -20,6 +20,7 @@ import fs from 'fs';
 import path from 'path';
 import {transformSync as babelTransform, loadPartialConfig} from '@babel/core';
 import chalk from 'chalk';
+import slash from 'slash';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
@@ -48,7 +49,7 @@ const createTransformer = (options: any): Transformer => {
     if (!babelConfig) {
       throw new Error(
         `babel-jest: Babel ignores ${chalk.bold(
-          path.relative(cwd, filename),
+          slash(path.relative(cwd, filename)),
         )} - make sure to include the file in Jest's ${chalk.bold(
           'transformIgnorePatterns',
         )} as well.`,
