@@ -76,7 +76,7 @@ const saveSnapshotsForFile = (
     const ast = parse(sourceFile, {plugins});
     traverseAst(snapshots, ast, sourceFile, babelTraverse);
 
-    // substitute in the snapshots in reverse order, so the slice calculations aren't thrown off.
+    // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
     newSourceFile = snapshots.reduceRight((sourceSoFar, nextSnapshot) => {
       if (
         typeof nextSnapshot.sliceStart !== 'number' ||
