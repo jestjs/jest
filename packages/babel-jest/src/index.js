@@ -47,7 +47,7 @@ const createTransformer = (options: any): Transformer => {
 
     if (!babelConfig) {
       throw new Error(
-        `Babel-Jest: Babel ignores ${chalk.bold(
+        `babel-jest: Babel ignores ${chalk.bold(
           path.relative(cwd, filename),
         )} - make sure to include the file in Jest's ${chalk.bold(
           'transformIgnorePatterns',

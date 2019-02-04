@@ -4,7 +4,7 @@ exports[`babel-jest ignored tells user to match ignored files 1`] = `
 FAIL __tests__/ignoredFile.test.js
   ● Test suite failed to run
 
-    Babel-Jest: Babel ignores __tests__/ignoredFile.test.js - make sure to include the file in Jest's transformIgnorePatterns as well.
+    babel-jest: Babel ignores __tests__/ignoredFile.test.js - make sure to include the file in Jest's transformIgnorePatterns as well.
 
       at loadBabelConfig (../../../packages/babel-jest/build/index.js:124:13)
 `;
