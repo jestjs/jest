@@ -125,6 +125,7 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
 
   var aIsDomNode = isDomNode(a);
   var bIsDomNode = isDomNode(b);
+  var hasElementCtor = typeof Element !== 'undefined';
   if (aIsDomNode && bIsDomNode) {
     // At first try to use DOM3 method isEqualNode
     if (a.isEqualNode) {
@@ -132,7 +133,7 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
     }
     // In some test environments (e.g. "node") there is no `Element` even though
     // we might be comparing things that look like DOM nodes
-    if (typeof Element !== 'undefined') {
+    if (hasElementCtor) {
       // IE8 doesn't support isEqualNode, try to use outerHTML && innerText
       var aIsElement = a instanceof Element;
       var bIsElement = b instanceof Element;
@@ -142,10 +143,10 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
       if (aIsElement || bIsElement) {
         return false;
       }
+      return a.innerText == b.innerText && a.textContent == b.textContent;
     }
-    return a.innerText == b.innerText && a.textContent == b.textContent;
   }
-  if (aIsDomNode || bIsDomNode) {
+  if (hasElementCtor && (aIsDomNode || bIsDomNode)) {
     return false;
   }
 
