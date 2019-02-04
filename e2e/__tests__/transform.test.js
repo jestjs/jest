@@ -11,7 +11,8 @@ import path from 'path';
 import {
   cleanup,
   copyDir,
-  createEmptyPackage, extractSummary,
+  createEmptyPackage,
+  extractSummary,
   linkJestPackage,
   run,
 } from '../Utils';
