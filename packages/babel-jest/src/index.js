@@ -19,6 +19,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import {transformSync as babelTransform, loadPartialConfig} from '@babel/core';
+import chalk from 'chalk';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
@@ -40,9 +41,22 @@ const createTransformer = (options: any): Transformer => {
   delete options.cacheDirectory;
   delete options.filename;
 
-  const loadBabelConfig = (cwd, filename) =>
+  function loadBabelConfig(cwd, filename) {
     // `cwd` first to allow incoming options to override it
-    loadPartialConfig({cwd, ...options, filename});
+    const babelConfig = loadPartialConfig({cwd, ...options, filename});
+
+    if (!babelConfig) {
+      throw new Error(
+        `Babel-Jest: Babel ignores ${chalk.bold(
+          path.relative(cwd, filename),
+        )} - make sure to include the file in Jest's ${chalk.bold(
+          'transformIgnorePatterns',
+        )} as well.`,
+      );
+    }
+
+    return babelConfig;
+  }
 
   return {
     canInstrument: true,

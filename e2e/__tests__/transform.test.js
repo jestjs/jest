@@ -11,7 +11,7 @@ import path from 'path';
 import {
   cleanup,
   copyDir,
-  createEmptyPackage,
+  createEmptyPackage, extractSummary,
   linkJestPackage,
   run,
 } from '../Utils';
@@ -42,6 +42,17 @@ describe('babel-jest', () => {
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
     expect(wrap(stdout)).toMatchSnapshot();
+  });
+});
+
+describe('babel-jest ignored', () => {
+  const dir = path.resolve(__dirname, '..', 'transform/babel-jest-ignored');
+
+  it('tells user to match ignored files', () => {
+    // --no-cache because babel can cache stuff and result in false green
+    const {status, stderr} = runJest(dir, ['--no-cache']);
+    expect(status).toBe(1);
+    expect(wrap(extractSummary(stderr).rest)).toMatchSnapshot();
   });
 });
 
