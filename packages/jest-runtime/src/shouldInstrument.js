@@ -84,6 +84,30 @@ export default function shouldInstrument(
     return false;
   }
 
+  if (config.globalSetup === filename) {
+    return false;
+  }
+
+  if (config.globalTeardown === filename) {
+    return false;
+  }
+
+  if (
+    //TODO: Remove additional check when normalized config provided in unit test
+    config.setupFiles &&
+    config.setupFiles.some(setupFile => setupFile === filename)
+  ) {
+    return false;
+  }
+
+  if (
+    //TODO: Remove additional check when normalized config provided in unit test
+    config.setupFilesAfterEnv &&
+    config.setupFilesAfterEnv.some(setupFile => setupFile === filename)
+  ) {
+    return false;
+  }
+
   if (MOCKS_PATTERN.test(filename)) {
     return false;
   }

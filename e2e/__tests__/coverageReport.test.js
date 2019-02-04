@@ -39,12 +39,12 @@ test('collects coverage only from specified file', () => {
       '--no-cache',
       '--coverage',
       '--collectCoverageFrom', // overwrites the one in package.json
-      'setup.js',
+      'file.js',
     ],
     {stripAnsi: true},
   );
 
-  // Coverage report should only have `setup.js` coverage info
+  // Coverage report should only have `file.js` coverage info
   expect(wrap(stdout)).toMatchSnapshot();
 });
 
@@ -55,7 +55,7 @@ test('collects coverage only from multiple specified files', () => {
       '--no-cache',
       '--coverage',
       '--collectCoverageFrom',
-      'setup.js',
+      'file.js',
       '--collectCoverageFrom',
       'otherFile.js',
     ],
