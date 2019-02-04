@@ -2,11 +2,14 @@
   "jest": {
     "projects": [
       {
-        "rootDir": "<rootDir>/foo"
+        "rootDir": "<rootDir>/prj-1"
       },
       {
-        "rootDir": "<rootDir>/bar"
-      }
+        "rootDir": "<rootDir>/prj-2"
+      },
+      "<rootDir>/prj-3",
+      "<rootDir>/prj-4",
+      "<rootDir>/prj-5"
     ]
   }
 }
