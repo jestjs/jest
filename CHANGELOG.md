@@ -23,6 +23,7 @@
 - `[jest-cli]` Load transformers before installing require hooks ([#7752](https://github.com/facebook/jest/pull/7752)
 - `[jest-cli]` Handle missing `numTodoTests` in test results ([#7779](https://github.com/facebook/jest/pull/7779))
 - `[jest-runtime]` Exclude setup/teardown files from coverage report ([#7790](https://github.com/facebook/jest/pull/7790)
+- `[babel-jest]` Throw an error if `babel-jest` tries to transform a file ignored by Babel ([#7797](https://github.com/facebook/jest/pull/7797))
 
 ### Chore & Maintenance
 
