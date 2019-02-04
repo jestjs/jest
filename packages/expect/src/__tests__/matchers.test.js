@@ -417,6 +417,16 @@ describe('.toEqual()', () => {
         },
       },
     ],
+    [
+      {
+        nodeName: 'div',
+        nodeType: 1,
+      },
+      {
+        nodeName: 'p',
+        nodeType: 1,
+      },
+    ],
   ].forEach(([a, b]) => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
