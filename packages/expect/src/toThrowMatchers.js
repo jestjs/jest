@@ -38,28 +38,22 @@ type Thrown =
     };
 
 const getThrown = (e: any): Thrown => {
-  if (
-    e !== null &&
-    e !== undefined &&
-    typeof e.message === 'string' &&
-    typeof e.name === 'string' &&
-    typeof e.stack === 'string'
-  ) {
+  const hasMessage =
+    e !== null && e !== undefined && typeof e.message === 'string';
+
+  if (hasMessage && typeof e.name === 'string' && typeof e.stack === 'string') {
     return {
-      hasMessage: true,
+      hasMessage,
       isError: true,
       message: e.message,
       value: e,
     };
   }
 
-  const hasMessage =
-    e !== null && e !== undefined && typeof e.message === 'string';
-
   return {
     hasMessage,
     isError: false,
-    message: hasMessage ? e.message : typeof e === 'string' ? e : String(e),
+    message: hasMessage ? e.message : String(e),
     value: e,
   };
 };

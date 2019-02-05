@@ -103,6 +103,7 @@ class Resolver {
       return resolver(path, {
         basedir: options.basedir,
         browser: options.browser,
+        defaultResolver,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
@@ -251,7 +252,7 @@ class Resolver {
     if (mock) {
       return mock;
     } else {
-      const moduleName = this._resolveStubModuleName(from, name);
+      const moduleName = this.resolveStubModuleName(from, name);
       if (moduleName) {
         return this.getModule(moduleName) || moduleName;
       }
@@ -340,7 +341,7 @@ class Resolver {
     );
   }
 
-  _resolveStubModuleName(from: Path, moduleName: string): ?Path {
+  resolveStubModuleName(from: Path, moduleName: string): ?Path {
     const dirname = path.dirname(from);
     const paths = this._options.modulePaths;
     const extensions = this._options.extensions.slice();

@@ -217,7 +217,9 @@ export default (async function runJest({
     globalConfig = failedTestsCache.updateConfig(globalConfig);
   }
 
-  if (!allTests.length) {
+  const hasTests = allTests.length > 0;
+
+  if (!hasTests) {
     const noTestsFoundMessage = getNoTestsFoundMessage(
       testRunData,
       globalConfig,
@@ -250,7 +252,9 @@ export default (async function runJest({
     collectHandles = collectNodeHandles();
   }
 
-  await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
+  if (hasTests) {
+    await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
+  }
 
   const results = await new TestScheduler(
     globalConfig,
@@ -262,11 +266,9 @@ export default (async function runJest({
 
   sequencer.cacheResults(allTests, results);
 
-  await runGlobalHook({
-    allTests,
-    globalConfig,
-    moduleName: 'globalTeardown',
-  });
+  if (hasTests) {
+    await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
+  }
 
   return processResults(results, {
     collectHandles,

@@ -19,7 +19,8 @@
     "jest-message-util": "^24.0.0",
     "jest-snapshot": "^24.0.0",
     "jest-util": "^24.0.0",
-    "pretty-format": "^24.0.0"
+    "pretty-format": "^24.0.0",
+    "throat": "^4.0.0"
   },
   "devDependencies": {
     "jest-diff": "^24.0.0",

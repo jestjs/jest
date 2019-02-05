@@ -389,37 +389,43 @@ class Runtime {
       return (mockRegistry[moduleID] = this._mockFactories[moduleID]());
     }
 
-    let manualMock = this._resolver.getMockModule(from, moduleName);
+    const manualMockOrStub = this._resolver.getMockModule(from, moduleName);
     let modulePath;
-    if (manualMock) {
-      modulePath = this._resolveModule(from, manualMock);
+    if (manualMockOrStub) {
+      modulePath = this._resolveModule(from, manualMockOrStub);
     } else {
       modulePath = this._resolveModule(from, moduleName);
     }
-    // If the actual module file has a __mocks__ dir sitting immediately next
-    // to it, look to see if there is a manual mock for this file.
-    //
-    // subDir1/my_module.js
-    // subDir1/__mocks__/my_module.js
-    // subDir2/my_module.js
-    // subDir2/__mocks__/my_module.js
-    //
-    // Where some other module does a relative require into each of the
-    // respective subDir{1,2} directories and expects a manual mock
-    // corresponding to that particular my_module.js file.
-    const moduleDir = path.dirname(modulePath);
-    const moduleFileName = path.basename(modulePath);
-    const potentialManualMock = path.join(
-      moduleDir,
-      '__mocks__',
-      moduleFileName,
-    );
-    if (fs.existsSync(potentialManualMock)) {
-      manualMock = true;
-      modulePath = potentialManualMock;
-    }
 
-    if (manualMock) {
+    let isManualMock =
+      manualMockOrStub &&
+      !this._resolver.resolveStubModuleName(from, moduleName);
+    if (!isManualMock) {
+      // If the actual module file has a __mocks__ dir sitting immediately next
+      // to it, look to see if there is a manual mock for this file.
+      //
+      // subDir1/my_module.js
+      // subDir1/__mocks__/my_module.js
+      // subDir2/my_module.js
+      // subDir2/__mocks__/my_module.js
+      //
+      // Where some other module does a relative require into each of the
+      // respective subDir{1,2} directories and expects a manual mock
+      // corresponding to that particular my_module.js file.
+
+      const moduleDir = path.dirname(modulePath);
+      const moduleFileName = path.basename(modulePath);
+      const potentialManualMock = path.join(
+        moduleDir,
+        '__mocks__',
+        moduleFileName,
+      );
+      if (fs.existsSync(potentialManualMock)) {
+        isManualMock = true;
+        modulePath = potentialManualMock;
+      }
+    }
+    if (isManualMock) {
       const localModule: Module = {
         children: [],
         exports: {},
@@ -684,19 +690,8 @@ class Runtime {
     const runScript = this._environment.runScript(transformedFile.script);
 
     if (runScript === null) {
-      const originalStack = new ReferenceError(
+      this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
-      ).stack
-        .split('\n')
-        // Remove this file from the stack (jest-message-utils will keep one line)
-        .filter(line => line.indexOf(__filename) === -1)
-        .join('\n');
-
-      const {message, stack} = separateMessageFromStack(originalStack);
-
-      console.error(
-        `\n${message}\n` +
-          formatStackTrace(stack, this._config, {noStackTrace: false}),
       );
       process.exitCode = 1;
       return;
@@ -741,8 +736,9 @@ class Runtime {
   }
 
   _generateMock(from: Path, moduleName: string) {
-    const modulePath = this._resolveModule(from, moduleName);
-
+    const modulePath =
+      this._resolver.resolveStubModuleName(from, moduleName) ||
+      this._resolveModule(from, moduleName);
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
@@ -978,15 +974,26 @@ class Runtime {
       return jestObject;
     };
 
+    const _getFakeTimers = () => {
+      if (!this._environment.fakeTimers) {
+        this._logFormattedReferenceError(
+          'You are trying to access a property or method of the Jest environment after it has been torn down.',
+        );
+        process.exitCode = 1;
+      }
+
+      return this._environment.fakeTimers;
+    };
+
     const jestObject = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
-        this._environment.fakeTimers.advanceTimersByTime(msToRun),
+        _getFakeTimers().advanceTimersByTime(msToRun),
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
-      clearAllTimers: () => this._environment.fakeTimers.clearAllTimers(),
+      clearAllTimers: () => _getFakeTimers().clearAllTimers(),
       deepUnmock,
       disableAutomock,
       doMock: mock,
@@ -995,7 +1002,7 @@ class Runtime {
       fn,
       genMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
-      getTimerCount: () => this._environment.fakeTimers.getTimerCount(),
+      getTimerCount: () => _getFakeTimers().getTimerCount(),
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
       mock,
@@ -1006,13 +1013,12 @@ class Runtime {
       resetModules,
       restoreAllMocks,
       retryTimes,
-      runAllImmediates: () => this._environment.fakeTimers.runAllImmediates(),
-      runAllTicks: () => this._environment.fakeTimers.runAllTicks(),
-      runAllTimers: () => this._environment.fakeTimers.runAllTimers(),
-      runOnlyPendingTimers: () =>
-        this._environment.fakeTimers.runOnlyPendingTimers(),
+      runAllImmediates: () => _getFakeTimers().runAllImmediates(),
+      runAllTicks: () => _getFakeTimers().runAllTicks(),
+      runAllTimers: () => _getFakeTimers().runAllTimers(),
+      runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
       runTimersToTime: (msToRun: number) =>
-        this._environment.fakeTimers.advanceTimersByTime(msToRun),
+        _getFakeTimers().advanceTimersByTime(msToRun),
       setMock: (moduleName: string, mock: Object) =>
         setMockFactory(moduleName, () => mock),
       setTimeout,
@@ -1022,6 +1028,21 @@ class Runtime {
       useRealTimers,
     };
     return jestObject;
+  }
+
+  _logFormattedReferenceError(errorMessage: string) {
+    const originalStack = new ReferenceError(errorMessage).stack
+      .split('\n')
+      // Remove this file from the stack (jest-message-utils will keep one line)
+      .filter(line => line.indexOf(__filename) === -1)
+      .join('\n');
+
+    const {message, stack} = separateMessageFromStack(originalStack);
+
+    console.error(
+      `\n${message}\n` +
+        formatStackTrace(stack, this._config, {noStackTrace: false}),
+    );
   }
 }
 

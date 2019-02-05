@@ -28,8 +28,8 @@
     "micromatch": "^3.1.10",
     "realpath-native": "^1.0.0",
     "slash": "^2.0.0",
-    "strip-bom": "3.0.0",
-    "write-file-atomic": "^2.4.2",
+    "strip-bom": "^3.0.0",
+    "write-file-atomic": "2.4.1",
     "yargs": "^12.0.2"
   },
   "devDependencies": {
