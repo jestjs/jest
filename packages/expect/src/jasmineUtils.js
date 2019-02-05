@@ -157,11 +157,9 @@ function eq(a, b, memos, customTesters, hasKey): boolean {
     // and checking for undefined. The map can only contain numbers, so it is
     // safe to check for undefined only.
     const bMemoA = memos.a.get(a);
-    if (bMemoA !== undefined) {
-      const bMemoB = memos.b.get(b);
-      if (bMemoB !== undefined) {
-        return bMemoA === bMemoB;
-      }
+    const bMemoB = memos.b.get(b);
+    if (bMemoA !== undefined || bMemoB !== undefined) {
+      return bMemoA === bMemoB;
     }
     memos.position++;
   }

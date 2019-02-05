@@ -4,9 +4,10 @@
 
 ### Fixes
 
-- `[expect]` fixed asymmetrical equality of cyclic objects ([#7730](https://github.com/facebook/jest/pull/7730))
 - `[jest-cli]` Break dependency cycle when using Jest programmatically ([#7707](https://github.com/facebook/jest/pull/7707))
 - `[jest-config]` Extract setupFilesAfterEnv from preset ([#7724](https://github.com/facebook/jest/pull/7724))
+- `[expect]` fixed asymmetrical equality of cyclic objects ([#7730](https://github.com/facebook/jest/pull/7730))
+
 
 ### Chore & Maintenance
 
