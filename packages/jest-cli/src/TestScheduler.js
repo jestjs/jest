@@ -174,6 +174,7 @@ export default class TestScheduler {
         // $FlowFixMe
         testRunners[config.runner] = new (require(config.runner): TestRunner)(
           this._globalConfig,
+          this._options.changedFiles,
         );
       }
     });
