@@ -19,9 +19,9 @@ import {escapeBacktickString} from './utils';
 export type InlineSnapshot = {|
   snapshot: string,
   frame: {line: number, column: number, file: string},
-  sliceStart ?: number,
-  sliceEnd ?: number,
-  shouldHaveCommaPrefix ?: boolean,
+  sliceStart?: number,
+  sliceEnd?: number,
+  shouldHaveCommaPrefix?: boolean,
 |};
 
 export const saveInlineSnapshots = (
@@ -85,20 +85,22 @@ const saveSnapshotsForFile = (
     });
     traverseAst(snapshots, ast, sourceFile, babelTraverse);
 
-    // substitute in the snapshots in reverse order, so the slice calculations aren't thrown off.
-    newSourceFile = snapshots.reduceRight(
-      (sourceSoFar, nextSnapshot) => {
-        if (typeof nextSnapshot.sliceStart !== 'number' || typeof nextSnapshot.sliceEnd !== 'number') {
-          throw new Error('Jest: no snapshot insert location found');
-        }
-        return sourceSoFar.slice(0, nextSnapshot.sliceStart) +
-          (nextSnapshot.shouldHaveCommaPrefix ? ', `' : '`') +
-          escapeBacktickString(nextSnapshot.snapshot) +
-          '`' +
-          sourceSoFar.slice(nextSnapshot.sliceEnd);
-      },
-      sourceFile,
-    );
+    // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
+    newSourceFile = snapshots.reduceRight((sourceSoFar, nextSnapshot) => {
+      if (
+        typeof nextSnapshot.sliceStart !== 'number' ||
+        typeof nextSnapshot.sliceEnd !== 'number'
+      ) {
+        throw new Error('Jest: no snapshot insert location found');
+      }
+      return (
+        sourceSoFar.slice(0, nextSnapshot.sliceStart) +
+        (nextSnapshot.shouldHaveCommaPrefix ? ', `' : '`') +
+        escapeBacktickString(nextSnapshot.snapshot) +
+        '`' +
+        sourceSoFar.slice(nextSnapshot.sliceEnd)
+      );
+    }, sourceFile);
   }
 
   if (newSourceFile !== sourceFile) {
@@ -148,7 +150,7 @@ const traverseAst = (
     ast = file(ast, ast.comments, ast.tokens);
     delete ast.program.comments;
   }
-  
+
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
   const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
 
@@ -174,7 +176,7 @@ const traverseAst = (
         ({type}) => type === 'TemplateLiteral',
       );
       const values = snapshotsForFrame.map(inlineSnapshot => {
-        const { snapshot } = inlineSnapshot
+        const {snapshot} = inlineSnapshot;
         if (snapshotIndex > -1) {
           inlineSnapshot.sliceStart = args[snapshotIndex].start;
           inlineSnapshot.sliceEnd = args[snapshotIndex].end;

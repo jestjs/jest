@@ -9,6 +9,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
+    "@babel/parser": "^7.2.3",
     "@babel/types": "^7.0.0",
     "chalk": "^2.0.1",
     "jest-diff": "^24.0.0",
