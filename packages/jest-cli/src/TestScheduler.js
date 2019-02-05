@@ -8,7 +8,7 @@
  */
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {GlobalConfig, ReporterConfig} from 'types/Config';
+import type {GlobalConfig, ReporterConfig, Path} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
 
@@ -37,6 +37,7 @@ TestRunner;
 
 export type TestSchedulerOptions = {|
   startRun: (globalConfig: GlobalConfig) => *,
+  changedFiles: ?Set<Path>,
 |};
 export type TestSchedulerContext = {|
   firstRun: boolean,
@@ -262,7 +263,9 @@ export default class TestScheduler {
     }
 
     if (!isDefault && collectCoverage) {
-      this.addReporter(new CoverageReporter(this._globalConfig));
+      this.addReporter(
+        new CoverageReporter(this._globalConfig, this._options.changedFiles),
+      );
     }
 
     if (notify) {
@@ -288,7 +291,9 @@ export default class TestScheduler {
     );
 
     if (collectCoverage) {
-      this.addReporter(new CoverageReporter(this._globalConfig));
+      this.addReporter(
+        new CoverageReporter(this._globalConfig, this._options.changedFiles),
+      );
     }
 
     this.addReporter(new SummaryReporter(this._globalConfig));

@@ -78,6 +78,7 @@ async function runTestInternal(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   resolver: Resolver,
+  changedFiles: ?Set<Path>,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const parsedDocblock = docblock.parse(docblock.extract(testSource));
@@ -143,7 +144,7 @@ async function runTestInternal(
   setGlobal(environment.global, 'console', testConsole);
 
   runtime = new Runtime(config, environment, resolver, cacheFS, {
-    changedFiles: globalConfig.changedFiles,
+    changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
@@ -269,12 +270,14 @@ export default async function runTest(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   resolver: Resolver,
+  changedFiles: ?Set<Path>,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
     globalConfig,
     config,
     resolver,
+    changedFiles,
   );
 
   if (leakDetector) {

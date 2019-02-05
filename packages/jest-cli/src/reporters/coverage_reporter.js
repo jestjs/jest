@@ -16,7 +16,7 @@ import type {
 } from 'types/TestResult';
 import typeof {worker} from './coverage_worker';
 
-import type {GlobalConfig} from 'types/Config';
+import type {GlobalConfig, Path} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
@@ -39,12 +39,14 @@ export default class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
   _globalConfig: GlobalConfig;
   _sourceMapStore: any;
+  _changedFiles: ?Set<Path>;
 
-  constructor(globalConfig: GlobalConfig) {
+  constructor(globalConfig: GlobalConfig, changedFiles: ?Set<Path>) {
     super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
+    this._changedFiles = changedFiles;
   }
 
   onTestResult(
@@ -168,6 +170,7 @@ export default class CoverageReporter extends BaseReporter {
       if (!this._coverageMap.data[filename]) {
         try {
           const result = await worker.worker({
+            changedFiles: this._changedFiles,
             config,
             globalConfig,
             path: filename,

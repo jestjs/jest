@@ -194,7 +194,6 @@ export type GlobalConfig = {|
   bail: number,
   changedSince: string,
   changedFilesWithAncestor: boolean,
-  changedFiles: ?Set<Path>,
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean},

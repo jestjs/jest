@@ -108,7 +108,6 @@ const groupOptions = (
 ): {globalConfig: GlobalConfig, projectConfig: ProjectConfig} => ({
   globalConfig: Object.freeze({
     bail: options.bail,
-    changedFiles: options.changedFiles,
     changedFilesWithAncestor: options.changedFilesWithAncestor,
     changedSince: options.changedSince,
     collectCoverage: options.collectCoverage,

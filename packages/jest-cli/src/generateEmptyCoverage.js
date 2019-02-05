@@ -25,9 +25,10 @@ export default function(
   filename: Path,
   globalConfig: GlobalConfig,
   config: ProjectConfig,
+  changedFiles: ?Set<Path>,
 ): ?CoverageWorkerResult {
   const coverageOptions = {
-    changedFiles: globalConfig.changedFiles,
+    changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,

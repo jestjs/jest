@@ -18,6 +18,7 @@ export type CoverageWorkerData = {|
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   path: Path,
+  changedFiles: ?Set<Path>,
 |};
 
 export type {CoverageWorkerResult};
@@ -32,11 +33,13 @@ export function worker({
   config,
   globalConfig,
   path,
+  changedFiles,
 }: CoverageWorkerData): ?CoverageWorkerResult {
   return generateEmptyCoverage(
     fs.readFileSync(path, 'utf8'),
     path,
     globalConfig,
     config,
+    changedFiles,
   );
 }

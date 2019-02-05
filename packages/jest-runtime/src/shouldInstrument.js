@@ -88,10 +88,7 @@ export default function shouldInstrument(
     return false;
   }
 
-  if (
-    options.changedFiles &&
-    !options.changedFiles.has(path.resolve(filename))
-  ) {
+  if (options.changedFiles && !options.changedFiles.has(filename)) {
     return false;
   }
 

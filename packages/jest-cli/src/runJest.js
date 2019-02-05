@@ -147,17 +147,6 @@ export default (async function runJest({
     }
   }
 
-  if (changedFilesPromise) {
-    const {changedFiles} = await changedFilesPromise;
-    const newConfig: GlobalConfig = {
-      ...globalConfig,
-      changedFiles:
-        changedFiles &&
-        new Set(Array.from(changedFiles).map(p => path.resolve(p))),
-    };
-    globalConfig = Object.freeze(newConfig);
-  }
-
   const testRunData: TestRunData = await Promise.all(
     contexts.map(async context => {
       const matches = await getTestPaths(
@@ -234,6 +223,8 @@ export default (async function runJest({
   const results = await new TestScheduler(
     globalConfig,
     {
+      changedFiles:
+        changedFilesPromise && (await changedFilesPromise).changedFiles,
       startRun,
     },
     testSchedulerContext,
