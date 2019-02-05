@@ -142,6 +142,70 @@ expect(a).toMatchInlineSnapshot(\`[{ foo: 'one' }, { foo: 'two' }]\`);
   );
 });
 
+test('saveInlineSnapshots() can handle tsx without prettier', () => {
+  const filename = path.join(__dirname, 'my.test.tsx');
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
+    () =>
+      `
+const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
+const a = await Foo({ foo: "hello" });
+expect(a).toMatchInlineSnapshot();
+`.trim() + '\n',
+  );
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 11, file: filename, line: 3},
+        snapshot: `<div>hello</div>`,
+      },
+    ],
+    null,
+    babelTraverse,
+  );
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    `
+const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
+const a = await Foo({ foo: "hello" });
+expect(a).toMatchInlineSnapshot(\`<div>hello</div>\`);
+`.trim() + '\n',
+  );
+});
+
+test('saveInlineSnapshots() can handle jsx without prettier', () => {
+  const filename = path.join(__dirname, 'my.test.js');
+  jest.spyOn(fs, 'readFileSync').mockImplementation(
+    () =>
+      `
+const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
+const a = Foo({ foo: "hello" });
+expect(a).toMatchInlineSnapshot();
+`.trim() + '\n',
+  );
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 11, file: filename, line: 3},
+        snapshot: `<div>hello</div>`,
+      },
+    ],
+    null,
+    babelTraverse,
+  );
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    `
+const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
+const a = Foo({ foo: "hello" });
+expect(a).toMatchInlineSnapshot(\`<div>hello</div>\`);
+`.trim() + '\n',
+  );
+});
+
 test('saveInlineSnapshots() can use prettier to fix formatting for whole file', () => {
   const filename = path.join(__dirname, 'my.test.js');
   jest.spyOn(fs, 'readFileSync').mockImplementation(

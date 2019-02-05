@@ -72,8 +72,17 @@ const saveSnapshotsForFile = (
       parser: createParser(snapshots, inferredParser, babelTraverse),
     });
   } else {
-    const plugins = /\.tsx?$/.test(sourceFilePath) ? ['typescript'] : undefined;
-    const ast = parse(sourceFile, { plugins });
+    const plugins = /\.tsx?$/.test(sourceFilePath)
+      ? ['typescript', ...prettierBabelPluginList]
+      : ['flow', ...prettierBabelPluginList];
+    const ast = parse(sourceFile, {
+      sourceType: "module",
+      allowAwaitOutsideFunction: true,
+      allowImportExportEverywhere: true,
+      allowReturnOutsideFunction: true,
+      allowSuperOutsideMethod: true,
+      plugins,
+    });
     traverseAst(snapshots, ast, sourceFile, babelTraverse);
 
     // substitute in the snapshots in reverse order, so the slice calculations aren't thrown off.
@@ -123,7 +132,9 @@ const createParser = (
   options.parser = inferredParser;
   const ast = parsers[inferredParser](text);
 
-  return traverseAst(snapshots, ast, text, babelTraverse);
+  traverseAst(snapshots, ast, text, babelTraverse);
+
+  return ast;
 };
 
 const traverseAst = (
@@ -195,9 +206,32 @@ const traverseAst = (
   if (remainingSnapshots.size) {
     throw new Error(`Jest: Couldn't locate all inline snapshots.`);
   }
-
-  return ast;
 };
+
+// lifted from https://github.com/prettier/prettier/blob/ca43aad88a5853eebc47958b3f69b47df5d78782/src/language-js/parser-babylon.js#L20-L40
+const prettierBabelPluginList = [
+  'jsx',
+  'doExpressions',
+  'objectRestSpread',
+  'classProperties',
+  'exportDefaultFrom',
+  'exportNamespaceFrom',
+  'asyncGenerators',
+  'functionBind',
+  'functionSent',
+  'dynamicImport',
+  'numericSeparator',
+  'importMeta',
+  'optionalCatchBinding',
+  'optionalChaining',
+  'classPrivateProperties',
+  ['pipelineOperator', { proposal: 'minimal' }],
+  'nullishCoalescingOperator',
+  'bigInt',
+  'throwExpressions',
+  'logicalAssignment',
+  'classPrivateMethods',
+];
 
 const simpleDetectParser = (filePath: Path) => {
   const extname = path.extname(filePath);
