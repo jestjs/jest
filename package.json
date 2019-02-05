@@ -117,7 +117,8 @@
           "e2e/*/**/*",
           "website/*.js",
           "website/*/**/*",
-          "eslintImportResolver.js"
+          "eslintImportResolver.js",
+          "babel.config.js"
         ],
         "options": {
           "printWidth": 80,

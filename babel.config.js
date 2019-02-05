@@ -10,7 +10,7 @@ module.exports = {
     {
       plugins: [
         require.resolve(
-          './scripts/babel-plugin-jest-replace-ts-export-assignment.js',
+          './scripts/babel-plugin-jest-replace-ts-export-assignment.js'
         ),
       ],
       presets: ['@babel/preset-typescript'],
