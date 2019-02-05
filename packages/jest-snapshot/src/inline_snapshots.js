@@ -76,12 +76,12 @@ const saveSnapshotsForFile = (
       ? ['typescript', ...prettierBabelPluginList]
       : ['flow', ...prettierBabelPluginList];
     const ast = parse(sourceFile, {
-      sourceType: "module",
       allowAwaitOutsideFunction: true,
       allowImportExportEverywhere: true,
       allowReturnOutsideFunction: true,
       allowSuperOutsideMethod: true,
       plugins,
+      sourceType: 'module',
     });
     traverseAst(snapshots, ast, sourceFile, babelTraverse);
 
@@ -227,7 +227,7 @@ const prettierBabelPluginList = [
   'optionalCatchBinding',
   'optionalChaining',
   'classPrivateProperties',
-  ['pipelineOperator', { proposal: 'minimal' }],
+  ['pipelineOperator', {proposal: 'minimal'}],
   'nullishCoalescingOperator',
   'bigInt',
   'throwExpressions',
