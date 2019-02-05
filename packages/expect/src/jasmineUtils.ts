@@ -133,12 +133,6 @@ function eq(
   if (aIsDomNode && a.isEqualNode && bIsDomNode) {
     return a.isEqualNode(b);
   }
-  // In some test environments (e.g. "node") there is no `Element` even though
-  // we might be comparing things that look like DOM nodes. In these cases we
-  // fall back to deep equality because we just don't know better at this point
-  if (typeof Element !== 'undefined' && (aIsDomNode || bIsDomNode)) {
-    return false;
-  }
 
   // Assume equality for cyclic structures. The algorithm for detecting cyclic
   // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
@@ -251,11 +245,15 @@ export function isA(typeName: string, value: unknown) {
 }
 
 function isDomNode(obj: any): obj is Node {
+  // In some test environments (e.g. "node") there is no `Node` even though
+  // we might be comparing things that look like DOM nodes.
   return (
-    obj !== null &&
-    typeof obj === 'object' &&
-    typeof obj.nodeType === 'number' &&
-    typeof obj.nodeName === 'string'
+    typeof Node !== 'undefined'
+      ? obj instanceof Node
+      : obj !== null &&
+        typeof obj === 'object' &&
+        typeof obj.nodeType === 'number' &&
+        typeof obj.nodeName === 'string'
   );
 }
 
