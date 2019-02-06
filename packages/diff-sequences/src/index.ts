@@ -66,8 +66,8 @@ type FoundSubsequence = (
 
 // Either original functions or wrapped to swap indexes if graph is transposed.
 type Callbacks = {
-  foundSubsequence: FoundSubsequence,
-  isCommon: IsCommon,
+  foundSubsequence: FoundSubsequence;
+  isCommon: IsCommon;
 };
 
 // Indexes in sequence a of last point of forward or reverse paths in graph.
@@ -82,22 +82,22 @@ type Indexes = Array<number>;
 // Invariant: intervals do not have common items at the start or end.
 type Division = {
   // The end of interval preceding division is open like array slice method.
-  nChangePreceding: number, // number of change items
-  aEndPreceding: number,
-  bEndPreceding: number,
+  nChangePreceding: number; // number of change items
+  aEndPreceding: number;
+  bEndPreceding: number;
 
-  nCommonPreceding: number, // 0 if no common items preceding middle change
-  aCommonPreceding: number, // ignore prop value if nCommonPreceding === 0
-  bCommonPreceding: number, // ignore prop value if nCommonPreceding === 0
+  nCommonPreceding: number; // 0 if no common items preceding middle change
+  aCommonPreceding: number; // ignore prop value if nCommonPreceding === 0
+  bCommonPreceding: number; // ignore prop value if nCommonPreceding === 0
 
-  nCommonFollowing: number, // 0 if no common items following middle change
-  aCommonFollowing: number, // ignore prop value if nCommonFollowing === 0
-  bCommonFollowing: number, // ignore prop value if nCommonFollowing === 0
+  nCommonFollowing: number; // 0 if no common items following middle change
+  aCommonFollowing: number; // ignore prop value if nCommonFollowing === 0
+  bCommonFollowing: number; // ignore prop value if nCommonFollowing === 0
 
   // The start of interval following division is closed like array slice method.
-  nChangeFollowing: number, // number of change items
-  aStartFollowing: number,
-  bStartFollowing: number,
+  nChangeFollowing: number; // number of change items
+  aStartFollowing: number;
+  bStartFollowing: number;
 };
 
 const pkg = 'diff-sequences'; // for error messages
