@@ -2,21 +2,21 @@
 
 jest.mock('path');
 
-import {replacePathSepForRegex} from '../index';
 import path from 'path';
+import {replacePathSepForRegex} from '../index';
 
 describe('replacePathSepForRegex()', () => {
   describe('posix', () => {
-    beforeEach(() => (path.sep = '/'));
+    beforeEach(() => ((path as any).sep = '/'));
 
     it('should return the path', () => {
       const expected = {};
-      expect(replacePathSepForRegex(expected)).toBe(expected);
+      expect(replacePathSepForRegex(expected as any)).toBe(expected);
     });
   });
 
   describe('win32', () => {
-    beforeEach(() => (path.sep = '\\'));
+    beforeEach(() => ((path as any).sep = '\\'));
 
     it('should replace POSIX path separators', () => {
       expect(replacePathSepForRegex('a/b/c')).toBe('a\\\\b\\\\c');
