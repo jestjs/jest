@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
 // This diff-sequences package implements the linear space variation in
@@ -66,10 +65,10 @@ type FoundSubsequence = (
 ) => void;
 
 // Either original functions or wrapped to swap indexes if graph is transposed.
-type Callbacks = {|
-  foundSubsequence: FoundSubsequence,
-  isCommon: IsCommon,
-|};
+type Callbacks = {
+  foundSubsequence: FoundSubsequence;
+  isCommon: IsCommon;
+};
 
 // Indexes in sequence a of last point of forward or reverse paths in graph.
 // Myers algorithm indexes by diagonal k which for negative is bad deopt in V8.
@@ -81,25 +80,25 @@ type Indexes = Array<number>;
 
 // Division of index intervals in sequences a and b at the middle change.
 // Invariant: intervals do not have common items at the start or end.
-type Division = {|
+type Division = {
   // The end of interval preceding division is open like array slice method.
-  nChangePreceding: number, // number of change items
-  aEndPreceding: number,
-  bEndPreceding: number,
+  nChangePreceding: number; // number of change items
+  aEndPreceding: number;
+  bEndPreceding: number;
 
-  nCommonPreceding: number, // 0 if no common items preceding middle change
-  aCommonPreceding: number, // ignore prop value if nCommonPreceding === 0
-  bCommonPreceding: number, // ignore prop value if nCommonPreceding === 0
+  nCommonPreceding: number; // 0 if no common items preceding middle change
+  aCommonPreceding: number; // ignore prop value if nCommonPreceding === 0
+  bCommonPreceding: number; // ignore prop value if nCommonPreceding === 0
 
-  nCommonFollowing: number, // 0 if no common items following middle change
-  aCommonFollowing: number, // ignore prop value if nCommonFollowing === 0
-  bCommonFollowing: number, // ignore prop value if nCommonFollowing === 0
+  nCommonFollowing: number; // 0 if no common items following middle change
+  aCommonFollowing: number; // ignore prop value if nCommonFollowing === 0
+  bCommonFollowing: number; // ignore prop value if nCommonFollowing === 0
 
   // The start of interval following division is closed like array slice method.
-  nChangeFollowing: number, // number of change items
-  aStartFollowing: number,
-  bStartFollowing: number,
-|};
+  nChangeFollowing: number; // number of change items
+  aStartFollowing: number;
+  bStartFollowing: number;
+};
 
 const pkg = 'diff-sequences'; // for error messages
 const NOT_YET_SET = 0; // small int instead of undefined to avoid deopt in V8
