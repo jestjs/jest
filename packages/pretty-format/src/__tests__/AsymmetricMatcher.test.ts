@@ -12,7 +12,7 @@ import prettyFormat from '../';
 const {AsymmetricMatcher} = prettyFormat.plugins;
 let options: OptionsReceived;
 
-function fnNameFor(func: Function) {
+function fnNameFor(func: (...any: any[]) => any) {
   if (func.name) {
     return func.name;
   }

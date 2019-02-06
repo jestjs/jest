@@ -13,8 +13,7 @@ const getKeysOfEnumerableProperties = (object: Object) => {
 
   if (Object.getOwnPropertySymbols) {
     Object.getOwnPropertySymbols(object).forEach(symbol => {
-      // @ts-ignore: because property enumerable is missing in undefined
-      if (Object.getOwnPropertyDescriptor(object, symbol).enumerable) {
+      if (Object.getOwnPropertyDescriptor(object, symbol)!.enumerable) {
         keys.push(symbol);
       }
     });
