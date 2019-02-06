@@ -23,6 +23,7 @@
     "throat": "^4.0.0"
   },
   "devDependencies": {
+    "@types/babel__traverse": "^7.0.4",
     "jest-diff": "^24.0.0",
     "jest-runtime": "^24.1.0"
   },

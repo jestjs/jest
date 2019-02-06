@@ -13,6 +13,9 @@
     "jest-util": "^24.0.0",
     "jsdom": "^11.5.1"
   },
+  "devDependencies":  {
+    "@types/jsdom": "^11.12.0"
+  },
   "engines": {
     "node": ">= 6"
   },
