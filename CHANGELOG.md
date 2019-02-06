@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[*]`: Setup building, linting and testing of TypeScript ([#7808](https://github.com/facebook/jest/pull/7808))
+
 ### Performance
 
 ## 24.1.0
