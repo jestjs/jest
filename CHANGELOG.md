@@ -8,7 +8,7 @@
 
 - `[*]`: Setup building, linting and testing of TypeScript ([#7808](https://github.com/facebook/jest/pull/7808))
 - `[pretty-format]`: Migrate to TypeScript ([#7809](https://github.com/facebook/jest/pull/7809))
-- `[jest-get-type]`: Migrate to TypeScript
+- `[jest-get-type]`: Migrate to TypeScript ([#7818](https://github.com/facebook/jest/pull/7818))
 
 ### Performance
 
