@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
 import diff from '../';
@@ -16,7 +15,7 @@ describe('invalid arg', () => {
   describe('length', () => {
     test('is not a number', () => {
       expect(() => {
-        diff(('0': any), 0, isCommon, foundSubsequence);
+        diff('0' as any, 0, isCommon, foundSubsequence);
       }).toThrow(/aLength/);
     });
     test('Infinity is not a safe integer', () => {
@@ -50,12 +49,12 @@ describe('invalid arg', () => {
   describe('callback', () => {
     test('null is not a function', () => {
       expect(() => {
-        diff(0, 0, (null: any), foundSubsequence);
+        diff(0, 0, null as any, foundSubsequence);
       }).toThrow(/isCommon/);
     });
     test('undefined is not a function', () => {
       expect(() => {
-        diff(0, 0, isCommon, (undefined: any));
+        diff(0, 0, isCommon, undefined as any);
       }).toThrow(/foundSubsequence/);
     });
   });
