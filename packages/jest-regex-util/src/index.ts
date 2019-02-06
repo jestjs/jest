@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
 import path from 'path';
@@ -25,7 +24,7 @@ export const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
     return string.replace(
       /(\/|(.)?\\(?![[\]{}()*+?.^$|\\]))/g,
-      (_match, p1, p2) => (p2 && p2 !== '\\' ? p2 + '\\\\' : '\\\\'),
+      (_match, _, p2) => (p2 && p2 !== '\\' ? p2 + '\\\\' : '\\\\'),
     );
   }
   return string;
