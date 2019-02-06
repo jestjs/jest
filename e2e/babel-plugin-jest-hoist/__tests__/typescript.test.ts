@@ -7,8 +7,6 @@
  * @emails oncall+jsinfra
  */
 
-/* eslint-disable import/no-unresolved */
-
 import {Color} from '../types';
 import {color} from '../entry';
 

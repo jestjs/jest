@@ -18,6 +18,13 @@
     "micromatch": "^3.1.10",
     "sane": "^3.0.0"
   },
+  "devDependencies":  {
+    "@types/fb-watchman": "^2.0.0",
+    "@types/graceful-fs": "^4.1.2",
+    "@types/invariant": "^2.2.29",
+    "@types/micromatch": "^3.1.0",
+    "@types/sane": "^2.0.0"
+  },
   "engines": {
     "node": ">= 6"
   },

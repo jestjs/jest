@@ -19,6 +19,10 @@
     "source-map": "^0.6.0"
   },
   "devDependencies": {
+    "@types/callsites": "^2.0.0",
+    "@types/graceful-fs": "^4.1.2",
+    "@types/is-ci": "^1.0.10",
+    "@types/mkdirp": "^0.5.2",
     "jest-mock": "^24.0.0"
   },
   "engines": {
