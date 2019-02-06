@@ -4,17 +4,9 @@
     "transform": {
       "^.+\\.(ts|js)$": "<rootDir>/typescriptPreprocessor.js"
     },
-    "testMatch": [
-      "**/__tests__/*.+(ts|tsx|js)"
-    ],
-    "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ]
+    "testEnvironment": "node"
   },
   "dependencies": {
-    "typescript": "^1.8.10"
+    "typescript": "^3.3.1"
   }
 }

@@ -16,6 +16,8 @@
     "ansi-styles": "^3.2.0"
   },
   "devDependencies": {
+    "@types/ansi-regex": "^4.0.0",
+    "@types/ansi-styles": "^3.2.1",
     "immutable": "4.0.0-rc.9",
     "react": "*",
     "react-dom": "*",

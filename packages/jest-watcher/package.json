@@ -9,6 +9,10 @@
     "jest-util": "^24.0.0",
     "string-length": "^2.0.0"
   },
+  "devDependencies":  {
+    "@types/ansi-escapes": "^3.0.0",
+    "@types/string-length": "^2.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest",
