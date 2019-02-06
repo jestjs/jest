@@ -61,9 +61,7 @@ const packageWithTs = packages.filter(p =>
   fs.existsSync(path.resolve(p, 'tsconfig.json'))
 );
 
-if (packageWithTs.length > 0) {
-  execa('tsc', ['-b', ...packageWithTs, '--watch']);
-}
+execa('tsc', ['-b', ...packageWithTs, '--watch']);
 
 setInterval(() => {
   const files = Array.from(filesToBuild.keys());

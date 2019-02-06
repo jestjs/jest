@@ -3,11 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
+import {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {
   printChildren,
@@ -17,30 +15,6 @@ import {
   printProps,
   printText,
 } from './lib/markup';
-
-type Attribute = {
-  name: string,
-  value: string,
-};
-
-type Element = {
-  attributes: Array<Attribute>,
-  childNodes: Array<Element | Text | Comment>,
-  nodeType: 1,
-  tagName: string,
-};
-type Text = {
-  data: string,
-  nodeType: 3,
-};
-type Comment = {
-  data: string,
-  nodeType: 8,
-};
-type DocumentFragment = {
-  children: Array<Element>,
-  nodeType: 11,
-};
 
 const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
@@ -61,33 +35,39 @@ export const test = (val: any) =>
   val.constructor.name &&
   testNode(val.nodeType, val.constructor.name);
 
-// Convert array of attribute objects to keys array and props object.
-const keysMapper = attribute => attribute.name;
-const propsReducer = (props, attribute) => {
-  props[attribute.name] = attribute.value;
-  return props;
-};
+type HandledType = Element | Text | Comment | DocumentFragment;
+
+function nodeIsText(node: HandledType): node is Text {
+  return node.nodeType === TEXT_NODE;
+}
+
+function nodeIsComment(node: HandledType): node is Comment {
+  return node.nodeType === COMMENT_NODE;
+}
+
+function nodeIsFragment(node: HandledType): node is DocumentFragment {
+  return node.nodeType === FRAGMENT_NODE;
+}
 
 export const serialize = (
-  node: Element | Text | Comment | DocumentFragment,
+  node: HandledType,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
   printer: Printer,
 ): string => {
-  if (node.nodeType === TEXT_NODE) {
+  if (nodeIsText(node)) {
     return printText(node.data, config);
   }
 
-  if (node.nodeType === COMMENT_NODE) {
+  if (nodeIsComment(node)) {
     return printComment(node.data, config);
   }
 
-  const type =
-    node.nodeType === FRAGMENT_NODE
-      ? `DocumentFragment`
-      : node.tagName.toLowerCase();
+  const type = nodeIsFragment(node)
+    ? `DocumentFragment`
+    : node.tagName.toLowerCase();
 
   if (++depth > config.maxDepth) {
     return printElementAsLeaf(type, config);
@@ -96,8 +76,20 @@ export const serialize = (
   return printElement(
     type,
     printProps(
-      Array.prototype.map.call(node.attributes || [], keysMapper).sort(),
-      Array.prototype.reduce.call(node.attributes || [], propsReducer, {}),
+      nodeIsFragment(node)
+        ? []
+        : Array.from(node.attributes)
+            .map(attr => attr.name)
+            .sort(),
+      nodeIsFragment(node)
+        ? []
+        : Array.from(node.attributes).reduce(
+            (props, attribute) => {
+              props[attribute.name] = attribute.value;
+              return props;
+            },
+            {} as any,
+          ),
       config,
       indentation + config.indent,
       depth,
@@ -117,4 +109,6 @@ export const serialize = (
   );
 };
 
-export default ({serialize, test}: NewPlugin);
+const plugin: NewPlugin = {serialize, test};
+
+export default plugin;

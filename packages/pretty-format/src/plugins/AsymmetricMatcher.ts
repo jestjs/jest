@@ -3,11 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Config, NewPlugin, Printer, Refs} from 'types/PrettyFormat';
+import {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {printListItems, printObjectProperties} from '../collections';
 
@@ -90,4 +88,6 @@ export const serialize = (
 
 export const test = (val: any) => val && val.$$typeof === asymmetricMatcher;
 
-export default ({serialize, test}: NewPlugin);
+const plugin: NewPlugin = {serialize, test};
+
+export default plugin;

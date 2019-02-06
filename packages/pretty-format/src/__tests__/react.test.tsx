@@ -3,20 +3,17 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {OptionsReceived} from 'types/PrettyFormat';
+import React from 'react';
+import renderer from 'react-test-renderer';
 
-const React = require('react');
-const renderer = require('react-test-renderer');
+import prettyFormat from '..';
+import {OptionsReceived} from '../types';
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');
 const testSymbol = Symbol.for('react.test.json');
-
-const prettyFormat = require('..');
 const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
 const formatElement = (element: any, options?: OptionsReceived) =>
@@ -116,7 +113,9 @@ test('supports props with numbers', () => {
 
 test('supports a single element with a function prop', () => {
   assertPrintedJSX(
-    React.createElement('Mouse', {onclick: function onclick() {}}),
+    React.createElement<{onclick: any}>('Mouse', {
+      onclick: function onclick() {},
+    }),
     '<Mouse\n  onclick={[Function onclick]}\n/>',
   );
 });
@@ -141,7 +140,7 @@ test('supports an element with and object prop and children', () => {
 
 test('supports an element with complex props and mixed children', () => {
   assertPrintedJSX(
-    React.createElement(
+    React.createElement<{customProp: any; onclick: any}>(
       'Mouse',
       {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
       'HELLO',
@@ -167,11 +166,11 @@ test('escapes children properly', () => {
 
 test('supports everything all together', () => {
   assertPrintedJSX(
-    React.createElement(
+    React.createElement<{customProp: any; onclick: any}>(
       'Mouse',
       {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
       'HELLO',
-      React.createElement(
+      React.createElement<{customProp: any; onclick: any}>(
         'Mouse',
         {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
         'HELLO',
@@ -266,7 +265,7 @@ test('supports a single element with custom React elements with props (using ano
 });
 
 test('supports a single element with custom React elements with a child', () => {
-  function Cat(props) {
+  function Cat(props: any) {
     return React.createElement('div', props);
   }
   assertPrintedJSX(
@@ -565,7 +564,7 @@ describe('maxDepth option', () => {
 
 test('min option', () => {
   assertPrintedJSX(
-    React.createElement(
+    React.createElement<{customProp: any; onclick: any}>(
       'Mouse',
       {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
       'HELLO',
@@ -622,9 +621,9 @@ test('throws if theme option is null', () => {
     'Hello, Mouse!',
   );
   expect(() => {
+    // @ts-ignore
     formatElement(jsx, {
       highlight: true,
-      // $FlowFixMe
       theme: null,
     });
   }).toThrow('pretty-format: Option "theme" must not be null.');
@@ -637,9 +636,9 @@ test('throws if theme option is not of type "object"', () => {
       {style: 'color:red'},
       'Hello, Mouse!',
     );
+    // @ts-ignore
     formatElement(jsx, {
       highlight: true,
-      // $FlowFixMe
       theme: 'beautiful',
     });
   }).toThrow(
@@ -701,7 +700,7 @@ test('ReactTestComponent plugin highlights syntax with color from theme option',
 });
 
 test('supports forwardRef with a child', () => {
-  function Cat(props) {
+  function Cat(props: any) {
     return React.createElement('div', props, props.children);
   }
 

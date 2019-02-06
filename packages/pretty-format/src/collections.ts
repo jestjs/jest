@@ -4,18 +4,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {Config, Printer, Refs} from 'types/PrettyFormat';
+import {Config, Printer, Refs} from './types';
 
 const getKeysOfEnumerableProperties = (object: Object) => {
-  const keys = Object.keys(object).sort();
+  const keys: Array<string | symbol> = Object.keys(object).sort();
 
   if (Object.getOwnPropertySymbols) {
     Object.getOwnPropertySymbols(object).forEach(symbol => {
-      //$FlowFixMe because property enumerable is missing in undefined
-      if (Object.getOwnPropertyDescriptor(object, symbol).enumerable) {
+      if (Object.getOwnPropertyDescriptor(object, symbol)!.enumerable) {
         keys.push(symbol);
       }
     });
@@ -24,9 +22,11 @@ const getKeysOfEnumerableProperties = (object: Object) => {
   return keys;
 };
 
-// Return entries (for example, of a map)
-// with spacing, indentation, and comma
-// without surrounding punctuation (for example, braces)
+/**
+ * Return entries (for example, of a map)
+ * with spacing, indentation, and comma
+ * without surrounding punctuation (for example, braces)
+ */
 export function printIteratorEntries(
   // Flow 0.51.0: property `@@iterator` of $Iterator not found in Object
   // To allow simplistic getRecordIterator in immutable.js
@@ -83,9 +83,11 @@ export function printIteratorEntries(
   return result;
 }
 
-// Return values (for example, of a set)
-// with spacing, indentation, and comma
-// without surrounding punctuation (braces or brackets)
+/**
+ * Return values (for example, of a set)
+ * with spacing, indentation, and comma
+ * without surrounding punctuation (braces or brackets)
+ */
 export function printIteratorValues(
   iterator: Iterator<any>,
   config: Config,
@@ -122,9 +124,11 @@ export function printIteratorValues(
   return result;
 }
 
-// Return items (for example, of an array)
-// with spacing, indentation, and comma
-// without surrounding punctuation (for example, brackets)
+/**
+ * Return items (for example, of an array)
+ * with spacing, indentation, and comma
+ * without surrounding punctuation (for example, brackets)
+ **/
 export function printListItems(
   list: any,
   config: Config,
@@ -158,9 +162,11 @@ export function printListItems(
   return result;
 }
 
-// Return properties of an object
-// with spacing, indentation, and comma
-// without surrounding punctuation (for example, braces)
+/**
+ * Return properties of an object
+ * with spacing, indentation, and comma
+ * without surrounding punctuation (for example, braces)
+ */
 export function printObjectProperties(
   val: Object,
   config: Config,
@@ -180,7 +186,13 @@ export function printObjectProperties(
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
       const name = printer(key, config, indentationNext, depth, refs);
-      const value = printer(val[key], config, indentationNext, depth, refs);
+      const value = printer(
+        (val as any)[key],
+        config,
+        indentationNext,
+        depth,
+        refs,
+      );
 
       result += indentationNext + name + ': ' + value;
 
