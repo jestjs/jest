@@ -194,7 +194,7 @@ Prints the test results in JSON. This mode will send all other test output and u
 
 ### `--outputFile=<filename>`
 
-Write test results to a file when the `--json` option is also specified.
+Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testResultsProcessor-string)
 
 ### `--lastCommit`
 
