@@ -19,7 +19,6 @@
   "devDependencies": {
     "@types/ansi-regex": "^4.0.0",
     "@types/ansi-styles": "^3.2.1",
-    "@types/jest": "^24.0.0",
     "@types/react": "*",
     "@types/react-test-renderer": "*",
     "immutable": "4.0.0-rc.9",
