@@ -3,27 +3,22 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-'use strict';
 
 import React from 'react';
 import Immutable from 'immutable';
-import getPrettyPrint from './getPrettyPrint';
 
-const {Immutable: ImmutablePlugin, ReactElement} = require('..').plugins;
+import setPrettyPrint from './setPrettyPrint';
+import prettyFormat from '..';
 
-const toPrettyPrintTo = getPrettyPrint([ReactElement, ImmutablePlugin]);
+const {Immutable: ImmutablePlugin, ReactElement} = prettyFormat.plugins;
 
-const expect = global.expect;
-expect.extend({toPrettyPrintTo});
+setPrettyPrint([ReactElement, ImmutablePlugin]);
 
 it('does not incorrectly match identity-obj-proxy as Immutable object', () => {
   // SENTINEL constant is from https://github.com/facebook/immutable-js
   const IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
-  const val = {};
+  const val: any = {};
   val[IS_ITERABLE_SENTINEL] = IS_ITERABLE_SENTINEL; // mock the mock object :)
   const expected = `{"${IS_ITERABLE_SENTINEL}": "${IS_ITERABLE_SENTINEL}"}`;
   expect(val).toPrettyPrintTo(expected, {min: true});
@@ -507,7 +502,7 @@ describe('Immutable.OrderedMap', () => {
   });
 
   it('supports non-string keys', () => {
-    const val = Immutable.OrderedMap([
+    const val = Immutable.OrderedMap<any, any>([
       [false, 'boolean'],
       ['false', 'string'],
       [0, 'number'],
@@ -871,7 +866,7 @@ describe('Immutable.Seq', () => {
   });
 
   it('supports a non-empty sequence from arguments', () => {
-    function returnArguments(...args) {
+    function returnArguments(..._args: Array<any>) {
       return arguments;
     }
     expect(Immutable.Seq(returnArguments(0, 1, 2))).toPrettyPrintTo(
@@ -933,7 +928,7 @@ describe('Immutable.Seq', () => {
 describe('Immutable.Seq lazy entries', () => {
   const expected = 'Immutable.Seq {…}';
   const object = {key0: '', key1: '1'};
-  const filterer = value => value.length !== 0;
+  const filterer = (value: string) => value.length !== 0;
 
   // undefined size confirms correct criteria for lazy Seq
   test('from object properties', () => {
@@ -951,7 +946,7 @@ describe('Immutable.Seq lazy entries', () => {
 describe('Immutable.Seq lazy values', () => {
   const expected = 'Immutable.Seq […]';
   const array = ['', '1', '22'];
-  const filterer = item => item.length !== 0;
+  const filterer = (item: string) => item.length !== 0;
 
   test('from Immutable.Range', () => {
     const val = Immutable.Range(1, Infinity);
@@ -961,7 +956,7 @@ describe('Immutable.Seq lazy values', () => {
 
   // undefined size confirms correct criteria for lazy Seq
   test('from iterator', () => {
-    function returnIterator(values) {
+    function returnIterator(values: Array<string>) {
       let i = 0;
       return {
         next() {

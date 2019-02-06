@@ -5,21 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @jest-environment jsdom
- * @flow
  */
 /* eslint-env browser*/
 
-'use strict';
+import prettyFormat from '../';
+import setPrettyPrint from './setPrettyPrint';
 
-const prettyFormat = require('../');
 const {DOMCollection, DOMElement} = prettyFormat.plugins;
-const toPrettyPrintTo = require('./getPrettyPrint').default([
-  DOMCollection,
-  DOMElement,
-]);
 
-const expect: any = global.expect;
-expect.extend({toPrettyPrintTo});
+setPrettyPrint([DOMCollection, DOMElement]);
 
 describe('DOMCollection plugin for object properties', () => {
   it('supports DOMStringMap', () => {

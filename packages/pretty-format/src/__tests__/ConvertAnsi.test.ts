@@ -3,12 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-const ansiStyle = require('ansi-styles');
-const prettyFormat = require('../');
+import ansiStyle from 'ansi-styles';
+
+import prettyFormat from '../';
+
 const {ConvertAnsi} = prettyFormat.plugins;
 
 const prettyFormatResult = (val: string) =>

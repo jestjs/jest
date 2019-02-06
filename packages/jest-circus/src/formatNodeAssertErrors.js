@@ -12,6 +12,7 @@ import type {Event, State} from 'types/Circus';
 
 import {diff, printExpected, printReceived} from 'jest-matcher-utils';
 import chalk from 'chalk';
+// $FlowFixMe: Converted to TS
 import prettyFormat from 'pretty-format';
 
 type AssertionError = {|

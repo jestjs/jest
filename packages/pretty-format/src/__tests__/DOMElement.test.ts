@@ -5,18 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @jest-environment jsdom
- * @flow
  */
 /* eslint-env browser*/
 
-'use strict';
+import prettyFormat from '../';
+import setPrettyPrint from './setPrettyPrint';
 
-const prettyFormat = require('../');
 const {DOMElement} = prettyFormat.plugins;
-const toPrettyPrintTo = require('./getPrettyPrint').default([DOMElement]);
 
-const expect: any = global.expect;
-expect.extend({toPrettyPrintTo});
+setPrettyPrint([DOMElement]);
 
 describe('pretty-format', () => {
   // Test is not related to plugin but is related to jsdom testing environment.

@@ -3,18 +3,16 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Config, Printer, Refs} from 'types/PrettyFormat';
+import {Config, Printer, Refs} from '../../types';
 
 import escapeHTML from './escapeHTML';
 
 // Return empty string if keys is empty.
 export const printProps = (
   keys: Array<string>,
-  props: Object,
+  props: any,
   config: Config,
   indentation: string,
   depth: number,
