@@ -39,13 +39,15 @@ const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
 const symbolToString = Symbol.prototype.toString;
 
-// Explicitly comparing typeof constructor to function avoids undefined as name
-// when mock identity-obj-proxy returns the key as the value for any key.
+/**
+ * Explicitly comparing typeof constructor to function avoids undefined as name
+ * when mock identity-obj-proxy returns the key as the value for any key.
+ */
 const getConstructorName = (val: any) =>
   (typeof val.constructor === 'function' && val.constructor.name) || 'Object';
 
-// Is val is equal to global window object? Works even if it does not exist :)
 /* global window */
+/** Is val is equal to global window object? Works even if it does not exist :) */
 const isWindow = (val: any) => typeof window !== 'undefined' && val === window;
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
@@ -95,6 +97,10 @@ function printError(val: Error): string {
   return '[' + errorToString.call(val) + ']';
 }
 
+/**
+ * The first port of call for printing an object, handles most of the
+ * data-types in JS.
+ */
 function printBasicValue(
   val: any,
   printFunctionName: boolean,
@@ -167,6 +173,10 @@ function printBasicValue(
   return null;
 }
 
+/**
+ * Handles more complex objects ( such as objects with circular references.
+ * maps and sets etc )
+ */
 function printComplexValue(
   val: any,
   config: Config,
@@ -471,6 +481,11 @@ function createIndent(indent: number): string {
   return new Array(indent + 1).join(' ');
 }
 
+/**
+ * Returns a presentation string of your `val` object
+ * @param val any potential JavaScript object
+ * @param options Custom settings
+ */
 function prettyFormat(val: any, options?: OptionsReceived): string {
   if (options) {
     validateOptions(options);

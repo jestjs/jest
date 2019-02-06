@@ -23,9 +23,11 @@ const getKeysOfEnumerableProperties = (object: Object) => {
   return keys;
 };
 
-// Return entries (for example, of a map)
-// with spacing, indentation, and comma
-// without surrounding punctuation (for example, braces)
+/**
+ * Return entries (for example, of a map)
+ * with spacing, indentation, and comma
+ * without surrounding punctuation (for example, braces)
+ */
 export function printIteratorEntries(
   // Flow 0.51.0: property `@@iterator` of $Iterator not found in Object
   // To allow simplistic getRecordIterator in immutable.js
@@ -82,9 +84,11 @@ export function printIteratorEntries(
   return result;
 }
 
-// Return values (for example, of a set)
-// with spacing, indentation, and comma
-// without surrounding punctuation (braces or brackets)
+/**
+ * Return values (for example, of a set)
+ * with spacing, indentation, and comma
+ * without surrounding punctuation (braces or brackets)
+ */
 export function printIteratorValues(
   iterator: Iterator<any>,
   config: Config,
@@ -121,9 +125,11 @@ export function printIteratorValues(
   return result;
 }
 
-// Return items (for example, of an array)
-// with spacing, indentation, and comma
-// without surrounding punctuation (for example, brackets)
+/**
+ *  Return items (for example, of an array)
+ * with spacing, indentation, and comma
+ * without surrounding punctuation (for example, brackets)
+ **/
 export function printListItems(
   list: any,
   config: Config,
@@ -157,9 +163,11 @@ export function printListItems(
   return result;
 }
 
-// Return properties of an object
-// with spacing, indentation, and comma
-// without surrounding punctuation (for example, braces)
+/**
+ * Return properties of an object
+ * with spacing, indentation, and comma
+ * without surrounding punctuation (for example, braces)
+ */
 export function printObjectProperties(
   val: Object,
   config: Config,
