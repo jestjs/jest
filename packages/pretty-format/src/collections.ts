@@ -126,7 +126,7 @@ export function printIteratorValues(
 }
 
 /**
- *  Return items (for example, of an array)
+ * Return items (for example, of an array)
  * with spacing, indentation, and comma
  * without surrounding punctuation (for example, brackets)
  **/
