@@ -3,17 +3,16 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {OptionsReceived} from 'types/PrettyFormat';
+import {OptionsReceived} from '../types';
 
-const prettyFormat = require('../');
+import prettyFormat from '../';
+
 const {AsymmetricMatcher} = prettyFormat.plugins;
 let options: OptionsReceived;
 
-function fnNameFor(func) {
+function fnNameFor(func: (...any: any[]) => any) {
   if (func.name) {
     return func.name;
   }
