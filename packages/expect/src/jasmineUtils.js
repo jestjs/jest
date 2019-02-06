@@ -126,7 +126,7 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
   var aIsDomNode = isDomNode(a);
   var bIsDomNode = isDomNode(b);
   // Use DOM3 method isEqualNode (IE>=9)
-  if (aIsDomNode && a.isEqualNode && bIsDomNode) {
+  if (aIsDomNode && typeof a.isEqualNode === 'function' && bIsDomNode) {
     return a.isEqualNode(b);
   }
 
@@ -239,14 +239,7 @@ export function isA(typeName: string, value: any) {
 function isDomNode(obj) {
   // In some test environments (e.g. "node") there is no `Node` even though
   // we might be comparing things that look like DOM nodes.
-  return (
-    typeof Node !== 'undefined'
-      ? obj instanceof Node
-      : obj !== null &&
-        typeof obj === 'object' &&
-        typeof obj.nodeType === 'number' &&
-        typeof obj.nodeName === 'string'
-  );
+  return typeof Node !== 'undefined' && obj instanceof Node;
 }
 
 export function fnNameFor(func: Function) {
