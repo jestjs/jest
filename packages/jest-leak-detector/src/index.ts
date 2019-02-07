@@ -7,9 +7,9 @@
 
 'use strict';
 
-import prettyFormat from 'pretty-format';
 import v8 from 'v8';
 import vm from 'vm';
+import prettyFormat from 'pretty-format';
 
 export default class {
   _isReferenceBeingHeld: boolean;
@@ -36,7 +36,7 @@ export default class {
 
       throw new Error(
         'The leaking detection mechanism requires the "weak" package to be installed and work. ' +
-        'Please install it as a dependency on your main project',
+          'Please install it as a dependency on your main project',
       );
     }
 

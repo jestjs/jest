@@ -34,7 +34,7 @@ it('does not show the GC if hidden', () => {
 it('does not hide the GC if visible', () => {
   const detector = new LeakDetector({});
 
-  global.gc = () => { };
+  global.gc = () => {};
   detector.isLeaking();
   expect(global.gc).toBeDefined();
 });
@@ -56,8 +56,8 @@ it('correctly checks simple leaks', () => {
 
 it('tests different objects', () => {
   const refs = [
-    function () { },
-    () => { },
+    function() {},
+    () => {},
     Object.create(null),
     [],
     /foo/g,
