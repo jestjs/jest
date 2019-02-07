@@ -13,7 +13,7 @@ import {wrap} from 'jest-snapshot-serializer-raw';
 import {
   findRepos,
   getChangedFilesForRoots,
-} from '../../packages/jest-changed-files';
+} from 'jest-changed-files';
 import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 import {cleanup, run, writeFiles} from '../Utils';
 import runJest from '../runJest';
