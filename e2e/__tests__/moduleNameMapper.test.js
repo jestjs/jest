@@ -7,7 +7,7 @@
  * @flow
  */
 
-import runJest from '../runJest';
+import runJest, {json as runWithJson} from '../runJest';
 import {extractSummary} from '../Utils';
 import {wrap} from 'jest-snapshot-serializer-raw';
 
@@ -27,4 +27,10 @@ test('moduleNameMapper correct configuration', () => {
 
   expect(status).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
+});
+
+test('moduleNameMapper with mocking', () => {
+  const {json} = runWithJson('module-name-mapper-mock');
+  expect(json.numTotalTests).toBe(2);
+  expect(json.success).toBe(true);
 });
