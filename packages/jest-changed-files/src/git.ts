@@ -28,7 +28,7 @@ const adapter: SCMAdapter = {
     cwd: string,
     options?: Options,
   ): Promise<Array<Path>> => {
-    const changedSince: string | null | undefined =
+    const changedSince: string | undefined =
       options && (options.withAncestor ? 'HEAD^' : options.changedSince);
 
     const includePaths: Array<Path> = (options && options.includePaths) || [];
@@ -70,7 +70,7 @@ const adapter: SCMAdapter = {
     }
   },
 
-  getRoot: async (cwd: string): Promise<string | null | undefined> => {
+  getRoot: async (cwd: string): Promise<string | null> => {
     const options = ['rev-parse', '--show-toplevel'];
 
     try {
