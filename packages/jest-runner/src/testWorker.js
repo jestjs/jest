@@ -11,6 +11,7 @@ import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {SerializableError, TestResult} from 'types/TestResult';
 import type {SerializableModuleMap} from 'types/HasteMap';
 import type {ErrorWithCode} from 'types/Errors';
+import type {TestRunnerContext} from 'types/TestRunner';
 
 import exit from 'exit';
 import HasteMap from 'jest-haste-map';
@@ -23,6 +24,7 @@ export type WorkerData = {|
   globalConfig: GlobalConfig,
   path: Path,
   serializableModuleMap: ?SerializableModuleMap,
+  context?: TestRunnerContext,
 |};
 
 // Make sure uncaught errors are logged before we exit.
@@ -74,6 +76,7 @@ export async function worker({
   globalConfig,
   path,
   serializableModuleMap,
+  context,
 }: WorkerData): Promise<TestResult> {
   try {
     const moduleMap = serializableModuleMap
@@ -84,6 +87,7 @@ export async function worker({
       globalConfig,
       config,
       getResolver(config, moduleMap),
+      context,
     );
   } catch (error) {
     throw formatError(error);

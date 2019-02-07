@@ -35,18 +35,22 @@ const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 type CoverageWorker = {worker: worker};
 
+export type CoverageReporterOptions = {
+  changedFiles?: Set<Path>,
+};
+
 export default class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
   _globalConfig: GlobalConfig;
   _sourceMapStore: any;
-  _changedFiles: ?Set<Path>;
+  _options: CoverageReporterOptions;
 
-  constructor(globalConfig: GlobalConfig, changedFiles: ?Set<Path>) {
+  constructor(globalConfig: GlobalConfig, options?: CoverageReporterOptions) {
     super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
-    this._changedFiles = changedFiles;
+    this._options = options || {};
   }
 
   onTestResult(
@@ -170,9 +174,9 @@ export default class CoverageReporter extends BaseReporter {
       if (!this._coverageMap.data[filename]) {
         try {
           const result = await worker.worker({
-            changedFiles: this._changedFiles,
             config,
             globalConfig,
+            options: this._options,
             path: filename,
           });
 

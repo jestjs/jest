@@ -14,6 +14,7 @@ import type {AggregatedResult} from 'types/TestResult';
 import type {TestRunData} from 'types/TestRunner';
 import type {JestHookEmitter} from 'types/JestHooks';
 import type TestWatcher from './TestWatcher';
+import type {TestSchedulerContext} from './TestScheduler';
 
 import chalk from 'chalk';
 import path from 'path';
@@ -103,7 +104,7 @@ const processResults = (runResults, options) => {
   return onComplete && onComplete(runResults);
 };
 
-const testSchedulerContext = {
+const testSchedulerContext: TestSchedulerContext = {
   firstRun: true,
   previousSuccess: true,
 };
@@ -220,11 +221,13 @@ export default (async function runJest({
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalSetup'});
   }
 
+  if (changedFilesPromise) {
+    testSchedulerContext.changedFiles = (await changedFilesPromise).changedFiles;
+  }
+
   const results = await new TestScheduler(
     globalConfig,
     {
-      changedFiles:
-        changedFilesPromise && (await changedFilesPromise).changedFiles,
       startRun,
     },
     testSchedulerContext,

@@ -37,11 +37,11 @@ TestRunner;
 
 export type TestSchedulerOptions = {|
   startRun: (globalConfig: GlobalConfig) => *,
-  changedFiles: ?Set<Path>,
 |};
 export type TestSchedulerContext = {|
   firstRun: boolean,
   previousSuccess: boolean,
+  changedFiles?: Set<Path>,
 |};
 export default class TestScheduler {
   _dispatcher: ReporterDispatcher;
@@ -174,7 +174,7 @@ export default class TestScheduler {
         // $FlowFixMe
         testRunners[config.runner] = new (require(config.runner): TestRunner)(
           this._globalConfig,
-          this._options.changedFiles,
+          {changedFiles: this._context && this._context.changedFiles},
         );
       }
     });
@@ -265,7 +265,9 @@ export default class TestScheduler {
 
     if (!isDefault && collectCoverage) {
       this.addReporter(
-        new CoverageReporter(this._globalConfig, this._options.changedFiles),
+        new CoverageReporter(this._globalConfig, {
+          changedFiles: this._context && this._context.changedFiles,
+        }),
       );
     }
 
@@ -293,7 +295,9 @@ export default class TestScheduler {
 
     if (collectCoverage) {
       this.addReporter(
-        new CoverageReporter(this._globalConfig, this._options.changedFiles),
+        new CoverageReporter(this._globalConfig, {
+          changedFiles: this._context && this._context.changedFiles,
+        }),
       );
     }
 

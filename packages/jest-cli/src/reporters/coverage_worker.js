@@ -8,6 +8,7 @@
  */
 
 import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
+import type {CoverageReporterOptions} from './coverage_reporter';
 
 import exit from 'exit';
 import fs from 'fs';
@@ -18,7 +19,7 @@ export type CoverageWorkerData = {|
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   path: Path,
-  changedFiles: ?Set<Path>,
+  options?: CoverageReporterOptions,
 |};
 
 export type {CoverageWorkerResult};
@@ -33,13 +34,13 @@ export function worker({
   config,
   globalConfig,
   path,
-  changedFiles,
+  options,
 }: CoverageWorkerData): ?CoverageWorkerResult {
   return generateEmptyCoverage(
     fs.readFileSync(path, 'utf8'),
     path,
     globalConfig,
     config,
-    changedFiles,
+    options && options.changedFiles,
   );
 }

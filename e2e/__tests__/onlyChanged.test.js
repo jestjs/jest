@@ -155,11 +155,12 @@ test('do not pickup non-tested files when reporting coverage on only changed fil
     'package.json': JSON.stringify({name: 'new name'}),
   });
 
-  const {stderr} = runJest(DIR, ['-o', '--coverage']);
+  const {stderr, stdout} = runJest(DIR, ['-o', '--coverage']);
 
   expect(stderr).toEqual(
     expect.not.stringContaining('Failed to collect coverage from'),
   );
+  expect(stdout).toEqual(expect.not.stringContaining('package.json'));
 });
 
 test('onlyChanged in config is overwritten by --all or testPathPattern', () => {

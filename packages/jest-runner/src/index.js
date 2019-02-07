@@ -7,12 +7,13 @@
  * @flow
  */
 
-import type {GlobalConfig, Path} from 'types/Config';
+import type {GlobalConfig} from 'types/Config';
 import type {
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
   Test,
+  TestRunnerContext,
   TestRunnerOptions,
   TestWatcher,
 } from 'types/TestRunner';
@@ -30,11 +31,11 @@ type WorkerInterface = Worker & {worker: worker};
 
 class TestRunner {
   _globalConfig: GlobalConfig;
-  _changedFiles: ?Set<Path>;
+  _context: TestRunnerContext;
 
-  constructor(globalConfig: GlobalConfig, changedFiles: ?Set<Path>) {
+  constructor(globalConfig: GlobalConfig, context?: TestRunnerContext) {
     this._globalConfig = globalConfig;
-    this._changedFiles = changedFiles;
+    this._context = context || {};
   }
 
   async runTests(
@@ -80,7 +81,7 @@ class TestRunner {
                 this._globalConfig,
                 test.context.config,
                 test.context.resolver,
-                this._changedFiles,
+                this._context,
               );
             })
             .then(result => onResult(test, result))
@@ -122,6 +123,7 @@ class TestRunner {
 
         return worker.worker({
           config: test.context.config,
+          context: this._context,
           globalConfig: this._globalConfig,
           path: test.path,
           serializableModuleMap: watcher.isWatchMode()

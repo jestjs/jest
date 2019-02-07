@@ -10,7 +10,7 @@
 import type {EnvironmentClass} from 'types/Environment';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Resolver} from 'types/Resolve';
-import type {TestFramework} from 'types/TestRunner';
+import type {TestFramework, TestRunnerContext} from 'types/TestRunner';
 import type {TestResult} from 'types/TestResult';
 import type RuntimeClass from 'jest-runtime';
 
@@ -78,7 +78,7 @@ async function runTestInternal(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   resolver: Resolver,
-  changedFiles: ?Set<Path>,
+  context: ?TestRunnerContext,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const parsedDocblock = docblock.parse(docblock.extract(testSource));
@@ -144,7 +144,7 @@ async function runTestInternal(
   setGlobal(environment.global, 'console', testConsole);
 
   runtime = new Runtime(config, environment, resolver, cacheFS, {
-    changedFiles,
+    changedFiles: context && context.changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
@@ -270,14 +270,14 @@ export default async function runTest(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   resolver: Resolver,
-  changedFiles: ?Set<Path>,
+  context: ?TestRunnerContext,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
     globalConfig,
     config,
     resolver,
-    changedFiles,
+    context,
   );
 
   if (leakDetector) {
