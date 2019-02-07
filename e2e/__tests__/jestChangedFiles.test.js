@@ -9,14 +9,14 @@
 
 import os from 'os';
 import path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {
   findRepos,
   getChangedFilesForRoots,
-} from '../../packages/jest-changed-files/src';
+} from '../../packages/jest-changed-files';
 import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 import {cleanup, run, writeFiles} from '../Utils';
 import runJest from '../runJest';
-import {wrap} from 'jest-snapshot-serializer-raw';
 
 skipSuiteOnWindows();
 

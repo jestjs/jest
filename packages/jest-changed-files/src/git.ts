@@ -4,14 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
-
-import type {Path} from 'types/Config';
-import type {Options, SCMAdapter} from 'types/ChangedFiles';
 
 import path from 'path';
 import execa from 'execa';
+
+import {Path, Options, SCMAdapter} from './types';
 
 const findChangedFilesUsingCommand = async (
   args: Array<string>,
@@ -30,7 +28,7 @@ const adapter: SCMAdapter = {
     cwd: string,
     options?: Options,
   ): Promise<Array<Path>> => {
-    const changedSince: ?string =
+    const changedSince: string | null | undefined =
       options && (options.withAncestor ? 'HEAD^' : options.changedSince);
 
     const includePaths: Array<Path> = (options && options.includePaths) || [];
@@ -72,7 +70,7 @@ const adapter: SCMAdapter = {
     }
   },
 
-  getRoot: async (cwd: string): Promise<?string> => {
+  getRoot: async (cwd: string): Promise<string | null | undefined> => {
     const options = ['rev-parse', '--show-toplevel'];
 
     try {
