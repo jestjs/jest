@@ -56,6 +56,7 @@ type InternalModuleOptions = {|
 |};
 
 type CoverageOptions = {
+  changedFiles: ?Set<Path>,
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
@@ -122,6 +123,7 @@ class Runtime {
     this._cacheFS = cacheFS || Object.create(null);
     this._config = config;
     this._coverageOptions = coverageOptions || {
+      changedFiles: null,
       collectCoverage: false,
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: null,
@@ -185,6 +187,7 @@ class Runtime {
     return shouldInstrument(
       filename,
       {
+        changedFiles: options.changedFiles,
         collectCoverage: options.collectCoverage,
         collectCoverageFrom: options.collectCoverageFrom,
         collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
@@ -671,6 +674,7 @@ class Runtime {
     const transformedFile = this._scriptTransformer.transform(
       filename,
       {
+        changedFiles: this._coverageOptions.changedFiles,
         collectCoverage: this._coverageOptions.collectCoverage,
         collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
         collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,

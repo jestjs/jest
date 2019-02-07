@@ -33,6 +33,7 @@ import {sync as realpath} from 'realpath-native';
 import {enhanceUnexpectedTokenMessage} from './helpers';
 
 export type Options = {|
+  changedFiles: ?Set<Path>,
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
