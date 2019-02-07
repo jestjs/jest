@@ -26,6 +26,7 @@ it('complains if the value is a primitive', () => {
 it('does not show the GC if hidden', () => {
   const detector = new LeakDetector({});
 
+  // @ts-ignore: purposefully removed
   global.gc = undefined;
   detector.isLeaking();
   expect(global.gc).not.toBeDefined();
@@ -40,7 +41,7 @@ it('does not hide the GC if visible', () => {
 });
 
 it('correctly checks simple leaks', () => {
-  let reference = {};
+  let reference: unknown = {};
 
   const detector = new LeakDetector(reference);
 
