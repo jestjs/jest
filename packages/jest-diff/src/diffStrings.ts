@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk, {Chalk} from 'chalk';
 import diff, {Callbacks} from 'diff-sequences';
 import {NO_DIFF_MESSAGE} from './constants';
 import {DiffOptions} from './types';
@@ -26,14 +26,11 @@ const bgCommon = chalk.bgYellow; // edge spaces in common line (even indentation
 const bgInverse = chalk.inverse; // edge spaces in any other lines
 
 // ONLY trailing if expected value is snapshot or multiline string.
-const highlightTrailingSpaces = (line: string, bgColor: typeof chalk): string =>
+const highlightTrailingSpaces = (line: string, bgColor: Chalk): string =>
   line.replace(/\s+$/, bgColor('$&'));
 
 // BOTH leading AND trailing if expected value is data structure.
-const highlightLeadingTrailingSpaces = (
-  line: string,
-  bgColor: typeof chalk,
-): string =>
+const highlightLeadingTrailingSpaces = (line: string, bgColor: Chalk): string =>
   // If line consists of ALL spaces: highlight all of them.
   highlightTrailingSpaces(line, bgColor).replace(
     // If line has an ODD length of leading spaces: highlight only the LAST.
@@ -41,7 +38,7 @@ const highlightLeadingTrailingSpaces = (
     '$1' + bgColor('$2'),
   );
 
-type Highlight = (line: string, bgColor: typeof chalk) => string;
+type Highlight = (line: string, bgColor: Chalk) => string;
 
 const getHighlightSpaces = (bothEdges: boolean): Highlight =>
   bothEdges ? highlightLeadingTrailingSpaces : highlightTrailingSpaces;
