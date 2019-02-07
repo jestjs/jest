@@ -3,8 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 'use strict';
@@ -16,7 +14,7 @@ import vm from 'vm';
 export default class {
   _isReferenceBeingHeld: boolean;
 
-  constructor(value: ?Object) {
+  constructor(value: any) {
     if (this._isPrimitive(value)) {
       throw new TypeError(
         [
@@ -38,7 +36,7 @@ export default class {
 
       throw new Error(
         'The leaking detection mechanism requires the "weak" package to be installed and work. ' +
-          'Please install it as a dependency on your main project',
+        'Please install it as a dependency on your main project',
       );
     }
 

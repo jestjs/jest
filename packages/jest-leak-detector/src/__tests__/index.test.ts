@@ -34,7 +34,7 @@ it('does not show the GC if hidden', () => {
 it('does not hide the GC if visible', () => {
   const detector = new LeakDetector({});
 
-  global.gc = () => {};
+  global.gc = () => { };
   detector.isLeaking();
   expect(global.gc).toBeDefined();
 });
@@ -56,8 +56,8 @@ it('correctly checks simple leaks', () => {
 
 it('tests different objects', () => {
   const refs = [
-    function() {},
-    () => {},
+    function () { },
+    () => { },
     Object.create(null),
     [],
     /foo/g,
@@ -73,8 +73,8 @@ it('tests different objects', () => {
 });
 
 it('correctly checks more complex leaks', () => {
-  let ref1 = {};
-  let ref2 = {};
+  let ref1: any = {};
+  let ref2: any = {};
 
   // Create a circular dependency between ref1 and ref2.
   ref1.ref2 = ref2;
