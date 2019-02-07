@@ -24,7 +24,7 @@ import {replacePathSepForGlob} from 'jest-util';
 type SearchResult = {|
   noSCM?: boolean,
   stats?: {[key: string]: number},
-  collectCoverageFrom?: Array<string>,
+  collectCoverageFrom?: Set<string>,
   tests: Array<Test>,
   total?: number,
 |};
@@ -179,22 +179,29 @@ export default class SearchSource {
 
     const allPathsAbsolute = Array.from(allPaths).map(p => path.resolve(p));
 
+    const collectCoverageFrom = new Set();
+
+    testModulesMap.forEach(testModule => {
+      if (!testModule.dependencies) {
+        return;
+      }
+
+      testModule.dependencies
+        .filter(p => allPathsAbsolute.includes(p))
+        .map(filename => {
+          filename = replaceRootDirInPath(
+            this._context.config.rootDir,
+            filename,
+          );
+          return path.isAbsolute(filename)
+            ? path.relative(this._context.config.rootDir, filename)
+            : filename;
+        })
+        .forEach(filename => collectCoverageFrom.add(filename));
+    });
+
     return {
-      collectCoverageFrom: Array.from(
-        testModulesMap.reduce((acc, testModule) => {
-          if (testModule.dependencies) {
-            testModule.dependencies
-              .filter(p => allPathsAbsolute.some(ap => ap === p))
-              .forEach(p => acc.add(p));
-          }
-          return acc;
-        }, new Set()),
-      ).map(filename => {
-        filename = replaceRootDirInPath(this._context.config.rootDir, filename);
-        return path.isAbsolute(filename)
-          ? path.relative(this._context.config.rootDir, filename)
-          : filename;
-      }),
+      collectCoverageFrom,
       tests: toTests(
         this._context,
         testModulesMap.map(testModule => testModule.file),

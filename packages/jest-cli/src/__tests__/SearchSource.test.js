@@ -429,7 +429,9 @@ describe('SearchSource', () => {
         new Set([regular, requireRegular, unrelatedFile]),
         true,
       );
-      expect(data.collectCoverageFrom).toEqual(['RegularModule.js']);
+      expect(Array.from(data.collectCoverageFrom)).toEqual([
+        'RegularModule.js',
+      ]);
     });
   });
 
