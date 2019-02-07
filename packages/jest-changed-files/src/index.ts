@@ -4,25 +4,23 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {Path} from 'types/Config';
-import type {ChangedFilesPromise, Options, Repos} from 'types/ChangedFiles';
+import throat from 'throat';
 
+import {Path, ChangedFilesPromise, Options, Repos} from './types';
 import git from './git';
 import hg from './hg';
-import throat from 'throat';
 
 // This is an arbitrary number. The main goal is to prevent projects with
 // many roots (50+) from spawning too many processes at once.
 const mutex = throat(5);
 
-const findGitRoot = dir => mutex(() => git.getRoot(dir));
-const findHgRoot = dir => mutex(() => hg.getRoot(dir));
+const findGitRoot = (dir: string) => mutex(() => git.getRoot(dir));
+const findHgRoot = (dir: string) => mutex(() => hg.getRoot(dir));
 
 export const getChangedFilesForRoots = async (
-  roots: Array<Path>,
+  roots: Path[],
   options: Options,
 ): ChangedFilesPromise => {
   const repos = await findRepos(roots);
@@ -50,16 +48,22 @@ export const getChangedFilesForRoots = async (
   return {changedFiles, repos};
 };
 
-export const findRepos = async (roots: Array<Path>): Promise<Repos> => {
+export const findRepos = async (roots: Path[]): Promise<Repos> => {
   const gitRepos = await Promise.all(
-    roots.reduce((promises, root) => promises.concat(findGitRoot(root)), []),
+    roots.reduce<Promise<string | null | undefined>[]>(
+      (promises, root) => promises.concat(findGitRoot(root)),
+      [],
+    ),
   );
   const hgRepos = await Promise.all(
-    roots.reduce((promises, root) => promises.concat(findHgRoot(root)), []),
+    roots.reduce<Promise<string | null | undefined>[]>(
+      (promises, root) => promises.concat(findHgRoot(root)),
+      [],
+    ),
   );
 
   return {
-    git: new Set(gitRepos.filter(Boolean)),
-    hg: new Set(hgRepos.filter(Boolean)),
+    git: new Set(gitRepos.filter(Boolean) as string[]),
+    hg: new Set(hgRepos.filter(Boolean) as string[]),
   };
 };
