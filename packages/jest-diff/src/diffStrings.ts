@@ -3,28 +3,19 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 import chalk from 'chalk';
-import type {Chalk} from 'chalk';
-import diff from 'diff-sequences';
-import {NO_DIFF_MESSAGE} from './constants.js';
+import diff, {Callbacks} from 'diff-sequences';
+import {NO_DIFF_MESSAGE} from './constants';
+import {DiffOptions} from './types';
 
 const DIFF_CONTEXT_DEFAULT = 5;
 
-export type DiffOptions = {|
-  aAnnotation?: string,
-  bAnnotation?: string,
-  expand?: boolean,
-  contextLines?: number,
-|};
-
-type Original = {|
-  a: string,
-  b: string,
-|};
+type Original = {
+  a: string;
+  b: string;
+};
 
 const fgPatchMark = chalk.yellow;
 const fgDelete = chalk.green;
@@ -35,11 +26,14 @@ const bgCommon = chalk.bgYellow; // edge spaces in common line (even indentation
 const bgInverse = chalk.inverse; // edge spaces in any other lines
 
 // ONLY trailing if expected value is snapshot or multiline string.
-const highlightTrailingSpaces = (line: string, bgColor: Chalk): string =>
+const highlightTrailingSpaces = (line: string, bgColor: typeof chalk): string =>
   line.replace(/\s+$/, bgColor('$&'));
 
 // BOTH leading AND trailing if expected value is data structure.
-const highlightLeadingTrailingSpaces = (line: string, bgColor: Chalk): string =>
+const highlightLeadingTrailingSpaces = (
+  line: string,
+  bgColor: typeof chalk,
+): string =>
   // If line consists of ALL spaces: highlight all of them.
   highlightTrailingSpaces(line, bgColor).replace(
     // If line has an ODD length of leading spaces: highlight only the LAST.
@@ -47,12 +41,12 @@ const highlightLeadingTrailingSpaces = (line: string, bgColor: Chalk): string =>
     '$1' + bgColor('$2'),
   );
 
-type Highlight = (line: string, bgColor: Chalk) => string;
+type Highlight = (line: string, bgColor: typeof chalk) => string;
 
 const getHighlightSpaces = (bothEdges: boolean): Highlight =>
   bothEdges ? highlightLeadingTrailingSpaces : highlightTrailingSpaces;
 
-const getAnnotation = (options: ?DiffOptions): string =>
+const getAnnotation = (options?: DiffOptions): string =>
   fgDelete('- ' + ((options && options.aAnnotation) || 'Expected')) +
   '\n' +
   fgInsert('+ ' + ((options && options.bAnnotation) || 'Received')) +
@@ -134,9 +128,10 @@ const diffExpand = (
   aLinesIn: Array<string>,
   bLinesIn: Array<string>,
 ): string => {
-  const isCommon = (aIndex, bIndex) => aLinesUn[aIndex] === bLinesUn[bIndex];
+  const isCommon: Callbacks['isCommon'] = (aIndex, bIndex) =>
+    aLinesUn[aIndex] === bLinesUn[bIndex];
 
-  const array = [];
+  const array: string[] = [];
   const put = (line: string) => {
     array.push(line);
   };
@@ -144,7 +139,11 @@ const diffExpand = (
   let aStart = 0;
   let bStart = 0;
 
-  const foundSubsequence = (nCommon, aCommon, bCommon) => {
+  const foundSubsequence: Callbacks['foundSubsequence'] = (
+    nCommon,
+    aCommon,
+    bCommon,
+  ) => {
     formatDelete(aStart, aCommon, aLinesUn, aLinesIn, put);
     formatInsert(bStart, bCommon, bLinesUn, bLinesIn, put);
     formatCommon(nCommon, aCommon, bCommon, aLinesIn, bLinesUn, bLinesIn, put);
@@ -175,7 +174,7 @@ const createPatchMark = (
     `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
   );
 
-const getContextLines = (options: ?DiffOptions): number =>
+const getContextLines = (options?: DiffOptions): number =>
   options &&
   typeof options.contextLines === 'number' &&
   options.contextLines >= 0
@@ -193,7 +192,8 @@ const diffNoExpand = (
   bLinesIn: Array<string>,
   nContextLines: number,
 ): string => {
-  const isCommon = (aIndex, bIndex) => aLinesUn[aIndex] === bLinesUn[bIndex];
+  const isCommon: Callbacks['isCommon'] = (aIndex, bIndex) =>
+    aLinesUn[aIndex] === bLinesUn[bIndex];
 
   let iPatchMark = 0; // index of placeholder line for patch mark
   const array = [''];
@@ -215,7 +215,11 @@ const diffNoExpand = (
 
   // Given the number of items and starting indexes of each common subsequence,
   // format any preceding change lines, and then common context lines.
-  const foundSubsequence = (nCommon, aStartCommon, bStartCommon) => {
+  const foundSubsequence: Callbacks['foundSubsequence'] = (
+    nCommon,
+    aStartCommon,
+    bStartCommon,
+  ) => {
     const aEndCommon = aStartCommon + nCommon;
     const bEndCommon = bStartCommon + nCommon;
     isAtEnd = aEndCommon === aLength && bEndCommon === bLength;
@@ -294,7 +298,7 @@ const diffNoExpand = (
 export default (
   a: string,
   b: string,
-  options: ?DiffOptions,
+  options?: DiffOptions,
   original?: Original,
 ): string => {
   if (a === b) {
