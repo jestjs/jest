@@ -73,8 +73,8 @@ it('tests different objects', () => {
 });
 
 it('correctly checks more complex leaks', () => {
-  let ref1 = {};
-  let ref2 = {};
+  let ref1: any = {};
+  let ref2: any = {};
 
   // Create a circular dependency between ref1 and ref2.
   ref1.ref2 = ref2;
