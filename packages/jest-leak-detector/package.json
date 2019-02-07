@@ -12,6 +12,7 @@
     "pretty-format": "^24.0.0"
   },
   "devDependencies": {
+    "@types/weak": "^1.0.0",
     "weak": "^1.0.1"
   },
   "engines": {

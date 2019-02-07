@@ -76,7 +76,7 @@ const IDVisitor = {
   ReferencedIdentifier(path) {
     this.ids.add(path);
   },
-  blacklist: ['TypeAnnotation', 'TSTypeAnnotation'],
+  blacklist: ['TypeAnnotation', 'TSTypeAnnotation', 'TSTypeReference'],
 };
 
 const FUNCTIONS: Object = Object.create(null);

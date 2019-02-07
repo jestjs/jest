@@ -2,6 +2,22 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+- `[*]`: Setup building, linting and testing of TypeScript ([#7808](https://github.com/facebook/jest/pull/7808))
+- `[pretty-format]`: Migrate to TypeScript ([#7809](https://github.com/facebook/jest/pull/7809))
+- `[diff-sequences]`: Migrate to Typescript ([#7820](https://github.com/facebook/jest/pull/7820))
+- `[jest-get-type]`: Migrate to TypeScript ([#7818](https://github.com/facebook/jest/pull/7818))
+- `[jest-regex-util]`: Migrate to TypeScript ([#7822](https://github.com/facebook/jest/pull/7822))
+
+### Performance
+
+## 24.1.0
+
+### Features
+
 - `[jest-snapshots]`: Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
 - `[jest-resolve]`: Pass default resolver into custom resolvers ([#7714](https://github.com/facebook/jest/pull/7714))
 - `[jest-cli]`: `global{Setup,Teardown}` use default export with es modules ([#7750](https://github.com/facebook/jest/pull/7750))
@@ -12,6 +28,7 @@
 
 ### Fixes
 
+- `[jest-runtime]` Fix for mocks not working with module name mapper ([#7787](https://github.com/facebook/jest/pull/7787))
 - `[jest-cli]` Break dependency cycle when using Jest programmatically ([#7707](https://github.com/facebook/jest/pull/7707))
 - `[jest-config]` Extract setupFilesAfterEnv from preset ([#7724](https://github.com/facebook/jest/pull/7724))
 - `[jest-cli]` Do not execute any `globalSetup` or `globalTeardown` if there are no tests to execute ([#7745](https://github.com/facebook/jest/pull/7745))
@@ -21,14 +38,16 @@
 - `[jest-config]` Make sure `normalize` can consume `Defaults` without warnings ([#7742](https://github.com/facebook/jest/pull/7742))
 - `[jest-config]` Allow `moduleFileExtensions` without 'js' for custom runners ([#7751](https://github.com/facebook/jest/pull/7751))
 - `[jest-cli]` Load transformers before installing require hooks ([#7752](https://github.com/facebook/jest/pull/7752)
+- `[jest-cli]` Handle missing `numTodoTests` in test results ([#7779](https://github.com/facebook/jest/pull/7779))
+- `[jest-runtime]` Exclude setup/teardown files from coverage report ([#7790](https://github.com/facebook/jest/pull/7790)
+- `[babel-jest]` Throw an error if `babel-jest` tries to transform a file ignored by Babel ([#7797](https://github.com/facebook/jest/pull/7797))
+- `[babel-plugin-jest-hoist]` Ignore TS type references when looking for out-of-scope references ([#7799](https://github.com/facebook/jest/pull/7799)
 
 ### Chore & Maintenance
 
 - `[jest]` Update jest-junit to ^6.2.1 ([#7739](https://github.com/facebook/jest/pull/7739))
 - `[website]` Fix broken help link on homepage ([#7706](https://github.com/facebook/jest/pull/7706))
 - `[docs]` Changed Babel setup documentation to correctly compile `async/await` ([#7701](https://github.com/facebook/jest/pull/7701))
-
-### Performance
 
 ## 24.0.0
 

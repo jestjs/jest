@@ -28,6 +28,7 @@ import co from 'co';
 
 import StackUtils from 'stack-utils';
 
+// $FlowFixMe: Converted to TS
 import prettyFormat from 'pretty-format';
 
 import {getState} from './state';

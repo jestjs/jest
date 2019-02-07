@@ -11,10 +11,13 @@ const webpack = require('webpack');
 const camelCase = require('camelcase');
 const rimraf = require('rimraf');
 
+const transformOptions = require('../babel.config.js');
+
 const babelEs5Options = {
   // Dont load other config files
   babelrc: false,
   configFile: false,
+  overrides: transformOptions.overrides,
   plugins: ['@babel/plugin-transform-strict-mode'],
   presets: [
     [
@@ -27,7 +30,6 @@ const babelEs5Options = {
         targets: 'IE 11',
       },
     ],
-    '@babel/preset-flow',
   ],
 };
 
@@ -63,6 +65,7 @@ function browserBuild(pkgName, entryPath, destination) {
               '../packages/expect/build/fakeChalk.js'
             ),
           },
+          extensions: ['.js', '.json', '.ts'],
         },
         node: {
           fs: 'empty',

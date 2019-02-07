@@ -38,7 +38,7 @@ module.exports = {
     '\\.snap$',
     '/packages/.*/build',
     '/packages/.*/build-es5',
-    '/packages/.*/src/__tests__/getPrettyPrint.js',
+    '/packages/.*/src/__tests__/setPrettyPrint.ts',
     '/packages/jest-cli/src/__tests__/test_root',
     '/packages/jest-cli/src/__tests__/__fixtures__/',
     '/packages/jest-cli/src/lib/__tests__/fixtures/',
@@ -56,6 +56,6 @@ module.exports = {
     '/e2e/__tests__/iterator-to-null-test.js',
   ],
   transform: {
-    '^.+\\.js$': '<rootDir>/packages/babel-jest',
+    '^.+\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
   },
 };

@@ -85,6 +85,12 @@ export const addResult = (
   aggregatedResults: AggregatedResult,
   testResult: TestResult,
 ): void => {
+  // `todos` are new as of Jest 24, and not all runners return it.
+  // Set it to `0` to avoid `NaN`
+  if (!testResult.numTodoTests) {
+    testResult.numTodoTests = 0;
+  }
+
   aggregatedResults.testResults.push(testResult);
   aggregatedResults.numTotalTests +=
     testResult.numPassingTests +
