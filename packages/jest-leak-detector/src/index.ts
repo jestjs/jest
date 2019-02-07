@@ -5,14 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import v8 from 'v8';
 import vm from 'vm';
 import prettyFormat from 'pretty-format';
 
 export default class {
-  _isReferenceBeingHeld: boolean;
+  private _isReferenceBeingHeld: boolean;
 
   constructor(value: any) {
     if (this._isPrimitive(value)) {
@@ -53,7 +51,7 @@ export default class {
     return this._isReferenceBeingHeld;
   }
 
-  _runGarbageCollector() {
+  private _runGarbageCollector() {
     const isGarbageCollectorHidden = !global.gc;
 
     // GC is usually hidden, so we have to expose it before running.
