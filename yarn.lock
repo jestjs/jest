@@ -1782,6 +1782,11 @@
   resolved "https://registry.yarnpkg.com/@types/string-length/-/string-length-2.0.0.tgz#358ce3ff2e8c2310270ee192ddd6b79b64fed7b2"
   integrity sha512-xFwWZpIWcLsrcVEybzxmxQM/26Snj1gqxmVrelC3We3Nub7q70RCtqTBVQ7nL+315fAcw4BGSFpxvMkhLApKmQ==
 
+"@types/strip-ansi@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/strip-ansi/-/strip-ansi-3.0.0.tgz#9b63d453a6b54aa849182207711a08be8eea48ae"
+  integrity sha1-m2PUU6a1SqhJGCIHcRoIvo7qSK4=
+
 "@types/strip-bom@3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/strip-bom/-/strip-bom-3.0.0.tgz#14a8ec3956c2e81edb7520790aecf21c290aebd2"

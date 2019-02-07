@@ -3,17 +3,14 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-import type {DiffOptions} from './diffStrings';
 
 import prettyFormat from 'pretty-format';
 import chalk from 'chalk';
 import getType from 'jest-get-type';
 import diffStrings from './diffStrings';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
+import {DiffOptions} from './types';
 
 const {
   AsymmetricMatcher,
@@ -45,7 +42,7 @@ const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
-function diff(a: any, b: any, options: ?DiffOptions): ?string {
+function diff(a: any, b: any, options?: DiffOptions): string | null {
   if (Object.is(a, b)) {
     return NO_DIFF_MESSAGE;
   }
@@ -98,7 +95,7 @@ function diff(a: any, b: any, options: ?DiffOptions): ?string {
 function comparePrimitive(
   a: number | boolean,
   b: number | boolean,
-  options: ?DiffOptions,
+  options?: DiffOptions,
 ) {
   return diffStrings(
     prettyFormat(a, FORMAT_OPTIONS),
@@ -107,15 +104,15 @@ function comparePrimitive(
   );
 }
 
-function sortMap(map) {
+function sortMap(map: Map<unknown, unknown>) {
   return new Map(Array.from(map.entries()).sort());
 }
 
-function sortSet(set) {
+function sortSet(set: Set<unknown>) {
   return new Set(Array.from(set.values()).sort());
 }
 
-function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
+function compareObjects(a: Object, b: Object, options?: DiffOptions) {
   let diffMessage;
   let hasThrown = false;
 
@@ -153,4 +150,4 @@ function compareObjects(a: Object, b: Object, options: ?DiffOptions) {
   return diffMessage;
 }
 
-module.exports = diff;
+export = diff;

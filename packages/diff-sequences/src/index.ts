@@ -65,7 +65,7 @@ type FoundSubsequence = (
 ) => void;
 
 // Either original functions or wrapped to swap indexes if graph is transposed.
-type Callbacks = {
+export type Callbacks = {
   foundSubsequence: FoundSubsequence;
   isCommon: IsCommon;
 };
