@@ -40,6 +40,7 @@ test('resolves to the result of generateEmptyCoverage upon success', async () =>
     'banana.js',
     globalConfig,
     config,
+    undefined,
   );
 
   expect(result).toEqual(42);

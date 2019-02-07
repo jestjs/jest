@@ -16,4 +16,9 @@ export type ResolveModuleConfig = {|
   paths?: Path[],
 |};
 
+export type ResolvedModule = {
+  file: string,
+  dependencies?: string[],
+};
+
 export type Resolver = _Resolver;

@@ -112,5 +112,9 @@ export default function shouldInstrument(
     return false;
   }
 
+  if (options.changedFiles && !options.changedFiles.has(filename)) {
+    return false;
+  }
+
   return true;
 }

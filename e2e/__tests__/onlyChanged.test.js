@@ -139,6 +139,30 @@ test('report test coverage for only changed files', () => {
   expect(stdout).not.toMatch('b.js');
 });
 
+test('do not pickup non-tested files when reporting coverage on only changed files', () => {
+  writeFiles(DIR, {
+    'a.js': 'module.exports = {}',
+    'b.test.js': 'module.exports = {}',
+    'package.json': JSON.stringify({name: 'original name'}),
+  });
+
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
+
+  writeFiles(DIR, {
+    'b.test.js': 'require("./package.json"); it("passes", () => {})',
+    'package.json': JSON.stringify({name: 'new name'}),
+  });
+
+  const {stderr, stdout} = runJest(DIR, ['-o', '--coverage']);
+
+  expect(stderr).toEqual(
+    expect.not.stringContaining('Failed to collect coverage from'),
+  );
+  expect(stdout).toEqual(expect.not.stringContaining('package.json'));
+});
+
 test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
