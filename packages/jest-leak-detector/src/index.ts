@@ -12,7 +12,7 @@ import prettyFormat from 'pretty-format';
 export default class {
   private _isReferenceBeingHeld: boolean;
 
-  constructor(value: any) {
+  constructor(value: unknown) {
     if (this._isPrimitive(value)) {
       throw new TypeError(
         [
