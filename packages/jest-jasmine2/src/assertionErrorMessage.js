@@ -7,7 +7,8 @@
  * @flow
  */
 
-import type {DiffOptions} from 'jest-diff/src/diffStrings';
+// TODO: Converted to TS. It's also not exported, but should be imported from `matcher-utils`
+import type {DiffOptions} from 'jest-diff';
 
 import {diff, printReceived, printExpected} from 'jest-matcher-utils';
 import chalk from 'chalk';

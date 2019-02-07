@@ -3,16 +3,17 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-const stripAnsi = require('strip-ansi');
-const diff = require('../');
+import stripAnsi from 'strip-ansi';
+
+import diff from '../';
+import {DiffOptions} from '../types';
 
 const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
 
-const stripped = (a, b, options) => stripAnsi(diff(a, b, options));
+const stripped = (a: unknown, b: unknown, options?: DiffOptions) =>
+  stripAnsi(diff(a, b, options) || '');
 
 const unexpanded = {expand: false};
 const expanded = {expand: true};
