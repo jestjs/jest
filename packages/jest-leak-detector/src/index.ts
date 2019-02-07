@@ -64,7 +64,7 @@ export default class {
     }
   }
 
-  _isPrimitive(value: any): boolean {
+  private _isPrimitive(value: any): boolean {
     return value !== Object(value);
   }
 }
