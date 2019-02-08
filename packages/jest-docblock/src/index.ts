@@ -119,8 +119,8 @@ export function print({
   );
 }
 
-function printKeyValues<T>(key: string, valueOrArray: T | T[]) {
-  return ([] as T[])
+function printKeyValues(key: string, valueOrArray: string | string[]) {
+  return ([] as string[])
     .concat(valueOrArray)
     .map(value => `@${key} ${value}`.trim());
 }
