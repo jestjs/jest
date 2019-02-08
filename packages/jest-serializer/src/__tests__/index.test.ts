@@ -18,9 +18,7 @@ import serializer from '..';
 
 const v8s = [
   {
-    // @ts-ignore - Node 8+ only
     deserialize: v8.deserialize,
-    // @ts-ignore - Node 8+ only
     serialize: v8.serialize,
   },
   {
@@ -57,9 +55,7 @@ afterEach(() => {
 v8s.forEach((mockV8, i) => {
   describe('Using V8 implementation ' + i, () => {
     beforeEach(() => {
-      // @ts-ignore - Node 8+ only
       v8.serialize = mockV8.serialize;
-      // @ts-ignore - Node 8+ only
       v8.deserialize = mockV8.deserialize;
     });
 

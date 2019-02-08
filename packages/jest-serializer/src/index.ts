@@ -114,40 +114,28 @@ function jsonParse(content: string) {
 // In memory functions.
 
 export function deserialize(buffer: Buffer): any {
-  // @ts-ignore - Node 8+ only
   return v8.deserialize
-    ? //
-      // @ts-ignore - Node 8+ only
-      v8.deserialize(buffer)
+    ? v8.deserialize(buffer)
     : jsonParse(buffer.toString('utf8'));
 }
 
 export function serialize(content: unknown): Buffer {
-  // @ts-ignore - Node 8+ only
   return v8.serialize
-    ? //
-      // @ts-ignore - Node 8+ only
-      v8.serialize(content)
+    ? v8.serialize(content)
     : Buffer.from(jsonStringify(content));
 }
 
 // Synchronous filesystem functions.
 
 export function readFileSync(filePath: Path): any {
-  // @ts-ignore - Node 8+ only
   return v8.deserialize
-    ? //
-      // @ts-ignore - Node 8+ only
-      v8.deserialize(fs.readFileSync(filePath))
+    ? v8.deserialize(fs.readFileSync(filePath))
     : jsonParse(fs.readFileSync(filePath, 'utf8'));
 }
 
 export function writeFileSync(filePath: Path, content: any) {
-  // @ts-ignore - Node 8+ only
   return v8.serialize
-    ? //
-      // @ts-ignore - Node 8+ only
-      fs.writeFileSync(filePath, v8.serialize(content))
+    ? fs.writeFileSync(filePath, v8.serialize(content))
     : fs.writeFileSync(filePath, jsonStringify(content), 'utf8');
 }
 
