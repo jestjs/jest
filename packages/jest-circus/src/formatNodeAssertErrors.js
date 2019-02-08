@@ -11,6 +11,7 @@
 import type {DiffOptions} from 'jest-diff';
 import type {Event, State} from 'types/Circus';
 
+// $FlowFixMe: Converted to TS
 import {diff, printExpected, printReceived} from 'jest-matcher-utils';
 import chalk from 'chalk';
 // $FlowFixMe: Converted to TS

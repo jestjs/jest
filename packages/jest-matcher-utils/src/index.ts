@@ -64,7 +64,7 @@ export const SUGGEST_TO_CONTAIN_EQUAL = chalk.dim(
   'Looks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.',
 );
 
-export const stringify = (object: any, maxDepth: number = 10): string => {
+export const stringify = (object: unknown, maxDepth: number = 10): string => {
   const MAX_LENGTH = 10000;
   let result;
 
@@ -91,15 +91,15 @@ export const stringify = (object: any, maxDepth: number = 10): string => {
 export const highlightTrailingWhitespace = (text: string): string =>
   text.replace(/\s+$/gm, chalk.inverse('$&'));
 
-export const printReceived = (object: any) =>
+export const printReceived = (object: unknown) =>
   RECEIVED_COLOR(highlightTrailingWhitespace(stringify(object)));
-export const printExpected = (value: any) =>
+export const printExpected = (value: unknown) =>
   EXPECTED_COLOR(highlightTrailingWhitespace(stringify(value)));
 
 export const printWithType = (
   name: string, // 'Expected' or 'Received'
-  value: any,
-  print: (value: any) => string, // printExpected or printReceived
+  value: unknown,
+  print: (value: unknown) => string, // printExpected or printReceived
 ) => {
   const type = getType(value);
   const hasType =
@@ -111,7 +111,7 @@ export const printWithType = (
 };
 
 export const ensureNoExpected = (
-  expected: any,
+  expected: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
 ) => {
@@ -130,7 +130,7 @@ export const ensureNoExpected = (
   }
 };
 
-export const ensureActualIsNumber = (actual: any, matcherName: string) => {
+export const ensureActualIsNumber = (actual: unknown, matcherName: string) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof actual !== 'number') {
     throw new Error(
@@ -143,7 +143,10 @@ export const ensureActualIsNumber = (actual: any, matcherName: string) => {
   }
 };
 
-export const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
+export const ensureExpectedIsNumber = (
+  expected: unknown,
+  matcherName: string,
+) => {
   matcherName || (matcherName = 'This matcher');
   if (typeof expected !== 'number') {
     throw new Error(
@@ -157,8 +160,8 @@ export const ensureExpectedIsNumber = (expected: any, matcherName: string) => {
 };
 
 export const ensureNumbers = (
-  actual: any,
-  expected: any,
+  actual: unknown,
+  expected: unknown,
   matcherName: string,
 ) => {
   ensureActualIsNumber(actual, matcherName);
@@ -168,7 +171,7 @@ export const ensureNumbers = (
 // Sometimes, e.g. when comparing two numbers, the output from jest-diff
 // does not contain more information than the `Expected:` / `Received:` already gives.
 // In those cases, we do not print a diff to make the output shorter and not redundant.
-const shouldPrintDiff = (actual: any, expected: any) => {
+const shouldPrintDiff = (actual: unknown, expected: unknown) => {
   if (typeof actual === 'number' && typeof expected === 'number') {
     return false;
   }
