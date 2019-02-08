@@ -40,7 +40,7 @@ function spawnJest(
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},
-  spawnAsync: boolean,
+  spawnAsync: boolean = false,
 ) {
   const isRelative = !path.isAbsolute(dir);
 
