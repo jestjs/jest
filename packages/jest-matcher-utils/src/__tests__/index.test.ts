@@ -37,7 +37,7 @@ describe('.stringify()', () => {
   });
 
   test('circular references', () => {
-    const a = {};
+    const a: any = {};
     a.a = a;
     expect(stringify(a)).toBe('{"a": [Circular]}');
   });
@@ -75,8 +75,8 @@ describe('.stringify()', () => {
   });
 
   test('reduces maxDepth if stringifying very large objects', () => {
-    const big = {a: 1, b: {}};
-    const small = {a: 1, b: {}};
+    const big: any = {a: 1, b: {}};
+    const small: any = {a: 1, b: {}};
     for (let i = 0; i < 10000; i += 1) {
       big.b[i] = 'test';
     }
@@ -93,18 +93,21 @@ describe('.stringify()', () => {
 describe('.ensureNumbers()', () => {
   test('dont throw error when variables are numbers', () => {
     expect(() => {
+      // @ts-ignore
       ensureNumbers(1, 2);
     }).not.toThrow();
   });
 
   test('throws error when expected is not a number', () => {
     expect(() => {
+      // @ts-ignore
       ensureNumbers(1, 'not_a_number');
     }).toThrowErrorMatchingSnapshot();
   });
 
   test('throws error when received is not a number', () => {
     expect(() => {
+      // @ts-ignore
       ensureNumbers('not_a_number', 3);
     }).toThrowErrorMatchingSnapshot();
   });
@@ -113,6 +116,7 @@ describe('.ensureNumbers()', () => {
 describe('.ensureNoExpected()', () => {
   test('dont throw error when undefined', () => {
     expect(() => {
+      // @ts-ignore
       ensureNoExpected(undefined);
     }).not.toThrow();
   });
