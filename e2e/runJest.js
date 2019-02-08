@@ -10,7 +10,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import execa, {sync as spawnSync} from 'execa';
+import execa from 'execa';
 import {Writable} from 'readable-stream';
 import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
@@ -71,8 +71,11 @@ function spawnJest(
     timeout: options.timeout || 0,
   };
 
-  return (spawnAsync ? execa : execa.sync)
-    (process.execPath, spawnArgs, spawnOptions);
+  return (spawnAsync ? execa : execa.sync)(
+    process.execPath,
+    spawnArgs,
+    spawnOptions,
+  );
 }
 
 function normalizeResult(result, options) {
