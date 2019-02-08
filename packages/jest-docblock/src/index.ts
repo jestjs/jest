@@ -3,14 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import detectNewline from 'detect-newline';
 import {EOL} from 'os';
+import detectNewline from 'detect-newline';
 
-type Pragmas = {[key: string]: string | string[], __proto__: null};
+type Pragmas = {[key: string]: string | string[]};
 
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;
@@ -37,7 +35,7 @@ export function parse(docblock: string): Pragmas {
 
 export function parseWithComments(
   docblock: string,
-): {comments: string, pragmas: Pragmas} {
+): {comments: string; pragmas: Pragmas} {
   const line = detectNewline(docblock) || EOL;
 
   docblock = docblock
@@ -67,7 +65,7 @@ export function parseWithComments(
       typeof result[match[1]] === 'string' ||
       Array.isArray(result[match[1]])
     ) {
-      result[match[1]] = [].concat(result[match[1]], nextPragma);
+      result[match[1]] = ([] as string[]).concat(result[match[1]], nextPragma);
     } else {
       result[match[1]] = nextPragma;
     }
@@ -79,9 +77,8 @@ export function print({
   comments = '',
   pragmas = {},
 }: {
-  comments?: string,
-  pragmas?: Pragmas,
-  __proto__: null,
+  comments?: string;
+  pragmas?: Pragmas;
 }): string {
   const line = detectNewline(comments) || EOL;
   const head = '/**';
@@ -122,6 +119,8 @@ export function print({
   );
 }
 
-function printKeyValues(key, valueOrArray) {
-  return [].concat(valueOrArray).map(value => `@${key} ${value}`.trim());
+function printKeyValues<T>(key: string, valueOrArray: T | T[]) {
+  return ([] as T[])
+    .concat(valueOrArray)
+    .map(value => `@${key} ${value}`.trim());
 }
