@@ -3,11 +3,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-import type {MatcherHintOptions} from 'types/Matchers';
 
 import chalk from 'chalk';
 import jestDiff from 'jest-diff';
@@ -30,6 +26,14 @@ const PLUGINS = [
   Immutable,
   AsymmetricMatcher,
 ];
+
+export type MatcherHintOptions = {
+  comment?: string;
+  isDirectExpectCall?: boolean;
+  isNot?: boolean;
+  promise?: string;
+  secondArgument?: string;
+};
 
 export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
@@ -60,7 +64,7 @@ export const SUGGEST_TO_CONTAIN_EQUAL = chalk.dim(
   'Looks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.',
 );
 
-export const stringify = (object: any, maxDepth?: number = 10): string => {
+export const stringify = (object: any, maxDepth: number = 10): string => {
   const MAX_LENGTH = 10000;
   let result;
 
@@ -184,7 +188,7 @@ export const pluralize = (word: string, count: number) =>
 // return function which given each string, returns the label:
 // string, colon, space, and enough padding spaces to align the value.
 
-type PrintLabel = string => string;
+type PrintLabel = (string: string) => string;
 
 export const getLabelPrinter = (...strings: Array<string>): PrintLabel => {
   const maxLength = strings.reduce(
