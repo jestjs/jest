@@ -6,9 +6,7 @@
  *
  */
 
-'use strict';
-
-const {formatResultsErrors, formatExecError} = require('..');
+import {formatExecError, formatResultsErrors} from '..';
 
 const unixStackTrace =
   `  ` +
@@ -77,11 +75,16 @@ it('should exclude jasmine from stack trace for Unix paths.', () => {
       {
         ancestorTitles: [],
         failureMessages: [unixStackTrace],
+        fullName: 'full name',
+        location: null,
+        numPassingAsserts: 0,
+        status: 'failed',
         title: 'Unix test',
       },
     ],
     {
       rootDir: '',
+      testMatch: [],
     },
     {
       noStackTrace: false,
@@ -95,9 +98,11 @@ it('.formatExecError()', () => {
   const message = formatExecError(
     {
       message: 'Whoops!',
+      stack: '',
     },
     {
       rootDir: '',
+      testMatch: [],
     },
     {
       noStackTrace: false,
@@ -114,11 +119,16 @@ it('formatStackTrace should strip node internals', () => {
       {
         ancestorTitles: [],
         failureMessages: [assertionStack],
+        fullName: 'full name',
+        location: null,
+        numPassingAsserts: 0,
+        status: 'failed',
         title: 'Unix test',
       },
     ],
     {
       rootDir: '',
+      testMatch: [],
     },
     {
       noStackTrace: false,
@@ -134,11 +144,16 @@ it('should not exclude vendor from stack trace', () => {
       {
         ancestorTitles: [],
         failureMessages: [vendorStack],
+        fullName: 'full name',
+        location: null,
+        numPassingAsserts: 0,
+        status: 'failed',
         title: 'Vendor test',
       },
     ],
     {
       rootDir: '',
+      testMatch: [],
     },
     {
       noStackTrace: false,
@@ -154,11 +169,16 @@ it('retains message in babel code frame error', () => {
       {
         ancestorTitles: [],
         failureMessages: [babelStack],
+        fullName: 'full name',
+        location: null,
+        numPassingAsserts: 0,
+        status: 'failed',
         title: 'Babel test',
       },
     ],
     {
       rootDir: '',
+      testMatch: [],
     },
     {
       noStackTrace: false,
