@@ -3,17 +3,15 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {
+import {
   JestHookSubscriber,
   JestHookEmitter,
   FileChange,
   ShouldRunTestSuite,
   TestRunComplete,
-} from 'types/JestHooks';
+} from './types';
 
 type AvailableHooks =
   | 'onFileChange'
@@ -22,9 +20,9 @@ type AvailableHooks =
 
 class JestHooks {
   _listeners: {
-    onFileChange: Array<FileChange>,
-    onTestRunComplete: Array<TestRunComplete>,
-    shouldRunTestSuite: Array<ShouldRunTestSuite>,
+    onFileChange: Array<FileChange>;
+    onTestRunComplete: Array<TestRunComplete>;
+    shouldRunTestSuite: Array<ShouldRunTestSuite>;
   };
 
   constructor() {
@@ -61,14 +59,15 @@ class JestHooks {
         this._listeners.onTestRunComplete.forEach(listener =>
           listener(results),
         ),
-      shouldRunTestSuite: async testSuiteInfo =>
-        Promise.all(
+      shouldRunTestSuite: async testSuiteInfo => {
+        const result = await Promise.all(
           this._listeners.shouldRunTestSuite.map(listener =>
             listener(testSuiteInfo),
           ),
-        ).then(result =>
-          result.every(shouldRunTestSuite => shouldRunTestSuite),
-        ),
+        );
+
+        return result.every(shouldRunTestSuite => shouldRunTestSuite);
+      },
     };
   }
 }

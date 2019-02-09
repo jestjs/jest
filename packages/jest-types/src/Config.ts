@@ -213,6 +213,14 @@ export type InitialOptions = {
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
 
+type NotifyMode =
+  | 'always'
+  | 'failure'
+  | 'success'
+  | 'change'
+  | 'success-change'
+  | 'failure-change';
+
 export type GlobalConfig = {
   bail: number;
   changedSince: string;
@@ -260,7 +268,7 @@ export type GlobalConfig = {
   nonFlagArgs: Array<string>;
   noSCM: boolean | null | undefined;
   notify: boolean;
-  notifyMode: string;
+  notifyMode: NotifyMode;
   outputFile: Path | null | undefined;
   onlyChanged: boolean;
   onlyFailures: boolean;

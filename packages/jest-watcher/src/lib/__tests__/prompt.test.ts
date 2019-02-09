@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import Prompt from '../Prompt';
 import {KEYS} from '../../constants';
 

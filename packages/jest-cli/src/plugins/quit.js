@@ -21,7 +21,6 @@ class QuitPlugin extends BaseWatchPlugin {
 
   async run() {
     if (typeof this._stdin.setRawMode === 'function') {
-      // $FlowFixMe
       this._stdin.setRawMode(false);
     }
     this._stdout.write('\n');
