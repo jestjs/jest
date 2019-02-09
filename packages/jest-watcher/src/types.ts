@@ -47,6 +47,7 @@ export type AllowedConfigOptions = Partial<
   Pick<
     Config.GlobalConfig,
     | 'bail'
+    | 'changedSince'
     | 'collectCoverage'
     | 'collectCoverageFrom'
     | 'collectCoverageOnlyFrom'
