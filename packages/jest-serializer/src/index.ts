@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
 
 import fs from 'fs';
 import v8 from 'v8';
