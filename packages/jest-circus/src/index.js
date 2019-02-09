@@ -18,6 +18,7 @@ import type {
   TestMode,
 } from 'types/Circus';
 import {bind as bindEach} from 'jest-each';
+// $FlowFixMe: Converted to TS
 import {ErrorWithStack} from 'jest-util';
 import {dispatch} from './state';
 

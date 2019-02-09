@@ -14,7 +14,6 @@ import slash from 'slash';
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils from 'stack-utils';
 
-type Glob = Config.Glob;
 type Path = Config.Path;
 type AssertionResult = TestResult.AssertionResult;
 type SerializableError = TestResult.SerializableError;
@@ -33,12 +32,12 @@ try {
   // node internals in the browser though, so no issue.
 }
 
-type StackTraceConfig = {
-  rootDir: string;
-  testMatch: Array<Glob>;
-};
+export type StackTraceConfig = Pick<
+  Config.ProjectConfig,
+  'rootDir' | 'testMatch'
+>;
 
-type StackTraceOptions = {
+export type StackTraceOptions = {
   noStackTrace: boolean;
 };
 

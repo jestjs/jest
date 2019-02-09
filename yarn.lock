@@ -1533,11 +1533,6 @@
   dependencies:
     "@types/resolve" "*"
 
-"@types/callsites@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@types/callsites/-/callsites-2.0.0.tgz#df0db68ea34053651caee9975294be902fd04751"
-  integrity sha512-kUvhIE1ZlV4dYEyFnZ2lJLXMEOc7eLN6ejolVBQm0boUCX2t6p0M2nx+20UkEtDMJYtRQffuhcwO1h/U029QAw==
-
 "@types/camelcase@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@types/camelcase/-/camelcase-4.1.0.tgz#e054f7986f31658d49936261b5cd4588ef29d1ee"
@@ -1694,9 +1689,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "10.12.18"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.18.tgz#1d3ca764718915584fcd9f6344621b7672665c67"
-  integrity sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ==
+  version "10.12.24"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.24.tgz#b13564af612a22a20b5d95ca40f1bffb3af315cf"
+  integrity sha512-GWWbvt+z9G5otRBW8rssOFgRY87J9N/qbhqfjMZ+gUuL6zoL+Hm6gP/8qQBG4jjimqdaNLCehcVapZ/Fs2WjCQ==
 
 "@types/prompts@^1.2.0":
   version "1.2.0"
@@ -1727,6 +1722,13 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
+
+"@types/readable-stream@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@types/readable-stream/-/readable-stream-2.3.0.tgz#52e4b8bd8c2c222cadbe5366c833bc75fc975763"
+  integrity sha512-c0+lRjSeBakp3YJaP4BixI+sWWO5JFsG3wKAlUNl2olBB5sbXY8rgRbFbBwLkuuX3xSxNqpCZzeROJzMlsCdig==
+  dependencies:
+    "@types/node" "*"
 
 "@types/resolve@*":
   version "0.0.8"
@@ -11033,7 +11035,7 @@ read@1, read@~1.0.1:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-readable-stream@^3.0.3, readable-stream@^3.0.6:
+readable-stream@^3.0.3, readable-stream@^3.0.6, readable-stream@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.1.1.tgz#ed6bbc6c5ba58b090039ff18ce670515795aeb06"
   integrity sha512-DkN66hPyqDhnIQ6Jcsvx9bFjhw214O4poMBcIMgPVpQvNy9a0e0Uhg5SqySyDKAmUlwt8LonTBz1ezOnM8pUdA==

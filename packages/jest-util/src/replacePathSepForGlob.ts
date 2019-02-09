@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as Config from './Config';
-import * as Console from './Console';
-import * as SourceMaps from './SourceMaps';
-import * as TestResult from './TestResult';
+import {Config} from '@jest/types';
 
-export {Config, Console, SourceMaps, TestResult};
+export default function replacePathSepForGlob(path: Config.Path): Config.Glob {
+  return path.replace(/\\(?![{}()+?.^$])/g, '/');
+}
