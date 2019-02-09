@@ -30,8 +30,6 @@ if (!Object.getOwnPropertyDescriptors) {
   };
 }
 
-Symbol.for('hello');
-
 export default function deepCyclicCopy<T>(
   value: T,
   options: DeepCyclicCopyOptions = {blacklist: EMPTY, keepPrototype: false},
