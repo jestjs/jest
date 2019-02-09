@@ -72,7 +72,5 @@ export default function formatTestResults(
     formatResult(testResult, formatter, reporter),
   );
 
-  return Object.assign(Object.create(null) as any, results, {
-    testResults,
-  });
+  return {...results, testResults};
 }
