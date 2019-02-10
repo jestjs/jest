@@ -290,7 +290,10 @@ export default class TestScheduler {
     this.addReporter(
       this._globalConfig.verbose
         ? new VerboseReporter(this._globalConfig)
-        : new DefaultReporter(this._globalConfig),
+        : new DefaultReporter(
+            this._globalConfig,
+            getReporterOption('default', this._globalConfig.reporters),
+          ),
     );
 
     if (collectCoverage) {
@@ -383,4 +386,14 @@ const getEstimatedTime = (timings, workers) => {
   return timings.length <= workers
     ? max
     : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
+};
+
+const getReporterOption = (
+  reporterName: string,
+  reporters: Array<string | ReporterConfig>,
+): Object => {
+  const config = reporters.find(
+    item => Array.isArray(item) && item[0] === reporterName,
+  );
+  return (config && config[1]) || {};
 };

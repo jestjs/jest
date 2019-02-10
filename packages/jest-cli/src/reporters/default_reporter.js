@@ -33,17 +33,19 @@ type DefaultReporterOptions = {
   compact: boolean,
 };
 
-export default class DefaultReporter extends BaseReporter<DefaultReporterOptions> {
+export default class DefaultReporter extends BaseReporter {
   _clear: string; // ANSI clear sequence for the last printed status
   _err: write;
   _globalConfig: GlobalConfig;
+  _options: DefaultReporterOptions;
   _out: write;
   _status: Status;
   _bufferedOutput: Set<FlushBufferedOutput>;
 
-  constructor(globalConfig: GlobalConfig) {
+  constructor(globalConfig: GlobalConfig, options: ?DefaultReporterOptions) {
     super();
     this._globalConfig = globalConfig;
+    this._options = options || {};
     this._clear = '';
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
@@ -165,7 +167,7 @@ export default class DefaultReporter extends BaseReporter<DefaultReporterOptions
         test.context.config,
         testResult,
       );
-      if (this.getOptions().compact) {
+      if (this._options.compact) {
         this.printCompactFailureMessage(
           testResult.testFilePath,
           test.context.config,
