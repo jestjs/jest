@@ -9,5 +9,6 @@ import * as Config from './Config';
 import * as Console from './Console';
 import * as SourceMaps from './SourceMaps';
 import * as TestResult from './TestResult';
+import * as Mocks from './Mocks';
 
-export {Config, Console, SourceMaps, TestResult};
+export {Config, Console, SourceMaps, TestResult, Mocks};

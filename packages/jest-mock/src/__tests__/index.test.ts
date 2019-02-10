@@ -6,9 +6,7 @@
  *
  */
 
-'use strict';
-
-const vm = require('vm');
+import vm from 'vm';
 
 describe('moduleMocker', () => {
   let moduleMocker;
@@ -182,6 +180,7 @@ describe('moduleMocker', () => {
     it('mocks ES2015 non-enumerable static properties and methods', () => {
       class ClassFoo {
         static foo() {}
+        static fooProp: Function;
       }
       ClassFoo.fooProp = () => {};
 
