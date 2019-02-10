@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
-import {ErrorWithStack} from 'jest-util';
+import {ErrorWithStack, isPromise} from 'jest-util';
 import queueRunner, {
   Options as QueueRunnerOptions,
   QueueableFn,
@@ -415,10 +415,17 @@ export default function(j$: Jasmine) {
         currentDeclarationSuite = suite;
 
         let declarationError: null | Error = null;
+        let describeReturnValue: null | Error = null;
         try {
-          specDefinitions.call(suite);
+          describeReturnValue = specDefinitions.call(suite);
         } catch (e) {
           declarationError = e;
+        }
+
+        if (isPromise(describeReturnValue)) {
+          declarationError = new Error(
+            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
+          );
         }
 
         if (declarationError) {

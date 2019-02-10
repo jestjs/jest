@@ -6,7 +6,7 @@
  */
 
 import {bind as bindEach} from 'jest-each';
-import {ErrorWithStack} from 'jest-util';
+import {ErrorWithStack, isPromise} from 'jest-util';
 import {Global} from '@jest/types';
 import {
   BlockFn,
@@ -63,7 +63,13 @@ const _dispatchDescribe = (
     mode,
     name: 'start_describe_definition',
   });
-  blockFn();
+  const describeReturn = blockFn();
+  if (isPromise(describeReturn)) {
+    throw new ErrorWithStack(
+      'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
+      describeFn,
+    );
+  }
   dispatch({blockName, mode, name: 'finish_describe_definition'});
 };
 

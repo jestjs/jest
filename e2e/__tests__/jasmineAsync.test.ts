@@ -83,6 +83,13 @@ describe('async jasmine', () => {
     expect(json.numPendingTests).toBe(1);
   });
 
+  it('fails if describe returns a Promise', () => {
+    const result = runJest('jasmine-async', ['promiseDescribeFails.test.js']);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toMatch(/Tests must be defined synchronously/);
+  });
+
   it('throws when not a promise is returned', () => {
     const result = runWithJson('jasmine-async', ['returningValues.test.js']);
     const json = result.json;
