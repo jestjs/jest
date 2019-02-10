@@ -66,7 +66,7 @@ class JestHooks {
           ),
         );
 
-        return result.every(shouldRunTestSuite => shouldRunTestSuite);
+        return result.every(Boolean);
       },
     };
   }
