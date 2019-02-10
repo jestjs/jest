@@ -17,7 +17,8 @@ type MockFunctionMetadataType =
   | 'null'
   | 'undefined';
 
-export type MockFunctionMetadata<
+// TODO: bring this type export back once done with TS migration
+type MockFunctionMetadata<
   T,
   Y extends unknown[],
   Type = MockFunctionMetadataType
@@ -1091,6 +1092,7 @@ class ModuleMockerClass {
   }
 }
 
-export type ModuleMocker = ModuleMockerClass;
+// TODO: bring this type export back once done with TS migration
+// export type ModuleMocker = ModuleMockerClass;
 
-export default new ModuleMockerClass(global);
+export = new ModuleMockerClass(global);
