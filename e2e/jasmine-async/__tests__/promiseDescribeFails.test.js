@@ -8,7 +8,13 @@
 
 'use strict';
 
-describe('Promise describe fails', async () => {
-  await Promise.resolve();
-  it('not declared', () => {});
-});
+// TODO after dropping Node 6: Convert to async-await
+// describe('Promise describe fails', async () => {
+//   await Promise.resolve();
+//   it('not declared', () => {});
+// });
+
+describe('Promise describe fails', () =>
+  Promise.resolve().then(() => {
+    it('not declared', () => {});
+  }));
