@@ -8,7 +8,7 @@
  */
 
 import type {Path, ProjectConfig, GlobalConfig} from 'types/Config';
-import type {AggregatedResult} from 'types/TestResult';
+import type {AggregatedResult, AssertionResult} from 'types/TestResult';
 
 import path from 'path';
 import chalk from 'chalk';
@@ -272,4 +272,15 @@ export const wrapAnsiString = (string: string, terminalWidth: number) => {
       [''],
     )
     .join('\n');
+};
+
+export const getLocation = (assertionResult: AssertionResult) => {
+  if (assertionResult.location) {
+    return assertionResult.location;
+  }
+  const matches = assertionResult.failureMessages[0].match(/(\d+):(\d+)/);
+  return {
+    column: matches[2],
+    line: matches[1],
+  };
 };

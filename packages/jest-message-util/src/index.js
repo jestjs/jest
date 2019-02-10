@@ -310,13 +310,8 @@ export const formatResultsErrors = (
       message = indentAllLines(message, MESSAGE_INDENT);
 
       const title =
-        chalk.bold.red(
-          TITLE_INDENT +
-            TITLE_BULLET +
-            result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-            (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
-            result.title,
-        ) + '\n';
+        chalk.bold.red(TITLE_INDENT + TITLE_BULLET + formatFullTitle(result)) +
+        '\n';
 
       return title + '\n' + message + '\n' + stack;
     })
@@ -346,3 +341,10 @@ export const separateMessageFromStack = (content: string) => {
   const stack = messageMatch[2];
   return {message, stack};
 };
+
+export const formatFullTitle = (result: AssertionResult) =>
+  result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
+  (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
+  result.title;
+
+export {TITLE_INDENT, TITLE_BULLET};

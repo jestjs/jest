@@ -9,24 +9,31 @@
 
 /* global stream$Writable, tty$WriteStream */
 
-import type {AggregatedResult, TestResult} from 'types/TestResult';
+import type {
+  AggregatedResult,
+  AssertionResult,
+  TestResult,
+} from 'types/TestResult';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
 import {clearLine, getConsoleOutput, isInteractive} from 'jest-util';
+import {formatFullTitle, TITLE_INDENT, TITLE_BULLET} from 'jest-message-util';
 import chalk from 'chalk';
 import BaseReporter from './base_reporter';
 import Status from './Status';
 import getResultHeader from './get_result_header';
 import getSnapshotStatus from './get_snapshot_status';
+import {formatTestPath, getLocation} from './utils';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 type FlushBufferedOutput = () => void;
+type DefaultReporterOptions = {
+  compact: boolean,
+};
 
-const TITLE_BULLET = chalk.bold('\u25cf ');
-
-export default class DefaultReporter extends BaseReporter {
+export default class DefaultReporter extends BaseReporter<DefaultReporterOptions>{
   _clear: string; // ANSI clear sequence for the last printed status
   _err: write;
   _globalConfig: GlobalConfig;
@@ -158,11 +165,19 @@ export default class DefaultReporter extends BaseReporter {
         test.context.config,
         testResult,
       );
-      this.printTestFileFailureMessage(
-        testResult.testFilePath,
-        test.context.config,
-        testResult,
-      );
+      if (this.getOptions().compact) {
+        this.printCompactFailureMessage(
+          testResult.testFilePath,
+          test.context.config,
+          testResult,
+        );
+      } else {
+        this.printTestFileFailureMessage(
+          testResult.testFilePath,
+          test.context.config,
+          testResult,
+        );
+      }
     }
     this.forceFlushBufferedOutput();
   }
@@ -184,7 +199,7 @@ export default class DefaultReporter extends BaseReporter {
     const consoleBuffer = result.console;
     if (consoleBuffer && consoleBuffer.length) {
       this.log(
-        '  ' +
+        TITLE_INDENT +
           TITLE_BULLET +
           'Console\n\n' +
           getConsoleOutput(
@@ -207,5 +222,26 @@ export default class DefaultReporter extends BaseReporter {
     const didUpdate = this._globalConfig.updateSnapshot === 'all';
     const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
     snapshotStatuses.forEach(this.log);
+  }
+
+  printCompactFailureMessage(
+    testPath: Path,
+    config: ProjectConfig,
+    result: TestResult,
+  ) {
+    result.testResults.forEach((assertionResult: AssertionResult) => {
+      if (assertionResult.failureMessages.length) {
+        const location = getLocation(assertionResult);
+        const path = formatTestPath(
+          config ? config : this._globalConfig,
+          result.testFilePath,
+        );
+        const fullTitle = formatFullTitle(assertionResult);
+        const fullPath = `${path}:${location.line}:${location.column}`;
+        this.log(
+          TITLE_INDENT + chalk.red(TITLE_BULLET + fullTitle) + ' ' + fullPath,
+        );
+      }
+    });
   }
 }
