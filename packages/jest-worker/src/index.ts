@@ -3,39 +3,30 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-'use strict';
 
 import os from 'os';
 import WorkerPool from './WorkerPool';
 import Farm from './Farm';
-import type {
-  WorkerPoolInterface,
-  WorkerPoolOptions,
-  FarmOptions,
-} from './types';
-import type {Readable} from 'stream';
+import {WorkerPoolInterface, WorkerPoolOptions, FarmOptions} from './types';
 
 function getExposedMethods(
   workerPath: string,
   options: FarmOptions,
-): $ReadOnlyArray<string> {
+): ReadonlyArray<string> {
   let exposedMethods = options.exposedMethods;
 
   // If no methods list is given, try getting it by auto-requiring the module.
   if (!exposedMethods) {
-    // $FlowFixMe: This has to be a dynamic require.
     const module: Function | Object = require(workerPath);
 
     exposedMethods = Object.keys(module).filter(
+      // @ts-ignore: no index
       name => typeof module[name] === 'function',
     );
 
     if (typeof module === 'function') {
-      exposedMethods.push('default');
+      exposedMethods = [...exposedMethods, 'default'];
     }
   }
 
@@ -75,6 +66,7 @@ export default class JestWorker {
 
   constructor(workerPath: string, options?: FarmOptions) {
     this._options = {...options};
+    this._ending = false;
 
     const workerPoolOptions: WorkerPoolOptions = {
       enableWorkerThreads: this._options.enableWorkerThreads || false,
@@ -84,9 +76,15 @@ export default class JestWorker {
       setupArgs: this._options.setupArgs || [],
     };
 
-    this._workerPool = this._options.WorkerPool
-      ? new this._options.WorkerPool(workerPath, workerPoolOptions)
-      : new WorkerPool(workerPath, workerPoolOptions);
+    if (this._options.WorkerPool) {
+      // @ts-ignore: constructor target any?
+      this._workerPool = new this._options.WorkerPool(
+        workerPath,
+        workerPoolOptions,
+      );
+    } else {
+      this._workerPool = new WorkerPool(workerPath, workerPoolOptions);
+    }
 
     this._farm = new Farm(
       workerPoolOptions.numWorkers,
@@ -107,7 +105,7 @@ export default class JestWorker {
         throw new TypeError('Cannot define a method called ' + name);
       }
 
-      // $FlowFixMe: dynamic extension of the class instance is expected.
+      // @ts-ignore: dynamic extension of the class instance is expected.
       this[name] = this._callFunctionWithArgs.bind(this, name);
     });
   }
@@ -120,11 +118,11 @@ export default class JestWorker {
     return this._farm.doWork(method, ...args);
   }
 
-  getStderr(): Readable {
+  getStderr(): NodeJS.ReadableStream {
     return this._workerPool.getStderr();
   }
 
-  getStdout(): Readable {
+  getStdout(): NodeJS.ReadableStream {
     return this._workerPool.getStdout();
   }
 

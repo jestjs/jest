@@ -3,35 +3,23 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-'use strict';
 
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_ERROR,
   PARENT_MESSAGE_SETUP_ERROR,
   PARENT_MESSAGE_OK,
-} from '../types';
-
-import type {
   ChildMessageInitialize,
   ChildMessageCall,
-  PARENT_MESSAGE_ERROR,
 } from '../types';
 
-let file = null;
-let setupArgs: Array<mixed> = [];
+let file: string | null = null;
+let setupArgs: Array<unknown> = [];
 let initialized = false;
-
-/* eslint-disable import/no-unresolved */
-// $FlowFixMe: Flow doesn't support experimental node modules
-import {parentPort, isMainThread} from 'worker_threads';
-/* eslint-enable import/no-unresolved */
 
 /**
  * This file is a small bootstrapper for workers. It sets up the communication
@@ -46,7 +34,7 @@ import {parentPort, isMainThread} from 'worker_threads';
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-parentPort.on('message', (request: any) => {
+process.on('message', (request: any) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
@@ -71,11 +59,11 @@ parentPort.on('message', (request: any) => {
 });
 
 function reportSuccess(result: any) {
-  if (isMainThread) {
+  if (!process || !process.send) {
     throw new Error('Child can only be used on a forked process');
   }
 
-  parentPort.postMessage([PARENT_MESSAGE_OK, result]);
+  process.send([PARENT_MESSAGE_OK, result]);
 }
 
 function reportClientError(error: Error) {
@@ -87,7 +75,7 @@ function reportInitializeError(error: Error) {
 }
 
 function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
-  if (isMainThread) {
+  if (!process || !process.send) {
     throw new Error('Child can only be used on a forked process');
   }
 
@@ -95,7 +83,7 @@ function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
     error = new Error('"null" or "undefined" thrown');
   }
 
-  parentPort.postMessage([
+  process.send([
     type,
     error.constructor && error.constructor.name,
     error.message,
@@ -106,8 +94,7 @@ function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
 }
 
 function end(): void {
-  // $FlowFixMe: This has to be a dynamic require.
-  const main = require(file);
+  const main = require(file!);
 
   if (!main.teardown) {
     exitProcess();
@@ -122,11 +109,10 @@ function exitProcess(): void {
   process.exit(0);
 }
 
-function execMethod(method: string, args: $ReadOnlyArray<any>): void {
-  // $FlowFixMe: This has to be a dynamic require.
-  const main = require(file);
+function execMethod(method: string, args: Array<any>): void {
+  const main = require(file!);
 
-  let fn;
+  let fn: (...args: Array<unknown>) => unknown;
 
   if (method === 'default') {
     fn = main.__esModule ? main['default'] : main;
@@ -150,10 +136,10 @@ function execMethod(method: string, args: $ReadOnlyArray<any>): void {
 }
 
 function execFunction(
-  fn: (...args: $ReadOnlyArray<mixed>) => mixed,
-  ctx: mixed,
-  args: $ReadOnlyArray<mixed>,
-  onResult: (result: mixed) => void,
+  fn: (...args: Array<unknown>) => any | Promise<any>,
+  ctx: unknown,
+  args: Array<unknown>,
+  onResult: (result: unknown) => void,
   onError: (error: Error) => void,
 ): void {
   let result;

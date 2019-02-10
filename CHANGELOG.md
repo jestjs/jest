@@ -24,6 +24,7 @@
 - `[jest-util]`: Migrate to TypeScript ([#7844](https://github.com/facebook/jest/pull/7844))
 - `[jest-watcher]`: Migrate to TypeScript ([#7843](https://github.com/facebook/jest/pull/7843))
 - `[jest-mock]`: Migrate to TypeScript ([#7847](https://github.com/facebook/jest/pull/7847), [#7850](https://github.com/facebook/jest/pull/7850))
+- `[jest-worker]`: Migrate to TypeScript ([#7853](https://github.com/facebook/jest/pull/7853))
 
 ### Performance
 

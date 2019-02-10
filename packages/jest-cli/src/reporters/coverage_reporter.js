@@ -159,7 +159,6 @@ export default class CoverageReporter extends BaseReporter {
     if (this._globalConfig.maxWorkers <= 1) {
       worker = require('./coverage_worker');
     } else {
-      // $FlowFixMe: assignment of a worker with custom properties.
       worker = new Worker(require.resolve('./coverage_worker'), {
         exposedMethods: ['worker'],
         maxRetries: 2,

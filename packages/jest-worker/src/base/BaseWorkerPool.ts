@@ -3,26 +3,24 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-'use strict';
-
-import mergeStream from 'merge-stream';
 import path from 'path';
+import mergeStream from 'merge-stream';
 
-import {CHILD_MESSAGE_END} from '../types';
-
-import type {Readable} from 'stream';
-import type {WorkerPoolOptions, WorkerOptions, WorkerInterface} from '../types';
+import {
+  CHILD_MESSAGE_END,
+  WorkerPoolOptions,
+  WorkerOptions,
+  WorkerInterface,
+} from '../types';
 
 /* istanbul ignore next */
 const emptyMethod = () => {};
 
 export default class BaseWorkerPool {
-  _stderr: Readable;
-  _stdout: Readable;
+  _stderr: NodeJS.ReadableStream;
+  _stdout: NodeJS.ReadableStream;
   _options: WorkerPoolOptions;
   _workers: Array<WorkerInterface>;
 
@@ -67,11 +65,11 @@ export default class BaseWorkerPool {
     this._stderr = stderr;
   }
 
-  getStderr(): Readable {
+  getStderr(): NodeJS.ReadableStream {
     return this._stderr;
   }
 
-  getStdout(): Readable {
+  getStdout(): NodeJS.ReadableStream {
     return this._stdout;
   }
 
@@ -83,7 +81,7 @@ export default class BaseWorkerPool {
     return this._workers[workerId];
   }
 
-  createWorker(workerOptions: WorkerOptions): WorkerInterface {
+  createWorker(_workerOptions: WorkerOptions): WorkerInterface {
     throw Error('Missing method createWorker in WorkerPool');
   }
 
