@@ -23,7 +23,7 @@
 - `[@jest/types]`: New package to handle shared types ([#7834](https://github.com/facebook/jest/pull/7834))
 - `[jest-util]`: Migrate to TypeScript ([#7844](https://github.com/facebook/jest/pull/7844))
 - `[jest-watcher]`: Migrate to TypeScript ([#7843](https://github.com/facebook/jest/pull/7843))
-- `[jest-mock]`: Migrate to TypeScript ([#7847](https://github.com/facebook/jest/pull/7847))
+- `[jest-mock]`: Migrate to TypeScript ([#7847](https://github.com/facebook/jest/pull/7847), [#7850](https://github.com/facebook/jest/pull/7850))
 
 ### Performance
 

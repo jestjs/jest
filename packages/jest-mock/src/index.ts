@@ -53,6 +53,16 @@ type MockFunctionConfig = {
   specificMockImpls: Array<Function>;
 };
 
+// see https://github.com/Microsoft/TypeScript/issues/25215
+type NonFunctionPropertyNames<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any ? never : K
+}[keyof T] &
+  string;
+type FunctionPropertyNames<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never
+}[keyof T] &
+  string;
+
 interface Mock<T, Y extends unknown[] = unknown[]>
   extends Function,
     MockInstance<T, Y> {
@@ -328,12 +338,12 @@ function isReadonlyProp(object: any, prop: string): boolean {
 }
 
 class ModuleMockerClass {
-  _environmentGlobal: Global;
-  _mockState: WeakMap<Mock<any, any>, MockFunctionState<any, any>>;
-  _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
-  _spyState: Set<() => void>;
+  private _environmentGlobal: Global;
+  private _mockState: WeakMap<Mock<any, any>, MockFunctionState<any, any>>;
+  private _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
+  private _spyState: Set<() => void>;
+  private _invocationCallCounter: number;
   ModuleMocker: typeof ModuleMockerClass;
-  _invocationCallCounter: number;
 
   /**
    * @see README.md
@@ -349,7 +359,7 @@ class ModuleMockerClass {
     this._invocationCallCounter = 1;
   }
 
-  _getSlots(object?: Object): Array<string> {
+  private _getSlots(object?: Object): Array<string> {
     if (!object) {
       return [];
     }
@@ -396,7 +406,9 @@ class ModuleMockerClass {
     return Array.from(slots);
   }
 
-  _ensureMockConfig<T, Y extends unknown[]>(f: Mock<T, Y>): MockFunctionConfig {
+  private _ensureMockConfig<T, Y extends unknown[]>(
+    f: Mock<T, Y>,
+  ): MockFunctionConfig {
     let config = this._mockConfigRegistry.get(f);
     if (!config) {
       config = this._defaultMockConfig();
@@ -405,7 +417,7 @@ class ModuleMockerClass {
     return config;
   }
 
-  _ensureMockState<T, Y extends unknown[]>(
+  private _ensureMockState<T, Y extends unknown[]>(
     f: Mock<T, Y>,
   ): MockFunctionState<T, Y> {
     let state = this._mockState.get(f);
@@ -416,7 +428,7 @@ class ModuleMockerClass {
     return state;
   }
 
-  _defaultMockConfig(): MockFunctionConfig {
+  private _defaultMockConfig(): MockFunctionConfig {
     return {
       defaultReturnValue: undefined,
       isReturnValueLastSet: false,
@@ -427,7 +439,7 @@ class ModuleMockerClass {
     };
   }
 
-  _defaultMockState<T, Y extends unknown[]>(): MockFunctionState<T, Y> {
+  private _defaultMockState<T, Y extends unknown[]>(): MockFunctionState<T, Y> {
     return {
       calls: [],
       instances: [],
@@ -436,19 +448,19 @@ class ModuleMockerClass {
     };
   }
 
-  _makeComponent<T, Y extends unknown[]>(
+  private _makeComponent<T, Y extends unknown[]>(
     metadata: Mocks.MockFunctionMetadata<T, Y, 'object'>,
     restore?: () => void,
   ): Object;
-  _makeComponent<T, Y extends unknown[]>(
+  private _makeComponent<T, Y extends unknown[]>(
     metadata: Mocks.MockFunctionMetadata<T, Y, 'array'>,
     restore?: () => void,
   ): Array<unknown>;
-  _makeComponent<T, Y extends unknown[]>(
+  private _makeComponent<T, Y extends unknown[]>(
     metadata: Mocks.MockFunctionMetadata<T, Y, 'regexp'>,
     restore?: () => void,
   ): RegExp;
-  _makeComponent<T, Y extends unknown[]>(
+  private _makeComponent<T, Y extends unknown[]>(
     metadata: Mocks.MockFunctionMetadata<
       T,
       Y,
@@ -456,11 +468,11 @@ class ModuleMockerClass {
     >,
     restore?: () => void,
   ): T;
-  _makeComponent<T, Y extends unknown[]>(
+  private _makeComponent<T, Y extends unknown[]>(
     metadata: Mocks.MockFunctionMetadata<T, Y, 'function'>,
     restore?: () => void,
   ): Mock<T, Y>;
-  _makeComponent<T, Y extends unknown[]>(
+  private _makeComponent<T, Y extends unknown[]>(
     metadata: Mocks.MockFunctionMetadata<T, Y>,
     restore?: () => void,
   ): Object | Array<unknown> | RegExp | T | undefined | Mock<T, Y> {
@@ -706,7 +718,7 @@ class ModuleMockerClass {
     }
   }
 
-  _createMockFunction<T, Y extends unknown[]>(
+  private _createMockFunction<T, Y extends unknown[]>(
     metadata: Mocks.MockFunctionMetadata<T, Y>,
     mockConstructor: Function,
   ): Function {
@@ -766,7 +778,7 @@ class ModuleMockerClass {
     return createConstructor(mockConstructor);
   }
 
-  _generateMock<T, Y extends unknown[]>(
+  private _generateMock<T, Y extends unknown[]>(
     metadata: Mocks.MockFunctionMetadata<T, Y>,
     callbacks: Array<Function>,
     refs: {
@@ -899,7 +911,7 @@ class ModuleMockerClass {
     return metadata;
   }
 
-  isMockFunction(fn: any): boolean {
+  isMockFunction<T>(fn: any): fn is Mock<T> {
     return !!fn && fn._isMockFunction === true;
   }
 
@@ -912,26 +924,26 @@ class ModuleMockerClass {
     return fn;
   }
 
-  spyOn<T extends {}, M extends keyof T>(
+  spyOn<T extends {}, M extends NonFunctionPropertyNames<T>>(
     object: T,
     methodName: M,
     accessType: 'get',
   ): SpyInstance<T[M], []>;
 
-  spyOn<T extends {}, M extends keyof T>(
+  spyOn<T extends {}, M extends NonFunctionPropertyNames<T>>(
     object: T,
     methodName: M,
     accessType: 'set',
   ): SpyInstance<void, [T[M]]>;
 
-  spyOn<T extends {}, M extends keyof T>(
+  spyOn<T extends {}, M extends FunctionPropertyNames<T>>(
     object: T,
     methodName: M,
   ): T[M] extends (...args: any[]) => any
     ? SpyInstance<ReturnType<T[M]>, ArgsType<T[M]>>
     : never;
 
-  spyOn<T extends {}, M extends keyof T>(
+  spyOn<T extends {}, M extends NonFunctionPropertyNames<T>>(
     object: T,
     methodName: M,
     accessType?: 'get' | 'set',
@@ -973,7 +985,7 @@ class ModuleMockerClass {
     return object[methodName];
   }
 
-  _spyOnProperty<T extends {}, M extends keyof T>(
+  private _spyOnProperty<T extends {}, M extends NonFunctionPropertyNames<T>>(
     obj: T,
     propertyName: M,
     accessType: 'get' | 'set' = 'get',
@@ -1060,7 +1072,7 @@ class ModuleMockerClass {
     this._spyState = new Set();
   }
 
-  _typeOf(value: any): string {
+  private _typeOf(value: any): string {
     return value == null ? '' + value : typeof value;
   }
 }
