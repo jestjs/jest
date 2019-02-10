@@ -29,7 +29,7 @@ import {formatTestPath, getLocation} from './utils';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 type FlushBufferedOutput = () => void;
-type DefaultReporterOptions = {
+export type DefaultReporterOptions = {
   compact: boolean,
 };
 
@@ -42,7 +42,7 @@ export default class DefaultReporter extends BaseReporter {
   _status: Status;
   _bufferedOutput: Set<FlushBufferedOutput>;
 
-  constructor(globalConfig: GlobalConfig, options?: DefaultReporterOptions) {
+  constructor(globalConfig: GlobalConfig, options: ?DefaultReporterOptions) {
     super();
     this._globalConfig = globalConfig;
     this._options = options || {};

@@ -289,10 +289,13 @@ export default class TestScheduler {
   _setupDefaultReporters(collectCoverage: boolean) {
     this.addReporter(
       this._globalConfig.verbose
-        ? new VerboseReporter(this._globalConfig)
+        ? new VerboseReporter(
+            this._globalConfig,
+            this._getReporterOption('verbose'),
+          )
         : new DefaultReporter(
             this._globalConfig,
-            getReporterOption('default', this._globalConfig.reporters || []),
+            this._getReporterOption('default'),
           ),
     );
 
@@ -367,6 +370,14 @@ export default class TestScheduler {
     }
     return Promise.resolve();
   }
+
+  _getReporterOption(reporterName: string): Object {
+    const reporters = this._globalConfig.reporters || [];
+    const config = reporters.find(
+      item => Array.isArray(item) && item[0] === reporterName,
+    );
+    return (config && config[1]) || {};
+  }
 }
 
 const createAggregatedResults = (numTotalTestSuites: number) => {
@@ -386,14 +397,4 @@ const getEstimatedTime = (timings, workers) => {
   return timings.length <= workers
     ? max
     : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);
-};
-
-const getReporterOption = (
-  reporterName: string,
-  reporters: Array<string | ReporterConfig>,
-): Object => {
-  const config = reporters.find(
-    item => Array.isArray(item) && item[0] === reporterName,
-  );
-  return (config && config[1]) || {};
 };

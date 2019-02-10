@@ -19,14 +19,15 @@ import type {Test} from 'types/TestRunner';
 import chalk from 'chalk';
 import {specialChars} from 'jest-util';
 import DefaultReporter from './default_reporter';
+import type {DefaultReporterOptions} from './default_reporter';
 
 const {ICONS} = specialChars;
 
 export default class VerboseReporter extends DefaultReporter {
   _globalConfig: GlobalConfig;
 
-  constructor(globalConfig: GlobalConfig) {
-    super(globalConfig);
+  constructor(globalConfig: GlobalConfig, options: DefaultReporterOptions) {
+    super(globalConfig, options);
     this._globalConfig = globalConfig;
   }
 
