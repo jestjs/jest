@@ -10,4 +10,6 @@ module.exports = {
 
   // The test environment that will be used for testing
   testEnvironment: './mongo-environment.js',
+
+  transformIgnorePatterns: ['/node_modules/', '/packages/'],
 };
