@@ -478,8 +478,6 @@ class ModuleMockerClass {
     ) {
       return metadata.value;
     } else if (metadata.type === 'function') {
-      let f: Mock<T, Y>;
-
       const prototype =
         (metadata.members &&
           metadata.members.prototype &&
@@ -593,7 +591,7 @@ class ModuleMockerClass {
         return finalReturnValue;
       }, metadata.length || 0);
 
-      f = (this._createMockFunction(
+      const f = (this._createMockFunction(
         metadata,
         mockConstructor,
       ) as unknown) as Mock<T, Y>;
