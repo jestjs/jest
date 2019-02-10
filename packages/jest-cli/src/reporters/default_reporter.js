@@ -33,7 +33,7 @@ type DefaultReporterOptions = {
   compact: boolean,
 };
 
-export default class DefaultReporter extends BaseReporter<DefaultReporterOptions>{
+export default class DefaultReporter extends BaseReporter<DefaultReporterOptions> {
   _clear: string; // ANSI clear sequence for the last printed status
   _err: write;
   _globalConfig: GlobalConfig;
