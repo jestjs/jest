@@ -5,13 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// not yet migrated to TS
-// import {ModuleMocker} from 'jest-mock';
-
-type ModuleMocker = any;
-
+import mock from 'jest-mock';
 import {formatStackTrace, StackTraceConfig} from 'jest-message-util';
 import setGlobal from './setGlobal';
+
+type ModuleMocker = typeof mock;
 
 /**
  * We don't know the type of arguments for a callback ahead of time which is why
@@ -356,8 +354,10 @@ export default class FakeTimers<TimerRef> {
 
   _createMocks() {
     const fn = (impl: Function) =>
+      // @ts-ignore TODO: figure out better typings here
       this._moduleMocker.fn().mockImplementation(impl);
 
+    // TODO: add better typings; these are mocks, but typed as regular timers
     this._fakeTimerAPIs = {
       clearImmediate: fn(this._fakeClearImmediate.bind(this)),
       clearInterval: fn(this._fakeClearTimer.bind(this)),

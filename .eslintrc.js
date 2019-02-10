@@ -25,6 +25,7 @@ module.exports = {
           {argsIgnorePattern: '^_'},
         ],
         'import/order': 'error',
+        'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
       },
     },
