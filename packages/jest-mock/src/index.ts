@@ -5,33 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-type Global = NodeJS.Global;
+import {Mocks} from '@jest/types';
 
-type MockFunctionMetadataType =
-  | 'object'
-  | 'array'
-  | 'regexp'
-  | 'function'
-  | 'constant'
-  | 'collection'
-  | 'null'
-  | 'undefined';
-
-// TODO: bring this type export back once done with TS migration
-type MockFunctionMetadata<
-  T,
-  Y extends unknown[],
-  Type = MockFunctionMetadataType
-> = {
-  ref?: number;
-  members?: {[key: string]: MockFunctionMetadata<T, Y>};
-  mockImpl?: (...args: Y) => T;
-  name?: string;
-  refID?: number;
-  type?: Type;
-  value?: T;
-  length?: number;
-};
+type Global = NodeJS.Global; // | Window – add once TS improves typings;
 
 /**
  * Possible types of a MockFunctionResult.
@@ -287,7 +263,7 @@ function getObjectType(value: unknown): string {
   return Object.prototype.toString.apply(value).slice(8, -1);
 }
 
-function getType(ref?: unknown): MockFunctionMetadataType | null {
+function getType(ref?: unknown): Mocks.MockFunctionMetadataType | null {
   const typeName = getObjectType(ref);
   if (
     typeName === 'Function' ||
@@ -461,19 +437,19 @@ class ModuleMockerClass {
   }
 
   _makeComponent<T, Y extends unknown[]>(
-    metadata: MockFunctionMetadata<T, Y, 'object'>,
+    metadata: Mocks.MockFunctionMetadata<T, Y, 'object'>,
     restore?: () => void,
   ): Object;
   _makeComponent<T, Y extends unknown[]>(
-    metadata: MockFunctionMetadata<T, Y, 'array'>,
+    metadata: Mocks.MockFunctionMetadata<T, Y, 'array'>,
     restore?: () => void,
   ): Array<unknown>;
   _makeComponent<T, Y extends unknown[]>(
-    metadata: MockFunctionMetadata<T, Y, 'regexp'>,
+    metadata: Mocks.MockFunctionMetadata<T, Y, 'regexp'>,
     restore?: () => void,
   ): RegExp;
   _makeComponent<T, Y extends unknown[]>(
-    metadata: MockFunctionMetadata<
+    metadata: Mocks.MockFunctionMetadata<
       T,
       Y,
       'constant' | 'collection' | 'null' | 'undefined'
@@ -481,11 +457,11 @@ class ModuleMockerClass {
     restore?: () => void,
   ): T;
   _makeComponent<T, Y extends unknown[]>(
-    metadata: MockFunctionMetadata<T, Y, 'function'>,
+    metadata: Mocks.MockFunctionMetadata<T, Y, 'function'>,
     restore?: () => void,
   ): Mock<T, Y>;
   _makeComponent<T, Y extends unknown[]>(
-    metadata: MockFunctionMetadata<T, Y>,
+    metadata: Mocks.MockFunctionMetadata<T, Y>,
     restore?: () => void,
   ): Object | Array<unknown> | RegExp | T | undefined | Mock<T, Y> {
     if (metadata.type === 'object') {
@@ -733,7 +709,7 @@ class ModuleMockerClass {
   }
 
   _createMockFunction<T, Y extends unknown[]>(
-    metadata: MockFunctionMetadata<T, Y>,
+    metadata: Mocks.MockFunctionMetadata<T, Y>,
     mockConstructor: Function,
   ): Function {
     let name = metadata.name;
@@ -793,7 +769,7 @@ class ModuleMockerClass {
   }
 
   _generateMock<T, Y extends unknown[]>(
-    metadata: MockFunctionMetadata<T, Y>,
+    metadata: Mocks.MockFunctionMetadata<T, Y>,
     callbacks: Array<Function>,
     refs: {
       [key: string]:
@@ -843,7 +819,7 @@ class ModuleMockerClass {
    * getMetadata method of this module.
    */
   generateFromMetadata<T, Y extends unknown[]>(
-    _metadata: MockFunctionMetadata<T, Y>,
+    _metadata: Mocks.MockFunctionMetadata<T, Y>,
   ): Mock<T, Y> {
     const callbacks: Function[] = [];
     const refs = {};
@@ -859,7 +835,7 @@ class ModuleMockerClass {
   getMetadata<T, Y extends unknown[]>(
     component: T,
     _refs?: Map<T, number>,
-  ): MockFunctionMetadata<T, Y> | null {
+  ): Mocks.MockFunctionMetadata<T, Y> | null {
     const refs = _refs || new Map<T, number>();
     const ref = refs.get(component);
     if (ref != null) {
@@ -871,7 +847,7 @@ class ModuleMockerClass {
       return null;
     }
 
-    const metadata: MockFunctionMetadata<T, Y> = {type};
+    const metadata: Mocks.MockFunctionMetadata<T, Y> = {type};
     if (
       type === 'constant' ||
       type === 'collection' ||
@@ -893,7 +869,9 @@ class ModuleMockerClass {
     metadata.refID = refs.size;
     refs.set(component, metadata.refID);
 
-    let members: {[key: string]: MockFunctionMetadata<T, Y>} | null = null;
+    let members: {
+      [key: string]: Mocks.MockFunctionMetadata<T, Y>;
+    } | null = null;
     // Leave arrays alone
     if (type !== 'array') {
       this._getSlots(component).forEach(slot => {
@@ -1054,11 +1032,8 @@ class ModuleMockerClass {
       }
 
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
-        if (!descriptor) {
-          return;
-        }
-        descriptor[accessType] = original;
-        Object.defineProperty(obj, propertyName, descriptor);
+        descriptor![accessType] = original;
+        Object.defineProperty(obj, propertyName, descriptor!);
       });
 
       (descriptor[accessType] as Mock<T>).mockImplementation(function(
