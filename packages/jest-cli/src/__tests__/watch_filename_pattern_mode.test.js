@@ -157,7 +157,7 @@ describe('Watch mode flows', () => {
     // globalConfig is updated with the current pattern
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchSnapshot();
   });
-  it('Pressing "P" enters pattern mode and invalid regexp', () => {
+  it('Pressing "P" enters pattern mode (invalid regexp)', () => {
     contexts[0].config = {
       rootDir: ''
     };
