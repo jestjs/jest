@@ -3,8 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 import chalk from 'chalk';
@@ -31,7 +29,7 @@ export default (testName: string, pattern: string, width: number) => {
     return chalk.dim(inlineTestName);
   }
 
-  const startPatternIndex = Math.max(match.index, 0);
+  const startPatternIndex = Math.max(match.index || 0, 0);
   const endPatternIndex = startPatternIndex + match[0].length;
 
   if (inlineTestName.length <= width) {

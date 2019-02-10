@@ -3,13 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-'use strict';
-
-import type {ScrollOptions} from 'types/Watch';
+import {ScrollOptions} from '../types';
 
 export default function scroll(size: number, {offset, max}: ScrollOptions) {
   let start = 0;
