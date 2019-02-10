@@ -22,6 +22,7 @@ import type {
   TestName,
   TestResults,
 } from 'types/Circus';
+// $FlowFixMe: Converted to TS
 import {convertDescriptorToString} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
