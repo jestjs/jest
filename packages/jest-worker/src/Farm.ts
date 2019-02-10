@@ -3,35 +3,32 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-'use strict';
-
-import type {
+import {
   ChildMessage,
+  FarmOptions,
   QueueChildMessage,
   WorkerInterface,
   OnStart,
   OnEnd,
+  CHILD_MESSAGE_CALL,
 } from './types';
-import {CHILD_MESSAGE_CALL} from './types';
 
 export default class Farm {
-  _computeWorkerKey: (string, ...Array<any>) => ?string;
-  _cacheKeys: {[string]: WorkerInterface, __proto__: null};
+  _computeWorkerKey: FarmOptions['computeWorkerKey'];
+  _cacheKeys: {[key: string]: WorkerInterface};
   _callback: Function;
   _last: Array<QueueChildMessage>;
   _locks: Array<boolean>;
   _numOfWorkers: number;
   _offset: number;
-  _queue: Array<?QueueChildMessage>;
+  _queue: Array<QueueChildMessage | null>;
 
   constructor(
     numOfWorkers: number,
     callback: Function,
-    computeWorkerKey?: (string, ...Array<any>) => ?string,
+    computeWorkerKey?: FarmOptions['computeWorkerKey'],
   ) {
     this._callback = callback;
     this._numOfWorkers = numOfWorkers;
@@ -45,16 +42,16 @@ export default class Farm {
     }
   }
 
-  doWork(method: string, ...args: Array<any>): Promise<mixed> {
+  doWork(method: string, ...args: Array<any>): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const computeWorkerKey = this._computeWorkerKey;
       const request: ChildMessage = [CHILD_MESSAGE_CALL, false, method, args];
 
-      let worker: ?WorkerInterface = null;
-      let hash: ?string = null;
+      let worker: WorkerInterface | null = null;
+      let hash: string | null = null;
 
       if (computeWorkerKey) {
-        hash = computeWorkerKey.apply(this, [method].concat(args));
+        hash = computeWorkerKey.call(this, method, ...args);
         worker = hash == null ? null : this._cacheKeys[hash];
       }
 
@@ -64,7 +61,7 @@ export default class Farm {
         }
       };
 
-      const onEnd: OnEnd = (error: ?Error, result: ?mixed) => {
+      const onEnd: OnEnd = (error: Error | null, result: unknown) => {
         if (error) {
           reject(error);
         } else {
@@ -81,11 +78,11 @@ export default class Farm {
     });
   }
 
-  _getNextJob(workerId: number): ?QueueChildMessage {
+  _getNextJob(workerId: number): QueueChildMessage | null {
     let queueHead = this._queue[workerId];
 
     while (queueHead && queueHead.request[1]) {
-      queueHead = queueHead.next;
+      queueHead = queueHead.next || null;
     }
 
     this._queue[workerId] = queueHead;
@@ -104,7 +101,7 @@ export default class Farm {
       return this;
     }
 
-    const onEnd = (error: ?Error, result: mixed) => {
+    const onEnd = (error: Error | null, result: unknown) => {
       job.onEnd(error, result);
       this.unlock(workerId);
       this._process(workerId);
