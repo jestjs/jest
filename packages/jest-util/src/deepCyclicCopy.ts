@@ -18,13 +18,12 @@ if (!Object.getOwnPropertyDescriptors) {
   Object.getOwnPropertyDescriptors = obj => {
     const list: {[key: string]: PropertyDescriptor | undefined} = {};
 
-    Object.getOwnPropertyNames(obj)
-      // @ts-ignore: assignment with a Symbol is OK.
+    (Object.getOwnPropertyNames(obj) as Array<string | symbol>)
       .concat(Object.getOwnPropertySymbols(obj))
-      .forEach(
-        (key: string) =>
-          (list[key] = Object.getOwnPropertyDescriptor(obj, key)),
-      );
+      .forEach(key => {
+        // @ts-ignore: assignment with a Symbol is OK.
+        list[key] = Object.getOwnPropertyDescriptor(obj, key);
+      });
 
     return list;
   };

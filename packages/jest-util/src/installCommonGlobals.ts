@@ -55,9 +55,9 @@ export default function(
 
   // Forward some APIs.
   DTRACE.forEach(dtrace => {
-    // @ts-ignore
+    // @ts-ignore: no index
     globalObject[dtrace] = function(...args: Array<any>) {
-      // @ts-ignore
+      // @ts-ignore: no index
       return global[dtrace].apply(this, args);
     };
   });

@@ -29,10 +29,9 @@ export default function convertDescriptorToString(
   const stringified = descriptor.toString();
   const typeDescriptorMatch = stringified.match(/class|function/);
   const indexOfNameSpace =
-    // @ts-ignore
+    // @ts-ignore: typeDescriptorMatch exists
     typeDescriptorMatch.index + typeDescriptorMatch[0].length;
-  // @ts-ignore
-  const indexOfNameAfterSpace = stringified.search(/\(|\{/, indexOfNameSpace);
+  const indexOfNameAfterSpace = stringified.search(/\(|\{/);
   const name = stringified.substring(indexOfNameSpace, indexOfNameAfterSpace);
   return name.trim();
 }
