@@ -5,10 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-type ModuleMocker = typeof import('jest-mock');
-
+import mock from 'jest-mock';
 import {formatStackTrace, StackTraceConfig} from 'jest-message-util';
 import setGlobal from './setGlobal';
+
+type ModuleMocker = typeof mock;
 
 /**
  * We don't know the type of arguments for a callback ahead of time which is why
