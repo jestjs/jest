@@ -911,7 +911,7 @@ class ModuleMockerClass {
     return metadata;
   }
 
-  isMockFunction<T, Y extends unknown[]>(fn: any): fn is Mock<T, Y> {
+  isMockFunction<T>(fn: any): fn is Mock<T> {
     return !!fn && fn._isMockFunction === true;
   }
 
