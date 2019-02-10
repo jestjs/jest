@@ -68,21 +68,21 @@ interface MockInstance<T, Y extends unknown[]> {
   getMockName(): string;
   getMockImplementation(): Function | undefined;
   mock: MockFunctionState<T, Y>;
-  mockClear(): void;
-  mockReset(): void;
+  mockClear(): this;
+  mockReset(): this;
   mockRestore(): void;
-  mockImplementation(fn: (...args: Y) => T): Mock<T, Y>;
-  mockImplementation(fn: () => Promise<T>): Mock<T, Y>;
-  mockImplementationOnce(fn: (...args: Y) => T): Mock<T, Y>;
-  mockImplementationOnce(fn: () => Promise<T>): Mock<T, Y>;
-  mockName(name: string): Mock<T, Y>;
-  mockReturnThis(): Mock<T, Y>;
-  mockReturnValue(value: T): Mock<T, Y>;
-  mockReturnValueOnce(value: T): Mock<T, Y>;
-  mockResolvedValue(value: T): Mock<T, Y>;
-  mockResolvedValueOnce(value: T): Mock<T, Y>;
-  mockRejectedValue(value: T): Mock<T, Y>;
-  mockRejectedValueOnce(value: T): Mock<T, Y>;
+  mockImplementation(fn: (...args: Y) => T): this;
+  mockImplementation(fn: () => Promise<T>): this;
+  mockImplementationOnce(fn: (...args: Y) => T): this;
+  mockImplementationOnce(fn: () => Promise<T>): this;
+  mockName(name: string): this;
+  mockReturnThis(): this;
+  mockReturnValue(value: T): this;
+  mockReturnValueOnce(value: T): this;
+  mockResolvedValue(value: T): this;
+  mockResolvedValueOnce(value: T): this;
+  mockRejectedValue(value: T): this;
+  mockRejectedValueOnce(value: T): this;
 }
 
 const MOCK_CONSTRUCTOR_NAME = 'mockConstructor';
