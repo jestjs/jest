@@ -25,7 +25,7 @@ import BaseReporter from './base_reporter';
 import Status from './Status';
 import getResultHeader from './get_result_header';
 import getSnapshotStatus from './get_snapshot_status';
-import {formatTestPath, getLocation} from './utils';
+import {formatFullPath} from './utils';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 type FlushBufferedOutput = () => void;
@@ -233,13 +233,12 @@ export default class DefaultReporter extends BaseReporter {
   ) {
     result.testResults.forEach((assertionResult: AssertionResult) => {
       if (assertionResult.failureMessages.length) {
-        const location = getLocation(assertionResult);
-        const path = formatTestPath(
-          config ? config : this._globalConfig,
+        const fullPath = formatFullPath(
           result.testFilePath,
+          config || this._globalConfig,
+          assertionResult,
         );
         const fullTitle = formatFullTitle(assertionResult);
-        const fullPath = `${path}:${location.line}:${location.column}`;
         this.log(
           TITLE_INDENT + chalk.red(TITLE_BULLET + fullTitle) + ' ' + fullPath,
         );

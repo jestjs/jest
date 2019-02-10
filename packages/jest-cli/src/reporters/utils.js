@@ -278,9 +278,24 @@ export const getLocation = (assertionResult: AssertionResult) => {
   if (assertionResult.location) {
     return assertionResult.location;
   }
-  const matches = assertionResult.failureMessages[0].match(/(\d+):(\d+)/) || [];
-  return {
-    column: matches[2],
-    line: matches[1],
-  };
+  const matches = assertionResult.failureMessages[0].match(/(\d+):(\d+)/);
+  return (
+    matches && {
+      column: matches[2],
+      line: matches[1],
+    }
+  );
+};
+
+export const formatFullPath = (
+  testFilePath: string,
+  config: GlobalConfig | ProjectConfig,
+  assertionResult: AssertionResult,
+) => {
+  let path = formatTestPath(config, testFilePath);
+  const location = getLocation(assertionResult);
+  if (location) {
+    path += `:${location.line}:${location.column}`;
+  }
+  return path;
 };
