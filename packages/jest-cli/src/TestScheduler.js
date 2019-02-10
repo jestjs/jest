@@ -390,7 +390,7 @@ const getEstimatedTime = (timings, workers) => {
 
 const getReporterOption = (
   reporterName: string,
-  reporters: Array<string | ReporterConfig>,
+  reporters: ?Array<string | ReporterConfig> = [],
 ): Object => {
   const config = reporters.find(
     item => Array.isArray(item) && item[0] === reporterName,
