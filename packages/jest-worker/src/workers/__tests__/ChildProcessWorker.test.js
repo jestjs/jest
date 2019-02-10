@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 /* eslint-disable no-new */
 
 import EventEmitter from 'events';
@@ -63,7 +61,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
   });
 
   expect(childProcess.fork.mock.calls[0][0]).toBe(child);
-  expect(childProcess.fork.mock.calls[0][1]).toEqual({
+  expect(childProcess.fork.mock.calls[0][2]).toEqual({
     cwd: '/tmp', // Overridden default option.
     env: {...process.env, FORCE_COLOR: supportsColor.stdout ? '1' : undefined}, // Default option.
     execArgv: ['-p'], // Filtered option.
@@ -80,7 +78,7 @@ it('passes workerId to the child process and assign it to env.JEST_WORKER_ID', (
     workerPath: '/tmp/foo',
   });
 
-  expect(childProcess.fork.mock.calls[0][1].env.JEST_WORKER_ID).toEqual(2);
+  expect(childProcess.fork.mock.calls[0][2].env.JEST_WORKER_ID).toEqual('2');
 });
 
 it('initializes the child process with the given workerPath', () => {

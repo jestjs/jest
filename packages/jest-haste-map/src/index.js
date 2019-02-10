@@ -670,7 +670,6 @@ class HasteMap extends EventEmitter {
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
-        // $FlowFixMe: assignment of a worker with custom properties.
         this._worker = (new Worker(require.resolve('./worker'), {
           exposedMethods: ['getSha1', 'worker'],
           maxRetries: 3,
