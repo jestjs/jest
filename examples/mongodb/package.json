@@ -4,10 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
-  "devDependencies": {
-    "jest": "^24.1.0",
+  "dependencies": {
     "mongodb": "^3.1.13",
-    "mongodb-memory-server": "^3.0.0"
+    "mongodb-memory-server": "^3.0.0",
+    "jest-environment-node": "^24.0.0"
+  },
+  "devDependencies": {
+    "jest": "^24.1.0"
   },
   "scripts": {
     "test": "jest"

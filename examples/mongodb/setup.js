@@ -1,14 +1,14 @@
 // setup.js
-const path = require("path");
+const path = require('path');
 
-const fs = require("fs");
+const fs = require('fs');
 
-const { MongoMemoryServer } = require("mongodb-memory-server");
+const {MongoMemoryServer} = require('mongodb-memory-server');
 
-const globalConfigPath = path.join(__dirname, "globalConfig.json");
+const globalConfigPath = path.join(__dirname, 'globalConfig.json');
 
 const mongod = new MongoMemoryServer({
-  autoStart: false
+  autoStart: false,
 });
 
 module.exports = async () => {
@@ -17,8 +17,8 @@ module.exports = async () => {
   }
 
   const mongoConfig = {
-    mongoDBName: "jest",
-    mongoUri: await mongod.getConnectionString()
+    mongoDBName: 'jest',
+    mongoUri: await mongod.getConnectionString(),
   };
 
   // Write global config to disk because all tests run in different contexts.

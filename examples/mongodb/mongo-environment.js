@@ -1,11 +1,11 @@
 // mongo-environment.js
-const NodeEnvironment = require("jest-environment-node");
+const NodeEnvironment = require('jest-environment-node');
 
-const path = require("path");
+const path = require('path');
 
-const fs = require("fs");
+const fs = require('fs');
 
-const globalConfigPath = path.join(__dirname, "globalConfig.json");
+const globalConfigPath = path.join(__dirname, 'globalConfig.json');
 
 class MongoEnvironment extends NodeEnvironment {
   constructor(config) {
@@ -13,9 +13,9 @@ class MongoEnvironment extends NodeEnvironment {
   }
 
   async setup() {
-    console.log("Setup MongoDB Test Environment");
+    console.log('Setup MongoDB Test Environment');
 
-    const globalConfig = JSON.parse(fs.readFileSync(globalConfigPath, "utf-8"));
+    const globalConfig = JSON.parse(fs.readFileSync(globalConfigPath, 'utf-8'));
 
     this.global.__MONGO_URI__ = globalConfig.mongoUri;
     this.global.__MONGO_DB_NAME__ = globalConfig.mongoDBName;
@@ -24,7 +24,7 @@ class MongoEnvironment extends NodeEnvironment {
   }
 
   async teardown() {
-    console.log("Teardown MongoDB Test Environment");
+    console.log('Teardown MongoDB Test Environment');
 
     await super.teardown();
   }
