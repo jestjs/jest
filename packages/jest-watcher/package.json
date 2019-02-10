@@ -4,6 +4,8 @@
   "version": "24.0.0",
   "main": "build/index.js",
   "dependencies": {
+    "@jest/types": "^24.1.0",
+    "@types/node": "*",
     "ansi-escapes": "^3.0.0",
     "chalk": "^2.0.1",
     "jest-util": "^24.0.0",

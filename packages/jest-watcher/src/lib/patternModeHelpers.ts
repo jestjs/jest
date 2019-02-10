@@ -3,11 +3,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-'use strict';
 
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
@@ -15,7 +11,7 @@ import stringLength from 'string-length';
 
 export const printPatternCaret = (
   pattern: string,
-  pipe: stream$Writable | tty$WriteStream,
+  pipe: NodeJS.WritableStream,
 ) => {
   const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
@@ -27,7 +23,7 @@ export const printPatternCaret = (
 export const printRestoredPatternCaret = (
   pattern: string,
   currentUsageRows: number,
-  pipe: stream$Writable | tty$WriteStream,
+  pipe: NodeJS.WritableStream,
 ) => {
   const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 

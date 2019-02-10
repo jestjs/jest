@@ -3,13 +3,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-'use strict';
-
-import type {ScrollOptions} from 'types/Watch';
 
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
@@ -28,18 +22,20 @@ const usage = (entity: string) =>
 const usageRows = usage('').split('\n').length;
 
 export default class PatternPrompt {
-  _pipe: stream$Writable | tty$WriteStream;
+  _pipe: NodeJS.WritableStream;
   _prompt: Prompt;
   _entityName: string;
   _currentUsageRows: number;
 
-  constructor(pipe: stream$Writable | tty$WriteStream, prompt: Prompt) {
+  constructor(pipe: NodeJS.WritableStream, prompt: Prompt) {
+    // TODO: Should come in the constructor
+    this._entityName = '';
     this._pipe = pipe;
     this._prompt = prompt;
     this._currentUsageRows = usageRows;
   }
 
-  run(onSuccess: Function, onCancel: Function, options?: {header: string}) {
+  run(onSuccess: () => void, onCancel: () => void, options?: {header: string}) {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(CLEAR);
 
@@ -56,7 +52,7 @@ export default class PatternPrompt {
     this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  _onChange(pattern: string, options: ScrollOptions) {
+  protected _onChange() {
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
   }
