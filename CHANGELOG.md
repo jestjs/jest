@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-cli]`: Add `compact` option to default reporter ([#7845](https://github.com/facebook/jest/pull/7845))
+
 ### Fixes
 
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
