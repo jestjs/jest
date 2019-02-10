@@ -7,7 +7,6 @@
 
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
-// @ts-ignore: Not yet migrated
 import {specialChars} from 'jest-util';
 import Prompt from './lib/Prompt';
 
