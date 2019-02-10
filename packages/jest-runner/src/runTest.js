@@ -39,7 +39,6 @@ function freezeConsole(
   testConsole: BufferedConsole | Console | NullConsole,
   config: ProjectConfig,
 ) {
-  // $FlowFixMe: overwrite it for pretty errors
   testConsole._log = function fakeConsolePush(_type, message) {
     const error = new ErrorWithStack(
       `${chalk.red(
@@ -89,7 +88,6 @@ async function runTestInternal(
   if (customEnvironment) {
     testEnvironment = getTestEnvironment({
       ...config,
-      // $FlowFixMe
       testEnvironment: customEnvironment,
     });
   }
