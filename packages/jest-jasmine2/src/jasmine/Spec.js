@@ -31,6 +31,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* @flow */
 /* eslint-disable sort-keys */
 
+import {AssertionError} from 'assert';
+
 import ExpectationFailed from '../ExpectationFailed';
 
 import expectationResultFactory from '../expectationResultFactory';
@@ -146,12 +148,12 @@ Spec.prototype.onException = function onException(error) {
     return;
   }
 
-  if (error && error.code === 'ERR_ASSERTION') {
-    error = assertionErrorMessage(error, {expand: this.expand});
-  }
-
   if (error instanceof ExpectationFailed) {
     return;
+  }
+
+  if (error instanceof AssertionError) {
+    error = assertionErrorMessage(error, {expand: this.expand});
   }
 
   this.addExpectationResult(
