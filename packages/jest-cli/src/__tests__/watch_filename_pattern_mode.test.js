@@ -9,7 +9,9 @@
 'use strict';
 
 import chalk from 'chalk';
-import {KEYS} from 'jest-watcher';
+import {
+  KEYS
+} from 'jest-watcher';
 
 const runJestMock = jest.fn();
 
@@ -23,48 +25,55 @@ jest
     cursorTo: (x, y) => `[MOCK - cursorTo(${x}, ${y})]`,
   }))
   .mock('jest-util', () => {
-    const {specialChars, ...util} = jest.requireActual('jest-util');
+    const {
+      specialChars,
+      ...util
+    } = jest.requireActual('jest-util');
     return {
       ...util,
-      specialChars: {...specialChars, CLEAR: '[MOCK - clear]'},
+      specialChars: { ...specialChars,
+        CLEAR: '[MOCK - clear]'
+      },
     };
   });
 
 jest.mock(
   '../SearchSource',
   () =>
-    class {
-      constructor(context) {
-        this._context = context;
-      }
+  class {
+    constructor(context) {
+      this._context = context;
+    }
 
-      findMatchingTests(pattern) {
-        const paths = [
-          './path/to/file1-test.js',
-          './path/to/file2-test.js',
-          './path/to/file3-test.js',
-          './path/to/file4-test.js',
-          './path/to/file5-test.js',
-          './path/to/file6-test.js',
-          './path/to/file7-test.js',
-          './path/to/file8-test.js',
-          './path/to/file9-test.js',
-          './path/to/file10-test.js',
-          './path/to/file11-test.js',
-        ].filter(path => path.match(pattern));
+    findMatchingTests(pattern) {
+      const paths = [
+        './path/to/file1-test.js',
+        './path/to/file2-test.js',
+        './path/to/file3-test.js',
+        './path/to/file4-test.js',
+        './path/to/file5-test.js',
+        './path/to/file6-test.js',
+        './path/to/file7-test.js',
+        './path/to/file8-test.js',
+        './path/to/file9-test.js',
+        './path/to/file10-test.js',
+        './path/to/file11-test.js',
+      ].filter(path => path.match(pattern));
 
-        return {
-          tests: paths.map(path => ({
-            context: this._context,
-            duration: null,
-            path,
-          })),
-        };
-      }
-    },
+      return {
+        tests: paths.map(path => ({
+          context: this._context,
+          duration: null,
+          path,
+        })),
+      };
+    }
+  },
 );
 
-jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
+jest.doMock('chalk', () => new chalk.constructor({
+  enabled: false
+}));
 
 jest.doMock('strip-ansi');
 require('strip-ansi').mockImplementation(str => str);
@@ -72,23 +81,29 @@ require('strip-ansi').mockImplementation(str => str);
 jest.doMock(
   '../runJest',
   () =>
-    function() {
-      const args = Array.from(arguments);
-      const [{onComplete}] = args;
-      runJestMock.apply(null, args);
+  function () {
+    const args = Array.from(arguments);
+    const [{
+      onComplete
+    }] = args;
+    runJestMock.apply(null, args);
 
-      // Call the callback
-      onComplete({snapshot: {}});
+    // Call the callback
+    onComplete({
+      snapshot: {}
+    });
 
-      return Promise.resolve();
-    },
+    return Promise.resolve();
+  },
 );
 
 const watch = require('../watch').default;
 
 const nextTick = () => new Promise(res => process.nextTick(res));
 
-const globalConfig = {watch: true};
+const globalConfig = {
+  watch: true
+};
 
 afterEach(runJestMock.mockReset);
 
@@ -99,14 +114,22 @@ describe('Watch mode flows', () => {
   let stdin;
 
   beforeEach(() => {
-    pipe = {write: jest.fn()};
-    hasteMapInstances = [{on: () => {}}];
-    contexts = [{config: {}}];
+    pipe = {
+      write: jest.fn()
+    };
+    hasteMapInstances = [{
+      on: () => {}
+    }];
+    contexts = [{
+      config: {}
+    }];
     stdin = new MockStdin();
   });
 
   it('Pressing "P" enters pattern mode', () => {
-    contexts[0].config = {rootDir: ''};
+    contexts[0].config = {
+      rootDir: ''
+    };
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
@@ -134,8 +157,10 @@ describe('Watch mode flows', () => {
     // globalConfig is updated with the current pattern
     expect(runJestMock.mock.calls[0][0].globalConfig).toMatchSnapshot();
   });
-  it('Pressing "P" enters pattern mode (invalid regexp)', () => {
-    contexts[0].config = {rootDir: ''};
+  it('Pressing "P" enters pattern mode and invalid regexp', () => {
+    contexts[0].config = {
+      rootDir: ''
+    };
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     // Write a enter pattern mode
@@ -156,7 +181,9 @@ describe('Watch mode flows', () => {
   });
 
   it('Pressing "c" clears the filters', async () => {
-    contexts[0].config = {rootDir: ''};
+    contexts[0].config = {
+      rootDir: ''
+    };
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit('p');
@@ -164,7 +191,7 @@ describe('Watch mode flows', () => {
 
     ['p', '.', '*', '1', '0']
 
-      .concat(KEYS.ENTER)
+    .concat(KEYS.ENTER)
       .forEach(key => stdin.emit(key));
 
     stdin.emit('t');
