@@ -3,8 +3,8 @@
 exports[`default reporter prints compact message 1`] = `""`;
 
 exports[`default reporter prints compact message 2`] = `
-"FAIL __tests/fail.test.js
-  ● failing tests › fails __tests/fail.test.js:13:11
-  ● failing tests › fails 2 __tests/fail.test.js:17:11
-  ● failing tests › fails 3 __tests/fail.test.js:23:11"
+"FAIL __tests__/fail.test.js
+  ● failing tests › fails __tests__/fail.test.js:13:11
+  ● failing tests › fails 2 __tests__/fail.test.js:17:11
+  ● failing tests › fails 3 __tests__/fail.test.js:23:11"
 `;
