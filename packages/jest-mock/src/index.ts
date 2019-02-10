@@ -1092,4 +1092,5 @@ class ModuleMockerClass {
 }
 
 export type ModuleMocker = ModuleMockerClass;
-module.exports = new ModuleMockerClass(global);
+
+export default new ModuleMockerClass(global);

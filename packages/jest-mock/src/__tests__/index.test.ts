@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import vm from 'vm';
 
 describe('moduleMocker', () => {
