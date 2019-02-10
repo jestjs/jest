@@ -10,7 +10,6 @@
 import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
-import stripAnsi from 'strip-ansi';
 import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
 import {wrap} from 'jest-snapshot-serializer-raw';
 
@@ -322,7 +321,7 @@ test('resolves projects and their <rootDir> properly', () => {
     }),
   });
 
-  ({stderr} = stripAnsi(runJest(DIR, ['--no-watchman'])));
+  ({stderr} = runJest(DIR, ['--no-watchman']));
   expect(stderr).toMatch(
     /Whoops! Two projects resolved to the same config path/,
   );

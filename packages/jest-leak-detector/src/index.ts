@@ -3,20 +3,16 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-'use strict';
-
-import prettyFormat from 'pretty-format';
 import v8 from 'v8';
 import vm from 'vm';
+import prettyFormat from 'pretty-format';
 
 export default class {
-  _isReferenceBeingHeld: boolean;
+  private _isReferenceBeingHeld: boolean;
 
-  constructor(value: ?Object) {
+  constructor(value: unknown) {
     if (this._isPrimitive(value)) {
       throw new TypeError(
         [
@@ -55,7 +51,7 @@ export default class {
     return this._isReferenceBeingHeld;
   }
 
-  _runGarbageCollector() {
+  private _runGarbageCollector() {
     const isGarbageCollectorHidden = !global.gc;
 
     // GC is usually hidden, so we have to expose it before running.
@@ -68,7 +64,7 @@ export default class {
     }
   }
 
-  _isPrimitive(value: any): boolean {
+  private _isPrimitive(value: unknown): boolean {
     return value !== Object(value);
   }
 }

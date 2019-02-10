@@ -4,16 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
-
-import type {Path} from 'types/Config';
-import type {Options, SCMAdapter} from 'types/ChangedFiles';
 
 import path from 'path';
 import execa from 'execa';
 
-const env = {...process.env, HGPLAIN: 1};
+import {Path, Options, SCMAdapter} from './types';
+
+const env = {...process.env, HGPLAIN: '1'};
 
 const ANCESTORS = [
   // Parent commit to this one.
@@ -51,7 +49,7 @@ const adapter: SCMAdapter = {
       .map(changedPath => path.resolve(cwd, changedPath));
   },
 
-  getRoot: async (cwd: Path): Promise<?Path> => {
+  getRoot: async (cwd: Path): Promise<Path | null | undefined> => {
     try {
       const result = await execa('hg', ['root'], {cwd, env});
 

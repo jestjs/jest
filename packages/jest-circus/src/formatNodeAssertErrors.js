@@ -7,9 +7,11 @@
  * @flow strict-local
  */
 
-import type {DiffOptions} from 'jest-diff/src/diffStrings';
+// $FlowFixMe: Converted to TS. It's also not exported, but should be imported from `matcher-utils`
+import type {DiffOptions} from 'jest-diff';
 import type {Event, State} from 'types/Circus';
 
+// $FlowFixMe: Converted to TS
 import {diff, printExpected, printReceived} from 'jest-matcher-utils';
 import chalk from 'chalk';
 // $FlowFixMe: Converted to TS

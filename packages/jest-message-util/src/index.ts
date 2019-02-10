@@ -3,27 +3,28 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-import type {Glob, Path} from 'types/Config';
-import type {AssertionResult, SerializableError} from 'types/TestResult';
 
 import fs from 'fs';
 import path from 'path';
+import {Config, TestResult} from '@jest/types';
 import chalk from 'chalk';
 import micromatch from 'micromatch';
 import slash from 'slash';
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils from 'stack-utils';
 
+type Glob = Config.Glob;
+type Path = Config.Path;
+type AssertionResult = TestResult.AssertionResult;
+type SerializableError = TestResult.SerializableError;
+
 // stack utils tries to create pretty stack by making paths relative.
 const stackUtils = new StackUtils({
   cwd: 'something which does not exist',
 });
 
-let nodeInternals = [];
+let nodeInternals: RegExp[] = [];
 
 try {
   nodeInternals = StackUtils.nodeInternals();
@@ -33,12 +34,12 @@ try {
 }
 
 type StackTraceConfig = {
-  rootDir: string,
-  testMatch: Array<Glob>,
+  rootDir: string;
+  testMatch: Array<Glob>;
 };
 
 type StackTraceOptions = {
-  noStackTrace: boolean,
+  noStackTrace: boolean;
 };
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -64,13 +65,13 @@ const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 const indentAllLines = (lines: string, indent: string) =>
   lines.replace(NOT_EMPTY_LINE_REGEXP, indent);
 
-const trim = string => (string || '').trim();
+const trim = (string: string) => (string || '').trim();
 
 // Some errors contain not only line numbers in stack traces
 // e.g. SyntaxErrors can contain snippets of code, and we don't
 // want to trim those, because they may have pointers to the column/character
 // which will get misaligned.
-const trimPaths = string =>
+const trimPaths = (string: string) =>
   string.match(STACK_PATH_REGEXP) ? trim(string) : string;
 
 const getRenderedCallsite = (
@@ -94,11 +95,11 @@ const getRenderedCallsite = (
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
 export const formatExecError = (
-  error?: Error | SerializableError | string,
+  error: Error | SerializableError | string | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath: ?Path,
-  reuseMessage: ?boolean,
+  testPath?: Path,
+  reuseMessage?: boolean,
 ) => {
   if (!error || typeof error === 'number') {
     error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
@@ -198,7 +199,11 @@ const removeInternalStackEntries = (
   });
 };
 
-const formatPaths = (config: StackTraceConfig, relativeTestPath, line) => {
+const formatPaths = (
+  config: StackTraceConfig,
+  relativeTestPath: Path | null,
+  line: string,
+) => {
   // Extract the file path from the trace line.
   const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
   if (!match) {
@@ -243,7 +248,7 @@ export const formatStackTrace = (
   stack: string,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath: ?Path,
+  testPath?: Path,
 ) => {
   const lines = getStackTraceLines(stack, options);
   const topFrame = getTopFrame(lines);
@@ -253,19 +258,15 @@ export const formatStackTrace = (
     : null;
 
   if (topFrame) {
-    const filename = topFrame.file;
+    const {column, file: filename, line} = topFrame;
 
-    if (path.isAbsolute(filename)) {
+    if (line && filename && path.isAbsolute(filename)) {
       let fileContent;
       try {
         // TODO: check & read HasteFS instead of reading the filesystem:
         // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
         fileContent = fs.readFileSync(filename, 'utf8');
-        renderedCallsite = getRenderedCallsite(
-          fileContent,
-          topFrame.line,
-          topFrame.column,
-        );
+        renderedCallsite = getRenderedCallsite(fileContent, line, column);
       } catch (e) {
         // the file does not exist or is inaccessible, we ignore
       }
@@ -287,12 +288,20 @@ export const formatResultsErrors = (
   testResults: Array<AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
-  testPath: ?Path,
-): ?string => {
-  const failedResults = testResults.reduce((errors, result) => {
-    result.failureMessages.forEach(content => errors.push({content, result}));
-    return errors;
-  }, []);
+  testPath?: Path,
+): string | null => {
+  type FailedResults = Array<{
+    content: string;
+    result: AssertionResult;
+  }>;
+
+  const failedResults: FailedResults = testResults.reduce(
+    (errors, result) => {
+      result.failureMessages.forEach(content => errors.push({content, result}));
+      return errors;
+    },
+    [] as FailedResults,
+  );
 
   if (!failedResults.length) {
     return null;
