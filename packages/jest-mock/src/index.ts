@@ -911,7 +911,7 @@ class ModuleMockerClass {
     return metadata;
   }
 
-  isMockFunction(fn: any): boolean {
+  isMockFunction<T, Y extends unknown[]>(fn: any): fn is Mock<T, Y> {
     return !!fn && fn._isMockFunction === true;
   }
 
@@ -943,7 +943,7 @@ class ModuleMockerClass {
     ? SpyInstance<ReturnType<T[M]>, ArgsType<T[M]>>
     : never;
 
-  spyOn<T extends {}, M extends keyof T>(
+  spyOn<T extends {}, M extends NonFunctionPropertyNames<T>>(
     object: T,
     methodName: M,
     accessType?: 'get' | 'set',
@@ -985,7 +985,7 @@ class ModuleMockerClass {
     return object[methodName];
   }
 
-  private _spyOnProperty<T extends {}, M extends keyof T>(
+  private _spyOnProperty<T extends {}, M extends NonFunctionPropertyNames<T>>(
     obj: T,
     propertyName: M,
     accessType: 'get' | 'set' = 'get',
