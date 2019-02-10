@@ -52,11 +52,11 @@ const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
 const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
-const TITLE_INDENT = '  ';
+export const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
 const ANCESTRY_SEPARATOR = ' \u203A ';
-const TITLE_BULLET = chalk.bold('\u25cf ');
+export const TITLE_BULLET = chalk.bold('\u25cf ');
 const STACK_TRACE_COLOR = chalk.dim;
 const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
@@ -355,5 +355,3 @@ export const formatFullTitle = (result: AssertionResult) =>
   result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
   (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
   result.title;
-
-export {TITLE_INDENT, TITLE_BULLET};
