@@ -461,9 +461,14 @@ module.exports =
                   sha1hex &&
                   existingFileData[_constants.default.SHA1] === sha1hex
                 ) {
-                  // @ts-ignore: TODO why is this wrong?
-                  nextData = [...existingFileData];
-                  nextData[1] = mtime;
+                  nextData = [
+                    existingFileData[0],
+                    mtime,
+                    existingFileData[2],
+                    existingFileData[3],
+                    existingFileData[4],
+                    existingFileData[5]
+                  ];
                 } else {
                   // See ../constants.ts
                   nextData = ['', mtime, size, 0, [], sha1hex];
