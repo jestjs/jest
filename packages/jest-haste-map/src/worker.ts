@@ -38,10 +38,10 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   }
 
   let content: string | undefined;
-  let dependencies: Array<string> | undefined;
-  let id;
-  let module;
-  let sha1;
+  let dependencies: WorkerMetadata['dependencies'];
+  let id: WorkerMetadata['id'];
+  let module: WorkerMetadata['module'];
+  let sha1: WorkerMetadata['sha1'];
 
   const {computeDependencies, computeSha1, rootDir, filePath} = data;
 

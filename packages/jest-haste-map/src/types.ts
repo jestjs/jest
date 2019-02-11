@@ -40,7 +40,7 @@ export type CrawlerOptions = {
 };
 
 export type HasteImpl = {
-  getHasteName(filePath: Config.Path): string | void;
+  getHasteName(filePath: Config.Path): string | undefined;
 };
 
 export type FileData = Map<Config.Path, FileMetaData>;
