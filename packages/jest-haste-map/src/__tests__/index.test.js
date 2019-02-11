@@ -146,9 +146,6 @@ describe('HasteMap', () => {
 
     mockEmitters = Object.create(null);
     mockFs = object({
-      [require.resolve('../../package.json')]: JSON.stringify({
-        version: '1.0.0',
-      }),
       '/project/fruits/Banana.js': `
         const Strawberry = require("Strawberry");
       `,
@@ -519,8 +516,8 @@ describe('HasteMap', () => {
 
       expect(data.map.get('fbjs')).not.toBeDefined();
 
-      // package.json + cache file + 5 modules - the node_module
-      expect(fs.readFileSync.mock.calls.length).toBe(7);
+      // cache file + 5 modules - the node_module
+      expect(fs.readFileSync.mock.calls.length).toBe(6);
     });
   });
 
@@ -638,10 +635,9 @@ describe('HasteMap', () => {
     new HasteMap(defaultConfig)
       .build()
       .then(({__hasteMapForTest: initialData}) => {
-        // The first run should access the file system once for package.json,
-        // once for the (empty) cache file and five times for the files in the
-        // system.
-        expect(fs.readFileSync.mock.calls.length).toBe(7);
+        // The first run should access the file system once for the (empty)
+        // cache file and five times for the files in the system.
+        expect(fs.readFileSync.mock.calls.length).toBe(6);
 
         fs.readFileSync.mockClear();
 

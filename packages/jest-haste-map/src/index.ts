@@ -106,10 +106,9 @@ const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 
-// TypeScript doesn't like us importing from outside `rootDir`
-const {version: VERSION} = JSON.parse(
-  fs.readFileSync(require.resolve('../package.json'), 'utf8'),
-);
+// TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
+// understand `require`.
+const {version: VERSION} = require('../package.json');
 
 const canUseWatchman = ((): boolean => {
   try {
