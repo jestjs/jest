@@ -9,8 +9,8 @@
 'use strict';
 
 const fs = require('fs');
-
 const http = require('http');
+const querystring = require('querystring');
 
 test('fs Error', () => {
   expect.hasAssertions();
@@ -25,7 +25,6 @@ test('fs Error', () => {
 test('http error', () =>
   new Promise((resolve, reject) => {
     const request = http.request('http://does-not-exist/blah', res => {
-      console.log(`STATUS: ${res.statusCode}`);
       res.on('end', () => {
         reject(new Error('Ended before failure'));
       });
@@ -41,6 +40,6 @@ test('http error', () =>
     });
   }));
 
-test('Array', () => {
-  expect([]).toBeInstanceOf(Array);
+test('querystring parse array', () => {
+  expect(querystring.parse('abc=xyz&abc=123').abc).toBeInstanceOf(Array);
 });

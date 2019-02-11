@@ -67,6 +67,7 @@ export default function(globalObject: Global, globals: ConfigGlobals) {
   globalObject.setImmediate = global.setImmediate;
   globalObject.clearImmediate = global.clearImmediate;
 
+  addInstanceOfAlias(globalObject.Array, Array);
   addInstanceOfAlias(globalObject.Error, Error);
 
   return Object.assign(globalObject, deepCyclicCopy(globals));
