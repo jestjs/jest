@@ -44,7 +44,7 @@ export default class ModuleMap {
     platform: string | null,
     supportsNativePlatform: boolean | null,
     type: HTypeValue | null,
-  ): string | null {
+  ): Config.Path | null {
     if (type == null) {
       type = H.MODULE;
     }
@@ -64,11 +64,11 @@ export default class ModuleMap {
     name: string,
     platform: string | null,
     _supportsNativePlatform: boolean | null,
-  ): string | null {
+  ): Config.Path | null {
     return this.getModule(name, platform, null, H.PACKAGE);
   }
 
-  getMockModule(name: string): string | undefined {
+  getMockModule(name: string): Config.Path | undefined {
     const mockPath =
       this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
     return mockPath && fastPath.resolve(this._raw.rootDir, mockPath);
