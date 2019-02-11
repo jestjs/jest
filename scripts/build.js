@@ -24,7 +24,6 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
-const execa = require('execa');
 
 const babel = require('@babel/core');
 const chalk = require('chalk');
@@ -191,20 +190,10 @@ function buildFile(file, silent) {
 
 const files = process.argv.slice(2);
 
-function compileTypes(packages) {
-  const packageWithTs = packages.filter(p =>
-    fs.existsSync(path.resolve(p, 'tsconfig.json'))
-  );
-
-  execa.sync('tsc', ['-b', ...packageWithTs], {stdio: 'inherit'});
-}
-
 if (files.length) {
   files.forEach(buildFile);
 } else {
   const packages = getPackages();
-  process.stdout.write(chalk.inverse(' Typechecking \n'));
-  compileTypes(packages);
   process.stdout.write(`${OK}\n\n`);
   process.stdout.write(chalk.inverse(' Building packages \n'));
   packages.forEach(buildNodePackage);
