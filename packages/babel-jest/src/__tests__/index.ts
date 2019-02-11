@@ -4,7 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-const babelJest = require('../index');
+
+import {Config, Transform} from '@jest/types';
+import babelJest from '../index';
 
 //Mock data for all the tests
 const sourceString = `
@@ -24,12 +26,16 @@ const mockConfig = {
 };
 
 test(`Returns source string with inline maps when no transformOptions is passed`, () => {
-  const result = babelJest.process(sourceString, 'dummy_path.js', mockConfig);
+  const result = babelJest.process(
+    sourceString,
+    'dummy_path.js',
+    (mockConfig as unknown) as Config.ProjectConfig,
+  ) as Transform.TransformedSource;
   expect(typeof result).toBe('object');
   expect(result.code).toBeDefined();
   expect(result.map).toBeDefined();
   expect(result.code).toMatch('//# sourceMappingURL');
   expect(result.code).toMatch('customMultiply');
-  expect(result.map.sources).toEqual(['dummy_path.js']);
-  expect(JSON.stringify(result.map.sourcesContent)).toMatch('customMultiply');
+  expect(result.map!.sources).toEqual(['dummy_path.js']);
+  expect(JSON.stringify(result.map!.sourcesContent)).toMatch('customMultiply');
 });
