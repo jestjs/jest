@@ -22,13 +22,13 @@ import H from './constants';
 const EMPTY_OBJ = {} as {[key: string]: any};
 const EMPTY_MAP = new Map();
 
-type ValueType<T> = T extends Map<T, infer V> ? V : T;
+type ValueType<T> = T extends Map<string, infer V> ? V : T;
 
 export type SerializableModuleMap = {
   // There is no easier way to extract the type of the entries of a Map
-  duplicates: [string, ValueType<DuplicatesIndex>];
-  map: [string, ValueType<ModuleMapData>];
-  mocks: [string, ValueType<MockData>];
+  duplicates: ReadonlyArray<[string, ValueType<DuplicatesIndex>]>;
+  map: ReadonlyArray<[string, ValueType<ModuleMapData>]>;
+  mocks: ReadonlyArray<[string, ValueType<MockData>]>;
   rootDir: Config.Path;
 };
 
