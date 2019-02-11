@@ -46,7 +46,7 @@ export default class ModuleMap {
     supportsNativePlatform: boolean | null,
     type: HTypeValue | null,
   ): string | null {
-    if (!type) {
+    if (type == null) {
       type = H.MODULE;
     }
     const module = this._getModuleMetadata(
@@ -64,7 +64,7 @@ export default class ModuleMap {
   getPackage(
     name: string,
     platform: string | null,
-    _: boolean | null,
+    _supportsNativePlatform: boolean | null,
   ): string | null {
     return this.getModule(name, platform, null, H.PACKAGE);
   }

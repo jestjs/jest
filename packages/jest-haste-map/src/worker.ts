@@ -34,7 +34,6 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
       throw new Error('jest-haste-map: hasteImplModulePath changed');
     }
     hasteImplModulePath = data.hasteImplModulePath;
-    // $FlowFixMe: dynamic require
     hasteImpl = require(hasteImplModulePath);
   }
 
@@ -77,8 +76,7 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
       const content = getContent();
       dependencies = Array.from(
         data.dependencyExtractor
-          ? // $FlowFixMe
-            require(data.dependencyExtractor).extract(
+          ? require(data.dependencyExtractor).extract(
               content,
               filePath,
               dependencyExtractor.extract,

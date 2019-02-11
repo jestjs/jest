@@ -273,7 +273,6 @@ class HasteMap extends EventEmitter {
     let dependencyExtractorHash = '';
 
     if (options.hasteImplModulePath) {
-      // $FlowFixMe: dynamic require
       const hasteImpl = require(options.hasteImplModulePath);
       if (hasteImpl.getCacheKey) {
         hasteImplHash = String(hasteImpl.getCacheKey());
@@ -281,7 +280,6 @@ class HasteMap extends EventEmitter {
     }
 
     if (options.dependencyExtractor) {
-      // $FlowFixMe: dynamic require
       const dependencyExtractor = require(options.dependencyExtractor);
       if (dependencyExtractor.getCacheKey) {
         dependencyExtractorHash = String(dependencyExtractor.getCacheKey());
@@ -416,7 +414,7 @@ class HasteMap extends EventEmitter {
     map: ModuleMapData,
     mocks: MockData,
     filePath: Config.Path,
-    workerOptions?: {forceInBand: boolean} | null,
+    workerOptions?: {forceInBand: boolean},
   ): Promise<void> | null {
     const rootDir = this._options.rootDir;
 
@@ -661,14 +659,14 @@ class HasteMap extends EventEmitter {
   /**
    * 4. serialize the new `HasteMap` in a cache file.
    */
-  _persist(hasteMap: InternalHasteMap) {
+  private _persist(hasteMap: InternalHasteMap) {
     serializer.writeFileSync(this._cachePath, hasteMap);
   }
 
   /**
    * Creates workers or parses files and extracts metadata in-process.
    */
-  _getWorker(options?: {forceInBand: boolean} | null): WorkerInterface {
+  private _getWorker(options?: {forceInBand: boolean}): WorkerInterface {
     if (!this._worker) {
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
@@ -685,7 +683,7 @@ class HasteMap extends EventEmitter {
     return this._worker;
   }
 
-  _crawl(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
+  private _crawl(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
     const options = this._options;
     const ignore = this._ignore.bind(this);
     const crawl =
@@ -741,7 +739,7 @@ class HasteMap extends EventEmitter {
   /**
    * Watch mode
    */
-  _watch(hasteMap: InternalHasteMap): Promise<void> {
+  private _watch(hasteMap: InternalHasteMap): Promise<void> {
     if (!this._options.watch) {
       return Promise.resolve();
     }
@@ -951,7 +949,7 @@ class HasteMap extends EventEmitter {
    * remaining in the group, then we want to restore that single file as the
    * correct resolution for its ID, and cleanup the duplicates index.
    */
-  _recoverDuplicates(
+  private _recoverDuplicates(
     hasteMap: InternalHasteMap,
     relativeFilePath: string,
     moduleName: string,
@@ -1017,7 +1015,7 @@ class HasteMap extends EventEmitter {
   /**
    * Helpers
    */
-  _ignore(filePath: Config.Path): boolean {
+  private _ignore(filePath: Config.Path): boolean {
     const ignorePattern = this._options.ignorePattern;
     const ignoreMatched =
       ignorePattern instanceof RegExp
@@ -1030,7 +1028,7 @@ class HasteMap extends EventEmitter {
     );
   }
 
-  _isNodeModulesDir(filePath: Config.Path): boolean {
+  private _isNodeModulesDir(filePath: Config.Path): boolean {
     if (!filePath.includes(NODE_MODULES)) {
       return false;
     }
@@ -1052,7 +1050,7 @@ class HasteMap extends EventEmitter {
     return true;
   }
 
-  _createEmptyMap(): InternalHasteMap {
+  private _createEmptyMap(): InternalHasteMap {
     return {
       clocks: new Map(),
       duplicates: new Map(),
