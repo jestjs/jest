@@ -41,6 +41,7 @@ export = async function watchmanCrawl(
   let clientError;
   client.on('error', error => (clientError = WatchmanError(error)));
 
+  // TODO: type better than `any`
   const cmd = (...args: Array<any>): Promise<any> =>
     new Promise((resolve, reject) =>
       client.command(args, (error, result) =>
@@ -138,7 +139,7 @@ export = async function watchmanCrawl(
   }
 
   let files = data.files;
-  let watchmanFiles;
+  let watchmanFiles: Map<string, any>;
   try {
     const watchmanRoots = await getWatchmanRoots(roots);
     const watchmanFileResults = await queryWatchmanForDirs(watchmanRoots);
@@ -158,7 +159,8 @@ export = async function watchmanCrawl(
     throw clientError;
   }
 
-  for (const [watchRoot, response] of watchmanFiles) {
+  // TODO: remove non-null
+  for (const [watchRoot, response] of watchmanFiles!) {
     const fsRoot = normalizePathSep(watchRoot);
     const relativeFsRoot = fastPath.relative(rootDir, fsRoot);
     clocks.set(relativeFsRoot, response.clock);
@@ -191,6 +193,7 @@ export = async function watchmanCrawl(
           sha1hex &&
           existingFileData[H.SHA1] === sha1hex
         ) {
+          // @ts-ignore: TODO why is this wrong?
           nextData = [...existingFileData];
           nextData[1] = mtime;
         } else {

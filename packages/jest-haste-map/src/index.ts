@@ -509,7 +509,7 @@ class HasteMap extends EventEmitter {
     };
 
     // Callback called when the response from the worker is an error.
-    const workerError = (error: Error | unknown) => {
+    const workerError = (error: Error | any) => {
       if (typeof error !== 'object' || !error.message || !error.stack) {
         error = new Error(error);
         error.stack = ''; // Remove stack for stack-less errors.
@@ -759,7 +759,7 @@ class HasteMap extends EventEmitter {
     const ignorePattern = this._options.ignorePattern;
     const rootDir = this._options.rootDir;
 
-    let changeQueue = Promise.resolve();
+    let changeQueue: Promise<null | void> = Promise.resolve();
     let eventsQueue: Array<{
       filePath: Config.Path;
       stat: fs.Stats | undefined;
@@ -769,6 +769,7 @@ class HasteMap extends EventEmitter {
     let mustCopy = true;
 
     const createWatcher = (root: Config.Path): Promise<Watcher> => {
+      // @ts-ignore: TODO how? "Cannot use 'new' with an expression whose type lacks a call or construct signature."
       const watcher = new Watcher(root, {
         dot: false,
         glob: extensions.map(extension => '**/*.' + extension),
@@ -852,7 +853,10 @@ class HasteMap extends EventEmitter {
             };
           }
 
-          const add = () => eventsQueue.push({filePath, stat, type});
+          const add = () => {
+            eventsQueue.push({filePath, stat, type});
+            return null;
+          };
 
           const relativeFilePath = fastPath.relative(rootDir, filePath);
           const fileMetadata = hasteMap.files.get(relativeFilePath);
@@ -898,8 +902,8 @@ class HasteMap extends EventEmitter {
             );
             const fileMetadata: FileMetaData = [
               '',
-              stat.mtime.getTime(),
-              stat.size,
+              stat ? stat.mtime.getTime() : -1,
+              stat ? stat.size : 0,
               0,
               [],
               null,
@@ -998,6 +1002,7 @@ class HasteMap extends EventEmitter {
   }
 
   end(): Promise<void> {
+    // @ts-ignore: TODO TS cannot decide if `setInterval` and `clearInterval` comes from NodeJS or the DOM
     clearInterval(this._changeInterval);
     if (!this._watchers.length) {
       return Promise.resolve();

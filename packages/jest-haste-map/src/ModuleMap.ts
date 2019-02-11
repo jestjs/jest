@@ -34,7 +34,7 @@ export type SerializableModuleMap = {
 
 export default class ModuleMap {
   private readonly _raw: RawModuleMap;
-  static DuplicateHasteCandidatesError: DuplicateHasteCandidatesError;
+  static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;
 
   constructor(raw: RawModuleMap) {
     this._raw = raw;
@@ -187,7 +187,7 @@ export default class ModuleMap {
   }
 }
 
-export class DuplicateHasteCandidatesError extends Error {
+class DuplicateHasteCandidatesError extends Error {
   hasteName: string;
   platform: string | null;
   supportsNativePlatform: boolean;
