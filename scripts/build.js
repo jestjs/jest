@@ -196,7 +196,7 @@ function compileTypes(packages) {
     fs.existsSync(path.resolve(p, 'tsconfig.json'))
   );
 
-  execa.sync('tsc', ['-b', ...packageWithTs]);
+  execa.sync('tsc', ['-b', ...packageWithTs], {stdio: 'inherit'});
 }
 
 if (files.length) {
