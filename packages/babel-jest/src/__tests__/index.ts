@@ -36,6 +36,8 @@ test(`Returns source string with inline maps when no transformOptions is passed`
   expect(result.map).toBeDefined();
   expect(result.code).toMatch('//# sourceMappingURL');
   expect(result.code).toMatch('customMultiply');
-  expect(result.map!.sources).toEqual(['dummy_path.js']);
-  expect(JSON.stringify(result.map!.sourcesContent)).toMatch('customMultiply');
+  // @ts-ignore: it's fine if we get wrong types, the tests will fail then
+  expect(result.map.sources).toEqual(['dummy_path.js']);
+  // @ts-ignore: it's fine if we get wrong types, the tests will fail then
+  expect(JSON.stringify(result.map.sourcesContent)).toMatch('customMultiply');
 });
