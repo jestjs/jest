@@ -91,7 +91,7 @@
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
     "test": "yarn typecheck && yarn lint && yarn jest",
-    "typecheck": "node scripts/typeScriptBuild && flow check --include-warnings",
+    "typecheck": "node scripts/buildTs.js && flow check --include-warnings",
     "watch": "yarn build && node ./scripts/watch.js"
   },
   "workspaces": {

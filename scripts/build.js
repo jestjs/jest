@@ -29,11 +29,9 @@ const babel = require('@babel/core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
 const prettier = require('prettier');
-const stringLength = require('string-length');
-const getPackages = require('./getPackages');
+const {getPackages, adjustToTerminalWidth, OK} = require('./buildUtils');
 const browserBuild = require('./browserBuild');
 
-const OK = chalk.reset.inverse.bold.green(' DONE ');
 const SRC_DIR = 'src';
 const BUILD_DIR = 'build';
 const BUILD_ES5_DIR = 'build-es5';
@@ -49,20 +47,6 @@ const transformOptions = require('../babel.config.js');
 const prettierConfig = prettier.resolveConfig.sync(__filename);
 prettierConfig.trailingComma = 'none';
 prettierConfig.parser = 'babel';
-
-const adjustToTerminalWidth = str => {
-  const columns = process.stdout.columns || 80;
-  const WIDTH = columns - stringLength(OK) + 1;
-  const strs = str.match(new RegExp(`(.{1,${WIDTH}})`, 'g'));
-  let lastString = strs[strs.length - 1];
-  if (lastString.length < WIDTH) {
-    lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
-  }
-  return strs
-    .slice(0, -1)
-    .concat(lastString)
-    .join('\n');
-};
 
 function getPackageName(file) {
   return path.relative(PACKAGES_DIR, file).split(path.sep)[0];
@@ -194,7 +178,6 @@ if (files.length) {
   files.forEach(buildFile);
 } else {
   const packages = getPackages();
-  process.stdout.write(`${OK}\n\n`);
   process.stdout.write(chalk.inverse(' Building packages \n'));
   packages.forEach(buildNodePackage);
   process.stdout.write('\n');
