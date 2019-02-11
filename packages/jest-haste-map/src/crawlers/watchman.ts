@@ -3,18 +3,17 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {InternalHasteMap} from 'types/HasteMap';
-import type {CrawlerOptions} from '../types';
-
-import * as fastPath from '../lib/fast_path';
-import normalizePathSep from '../lib/normalizePathSep';
 import path from 'path';
 import watchman from 'fb-watchman';
+import {Config} from '@jest/types';
+import * as fastPath from '../lib/fast_path';
+import normalizePathSep from '../lib/normalizePathSep';
 import H from '../constants';
+import {InternalHasteMap, CrawlerOptions, FileMetaData} from '../types';
+
+type WatchmanRoots = Map<string, Array<string>>;
 
 const watchmanURL =
   'https://facebook.github.io/watchman/docs/troubleshooting.html';
@@ -26,7 +25,7 @@ function WatchmanError(error: Error): Error {
   return error;
 }
 
-module.exports = async function watchmanCrawl(
+export = async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
   const fields = ['name', 'exists', 'mtime_ms', 'size'];
@@ -34,7 +33,7 @@ module.exports = async function watchmanCrawl(
   const defaultWatchExpression = [
     'allof',
     ['type', 'f'],
-    ['anyof'].concat(extensions.map(extension => ['suffix', extension])),
+    ['anyof', ...extensions.map(extension => ['suffix', extension])],
   ];
   const clocks = data.clocks;
   const client = new watchman.Client();
@@ -42,7 +41,7 @@ module.exports = async function watchmanCrawl(
   let clientError;
   client.on('error', error => (clientError = WatchmanError(error)));
 
-  const cmd = (...args) =>
+  const cmd = (...args: Array<any>): Promise<any> =>
     new Promise((resolve, reject) =>
       client.command(args, (error, result) =>
         error ? reject(WatchmanError(error)) : resolve(result),
@@ -57,7 +56,9 @@ module.exports = async function watchmanCrawl(
     }
   }
 
-  async function getWatchmanRoots(roots) {
+  async function getWatchmanRoots(
+    roots: Array<Config.Path>,
+  ): Promise<WatchmanRoots> {
     const watchmanRoots = new Map();
     await Promise.all(
       roots.map(async root => {
@@ -85,7 +86,7 @@ module.exports = async function watchmanCrawl(
     return watchmanRoots;
   }
 
-  async function queryWatchmanForDirs(rootProjectDirMappings) {
+  async function queryWatchmanForDirs(rootProjectDirMappings: WatchmanRoots) {
     const files = new Map();
     let isFresh = false;
     await Promise.all(
@@ -181,7 +182,7 @@ module.exports = async function watchmanCrawl(
         }
 
         const existingFileData = data.files.get(relativeFilePath);
-        let nextData;
+        let nextData: FileMetaData;
 
         if (existingFileData && existingFileData[H.MTIME] === mtime) {
           nextData = existingFileData;
@@ -193,7 +194,7 @@ module.exports = async function watchmanCrawl(
           nextData = [...existingFileData];
           nextData[1] = mtime;
         } else {
-          // See ../constants.js
+          // See ../constants.ts
           nextData = ['', mtime, size, 0, [], sha1hex];
         }
 

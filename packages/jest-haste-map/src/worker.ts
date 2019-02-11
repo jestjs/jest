@@ -3,23 +3,20 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 
 import crypto from 'crypto';
 import path from 'path';
 import fs from 'graceful-fs';
+import {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 import blacklist from './blacklist';
 import H from './constants';
 import * as dependencyExtractor from './lib/dependencyExtractor';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
-let hasteImpl: ?HasteImpl = null;
-let hasteImplModulePath: ?string = null;
+let hasteImpl: HasteImpl | null = null;
+let hasteImplModulePath: string | null = null;
 
 function sha1hex(content: string | Buffer): string {
   return crypto
@@ -38,11 +35,11 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
     }
     hasteImplModulePath = data.hasteImplModulePath;
     // $FlowFixMe: dynamic require
-    hasteImpl = (require(hasteImplModulePath): HasteImpl);
+    hasteImpl = require(hasteImplModulePath);
   }
 
-  let content;
-  let dependencies;
+  let content: string | undefined;
+  let dependencies: Array<string> | undefined;
   let id;
   let module;
   let sha1;
