@@ -176,7 +176,7 @@ export default class ModuleMap {
     );
   }
 
-  static create(rootDir: string) {
+  static create(rootDir: Config.Path) {
     return new ModuleMap({
       duplicates: new Map(),
       map: new Map(),
