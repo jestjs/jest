@@ -519,7 +519,7 @@ describe('HasteMap', () => {
 
       expect(data.map.get('fbjs')).not.toBeDefined();
 
-      // cache file + 5 modules - the node_module
+      // package.json + cache file + 5 modules - the node_module
       expect(fs.readFileSync.mock.calls.length).toBe(7);
     });
   });
@@ -638,8 +638,9 @@ describe('HasteMap', () => {
     new HasteMap(defaultConfig)
       .build()
       .then(({__hasteMapForTest: initialData}) => {
-        // The first run should access the file system once for the (empty)
-        // cache file and five times for the files in the system.
+        // The first run should access the file system once for package.json,
+        // once for the (empty) cache file and five times for the files in the
+        // system.
         expect(fs.readFileSync.mock.calls.length).toBe(7);
 
         fs.readFileSync.mockClear();
