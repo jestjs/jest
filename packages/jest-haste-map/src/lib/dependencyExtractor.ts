@@ -3,8 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 import isRegExpSupported from './isRegExpSupported';
@@ -13,22 +11,23 @@ import isRegExpSupported from './isRegExpSupported';
 const NOT_A_DOT = isRegExpSupported('(?<!\\.\\s*)')
   ? '(?<!\\.\\s*)'
   : '(?:^|[^.]\\s*)';
-const CAPTURE_STRING_LITERAL = pos => `([\`'"])([^'"\`]*?)(?:\\${pos})`;
+const CAPTURE_STRING_LITERAL = (pos: number) =>
+  `([\`'"])([^'"\`]*?)(?:\\${pos})`;
 const WORD_SEPARATOR = '\\b';
 const LEFT_PARENTHESIS = '\\(';
 const RIGHT_PARENTHESIS = '\\)';
 const WHITESPACE = '\\s*';
 const OPTIONAL_COMMA = '(:?,\\s*)?';
 
-function createRegExp(parts, flags) {
+function createRegExp(parts: Array<string>, flags: string) {
   return new RegExp(parts.join(''), flags);
 }
 
-function alternatives(...parts) {
+function alternatives(...parts: Array<string>) {
   return `(?:${parts.join('|')})`;
 }
 
-function functionCallStart(...names) {
+function functionCallStart(...names: Array<string>) {
   return [
     NOT_A_DOT,
     WORD_SEPARATOR,
@@ -78,7 +77,7 @@ const JEST_EXTENSIONS_RE = createRegExp(
 export function extract(code: string): Set<string> {
   const dependencies = new Set();
 
-  const addDependency = (match: string, q: string, dep: string) => {
+  const addDependency = (match: string, _: string, dep: string) => {
     dependencies.add(dep);
     return match;
   };

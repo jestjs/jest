@@ -20,7 +20,8 @@
 
     /* Module Resolution Options */
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
   "exclude": ["**/__tests__/**/*", "**/build/**/*", "**/build-es5/**/*"]
 }

@@ -3,23 +3,20 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 
 import crypto from 'crypto';
 import path from 'path';
 import fs from 'graceful-fs';
+import {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 import blacklist from './blacklist';
 import H from './constants';
 import * as dependencyExtractor from './lib/dependencyExtractor';
 
 const PACKAGE_JSON = path.sep + 'package.json';
 
-let hasteImpl: ?HasteImpl = null;
-let hasteImplModulePath: ?string = null;
+let hasteImpl: HasteImpl | null = null;
+let hasteImplModulePath: string | null = null;
 
 function sha1hex(content: string | Buffer): string {
   return crypto
@@ -37,15 +34,14 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
       throw new Error('jest-haste-map: hasteImplModulePath changed');
     }
     hasteImplModulePath = data.hasteImplModulePath;
-    // $FlowFixMe: dynamic require
-    hasteImpl = (require(hasteImplModulePath): HasteImpl);
+    hasteImpl = require(hasteImplModulePath);
   }
 
-  let content;
-  let dependencies;
-  let id;
-  let module;
-  let sha1;
+  let content: string | undefined;
+  let dependencies: WorkerMetadata['dependencies'];
+  let id: WorkerMetadata['id'];
+  let module: WorkerMetadata['module'];
+  let sha1: WorkerMetadata['sha1'];
 
   const {computeDependencies, computeSha1, rootDir, filePath} = data;
 
@@ -80,8 +76,7 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
       const content = getContent();
       dependencies = Array.from(
         data.dependencyExtractor
-          ? // $FlowFixMe
-            require(data.dependencyExtractor).extract(
+          ? require(data.dependencyExtractor).extract(
               content,
               filePath,
               dependencyExtractor.extract,

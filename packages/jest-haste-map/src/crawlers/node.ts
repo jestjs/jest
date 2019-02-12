@@ -3,22 +3,18 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-import type {InternalHasteMap} from 'types/HasteMap';
-import type {IgnoreMatcher, CrawlerOptions} from '../types';
 
 import fs from 'fs';
 import path from 'path';
 import {spawn} from 'child_process';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
+import {IgnoreMatcher, InternalHasteMap, CrawlerOptions} from '../types';
 
-type Callback = (
-  result: Array<[/* id */ string, /* mtime */ number, /* size */ number]>,
-) => void;
+type Result = Array<[/* id */ string, /* mtime */ number, /* size */ number]>;
+
+type Callback = (result: Result) => void;
 
 function find(
   roots: Array<string>,
@@ -26,7 +22,7 @@ function find(
   ignore: IgnoreMatcher,
   callback: Callback,
 ): void {
-  const result = [];
+  const result: Result = [];
   let activeCalls = 0;
 
   function search(directory: string): void {
@@ -82,7 +78,7 @@ function findNative(
   ignore: IgnoreMatcher,
   callback: Callback,
 ): void {
-  const args = [].concat(roots);
+  const args = Array.from(roots);
   args.push('-type', 'f');
   if (extensions.length) {
     args.push('(');
@@ -108,7 +104,7 @@ function findNative(
       .trim()
       .split('\n')
       .filter(x => !ignore(x));
-    const result = [];
+    const result: Result = [];
     let count = lines.length;
     if (!count) {
       callback([]);
@@ -127,7 +123,7 @@ function findNative(
   });
 }
 
-module.exports = function nodeCrawl(
+export = function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<InternalHasteMap> {
   if (options.mapper) {
@@ -144,13 +140,11 @@ module.exports = function nodeCrawl(
   } = options;
 
   return new Promise(resolve => {
-    const callback = list => {
+    const callback = (list: Result) => {
       const files = new Map();
       list.forEach(fileData => {
-        const filePath = fileData[0];
+        const [filePath, mtime, size] = fileData;
         const relativeFilePath = fastPath.relative(rootDir, filePath);
-        const mtime = fileData[1];
-        const size = fileData[2];
         const existingFile = data.files.get(relativeFilePath);
         if (existingFile && existingFile[H.MTIME] === mtime) {
           files.set(relativeFilePath, existingFile);
