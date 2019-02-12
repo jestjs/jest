@@ -3,8 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 /* eslint-disable sort-keys */
 
@@ -16,7 +14,10 @@
  * This constant key map allows to keep the map smaller without having to build
  * a custom serialization library.
  */
-export default {
+
+import {HType} from './types';
+
+const constants: HType = {
   /* file map attributes */
   ID: 0,
   MTIME: 1,
@@ -37,3 +38,5 @@ export default {
   GENERIC_PLATFORM: 'g',
   NATIVE_PLATFORM: 'native',
 };
+
+export default constants;

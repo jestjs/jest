@@ -3,12 +3,10 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Path} from 'types/Config';
-import type {
+import {Config} from '@jest/types';
+import {
   DuplicatesSet,
   HTypeValue,
   ModuleMetaData,
@@ -16,28 +14,26 @@ import type {
   ModuleMapData,
   DuplicatesIndex,
   MockData,
-} from 'types/HasteMap';
+} from './types';
 
 import * as fastPath from './lib/fast_path';
 import H from './constants';
 
-const EMPTY_OBJ = {};
+const EMPTY_OBJ = {} as {[key: string]: any};
 const EMPTY_MAP = new Map();
 
-export opaque type SerializableModuleMap = {
-  // There is no easier way to extract the type of the entries of a Map
-  duplicates: $Call<
-    typeof Array.from,
-    $Call<$PropertyType<DuplicatesIndex, 'entries'>>,
-  >,
-  map: $Call<typeof Array.from, $Call<$PropertyType<ModuleMapData, 'entries'>>>,
-  mocks: $Call<typeof Array.from, $Call<$PropertyType<MockData, 'entries'>>>,
-  rootDir: string,
+type ValueType<T> = T extends Map<string, infer V> ? V : never;
+
+export type SerializableModuleMap = {
+  duplicates: ReadonlyArray<[string, ValueType<DuplicatesIndex>]>;
+  map: ReadonlyArray<[string, ValueType<ModuleMapData>]>;
+  mocks: ReadonlyArray<[string, ValueType<MockData>]>;
+  rootDir: Config.Path;
 };
 
 export default class ModuleMap {
-  _raw: RawModuleMap;
-  static DuplicateHasteCandidatesError: Class<DuplicateHasteCandidatesError>;
+  private readonly _raw: RawModuleMap;
+  static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;
 
   constructor(raw: RawModuleMap) {
     this._raw = raw;
@@ -45,11 +41,11 @@ export default class ModuleMap {
 
   getModule(
     name: string,
-    platform: ?string,
-    supportsNativePlatform: ?boolean,
-    type: ?HTypeValue,
-  ): ?Path {
-    if (!type) {
+    platform: string | null,
+    supportsNativePlatform: boolean | null,
+    type: HTypeValue | null,
+  ): Config.Path | null {
+    if (type == null) {
       type = H.MODULE;
     }
     const module = this._getModuleMetadata(
@@ -66,13 +62,13 @@ export default class ModuleMap {
 
   getPackage(
     name: string,
-    platform: ?string,
-    supportsNativePlatform: ?boolean,
-  ): ?Path {
+    platform: string | null,
+    _supportsNativePlatform: boolean | null,
+  ): Config.Path | null {
     return this.getModule(name, platform, null, H.PACKAGE);
   }
 
-  getMockModule(name: string): ?Path {
+  getMockModule(name: string): Config.Path | undefined {
     const mockPath =
       this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
     return mockPath && fastPath.resolve(this._raw.rootDir, mockPath);
@@ -113,11 +109,11 @@ export default class ModuleMap {
    * extra sure. If metadata exists both in the `duplicates` object and the
    * `map`, this would be a bug.
    */
-  _getModuleMetadata(
+  private _getModuleMetadata(
     name: string,
-    platform: ?string,
+    platform: string | null,
     supportsNativePlatform: boolean,
-  ): ?ModuleMetaData {
+  ): ModuleMetaData | null {
     const map = this._raw.map.get(name) || EMPTY_OBJ;
     const dupMap = this._raw.duplicates.get(name) || EMPTY_MAP;
     if (platform != null) {
@@ -154,11 +150,11 @@ export default class ModuleMap {
     return null;
   }
 
-  _assertNoDuplicates(
+  private _assertNoDuplicates(
     name: string,
     platform: string,
     supportsNativePlatform: boolean,
-    relativePathSet: ?DuplicatesSet,
+    relativePathSet: DuplicatesSet | null,
   ) {
     if (relativePathSet == null) {
       return;
@@ -180,7 +176,7 @@ export default class ModuleMap {
     );
   }
 
-  static create(rootDir: Path) {
+  static create(rootDir: Config.Path) {
     return new ModuleMap({
       duplicates: new Map(),
       map: new Map(),
@@ -192,7 +188,7 @@ export default class ModuleMap {
 
 class DuplicateHasteCandidatesError extends Error {
   hasteName: string;
-  platform: ?string;
+  platform: string | null;
   supportsNativePlatform: boolean;
   duplicatesSet: DuplicatesSet;
 
