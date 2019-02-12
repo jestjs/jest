@@ -8,13 +8,18 @@
   },
   "license": "MIT",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/types": "^24.1.0",
     "browser-resolve": "^1.11.3",
     "chalk": "^2.0.1",
-    "realpath-native": "^1.0.0"
+    "realpath-native": "^1.1.0"
   },
   "devDependencies": {
     "@types/browser-resolve": "^0.0.5",
+    "jest-haste-map": "^24.0.0"
+  },
+  "peerDependencies": {
     "jest-haste-map": "^24.0.0"
   },
   "engines": {

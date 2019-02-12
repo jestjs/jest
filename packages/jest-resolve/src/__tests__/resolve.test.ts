@@ -6,16 +6,18 @@
  *
  */
 
-'use strict';
-
 import fs from 'fs';
 import path from 'path';
-import {ModuleMap} from 'jest-haste-map';
-// eslint-disable-next-line import/default
+import HasteMap from 'jest-haste-map';
 import Resolver from '../';
+// @ts-ignore: js file
 import userResolver from '../__mocks__/userResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import defaultResolver from '../defaultResolver';
+import {ResolverConfig} from '../types';
+
+// @ts-ignore: types are wrong. not sure how...
+const {ModuleMap} = HasteMap;
 
 jest.mock('../__mocks__/userResolver');
 
@@ -28,21 +30,21 @@ describe('isCoreModule', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {
       hasCoreModules: false,
-    });
+    } as ResolverConfig);
     const isCore = resolver.isCoreModule('assert');
     expect(isCore).toEqual(false);
   });
 
   it('returns true if `hasCoreModules` is true and `moduleName` is a core module.', () => {
     const moduleMap = ModuleMap.create('/');
-    const resolver = new Resolver(moduleMap, {});
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('assert');
     expect(isCore).toEqual(true);
   });
 
   it('returns false if `hasCoreModules` is true and `moduleName` is not a core module.', () => {
     const moduleMap = ModuleMap.create('/');
-    const resolver = new Resolver(moduleMap, {});
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('not-a-core-module');
     expect(isCore).toEqual(false);
   });
@@ -84,7 +86,7 @@ describe('findNodeModule', () => {
 });
 
 describe('resolveModule', () => {
-  let moduleMap;
+  let moduleMap: typeof ModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -92,7 +94,7 @@ describe('resolveModule', () => {
   it('is possible to resolve node modules', () => {
     const resolver = new Resolver(moduleMap, {
       extensions: ['.js'],
-    });
+    } as ResolverConfig);
     const src = require.resolve('../');
     const resolved = resolver.resolveModule(
       src,
@@ -104,7 +106,7 @@ describe('resolveModule', () => {
   it('is possible to resolve node modules with custom extensions', () => {
     const resolver = new Resolver(moduleMap, {
       extensions: ['.js', '.jsx'],
-    });
+    } as ResolverConfig);
     const src = require.resolve('../');
     const resolvedJsx = resolver.resolveModule(
       src,
@@ -119,7 +121,7 @@ describe('resolveModule', () => {
     const resolver = new Resolver(moduleMap, {
       extensions: ['.js', '.jsx'],
       platforms: ['native'],
-    });
+    } as ResolverConfig);
     const src = require.resolve('../');
     const resolvedJsx = resolver.resolveModule(
       src,
@@ -133,7 +135,7 @@ describe('resolveModule', () => {
   it('is possible to resolve node modules by resolving their realpath', () => {
     const resolver = new Resolver(moduleMap, {
       extensions: ['.js'],
-    });
+    } as ResolverConfig);
     const src = path.join(
       path.resolve(__dirname, '../../src/__mocks__/bar/node_modules/'),
       'foo/index.js',
@@ -147,7 +149,7 @@ describe('resolveModule', () => {
   it('is possible to specify custom resolve paths', () => {
     const resolver = new Resolver(moduleMap, {
       extensions: ['.js'],
-    });
+    } as ResolverConfig);
     const src = require.resolve('../');
     const resolved = resolver.resolveModule(src, 'mockJsDependency', {
       paths: [
@@ -173,7 +175,7 @@ describe('getMockModule', () => {
         },
       ],
       resolver: require.resolve('../__mocks__/userResolver'),
-    });
+    } as ResolverConfig);
     const src = require.resolve('../');
     resolver.getMockModule(src, 'dependentModule');
 
@@ -196,7 +198,7 @@ describe('nodeModulesPaths', () => {
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   const _path = path;
-  let moduleMap;
+  let moduleMap: typeof ModuleMap;
 
   beforeEach(() => {
     jest.resetModules();
@@ -208,7 +210,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     // This test suite won't work otherwise, since we cannot make assumptions
     // about the test environment when it comes to absolute paths.
     jest.doMock('realpath-native', () => ({
-      sync: dirInput => dirInput,
+      sync: (dirInput: string) => dirInput,
     }));
   });
 

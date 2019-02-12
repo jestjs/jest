@@ -3,33 +3,29 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Path} from 'types/Config';
-import type {ErrorWithCode} from 'types/Errors';
-
-import browserResolve from 'browser-resolve';
 import fs from 'fs';
 import path from 'path';
+import browserResolve from 'browser-resolve';
+import {Config} from '@jest/types';
 import isBuiltinModule from './isBuiltinModule';
 import nodeModulesPaths from './nodeModulesPaths';
 
-type ResolverOptions = {|
-  basedir: Path,
-  browser?: boolean,
-  defaultResolver: typeof defaultResolver,
-  extensions?: Array<string>,
-  moduleDirectory?: Array<string>,
-  paths?: ?Array<Path>,
-  rootDir: ?Path,
-|};
+type ResolverOptions = {
+  basedir: Config.Path;
+  browser?: boolean;
+  defaultResolver: typeof defaultResolver;
+  extensions?: Array<string>;
+  moduleDirectory?: Array<string>;
+  paths?: Array<Config.Path>;
+  rootDir?: Config.Path;
+};
 
 export default function defaultResolver(
-  path: Path,
+  path: Config.Path,
   options: ResolverOptions,
-): Path {
+): Config.Path {
   const resolve = options.browser ? browserResolve.sync : resolveSync;
 
   return resolve(path, {
@@ -44,7 +40,10 @@ export default function defaultResolver(
 
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 
-function resolveSync(target: Path, options: ResolverOptions): Path {
+function resolveSync(
+  target: Config.Path,
+  options: ResolverOptions,
+): Config.Path {
   const basedir = options.basedir;
   const extensions = options.extensions || ['.js'];
   const paths = options.paths || [];
@@ -75,7 +74,7 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
     return target;
   }
 
-  const err: ErrorWithCode = new Error(
+  const err: Error & {code?: string} = new Error(
     "Cannot find module '" + target + "' from '" + basedir + "'",
   );
   err.code = 'MODULE_NOT_FOUND';
@@ -84,7 +83,7 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
   /*
    * contextual helper functions
    */
-  function tryResolve(name: Path): ?Path {
+  function tryResolve(name: Config.Path): Config.Path | undefined {
     const dir = path.dirname(name);
     let result;
     if (isDirectory(dir)) {
@@ -98,7 +97,7 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
     return result;
   }
 
-  function resolveAsFile(name: Path): ?Path {
+  function resolveAsFile(name: Config.Path): Config.Path | undefined {
     if (isFile(name)) {
       return name;
     }
@@ -113,7 +112,7 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
     return undefined;
   }
 
-  function resolveAsDirectory(name: Path): ?Path {
+  function resolveAsDirectory(name: Config.Path): Config.Path | undefined {
     if (!isDirectory(name)) {
       return undefined;
     }
@@ -140,7 +139,7 @@ function resolveSync(target: Path, options: ResolverOptions): Path {
 /*
  * helper functions
  */
-function isFile(file: Path): boolean {
+function isFile(file: Config.Path): boolean {
   let result;
 
   try {
@@ -156,7 +155,7 @@ function isFile(file: Path): boolean {
   return result;
 }
 
-function isDirectory(dir: Path): boolean {
+function isDirectory(dir: Config.Path): boolean {
   let result;
 
   try {
@@ -172,6 +171,6 @@ function isDirectory(dir: Path): boolean {
   return result;
 }
 
-function isCurrentDirectory(testPath: Path): boolean {
+function isCurrentDirectory(testPath: Config.Path): boolean {
   return path.resolve('.') === path.resolve(testPath);
 }

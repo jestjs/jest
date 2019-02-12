@@ -1,5 +1,4 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-// @flow
 
 import isBuiltinModule from '../isBuiltinModule';
 
