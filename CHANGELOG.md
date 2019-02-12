@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect]`: Improve report when matcher fails, part 7 ([#7866](https://github.com/facebook/jest/pull/7866))
+
 ### Fixes
 
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
