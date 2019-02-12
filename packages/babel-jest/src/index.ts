@@ -126,8 +126,10 @@ const createTransformer = (
       const transformResult = babelTransform(src, babelOptions);
 
       if (transformResult && typeof transformResult.code === 'string') {
-        // @ts-ignore: why doesn't TS understand this?
-        return transformResult;
+        const {code, map} = transformResult;
+        if (typeof code === 'string') {
+          return {code, map};
+        }
       }
 
       return src;
