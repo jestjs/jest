@@ -121,12 +121,8 @@ const matchers: MatchersObject = {
             : `Received:     ${printReceived(received)}\n` +
               '\n' +
               `Expected precision:        ${printExpected(precision)}\n` +
-              `Expected difference: not < ${EXPECTED_COLOR(
-                expectedDiff.toExponential(),
-              )}\n` +
-              `Received difference:       ${RECEIVED_COLOR(
-                receivedDiff.toExponential(),
-              )}`)
+              `Expected difference: not < ${printExpected(expectedDiff)}\n` +
+              `Received difference:       ${printReceived(receivedDiff)}`)
       : () =>
           matcherHint('toBeCloseTo', undefined, undefined, options) +
           '\n\n' +
@@ -134,12 +130,8 @@ const matchers: MatchersObject = {
           `Received: ${printReceived(received)}\n` +
           '\n' +
           `Expected precision:    ${printExpected(precision)}\n` +
-          `Expected difference: < ${EXPECTED_COLOR(
-            expectedDiff.toExponential(),
-          )}\n` +
-          `Received difference:   ${RECEIVED_COLOR(
-            receivedDiff.toExponential(),
-          )}`;
+          `Expected difference: < ${printExpected(expectedDiff)}\n` +
+          `Received difference:   ${printReceived(receivedDiff)}`;
 
     return {message, pass};
   },
