@@ -940,7 +940,7 @@ class ModuleMockerClass {
     object: T,
     methodName: M,
   ): T[M] extends (...args: any[]) => any
-    ? SpyInstance<ReturnType<T[M]>, ArgsType<T[M]>>
+    ? SpyInstance<ReturnType<T[M]>, Parameters<T[M]>>
     : never;
 
   spyOn<T extends {}, M extends NonFunctionPropertyNames<T>>(
