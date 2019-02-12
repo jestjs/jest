@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
+- `[docs]` Fix image URLs in SnapshotTesting.md for current and version 24
 
 ### Chore & Maintenance
 
