@@ -14,7 +14,7 @@ import activeFilters from '../lib/active_filters_message';
 
 class TestPathPatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
-  isInternal: true;
+  isInternal: true = true;
 
   constructor(options: {
     stdin: stream$Readable | tty$ReadStream,
@@ -22,7 +22,6 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
   }) {
     super(options);
     this._prompt = new Prompt();
-    this.isInternal = true;
   }
 
   getUsageInfo() {

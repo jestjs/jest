@@ -9,14 +9,13 @@
 import {BaseWatchPlugin} from 'jest-watcher';
 
 class QuitPlugin extends BaseWatchPlugin {
-  isInternal: true;
+  isInternal: true = true;
 
   constructor(options: {
     stdin: stream$Readable | tty$ReadStream,
     stdout: stream$Writable | tty$WriteStream,
   }) {
     super(options);
-    this.isInternal = true;
   }
 
   async run() {

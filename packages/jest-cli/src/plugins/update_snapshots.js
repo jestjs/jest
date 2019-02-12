@@ -12,14 +12,13 @@ import {BaseWatchPlugin} from 'jest-watcher';
 
 class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   _hasSnapshotFailure: boolean;
-  isInternal: true;
+  isInternal: true = true;
 
   constructor(options: {
     stdin: stream$Readable | tty$ReadStream,
     stdout: stream$Writable | tty$WriteStream,
   }) {
     super(options);
-    this.isInternal = true;
   }
 
   run(
