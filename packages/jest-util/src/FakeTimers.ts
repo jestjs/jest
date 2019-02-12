@@ -49,6 +49,7 @@ type TimerConfig<Ref> = {
 };
 
 const MS_IN_A_YEAR = 31536000000;
+const DEFAULT_MAX_LOOPS = 100000;
 
 export default class FakeTimers<TimerRef> {
   private _cancelledImmediates!: {[key: string]: boolean};
@@ -83,7 +84,7 @@ export default class FakeTimers<TimerRef> {
     this._global = global;
     this._timerConfig = timerConfig;
     this._config = config;
-    this._maxLoops = maxLoops || 100000;
+    this._maxLoops = maxLoops || DEFAULT_MAX_LOOPS;
     this._moduleMocker = moduleMocker;
 
     // Store original timer APIs for future reference
