@@ -13,11 +13,11 @@ import type {
   DefaultOptions,
   ReporterConfig,
   GlobalConfig,
+  Path,
   ProjectConfig,
 } from 'types/Config';
 
 import crypto from 'crypto';
-import uuid from 'uuid/v4';
 import glob from 'glob';
 import path from 'path';
 import {ValidationError, validate} from 'jest-validate';
@@ -200,7 +200,9 @@ const normalizeCollectCoverageFrom = (options: InitialOptions, key: string) => {
       value = JSON.parse(options[key]);
     } catch (e) {}
 
-    Array.isArray(value) || (value = [options[key]]);
+    if (options[key] && !Array.isArray(value)) {
+      value = [options[key]];
+    }
   } else {
     value = options[key];
   }
@@ -264,12 +266,18 @@ const normalizePreprocessor = (options: InitialOptions): InitialOptions => {
   return options;
 };
 
-const normalizeMissingOptions = (options: InitialOptions): InitialOptions => {
+const normalizeMissingOptions = (
+  options: InitialOptions,
+  configPath: ?Path,
+  projectIndex: number,
+): InitialOptions => {
   if (!options.name) {
     options.name = crypto
       .createHash('md5')
       .update(options.rootDir)
-      .update(uuid())
+      // In case we load config from some path that has the same root dir
+      .update(configPath || '')
+      .update(String(projectIndex))
       .digest('hex');
   }
 
@@ -375,7 +383,12 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-export default function normalize(options: InitialOptions, argv: Argv) {
+export default function normalize(
+  options: InitialOptions,
+  argv: Argv,
+  configPath: ?Path,
+  projectIndex?: number = Infinity,
+) {
   const {hasDeprecationWarnings} = validate(options, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
@@ -394,9 +407,17 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   options = normalizePreprocessor(
     normalizeReporters(
-      normalizeMissingOptions(normalizeRootDir(setFromArgv(options, argv))),
+      normalizeMissingOptions(
+        normalizeRootDir(setFromArgv(options, argv)),
+        configPath,
+        projectIndex,
+      ),
     ),
   );
+
+  if (options.preset) {
+    options = setupPreset(options, options.preset);
+  }
 
   if (!options.setupFilesAfterEnv) {
     options.setupFilesAfterEnv = [];
@@ -418,10 +439,6 @@ export default function normalize(options: InitialOptions, argv: Argv) {
 
   if (options.setupTestFrameworkScriptFile) {
     options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
-  }
-
-  if (options.preset) {
-    options = setupPreset(options, options.preset);
   }
 
   options.testEnvironment = getTestEnvironment({
@@ -633,8 +650,12 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'moduleFileExtensions': {
         value = options[key];
 
-        // If it's the wrong type, it can throw at a later time
-        if (Array.isArray(value) && !value.includes('js')) {
+        if (
+          Array.isArray(value) && // If it's the wrong type, it can throw at a later time
+          (options.runner === undefined ||
+            options.runner === DEFAULT_CONFIG.runner) && // Only require 'js' for the default jest-runner
+          !value.includes('js')
+        ) {
           const errorMessage =
             `  moduleFileExtensions must include 'js':\n` +
             `  but instead received:\n` +
@@ -692,6 +713,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
+      case 'maxConcurrency':
       case 'mapCoverage':
       case 'name':
       case 'noStackTrace':
@@ -782,6 +804,7 @@ export default function normalize(options: InitialOptions, argv: Argv) {
       ? 'all'
       : 'new';
 
+  newOptions.maxConcurrency = parseInt(newOptions.maxConcurrency, 10);
   newOptions.maxWorkers = getMaxWorkers(argv);
 
   if (newOptions.testRegex.length && options.testMatch) {

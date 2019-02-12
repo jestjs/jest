@@ -144,29 +144,41 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeGreaterThan(actual: number, expected: number) {
-    ensureNumbers(actual, expected, '.toBeGreaterThan');
-    const pass = actual > expected;
+  toBeGreaterThan(received: number, expected: number) {
+    const isNot = this.isNot;
+    const options = {
+      isNot,
+      promise: this.promise,
+    };
+    ensureNumbers(received, expected, '.toBeGreaterThan');
+
+    const pass = received > expected;
+
     const message = () =>
-      matcherHint('.toBeGreaterThan', undefined, undefined, {
-        isNot: this.isNot,
-      }) +
+      matcherHint('toBeGreaterThan', undefined, undefined, options) +
       '\n\n' +
-      `Expected: ${printExpected(expected)}\n` +
-      `Received: ${printReceived(actual)}`;
+      `Expected:${isNot ? ' not' : ''} > ${printExpected(expected)}\n` +
+      `Received:${isNot ? '    ' : ''}   ${printReceived(received)}`;
+
     return {message, pass};
   },
 
-  toBeGreaterThanOrEqual(actual: number, expected: number) {
-    ensureNumbers(actual, expected, '.toBeGreaterThanOrEqual');
-    const pass = actual >= expected;
+  toBeGreaterThanOrEqual(received: number, expected: number) {
+    const isNot = this.isNot;
+    const options = {
+      isNot,
+      promise: this.promise,
+    };
+    ensureNumbers(received, expected, '.toBeGreaterThanOrEqual');
+
+    const pass = received >= expected;
+
     const message = () =>
-      matcherHint('.toBeGreaterThanOrEqual', undefined, undefined, {
-        isNot: this.isNot,
-      }) +
+      matcherHint('toBeGreaterThanOrEqual', undefined, undefined, options) +
       '\n\n' +
-      `Expected: ${printExpected(expected)}\n` +
-      `Received: ${printReceived(actual)}`;
+      `Expected:${isNot ? ' not' : ''} >= ${printExpected(expected)}\n` +
+      `Received:${isNot ? '    ' : ''}    ${printReceived(received)}`;
+
     return {message, pass};
   },
 
@@ -214,29 +226,41 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeLessThan(actual: number, expected: number) {
-    ensureNumbers(actual, expected, '.toBeLessThan');
-    const pass = actual < expected;
+  toBeLessThan(received: number, expected: number) {
+    const isNot = this.isNot;
+    const options = {
+      isNot,
+      promise: this.promise,
+    };
+    ensureNumbers(received, expected, '.toBeLessThan');
+
+    const pass = received < expected;
+
     const message = () =>
-      matcherHint('.toBeLessThan', undefined, undefined, {
-        isNot: this.isNot,
-      }) +
+      matcherHint('toBeLessThan', undefined, undefined, options) +
       '\n\n' +
-      `Expected: ${printExpected(expected)}\n` +
-      `Received: ${printReceived(actual)}`;
+      `Expected:${isNot ? ' not' : ''} < ${printExpected(expected)}\n` +
+      `Received:${isNot ? '    ' : ''}   ${printReceived(received)}`;
+
     return {message, pass};
   },
 
-  toBeLessThanOrEqual(actual: number, expected: number) {
-    ensureNumbers(actual, expected, '.toBeLessThanOrEqual');
-    const pass = actual <= expected;
+  toBeLessThanOrEqual(received: number, expected: number) {
+    const isNot = this.isNot;
+    const options = {
+      isNot,
+      promise: this.promise,
+    };
+    ensureNumbers(received, expected, '.toBeLessThanOrEqual');
+
+    const pass = received <= expected;
+
     const message = () =>
-      matcherHint('.toBeLessThanOrEqual', undefined, undefined, {
-        isNot: this.isNot,
-      }) +
+      matcherHint('toBeLessThanOrEqual', undefined, undefined, options) +
       '\n\n' +
-      `Expected: ${printExpected(expected)}\n` +
-      `Received: ${printReceived(actual)}`;
+      `Expected:${isNot ? ' not' : ''} <= ${printExpected(expected)}\n` +
+      `Received:${isNot ? '    ' : ''}    ${printReceived(received)}`;
+
     return {message, pass};
   },
 

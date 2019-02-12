@@ -12,7 +12,6 @@ import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 
 import fs from 'fs';
-// $FlowFixMe: Missing ESM export
 import {getCacheFilePath} from 'jest-haste-map';
 
 const FAIL = 0;

@@ -17,7 +17,7 @@ PASS __tests__/pretty.test.js
     ✓ -Infinity == -Infinity
     ✓ NaN == NaN
   template
-    ✓ "hello" == "hello"
+    ✓ hello == hello
     ✓ 1 == 1
     ✓ null == null
     ✓ undefined == undefined

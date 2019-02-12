@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "23.6.0",
+  "version": "24.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -9,6 +9,7 @@
   "license": "MIT",
   "description": "Stringify any JavaScript value.",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "browser": "build-es5/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
@@ -16,6 +17,10 @@
     "ansi-styles": "^3.2.0"
   },
   "devDependencies": {
+    "@types/ansi-regex": "^4.0.0",
+    "@types/ansi-styles": "^3.2.1",
+    "@types/react": "*",
+    "@types/react-test-renderer": "*",
     "immutable": "4.0.0-rc.9",
     "react": "*",
     "react-dom": "*",
@@ -23,5 +28,6 @@
   },
   "engines": {
     "node": ">= 6"
-  }
+  },
+  "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
 }

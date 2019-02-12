@@ -53,7 +53,7 @@ describe.each`
   ${'a'} | ${'b'}
   ${'c'} | ${'d'}
 `(
-  'template table describe fails on all rows expected $left == $right',
+  'template table describe fails on all rows expected "$left" == "$right"',
   ({left, right}) => {
     it('fails ', () => {
       expect(left).toBe(right);

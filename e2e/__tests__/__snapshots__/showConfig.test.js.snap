@@ -101,6 +101,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "globalSetup": null,
     "globalTeardown": null,
     "listTests": false,
+    "maxConcurrency": 5,
     "maxWorkers": "[maxWorkers]",
     "noStackTrace": false,
     "nonFlagArgs": [],

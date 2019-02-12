@@ -6,6 +6,7 @@
  *
  */
 
+import {normalize} from 'jest-config';
 import shouldInstrument from '../shouldInstrument';
 
 describe('shouldInstrument', () => {
@@ -13,9 +14,12 @@ describe('shouldInstrument', () => {
   const defaultOptions = {
     collectCoverage: true,
   };
-  const defaultConfig = {
-    rootDir: '/',
-  };
+  const defaultConfig = normalize(
+    {
+      rootDir: '/',
+    },
+    {},
+  ).options;
 
   describe('should return true', () => {
     const testShouldInstrument = (
@@ -197,6 +201,34 @@ describe('shouldInstrument', () => {
           : 'dont/__mocks__/collect/coverage.js';
 
       testShouldInstrument(filename, defaultOptions, defaultConfig);
+    });
+
+    it('if file is a globalSetup file', () => {
+      testShouldInstrument('globalSetup.js', defaultOptions, {
+        globalSetup: 'globalSetup.js',
+        rootDir: '/',
+      });
+    });
+
+    it('if file is globalTeardown file', () => {
+      testShouldInstrument('globalTeardown.js', defaultOptions, {
+        globalTeardown: 'globalTeardown.js',
+        rootDir: '/',
+      });
+    });
+
+    it('if file is in setupFiles', () => {
+      testShouldInstrument('setupTest.js', defaultOptions, {
+        rootDir: '/',
+        setupFiles: ['setupTest.js'],
+      });
+    });
+
+    it('if file is in setupFilesAfterEnv', () => {
+      testShouldInstrument('setupTest.js', defaultOptions, {
+        rootDir: '/',
+        setupFilesAfterEnv: ['setupTest.js'],
+      });
     });
   });
 });

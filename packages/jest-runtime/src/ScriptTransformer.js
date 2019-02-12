@@ -33,6 +33,7 @@ import {sync as realpath} from 'realpath-native';
 import {enhanceUnexpectedTokenMessage} from './helpers';
 
 export type Options = {|
+  changedFiles: ?Set<Path>,
   collectCoverage: boolean,
   collectCoverageFrom: Array<Glob>,
   collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
@@ -202,6 +203,12 @@ export default class ScriptTransformer {
     } catch (err) {
       return filepath;
     }
+  }
+
+  // We don't want to expose transformers to the outside - this function is just
+  // to warm up `this._transformCache`
+  preloadTransformer(filepath: Path): void {
+    this._getTransformer(filepath);
   }
 
   transformSource(filepath: Path, content: string, instrument: boolean) {

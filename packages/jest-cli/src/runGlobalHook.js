@@ -15,6 +15,11 @@ import pEachSeries from 'p-each-series';
 import {addHook} from 'pirates';
 import Runtime from 'jest-runtime';
 
+// copied from https://github.com/babel/babel/blob/56044c7851d583d498f919e9546caddf8f80a72f/packages/babel-helpers/src/helpers.js#L558-L562
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {default: obj};
+}
+
 export default ({
   allTests,
   globalConfig,
@@ -49,6 +54,10 @@ export default ({
 
       const transformer = new Runtime.ScriptTransformer(projectConfig);
 
+      // Load the transformer to avoid a cycle where we need to load a
+      // transformer in order to transform it in the require hooks
+      transformer.preloadTransformer(modulePath);
+
       const revertHook = addHook(
         (code, filename) =>
           transformer.transformSource(filename, code, false).code || code,
@@ -59,7 +68,7 @@ export default ({
       );
 
       // $FlowFixMe
-      const globalModule = require(modulePath);
+      const globalModule = _interopRequireDefault(require(modulePath)).default;
 
       if (typeof globalModule !== 'function') {
         throw new TypeError(

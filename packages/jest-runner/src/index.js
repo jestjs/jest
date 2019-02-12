@@ -13,6 +13,7 @@ import type {
   OnTestStart,
   OnTestSuccess,
   Test,
+  TestRunnerContext,
   TestRunnerOptions,
   TestWatcher,
 } from 'types/TestRunner';
@@ -30,9 +31,11 @@ type WorkerInterface = Worker & {worker: worker};
 
 class TestRunner {
   _globalConfig: GlobalConfig;
+  _context: TestRunnerContext;
 
-  constructor(globalConfig: GlobalConfig) {
+  constructor(globalConfig: GlobalConfig, context?: TestRunnerContext) {
     this._globalConfig = globalConfig;
+    this._context = context || {};
   }
 
   async runTests(
@@ -78,6 +81,7 @@ class TestRunner {
                 this._globalConfig,
                 test.context.config,
                 test.context.resolver,
+                this._context,
               );
             })
             .then(result => onResult(test, result))
@@ -94,7 +98,6 @@ class TestRunner {
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
   ) {
-    // $FlowFixMe: class object is augmented with worker when instantiating.
     const worker: WorkerInterface = new Worker(TEST_WORKER_PATH, {
       exposedMethods: ['worker'],
       forkOptions: {stdio: 'pipe'},
@@ -119,6 +122,7 @@ class TestRunner {
 
         return worker.worker({
           config: test.context.config,
+          context: this._context,
           globalConfig: this._globalConfig,
           path: test.path,
           serializableModuleMap: watcher.isWatchMode()
