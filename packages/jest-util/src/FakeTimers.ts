@@ -64,7 +64,7 @@ export default class FakeTimers<TimerRef> {
   private _ticks!: Array<Tick>;
   private _timerAPIs: TimerAPI;
   private _timers!: {[key: string]: Timer};
-  private _uuidCounter: number;
+  private _uuidCounter: number = 1;
   private _timerConfig: TimerConfig<TimerRef>;
 
   constructor({
@@ -84,7 +84,6 @@ export default class FakeTimers<TimerRef> {
     this._timerConfig = timerConfig;
     this._config = config;
     this._maxLoops = maxLoops || 100000;
-    this._uuidCounter = 1;
     this._moduleMocker = moduleMocker;
 
     // Store original timer APIs for future reference
