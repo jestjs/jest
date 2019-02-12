@@ -10,6 +10,7 @@
 import fs from 'fs';
 import semver from 'semver';
 import path from 'path';
+import {loadPartialConfig} from '@babel/core';
 import {parse} from '@babel/parser';
 import {templateElement, templateLiteral, file} from '@babel/types';
 
@@ -72,17 +73,17 @@ const saveSnapshotsForFile = (
       parser: createParser(snapshots, inferredParser, babelTraverse),
     });
   } else {
-    const plugins = /\.tsx?$/.test(sourceFilePath)
-      ? ['typescript', ...prettierBabelPluginList]
-      : ['flow', ...prettierBabelPluginList];
-    const ast = parse(sourceFile, {
-      allowAwaitOutsideFunction: true,
-      allowImportExportEverywhere: true,
-      allowReturnOutsideFunction: true,
-      allowSuperOutsideMethod: true,
-      plugins,
-      sourceType: 'module',
-    });
+    const {options} = loadPartialConfig({filename: sourceFilePath});
+
+    // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
+    if (/\.tsx?$/.test(sourceFilePath)) {
+      options.plugins.push('typescript');
+    }
+    if (/\.tsx/.test(sourceFilePath)) {
+      options.plugins.push('jsx');
+    }
+
+    const ast = parse(sourceFile, options);
     traverseAst(snapshots, ast, sourceFile, babelTraverse);
 
     // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
@@ -209,31 +210,6 @@ const traverseAst = (
     throw new Error(`Jest: Couldn't locate all inline snapshots.`);
   }
 };
-
-// lifted from https://github.com/prettier/prettier/blob/ca43aad88a5853eebc47958b3f69b47df5d78782/src/language-js/parser-babylon.js#L20-L40
-const prettierBabelPluginList = [
-  'jsx',
-  'doExpressions',
-  'objectRestSpread',
-  'classProperties',
-  'exportDefaultFrom',
-  'exportNamespaceFrom',
-  'asyncGenerators',
-  'functionBind',
-  'functionSent',
-  'dynamicImport',
-  'numericSeparator',
-  'importMeta',
-  'optionalCatchBinding',
-  'optionalChaining',
-  'classPrivateProperties',
-  ['pipelineOperator', {proposal: 'minimal'}],
-  'nullishCoalescingOperator',
-  'bigInt',
-  'throwExpressions',
-  'logicalAssignment',
-  'classPrivateMethods',
-];
 
 const simpleDetectParser = (filePath: Path) => {
   const extname = path.extname(filePath);

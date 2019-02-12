@@ -9,11 +9,13 @@
 
 jest.mock('fs');
 jest.mock('prettier');
+jest.mock('@babel/core');
 
 const fs = require('fs');
 const path = require('path');
 const prettier = require('prettier');
 const babelTraverse = require('@babel/traverse').default;
+const babelCore = require('@babel/core');
 
 const {saveInlineSnapshots} = require('../inline_snapshots');
 
@@ -35,6 +37,10 @@ beforeEach(() => {
   }));
   // $FlowFixMe mock
   fs.readdirSync = jest.fn(() => []);
+
+  jest
+    .spyOn(babelCore, 'loadPartialConfig')
+    .mockImplementation(() => ({options: {plugins: []}}));
 
   prettier.resolveConfig.sync.mockReset();
 });
@@ -147,16 +153,18 @@ test('saveInlineSnapshots() can handle tsx without prettier', () => {
   jest.spyOn(fs, 'readFileSync').mockImplementation(
     () =>
       `
-const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
-const a = await Foo({ foo: "hello" });
-expect(a).toMatchInlineSnapshot();
+it('foos', async () => {
+  const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
+  const a = await Foo({ foo: "hello" });
+  expect(a).toMatchInlineSnapshot();
+})
 `.trim() + '\n',
   );
 
   saveInlineSnapshots(
     [
       {
-        frame: {column: 11, file: filename, line: 3},
+        frame: {column: 13, file: filename, line: 4},
         snapshot: `<div>hello</div>`,
       },
     ],
@@ -167,14 +175,21 @@ expect(a).toMatchInlineSnapshot();
   expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     `
-const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
-const a = await Foo({ foo: "hello" });
-expect(a).toMatchInlineSnapshot(\`<div>hello</div>\`);
+it('foos', async () => {
+  const Foo = (props: { foo: string }) => <div>{props.foo}</div>;
+  const a = await Foo({ foo: "hello" });
+  expect(a).toMatchInlineSnapshot(\`<div>hello</div>\`);
+})
 `.trim() + '\n',
   );
 });
 
-test('saveInlineSnapshots() can handle jsx without prettier', () => {
+test('saveInlineSnapshots() can handle flow and jsx without prettier', () => {
+  jest.spyOn(babelCore, 'loadPartialConfig').mockImplementation(() => ({
+    options: {
+      plugins: ['flow', 'jsx'],
+    },
+  }));
   const filename = path.join(__dirname, 'my.test.js');
   jest.spyOn(fs, 'readFileSync').mockImplementation(
     () =>
