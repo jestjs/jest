@@ -73,7 +73,9 @@
   },
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5",
+    "prebuild": "yarn build:ts",
     "build": "node ./scripts/build.js",
+    "build:ts": "node scripts/buildTs.js",
     "check-copyright-headers": "node ./scripts/checkCopyrightHeaders.js",
     "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && yarn clean-e2e && yarn build-clean",
     "clean-e2e": "find ./e2e -not \\( -path ./e2e/presets/js -prune \\) -not \\( -path ./e2e/presets/json -prune \\) -mindepth 2 -type d \\( -name node_modules -prune \\) -exec rm -r '{}' +",
@@ -91,8 +93,9 @@
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
     "test": "yarn typecheck && yarn lint && yarn jest",
-    "typecheck": "node scripts/buildTs.js && flow check --include-warnings",
-    "watch": "yarn build && node ./scripts/watch.js"
+    "typecheck": "flow check --include-warnings",
+    "watch": "yarn build && node ./scripts/watch.js",
+    "watch:ts": "yarn build:ts --watch"
   },
   "workspaces": {
     "packages": [
