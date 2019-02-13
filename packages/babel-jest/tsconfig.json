@@ -4,5 +4,6 @@
     "rootDir": "src",
     "outDir": "build"
   },
+  // TODO: include `babel-preset-jest` even though we don't care about its types
   "references": [{"path": "../jest-types"}]
 }
