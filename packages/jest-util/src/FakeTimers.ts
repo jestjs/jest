@@ -452,7 +452,11 @@ export default class FakeTimers<TimerRef> {
     return this._timerConfig.idToRef(uuid);
   }
 
-  private _fakeSetTimeout(callback: Callback, delay?: number, ...args: Array<any>) {
+  private _fakeSetTimeout(
+    callback: Callback,
+    delay?: number,
+    ...args: Array<any>
+  ) {
     if (this._disposed) {
       return null;
     }
