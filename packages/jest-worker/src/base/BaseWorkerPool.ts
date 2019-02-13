@@ -19,10 +19,10 @@ import {
 const emptyMethod = () => {};
 
 export default class BaseWorkerPool {
-  _stderr: NodeJS.ReadableStream;
-  _stdout: NodeJS.ReadableStream;
-  _options: WorkerPoolOptions;
-  _workers: Array<WorkerInterface>;
+  private readonly _stderr: NodeJS.ReadableStream;
+  private readonly _stdout: NodeJS.ReadableStream;
+  protected readonly _options: WorkerPoolOptions;
+  private readonly _workers: Array<WorkerInterface>;
 
   constructor(workerPath: string, options: WorkerPoolOptions) {
     this._options = options;
