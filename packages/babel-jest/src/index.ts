@@ -125,7 +125,7 @@ const createTransformer = (
 
       const transformResult = babelTransform(src, babelOptions);
 
-      if (transformResult && typeof transformResult.code === 'string') {
+      if (transformResult) {
         const {code, map} = transformResult;
         if (typeof code === 'string') {
           return {code, map};
