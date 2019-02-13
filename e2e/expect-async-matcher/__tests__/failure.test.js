@@ -12,22 +12,16 @@ expect.extend({
   toHaveLengthAsync,
 });
 
-it('fail with expected non promise values', async () => {
-  await (expect([1]): any).toHaveLengthAsync(Promise.resolve(2));
-});
+it('fail with expected non promise values', () =>
+  expect([1]).toHaveLengthAsync(Promise.resolve(2)));
 
-it('fail with expected non promise values and not', async () => {
-  await (expect([1, 2]): any).not.toHaveLengthAsync(Promise.resolve(2));
-});
+it('fail with expected non promise values and not', () =>
+  expect([1, 2]).not.toHaveLengthAsync(Promise.resolve(2)));
 
-it('fail with expected promise values', async () => {
-  await (expect(Promise.resolve([1])): any).resolves.toHaveLengthAsync(
+it('fail with expected promise values', () =>
+  expect(Promise.resolve([1])).resolves.toHaveLengthAsync(Promise.resolve(2)));
+
+it('fail with expected promise values and not', async () =>
+  expect(Promise.resolve([1, 2])).resolves.not.toHaveLengthAsync(
     Promise.resolve(2)
-  );
-});
-
-it('fail with expected promise values and not', async () => {
-  await (expect(Promise.resolve([1, 2])).resolves.not: any).toHaveLengthAsync(
-    Promise.resolve(2)
-  );
-});
+  ));

@@ -10,22 +10,40 @@ FAIL __tests__/failure.test.js
   ● fail with expected non promise values
 
     Expected value to have length:
+      2
+    Received:
+      1
+    received.length:
+      1
 
-        2
-      Received:
-        1
-      received.length:
-        1
+      14 | 
+      15 | it('fail with expected non promise values', () =>
+    > 16 |   expect([1]).toHaveLengthAsync(Promise.resolve(2)));
+         |               ^
+      17 | 
+      18 | it('fail with expected non promise values and not', () =>
+      19 |   expect([1, 2]).not.toHaveLengthAsync(Promise.resolve(2)));
+
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:16:15)
 
   ● fail with expected non promise values and not
 
     Expected value to not have length:
+      2
+    Received:
+      1,2
+    received.length:
+      2
 
-        2
-      Received:
-        1,2
-      received.length:
-        2
+      17 | 
+      18 | it('fail with expected non promise values and not', () =>
+    > 19 |   expect([1, 2]).not.toHaveLengthAsync(Promise.resolve(2)));
+         |                      ^
+      20 | 
+      21 | it('fail with expected promise values', () =>
+      22 |   expect(Promise.resolve([1])).resolves.toHaveLengthAsync(Promise.resolve(2)));
+
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:19:22)
 
   ● fail with expected promise values
 
@@ -36,19 +54,15 @@ FAIL __tests__/failure.test.js
     received.length:
       1
 
-      22 | 
-      23 | it('fail with expected promise values', async () => {
-    > 24 |   await (expect(Promise.resolve([1])): any).resolves.toHaveLengthAsync(
-         |                                                      ^
-      25 |     Promise.resolve(2)
-      26 |   );
-      27 | });
+      20 | 
+      21 | it('fail with expected promise values', () =>
+    > 22 |   expect(Promise.resolve([1])).resolves.toHaveLengthAsync(Promise.resolve(2)));
+         |                                         ^
+      23 | 
+      24 | it('fail with expected promise values and not', async () =>
+      25 |   expect(Promise.resolve([1, 2])).resolves.not.toHaveLengthAsync(
 
-      at Object.toHaveLengthAsync (__tests__/failure.test.js:24:54)
-      at asyncGeneratorStep (__tests__/failure.test.js:11:103)
-      at _next (__tests__/failure.test.js:13:194)
-      at __tests__/failure.test.js:13:364
-      at Object.<anonymous> (__tests__/failure.test.js:13:97)
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:22:41)
 
   ● fail with expected promise values and not
 
@@ -59,15 +73,15 @@ FAIL __tests__/failure.test.js
     received.length:
       2
 
+      23 | 
+      24 | it('fail with expected promise values and not', async () =>
+    > 25 |   expect(Promise.resolve([1, 2])).resolves.not.toHaveLengthAsync(
+         |                                                ^
+      26 |     Promise.resolve(2)
+      27 |   ));
       28 | 
-      29 | it('fail with expected promise values and not', async () => {
-    > 30 |   await (expect(Promise.resolve([1, 2])).resolves.not: any).toHaveLengthAsync(
-         |                                                             ^
-      31 |     Promise.resolve(2)
-      32 |   );
-      33 | });
 
-      at Object.toHaveLengthAsync (__tests__/failure.test.js:30:61)
+      at Object.toHaveLengthAsync (__tests__/failure.test.js:25:48)
       at asyncGeneratorStep (__tests__/failure.test.js:11:103)
       at _next (__tests__/failure.test.js:13:194)
       at __tests__/failure.test.js:13:364
