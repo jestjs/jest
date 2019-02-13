@@ -41,9 +41,9 @@ export default class ModuleMap {
 
   getModule(
     name: string,
-    platform: string | null,
-    supportsNativePlatform: boolean | null,
-    type: HTypeValue | null,
+    platform?: string | null,
+    supportsNativePlatform?: boolean | null,
+    type?: HTypeValue | null,
   ): Config.Path | null {
     if (type == null) {
       type = H.MODULE;
@@ -62,7 +62,7 @@ export default class ModuleMap {
 
   getPackage(
     name: string,
-    platform: string | null,
+    platform: string | null | undefined,
     _supportsNativePlatform: boolean | null,
   ): Config.Path | null {
     return this.getModule(name, platform, null, H.PACKAGE);
@@ -111,7 +111,7 @@ export default class ModuleMap {
    */
   private _getModuleMetadata(
     name: string,
-    platform: string | null,
+    platform: string | null | undefined,
     supportsNativePlatform: boolean,
   ): ModuleMetaData | null {
     const map = this._raw.map.get(name) || EMPTY_OBJ;
