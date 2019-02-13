@@ -73,7 +73,7 @@ interface Mock<T, Y extends unknown[] = unknown[]>
 interface SpyInstance<T, Y extends unknown[]> extends MockInstance<T, Y> {}
 
 interface MockInstance<T, Y extends unknown[]> {
-  _isMockFunction: boolean;
+  _isMockFunction: true;
   _protoImpl: Function;
   getMockName(): string;
   getMockImplementation(): Function | undefined;

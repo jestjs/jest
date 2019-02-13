@@ -40,10 +40,10 @@ import {
  * same call skip it.
  */
 export default class ChildProcessWorker implements WorkerInterface {
-  _child!: ChildProcess;
-  _options: WorkerOptions;
-  _onProcessEnd!: OnEnd;
-  _retries!: number;
+  private _child!: ChildProcess;
+  private _options: WorkerOptions;
+  private _onProcessEnd!: OnEnd;
+  private _retries!: number;
 
   constructor(options: WorkerOptions) {
     this._options = options;

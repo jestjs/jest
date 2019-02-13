@@ -59,10 +59,10 @@ function getExposedMethods(
  *   caching results.
  */
 export default class JestWorker {
-  _ending: boolean;
-  _farm: Farm;
-  _options: FarmOptions;
-  _workerPool: WorkerPoolInterface;
+  private _ending: boolean;
+  private _farm: Farm;
+  private _options: FarmOptions;
+  private _workerPool: WorkerPoolInterface;
 
   constructor(workerPath: string, options?: FarmOptions) {
     this._options = {...options};
@@ -95,7 +95,10 @@ export default class JestWorker {
     this._bindExposedWorkerMethods(workerPath, this._options);
   }
 
-  _bindExposedWorkerMethods(workerPath: string, options: FarmOptions): void {
+  private _bindExposedWorkerMethods(
+    workerPath: string,
+    options: FarmOptions,
+  ): void {
     getExposedMethods(workerPath, options).forEach(name => {
       if (name.startsWith('_')) {
         return;
@@ -110,7 +113,10 @@ export default class JestWorker {
     });
   }
 
-  _callFunctionWithArgs(method: string, ...args: Array<any>): Promise<any> {
+  private _callFunctionWithArgs(
+    method: string,
+    ...args: Array<any>
+  ): Promise<any> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
