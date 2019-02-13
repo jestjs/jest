@@ -24,10 +24,10 @@ import {
 } from '../types';
 
 export default class ExperimentalWorker implements WorkerInterface {
-  _worker!: Worker;
-  _options: WorkerOptions;
-  _onProcessEnd!: OnEnd;
-  _retries!: number;
+  private _worker!: Worker;
+  private _options: WorkerOptions;
+  private _onProcessEnd!: OnEnd;
+  private _retries!: number;
 
   constructor(options: WorkerOptions) {
     this._options = options;

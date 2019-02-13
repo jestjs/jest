@@ -8,8 +8,8 @@
 import {WatchPlugin} from './types';
 
 class BaseWatchPlugin implements WatchPlugin {
-  _stdin: NodeJS.ReadableStream;
-  _stdout: NodeJS.WritableStream;
+  protected _stdin: NodeJS.ReadableStream;
+  protected _stdout: NodeJS.WritableStream;
 
   constructor({
     stdin,

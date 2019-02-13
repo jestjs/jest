@@ -9,14 +9,14 @@ import {ScrollOptions} from '../types';
 import {KEYS} from '../constants';
 
 export default class Prompt {
-  _entering: boolean;
-  _value: string;
-  _onChange: () => void;
-  _onSuccess: (value?: string) => void;
-  _onCancel: (value?: string) => void;
-  _offset: number;
-  _promptLength: number;
-  _selection: string | null;
+  private _entering: boolean;
+  private _value: string;
+  private _onChange: () => void;
+  private _onSuccess: (value?: string) => void;
+  private _onCancel: (value?: string) => void;
+  private _offset: number;
+  private _promptLength: number;
+  private _selection: string | null;
 
   constructor() {
     // Copied from `enter` to satisfy TS

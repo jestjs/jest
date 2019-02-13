@@ -16,14 +16,14 @@ import {
 } from './types';
 
 export default class Farm {
-  _computeWorkerKey: FarmOptions['computeWorkerKey'];
-  _cacheKeys: {[key: string]: WorkerInterface};
-  _callback: Function;
-  _last: Array<QueueChildMessage>;
-  _locks: Array<boolean>;
-  _numOfWorkers: number;
-  _offset: number;
-  _queue: Array<QueueChildMessage | null>;
+  private _computeWorkerKey: FarmOptions['computeWorkerKey'];
+  private _cacheKeys: {[key: string]: WorkerInterface};
+  private _callback: Function;
+  private _last: Array<QueueChildMessage>;
+  private _locks: Array<boolean>;
+  private _numOfWorkers: number;
+  private _offset: number;
+  private _queue: Array<QueueChildMessage | null>;
 
   constructor(
     numOfWorkers: number,
@@ -78,7 +78,7 @@ export default class Farm {
     });
   }
 
-  _getNextJob(workerId: number): QueueChildMessage | null {
+  private _getNextJob(workerId: number): QueueChildMessage | null {
     let queueHead = this._queue[workerId];
 
     while (queueHead && queueHead.request[1]) {
@@ -90,7 +90,7 @@ export default class Farm {
     return queueHead;
   }
 
-  _process(workerId: number): Farm {
+  private _process(workerId: number): Farm {
     if (this.isLocked(workerId)) {
       return this;
     }
@@ -116,7 +116,7 @@ export default class Farm {
     return this;
   }
 
-  _enqueue(task: QueueChildMessage, workerId: number): Farm {
+  private _enqueue(task: QueueChildMessage, workerId: number): Farm {
     if (task.request[1]) {
       return this;
     }
@@ -133,7 +133,7 @@ export default class Farm {
     return this;
   }
 
-  _push(task: QueueChildMessage): Farm {
+  private _push(task: QueueChildMessage): Farm {
     for (let i = 0; i < this._numOfWorkers; i++) {
       const workerIdx = (this._offset + i) % this._numOfWorkers;
       this._enqueue(task, workerIdx);

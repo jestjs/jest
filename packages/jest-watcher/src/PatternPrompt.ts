@@ -22,10 +22,10 @@ const usage = (entity: string) =>
 const usageRows = usage('').split('\n').length;
 
 export default class PatternPrompt {
-  _pipe: NodeJS.WritableStream;
-  _prompt: Prompt;
-  _entityName: string;
-  _currentUsageRows: number;
+  protected _pipe: NodeJS.WritableStream;
+  protected _prompt: Prompt;
+  protected _entityName: string;
+  protected _currentUsageRows: number;
 
   constructor(pipe: NodeJS.WritableStream, prompt: Prompt) {
     // TODO: Should come in the constructor
