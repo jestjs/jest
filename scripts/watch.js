@@ -13,7 +13,6 @@ const fs = require('fs');
 const {execSync} = require('child_process');
 const path = require('path');
 const chalk = require('chalk');
-const execa = require('execa');
 const getPackages = require('./getPackages');
 
 const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;
@@ -56,12 +55,6 @@ packages.forEach(p => {
     // doesn't exist
   }
 });
-
-const packageWithTs = packages.filter(p =>
-  fs.existsSync(path.resolve(p, 'tsconfig.json'))
-);
-
-execa('tsc', ['-b', ...packageWithTs, '--watch'], {stdio: 'inherit'});
 
 setInterval(() => {
   const files = Array.from(filesToBuild.keys());
