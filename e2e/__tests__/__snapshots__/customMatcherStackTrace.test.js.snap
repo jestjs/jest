@@ -9,14 +9,14 @@ FAIL __tests__/asynchronous.test.js
     We expect the stack trace and code fence for this matcher to be shown in the console.
 
        9 | 
-      10 | test('showing the stack trace for an async matcher', async () => {
-    > 11 |   await expect(true).toThrowCustomAsyncMatcherError();
-         |                      ^
-      12 | });
-      13 | 
-      14 | async function toThrowCustomAsyncMatcherError() {
+      10 | test('showing the stack trace for an async matcher', () =>
+    > 11 |   expect(true).toThrowCustomAsyncMatcherError());
+         |                ^
+      12 | 
+      13 | function toThrowCustomAsyncMatcherError() {
+      14 |   const message = () =>
 
-      at Object.toThrowCustomAsyncMatcherError (__tests__/asynchronous.test.js:11:22)
+      at Object.toThrowCustomAsyncMatcherError (__tests__/asynchronous.test.js:11:16)
 `;
 
 exports[`works with custom matchers 1`] = `

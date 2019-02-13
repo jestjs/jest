@@ -7,12 +7,11 @@
 
 expect.extend({toThrowCustomAsyncMatcherError});
 
-test('showing the stack trace for an async matcher', async () => {
-  await expect(true).toThrowCustomAsyncMatcherError();
-});
+test('showing the stack trace for an async matcher', () =>
+  expect(true).toThrowCustomAsyncMatcherError());
 
-async function toThrowCustomAsyncMatcherError() {
+function toThrowCustomAsyncMatcherError() {
   const message = () =>
     'We expect the stack trace and code fence for this matcher to be shown in the console.';
-  return {message, pass: false};
+  return Promise.resolve({message, pass: false});
 }
