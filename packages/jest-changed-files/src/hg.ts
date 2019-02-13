@@ -13,17 +13,6 @@ import {Path, Options, SCMAdapter} from './types';
 
 const env = {...process.env, HGPLAIN: '1'};
 
-const ANCESTORS = [
-  // Parent commit to this one.
-  '.^',
-
-  // The first commit of my branch, only if we are not on the default branch.
-  'min(branch(.)) and not min(branch(default))',
-
-  // Latest public commit.
-  'max(public())',
-];
-
 const adapter: SCMAdapter = {
   findChangedFiles: async (
     cwd: string,
@@ -33,7 +22,7 @@ const adapter: SCMAdapter = {
 
     const args = ['status', '-amnu'];
     if (options && options.withAncestor) {
-      args.push('--rev', `ancestor(${ANCESTORS.join(', ')})`);
+      args.push('--rev', `min(!public() & ::.)^`);
     } else if (options && options.changedSince) {
       args.push('--rev', `ancestor(., ${options.changedSince})`);
     } else if (options && options.lastCommit === true) {
