@@ -10,5 +10,6 @@ import * as Console from './Console';
 import * as SourceMaps from './SourceMaps';
 import * as TestResult from './TestResult';
 import * as Mocks from './Mocks';
+import * as Transform from './Transform';
 
-export {Config, Console, SourceMaps, TestResult, Mocks};
+export {Config, Console, SourceMaps, TestResult, Mocks, Transform};
