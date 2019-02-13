@@ -6,22 +6,21 @@
  */
 
 import {Script} from 'vm';
+import {RawSourceMap} from 'source-map';
 import {Path, ProjectConfig} from './Config';
+
+// https://stackoverflow.com/a/48216010/1850276
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+// This is fixed in a newer version, but that depends on Node 8 which is a
+// breaking change (engine warning when installing)
+interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
+  version: number;
+}
 
 export type TransformedSource = {
   code: string;
-  map?:  // copied from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/363cdf403a74e0372e87bbcd15eb1668f4c5230b/types/babel__core/index.d.ts#L371-L379
-    | {
-        version: number;
-        sources: string[];
-        names: string[];
-        sourceRoot?: string;
-        sourcesContent?: string[];
-        mappings: string;
-        file: string;
-      }
-    | string
-    | null;
+  map?: FixedRawSourceMap | string | null;
 };
 
 export type TransformResult = {
