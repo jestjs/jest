@@ -1,3 +1,4 @@
+.idea
 .DS_STORE
 .eslintcache
 *.swp
@@ -24,6 +25,8 @@
 /website/yarn.lock
 /website/translated_docs
 /website/i18n/*
+
+/reports/*
 
 coverage
 lerna-debug.log

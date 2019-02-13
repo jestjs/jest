@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,9 +13,11 @@ const CALL_PRINT_LIMIT = 3;
 const RETURN_PRINT_LIMIT = 5;
 const LAST_CALL_PRINT_LIMIT = 1;
 import {
+  diff,
   ensureExpectedIsNumber,
   ensureNoExpected,
   EXPECTED_COLOR,
+  matcherErrorMessage,
   matcherHint,
   pluralize,
   printExpected,
@@ -25,7 +27,6 @@ import {
 } from 'jest-matcher-utils';
 import {equals} from './jasmineUtils';
 import {iterableEquality, partition, isOneline} from './utils';
-import diff from 'jest-diff';
 
 const createToBeCalledMatcher = matcherName => (received, expected) => {
   ensureNoExpected(expected, matcherName);
@@ -313,12 +314,12 @@ const createLastReturnedMatcher = matcherName => (
         (!lastResult
           ? `But it was ${RECEIVED_COLOR('not called')}`
           : lastResult.type === 'incomplete'
-            ? `But the last call ${RECEIVED_COLOR('has not returned yet')}`
-            : lastResult.type === 'throw'
-              ? `But the last call ${RECEIVED_COLOR('threw an error')}`
-              : `But the last call returned:\n  ${printReceived(
-                  lastResult.value,
-                )}`);
+          ? `But the last call ${RECEIVED_COLOR('has not returned yet')}`
+          : lastResult.type === 'throw'
+          ? `But the last call ${RECEIVED_COLOR('threw an error')}`
+          : `But the last call returned:\n  ${printReceived(
+              lastResult.value,
+            )}`);
 
   return {message, pass};
 };
@@ -420,18 +421,16 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
         (results.length === 0
           ? `But it was ${RECEIVED_COLOR('not called')}`
           : nth > results.length
-            ? `But it was only called ${printReceived(results.length)} times`
-            : nthResult.type === 'incomplete'
-              ? `But the ${nthString} call ${RECEIVED_COLOR(
-                  'has not returned yet',
-                )}`
-              : nthResult.type === 'throw'
-                ? `But the ${nthString} call ${RECEIVED_COLOR(
-                    'threw an error',
-                  )}`
-                : `But the ${nthString} call returned with:\n  ${printReceived(
-                    nthResult.value,
-                  )}`);
+          ? `But it was only called ${printReceived(results.length)} times`
+          : nthResult.type === 'incomplete'
+          ? `But the ${nthString} call ${RECEIVED_COLOR(
+              'has not returned yet',
+            )}`
+          : nthResult.type === 'throw'
+          ? `But the ${nthString} call ${RECEIVED_COLOR('threw an error')}`
+          : `But the ${nthString} call returned with:\n  ${printReceived(
+              nthResult.value,
+            )}`);
 
   return {message, pass};
 };
@@ -472,11 +471,11 @@ const ensureMock = (mockOrSpy, matcherName) => {
       mockOrSpy._isMockFunction !== true)
   ) {
     throw new Error(
-      matcherHint('[.not]' + matcherName, 'jest.fn()', '') +
-        '\n\n' +
-        `${RECEIVED_COLOR('jest.fn()')} value must be a mock function ` +
-        `or spy.\n` +
+      matcherErrorMessage(
+        matcherHint('[.not]' + matcherName, 'jest.fn()', ''),
+        `${RECEIVED_COLOR('received')} value must be a mock or spy function`,
         printWithType('Received', mockOrSpy, printReceived),
+      ),
     );
   }
 };

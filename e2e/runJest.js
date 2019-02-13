@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -10,9 +10,9 @@
 
 import path from 'path';
 import fs from 'fs';
-import execa, {sync as spawnSync} from 'execa';
+import execa from 'execa';
 import {Writable} from 'readable-stream';
-const stripAnsi = require('strip-ansi');
+import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
@@ -20,7 +20,8 @@ const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 type RunJestOptions = {
   nodePath?: string,
   skipPkgJsonCheck?: boolean, // don't complain if can't find package.json
-  stripAnsi?: boolean, // remove colors from stdout and stderr
+  stripAnsi?: boolean, // remove colors from stdout and stderr,
+  timeout?: number, // kill the Jest process after X milliseconds
 };
 
 // return the result of the spawned process:
@@ -31,7 +32,17 @@ export default function runJest(
   args?: Array<string>,
   options: RunJestOptions = {},
 ) {
-  const isRelative = dir[0] !== '/';
+  return normalizeResult(spawnJest(dir, args, options), options);
+}
+
+// Spawns Jest and returns either a Promise (if spawnAsync is true) or the completed child process
+function spawnJest(
+  dir: string,
+  args?: Array<string>,
+  options: RunJestOptions = {},
+  spawnAsync: boolean = false,
+) {
+  const isRelative = !path.isAbsolute(dir);
 
   if (isRelative) {
     dir = path.resolve(__dirname, dir);
@@ -44,19 +55,30 @@ export default function runJest(
       Make sure you have a local package.json file at
         "${localPackageJson}".
       Otherwise Jest will try to traverse the directory tree and find the
-      the global package.json, which will send Jest into infinite loop.
+      global package.json, which will send Jest into infinite loop.
     `,
     );
   }
 
-  const env = Object.assign({}, process.env, {FORCE_COLOR: 0});
+  const env = {...process.env, FORCE_COLOR: 0};
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
-  const result = spawnSync(JEST_PATH, args || [], {
+
+  const spawnArgs = [JEST_PATH, ...(args || [])];
+  const spawnOptions = {
     cwd: dir,
     env,
     reject: false,
-  });
+    timeout: options.timeout || 0,
+  };
 
+  return (spawnAsync ? execa : execa.sync)(
+    process.execPath,
+    spawnArgs,
+    spawnOptions,
+  );
+}
+
+function normalizeResult(result, options) {
   // For compat with cross-spawn
   result.status = result.code;
 
@@ -101,32 +123,7 @@ export const until = async function(
   text: string,
   options: RunJestOptions = {},
 ) {
-  const isRelative = dir[0] !== '/';
-
-  if (isRelative) {
-    dir = path.resolve(__dirname, dir);
-  }
-
-  const localPackageJson = path.resolve(dir, 'package.json');
-  if (!options.skipPkgJsonCheck && !fs.existsSync(localPackageJson)) {
-    throw new Error(
-      `
-      Make sure you have a local package.json file at
-        "${localPackageJson}".
-      Otherwise Jest will try to traverse the directory tree and find the
-      the global package.json, which will send Jest into infinite loop.
-    `,
-    );
-  }
-
-  const env = Object.assign({}, process.env, {FORCE_COLOR: 0});
-  if (options.nodePath) env['NODE_PATH'] = options.nodePath;
-
-  const jestPromise = execa(JEST_PATH, args || [], {
-    cwd: dir,
-    env,
-    reject: false,
-  });
+  const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
 
   jestPromise.stderr.pipe(
     new Writable({
@@ -142,15 +139,5 @@ export const until = async function(
     }),
   );
 
-  const result = await jestPromise;
-
-  // For compat with cross-spawn
-  result.status = result.code;
-
-  result.stdout = normalizeIcons(result.stdout);
-  if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
-  result.stderr = normalizeIcons(result.stderr);
-  if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
-
-  return result;
+  return normalizeResult(await jestPromise, options);
 };
