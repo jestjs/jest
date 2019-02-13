@@ -62,7 +62,7 @@
     "progress": "^2.0.0",
     "promise": "^8.0.2",
     "readable-stream": "^3.0.3",
-    "realpath-native": "^1.0.0",
+    "realpath-native": "^1.1.0",
     "resolve": "^1.4.0",
     "rimraf": "^2.6.2",
     "slash": "^2.0.0",

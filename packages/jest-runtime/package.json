@@ -26,7 +26,7 @@
     "jest-util": "^24.0.0",
     "jest-validate": "^24.0.0",
     "micromatch": "^3.1.10",
-    "realpath-native": "^1.0.0",
+    "realpath-native": "^1.1.0",
     "slash": "^2.0.0",
     "strip-bom": "^3.0.0",
     "write-file-atomic": "2.4.1",
