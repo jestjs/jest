@@ -14,13 +14,6 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   _hasSnapshotFailure: boolean;
   isInternal: true = true;
 
-  constructor(options: {
-    stdin: stream$Readable | tty$ReadStream,
-    stdout: stream$Writable | tty$WriteStream,
-  }) {
-    super(options);
-  }
-
   run(
     globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
