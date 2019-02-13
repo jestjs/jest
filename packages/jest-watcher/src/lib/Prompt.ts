@@ -8,34 +8,21 @@
 import {ScrollOptions} from '../types';
 import {KEYS} from '../constants';
 
+const noop = () => {};
+
 export default class Prompt {
-  private _entering: boolean;
-  private _value: string;
-  private _onChange: () => void;
-  private _onSuccess: (value?: string) => void;
-  private _onCancel: (value?: string) => void;
-  private _offset: number;
-  private _promptLength: number;
-  private _selection: string | null;
+  private _entering: boolean = true;
+  private _value: string = '';
+  private _onChange: () => void = noop;
+  private _onSuccess: (value?: string) => void = noop;
+  private _onCancel: (value?: string) => void = noop;
+  private _offset: number = -1;
+  private _promptLength: number = 0;
+  private _selection: string | null = null;
 
-  constructor() {
-    // Copied from `enter` to satisfy TS
-    this._entering = true;
-    this._value = '';
-    this._selection = null;
-    this._offset = -1;
-    this._promptLength = 0;
-
-    this._onChange = () => {};
-    this._onSuccess = () => {};
-    this._onCancel = () => {};
-
-    this._onResize = this._onResize.bind(this);
-  }
-
-  private _onResize() {
+  private _onResize = () => {
     this._onChange();
-  }
+  };
 
   enter(
     onChange: (pattern: string, options: ScrollOptions) => void,
