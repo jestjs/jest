@@ -12,7 +12,7 @@ import {extractSummary} from '../Utils';
 import {wrap} from 'jest-snapshot-serializer-raw';
 
 test('works with custom matchers', () => {
-  const {stderr} = runJest('custom-matcher-stack-trace');
+  const {stderr} = runJest('custom-matcher-stack-trace', ['sync.test.js']);
 
   let {rest} = extractSummary(stderr);
 
@@ -20,6 +20,16 @@ test('works with custom matchers', () => {
     .split('\n')
     .filter(line => line.indexOf('at Error (native)') < 0)
     .join('\n');
+
+  expect(wrap(rest)).toMatchSnapshot();
+});
+
+test('custom async matchers', () => {
+  const {stderr} = runJest('custom-matcher-stack-trace', [
+    'asynchronous.test.js',
+  ]);
+
+  const {rest} = extractSummary(stderr);
 
   expect(wrap(rest)).toMatchSnapshot();
 });

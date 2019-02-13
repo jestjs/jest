@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
+- `[expect]` Fix custom async matcher stack trace ([#7652](https://github.com/facebook/jest/pull/7652))
 
 ### Chore & Maintenance
 
