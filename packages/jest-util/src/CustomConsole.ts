@@ -52,7 +52,10 @@ export default class CustomConsole extends Console {
     try {
       assert(value, message);
     } catch (error) {
-      this._log('assert', error.toString());
+      const errorMessage = error.generatedMessage
+        ? `${error.name}: ${error.actual} ${error.operator} ${error.expected}`
+        : error.toString();
+      this._log('assert', errorMessage);
     }
   }
 
