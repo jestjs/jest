@@ -8,15 +8,15 @@ FAIL __tests__/asynchronous.test.js
 
     We expect the stack trace and code fence for this matcher to be shown in the console.
 
-      2 | 
-      3 | test('showing the stack trace for an async matcher', async () => {
-    > 4 |   await expect(true).toThrowCustomAsyncMatcherError();
-        |                      ^
-      5 | });
-      6 | 
-      7 | async function toThrowCustomAsyncMatcherError() {
+       9 | 
+      10 | test('showing the stack trace for an async matcher', async () => {
+    > 11 |   await expect(true).toThrowCustomAsyncMatcherError();
+         |                      ^
+      12 | });
+      13 | 
+      14 | async function toThrowCustomAsyncMatcherError() {
 
-      at Object.toThrowCustomAsyncMatcherError (__tests__/asynchronous.test.js:4:22)
+      at Object.toThrowCustomAsyncMatcherError (__tests__/asynchronous.test.js:11:22)
 `;
 
 exports[`works with custom matchers 1`] = `
