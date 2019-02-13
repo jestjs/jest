@@ -389,139 +389,178 @@ Received: <red>true</>"
 `;
 
 exports[`.toBeCloseTo() {pass: false} expect(-Infinity)toBeCloseTo( -1.23) 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>-1.23</>
-Received:  <red>-Infinity</>"
+Expected: <green>-1.23</>
+Received: <red>-Infinity</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>Infinity</>"
 `;
 
 exports[`.toBeCloseTo() {pass: false} expect(Infinity)toBeCloseTo( -Infinity) 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>-Infinity</>
-Received:  <red>Infinity</>"
+Expected: <green>-Infinity</>
+Received: <red>Infinity</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>Infinity</>"
 `;
 
 exports[`.toBeCloseTo() {pass: false} expect(Infinity)toBeCloseTo( 1.23) 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.23</>
-Received:  <red>Infinity</>"
+Expected: <green>1.23</>
+Received: <red>Infinity</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>Infinity</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(-Infinity)toBeCloseTo( -Infinity) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>-Infinity</>
-Received:  <red>-Infinity</>"
+Expected: not <green>-Infinity</>
+"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(0)toBeCloseTo( 0) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>0</>
-Received:  <red>0</>"
+Expected: not <green>0</>
+"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(0)toBeCloseTo( 0.001) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>0.001</>
-Received:  <red>0</>"
+Expected: not <green>0.001</>
+Received:     <red>0</>
+
+Expected precision:        <green>2</>
+Expected difference: not < <green>0.005</>
+Received difference:       <red>0.001</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.225) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.225</>
-Received:  <red>1.23</>"
+Expected: not <green>1.225</>
+Received:     <red>1.23</>
+
+Expected precision:        <green>2</>
+Expected difference: not < <green>0.005</>
+Received difference:       <red>0.004999999999999893</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.226) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.226</>
-Received:  <red>1.23</>"
+Expected: not <green>1.226</>
+Received:     <red>1.23</>
+
+Expected precision:        <green>2</>
+Expected difference: not < <green>0.005</>
+Received difference:       <red>0.0040000000000000036</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.229) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.229</>
-Received:  <red>1.23</>"
+Expected: not <green>1.229</>
+Received:     <red>1.23</>
+
+Expected precision:        <green>2</>
+Expected difference: not < <green>0.005</>
+Received difference:       <red>0.0009999999999998899</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.234) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.234</>
-Received:  <red>1.23</>"
+Expected: not <green>1.234</>
+Received:     <red>1.23</>
+
+Expected precision:        <green>2</>
+Expected difference: not < <green>0.005</>
+Received difference:       <red>0.0040000000000000036</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(Infinity)toBeCloseTo( Infinity) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>Infinity</>
-Received:  <red>Infinity</>"
+Expected: not <green>Infinity</>
+"
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.000004, 5] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
-Precision: <green>5</>-digit
-Expected:  <green>0.000004</>
-Received:  <red>0</>"
+Expected: not <green>0.000004</>
+Received:     <red>0</>
+
+Expected precision:        <green>5</>
+Expected difference: not < <green>0.000005</>
+Received difference:       <red>0.000004</>"
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.0001, 3] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
-Precision: <green>3</>-digit
-Expected:  <green>0.0001</>
-Received:  <red>0</>"
+Expected: not <green>0.0001</>
+Received:     <red>0</>
+
+Expected precision:        <green>3</>
+Expected difference: not < <green>0.0005</>
+Received difference:       <red>0.0001</>"
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.1, 0] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
-Precision: <green>0</>-digit
-Expected:  <green>0.1</>
-Received:  <red>0</>"
+Expected: not <green>0.1</>
+Received:     <red>0</>
+
+Expected precision:        <green>0</>
+Expected difference: not < <green>0.5</>
+Received difference:       <red>0.1</>"
 `;
 
 exports[`.toBeCloseTo() throws: [0, 0.01] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>0.01</>
-Received:  <red>0</>"
+Expected: <green>0.01</>
+Received: <red>0</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>0.01</>"
 `;
 
 exports[`.toBeCloseTo() throws: [1, 1.23] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.23</>
-Received:  <red>1</>"
+Expected: <green>1.23</>
+Received: <red>1</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>0.22999999999999998</>"
 `;
 
 exports[`.toBeCloseTo() throws: [1.23, 1.2249999] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.2249999</>
-Received:  <red>1.23</>"
+Expected: <green>1.2249999</>
+Received: <red>1.23</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>0.005000099999999952</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '"a"' is defined 1`] = `
