@@ -38,9 +38,6 @@ const createTransformer = (
     sourceMaps: 'both',
   };
 
-  // @ts-ignore: seems like this is removed. Is that true?
-  delete options.cacheDirectory;
-
   function loadBabelConfig(
     cwd: Config.Path,
     filename: Config.Path,
