@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
+- `[expect]` Fix custom async matcher stack trace ([#7652](https://github.com/facebook/jest/pull/7652))
 
 ### Chore & Maintenance
 
@@ -191,7 +192,6 @@
 - `[jest-config]` Normalize `config.cwd` and `config.rootDir` using `realpath ([#7598](https://github.com/facebook/jest/pull/7598))
 - `[jest-environment-node]` Fix buffer property is not ArrayBuffer issue. ([#7626](https://github.com/facebook/jest/pull/7626))
 - `[babel-plugin-jest-hoist]` Ignore TS type annotations when looking for out-of-scope references ([#7641](https://github.com/facebook/jest/pull/7641))
-- `[expect]` Fix custom async matcher stack trace ([#7652](https://github.com/facebook/jest/pull/7652))
 - `[jest-config]` Add name to project if one does not exist to pick correct resolver ([#5862](https://github.com/facebook/jest/pull/5862))
 - `[jest-runtime]` Pass `watchPathIgnorePatterns` to Haste instance ([#7585](https://github.com/facebook/jest/pull/7585))
 - `[jest-runtime]` Resolve mock files via Haste when using `require.resolve` ([#7687](https://github.com/facebook/jest/pull/7687))
