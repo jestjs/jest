@@ -6,7 +6,7 @@
  */
 'use strict';
 
-/* eslint jest/no-focused-tests: 0 */
+/* eslint-disable jest/no-focused-tests */
 
 describe('describe', () => {
   it('it', () => {
