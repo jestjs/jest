@@ -12,6 +12,7 @@ import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-e
 
 import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
+import {MatcherState} from 'expect';
 import {SnapshotResolver} from './types';
 import {
   buildSnapshotResolver,
@@ -22,7 +23,7 @@ import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import * as utils from './utils';
 
-type Context = any & {dontThrow?: () => any};
+type Context = MatcherState & {dontThrow?: () => any};
 
 const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
