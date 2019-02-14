@@ -31,7 +31,6 @@ const setPrettyPrint = (plugins: Plugins) => {
             `Received:\n` +
             `  ${this.utils.printReceived(prettyFormatted)}`
         : () => {
-            // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/32891
             const diffString = this.utils.diff(expected, prettyFormatted, {
               expand: this.expand,
             });
