@@ -3075,41 +3075,6 @@ Expected: not <g>true</>
 
 `;
 
-exports[`.toEqual() failure message matches the expected snapshot 3`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
-
-<green>- Expected</>
-<red>+ Received</>
-
-<dim>  Object {</>
-<green>-   \\"a\\": \\"x\\",</>
-<green>-   \\"b\\": Any<String>,</>
-<red>+   \\"a\\": \\"a\\",</>
-<red>+   \\"b\\": \\"b\\",</>
-<dim>  }</>"
-`;
-
-exports[`.toEqual() failure message matches the expected snapshot 4`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
-
-<green>- Expected</>
-<red>+ Received</>
-
-<green>- ObjectContaining {</>
-<green>-   \\"a\\": \\"x\\",</>
-<green>-   \\"b\\": Any<String>,</>
-<red>+ Object {</>
-<red>+   \\"a\\": \\"a\\",</>
-<red>+   \\"b\\": \\"b\\",</>
-<red>+   \\"c\\": \\"c\\",</>
-<red>+   \\"d\\": \\"d\\",</>
-<dim>  }</>"
-`;
-
 exports[`.toHaveLength {pass: false} expect("").toHaveLength(1) 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveLength<d>(</><g>expected</><d>)</>
 
@@ -4632,25 +4597,6 @@ exports[`toMatchObject() does not match properties up in the prototype chain 1`]
 <d>    "other": "child",</>
 <g>-   "ref": [Circular],</>
 <d>  }</>
-`;
-
-exports[`toMatchObject() failure message matches the expected snapshot 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatchObject(</><green>expected</><dim>)</>
-
-Expected value to match object:
-  <green>{\\"a\\": \\"x\\", \\"b\\": Any<String>}</>
-Received:
-  <red>{\\"a\\": \\"a\\", \\"b\\": \\"b\\", \\"c\\": \\"c\\"}</>
-Difference:
-<green>- Expected</>
-<red>+ Received</>
-
-<dim>  Object {</>
-<green>-   \\"a\\": \\"x\\",</>
-<green>-   \\"b\\": Any<String>,</>
-<red>+   \\"a\\": \\"a\\",</>
-<red>+   \\"b\\": \\"b\\",</>
-<dim>  }</>"
 `;
 
 exports[`toMatchObject() throws expect("44").toMatchObject({}) 1`] = `

@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build",
+    "lib": [
+      "es2019"
+    ]
+  },
+  "references": [
+    {
+      "path": "../jest-get-type"
+    },
+    {
+      "path": "../pretty-format"
+    },
+  ]
+}

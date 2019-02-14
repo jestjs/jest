@@ -1,0 +1,332 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Circular objects are not equal if circularity is not on the same property 1`] = `
+Object {
+  "a": Object {
+    "a": [Circular],
+  },
+  "b": Object {
+    "a": Object {
+      "a": Object {
+        "a": [Circular],
+      },
+    },
+  },
+  "childDiffs": Array [
+    Object {
+      "a": Object {
+        "circularToDepth": 0,
+        Symbol(circularVal): Object {
+          "a": [Circular],
+        },
+      },
+      "b": Object {
+        "a": Object {
+          "a": [Circular],
+        },
+      },
+      "kind": 1,
+      "path": "a",
+    },
+  ],
+  "kind": 1,
+  "path": undefined,
+}
+`;
+
+exports[`Circular objects are not equal if circularity is not on the same property 2`] = `
+Object {
+  "a": Object {
+    "x": Object {
+      "x": [Circular],
+    },
+  },
+  "b": Object {
+    "x": [Circular],
+  },
+  "childDiffs": Array [
+    Object {
+      "a": Object {
+        "x": Object {
+          "x": [Circular],
+        },
+      },
+      "b": Object {
+        "circularToDepth": 0,
+        Symbol(circularVal): Object {
+          "x": [Circular],
+        },
+      },
+      "kind": 1,
+      "path": "x",
+    },
+  ],
+  "kind": 1,
+  "path": undefined,
+}
+`;
+
+exports[`Circular objects properties with different circularity are not equal 1`] = `
+Object {
+  "a": Object {
+    "x": Object {
+      "y": [Circular],
+    },
+  },
+  "b": Object {
+    "x": Object {
+      "y": [Circular],
+    },
+  },
+  "childDiffs": Array [
+    Object {
+      "a": Object {
+        "y": Object {
+          "x": [Circular],
+        },
+      },
+      "b": Object {
+        "y": [Circular],
+      },
+      "childDiffs": Array [
+        Object {
+          "a": Object {
+            "circularToDepth": 0,
+            Symbol(circularVal): Object {
+              "x": Object {
+                "y": [Circular],
+              },
+            },
+          },
+          "b": Object {
+            "circularToDepth": 1,
+            Symbol(circularVal): Object {
+              "y": [Circular],
+            },
+          },
+          "kind": 1,
+          "path": "y",
+        },
+      ],
+      "kind": 1,
+      "path": "x",
+    },
+  ],
+  "kind": 1,
+  "path": undefined,
+}
+`;
+
+exports[`Circular objects properties with different circularity are not equal 2`] = `
+Object {
+  "a": Object {
+    "x": Object {
+      "x": Object {
+        "y": [Circular],
+      },
+    },
+  },
+  "b": Object {
+    "x": Object {
+      "x": Object {
+        "y": [Circular],
+      },
+    },
+  },
+  "childDiffs": Array [
+    Object {
+      "a": Object {
+        "x": Object {
+          "y": [Circular],
+        },
+      },
+      "b": Object {
+        "x": Object {
+          "y": [Circular],
+        },
+      },
+      "childDiffs": Array [
+        Object {
+          "a": Object {
+            "y": Object {
+              "x": [Circular],
+            },
+          },
+          "b": Object {
+            "y": [Circular],
+          },
+          "childDiffs": Array [
+            Object {
+              "a": Object {
+                "circularToDepth": 1,
+                Symbol(circularVal): Object {
+                  "x": Object {
+                    "y": [Circular],
+                  },
+                },
+              },
+              "b": Object {
+                "circularToDepth": 2,
+                Symbol(circularVal): Object {
+                  "y": [Circular],
+                },
+              },
+              "kind": 1,
+              "path": "y",
+            },
+          ],
+          "kind": 1,
+          "path": "x",
+        },
+      ],
+      "kind": 1,
+      "path": "x",
+    },
+  ],
+  "kind": 1,
+  "path": undefined,
+}
+`;
+
+exports[`Circular objects properties with the same circularity are equal 1`] = `
+Object {
+  "a": Object {
+    "x": [Circular],
+  },
+  "b": Object {
+    "x": [Circular],
+  },
+  "childDiffs": Array [
+    Object {
+      "a": Object {
+        "circularToDepth": 0,
+        Symbol(circularVal): Object {
+          "x": [Circular],
+        },
+      },
+      "b": Object {
+        "circularToDepth": 0,
+        Symbol(circularVal): Object {
+          "x": [Circular],
+        },
+      },
+      "kind": 0,
+      "path": "x",
+    },
+  ],
+  "kind": 0,
+  "path": undefined,
+}
+`;
+
+exports[`Circular objects properties with the same circularity are equal 2`] = `
+Object {
+  "a": Object {
+    "x": Object {
+      "x": [Circular],
+    },
+  },
+  "b": Object {
+    "x": Object {
+      "x": [Circular],
+    },
+  },
+  "childDiffs": Array [
+    Object {
+      "a": Object {
+        "x": [Circular],
+      },
+      "b": Object {
+        "x": [Circular],
+      },
+      "childDiffs": Array [
+        Object {
+          "a": Object {
+            "circularToDepth": 1,
+            Symbol(circularVal): Object {
+              "x": [Circular],
+            },
+          },
+          "b": Object {
+            "circularToDepth": 1,
+            Symbol(circularVal): Object {
+              "x": [Circular],
+            },
+          },
+          "kind": 0,
+          "path": "x",
+        },
+      ],
+      "kind": 0,
+      "path": "x",
+    },
+  ],
+  "kind": 0,
+  "path": undefined,
+}
+`;
+
+exports[`Objects correctly propagates "updated" to parent 1`] = `
+Object {
+  "a": Object {
+    "a": 1,
+    "b": Object {
+      "c": Object {
+        "d": 2,
+      },
+    },
+  },
+  "b": Object {
+    "a": 1,
+    "b": Object {
+      "c": Object {
+        "d": 1,
+      },
+    },
+  },
+  "childDiffs": Array [
+    Object {
+      "a": 1,
+      "b": 1,
+      "kind": 0,
+      "path": "a",
+    },
+    Object {
+      "a": Object {
+        "c": Object {
+          "d": 2,
+        },
+      },
+      "b": Object {
+        "c": Object {
+          "d": 1,
+        },
+      },
+      "childDiffs": Array [
+        Object {
+          "a": Object {
+            "d": 2,
+          },
+          "b": Object {
+            "d": 1,
+          },
+          "childDiffs": Array [
+            Object {
+              "a": 2,
+              "b": 1,
+              "kind": 1,
+              "path": "d",
+            },
+          ],
+          "kind": 1,
+          "path": "c",
+        },
+      ],
+      "kind": 1,
+      "path": "b",
+    },
+  ],
+  "kind": 1,
+  "path": undefined,
+}
+`;
