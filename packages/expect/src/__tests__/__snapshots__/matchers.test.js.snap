@@ -389,139 +389,178 @@ Received: <red>true</>"
 `;
 
 exports[`.toBeCloseTo() {pass: false} expect(-Infinity)toBeCloseTo( -1.23) 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>-1.23</>
-Received:  <red>-Infinity</>"
+Expected: <green>-1.23</>
+Received: <red>-Infinity</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>Infinity</>"
 `;
 
 exports[`.toBeCloseTo() {pass: false} expect(Infinity)toBeCloseTo( -Infinity) 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>-Infinity</>
-Received:  <red>Infinity</>"
+Expected: <green>-Infinity</>
+Received: <red>Infinity</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>Infinity</>"
 `;
 
 exports[`.toBeCloseTo() {pass: false} expect(Infinity)toBeCloseTo( 1.23) 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.23</>
-Received:  <red>Infinity</>"
+Expected: <green>1.23</>
+Received: <red>Infinity</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>Infinity</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(-Infinity)toBeCloseTo( -Infinity) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>-Infinity</>
-Received:  <red>-Infinity</>"
+Expected: not <green>-Infinity</>
+"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(0)toBeCloseTo( 0) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>0</>
-Received:  <red>0</>"
+Expected: not <green>0</>
+"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(0)toBeCloseTo( 0.001) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>0.001</>
-Received:  <red>0</>"
+Expected: not <green>0.001</>
+Received:     <red>0</>
+
+Expected precision:        <green>2</>
+Expected difference: not < <green>0.005</>
+Received difference:       <red>0.001</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.225) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.225</>
-Received:  <red>1.23</>"
+Expected: not <green>1.225</>
+Received:     <red>1.23</>
+
+Expected precision:        <green>2</>
+Expected difference: not < <green>0.005</>
+Received difference:       <red>0.004999999999999893</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.226) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.226</>
-Received:  <red>1.23</>"
+Expected: not <green>1.226</>
+Received:     <red>1.23</>
+
+Expected precision:        <green>2</>
+Expected difference: not < <green>0.005</>
+Received difference:       <red>0.0040000000000000036</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.229) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.229</>
-Received:  <red>1.23</>"
+Expected: not <green>1.229</>
+Received:     <red>1.23</>
+
+Expected precision:        <green>2</>
+Expected difference: not < <green>0.005</>
+Received difference:       <red>0.0009999999999998899</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.234) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.234</>
-Received:  <red>1.23</>"
+Expected: not <green>1.234</>
+Received:     <red>1.23</>
+
+Expected precision:        <green>2</>
+Expected difference: not < <green>0.005</>
+Received difference:       <red>0.0040000000000000036</>"
 `;
 
 exports[`.toBeCloseTo() {pass: true} expect(Infinity)toBeCloseTo( Infinity) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>Infinity</>
-Received:  <red>Infinity</>"
+Expected: not <green>Infinity</>
+"
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.000004, 5] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
-Precision: <green>5</>-digit
-Expected:  <green>0.000004</>
-Received:  <red>0</>"
+Expected: not <green>0.000004</>
+Received:     <red>0</>
+
+Expected precision:        <green>5</>
+Expected difference: not < <green>0.000005</>
+Received difference:       <red>0.000004</>"
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.0001, 3] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
-Precision: <green>3</>-digit
-Expected:  <green>0.0001</>
-Received:  <red>0</>"
+Expected: not <green>0.0001</>
+Received:     <red>0</>
+
+Expected precision:        <green>3</>
+Expected difference: not < <green>0.0005</>
+Received difference:       <red>0.0001</>"
 `;
 
 exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.1, 0] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeCloseTo(</><green>expected</><dim>, </><green>precision</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
-Precision: <green>0</>-digit
-Expected:  <green>0.1</>
-Received:  <red>0</>"
+Expected: not <green>0.1</>
+Received:     <red>0</>
+
+Expected precision:        <green>0</>
+Expected difference: not < <green>0.5</>
+Received difference:       <red>0.1</>"
 `;
 
 exports[`.toBeCloseTo() throws: [0, 0.01] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>0.01</>
-Received:  <red>0</>"
+Expected: <green>0.01</>
+Received: <red>0</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>0.01</>"
 `;
 
 exports[`.toBeCloseTo() throws: [1, 1.23] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.23</>
-Received:  <red>1</>"
+Expected: <green>1.23</>
+Received: <red>1</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>0.22999999999999998</>"
 `;
 
 exports[`.toBeCloseTo() throws: [1.23, 1.2249999] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeCloseTo(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-Precision: <green>2</>-digit
-Expected:  <green>1.2249999</>
-Received:  <red>1.23</>"
+Expected: <green>1.2249999</>
+Received: <red>1.23</>
+
+Expected precision:    <green>2</>
+Expected difference: < <green>0.005</>
+Received difference:   <red>0.005000099999999952</>"
 `;
 
 exports[`.toBeDefined(), .toBeUndefined() '"a"' is defined 1`] = `
@@ -645,465 +684,465 @@ Received: <red>undefined</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [-Infinity, -Infinity] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>-Infinity</>
-Received: <red>-Infinity</>"
+Expected: not >= <green>-Infinity</>
+Received:        <red>-Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [-Infinity, -Infinity] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>-Infinity</>
-Received: <red>-Infinity</>"
+Expected: not <= <green>-Infinity</>
+Received:        <red>-Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1, 1] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1</>
-Received: <red>1</>"
+Expected: not >= <green>1</>
+Received:        <red>1</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1, 1] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1</>
-Received: <red>1</>"
+Expected: not <= <green>1</>
+Received:        <red>1</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1.7976931348623157e+308, 1.7976931348623157e+308] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1.7976931348623157e+308</>
-Received: <red>1.7976931348623157e+308</>"
+Expected: not >= <green>1.7976931348623157e+308</>
+Received:        <red>1.7976931348623157e+308</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [1.7976931348623157e+308, 1.7976931348623157e+308] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1.7976931348623157e+308</>
-Received: <red>1.7976931348623157e+308</>"
+Expected: not <= <green>1.7976931348623157e+308</>
+Received:        <red>1.7976931348623157e+308</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [5e-324, 5e-324] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>5e-324</>
-Received: <red>5e-324</>"
+Expected: not >= <green>5e-324</>
+Received:        <red>5e-324</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [5e-324, 5e-324] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>5e-324</>
-Received: <red>5e-324</>"
+Expected: not <= <green>5e-324</>
+Received:        <red>5e-324</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [Infinity, Infinity] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>Infinity</>
-Received: <red>Infinity</>"
+Expected: not >= <green>Infinity</>
+Received:        <red>Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() equal numbers: [Infinity, Infinity] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>Infinity</>
-Received: <red>Infinity</>"
+Expected: not <= <green>Infinity</>
+Received:        <red>Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>Infinity</>
-Received: <red>-Infinity</>"
+Expected: > <green>Infinity</>
+Received:   <red>-Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>Infinity</>
-Received: <red>-Infinity</>"
+Expected: not < <green>Infinity</>
+Received:       <red>-Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 3`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>-Infinity</>
-Received: <red>Infinity</>"
+Expected: not > <green>-Infinity</>
+Received:       <red>Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 4`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>-Infinity</>
-Received: <red>Infinity</>"
+Expected: < <green>-Infinity</>
+Received:   <red>Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 5`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>Infinity</>
-Received: <red>-Infinity</>"
+Expected: >= <green>Infinity</>
+Received:    <red>-Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 6`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>Infinity</>
-Received: <red>-Infinity</>"
+Expected: not <= <green>Infinity</>
+Received:        <red>-Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 7`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>-Infinity</>
-Received: <red>Infinity</>"
+Expected: not >= <green>-Infinity</>
+Received:        <red>Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [-Infinity, Infinity] 8`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>-Infinity</>
-Received: <red>Infinity</>"
+Expected: <= <green>-Infinity</>
+Received:    <red>Infinity</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>0.2</>
-Received: <red>0.1</>"
+Expected: > <green>0.2</>
+Received:   <red>0.1</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>0.2</>
-Received: <red>0.1</>"
+Expected: not < <green>0.2</>
+Received:       <red>0.1</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 3`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>0.1</>
-Received: <red>0.2</>"
+Expected: not > <green>0.1</>
+Received:       <red>0.2</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 4`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>0.1</>
-Received: <red>0.2</>"
+Expected: < <green>0.1</>
+Received:   <red>0.2</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 5`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>0.2</>
-Received: <red>0.1</>"
+Expected: >= <green>0.2</>
+Received:    <red>0.1</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 6`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>0.2</>
-Received: <red>0.1</>"
+Expected: not <= <green>0.2</>
+Received:        <red>0.1</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 7`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>0.1</>
-Received: <red>0.2</>"
+Expected: not >= <green>0.1</>
+Received:        <red>0.2</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [0.1, 0.2] 8`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>0.1</>
-Received: <red>0.2</>"
+Expected: <= <green>0.1</>
+Received:    <red>0.2</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>2</>
-Received: <red>1</>"
+Expected: > <green>2</>
+Received:   <red>1</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>2</>
-Received: <red>1</>"
+Expected: not < <green>2</>
+Received:       <red>1</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 3`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1</>
-Received: <red>2</>"
+Expected: not > <green>1</>
+Received:       <red>2</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 4`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1</>
-Received: <red>2</>"
+Expected: < <green>1</>
+Received:   <red>2</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 5`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>2</>
-Received: <red>1</>"
+Expected: >= <green>2</>
+Received:    <red>1</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 6`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>2</>
-Received: <red>1</>"
+Expected: not <= <green>2</>
+Received:        <red>1</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 7`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1</>
-Received: <red>2</>"
+Expected: not >= <green>1</>
+Received:        <red>2</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [1, 2] 8`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1</>
-Received: <red>2</>"
+Expected: <= <green>1</>
+Received:    <red>2</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>7</>
-Received: <red>3</>"
+Expected: > <green>7</>
+Received:   <red>3</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>7</>
-Received: <red>3</>"
+Expected: not < <green>7</>
+Received:       <red>3</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 3`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>3</>
-Received: <red>7</>"
+Expected: not > <green>3</>
+Received:       <red>7</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 4`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>3</>
-Received: <red>7</>"
+Expected: < <green>3</>
+Received:   <red>7</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 5`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>7</>
-Received: <red>3</>"
+Expected: >= <green>7</>
+Received:    <red>3</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 6`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>7</>
-Received: <red>3</>"
+Expected: not <= <green>7</>
+Received:        <red>3</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 7`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>3</>
-Received: <red>7</>"
+Expected: not >= <green>3</>
+Received:        <red>7</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [3, 7] 8`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>3</>
-Received: <red>7</>"
+Expected: <= <green>3</>
+Received:    <red>7</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1.7976931348623157e+308</>
-Received: <red>5e-324</>"
+Expected: > <green>1.7976931348623157e+308</>
+Received:   <red>5e-324</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1.7976931348623157e+308</>
-Received: <red>5e-324</>"
+Expected: not < <green>1.7976931348623157e+308</>
+Received:       <red>5e-324</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 3`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>5e-324</>
-Received: <red>1.7976931348623157e+308</>"
+Expected: not > <green>5e-324</>
+Received:       <red>1.7976931348623157e+308</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 4`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>5e-324</>
-Received: <red>1.7976931348623157e+308</>"
+Expected: < <green>5e-324</>
+Received:   <red>1.7976931348623157e+308</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 5`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1.7976931348623157e+308</>
-Received: <red>5e-324</>"
+Expected: >= <green>1.7976931348623157e+308</>
+Received:    <red>5e-324</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 6`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>1.7976931348623157e+308</>
-Received: <red>5e-324</>"
+Expected: not <= <green>1.7976931348623157e+308</>
+Received:        <red>5e-324</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 7`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>5e-324</>
-Received: <red>1.7976931348623157e+308</>"
+Expected: not >= <green>5e-324</>
+Received:        <red>1.7976931348623157e+308</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [5e-324, 1.7976931348623157e+308] 8`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>5e-324</>
-Received: <red>1.7976931348623157e+308</>"
+Expected: <= <green>5e-324</>
+Received:    <red>1.7976931348623157e+308</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>18</>
-Received: <red>9</>"
+Expected: > <green>18</>
+Received:   <red>9</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>18</>
-Received: <red>9</>"
+Expected: not < <green>18</>
+Received:       <red>9</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 3`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>9</>
-Received: <red>18</>"
+Expected: not > <green>9</>
+Received:       <red>18</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 4`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>9</>
-Received: <red>18</>"
+Expected: < <green>9</>
+Received:   <red>18</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 5`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>18</>
-Received: <red>9</>"
+Expected: >= <green>18</>
+Received:    <red>9</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 6`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>18</>
-Received: <red>9</>"
+Expected: not <= <green>18</>
+Received:        <red>9</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 7`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>9</>
-Received: <red>18</>"
+Expected: not >= <green>9</>
+Received:        <red>18</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [9, 18] 8`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>9</>
-Received: <red>18</>"
+Expected: <= <green>9</>
+Received:    <red>18</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>34</>
-Received: <red>17</>"
+Expected: > <green>34</>
+Received:   <red>17</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>34</>
-Received: <red>17</>"
+Expected: not < <green>34</>
+Received:       <red>17</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 3`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>17</>
-Received: <red>34</>"
+Expected: not > <green>17</>
+Received:       <red>34</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 4`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThan(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThan<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>17</>
-Received: <red>34</>"
+Expected: < <green>17</>
+Received:   <red>34</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 5`] = `
-"<dim>expect(</><red>received</><dim>).toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>34</>
-Received: <red>17</>"
+Expected: >= <green>34</>
+Received:    <red>17</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 6`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>34</>
-Received: <red>17</>"
+Expected: not <= <green>34</>
+Received:        <red>17</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 7`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBeGreaterThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeGreaterThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>17</>
-Received: <red>34</>"
+Expected: not >= <green>17</>
+Received:        <red>34</>"
 `;
 
 exports[`.toBeGreaterThan(), .toBeLessThan(), .toBeGreaterThanOrEqual(), .toBeLessThanOrEqual() throws: [17, 34] 8`] = `
-"<dim>expect(</><red>received</><dim>).toBeLessThanOrEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeLessThanOrEqual<dim>(</><green>expected</><dim>)</>
 
-Expected: <green>17</>
-Received: <red>34</>"
+Expected: <= <green>17</>
+Received:    <red>34</>"
 `;
 
 exports[`.toBeInstanceOf() failing "a" and [Function String] 1`] = `

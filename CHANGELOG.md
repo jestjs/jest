@@ -2,15 +2,78 @@
 
 ### Features
 
+- `[expect]`: Improve report when matcher fails, part 7 ([#7866](https://github.com/facebook/jest/pull/7866))
+- `[expect]`: Improve report when matcher fails, part 8 ([#7876](https://github.com/facebook/jest/pull/7876))
+- `[pretty-format]` Support `React.memo` ([#7891](https://github.com/facebook/jest/pull/7891))
+
 ### Fixes
 
 - `[jest-util]` Install fix for `instanceof` as part of other globals into test environments ([#5995](https://github.com/facebook/jest/pull/5995))
+- `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
+- `[expect]` Fix custom async matcher stack trace ([#7652](https://github.com/facebook/jest/pull/7652))
+- `[jest-changed-files]` Improve default file selection for Mercurial repos ([#7880](https://github.com/facebook/jest/pull/7880))
+- `[jest-validate]` Fix validating async functions ([#7894](https://github.com/facebook/jest/issues/7894))
+- `[jest-circus]` Fix bug with test.only ([#7888](https://github.com/facebook/jest/pull/7888))
 
 ### Chore & Maintenance
 
-- `[website]` Fix broken help link on homepage ([#7706](https://github.com/facebook/jest/pull/7706))
+- `[*]`: Setup building, linting and testing of TypeScript ([#7808](https://github.com/facebook/jest/pull/7808), [#7855](https://github.com/facebook/jest/pull/7855))
+- `[pretty-format]`: Migrate to TypeScript ([#7809](https://github.com/facebook/jest/pull/7809))
+- `[diff-sequences]`: Migrate to Typescript ([#7820](https://github.com/facebook/jest/pull/7820))
+- `[jest-get-type]`: Migrate to TypeScript ([#7818](https://github.com/facebook/jest/pull/7818))
+- `[jest-regex-util]`: Migrate to TypeScript ([#7822](https://github.com/facebook/jest/pull/7822))
+- `[jest-diff]`: Migrate to TypeScript ([#7824](https://github.com/facebook/jest/pull/7824))
+- `[jest-leak-detector]`: Migrate to TypeScript ([#7825](https://github.com/facebook/jest/pull/7825))
+- `[jest-changed-files]`: Migrate to TypeScript ([#7827](https://github.com/facebook/jest/pull/7827))
+- `[jest-matcher-utils]`: Migrate to TypeScript ([#7835](https://github.com/facebook/jest/pull/7835))
+- `[jest-docblock]`: Migrate to TypeScript ([#7836](https://github.com/facebook/jest/pull/7836))
+- `[jest-serializer]`: Migrate to TypeScript ([#7841](https://github.com/facebook/jest/pull/7841))
+- `[jest-message-util]`: Migrate to TypeScript ([#7834](https://github.com/facebook/jest/pull/7834))
+- `[@jest/types]`: New package to handle shared types ([#7834](https://github.com/facebook/jest/pull/7834))
+- `[jest-util]`: Migrate to TypeScript ([#7844](https://github.com/facebook/jest/pull/7844))
+- `[jest-watcher]`: Migrate to TypeScript ([#7843](https://github.com/facebook/jest/pull/7843))
+- `[jest-mock]`: Migrate to TypeScript ([#7847](https://github.com/facebook/jest/pull/7847), [#7850](https://github.com/facebook/jest/pull/7850))
+- `[jest-worker]`: Migrate to TypeScript ([#7853](https://github.com/facebook/jest/pull/7853))
+- `[jest-haste-map]`: Migrate to TypeScript ([#7854](https://github.com/facebook/jest/pull/7854))
+- `[docs]`: Fix image paths in SnapshotTesting.md for current and version 24 ([#7872](https://github.com/facebook/jest/pull/7872))
+- `[babel-jest]`: Migrate to TypeScript ([#7862](https://github.com/facebook/jest/pull/7862))
+- `[jest-resolve]`: Migrate to TypeScript ([#7871](https://github.com/facebook/jest/pull/7871))
 
 ### Performance
+
+## 24.1.0
+
+### Features
+
+- `[jest-resolve]`: Pass default resolver into custom resolvers ([#7714](https://github.com/facebook/jest/pull/7714))
+- `[jest-cli]`: `global{Setup,Teardown}` use default export with es modules ([#7750](https://github.com/facebook/jest/pull/7750))
+- `[jest-runtime]` Better error messages when the jest environment is used after teardown by async code ([#7756](https://github.com/facebook/jest/pull/7756))
+- `[jest-jasmine2]` Will now only execute at most 5 concurrent tests _within the same testsuite_ when using `test.concurrent` ([#7770](https://github.com/facebook/jest/pull/7770))
+- `[jest-circus]` Same as `[jest-jasmine2]`, only 5 tests will run concurrently by default ([#7770](https://github.com/facebook/jest/pull/7770))
+- `[jest-config]` A new `maxConcurrency` option allows to change the number of tests allowed to run concurrently ([#7770](https://github.com/facebook/jest/pull/7770))
+
+### Fixes
+
+- `[jest-runtime]` Fix for mocks not working with module name mapper ([#7787](https://github.com/facebook/jest/pull/7787))
+- `[jest-cli]` Break dependency cycle when using Jest programmatically ([#7707](https://github.com/facebook/jest/pull/7707))
+- `[jest-config]` Extract setupFilesAfterEnv from preset ([#7724](https://github.com/facebook/jest/pull/7724))
+- `[jest-cli]` Do not execute any `globalSetup` or `globalTeardown` if there are no tests to execute ([#7745](https://github.com/facebook/jest/pull/7745))
+- `[jest-runtime]` Lock down version of `write-file-atomic` ([#7725](https://github.com/facebook/jest/pull/7725))
+- `[jest-cli]` Print log entries when logging happens after test environment is torn down ([#7731](https://github.com/facebook/jest/pull/7731))
+- `[jest-config]` Do not use a uuid as `name` since that breaks caching ([#7746](https://github.com/facebook/jest/pull/7746))
+- `[jest-config]` Make sure `normalize` can consume `Defaults` without warnings ([#7742](https://github.com/facebook/jest/pull/7742))
+- `[jest-config]` Allow `moduleFileExtensions` without 'js' for custom runners ([#7751](https://github.com/facebook/jest/pull/7751))
+- `[jest-cli]` Load transformers before installing require hooks ([#7752](https://github.com/facebook/jest/pull/7752)
+- `[jest-cli]` Handle missing `numTodoTests` in test results ([#7779](https://github.com/facebook/jest/pull/7779))
+- `[jest-runtime]` Exclude setup/teardown files from coverage report ([#7790](https://github.com/facebook/jest/pull/7790)
+- `[babel-jest]` Throw an error if `babel-jest` tries to transform a file ignored by Babel ([#7797](https://github.com/facebook/jest/pull/7797))
+- `[babel-plugin-jest-hoist]` Ignore TS type references when looking for out-of-scope references ([#7799](https://github.com/facebook/jest/pull/7799)
+
+### Chore & Maintenance
+
+- `[jest]` Update jest-junit to ^6.2.1 ([#7739](https://github.com/facebook/jest/pull/7739))
+- `[website]` Fix broken help link on homepage ([#7706](https://github.com/facebook/jest/pull/7706))
+- `[docs]` Changed Babel setup documentation to correctly compile `async/await` ([#7701](https://github.com/facebook/jest/pull/7701))
 
 ## 24.0.0
 

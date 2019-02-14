@@ -9,7 +9,11 @@
 
 import type {HasteFS} from 'types/HasteMap';
 import type {Path} from 'types/Config';
-import type {Resolver, ResolveModuleConfig} from 'types/Resolve';
+import type {
+  Resolver,
+  ResolveModuleConfig,
+  ResolvedModule,
+} from 'types/Resolve';
 import type {SnapshotResolver} from 'types/SnapshotResolver';
 import {isSnapshotPath} from 'jest-snapshot';
 
@@ -61,17 +65,18 @@ class DependencyResolver {
     }, []);
   }
 
-  resolveInverse(
+  resolveInverseModuleMap(
     paths: Set<Path>,
     filter: (file: Path) => boolean,
     options?: ResolveModuleConfig,
-  ): Array<Path> {
+  ): Array<ResolvedModule> {
     if (!paths.size) {
       return [];
     }
 
-    const collectModules = (relatedPaths, moduleMap, changed) => {
+    const collectModules = (related, moduleMap, changed) => {
       const visitedModules = new Set();
+      const result: Array<ResolvedModule> = [];
       while (changed.size) {
         changed = new Set(
           moduleMap.reduce((acc, module) => {
@@ -84,7 +89,8 @@ class DependencyResolver {
 
             const file = module.file;
             if (filter(file)) {
-              relatedPaths.add(file);
+              result.push(module);
+              related.delete(file);
             }
             visitedModules.add(file);
             acc.push(module.file);
@@ -92,10 +98,10 @@ class DependencyResolver {
           }, []),
         );
       }
-      return relatedPaths;
+      return result.concat(Array.from(related).map(file => ({file})));
     };
 
-    const relatedPaths = new Set();
+    const relatedPaths = new Set<Path>();
     const changed = new Set();
     for (const path of paths) {
       if (this._hasteFS.exists(path)) {
@@ -115,7 +121,17 @@ class DependencyResolver {
         file,
       });
     }
-    return Array.from(collectModules(relatedPaths, modules, changed));
+    return collectModules(relatedPaths, modules, changed);
+  }
+
+  resolveInverse(
+    paths: Set<Path>,
+    filter: (file: Path) => boolean,
+    options?: ResolveModuleConfig,
+  ): Array<Path> {
+    return this.resolveInverseModuleMap(paths, filter, options).map(
+      module => module.file,
+    );
   }
 }
 

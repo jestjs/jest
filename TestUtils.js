@@ -36,6 +36,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   lastCommit: false,
   listTests: false,
   logHeapUsage: false,
+  maxConcurrency: 5,
   maxWorkers: 2,
   noSCM: null,
   noStackTrace: false,

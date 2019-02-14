@@ -5,10 +5,6 @@
       "^.+\\.(ts)$": "<rootDir>/preprocessor.js"
     },
     "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
     "testRegex": "fails"
   },
   "dependencies": {

@@ -22,12 +22,14 @@ import type {
   TestName,
   TestResults,
 } from 'types/Circus';
+// $FlowFixMe: Converted to TS
 import {convertDescriptorToString} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
 
 import StackUtils from 'stack-utils';
 
+// $FlowFixMe: Converted to TS
 import prettyFormat from 'pretty-format';
 
 import {getState} from './state';
@@ -63,12 +65,6 @@ export const makeTest = (
   timeout: ?number,
   asyncError: Exception,
 ): TestEntry => {
-  let _mode = mode;
-  if (!mode) {
-    // if not set explicitly, inherit from its parent describe
-    _mode = parent.mode;
-  }
-
   const errors: Array<[?Exception, Exception]> = [];
 
   return {
@@ -77,7 +73,7 @@ export const makeTest = (
     errors,
     fn,
     invocations: 0,
-    mode: _mode,
+    mode,
     name: convertDescriptorToString(name),
     parent,
     startedAt: null,

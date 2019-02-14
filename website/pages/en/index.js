@@ -316,8 +316,8 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Tests runs parallel in their own processes to maximize
-                      performance.
+                      Tests are parallelized by running them in their own
+                      processes to maximize performance.
                     </translate>
                   ),
                   title: <translate>Isolated</translate>,
