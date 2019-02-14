@@ -87,25 +87,51 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: 'toBe', pass};
   },
 
-  toBeCloseTo(actual: number, expected: number, precision?: number = 2) {
+  toBeCloseTo(received: number, expected: number, precision?: number = 2) {
     const secondArgument = arguments.length === 3 ? 'precision' : null;
-    ensureNumbers(actual, expected, '.toBeCloseTo');
+    const isNot = this.isNot;
+    const options = {
+      isNot,
+      promise: this.promise,
+      secondArgument,
+    };
+    ensureNumbers(received, expected, '.toBeCloseTo');
 
     let pass = false;
+    let expectedDiff = 0;
+    let receivedDiff = 0;
 
-    if (actual == Infinity && expected == Infinity) pass = true;
-    else if (actual == -Infinity && expected == -Infinity) pass = true;
-    else pass = Math.abs(expected - actual) < Math.pow(10, -precision) / 2;
+    if (received === Infinity && expected === Infinity) {
+      pass = true; // Infinity - Infinity is NaN
+    } else if (received === -Infinity && expected === -Infinity) {
+      pass = true; // -Infinity - -Infinity is NaN
+    } else {
+      expectedDiff = Math.pow(10, -precision) / 2;
+      receivedDiff = Math.abs(expected - received);
+      pass = receivedDiff < expectedDiff;
+    }
 
-    const message = () =>
-      matcherHint('.toBeCloseTo', undefined, undefined, {
-        isNot: this.isNot,
-        secondArgument,
-      }) +
-      '\n\n' +
-      `Precision: ${printExpected(precision)}-digit\n` +
-      `Expected:  ${printExpected(expected)}\n` +
-      `Received:  ${printReceived(actual)}`;
+    const message = pass
+      ? () =>
+          matcherHint('toBeCloseTo', undefined, undefined, options) +
+          '\n\n' +
+          `Expected: not ${printExpected(expected)}\n` +
+          (receivedDiff === 0
+            ? ''
+            : `Received:     ${printReceived(received)}\n` +
+              '\n' +
+              `Expected precision:        ${printExpected(precision)}\n` +
+              `Expected difference: not < ${printExpected(expectedDiff)}\n` +
+              `Received difference:       ${printReceived(receivedDiff)}`)
+      : () =>
+          matcherHint('toBeCloseTo', undefined, undefined, options) +
+          '\n\n' +
+          `Expected: ${printExpected(expected)}\n` +
+          `Received: ${printReceived(received)}\n` +
+          '\n' +
+          `Expected precision:    ${printExpected(precision)}\n` +
+          `Expected difference: < ${printExpected(expectedDiff)}\n` +
+          `Received difference:   ${printReceived(receivedDiff)}`;
 
     return {message, pass};
   },

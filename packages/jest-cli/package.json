@@ -35,7 +35,7 @@
     "p-each-series": "^1.0.0",
     "pirates": "^4.0.0",
     "prompts": "^2.0.1",
-    "realpath-native": "^1.0.0",
+    "realpath-native": "^1.1.0",
     "rimraf": "^2.5.4",
     "slash": "^2.0.0",
     "string-length": "^2.0.0",

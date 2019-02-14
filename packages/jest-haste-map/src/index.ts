@@ -219,14 +219,14 @@ const getWhiteList = (list: Array<string> | undefined): RegExp | null => {
  *
  */
 class HasteMap extends EventEmitter {
-  _buildPromise: Promise<HasteMapObject> | null;
-  _cachePath: Config.Path;
-  _changeInterval?: NodeJS.Timeout;
-  _console: Console;
-  _options: InternalOptions;
-  _watchers: Array<Watcher>;
-  _whitelist: RegExp | null;
-  _worker: WorkerInterface | null;
+  private _buildPromise: Promise<HasteMapObject> | null;
+  private _cachePath: Config.Path;
+  private _changeInterval?: NodeJS.Timeout;
+  private _console: Console;
+  private _options: InternalOptions;
+  private _watchers: Array<Watcher>;
+  private _whitelist: RegExp | null;
+  private _worker: WorkerInterface | null;
 
   constructor(options: Options) {
     super();
@@ -381,7 +381,7 @@ class HasteMap extends EventEmitter {
   /**
    * 2. crawl the file system.
    */
-  _buildFileMap(): Promise<{
+  private _buildFileMap(): Promise<{
     deprecatedFiles: Array<{moduleName: string; path: string}>;
     hasteMap: InternalHasteMap;
   }> {
@@ -408,7 +408,7 @@ class HasteMap extends EventEmitter {
   /**
    * 3. parse and extract metadata from changed files.
    */
-  _processFile(
+  private _processFile(
     hasteMap: InternalHasteMap,
     map: ModuleMapData,
     mocks: MockData,
@@ -604,7 +604,7 @@ class HasteMap extends EventEmitter {
       .then(workerReply, workerError);
   }
 
-  _buildHasteMap(data: {
+  private _buildHasteMap(data: {
     deprecatedFiles: Array<{moduleName: string; path: string}>;
     hasteMap: InternalHasteMap;
   }): Promise<InternalHasteMap> {
@@ -643,7 +643,7 @@ class HasteMap extends EventEmitter {
       });
   }
 
-  _cleanup() {
+  private _cleanup() {
     const worker = this._worker;
 
     // @ts-ignore

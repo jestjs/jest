@@ -5,26 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  *
  * Adapted from: https://github.com/substack/node-resolve
- *
- * @flow
  */
 
-import type {Path} from 'types/Config';
 import path from 'path';
+import {Config} from '@jest/types';
 import {sync as realpath} from 'realpath-native';
 
-type NodeModulesPathsOptions = {|
-  moduleDirectory?: Array<string>,
-  paths?: ?Array<Path>,
-|};
+type NodeModulesPathsOptions = {
+  moduleDirectory?: Array<string>;
+  paths?: Array<Config.Path>;
+};
 
 export default function nodeModulesPaths(
-  basedir: Path,
+  basedir: Config.Path,
   options: NodeModulesPathsOptions,
-): Path[] {
+): Config.Path[] {
   const modules =
     options && options.moduleDirectory
-      ? [].concat(options.moduleDirectory)
+      ? Array.from(options.moduleDirectory)
       : ['node_modules'];
 
   // ensure that `basedir` is an absolute path at this point,
@@ -48,7 +46,7 @@ export default function nodeModulesPaths(
     physicalBasedir = basedirAbs;
   }
 
-  const paths = [physicalBasedir];
+  const paths: Array<Config.Path> = [physicalBasedir];
   let parsed = path.parse(physicalBasedir);
   while (parsed.dir !== paths[paths.length - 1]) {
     paths.push(parsed.dir);
@@ -67,7 +65,7 @@ export default function nodeModulesPaths(
               : path.join(prefix, aPath, moduleDir),
           ),
         ),
-      [],
+      [] as Array<Config.Path>,
     )
     .filter(dir => dir !== '');
 

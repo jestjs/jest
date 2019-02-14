@@ -19,7 +19,7 @@ type AvailableHooks =
   | 'shouldRunTestSuite';
 
 class JestHooks {
-  _listeners: {
+  private _listeners: {
     onFileChange: Array<FileChange>;
     onTestRunComplete: Array<TestRunComplete>;
     shouldRunTestSuite: Array<ShouldRunTestSuite>;

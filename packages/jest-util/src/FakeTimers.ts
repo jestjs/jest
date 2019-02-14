@@ -51,21 +51,21 @@ type TimerConfig<Ref> = {
 const MS_IN_A_YEAR = 31536000000;
 
 export default class FakeTimers<TimerRef> {
-  _cancelledImmediates!: {[key: string]: boolean};
-  _cancelledTicks!: {[key: string]: boolean};
-  _config: StackTraceConfig;
-  _disposed?: boolean;
-  _fakeTimerAPIs!: TimerAPI;
-  _global: NodeJS.Global;
-  _immediates!: Array<Tick>;
-  _maxLoops: number;
-  _moduleMocker: ModuleMocker;
-  _now!: number;
-  _ticks!: Array<Tick>;
-  _timerAPIs: TimerAPI;
-  _timers!: {[key: string]: Timer};
-  _uuidCounter: number;
-  _timerConfig: TimerConfig<TimerRef>;
+  private _cancelledImmediates!: {[key: string]: boolean};
+  private _cancelledTicks!: {[key: string]: boolean};
+  private _config: StackTraceConfig;
+  private _disposed?: boolean;
+  private _fakeTimerAPIs!: TimerAPI;
+  private _global: NodeJS.Global;
+  private _immediates!: Array<Tick>;
+  private _maxLoops: number;
+  private _moduleMocker: ModuleMocker;
+  private _now!: number;
+  private _ticks!: Array<Tick>;
+  private _timerAPIs: TimerAPI;
+  private _timers!: {[key: string]: Timer};
+  private _uuidCounter: number;
+  private _timerConfig: TimerConfig<TimerRef>;
 
   constructor({
     global,
@@ -176,7 +176,7 @@ export default class FakeTimers<TimerRef> {
     }
   }
 
-  _runImmediate(immediate: Tick) {
+  private _runImmediate(immediate: Tick) {
     if (!this._cancelledImmediates.hasOwnProperty(immediate.uuid)) {
       // Callback may throw, so update the map prior calling.
       this._cancelledImmediates[immediate.uuid] = true;
@@ -334,7 +334,7 @@ export default class FakeTimers<TimerRef> {
     return Object.keys(this._timers).length;
   }
 
-  _checkFakeTimers() {
+  private _checkFakeTimers() {
     if (this._global.setTimeout !== this._fakeTimerAPIs.setTimeout) {
       this._global.console.warn(
         `A function to advance timers was called but the timers API is not ` +
@@ -352,7 +352,7 @@ export default class FakeTimers<TimerRef> {
     }
   }
 
-  _createMocks() {
+  private _createMocks() {
     const fn = (impl: Function) =>
       // @ts-ignore TODO: figure out better typings here
       this._moduleMocker.fn().mockImplementation(impl);
@@ -369,7 +369,7 @@ export default class FakeTimers<TimerRef> {
     };
   }
 
-  _fakeClearTimer(timerRef: TimerRef) {
+  private _fakeClearTimer(timerRef: TimerRef) {
     const uuid = this._timerConfig.refToId(timerRef);
 
     if (uuid && this._timers.hasOwnProperty(uuid)) {
@@ -377,11 +377,11 @@ export default class FakeTimers<TimerRef> {
     }
   }
 
-  _fakeClearImmediate(uuid: TimerID) {
+  private _fakeClearImmediate(uuid: TimerID) {
     this._cancelledImmediates[uuid] = true;
   }
 
-  _fakeNextTick(callback: Callback, ...args: Array<any>) {
+  private _fakeNextTick(callback: Callback, ...args: Array<any>) {
     if (this._disposed) {
       return;
     }
@@ -403,7 +403,7 @@ export default class FakeTimers<TimerRef> {
     });
   }
 
-  _fakeSetImmediate(callback: Callback, ...args: Array<any>) {
+  private _fakeSetImmediate(callback: Callback, ...args: Array<any>) {
     if (this._disposed) {
       return null;
     }
@@ -427,7 +427,7 @@ export default class FakeTimers<TimerRef> {
     return uuid;
   }
 
-  _fakeSetInterval(
+  private _fakeSetInterval(
     callback: Callback,
     intervalDelay?: number,
     ...args: Array<any>
@@ -452,7 +452,11 @@ export default class FakeTimers<TimerRef> {
     return this._timerConfig.idToRef(uuid);
   }
 
-  _fakeSetTimeout(callback: Callback, delay?: number, ...args: Array<any>) {
+  private _fakeSetTimeout(
+    callback: Callback,
+    delay?: number,
+    ...args: Array<any>
+  ) {
     if (this._disposed) {
       return null;
     }
@@ -472,7 +476,7 @@ export default class FakeTimers<TimerRef> {
     return this._timerConfig.idToRef(uuid);
   }
 
-  _getNextTimerHandle() {
+  private _getNextTimerHandle() {
     let nextTimerHandle = null;
     let uuid;
     let soonestTime = MS_IN_A_YEAR;
@@ -488,7 +492,7 @@ export default class FakeTimers<TimerRef> {
     return nextTimerHandle;
   }
 
-  _runTimerHandle(timerHandle: TimerID) {
+  private _runTimerHandle(timerHandle: TimerID) {
     const timer = this._timers[timerHandle];
 
     if (!timer) {
