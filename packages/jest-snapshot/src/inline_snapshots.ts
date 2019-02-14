@@ -102,7 +102,9 @@ const groupSnapshotsBy = (
   );
 
 const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
-  line && column ? `${line}:${column - 1}` : '',
+  typeof line === 'number' && typeof column === 'number'
+    ? `${line}:${column - 1}`
+    : '',
 );
 const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
