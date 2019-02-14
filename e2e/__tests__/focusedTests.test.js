@@ -10,6 +10,6 @@ import runJest from '../runJest';
 import {countExecutedTests} from '../Utils';
 
 it('runs only "it.only" tests', () => {
-  const {stderr} = runJest('jest-circus');
+  const {stderr} = runJest('focused-tests');
   expect(countExecutedTests(stderr)).toBe(1);
 });
