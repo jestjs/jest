@@ -13,7 +13,7 @@ const fs = require('fs');
 const {execSync} = require('child_process');
 const path = require('path');
 const chalk = require('chalk');
-const getPackages = require('./getPackages');
+const {getPackages} = require('./buildUtils');
 
 const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;
 
