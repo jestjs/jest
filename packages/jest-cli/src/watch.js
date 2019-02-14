@@ -19,8 +19,7 @@ import exit from 'exit';
 import HasteMap from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import isValidPath from './lib/is_valid_path';
-import {isInteractive, specialChars} from 'jest-util';
-import {print as preRunMessagePrint} from './preRunMessage';
+import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 import createContext from './lib/create_context';
 import runJest from './runJest';
 import updateGlobalConfig from './lib/update_global_config';
@@ -39,6 +38,8 @@ import {
 } from './lib/watch_plugins_helpers';
 import {ValidationError} from 'jest-validate';
 import activeFilters from './lib/active_filters_message';
+
+const {print: preRunMessagePrint} = preRunMessage;
 
 let hasExitListener = false;
 

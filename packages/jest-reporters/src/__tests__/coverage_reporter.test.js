@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use strict';
 
 jest.mock('istanbul-lib-source-maps').mock('istanbul-api');
 
@@ -322,7 +321,7 @@ describe('onRunComplete', () => {
       });
   });
 
-  test(`getLastError() returns 'undefined' when file and directory path 
+  test(`getLastError() returns 'undefined' when file and directory path
   threshold groups overlap`, () => {
     const covThreshold = {};
     [
@@ -356,8 +355,8 @@ describe('onRunComplete', () => {
       });
   });
 
-  test(`that if globs or paths are specified alongside global, coverage 
-  data for matching paths will be subtracted from overall coverage 
+  test(`that if globs or paths are specified alongside global, coverage
+  data for matching paths will be subtracted from overall coverage
   and thresholds will be applied independently`, () => {
     const testReporter = new CoverageReporter(
       {
