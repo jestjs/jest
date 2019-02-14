@@ -10,6 +10,7 @@
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
 - `[expect]` Fix custom async matcher stack trace ([#7652](https://github.com/facebook/jest/pull/7652))
 - `[jest-changed-files]` Improve default file selection for Mercurial repos ([#7880](https://github.com/facebook/jest/pull/7880))
+- `[pretty-format]` React.memo with snapshot testing results in <UNDEFINED> ([#7891](https://github.com/facebook/jest/pull/7891))
 
 ### Chore & Maintenance
 
