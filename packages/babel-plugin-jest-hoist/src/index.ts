@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
 const invariant = (condition: any, message: any) => {
@@ -142,7 +141,7 @@ FUNCTIONS.deepUnmock = (args: Array<any>) =>
 FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = (args: any) =>
   args.length === 0;
 
-export default () => {
+export = () => {
   const shouldHoistExpression = (expr: any): boolean => {
     if (!expr.isCallExpression()) {
       return false;
