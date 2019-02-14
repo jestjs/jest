@@ -9,8 +9,7 @@
 import runJest from '../runJest';
 import {countExecutedTests} from '../Utils';
 
-test('run only "it.only" tests', () => {
-  const jestCircusPath = require.resolve('../../packages/jest-circus/runner');
-  const {stderr} = runJest('jest-circus', [`--testRunner=${jestCircusPath}`]);
+it('runs only "it.only" tests', () => {
+  const {stderr} = runJest('jest-circus');
   expect(countExecutedTests(stderr)).toBe(1);
 });
