@@ -10,6 +10,7 @@
   "main": "build/index.js",
   "dependencies": {
     "@babel/types": "^7.0.0",
+    "@jest/types": "^24.1.0",
     "chalk": "^2.0.1",
     "jest-diff": "^24.0.0",
     "jest-matcher-utils": "^24.0.0",
@@ -23,6 +24,8 @@
   "devDependencies": {
     "@types/mkdirp": "^0.5.2",
     "@types/semver": "^5.5.0",
+    "jest-haste-map": "^24.0.0",
+    "pretty-format": "^24.0.0",
     "prettier": "^1.13.4"
   },
   "engines": {

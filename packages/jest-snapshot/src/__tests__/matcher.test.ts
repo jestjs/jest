@@ -13,7 +13,10 @@ it(`matcher returns matcher name, expected and actual values`, () => {
   const actual = 'a';
   const expected = 'b';
   const matcher = toMatchSnapshot.bind({
-    snapshotState: {match: (testName, received) => ({actual, expected})},
+    snapshotState: {
+      // @ts-ignore
+      match: (testName: string, received: any) => ({actual, expected}), // eslint-disable-line
+    },
   });
 
   const matcherResult = matcher({a: 1});

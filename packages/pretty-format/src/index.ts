@@ -16,7 +16,10 @@ import {
   Plugins,
   Refs,
   Theme,
+  Printer,
 } from './types';
+
+export * from './types';
 
 import {
   printIteratorEntries,
@@ -520,4 +523,6 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-export = prettyFormat;
+export {Config, NewPlugin, Printer, Refs};
+
+export default prettyFormat;

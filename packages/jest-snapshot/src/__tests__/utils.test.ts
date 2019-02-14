@@ -177,8 +177,8 @@ test('escaping', () => {
       'exports[`key`] = `"\'\\\\`;\n',
   );
 
-  // eslint-disable-next-line no-unused-vars
-  const exports = {};
+  // @ts-ignore
+  const exports = {}; // eslint-disable-line
   // eslint-disable-next-line no-eval
   const readData = eval('var exports = {}; ' + writtenData + ' exports');
   expect(readData).toEqual({key: data});

@@ -5,11 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+
 'use strict';
 
 const {toThrowErrorMatchingSnapshot} = require('../');
 
-let matchFn;
+let matchFn: jest.Mock;
 
 beforeEach(() => {
   matchFn = jest.fn(() => ({
@@ -33,7 +34,7 @@ it('throw matcher can take func', () => {
 });
 
 describe('throw matcher from promise', () => {
-  let throwMatcher;
+  let throwMatcher: typeof toThrowErrorMatchingSnapshot;
 
   beforeEach(() => {
     throwMatcher = toThrowErrorMatchingSnapshot.bind({

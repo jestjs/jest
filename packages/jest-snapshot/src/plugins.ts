@@ -4,12 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ *
  */
 
-import type {Plugin} from 'types/PrettyFormat';
-
-import prettyFormat from 'pretty-format';
+import prettyFormat, {Plugin} from 'pretty-format';
 import jestMockSerializer from './mock_serializer';
 
 const {

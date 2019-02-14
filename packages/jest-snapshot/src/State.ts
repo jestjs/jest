@@ -4,12 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ *
  */
 
-import type {Path, SnapshotUpdateState} from 'types/Config';
-
 import fs from 'fs';
+import {Config} from '@jest/types';
+
 import {getTopFrame, getStackTraceLines} from 'jest-message-util';
 import {
   saveSnapshotFile,
@@ -19,30 +19,30 @@ import {
   testNameToKey,
   unescape,
 } from './utils';
-import {saveInlineSnapshots, type InlineSnapshot} from './inline_snapshots';
+import {saveInlineSnapshots, InlineSnapshot} from './inline_snapshots';
 
-export type SnapshotStateOptions = {|
-  updateSnapshot: SnapshotUpdateState,
-  getPrettier: () => null | any,
-  getBabelTraverse: () => Function,
-  expand?: boolean,
-|};
+export type SnapshotStateOptions = {
+  updateSnapshot: Config.SnapshotUpdateState;
+  getPrettier: () => null | any;
+  getBabelTraverse: () => Function;
+  expand?: boolean;
+};
 
-export type SnapshotMatchOptions = {|
-  testName: string,
-  received: any,
-  key?: string,
-  inlineSnapshot?: string,
-  error?: Error,
-|};
+export type SnapshotMatchOptions = {
+  testName: string;
+  received: any;
+  key?: string;
+  inlineSnapshot?: string;
+  error?: Error;
+};
 
 export default class SnapshotState {
   _counters: Map<string, number>;
   _dirty: boolean;
   _index: number;
-  _updateSnapshot: SnapshotUpdateState;
+  _updateSnapshot: Config.SnapshotUpdateState;
   _snapshotData: {[key: string]: string};
-  _snapshotPath: Path;
+  _snapshotPath: Config.Path;
   _inlineSnapshots: Array<InlineSnapshot>;
   _uncheckedKeys: Set<string>;
   _getBabelTraverse: () => Function;
@@ -53,7 +53,7 @@ export default class SnapshotState {
   unmatched: number;
   updated: number;
 
-  constructor(snapshotPath: Path, options: SnapshotStateOptions) {
+  constructor(snapshotPath: Config.Path, options: SnapshotStateOptions) {
     this._snapshotPath = snapshotPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,
@@ -86,12 +86,12 @@ export default class SnapshotState {
   _addSnapshot(
     key: string,
     receivedSerialized: string,
-    options: {isInline: boolean, error?: Error},
+    options: {isInline: boolean; error?: Error},
   ) {
     this._dirty = true;
     if (options.isInline) {
       const error = options.error || new Error();
-      const lines = getStackTraceLines(error.stack);
+      const lines = getStackTraceLines(error.stack || '');
       const frame = getTopFrame(lines);
       if (!frame) {
         throw new Error(
@@ -99,7 +99,11 @@ export default class SnapshotState {
         );
       }
       this._inlineSnapshots.push({
-        frame,
+        frame: {
+          column: frame.column,
+          file: frame.file as string,
+          line: frame.line,
+        },
         snapshot: receivedSerialized,
       });
     } else {
@@ -251,7 +255,7 @@ export default class SnapshotState {
     }
   }
 
-  fail(testName: string, received: any, key?: string) {
+  fail(testName: string, _: any, key?: string) {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
 
