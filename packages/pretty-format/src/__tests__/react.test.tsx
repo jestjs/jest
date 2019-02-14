@@ -709,6 +709,16 @@ test('supports forwardRef with a child', () => {
   ).toEqual('<ForwardRef(Cat)>\n  mouse\n</ForwardRef(Cat)>');
 });
 
+test('supports memo with a child', () => {
+  function Dog(props: any) {
+    return React.createElement('div', props, props.children);
+  }
+
+  expect(
+    formatElement(React.createElement(React.memo(Dog), null, 'cat')),
+  ).toEqual('<Memo(Dog)>\n  cat\n</Memo(Dog)>');
+});
+
 test('supports context Provider with a child', () => {
   const {Provider} = React.createContext('test');
 
