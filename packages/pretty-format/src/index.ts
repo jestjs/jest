@@ -16,7 +16,6 @@ import {
   Plugins,
   Refs,
   Theme,
-  Printer,
 } from './types';
 
 export * from './types';
@@ -522,7 +521,5 @@ prettyFormat.plugins = {
   ReactElement,
   ReactTestComponent,
 };
-
-export {Config, NewPlugin, Printer, Refs};
 
 export default prettyFormat;
