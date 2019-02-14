@@ -70,7 +70,10 @@ const eventHandler: EventHandler = (event, state): void => {
         });
       }
 
-      if (currentDescribeBlock.tests.some(test => test.mode === 'only')) {
+      if (
+        !state.hasFocusedTests &&
+        currentDescribeBlock.tests.some(test => test.mode === 'only')
+      ) {
         state.hasFocusedTests = true;
       }
 
