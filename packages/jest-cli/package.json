@@ -11,7 +11,7 @@
     "graceful-fs": "^4.1.15",
     "import-local": "^2.0.0",
     "is-ci": "^2.0.0",
-    "istanbul-api": "^2.0.8",
+    "istanbul-api": "^2.1.1",
     "istanbul-lib-coverage": "^2.0.2",
     "istanbul-lib-instrument": "^3.0.1",
     "istanbul-lib-source-maps": "^3.0.1",
