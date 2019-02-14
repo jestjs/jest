@@ -4,12 +4,9 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @flow
  */
-'use strict';
 
-export default function addInstanceOfAlias(target: Object, alias: Object) {
+export default function addInstanceOfAlias(target: Function, alias: Function) {
   if (typeof Symbol === 'undefined' || Symbol.hasInstance == null) {
     return;
   }
@@ -21,7 +18,7 @@ export default function addInstanceOfAlias(target: Object, alias: Object) {
     );
   }
 
-  const originalHasInstance: any => boolean = target[Symbol.hasInstance];
+  const originalHasInstance = target[Symbol.hasInstance];
   Object.defineProperty(target, Symbol.hasInstance, {
     configurable: true,
     value: function aliasedHasInstance(potentialInstance: any) {

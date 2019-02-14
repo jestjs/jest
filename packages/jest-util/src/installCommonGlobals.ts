@@ -6,8 +6,8 @@
  */
 
 import fs from 'fs';
-import addInstanceOfAlias from './addInstanceOfAlias';
 import {Config} from '@jest/types';
+import addInstanceOfAlias from './addInstanceOfAlias';
 import createProcessObject from './createProcessObject';
 import deepCyclicCopy from './deepCyclicCopy';
 
