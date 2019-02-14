@@ -6,10 +6,12 @@
  *
  * @flow
  */
-import runJest from '../runJest';
-import {countExecutedTests} from '../Utils';
+import {json} from '../runJest';
 
 it('runs only "it.only" tests', () => {
-  const {stderr} = runJest('focused-tests');
-  expect(countExecutedTests(stderr)).toBe(1);
+  const {
+    json: {numPassedTests, numPendingTests},
+  } = json('focused-tests');
+  expect(numPassedTests).toBe(1);
+  expect(numPendingTests).toBe(2);
 });
