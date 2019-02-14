@@ -65,12 +65,6 @@ export const makeTest = (
   timeout: ?number,
   asyncError: Exception,
 ): TestEntry => {
-  let _mode = mode;
-  if (!mode) {
-    // if not set explicitly, inherit from its parent describe
-    _mode = parent.mode;
-  }
-
   const errors: Array<[?Exception, Exception]> = [];
 
   return {
@@ -79,7 +73,7 @@ export const makeTest = (
     errors,
     fn,
     invocations: 0,
-    mode: _mode,
+    mode,
     name: convertDescriptorToString(name),
     parent,
     startedAt: null,
