@@ -62,12 +62,11 @@ const eventHandler: EventHandler = (event, state): void => {
         currentDescribeBlock.tests.find(test => test.mode === 'only')
       );
 
-      currentDescribeBlock.tests.forEach(
-        test =>
-          !test.mode &&
-          shouldInheritMode &&
-          (test.mode = currentDescribeBlock.mode),
-      );
+      currentDescribeBlock.tests.forEach(test => {
+        if (!test.mode && shouldInheritMode) {
+          test.mode = currentDescribeBlock.mode;
+        }
+      });
 
       if (currentDescribeBlock.tests.some(test => test.mode === 'only')) {
         state.hasFocusedTests = true;
