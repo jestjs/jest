@@ -55,6 +55,24 @@ const eventHandler: EventHandler = (event, state): void => {
         });
       }
 
+      // inherit mode from its parent describe but
+      // do not inherit "only" mode when there is already tests with "only" mode
+      const shouldInheritMode = !(
+        currentDescribeBlock.mode === 'only' &&
+        currentDescribeBlock.tests.find(test => test.mode === 'only')
+      );
+
+      currentDescribeBlock.tests.forEach(
+        test =>
+          !test.mode &&
+          shouldInheritMode &&
+          (test.mode = currentDescribeBlock.mode),
+      );
+
+      if (currentDescribeBlock.tests.some(test => test.mode === 'only')) {
+        state.hasFocusedTests = true;
+      }
+
       if (currentDescribeBlock.parent) {
         state.currentDescribeBlock = currentDescribeBlock.parent;
       }

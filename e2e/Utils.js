@@ -225,3 +225,8 @@ export const normalizeIcons = (str: string) => {
     .replace(new RegExp('\u00D7', 'g'), '\u2715')
     .replace(new RegExp('\u221A', 'g'), '\u2713');
 };
+
+export const countExecutedTests = (str: string): number => {
+  const {rest} = extractSortedSummary(str);
+  return rest.split('\n').filter(line => /[✓✕]/.test(line)).length;
+};
