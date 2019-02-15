@@ -79,7 +79,7 @@ function isObject(item: unknown): boolean {
   return item && typeof item === 'object' && !Array.isArray(item);
 }
 
-export const testNameToKey = (testName: string, count: number): string =>
+export const testNameToKey = (testName: Config.Path, count: number): string =>
   testName + ' ' + count;
 
 export const keyToTestName = (key: string): string => {
