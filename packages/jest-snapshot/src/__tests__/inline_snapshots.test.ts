@@ -13,6 +13,7 @@ import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
 import babelTraverse from '@babel/traverse';
+import {Frame} from 'jest-message-util';
 
 import {saveInlineSnapshots} from '../inline_snapshots';
 
@@ -49,7 +50,7 @@ test('saveInlineSnapshots() replaces empty function call with a template literal
   saveInlineSnapshots(
     [
       {
-        frame: {column: 11, file: filename, line: 1},
+        frame: {column: 11, file: filename, line: 1} as Frame,
         snapshot: `1`,
       },
     ],
@@ -76,7 +77,7 @@ test.each([['babylon'], ['flow'], ['typescript']])(
     saveInlineSnapshots(
       [
         {
-          frame: {column: 11, file: filename, line: 1},
+          frame: {column: 11, file: filename, line: 1} as Frame,
           snapshot: `1`,
         },
       ],
@@ -104,7 +105,7 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
   saveInlineSnapshots(
     [
       {
-        frame: {column: 11, file: filename, line: 1},
+        frame: {column: 11, file: filename, line: 1} as Frame,
         snapshot: `1`,
       },
     ],
@@ -128,7 +129,7 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
     saveInlineSnapshots(
       [
         {
-          frame: {column: 2 /* incorrect */, file: filename, line: 1},
+          frame: {column: 2 /* incorrect */, file: filename, line: 1} as Frame,
           snapshot: `1`,
         },
       ],
@@ -145,7 +146,7 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
     () => 'expect(1).toMatchInlineSnapshot();\n',
   );
 
-  const frame = {column: 11, file: filename, line: 1};
+  const frame = {column: 11, file: filename, line: 1} as Frame;
   const save = () =>
     saveInlineSnapshots(
       [{frame, snapshot: `1`}, {frame, snapshot: `2`}],
@@ -164,7 +165,7 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
     () => 'expect("`").toMatchInlineSnapshot();\n',
   );
 
-  const frame = {column: 13, file: filename, line: 1};
+  const frame = {column: 13, file: filename, line: 1} as Frame;
   saveInlineSnapshots([{frame, snapshot: '`'}], prettier, babelTraverse);
 
   expect(fs.writeFileSync).toHaveBeenCalledWith(
@@ -186,7 +187,7 @@ test('saveInlineSnapshots() works with non-literals in expect call', () => {
   saveInlineSnapshots(
     [
       {
-        frame: {column: 18, file: filename, line: 1},
+        frame: {column: 18, file: filename, line: 1} as Frame,
         snapshot: `{a: 'a'}`,
       },
     ],
