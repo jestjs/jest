@@ -3,5 +3,16 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build"
-  }
+  },
+  "references": [
+    {
+      "path": "../jest-types"
+    },
+    {
+      "path": "../jest-haste-map"
+    },
+    {
+      "path": "../pretty-format"
+    }
+  ]
 }

@@ -7,3 +7,5 @@ export type SnapshotResolver = {
   resolveSnapshotPath(testPath: Config.Path, extension?: string): Config.Path;
   resolveTestPath(snapshotPath: Config.Path, extension?: string): Config.Path;
 };
+
+export type SnapshotData = {[key: string]: string};

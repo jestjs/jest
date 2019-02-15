@@ -14,6 +14,7 @@ import chalk from 'chalk';
 import {Config} from '@jest/types';
 import prettyFormat from 'pretty-format';
 import {getSerializers} from './plugins';
+import {SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
@@ -74,7 +75,7 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   return null;
 };
 
-function isObject(item: any): boolean {
+function isObject(item: unknown): boolean {
   return item && typeof item === 'object' && !Array.isArray(item);
 }
 
@@ -93,7 +94,7 @@ export const getSnapshotData = (
   snapshotPath: Config.Path,
   update: Config.SnapshotUpdateState,
 ): {
-  data: any;
+  data: SnapshotData;
   dirty: boolean;
 } => {
   const data = Object.create(null);

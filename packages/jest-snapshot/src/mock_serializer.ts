@@ -46,4 +46,6 @@ export const serialize = (
 
 export const test = (val: any) => val && !!val._isMockFunction;
 
-export default {serialize, test} as NewPlugin;
+const plugin: NewPlugin = {serialize, test};
+
+export default plugin;

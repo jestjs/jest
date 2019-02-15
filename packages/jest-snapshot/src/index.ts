@@ -7,12 +7,11 @@
  */
 
 import fs from 'fs';
-import {Config} from '@jest/types';
+import {Config, MatcherState} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 
 import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
-import {MatcherState} from 'expect';
 import {SnapshotResolver} from './types';
 import {
   buildSnapshotResolver,
@@ -55,7 +54,7 @@ const toMatchSnapshot = function(
   this: Context,
   received: any,
   propertyMatchers?: any,
-  testName?: string,
+  testName?: Config.Path,
 ) {
   if (arguments.length === 3 && !propertyMatchers) {
     throw new Error(
