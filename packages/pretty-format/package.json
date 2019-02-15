@@ -21,6 +21,7 @@
     "@types/ansi-styles": "^3.2.1",
     "@types/react": "*",
     "@types/react-test-renderer": "*",
+    "@jest/types": "^24.1.0",
     "immutable": "4.0.0-rc.9",
     "react": "*",
     "react-dom": "*",

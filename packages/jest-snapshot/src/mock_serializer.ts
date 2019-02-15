@@ -7,15 +7,15 @@
  *
  */
 
-import {Config, NewPlugin, Printer, Refs} from 'pretty-format';
+import {PrettyFormat} from '@jest/types';
 
 export const serialize = (
   val: any,
-  config: Config,
+  config: PrettyFormat.Config,
   indentation: string,
   depth: number,
-  refs: Refs,
-  printer: Printer,
+  refs: PrettyFormat.Refs,
+  printer: PrettyFormat.Printer,
 ): string => {
   // Serialize a non-default name, even if config.printFunctionName is false.
   const name = val.getMockName();
@@ -46,6 +46,6 @@ export const serialize = (
 
 export const test = (val: any) => val && !!val._isMockFunction;
 
-const plugin: NewPlugin = {serialize, test};
+const plugin: PrettyFormat.NewPlugin = {serialize, test};
 
 export default plugin;

@@ -7,7 +7,9 @@
  *
  */
 
-import prettyFormat, {Plugin} from 'pretty-format';
+import prettyFormat from 'pretty-format';
+import {PrettyFormat} from '@jest/types';
+
 import jestMockSerializer from './mock_serializer';
 
 const {
@@ -19,7 +21,7 @@ const {
   AsymmetricMatcher,
 } = prettyFormat.plugins;
 
-let PLUGINS: Array<Plugin> = [
+let PLUGINS: Array<PrettyFormat.Plugin> = [
   ReactTestComponent,
   ReactElement,
   DOMElement,
@@ -30,7 +32,7 @@ let PLUGINS: Array<Plugin> = [
 ];
 
 // Prepend to list so the last added is the first tested.
-export const addSerializer = (plugin: Plugin) => {
+export const addSerializer = (plugin: PrettyFormat.Plugin) => {
   PLUGINS = [plugin].concat(PLUGINS);
 };
 

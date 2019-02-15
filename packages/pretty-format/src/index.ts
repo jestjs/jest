@@ -18,8 +18,6 @@ import {
   Theme,
 } from './types';
 
-export * from './types';
-
 import {
   printIteratorEntries,
   printIteratorValues,
@@ -522,4 +520,4 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-export default prettyFormat;
+export = prettyFormat;

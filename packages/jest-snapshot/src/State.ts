@@ -39,6 +39,7 @@ export type SnapshotMatchOptions = {
 export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
+  // @ts-ignore
   private _index: number;
   private _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
