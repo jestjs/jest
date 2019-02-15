@@ -18,6 +18,15 @@
     },
     {
       "path": "../jest-message-util"
+    },
+    {
+      "path": "../jest-diff"
+    },
+    {
+      "path": "../jest-matcher-utils"
+    },
+    {
+      "path": "../jest-resolve"
     }
   ]
 }

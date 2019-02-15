@@ -13,11 +13,11 @@
   "browser": "build-es5/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
+    "@jest/types": "^24.1.0",
     "ansi-regex": "^4.0.0",
     "ansi-styles": "^3.2.0"
   },
   "devDependencies": {
-    "@jest/types": "^24.1.0",
     "@types/ansi-regex": "^4.0.0",
     "@types/ansi-styles": "^3.2.1",
     "@types/react": "*",
