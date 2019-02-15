@@ -6,7 +6,7 @@
  *
  */
 
-const jestSnapshot = require('../');
+import jestSnapshot from '../';
 
 const {toMatchSnapshot} = jestSnapshot;
 
