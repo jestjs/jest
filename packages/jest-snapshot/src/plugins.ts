@@ -21,7 +21,7 @@ const {
   AsymmetricMatcher,
 } = prettyFormat.plugins;
 
-let PLUGINS: Array<PrettyFormat.Plugin> = [
+let PLUGINS: PrettyFormat.Plugins = [
   ReactTestComponent,
   ReactElement,
   DOMElement,
