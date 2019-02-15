@@ -15,8 +15,7 @@ it(`matcher returns matcher name, expected and actual values`, () => {
   const expected = 'b';
   const matcher = toMatchSnapshot.bind({
     snapshotState: {
-      // @ts-ignore
-      match: (testName: string, received: any) => ({actual, expected}), // eslint-disable-line
+      match: (_testName: string, _received: any) => ({actual, expected}),
     },
   });
 
