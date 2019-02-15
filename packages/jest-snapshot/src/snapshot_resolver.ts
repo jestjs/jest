@@ -20,8 +20,7 @@ export const buildSnapshotResolver = (
   if (!cache.has(key)) {
     cache.set(key, createSnapshotResolver(config.snapshotResolver));
   }
-  // @ts-ignore
-  return cache.get(key);
+  return cache.get(key)!;
 };
 
 function createSnapshotResolver(

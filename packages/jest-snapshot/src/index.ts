@@ -8,7 +8,7 @@
 
 import fs from 'fs';
 import {Config, MatcherState} from '@jest/types';
-import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
+import {FS as HasteFS} from 'jest-haste-map';
 
 import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';

@@ -21,6 +21,9 @@
     "pretty-format": "^24.0.0",
     "semver": "^5.5.0"
   },
+  "peerDependencies": {
+    "jest-haste-map": "^24.0.0"
+  },
   "devDependencies": {
     "@types/mkdirp": "^0.5.2",
     "@types/prettier": "^1.16.1",
