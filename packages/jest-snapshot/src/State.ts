@@ -84,7 +84,7 @@ export default class SnapshotState {
     });
   }
 
-  _addSnapshot(
+  private _addSnapshot(
     key: string,
     receivedSerialized: string,
     options: {isInline: boolean; error?: Error},
