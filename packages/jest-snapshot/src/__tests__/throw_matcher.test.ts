@@ -6,9 +6,9 @@
  *
  */
 
-'use strict';
+import jestSnapshot from '../';
 
-import {toThrowErrorMatchingSnapshot} = from '../';
+const {toThrowErrorMatchingSnapshot} = jestSnapshot;
 
 let matchFn: jest.Mock;
 
@@ -24,9 +24,13 @@ it('throw matcher can take func', () => {
     snapshotState: {match: matchFn},
   });
 
-  throwMatcher(() => {
-    throw new Error('coconut');
-  });
+  throwMatcher(
+    () => {
+      throw new Error('coconut');
+    },
+    undefined,
+    false,
+  );
 
   expect(matchFn).toHaveBeenCalledWith(
     expect.objectContaining({received: 'coconut', testName: ''}),

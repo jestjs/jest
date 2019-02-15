@@ -295,7 +295,7 @@ const _toThrowErrorMatchingSnapshot = ({
   });
 };
 
-module.exports = {
+export = {
   EXTENSION,
   SnapshotState,
   addSerializer,

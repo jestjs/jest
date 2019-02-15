@@ -1,14 +1,17 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
-const path = require('path');
-const {buildSnapshotResolver} = require('../snapshot_resolver');
+import path from 'path';
+import {Config} from '@jest/types';
+import {SnapshotResolver} from '../types';
+
+import {buildSnapshotResolver} from '../snapshot_resolver';
 
 describe('defaults', () => {
-  let snapshotResolver;
+  let snapshotResolver: SnapshotResolver;
   const projectConfig = {
     rootDir: 'default',
     // snapshotResolver: null,
-  };
+  } as Config.ProjectConfig;
 
   beforeEach(() => {
     snapshotResolver = buildSnapshotResolver(projectConfig);
@@ -32,7 +35,7 @@ describe('defaults', () => {
 });
 
 describe('custom resolver in project config', () => {
-  let snapshotResolver;
+  let snapshotResolver: SnapshotResolver;
   const customSnapshotResolverFile = path.join(
     __dirname,
     'fixtures',
@@ -41,7 +44,7 @@ describe('custom resolver in project config', () => {
   const projectConfig = {
     rootDir: 'custom1',
     snapshotResolver: customSnapshotResolverFile,
-  };
+  } as Config.ProjectConfig;
 
   beforeEach(() => {
     snapshotResolver = buildSnapshotResolver(projectConfig);
@@ -78,7 +81,7 @@ describe('malformed custom resolver in project config', () => {
     return {
       rootDir: 'missing-resolveSnapshotPath',
       snapshotResolver: customSnapshotResolverFile,
-    };
+    } as Config.ProjectConfig;
   };
 
   it('missing resolveSnapshotPath throws ', () => {

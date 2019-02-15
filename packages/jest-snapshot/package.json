@@ -23,8 +23,8 @@
   },
   "devDependencies": {
     "@types/mkdirp": "^0.5.2",
+    "@types/prettier": "^1.16.1",
     "@types/semver": "^5.5.0",
-    "expect": "^24.1.0",
     "jest-haste-map": "^24.0.0",
     "prettier": "^1.13.4",
     "pretty-format": "^24.0.0"

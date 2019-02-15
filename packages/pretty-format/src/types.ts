@@ -7,4 +7,13 @@
 
 import {PrettyFormat} from '@jest/types';
 
-export = PrettyFormat;
+export type Colors = PrettyFormat.Colors;
+export type Config = PrettyFormat.Config;
+export type Options = PrettyFormat.Options;
+export type OptionsReceived = PrettyFormat.OptionsReceived;
+export type NewPlugin = PrettyFormat.NewPlugin;
+export type Plugin = PrettyFormat.Plugin;
+export type Plugins = PrettyFormat.Plugins;
+export type Refs = PrettyFormat.Refs;
+export type Theme = PrettyFormat.Theme;
+export type Printer = PrettyFormat.Printer;

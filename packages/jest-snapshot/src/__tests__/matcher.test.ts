@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-'use strict';
 
-const {toMatchSnapshot} = require('../');
+import jestSnapshot = require('../');
+
+const {toMatchSnapshot} = jestSnapshot;
 
 it(`matcher returns matcher name, expected and actual values`, () => {
   const actual = 'a';
