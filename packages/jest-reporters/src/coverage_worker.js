@@ -12,8 +12,9 @@ import type {CoverageReporterOptions} from './coverage_reporter';
 
 import exit from 'exit';
 import fs from 'fs';
-import generateEmptyCoverage from '../generateEmptyCoverage';
-import type {CoverageWorkerResult} from '../generateEmptyCoverage';
+import generateEmptyCoverage, {
+  type CoverageWorkerResult,
+} from './generateEmptyCoverage';
 
 export type CoverageWorkerData = {|
   globalConfig: GlobalConfig,

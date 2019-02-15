@@ -14,8 +14,7 @@ import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import {KEYS} from 'jest-watcher';
 
-import {pluralize} from './reporters/utils';
-import {specialChars} from 'jest-util';
+import {pluralize, specialChars} from 'jest-util';
 
 const {ARROW, CLEAR} = specialChars;
 

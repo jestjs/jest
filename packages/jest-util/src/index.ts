@@ -23,6 +23,9 @@ import deepCyclicCopy from './deepCyclicCopy';
 import convertDescriptorToString from './convertDescriptorToString';
 import * as specialChars from './specialChars';
 import replacePathSepForGlob from './replacePathSepForGlob';
+import testPathPatternToRegExp from './testPathPatternToRegExp';
+import * as preRunMessage from './preRunMessage';
+import pluralize from './pluralize';
 
 export = {
   BufferedConsole,
@@ -40,7 +43,10 @@ export = {
   getFailedSnapshotTests,
   installCommonGlobals,
   isInteractive,
+  pluralize,
+  preRunMessage,
   replacePathSepForGlob,
   setGlobal,
   specialChars,
+  testPathPatternToRegExp,
 };

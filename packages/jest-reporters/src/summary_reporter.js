@@ -13,11 +13,11 @@ import type {Context} from 'types/Context';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
 import chalk from 'chalk';
+import {testPathPatternToRegExp} from 'jest-util';
 import BaseReporter from './base_reporter';
 import {getSummary} from './utils';
 import getResultHeader from './get_result_header';
 import getSnapshotSummary from './get_snapshot_summary';
-import testPathPatternToRegExp from '../testPathPatternToRegexp';
 
 const TEST_SUMMARY_THRESHOLD = 20;
 

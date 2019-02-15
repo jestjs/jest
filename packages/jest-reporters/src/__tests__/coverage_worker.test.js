@@ -7,7 +7,7 @@
 
 'use strict';
 
-jest.mock('fs').mock('../../generateEmptyCoverage');
+jest.mock('fs').mock('../generateEmptyCoverage');
 
 const globalConfig = {collectCoverage: true};
 const config = {};
@@ -21,7 +21,7 @@ beforeEach(() => {
   jest.resetModules();
 
   fs = require('fs');
-  generateEmptyCoverage = require('../../generateEmptyCoverage').default;
+  generateEmptyCoverage = require('../generateEmptyCoverage').default;
   worker = require('../coverage_worker').worker;
 });
 
