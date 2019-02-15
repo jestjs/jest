@@ -215,8 +215,7 @@ const _toMatchSnapshot = ({
 const toThrowErrorMatchingSnapshot = function(
   this: Context,
   received: any,
-  testName?: string,
-  // @ts-ignore
+  testName: string | undefined,
   fromPromise: boolean,
 ) {
   return _toThrowErrorMatchingSnapshot({
