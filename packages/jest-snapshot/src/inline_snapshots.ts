@@ -15,13 +15,14 @@ import {
   file,
   CallExpression,
 } from '@babel/types';
+import {Frame} from 'jest-message-util';
 
 import {Config} from '@jest/types';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {
   snapshot: string;
-  frame: {line?: number; column?: number; file: string};
+  frame: Frame;
 };
 
 export const saveInlineSnapshots = (

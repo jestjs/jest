@@ -101,11 +101,7 @@ export default class SnapshotState {
         );
       }
       this._inlineSnapshots.push({
-        frame: {
-          column: frame.column,
-          file: frame.file as string,
-          line: frame.line,
-        },
+        frame,
         snapshot: receivedSerialized,
       });
     } else {
