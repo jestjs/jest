@@ -114,7 +114,7 @@ const createParser = (
   babelTraverse: Function,
 ) => (
   text: string,
-  parsers: {[key: string]: (arg0: string) => any},
+  parsers: {[key: string]: (text: string) => any},
   options: any,
 ) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
