@@ -9,6 +9,7 @@
 
 import type {GlobalConfig} from 'types/Config';
 import type {AggregatedResult} from 'types/TestResult';
+import type {TestSchedulerContext} from 'types/TestScheduler';
 import type {Context} from 'types/Context';
 
 import exit from 'exit';
@@ -16,7 +17,6 @@ import path from 'path';
 import util from 'util';
 import notifier from 'node-notifier';
 import BaseReporter from './base_reporter';
-import type {TestSchedulerContext} from '../TestScheduler';
 
 const isDarwin = process.platform === 'darwin';
 

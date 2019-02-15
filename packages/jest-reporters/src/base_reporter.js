@@ -12,7 +12,9 @@ import type {Context} from 'types/Context';
 import type {Test} from 'types/TestRunner';
 import type {ReporterOnStartOptions} from 'types/Reporters';
 
-import {remove as preRunMessageRemove} from '../preRunMessage';
+import {preRunMessage} from 'jest-util';
+
+const {remove: preRunMessageRemove} = preRunMessage;
 
 export default class BaseReporter {
   _error: ?Error;

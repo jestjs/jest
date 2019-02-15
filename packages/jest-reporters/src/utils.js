@@ -13,6 +13,7 @@ import type {AggregatedResult} from 'types/TestResult';
 import path from 'path';
 import chalk from 'chalk';
 import slash from 'slash';
+import {pluralize} from 'jest-util';
 
 type SummaryOptions = {|
   estimatedTime?: number,
@@ -91,9 +92,6 @@ export const relativePath = (
   const basename = path.basename(testPath);
   return {basename, dirname};
 };
-
-export const pluralize = (word: string, count: number) =>
-  `${count} ${word}${count === 1 ? '' : 's'}`;
 
 export const getSummary = (
   aggregatedResults: AggregatedResult,

@@ -6,13 +6,11 @@
  *
  */
 
-'use strict';
-
+import {SummaryReporter} from '@jest/reporters';
 import TestScheduler from '../TestScheduler';
-import SummaryReporter from '../reporters/summary_reporter';
 import * as testSchedulerHelper from '../testSchedulerHelper';
 
-jest.mock('../reporters/default_reporter');
+jest.mock('@jest/reporters');
 const mockSerialRunner = {
   isSerial: true,
   runTests: jest.fn(),
