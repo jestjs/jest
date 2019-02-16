@@ -1,29 +1,40 @@
 {
-  "name": "jest-cli",
+  "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
   "version": "24.1.0",
-  "main": "build/index.js",
+  "main": "build/jest.js",
   "dependencies": {
-    "@jest/core": "^24.1.0",
+    "@jest/reporters": "^24.1.0",
+    "@jest/transform": "^24.1.0",
+    "ansi-escapes": "^3.0.0",
     "chalk": "^2.0.1",
     "exit": "^0.1.2",
-    "import-local": "^2.0.0",
-    "is-ci": "^2.0.0",
+    "graceful-fs": "^4.1.15",
+    "jest-changed-files": "^24.0.0",
     "jest-config": "^24.1.0",
+    "jest-haste-map": "^24.0.0",
+    "jest-message-util": "^24.0.0",
+    "jest-regex-util": "^24.0.0",
+    "jest-resolve-dependencies": "^24.1.0",
+    "jest-runner": "^24.1.0",
+    "jest-runtime": "^24.1.0",
+    "jest-snapshot": "^24.1.0",
     "jest-util": "^24.0.0",
     "jest-validate": "^24.0.0",
-    "prompts": "^2.0.1",
+    "jest-watcher": "^24.0.0",
+    "micromatch": "^3.1.10",
+    "p-each-series": "^1.0.0",
+    "pirates": "^4.0.0",
     "realpath-native": "^1.1.0",
-    "yargs": "^12.0.2"
+    "rimraf": "^2.5.4",
+    "strip-ansi": "^5.0.0"
   },
   "devDependencies": {
+    "@types/ansi-escapes": "^3.0.0",
     "@types/exit": "^0.1.30",
-    "@types/is-ci": "^1.1.0",
-    "@types/prompts": "^1.2.0",
-    "@types/yargs": "^12.0.2"
-  },
-  "bin": {
-    "jest": "./bin/jest.js"
+    "@types/graceful-fs": "^4.1.2",
+    "@types/micromatch": "^3.1.0",
+    "@types/rimraf": "^2.0.2"
   },
   "engines": {
     "node": ">= 6"
@@ -31,7 +42,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest",
-    "directory": "packages/jest-cli"
+    "directory": "packages/jest-core"
   },
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"
@@ -63,6 +74,5 @@
     "testing",
     "typescript",
     "watch"
-  ],
-  "gitHead": "b16789230fd45056a7f2fa199bae06c7a1780deb"
+  ]
 }

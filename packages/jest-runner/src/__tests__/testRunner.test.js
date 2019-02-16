@@ -6,10 +6,9 @@
  *
  */
 
-'use strict';
-
-const TestRunner = require('../index');
-const {TestWatcher} = require('jest-cli');
+import {TestWatcher} from '@jest/core';
+// eslint-disable-next-line import/default
+import TestRunner from '../index';
 
 let mockWorkerFarm;
 
