@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {PrettyFormat} from '@jest/types'; // eslint-disable-line import/no-extraneous-dependencies
+import {PrettyFormat} from '@jest/types';
 
 export type Colors = PrettyFormat.Colors;
 export type Config = PrettyFormat.Config;
