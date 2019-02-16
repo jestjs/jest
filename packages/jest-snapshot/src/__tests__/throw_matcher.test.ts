@@ -3,13 +3,13 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
-'use strict';
 
-const {toThrowErrorMatchingSnapshot} = require('../');
+import jestSnapshot from '../';
 
-let matchFn;
+const {toThrowErrorMatchingSnapshot} = jestSnapshot;
+
+let matchFn: jest.Mock;
 
 beforeEach(() => {
   matchFn = jest.fn(() => ({
@@ -23,9 +23,13 @@ it('throw matcher can take func', () => {
     snapshotState: {match: matchFn},
   });
 
-  throwMatcher(() => {
-    throw new Error('coconut');
-  });
+  throwMatcher(
+    () => {
+      throw new Error('coconut');
+    },
+    undefined,
+    false,
+  );
 
   expect(matchFn).toHaveBeenCalledWith(
     expect.objectContaining({received: 'coconut', testName: ''}),
@@ -33,7 +37,7 @@ it('throw matcher can take func', () => {
 });
 
 describe('throw matcher from promise', () => {
-  let throwMatcher;
+  let throwMatcher: typeof toThrowErrorMatchingSnapshot;
 
   beforeEach(() => {
     throwMatcher = toThrowErrorMatchingSnapshot.bind({

@@ -3,33 +3,34 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {HasteFS} from 'types/HasteMap';
-import type {MatcherState} from 'types/Matchers';
-import type {Path, SnapshotUpdateState} from 'types/Config';
-import type {SnapshotResolver} from 'types/SnapshotResolver';
-
 import fs from 'fs';
+import {Config, Matchers} from '@jest/types';
+import {FS as HasteFS} from 'jest-haste-map';
+
 import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
 import {
   buildSnapshotResolver,
   isSnapshotPath,
+  SnapshotResolver,
   EXTENSION,
 } from './snapshot_resolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import * as utils from './utils';
 
-const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
+type Context = Matchers.MatcherState & {
+  snapshotState: SnapshotState;
+};
+
+const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
 const cleanup = (
   hasteFS: HasteFS,
-  update: SnapshotUpdateState,
+  update: Config.SnapshotUpdateState,
   snapshotResolver: SnapshotResolver,
 ) => {
   const pattern = '\\.' + EXTENSION + '$';
@@ -51,9 +52,10 @@ const cleanup = (
 };
 
 const toMatchSnapshot = function(
+  this: Context,
   received: any,
   propertyMatchers?: any,
-  testName?: string,
+  testName?: Config.Path,
 ) {
   if (arguments.length === 3 && !propertyMatchers) {
     throw new Error(
@@ -70,6 +72,7 @@ const toMatchSnapshot = function(
 };
 
 const toMatchInlineSnapshot = function(
+  this: Context,
   received: any,
   propertyMatchersOrInlineSnapshot?: any,
   inlineSnapshot?: string,
@@ -95,11 +98,11 @@ const _toMatchSnapshot = ({
   testName,
   inlineSnapshot,
 }: {
-  context: MatcherState & {dontThrow?: () => any},
-  received: any,
-  propertyMatchers?: any,
-  testName?: string,
-  inlineSnapshot?: string,
+  context: Context;
+  received: any;
+  propertyMatchers?: any;
+  testName?: string;
+  inlineSnapshot?: string;
 }) => {
   context.dontThrow && context.dontThrow();
   testName = typeof propertyMatchers === 'string' ? propertyMatchers : testName;
@@ -168,7 +171,7 @@ const _toMatchSnapshot = ({
   const {pass} = result;
   let {actual, expected} = result;
 
-  let report;
+  let report: () => string;
   if (pass) {
     return {message: () => '', pass: true};
   } else if (!expected) {
@@ -211,8 +214,9 @@ const _toMatchSnapshot = ({
 };
 
 const toThrowErrorMatchingSnapshot = function(
+  this: Context,
   received: any,
-  testName?: string,
+  testName: string | undefined,
   fromPromise: boolean,
 ) {
   return _toThrowErrorMatchingSnapshot({
@@ -224,6 +228,7 @@ const toThrowErrorMatchingSnapshot = function(
 };
 
 const toThrowErrorMatchingInlineSnapshot = function(
+  this: Context,
   received: any,
   inlineSnapshot?: string,
   fromPromise?: boolean,
@@ -243,11 +248,11 @@ const _toThrowErrorMatchingSnapshot = ({
   fromPromise,
   inlineSnapshot,
 }: {
-  context: MatcherState & {dontThrow?: () => any},
-  received: any,
-  testName?: string,
-  fromPromise?: boolean,
-  inlineSnapshot?: string,
+  context: Context;
+  received: any;
+  testName?: string;
+  fromPromise?: boolean;
+  inlineSnapshot?: string;
 }) => {
   context.dontThrow && context.dontThrow();
   const {isNot} = context;
@@ -291,7 +296,7 @@ const _toThrowErrorMatchingSnapshot = ({
   });
 };
 
-module.exports = {
+export = {
   EXTENSION,
   SnapshotState,
   addSerializer,

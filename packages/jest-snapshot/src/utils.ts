@@ -3,19 +3,17 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Path, SnapshotUpdateState} from 'types/Config';
-
-import {getSerializers} from './plugins';
-import chalk from 'chalk';
 import fs from 'fs';
+import path from 'path';
 import mkdirp from 'mkdirp';
 import naturalCompare from 'natural-compare';
-import path from 'path';
+import chalk from 'chalk';
+import {Config} from '@jest/types';
 import prettyFormat from 'pretty-format';
+import {getSerializers} from './plugins';
+import {SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
@@ -76,14 +74,14 @@ const validateSnapshotVersion = (snapshotContents: string) => {
   return null;
 };
 
-function isObject(item) {
+function isObject(item: unknown): boolean {
   return item && typeof item === 'object' && !Array.isArray(item);
 }
 
-export const testNameToKey = (testName: string, count: number) =>
+export const testNameToKey = (testName: Config.Path, count: number): string =>
   testName + ' ' + count;
 
-export const keyToTestName = (key: string) => {
+export const keyToTestName = (key: string): string => {
   if (!/ \d+$/.test(key)) {
     throw new Error('Snapshot keys must end with a number.');
   }
@@ -92,9 +90,12 @@ export const keyToTestName = (key: string) => {
 };
 
 export const getSnapshotData = (
-  snapshotPath: Path,
-  update: SnapshotUpdateState,
-) => {
+  snapshotPath: Config.Path,
+  update: Config.SnapshotUpdateState,
+): {
+  data: SnapshotData;
+  dirty: boolean;
+} => {
   const data = Object.create(null);
   let snapshotContents = '';
   let dirty = false;
@@ -104,7 +105,6 @@ export const getSnapshotData = (
       snapshotContents = fs.readFileSync(snapshotPath, 'utf8');
       // eslint-disable-next-line no-new-func
       const populate = new Function('exports', snapshotContents);
-      // $FlowFixMe
       populate(data);
     } catch (e) {}
   }
@@ -120,15 +120,15 @@ export const getSnapshotData = (
     dirty = true;
   }
 
-  return ({data, dirty}: {data: any, dirty: boolean});
+  return {data, dirty};
 };
 
 // Extra line breaks at the beginning and at the end of the snapshot are useful
 // to make the content of the snapshot easier to read
-const addExtraLineBreaks = string =>
+const addExtraLineBreaks = (string: string): string =>
   string.includes('\n') ? `\n${string}\n` : string;
 
-export const serialize = (data: any): string =>
+export const serialize = (data: string): string =>
   addExtraLineBreaks(
     normalizeNewlines(
       prettyFormat(data, {
@@ -140,25 +140,25 @@ export const serialize = (data: any): string =>
   );
 
 // unescape double quotes
-export const unescape = (data: any): string => data.replace(/\\(")/g, '$1');
+export const unescape = (data: string): string => data.replace(/\\(")/g, '$1');
 
-export const escapeBacktickString = (str: string) =>
+export const escapeBacktickString = (str: string): string =>
   str.replace(/`|\\|\${/g, '\\$&');
 
-const printBacktickString = (str: string) =>
+const printBacktickString = (str: string): string =>
   '`' + escapeBacktickString(str) + '`';
 
-export const ensureDirectoryExists = (filePath: Path) => {
+export const ensureDirectoryExists = (filePath: Config.Path) => {
   try {
     mkdirp.sync(path.join(path.dirname(filePath)), '777');
   } catch (e) {}
 };
 
-const normalizeNewlines = string => string.replace(/\r\n|\r/g, '\n');
+const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
   snapshotData: {[key: string]: string},
-  snapshotPath: Path,
+  snapshotPath: Config.Path,
 ) => {
   const snapshots = Object.keys(snapshotData)
     .sort(naturalCompare)
