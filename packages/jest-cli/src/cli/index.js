@@ -12,7 +12,7 @@ import type {Argv} from 'types/Argv';
 import type {GlobalConfig, Path} from 'types/Config';
 
 import path from 'path';
-import {Console, clearLine, createDirectory} from 'jest-util';
+import {Console, clearLine, createDirectory, preRunMessage} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfigs, deprecationEntries} from 'jest-config';
 import * as args from './args';
@@ -22,7 +22,6 @@ import exit from 'exit';
 import getChangedFilesPromise from '../getChangedFilesPromise';
 import {formatHandleErrors} from '../collectHandles';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
-import {print as preRunMessagePrint} from '../preRunMessage';
 import runJest from '../runJest';
 import Runtime from 'jest-runtime';
 import TestWatcher from '../TestWatcher';
@@ -34,6 +33,8 @@ import {sync as realpath} from 'realpath-native';
 import init from '../lib/init';
 import logDebugMessages from '../lib/log_debug_messages';
 import getVersion from '../version';
+
+const {print: preRunMessagePrint} = preRunMessage;
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {

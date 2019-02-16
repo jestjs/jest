@@ -30,7 +30,7 @@ export default ({
   errorOnDeprecated:
     'Make calling deprecated APIs throw helpful error messages',
   forceCoverageMatch:
-    'Force coverage collection from ignored files usin a array of glob patterns',
+    'Force coverage collection from ignored files using an array of glob patterns',
   globalSetup:
     'A path to a module which exports an async function that is triggered once before all test suites',
   globalTeardown:

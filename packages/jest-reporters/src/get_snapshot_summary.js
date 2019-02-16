@@ -11,7 +11,8 @@ import type {SnapshotSummary} from 'types/TestResult';
 import type {GlobalConfig} from 'types/Config';
 
 import chalk from 'chalk';
-import {formatTestPath, pluralize} from './utils';
+import {pluralize} from 'jest-util';
+import {formatTestPath} from './utils';
 
 const ARROW = ' \u203A ';
 const DOWN_ARROW = ' \u21B3 ';

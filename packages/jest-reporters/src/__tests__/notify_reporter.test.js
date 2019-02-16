@@ -6,14 +6,11 @@
  *
  */
 
-'use strict';
-
-import TestScheduler from '../TestScheduler';
-import NotifyReporter from '../reporters/notify_reporter';
-import type {TestSchedulerContext} from '../TestScheduler';
+import type {TestSchedulerContext} from 'types/TestScheduler';
+import NotifyReporter from '../notify_reporter';
 import type {AggregatedResult} from '../../../../types/TestResult';
 
-jest.mock('../reporters/default_reporter');
+jest.mock('../default_reporter');
 jest.mock('node-notifier', () => ({
   notify: jest.fn(),
 }));
@@ -67,15 +64,6 @@ const notifyEvents = [
   aggregatedResultsFailure,
   aggregatedResultsFailure,
 ];
-
-test('.addReporter() .removeReporter()', () => {
-  const scheduler = new TestScheduler({}, {}, {...initialContext});
-  const reporter = new NotifyReporter();
-  scheduler.addReporter(reporter);
-  expect(scheduler._dispatcher._reporters).toContain(reporter);
-  scheduler.removeReporter(NotifyReporter);
-  expect(scheduler._dispatcher._reporters).not.toContain(reporter);
-});
 
 const testModes = ({notifyMode, arl, rootDir, moduleName}) => {
   const notify = require('node-notifier');
