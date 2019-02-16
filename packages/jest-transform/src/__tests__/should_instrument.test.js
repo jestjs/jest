@@ -6,20 +6,15 @@
  *
  */
 
-import {normalize} from 'jest-config';
 import shouldInstrument from '../shouldInstrument';
+import {makeGlobalConfig} from '../../../../TestUtils';
 
 describe('shouldInstrument', () => {
   const defaultFilename = 'source_file.test.js';
   const defaultOptions = {
     collectCoverage: true,
   };
-  const defaultConfig = normalize(
-    {
-      rootDir: '/',
-    },
-    {},
-  ).options;
+  const defaultConfig = makeGlobalConfig({rootDir: '/'});
 
   describe('should return true', () => {
     const testShouldInstrument = (
