@@ -82,14 +82,14 @@ const afterEach: THook = (fn, timeout) =>
 const afterAll: THook = (fn, timeout) =>
   _addHook(fn, 'afterAll', afterAll, timeout);
 
-const test = (testName: TestName, fn: TestFn, timeout?: number) =>
+const test = (testName: TestName, fn: TestFn, timeout?: number): void =>
   _addTest(testName, undefined, fn, test, timeout);
 const it = test;
-test.skip = (testName: TestName, fn?: TestFn, timeout?: number) =>
+test.skip = (testName: TestName, fn?: TestFn, timeout?: number): void =>
   _addTest(testName, 'skip', fn, test.skip, timeout);
-test.only = (testName: TestName, fn: TestFn, timeout?: number) =>
+test.only = (testName: TestName, fn: TestFn, timeout?: number): void =>
   _addTest(testName, 'only', fn, test.only, timeout);
-test.todo = (testName: TestName, ...rest: Array<any>) => {
+test.todo = (testName: TestName, ...rest: Array<any>): void => {
   if (rest.length > 0 || typeof testName !== 'string') {
     throw new ErrorWithStack(
       'Todo must be called with only a description.',
@@ -102,8 +102,8 @@ test.todo = (testName: TestName, ...rest: Array<any>) => {
 const _addTest = (
   testName: TestName,
   mode: TestMode,
-  fn?: TestFn,
-  testFn,
+  fn: TestFn | undefined,
+  testFn: (testName: TestName, fn: TestFn, timeout?: number) => void,
   timeout?: number,
 ) => {
   const asyncError = new ErrorWithStack(undefined, testFn);

@@ -125,7 +125,7 @@ export const getEachHooksForTest = (test: TestEntry) => {
     beforeEach: Array<Hook>;
     afterEach: Array<Hook>;
   } = {afterEach: [], beforeEach: []};
-  let {parent: block} = test;
+  let block: DescribeBlock | undefined | null = test.parent;
 
   do {
     const beforeEachForCurrentBlock = [];

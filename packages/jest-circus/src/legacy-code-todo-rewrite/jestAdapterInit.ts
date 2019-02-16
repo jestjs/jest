@@ -101,7 +101,7 @@ export const initialize = ({
   config.snapshotSerializers
     .concat()
     .reverse()
-    .forEach(path => {
+    .forEach((path: Config.Path) => {
       addSerializer(localRequire(path));
     });
 
@@ -163,7 +163,9 @@ export const runAndTransformResultsToJestFormat = async ({
       ancestorTitles,
       duration: testResult.duration,
       failureMessages: testResult.errors,
-      fullName: ancestorTitles.concat(title).join(' '),
+      fullName: title
+        ? ancestorTitles.concat(title).join(' ')
+        : ancestorTitles.join(' '),
       invocations: testResult.invocations,
       location: testResult.location,
       numPassingAsserts: 0,

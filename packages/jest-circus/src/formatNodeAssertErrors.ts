@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {DiffOptions} from 'jest-diff';
+import {DiffOptions} from '@jest/types';
 
 import {diff, printExpected, printReceived} from 'jest-matcher-utils';
 import chalk from 'chalk';

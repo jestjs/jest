@@ -8,9 +8,8 @@
 import path from 'path';
 import {Config, TestResult, Environment} from '@jest/types';
 import Runtime from 'jest-runtime';
-import jestSnapshot from 'jest-snapshot';
+import {SnapshotState} from 'jest-snapshot';
 
-const {} = jestSnapshot;
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
 const jestAdapter = async (
@@ -71,7 +70,9 @@ const jestAdapter = async (
     }
   });
 
-  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
+  config.setupFilesAfterEnv.forEach((path: Config.Path) =>
+    runtime.requireModule(path),
+  );
 
   runtime.requireModule(testPath);
   const results = await runAndTransformResultsToJestFormat({
@@ -82,14 +83,19 @@ const jestAdapter = async (
   return _addSnapshotData(results, snapshotState);
 };
 
-const _addSnapshotData = (results: TestResult.TestResult, snapshotState) => {
-  results.testResults.forEach(({fullName, status}) => {
-    if (status === 'pending' || status === 'failed') {
-      // if test is skipped or failed, we don't want to mark
-      // its snapshots as obsolete.
-      snapshotState.markSnapshotsAsCheckedForTest(fullName);
-    }
-  });
+const _addSnapshotData = (
+  results: TestResult.TestResult,
+  snapshotState: SnapshotState,
+) => {
+  results.testResults.forEach(
+    ({fullName, status}: TestResult.AssertionResult) => {
+      if (status === 'pending' || status === 'failed') {
+        // if test is skipped or failed, we don't want to mark
+        // its snapshots as obsolete.
+        snapshotState.markSnapshotsAsCheckedForTest(fullName);
+      }
+    },
+  );
 
   const uncheckedCount = snapshotState.getUncheckedCount();
   const uncheckedKeys = snapshotState.getUncheckedKeys();
