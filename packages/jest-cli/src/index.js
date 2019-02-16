@@ -7,4 +7,7 @@
  * @flow
  */
 
+// TODO: remove exports for the next major
+export {runCLI, SearchSource, TestScheduler, TestWatcher} from '@jest/core';
 export {run} from './cli';
+export {default as getVersion} from './version';

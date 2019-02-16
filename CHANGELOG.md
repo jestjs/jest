@@ -17,7 +17,6 @@
 
 ### Chore & Maintenance
 
-- `[jest-cli]` [**BREAKING**] Move everything not related to CLI args parsing into a new `@jest/core` package ([#7696](https://github.com/facebook/jest/pull/7696))
 - `[*]`: Setup building, linting and testing of TypeScript ([#7808](https://github.com/facebook/jest/pull/7808), [#7855](https://github.com/facebook/jest/pull/7855))
 - `[pretty-format]`: Migrate to TypeScript ([#7809](https://github.com/facebook/jest/pull/7809))
 - `[diff-sequences]`: Migrate to Typescript ([#7820](https://github.com/facebook/jest/pull/7820))
