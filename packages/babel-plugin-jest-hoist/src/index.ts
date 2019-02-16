@@ -151,14 +151,15 @@ FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = (args: any) =>
   args.length === 0;
 
 export = () => {
-  const shouldHoistExpression = (expr: any): boolean => {
+  const shouldHoistExpression = (expr: NodePath): boolean => {
     if (!expr.isCallExpression()) {
       return false;
     }
 
     const callee = expr.get('callee');
-    const object = callee.get('object');
-    const property = callee.get('property');
+    // TODO: avoid type casts - the types can be arrays (is it possible to ignore that without casting?)
+    const object = callee.get('object') as NodePath;
+    const property = callee.get('property') as NodePath;
     return (
       property.isIdentifier() &&
       FUNCTIONS[property.node.name] &&
