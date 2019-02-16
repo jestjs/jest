@@ -7,6 +7,7 @@
  * @flow
  */
 
-import * as cli from 'jest-cli';
-
-module.exports = cli;
+export {default as SearchSource} from './SearchSource';
+export {default as TestScheduler} from './TestScheduler';
+export {default as TestWatcher} from './TestWatcher';
+export {runCLI} from './cli';
