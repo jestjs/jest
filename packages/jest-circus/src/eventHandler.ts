@@ -107,7 +107,7 @@ const eventHandler: EventHandler = (event, state): void => {
 
       if (type === 'beforeAll') {
         invariant(describeBlock, 'always present for `*All` hooks');
-        addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
+        addErrorToEachTestUnderDescribe(describeBlock!, error, asyncError);
       } else if (type === 'afterAll') {
         // Attaching `afterAll` errors to each test makes execution flow
         // too complicated, so we'll consider them to be global.

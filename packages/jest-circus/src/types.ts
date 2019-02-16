@@ -168,7 +168,9 @@ export type TestResults = Array<TestResult>;
 
 export type GlobalErrorHandlers = {
   uncaughtException: Array<(exception: Exception) => void>;
-  unhandledRejection: Array<(exception: Exception) => void>;
+  unhandledRejection: Array<
+    (exception: Exception, promise: Promise<any>) => void
+  >;
 };
 
 export type State = {

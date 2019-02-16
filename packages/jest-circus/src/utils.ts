@@ -175,7 +175,8 @@ export const callAsyncCircusFn = (
     // soon as `done` called.
     if (fn.length) {
       const done = (reason?: Error | string): void => {
-        const isError = reason && reason.message && reason.stack;
+        const isError =
+          reason && (reason as Error).message && (reason as Error).stack;
         return reason
           ? reject(
               isError
