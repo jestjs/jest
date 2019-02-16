@@ -1681,6 +1681,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/natural-compare@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@types/natural-compare/-/natural-compare-1.4.0.tgz#b3c54f7edc339758d573c5dcac7808c58cf8c31e"
+  integrity sha512-bNtBj6AF1F90jp54KRPOrYfilGNfPr2kpaUN7rMJjauAtfGBXzT/T/REZN6jb4qUs9FTxU37kir3Nrn5WsTUDw==
+
 "@types/node-notifier@^0.0.28":
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/@types/node-notifier/-/node-notifier-0.0.28.tgz#86ba3d3aa8d918352cc3191d88de328b20dc93c1"

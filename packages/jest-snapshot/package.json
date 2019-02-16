@@ -12,6 +12,7 @@
   "dependencies": {
     "@babel/types": "^7.0.0",
     "@jest/types": "^24.1.0",
+    "@types/natural-compare": "^1.4.0",
     "chalk": "^2.0.1",
     "jest-diff": "^24.0.0",
     "jest-matcher-utils": "^24.0.0",
