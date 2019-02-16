@@ -22,6 +22,7 @@ import vm from 'vm';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
+import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
 import stableStringify from 'fast-json-stable-stringify';
@@ -37,8 +38,6 @@ type ProjectCache = {|
   ignorePatternsRegExp: ?RegExp,
   transformedFiles: Map<string, TransformResult>,
 |};
-
-const babelPluginIstanbul = require.resolve('babel-plugin-istanbul');
 
 // This data structure is used to avoid recalculating some data every time that
 // we need to transform a file. Since ScriptTransformer is instantiated for each

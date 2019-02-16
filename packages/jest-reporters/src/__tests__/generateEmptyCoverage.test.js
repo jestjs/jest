@@ -6,18 +6,19 @@
  *
  * @flow
  */
-'use strict';
 
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
 import generateEmptyCoverage from '../generateEmptyCoverage';
-import Runtime from 'jest-runtime';
 
-const path = require('path');
-const os = require('os');
-const {makeGlobalConfig, makeProjectConfig} = require('../../../../TestUtils');
+import path from 'path';
+import os from 'os';
+import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
-jest.spyOn(Runtime, 'shouldInstrument').mockImplementation(() => true);
+jest.mock('@jest/transform', () => ({
+  ...jest.requireActual('@jest/transform'),
+  shouldInstrument: () => true,
+}));
 
 const src = `
 throw new Error('this should not be thrown');
