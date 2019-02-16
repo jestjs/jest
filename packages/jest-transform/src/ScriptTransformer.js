@@ -7,13 +7,14 @@
  * @flow
  */
 
-import type {Glob, Path, ProjectConfig} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 import type {
   Transformer,
   TransformedSource,
   TransformResult,
 } from 'types/Transform';
 import type {ErrorWithCode} from 'types/Errors';
+import type {Options} from './types';
 
 import crypto from 'crypto';
 import path from 'path';
@@ -21,7 +22,6 @@ import vm from 'vm';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
-import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
 import stableStringify from 'fast-json-stable-stringify';
@@ -30,23 +30,15 @@ import {version as VERSION} from '../package.json';
 import shouldInstrument from './shouldInstrument';
 import writeFileAtomic from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
-import {enhanceUnexpectedTokenMessage} from './helpers';
-
-export type Options = {|
-  changedFiles: ?Set<Path>,
-  collectCoverage: boolean,
-  collectCoverageFrom: Array<Glob>,
-  collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
-  extraGlobals?: Array<string>,
-  isCoreModule?: boolean,
-  isInternalModule?: boolean,
-|};
+import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
 
 type ProjectCache = {|
   configString: string,
   ignorePatternsRegExp: ?RegExp,
   transformedFiles: Map<string, TransformResult>,
 |};
+
+const babelPluginIstanbul = require.resolve('babel-plugin-istanbul');
 
 // This data structure is used to avoid recalculating some data every time that
 // we need to transform a file. Since ScriptTransformer is instantiated for each
@@ -175,7 +167,7 @@ export default class ScriptTransformer {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
       caller: {
-        name: 'jest-runtime',
+        name: '@jest/transform',
         supportsStaticESM: false,
       },
       configFile: false,

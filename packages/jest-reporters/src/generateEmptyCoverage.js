@@ -11,7 +11,7 @@ import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
 
 import {readInitialCoverage} from 'istanbul-lib-instrument';
 import {classes} from 'istanbul-lib-coverage';
-import Runtime from 'jest-runtime';
+import {shouldInstrument, ScriptTransformer} from '@jest/transform';
 
 export type CoverageWorkerResult = {|
   coverage: any,
@@ -33,9 +33,9 @@ export default function(
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
   };
-  if (Runtime.shouldInstrument(filename, coverageOptions, config)) {
+  if (shouldInstrument(filename, coverageOptions, config)) {
     // Transform file with instrumentation to make sure initial coverage data is well mapped to original code.
-    const {code, mapCoverage, sourceMapPath} = new Runtime.ScriptTransformer(
+    const {code, mapCoverage, sourceMapPath} = new ScriptTransformer(
       config,
     ).transformSource(filename, source, true);
     const extracted = readInitialCoverage(code);
