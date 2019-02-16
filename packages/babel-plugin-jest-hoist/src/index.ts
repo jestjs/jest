@@ -6,6 +6,12 @@
  *
  */
 
+// Only used for types
+// eslint-disable-next-line
+import {NodePath, Visitor} from '@babel/traverse';
+// eslint-disable-next-line
+import {Identifier} from '@babel/types';
+
 const invariant = (condition: any, message: any) => {
   if (!condition) {
     throw new Error('babel-plugin-jest-hoist: ' + message);
@@ -73,8 +79,9 @@ Object.keys(global).forEach(name => {
 });
 
 const JEST_GLOBAL = {name: 'jest'};
+// TODO: Should be Visitor<{ids: Set<NodePath<Identifier>>}>, but `ReferencedIdentifier` doesn't exist
 const IDVisitor = {
-  ReferencedIdentifier(path: any) {
+  ReferencedIdentifier(path: NodePath<Identifier>) {
     // @ts-ignore: passed as Visitor State
     this.ids.add(path);
   },
@@ -92,11 +99,11 @@ FUNCTIONS.mock = (args: any) => {
       'The second argument of `jest.mock` must be an inline function.',
     );
 
-    const ids = new Set();
+    const ids: Set<NodePath<Identifier>> = new Set();
     const parentScope = moduleFactory.parentPath.scope;
     moduleFactory.traverse(IDVisitor, {ids});
     for (const id of ids) {
-      const name = id.node.name;
+      const {name} = id.node;
       let found = false;
       let scope = id.scope;
 
@@ -160,13 +167,15 @@ export = () => {
       FUNCTIONS[property.node.name](expr.get('arguments'))
     );
   };
-  return {
-    visitor: {
-      ExpressionStatement(path: any) {
-        if (shouldHoistExpression(path.get('expression'))) {
-          path.node._blockHoist = Infinity;
-        }
-      },
+
+  const visitor: Visitor = {
+    ExpressionStatement(path) {
+      if (shouldHoistExpression(path.get('expression'))) {
+        // @ts-ignore: private, magical property
+        path.node._blockHoist = Infinity;
+      }
     },
   };
+
+  return {visitor};
 };
