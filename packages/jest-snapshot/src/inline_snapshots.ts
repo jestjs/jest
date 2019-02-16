@@ -3,22 +3,26 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 import fs from 'fs';
-import semver from 'semver';
 import path from 'path';
-import {templateElement, templateLiteral, file} from '@babel/types';
+import semver from 'semver';
+import {
+  templateElement,
+  templateLiteral,
+  file,
+  CallExpression,
+} from '@babel/types';
+import {Frame} from 'jest-message-util';
 
-import type {Path} from 'types/Config';
+import {Config} from '@jest/types';
 import {escapeBacktickString} from './utils';
 
-export type InlineSnapshot = {|
-  snapshot: string,
-  frame: {line: number, column: number, file: string},
-|};
+export type InlineSnapshot = {
+  snapshot: string;
+  frame: Frame;
+};
 
 export const saveInlineSnapshots = (
   snapshots: InlineSnapshot[],
@@ -54,7 +58,7 @@ export const saveInlineSnapshots = (
 
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
-  sourceFilePath: Path,
+  sourceFilePath: Config.Path,
   prettier: any,
   babelTraverse: Function,
 ) => {
@@ -86,16 +90,21 @@ const saveSnapshotsForFile = (
   }
 };
 
-const groupSnapshotsBy = (createKey: InlineSnapshot => string) => (
-  snapshots: Array<InlineSnapshot>,
-) =>
-  snapshots.reduce((object, inlineSnapshot) => {
-    const key = createKey(inlineSnapshot);
-    return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
-  }, {});
+const groupSnapshotsBy = (
+  createKey: (inlineSnapshot: InlineSnapshot) => string,
+) => (snapshots: Array<InlineSnapshot>) =>
+  snapshots.reduce<{[key: string]: InlineSnapshot[]}>(
+    (object, inlineSnapshot) => {
+      const key = createKey(inlineSnapshot);
+      return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+    },
+    {},
+  );
 
-const groupSnapshotsByFrame = groupSnapshotsBy(
-  ({frame: {line, column}}) => `${line}:${column - 1}`,
+const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
+  typeof line === 'number' && typeof column === 'number'
+    ? `${line}:${column - 1}`
+    : '',
 );
 const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
@@ -105,7 +114,7 @@ const createParser = (
   babelTraverse: Function,
 ) => (
   text: string,
-  parsers: {[key: string]: (string) => any},
+  parsers: {[key: string]: (text: string) => any},
   options: any,
 ) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
@@ -122,7 +131,7 @@ const createParser = (
   }
 
   babelTraverse(ast, {
-    CallExpression({node: {arguments: args, callee}}) {
+    CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
       if (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier'
@@ -167,7 +176,7 @@ const createParser = (
   return ast;
 };
 
-const simpleDetectParser = (filePath: Path) => {
+const simpleDetectParser = (filePath: Config.Path) => {
   const extname = path.extname(filePath);
   if (/tsx?$/.test(extname)) {
     return 'typescript';
