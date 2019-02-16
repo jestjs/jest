@@ -25,12 +25,14 @@ Object {
 exports[`ScriptTransformer transforms a file properly 1`] = `
 "({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */
 var cov_25u22311x4 = function () {
-  var path = \\"/fruits/banana.js\\",
-      hash = \\"ef12c7f3c0d46c0ac007781d50b4e524293578c6\\",
-      Function = function () {}.constructor,
-      global = new Function('return this')(),
-      gcv = \\"__coverage__\\",
-      coverageData = {
+  var path = \\"/fruits/banana.js\\";
+  var hash = \\"ef12c7f3c0d46c0ac007781d50b4e524293578c6\\";
+
+  var Function = function () {}.constructor;
+
+  var global = new Function(\\"return this\\")();
+  var gcv = \\"__coverage__\\";
+  var coverageData = {
     path: \\"/fruits/banana.js\\",
     statementMap: {
       \\"0\\": {
@@ -52,8 +54,8 @@ var cov_25u22311x4 = function () {
     f: {},
     b: {},
     _coverageSchema: \\"43e27e138ebf9cfc5966b082cf9a028302ed4184\\"
-  },
-      coverage = global[gcv] || (global[gcv] = {});
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
 
   if (coverage[path] && coverage[path].hash === hash) {
     return coverage[path];
@@ -71,12 +73,14 @@ module.exports = \\"banana\\";
 exports[`ScriptTransformer transforms a file properly 2`] = `
 "({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */
 var cov_23yvu8etmu = function () {
-  var path = \\"/fruits/kiwi.js\\",
-      hash = \\"90cf6273dfbcd93e4510a6c5503c2125aab1f1b8\\",
-      Function = function () {}.constructor,
-      global = new Function('return this')(),
-      gcv = \\"__coverage__\\",
-      coverageData = {
+  var path = \\"/fruits/kiwi.js\\";
+  var hash = \\"90cf6273dfbcd93e4510a6c5503c2125aab1f1b8\\";
+
+  var Function = function () {}.constructor;
+
+  var global = new Function(\\"return this\\")();
+  var gcv = \\"__coverage__\\";
+  var coverageData = {
     path: \\"/fruits/kiwi.js\\",
     statementMap: {
       \\"0\\": {
@@ -136,8 +140,8 @@ var cov_23yvu8etmu = function () {
     },
     b: {},
     _coverageSchema: \\"43e27e138ebf9cfc5966b082cf9a028302ed4184\\"
-  },
-      coverage = global[gcv] || (global[gcv] = {});
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
 
   if (coverage[path] && coverage[path].hash === hash) {
     return coverage[path];
