@@ -2,9 +2,8 @@
 
 import path from 'path';
 import {Config} from '@jest/types';
-import {SnapshotResolver} from '../types';
 
-import {buildSnapshotResolver} from '../snapshot_resolver';
+import {buildSnapshotResolver, SnapshotResolver} from '../snapshot_resolver';
 
 describe('defaults', () => {
   let snapshotResolver: SnapshotResolver;

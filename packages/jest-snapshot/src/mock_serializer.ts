@@ -3,19 +3,17 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- *
  */
 
 import {PrettyFormat} from '@jest/types';
 
-export const serialize = (
-  val: any,
-  config: PrettyFormat.Config,
-  indentation: string,
-  depth: number,
-  refs: PrettyFormat.Refs,
-  printer: PrettyFormat.Printer,
+export const serialize: PrettyFormat.NewPlugin['serialize'] = (
+  val,
+  config,
+  indentation,
+  depth,
+  refs,
+  printer,
 ): string => {
   // Serialize a non-default name, even if config.printFunctionName is false.
   const name = val.getMockName();
@@ -44,7 +42,8 @@ export const serialize = (
   return '[MockFunction' + nameString + ']' + callsString;
 };
 
-export const test = (val: any) => val && !!val._isMockFunction;
+export const test: PrettyFormat.NewPlugin['test'] = val =>
+  val && !!val._isMockFunction;
 
 const plugin: PrettyFormat.NewPlugin = {serialize, test};
 

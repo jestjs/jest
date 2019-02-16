@@ -14,6 +14,7 @@ type Tester = (a: any, b: any) => boolean | undefined;
 export type MatcherState = {
   assertionCalls: number;
   currentTestName?: string;
+  dontThrow?: () => void;
   error?: Error;
   equals: (
     a: unknown,

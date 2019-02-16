@@ -1,10 +1,19 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 import path from 'path';
 import {Config} from '@jest/types';
 import chalk from 'chalk';
 
-import {SnapshotResolver} from './types';
+export type SnapshotResolver = {
+  testPathForConsistencyCheck: string;
+  resolveSnapshotPath(testPath: Config.Path, extension?: string): Config.Path;
+  resolveTestPath(snapshotPath: Config.Path, extension?: string): Config.Path;
+};
 
 export const EXTENSION = 'snap';
 export const DOT_EXTENSION = '.' + EXTENSION;

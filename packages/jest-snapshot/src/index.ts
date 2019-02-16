@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 import fs from 'fs';
@@ -12,10 +11,10 @@ import {FS as HasteFS} from 'jest-haste-map';
 
 import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
-import {SnapshotResolver} from './types';
 import {
   buildSnapshotResolver,
   isSnapshotPath,
+  SnapshotResolver,
   EXTENSION,
 } from './snapshot_resolver';
 import SnapshotState from './State';
@@ -24,7 +23,6 @@ import * as utils from './utils';
 
 type Context = Matchers.MatcherState & {
   snapshotState: SnapshotState;
-  dontThrow?: () => any;
 };
 
 const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>

@@ -11,17 +11,17 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 
-const {
+import {
+  deepMerge,
   getSnapshotData,
   keyToTestName,
   saveSnapshotFile,
   serialize,
   testNameToKey,
-  deepMerge,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
-} = require('../utils');
+} from '../utils';
 
 const writeFileSync = fs.writeFileSync;
 const readFileSync = fs.readFileSync;
