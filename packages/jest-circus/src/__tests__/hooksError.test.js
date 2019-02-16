@@ -9,7 +9,7 @@
 
 'use strict';
 
-const circus = require('../index.js');
+const circus = require('../index.ts');
 
 describe.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
   '%s hooks error throwing',

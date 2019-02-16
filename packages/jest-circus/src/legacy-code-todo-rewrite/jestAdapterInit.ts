@@ -3,13 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {AssertionResult, TestResult, Status} from 'types/TestResult';
-import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {Event, RunResult, TestEntry} from 'types/Circus';
+import {Config, TestResult} from '@jest/types';
 
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
@@ -23,7 +19,15 @@ import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
 // eslint-disable-next-line import/default
-import globals from '../index';
+import globals from '..';
+import Process = NodeJS.Process;
+import {
+  Event,
+  RunResult,
+  TestEntry,
+  TestResult as TestResultCircus,
+  FormattedError,
+} from './types';
 
 export const initialize = ({
   config,
@@ -34,13 +38,13 @@ export const initialize = ({
   parentProcess,
   testPath,
 }: {
-  config: ProjectConfig,
-  getPrettier: () => null | any,
-  getBabelTraverse: () => Function,
-  globalConfig: GlobalConfig,
-  localRequire: Path => any,
-  testPath: Path,
-  parentProcess: Process,
+  config: Config.ProjectConfig;
+  getPrettier: () => null | any;
+  getBabelTraverse: () => Function;
+  globalConfig: Config.GlobalConfig;
+  localRequire: (path: Config.Path) => any;
+  testPath: Config.Path;
+  parentProcess: Process;
 }) => {
   const mutex = throat(globalConfig.maxConcurrency);
 
@@ -121,10 +125,10 @@ export const runAndTransformResultsToJestFormat = async ({
   globalConfig,
   testPath,
 }: {
-  config: ProjectConfig,
-  globalConfig: GlobalConfig,
-  testPath: string,
-}): Promise<TestResult> => {
+  config: Config.ProjectConfig;
+  globalConfig: Config.GlobalConfig;
+  testPath: string;
+}): Promise<TestResult.TestResult> => {
   const runResult: RunResult = await run();
 
   let numFailingTests = 0;
@@ -132,41 +136,41 @@ export const runAndTransformResultsToJestFormat = async ({
   let numPendingTests = 0;
   let numTodoTests = 0;
 
-  const assertionResults: Array<AssertionResult> = runResult.testResults.map(
-    testResult => {
-      let status: Status;
-      if (testResult.status === 'skip') {
-        status = 'pending';
-        numPendingTests += 1;
-      } else if (testResult.status === 'todo') {
-        status = 'todo';
-        numTodoTests += 1;
-      } else if (testResult.errors.length) {
-        status = 'failed';
-        numFailingTests += 1;
-      } else {
-        status = 'passed';
-        numPassingTests += 1;
-      }
+  const assertionResults: Array<
+    TestResult.AssertionResult
+  > = runResult.testResults.map((testResult: TestResultCircus) => {
+    let status: TestResult.Status;
+    if (testResult.status === 'skip') {
+      status = 'pending';
+      numPendingTests += 1;
+    } else if (testResult.status === 'todo') {
+      status = 'todo';
+      numTodoTests += 1;
+    } else if (testResult.errors.length) {
+      status = 'failed';
+      numFailingTests += 1;
+    } else {
+      status = 'passed';
+      numPassingTests += 1;
+    }
 
-      const ancestorTitles = testResult.testPath.filter(
-        name => name !== ROOT_DESCRIBE_BLOCK_NAME,
-      );
-      const title = ancestorTitles.pop();
+    const ancestorTitles = testResult.testPath.filter(
+      (name: string) => name !== ROOT_DESCRIBE_BLOCK_NAME,
+    );
+    const title = ancestorTitles.pop();
 
-      return {
-        ancestorTitles,
-        duration: testResult.duration,
-        failureMessages: testResult.errors,
-        fullName: ancestorTitles.concat(title).join(' '),
-        invocations: testResult.invocations,
-        location: testResult.location,
-        numPassingAsserts: 0,
-        status,
-        title: testResult.testPath[testResult.testPath.length - 1],
-      };
-    },
-  );
+    return {
+      ancestorTitles,
+      duration: testResult.duration,
+      failureMessages: testResult.errors,
+      fullName: ancestorTitles.concat(title).join(' '),
+      invocations: testResult.invocations,
+      location: testResult.location,
+      numPassingAsserts: 0,
+      status,
+      title: testResult.testPath[testResult.testPath.length - 1],
+    };
+  });
 
   let failureMessage = formatResultsErrors(
     assertionResults,
@@ -185,7 +189,9 @@ export const runAndTransformResultsToJestFormat = async ({
       (failureMessage || '') +
       '\n\n' +
       runResult.unhandledErrors
-        .map(err => formatExecError(err, config, globalConfig))
+        .map((err: FormattedError) =>
+          formatExecError(err, config, globalConfig),
+        )
         .join('\n');
   }
 

@@ -4,10 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
  */
 
-import type {
+import {bind as bindEach} from 'jest-each';
+import {ErrorWithStack} from 'jest-util';
+import {
   BlockFn,
   HookFn,
   HookType,
@@ -16,13 +17,11 @@ import type {
   BlockName,
   TestName,
   TestMode,
-} from 'types/Circus';
-import {bind as bindEach} from 'jest-each';
-// $FlowFixMe: Converted to TS
-import {ErrorWithStack} from 'jest-util';
+} from './types';
 import {dispatch} from './state';
 
 type THook = (fn: HookFn, timeout?: number) => void;
+type DescribeFn = (blockName: BlockName, blockFn: BlockFn) => void;
 
 const describe = (blockName: BlockName, blockFn: BlockFn) =>
   _dispatchDescribe(blockFn, blockName, describe);
@@ -32,9 +31,9 @@ describe.skip = (blockName: BlockName, blockFn: BlockFn) =>
   _dispatchDescribe(blockFn, blockName, describe.skip, 'skip');
 
 const _dispatchDescribe = (
-  blockFn,
-  blockName,
-  describeFn,
+  blockFn: BlockFn,
+  blockName: BlockName,
+  describeFn: DescribeFn,
   mode?: BlockMode,
 ) => {
   const asyncError = new ErrorWithStack(undefined, describeFn);
@@ -56,7 +55,12 @@ const _dispatchDescribe = (
   dispatch({blockName, mode, name: 'finish_describe_definition'});
 };
 
-const _addHook = (fn: HookFn, hookType: HookType, hookFn, timeout: ?number) => {
+const _addHook = (
+  fn: HookFn,
+  hookType: HookType,
+  hookFn: THook,
+  timeout?: number,
+) => {
   const asyncError = new ErrorWithStack(undefined, hookFn);
 
   if (typeof fn !== 'function') {
@@ -86,14 +90,14 @@ test.skip = (testName: TestName, fn?: TestFn, timeout?: number) =>
   _addTest(testName, 'skip', fn, test.skip, timeout);
 test.only = (testName: TestName, fn: TestFn, timeout?: number) =>
   _addTest(testName, 'only', fn, test.only, timeout);
-test.todo = (testName: TestName, ...rest: Array<mixed>) => {
+test.todo = (testName: TestName, ...rest: Array<any>) => {
   if (rest.length > 0 || typeof testName !== 'string') {
     throw new ErrorWithStack(
       'Todo must be called with only a description.',
       test.todo,
     );
   }
-  return _addTest(testName, 'todo', () => {}, test.todo);
+  return _addTest(testName, 'todo', () => undefined, test.todo);
 };
 
 const _addTest = (
@@ -101,7 +105,7 @@ const _addTest = (
   mode: TestMode,
   fn?: TestFn,
   testFn,
-  timeout: ?number,
+  timeout?: number,
 ) => {
   const asyncError = new ErrorWithStack(undefined, testFn);
 
@@ -140,7 +144,7 @@ describe.each = bindEach(describe, false);
 describe.only.each = bindEach(describe.only, false);
 describe.skip.each = bindEach(describe.skip, false);
 
-module.exports = {
+export = {
   afterAll,
   afterEach,
   beforeAll,

@@ -16,7 +16,7 @@ let circusTest;
 // the two with this alias.
 
 const aliasCircusIt = () => {
-  const {it, test} = require('../index.js');
+  const {it, test} = require('../index.ts');
   circusIt = it;
   circusTest = test;
 };

@@ -3,25 +3,22 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow strict-local
  */
 
-import type {Environment} from 'types/Environment';
-import type {GlobalConfig, ProjectConfig} from 'types/Config';
-import type {TestResult} from 'types/TestResult';
-import type Runtime from 'jest-runtime';
+import path from 'path';
+import {Config, TestResult} from '@jest/types';
+import Runtime from 'jest-runtime';
+import {Environment} from 'types/Environment';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
-import path from 'path';
 
 const jestAdapter = async (
-  globalConfig: GlobalConfig,
-  config: ProjectConfig,
+  globalConfig: Config.GlobalConfig,
+  config: Config.ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult> => {
+): Promise<TestResult.TestResult> => {
   const {
     initialize,
     runAndTransformResultsToJestFormat,
@@ -84,7 +81,7 @@ const jestAdapter = async (
   return _addSnapshotData(results, snapshotState);
 };
 
-const _addSnapshotData = (results: TestResult, snapshotState) => {
+const _addSnapshotData = (results: TestResult.TestResult, snapshotState) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark

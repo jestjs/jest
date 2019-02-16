@@ -4,10 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
  */
 
-import type {EventHandler, Exception} from 'types/Circus';
+import {EventHandler, Exception} from './types';
 
 import {
   addErrorToEachTestUnderDescribe,
@@ -119,7 +118,7 @@ const eventHandler: EventHandler = (event, state): void => {
         state.unhandledErrors.push([error, asyncError]);
       } else {
         invariant(test, 'always present for `*Each` hooks');
-        test.errors.push([error, asyncError]);
+        test!.errors.push([error, asyncError]);
       }
       break;
     }
@@ -152,7 +151,7 @@ const eventHandler: EventHandler = (event, state): void => {
       break;
     }
     case 'test_retry': {
-      const errors: Array<[?Exception, Exception]> = [];
+      const errors: Array<[Exception | undefined | null, Exception]> = [];
       event.test.errors = errors;
       break;
     }
@@ -172,7 +171,7 @@ const eventHandler: EventHandler = (event, state): void => {
       // i'm not sure if this is works. For now i just replicated whatever
       // jasmine was doing -- dabramov
       state.parentProcess = event.parentProcess;
-      invariant(state.parentProcess);
+      invariant(state.parentProcess, '');
       state.originalGlobalErrorHandlers = injectGlobalErrorHandlers(
         state.parentProcess,
       );
@@ -182,11 +181,11 @@ const eventHandler: EventHandler = (event, state): void => {
       break;
     }
     case 'teardown': {
-      invariant(state.originalGlobalErrorHandlers);
-      invariant(state.parentProcess);
+      invariant(state.originalGlobalErrorHandlers, '');
+      invariant(state.parentProcess, '');
       restoreGlobalErrorHandlers(
-        state.parentProcess,
-        state.originalGlobalErrorHandlers,
+        state.parentProcess!,
+        state.originalGlobalErrorHandlers!,
       );
       break;
     }

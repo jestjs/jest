@@ -3,17 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow strict-local
  */
 
-import type {
-  RunResult,
-  TestEntry,
-  TestContext,
-  Hook,
-  DescribeBlock,
-} from 'types/Circus';
+import {RunResult, TestEntry, TestContext, Hook, DescribeBlock} from './types';
 
 import {getState, dispatch} from './state';
 import {
@@ -128,11 +120,11 @@ const _callCircusHook = ({
   describeBlock,
   testContext,
 }: {
-  hook: Hook,
-  describeBlock?: DescribeBlock,
-  test?: TestEntry,
-  testContext?: TestContext,
-}): Promise<mixed> => {
+  hook: Hook;
+  describeBlock?: DescribeBlock;
+  test?: TestEntry;
+  testContext?: TestContext;
+}): Promise<any> => {
   dispatch({hook, name: 'hook_start'});
   const timeout = hook.timeout || getState().testTimeout;
   return callAsyncCircusFn(hook.fn, testContext, {isHook: true, timeout})
