@@ -9,7 +9,9 @@ import path from 'path';
 import {Config, TestResult} from '@jest/types';
 import Runtime from 'jest-runtime';
 import {Environment} from 'types/Environment';
+import jestSnapshot from 'jest-snapshot';
 
+const {} = jestSnapshot;
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
 const jestAdapter = async (

@@ -4,17 +4,14 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @flow strict-local
  */
 
-'use strict';
-// $FlowFixMe - execa is untyped
-import {sync as spawnSync} from 'execa';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import crypto from 'crypto';
+import {sync as spawnSync, ExecaReturns} from 'execa';
+// @ts-ignore
 import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
 const CIRCUS_PATH = require.resolve('../../build/index');
@@ -24,6 +21,11 @@ const TEST_EVENT_HANDLER_PATH = require.resolve('./testEventHandler');
 const BABEL_REGISTER_PATH = require.resolve('@babel/register');
 
 skipSuiteOnWindows();
+
+interface Result extends ExecaReturns {
+  status: number;
+  error: string;
+}
 
 export const runTest = (source: string) => {
   const filename = crypto
@@ -54,7 +56,9 @@ export const runTest = (source: string) => {
   `;
 
   fs.writeFileSync(tmpFilename, content);
-  const result = spawnSync('node', [tmpFilename], {cwd: process.cwd()});
+  const result = spawnSync('node', [tmpFilename], {
+    cwd: process.cwd(),
+  }) as Result;
 
   // For compat with cross-spawn
   result.status = result.code;

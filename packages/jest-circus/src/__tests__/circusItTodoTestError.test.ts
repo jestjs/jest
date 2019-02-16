@@ -3,11 +3,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow strict-local
  */
-
-'use strict';
 
 let circusIt;
 
@@ -24,7 +20,6 @@ aliasCircusIt();
 describe('test/it.todo error throwing', () => {
   it('todo throws error when given no arguments', () => {
     expect(() => {
-      // $FlowFixMe: Testing runitme errors here
       circusIt.todo();
     }).toThrowError('Todo must be called with only a description.');
   });
@@ -35,7 +30,6 @@ describe('test/it.todo error throwing', () => {
   });
   it('todo throws error when given none string description', () => {
     expect(() => {
-      // $FlowFixMe: Testing runitme errors here
       circusIt.todo(() => {});
     }).toThrowError('Todo must be called with only a description.');
   });

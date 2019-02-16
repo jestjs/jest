@@ -3,17 +3,13 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-'use strict';
-
-const circus = require('../index.ts');
+import circus from '../';
 
 describe.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
   '%s hooks error throwing',
-  fn => {
+  (fn: 'beforeEach' | 'beforeAll' | 'afterEach' | 'afterAll') => {
     test.each([
       ['String'],
       [1],
