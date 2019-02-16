@@ -32,11 +32,10 @@ jest
   .mock('jest-haste-map', () => ({
     getCacheFilePath: (cacheDir, baseDir, version) => cacheDir + baseDir,
   }))
-  .mock('jest-util', () => {
-    const util = jest.requireActual('jest-util');
-    util.createDirectory = jest.fn();
-    return util;
-  })
+  .mock('jest-util', () => ({
+    ...jest.requireActual('jest-util'),
+    createDirectory: jest.fn(),
+  }))
   .mock('vm')
   .mock('path', () => jest.requireActual('path').posix);
 
