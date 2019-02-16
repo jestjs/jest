@@ -7,7 +7,7 @@
  */
 
 import fs from 'fs';
-import {Config, MatcherState} from '@jest/types';
+import {Config, Matchers} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map';
 
 import diff from 'jest-diff';
@@ -22,7 +22,10 @@ import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import * as utils from './utils';
 
-type Context = MatcherState & {dontThrow?: () => any};
+type Context = Matchers.MatcherState & {
+  snapshotState: SnapshotState;
+  dontThrow?: () => any;
+};
 
 const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
