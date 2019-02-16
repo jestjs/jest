@@ -7,13 +7,14 @@
  * @flow
  */
 
-import type {Glob, Path, ProjectConfig} from 'types/Config';
+import type {Path, ProjectConfig} from 'types/Config';
 import type {
   Transformer,
   TransformedSource,
   TransformResult,
 } from 'types/Transform';
 import type {ErrorWithCode} from 'types/Errors';
+import type {Options} from './types';
 
 import crypto from 'crypto';
 import path from 'path';
@@ -30,17 +31,7 @@ import {version as VERSION} from '../package.json';
 import shouldInstrument from './shouldInstrument';
 import writeFileAtomic from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
-import {enhanceUnexpectedTokenMessage} from './helpers';
-
-export type Options = {|
-  changedFiles: ?Set<Path>,
-  collectCoverage: boolean,
-  collectCoverageFrom: Array<Glob>,
-  collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
-  extraGlobals?: Array<string>,
-  isCoreModule?: boolean,
-  isInternalModule?: boolean,
-|};
+import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
 
 type ProjectCache = {|
   configString: string,
@@ -175,7 +166,7 @@ export default class ScriptTransformer {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
       caller: {
-        name: 'jest-runtime',
+        name: '@jest/transform',
         supportsStaticESM: false,
       },
       configFile: false,
