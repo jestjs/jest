@@ -7,21 +7,21 @@
 
 jest.mock('fs');
 
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
 
-const {
+import {
+  deepMerge,
   getSnapshotData,
   keyToTestName,
   saveSnapshotFile,
   serialize,
   testNameToKey,
-  deepMerge,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
-} = require('../utils');
+} from '../utils';
 
 const writeFileSync = fs.writeFileSync;
 const readFileSync = fs.readFileSync;
@@ -80,7 +80,9 @@ test('saveSnapshotFile() works with \r', () => {
 
 test('getSnapshotData() throws when no snapshot version', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
-  fs.readFileSync = jest.fn(() => 'exports[`myKey`] = `<div>\n</div>`;\n');
+  (fs.readFileSync as jest.Mock).mockImplementation(
+    () => 'exports[`myKey`] = `<div>\n</div>`;\n',
+  );
   const update = 'none';
 
   expect(() => getSnapshotData(filename, update)).toThrowError(
@@ -95,7 +97,7 @@ test('getSnapshotData() throws when no snapshot version', () => {
 
 test('getSnapshotData() throws for older snapshot version', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
-  fs.readFileSync = jest.fn(
+  (fs.readFileSync as jest.Mock).mockImplementation(
     () =>
       `// Jest Snapshot v0.99, ${SNAPSHOT_GUIDE_LINK}\n\n` +
       'exports[`myKey`] = `<div>\n</div>`;\n',
@@ -118,7 +120,7 @@ test('getSnapshotData() throws for older snapshot version', () => {
 
 test('getSnapshotData() throws for newer snapshot version', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
-  fs.readFileSync = jest.fn(
+  (fs.readFileSync as jest.Mock).mockImplementation(
     () =>
       `// Jest Snapshot v2, ${SNAPSHOT_GUIDE_LINK}\n\n` +
       'exports[`myKey`] = `<div>\n</div>`;\n',
@@ -141,7 +143,9 @@ test('getSnapshotData() throws for newer snapshot version', () => {
 
 test('getSnapshotData() does not throw for when updating', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
-  fs.readFileSync = jest.fn(() => 'exports[`myKey`] = `<div>\n</div>`;\n');
+  (fs.readFileSync as jest.Mock).mockImplementation(
+    () => 'exports[`myKey`] = `<div>\n</div>`;\n',
+  );
   const update = 'all';
 
   expect(() => getSnapshotData(filename, update)).not.toThrow();
@@ -149,7 +153,9 @@ test('getSnapshotData() does not throw for when updating', () => {
 
 test('getSnapshotData() marks invalid snapshot dirty when updating', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
-  fs.readFileSync = jest.fn(() => 'exports[`myKey`] = `<div>\n</div>`;\n');
+  (fs.readFileSync as jest.Mock).mockImplementation(
+    () => 'exports[`myKey`] = `<div>\n</div>`;\n',
+  );
   const update = 'all';
 
   expect(getSnapshotData(filename, update)).toMatchObject({dirty: true});
@@ -157,7 +163,7 @@ test('getSnapshotData() marks invalid snapshot dirty when updating', () => {
 
 test('getSnapshotData() marks valid snapshot not dirty when updating', () => {
   const filename = path.join(__dirname, 'old-snapshot.snap');
-  fs.readFileSync = jest.fn(
+  (fs.readFileSync as jest.Mock).mockImplementation(
     () =>
       `// Jest Snapshot v${SNAPSHOT_VERSION}, ${SNAPSHOT_GUIDE_LINK}\n\n` +
       'exports[`myKey`] = `<div>\n</div>`;\n',
@@ -171,14 +177,14 @@ test('escaping', () => {
   const filename = path.join(__dirname, 'escaping.snap');
   const data = '"\'\\';
   saveSnapshotFile({key: data}, filename);
-  const writtenData = fs.writeFileSync.mock.calls[0][1];
+  const writtenData = (fs.writeFileSync as jest.Mock).mock.calls[0][1];
   expect(writtenData).toBe(
     `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
       'exports[`key`] = `"\'\\\\`;\n',
   );
 
-  // eslint-disable-next-line no-unused-vars
-  const exports = {};
+  // @ts-ignore
+  const exports = {}; // eslint-disable-line
   // eslint-disable-next-line no-eval
   const readData = eval('var exports = {}; ' + writtenData + ' exports');
   expect(readData).toEqual({key: data});
