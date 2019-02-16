@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Event, State, EventHandler} from './types';
+import {Event, State, EventHandler, STATE_SYM} from './types';
 
 import {makeDescribe} from './utils';
 import eventHandler from './eventHandler';
@@ -17,7 +17,6 @@ const eventHandlers: Array<EventHandler> = [
 ];
 
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
-export const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
 
 const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
 const INITIAL_STATE: State = {

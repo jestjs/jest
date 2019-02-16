@@ -28,7 +28,8 @@ import {
   TestMode,
   TestName,
   TestResults,
-} from 'types/Circus';
+  TestResult,
+} from './types';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
@@ -145,8 +146,8 @@ export const getEachHooksForTest = (test: TestEntry) => {
   return result;
 };
 
-export const describeBlockHasTests = (describe: DescribeBlock) =>
-  describe.tests.length || describe.children.some(describeBlockHasTests);
+export const describeBlockHasTests = (describe: DescribeBlock): boolean =>
+  !!describe.tests.length || describe.children.some(describeBlockHasTests);
 
 const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
   `Exceeded timeout of ${timeout}ms for a ${
@@ -254,10 +255,10 @@ const makeTestResults = (
   config?: never,
 ): TestResults => {
   const {includeTestLocationInResult} = getState();
-  let testResults = [];
+  let testResults: TestResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
-    let parent = test;
+    let parent: TestEntry | DescribeBlock = test;
     do {
       testPath.unshift(parent.name);
     } while ((parent = parent.parent));
@@ -268,11 +269,15 @@ const makeTestResults = (
       throw new Error('Status should be present after tests are run.');
     }
 
-    let location = null;
+    let location: TestResult['location'] = null;
     if (includeTestLocationInResult) {
       const stackLine = test.asyncError.stack.split('\n')[1];
       const parsedLine = stackUtils.parseLine(stackLine);
-      if (parsedLine) {
+      if (
+        parsedLine &&
+        typeof parsedLine.column === 'number' &&
+        typeof parsedLine.line === 'number'
+      ) {
         location = {
           column: parsedLine.column,
           line: parsedLine.line,
@@ -291,7 +296,10 @@ const makeTestResults = (
   }
 
   for (const child of describeBlock.children) {
-    testResults = testResults.concat(makeTestResults(child, config));
+    testResults = {
+      ...testResults,
+      ...makeTestResults(child, config),
+    };
   }
 
   return testResults;
@@ -301,7 +309,7 @@ const makeTestResults = (
 // names + test title)
 export const getTestID = (test: TestEntry) => {
   const titles = [];
-  let parent = test;
+  let parent: TestEntry | DescribeBlock = test;
   do {
     titles.unshift(parent.name);
   } while ((parent = parent.parent));

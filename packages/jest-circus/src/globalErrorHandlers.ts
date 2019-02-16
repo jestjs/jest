@@ -7,7 +7,8 @@
 
 import {dispatch} from './state';
 import {GlobalErrorHandlers} from './types';
-import Process = NodeJS.Process; // eslint-disable-line no-undef
+
+type Process = NodeJS.Process;
 
 const uncaught = (error: Error) => {
   dispatch({error, name: 'error'});

@@ -18,16 +18,16 @@ import throat from 'throat';
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
-// eslint-disable-next-line import/default
 import globals from '..';
-import Process = NodeJS.Process;
 import {
   Event,
   RunResult,
   TestEntry,
   TestResult as TestResultCircus,
   FormattedError,
-} from './types';
+} from '../types';
+
+type Process = NodeJS.Process;
 
 export const initialize = ({
   config,

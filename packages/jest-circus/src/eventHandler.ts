@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventHandler, Exception} from './types';
+import {EventHandler, Exception, TEST_TIMEOUT_SYMBOL} from './types';
 
 import {
   addErrorToEachTestUnderDescribe,
@@ -19,9 +19,6 @@ import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
-
-// To pass this value from Runtime object to state we need to use global[sym]
-const TEST_TIMEOUT_SYMBOL = Symbol.for('TEST_TIMEOUT_SYMBOL');
 
 const eventHandler: EventHandler = (event, state): void => {
   switch (event.name) {

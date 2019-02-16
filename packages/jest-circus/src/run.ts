@@ -5,7 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {RunResult, TestEntry, TestContext, Hook, DescribeBlock} from './types';
+import {
+  RunResult,
+  TestEntry,
+  TestContext,
+  Hook,
+  DescribeBlock,
+  Exception,
+  RETRY_TIMES,
+} from './types';
 
 import {getState, dispatch} from './state';
 import {
@@ -37,7 +45,7 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   }
 
   // Tests that fail and are retried we run after other tests
-  const retryTimes = parseInt(global[Symbol.for('RETRY_TIMES')], 10) || 0;
+  const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 
   for (const test of describeBlock.tests) {
@@ -147,9 +155,11 @@ const _callCircusTest = (
     return Promise.resolve();
   }
 
-  return callAsyncCircusFn(test.fn, testContext, {isHook: false, timeout})
+  return callAsyncCircusFn(test.fn!, testContext, {isHook: false, timeout})
     .then(() => dispatch({name: 'test_fn_success', test}))
-    .catch(error => dispatch({error, name: 'test_fn_failure', test}));
+    .catch((error: Exception) =>
+      dispatch({error, name: 'test_fn_failure', test}),
+    );
 };
 
 export default run;

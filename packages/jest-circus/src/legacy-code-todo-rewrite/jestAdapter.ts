@@ -6,9 +6,8 @@
  */
 
 import path from 'path';
-import {Config, TestResult} from '@jest/types';
+import {Config, TestResult, Environment} from '@jest/types';
 import Runtime from 'jest-runtime';
-import {Environment} from 'types/Environment';
 import jestSnapshot from 'jest-snapshot';
 
 const {} = jestSnapshot;

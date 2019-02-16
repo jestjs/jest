@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Process = NodeJS.Process; // eslint-disable-line no-undef
+type Process = NodeJS.Process; // eslint-disable-line no-undef
 
 export type DoneFn = (reason?: string | Error) => void;
 export type BlockFn = () => void;
@@ -214,3 +214,18 @@ export type TestEntry = {
   status: TestStatus | undefined | null; // whether the test has been skipped or run already
   timeout: number | undefined | null;
 };
+
+export const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
+export const RETRY_TIMES = Symbol.for('RETRY_TIMES');
+// To pass this value from Runtime object to state we need to use global[sym]
+export const TEST_TIMEOUT_SYMBOL = Symbol.for('TEST_TIMEOUT_SYMBOL');
+
+declare global {
+  module NodeJS {
+    interface Global {
+      [STATE_SYM]: State; // eslint-disable-line no-undef
+      [RETRY_TIMES]: string; // eslint-disable-line no-undef
+      [TEST_TIMEOUT_SYMBOL]: number; // eslint-disable-line no-undef
+    }
+  }
+}
