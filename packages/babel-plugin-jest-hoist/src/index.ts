@@ -12,7 +12,7 @@ import {NodePath, Visitor} from '@babel/traverse';
 // eslint-disable-next-line
 import {Identifier} from '@babel/types';
 
-const invariant = (condition: any, message: any) => {
+const invariant = (condition: unknown, message: string) => {
   if (!condition) {
     throw new Error('babel-plugin-jest-hoist: ' + message);
   }
@@ -88,8 +88,11 @@ const IDVisitor = {
   blacklist: ['TypeAnnotation', 'TSTypeAnnotation', 'TSTypeReference'],
 };
 
-const FUNCTIONS: {[key: string]: any} = Object.create(null);
-FUNCTIONS.mock = (args: any) => {
+const FUNCTIONS: {
+  [key: string]: (args: Array<NodePath>) => boolean;
+} = Object.create(null);
+
+FUNCTIONS.mock = (args: Array<NodePath>) => {
   if (args.length === 1) {
     return args[0].isStringLiteral() || args[0].isLiteral();
   } else if (args.length === 2 || args.length === 3) {
@@ -101,6 +104,7 @@ FUNCTIONS.mock = (args: any) => {
 
     const ids: Set<NodePath<Identifier>> = new Set();
     const parentScope = moduleFactory.parentPath.scope;
+    // @ts-ignore: Same as above: ReferencedIdentifier doesn't exist
     moduleFactory.traverse(IDVisitor, {ids});
     for (const id of ids) {
       const {name} = id.node;
@@ -142,13 +146,13 @@ FUNCTIONS.mock = (args: any) => {
   return false;
 };
 
-FUNCTIONS.unmock = (args: Array<any>) =>
+FUNCTIONS.unmock = (args: Array<NodePath>) =>
   args.length === 1 && args[0].isStringLiteral();
-FUNCTIONS.deepUnmock = (args: Array<any>) =>
+FUNCTIONS.deepUnmock = (args: Array<NodePath>) =>
   args.length === 1 && args[0].isStringLiteral();
-
-FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = (args: any) =>
-  args.length === 0;
+FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = (
+  args: Array<NodePath>,
+) => args.length === 0;
 
 export = () => {
   const shouldHoistExpression = (expr: NodePath): boolean => {
