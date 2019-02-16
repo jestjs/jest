@@ -15,7 +15,7 @@ import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils from 'stack-utils';
 import {Frame} from './types';
 
-export * from './types';
+export {Frame} from './types';
 
 type Path = Config.Path;
 type AssertionResult = TestResult.AssertionResult;

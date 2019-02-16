@@ -252,7 +252,7 @@ export default class SnapshotState {
     }
   }
 
-  fail(testName: string, _: any, key?: string) {
+  fail(testName: string, _received: any, key?: string) {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
 
