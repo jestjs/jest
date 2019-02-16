@@ -27,7 +27,7 @@ const createTransformer = (
 ): Transform.Transformer => {
   options = {
     ...options,
-    // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/32955
+    // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33118
     caller: {
       name: 'babel-jest',
       supportsStaticESM: false,
