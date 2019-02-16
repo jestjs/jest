@@ -15,68 +15,70 @@ const invariant = (condition: any, message: any) => {
 // We allow `jest`, `expect`, `require`, all default Node.js globals and all
 // ES2015 built-ins to be used inside of a `jest.mock` factory.
 // We also allow variables prefixed with `mock` as an escape-hatch.
-const WHITELISTED_IDENTIFIERS: {[key: string]: boolean} = {
-  Array: true,
-  ArrayBuffer: true,
-  Boolean: true,
-  DataView: true,
-  Date: true,
-  Error: true,
-  EvalError: true,
-  Float32Array: true,
-  Float64Array: true,
-  Function: true,
-  Generator: true,
-  GeneratorFunction: true,
-  Infinity: true,
-  Int16Array: true,
-  Int32Array: true,
-  Int8Array: true,
-  InternalError: true,
-  Intl: true,
-  JSON: true,
-  Map: true,
-  Math: true,
-  NaN: true,
-  Number: true,
-  Object: true,
-  Promise: true,
-  Proxy: true,
-  RangeError: true,
-  ReferenceError: true,
-  Reflect: true,
-  RegExp: true,
-  Set: true,
-  String: true,
-  Symbol: true,
-  SyntaxError: true,
-  TypeError: true,
-  URIError: true,
-  Uint16Array: true,
-  Uint32Array: true,
-  Uint8Array: true,
-  Uint8ClampedArray: true,
-  WeakMap: true,
-  WeakSet: true,
-  arguments: true,
-  console: true,
-  expect: true,
-  isNaN: true,
-  jest: true,
-  parseFloat: true,
-  parseInt: true,
-  require: true,
-  undefined: true,
-};
-Object.keys(global).forEach(name => (WHITELISTED_IDENTIFIERS[name] = true));
+const WHITELISTED_IDENTIFIERS: Set<string> = new Set([
+  'Array',
+  'ArrayBuffer',
+  'Boolean',
+  'DataView',
+  'Date',
+  'Error',
+  'EvalError',
+  'Float32Array',
+  'Float64Array',
+  'Function',
+  'Generator',
+  'GeneratorFunction',
+  'Infinity',
+  'Int16Array',
+  'Int32Array',
+  'Int8Array',
+  'InternalError',
+  'Intl',
+  'JSON',
+  'Map',
+  'Math',
+  'NaN',
+  'Number',
+  'Object',
+  'Promise',
+  'Proxy',
+  'RangeError',
+  'ReferenceError',
+  'Reflect',
+  'RegExp',
+  'Set',
+  'String',
+  'Symbol',
+  'SyntaxError',
+  'TypeError',
+  'URIError',
+  'Uint16Array',
+  'Uint32Array',
+  'Uint8Array',
+  'Uint8ClampedArray',
+  'WeakMap',
+  'WeakSet',
+  'arguments',
+  'console',
+  'expect',
+  'isNaN',
+  'jest',
+  'parseFloat',
+  'parseInt',
+  'require',
+  'undefined',
+]);
+Object.keys(global).forEach(name => {
+  WHITELISTED_IDENTIFIERS.add(name);
+});
 
 const JEST_GLOBAL = {name: 'jest'};
 const IDVisitor = {
   ReferencedIdentifier(path: any) {
+    // @ts-ignore: passed as Visitor State
     this.ids.add(path);
   },
   blacklist: ['TypeAnnotation', 'TSTypeAnnotation', 'TSTypeReference'],
-  ids: new Set(),
 };
 
 const FUNCTIONS: {[key: string]: any} = Object.create(null);
@@ -109,7 +111,7 @@ FUNCTIONS.mock = (args: any) => {
 
       if (!found) {
         invariant(
-          (scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS[name]) ||
+          (scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS.has(name)) ||
             /^mock/i.test(name) ||
             // Allow istanbul's coverage variable to pass.
             /^(?:__)?cov/.test(name),
@@ -119,7 +121,7 @@ FUNCTIONS.mock = (args: any) => {
             name +
             '\n' +
             'Whitelisted objects: ' +
-            Object.keys(WHITELISTED_IDENTIFIERS).join(', ') +
+            Array.from(WHITELISTED_IDENTIFIERS).join(', ') +
             '.\n' +
             'Note: This is a precaution to guard against uninitialized mock ' +
             'variables. If it is ensured that the mock is required lazily, ' +
