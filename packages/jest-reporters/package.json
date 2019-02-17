@@ -18,6 +18,9 @@
     "slash": "^2.0.0",
     "string-length": "^2.0.0"
   },
+  "peerDependencies": {
+    "jest-message-util": "^24.0.0"
+  },
   "devDependencies": {
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
