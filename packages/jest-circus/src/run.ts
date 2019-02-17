@@ -132,7 +132,7 @@ const _callCircusHook = ({
   describeBlock?: DescribeBlock;
   test?: TestEntry;
   testContext?: TestContext;
-}): Promise<any> => {
+}): Promise<unknown> => {
   dispatch({hook, name: 'hook_start'});
   const timeout = hook.timeout || getState().testTimeout;
   return callAsyncCircusFn(hook.fn, testContext, {isHook: true, timeout})
