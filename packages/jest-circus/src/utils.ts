@@ -61,23 +61,19 @@ export const makeTest = (
   parent: DescribeBlock,
   timeout: number | null | undefined,
   asyncError: Exception,
-): TestEntry => {
-  const errors: Array<[Exception | undefined, Exception]> = [];
-
-  return {
-    asyncError,
-    duration: null,
-    errors,
-    fn,
-    invocations: 0,
-    mode,
-    name: convertDescriptorToString(name),
-    parent,
-    startedAt: null,
-    status: null,
-    timeout,
-  };
-};
+): TestEntry => ({
+  asyncError,
+  duration: null,
+  errors: [],
+  fn,
+  invocations: 0,
+  mode,
+  name: convertDescriptorToString(name),
+  parent,
+  startedAt: null,
+  status: null,
+  timeout,
+});
 
 // Traverse the tree of describe blocks and return true if at least one describe
 // block has an enabled test.

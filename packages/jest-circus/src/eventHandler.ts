@@ -147,8 +147,7 @@ const eventHandler: EventHandler = (event, state): void => {
       break;
     }
     case 'test_retry': {
-      const errors: Array<[Exception | undefined | null, Exception]> = [];
-      event.test.errors = errors;
+      event.test.errors = [];
       break;
     }
     case 'run_start': {
