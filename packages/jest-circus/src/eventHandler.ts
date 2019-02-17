@@ -167,7 +167,7 @@ const eventHandler: EventHandler = (event, state): void => {
       // i'm not sure if this is works. For now i just replicated whatever
       // jasmine was doing -- dabramov
       state.parentProcess = event.parentProcess;
-      invariant(state.parentProcess, '');
+      invariant(state.parentProcess);
       state.originalGlobalErrorHandlers = injectGlobalErrorHandlers(
         state.parentProcess,
       );
@@ -177,8 +177,8 @@ const eventHandler: EventHandler = (event, state): void => {
       break;
     }
     case 'teardown': {
-      invariant(state.originalGlobalErrorHandlers, '');
-      invariant(state.parentProcess, '');
+      invariant(state.originalGlobalErrorHandlers);
+      invariant(state.parentProcess);
       restoreGlobalErrorHandlers(
         state.parentProcess!,
         state.originalGlobalErrorHandlers!,

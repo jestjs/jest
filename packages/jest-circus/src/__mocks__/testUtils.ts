@@ -14,7 +14,7 @@ import {sync as spawnSync, ExecaReturns} from 'execa';
 // @ts-ignore
 import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
 
-const CIRCUS_PATH = require.resolve('../../build/index');
+const CIRCUS_PATH = require.resolve('../../build');
 const CIRCUS_RUN_PATH = require.resolve('../../build/run');
 const CIRCUS_STATE_PATH = require.resolve('../../build/state');
 const TEST_EVENT_HANDLER_PATH = require.resolve('./testEventHandler');

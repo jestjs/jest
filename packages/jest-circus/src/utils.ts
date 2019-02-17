@@ -62,7 +62,7 @@ export const makeTest = (
   timeout: number | null | undefined,
   asyncError: Exception,
 ): TestEntry => {
-  const errors: Array<[Exception | null | undefined, Exception]> = [];
+  const errors: Array<[Exception | undefined, Exception]> = [];
 
   return {
     asyncError,
@@ -361,7 +361,7 @@ export const addErrorToEachTestUnderDescribe = (
   }
 };
 
-export const invariant = (condition: unknown, message: string) => {
+export const invariant = (condition: unknown, message?: string) => {
   if (!condition) {
     throw new Error(message);
   }

@@ -11,7 +11,7 @@ let circusIt;
 // the two with this alias.
 
 const aliasCircusIt = () => {
-  const {it} = require('../index.ts');
+  const {it} = require('../');
   circusIt = it;
 };
 
