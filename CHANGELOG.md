@@ -5,7 +5,6 @@
 - `[expect]`: Improve report when matcher fails, part 7 ([#7866](https://github.com/facebook/jest/pull/7866))
 - `[expect]`: Improve report when matcher fails, part 8 ([#7876](https://github.com/facebook/jest/pull/7876))
 - `[pretty-format]` Support `React.memo` ([#7891](https://github.com/facebook/jest/pull/7891))
-
 - `[jest-cli]`: Add `compact` option to default reporter ([#7845](https://github.com/facebook/jest/pull/7845))
 
 ### Fixes
