@@ -10,17 +10,7 @@ import * as Console from './Console';
 import * as SourceMaps from './SourceMaps';
 import * as TestResult from './TestResult';
 import * as Mocks from './Mocks';
-import * as Transform from './Transform';
 import * as PrettyFormat from './PrettyFormat';
 import * as Matchers from './Matchers';
 
-export {
-  Config,
-  Console,
-  SourceMaps,
-  TestResult,
-  Mocks,
-  Transform,
-  PrettyFormat,
-  Matchers,
-};
+export {Config, Console, SourceMaps, TestResult, Mocks, PrettyFormat, Matchers};

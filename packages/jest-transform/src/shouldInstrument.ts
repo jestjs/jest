@@ -3,26 +3,23 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Path, ProjectConfig} from 'types/Config';
-import type {Options} from './types';
-
 import path from 'path';
+import {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replacePathSepForGlob} from 'jest-util';
 import micromatch from 'micromatch';
+import {Options} from './types';
 
 const MOCKS_PATTERN = new RegExp(
   escapePathForRegex(path.sep + '__mocks__' + path.sep),
 );
 
 export default function shouldInstrument(
-  filename: Path,
+  filename: Config.Path,
   options: Options,
-  config: ProjectConfig,
+  config: Config.ProjectConfig,
 ): boolean {
   if (!options.collectCoverage) {
     return false;
@@ -38,7 +35,7 @@ export default function shouldInstrument(
 
   if (
     !config.testPathIgnorePatterns ||
-    !config.testPathIgnorePatterns.some(pattern => filename.match(pattern))
+    !config.testPathIgnorePatterns.some(pattern => !!filename.match(pattern))
   ) {
     if (
       config.testRegex &&
@@ -79,7 +76,7 @@ export default function shouldInstrument(
 
   if (
     config.coveragePathIgnorePatterns &&
-    config.coveragePathIgnorePatterns.some(pattern => filename.match(pattern))
+    config.coveragePathIgnorePatterns.some(pattern => !!filename.match(pattern))
   ) {
     return false;
   }

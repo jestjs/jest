@@ -3,57 +3,59 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-import type {Path, ProjectConfig} from 'types/Config';
-import type {
-  Transformer,
-  TransformedSource,
-  TransformResult,
-} from 'types/Transform';
-import type {ErrorWithCode} from 'types/Errors';
-import type {Options} from './types';
 
 import crypto from 'crypto';
 import path from 'path';
 import vm from 'vm';
+import {Config} from '@jest/types';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
+// @ts-ignore: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import convertSourceMap from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
 import stableStringify from 'fast-json-stable-stringify';
 import slash from 'slash';
-import {version as VERSION} from '../package.json';
-import shouldInstrument from './shouldInstrument';
 import writeFileAtomic from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
+import {
+  Options,
+  Transformer,
+  TransformedSource,
+  TransformResult,
+} from './types';
+import shouldInstrument from './shouldInstrument';
 import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
 
-type ProjectCache = {|
-  configString: string,
-  ignorePatternsRegExp: ?RegExp,
-  transformedFiles: Map<string, TransformResult>,
-|};
+type ProjectCache = {
+  configString: string;
+  ignorePatternsRegExp: RegExp | null;
+  transformedFiles: Map<string, TransformResult>;
+};
+
+// Use `require` to avoid TS rootDir
+const {version: VERSION} = require('../package.json');
 
 // This data structure is used to avoid recalculating some data every time that
 // we need to transform a file. Since ScriptTransformer is instantiated for each
 // file we need to keep this object in the local scope of this module.
-const projectCaches: WeakMap<ProjectConfig, ProjectCache> = new WeakMap();
+const projectCaches: WeakMap<
+  Config.ProjectConfig,
+  ProjectCache
+> = new WeakMap();
 
 // To reset the cache for specific changesets (rather than package version).
 const CACHE_VERSION = '1';
 
 export default class ScriptTransformer {
   static EVAL_RESULT_VARIABLE: string;
-  _cache: ProjectCache;
-  _config: ProjectConfig;
-  _transformCache: Map<Path, ?Transformer>;
+  private _cache: ProjectCache;
+  private _config: Config.ProjectConfig;
+  private _transformCache: Map<Config.Path, Transformer>;
 
-  constructor(config: ProjectConfig) {
+  constructor(config: Config.ProjectConfig) {
     this._config = config;
     this._transformCache = new Map();
 
@@ -72,7 +74,11 @@ export default class ScriptTransformer {
     this._cache = projectCache;
   }
 
-  _getCacheKey(fileData: string, filename: Path, instrument: boolean): string {
+  private _getCacheKey(
+    fileData: string,
+    filename: Config.Path,
+    instrument: boolean,
+  ): string {
     const configString = this._cache.configString;
     const transformer = this._getTransformer(filename);
 
@@ -99,11 +105,12 @@ export default class ScriptTransformer {
     }
   }
 
-  _getFileCachePath(
-    filename: Path,
+  private _getFileCachePath(
+    filename: Config.Path,
     content: string,
     instrument: boolean,
-  ): Path {
+  ): Config.Path {
+    // @ts-ignore: not properly exported (needs ESM)
     const baseCacheDir = HasteMap.getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,
@@ -124,7 +131,7 @@ export default class ScriptTransformer {
     return cachePath;
   }
 
-  _getTransformPath(filename: Path) {
+  private _getTransformPath(filename: Config.Path) {
     for (let i = 0; i < this._config.transform.length; i++) {
       if (new RegExp(this._config.transform[i][0]).test(filename)) {
         return this._config.transform[i][1];
@@ -133,8 +140,8 @@ export default class ScriptTransformer {
     return null;
   }
 
-  _getTransformer(filename: Path) {
-    let transform: ?Transformer;
+  private _getTransformer(filename: Config.Path) {
+    let transform: Transformer | null = null;
     if (!this._config.transform || !this._config.transform.length) {
       return null;
     }
@@ -146,8 +153,7 @@ export default class ScriptTransformer {
         return transformer;
       }
 
-      // $FlowFixMe
-      transform = (require(transformPath): Transformer);
+      transform = require(transformPath) as Transformer;
       if (typeof transform.createTransformer === 'function') {
         transform = transform.createTransformer();
       }
@@ -161,10 +167,11 @@ export default class ScriptTransformer {
     return transform;
   }
 
-  _instrumentFile(filename: Path, content: string): string {
+  private _instrumentFile(filename: Config.Path, content: string): string {
     const result = babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
+      // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33118
       caller: {
         name: '@jest/transform',
         supportsStaticESM: false,
@@ -185,10 +192,18 @@ export default class ScriptTransformer {
       ],
     });
 
-    return result ? result.code : content;
+    if (result) {
+      const {code} = result;
+
+      if (code) {
+        return code;
+      }
+    }
+
+    return content;
   }
 
-  _getRealPath(filepath: Path): Path {
+  private _getRealPath(filepath: Config.Path): Config.Path {
     try {
       return realpath(filepath) || filepath;
     } catch (err) {
@@ -198,15 +213,15 @@ export default class ScriptTransformer {
 
   // We don't want to expose transformers to the outside - this function is just
   // to warm up `this._transformCache`
-  preloadTransformer(filepath: Path): void {
+  preloadTransformer(filepath: Config.Path): void {
     this._getTransformer(filepath);
   }
 
-  transformSource(filepath: Path, content: string, instrument: boolean) {
+  transformSource(filepath: Config.Path, content: string, instrument: boolean) {
     const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(filename, content, instrument);
-    let sourceMapPath = cacheFilePath + '.map';
+    let sourceMapPath: Config.Path | null = cacheFilePath + '.map';
     // Ignore cache if `config.cache` is set (--no-cache)
     let code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
@@ -290,9 +305,9 @@ export default class ScriptTransformer {
     };
   }
 
-  _transformAndBuildScript(
-    filename: Path,
-    options: ?Options,
+  private _transformAndBuildScript(
+    filename: Config.Path,
+    options: Options | null,
     instrument: boolean,
     fileSource?: string,
   ): TransformResult {
@@ -303,7 +318,7 @@ export default class ScriptTransformer {
     );
 
     let wrappedCode: string;
-    let sourceMapPath: ?string = null;
+    let sourceMapPath: string | null = null;
     let mapCoverage = false;
 
     const willTransform =
@@ -354,13 +369,13 @@ export default class ScriptTransformer {
   }
 
   transform(
-    filename: Path,
+    filename: Config.Path,
     options: Options,
     fileSource?: string,
   ): TransformResult {
     let scriptCacheKey = null;
     let instrument = false;
-    let result = '';
+    let result: TransformResult | undefined;
 
     if (!options.isCoreModule) {
       instrument = shouldInstrument(filename, options, this._config);
@@ -386,7 +401,7 @@ export default class ScriptTransformer {
     return result;
   }
 
-  _shouldTransform(filename: Path): boolean {
+  private _shouldTransform(filename: Config.Path): boolean {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
@@ -396,13 +411,13 @@ export default class ScriptTransformer {
   }
 }
 
-const removeFile = (path: Path) => {
+const removeFile = (path: Config.Path) => {
   try {
     fs.unlinkSync(path);
   } catch (e) {}
 };
 
-const stripShebang = content => {
+const stripShebang = (content: string) => {
   // If the file data starts with a shebang remove it. Leaves the empty line
   // to keep stack trace line numbers correct.
   if (content.startsWith('#!')) {
@@ -419,7 +434,7 @@ const stripShebang = content => {
  * it right away. This is not a great system, because source map cache file
  * could get corrupted, out-of-sync, etc.
  */
-function writeCodeCacheFile(cachePath: Path, code: string) {
+function writeCodeCacheFile(cachePath: Config.Path, code: string) {
   const checksum = crypto
     .createHash('md5')
     .update(code)
@@ -433,7 +448,7 @@ function writeCodeCacheFile(cachePath: Path, code: string) {
  * could happen if an older version of `jest-runtime` writes non-atomically to
  * the same cache, for example.
  */
-function readCodeCacheFile(cachePath: Path): ?string {
+function readCodeCacheFile(cachePath: Config.Path): string | null {
   const content = readCacheFile(cachePath);
   if (content == null) {
     return null;
@@ -455,7 +470,7 @@ function readCodeCacheFile(cachePath: Path): ?string {
  * two processes to write to the same file at the same time. It also reduces
  * the risk of reading a file that's being overwritten at the same time.
  */
-const writeCacheFile = (cachePath: Path, fileData: string) => {
+const writeCacheFile = (cachePath: Config.Path, fileData: string) => {
   try {
     writeFileAtomic.sync(cachePath, fileData, {encoding: 'utf8'});
   } catch (e) {
@@ -479,12 +494,15 @@ const writeCacheFile = (cachePath: Path, fileData: string) => {
  * If the target file exists we can be reasonably sure another process has
  * legitimately won a cache write race and ignore the error.
  */
-const cacheWriteErrorSafeToIgnore = (e: ErrorWithCode, cachePath: Path) =>
+const cacheWriteErrorSafeToIgnore = (
+  e: Error & {code: string},
+  cachePath: Config.Path,
+) =>
   process.platform === 'win32' &&
   e.code === 'EPERM' &&
   fs.existsSync(cachePath);
 
-const readCacheFile = (cachePath: Path): ?string => {
+const readCacheFile = (cachePath: Config.Path): string | null => {
   if (!fs.existsSync(cachePath)) {
     return null;
   }
@@ -510,12 +528,14 @@ const readCacheFile = (cachePath: Path): ?string => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename, instrument: boolean) => {
+const getScriptCacheKey = (filename: Config.Path, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
   return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };
 
-const calcIgnorePatternRegexp = (config: ProjectConfig): ?RegExp => {
+const calcIgnorePatternRegexp = (
+  config: Config.ProjectConfig,
+): RegExp | null => {
   if (
     !config.transformIgnorePatterns ||
     config.transformIgnorePatterns.length === 0
@@ -526,7 +546,7 @@ const calcIgnorePatternRegexp = (config: ProjectConfig): ?RegExp => {
   return new RegExp(config.transformIgnorePatterns.join('|'));
 };
 
-const wrap = (content, ...extras) => {
+const wrap = (content: string, ...extras: Array<string>) => {
   const globals = new Set([
     'module',
     'exports',
