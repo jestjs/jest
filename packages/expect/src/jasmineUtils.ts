@@ -20,7 +20,6 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-@flow
 */
 
 /* eslint-disable */
@@ -38,11 +37,11 @@ export function equals(
   return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
 }
 
-function isAsymmetric(obj) {
+function isAsymmetric(obj: any) {
   return !!obj && isA('Function', obj.asymmetricMatch);
 }
 
-function asymmetricMatch(a, b) {
+function asymmetricMatch(a: any, b: any) {
   var asymmetricA = isAsymmetric(a),
     asymmetricB = isAsymmetric(b);
 
@@ -62,7 +61,7 @@ function asymmetricMatch(a, b) {
 
 // Equality function lovingly adapted from isEqual in
 //   [Underscore](http://underscorejs.org)
-function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
+function eq(a: any, b: any, aStack: any, bStack: any, customTesters: any, hasKey: any): boolean {
   var result = true;
 
   var asymmetricResult = asymmetricMatch(a, b);
@@ -204,8 +203,8 @@ function eq(a, b, aStack, bStack, customTesters, hasKey): boolean {
   return result;
 }
 
-function keys(obj, isArray, hasKey) {
-  var allKeys = (function(o) {
+function keys(obj: any, isArray: any, hasKey: any) {
+  var allKeys = (function (o) {
     var keys = [];
     for (var key in o) {
       if (hasKey(o, key)) {
@@ -213,9 +212,9 @@ function keys(obj, isArray, hasKey) {
       }
     }
     return keys.concat(
-      (Object.getOwnPropertySymbols(o): Array<any>).filter(
+      (Object.getOwnPropertySymbols(o) as Array<any>).filter(
         //$FlowFixMe Jest complains about nullability, but we know for sure that property 'symbol' does exist.
-        symbol => Object.getOwnPropertyDescriptor(o, symbol).enumerable,
+        symbol => (Object.getOwnPropertyDescriptor(o, symbol) as any).enumerable,
       ),
     );
   })(obj);
@@ -238,11 +237,11 @@ function keys(obj, isArray, hasKey) {
   return extraKeys;
 }
 
-function hasDefinedKey(obj, key) {
+function hasDefinedKey(obj: any, key: any) {
   return hasKey(obj, key) && obj[key] !== undefined;
 }
 
-function hasKey(obj, key) {
+function hasKey(obj: any, key: any) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
 
@@ -250,7 +249,7 @@ export function isA(typeName: string, value: any) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
-function isDomNode(obj) {
+function isDomNode(obj: any) {
   return (
     obj !== null &&
     typeof obj === 'object' &&
@@ -272,7 +271,7 @@ export function isUndefined(obj: any) {
   return obj === void 0;
 }
 
-function getPrototype(obj) {
+function getPrototype(obj: any) {
   if (Object.getPrototypeOf) {
     return Object.getPrototypeOf(obj);
   }
@@ -284,7 +283,7 @@ function getPrototype(obj) {
   return obj.constructor.prototype;
 }
 
-export function hasProperty(obj: Object | null, property: string) {
+export function hasProperty(obj: Object | null, property: string): boolean {
   if (!obj) {
     return false;
   }
