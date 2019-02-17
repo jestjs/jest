@@ -13,7 +13,7 @@ export type BlockName = string;
 export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = string;
-export type TestFn = (done?: DoneFn) => Promise<any> | null | undefined;
+export type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
 export type HookFn = (done?: DoneFn) => Promise<any> | null | undefined;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
