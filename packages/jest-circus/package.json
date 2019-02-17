@@ -12,7 +12,6 @@
   "dependencies": {
     "@babel/traverse": "^7.1.0",
     "@jest/types": "^24.1.0",
-    "@types/co": "^4.6.0",
     "chalk": "^2.0.1",
     "co": "^4.6.0",
     "expect": "^24.1.0",
@@ -28,6 +27,7 @@
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.0.4",
+    "@types/co": "^4.6.0",
     "@types/stack-utils": "^1.0.1",
     "execa": "^1.0.0",
     "jest-diff": "^24.0.0",
