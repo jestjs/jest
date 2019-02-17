@@ -5,6 +5,7 @@
 module.exports = {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
+    '**/packages/*/**/*.ts',
     '!**/bin/**',
     '!**/cli/**',
     '!**/perf/**',
