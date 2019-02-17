@@ -82,28 +82,28 @@ export type Expect = {
   not: { [id: string]: AsymmetricMatcher },
 };
 
-type resolves = {
+type resolvesFn = {
   [id: string]: PromiseMatcherFn,
 } & {
   not: { [id: string]: PromiseMatcherFn },
 }
 
-type rejects = {
+type rejectsFn = {
   [id: string]: PromiseMatcherFn,
 } & {
   not: { [id: string]: PromiseMatcherFn },
 }
 
-type not = {
+type notFn = {
   [id: string]: ThrowingMatcherFn
 }
 
 export type ExpectationObject = {
   [id: string]: ThrowingMatcherFn,
 } & {
-  resolves: resolves
-  rejects: rejects
-  not: not
+  resolves: resolvesFn
+  rejects: rejectsFn
+  not: notFn
 }
 
 export type MatcherHintOptions = {
