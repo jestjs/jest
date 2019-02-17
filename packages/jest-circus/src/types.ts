@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-type Process = NodeJS.Process; // eslint-disable-line no-undef
+type Process = NodeJS.Process;
 
 export type DoneFn = (reason?: string | Error) => void;
 export type BlockFn = () => void;
