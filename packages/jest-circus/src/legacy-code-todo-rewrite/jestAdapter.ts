@@ -70,9 +70,7 @@ const jestAdapter = async (
     }
   });
 
-  config.setupFilesAfterEnv.forEach((path: Config.Path) =>
-    runtime.requireModule(path),
-  );
+  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
 
   runtime.requireModule(testPath);
   const results = await runAndTransformResultsToJestFormat({

@@ -293,10 +293,7 @@ const makeTestResults = (
   }
 
   for (const child of describeBlock.children) {
-    testResults = [
-      ...testResults,
-      ...makeTestResults(child, config),
-    };
+    testResults = [...testResults, ...makeTestResults(child, config)];
   }
 
   return testResults;
