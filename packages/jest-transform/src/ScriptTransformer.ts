@@ -32,7 +32,7 @@ import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
 type ProjectCache = {
   configString: string;
   ignorePatternsRegExp: RegExp | null;
-  transformedFiles: Map<string, TransformResult | string>;
+  transformedFiles: Map<string, TransformResult>;
 };
 
 // Use `require` to avoid TS rootDir
@@ -372,10 +372,10 @@ export default class ScriptTransformer {
     filename: Config.Path,
     options: Options,
     fileSource?: string,
-  ): TransformResult | string {
+  ): TransformResult {
     let scriptCacheKey = null;
     let instrument = false;
-    let result: TransformResult | string | undefined = '';
+    let result: TransformResult | undefined;
 
     if (!options.isCoreModule) {
       instrument = shouldInstrument(filename, options, this._config);
