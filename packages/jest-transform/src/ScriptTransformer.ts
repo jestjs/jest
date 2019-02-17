@@ -8,7 +8,7 @@
 import crypto from 'crypto';
 import path from 'path';
 import vm from 'vm';
-import {Config, Transform} from '@jest/types';
+import {Config} from '@jest/types';
 import {createDirectory} from 'jest-util';
 import fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
@@ -20,14 +20,19 @@ import stableStringify from 'fast-json-stable-stringify';
 import slash from 'slash';
 import writeFileAtomic from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
-import {Options} from './types';
+import {
+  Options,
+  Transformer,
+  TransformedSource,
+  TransformResult,
+} from './types';
 import shouldInstrument from './shouldInstrument';
 import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
 
 type ProjectCache = {
   configString: string;
   ignorePatternsRegExp: RegExp | null;
-  transformedFiles: Map<string, Transform.TransformResult | string>;
+  transformedFiles: Map<string, TransformResult | string>;
 };
 
 // Use `require` to avoid TS rootDir
@@ -48,7 +53,7 @@ export default class ScriptTransformer {
   static EVAL_RESULT_VARIABLE: string;
   private _cache: ProjectCache;
   private _config: Config.ProjectConfig;
-  private _transformCache: Map<Config.Path, Transform.Transformer>;
+  private _transformCache: Map<Config.Path, Transformer>;
 
   constructor(config: Config.ProjectConfig) {
     this._config = config;
@@ -136,7 +141,7 @@ export default class ScriptTransformer {
   }
 
   private _getTransformer(filename: Config.Path) {
-    let transform: Transform.Transformer | null = null;
+    let transform: Transformer | null = null;
     if (!this._config.transform || !this._config.transform.length) {
       return null;
     }
@@ -148,7 +153,7 @@ export default class ScriptTransformer {
         return transformer;
       }
 
-      transform = require(transformPath) as Transform.Transformer;
+      transform = require(transformPath) as Transformer;
       if (typeof transform.createTransformer === 'function') {
         transform = transform.createTransformer();
       }
@@ -243,7 +248,7 @@ export default class ScriptTransformer {
       };
     }
 
-    let transformed: Transform.TransformedSource = {
+    let transformed: TransformedSource = {
       code: content,
       map: null,
     };
@@ -305,7 +310,7 @@ export default class ScriptTransformer {
     options: Options | null,
     instrument: boolean,
     fileSource?: string,
-  ): Transform.TransformResult {
+  ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
     const isCoreModule = !!(options && options.isCoreModule);
     const content = stripShebang(
@@ -367,10 +372,10 @@ export default class ScriptTransformer {
     filename: Config.Path,
     options: Options,
     fileSource?: string,
-  ): Transform.TransformResult | string {
+  ): TransformResult | string {
     let scriptCacheKey = null;
     let instrument = false;
-    let result: Transform.TransformResult | string | undefined = '';
+    let result: TransformResult | string | undefined = '';
 
     if (!options.isCoreModule) {
       instrument = shouldInstrument(filename, options, this._config);

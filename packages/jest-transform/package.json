@@ -22,6 +22,7 @@
     "micromatch": "^3.1.10",
     "realpath-native": "^1.1.0",
     "slash": "^2.0.0",
+    "source-map": "^0.6.1",
     "write-file-atomic": "2.4.1"
   },
   "devDependencies": {
