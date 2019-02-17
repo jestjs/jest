@@ -4,16 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
+import { equals, fnNameFor, hasProperty, isA, isUndefined } from './jasmineUtils';
 
-import {emptyObject} from './utils';
+import { emptyObject } from './utils';
 
 export class AsymmetricMatcher {
   $$typeof: Symbol;
-  inverse: boolean;
 
   constructor() {
     this.$$typeof = Symbol.for('jest.asymmetricMatcher');
@@ -28,7 +26,7 @@ class Any extends AsymmetricMatcher {
     if (typeof sample === 'undefined') {
       throw new TypeError(
         'any() expects to be passed a constructor function. ' +
-          'Please pass one or use anything() to match any object.',
+        'Please pass one or use anything() to match any object.',
       );
     }
     this.sample = sample;
@@ -109,6 +107,7 @@ class Anything extends AsymmetricMatcher {
 
 class ArrayContaining extends AsymmetricMatcher {
   sample: Array<any>;
+  inverse: boolean;
 
   constructor(sample: Array<any>, inverse: boolean = false) {
     super();
@@ -120,8 +119,8 @@ class ArrayContaining extends AsymmetricMatcher {
     if (!Array.isArray(this.sample)) {
       throw new Error(
         `You must provide an array to ${this.toString()}, not '` +
-          typeof this.sample +
-          "'.",
+        typeof this.sample +
+        "'.",
       );
     }
 
@@ -146,6 +145,7 @@ class ArrayContaining extends AsymmetricMatcher {
 
 class ObjectContaining extends AsymmetricMatcher {
   sample: Object;
+  inverse: boolean;
 
   constructor(sample: Object, inverse: boolean = false) {
     super();
@@ -153,12 +153,12 @@ class ObjectContaining extends AsymmetricMatcher {
     this.inverse = inverse;
   }
 
-  asymmetricMatch(other: Object) {
+  asymmetricMatch(other: any) {
     if (typeof this.sample !== 'object') {
       throw new Error(
         `You must provide an object to ${this.toString()}, not '` +
-          typeof this.sample +
-          "'.",
+        typeof this.sample +
+        "'.",
       );
     }
 
@@ -166,8 +166,8 @@ class ObjectContaining extends AsymmetricMatcher {
       for (const property in this.sample) {
         if (
           hasProperty(other, property) &&
-          equals(this.sample[property], other[property]) &&
-          !emptyObject(this.sample[property]) &&
+          equals((this.sample as any)[property], other[property]) &&
+          !emptyObject((this.sample as any)[property]) &&
           !emptyObject(other[property])
         ) {
           return false;
@@ -179,7 +179,7 @@ class ObjectContaining extends AsymmetricMatcher {
       for (const property in this.sample) {
         if (
           !hasProperty(other, property) ||
-          !equals(this.sample[property], other[property])
+          !equals((this.sample as any)[property], other[property])
         ) {
           return false;
         }
@@ -200,6 +200,7 @@ class ObjectContaining extends AsymmetricMatcher {
 
 class StringContaining extends AsymmetricMatcher {
   sample: string;
+  inverse: boolean;
 
   constructor(sample: string, inverse: boolean = false) {
     super();
@@ -227,6 +228,7 @@ class StringContaining extends AsymmetricMatcher {
 
 class StringMatching extends AsymmetricMatcher {
   sample: RegExp;
+  inverse: boolean;
 
   constructor(sample: string | RegExp, inverse: boolean = false) {
     super();
