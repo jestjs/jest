@@ -1710,6 +1710,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.24.tgz#b13564af612a22a20b5d95ca40f1bffb3af315cf"
   integrity sha512-GWWbvt+z9G5otRBW8rssOFgRY87J9N/qbhqfjMZ+gUuL6zoL+Hm6gP/8qQBG4jjimqdaNLCehcVapZ/Fs2WjCQ==
 
+"@types/p-each-series@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/p-each-series/-/p-each-series-1.0.0.tgz#04d8a62a63a2fb82a1673ec98edabaf58dd73072"
+  integrity sha512-bqQAn+tAs1QwGQYNIbv8a0XT8Pzl6Z+6SVpca+vJngcvwRwws7eJj9P2rTJDpjwOSyX1iRNSlIokUlusV0mP0A==
+
 "@types/prettier@^1.16.1":
   version "1.16.1"
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-1.16.1.tgz#328d1c9b54402e44119398bcb6a31b7bbd606d59"
