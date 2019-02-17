@@ -4,12 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {
-  Expect,
-  ExpectationObject,
+import {
   AsyncExpectationResult,
   SyncExpectationResult,
   ExpectationResult,
@@ -18,16 +15,18 @@ import type {
   RawMatcherFn,
   ThrowingMatcherFn,
   PromiseMatcherFn,
-} from 'types/Matchers';
+  ExpectationObject,
+  Expect,
+} from './types';
 
 import * as matcherUtils from 'jest-matcher-utils';
-import {iterableEquality, subsetEquality} from './utils';
+import { iterableEquality, subsetEquality } from './utils';
 import matchers from './matchers';
 import spyMatchers from './spyMatchers';
 import toThrowMatchers, {
   createMatcher as createThrowMatcher,
 } from './toThrowMatchers';
-import {equals} from './jasmineUtils';
+import { equals } from './jasmineUtils';
 import {
   any,
   anything,
@@ -53,18 +52,18 @@ class JestAssertionError extends Error {
   matcherResult: any;
 }
 
-const isPromise = obj =>
+const isPromise = (obj: any) =>
   !!obj &&
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
 
-const createToThrowErrorMatchingSnapshotMatcher = function(matcher) {
-  return function(received: any, testNameOrInlineSnapshot?: string) {
+const createToThrowErrorMatchingSnapshotMatcher = function (matcher: any) {
+  return function (this: any, received: any, testNameOrInlineSnapshot?: string) {
     return matcher.apply(this, [received, testNameOrInlineSnapshot, true]);
   };
 };
 
-const getPromiseMatcher = (name, matcher) => {
+const getPromiseMatcher = (name: string, matcher: any) => {
   if (name === 'toThrow' || name === 'toThrowError') {
     return createThrowMatcher(name, true);
   } else if (
@@ -77,16 +76,16 @@ const getPromiseMatcher = (name, matcher) => {
   return null;
 };
 
-const expect = (actual: any, ...rest): ExpectationObject => {
+const expect: any = (actual: any, ...rest: Array<any>): ExpectationObject => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
   }
 
   const allMatchers = getMatchers();
-  const expectation = {
+  const expectation: any = {
     not: {},
-    rejects: {not: {}},
-    resolves: {not: {}},
+    rejects: { not: {} },
+    resolves: { not: {} },
   };
 
   const err = new JestAssertionError();
@@ -131,7 +130,7 @@ const expect = (actual: any, ...rest): ExpectationObject => {
   return expectation;
 };
 
-const getMessage = message =>
+const getMessage = (message: any) =>
   (message && message()) ||
   matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.');
 
@@ -234,7 +233,7 @@ const makeThrowingMatcher = (
 ): ThrowingMatcherFn =>
   function throwingMatcher(...args): any {
     let throws = true;
-    const utils = {...matcherUtils, iterableEquality, subsetEquality};
+    const utils = { ...matcherUtils, iterableEquality, subsetEquality };
 
     const matcherContext: MatcherState = {
       // When throws is disabled, the matcher will not throw errors during test
@@ -294,7 +293,7 @@ const makeThrowingMatcher = (
 
     const handlError = (error: Error) => {
       if (
-        matcher[INTERNAL_MATCHER_FLAG] === true &&
+        (matcher as any)[INTERNAL_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
         error.name !== 'PrettyFormatPluginError' &&
         // Guard for some environments (browsers) that do not support this feature.
@@ -309,10 +308,10 @@ const makeThrowingMatcher = (
     let potentialResult: ExpectationResult;
 
     try {
-      potentialResult = matcher.apply(matcherContext, [actual].concat(args));
+      potentialResult = matcher.apply(matcherContext, ([actual] as any).concat(args));
 
-      if (isPromise((potentialResult: any))) {
-        const asyncResult = ((potentialResult: any): AsyncExpectationResult);
+      if (isPromise(potentialResult)) {
+        const asyncResult: AsyncExpectationResult = potentialResult as any;
         const asyncError = new JestAssertionError();
         if (Error.captureStackTrace) {
           Error.captureStackTrace(asyncError, throwingMatcher);
@@ -322,7 +321,7 @@ const makeThrowingMatcher = (
           .then(aResult => processResult(aResult, asyncError))
           .catch(error => handlError(error));
       } else {
-        const syncResult = ((potentialResult: any): SyncExpectationResult);
+        const syncResult: SyncExpectationResult = potentialResult as any;
 
         return processResult(syncResult);
       }
@@ -332,7 +331,7 @@ const makeThrowingMatcher = (
   };
 
 expect.extend = (matchers: MatchersObject): void =>
-  setMatchers(matchers, false, expect);
+  setMatchers(matchers, false, expect as any);
 
 expect.anything = anything;
 expect.any = any;
@@ -349,7 +348,7 @@ expect.arrayContaining = arrayContaining;
 expect.stringContaining = stringContaining;
 expect.stringMatching = stringMatching;
 
-const _validateResult = result => {
+const _validateResult = (result: any) => {
   if (
     typeof result !== 'object' ||
     typeof result.pass !== 'boolean' ||
@@ -359,10 +358,10 @@ const _validateResult = result => {
   ) {
     throw new Error(
       'Unexpected return from a matcher function.\n' +
-        'Matcher functions should ' +
-        'return an object in the following format:\n' +
-        '  {message?: string | function, pass: boolean}\n' +
-        `'${matcherUtils.stringify(result)}' was returned`,
+      'Matcher functions should ' +
+      'return an object in the following format:\n' +
+      '  {message?: string | function, pass: boolean}\n' +
+      `'${matcherUtils.stringify(result)}' was returned`,
     );
   }
 };
@@ -376,7 +375,7 @@ function assertions(expected: number) {
   getState().expectedAssertionsNumber = expected;
   getState().expectedAssertionsNumberError = error;
 }
-function hasAssertions(...args) {
+function hasAssertions(...args: Array<any>) {
   const error = new Error();
   if (Error.captureStackTrace) {
     Error.captureStackTrace(error, hasAssertions);
@@ -388,15 +387,15 @@ function hasAssertions(...args) {
 }
 
 // add default jest matchers
-setMatchers(matchers, true, expect);
-setMatchers(spyMatchers, true, expect);
-setMatchers(toThrowMatchers, true, expect);
+setMatchers(matchers, true, expect as Expect);
+setMatchers(spyMatchers, true, expect as Expect);
+setMatchers(toThrowMatchers, true, expect as Expect);
 
 expect.addSnapshotSerializer = () => void 0;
 expect.assertions = assertions;
 expect.hasAssertions = hasAssertions;
 expect.getState = getState;
 expect.setState = setState;
-expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
+(expect as any).extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
-module.exports = (expect: Expect);
+exports = (expect as Expect);
