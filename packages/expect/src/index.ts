@@ -6,6 +6,7 @@
  *
  */
 
+import * as matcherUtils from 'jest-matcher-utils';
 import {
   AsyncExpectationResult,
   SyncExpectationResult,
@@ -19,14 +20,13 @@ import {
   Expect,
 } from './types';
 
-import * as matcherUtils from 'jest-matcher-utils';
-import { iterableEquality, subsetEquality } from './utils';
+import {iterableEquality, subsetEquality} from './utils';
 import matchers from './matchers';
 import spyMatchers from './spyMatchers';
 import toThrowMatchers, {
   createMatcher as createThrowMatcher,
 } from './toThrowMatchers';
-import { equals } from './jasmineUtils';
+import {equals} from './jasmineUtils';
 import {
   any,
   anything,
@@ -57,8 +57,8 @@ const isPromise = (obj: any) =>
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
 
-const createToThrowErrorMatchingSnapshotMatcher = function (matcher: any) {
-  return function (this: any, received: any, testNameOrInlineSnapshot?: string) {
+const createToThrowErrorMatchingSnapshotMatcher = function(matcher: any) {
+  return function(this: any, received: any, testNameOrInlineSnapshot?: string) {
     return matcher.apply(this, [received, testNameOrInlineSnapshot, true]);
   };
 };
@@ -84,8 +84,8 @@ const expect: any = (actual: any, ...rest: Array<any>): ExpectationObject => {
   const allMatchers = getMatchers();
   const expectation: any = {
     not: {},
-    rejects: { not: {} },
-    resolves: { not: {} },
+    rejects: {not: {}},
+    resolves: {not: {}},
   };
 
   const err = new JestAssertionError();
@@ -233,7 +233,7 @@ const makeThrowingMatcher = (
 ): ThrowingMatcherFn =>
   function throwingMatcher(...args): any {
     let throws = true;
-    const utils = { ...matcherUtils, iterableEquality, subsetEquality };
+    const utils = {...matcherUtils, iterableEquality, subsetEquality};
 
     const matcherContext: MatcherState = {
       // When throws is disabled, the matcher will not throw errors during test
@@ -308,7 +308,10 @@ const makeThrowingMatcher = (
     let potentialResult: ExpectationResult;
 
     try {
-      potentialResult = matcher.apply(matcherContext, ([actual] as any).concat(args));
+      potentialResult = matcher.apply(
+        matcherContext,
+        ([actual] as any).concat(args),
+      );
 
       if (isPromise(potentialResult)) {
         const asyncResult: AsyncExpectationResult = potentialResult as any;
@@ -358,10 +361,10 @@ const _validateResult = (result: any) => {
   ) {
     throw new Error(
       'Unexpected return from a matcher function.\n' +
-      'Matcher functions should ' +
-      'return an object in the following format:\n' +
-      '  {message?: string | function, pass: boolean}\n' +
-      `'${matcherUtils.stringify(result)}' was returned`,
+        'Matcher functions should ' +
+        'return an object in the following format:\n' +
+        '  {message?: string | function, pass: boolean}\n' +
+        `'${matcherUtils.stringify(result)}' was returned`,
     );
   }
 };
@@ -398,4 +401,4 @@ expect.getState = getState;
 expect.setState = setState;
 (expect as any).extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
-exports = (expect as Expect);
+exports = expect as Expect;

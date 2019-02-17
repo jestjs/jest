@@ -6,9 +6,9 @@
  *
  */
 
-import { equals, fnNameFor, hasProperty, isA, isUndefined } from './jasmineUtils';
+import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
 
-import { emptyObject } from './utils';
+import {emptyObject} from './utils';
 
 export class AsymmetricMatcher {
   $$typeof: Symbol;
@@ -26,7 +26,7 @@ class Any extends AsymmetricMatcher {
     if (typeof sample === 'undefined') {
       throw new TypeError(
         'any() expects to be passed a constructor function. ' +
-        'Please pass one or use anything() to match any object.',
+          'Please pass one or use anything() to match any object.',
       );
     }
     this.sample = sample;
@@ -119,8 +119,8 @@ class ArrayContaining extends AsymmetricMatcher {
     if (!Array.isArray(this.sample)) {
       throw new Error(
         `You must provide an array to ${this.toString()}, not '` +
-        typeof this.sample +
-        "'.",
+          typeof this.sample +
+          "'.",
       );
     }
 
@@ -157,8 +157,8 @@ class ObjectContaining extends AsymmetricMatcher {
     if (typeof this.sample !== 'object') {
       throw new Error(
         `You must provide an object to ${this.toString()}, not '` +
-        typeof this.sample +
-        "'.",
+          typeof this.sample +
+          "'.",
       );
     }
 

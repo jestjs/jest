@@ -7,10 +7,8 @@
  * @flow
  */
 
-import { MatchersObject } from './types';
-
 import getType from 'jest-get-type';
-import { escapeStrForRegex } from 'jest-regex-util';
+import {escapeStrForRegex} from 'jest-regex-util';
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -26,6 +24,7 @@ import {
   printExpected,
   printWithType,
 } from 'jest-matcher-utils';
+import {MatchersObject} from './types';
 import {
   getObjectSubset,
   getPath,
@@ -35,7 +34,7 @@ import {
   typeEquality,
   isOneline,
 } from './utils';
-import { equals } from './jasmineUtils';
+import {equals} from './jasmineUtils';
 
 type ContainIterable =
   | Array<any>
@@ -51,40 +50,40 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-        matcherHint('.toBe', undefined, undefined, {
-          comment,
-          isNot: true,
-        }) +
-        '\n\n' +
-        `Expected: ${printExpected(expected)}\n` +
-        `Received: ${printReceived(received)}`
-      : () => {
-        const receivedType = getType(received);
-        const expectedType = getType(expected);
-        const suggestToEqual =
-          receivedType === expectedType &&
-          (receivedType === 'object' || expectedType === 'array') &&
-          equals(received, expected, [iterableEquality]);
-        const oneline = isOneline(expected, received);
-        const diffString = diff(expected, received, { expand: this.expand });
-
-        return (
           matcherHint('.toBe', undefined, undefined, {
             comment,
-            isNot: false,
+            isNot: true,
           }) +
           '\n\n' +
           `Expected: ${printExpected(expected)}\n` +
-          `Received: ${printReceived(received)}` +
-          (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '') +
-          (suggestToEqual ? ` ${SUGGEST_TO_EQUAL}` : '')
-        );
-      };
+          `Received: ${printReceived(received)}`
+      : () => {
+          const receivedType = getType(received);
+          const expectedType = getType(expected);
+          const suggestToEqual =
+            receivedType === expectedType &&
+            (receivedType === 'object' || expectedType === 'array') &&
+            equals(received, expected, [iterableEquality]);
+          const oneline = isOneline(expected, received);
+          const diffString = diff(expected, received, {expand: this.expand});
+
+          return (
+            matcherHint('.toBe', undefined, undefined, {
+              comment,
+              isNot: false,
+            }) +
+            '\n\n' +
+            `Expected: ${printExpected(expected)}\n` +
+            `Received: ${printReceived(received)}` +
+            (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '') +
+            (suggestToEqual ? ` ${SUGGEST_TO_EQUAL}` : '')
+          );
+        };
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
-    return { actual: received, expected, message, name: 'toBe', pass };
+    return {actual: received, expected, message, name: 'toBe', pass};
   },
 
   toBeCloseTo(received: number, expected: number, precision: number = 2) {
@@ -113,27 +112,27 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-        matcherHint('toBeCloseTo', undefined, undefined, options) +
-        '\n\n' +
-        `Expected: not ${printExpected(expected)}\n` +
-        (receivedDiff === 0
-          ? ''
-          : `Received:     ${printReceived(received)}\n` +
-          '\n' +
-          `Expected precision:        ${printExpected(precision)}\n` +
-          `Expected difference: not < ${printExpected(expectedDiff)}\n` +
-          `Received difference:       ${printReceived(receivedDiff)}`)
+          matcherHint('toBeCloseTo', undefined, undefined, options) +
+          '\n\n' +
+          `Expected: not ${printExpected(expected)}\n` +
+          (receivedDiff === 0
+            ? ''
+            : `Received:     ${printReceived(received)}\n` +
+              '\n' +
+              `Expected precision:        ${printExpected(precision)}\n` +
+              `Expected difference: not < ${printExpected(expectedDiff)}\n` +
+              `Received difference:       ${printReceived(receivedDiff)}`)
       : () =>
-        matcherHint('toBeCloseTo', undefined, undefined, options) +
-        '\n\n' +
-        `Expected: ${printExpected(expected)}\n` +
-        `Received: ${printReceived(received)}\n` +
-        '\n' +
-        `Expected precision:    ${printExpected(precision)}\n` +
-        `Expected difference: < ${printExpected(expectedDiff)}\n` +
-        `Received difference:   ${printReceived(receivedDiff)}`;
+          matcherHint('toBeCloseTo', undefined, undefined, options) +
+          '\n\n' +
+          `Expected: ${printExpected(expected)}\n` +
+          `Received: ${printReceived(received)}\n` +
+          '\n' +
+          `Expected precision:    ${printExpected(precision)}\n` +
+          `Expected difference: < ${printExpected(expectedDiff)}\n` +
+          `Received difference:   ${printReceived(receivedDiff)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeDefined(received: any, expected: void) {
@@ -150,7 +149,7 @@ const matchers: MatchersObject = {
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeFalsy(received: any, expected: void) {
@@ -167,7 +166,7 @@ const matchers: MatchersObject = {
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeGreaterThan(received: number, expected: number) {
@@ -186,7 +185,7 @@ const matchers: MatchersObject = {
       `Expected:${isNot ? ' not' : ''} > ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}   ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeGreaterThanOrEqual(received: number, expected: number) {
@@ -205,7 +204,7 @@ const matchers: MatchersObject = {
       `Expected:${isNot ? ' not' : ''} >= ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}    ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeInstanceOf(this: any, received: any, constructor: Function) {
@@ -226,30 +225,30 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-        matcherHint('.toBeInstanceOf', 'value', 'constructor', {
-          isNot: this.isNot,
-        }) +
-        '\n\n' +
-        `Expected constructor: ${EXPECTED_COLOR(
-          constructor.name || String(constructor),
-        )}\n` +
-        `Received value: ${printReceived(received)}`
+          matcherHint('.toBeInstanceOf', 'value', 'constructor', {
+            isNot: this.isNot,
+          }) +
+          '\n\n' +
+          `Expected constructor: ${EXPECTED_COLOR(
+            constructor.name || String(constructor),
+          )}\n` +
+          `Received value: ${printReceived(received)}`
       : () =>
-        matcherHint('.toBeInstanceOf', 'value', 'constructor', {
-          isNot: this.isNot,
-        }) +
-        '\n\n' +
-        `Expected constructor: ${EXPECTED_COLOR(
-          constructor.name || String(constructor),
-        )}\n` +
-        `Received constructor: ${RECEIVED_COLOR(
-          received != null
-            ? received.constructor && received.constructor.name
-            : '',
-        )}\n` +
-        `Received value: ${printReceived(received)}`;
+          matcherHint('.toBeInstanceOf', 'value', 'constructor', {
+            isNot: this.isNot,
+          }) +
+          '\n\n' +
+          `Expected constructor: ${EXPECTED_COLOR(
+            constructor.name || String(constructor),
+          )}\n` +
+          `Received constructor: ${RECEIVED_COLOR(
+            received != null
+              ? received.constructor && received.constructor.name
+              : '',
+          )}\n` +
+          `Received value: ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeLessThan(this: any, received: number, expected: number) {
@@ -268,7 +267,7 @@ const matchers: MatchersObject = {
       `Expected:${isNot ? ' not' : ''} < ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}   ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeLessThanOrEqual(received: number, expected: number) {
@@ -287,7 +286,7 @@ const matchers: MatchersObject = {
       `Expected:${isNot ? ' not' : ''} <= ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}    ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeNaN(received: any, expected: void) {
@@ -304,7 +303,7 @@ const matchers: MatchersObject = {
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeNull(received: any, expected: void) {
@@ -321,7 +320,7 @@ const matchers: MatchersObject = {
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeTruthy(received: any, expected: void) {
@@ -338,7 +337,7 @@ const matchers: MatchersObject = {
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toBeUndefined(received: any, expected: void) {
@@ -355,7 +354,7 @@ const matchers: MatchersObject = {
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toContain(this: any, collection: ContainIterable | string, value: any) {
@@ -396,7 +395,7 @@ const matchers: MatchersObject = {
         typeof converted !== 'string' &&
         converted instanceof Array &&
         converted.findIndex(item => equals(item, value, [iterableEquality])) !==
-        -1;
+          -1;
 
       return (
         matcherHint('.toContain', collectionType, 'value', {
@@ -410,7 +409,7 @@ const matchers: MatchersObject = {
       );
     };
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toContainEqual(this: any, collection: ContainIterable, value: any) {
@@ -455,7 +454,7 @@ const matchers: MatchersObject = {
       );
     };
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toEqual(this: any, received: any, expected: any) {
@@ -463,31 +462,31 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-        matcherHint('.toEqual', undefined, undefined, {
-          isNot: this.isNot,
-        }) +
-        '\n\n' +
-        `Expected: ${printExpected(expected)}\n` +
-        `Received: ${printReceived(received)}`
-      : () => {
-        const diffString = diff(expected, received, { expand: this.expand });
-
-        return (
           matcherHint('.toEqual', undefined, undefined, {
             isNot: this.isNot,
           }) +
           '\n\n' +
-          (diffString && diffString.includes('- Expect')
-            ? `Difference:\n\n${diffString}`
-            : `Expected: ${printExpected(expected)}\n` +
-            `Received: ${printReceived(received)}`)
-        );
-      };
+          `Expected: ${printExpected(expected)}\n` +
+          `Received: ${printReceived(received)}`
+      : () => {
+          const diffString = diff(expected, received, {expand: this.expand});
+
+          return (
+            matcherHint('.toEqual', undefined, undefined, {
+              isNot: this.isNot,
+            }) +
+            '\n\n' +
+            (diffString && diffString.includes('- Expect')
+              ? `Difference:\n\n${diffString}`
+              : `Expected: ${printExpected(expected)}\n` +
+                `Received: ${printReceived(received)}`)
+          );
+        };
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
-    return { actual: received, expected, message, name: 'toEqual', pass };
+    return {actual: received, expected, message, name: 'toEqual', pass};
   },
 
   toHaveLength(this: any, received: any, length: number) {
@@ -544,10 +543,15 @@ const matchers: MatchersObject = {
       );
     };
 
-    return { message, pass };
+    return {message, pass};
   },
 
-  toHaveProperty(this: any, object: Object, keyPath: string | Array<any>, value?: any) {
+  toHaveProperty(
+    this: any,
+    object: Object,
+    keyPath: string | Array<any>,
+    value?: any,
+  ) {
     const valuePassed = arguments.length === 3;
     const secondArgument = valuePassed ? 'value' : null;
 
@@ -580,7 +584,7 @@ const matchers: MatchersObject = {
     }
 
     const result = getPath(object, keyPath);
-    const { lastTraversedObject, hasEndProp } = result;
+    const {lastTraversedObject, hasEndProp} = result;
 
     const pass = valuePassed
       ? equals(result.value, value, [iterableEquality])
@@ -590,48 +594,48 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-        matcherHint('.not.toHaveProperty', 'object', 'path', {
-          secondArgument,
-        } as any) +
-        '\n\n' +
-        `Expected the object:\n` +
-        `  ${printReceived(object)}\n` +
-        `Not to have a nested property:\n` +
-        `  ${printExpected(keyPath)}\n` +
-        (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
-      : () => {
-        const diffString =
-          valuePassed && hasEndProp
-            ? diff(value, result.value, { expand: this.expand })
-            : '';
-        return (
-          matcherHint('.toHaveProperty', 'object', 'path', {
+          matcherHint('.not.toHaveProperty', 'object', 'path', {
             secondArgument,
           } as any) +
           '\n\n' +
           `Expected the object:\n` +
           `  ${printReceived(object)}\n` +
-          `To have a nested property:\n` +
+          `Not to have a nested property:\n` +
           `  ${printExpected(keyPath)}\n` +
-          (valuePassed
-            ? `With a value of:\n  ${printExpected(value)}\n`
-            : '') +
-          (hasEndProp
-            ? `Received:\n` +
-            `  ${printReceived(result.value)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
-            : traversedPath
+          (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
+      : () => {
+          const diffString =
+            valuePassed && hasEndProp
+              ? diff(value, result.value, {expand: this.expand})
+              : '';
+          return (
+            matcherHint('.toHaveProperty', 'object', 'path', {
+              secondArgument,
+            } as any) +
+            '\n\n' +
+            `Expected the object:\n` +
+            `  ${printReceived(object)}\n` +
+            `To have a nested property:\n` +
+            `  ${printExpected(keyPath)}\n` +
+            (valuePassed
+              ? `With a value of:\n  ${printExpected(value)}\n`
+              : '') +
+            (hasEndProp
+              ? `Received:\n` +
+                `  ${printReceived(result.value)}` +
+                (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+              : traversedPath
               ? `Received:\n  ${RECEIVED_COLOR(
-                'object',
-              )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
+                  'object',
+                )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
               : '')
-        );
-      };
+          );
+        };
     if (pass === undefined) {
       throw new Error('pass must be initialized');
     }
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toMatch(this: any, received: string, expected: string | RegExp | any) {
@@ -669,19 +673,19 @@ const matchers: MatchersObject = {
     ).test(received);
     const message = pass
       ? () =>
-        matcherHint('.not.toMatch') +
-        `\n\nExpected value not to match:\n` +
-        `  ${printExpected(expected)}` +
-        `\nReceived:\n` +
-        `  ${printReceived(received)}`
+          matcherHint('.not.toMatch') +
+          `\n\nExpected value not to match:\n` +
+          `  ${printExpected(expected)}` +
+          `\nReceived:\n` +
+          `  ${printReceived(received)}`
       : () =>
-        matcherHint('.toMatch') +
-        `\n\nExpected value to match:\n` +
-        `  ${printExpected(expected)}` +
-        `\nReceived:\n` +
-        `  ${printReceived(received)}`;
+          matcherHint('.toMatch') +
+          `\n\nExpected value to match:\n` +
+          `  ${printExpected(expected)}` +
+          `\nReceived:\n` +
+          `  ${printReceived(received)}`;
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toMatchObject(this: any, receivedObject: Object, expectedObject: Object) {
@@ -716,30 +720,30 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-        matcherHint('.not.toMatchObject') +
-        `\n\nExpected value not to match object:\n` +
-        `  ${printExpected(expectedObject)}` +
-        `\nReceived:\n` +
-        `  ${printReceived(receivedObject)}`
-      : () => {
-        const diffString = diff(
-          expectedObject,
-          getObjectSubset(receivedObject, expectedObject),
-          {
-            expand: this.expand,
-          },
-        );
-        return (
-          matcherHint('.toMatchObject') +
-          `\n\nExpected value to match object:\n` +
+          matcherHint('.not.toMatchObject') +
+          `\n\nExpected value not to match object:\n` +
           `  ${printExpected(expectedObject)}` +
           `\nReceived:\n` +
-          `  ${printReceived(receivedObject)}` +
-          (diffString ? `\nDifference:\n${diffString}` : '')
-        );
-      };
+          `  ${printReceived(receivedObject)}`
+      : () => {
+          const diffString = diff(
+            expectedObject,
+            getObjectSubset(receivedObject, expectedObject),
+            {
+              expand: this.expand,
+            },
+          );
+          return (
+            matcherHint('.toMatchObject') +
+            `\n\nExpected value to match object:\n` +
+            `  ${printExpected(expectedObject)}` +
+            `\nReceived:\n` +
+            `  ${printReceived(receivedObject)}` +
+            (diffString ? `\nDifference:\n${diffString}` : '')
+          );
+        };
 
-    return { message, pass };
+    return {message, pass};
   },
 
   toStrictEqual(this: any, received: any, expected: any) {
@@ -755,21 +759,21 @@ const matchers: MatchersObject = {
     });
     const message = pass
       ? () =>
-        hint +
-        '\n\n' +
-        `Expected: ${printExpected(expected)}\n` +
-        `Received: ${printReceived(received)}`
+          hint +
+          '\n\n' +
+          `Expected: ${printExpected(expected)}\n` +
+          `Received: ${printReceived(received)}`
       : () => {
-        const diffString = diff(expected, received, {
-          expand: this.expand,
-        });
-        return hint + (diffString ? `\n\nDifference:\n\n${diffString}` : '');
-      };
+          const diffString = diff(expected, received, {
+            expand: this.expand,
+          });
+          return hint + (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+        };
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
-    return { actual: received, expected, message, name: 'toStrictEqual', pass };
+    return {actual: received, expected, message, name: 'toStrictEqual', pass};
   },
 };
 

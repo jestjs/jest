@@ -10,7 +10,7 @@ import ansiStyles from 'ansi-styles';
 const returnInput = (str: any) => str;
 
 const allColorsAsFunc = Object.keys(ansiStyles)
-  .map(style => ({ [style]: returnInput }))
+  .map(style => ({[style]: returnInput}))
   .reduce((acc, cur) => Object.assign(acc, cur));
 
 Object.keys(allColorsAsFunc)

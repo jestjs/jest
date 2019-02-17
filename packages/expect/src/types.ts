@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import { Config } from '@jest/types';
-
+import {Config} from '@jest/types';
 
 export type SyncExpectationResult = {
-  pass: boolean,
-  message: () => string,
+  pass: boolean;
+  message: () => string;
 };
 
 export type AsyncExpectationResult = Promise<SyncExpectationResult>;
@@ -57,59 +56,59 @@ export type MatcherState = {
 };
 
 export type AsymmetricMatcher = Object;
-export type MatchersObject = { [id: string]: RawMatcherFn };
+export type MatchersObject = {[id: string]: RawMatcherFn};
 export type Expect = {
-  (expected: any): ExpectationObject,
-  addSnapshotSerializer(arg0: any): void,
-  assertions(arg0: number): void,
-  extend(arg0: any): void,
+  (expected: any): ExpectationObject;
+  addSnapshotSerializer(arg0: any): void;
+  assertions(arg0: number): void;
+  extend(arg0: any): void;
   extractExpectedAssertionsErrors: () => Array<{
-    actual: string | number,
-    error: Error,
-    expected: string,
-  }>,
-  getState(): MatcherState,
-  hasAssertions(): void,
-  setState(arg0: any): void,
+    actual: string | number;
+    error: Error;
+    expected: string;
+  }>;
+  getState(): MatcherState;
+  hasAssertions(): void;
+  setState(arg0: any): void;
 
-  any(expectedObject: any): AsymmetricMatcher,
-  anything(): AsymmetricMatcher,
-  arrayContaining(sample: Array<any>): AsymmetricMatcher,
-  objectContaining(sample: Object): AsymmetricMatcher,
-  stringContaining(expected: string): AsymmetricMatcher,
-  stringMatching(expected: string | RegExp): AsymmetricMatcher,
-  [id: string]: AsymmetricMatcher,
-  not: { [id: string]: AsymmetricMatcher },
+  any(expectedObject: any): AsymmetricMatcher;
+  anything(): AsymmetricMatcher;
+  arrayContaining(sample: Array<any>): AsymmetricMatcher;
+  objectContaining(sample: Object): AsymmetricMatcher;
+  stringContaining(expected: string): AsymmetricMatcher;
+  stringMatching(expected: string | RegExp): AsymmetricMatcher;
+  [id: string]: AsymmetricMatcher;
+  not: {[id: string]: AsymmetricMatcher};
 };
 
 type resolvesFn = {
-  [id: string]: PromiseMatcherFn,
+  [id: string]: PromiseMatcherFn;
 } & {
-  not: { [id: string]: PromiseMatcherFn },
-}
+  not: {[id: string]: PromiseMatcherFn};
+};
 
 type rejectsFn = {
-  [id: string]: PromiseMatcherFn,
+  [id: string]: PromiseMatcherFn;
 } & {
-  not: { [id: string]: PromiseMatcherFn },
-}
+  not: {[id: string]: PromiseMatcherFn};
+};
 
 type notFn = {
-  [id: string]: ThrowingMatcherFn
-}
+  [id: string]: ThrowingMatcherFn;
+};
 
 export type ExpectationObject = {
-  [id: string]: ThrowingMatcherFn,
+  [id: string]: ThrowingMatcherFn;
 } & {
-  resolves: resolvesFn
-  rejects: rejectsFn
-  not: notFn
-}
+  resolves: resolvesFn;
+  rejects: rejectsFn;
+  not: notFn;
+};
 
 export type MatcherHintOptions = {
-  comment?: string,
-  isDirectExpectCall?: boolean,
-  isNot?: boolean,
-  promise?: string,
-  secondArgument?: string,
+  comment?: string;
+  isDirectExpectCall?: boolean;
+  isNot?: boolean;
+  promise?: string;
+  secondArgument?: string;
 };

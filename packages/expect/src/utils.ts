@@ -14,10 +14,10 @@ import {
 } from './jasmineUtils';
 
 type GetPath = {
-  hasEndProp?: boolean,
-  lastTraversedObject: any,
-  traversedPath: Array<string>,
-  value?: any,
+  hasEndProp?: boolean;
+  lastTraversedObject: any;
+  traversedPath: Array<string>;
+  value?: any;
 };
 
 // Return whether object instance inherits getter from its class.
@@ -101,7 +101,9 @@ export const getPath = (
 export const getObjectSubset = (object: any, subset: any): any => {
   if (Array.isArray(object)) {
     if (Array.isArray(subset) && subset.length === object.length) {
-      return subset.map((sub: any, i: number) => getObjectSubset(object[i], sub));
+      return subset.map((sub: any, i: number) =>
+        getObjectSubset(object[i], sub),
+      );
     }
   } else if (object instanceof Date) {
     return object;
@@ -127,7 +129,8 @@ export const getObjectSubset = (object: any, subset: any): any => {
 
 const IteratorSymbol = Symbol.iterator;
 
-const hasIterator = (object: any) => !!(object != null && object[IteratorSymbol]);
+const hasIterator = (object: any) =>
+  !!(object != null && object[IteratorSymbol]);
 export const iterableEquality = (a: any, b: any) => {
   if (
     typeof a !== 'object' ||
@@ -221,7 +224,10 @@ const isObjectWithKeys = (a: any) =>
   !(a instanceof Array) &&
   !(a instanceof Date);
 
-export const subsetEquality = (object: any, subset: any): undefined | boolean => {
+export const subsetEquality = (
+  object: any,
+  subset: any,
+): undefined | boolean => {
   if (!isObjectWithKeys(subset)) {
     return undefined;
   }

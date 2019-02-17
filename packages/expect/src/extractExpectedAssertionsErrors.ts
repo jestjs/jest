@@ -13,7 +13,7 @@ import {
   pluralize,
 } from 'jest-matcher-utils';
 
-import { getState, setState } from './jestMatchersObject';
+import {getState, setState} from './jestMatchersObject';
 
 const resetAssertionsLocalState = () => {
   setState({
