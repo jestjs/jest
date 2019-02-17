@@ -46,6 +46,7 @@
 - `[@jest/core]` Create new package, which is `jest-cli` minus `yargs` and `prompts` ([#7696](https://github.com/facebook/jest/pull/7696))
 - `[@jest/transform]`: Migrate to TypeScript ([#7918](https://github.com/facebook/jest/pull/7918))
 - `[docs]` Add missing import to docs ([#7928](https://github.com/facebook/jest/pull/7928))
+- `[jest-resolve-dependencies]`: Migrate to TypeScript ([#7922](https://github.com/facebook/jest/pull/7922))
 
 ### Performance
 
