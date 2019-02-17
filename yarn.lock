@@ -1543,6 +1543,11 @@
   resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.10.tgz#780d552467824be4a241b29510a7873a7432c4a6"
   integrity sha512-fOM/Jhv51iyugY7KOBZz2ThfT1gwvsGCfWxpLpZDgkGjpEO4Le9cld07OdskikLjDUQJ43dzDaVRSFwQlpdqVg==
 
+"@types/co@^4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@types/co/-/co-4.6.0.tgz#fd7b669f3643e366d2d2114022be0571f3ddfc68"
+  integrity sha512-Ptqc3o9M/zuYT/AjM5pVO7xsAXPkal6P5xJ1nIbYYRzMlFYn7ZAVj0Wzz/Falort7jasH7GxuCkx5iueiiyjJA==
+
 "@types/color-name@*":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.0.tgz#926f76f7e66f49cc59ad880bb15b030abbf0b66d"
