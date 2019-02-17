@@ -149,5 +149,5 @@ export const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
     `);
   }
 
-  return {...DEFAULT_GLOBAL_CONFIG, ...overrides};
+  return {...DEFAULT_PROJECT_CONFIG, ...overrides};
 };
