@@ -6,8 +6,6 @@
  *
  */
 
-import {MatchersObject} from './types';
-
 const CALL_PRINT_LIMIT = 3;
 const RETURN_PRINT_LIMIT = 5;
 const LAST_CALL_PRINT_LIMIT = 1;
@@ -24,6 +22,7 @@ import {
   printWithType,
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
+import {MatchersObject} from './types';
 import {equals} from './jasmineUtils';
 import {iterableEquality, partition, isOneline} from './utils';
 
