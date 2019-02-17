@@ -13,7 +13,7 @@ untyped-import
 untyped-type-import
 
 [version]
-^0.91.0
+^0.93.0
 
 [options]
 module.name_mapper='^pretty-format$' -> '<PROJECT_ROOT>/packages/pretty-format/src/index.js'

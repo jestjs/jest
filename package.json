@@ -36,7 +36,7 @@
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "~0.0.19",
     "execa": "^1.0.0",
-    "flow-bin": "^0.91.0",
+    "flow-bin": "^0.93.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.15",
     "isbinaryfile": "^3.0.3",
@@ -68,7 +68,7 @@
     "slash": "^2.0.0",
     "string-length": "^2.0.0",
     "strip-ansi": "^5.0.0",
-    "typescript": "^3.3.1",
+    "typescript": "^3.3.3",
     "webpack": "^4.28.4"
   },
   "scripts": {
