@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {DiffOptions} from '@jest/types';
-
 import {diff, printExpected, printReceived} from 'jest-matcher-utils';
 import chalk from 'chalk';
 import prettyFormat from 'pretty-format';
 import {Event, State, TestError} from './types';
+
+// TODO replace with import {DiffOptions} from 'jest-matcher-utils';
+type DiffOptions = Parameters<typeof diff>[2];
 
 type AssertionError = {
   actual: string | undefined | null;
