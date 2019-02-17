@@ -3,18 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {HasteFS} from 'types/HasteMap';
-import type {Path} from 'types/Config';
-import type {
-  Resolver,
-  ResolveModuleConfig,
-  ResolvedModule,
-} from 'types/Resolve';
-import type {SnapshotResolver} from 'types/SnapshotResolver';
+import {Config, Resolve, Snapshot} from '@jest/types';
+import {FS as HasteFS} from 'jest-haste-map';
+import Resolver from 'jest-resolve';
 import {isSnapshotPath} from 'jest-snapshot';
 
 /**
@@ -24,25 +17,28 @@ import {isSnapshotPath} from 'jest-snapshot';
 class DependencyResolver {
   _hasteFS: HasteFS;
   _resolver: Resolver;
-  _snapshotResolver: SnapshotResolver;
+  _snapshotResolver: Snapshot.SnapshotResolver;
 
   constructor(
     resolver: Resolver,
     hasteFS: HasteFS,
-    snapshotResolver: SnapshotResolver,
+    snapshotResolver: Snapshot.SnapshotResolver,
   ) {
     this._resolver = resolver;
     this._hasteFS = hasteFS;
     this._snapshotResolver = snapshotResolver;
   }
 
-  resolve(file: Path, options?: ResolveModuleConfig): Array<Path> {
+  resolve(
+    file: Config.Path,
+    options?: Resolve.ResolveModuleConfig,
+  ): Array<Config.Path> {
     const dependencies = this._hasteFS.getDependencies(file);
     if (!dependencies) {
       return [];
     }
 
-    return dependencies.reduce((acc, dependency) => {
+    return dependencies.reduce<Array<Config.Path>>((acc, dependency) => {
       if (this._resolver.isCoreModule(dependency)) {
         return acc;
       }
@@ -66,23 +62,27 @@ class DependencyResolver {
   }
 
   resolveInverseModuleMap(
-    paths: Set<Path>,
-    filter: (file: Path) => boolean,
-    options?: ResolveModuleConfig,
-  ): Array<ResolvedModule> {
+    paths: Set<Config.Path>,
+    filter: (file: Config.Path) => boolean,
+    options?: Resolve.ResolveModuleConfig,
+  ): Array<Resolve.ResolvedModule> {
     if (!paths.size) {
       return [];
     }
 
-    const collectModules = (related, moduleMap, changed) => {
+    const collectModules = (
+      related: Set<Config.Path>,
+      moduleMap: Array<Resolve.ResolvedModule>,
+      changed: Set<Config.Path>,
+    ) => {
       const visitedModules = new Set();
-      const result: Array<ResolvedModule> = [];
+      const result: Array<Resolve.ResolvedModule> = [];
       while (changed.size) {
         changed = new Set(
-          moduleMap.reduce((acc, module) => {
+          moduleMap.reduce<Array<Config.Path>>((acc, module) => {
             if (
               visitedModules.has(module.file) ||
-              !module.dependencies.some(dep => dep && changed.has(dep))
+              !module.dependencies.some(dep => changed.has(dep))
             ) {
               return acc;
             }
@@ -98,11 +98,13 @@ class DependencyResolver {
           }, []),
         );
       }
-      return result.concat(Array.from(related).map(file => ({file})));
+      return result.concat(
+        Array.from(related).map(file => ({dependencies: [], file})),
+      );
     };
 
-    const relatedPaths = new Set<Path>();
-    const changed = new Set();
+    const relatedPaths = new Set<Config.Path>();
+    const changed: Set<Config.Path> = new Set();
     for (const path of paths) {
       if (this._hasteFS.exists(path)) {
         const modulePath = isSnapshotPath(path)
@@ -114,7 +116,7 @@ class DependencyResolver {
         }
       }
     }
-    const modules = [];
+    const modules: Array<Resolve.ResolvedModule> = [];
     for (const file of this._hasteFS.getAbsoluteFileIterator()) {
       modules.push({
         dependencies: this.resolve(file, options),
@@ -125,14 +127,14 @@ class DependencyResolver {
   }
 
   resolveInverse(
-    paths: Set<Path>,
-    filter: (file: Path) => boolean,
-    options?: ResolveModuleConfig,
-  ): Array<Path> {
+    paths: Set<Config.Path>,
+    filter: (file: Config.Path) => boolean,
+    options?: Resolve.ResolveModuleConfig,
+  ): Array<Config.Path> {
     return this.resolveInverseModuleMap(paths, filter, options).map(
       module => module.file,
     );
   }
 }
 
-module.exports = DependencyResolver;
+export = DependencyResolver;
