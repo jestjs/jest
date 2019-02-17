@@ -123,6 +123,7 @@ export type AssertionResult = {
 };
 
 export type FormattedAssertionResult = {
+  ancestorTitles: Array<string>;
   failureMessages: Array<string> | null;
   fullName: string;
   location: Callsite | null | undefined;
@@ -150,7 +151,7 @@ export type AggregatedResultWithoutCoverage = {
 };
 
 export type AggregatedResult = AggregatedResultWithoutCoverage & {
-  coverageMap?: CoverageMap | null | undefined;
+  coverageMap?: CoverageMap | null;
 };
 
 export type Suite = {
@@ -160,10 +161,10 @@ export type Suite = {
 };
 
 export type TestResult = {
-  console: ConsoleBuffer | null | undefined;
+  console?: ConsoleBuffer | null;
   coverage?: RawCoverage;
-  displayName: string | null | undefined;
-  failureMessage: string | null | undefined;
+  displayName?: string | null;
+  failureMessage?: string | null;
   leaks: boolean;
   memoryUsage?: Bytes;
   numFailingTests: number;

@@ -8,7 +8,9 @@
   },
   "license": "MIT",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/types": "^24.1.0",
     "fb-watchman": "^2.0.0",
     "graceful-fs": "^4.1.15",
     "invariant": "^2.2.4",
@@ -23,6 +25,7 @@
     "@types/graceful-fs": "^4.1.2",
     "@types/invariant": "^2.2.29",
     "@types/micromatch": "^3.1.0",
+    "@types/node": "^10.12.24",
     "@types/sane": "^2.0.0"
   },
   "engines": {

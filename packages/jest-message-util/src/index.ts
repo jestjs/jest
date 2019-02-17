@@ -13,8 +13,10 @@ import micromatch from 'micromatch';
 import slash from 'slash';
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils from 'stack-utils';
+import {Frame} from './types';
 
-type Glob = Config.Glob;
+export {Frame} from './types';
+
 type Path = Config.Path;
 type AssertionResult = TestResult.AssertionResult;
 type SerializableError = TestResult.SerializableError;
@@ -33,12 +35,12 @@ try {
   // node internals in the browser though, so no issue.
 }
 
-type StackTraceConfig = {
-  rootDir: string;
-  testMatch: Array<Glob>;
-};
+export type StackTraceConfig = Pick<
+  Config.ProjectConfig,
+  'rootDir' | 'testMatch'
+>;
 
-type StackTraceOptions = {
+export type StackTraceOptions = {
   noStackTrace: boolean;
 };
 
@@ -228,7 +230,7 @@ export const getStackTraceLines = (
   options: StackTraceOptions = {noStackTrace: false},
 ) => removeInternalStackEntries(stack.split(/\n/), options);
 
-export const getTopFrame = (lines: string[]) => {
+export const getTopFrame = (lines: string[]): Frame | null => {
   for (const line of lines) {
     if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
       continue;
@@ -237,7 +239,7 @@ export const getTopFrame = (lines: string[]) => {
     const parsedFrame = stackUtils.parseLine(line.trim());
 
     if (parsedFrame && parsedFrame.file) {
-      return parsedFrame;
+      return parsedFrame as Frame;
     }
   }
 

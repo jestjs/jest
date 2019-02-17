@@ -19,16 +19,18 @@ import {
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
 } from './testResultHelpers';
-import CoverageReporter from './reporters/coverage_reporter';
-import DefaultReporter from './reporters/default_reporter';
+import {
+  CoverageReporter,
+  DefaultReporter,
+  NotifyReporter,
+  SummaryReporter,
+  VerboseReporter,
+} from '@jest/reporters';
 import exit from 'exit';
-import NotifyReporter from './reporters/notify_reporter';
 import ReporterDispatcher from './ReporterDispatcher';
 import snapshot from 'jest-snapshot';
-import SummaryReporter from './reporters/summary_reporter';
 import TestRunner from 'jest-runner';
 import TestWatcher from './TestWatcher';
-import VerboseReporter from './reporters/verbose_reporter';
 import {shouldRunInBand} from './testSchedulerHelper';
 
 // The default jest-runner is required because it is the default test runner

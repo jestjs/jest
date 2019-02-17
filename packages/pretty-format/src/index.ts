@@ -89,7 +89,7 @@ function printFunction(val: Function, printFunctionName: boolean): string {
   return '[Function ' + (val.name || 'anonymous') + ']';
 }
 
-function printSymbol(val: Symbol): string {
+function printSymbol(val: symbol): string {
   return symbolToString.call(val).replace(SYMBOL_REGEXP, 'Symbol($1)');
 }
 
