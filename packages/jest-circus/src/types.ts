@@ -217,17 +217,23 @@ export type TestEntry = {
   timeout: number | undefined | null;
 };
 
-export const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
-export const RETRY_TIMES = Symbol.for('RETRY_TIMES');
+export const STATE_SYM = (Symbol(
+  'JEST_STATE_SYMBOL',
+) as unknown) as 'STATE_SYM_SYMBOL';
+export const RETRY_TIMES = (Symbol.for(
+  'RETRY_TIMES',
+) as unknown) as 'RETRY_TIMES_SYMBOL';
 // To pass this value from Runtime object to state we need to use global[sym]
-export const TEST_TIMEOUT_SYMBOL = Symbol.for('TEST_TIMEOUT_SYMBOL');
+export const TEST_TIMEOUT_SYMBOL = (Symbol.for(
+  'TEST_TIMEOUT_SYMBOL',
+) as unknown) as 'TEST_TIMEOUT_SYMBOL';
 
 declare global {
   module NodeJS {
     interface Global {
-      [STATE_SYM]: State; // eslint-disable-line no-undef
-      [RETRY_TIMES]: string; // eslint-disable-line no-undef
-      [TEST_TIMEOUT_SYMBOL]: number; // eslint-disable-line no-undef
+      STATE_SYM_SYMBOL: State; // eslint-disable-line no-undef
+      RETRY_TIMES_SYMBOL: string; // eslint-disable-line no-undef
+      TEST_TIMEOUT_SYMBOL: number; // eslint-disable-line no-undef
     }
   }
 }

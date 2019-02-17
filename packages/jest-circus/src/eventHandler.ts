@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventHandler, Exception, TEST_TIMEOUT_SYMBOL} from './types';
+import {EventHandler, TEST_TIMEOUT_SYMBOL} from './types';
 
 import {
   addErrorToEachTestUnderDescribe,
