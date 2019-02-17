@@ -4,15 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import {AsymmetricMatcher} from './asymmetricMatchers';
-import type {
+import { AsymmetricMatcher } from './asymmetricMatchers';
+import {
   Expect,
   MatchersObject,
-  SyncExpectationResult,
-} from 'types/Matchers';
+  ExpectationResult,
+} from './types';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.
@@ -22,7 +21,7 @@ const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 // Jest may override the stack trace of Errors thrown by internal matchers.
 export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
 
-if (!global[JEST_MATCHERS_OBJECT]) {
+if (!(global as any)[JEST_MATCHERS_OBJECT]) {
   Object.defineProperty(global, JEST_MATCHERS_OBJECT, {
     value: {
       matchers: Object.create(null),
@@ -36,13 +35,13 @@ if (!global[JEST_MATCHERS_OBJECT]) {
   });
 }
 
-export const getState = () => global[JEST_MATCHERS_OBJECT].state;
+export const getState = () => (global as any)[JEST_MATCHERS_OBJECT].state;
 
 export const setState = (state: Object) => {
-  Object.assign(global[JEST_MATCHERS_OBJECT].state, state);
+  Object.assign((global as any)[JEST_MATCHERS_OBJECT].state, state);
 };
 
-export const getMatchers = () => global[JEST_MATCHERS_OBJECT].matchers;
+export const getMatchers = () => (global as any)[JEST_MATCHERS_OBJECT].matchers;
 
 export const setMatchers = (
   matchers: MatchersObject,
@@ -60,6 +59,7 @@ export const setMatchers = (
 
       class CustomMatcher extends AsymmetricMatcher {
         sample: Array<any>;
+        inverse: boolean;
 
         constructor(inverse: boolean = false, ...sample: Array<any>) {
           super();
@@ -68,10 +68,11 @@ export const setMatchers = (
         }
 
         asymmetricMatch(other: any) {
-          const {pass} = ((matcher(
-            (other: any),
-            ...(this.sample: any),
-          ): any): SyncExpectationResult);
+          // @ts-ignore
+          const { pass }: ExpectationResult = matcher(
+            other,
+            ...this.sample as [any, any],
+          );
 
           return this.inverse ? !pass : pass;
         }
@@ -99,5 +100,5 @@ export const setMatchers = (
     }
   });
 
-  Object.assign(global[JEST_MATCHERS_OBJECT].matchers, matchers);
+  Object.assign((global as any)[JEST_MATCHERS_OBJECT].matchers, matchers);
 };
