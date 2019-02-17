@@ -8,6 +8,7 @@
   },
   "license": "MIT",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "browser": "build-es5/index.js",
   "dependencies": {
     "ansi-styles": "^3.2.0",
