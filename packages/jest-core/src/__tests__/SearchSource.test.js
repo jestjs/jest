@@ -471,7 +471,7 @@ describe('SearchSource', () => {
     });
 
     it('finds tests for a single file', () => {
-      const input = ['packages/jest-cli/src/__tests__/test_root/module.jsx'];
+      const input = ['packages/jest-core/src/__tests__/test_root/module.jsx'];
       const data = searchSource.findRelatedTestsFromPattern(input);
       expect(toPaths(data.tests).sort()).toEqual([
         path.join(rootDir, '__testtests__', 'test.js'),
@@ -481,8 +481,8 @@ describe('SearchSource', () => {
 
     it('finds tests for multiple files', () => {
       const input = [
-        'packages/jest-cli/src/__tests__/test_root/module.jsx',
-        'packages/jest-cli/src/__tests__/test_root/module.foobar',
+        'packages/jest-core/src/__tests__/test_root/module.jsx',
+        'packages/jest-core/src/__tests__/test_root/module.foobar',
       ];
       const data = searchSource.findRelatedTestsFromPattern(input);
       expect(toPaths(data.tests).sort()).toEqual([
