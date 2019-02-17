@@ -10,6 +10,7 @@
   "main": "build/index.js",
   "dependencies": {
     "@babel/core": "^7.1.0",
+    "@jest/types": "^24.1.0",
     "babel-plugin-istanbul": "^5.1.0",
     "chalk": "^2.0.1",
     "convert-source-map": "^1.4.0",
@@ -21,11 +22,13 @@
     "micromatch": "^3.1.10",
     "realpath-native": "^1.1.0",
     "slash": "^2.0.0",
+    "source-map": "^0.6.1",
     "write-file-atomic": "2.4.1"
   },
   "devDependencies": {
     "@types/babel__core": "^7.0.4",
     "@types/convert-source-map": "^1.5.1",
+    "@types/fast-json-stable-stringify": "^2.0.0",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^3.1.0",
     "@types/write-file-atomic": "^2.1.1"

@@ -1,7 +1,5 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
-// @flow
-
 import chalk from 'chalk';
 
 const DOT = ' \u2022 ';
