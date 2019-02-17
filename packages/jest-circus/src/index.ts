@@ -96,7 +96,7 @@ test.todo = (testName: TestName, ...rest: Array<any>): void => {
       test.todo,
     );
   }
-  return _addTest(testName, 'todo', () => undefined, test.todo);
+  return _addTest(testName, 'todo', () => {}, test.todo);
 };
 
 const _addTest = (
