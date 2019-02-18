@@ -7,11 +7,11 @@
  */
 'use strict';
 
+import {tmpdir} from 'os';
 import path from 'path';
 import {Config} from '@jest/types';
-// @ts-ignore
-import {normalize} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
+import {makeProjectConfig} from '../../../../TestUtils';
 
 import DependencyResolver from '../index';
 
@@ -28,13 +28,12 @@ const filter = (path: Config.Path) =>
 
 beforeEach(() => {
   Runtime = require('jest-runtime');
-  config = normalize(
-    {
-      rootDir: '.',
-      roots: ['./packages/jest-resolve-dependencies'],
-    },
-    {},
-  ).options;
+  config = makeProjectConfig({
+    cacheDirectory: path.resolve(tmpdir(), 'jest-resolve-dependencies-test'),
+    moduleDirectories: ['node_modules'],
+    rootDir: '.',
+    roots: ['./packages/jest-resolve-dependencies'],
+  });
   return Runtime.createContext(config, {maxWorkers}).then((hasteMap: any) => {
     dependencyResolver = new DependencyResolver(
       hasteMap.resolver,
