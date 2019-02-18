@@ -190,6 +190,8 @@ jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
 <p>以上すべてのモックで実装を変更するには、1つのテストまたはすべてのテストに対して、既存のモックの中で <code>mockImplementation()</code> を呼び出します。</p>
 <p>jest.mock の呼び出しはコードのトップに引き上げられます。 たとえば <code>beforeAll()</code> の中などで後からモックを指定するには、ファクトリ引数で指定するのではなく、<code>mockImplementation()</code> (または <code>mockImplementationOnce()</code>) を既存のモックの中で呼び出します。 これにより、テスト間で必要に応じてモックを変更することができるようになります。</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+
 jest.mock(<span class="hljs-string">'./sound-player'</span>);
 
 describe(<span class="hljs-string">'When SoundPlayer throws an error'</span>, () =&gt; {

@@ -191,6 +191,8 @@ jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
 <p>Puede reemplazar todas las simulaciones de arriba para cambiar la implementación, para una así como para todas las pruebas, al llamar <code>mockImplementation()</code> en la simulación existente.</p>
 <p>Las llamadas a jest.mock son elevadas al principio del código. Puede especificar una simulación luego, por ejemplo, en <code>beforeAll()</code>, al llamar <code>mockImplementation()</code> (o <code>mockImplementationOnce()</code>) en la simulación existente en lugar de usar el parámetro de fábrica. Esto también le permite cambiar la simulación entre pruebas, si se necesita:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+
 jest.mock(<span class="hljs-string">'./sound-player'</span>);
 
 describe(<span class="hljs-string">'When SoundPlayer throws an error'</span>, () =&gt; {

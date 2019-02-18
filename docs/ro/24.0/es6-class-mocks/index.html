@@ -190,6 +190,8 @@ jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
 <p>You can replace all of the above mocks in order to change the implementation, for a single test or all tests, by calling <code>mockImplementation()</code> on the existing mock.</p>
 <p>Calls to jest.mock are hoisted to the top of the code. You can specify a mock later, e.g. in <code>beforeAll()</code>, by calling <code>mockImplementation()</code> (or <code>mockImplementationOnce()</code>) on the existing mock instead of using the factory parameter. This also allows you to change the mock between tests, if needed:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+
 jest.mock(<span class="hljs-string">'./sound-player'</span>);
 
 describe(<span class="hljs-string">'When SoundPlayer throws an error'</span>, () =&gt; {

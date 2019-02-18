@@ -190,6 +190,8 @@ jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
 <p>Вы можете заменить все перечисленное высмеивается для того, чтобы изменить реализацию, на один тест или тесты, по телефону <code>&gt;mockImplementation()</code> на существующем макете.</p>
 <p>Вызывает шутку.макеты поднимаются наверх кода. You can specify a mock later, e.g. in <code>beforeAll()</code>, by calling <code>mockImplementation()</code> (or <code>mockImplementationOnce()</code>) on the existing mock instead of using the factory parameter. Это также позволяет при необходимости изменить макет между тестами:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+
 jest.mock(<span class="hljs-string">'./sound-player'</span>);
 
 describe(<span class="hljs-string">'When SoundPlayer throws an error'</span>, () =&gt; {
