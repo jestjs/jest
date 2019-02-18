@@ -33,7 +33,7 @@ if (!(global as any)[JEST_MATCHERS_OBJECT]) {
 
 export const getState = () => (global as any)[JEST_MATCHERS_OBJECT].state;
 
-export const setState = (state: Object) => {
+export const setState = (state: object) => {
   Object.assign((global as any)[JEST_MATCHERS_OBJECT].state, state);
 };
 
@@ -54,20 +54,19 @@ export const setMatchers = (
       // expect is defined
 
       class CustomMatcher extends AsymmetricMatcher {
-        sample: Array<any>;
-        inverse: boolean;
+        sample: Array<unknown>;
 
-        constructor(inverse: boolean = false, ...sample: Array<any>) {
+        constructor(inverse: boolean = false, ...sample: Array<unknown>) {
           super();
           this.inverse = inverse;
           this.sample = sample;
         }
 
-        asymmetricMatch(other: any) {
+        asymmetricMatch(other: unknown) {
           // @ts-ignore
           const {pass}: ExpectationResult = matcher(
             other,
-            ...(this.sample as [any, any]),
+            ...(this.sample as [unknown, unknown]),
           );
 
           return this.inverse ? !pass : pass;
@@ -86,12 +85,12 @@ export const setMatchers = (
         }
       }
 
-      expect[key] = (...sample: Array<any>) =>
+      expect[key] = (...sample: Array<unknown>) =>
         new CustomMatcher(false, ...sample);
       if (!expect.not) {
         expect.not = {};
       }
-      expect.not[key] = (...sample: Array<any>) =>
+      expect.not[key] = (...sample: Array<unknown>) =>
         new CustomMatcher(true, ...sample);
     }
   });
