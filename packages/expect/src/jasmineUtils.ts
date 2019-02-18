@@ -24,12 +24,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* eslint-disable */
 
-type Tester = (a: any, b: any) => boolean | typeof undefined;
+import { Tester } from "./types";
 
 // Extracted out of jasmine 2.5.2
 export function equals(
-  a: any,
-  b: any,
+  a: unknown,
+  b: unknown,
   customTesters?: Array<Tester>,
   strictCheck?: boolean,
 ): boolean {
@@ -203,7 +203,7 @@ function eq(a: any, b: any, aStack: any, bStack: any, customTesters: any, hasKey
   return result;
 }
 
-function keys(obj: any, isArray: any, hasKey: any) {
+function keys(obj: object, isArray: boolean, hasKey: (obj: object, key: string) => boolean) {
   var allKeys = (function (o) {
     var keys = [];
     for (var key in o) {
@@ -237,15 +237,15 @@ function keys(obj: any, isArray: any, hasKey: any) {
   return extraKeys;
 }
 
-function hasDefinedKey(obj: any, key: any) {
+function hasDefinedKey(obj: any, key: string) {
   return hasKey(obj, key) && obj[key] !== undefined;
 }
 
-function hasKey(obj: any, key: any) {
+function hasKey(obj: any, key: string) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
 
-export function isA(typeName: string, value: any) {
+export function isA(typeName: string, value: unknown) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
@@ -271,7 +271,7 @@ export function isUndefined(obj: any) {
   return obj === void 0;
 }
 
-function getPrototype(obj: any) {
+function getPrototype(obj: object) {
   if (Object.getPrototypeOf) {
     return Object.getPrototypeOf(obj);
   }
@@ -283,7 +283,7 @@ function getPrototype(obj: any) {
   return obj.constructor.prototype;
 }
 
-export function hasProperty(obj: Object | null, property: string): boolean {
+export function hasProperty(obj: object | null, property: string): boolean {
   if (!obj) {
     return false;
   }
