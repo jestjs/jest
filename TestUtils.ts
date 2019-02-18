@@ -3,15 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-'use strict';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import {Config} from '@jest/types';
 
-import type {GlobalConfig, ProjectConfig} from 'types/Config';
-
-const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
+const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   bail: 0,
   changedFilesWithAncestor: false,
   changedSince: '',
@@ -67,7 +64,7 @@ const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   watchman: false,
 };
 
-const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
+const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   automock: false,
   browser: false,
   cache: false,
@@ -124,7 +121,9 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   watchPathIgnorePatterns: [],
 };
 
-export const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
+export const makeGlobalConfig = (
+  overrides: Partial<Config.GlobalConfig> = {},
+): Config.GlobalConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
   Object.keys(DEFAULT_GLOBAL_CONFIG).forEach(key => overridesKeys.delete(key));
 
@@ -138,7 +137,9 @@ export const makeGlobalConfig = (overrides: Object = {}): GlobalConfig => {
   return {...DEFAULT_GLOBAL_CONFIG, ...overrides};
 };
 
-export const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
+export const makeProjectConfig = (
+  overrides: Partial<Config.ProjectConfig> = {},
+): Config.ProjectConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
   Object.keys(DEFAULT_PROJECT_CONFIG).forEach(key => overridesKeys.delete(key));
 
@@ -149,5 +150,5 @@ export const makeProjectConfig = (overrides: Object = {}): ProjectConfig => {
     `);
   }
 
-  return {...DEFAULT_GLOBAL_CONFIG, ...overrides};
+  return {...DEFAULT_PROJECT_CONFIG, ...overrides};
 };

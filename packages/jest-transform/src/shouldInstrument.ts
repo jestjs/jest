@@ -26,7 +26,6 @@ export default function shouldInstrument(
   }
 
   if (
-    config.forceCoverageMatch &&
     config.forceCoverageMatch.length &&
     micromatch.any(filename, config.forceCoverageMatch)
   ) {
@@ -34,21 +33,13 @@ export default function shouldInstrument(
   }
 
   if (
-    !config.testPathIgnorePatterns ||
     !config.testPathIgnorePatterns.some(pattern => !!filename.match(pattern))
   ) {
-    if (
-      config.testRegex &&
-      config.testRegex.some(regex => new RegExp(regex).test(filename))
-    ) {
+    if (config.testRegex.some(regex => new RegExp(regex).test(filename))) {
       return false;
     }
 
-    if (
-      config.testMatch &&
-      config.testMatch.length &&
-      micromatch.some(replacePathSepForGlob(filename), config.testMatch)
-    ) {
+    if (micromatch.some(replacePathSepForGlob(filename), config.testMatch)) {
       return false;
     }
   }
@@ -75,7 +66,6 @@ export default function shouldInstrument(
   }
 
   if (
-    config.coveragePathIgnorePatterns &&
     config.coveragePathIgnorePatterns.some(pattern => !!filename.match(pattern))
   ) {
     return false;
@@ -89,19 +79,11 @@ export default function shouldInstrument(
     return false;
   }
 
-  if (
-    //TODO: Remove additional check when normalized config provided in unit test
-    config.setupFiles &&
-    config.setupFiles.some(setupFile => setupFile === filename)
-  ) {
+  if (config.setupFiles.some(setupFile => setupFile === filename)) {
     return false;
   }
 
-  if (
-    //TODO: Remove additional check when normalized config provided in unit test
-    config.setupFilesAfterEnv &&
-    config.setupFilesAfterEnv.some(setupFile => setupFile === filename)
-  ) {
+  if (config.setupFilesAfterEnv.some(setupFile => setupFile === filename)) {
     return false;
   }
 
