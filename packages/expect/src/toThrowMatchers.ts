@@ -15,8 +15,9 @@ import {
   printExpected,
   printReceived,
   printWithType,
+  MatcherHintOptions,
 } from 'jest-matcher-utils';
-import {MatcherHintOptions, MatchersObject} from './types';
+import {MatchersObject, MatcherState} from './types';
 import {isError} from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw';
@@ -57,7 +58,7 @@ const getThrown = (e: any): Thrown => {
 };
 
 export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
-  function(this: any, received: Function, expected: any) {
+  function(this: MatcherState, received: Function, expected: any) {
     const options = {
       isNot: this.isNot,
       promise: this.promise,
@@ -153,7 +154,7 @@ const toThrowExpectedRegExp = (
 };
 
 type AsymmetricMatcher = {
-  asymmetricMatch: (received: any) => boolean;
+  asymmetricMatch: (received: unknown) => boolean;
 };
 
 const toThrowExpectedAsymmetric = (
@@ -312,7 +313,7 @@ const toThrow = (
   return {message, pass};
 };
 
-const formatExpected = (label: string, expected: any) =>
+const formatExpected = (label: string, expected: unknown) =>
   label + printExpected(expected) + '\n';
 
 const formatReceived = (label: string, thrown: Thrown | null, key: string) => {
