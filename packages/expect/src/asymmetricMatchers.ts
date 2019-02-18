@@ -12,6 +12,7 @@ import {emptyObject} from './utils';
 
 export class AsymmetricMatcher {
   $$typeof: Symbol;
+  inverse?: boolean;
 
   constructor() {
     this.$$typeof = Symbol.for('jest.asymmetricMatcher');
@@ -21,7 +22,7 @@ export class AsymmetricMatcher {
 class Any extends AsymmetricMatcher {
   sample: any;
 
-  constructor(sample: any) {
+  constructor(sample: unknown) {
     super();
     if (typeof sample === 'undefined') {
       throw new TypeError(
@@ -32,7 +33,7 @@ class Any extends AsymmetricMatcher {
     this.sample = sample;
   }
 
-  asymmetricMatch(other: any) {
+  asymmetricMatch(other: unknown) {
     if (this.sample == String) {
       return typeof other == 'string' || other instanceof String;
     }
@@ -90,7 +91,7 @@ class Any extends AsymmetricMatcher {
 }
 
 class Anything extends AsymmetricMatcher {
-  asymmetricMatch(other: any) {
+  asymmetricMatch(other: unknown) {
     return !isUndefined(other) && other !== null;
   }
 
@@ -106,16 +107,15 @@ class Anything extends AsymmetricMatcher {
 }
 
 class ArrayContaining extends AsymmetricMatcher {
-  sample: Array<any>;
-  inverse: boolean;
+  sample: Array<unknown>;
 
-  constructor(sample: Array<any>, inverse: boolean = false) {
+  constructor(sample: Array<unknown>, inverse: boolean = false) {
     super();
     this.sample = sample;
     this.inverse = inverse;
   }
 
-  asymmetricMatch(other: Array<any>) {
+  asymmetricMatch(other: Array<unknown>) {
     if (!Array.isArray(this.sample)) {
       throw new Error(
         `You must provide an array to ${this.toString()}, not '` +
@@ -145,7 +145,6 @@ class ArrayContaining extends AsymmetricMatcher {
 
 class ObjectContaining extends AsymmetricMatcher {
   sample: Object;
-  inverse: boolean;
 
   constructor(sample: Object, inverse: boolean = false) {
     super();
@@ -200,7 +199,6 @@ class ObjectContaining extends AsymmetricMatcher {
 
 class StringContaining extends AsymmetricMatcher {
   sample: string;
-  inverse: boolean;
 
   constructor(sample: string, inverse: boolean = false) {
     super();
@@ -211,7 +209,7 @@ class StringContaining extends AsymmetricMatcher {
     this.inverse = inverse;
   }
 
-  asymmetricMatch(other: any) {
+  asymmetricMatch(other: string) {
     const result = isA('String', other) && other.includes(this.sample);
 
     return this.inverse ? !result : result;
@@ -228,7 +226,6 @@ class StringContaining extends AsymmetricMatcher {
 
 class StringMatching extends AsymmetricMatcher {
   sample: RegExp;
-  inverse: boolean;
 
   constructor(sample: string | RegExp, inverse: boolean = false) {
     super();
@@ -240,7 +237,7 @@ class StringMatching extends AsymmetricMatcher {
     this.inverse = inverse;
   }
 
-  asymmetricMatch(other: any) {
+  asymmetricMatch(other: string) {
     const result = isA('String', other) && this.sample.test(other);
 
     return this.inverse ? !result : result;
@@ -257,9 +254,9 @@ class StringMatching extends AsymmetricMatcher {
 
 export const any = (expectedObject: any) => new Any(expectedObject);
 export const anything = () => new Anything();
-export const arrayContaining = (sample: Array<any>) =>
+export const arrayContaining = (sample: Array<unknown>) =>
   new ArrayContaining(sample);
-export const arrayNotContaining = (sample: Array<any>) =>
+export const arrayNotContaining = (sample: Array<unknown>) =>
   new ArrayContaining(sample, true);
 export const objectContaining = (sample: Object) =>
   new ObjectContaining(sample);
