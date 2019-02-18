@@ -9,6 +9,7 @@
 
 import isValidPath from '../is_valid_path';
 import path from 'path';
+//$FlowFixMe: Converted to TS
 import {makeGlobalConfig} from '../../../../../TestUtils';
 
 const rootDir = path.resolve(path.sep, 'root');
