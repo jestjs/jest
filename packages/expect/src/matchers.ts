@@ -37,14 +37,14 @@ import {
 import {equals} from './jasmineUtils';
 
 type ContainIterable =
-  | Array<any>
-  | Set<any>
+  | Array<unknown>
+  | Set<unknown>
   | NodeListOf<any>
   | DOMTokenList
   | HTMLCollectionOf<any>;
 
 const matchers: MatchersObject = {
-  toBe(this: MatcherState, received: any, expected: any) {
+  toBe(this: MatcherState, received: unknown, expected: unknown) {
     const comment = 'Object.is equality';
     const pass = Object.is(received, expected);
 
@@ -140,7 +140,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeDefined(this: MatcherState, received: any, expected: void) {
+  toBeDefined(this: MatcherState, received: unknown, expected: void) {
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
@@ -157,7 +157,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeFalsy(this: MatcherState, received: any, expected: void) {
+  toBeFalsy(this: MatcherState, received: unknown, expected: void) {
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
@@ -315,7 +315,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeNull(this: MatcherState, received: any, expected: void) {
+  toBeNull(this: MatcherState, received: unknown, expected: void) {
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
@@ -332,7 +332,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeTruthy(this: MatcherState, received: any, expected: void) {
+  toBeTruthy(this: MatcherState, received: unknown, expected: void) {
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
@@ -349,7 +349,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeUndefined(this: MatcherState, received: any, expected: void) {
+  toBeUndefined(this: MatcherState, received: unknown, expected: void) {
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
@@ -369,7 +369,7 @@ const matchers: MatchersObject = {
   toContain(
     this: MatcherState,
     collection: ContainIterable | string,
-    value: any,
+    value: unknown,
   ) {
     const collectionType = getType(collection);
 
@@ -425,7 +425,11 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toContainEqual(this: MatcherState, collection: ContainIterable, value: any) {
+  toContainEqual(
+    this: MatcherState,
+    collection: ContainIterable,
+    value: unknown,
+  ) {
     const collectionType = getType(collection);
     let converted = null;
     if (Array.isArray(collection)) {
@@ -470,7 +474,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toEqual(this: MatcherState, received: any, expected: any) {
+  toEqual(this: MatcherState, received: unknown, expected: unknown) {
     const pass = equals(received, expected, [iterableEquality]);
 
     const message = pass
@@ -561,7 +565,7 @@ const matchers: MatchersObject = {
 
   toHaveProperty(
     this: MatcherState,
-    object: Object,
+    object: object,
     keyPath: string | Array<any>,
     value?: any,
   ) {
@@ -707,8 +711,8 @@ const matchers: MatchersObject = {
 
   toMatchObject(
     this: MatcherState,
-    receivedObject: Object,
-    expectedObject: Object,
+    receivedObject: object,
+    expectedObject: object,
   ) {
     if (typeof receivedObject !== 'object' || receivedObject === null) {
       throw new Error(
@@ -767,7 +771,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toStrictEqual(this: MatcherState, received: any, expected: any) {
+  toStrictEqual(this: MatcherState, received: unknown, expected: unknown) {
     const pass = equals(
       received,
       expected,
