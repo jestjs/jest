@@ -34,13 +34,15 @@ beforeEach(() => {
     rootDir: '.',
     roots: ['./packages/jest-resolve-dependencies'],
   });
-  return Runtime.createContext(config, {maxWorkers}).then((hasteMap: any) => {
-    dependencyResolver = new DependencyResolver(
-      hasteMap.resolver,
-      hasteMap.hasteFS,
-      buildSnapshotResolver(config),
-    );
-  });
+  return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
+    (hasteMap: any) => {
+      dependencyResolver = new DependencyResolver(
+        hasteMap.resolver,
+        hasteMap.hasteFS,
+        buildSnapshotResolver(config),
+      );
+    },
+  );
 });
 
 test('resolves no dependencies for non-existent path', () => {
