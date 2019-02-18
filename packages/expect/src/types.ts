@@ -25,7 +25,7 @@ export type RawMatcherFn = (
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
-type Tester = (a: any, b: any) => boolean | undefined;
+export type Tester = (a: any, b: any) => boolean | undefined;
 
 export type MatcherState = {
   assertionCalls: number;
