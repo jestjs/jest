@@ -314,7 +314,7 @@ const makeThrowingMatcher = (
       );
 
       if (isPromise(potentialResult)) {
-        const asyncResult: AsyncExpectationResult = potentialResult as any;
+        const asyncResult = potentialResult as AsyncExpectationResult;
         const asyncError = new JestAssertionError();
         if (Error.captureStackTrace) {
           Error.captureStackTrace(asyncError, throwingMatcher);
@@ -324,7 +324,7 @@ const makeThrowingMatcher = (
           .then(aResult => processResult(aResult, asyncError))
           .catch(error => handlError(error));
       } else {
-        const syncResult: SyncExpectationResult = potentialResult as any;
+        const syncResult = potentialResult as SyncExpectationResult;
 
         return processResult(syncResult);
       }
