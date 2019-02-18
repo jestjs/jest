@@ -7,7 +7,7 @@
 
 import ansiStyles from 'ansi-styles';
 
-const returnInput = (str: any) => str;
+const returnInput = (str: string) => str;
 
 const allColorsAsFunc = Object.keys(ansiStyles)
   .map(style => ({[style]: returnInput}))
