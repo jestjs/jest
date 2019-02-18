@@ -14,7 +14,7 @@
 - `[jest-changed-files]` Improve default file selection for Mercurial repos ([#7880](https://github.com/facebook/jest/pull/7880))
 - `[jest-validate]` Fix validating async functions ([#7894](https://github.com/facebook/jest/issues/7894))
 - `[jest-circus]` Fix bug with test.only ([#7888](https://github.com/facebook/jest/pull/7888))
-- `[jest-transform]` Normalize config and remove unecessary checks ([#7801](https://github.com/facebook/jest/pull/7801)
+- `[jest-transform]` Normalize config and remove unecessary checks, convert `TestUtils.js` to TypeScript ([#7801](https://github.com/facebook/jest/pull/7801)
 
 ### Chore & Maintenance
 
