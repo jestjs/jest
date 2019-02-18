@@ -25,7 +25,7 @@ class Output {
   }
 
   get isTTY() {
-    return (this._stdout as NodeJS.WriteStream).isTTY;
+    return this._stdout.isTTY;
   }
 
   err(chunk: any, encoding?: Encoding, callback?: Callback) {
