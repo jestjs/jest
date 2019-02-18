@@ -26,9 +26,9 @@ import {MatchersObject} from './types';
 import {equals} from './jasmineUtils';
 import {iterableEquality, partition, isOneline} from './utils';
 
-const createToBeCalledMatcher = (matcherName: any) => (
+const createToBeCalledMatcher = (matcherName: string) => (
   received: any,
-  expected: any,
+  expected: unknown,
 ) => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
@@ -61,9 +61,9 @@ const createToBeCalledMatcher = (matcherName: any) => (
   return {message, pass};
 };
 
-const createToReturnMatcher = (matcherName: any) => (
+const createToReturnMatcher = (matcherName: string) => (
   received: any,
-  expected: any,
+  expected: unknown,
 ) => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
@@ -169,9 +169,9 @@ const createToReturnTimesMatcher = (matcherName: string) => (
   return {message, pass};
 };
 
-const createToBeCalledWithMatcher = (matcherName: any) => (
+const createToBeCalledWithMatcher = (matcherName: string) => (
   received: any,
-  ...expected: any
+  ...expected: Array<unknown>
 ) => {
   ensureMock(received, matcherName);
 
@@ -207,9 +207,9 @@ const createToBeCalledWithMatcher = (matcherName: any) => (
   return {message, pass};
 };
 
-const createToReturnWithMatcher = (matcherName: any) => (
+const createToReturnWithMatcher = (matcherName: string) => (
   received: any,
-  expected: any,
+  expected: unknown,
 ) => {
   ensureMock(received, matcherName);
 
@@ -250,9 +250,9 @@ const createToReturnWithMatcher = (matcherName: any) => (
   return {message, pass};
 };
 
-const createLastCalledWithMatcher = (matcherName: any) => (
+const createLastCalledWithMatcher = (matcherName: string) => (
   received: any,
-  ...expected: Array<any>
+  ...expected: Array<unknown>
 ) => {
   ensureMock(received, matcherName);
 
@@ -283,9 +283,9 @@ const createLastCalledWithMatcher = (matcherName: any) => (
   return {message, pass};
 };
 
-const createLastReturnedMatcher = (matcherName: any) => (
+const createLastReturnedMatcher = (matcherName: string) => (
   received: any,
-  expected: any,
+  expected: unknown,
 ) => {
   ensureMock(received, matcherName);
 
@@ -331,7 +331,7 @@ const createLastReturnedMatcher = (matcherName: any) => (
 const createNthCalledWithMatcher = (matcherName: string) => (
   received: any,
   nth: number,
-  ...expected: any
+  ...expected: Array<unknown>
 ) => {
   ensureMock(received, matcherName);
 
@@ -384,7 +384,7 @@ const createNthCalledWithMatcher = (matcherName: string) => (
 const createNthReturnedWithMatcher = (matcherName: string) => (
   received: any,
   nth: number,
-  expected: any,
+  expected: unknown,
 ) => {
   ensureMock(received, matcherName);
 
