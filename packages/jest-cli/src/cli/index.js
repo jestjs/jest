@@ -41,9 +41,8 @@ export async function run(maybeArgv?: Argv, project?: Path) {
     const {results, globalConfig} = await runCLI(argv, projects);
     readResultsAndExit(results, globalConfig);
   } catch (error) {
-    clearLine(output.error);
-    clearLine(output.log);
-    output.error(chalk.red(error.stack));
+    output.clearLine(output.err, output.out);
+    output.err(chalk.red(error.stack));
     exit(1);
     throw error;
   }
@@ -119,7 +118,7 @@ const readResultsAndExit = (
 
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
-      output.error(
+      output.err(
         chalk.red.bold('Force exiting Jest\n\n') +
           chalk.red(
             'Have you considered using `--detectOpenHandles` to detect ' +
@@ -131,7 +130,7 @@ const readResultsAndExit = (
     exit(code);
   } else if (!globalConfig.detectOpenHandles) {
     setTimeout(() => {
-      output.error(
+      output.err(
         chalk.red.bold(
           'Jest did not exit one second after the test run has completed.\n\n',
         ) +

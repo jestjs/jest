@@ -9,6 +9,11 @@ import {Writable} from 'stream';
 
 type Callback = (error: Error | null | undefined) => void;
 type Encoding = string | undefined;
+type WriteFn = (
+  chunk: any,
+  encoding?: Encoding,
+  callback?: Callback,
+) => boolean;
 
 class Output {
   private _stdout: NodeJS.WriteStream;
@@ -23,19 +28,25 @@ class Output {
     return (this._stdout as NodeJS.WriteStream).isTTY;
   }
 
-  error(chunk: any, encoding?: Encoding, callback?: Callback) {
+  err(chunk: any, encoding?: Encoding, callback?: Callback) {
     return this._stderr.write(chunk, encoding, callback);
   }
 
-  log(chunk: any, encoding?: Encoding, callback?: Callback) {
+  out(chunk: any, encoding?: Encoding, callback?: Callback) {
     return this._stdout.write(chunk, encoding, callback);
+  }
+
+  clearLine(...args: Array<WriteFn>) {
+    if (this.isTTY) {
+      args.forEach(fn => fn.call(this, '\x1b[999D\x1b[K'));
+    }
   }
 
   setErrorStream(stream: NodeJS.WriteStream | Writable) {
     this._stderr = stream as NodeJS.WriteStream;
   }
 
-  setLogStream(stream: NodeJS.WriteStream | Writable) {
+  setOutStream(stream: NodeJS.WriteStream | Writable) {
     this._stdout = stream as NodeJS.WriteStream;
   }
 }

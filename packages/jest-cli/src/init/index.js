@@ -66,8 +66,8 @@ export default async (rootDir: string = realpath(process.cwd())) => {
     });
 
     if (!result.continue) {
-      output.log('\n');
-      output.log('Aborting...');
+      output.out('\n');
+      output.out('Aborting...');
       return;
     }
   }
@@ -81,8 +81,8 @@ export default async (rootDir: string = realpath(process.cwd())) => {
   }
 
   // Start the init process
-  output.log('\n');
-  output.log(
+  output.out('\n');
+  output.out(
     chalk.underline(
       `The following questions will help Jest to create a suitable configuration for your project\n`,
     ),
@@ -97,8 +97,8 @@ export default async (rootDir: string = realpath(process.cwd())) => {
   });
 
   if (promptAborted) {
-    output.log('\n');
-    output.log('Aborting...');
+    output.out('\n');
+    output.out('Aborting...');
     return;
   }
 
@@ -112,14 +112,14 @@ export default async (rootDir: string = realpath(process.cwd())) => {
 
     fs.writeFileSync(projectPackageJsonPath, modifiedPackageJson);
 
-    output.log('\n');
-    output.log(`✏️  Modified ${chalk.cyan(projectPackageJsonPath)}`);
+    output.out('\n');
+    output.out(`✏️  Modified ${chalk.cyan(projectPackageJsonPath)}`);
   }
 
   const generatedConfig = generateConfigFile(results);
 
   fs.writeFileSync(jestConfigPath, generatedConfig);
 
-  output.log('\n');
-  output.log(`📝  Configuration file created at ${chalk.cyan(jestConfigPath)}`);
+  output.out('\n');
+  output.out(`📝  Configuration file created at ${chalk.cyan(jestConfigPath)}`);
 };
