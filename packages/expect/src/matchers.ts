@@ -23,8 +23,9 @@ import {
   printReceived,
   printExpected,
   printWithType,
+  MatcherHintOptions,
 } from 'jest-matcher-utils';
-import {MatchersObject} from './types';
+import {MatchersObject, MatcherState} from './types';
 import {
   getObjectSubset,
   getPath,
@@ -44,7 +45,7 @@ type ContainIterable =
   | HTMLCollectionOf<any>;
 
 const matchers: MatchersObject = {
-  toBe(this: any, received: any, expected: any) {
+  toBe(this: MatcherState, received: any, expected: any) {
     const comment = 'Object.is equality';
     const pass = Object.is(received, expected);
 
@@ -86,10 +87,15 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: 'toBe', pass};
   },
 
-  toBeCloseTo(received: number, expected: number, precision: number = 2) {
-    const secondArgument = arguments.length === 3 ? 'precision' : null;
+  toBeCloseTo(
+    this: MatcherState,
+    received: number,
+    expected: number,
+    precision: number = 2,
+  ) {
+    const secondArgument = arguments.length === 3 ? 'precision' : undefined;
     const isNot = this.isNot;
-    const options: any = {
+    const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
       secondArgument,
@@ -135,8 +141,8 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeDefined(received: any, expected: void) {
-    const options: any = {
+  toBeDefined(this: MatcherState, received: any, expected: void) {
+    const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
@@ -152,8 +158,8 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeFalsy(received: any, expected: void) {
-    const options: any = {
+  toBeFalsy(this: MatcherState, received: any, expected: void) {
+    const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
@@ -169,9 +175,9 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeGreaterThan(received: number, expected: number) {
+  toBeGreaterThan(this: MatcherState, received: number, expected: number) {
     const isNot = this.isNot;
-    const options: any = {
+    const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
@@ -188,9 +194,13 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeGreaterThanOrEqual(received: number, expected: number) {
+  toBeGreaterThanOrEqual(
+    this: MatcherState,
+    received: number,
+    expected: number,
+  ) {
     const isNot = this.isNot;
-    const options: any = {
+    const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
@@ -207,7 +217,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeInstanceOf(this: any, received: any, constructor: Function) {
+  toBeInstanceOf(this: MatcherState, received: any, constructor: Function) {
     const constType = getType(constructor);
 
     if (constType !== 'function') {
@@ -251,9 +261,9 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeLessThan(this: any, received: number, expected: number) {
+  toBeLessThan(this: MatcherState, received: number, expected: number) {
     const isNot = this.isNot;
-    const options = {
+    const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
@@ -270,9 +280,9 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeLessThanOrEqual(received: number, expected: number) {
+  toBeLessThanOrEqual(this: MatcherState, received: number, expected: number) {
     const isNot = this.isNot;
-    const options: any = {
+    const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
@@ -289,8 +299,8 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeNaN(received: any, expected: void) {
-    const options: any = {
+  toBeNaN(this: MatcherState, received: any, expected: void) {
+    const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
@@ -306,8 +316,8 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeNull(received: any, expected: void) {
-    const options: any = {
+  toBeNull(this: MatcherState, received: any, expected: void) {
+    const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
@@ -323,8 +333,8 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeTruthy(received: any, expected: void) {
-    const options: any = {
+  toBeTruthy(this: MatcherState, received: any, expected: void) {
+    const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
@@ -340,8 +350,8 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeUndefined(received: any, expected: void) {
-    const options: any = {
+  toBeUndefined(this: MatcherState, received: any, expected: void) {
+    const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
@@ -357,7 +367,11 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toContain(this: any, collection: ContainIterable | string, value: any) {
+  toContain(
+    this: MatcherState,
+    collection: ContainIterable | string,
+    value: any,
+  ) {
     const collectionType = getType(collection);
 
     let converted: any = null;
@@ -412,7 +426,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toContainEqual(this: any, collection: ContainIterable, value: any) {
+  toContainEqual(this: MatcherState, collection: ContainIterable, value: any) {
     const collectionType = getType(collection);
     let converted = null;
     if (Array.isArray(collection)) {
@@ -457,7 +471,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toEqual(this: any, received: any, expected: any) {
+  toEqual(this: MatcherState, received: any, expected: any) {
     const pass = equals(received, expected, [iterableEquality]);
 
     const message = pass
@@ -489,7 +503,7 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: 'toEqual', pass};
   },
 
-  toHaveLength(this: any, received: any, length: number) {
+  toHaveLength(this: MatcherState, received: any, length: number) {
     if (
       typeof received !== 'string' &&
       (!received || typeof received.length !== 'number')
@@ -547,7 +561,7 @@ const matchers: MatchersObject = {
   },
 
   toHaveProperty(
-    this: any,
+    this: MatcherState,
     object: Object,
     keyPath: string | Array<any>,
     value?: any,
@@ -561,7 +575,7 @@ const matchers: MatchersObject = {
           matcherHint('.toHaveProperty', undefined, 'path', {
             isNot: this.isNot,
             secondArgument,
-          } as any),
+          } as MatcherHintOptions),
           `${RECEIVED_COLOR('received')} value must not be null nor undefined`,
           printWithType('Received', object, printReceived),
         ),
@@ -576,7 +590,7 @@ const matchers: MatchersObject = {
           matcherHint('.toHaveProperty', undefined, 'path', {
             isNot: this.isNot,
             secondArgument,
-          } as any),
+          } as MatcherHintOptions),
           `${EXPECTED_COLOR('expected')} path must be a string or array`,
           printWithType('Expected', keyPath, printExpected),
         ),
@@ -596,7 +610,7 @@ const matchers: MatchersObject = {
       ? () =>
           matcherHint('.not.toHaveProperty', 'object', 'path', {
             secondArgument,
-          } as any) +
+          } as MatcherHintOptions) +
           '\n\n' +
           `Expected the object:\n` +
           `  ${printReceived(object)}\n` +
@@ -611,7 +625,7 @@ const matchers: MatchersObject = {
           return (
             matcherHint('.toHaveProperty', 'object', 'path', {
               secondArgument,
-            } as any) +
+            } as MatcherHintOptions) +
             '\n\n' +
             `Expected the object:\n` +
             `  ${printReceived(object)}\n` +
@@ -638,7 +652,11 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toMatch(this: any, received: string, expected: string | RegExp | any) {
+  toMatch(
+    this: MatcherState,
+    received: string,
+    expected: string | RegExp | any,
+  ) {
     if (typeof received !== 'string') {
       throw new Error(
         matcherErrorMessage(
@@ -688,7 +706,11 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toMatchObject(this: any, receivedObject: Object, expectedObject: Object) {
+  toMatchObject(
+    this: MatcherState,
+    receivedObject: Object,
+    expectedObject: Object,
+  ) {
     if (typeof receivedObject !== 'object' || receivedObject === null) {
       throw new Error(
         matcherErrorMessage(
@@ -746,7 +768,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toStrictEqual(this: any, received: any, expected: any) {
+  toStrictEqual(this: MatcherState, received: any, expected: any) {
     const pass = equals(
       received,
       expected,
