@@ -104,11 +104,3 @@ export type ExpectationObject = {
   rejects: rejectsFn;
   not: notFn;
 };
-
-export type MatcherHintOptions = {
-  comment?: string;
-  isDirectExpectCall?: boolean;
-  isNot?: boolean;
-  promise?: string;
-  secondArgument?: string;
-};
