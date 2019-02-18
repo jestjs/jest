@@ -15,13 +15,13 @@ import {
 
 type GetPath = {
   hasEndProp?: boolean;
-  lastTraversedObject: any;
+  lastTraversedObject: unknown;
   traversedPath: Array<string>;
-  value?: any;
+  value?: unknown;
 };
 
 // Return whether object instance inherits getter from its class.
-const hasGetterFromConstructor = (object: Object, key: string) => {
+const hasGetterFromConstructor = (object: object, key: string) => {
   const constructor = object.constructor;
   if (constructor === Object) {
     // A literal object has Object as constructor.
@@ -43,12 +43,12 @@ const hasGetterFromConstructor = (object: Object, key: string) => {
   return descriptor !== undefined && typeof descriptor.get === 'function';
 };
 
-export const hasOwnProperty = (object: Object, key: string) =>
+export const hasOwnProperty = (object: object, key: string) =>
   Object.prototype.hasOwnProperty.call(object, key) ||
   hasGetterFromConstructor(object, key);
 
 export const getPath = (
-  object: Object,
+  object: object,
   propertyPath: string | Array<string>,
 ): GetPath => {
   if (!Array.isArray(propertyPath)) {
@@ -248,7 +248,7 @@ export const typeEquality = (a: any, b: any) => {
   return false;
 };
 
-export const sparseArrayEquality = (a: any, b: any) => {
+export const sparseArrayEquality = (a: unknown, b: unknown) => {
   if (!Array.isArray(a) || !Array.isArray(b)) {
     return undefined;
   }
@@ -271,7 +271,7 @@ export const partition = <T>(
 };
 
 // Copied from https://github.com/graingert/angular.js/blob/a43574052e9775cbc1d7dd8a086752c979b0f020/src/Angular.js#L685-L693
-export const isError = (value: any) => {
+export const isError = (value: unknown) => {
   switch (Object.prototype.toString.call(value)) {
     case '[object Error]':
       return true;
@@ -290,7 +290,7 @@ export function emptyObject(obj: any) {
 
 const MULTILINE_REGEXP = /[\r\n]/;
 
-export const isOneline = (expected: any, received: any) =>
+export const isOneline = (expected: any, received: any): boolean =>
   typeof expected === 'string' &&
   typeof received === 'string' &&
   (!MULTILINE_REGEXP.test(expected) || !MULTILINE_REGEXP.test(received));
