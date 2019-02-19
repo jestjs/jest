@@ -24,7 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* eslint-disable */
 
-import { Tester } from "./types";
+import {Tester} from './types';
 
 // Extracted out of jasmine 2.5.2
 export function equals(
@@ -61,7 +61,14 @@ function asymmetricMatch(a: any, b: any) {
 
 // Equality function lovingly adapted from isEqual in
 //   [Underscore](http://underscorejs.org)
-function eq(a: any, b: any, aStack: any, bStack: any, customTesters: any, hasKey: any): boolean {
+function eq(
+  a: any,
+  b: any,
+  aStack: any,
+  bStack: any,
+  customTesters: any,
+  hasKey: any,
+): boolean {
   var result = true;
 
   var asymmetricResult = asymmetricMatch(a, b);
@@ -203,8 +210,12 @@ function eq(a: any, b: any, aStack: any, bStack: any, customTesters: any, hasKey
   return result;
 }
 
-function keys(obj: object, isArray: boolean, hasKey: (obj: object, key: string) => boolean) {
-  var allKeys = (function (o) {
+function keys(
+  obj: object,
+  isArray: boolean,
+  hasKey: (obj: object, key: string) => boolean,
+) {
+  var allKeys = (function(o) {
     var keys = [];
     for (var key in o) {
       if (hasKey(o, key)) {
@@ -214,7 +225,8 @@ function keys(obj: object, isArray: boolean, hasKey: (obj: object, key: string) 
     return keys.concat(
       (Object.getOwnPropertySymbols(o) as Array<any>).filter(
         //$FlowFixMe Jest complains about nullability, but we know for sure that property 'symbol' does exist.
-        symbol => (Object.getOwnPropertyDescriptor(o, symbol) as any).enumerable,
+        symbol =>
+          (Object.getOwnPropertyDescriptor(o, symbol) as any).enumerable,
       ),
     );
   })(obj);
@@ -257,7 +269,6 @@ function isDomNode(obj: any): obj is Node {
     typeof obj.nodeName === 'string'
   );
 }
-
 
 export function fnNameFor(func: Function) {
   if (func.name) {
