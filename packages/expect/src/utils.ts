@@ -257,8 +257,7 @@ export const sparseArrayEquality = (a: unknown, b: unknown) => {
   const aKeys = Object.keys(a);
   const bKeys = Object.keys(b);
   return (
-    equals(a, b, [iterableEquality, typeEquality], true) &&
-    equals(aKeys, bKeys)
+    equals(a, b, [iterableEquality, typeEquality], true) && equals(aKeys, bKeys)
   );
 };
 
