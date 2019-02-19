@@ -52,7 +52,7 @@ class JestAssertionError extends Error {
   matcherResult: any;
 }
 
-const isPromise = (obj: any) =>
+const isPromise = (obj: any): obj is PromiseLike<any> =>
   !!obj &&
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
@@ -136,7 +136,7 @@ const expect: any = (actual: any, ...rest: Array<any>): ExpectationObject => {
   return expectation;
 };
 
-const getMessage = (message: any) =>
+const getMessage = (message?: () => string) =>
   (message && message()) ||
   matcherUtils.RECEIVED_COLOR('No message was specified for this matcher.');
 
