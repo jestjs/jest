@@ -6,7 +6,7 @@
  */
 
 import fs from 'fs';
-import {Config, Matchers} from '@jest/types';
+import {Config, Matchers, Snapshot} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map';
 
 import diff from 'jest-diff';
@@ -14,7 +14,6 @@ import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
 import {
   buildSnapshotResolver,
   isSnapshotPath,
-  SnapshotResolver,
   EXTENSION,
 } from './snapshot_resolver';
 import SnapshotState from './State';
@@ -31,7 +30,7 @@ const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
 const cleanup = (
   hasteFS: HasteFS,
   update: Config.SnapshotUpdateState,
-  snapshotResolver: SnapshotResolver,
+  snapshotResolver: Snapshot.SnapshotResolver,
 ) => {
   const pattern = '\\.' + EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);

@@ -15,9 +15,9 @@ import {isSnapshotPath} from 'jest-snapshot';
  * to retrieve a list of all transitive inverse dependencies.
  */
 class DependencyResolver {
-  _hasteFS: HasteFS;
-  _resolver: Resolver;
-  _snapshotResolver: Snapshot.SnapshotResolver;
+  private _resolver: Resolver;
+  private _hasteFS: HasteFS;
+  private _snapshotResolver: Snapshot.SnapshotResolver;
 
   constructor(
     resolver: Resolver,
