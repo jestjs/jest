@@ -52,7 +52,7 @@ class JestAssertionError extends Error {
   matcherResult?: SyncExpectationResult;
 }
 
-const isPromise = (obj: any): obj is PromiseLike<any> =>
+const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
   !!obj &&
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
