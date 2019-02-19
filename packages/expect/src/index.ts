@@ -57,8 +57,14 @@ const isPromise = (obj: any) =>
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
 
-const createToThrowErrorMatchingSnapshotMatcher = function(matcher: any) {
-  return function(this: any, received: any, testNameOrInlineSnapshot?: string) {
+const createToThrowErrorMatchingSnapshotMatcher = function(
+  matcher: RawMatcherFn,
+) {
+  return function(
+    this: MatcherState,
+    received: any,
+    testNameOrInlineSnapshot?: string,
+  ) {
     return matcher.apply(this, [received, testNameOrInlineSnapshot, true]);
   };
 };
