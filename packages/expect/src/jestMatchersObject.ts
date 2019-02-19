@@ -7,7 +7,7 @@
  */
 
 import {AsymmetricMatcher} from './asymmetricMatchers';
-import {Expect, MatchersObject, ExpectationResult} from './types';
+import {Expect, MatchersObject, SyncExpectationResult} from './types';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.
@@ -63,11 +63,10 @@ export const setMatchers = (
         }
 
         asymmetricMatch(other: unknown) {
-          // @ts-ignore
-          const {pass}: ExpectationResult = matcher(
+          const {pass} = matcher(
             other,
             ...(this.sample as [unknown, unknown]),
-          );
+          ) as SyncExpectationResult;
 
           return this.inverse ? !pass : pass;
         }
