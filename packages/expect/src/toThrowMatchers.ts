@@ -17,7 +17,12 @@ import {
   printWithType,
   MatcherHintOptions,
 } from 'jest-matcher-utils';
-import {MatchersObject, MatcherState} from './types';
+import {
+  MatchersObject,
+  MatcherState,
+  RawMatcherFn,
+  SyncExpectationResult,
+} from './types';
 import {isError} from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw';
@@ -57,7 +62,10 @@ const getThrown = (e: any): Thrown => {
   };
 };
 
-export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
+export const createMatcher = (
+  matcherName: string,
+  fromPromise?: boolean,
+): RawMatcherFn =>
   function(this: MatcherState, received: Function, expected: any) {
     const options = {
       isNot: this.isNot,
@@ -127,7 +135,7 @@ const toThrowExpectedRegExp = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: RegExp,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null && expected.test(thrown.message);
 
   const message = pass
@@ -162,7 +170,7 @@ const toThrowExpectedAsymmetric = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: AsymmetricMatcher,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null && expected.asymmetricMatch(thrown.value);
 
   const message = pass
@@ -197,7 +205,7 @@ const toThrowExpectedObject = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: any,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null && thrown.message === expected.message;
 
   const message = pass
@@ -228,7 +236,7 @@ const toThrowExpectedClass = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: Function,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null && thrown.value instanceof expected;
 
   const message = pass
@@ -263,7 +271,7 @@ const toThrowExpectedString = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: string,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null && thrown.message.includes(expected);
 
   const message = pass
@@ -293,7 +301,7 @@ const toThrow = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null;
 
   const message = pass

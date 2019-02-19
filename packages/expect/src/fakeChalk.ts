@@ -20,4 +20,4 @@ Object.keys(allColorsAsFunc)
     Object.assign(returnInput, style);
   });
 
-module.exports = allColorsAsFunc;
+export = allColorsAsFunc;

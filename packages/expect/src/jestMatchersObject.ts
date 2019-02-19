@@ -53,13 +53,10 @@ export const setMatchers = (
     if (!isInternal) {
       // expect is defined
 
-      class CustomMatcher extends AsymmetricMatcher {
-        sample: Array<unknown>;
-
+      class CustomMatcher extends AsymmetricMatcher<Array<unknown>> {
         constructor(inverse: boolean = false, ...sample: Array<unknown>) {
-          super();
+          super(sample);
           this.inverse = inverse;
-          this.sample = sample;
         }
 
         asymmetricMatch(other: unknown) {

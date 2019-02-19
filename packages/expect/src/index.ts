@@ -49,7 +49,7 @@ import {
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 
 class JestAssertionError extends Error {
-  matcherResult: any;
+  matcherResult?: SyncExpectationResult;
 }
 
 const isPromise = (obj: any): obj is PromiseLike<any> =>
@@ -407,4 +407,4 @@ expect.getState = getState;
 expect.setState = setState;
 (expect as any).extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
-exports = expect as Expect;
+export = expect as Expect;

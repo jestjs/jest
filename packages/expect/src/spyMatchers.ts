@@ -6,9 +6,6 @@
  *
  */
 
-const CALL_PRINT_LIMIT = 3;
-const RETURN_PRINT_LIMIT = 5;
-const LAST_CALL_PRINT_LIMIT = 1;
 import {
   diff,
   ensureExpectedIsNumber,
@@ -22,14 +19,18 @@ import {
   printWithType,
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
-import {MatchersObject} from './types';
+import {MatchersObject, SyncExpectationResult} from './types';
 import {equals} from './jasmineUtils';
 import {iterableEquality, partition, isOneline} from './utils';
+
+const CALL_PRINT_LIMIT = 3;
+const RETURN_PRINT_LIMIT = 5;
+const LAST_CALL_PRINT_LIMIT = 1;
 
 const createToBeCalledMatcher = (matcherName: string) => (
   received: any,
   expected: unknown,
-) => {
+): SyncExpectationResult => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
 
@@ -64,7 +65,7 @@ const createToBeCalledMatcher = (matcherName: string) => (
 const createToReturnMatcher = (matcherName: string) => (
   received: any,
   expected: unknown,
-) => {
+): SyncExpectationResult => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
 
@@ -99,7 +100,7 @@ const createToReturnMatcher = (matcherName: string) => (
 const createToBeCalledTimesMatcher = (matcherName: string) => (
   received: any,
   expected: number,
-) => {
+): SyncExpectationResult => {
   ensureExpectedIsNumber(expected, matcherName);
   ensureMock(received, matcherName);
 
@@ -134,7 +135,7 @@ const createToBeCalledTimesMatcher = (matcherName: string) => (
 const createToReturnTimesMatcher = (matcherName: string) => (
   received: any,
   expected: number,
-) => {
+): SyncExpectationResult => {
   ensureExpectedIsNumber(expected, matcherName);
   ensureMock(received, matcherName);
 
@@ -172,7 +173,7 @@ const createToReturnTimesMatcher = (matcherName: string) => (
 const createToBeCalledWithMatcher = (matcherName: string) => (
   received: any,
   ...expected: Array<unknown>
-) => {
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   const receivedIsSpy = isSpy(received);
@@ -210,7 +211,7 @@ const createToBeCalledWithMatcher = (matcherName: string) => (
 const createToReturnWithMatcher = (matcherName: string) => (
   received: any,
   expected: unknown,
-) => {
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   const receivedName = received.getMockName();
@@ -253,7 +254,7 @@ const createToReturnWithMatcher = (matcherName: string) => (
 const createLastCalledWithMatcher = (matcherName: string) => (
   received: any,
   ...expected: Array<unknown>
-) => {
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   const receivedIsSpy = isSpy(received);
@@ -286,7 +287,7 @@ const createLastCalledWithMatcher = (matcherName: string) => (
 const createLastReturnedMatcher = (matcherName: string) => (
   received: any,
   expected: unknown,
-) => {
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   const receivedName = received.getMockName();
@@ -332,7 +333,7 @@ const createNthCalledWithMatcher = (matcherName: string) => (
   received: any,
   nth: number,
   ...expected: Array<unknown>
-) => {
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   const receivedIsSpy = isSpy(received);
@@ -385,7 +386,7 @@ const createNthReturnedWithMatcher = (matcherName: string) => (
   received: any,
   nth: number,
   expected: unknown,
-) => {
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   //@ts-ignore
@@ -542,7 +543,7 @@ const formatMismatchedCalls = (
   calls: Array<any>,
   expected: any,
   limit: number,
-) => {
+): string => {
   if (calls.length) {
     return getPrintedCalls(
       calls,
@@ -562,7 +563,7 @@ const formatMismatchedReturnValues = (
   returnValues: Array<any>,
   expected: any,
   limit: number,
-) => {
+): string => {
   if (returnValues.length) {
     return (
       `  ${printExpected(expected)}\n` +
@@ -577,7 +578,7 @@ const formatMismatchedReturnValues = (
   }
 };
 
-const formatMismatchedArgs = (expected: any, received: any) => {
+const formatMismatchedArgs = (expected: any, received: any): string => {
   const length = Math.max(expected.length, received.length);
 
   const printedArgs = [];
@@ -602,7 +603,7 @@ const formatMismatchedArgs = (expected: any, received: any) => {
   return printedArgs.join('\n');
 };
 
-const nthToString = (nth: number) => {
+const nthToString = (nth: number): string => {
   switch (nth) {
     case 1:
       return 'first';

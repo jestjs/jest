@@ -567,7 +567,7 @@ const matchers: MatchersObject = {
     this: MatcherState,
     object: object,
     keyPath: string | Array<any>,
-    value?: any,
+    value?: unknown,
   ) {
     const valuePassed = arguments.length === 3;
     const secondArgument = valuePassed ? 'value' : null;

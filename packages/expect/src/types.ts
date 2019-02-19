@@ -19,7 +19,7 @@ export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 export type RawMatcherFn = (
   expected: any,
   actual: any,
-  options: any,
+  options?: any,
 ) => ExpectationResult;
 
 export type ThrowingMatcherFn = (actual: any) => void;
