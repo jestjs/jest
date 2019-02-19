@@ -934,6 +934,10 @@ describe('preset', () => {
         return '/node_modules/react-native/jest-preset.json';
       }
 
+      if (name === 'react-native-js-preset/jest-preset') {
+        return '/node_modules/react-native-js-preset/jest-preset.js';
+      }
+
       if (name === 'doesnt-exist') {
         return null;
       }
@@ -948,6 +952,15 @@ describe('preset', () => {
         setupFiles: ['b'],
         setupFilesAfterEnv: ['b'],
         transform: {b: 'b'},
+      }),
+      {virtual: true},
+    );
+    jest.doMock(
+      '/node_modules/react-native-js-preset/jest-preset.js',
+      () => ({
+        moduleNameMapper: {
+          json: true,
+        },
       }),
       {virtual: true},
     );
@@ -1021,7 +1034,29 @@ describe('preset', () => {
         },
         {},
       );
-    }).toThrowError(/Unexpected token }/);
+    }).toThrowError(/Unexpected token } in JSON at position 104[\s\S]* at /);
+  });
+
+  test('throws when preset evaluation throws type error', () => {
+    jest.doMock(
+      '/node_modules/react-native-js-preset/jest-preset.js',
+      () => ({
+        transform: {}.nonExistingProp.call(),
+      }),
+      {virtual: true},
+    );
+
+    expect(() => {
+      normalize(
+        {
+          preset: 'react-native-js-preset',
+          rootDir: '/root/path/foo',
+        },
+        {},
+      );
+    }).toThrowError(
+      /TypeError: Cannot read property 'call' of undefined[\s\S]* at /,
+    );
   });
 
   test('works with "react-native"', () => {
