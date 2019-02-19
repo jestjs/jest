@@ -16,7 +16,8 @@
   },
   "devDependencies": {
     "jest-haste-map": "^24.0.0",
-    "jest-resolve": "^24.1.0"
+    "jest-resolve": "^24.1.0",
+    "jest-runtime": "^24.1.0"
   },
   "peerDependencies": {
     "jest-haste-map": "^24.0.0",
