@@ -249,7 +249,7 @@ export function isA(typeName: string, value: unknown) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
-function isDomNode(obj: any) {
+function isDomNode(obj: any): obj is Node {
   return (
     obj !== null &&
     typeof obj === 'object' &&
@@ -257,6 +257,7 @@ function isDomNode(obj: any) {
     typeof obj.nodeName === 'string'
   );
 }
+
 
 export function fnNameFor(func: Function) {
   if (func.name) {
