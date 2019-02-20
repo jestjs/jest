@@ -998,6 +998,56 @@ describe('.toBeCloseTo()', () => {
       ).toThrowErrorMatchingSnapshot();
     });
   });
+
+  describe('throws: Matcher error', () => {
+    test('promise empty isNot false received', () => {
+      const expected = 0;
+      const received = '';
+      expect(() => {
+        jestExpect(received).toBeCloseTo(expected);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise empty isNot true expected', () => {
+      const received = 0.1;
+      // expected is undefined
+      expect(() => {
+        jestExpect(received).not.toBeCloseTo();
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise rejects isNot false expected', () => {
+      const expected = '0';
+      const received = Promise.reject(0.01);
+      return expect(
+        jestExpect(received).rejects.toBeCloseTo(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise rejects isNot true received', () => {
+      const expected = 0;
+      const received = Promise.reject(Symbol('0.1'));
+      return expect(
+        jestExpect(received).rejects.not.toBeCloseTo(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise resolves isNot false received', () => {
+      const expected = 0;
+      const received = Promise.resolve(false);
+      return expect(
+        jestExpect(received).resolves.toBeCloseTo(expected, 3),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise resolves isNot true expected', () => {
+      const expected = null;
+      const received = Promise.resolve(0.1);
+      expect(
+        jestExpect(received).resolves.not.toBeCloseTo(expected, 3),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+  });
 });
 
 describe('.toMatch()', () => {
