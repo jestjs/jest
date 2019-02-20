@@ -6,7 +6,7 @@
  */
 
 import path from 'path';
-import {Config} from '@jest/types';
+import {Config, Resolve} from '@jest/types';
 import {ModuleMap} from 'jest-haste-map';
 import {sync as realpath} from 'realpath-native';
 import chalk from 'chalk';
@@ -14,11 +14,6 @@ import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver from './defaultResolver';
 import {ResolverConfig} from './types';
-
-type ResolveModuleConfig = {
-  skipNodeResolution?: boolean;
-  paths?: Config.Path[];
-};
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -102,7 +97,7 @@ class Resolver {
   resolveModuleFromDirIfExists(
     dirname: Config.Path,
     moduleName: string,
-    options?: ResolveModuleConfig,
+    options?: Resolve.ResolveModuleConfig,
   ): Config.Path | null {
     const paths = (options && options.paths) || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
@@ -185,7 +180,7 @@ class Resolver {
   resolveModule(
     from: Config.Path,
     moduleName: string,
-    options?: ResolveModuleConfig,
+    options?: Resolve.ResolveModuleConfig,
   ): Config.Path {
     const dirname = path.dirname(from);
     const module = this.resolveModuleFromDirIfExists(

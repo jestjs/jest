@@ -3,41 +3,44 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
-'use strict';
 
-const path = require('path');
-const {normalize} = require('jest-config');
-const {buildSnapshotResolver} = require('jest-snapshot');
-const DependencyResolver = require('../index');
+import {tmpdir} from 'os';
+import path from 'path';
+import {Config} from '@jest/types';
+import {buildSnapshotResolver} from 'jest-snapshot';
+import {makeProjectConfig} from '../../../../TestUtils';
+
+import DependencyResolver from '../index';
 
 const maxWorkers = 1;
-let dependencyResolver;
+let dependencyResolver: DependencyResolver;
 let Runtime;
-let config;
-const cases = {
+let config: Config.ProjectConfig;
+const cases: {[key: string]: jest.Mock} = {
   fancyCondition: jest.fn(path => path.length > 10),
   testRegex: jest.fn(path => /.test.js$/.test(path)),
 };
-const filter = path => Object.keys(cases).every(key => cases[key](path));
+const filter = (path: Config.Path) =>
+  Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(() => {
   Runtime = require('jest-runtime');
-  config = normalize(
-    {
-      rootDir: '.',
-      roots: ['./packages/jest-resolve-dependencies'],
-    },
-    {},
-  ).options;
-  return Runtime.createContext(config, {maxWorkers}).then(hasteMap => {
-    dependencyResolver = new DependencyResolver(
-      hasteMap.resolver,
-      hasteMap.hasteFS,
-      buildSnapshotResolver(config),
-    );
+  config = makeProjectConfig({
+    cacheDirectory: path.resolve(tmpdir(), 'jest-resolve-dependencies-test'),
+    moduleDirectories: ['node_modules'],
+    rootDir: '.',
+    roots: ['./packages/jest-resolve-dependencies'],
   });
+  return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
+    (hasteMap: any) => {
+      dependencyResolver = new DependencyResolver(
+        hasteMap.resolver,
+        hasteMap.hasteFS,
+        buildSnapshotResolver(config),
+      );
+    },
+  );
 });
 
 test('resolves no dependencies for non-existent path', () => {

@@ -5,6 +5,7 @@
 - `[expect]`: Improve report when matcher fails, part 7 ([#7866](https://github.com/facebook/jest/pull/7866))
 - `[expect]`: Improve report when matcher fails, part 8 ([#7876](https://github.com/facebook/jest/pull/7876))
 - `[pretty-format]` Support `React.memo` ([#7891](https://github.com/facebook/jest/pull/7891))
+- `[jest-config]` Print error information on preset normalization error ([#7935](https://github.com/facebook/jest/pull/7935))
 
 ### Fixes
 
@@ -14,7 +15,8 @@
 - `[jest-changed-files]` Improve default file selection for Mercurial repos ([#7880](https://github.com/facebook/jest/pull/7880))
 - `[jest-validate]` Fix validating async functions ([#7894](https://github.com/facebook/jest/issues/7894))
 - `[jest-circus]` Fix bug with test.only ([#7888](https://github.com/facebook/jest/pull/7888))
-- `[jest-transform]` Normalize config and remove unecessary checks, convert `TestUtils.js` to TypeScript ([#7801](https://github.com/facebook/jest/pull/7801)
+- `[jest-transform]` Normalize config and remove unecessary checks, convert `TestUtils.js` to TypeScript ([#7801](https://github.com/facebook/jest/pull/7801))
+- `[jest-worker]` Fix `jest-worker` when using pre-allocated jobs ([#7934](https://github.com/facebook/jest/pull/7934))
 
 ### Chore & Maintenance
 
@@ -45,6 +47,8 @@
 - `[babel-plugin-jest-hoist]`: Migrate to TypeScript ([#7898](https://github.com/facebook/jest/pull/7898))
 - `[@jest/core]` Create new package, which is `jest-cli` minus `yargs` and `prompts` ([#7696](https://github.com/facebook/jest/pull/7696))
 - `[@jest/transform]`: Migrate to TypeScript ([#7918](https://github.com/facebook/jest/pull/7918))
+- `[docs]` Add missing import to docs ([#7928](https://github.com/facebook/jest/pull/7928))
+- `[jest-resolve-dependencies]`: Migrate to TypeScript ([#7922](https://github.com/facebook/jest/pull/7922))
 
 ### Performance
 
