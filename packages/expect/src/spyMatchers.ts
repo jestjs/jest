@@ -4,14 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {MatchersObject} from 'types/Matchers';
-
-const CALL_PRINT_LIMIT = 3;
-const RETURN_PRINT_LIMIT = 5;
-const LAST_CALL_PRINT_LIMIT = 1;
 import {
   diff,
   ensureExpectedIsNumber,
@@ -25,10 +19,18 @@ import {
   printWithType,
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
+import {MatchersObject, SyncExpectationResult} from './types';
 import {equals} from './jasmineUtils';
 import {iterableEquality, partition, isOneline} from './utils';
 
-const createToBeCalledMatcher = matcherName => (received, expected) => {
+const CALL_PRINT_LIMIT = 3;
+const RETURN_PRINT_LIMIT = 5;
+const LAST_CALL_PRINT_LIMIT = 1;
+
+const createToBeCalledMatcher = (matcherName: string) => (
+  received: any,
+  expected: unknown,
+): SyncExpectationResult => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
 
@@ -43,7 +45,7 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
     ? received.calls.count()
     : received.mock.calls.length;
   const calls = receivedIsSpy
-    ? received.calls.all().map(x => x.args)
+    ? received.calls.all().map((x: any) => x.args)
     : received.mock.calls;
   const pass = count > 0;
   const message = pass
@@ -60,7 +62,10 @@ const createToBeCalledMatcher = matcherName => (received, expected) => {
   return {message, pass};
 };
 
-const createToReturnMatcher = matcherName => (received, expected) => {
+const createToReturnMatcher = (matcherName: string) => (
+  received: any,
+  expected: unknown,
+): SyncExpectationResult => {
   ensureNoExpected(expected, matcherName);
   ensureMock(received, matcherName);
 
@@ -72,8 +77,8 @@ const createToReturnMatcher = matcherName => (received, expected) => {
 
   // List of return values that correspond only to calls that returned
   const returnValues = received.mock.results
-    .filter(result => result.type === 'return')
-    .map(result => result.value);
+    .filter((result: any) => result.type === 'return')
+    .map((result: any) => result.value);
 
   const count = returnValues.length;
   const pass = count > 0;
@@ -95,7 +100,7 @@ const createToReturnMatcher = matcherName => (received, expected) => {
 const createToBeCalledTimesMatcher = (matcherName: string) => (
   received: any,
   expected: number,
-) => {
+): SyncExpectationResult => {
   ensureExpectedIsNumber(expected, matcherName);
   ensureMock(received, matcherName);
 
@@ -130,7 +135,7 @@ const createToBeCalledTimesMatcher = (matcherName: string) => (
 const createToReturnTimesMatcher = (matcherName: string) => (
   received: any,
   expected: number,
-) => {
+): SyncExpectationResult => {
   ensureExpectedIsNumber(expected, matcherName);
   ensureMock(received, matcherName);
 
@@ -142,7 +147,7 @@ const createToReturnTimesMatcher = (matcherName: string) => (
 
   // List of return results that correspond only to calls that returned
   const returnResults = received.mock.results.filter(
-    result => result.type === 'return',
+    (result: any) => result.type === 'return',
   );
 
   const count = returnResults.length;
@@ -165,10 +170,10 @@ const createToReturnTimesMatcher = (matcherName: string) => (
   return {message, pass};
 };
 
-const createToBeCalledWithMatcher = matcherName => (
+const createToBeCalledWithMatcher = (matcherName: string) => (
   received: any,
-  ...expected: any
-) => {
+  ...expected: Array<unknown>
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   const receivedIsSpy = isSpy(received);
@@ -180,7 +185,7 @@ const createToBeCalledWithMatcher = matcherName => (
       : `${type} "${receivedName}"`;
 
   const calls = receivedIsSpy
-    ? received.calls.all().map(x => x.args)
+    ? received.calls.all().map((x: any) => x.args)
     : received.mock.calls;
 
   const [match, fail] = partition(calls, call =>
@@ -203,10 +208,10 @@ const createToBeCalledWithMatcher = matcherName => (
   return {message, pass};
 };
 
-const createToReturnWithMatcher = matcherName => (
+const createToReturnWithMatcher = (matcherName: string) => (
   received: any,
-  expected: any,
-) => {
+  expected: unknown,
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   const receivedName = received.getMockName();
@@ -217,8 +222,8 @@ const createToReturnWithMatcher = matcherName => (
 
   // List of return values that correspond only to calls that returned
   const returnValues = received.mock.results
-    .filter(result => result.type === 'return')
-    .map(result => result.value);
+    .filter((result: any) => result.type === 'return')
+    .map((result: any) => result.value);
 
   const [match] = partition(returnValues, value =>
     equals(expected, value, [iterableEquality]),
@@ -246,10 +251,10 @@ const createToReturnWithMatcher = matcherName => (
   return {message, pass};
 };
 
-const createLastCalledWithMatcher = matcherName => (
+const createLastCalledWithMatcher = (matcherName: string) => (
   received: any,
-  ...expected: any
-) => {
+  ...expected: Array<unknown>
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   const receivedIsSpy = isSpy(received);
@@ -260,7 +265,7 @@ const createLastCalledWithMatcher = matcherName => (
       ? type
       : `${type} "${receivedName}"`;
   const calls = receivedIsSpy
-    ? received.calls.all().map(x => x.args)
+    ? received.calls.all().map((x: any) => x.args)
     : received.mock.calls;
   const pass = equals(calls[calls.length - 1], expected, [iterableEquality]);
 
@@ -279,10 +284,10 @@ const createLastCalledWithMatcher = matcherName => (
   return {message, pass};
 };
 
-const createLastReturnedMatcher = matcherName => (
+const createLastReturnedMatcher = (matcherName: string) => (
   received: any,
-  expected: any,
-) => {
+  expected: unknown,
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   const receivedName = received.getMockName();
@@ -327,13 +332,14 @@ const createLastReturnedMatcher = matcherName => (
 const createNthCalledWithMatcher = (matcherName: string) => (
   received: any,
   nth: number,
-  ...expected: any
-) => {
+  ...expected: Array<unknown>
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
   const receivedIsSpy = isSpy(received);
   const type = receivedIsSpy ? 'spy' : 'mock function';
 
+  // @ts-ignore
   if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
     const message = () =>
       `nth value ${printReceived(
@@ -349,7 +355,7 @@ const createNthCalledWithMatcher = (matcherName: string) => (
       ? type
       : `${type} "${receivedName}"`;
   const calls = receivedIsSpy
-    ? received.calls.all().map(x => x.args)
+    ? received.calls.all().map((x: any) => x.args)
     : received.mock.calls;
   const pass = equals(calls[nth - 1], expected, [iterableEquality]);
 
@@ -379,10 +385,11 @@ const createNthCalledWithMatcher = (matcherName: string) => (
 const createNthReturnedWithMatcher = (matcherName: string) => (
   received: any,
   nth: number,
-  expected: any,
-) => {
+  expected: unknown,
+): SyncExpectationResult => {
   ensureMock(received, matcherName);
 
+  //@ts-ignore
   if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
     const message = () =>
       `nth value ${printReceived(
@@ -462,9 +469,9 @@ const spyMatchers: MatchersObject = {
   toReturnWith: createToReturnWithMatcher('.toReturnWith'),
 };
 
-const isSpy = spy => spy.calls && typeof spy.calls.count === 'function';
+const isSpy = (spy: any) => spy.calls && typeof spy.calls.count === 'function';
 
-const ensureMock = (mockOrSpy, matcherName) => {
+const ensureMock = (mockOrSpy: any, matcherName: any) => {
   if (
     !mockOrSpy ||
     ((mockOrSpy.calls === undefined || mockOrSpy.calls.all === undefined) &&
@@ -510,7 +517,11 @@ const getPrintedReturnValues = (calls: any[], limit: number): string => {
   return result.join('\n\n  ');
 };
 
-const formatReceivedCalls = (calls, limit, options) => {
+const formatReceivedCalls = (
+  calls: Array<any>,
+  limit: number,
+  options: any,
+) => {
   if (calls.length) {
     const but = options && options.sameSentence ? 'but' : 'But';
     const count = calls.length - limit;
@@ -528,7 +539,11 @@ const formatReceivedCalls = (calls, limit, options) => {
   }
 };
 
-const formatMismatchedCalls = (calls, expected, limit) => {
+const formatMismatchedCalls = (
+  calls: Array<any>,
+  expected: any,
+  limit: number,
+): string => {
   if (calls.length) {
     return getPrintedCalls(
       calls,
@@ -544,7 +559,11 @@ const formatMismatchedCalls = (calls, expected, limit) => {
   }
 };
 
-const formatMismatchedReturnValues = (returnValues, expected, limit) => {
+const formatMismatchedReturnValues = (
+  returnValues: Array<any>,
+  expected: any,
+  limit: number,
+): string => {
   if (returnValues.length) {
     return (
       `  ${printExpected(expected)}\n` +
@@ -559,7 +578,7 @@ const formatMismatchedReturnValues = (returnValues, expected, limit) => {
   }
 };
 
-const formatMismatchedArgs = (expected, received) => {
+const formatMismatchedArgs = (expected: any, received: any): string => {
   const length = Math.max(expected.length, received.length);
 
   const printedArgs = [];
@@ -584,7 +603,7 @@ const formatMismatchedArgs = (expected, received) => {
   return printedArgs.join('\n');
 };
 
-const nthToString = (nth: number) => {
+const nthToString = (nth: number): string => {
   switch (nth) {
     case 1:
       return 'first';

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO: Move this to `expect` when it's migrated
+// TODO: Remove this when whole project is migrated
 
 import {Path} from './Config';
 

@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
 import {
@@ -15,14 +14,14 @@ import {
 } from './jasmineUtils';
 
 type GetPath = {
-  hasEndProp?: boolean,
-  lastTraversedObject: ?Object,
-  traversedPath: Array<string>,
-  value?: any,
+  hasEndProp?: boolean;
+  lastTraversedObject: unknown;
+  traversedPath: Array<string>;
+  value?: unknown;
 };
 
 // Return whether object instance inherits getter from its class.
-const hasGetterFromConstructor = (object: Object, key: string) => {
+const hasGetterFromConstructor = (object: object, key: string) => {
   const constructor = object.constructor;
   if (constructor === Object) {
     // A literal object has Object as constructor.
@@ -44,22 +43,22 @@ const hasGetterFromConstructor = (object: Object, key: string) => {
   return descriptor !== undefined && typeof descriptor.get === 'function';
 };
 
-export const hasOwnProperty = (object: Object, key: string) =>
+export const hasOwnProperty = (object: object, key: string) =>
   Object.prototype.hasOwnProperty.call(object, key) ||
   hasGetterFromConstructor(object, key);
 
 export const getPath = (
-  object: Object,
+  object: object,
   propertyPath: string | Array<string>,
 ): GetPath => {
   if (!Array.isArray(propertyPath)) {
-    propertyPath = propertyPath.split('.');
+    propertyPath = (propertyPath as string).split('.');
   }
 
   if (propertyPath.length) {
     const lastProp = propertyPath.length === 1;
     const prop = propertyPath[0];
-    const newObject = object[prop];
+    const newObject = (object as any)[prop];
 
     if (!lastProp && (newObject === null || newObject === undefined)) {
       // This is not the last prop in the chain. If we keep recursing it will
@@ -99,10 +98,12 @@ export const getPath = (
 
 // Strip properties from object that are not present in the subset. Useful for
 // printing the diff for toMatchObject() without adding unrelated noise.
-export const getObjectSubset = (object: Object, subset: Object) => {
+export const getObjectSubset = (object: any, subset: any): any => {
   if (Array.isArray(object)) {
     if (Array.isArray(subset) && subset.length === object.length) {
-      return subset.map((sub, i) => getObjectSubset(object[i], sub));
+      return subset.map((sub: any, i: number) =>
+        getObjectSubset(object[i], sub),
+      );
     }
   } else if (object instanceof Date) {
     return object;
@@ -112,7 +113,7 @@ export const getObjectSubset = (object: Object, subset: Object) => {
     typeof subset === 'object' &&
     subset !== null
   ) {
-    const trimmed = {};
+    const trimmed: any = {};
     Object.keys(subset)
       .filter(key => hasOwnProperty(object, key))
       .forEach(
@@ -128,7 +129,8 @@ export const getObjectSubset = (object: Object, subset: Object) => {
 
 const IteratorSymbol = Symbol.iterator;
 
-const hasIterator = object => !!(object != null && object[IteratorSymbol]);
+const hasIterator = (object: any) =>
+  !!(object != null && object[IteratorSymbol]);
 export const iterableEquality = (a: any, b: any) => {
   if (
     typeof a !== 'object' ||
@@ -215,14 +217,17 @@ export const iterableEquality = (a: any, b: any) => {
   return true;
 };
 
-const isObjectWithKeys = a =>
+const isObjectWithKeys = (a: any) =>
   a !== null &&
   typeof a === 'object' &&
   !(a instanceof Error) &&
   !(a instanceof Array) &&
   !(a instanceof Date);
 
-export const subsetEquality = (object: Object, subset: Object) => {
+export const subsetEquality = (
+  object: any,
+  subset: any,
+): undefined | boolean => {
   if (!isObjectWithKeys(subset)) {
     return undefined;
   }
@@ -243,7 +248,7 @@ export const typeEquality = (a: any, b: any) => {
   return false;
 };
 
-export const sparseArrayEquality = (a: any, b: any) => {
+export const sparseArrayEquality = (a: unknown, b: unknown) => {
   if (!Array.isArray(a) || !Array.isArray(b)) {
     return undefined;
   }
@@ -256,9 +261,9 @@ export const sparseArrayEquality = (a: any, b: any) => {
 
 export const partition = <T>(
   items: Array<T>,
-  predicate: T => boolean,
+  predicate: (arg: T) => boolean,
 ): [Array<T>, Array<T>] => {
-  const result = [[], []];
+  const result: [Array<T>, Array<T>] = [[], []];
 
   items.forEach(item => result[predicate(item) ? 0 : 1].push(item));
 
@@ -266,7 +271,7 @@ export const partition = <T>(
 };
 
 // Copied from https://github.com/graingert/angular.js/blob/a43574052e9775cbc1d7dd8a086752c979b0f020/src/Angular.js#L685-L693
-export const isError = (value: any) => {
+export const isError = (value: unknown) => {
   switch (Object.prototype.toString.call(value)) {
     case '[object Error]':
       return true;
@@ -285,7 +290,7 @@ export function emptyObject(obj: any) {
 
 const MULTILINE_REGEXP = /[\r\n]/;
 
-export const isOneline = (expected: any, received: any) =>
+export const isOneline = (expected: any, received: any): boolean =>
   typeof expected === 'string' &&
   typeof received === 'string' &&
   (!MULTILINE_REGEXP.test(expected) || !MULTILINE_REGEXP.test(received));

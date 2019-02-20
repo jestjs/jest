@@ -4,15 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
 import {AsymmetricMatcher} from './asymmetricMatchers';
-import type {
-  Expect,
-  MatchersObject,
-  SyncExpectationResult,
-} from 'types/Matchers';
+import {Expect, MatchersObject, SyncExpectationResult} from './types';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.
@@ -22,7 +17,7 @@ const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 // Jest may override the stack trace of Errors thrown by internal matchers.
 export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
 
-if (!global[JEST_MATCHERS_OBJECT]) {
+if (!(global as any)[JEST_MATCHERS_OBJECT]) {
   Object.defineProperty(global, JEST_MATCHERS_OBJECT, {
     value: {
       matchers: Object.create(null),
@@ -36,13 +31,13 @@ if (!global[JEST_MATCHERS_OBJECT]) {
   });
 }
 
-export const getState = () => global[JEST_MATCHERS_OBJECT].state;
+export const getState = () => (global as any)[JEST_MATCHERS_OBJECT].state;
 
-export const setState = (state: Object) => {
-  Object.assign(global[JEST_MATCHERS_OBJECT].state, state);
+export const setState = (state: object) => {
+  Object.assign((global as any)[JEST_MATCHERS_OBJECT].state, state);
 };
 
-export const getMatchers = () => global[JEST_MATCHERS_OBJECT].matchers;
+export const getMatchers = () => (global as any)[JEST_MATCHERS_OBJECT].matchers;
 
 export const setMatchers = (
   matchers: MatchersObject,
@@ -58,20 +53,17 @@ export const setMatchers = (
     if (!isInternal) {
       // expect is defined
 
-      class CustomMatcher extends AsymmetricMatcher {
-        sample: Array<any>;
-
-        constructor(inverse: boolean = false, ...sample: Array<any>) {
-          super();
+      class CustomMatcher extends AsymmetricMatcher<[unknown, unknown]> {
+        constructor(inverse: boolean = false, ...sample: [unknown, unknown]) {
+          super(sample);
           this.inverse = inverse;
-          this.sample = sample;
         }
 
-        asymmetricMatch(other: any) {
-          const {pass} = ((matcher(
-            (other: any),
-            ...(this.sample: any),
-          ): any): SyncExpectationResult);
+        asymmetricMatch(other: unknown) {
+          const {pass} = matcher(
+            other,
+            ...this.sample,
+          ) as SyncExpectationResult;
 
           return this.inverse ? !pass : pass;
         }
@@ -89,15 +81,15 @@ export const setMatchers = (
         }
       }
 
-      expect[key] = (...sample: Array<any>) =>
+      expect[key] = (...sample: [unknown, unknown]) =>
         new CustomMatcher(false, ...sample);
       if (!expect.not) {
         expect.not = {};
       }
-      expect.not[key] = (...sample: Array<any>) =>
+      expect.not[key] = (...sample: [unknown, unknown]) =>
         new CustomMatcher(true, ...sample);
     }
   });
 
-  Object.assign(global[JEST_MATCHERS_OBJECT].matchers, matchers);
+  Object.assign((global as any)[JEST_MATCHERS_OBJECT].matchers, matchers);
 };

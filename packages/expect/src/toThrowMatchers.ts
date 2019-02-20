@@ -4,10 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
-
-import type {MatcherHintOptions, MatchersObject} from 'types/Matchers';
 
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
@@ -18,23 +15,30 @@ import {
   printExpected,
   printReceived,
   printWithType,
+  MatcherHintOptions,
 } from 'jest-matcher-utils';
+import {
+  MatchersObject,
+  MatcherState,
+  RawMatcherFn,
+  SyncExpectationResult,
+} from './types';
 import {isError} from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw';
 
 type Thrown =
   | {
-      hasMessage: true,
-      isError: true,
-      message: string,
-      value: Error,
+      hasMessage: true;
+      isError: true;
+      message: string;
+      value: Error;
     }
   | {
-      hasMessage: boolean,
-      isError: false,
-      message: string,
-      value: any,
+      hasMessage: boolean;
+      isError: false;
+      message: string;
+      value: any;
     };
 
 const getThrown = (e: any): Thrown => {
@@ -58,8 +62,11 @@ const getThrown = (e: any): Thrown => {
   };
 };
 
-export const createMatcher = (matcherName: string, fromPromise?: boolean) =>
-  function(received: Function, expected: any) {
+export const createMatcher = (
+  matcherName: string,
+  fromPromise?: boolean,
+): RawMatcherFn =>
+  function(this: MatcherState, received: Function, expected: any) {
     const options = {
       isNot: this.isNot,
       promise: this.promise,
@@ -128,7 +135,7 @@ const toThrowExpectedRegExp = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: RegExp,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null && expected.test(thrown.message);
 
   const message = pass
@@ -155,7 +162,7 @@ const toThrowExpectedRegExp = (
 };
 
 type AsymmetricMatcher = {
-  asymmetricMatch: (received: any) => boolean,
+  asymmetricMatch: (received: unknown) => boolean;
 };
 
 const toThrowExpectedAsymmetric = (
@@ -163,7 +170,7 @@ const toThrowExpectedAsymmetric = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: AsymmetricMatcher,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null && expected.asymmetricMatch(thrown.value);
 
   const message = pass
@@ -197,8 +204,8 @@ const toThrowExpectedObject = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
-  expected: Object,
-) => {
+  expected: any,
+): SyncExpectationResult => {
   const pass = thrown !== null && thrown.message === expected.message;
 
   const message = pass
@@ -229,7 +236,7 @@ const toThrowExpectedClass = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: Function,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null && thrown.value instanceof expected;
 
   const message = pass
@@ -264,7 +271,7 @@ const toThrowExpectedString = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: string,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null && thrown.message.includes(expected);
 
   const message = pass
@@ -294,7 +301,7 @@ const toThrow = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
-) => {
+): SyncExpectationResult => {
   const pass = thrown !== null;
 
   const message = pass
@@ -314,7 +321,7 @@ const toThrow = (
   return {message, pass};
 };
 
-const formatExpected = (label: string, expected: any) =>
+const formatExpected = (label: string, expected: unknown) =>
   label + printExpected(expected) + '\n';
 
 const formatReceived = (label: string, thrown: Thrown | null, key: string) => {
@@ -343,6 +350,7 @@ const formatStack = (thrown: Thrown | null) =>
   thrown === null || !thrown.isError
     ? ''
     : formatStackTrace(
+        // @ts-ignore
         separateMessageFromStack(thrown.value.stack).stack,
         {
           rootDir: process.cwd(),
