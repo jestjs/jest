@@ -1034,18 +1034,20 @@ describe('.toBeCloseTo()', () => {
     });
 
     test('promise resolves isNot false received', () => {
+      const precision = 3;
       const expected = 0;
       const received = Promise.resolve(false);
       return expect(
-        jestExpect(received).resolves.toBeCloseTo(expected, 3),
+        jestExpect(received).resolves.toBeCloseTo(expected, precision),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
 
     test('promise resolves isNot true expected', () => {
+      const precision = 3;
       const expected = null;
       const received = Promise.resolve(0.1);
       expect(
-        jestExpect(received).resolves.not.toBeCloseTo(expected, 3),
+        jestExpect(received).resolves.not.toBeCloseTo(expected, precision),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
   });
