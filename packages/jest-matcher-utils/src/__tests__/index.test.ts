@@ -120,6 +120,7 @@ describe('.ensureNumbers()', () => {
       const options: MatcherHintOptions = {
         isNot: false,
         promise: '',
+        secondArgument: 'precision',
       };
       expect(() => {
         // @ts-ignore

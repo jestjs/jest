@@ -564,7 +564,7 @@ Received difference:   <red>0.005000099999999952</>"
 `;
 
 exports[`.toBeCloseTo() throws: Matcher error promise empty isNot false received 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a number
 

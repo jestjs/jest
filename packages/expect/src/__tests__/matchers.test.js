@@ -1001,10 +1001,11 @@ describe('.toBeCloseTo()', () => {
 
   describe('throws: Matcher error', () => {
     test('promise empty isNot false received', () => {
+      const precision = 3;
       const expected = 0;
       const received = '';
       expect(() => {
-        jestExpect(received).toBeCloseTo(expected);
+        jestExpect(received).toBeCloseTo(expected, precision);
       }).toThrowErrorMatchingSnapshot();
     });
 

@@ -37,7 +37,7 @@ Received has value: <red>\\"not_a_number\\"</>"
 `;
 
 exports[`.ensureNumbers() with options promise empty isNot false received 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a number
 
