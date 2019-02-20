@@ -285,6 +285,10 @@ describe('.toStrictEqual()', () => {
     expect([{a: undefined}]).not.toStrictEqual([{}]);
   });
 
+  it('does not ignore keys with undefined values deep inside an object', () => {
+    expect([{a: [{a: undefined}]}]).not.toStrictEqual([{a: [{}]}]);
+  });
+
   it('passes when comparing same type', () => {
     expect({
       test: new TestClassA(1, 2),
