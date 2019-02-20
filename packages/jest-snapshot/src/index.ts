@@ -20,6 +20,7 @@ import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import * as utils from './utils';
 
+// TODO: use MatcherState directly from `expect` once whole project is migrated
 type Context = Matchers.MatcherState & {
   snapshotState: SnapshotState;
 };
