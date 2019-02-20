@@ -17,6 +17,7 @@ import {
   transformSync as babelTransform,
 } from '@babel/core';
 import chalk from 'chalk';
+import {escapeStrForRegex} from 'jest-regex-util';
 import slash from 'slash';
 
 const THIS_FILE = fs.readFileSync(__filename);
@@ -63,31 +64,53 @@ const createTransformer = (
     return babelConfig;
   }
 
+  const rootDirRegExpCache: {[rootDir: string]: RegExp} = Object.create(null);
+
+  function getRootDirRegExp(rootDir: Config.Path): RegExp {
+    if (!rootDirRegExpCache[rootDir]) {
+      rootDirRegExpCache[rootDir] = new RegExp(
+        `^${escapeStrForRegex(rootDir)}(${escapeStrForRegex(path.sep)}|$)`,
+      );
+    }
+
+    return rootDirRegExpCache[rootDir];
+  }
+
+  function getCacheKeyForBabelOptions(babelOptions: any, rootDir: Config.Path) {
+    const rootDirRegExp = getRootDirRegExp(rootDir);
+
+    // Not pretty but not coupled to a specific signature of the
+    // babel options to relativize paths
+    return JSON.stringify(babelOptions.options, (_key, value) => {
+      if (typeof value === 'string') {
+        return value.replace(rootDirRegExp, '<rootDir>$1');
+      }
+      return value;
+    });
+  }
+
   return {
     canInstrument: true,
     getCacheKey(
       fileData,
       filename,
-      configString,
+      _configString,
       {config, instrument, rootDir},
     ) {
       const babelOptions = loadBabelConfig(config.cwd, filename);
-      const configPath = [
-        babelOptions.config || '',
-        babelOptions.babelrc || '',
-      ];
+      const configPath = [babelOptions.config, babelOptions.babelrc].map(
+        configPath => configPath && path.relative(rootDir, configPath),
+      );
 
       return crypto
         .createHash('md5')
         .update(THIS_FILE)
         .update('\0', 'utf8')
-        .update(JSON.stringify(babelOptions.options))
+        .update(getCacheKeyForBabelOptions(babelOptions, rootDir))
         .update('\0', 'utf8')
         .update(fileData)
         .update('\0', 'utf8')
         .update(path.relative(rootDir, filename))
-        .update('\0', 'utf8')
-        .update(configString)
         .update('\0', 'utf8')
         .update(configPath.join(''))
         .update('\0', 'utf8')

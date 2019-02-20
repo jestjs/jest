@@ -25,6 +25,10 @@ const mockConfig = {
   moduleFileExtensions: [],
 };
 
+afterEach(() => {
+  jest.unmock('@babel/core');
+});
+
 test(`Returns source string with inline maps when no transformOptions is passed`, () => {
   const result = babelJest.process(
     sourceString,
@@ -38,4 +42,40 @@ test(`Returns source string with inline maps when no transformOptions is passed`
   expect(result.code).toMatch('customMultiply');
   expect(result.map.sources).toEqual(['dummy_path.js']);
   expect(JSON.stringify(result.map.sourcesContent)).toMatch('customMultiply');
+});
+
+test('getCacheKey does not depend on the rootDir', () => {
+  const getCacheKeyArgs = rootDir => {
+    const config = {
+      cwd: rootDir,
+      rootDir,
+    };
+
+    return [
+      '// Some code',
+      `${rootDir}/foo/bar.js`,
+      JSON.stringify(config),
+      {config, instrument: true, rootDir: config.rootDir},
+    ];
+  };
+
+  jest.mock('@babel/core');
+
+  require('@babel/core').loadPartialConfig = options => ({
+    babelrc: `${options.cwd}/foo/.babelrc`,
+    config: `${options.cwd}/babel.config.js`,
+    options: {
+      cwd: options.cwd,
+      someOtherOption: `${options.cwd}/foo`,
+    },
+  });
+
+  const cacheKeyForRoot1 = babelJest.getCacheKey(
+    ...getCacheKeyArgs('/root1/dir'),
+  );
+  const cacheKeyForRoot2 = babelJest.getCacheKey(
+    ...getCacheKeyArgs('/root2/dir'),
+  );
+
+  expect(cacheKeyForRoot1).toEqual(cacheKeyForRoot2);
 });
