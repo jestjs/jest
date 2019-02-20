@@ -93,9 +93,8 @@ const matchers: MatchersObject = {
     precision: number = 2,
   ) {
     const secondArgument = arguments.length === 3 ? 'precision' : undefined;
-    const isNot = this.isNot;
     const options: MatcherHintOptions = {
-      isNot,
+      isNot: this.isNot,
       promise: this.promise,
       secondArgument,
     };
