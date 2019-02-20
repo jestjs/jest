@@ -256,7 +256,9 @@ export const sparseArrayEquality = (a: unknown, b: unknown) => {
   // A sparse array [, , 1] will have keys ["2"] whereas [undefined, undefined, 1] will have keys ["0", "1", "2"]
   const aKeys = Object.keys(a);
   const bKeys = Object.keys(b);
-  return equals(a, b) && equals(aKeys, bKeys);
+  return (
+    equals(a, b, [iterableEquality, typeEquality], true) && equals(aKeys, bKeys)
+  );
 };
 
 export const partition = <T>(
