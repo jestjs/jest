@@ -405,6 +405,6 @@ expect.assertions = assertions;
 expect.hasAssertions = hasAssertions;
 expect.getState = getState;
 expect.setState = setState;
-(expect as any).extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
+expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
 export = expect as Expect;

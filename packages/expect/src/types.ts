@@ -6,6 +6,7 @@
  *
  */
 import {Config} from '@jest/types';
+import * as jestMatcherUtils from 'jest-matcher-utils';
 
 export type SyncExpectationResult = {
   pass: boolean;
@@ -45,11 +46,7 @@ export type MatcherState = {
   promise: string;
   suppressedErrors: Array<Error>;
   testPath?: Config.Path;
-  // This is output from `jest-matcher-utils` plus iterableEquality, subsetEquality
-  // Type it correctly when moving it to `expect`
-  utils: {
-    printExpected: (value: unknown) => string;
-    printReceived: (value: unknown) => string;
+  utils: typeof jestMatcherUtils & {
     iterableEquality: Tester;
     subsetEquality: Tester;
   };

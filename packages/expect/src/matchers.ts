@@ -566,7 +566,7 @@ const matchers: MatchersObject = {
   toHaveProperty(
     this: MatcherState,
     object: object,
-    keyPath: string | Array<any>,
+    keyPath: string | Array<string>,
     value?: unknown,
   ) {
     const valuePassed = arguments.length === 3;
@@ -655,11 +655,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toMatch(
-    this: MatcherState,
-    received: string,
-    expected: string | RegExp | any,
-  ) {
+  toMatch(this: MatcherState, received: string, expected: string | RegExp) {
     if (typeof received !== 'string') {
       throw new Error(
         matcherErrorMessage(
@@ -673,8 +669,8 @@ const matchers: MatchersObject = {
     }
 
     if (
-      !(expected && typeof expected.test === 'function') &&
-      !(typeof expected === 'string')
+      !(typeof expected === 'string') &&
+      !(expected && typeof expected.test === 'function')
     ) {
       throw new Error(
         matcherErrorMessage(
