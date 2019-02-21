@@ -108,7 +108,7 @@ function eq(
     case '[object Number]':
       // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for
       // other numeric values.
-      return a != +a ? b != +b : a === 0 && b === 0 ? 1 / a == 1 / b : a == +b;
+      return a != +a ? b != +b : Number(a) === 0 && Number(b) === 0 ? 1 / a == 1 / b : a == +b;
     case '[object Date]':
     case '[object Boolean]':
       // Coerce dates and booleans to numeric primitive values. Dates are compared by their
