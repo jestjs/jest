@@ -7,7 +7,7 @@
 
 import {bind as bindEach} from 'jest-each';
 import {ErrorWithStack} from 'jest-util';
-import {Global} from '@jest/types';
+import {Global} from '@jest/types'; // eslint-disable-line import/no-unresolved
 import {
   BlockFn,
   HookFn,

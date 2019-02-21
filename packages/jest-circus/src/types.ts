@@ -4,8 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import expect from 'expect';
-import {Global} from '@jest/types';
+import expect from 'expect'; // eslint-disable-line
+import {Global} from '@jest/types'; // eslint-disable-line import/no-unresolved
 
 type Process = NodeJS.Process;
 
@@ -252,10 +252,10 @@ export type RawMatcherFn = (
 declare global {
   module NodeJS {
     interface Global {
-      STATE_SYM_SYMBOL: State; // eslint-disable-line no-undef
-      RETRY_TIMES_SYMBOL: string; // eslint-disable-line no-undef
-      TEST_TIMEOUT_SYMBOL: number; // eslint-disable-line no-undef
-      expect: typeof expect; // eslint-disable-line no-undef
+      STATE_SYM_SYMBOL: State;
+      RETRY_TIMES_SYMBOL: string;
+      TEST_TIMEOUT_SYMBOL: number;
+      expect: typeof expect;
     }
   }
 }

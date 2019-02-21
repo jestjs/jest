@@ -6,7 +6,7 @@
  */
 
 import path from 'path';
-import {Config, TestResult, Environment} from '@jest/types';
+import {Config, TestResult, Environment} from '@jest/types'; // eslint-disable-line import/no-unresolved
 import Runtime from 'jest-runtime'; // eslint-disable-line import/no-extraneous-dependencies
 import jestSnapshot = require('jest-snapshot');
 
