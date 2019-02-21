@@ -3,26 +3,23 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-import type {InitialOptions, Path} from 'types/Config';
 
 import path from 'path';
 import fs from 'fs';
+import {Config} from '@jest/types';
+// @ts-ignore: vendored
 import jsonlint from './vendor/jsonlint';
 import {PACKAGE_JSON} from './constants';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
 // 2. For any other file, we just require it.
-export default (configPath: Path): InitialOptions => {
+export default (configPath: Config.Path): Config.InitialOptions => {
   const isJSON = configPath.endsWith('.json');
   let configObject;
 
   try {
-    // $FlowFixMe dynamic require
     configObject = require(configPath);
   } catch (error) {
     if (isJSON) {
