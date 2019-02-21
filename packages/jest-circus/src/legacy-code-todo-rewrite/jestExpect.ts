@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import expect, {RawMatcherFn} from 'expect';
+import expect from 'expect';
 
 import {
   addSerializer,
@@ -14,6 +14,8 @@ import {
   toThrowErrorMatchingSnapshot,
   toThrowErrorMatchingInlineSnapshot,
 } from 'jest-snapshot';
+
+import {RawMatcherFn} from '../types';
 
 // @ts-ignore
 type JasmineMatcher = {
@@ -34,5 +36,5 @@ export default (config: {expand: boolean}) => {
     toThrowErrorMatchingSnapshot,
   });
 
-  (expect as Object).addSnapshotSerializer = addSerializer;
+  expect.addSnapshotSerializer = addSerializer;
 };

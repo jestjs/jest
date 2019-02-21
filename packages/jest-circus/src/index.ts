@@ -7,6 +7,7 @@
 
 import {bind as bindEach} from 'jest-each';
 import {ErrorWithStack} from 'jest-util';
+import {Global} from '@jest/types';
 import {
   BlockFn,
   HookFn,
@@ -22,12 +23,24 @@ import {dispatch} from './state';
 type THook = (fn: HookFn, timeout?: number) => void;
 type DescribeFn = (blockName: BlockName, blockFn: BlockFn) => void;
 
-const describe = (blockName: BlockName, blockFn: BlockFn) =>
-  _dispatchDescribe(blockFn, blockName, describe);
-describe.only = (blockName: BlockName, blockFn: BlockFn) =>
-  _dispatchDescribe(blockFn, blockName, describe.only, 'only');
-describe.skip = (blockName: BlockName, blockFn: BlockFn) =>
-  _dispatchDescribe(blockFn, blockName, describe.skip, 'skip');
+const describe = (() => {
+  const describe = (blockName: BlockName, blockFn: BlockFn) =>
+    _dispatchDescribe(blockFn, blockName, describe);
+  const only = (blockName: BlockName, blockFn: BlockFn) =>
+    _dispatchDescribe(blockFn, blockName, only, 'only');
+  const skip = (blockName: BlockName, blockFn: BlockFn) =>
+    _dispatchDescribe(blockFn, blockName, skip, 'skip');
+
+  describe.each = bindEach(describe, false);
+
+  only.each = bindEach(only, false);
+  skip.each = bindEach(skip, false);
+
+  describe.only = only;
+  describe.skip = skip;
+
+  return describe;
+})();
 
 const _dispatchDescribe = (
   blockFn: BlockFn,
@@ -82,66 +95,71 @@ const afterEach: THook = (fn, timeout) =>
 const afterAll: THook = (fn, timeout) =>
   _addHook(fn, 'afterAll', afterAll, timeout);
 
-const test = (testName: TestName, fn: TestFn, timeout?: number): void =>
-  _addTest(testName, undefined, fn, test, timeout);
-const it = test;
-test.skip = (testName: TestName, fn?: TestFn, timeout?: number): void =>
-  _addTest(testName, 'skip', fn, test.skip, timeout);
-test.only = (testName: TestName, fn: TestFn, timeout?: number): void =>
-  _addTest(testName, 'only', fn, test.only, timeout);
-test.todo = (testName: TestName, ...rest: Array<any>): void => {
-  if (rest.length > 0 || typeof testName !== 'string') {
-    throw new ErrorWithStack(
-      'Todo must be called with only a description.',
-      test.todo,
-    );
-  }
-  return _addTest(testName, 'todo', () => {}, test.todo);
-};
+const test: Global.It = (() => {
+  const test = (testName: TestName, fn: TestFn, timeout?: number): void =>
+    _addTest(testName, undefined, fn, test, timeout);
+  const skip = (testName: TestName, fn?: TestFn, timeout?: number): void =>
+    _addTest(testName, 'skip', fn, skip, timeout);
+  const only = (testName: TestName, fn: TestFn, timeout?: number): void =>
+    _addTest(testName, 'only', fn, test.only, timeout);
 
-const _addTest = (
-  testName: TestName,
-  mode: TestMode,
-  fn: TestFn | undefined,
-  testFn: (testName: TestName, fn: TestFn, timeout?: number) => void,
-  timeout?: number,
-) => {
-  const asyncError = new ErrorWithStack(undefined, testFn);
+  test.todo = (testName: TestName, ...rest: Array<any>): void => {
+    if (rest.length > 0 || typeof testName !== 'string') {
+      throw new ErrorWithStack(
+        'Todo must be called with only a description.',
+        test.todo,
+      );
+    }
+    return _addTest(testName, 'todo', () => {}, test.todo);
+  };
 
-  if (typeof testName !== 'string') {
-    asyncError.message = `Invalid first argument, ${testName}. It must be a string.`;
+  const _addTest = (
+    testName: TestName,
+    mode: TestMode,
+    fn: TestFn | undefined,
+    testFn: (testName: TestName, fn: TestFn, timeout?: number) => void,
+    timeout?: number,
+  ) => {
+    const asyncError = new ErrorWithStack(undefined, testFn);
 
-    throw asyncError;
-  }
-  if (fn === undefined) {
-    asyncError.message =
-      'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.';
+    if (typeof testName !== 'string') {
+      asyncError.message = `Invalid first argument, ${testName}. It must be a string.`;
 
-    throw asyncError;
-  }
-  if (typeof fn !== 'function') {
-    asyncError.message = `Invalid second argument, ${fn}. It must be a callback function.`;
+      throw asyncError;
+    }
+    if (fn === undefined) {
+      asyncError.message =
+        'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.';
 
-    throw asyncError;
-  }
+      throw asyncError;
+    }
+    if (typeof fn !== 'function') {
+      asyncError.message = `Invalid second argument, ${fn}. It must be a callback function.`;
 
-  return dispatch({
-    asyncError,
-    fn,
-    mode,
-    name: 'add_test',
-    testName,
-    timeout,
-  });
-};
+      throw asyncError;
+    }
 
-test.each = bindEach(test);
-test.only.each = bindEach(test.only);
-test.skip.each = bindEach(test.skip);
+    return dispatch({
+      asyncError,
+      fn,
+      mode,
+      name: 'add_test',
+      testName,
+      timeout,
+    });
+  };
 
-describe.each = bindEach(describe, false);
-describe.only.each = bindEach(describe.only, false);
-describe.skip.each = bindEach(describe.skip, false);
+  test.each = bindEach(test);
+  only.each = bindEach(only);
+  skip.each = bindEach(skip);
+
+  test.only = only;
+  test.skip = skip;
+
+  return test;
+})();
+
+const it: Global.It = test;
 
 export = {
   afterAll,

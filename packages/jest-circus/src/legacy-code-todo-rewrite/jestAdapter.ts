@@ -7,15 +7,17 @@
 
 import path from 'path';
 import {Config, TestResult, Environment} from '@jest/types';
-import Runtime from 'jest-runtime';
-import {SnapshotState} from 'jest-snapshot';
+import Runtime from 'jest-runtime'; // eslint-disable-line import/no-extraneous-dependencies
+import jestSnapshot = require('jest-snapshot');
+
+const {SnapshotState} = jestSnapshot;
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  environment: Environment,
+  environment: Environment.Environment,
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult.TestResult> => {
@@ -83,7 +85,7 @@ const jestAdapter = async (
 
 const _addSnapshotData = (
   results: TestResult.TestResult,
-  snapshotState: SnapshotState,
+  snapshotState: typeof SnapshotState.prototype,
 ) => {
   results.testResults.forEach(
     ({fullName, status}: TestResult.AssertionResult) => {

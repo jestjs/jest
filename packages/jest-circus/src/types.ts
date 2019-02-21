@@ -4,16 +4,18 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import expect from 'expect';
+import {Global} from '@jest/types';
 
 type Process = NodeJS.Process;
 
-export type DoneFn = (reason?: string | Error) => void;
-export type BlockFn = () => void;
-export type BlockName = string;
+export type DoneFn = Global.DoneFn;
+export type BlockFn = Global.BlockFn;
+export type BlockName = Global.BlockName;
 export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
-export type TestName = string;
-export type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
+export type TestName = Global.TestName;
+export type TestFn = Global.TestFn;
 export type HookFn = (done?: DoneFn) => Promise<any> | null | undefined;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
@@ -228,12 +230,32 @@ export const TEST_TIMEOUT_SYMBOL = (Symbol.for(
   'TEST_TIMEOUT_SYMBOL',
 ) as unknown) as 'TEST_TIMEOUT_SYMBOL';
 
+// TODO Add expect types to @jest/types or leave it here
+// Borrowed from "expect"
+// -------START-------
+export type SyncExpectationResult = {
+  pass: boolean;
+  message: () => string;
+};
+
+export type AsyncExpectationResult = Promise<SyncExpectationResult>;
+
+export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
+
+export type RawMatcherFn = (
+  expected: any,
+  actual: any,
+  options?: any,
+) => ExpectationResult;
+// -------END-------
+
 declare global {
   module NodeJS {
     interface Global {
       STATE_SYM_SYMBOL: State; // eslint-disable-line no-undef
       RETRY_TIMES_SYMBOL: string; // eslint-disable-line no-undef
       TEST_TIMEOUT_SYMBOL: number; // eslint-disable-line no-undef
+      expect: typeof expect; // eslint-disable-line no-undef
     }
   }
 }

@@ -56,31 +56,35 @@ export const initialize = ({
   global.fit = global.it.only;
   global.fdescribe = global.describe.only;
 
-  global.test.concurrent = (
-    testName: string,
-    testFn: () => Promise<any>,
-    timeout?: number,
-  ) => {
-    // For concurrent tests we first run the function that returns promise, and then register a
-    // nomral test that will be waiting on the returned promise (when we start the test, the promise
-    // will already be in the process of execution).
-    // Unfortunately at this stage there's no way to know if there are any `.only` tests in the suite
-    // that will result in this test to be skipped, so we'll be executing the promise function anyway,
-    // even if it ends up being skipped.
-    const promise = mutex(() => testFn());
-    global.test(testName, () => promise, timeout);
-  };
+  global.test.concurrent = (test => {
+    const concurrent = (
+      testName: string,
+      testFn: () => Promise<any>,
+      timeout?: number,
+    ) => {
+      // For concurrent tests we first run the function that returns promise, and then register a
+      // nomral test that will be waiting on the returned promise (when we start the test, the promise
+      // will already be in the process of execution).
+      // Unfortunately at this stage there's no way to know if there are any `.only` tests in the suite
+      // that will result in this test to be skipped, so we'll be executing the promise function anyway,
+      // even if it ends up being skipped.
+      const promise = mutex(() => testFn());
+      global.test(testName, () => promise, timeout);
+    };
 
-  global.test.concurrent.only = (
-    testName: string,
-    testFn: () => Promise<any>,
-    timeout?: number,
-  ) => {
-    const promise = mutex(() => testFn());
-    global.test.only(testName, () => promise, timeout);
-  };
+    concurrent.only = (
+      testName: string,
+      testFn: () => Promise<any>,
+      timeout?: number,
+    ) => {
+      const promise = mutex(() => testFn());
+      test.only(testName, () => promise, timeout); // eslint-disable-line jest/no-focused-tests
+    };
 
-  global.test.concurrent.skip = global.test.skip;
+    concurrent.skip = test.skip;
+
+    return concurrent;
+  })(global.test);
 
   addEventHandler(eventHandler);
 
