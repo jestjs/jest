@@ -171,7 +171,6 @@ export default class ScriptTransformer {
     const result = babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
-      // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33118
       caller: {
         name: '@jest/transform',
         supportsStaticESM: false,
