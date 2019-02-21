@@ -428,7 +428,16 @@ describe('.toEqual()', () => {
   [
     [true, true],
     [1, 1],
+    [NaN, NaN],
+    // eslint-disable-next-line no-new-wrappers
+    [0, new Number(0)],
+    // eslint-disable-next-line no-new-wrappers
+    [new Number(0), 0],
     ['abc', 'abc'],
+    // eslint-disable-next-line no-new-wrappers
+    [new String('abc'), 'abc'],
+    // eslint-disable-next-line no-new-wrappers
+    ['abc', new String('abc')],
     [[1], [1]],
     [[1, 2], [1, 2]],
     [Immutable.List([1]), Immutable.List([1])],
