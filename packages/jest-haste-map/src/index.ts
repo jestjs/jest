@@ -98,9 +98,11 @@ type Watcher = {
 
 type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
 
-export type ModuleMap = HasteModuleMap;
-export type SerializableModuleMap = HasteSerializableModuleMap;
-export type FS = HasteFS;
+namespace HasteMap {
+  export type ModuleMap = HasteModuleMap;
+  export type SerializableModuleMap = HasteSerializableModuleMap;
+  export type FS = HasteFS;
+}
 
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
@@ -368,7 +370,7 @@ class HasteMap extends EventEmitter {
     return hasteMap;
   }
 
-  readModuleMap(): ModuleMap {
+  readModuleMap(): HasteModuleMap {
     const data = this.read();
     return new HasteModuleMap({
       duplicates: data.duplicates,
@@ -1079,4 +1081,4 @@ function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
 HasteMap.H = H;
 HasteMap.ModuleMap = HasteModuleMap;
 
-module.exports = HasteMap;
+export = HasteMap;

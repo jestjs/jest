@@ -8,16 +8,13 @@
 
 import fs from 'fs';
 import path from 'path';
-import HasteMap from 'jest-haste-map';
+import {ModuleMap} from 'jest-haste-map';
 import Resolver from '../';
 // @ts-ignore: js file
 import userResolver from '../__mocks__/userResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import defaultResolver from '../defaultResolver';
 import {ResolverConfig} from '../types';
-
-// @ts-ignore: types are wrong. not sure how...
-const {ModuleMap} = HasteMap;
 
 jest.mock('../__mocks__/userResolver');
 

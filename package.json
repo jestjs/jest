@@ -19,6 +19,7 @@
     "ansi-styles": "^3.2.0",
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.5",
+    "babel-plugin-typescript-strip-namespaces": "^1.1.0",
     "camelcase": "^5.0.0",
     "chalk": "^2.0.1",
     "codecov": "^3.0.0",
