@@ -26,7 +26,6 @@ const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 // Narrow down the types
 interface BabelJestTransformer extends Transformer {
   canInstrument: true;
-  createTransformer: (options?: TransformOptions) => BabelJestTransformer;
 }
 
 const createTransformer = (
@@ -64,9 +63,8 @@ const createTransformer = (
     return babelConfig;
   }
 
-  const transformer: BabelJestTransformer = {
+  return {
     canInstrument: true,
-    createTransformer,
     getCacheKey(
       fileData,
       filename,
@@ -130,8 +128,15 @@ const createTransformer = (
       return src;
     },
   };
-
-  return transformer;
 };
 
-export = createTransformer();
+const transformer: BabelJestTransformer & {
+  createTransformer: (options?: TransformOptions) => BabelJestTransformer;
+} = {
+  ...createTransformer(),
+  // Assigned here so only the exported transformer has `createTransformer`,
+  // instead of all created transformers by the function
+  createTransformer,
+};
+
+export = transformer;
