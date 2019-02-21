@@ -9,9 +9,9 @@
  */
 
 //$FlowFixMe Cannot import ts
-import type {EventHandler} from '../types.ts';
+// import type {EventHandler} from '../types.ts';
 
-const testEventHandler: EventHandler = (event, state) => {
+const testEventHandler = (event, state) => {
   switch (event.name) {
     case 'start_describe_definition':
     case 'finish_describe_definition': {
