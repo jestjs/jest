@@ -69,7 +69,7 @@ const createTransformer = (
   function getRootDirRegExp(rootDir: Config.Path): RegExp {
     if (!rootDirRegExpCache[rootDir]) {
       rootDirRegExpCache[rootDir] = new RegExp(
-        `^${escapeStrForRegex(rootDir)}(${escapeStrForRegex(path.sep)}|$)`,
+        `^${escapeStrForRegex(rootDir)}(?=${escapeStrForRegex(path.sep)}|$)`,
       );
     }
 
@@ -86,7 +86,7 @@ const createTransformer = (
     // babel options to relativize paths
     return JSON.stringify(babelOptions.options, (_key, value) => {
       if (typeof value === 'string') {
-        return value.replace(rootDirRegExp, '<rootDir>$1');
+        return value.replace(rootDirRegExp, '<rootDir>');
       }
       return value;
     });
