@@ -344,6 +344,8 @@ describe('.toEqual()', () => {
     [true, false],
     [1, 2],
     [0, -0],
+    [0, Number.MIN_VALUE], // issues/7941
+    [Number.MIN_VALUE, 0],
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
     [null, undefined],

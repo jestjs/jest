@@ -2013,6 +2013,13 @@ Expected: <green>-0</>
 Received: <red>0</>"
 `;
 
+exports[`.toEqual() {pass: false} expect(0).toEqual(5e-324) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected: <green>5e-324</>
+Received: <red>0</>"
+`;
+
 exports[`.toEqual() {pass: false} expect(1).not.toEqual(1) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
 
@@ -2032,6 +2039,13 @@ exports[`.toEqual() {pass: false} expect(1).toEqual(ArrayContaining [1, 2]) 1`] 
 
 Expected: <green>ArrayContaining [1, 2]</>
 Received: <red>1</>"
+`;
+
+exports[`.toEqual() {pass: false} expect(5e-324).toEqual(0) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Expected: <green>0</>
+Received: <red>5e-324</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.List [1, 2]).not.toEqual(Immutable.List [1, 2]) 1`] = `
