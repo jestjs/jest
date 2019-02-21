@@ -47,7 +47,7 @@
 - `[@jest/transform]`: New package extracted from `jest-runtime` ([#7915](https://github.com/facebook/jest/pull/7915))
 - `[babel-plugin-jest-hoist]`: Migrate to TypeScript ([#7898](https://github.com/facebook/jest/pull/7898))
 - `[@jest/core]` Create new package, which is `jest-cli` minus `yargs` and `prompts` ([#7696](https://github.com/facebook/jest/pull/7696))
-- `[@jest/transform]`: Migrate to TypeScript ([#7918](https://github.com/facebook/jest/pull/7918))
+- `[@jest/transform]`: Migrate to TypeScript ([#7918](https://github.com/facebook/jest/pull/7918), [#7945](https://github.com/facebook/jest/pull/7945))
 - `[docs]` Add missing import to docs ([#7928](https://github.com/facebook/jest/pull/7928))
 - `[jest-resolve-dependencies]`: Migrate to TypeScript ([#7922](https://github.com/facebook/jest/pull/7922))
 - `[expect]`: Migrate to TypeScript ([#7919](https://github.com/facebook/jest/pull/7919))
