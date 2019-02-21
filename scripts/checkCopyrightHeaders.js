@@ -99,7 +99,7 @@ const CUSTOM_IGNORED_PATTERNS = [
   '\\.(example|map)$',
   '^examples/.*',
   '^flow-typed/.*',
-  '^packages/expect/src/jasmineUtils\\.js$',
+  '^packages/expect/src/jasmineUtils\\.ts$',
   '^packages/jest-config/src/vendor/jsonlint\\.js$',
 ].map(createRegExp);
 

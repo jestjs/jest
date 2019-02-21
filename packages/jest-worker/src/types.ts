@@ -147,6 +147,7 @@ export type ParentMessageError = [
 export type ParentMessage = ParentMessageOk | ParentMessageError;
 
 // Queue types.
+
 export type OnStart = (worker: WorkerInterface) => void;
 export type OnEnd = (err: Error | null, result: unknown) => void;
 
@@ -154,5 +155,9 @@ export type QueueChildMessage = {
   request: ChildMessage;
   onStart: OnStart;
   onEnd: OnEnd;
-  next?: QueueChildMessage;
+};
+
+export type QueueItem = {
+  task: QueueChildMessage;
+  next: QueueItem | null;
 };

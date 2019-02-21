@@ -8,9 +8,20 @@
   },
   "license": "MIT",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/types": "^24.1.0",
     "jest-regex-util": "^24.0.0",
     "jest-snapshot": "^24.1.0"
+  },
+  "devDependencies": {
+    "jest-haste-map": "^24.0.0",
+    "jest-resolve": "^24.1.0",
+    "jest-runtime": "^24.1.0"
+  },
+  "peerDependencies": {
+    "jest-haste-map": "^24.0.0",
+    "jest-resolve": "^24.1.0"
   },
   "engines": {
     "node": ">= 6"

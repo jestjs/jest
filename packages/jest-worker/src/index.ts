@@ -53,10 +53,10 @@ function getExposedMethods(
  *     so they will get executed as soon as they can.
  *
  *   - Sticky method: if a "computeWorkerKey" method is provided within the
- *   config, the resulting string of this method will be used as a key.
- *   Every time this key is returned, it is guaranteed that your job will be
- *   processed by the same worker. This is specially useful if your workers are
- *   caching results.
+ *     config, the resulting string of this method will be used as a key.
+ *     Every time this key is returned, it is guaranteed that your job will be
+ *     processed by the same worker. This is specially useful if your workers
+ *     are caching results.
  */
 export default class JestWorker {
   private _ending: boolean;
