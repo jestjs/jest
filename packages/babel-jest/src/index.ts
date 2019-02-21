@@ -76,7 +76,10 @@ const createTransformer = (
     return rootDirRegExpCache[rootDir];
   }
 
-  function getCacheKeyForBabelOptions(babelOptions: any, rootDir: Config.Path) {
+  function getCacheKeyForBabelOptions(
+    babelOptions: PartialConfig,
+    rootDir: Config.Path,
+  ) {
     const rootDirRegExp = getRootDirRegExp(rootDir);
 
     // Not pretty but not coupled to a specific signature of the
