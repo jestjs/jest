@@ -35,7 +35,7 @@ export const runTest = (source: string) => {
   const tmpFilename = path.join(os.tmpdir(), filename);
 
   const content = `
-    require('${BABEL_REGISTER_PATH}');
+    require('${BABEL_REGISTER_PATH}')({extensions: [".js", ".ts"]});
     const circus = require('${CIRCUS_PATH}');
     global.test = circus.test;
     global.describe = circus.describe;
