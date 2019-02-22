@@ -15,6 +15,9 @@ module.exports = {
     '!**/vendor/**',
     '!e2e/**',
   ],
+  moduleNameMapper: {
+    '@jest/types': '<rootDir>/packages/jest-types/src/index.ts',
+  },
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
