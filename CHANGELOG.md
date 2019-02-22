@@ -19,6 +19,7 @@
 - `[jest-circus]` Fix bug with test.only ([#7888](https://github.com/facebook/jest/pull/7888))
 - `[jest-transform]` Normalize config and remove unecessary checks, convert `TestUtils.js` to TypeScript ([#7801](https://github.com/facebook/jest/pull/7801))
 - `[jest-worker]` Fix `jest-worker` when using pre-allocated jobs ([#7934](https://github.com/facebook/jest/pull/7934))
+- `[jest-changed-files]` Fix `getChangedFilesFromRoots` to not return parts of the commit messages as if they were files, when the commit messages contained multiple paragraphs ([#7961](https://github.com/facebook/jest/pull/7961))
 
 ### Chore & Maintenance
 
