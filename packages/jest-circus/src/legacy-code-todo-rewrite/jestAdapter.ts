@@ -9,9 +9,7 @@ import path from 'path';
 import {Config, TestResult, Environment} from '@jest/types'; // eslint-disable-line import/no-unresolved
 // @ts-ignore TODO Remove ignore when jest-runtime is migrated to ts
 import Runtime from 'jest-runtime'; // eslint-disable-line import/no-extraneous-dependencies
-import jestSnapshot = require('jest-snapshot');
-
-const {SnapshotState} = jestSnapshot;
+import {SnapshotState} from 'jest-snapshot';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
