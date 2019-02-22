@@ -110,7 +110,6 @@ export default class ScriptTransformer {
     content: string,
     instrument: boolean,
   ): Config.Path {
-    // @ts-ignore: not properly exported (needs ESM)
     const baseCacheDir = HasteMap.getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,

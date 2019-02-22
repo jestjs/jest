@@ -22,7 +22,7 @@
 
 ### Chore & Maintenance
 
-- `[*]`: Setup building, linting and testing of TypeScript ([#7808](https://github.com/facebook/jest/pull/7808), [#7855](https://github.com/facebook/jest/pull/7855))
+- `[*]`: Setup building, linting and testing of TypeScript ([#7808](https://github.com/facebook/jest/pull/7808), [#7855](https://github.com/facebook/jest/pull/7855), [#7951](https://github.com/facebook/jest/pull/7951))
 - `[pretty-format]`: Migrate to TypeScript ([#7809](https://github.com/facebook/jest/pull/7809))
 - `[diff-sequences]`: Migrate to Typescript ([#7820](https://github.com/facebook/jest/pull/7820))
 - `[jest-get-type]`: Migrate to TypeScript ([#7818](https://github.com/facebook/jest/pull/7818))
@@ -39,7 +39,7 @@
 - `[jest-watcher]`: Migrate to TypeScript ([#7843](https://github.com/facebook/jest/pull/7843))
 - `[jest-mock]`: Migrate to TypeScript ([#7847](https://github.com/facebook/jest/pull/7847), [#7850](https://github.com/facebook/jest/pull/7850))
 - `[jest-worker]`: Migrate to TypeScript ([#7853](https://github.com/facebook/jest/pull/7853))
-- `[jest-haste-map]`: Migrate to TypeScript ([#7854](https://github.com/facebook/jest/pull/7854))
+- `[jest-haste-map]`: Migrate to TypeScript ([#7854](https://github.com/facebook/jest/pull/7854), [#7951](https://github.com/facebook/jest/pull/7951))
 - `[docs]`: Fix image paths in SnapshotTesting.md for current and version 24 ([#7872](https://github.com/facebook/jest/pull/7872))
 - `[babel-jest]`: Migrate to TypeScript ([#7862](https://github.com/facebook/jest/pull/7862))
 - `[jest-resolve]`: Migrate to TypeScript ([#7871](https://github.com/facebook/jest/pull/7871))

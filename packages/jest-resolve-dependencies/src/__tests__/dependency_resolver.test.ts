@@ -33,10 +33,10 @@ beforeEach(() => {
     roots: ['./packages/jest-resolve-dependencies'],
   });
   return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-    (hasteMap: any) => {
+    (runtimeContext: any) => {
       dependencyResolver = new DependencyResolver(
-        hasteMap.resolver,
-        hasteMap.hasteFS,
+        runtimeContext.resolver,
+        runtimeContext.hasteFS,
         buildSnapshotResolver(config),
       );
     },
