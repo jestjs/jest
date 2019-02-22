@@ -11,6 +11,7 @@ export type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
 export type BlockFn = () => void;
 export type BlockName = string;
 
+// TODO Replace with actual type when `jest-each` is ready
 type Each = () => void;
 
 export interface ItBase {

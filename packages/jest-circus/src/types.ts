@@ -187,7 +187,7 @@ export type State = {
   // handlers (so we could fail tests on unhandled errors) and later restore
   // the original ones.
   originalGlobalErrorHandlers?: GlobalErrorHandlers;
-  parentProcess: Process | undefined | null; // process object from the outer scope
+  parentProcess: Process | null; // process object from the outer scope
   rootDescribeBlock: DescribeBlock;
   testNamePattern: RegExp | undefined | null;
   testTimeout: number;
