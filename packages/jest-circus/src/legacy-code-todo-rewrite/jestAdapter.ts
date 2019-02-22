@@ -3,25 +3,23 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow strict-local
  */
 
-import type {Environment} from 'types/Environment';
-import type {GlobalConfig, ProjectConfig} from 'types/Config';
-import type {TestResult} from 'types/TestResult';
-import type Runtime from 'jest-runtime';
+import path from 'path';
+import {Config, TestResult, Environment} from '@jest/types';
+// @ts-ignore TODO Remove ignore when jest-runtime is migrated to ts
+import Runtime from 'jest-runtime'; // eslint-disable-line import/no-extraneous-dependencies
+import {SnapshotState} from 'jest-snapshot';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
-import path from 'path';
 
 const jestAdapter = async (
-  globalConfig: GlobalConfig,
-  config: ProjectConfig,
-  environment: Environment,
+  globalConfig: Config.GlobalConfig,
+  config: Config.ProjectConfig,
+  environment: Environment.$JestEnvironment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult> => {
+): Promise<TestResult.TestResult> => {
   const {
     initialize,
     runAndTransformResultsToJestFormat,
@@ -84,7 +82,11 @@ const jestAdapter = async (
   return _addSnapshotData(results, snapshotState);
 };
 
-const _addSnapshotData = (results: TestResult, snapshotState) => {
+const _addSnapshotData = (
+  results: TestResult.TestResult,
+  // TODO: make just snapshotState: SnapshotState when `jest-snapshot` is ESM
+  snapshotState: typeof SnapshotState.prototype,
+) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark
@@ -111,4 +113,4 @@ const _addSnapshotData = (results: TestResult, snapshotState) => {
   return results;
 };
 
-module.exports = jestAdapter;
+export = jestAdapter;

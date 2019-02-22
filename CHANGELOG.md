@@ -54,6 +54,7 @@
 - `[docs]` Add missing import to docs ([#7928](https://github.com/facebook/jest/pull/7928))
 - `[jest-resolve-dependencies]`: Migrate to TypeScript ([#7922](https://github.com/facebook/jest/pull/7922))
 - `[expect]`: Migrate to TypeScript ([#7919](https://github.com/facebook/jest/pull/7919))
+- `[jest-circus]`: Migrate to TypeScript ([#7916](https://github.com/facebook/jest/pull/7916))
 
 ### Performance
 

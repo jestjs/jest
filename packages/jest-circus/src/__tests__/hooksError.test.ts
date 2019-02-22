@@ -3,17 +3,14 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-'use strict';
+import circus from '../';
+import {HookType} from '../types';
 
-const circus = require('../index.js');
-
-describe.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
+describe.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'])(
   '%s hooks error throwing',
-  fn => {
+  (fn: HookType) => {
     test.each([
       ['String'],
       [1],

@@ -3,11 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow strict-local
  */
 
-import type {Event, State, EventHandler} from 'types/Circus';
+import {Event, State, EventHandler, STATE_SYM} from './types';
 
 import {makeDescribe} from './utils';
 import eventHandler from './eventHandler';
@@ -19,7 +17,6 @@ const eventHandlers: Array<EventHandler> = [
 ];
 
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
-const STATE_SYM = Symbol('JEST_STATE_SYMBOL');
 
 const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
 const INITIAL_STATE: State = {

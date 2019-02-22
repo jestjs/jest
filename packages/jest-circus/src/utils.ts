@@ -3,11 +3,18 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow strict-local
  */
 
-import type {
+import {convertDescriptorToString} from 'jest-util';
+import isGeneratorFn from 'is-generator-fn';
+import co from 'co';
+
+import StackUtils from 'stack-utils';
+
+import prettyFormat from 'pretty-format';
+
+import {getState} from './state';
+import {
   AsyncFn,
   BlockMode,
   BlockName,
@@ -21,24 +28,13 @@ import type {
   TestMode,
   TestName,
   TestResults,
-} from 'types/Circus';
-// $FlowFixMe: Converted to TS
-import {convertDescriptorToString} from 'jest-util';
-import isGeneratorFn from 'is-generator-fn';
-import co from 'co';
-
-import StackUtils from 'stack-utils';
-
-// $FlowFixMe: Converted to TS
-import prettyFormat from 'pretty-format';
-
-import {getState} from './state';
+} from './types';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
 export const makeDescribe = (
   name: BlockName,
-  parent: ?DescribeBlock,
+  parent?: DescribeBlock,
   mode?: BlockMode,
 ): DescribeBlock => {
   let _mode = mode;
@@ -58,29 +54,25 @@ export const makeDescribe = (
 };
 
 export const makeTest = (
-  fn: ?TestFn,
+  fn: TestFn | undefined,
   mode: TestMode,
   name: TestName,
   parent: DescribeBlock,
-  timeout: ?number,
+  timeout: number | undefined,
   asyncError: Exception,
-): TestEntry => {
-  const errors: Array<[?Exception, Exception]> = [];
-
-  return {
-    asyncError,
-    duration: null,
-    errors,
-    fn,
-    invocations: 0,
-    mode,
-    name: convertDescriptorToString(name),
-    parent,
-    startedAt: null,
-    status: null,
-    timeout,
-  };
-};
+): TestEntry => ({
+  asyncError,
+  duration: null,
+  errors: [],
+  fn,
+  invocations: 0,
+  mode,
+  name: convertDescriptorToString(name),
+  parent,
+  startedAt: null,
+  status: null,
+  timeout,
+});
 
 // Traverse the tree of describe blocks and return true if at least one describe
 // block has an enabled test.
@@ -98,10 +90,14 @@ const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
   return hasOwnEnabledTests || describeBlock.children.some(hasEnabledTest);
 };
 
-export const getAllHooksForDescribe = (
-  describe: DescribeBlock,
-): {[key: 'beforeAll' | 'afterAll']: Array<Hook>} => {
-  const result = {afterAll: [], beforeAll: []};
+export const getAllHooksForDescribe = (describe: DescribeBlock) => {
+  const result: {
+    beforeAll: Array<Hook>;
+    afterAll: Array<Hook>;
+  } = {
+    afterAll: [],
+    beforeAll: [],
+  };
 
   if (hasEnabledTest(describe)) {
     for (const hook of describe.hooks) {
@@ -119,11 +115,12 @@ export const getAllHooksForDescribe = (
   return result;
 };
 
-export const getEachHooksForTest = (
-  test: TestEntry,
-): {[key: 'beforeEach' | 'afterEach']: Array<Hook>} => {
-  const result = {afterEach: [], beforeEach: []};
-  let {parent: block} = test;
+export const getEachHooksForTest = (test: TestEntry) => {
+  const result: {
+    beforeEach: Array<Hook>;
+    afterEach: Array<Hook>;
+  } = {afterEach: [], beforeEach: []};
+  let block: DescribeBlock | undefined | null = test.parent;
 
   do {
     const beforeEachForCurrentBlock = [];
@@ -144,10 +141,10 @@ export const getEachHooksForTest = (
   return result;
 };
 
-export const describeBlockHasTests = (describe: DescribeBlock) =>
-  describe.tests.length || describe.children.some(describeBlockHasTests);
+export const describeBlockHasTests = (describe: DescribeBlock): boolean =>
+  describe.tests.length > 0 || describe.children.some(describeBlockHasTests);
 
-const _makeTimeoutMessage = (timeout, isHook) =>
+const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
   `Exceeded timeout of ${timeout}ms for a ${
     isHook ? 'hook' : 'test'
   }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
@@ -158,14 +155,14 @@ const {setTimeout, clearTimeout} = global;
 
 export const callAsyncCircusFn = (
   fn: AsyncFn,
-  testContext: ?TestContext,
-  {isHook, timeout}: {isHook?: ?boolean, timeout: number},
-): Promise<mixed> => {
-  let timeoutID;
+  testContext: TestContext | undefined,
+  {isHook, timeout}: {isHook?: boolean | null; timeout: number},
+): Promise<any> => {
+  let timeoutID: NodeJS.Timeout;
 
   return new Promise((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, isHook)),
+      () => reject(_makeTimeoutMessage(timeout, !!isHook)),
       timeout,
     );
 
@@ -173,8 +170,8 @@ export const callAsyncCircusFn = (
     // soon as `done` called.
     if (fn.length) {
       const done = (reason?: Error | string): void => {
-        // $FlowFixMe: It doesn't approve of .stack
-        const isError = reason && reason.message && reason.stack;
+        const isError =
+          reason && (reason as Error).message && (reason as Error).stack;
         return reason
           ? reject(
               isError
@@ -236,7 +233,7 @@ export const callAsyncCircusFn = (
     });
 };
 
-export const getTestDuration = (test: TestEntry): ?number => {
+export const getTestDuration = (test: TestEntry): number | null => {
   const {startedAt} = test;
   return typeof startedAt === 'number' ? Date.now() - startedAt : null;
 };
@@ -249,12 +246,12 @@ export const makeRunResult = (
   unhandledErrors: unhandledErrors.map(_formatError),
 });
 
-const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
+const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
   const {includeTestLocationInResult} = getState();
-  let testResults = [];
+  let testResults: TestResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
-    let parent = test;
+    let parent: TestEntry | DescribeBlock = test;
     do {
       testPath.unshift(parent.name);
     } while ((parent = parent.parent));
@@ -268,8 +265,17 @@ const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
     let location = null;
     if (includeTestLocationInResult) {
       const stackLine = test.asyncError.stack.split('\n')[1];
-      const {line, column} = stackUtils.parseLine(stackLine);
-      location = {column, line};
+      const parsedLine = stackUtils.parseLine(stackLine);
+      if (
+        parsedLine &&
+        typeof parsedLine.column === 'number' &&
+        typeof parsedLine.line === 'number'
+      ) {
+        location = {
+          column: parsedLine.column,
+          line: parsedLine.line,
+        };
+      }
     }
 
     testResults.push({
@@ -283,7 +289,7 @@ const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
   }
 
   for (const child of describeBlock.children) {
-    testResults = testResults.concat(makeTestResults(child, config));
+    testResults = testResults.concat(makeTestResults(child));
   }
 
   return testResults;
@@ -293,7 +299,7 @@ const makeTestResults = (describeBlock: DescribeBlock, config): TestResults => {
 // names + test title)
 export const getTestID = (test: TestEntry) => {
   const titles = [];
-  let parent = test;
+  let parent: TestEntry | DescribeBlock = test;
   do {
     titles.unshift(parent.name);
   } while ((parent = parent.parent));
@@ -302,7 +308,9 @@ export const getTestID = (test: TestEntry) => {
   return titles.join(' ');
 };
 
-const _formatError = (errors: ?Exception | [?Exception, Exception]): string => {
+const _formatError = (
+  errors?: Exception | [Exception | undefined, Exception],
+): string => {
   let error;
   let asyncError;
 
@@ -342,7 +350,7 @@ export const addErrorToEachTestUnderDescribe = (
   }
 };
 
-export const invariant = (condition: *, message: string) => {
+export const invariant = (condition: unknown, message?: string) => {
   if (!condition) {
     throw new Error(message);
   }

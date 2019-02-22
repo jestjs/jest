@@ -14,6 +14,8 @@ import * as Resolve from './Resolve';
 import * as Snapshot from './Snapshot';
 import * as SourceMaps from './SourceMaps';
 import * as TestResult from './TestResult';
+import * as Global from './Global';
+import * as Environment from './Environment';
 
 export {
   Config,
@@ -25,4 +27,6 @@ export {
   Snapshot,
   SourceMaps,
   TestResult,
+  Global,
+  Environment,
 };
