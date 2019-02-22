@@ -5,15 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, Resolve, Snapshot} from '@jest/types';
+import {Config, Snapshot} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map';
 import Resolver from 'jest-resolve';
 import {isSnapshotPath} from 'jest-snapshot';
+
+namespace DependencyResolver {
+  export type ResolvedModule = {
+    file: Config.Path;
+    dependencies: Config.Path[];
+  };
+}
 
 /**
  * DependencyResolver is used to resolve the direct dependencies of a module or
  * to retrieve a list of all transitive inverse dependencies.
  */
+/* eslint-disable-next-line no-redeclare */
 class DependencyResolver {
   private _hasteFS: HasteFS;
   private _resolver: Resolver;
@@ -31,7 +39,7 @@ class DependencyResolver {
 
   resolve(
     file: Config.Path,
-    options?: Resolve.ResolveModuleConfig,
+    options?: Resolver.ResolveModuleConfig,
   ): Array<Config.Path> {
     const dependencies = this._hasteFS.getDependencies(file);
     if (!dependencies) {
@@ -64,19 +72,19 @@ class DependencyResolver {
   resolveInverseModuleMap(
     paths: Set<Config.Path>,
     filter: (file: Config.Path) => boolean,
-    options?: Resolve.ResolveModuleConfig,
-  ): Array<Resolve.ResolvedModule> {
+    options?: Resolver.ResolveModuleConfig,
+  ): Array<DependencyResolver.ResolvedModule> {
     if (!paths.size) {
       return [];
     }
 
     const collectModules = (
       related: Set<Config.Path>,
-      moduleMap: Array<Resolve.ResolvedModule>,
+      moduleMap: Array<DependencyResolver.ResolvedModule>,
       changed: Set<Config.Path>,
     ) => {
       const visitedModules = new Set();
-      const result: Array<Resolve.ResolvedModule> = [];
+      const result: Array<DependencyResolver.ResolvedModule> = [];
       while (changed.size) {
         changed = new Set(
           moduleMap.reduce<Array<Config.Path>>((acc, module) => {
@@ -116,7 +124,7 @@ class DependencyResolver {
         }
       }
     }
-    const modules: Array<Resolve.ResolvedModule> = [];
+    const modules: Array<DependencyResolver.ResolvedModule> = [];
     for (const file of this._hasteFS.getAbsoluteFileIterator()) {
       modules.push({
         dependencies: this.resolve(file, options),
@@ -129,7 +137,7 @@ class DependencyResolver {
   resolveInverse(
     paths: Set<Config.Path>,
     filter: (file: Config.Path) => boolean,
-    options?: Resolve.ResolveModuleConfig,
+    options?: Resolver.ResolveModuleConfig,
   ): Array<Config.Path> {
     return this.resolveInverseModuleMap(paths, filter, options).map(
       module => module.file,

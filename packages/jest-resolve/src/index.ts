@@ -6,7 +6,7 @@
  */
 
 import path from 'path';
-import {Config, Resolve} from '@jest/types';
+import {Config} from '@jest/types';
 import {ModuleMap} from 'jest-haste-map';
 import {sync as realpath} from 'realpath-native';
 import chalk from 'chalk';
@@ -27,6 +27,13 @@ type FindNodeModuleConfig = {
 
 type BooleanObject = {[key: string]: boolean};
 
+namespace Resolver {
+  export type ResolveModuleConfig = {
+    skipNodeResolution?: boolean;
+    paths?: Config.Path[];
+  };
+}
+
 const NATIVE_PLATFORM = 'native';
 
 // We might be inside a symlink.
@@ -39,6 +46,7 @@ const nodePaths = process.env.NODE_PATH
       .map(p => path.resolve(resolvedCwd, p))
   : null;
 
+/* eslint-disable-next-line no-redeclare */
 class Resolver {
   private readonly _options: ResolverConfig;
   private readonly _moduleMap: ModuleMap;
@@ -97,7 +105,7 @@ class Resolver {
   resolveModuleFromDirIfExists(
     dirname: Config.Path,
     moduleName: string,
-    options?: Resolve.ResolveModuleConfig,
+    options?: Resolver.ResolveModuleConfig,
   ): Config.Path | null {
     const paths = (options && options.paths) || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
@@ -180,7 +188,7 @@ class Resolver {
   resolveModule(
     from: Config.Path,
     moduleName: string,
-    options?: Resolve.ResolveModuleConfig,
+    options?: Resolver.ResolveModuleConfig,
   ): Config.Path {
     const dirname = path.dirname(from);
     const module = this.resolveModuleFromDirIfExists(
