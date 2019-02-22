@@ -18,7 +18,7 @@ export type EnvironmentContext = {
   testPath?: string;
 };
 
-declare class $JestEnvironment {
+export declare class $JestEnvironment {
   constructor(config: ProjectConfig, context?: EnvironmentContext);
   runScript(script: Script): any;
   global: Global;

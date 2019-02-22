@@ -16,7 +16,7 @@ const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  environment: Environment.Environment,
+  environment: Environment.$JestEnvironment,
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult.TestResult> => {
@@ -114,4 +114,4 @@ const _addSnapshotData = (
   return results;
 };
 
-module.exports = jestAdapter;
+export = jestAdapter;
