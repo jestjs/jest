@@ -7,7 +7,7 @@
 // @ts-ignore TODO Remove ignore when jest-each is migrated to ts
 import {bind as bindEach} from 'jest-each';
 import {ErrorWithStack} from 'jest-util';
-import {Global} from '@jest/types'; // eslint-disable-line
+import {Global} from '@jest/types';
 import {
   BlockFn,
   HookFn,

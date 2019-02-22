@@ -6,7 +6,7 @@
  */
 
 import path from 'path';
-import {Config, TestResult, Environment} from '@jest/types'; // eslint-disable-line
+import {Config, TestResult, Environment} from '@jest/types';
 // @ts-ignore TODO Remove ignore when jest-runtime is migrated to ts
 import Runtime from 'jest-runtime'; // eslint-disable-line import/no-extraneous-dependencies
 import {SnapshotState} from 'jest-snapshot';
