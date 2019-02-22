@@ -176,6 +176,28 @@ export const ensureNumbers = (
   ensureExpectedIsNumber(expected, matcherName, options);
 };
 
+export const ensureExpectedIsNonNegativeInteger = (
+  expected: unknown,
+  matcherName: string,
+  options?: MatcherHintOptions,
+) => {
+  if (
+    typeof expected !== 'number' ||
+    !Number.isSafeInteger(expected) ||
+    expected < 0
+  ) {
+    // Prepend maybe not only for backward compatibility.
+    const matcherString = (options ? '' : '[.not]') + matcherName;
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherString, undefined, undefined, options),
+        `${EXPECTED_COLOR('expected')} value must be a non-negative integer`,
+        printWithType('Expected', expected, printExpected),
+      ),
+    );
+  }
+};
+
 // Sometimes, e.g. when comparing two numbers, the output from jest-diff
 // does not contain more information than the `Expected:` / `Received:` already gives.
 // In those cases, we do not print a diff to make the output shorter and not redundant.

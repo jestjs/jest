@@ -14,6 +14,7 @@ import {
   SUGGEST_TO_EQUAL,
   SUGGEST_TO_CONTAIN_EQUAL,
   diff,
+  ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
   ensureNumbers,
   getLabelPrinter,
@@ -505,16 +506,20 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: 'toEqual', pass};
   },
 
-  toHaveLength(this: MatcherState, received: any, length: number) {
+  toHaveLength(this: MatcherState, received: any, expected: number) {
+    const isNot = this.isNot;
+    const options: MatcherHintOptions = {
+      isNot,
+      promise: this.promise,
+    };
+
     if (
       typeof received !== 'string' &&
       (!received || typeof received.length !== 'number')
     ) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('.toHaveLength', undefined, undefined, {
-            isNot: this.isNot,
-          }),
+          matcherHint('toHaveLength', undefined, undefined, options),
           `${RECEIVED_COLOR(
             'received',
           )} value must have a length property whose value must be a number`,
@@ -523,39 +528,34 @@ const matchers: MatchersObject = {
       );
     }
 
-    if (typeof length !== 'number') {
-      throw new Error(
-        matcherErrorMessage(
-          matcherHint('.toHaveLength', undefined, undefined, {
-            isNot: this.isNot,
-          }),
-          `${EXPECTED_COLOR('expected')} value must be a number`,
-          printWithType('Expected', length, printExpected),
-        ),
-      );
-    }
+    ensureExpectedIsNonNegativeInteger(expected, 'toHaveLength', options);
 
-    const pass = received.length === length;
+    const pass = received.length === expected;
+
     const message = () => {
-      const stringExpected = 'Expected length';
-      const stringReceivedLength = 'Received length';
-      const stringReceivedValue = `Received ${getType(received)}`;
+      const labelExpected = 'Expected length';
+      const labelReceivedLength = 'Received length';
+      const labelReceivedValue = `Received ${getType(received)}`;
       const printLabel = getLabelPrinter(
-        stringExpected,
-        stringReceivedLength,
-        stringReceivedValue,
+        labelExpected,
+        labelReceivedLength,
+        labelReceivedValue,
       );
 
       return (
-        matcherHint('.toHaveLength', 'received', 'length', {
-          isNot: this.isNot,
-        }) +
+        matcherHint('toHaveLength', undefined, undefined, options) +
         '\n\n' +
-        `${printLabel(stringExpected)}${printExpected(length)}\n` +
-        `${printLabel(stringReceivedLength)}${printReceived(
-          received.length,
+        `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
+          expected,
         )}\n` +
-        `${printLabel(stringReceivedValue)}${printReceived(received)}`
+        (isNot
+          ? ''
+          : `${printLabel(labelReceivedLength)}${printReceived(
+              received.length,
+            )}\n`) +
+        `${printLabel(labelReceivedValue)}${isNot ? '    ' : ''}${printReceived(
+          received,
+        )}`
       );
     };
 
