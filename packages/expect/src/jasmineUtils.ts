@@ -106,8 +106,6 @@ function eq(
       // $FlowFixMe – Flow sees `a` as a number
       return a == String(b);
     case '[object Number]':
-      // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for
-      // other numeric values.
       return Object.is(Number(a), Number(b));
     case '[object Date]':
     case '[object Boolean]':
