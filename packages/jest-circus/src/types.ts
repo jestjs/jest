@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import expect from 'expect'; // eslint-disable-line
-import {Global} from '@jest/types'; // eslint-disable-line import/no-unresolved
+import {Global} from '@jest/types';
 
 type Process = NodeJS.Process;
 
@@ -229,25 +229,6 @@ export const RETRY_TIMES = (Symbol.for(
 export const TEST_TIMEOUT_SYMBOL = (Symbol.for(
   'TEST_TIMEOUT_SYMBOL',
 ) as unknown) as 'TEST_TIMEOUT_SYMBOL';
-
-// TODO Add expect types to @jest/types or leave it here
-// Borrowed from "expect"
-// -------START-------
-export type SyncExpectationResult = {
-  pass: boolean;
-  message: () => string;
-};
-
-export type AsyncExpectationResult = Promise<SyncExpectationResult>;
-
-export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
-
-export type RawMatcherFn = (
-  expected: any,
-  actual: any,
-  options?: any,
-) => ExpectationResult;
-// -------END-------
 
 declare global {
   module NodeJS {
