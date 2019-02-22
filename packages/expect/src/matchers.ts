@@ -93,13 +93,12 @@ const matchers: MatchersObject = {
     precision: number = 2,
   ) {
     const secondArgument = arguments.length === 3 ? 'precision' : undefined;
-    const isNot = this.isNot;
     const options: MatcherHintOptions = {
-      isNot,
+      isNot: this.isNot,
       promise: this.promise,
       secondArgument,
     };
-    ensureNumbers(received, expected, '.toBeCloseTo');
+    ensureNumbers(received, expected, 'toBeCloseTo', options);
 
     let pass = false;
     let expectedDiff = 0;
@@ -180,7 +179,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, '.toBeGreaterThan');
+    ensureNumbers(received, expected, 'toBeGreaterThan', options);
 
     const pass = received > expected;
 
@@ -203,7 +202,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, '.toBeGreaterThanOrEqual');
+    ensureNumbers(received, expected, 'toBeGreaterThanOrEqual', options);
 
     const pass = received >= expected;
 
@@ -266,7 +265,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, '.toBeLessThan');
+    ensureNumbers(received, expected, 'toBeLessThan', options);
 
     const pass = received < expected;
 
@@ -285,7 +284,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, '.toBeLessThanOrEqual');
+    ensureNumbers(received, expected, 'toBeLessThanOrEqual', options);
 
     const pass = received <= expected;
 
