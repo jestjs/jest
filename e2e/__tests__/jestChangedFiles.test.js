@@ -148,7 +148,11 @@ test('gets changed files for git', async () => {
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   run(`${GIT} add .`, DIR);
-  run(`${GIT} commit --no-gpg-sign -m "test"`, DIR);
+
+  // Uses multiple `-m` to make the commit message have multiple
+  // paragraphs. This is done to ensure that `changedFiles` only
+  // returns files and not parts of commit messages.
+  run(`${GIT} commit --no-gpg-sign -m "test" -m "extra-line"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(Array.from(files)).toEqual([]);
@@ -266,8 +270,13 @@ test('gets changed files for hg', async () => {
     // skip this test and run it only locally.
     return;
   }
+
+  // file1.txt is used to make a multi-line commit message
+  // with `hg commit -l file1.txt`.
+  // This is done to ensure that `changedFiles` only returns files
+  // and not parts of commit messages.
   writeFiles(DIR, {
-    'file1.txt': 'file1',
+    'file1.txt': 'file1\n\nextra-line',
     'nested-dir/file2.txt': 'file2',
     'nested-dir/second-nested-dir/file3.txt': 'file3',
   });
@@ -286,7 +295,7 @@ test('gets changed files for hg', async () => {
   ).toEqual(['file1.txt', 'file2.txt', 'file3.txt']);
 
   run(`${HG} add .`, DIR);
-  run(`${HG} commit -m "test"`, DIR);
+  run(`${HG} commit -l file1.txt`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(Array.from(files)).toEqual([]);
