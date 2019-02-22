@@ -18,8 +18,8 @@ Expected has type:  object
 Expected has value: <green>{\\"a\\": 1}</>"
 `;
 
-exports[`.ensureNumbers() throws error when expected is not a number 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not]This matcher(</><green>expected</><dim>)</>
+exports[`.ensureNumbers() throws error when expected is not a number (backward compatibility) 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCloseTo(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a number
 
@@ -27,13 +27,65 @@ Expected has type:  string
 Expected has value: <green>\\"not_a_number\\"</>"
 `;
 
-exports[`.ensureNumbers() throws error when received is not a number 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not]This matcher(</><green>expected</><dim>)</>
+exports[`.ensureNumbers() throws error when received is not a number (backward compatibility) 1`] = `
+"<dim>expect(</><red>received</><dim>)[.not].toBeCloseTo(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a number
 
 Received has type:  string
 Received has value: <red>\\"not_a_number\\"</>"
+`;
+
+exports[`.ensureNumbers() with options promise empty isNot false received 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
+
+<bold>Matcher error</>: <red>received</> value must be a number
+
+Received has type:  string
+Received has value: <red>\\"\\"</>"
+`;
+
+exports[`.ensureNumbers() with options promise empty isNot true expected 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has value: <green>undefined</>"
+`;
+
+exports[`.ensureNumbers() with options promise rejects isNot false expected 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  string
+Expected has value: <green>\\"0\\"</>"
+`;
+
+exports[`.ensureNumbers() with options promise rejects isNot true received 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <red>received</> value must be a number
+
+Received has type:  symbol
+Received has value: <red>Symbol(0.1)</>"
+`;
+
+exports[`.ensureNumbers() with options promise resolves isNot false received 1`] = `
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <red>received</> value must be a number
+
+Received has type:  boolean
+Received has value: <red>false</>"
+`;
+
+exports[`.ensureNumbers() with options promise resolves isNot true expected 1`] = `
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has value: <green>null</>"
 `;
 
 exports[`.stringify() reduces maxDepth if stringifying very large objects 1`] = `"{\\"a\\": 1, \\"b\\": [Object]}"`;
