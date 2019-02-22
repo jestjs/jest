@@ -22,7 +22,7 @@ aliasCircusIt();
 describe('test/it.todo error throwing', () => {
   it('todo throws error when given no arguments', () => {
     expect(() => {
-      // @ts-ignore
+      // @ts-ignore: Testing runtime errors here
       circusIt.todo();
     }).toThrowError('Todo must be called with only a description.');
   });
@@ -33,7 +33,7 @@ describe('test/it.todo error throwing', () => {
   });
   it('todo throws error when given none string description', () => {
     expect(() => {
-      // @ts-ignore
+      // @ts-ignore: Testing runtime errors here
       circusIt.todo(() => {});
     }).toThrowError('Todo must be called with only a description.');
   });
