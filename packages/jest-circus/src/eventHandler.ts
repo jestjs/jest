@@ -3,11 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow strict-local
  */
 
-import type {EventHandler, Exception} from 'types/Circus';
+import {EventHandler, TEST_TIMEOUT_SYMBOL} from './types';
 
 import {
   addErrorToEachTestUnderDescribe,
@@ -21,9 +19,6 @@ import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
-
-// To pass this value from Runtime object to state we need to use global[sym]
-const TEST_TIMEOUT_SYMBOL = Symbol.for('TEST_TIMEOUT_SYMBOL');
 
 const eventHandler: EventHandler = (event, state): void => {
   switch (event.name) {
@@ -112,14 +107,14 @@ const eventHandler: EventHandler = (event, state): void => {
 
       if (type === 'beforeAll') {
         invariant(describeBlock, 'always present for `*All` hooks');
-        addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
+        addErrorToEachTestUnderDescribe(describeBlock!, error, asyncError);
       } else if (type === 'afterAll') {
         // Attaching `afterAll` errors to each test makes execution flow
         // too complicated, so we'll consider them to be global.
         state.unhandledErrors.push([error, asyncError]);
       } else {
         invariant(test, 'always present for `*Each` hooks');
-        test.errors.push([error, asyncError]);
+        test!.errors.push([error, asyncError]);
       }
       break;
     }
@@ -152,8 +147,7 @@ const eventHandler: EventHandler = (event, state): void => {
       break;
     }
     case 'test_retry': {
-      const errors: Array<[?Exception, Exception]> = [];
-      event.test.errors = errors;
+      event.test.errors = [];
       break;
     }
     case 'run_start': {
@@ -185,8 +179,8 @@ const eventHandler: EventHandler = (event, state): void => {
       invariant(state.originalGlobalErrorHandlers);
       invariant(state.parentProcess);
       restoreGlobalErrorHandlers(
-        state.parentProcess,
-        state.originalGlobalErrorHandlers,
+        state.parentProcess!,
+        state.originalGlobalErrorHandlers!,
       );
       break;
     }

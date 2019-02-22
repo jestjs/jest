@@ -3,17 +3,16 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow strict-local
  */
 
-import type {
+import {
   RunResult,
   TestEntry,
   TestContext,
   Hook,
   DescribeBlock,
-} from 'types/Circus';
+  RETRY_TIMES,
+} from './types';
 
 import {getState, dispatch} from './state';
 import {
@@ -45,7 +44,7 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   }
 
   // Tests that fail and are retried we run after other tests
-  const retryTimes = parseInt(global[Symbol.for('RETRY_TIMES')], 10) || 0;
+  const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 
   for (const test of describeBlock.tests) {
@@ -128,11 +127,11 @@ const _callCircusHook = ({
   describeBlock,
   testContext,
 }: {
-  hook: Hook,
-  describeBlock?: DescribeBlock,
-  test?: TestEntry,
-  testContext?: TestContext,
-}): Promise<mixed> => {
+  hook: Hook;
+  describeBlock?: DescribeBlock;
+  test?: TestEntry;
+  testContext?: TestContext;
+}): Promise<unknown> => {
   dispatch({hook, name: 'hook_start'});
   const timeout = hook.timeout || getState().testTimeout;
   return callAsyncCircusFn(hook.fn, testContext, {isHook: true, timeout})
@@ -155,7 +154,7 @@ const _callCircusTest = (
     return Promise.resolve();
   }
 
-  return callAsyncCircusFn(test.fn, testContext, {isHook: false, timeout})
+  return callAsyncCircusFn(test.fn!, testContext, {isHook: false, timeout})
     .then(() => dispatch({name: 'test_fn_success', test}))
     .catch(error => dispatch({error, name: 'test_fn_failure', test}));
 };

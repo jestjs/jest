@@ -3,38 +3,29 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow strict-local
  */
 
-// $FlowFixMe: Converted to TS. It's also not exported, but should be imported from `matcher-utils`
-import type {DiffOptions} from 'jest-diff';
-import type {Event, State} from 'types/Circus';
-
-// $FlowFixMe: Converted to TS
+import {AssertionError} from 'assert';
 import {diff, printExpected, printReceived} from 'jest-matcher-utils';
 import chalk from 'chalk';
-// $FlowFixMe: Converted to TS
 import prettyFormat from 'pretty-format';
+import {Event, State, TestError} from './types';
 
-type AssertionError = {|
-  actual: ?string,
-  expected: ?string,
-  generatedMessage: boolean,
-  message: string,
-  name: string,
-  operator: ?string,
-  stack: string,
-|};
+// TODO replace with import {DiffOptions} from 'jest-matcher-utils';
+type DiffOptions = Parameters<typeof diff>[2];
 
-const assertOperatorsMap = {
+interface AssertionErrorWithStack extends AssertionError {
+  stack: string;
+}
+
+const assertOperatorsMap: {[key: string]: string} = {
   '!=': 'notEqual',
   '!==': 'notStrictEqual',
   '==': 'equal',
   '===': 'strictEqual',
 };
 
-const humanReadableOperators = {
+const humanReadableOperators: {[key: string]: string} = {
   deepEqual: 'to deeply equal',
   deepStrictEqual: 'to deeply and strictly equal',
   equal: 'to be equal',
@@ -48,7 +39,7 @@ const humanReadableOperators = {
 const formatNodeAssertErrors = (event: Event, state: State) => {
   switch (event.name) {
     case 'test_done': {
-      event.test.errors = event.test.errors.map(errors => {
+      event.test.errors = event.test.errors.map((errors: TestError) => {
         let error;
         if (Array.isArray(errors)) {
           const [originalError, asyncError] = errors;
@@ -75,7 +66,7 @@ const formatNodeAssertErrors = (event: Event, state: State) => {
   }
 };
 
-const getOperatorName = (operator: ?string, stack: string) => {
+const getOperatorName = (operator: string | undefined, stack: string) => {
   if (typeof operator === 'string') {
     return assertOperatorsMap[operator] || operator;
   }
@@ -88,9 +79,8 @@ const getOperatorName = (operator: ?string, stack: string) => {
   return '';
 };
 
-const operatorMessage = (operator: ?string) => {
+const operatorMessage = (operator: string | undefined) => {
   const niceOperatorName = getOperatorName(operator, '');
-  // $FlowFixMe: we default to the operator itself, so holes in the map doesn't matter
   const humanReadableOperator = humanReadableOperators[niceOperatorName];
 
   return typeof operator === 'string'
@@ -104,7 +94,10 @@ const assertThrowingMatcherHint = (operatorName: string) =>
   chalk.red('function') +
   chalk.dim(')');
 
-const assertMatcherHint = (operator: ?string, operatorName: string) => {
+const assertMatcherHint = (
+  operator: string | undefined | null,
+  operatorName: string,
+) => {
   let message =
     chalk.dim('assert') +
     chalk.dim('.' + operatorName + '(') +
@@ -125,7 +118,10 @@ const assertMatcherHint = (operator: ?string, operatorName: string) => {
   return message;
 };
 
-function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
+function assertionErrorMessage(
+  error: AssertionErrorWithStack,
+  options: DiffOptions,
+) {
   const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);
   const hasCustomMessage = !generatedMessage;
