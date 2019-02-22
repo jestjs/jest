@@ -16,7 +16,6 @@ import * as SourceMaps from './SourceMaps';
 import * as TestResult from './TestResult';
 import * as Global from './Global';
 import * as Environment from './Environment';
-import * as Expect from './Expect';
 
 export {
   Config,
@@ -30,5 +29,4 @@ export {
   TestResult,
   Global,
   Environment,
-  Expect,
 };

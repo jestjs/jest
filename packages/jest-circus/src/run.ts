@@ -11,7 +11,6 @@ import {
   TestContext,
   Hook,
   DescribeBlock,
-  Exception,
   RETRY_TIMES,
 } from './types';
 
@@ -157,9 +156,7 @@ const _callCircusTest = (
 
   return callAsyncCircusFn(test.fn!, testContext, {isHook: false, timeout})
     .then(() => dispatch({name: 'test_fn_success', test}))
-    .catch((error: Exception) =>
-      dispatch({error, name: 'test_fn_failure', test}),
-    );
+    .catch(error => dispatch({error, name: 'test_fn_failure', test}));
 };
 
 export default run;

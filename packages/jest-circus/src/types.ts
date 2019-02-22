@@ -4,7 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import expect from 'expect'; // eslint-disable-line
+
+// Used as type
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import expect from 'expect';
 import {Global} from '@jest/types';
 
 type Process = NodeJS.Process;
@@ -53,7 +56,7 @@ export type Event =
       name: 'add_hook';
       hookType: HookType;
       fn: HookFn;
-      timeout: number | undefined | null;
+      timeout: number | undefined;
     }
   | {
       asyncError: Exception;
@@ -61,7 +64,7 @@ export type Event =
       testName: TestName;
       fn?: TestFn;
       mode?: TestMode;
-      timeout: number | undefined | null;
+      timeout: number | undefined;
     }
   | {
       name: 'hook_start';
@@ -201,9 +204,7 @@ export type DescribeBlock = {
   tests: Array<TestEntry>;
 };
 
-export type TestError =
-  | Exception
-  | Array<[Exception | undefined | null, Exception]>; // the error from the test, as well as a backup error for async
+export type TestError = Exception | Array<[Exception | undefined, Exception]>; // the error from the test, as well as a backup error for async
 
 export type TestEntry = {
   asyncError: Exception; // Used if the test failure contains no usable stack trace

@@ -84,17 +84,16 @@ const jestAdapter = async (
 
 const _addSnapshotData = (
   results: TestResult.TestResult,
+  // TODO: make just snapshotState: SnapshotState when `jest-snapshot` is ESM
   snapshotState: typeof SnapshotState.prototype,
 ) => {
-  results.testResults.forEach(
-    ({fullName, status}: TestResult.AssertionResult) => {
-      if (status === 'pending' || status === 'failed') {
-        // if test is skipped or failed, we don't want to mark
-        // its snapshots as obsolete.
-        snapshotState.markSnapshotsAsCheckedForTest(fullName);
-      }
-    },
-  );
+  results.testResults.forEach(({fullName, status}) => {
+    if (status === 'pending' || status === 'failed') {
+      // if test is skipped or failed, we don't want to mark
+      // its snapshots as obsolete.
+      snapshotState.markSnapshotsAsCheckedForTest(fullName);
+    }
+  });
 
   const uncheckedCount = snapshotState.getUncheckedCount();
   const uncheckedKeys = snapshotState.getUncheckedKeys();

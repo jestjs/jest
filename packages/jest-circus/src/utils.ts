@@ -28,7 +28,6 @@ import {
   TestMode,
   TestName,
   TestResults,
-  TestResult,
 } from './types';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
@@ -55,11 +54,11 @@ export const makeDescribe = (
 };
 
 export const makeTest = (
-  fn: TestFn | null | undefined,
+  fn: TestFn | undefined,
   mode: TestMode,
   name: TestName,
   parent: DescribeBlock,
-  timeout: number | null | undefined,
+  timeout: number | undefined,
   asyncError: Exception,
 ): TestEntry => ({
   asyncError,
@@ -80,7 +79,7 @@ export const makeTest = (
 const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
   const {hasFocusedTests, testNamePattern} = getState();
   const hasOwnEnabledTests = describeBlock.tests.some(
-    (test: TestEntry) =>
+    test =>
       !(
         test.mode === 'skip' ||
         (hasFocusedTests && test.mode !== 'only') ||
@@ -143,7 +142,7 @@ export const getEachHooksForTest = (test: TestEntry) => {
 };
 
 export const describeBlockHasTests = (describe: DescribeBlock): boolean =>
-  !!describe.tests.length || describe.children.some(describeBlockHasTests);
+  describe.tests.length > 0 || describe.children.some(describeBlockHasTests);
 
 const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
   `Exceeded timeout of ${timeout}ms for a ${
@@ -156,7 +155,7 @@ const {setTimeout, clearTimeout} = global;
 
 export const callAsyncCircusFn = (
   fn: AsyncFn,
-  testContext: TestContext | null | undefined,
+  testContext: TestContext | undefined,
   {isHook, timeout}: {isHook?: boolean | null; timeout: number},
 ): Promise<any> => {
   let timeoutID: NodeJS.Timeout;
@@ -247,10 +246,7 @@ export const makeRunResult = (
   unhandledErrors: unhandledErrors.map(_formatError),
 });
 
-const makeTestResults = (
-  describeBlock: DescribeBlock,
-  config?: never,
-): TestResults => {
+const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
   const {includeTestLocationInResult} = getState();
   let testResults: TestResults = [];
   for (const test of describeBlock.tests) {
@@ -266,7 +262,7 @@ const makeTestResults = (
       throw new Error('Status should be present after tests are run.');
     }
 
-    let location: TestResult['location'] = null;
+    let location = null;
     if (includeTestLocationInResult) {
       const stackLine = test.asyncError.stack.split('\n')[1];
       const parsedLine = stackUtils.parseLine(stackLine);
@@ -293,7 +289,7 @@ const makeTestResults = (
   }
 
   for (const child of describeBlock.children) {
-    testResults = [...testResults, ...makeTestResults(child, config)];
+    testResults = testResults.concat(makeTestResults(child));
   }
 
   return testResults;
@@ -313,7 +309,7 @@ export const getTestID = (test: TestEntry) => {
 };
 
 const _formatError = (
-  errors?: Exception | [Exception | null | undefined, Exception],
+  errors?: Exception | [Exception | undefined, Exception],
 ): string => {
   let error;
   let asyncError;

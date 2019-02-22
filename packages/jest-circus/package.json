@@ -12,6 +12,7 @@
   "dependencies": {
     "@babel/traverse": "^7.1.0",
     "@jest/types": "^24.1.0",
+    "@types/node": "*",
     "chalk": "^2.0.1",
     "co": "^4.6.0",
     "expect": "^24.1.0",

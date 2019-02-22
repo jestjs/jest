@@ -14,14 +14,6 @@ import {
   toThrowErrorMatchingSnapshot,
   toThrowErrorMatchingInlineSnapshot,
 } from 'jest-snapshot';
-import {Expect} from '@jest/types';
-
-// @ts-ignore
-type JasmineMatcher = {
-  (): JasmineMatcher;
-  compare: () => Expect.RawMatcherFn;
-  negativeCompare: () => Expect.RawMatcherFn;
-};
 
 export default (config: {expand: boolean}) => {
   global.expect = expect;

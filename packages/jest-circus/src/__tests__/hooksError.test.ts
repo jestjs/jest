@@ -6,10 +6,11 @@
  */
 
 import circus from '../';
+import {HookType} from '../types';
 
-describe.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
+describe.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'])(
   '%s hooks error throwing',
-  (fn: 'beforeEach' | 'beforeAll' | 'afterEach' | 'afterAll') => {
+  (fn: HookType) => {
     test.each([
       ['String'],
       [1],

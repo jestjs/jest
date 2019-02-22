@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {AssertionError} from 'assert';
 import {diff, printExpected, printReceived} from 'jest-matcher-utils';
 import chalk from 'chalk';
 import prettyFormat from 'pretty-format';
@@ -13,15 +14,9 @@ import {Event, State, TestError} from './types';
 // TODO replace with import {DiffOptions} from 'jest-matcher-utils';
 type DiffOptions = Parameters<typeof diff>[2];
 
-type AssertionError = {
-  actual: string | undefined | null;
-  expected: string | undefined | null;
-  generatedMessage: boolean;
-  message: string;
-  name: string;
-  operator: string | undefined | null;
+interface AssertionErrorWithStack extends AssertionError {
   stack: string;
-};
+}
 
 const assertOperatorsMap: {[key: string]: string} = {
   '!=': 'notEqual',
@@ -71,10 +66,7 @@ const formatNodeAssertErrors = (event: Event, state: State) => {
   }
 };
 
-const getOperatorName = (
-  operator: string | undefined | null,
-  stack: string,
-) => {
+const getOperatorName = (operator: string | undefined, stack: string) => {
   if (typeof operator === 'string') {
     return assertOperatorsMap[operator] || operator;
   }
@@ -87,7 +79,7 @@ const getOperatorName = (
   return '';
 };
 
-const operatorMessage = (operator: string | undefined | null) => {
+const operatorMessage = (operator: string | undefined) => {
   const niceOperatorName = getOperatorName(operator, '');
   const humanReadableOperator = humanReadableOperators[niceOperatorName];
 
@@ -126,7 +118,10 @@ const assertMatcherHint = (
   return message;
 };
 
-function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
+function assertionErrorMessage(
+  error: AssertionErrorWithStack,
+  options: DiffOptions,
+) {
   const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);
   const hasCustomMessage = !generatedMessage;

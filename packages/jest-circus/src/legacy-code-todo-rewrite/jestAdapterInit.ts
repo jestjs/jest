@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types'; // eslint-disable-line import/no-unresolved
+import {Config, TestResult} from '@jest/types';
 
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
@@ -19,13 +19,7 @@ import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
 import globals from '..';
-import {
-  Event,
-  RunResult,
-  TestEntry,
-  TestResult as TestResultCircus,
-  FormattedError,
-} from '../types';
+import {Event, RunResult, TestEntry} from '../types';
 
 type Process = NodeJS.Process;
 
@@ -78,7 +72,8 @@ export const initialize = ({
       timeout?: number,
     ) => {
       const promise = mutex(() => testFn());
-      test.only(testName, () => promise, timeout); // eslint-disable-line jest/no-focused-tests
+      // eslint-disable-next-line jest/no-focused-tests
+      test.only(testName, () => promise, timeout);
     };
 
     concurrent.skip = test.skip;
@@ -105,7 +100,7 @@ export const initialize = ({
   config.snapshotSerializers
     .concat()
     .reverse()
-    .forEach((path: Config.Path) => {
+    .forEach(path => {
       addSerializer(localRequire(path));
     });
 
@@ -142,7 +137,7 @@ export const runAndTransformResultsToJestFormat = async ({
 
   const assertionResults: Array<
     TestResult.AssertionResult
-  > = runResult.testResults.map((testResult: TestResultCircus) => {
+  > = runResult.testResults.map(testResult => {
     let status: TestResult.Status;
     if (testResult.status === 'skip') {
       status = 'pending';
@@ -159,7 +154,7 @@ export const runAndTransformResultsToJestFormat = async ({
     }
 
     const ancestorTitles = testResult.testPath.filter(
-      (name: string) => name !== ROOT_DESCRIBE_BLOCK_NAME,
+      name => name !== ROOT_DESCRIBE_BLOCK_NAME,
     );
     const title = ancestorTitles.pop();
 
@@ -195,9 +190,7 @@ export const runAndTransformResultsToJestFormat = async ({
       (failureMessage || '') +
       '\n\n' +
       runResult.unhandledErrors
-        .map((err: FormattedError) =>
-          formatExecError(err, config, globalConfig),
-        )
+        .map(err => formatExecError(err, config, globalConfig))
         .join('\n');
   }
 
