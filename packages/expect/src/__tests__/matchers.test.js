@@ -1171,14 +1171,50 @@ describe('.toHaveLength', () => {
     ).toThrowErrorMatchingSnapshot();
     expect(() => jestExpect(0).toHaveLength(1)).toThrowErrorMatchingSnapshot();
     expect(() =>
-      jestExpect(undefined).toHaveLength(1),
+      jestExpect(undefined).not.toHaveLength(1),
     ).toThrowErrorMatchingSnapshot();
   });
 
-  test('matcher error expected length', () => {
-    expect(() =>
-      jestExpect('abc').toHaveLength('3'),
-    ).toThrowErrorMatchingSnapshot();
+  describe('matcher error expected length', () => {
+    test('not number', () => {
+      const expected = '3';
+      const received = 'abc';
+      expect(() => {
+        jestExpect(received).not.toHaveLength(expected);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('number Infinity', () => {
+      const expected = Infinity;
+      const received = Promise.reject('abc');
+      return expect(
+        jestExpect(received).rejects.toHaveLength(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('number NaN', () => {
+      const expected = NaN;
+      const received = Promise.reject('abc');
+      return expect(
+        jestExpect(received).rejects.not.toHaveLength(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('number float', () => {
+      const expected = 0.5;
+      const received = Promise.resolve('abc');
+      return expect(
+        jestExpect(received).resolves.toHaveLength(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('number negative integer', () => {
+      const expected = -3;
+      const received = Promise.resolve('abc');
+      return expect(
+        jestExpect(received).resolves.not.toHaveLength(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
   });
 });
 
