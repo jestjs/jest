@@ -8,7 +8,7 @@
  * @flow strict-local
  */
 
-//$FlowFixMe Cannot import ts
+//$FlowFixMe Cannot import ts inside flow
 import type {EventHandler} from '../types.ts';
 
 const testEventHandler: EventHandler = (event, state) => {
