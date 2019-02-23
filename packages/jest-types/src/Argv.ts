@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// import from `@types`
-// eslint-disable-next-line import/no-extraneous-dependencies
 import {Arguments} from 'yargs';
 
 export type Argv = Arguments<{
