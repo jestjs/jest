@@ -52,10 +52,10 @@ export type CoverageSummary = {
 };
 
 export type FileCoverage = {
-  getLineCoverage: () => Object;
+  getLineCoverage: () => {[line: string]: string};
   getUncoveredLines: () => Array<number>;
-  getBranchCoverageByLine: () => Object;
-  toJSON: () => Object;
+  getBranchCoverageByLine: () => {[line: string]: string};
+  toJSON: () => {[line: string]: string};
   merge: (other: Object) => undefined;
   computeSimpleTotals: (property: string) => FileCoverageTotal;
   computeBranchTotals: () => FileCoverageTotal;
