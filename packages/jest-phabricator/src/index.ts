@@ -8,8 +8,9 @@
 import {TestResult} from '@jest/types';
 
 type AggregatedResult = TestResult.AggregatedResult;
+type CoverageMap = AggregatedResult['coverageMap'];
 
-function summarize(coverageMap: AggregatedResult['coverageMap']) {
+function summarize(coverageMap: CoverageMap): CoverageMap {
   if (!coverageMap) {
     return coverageMap;
   }
