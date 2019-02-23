@@ -56,6 +56,7 @@
 - `[expect]`: Migrate to TypeScript ([#7919](https://github.com/facebook/jest/pull/7919))
 - `[jest-circus]`: Migrate to TypeScript ([#7916](https://github.com/facebook/jest/pull/7916))
 - `[jest-phabricator]`: Migrate to TypeScript ([#7965](https://github.com/facebook/jest/pull/7965))
+- `[jest-runtime]`: Migrate to TypeScript ([#7964](https://github.com/facebook/jest/pull/7964))
 
 ### Performance
 
