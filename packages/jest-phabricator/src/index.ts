@@ -3,20 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- * @flow
  */
 
-import type {
-  AggregatedResult,
-  AggregatedResultWithoutCoverage,
-  CoverageMap,
-} from 'types/TestResult';
+import {TestResult} from '@jest/types';
 
-type PhabricatorReport = AggregatedResultWithoutCoverage & {
-  coverageMap?: ?CoverageMap,
-};
-
-function summarize(coverageMap: CoverageMap) {
+function summarize(coverageMap: TestResult.CoverageMap) {
   const summaries = Object.create(null);
 
   coverageMap.files().forEach(file => {
@@ -41,8 +32,9 @@ function summarize(coverageMap: CoverageMap) {
   return summaries;
 }
 
-module.exports = function(results: AggregatedResult): PhabricatorReport {
-  // $FlowFixMe: This should work, but it does not.
+module.exports = function(
+  results: TestResult.AggregatedResult,
+): TestResult.AggregatedResult {
   return {
     ...results,
     coverageMap: results.coverageMap && summarize(results.coverageMap),
