@@ -64,7 +64,7 @@ module.exports = {
       },
     },
     {
-      files: 'types/**/*',
+      files: ['types/**/*', 'packages/jest-types/**/*'],
       rules: {
         'import/no-extraneous-dependencies': 0,
       },

@@ -11,5 +11,8 @@
   },
   "license": "MIT",
   "main": "build/index.js",
-  "types": "build/index.d.ts"
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "@types/istanbul-lib-coverage": "^1.1.0"
+  }
 }

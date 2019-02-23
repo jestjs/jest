@@ -7,7 +7,14 @@
 
 import {TestResult} from '@jest/types';
 
-function summarize(coverageMap: TestResult.CoverageMap) {
+type AggregatedResult = TestResult.AggregatedResult;
+type CoverageMap = AggregatedResult['coverageMap'];
+
+function summarize(coverageMap: CoverageMap): CoverageMap {
+  if (!coverageMap) {
+    return coverageMap;
+  }
+
   const summaries = Object.create(null);
 
   coverageMap.files().forEach(file => {
@@ -15,9 +22,9 @@ function summarize(coverageMap: TestResult.CoverageMap) {
     const lineCoverage = coverageMap.fileCoverageFor(file).getLineCoverage();
 
     Object.keys(lineCoverage).forEach(lineNumber => {
+      const number = parseInt(lineNumber, 10);
       // Line numbers start at one
-      const number = parseInt(lineNumber, 10) - 1;
-      covered[number] = lineCoverage[lineNumber] ? 'C' : 'U';
+      covered[number - 1] = lineCoverage[number] ? 'C' : 'U';
     });
 
     for (let i = 0; i < covered.length; i++) {
@@ -32,11 +39,6 @@ function summarize(coverageMap: TestResult.CoverageMap) {
   return summaries;
 }
 
-export = function(
-  results: TestResult.AggregatedResult,
-): TestResult.AggregatedResult {
-  return {
-    ...results,
-    coverageMap: results.coverageMap && summarize(results.coverageMap),
-  };
+export = function(results: AggregatedResult): AggregatedResult {
+  return {...results, coverageMap: summarize(results.coverageMap)};
 };
