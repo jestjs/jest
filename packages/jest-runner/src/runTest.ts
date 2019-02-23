@@ -7,13 +7,9 @@
  * @flow
  */
 
-import type {EnvironmentClass} from 'types/Environment';
-import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {Resolver} from 'types/Resolve';
-import type {TestFramework, TestRunnerContext} from 'types/TestRunner';
-import type {TestResult} from 'types/TestResult';
-import type RuntimeClass from 'jest-runtime';
-
+import { Environment, Config, TestResult, Console as ConsoleType } from '@jest/types';
+import { TestFramework, TestRunnerContext } from './types';
+import RuntimeClass from 'jest-runtime';
 import fs from 'graceful-fs';
 import {
   BufferedConsole,
@@ -24,22 +20,26 @@ import {
   setGlobal,
 } from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
-import {getTestEnvironment} from 'jest-config';
+import Resolver from 'jest-resolve';
+import { getTestEnvironment } from 'jest-config';
 import * as docblock from 'jest-docblock';
-import {formatExecError} from 'jest-message-util';
+import { formatExecError } from 'jest-message-util';
 import sourcemapSupport from 'source-map-support';
 import chalk from 'chalk';
 
 type RunTestInternalResult = {
-  leakDetector: ?LeakDetector,
-  result: TestResult,
+  leakDetector: LeakDetector | null,
+  result: TestResult.TestResult,
 };
 
+
 function freezeConsole(
+  // TODO: clarify this in the PR
+  // why cant the names be found even though I've exported them
   testConsole: BufferedConsole | Console | NullConsole,
-  config: ProjectConfig,
+  config: Config.ProjectConfig,
 ) {
-  testConsole._log = function fakeConsolePush(_type, message) {
+  testConsole.log = function fakeConsolePush(_type: unknown, message: string) {
     const error = new ErrorWithStack(
       `${chalk.red(
         `${chalk.bold(
@@ -52,7 +52,7 @@ function freezeConsole(
     const formattedError = formatExecError(
       error,
       config,
-      {noStackTrace: false},
+      { noStackTrace: false },
       undefined,
       true,
     );
@@ -73,11 +73,11 @@ function freezeConsole(
 // references to verify if there is a leak, which is not maintainable and error
 // prone. That's why "runTestInternal" CANNOT be inlined inside "runTest".
 async function runTestInternal(
-  path: Path,
-  globalConfig: GlobalConfig,
-  config: ProjectConfig,
+  path: Config.Path,
+  globalConfig: Config.GlobalConfig,
+  config: Config.ProjectConfig,
   resolver: Resolver,
-  context: ?TestRunnerContext,
+  context?: TestRunnerContext,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const parsedDocblock = docblock.parse(docblock.extract(testSource));
@@ -93,20 +93,20 @@ async function runTestInternal(
   }
 
   /* $FlowFixMe */
-  const TestEnvironment = (require(testEnvironment): EnvironmentClass);
+  const TestEnvironment = (require(testEnvironment) as Environment.EnvironmentClass);
   const testFramework = ((process.env.JEST_CIRCUS === '1'
     ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
     : /* $FlowFixMe */
-      require(config.testRunner)): TestFramework);
+    require(config.testRunner)) as TestFramework);
   const Runtime = ((config.moduleLoader
     ? /* $FlowFixMe */
-      require(config.moduleLoader)
-    : require('jest-runtime')): Class<RuntimeClass>);
+    require(config.moduleLoader)
+    : require('jest-runtime')) as RuntimeClass);
 
-  let runtime = undefined;
+  let runtime: RuntimeClass = undefined;
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
-  const consoleFormatter = (type, message) =>
+  const consoleFormatter = (type: ConsoleType.LogType, message: ConsoleType.LogMessage) =>
     getConsoleOutput(
       config.cwd,
       !!globalConfig.verbose,
@@ -138,7 +138,9 @@ async function runTestInternal(
     ? new LeakDetector(environment)
     : null;
 
-  const cacheFS = {[path]: testSource};
+  const cacheFS = { [path]: testSource };
+
+  // @ts-ignore
   setGlobal(environment.global, 'console', testConsole);
 
   runtime = new Runtime(config, environment, resolver, cacheFS, {
@@ -150,20 +152,21 @@ async function runTestInternal(
 
   const start = Date.now();
 
-  const sourcemapOptions = {
+  const sourcemapOptions: sourcemapSupport.Options = {
     environment: 'node',
     handleUncaughtExceptions: false,
-    retrieveSourceMap: source => {
+    retrieveSourceMap: (source: string) => {
       const sourceMaps = runtime && runtime.getSourceMaps();
       const sourceMapSource = sourceMaps && sourceMaps[source];
 
       if (sourceMapSource) {
         try {
           return {
+            // @ts-ignore TODO: clarify in PR
             map: JSON.parse(fs.readFileSync(sourceMapSource)),
             url: source,
           };
-        } catch (e) {}
+        } catch (e) { }
       }
       return null;
     },
@@ -182,12 +185,12 @@ async function runTestInternal(
 
   if (
     environment.global &&
-    environment.global.process &&
-    environment.global.process.exit
+    (environment.global as NodeJS.Global).process &&
+    (environment.global as NodeJS.Global).process.exit
   ) {
-    const realExit = environment.global.process.exit;
+    const realExit = (environment.global as NodeJS.Global).process.exit;
 
-    environment.global.process.exit = function exit(...args) {
+    (environment.global as NodeJS.Global).process.exit = function exit(...args: Array<any>) {
       const error = new ErrorWithStack(
         `process.exit called with "${args.join(', ')}"`,
         exit,
@@ -196,7 +199,7 @@ async function runTestInternal(
       const formattedError = formatExecError(
         error,
         config,
-        {noStackTrace: false},
+        { noStackTrace: false },
         undefined,
         true,
       );
@@ -210,7 +213,7 @@ async function runTestInternal(
   try {
     await environment.setup();
 
-    let result: TestResult;
+    let result: TestResult.TestResult;
 
     try {
       result = await testFramework(
@@ -235,7 +238,7 @@ async function runTestInternal(
       result.numPendingTests +
       result.numTodoTests;
 
-    result.perfStats = {end: Date.now(), start};
+    result.perfStats = { end: Date.now(), start };
     result.testFilePath = path;
     result.coverage = runtime.getAllCoverageInfoCopy();
     result.sourceMaps = runtime.getSourceMapInfo(
@@ -254,23 +257,25 @@ async function runTestInternal(
 
     // Delay the resolution to allow log messages to be output.
     return new Promise(resolve => {
-      setImmediate(() => resolve({leakDetector, result}));
+      setImmediate(() => resolve({ leakDetector, result }));
     });
   } finally {
     await environment.teardown();
 
+    // @ts-ignore
+    // TODO: clarify this in PR why this is not on the module
     sourcemapSupport.resetRetrieveHandlers();
   }
 }
 
 export default async function runTest(
-  path: Path,
-  globalConfig: GlobalConfig,
-  config: ProjectConfig,
+  path: Config.Path,
+  globalConfig: Config.GlobalConfig,
+  config: Config.ProjectConfig,
   resolver: Resolver,
-  context: ?TestRunnerContext,
-): Promise<TestResult> {
-  const {leakDetector, result} = await runTestInternal(
+  context?: TestRunnerContext,
+): Promise<TestResult.TestResult> {
+  const { leakDetector, result } = await runTestInternal(
     path,
     globalConfig,
     config,
