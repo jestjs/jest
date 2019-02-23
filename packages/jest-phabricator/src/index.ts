@@ -7,18 +7,12 @@
 
 import {TestResult} from '@jest/types';
 
-type PhabricatorReport = TestResult.AggregatedResultWithoutCoverage & {
-  coverageMap?: TestResult.CoverageMap | null;
-};
-
 function summarize(coverageMap: TestResult.CoverageMap) {
   const summaries = Object.create(null);
 
   coverageMap.files().forEach((file: string) => {
     const covered = [];
-    const lineCoverage: any = coverageMap
-      .fileCoverageFor(file)
-      .getLineCoverage();
+    const lineCoverage = coverageMap.fileCoverageFor(file).getLineCoverage();
 
     Object.keys(lineCoverage).forEach(lineNumber => {
       // Line numbers start at one
@@ -40,7 +34,7 @@ function summarize(coverageMap: TestResult.CoverageMap) {
 
 module.exports = function(
   results: TestResult.AggregatedResult,
-): PhabricatorReport {
+): TestResult.AggregatedResult {
   return {
     ...results,
     coverageMap: results.coverageMap && summarize(results.coverageMap),
