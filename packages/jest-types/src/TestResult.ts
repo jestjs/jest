@@ -5,72 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import {ConsoleBuffer} from './Console';
 
-export type RawFileCoverage = {
-  path: string;
-  s: {
-    [statementId: number]: number;
-  };
-  b: {
-    [branchId: number]: number;
-  };
-  f: {
-    [functionId: number]: number;
-  };
-  l: {
-    [lineId: number]: number;
-  };
-  fnMap: {
-    [functionId: number]: any;
-  };
-  statementMap: {
-    [statementId: number]: any;
-  };
-  branchMap: {
-    [branchId: number]: any;
-  };
-  inputSourceMap?: Object;
-};
-
-export type RawCoverage = {
-  [filePath: string]: RawFileCoverage;
-};
-type FileCoverageTotal = {
-  total: number;
-  covered: number;
-  skipped: number;
-  pct: number;
-};
-
-export type CoverageSummary = {
-  lines: FileCoverageTotal;
-  statements: FileCoverageTotal;
-  branches: FileCoverageTotal;
-  functions: FileCoverageTotal;
-  merge: (other: CoverageSummary) => undefined;
-};
-
-export type FileCoverage = {
-  getLineCoverage: () => {[line: string]: string};
-  getUncoveredLines: () => Array<number>;
-  getBranchCoverageByLine: () => {[line: string]: string};
-  toJSON: () => {[line: string]: string};
-  merge: (other: Object) => undefined;
-  computeSimpleTotals: (property: string) => FileCoverageTotal;
-  computeBranchTotals: () => FileCoverageTotal;
-  resetHits: () => undefined;
-  toSummary: () => CoverageSummary;
-};
-
-export type CoverageMap = {
-  merge: (data: Object) => undefined;
-  getCoverageSummary: () => FileCoverage;
-  data: RawCoverage;
-  addFileCoverage: (fileCoverage: RawFileCoverage) => undefined;
-  files: () => Array<string>;
-  fileCoverageFor: (file: string) => FileCoverage;
-};
+export {CoverageMap};
 
 export type SerializableError = {
   code?: unknown;
@@ -162,7 +100,7 @@ export type Suite = {
 
 export type TestResult = {
   console?: ConsoleBuffer | null;
-  coverage?: RawCoverage;
+  coverage?: CoverageMapData;
   displayName?: string | null;
   failureMessage?: string | null;
   leaks: boolean;
@@ -226,7 +164,7 @@ export type FormattedTestResults = {
 export type CodeCoverageReporter = any;
 
 export type CodeCoverageFormatter = (
-  coverage: RawCoverage | null | undefined,
+  coverage: CoverageMapData | null | undefined,
   reporter: CodeCoverageReporter,
 ) => Object | null | undefined;
 
