@@ -10,7 +10,7 @@ import {TestResult} from '@jest/types';
 function summarize(coverageMap: TestResult.CoverageMap) {
   const summaries = Object.create(null);
 
-  coverageMap.files().forEach((file: string) => {
+  coverageMap.files().forEach(file => {
     const covered = [];
     const lineCoverage = coverageMap.fileCoverageFor(file).getLineCoverage();
 
