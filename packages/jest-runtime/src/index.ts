@@ -89,7 +89,7 @@ class Runtime {
     [key: string]: Mocks.MockFunctionMetadata<unknown, unknown[]>;
   };
   private _mockRegistry: {[key: string]: any};
-  private _isolatedMockRegistry: {[key: string]: any} | null | undefined;
+  private _isolatedMockRegistry: {[key: string]: any} | null;
   private _moduleMocker: typeof jestMock;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
@@ -128,6 +128,7 @@ class Runtime {
     this._mockRegistry = Object.create(null);
     this._moduleMocker = this._environment.moduleMocker;
     this._isolatedModuleRegistry = null;
+    this._isolatedMockRegistry = null;
     this._moduleRegistry = Object.create(null);
     this._needsCoverageMapped = new Set();
     this._resolver = resolver;
@@ -552,7 +553,7 @@ class Runtime {
     this._moduleMocker.clearAllMocks();
   }
 
-  private _resolveModule(from: Config.Path, to?: string | null | undefined) {
+  private _resolveModule(from: Config.Path, to?: string) {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
@@ -626,7 +627,7 @@ class Runtime {
     localModule: InitialModule,
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
-    from: Config.Path | null | undefined,
+    from: Config.Path | null,
   ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
