@@ -6,61 +6,61 @@
  *
  */
 
-import { Environment, Config, TestResult } from "@jest/types";
-import { ModuleMap, FS as HasteFS } from 'jest-haste-map';
-import HasteResolver from 'jest-resolve'
-
+import {Environment, Config, TestResult} from '@jest/types';
+import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
+import HasteResolver from 'jest-resolve';
 import Runtime from 'jest-runtime';
+import {TestWatcher as _TestWatcher} from '@jest/core';
 
-import { TestWatcher as _TestWatcher } from '@jest/core';
-
-export type ErrorWithCode = Error & { code?: string };
-
+export type ErrorWithCode = Error & {code?: string};
 export type Test = {
-  context: Context,
-  duration?: number,
-  path: Config.Path,
+  context: Context;
+  duration?: number;
+  path: Config.Path;
 };
 
-
 export type Context = {
-  config: Config.ProjectConfig,
-  hasteFS: HasteFS,
-  moduleMap: ModuleMap,
-  resolver: HasteResolver,
+  config: Config.ProjectConfig;
+  hasteFS: HasteFS;
+  moduleMap: ModuleMap;
+  resolver: HasteResolver;
 };
 
 // TODO: Obtain this from jest-reporter once its been migrated
 type ReporterOnStartOptions = {
-  estimatedTime: number,
-  showStatus: boolean,
+  estimatedTime: number;
+  showStatus: boolean;
 };
-
-
 
 // TODO: Obtain this from @jest/core once its been migrated
 export type TestWatcher = _TestWatcher;
 
 export type OnTestStart = (test: Test) => Promise<void>;
-export type OnTestFailure = (test: Test, serializableError: TestResult.SerializableError) => Promise<void>
-export type OnTestSuccess = (test: Test, testResult: TestResult.TestResult) => Promise<void>;
+export type OnTestFailure = (
+  test: Test,
+  serializableError: TestResult.SerializableError,
+) => Promise<void>;
+export type OnTestSuccess = (
+  test: Test,
+  testResult: TestResult.TestResult,
+) => Promise<void>;
 
 export type Reporter = {
   onTestResult: (
     test: Test,
     testResult: TestResult.TestResult,
     aggregatedResult: TestResult.AggregatedResult,
-  ) => Promise<void>,
+  ) => Promise<void>;
   onRunStart: (
     results: TestResult.AggregatedResult,
     options: ReporterOnStartOptions,
-  ) => Promise<void>,
-  onTestStart: (test: Test) => Promise<void>,
+  ) => Promise<void>;
+  onTestStart: (test: Test) => Promise<void>;
   onRunComplete: (
     contexts: Set<Context>,
     results: TestResult.AggregatedResult,
-  ) => Promise<void>,
-  getLastError: () => Error,
+  ) => Promise<void>;
+  getLastError: () => Error;
 };
 
 export type TestFramework = (
@@ -72,14 +72,14 @@ export type TestFramework = (
 ) => Promise<TestResult.TestResult>;
 
 export type TestRunnerOptions = {
-  serial: boolean,
+  serial: boolean;
 };
 
 export type TestRunnerContext = {
-  changedFiles?: Set<Config.Path>,
+  changedFiles?: Set<Config.Path>;
 };
 
 export type TestRunData = Array<{
-  context: Context,
-  matches: { allTests: number, tests: Array<Test>, total: number },
+  context: Context;
+  matches: {allTests: number; tests: Array<Test>; total: number};
 }>;

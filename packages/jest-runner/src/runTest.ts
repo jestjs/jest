@@ -4,11 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import { Environment, Config, TestResult, Console as ConsoleType } from '@jest/types';
-import { TestFramework, TestRunnerContext } from './types';
+import {
+  Environment,
+  Config,
+  TestResult,
+  Console as ConsoleType,
+} from '@jest/types';
 import RuntimeClass from 'jest-runtime';
 import fs from 'graceful-fs';
 import {
@@ -21,17 +24,17 @@ import {
 } from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
 import Resolver from 'jest-resolve';
-import { getTestEnvironment } from 'jest-config';
+import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
-import { formatExecError } from 'jest-message-util';
+import {formatExecError} from 'jest-message-util';
 import sourcemapSupport from 'source-map-support';
 import chalk from 'chalk';
+import {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
-  leakDetector: LeakDetector | null,
-  result: TestResult.TestResult,
+  leakDetector: LeakDetector | null;
+  result: TestResult.TestResult;
 };
-
 
 function freezeConsole(
   // TODO: clarify this in the PR
@@ -52,7 +55,7 @@ function freezeConsole(
     const formattedError = formatExecError(
       error,
       config,
-      { noStackTrace: false },
+      {noStackTrace: false},
       undefined,
       true,
     );
@@ -93,20 +96,23 @@ async function runTestInternal(
   }
 
   /* $FlowFixMe */
-  const TestEnvironment = (require(testEnvironment) as Environment.EnvironmentClass);
-  const testFramework = ((process.env.JEST_CIRCUS === '1'
+  const TestEnvironment = require(testEnvironment) as Environment.EnvironmentClass;
+  const testFramework = (process.env.JEST_CIRCUS === '1'
     ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
     : /* $FlowFixMe */
-    require(config.testRunner)) as TestFramework);
-  const Runtime = ((config.moduleLoader
+      require(config.testRunner)) as TestFramework;
+  const Runtime = (config.moduleLoader
     ? /* $FlowFixMe */
-    require(config.moduleLoader)
-    : require('jest-runtime')) as RuntimeClass);
+      require(config.moduleLoader)
+    : require('jest-runtime')) as RuntimeClass;
 
   let runtime: RuntimeClass = undefined;
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
-  const consoleFormatter = (type: ConsoleType.LogType, message: ConsoleType.LogMessage) =>
+  const consoleFormatter = (
+    type: ConsoleType.LogType,
+    message: ConsoleType.LogMessage,
+  ) =>
     getConsoleOutput(
       config.cwd,
       !!globalConfig.verbose,
@@ -138,7 +144,7 @@ async function runTestInternal(
     ? new LeakDetector(environment)
     : null;
 
-  const cacheFS = { [path]: testSource };
+  const cacheFS = {[path]: testSource};
 
   // @ts-ignore
   setGlobal(environment.global, 'console', testConsole);
@@ -166,7 +172,7 @@ async function runTestInternal(
             map: JSON.parse(fs.readFileSync(sourceMapSource)),
             url: source,
           };
-        } catch (e) { }
+        } catch (e) {}
       }
       return null;
     },
@@ -190,7 +196,9 @@ async function runTestInternal(
   ) {
     const realExit = (environment.global as NodeJS.Global).process.exit;
 
-    (environment.global as NodeJS.Global).process.exit = function exit(...args: Array<any>) {
+    (environment.global as NodeJS.Global).process.exit = function exit(
+      ...args: Array<any>
+    ) {
       const error = new ErrorWithStack(
         `process.exit called with "${args.join(', ')}"`,
         exit,
@@ -199,7 +207,7 @@ async function runTestInternal(
       const formattedError = formatExecError(
         error,
         config,
-        { noStackTrace: false },
+        {noStackTrace: false},
         undefined,
         true,
       );
@@ -238,7 +246,7 @@ async function runTestInternal(
       result.numPendingTests +
       result.numTodoTests;
 
-    result.perfStats = { end: Date.now(), start };
+    result.perfStats = {end: Date.now(), start};
     result.testFilePath = path;
     result.coverage = runtime.getAllCoverageInfoCopy();
     result.sourceMaps = runtime.getSourceMapInfo(
@@ -257,7 +265,7 @@ async function runTestInternal(
 
     // Delay the resolution to allow log messages to be output.
     return new Promise(resolve => {
-      setImmediate(() => resolve({ leakDetector, result }));
+      setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
     await environment.teardown();
@@ -275,7 +283,7 @@ export default async function runTest(
   resolver: Resolver,
   context?: TestRunnerContext,
 ): Promise<TestResult.TestResult> {
-  const { leakDetector, result } = await runTestInternal(
+  const {leakDetector, result} = await runTestInternal(
     path,
     globalConfig,
     config,
