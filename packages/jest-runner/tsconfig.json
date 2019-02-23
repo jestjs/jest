@@ -6,10 +6,10 @@
   },
   "references": [
     {
-      "path": "../jest-config"
+      "path": "../jest-docblock"
     },
     {
-      "path": "../jest-docblock"
+      "path": "../jest-config"
     },
     {
       "path": "../jest-haste-map"
@@ -35,5 +35,8 @@
     {
       "path": "../jest-types"
     },
+    {
+      "path": "../jest-resolve"
+    }
   ]
 }
