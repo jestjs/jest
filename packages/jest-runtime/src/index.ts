@@ -47,7 +47,7 @@ type InternalModuleOptions = {
 
 type InitialModule = Partial<Module> &
   Pick<Module, 'children' | 'exports' | 'filename' | 'id' | 'loaded'>;
-type ModuleRegistry = {[key: string]: InitialModule};
+type ModuleRegistry = {[key: string]: InitialModule | Module};
 type ResolveOptions = Parameters<typeof require.resolve>[1];
 
 type BooleanObject = {[key: string]: boolean};
