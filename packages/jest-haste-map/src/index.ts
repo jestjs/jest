@@ -221,6 +221,7 @@ const getWhiteList = (list: Array<string> | undefined): RegExp | null => {
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
  */
+/* eslint-disable-next-line no-redeclare */
 class HasteMap extends EventEmitter {
   private _buildPromise: Promise<HasteMapObject> | null;
   private _cachePath: Config.Path;
