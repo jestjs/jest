@@ -3,26 +3,28 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
-export type Path = string;
+import {Config} from '@jest/types';
 
 export type Options = {
   lastCommit?: boolean;
   withAncestor?: boolean;
   changedSince?: string;
-  includePaths?: Array<Path>;
+  includePaths?: Array<Config.Path>;
 };
 
-export type ChangedFiles = Set<Path>;
-export type Repos = {git: Set<Path>; hg: Set<Path>};
+type ChangedFiles = Set<Config.Path>;
+export type Repos = {git: ChangedFiles; hg: ChangedFiles};
 export type ChangedFilesPromise = Promise<{
   repos: Repos;
   changedFiles: ChangedFiles;
 }>;
 
 export type SCMAdapter = {
-  findChangedFiles: (cwd: Path, options: Options) => Promise<Array<Path>>;
-  getRoot: (cwd: Path) => Promise<Path | null | undefined>;
+  findChangedFiles: (
+    cwd: Config.Path,
+    options: Options,
+  ) => Promise<Array<Config.Path>>;
+  getRoot: (cwd: Config.Path) => Promise<Config.Path | null>;
 };
