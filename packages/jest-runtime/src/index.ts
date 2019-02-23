@@ -275,7 +275,7 @@ class Runtime {
   requireModule(
     from: Config.Path,
     moduleName?: string,
-    options?: InternalModuleOptions | null,
+    options?: InternalModuleOptions,
     isRequireActual?: boolean | null,
   ) {
     const moduleID = this._resolver.getModuleID(
@@ -624,7 +624,7 @@ class Runtime {
 
   private _execModule(
     localModule: InitialModule,
-    options: InternalModuleOptions | null | undefined,
+    options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
     from: Config.Path | null | undefined,
   ) {
@@ -831,27 +831,23 @@ class Runtime {
 
   private _createRequireImplementation(
     from: InitialModule,
-    options: InternalModuleOptions | null | undefined,
+    options?: InternalModuleOptions,
   ): LocalModuleRequire {
-    // TODO: somehow avoid having to type the arguments - they should come from `LocalModuleRequire`
-    const resolve = (moduleName: string, options: ResolveOptions) =>
-      this._requireResolve(from.filename, moduleName, options);
-
-    resolve.paths = (moduleName: string) =>
-      this._requireResolvePaths(from.filename, moduleName);
-
-    const requireImpl: any =
+    // TODO: Should not be `any`, this isn't type safe. Should be `LocalModuleRequire`
+    const moduleRequire: any =
       options && options.isInternalModule
         ? (moduleName: string) =>
             this.requireInternalModule(from.filename, moduleName)
         : this.requireModuleOrMock.bind(this, from.filename);
-    requireImpl.cache = Object.create(null);
-    requireImpl.extensions = Object.create(null);
-    requireImpl.requireActual = this.requireActual.bind(this, from.filename);
-    requireImpl.requireMock = this.requireMock.bind(this, from.filename);
-    requireImpl.resolve = resolve;
-
-    const moduleRequire: LocalModuleRequire = {...requireImpl};
+    moduleRequire.cache = Object.create(null);
+    moduleRequire.extensions = Object.create(null);
+    moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
+    moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
+    // TODO: somehow avoid having to type the arguments - they should come from `NodeRequire.resolve`
+    moduleRequire.resolve = (moduleName: string, options: ResolveOptions) =>
+      this._requireResolve(from.filename, moduleName, options);
+    moduleRequire.resolve.paths = (moduleName: string) =>
+      this._requireResolvePaths(from.filename, moduleName);
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
