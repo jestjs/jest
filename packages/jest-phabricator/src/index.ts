@@ -32,7 +32,7 @@ function summarize(coverageMap: TestResult.CoverageMap) {
   return summaries;
 }
 
-module.exports = function(
+export = function(
   results: TestResult.AggregatedResult,
 ): TestResult.AggregatedResult {
   return {
