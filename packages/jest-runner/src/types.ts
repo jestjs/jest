@@ -41,9 +41,9 @@ type ReporterOnStartOptions = {
 // TODO: Obtain this from @jest/core once its been migrated
 export type TestWatcher = _TestWatcher;
 
-export type OnTestStart = (test: Test) => Promise<unknown>;
-export type OnTestFailure = (test: Test, serializableError: TestResult.SerializableError) => Promise<unknown>
-export type OnTestSuccess = (test: Test, testResult: TestResult.TestResult) => Promise<unknown>;
+export type OnTestStart = (test: Test) => Promise<void>;
+export type OnTestFailure = (test: Test, serializableError: TestResult.SerializableError) => Promise<void>
+export type OnTestSuccess = (test: Test, testResult: TestResult.TestResult) => Promise<void>;
 
 export type Reporter = {
   onTestResult: (
