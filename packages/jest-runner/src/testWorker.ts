@@ -23,7 +23,7 @@ export type WorkerData = {
   config: Config.ProjectConfig,
   globalConfig: Config.GlobalConfig,
   path: Config.Path,
-  serializableModuleMap?: SerializableModuleMap,
+  serializableModuleMap: SerializableModuleMap | null,
   context?: TestRunnerContext,
 }
   ;
