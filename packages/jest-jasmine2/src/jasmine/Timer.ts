@@ -28,46 +28,29 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* @flow */
 
-export default function ReportDispatcher(methods: Array<string>) {
-  const dispatchedMethods = methods || [];
-
-  for (let i = 0; i < dispatchedMethods.length; i++) {
-    const method = dispatchedMethods[i];
-    this[method] = (function(m) {
-      return function() {
-        dispatch(m, arguments);
-      };
-    })(method);
-  }
-
-  let reporters = [];
-  let fallbackReporter = null;
-
-  this.addReporter = function(reporter) {
-    reporters.push(reporter);
+const defaultNow = (function(Date) {
+  return function() {
+    return new Date().getTime();
   };
+})(Date);
 
-  this.provideFallbackReporter = function(reporter) {
-    fallbackReporter = reporter;
-  };
+export default class Timer {
+  start: () => void;
+  elapsed: () => number;
 
-  this.clearReporters = function() {
-    reporters = [];
-  };
+  constructor(options: {now?: () => number}) {
+    options = options || {};
 
-  return this;
+    const now = options.now || defaultNow;
+    let startTime: number;
 
-  function dispatch(method, args) {
-    if (reporters.length === 0 && fallbackReporter !== null) {
-      reporters.push(fallbackReporter);
-    }
-    for (let i = 0; i < reporters.length; i++) {
-      const reporter = reporters[i];
-      if (reporter[method]) {
-        reporter[method].apply(reporter, args);
-      }
-    }
+    this.start = function() {
+      startTime = now();
+    };
+
+    this.elapsed = function() {
+      return now() - startTime;
+    };
   }
 }

@@ -3,26 +3,24 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
 type Options = {
-  clearTimeout: (timeoutID: number) => void,
-  fail: () => void,
-  onException: (error: Error) => void,
-  queueableFns: Array<QueueableFn>,
-  setTimeout: (func: () => void, delay: number) => number,
-  userContext: any,
+  clearTimeout: (timeoutID: number) => void;
+  fail: () => void;
+  onException: (error: Error) => void;
+  queueableFns: Array<QueueableFn>;
+  setTimeout: (func: () => void, delay: number) => number;
+  userContext: any;
 };
 
 type QueueableFn = {
-  fn: (next: () => void) => void,
-  timeout?: () => number,
-  initError?: Error,
+  fn: (next: () => void) => void;
+  timeout?: () => number;
+  initError?: Error;
 };
 
 export default function queueRunner(options: Options) {

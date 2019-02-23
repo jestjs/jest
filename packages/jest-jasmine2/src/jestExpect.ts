@@ -3,12 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {RawMatcherFn} from 'types/Matchers';
-
+import {Matchers} from '@jest/types';
 import expect from 'expect';
 import {
   addSerializer,
@@ -17,12 +14,14 @@ import {
   toThrowErrorMatchingSnapshot,
   toThrowErrorMatchingInlineSnapshot,
 } from 'jest-snapshot';
+import {RawMatcherFn} from './types';
 
 type JasmineMatcher = {
-  (matchersUtil: any, context: any): JasmineMatcher,
-  compare: () => RawMatcherFn,
-  negativeCompare: () => RawMatcherFn,
+  (matchersUtil: any, context: any): JasmineMatcher;
+  compare: () => RawMatcherFn;
+  negativeCompare: () => RawMatcherFn;
 };
+
 type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
 export default (config: {expand: boolean}) => {
@@ -34,7 +33,7 @@ export default (config: {expand: boolean}) => {
     toThrowErrorMatchingInlineSnapshot,
     toThrowErrorMatchingSnapshot,
   });
-  (expect: Object).addSnapshotSerializer = addSerializer;
+  expect.addSnapshotSerializer = addSerializer;
 
   const jasmine = global.jasmine;
   jasmine.anything = expect.anything;
@@ -46,7 +45,9 @@ export default (config: {expand: boolean}) => {
   jasmine.addMatchers = (jasmineMatchersObject: JasmineMatchersObject) => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
-      jestMatchersObject[name] = function(): RawMatcherFn {
+      jestMatchersObject[name] = function(
+        this: Matchers.MatcherState,
+      ): RawMatcherFn {
         // use "expect.extend" if you need to use equality testers (via this.equal)
         const result = jasmineMatchersObject[name](null, null);
         // if there is no 'negativeCompare', both should be handled by `compare`

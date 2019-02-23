@@ -3,32 +3,28 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Environment} from 'types/Environment';
-import type {GlobalConfig, ProjectConfig} from 'types/Config';
-import type {SnapshotState} from 'jest-snapshot';
-import type {TestResult} from 'types/TestResult';
-import type Runtime from 'jest-runtime';
-
 import path from 'path';
+import {Environment, Config, TestResult} from '@jest/types';
+import {SnapshotState} from 'jest-snapshot';
+import Runtime from 'jest-runtime';
+
+import {getCallsite} from 'jest-util';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
-import {getCallsite} from 'jest-util';
 import JasmineReporter from './reporter';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight.js');
 
 async function jasmine2(
-  globalConfig: GlobalConfig,
-  config: ProjectConfig,
-  environment: Environment,
+  globalConfig: Config.GlobalConfig,
+  config: Config.ProjectConfig,
+  environment: Environment.Environment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult> {
+): Promise<TestResult.TestResult> {
   const reporter = new JasmineReporter(globalConfig, config, testPath);
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create({
@@ -137,7 +133,8 @@ async function jasmine2(
     });
   }
 
-  const snapshotState: SnapshotState = runtime
+  // TODO: make just snapshotState: SnapshotState when `jest-snapshot` is ESM
+  const snapshotState: typeof SnapshotState.prototype = runtime
     .requireInternalModule(path.resolve(__dirname, './setup_jest_globals.js'))
     .default({
       config,
@@ -168,7 +165,11 @@ async function jasmine2(
   return addSnapshotData(results, snapshotState);
 }
 
-const addSnapshotData = (results, snapshotState) => {
+// TODO: make just snapshotState: SnapshotState when `jest-snapshot` is ESM
+const addSnapshotData = (
+  results: TestResult.TestResult,
+  snapshotState: typeof SnapshotState.prototype,
+) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
       // if test is skipped or failed, we don't want to mark

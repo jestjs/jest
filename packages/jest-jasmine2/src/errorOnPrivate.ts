@@ -3,15 +3,13 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Global} from '../../../types/Global';
+import {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
 
 // prettier-ignore
-const disabledGlobals = {
+const disabledGlobals: {[key: string]: string} = {
   fail: 'Illegal usage of global `fail`, prefer throwing an error, or the `done.fail` callback.',
   pending: 'Illegal usage of global `pending`, prefer explicitly skipping a test using `test.skip`',
   spyOn: 'Illegal usage of global `spyOn`, prefer `jest.spyOn`.',
@@ -19,7 +17,7 @@ const disabledGlobals = {
 };
 
 // prettier-ignore
-const disabledJasmineMethods = {
+const disabledJasmineMethods: {[key: string]: string} = {
   addMatchers: 'Illegal usage of `jasmine.addMatchers`, prefer `expect.extends`.',
   any: 'Illegal usage of `jasmine.any`, prefer `expect.any`.',
   anything: 'Illegal usage of `jasmine.anything`, prefer `expect.anything`.',
@@ -29,7 +27,7 @@ const disabledJasmineMethods = {
   stringMatching: 'Illegal usage of `jasmine.stringMatching`, prefer `expect.stringMatching`.',
 };
 
-export function installErrorOnPrivate(global: Global): void {
+export function installErrorOnPrivate(global: Global.Global): void {
   const {jasmine} = global;
   Object.keys(disabledGlobals).forEach(functionName => {
     global[functionName] = () => {
@@ -60,6 +58,6 @@ export function installErrorOnPrivate(global: Global): void {
   });
 }
 
-function throwAtFunction(message, fn) {
+function throwAtFunction(message: string, fn: Function) {
   throw new ErrorWithStack(message, fn);
 }

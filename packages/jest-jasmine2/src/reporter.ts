@@ -3,51 +3,44 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {
-  AssertionResult,
-  FailedAssertion,
-  Milliseconds,
-  Status,
-  TestResult,
-} from 'types/TestResult';
-
+import {Config, TestResult} from '@jest/types';
 import {formatResultsErrors} from 'jest-message-util';
 
 type Suite = {
-  description: string,
+  description: string;
 };
 
 type SpecResult = {
-  __callsite?: Object,
-  description: string,
-  duration?: Milliseconds,
-  failedExpectations: Array<FailedAssertion>,
-  fullName: string,
-  id: string,
-  status: Status,
+  __callsite?: {
+    getColumnNumber: () => number;
+    getLineNumber: () => number;
+  };
+  description: string;
+  duration?: TestResult.Milliseconds;
+  failedExpectations: Array<TestResult.FailedAssertion>;
+  fullName: string;
+  id: string;
+  status: TestResult.Status;
 };
 
 type Microseconds = number;
 
 export default class Jasmine2Reporter {
-  _testResults: Array<AssertionResult>;
-  _globalConfig: GlobalConfig;
-  _config: ProjectConfig;
+  _testResults: Array<TestResult.AssertionResult>;
+  _globalConfig: Config.GlobalConfig;
+  _config: Config.ProjectConfig;
   _currentSuites: Array<string>;
   _resolve: any;
-  _resultsPromise: Promise<TestResult>;
+  _resultsPromise: Promise<TestResult.TestResult>;
   _startTimes: Map<string, Microseconds>;
-  _testPath: Path;
+  _testPath: Config.Path;
 
   constructor(
-    globalConfig: GlobalConfig,
-    config: ProjectConfig,
-    testPath: Path,
+    globalConfig: Config.GlobalConfig,
+    config: Config.ProjectConfig,
+    testPath: Config.Path,
   ) {
     this._globalConfig = globalConfig;
     this._config = config;
@@ -126,11 +119,11 @@ export default class Jasmine2Reporter {
     this._resolve(testResult);
   }
 
-  getResults(): Promise<TestResult> {
+  getResults(): Promise<TestResult.TestResult> {
     return this._resultsPromise;
   }
 
-  _addMissingMessageToStack(stack: string, message: ?string) {
+  _addMissingMessageToStack(stack: string, message: string | undefined) {
     // Some errors (e.g. Angular injection error) don't prepend error.message
     // to stack, instead the first line of the stack is just plain 'Error'
     const ERROR_REGEX = /^Error\s*\n/;
@@ -148,7 +141,7 @@ export default class Jasmine2Reporter {
   _extractSpecResults(
     specResult: SpecResult,
     ancestorTitles: Array<string>,
-  ): AssertionResult {
+  ): TestResult.AssertionResult {
     const start = this._startTimes.get(specResult.id);
     const duration = start ? Date.now() - start : undefined;
     const status =
@@ -156,11 +149,10 @@ export default class Jasmine2Reporter {
     const location = specResult.__callsite
       ? {
           column: specResult.__callsite.getColumnNumber(),
-          // $FlowFixMe: https://github.com/facebook/flow/issues/5213
           line: specResult.__callsite.getLineNumber(),
         }
       : null;
-    const results = {
+    const results: TestResult.AssertionResult = {
       ancestorTitles,
       duration,
       failureMessages: [],

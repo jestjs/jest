@@ -3,12 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {Plugin} from 'types/PrettyFormat';
+import {PrettyFormat, Config} from '@jest/types';
 
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
@@ -17,12 +14,12 @@ import {
   addSerializer,
 } from 'jest-snapshot';
 
-export type SetupOptions = {|
-  config: ProjectConfig,
-  globalConfig: GlobalConfig,
-  localRequire: (moduleName: string) => Plugin,
-  testPath: Path,
-|};
+export type SetupOptions = {
+  config: Config.ProjectConfig;
+  globalConfig: Config.GlobalConfig;
+  localRequire: (moduleName: string) => PrettyFormat.Plugin;
+  testPath: Config.Path;
+};
 
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
@@ -61,27 +58,23 @@ const addAssertionErrors = result => {
 
 const patchJasmine = () => {
   global.jasmine.Spec = (realSpec => {
-    const Spec = function Spec(attr) {
-      const resultCallback = attr.resultCallback;
-      attr.resultCallback = function(result) {
-        addSuppressedErrors(result);
-        addAssertionErrors(result);
-        resultCallback.call(attr, result);
-      };
-      const onStart = attr.onStart;
-      attr.onStart = context => {
-        setState({currentTestName: context.getFullName()});
-        onStart && onStart.call(attr, context);
-      };
-      realSpec.call(this, attr);
-    };
-
-    Spec.prototype = realSpec.prototype;
-    for (const statics in realSpec) {
-      if (Object.prototype.hasOwnProperty.call(realSpec, statics)) {
-        Spec[statics] = realSpec[statics];
+    class Spec extends realSpec {
+      constructor(attr) {
+        const resultCallback = attr.resultCallback;
+        attr.resultCallback = function(result) {
+          addSuppressedErrors(result);
+          addAssertionErrors(result);
+          resultCallback.call(attr, result);
+        };
+        const onStart = attr.onStart;
+        attr.onStart = context => {
+          setState({currentTestName: context.getFullName()});
+          onStart && onStart.call(attr, context);
+        };
+        super(attr);
       }
     }
+
     return Spec;
   })(global.jasmine.Spec);
 };

@@ -3,8 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 /**
@@ -12,15 +10,13 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-import type {Global} from 'types/Global';
-import type {GlobalConfig} from 'types/Config';
-
+import {Global, Config} from '@jest/types';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
 import isError from './isError';
 
-function isPromise(obj) {
+function isPromise(obj: any) {
   return obj && typeof obj.then === 'function';
 }
 
@@ -153,8 +149,8 @@ function makeConcurrent(originalFn: Function, env, mutex) {
 }
 
 export default function jasmineAsyncInstall(
-  globalConfig: GlobalConfig,
-  global: Global,
+  globalConfig: Config.GlobalConfig,
+  global: Global.Global,
 ) {
   const jasmine = global.jasmine;
   const mutex = throat(globalConfig.maxConcurrency);

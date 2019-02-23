@@ -28,11 +28,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* @flow */
 /* eslint-disable sort-keys */
 
-import type {Jasmine} from 'types/Jasmine';
-
+import {Jasmine} from '../types';
 import createSpy from './createSpy';
 import Env from './Env';
 import JsApiReporter from './JsApiReporter';
@@ -42,7 +40,11 @@ import SpyRegistry from './spyRegistry';
 import Suite from './Suite';
 import Timer from './Timer';
 
-exports.create = function(createOptions: Object) {
+type $J = {
+  _DEFAULT_TIMEOUT_INTERVAL: number;
+};
+
+exports.create = function(createOptions: Object): $J {
   const j$ = {...createOptions};
 
   j$._DEFAULT_TIMEOUT_INTERVAL = 5000;

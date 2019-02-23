@@ -3,27 +3,25 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 type Options = {
-  nodeComplete: (suite: TreeNode) => void,
-  nodeStart: (suite: TreeNode) => void,
-  queueRunnerFactory: any,
-  runnableIds: Array<string>,
-  tree: TreeNode,
+  nodeComplete: (suite: TreeNode) => void;
+  nodeStart: (suite: TreeNode) => void;
+  queueRunnerFactory: any;
+  runnableIds: Array<string>;
+  tree: TreeNode;
 };
 
 type TreeNode = {
-  afterAllFns: Array<any>,
-  beforeAllFns: Array<any>,
-  disabled?: boolean,
-  execute: (onComplete: () => void, enabled: boolean) => void,
-  id: string,
-  onException: (error: Error) => void,
-  sharedUserContext: () => any,
-  children?: Array<TreeNode>,
+  afterAllFns: Array<any>;
+  beforeAllFns: Array<any>;
+  disabled?: boolean;
+  execute: (onComplete: () => void, enabled: boolean) => void;
+  id: string;
+  onException: (error: Error) => void;
+  sharedUserContext: () => any;
+  children?: Array<TreeNode>;
 };
 
 export default function treeProcessor(options: Options) {
@@ -35,7 +33,7 @@ export default function treeProcessor(options: Options) {
     tree,
   } = options;
 
-  function isEnabled(node, parentEnabled) {
+  function isEnabled(node: TreeNode, parentEnabled: boolean) {
     return parentEnabled || runnableIds.indexOf(node.id) !== -1;
   }
 
@@ -56,7 +54,7 @@ export default function treeProcessor(options: Options) {
     return async function fn(done: (error?: any) => void = () => {}) {
       nodeStart(node);
       await queueRunnerFactory({
-        onException: error => node.onException(error),
+        onException: (error: Error) => node.onException(error),
         queueableFns: wrapChildren(node, enabled),
         userContext: node.sharedUserContext(),
       });
@@ -65,7 +63,7 @@ export default function treeProcessor(options: Options) {
     };
   }
 
-  function hasEnabledTest(node: TreeNode) {
+  function hasEnabledTest(node: TreeNode): boolean {
     if (node.children) {
       return node.children.some(hasEnabledTest);
     }
