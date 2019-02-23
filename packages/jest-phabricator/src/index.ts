@@ -5,22 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  AggregatedResult,
-  AggregatedResultWithoutCoverage,
-  CoverageMap,
-} from '@jest/types';
+import {TestResult} from '@jest/types';
 
-type PhabricatorReport = AggregatedResultWithoutCoverage & {
-  coverageMap?: CoverageMap | null;
+type PhabricatorReport = TestResult.AggregatedResultWithoutCoverage & {
+  coverageMap?: TestResult.CoverageMap | null;
 };
 
-function summarize(coverageMap: CoverageMap) {
+function summarize(coverageMap: TestResult.CoverageMap) {
   const summaries = Object.create(null);
 
   coverageMap.files().forEach((file: string) => {
     const covered = [];
-    const lineCoverage = coverageMap.fileCoverageFor(file).getLineCoverage();
+    const lineCoverage: any = coverageMap
+      .fileCoverageFor(file)
+      .getLineCoverage();
 
     Object.keys(lineCoverage).forEach(lineNumber => {
       // Line numbers start at one
@@ -40,7 +38,9 @@ function summarize(coverageMap: CoverageMap) {
   return summaries;
 }
 
-module.exports = function(results: AggregatedResult): PhabricatorReport {
+module.exports = function(
+  results: TestResult.AggregatedResult,
+): PhabricatorReport {
   return {
     ...results,
     coverageMap: results.coverageMap && summarize(results.coverageMap),
