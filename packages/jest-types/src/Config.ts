@@ -313,7 +313,7 @@ export type ProjectConfig = {
   detectOpenHandles: boolean;
   displayName: string | null | undefined;
   errorOnDeprecated: boolean;
-  extraGlobals: Array<string>;
+  extraGlobals: Array<keyof NodeJS.Global>;
   filter: Path | null | undefined;
   forceCoverageMatch: Array<Glob>;
   globalSetup: string | null | undefined;

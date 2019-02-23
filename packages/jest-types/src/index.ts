@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as Argv from './Argv';
 import * as Config from './Config';
 import * as Console from './Console';
 import * as Matchers from './Matchers';
@@ -14,9 +15,9 @@ import * as Snapshot from './Snapshot';
 import * as SourceMaps from './SourceMaps';
 import * as TestResult from './TestResult';
 import * as Global from './Global';
-import * as Environment from './Environment';
 
 export {
+  Argv,
   Config,
   Console,
   Matchers,
@@ -26,5 +27,4 @@ export {
   SourceMaps,
   TestResult,
   Global,
-  Environment,
 };

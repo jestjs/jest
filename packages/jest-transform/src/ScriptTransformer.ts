@@ -50,7 +50,7 @@ const projectCaches: WeakMap<
 const CACHE_VERSION = '1';
 
 export default class ScriptTransformer {
-  static EVAL_RESULT_VARIABLE: string;
+  static EVAL_RESULT_VARIABLE: 'Object.<anonymous>';
   private _cache: ProjectCache;
   private _config: Config.ProjectConfig;
   private _transformCache: Map<Config.Path, Transformer>;
@@ -565,4 +565,5 @@ const wrap = (content: string, ...extras: Array<string>) => {
   );
 };
 
+// TODO: Can this be added to the static property?
 ScriptTransformer.EVAL_RESULT_VARIABLE = 'Object.<anonymous>';

@@ -3,72 +3,60 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Console} from 'console';
-import type {Argv} from 'types/Argv';
-import type {Glob, Path, ProjectConfig} from 'types/Config';
-import type {Environment} from 'types/Environment';
-import type {Context} from 'types/Context';
-import type {Jest, LocalModuleRequire} from 'types/Jest';
-import type {ModuleMap} from 'jest-haste-map';
-import type {MockFunctionMetadata, ModuleMocker} from 'types/Mock';
-import type {SourceMapRegistry} from 'types/SourceMaps';
-
 import path from 'path';
-import HasteMap from 'jest-haste-map';
+// import {Jest, LocalModuleRequire} from 'types/Jest';
+import {Argv, Config, Mocks, SourceMaps} from '@jest/types';
+import {
+  Jest,
+  JestEnvironment,
+  LocalModuleRequire,
+  Module,
+} from '@jest/environment';
+import jestMock from 'jest-mock';
+import HasteMap, {ModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import Resolver from 'jest-resolve';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
 import Snapshot from 'jest-snapshot';
-import {ScriptTransformer, shouldInstrument} from '@jest/transform';
+import {
+  ScriptTransformer,
+  ShouldInstrumentOptions,
+  shouldInstrument,
+} from '@jest/transform';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
+import {Context} from './types';
 
-type Module = {|
-  children: Array<Module>,
-  exports: any,
-  filename: string,
-  id: string,
-  loaded: boolean,
-  parent?: Module,
-  paths?: Array<Path>,
-  require?: (id: string) => any,
-|};
-
-type HasteMapOptions = {|
-  console?: Console,
-  maxWorkers: number,
-  resetCache: boolean,
-  watch?: boolean,
-  watchman: boolean,
-|};
-
-type InternalModuleOptions = {|
-  isInternalModule: boolean,
-|};
-
-type CoverageOptions = {
-  changedFiles: ?Set<Path>,
-  collectCoverage: boolean,
-  collectCoverageFrom: Array<Glob>,
-  collectCoverageOnlyFrom: ?{[key: string]: boolean, __proto__: null},
+type HasteMapOptions = {
+  console?: Console;
+  maxWorkers: number;
+  resetCache: boolean;
+  watch?: boolean;
+  watchman: boolean;
 };
 
-type ModuleRegistry = {[key: string]: Module, __proto__: null};
+type InternalModuleOptions = {
+  isInternalModule: boolean;
+};
 
-type BooleanObject = {[key: string]: boolean, __proto__: null};
-type CacheFS = {[path: Path]: string, __proto__: null};
+type ModuleRegistry = {[key: string]: Module};
+type ResolveOptions = Parameters<typeof require.resolve>[1];
+
+type BooleanObject = {[key: string]: boolean};
+type CacheFS = {[path: string]: string};
+
+const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
+const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 
-const getModuleNameMapper = (config: ProjectConfig) => {
+const getModuleNameMapper = (config: Config.ProjectConfig) => {
   if (
     Array.isArray(config.moduleNameMapper) &&
     config.moduleNameMapper.length
@@ -84,45 +72,47 @@ const getModuleNameMapper = (config: ProjectConfig) => {
 const unmockRegExpCache = new WeakMap();
 
 class Runtime {
-  static ScriptTransformer: Class<ScriptTransformer>;
+  static ScriptTransformer: typeof ScriptTransformer;
 
-  _cacheFS: CacheFS;
-  _config: ProjectConfig;
-  _coverageOptions: CoverageOptions;
-  _currentlyExecutingModulePath: string;
-  _environment: Environment;
-  _explicitShouldMock: BooleanObject;
-  _internalModuleRegistry: ModuleRegistry;
-  _isCurrentlyExecutingManualMock: ?string;
-  _mockFactories: {[key: string]: () => any, __proto__: null};
-  _mockMetaDataCache: {[key: string]: MockFunctionMetadata, __proto__: null};
-  _mockRegistry: {[key: string]: any, __proto__: null};
-  _isolatedMockRegistry: ?{[key: string]: any, __proto__: null};
-  _moduleMocker: ModuleMocker;
-  _isolatedModuleRegistry: ?ModuleRegistry;
-  _moduleRegistry: ModuleRegistry;
-  _needsCoverageMapped: Set<string>;
-  _resolver: Resolver;
-  _shouldAutoMock: boolean;
-  _shouldMockModuleCache: BooleanObject;
-  _shouldUnmockTransitiveDependenciesCache: BooleanObject;
-  _sourceMapRegistry: SourceMapRegistry;
-  _scriptTransformer: ScriptTransformer;
-  _transitiveShouldMock: BooleanObject;
-  _unmockList: ?RegExp;
-  _virtualMocks: BooleanObject;
+  private _cacheFS: CacheFS;
+  private _config: Config.ProjectConfig;
+  private _coverageOptions: ShouldInstrumentOptions;
+  private _currentlyExecutingModulePath: string;
+  private _environment: JestEnvironment;
+  private _explicitShouldMock: BooleanObject;
+  private _internalModuleRegistry: ModuleRegistry;
+  private _isCurrentlyExecutingManualMock: string | null;
+  private _mockFactories: {[key: string]: () => unknown};
+  private _mockMetaDataCache: {
+    [key: string]: Mocks.MockFunctionMetadata<unknown, unknown[]>;
+  };
+  private _mockRegistry: {[key: string]: any};
+  private _isolatedMockRegistry: {[key: string]: any} | null | undefined;
+  private _moduleMocker: typeof jestMock;
+  private _isolatedModuleRegistry: ModuleRegistry | null;
+  private _moduleRegistry: ModuleRegistry;
+  private _needsCoverageMapped: Set<string>;
+  private _resolver: Resolver;
+  private _shouldAutoMock: boolean;
+  private _shouldMockModuleCache: BooleanObject;
+  private _shouldUnmockTransitiveDependenciesCache: BooleanObject;
+  private _sourceMapRegistry: SourceMaps.SourceMapRegistry;
+  private _scriptTransformer: ScriptTransformer;
+  private _transitiveShouldMock: BooleanObject;
+  private _unmockList: RegExp | undefined;
+  private _virtualMocks: BooleanObject;
 
   constructor(
-    config: ProjectConfig,
-    environment: Environment,
+    config: Config.ProjectConfig,
+    environment: JestEnvironment,
     resolver: Resolver,
     cacheFS?: CacheFS,
-    coverageOptions?: CoverageOptions,
+    coverageOptions?: ShouldInstrumentOptions,
   ) {
     this._cacheFS = cacheFS || Object.create(null);
     this._config = config;
     this._coverageOptions = coverageOptions || {
-      changedFiles: null,
+      changedFiles: undefined,
       collectCoverage: false,
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: null,
@@ -178,30 +168,22 @@ class Runtime {
     }
   }
 
+  // TODO: Can this be `static shouldInstrument = shouldInstrument;`?
   static shouldInstrument(
-    filename: Path,
-    options: CoverageOptions,
-    config: ProjectConfig,
+    filename: Config.Path,
+    options: ShouldInstrumentOptions,
+    config: Config.ProjectConfig,
   ) {
-    return shouldInstrument(
-      filename,
-      {
-        changedFiles: options.changedFiles,
-        collectCoverage: options.collectCoverage,
-        collectCoverageFrom: options.collectCoverageFrom,
-        collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
-      },
-      config,
-    );
+    return shouldInstrument(filename, options, config);
   }
 
   static createContext(
-    config: ProjectConfig,
+    config: Config.ProjectConfig,
     options: {
-      console?: Console,
-      maxWorkers: number,
-      watch?: boolean,
-      watchman: boolean,
+      console?: Console;
+      maxWorkers: number;
+      watch?: boolean;
+      watchman: boolean;
     },
   ): Promise<Context> {
     createDirectory(config.cacheDirectory);
@@ -226,7 +208,7 @@ class Runtime {
   }
 
   static createHasteMap(
-    config: ProjectConfig,
+    config: Config.ProjectConfig,
     options?: HasteMapOptions,
   ): HasteMap {
     const ignorePatternParts = [
@@ -238,7 +220,7 @@ class Runtime {
     const ignorePattern =
       ignorePatternParts.length > 0
         ? new RegExp(ignorePatternParts.join('|'))
-        : null;
+        : undefined;
 
     return new HasteMap({
       cacheDirectory: config.cacheDirectory,
@@ -262,7 +244,10 @@ class Runtime {
     });
   }
 
-  static createResolver(config: ProjectConfig, moduleMap: ModuleMap): Resolver {
+  static createResolver(
+    config: Config.ProjectConfig,
+    moduleMap: ModuleMap,
+  ): Resolver {
     return new Resolver(moduleMap, {
       browser: config.browser,
       defaultPlatform: config.haste.defaultPlatform,
@@ -277,7 +262,7 @@ class Runtime {
     });
   }
 
-  static runCLI(args?: Argv, info?: Array<string>) {
+  static runCLI(args?: Argv.Argv, info?: Array<string>) {
     return cliRun(args, info);
   }
 
@@ -286,10 +271,10 @@ class Runtime {
   }
 
   requireModule(
-    from: Path,
+    from: Config.Path,
     moduleName?: string,
-    options: ?InternalModuleOptions,
-    isRequireActual: ?boolean,
+    options?: InternalModuleOptions | null,
+    isRequireActual?: boolean | null,
   ) {
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
@@ -351,7 +336,6 @@ class Runtime {
           stripBOM(fs.readFileSync(modulePath, 'utf8')),
         );
       } else if (path.extname(modulePath) === '.node') {
-        // $FlowFixMe
         localModule.exports = require(modulePath);
       } else {
         // Only include the fromPath if a moduleName is given. Else treat as root.
@@ -364,15 +348,15 @@ class Runtime {
     return moduleRegistry[modulePath].exports;
   }
 
-  requireInternalModule(from: Path, to?: string) {
+  requireInternalModule(from: Config.Path, to?: string) {
     return this.requireModule(from, to, {isInternalModule: true});
   }
 
-  requireActual(from: Path, moduleName: string) {
+  requireActual(from: Config.Path, moduleName: string) {
     return this.requireModule(from, moduleName, undefined, true);
   }
 
-  requireMock(from: Path, moduleName: string) {
+  requireMock(from: Config.Path, moduleName: string) {
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
       from,
@@ -449,7 +433,7 @@ class Runtime {
     return mockRegistry[moduleID];
   }
 
-  requireModuleOrMock(from: Path, moduleName: string) {
+  requireModuleOrMock(from: Config.Path, moduleName: string) {
     try {
       if (this._shouldMock(from, moduleName)) {
         return this.requireMock(from, moduleName);
@@ -494,13 +478,14 @@ class Runtime {
     if (this._environment) {
       if (this._environment.global) {
         const envGlobal = this._environment.global;
-        Object.keys(envGlobal).forEach(key => {
+        (Object.keys(envGlobal) as Array<keyof NodeJS.Global>).forEach(key => {
           const globalMock = envGlobal[key];
           if (
-            (typeof globalMock === 'object' && globalMock !== null) ||
-            typeof globalMock === 'function'
+            ((typeof globalMock === 'object' && globalMock !== null) ||
+              typeof globalMock === 'function') &&
+            globalMock._isMockFunction === true
           ) {
-            globalMock._isMockFunction === true && globalMock.mockClear();
+            globalMock.mockClear();
           }
         });
       }
@@ -516,7 +501,9 @@ class Runtime {
   }
 
   getSourceMapInfo(coveredFiles: Set<string>) {
-    return Object.keys(this._sourceMapRegistry).reduce((result, sourcePath) => {
+    return Object.keys(this._sourceMapRegistry).reduce<{
+      [path: string]: unknown;
+    }>((result, sourcePath) => {
       if (
         coveredFiles.has(sourcePath) &&
         this._needsCoverageMapped.has(sourcePath) &&
@@ -528,15 +515,15 @@ class Runtime {
     }, {});
   }
 
-  getSourceMaps(): SourceMapRegistry {
+  getSourceMaps(): SourceMaps.SourceMapRegistry {
     return this._sourceMapRegistry;
   }
 
   setMock(
     from: string,
     moduleName: string,
-    mockFactory: () => any,
-    options?: {virtual: boolean},
+    mockFactory: () => unknown,
+    options?: {virtual?: boolean},
   ) {
     if (options && options.virtual) {
       const mockPath = this._resolver.getModulePath(from, moduleName);
@@ -563,20 +550,22 @@ class Runtime {
     this._moduleMocker.clearAllMocks();
   }
 
-  _resolveModule(from: Path, to?: ?string) {
+  private _resolveModule(from: Config.Path, to?: string | null | undefined) {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
-  _requireResolve(
-    from: Path,
+  private _requireResolve(
+    from: Config.Path,
     moduleName?: string,
-    {paths}: {paths?: Path[]} = {},
+    options: ResolveOptions = {},
   ) {
     if (moduleName == null) {
       throw new Error(
         'The first argument to require.resolve must be a string. Received null or undefined.',
       );
     }
+
+    const {paths} = options;
 
     if (paths) {
       for (const p of paths) {
@@ -610,7 +599,7 @@ class Runtime {
     }
   }
 
-  _requireResolvePaths(from: Path, moduleName?: string) {
+  private _requireResolvePaths(from: Config.Path, moduleName?: string) {
     if (moduleName == null) {
       throw new Error(
         'The first argument to require.resolve.paths must be a string. Received null or undefined.',
@@ -631,11 +620,11 @@ class Runtime {
     return this._resolver.getModulePaths(path.resolve(from, '..'));
   }
 
-  _execModule(
+  private _execModule(
     localModule: Module,
-    options: ?InternalModuleOptions,
+    options: InternalModuleOptions | null | undefined,
     moduleRegistry: ModuleRegistry,
-    from: ?Path,
+    from: Config.Path | null | undefined,
   ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
@@ -652,18 +641,13 @@ class Runtime {
     const dirname = path.dirname(filename);
     localModule.children = [];
 
-    Object.defineProperty(
-      localModule,
-      'parent',
-      // https://github.com/facebook/flow/issues/285#issuecomment-270810619
-      ({
-        enumerable: true,
-        get() {
-          const key = from || '';
-          return moduleRegistry[key] || null;
-        },
-      }: Object),
-    );
+    Object.defineProperty(localModule, 'parent', {
+      enumerable: true,
+      get() {
+        const key = from || '';
+        return moduleRegistry[key] || null;
+      },
+    });
 
     localModule.paths = this._resolver.getModulePaths(dirname);
     Object.defineProperty(localModule, 'require', {
@@ -710,8 +694,7 @@ class Runtime {
       this._environment.global, // global object
       this._createJestObjectFor(
         filename,
-        // $FlowFixMe
-        (localModule.require: LocalModuleRequire),
+        localModule.require as LocalModuleRequire,
       ), // jest object
       ...extraGlobals.map(globalVariable => {
         if (this._environment.global[globalVariable]) {
@@ -729,25 +712,24 @@ class Runtime {
     this._currentlyExecutingModulePath = lastExecutingModulePath;
   }
 
-  _requireCoreModule(moduleName: string) {
+  private _requireCoreModule(moduleName: string) {
     if (moduleName === 'process') {
       return this._environment.global.process;
     }
 
-    // $FlowFixMe
     return require(moduleName);
   }
 
-  _generateMock(from: Path, moduleName: string) {
+  private _generateMock(from: Config.Path, moduleName: string) {
     const modulePath =
       this._resolver.resolveStubModuleName(from, moduleName) ||
       this._resolveModule(from, moduleName);
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
-      this._mockMetaDataCache[modulePath] = (this._moduleMocker.getMetadata(
+      this._mockMetaDataCache[modulePath] = this._moduleMocker.getMetadata(
         {},
-      ): any);
+      ) as any;
 
       // In order to avoid it being possible for automocking to potentially
       // cause side-effects within the module environment, we need to execute
@@ -778,7 +760,7 @@ class Runtime {
     );
   }
 
-  _shouldMock(from: Path, moduleName: string) {
+  private _shouldMock(from: Config.Path, moduleName: string) {
     const mockPath = this._resolver.getModulePath(from, moduleName);
     if (mockPath in this._virtualMocks) {
       return true;
@@ -845,45 +827,51 @@ class Runtime {
     return (this._shouldMockModuleCache[moduleID] = true);
   }
 
-  _createRequireImplementation(
+  private _createRequireImplementation(
     from: Module,
-    options: ?InternalModuleOptions,
+    options: InternalModuleOptions | null | undefined,
   ): LocalModuleRequire {
-    const moduleRequire =
+    // TODO: somehow avoid having to type the arguments - they should come from `LocalModuleRequire`
+    const resolve = (moduleName: string, options: ResolveOptions) =>
+      this._requireResolve(from.filename, moduleName, options);
+
+    resolve.paths = (moduleName: string) =>
+      this._requireResolvePaths(from.filename, moduleName);
+
+    const requireImpl: any =
       options && options.isInternalModule
         ? (moduleName: string) =>
             this.requireInternalModule(from.filename, moduleName)
         : this.requireModuleOrMock.bind(this, from.filename);
-    moduleRequire.cache = Object.create(null);
-    moduleRequire.extensions = Object.create(null);
-    moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
-    moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
-    moduleRequire.resolve = (moduleName, options) =>
-      this._requireResolve(from.filename, moduleName, options);
-    moduleRequire.resolve.paths = moduleName =>
-      this._requireResolvePaths(from.filename, moduleName);
-    Object.defineProperty(
-      moduleRequire,
-      'main',
-      ({
-        enumerable: true,
-        get() {
-          let mainModule = from.parent;
-          while (
-            mainModule &&
-            mainModule.parent &&
-            mainModule.id !== mainModule.parent.id
-          ) {
-            mainModule = mainModule.parent;
-          }
-          return mainModule;
-        },
-      }: Object),
-    );
+    requireImpl.cache = Object.create(null);
+    requireImpl.extensions = Object.create(null);
+    requireImpl.requireActual = this.requireActual.bind(this, from.filename);
+    requireImpl.requireMock = this.requireMock.bind(this, from.filename);
+    requireImpl.resolve = resolve;
+
+    const moduleRequire: LocalModuleRequire = {...requireImpl};
+
+    Object.defineProperty(moduleRequire, 'main', {
+      enumerable: true,
+      get() {
+        let mainModule = from.parent;
+        while (
+          mainModule &&
+          mainModule.parent &&
+          mainModule.id !== mainModule.parent.id
+        ) {
+          mainModule = mainModule.parent;
+        }
+        return mainModule;
+      },
+    });
     return moduleRequire;
   }
 
-  _createJestObjectFor(from: Path, localRequire: LocalModuleRequire): Jest {
+  private _createJestObjectFor(
+    from: Config.Path,
+    localRequire: LocalModuleRequire,
+  ): Jest {
     const disableAutomock = () => {
       this._shouldAutoMock = false;
       return jestObject;
@@ -911,11 +899,7 @@ class Runtime {
       this._transitiveShouldMock[moduleID] = false;
       return jestObject;
     };
-    const mock = (
-      moduleName: string,
-      mockFactory?: Object,
-      options?: {virtual: boolean},
-    ) => {
+    const mock: Jest['mock'] = (moduleName, mockFactory, options) => {
       if (mockFactory !== undefined) {
         return setMockFactory(moduleName, mockFactory, options);
       }
@@ -928,7 +912,11 @@ class Runtime {
       this._explicitShouldMock[moduleID] = true;
       return jestObject;
     };
-    const setMockFactory = (moduleName, mockFactory, options) => {
+    const setMockFactory = (
+      moduleName: string,
+      mockFactory: () => unknown,
+      options?: {virtual?: boolean},
+    ) => {
       this.setMock(from, moduleName, mockFactory, options);
       return jestObject;
     };
@@ -964,16 +952,18 @@ class Runtime {
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
     const setTimeout = (timeout: number) => {
-      this._environment.global.jasmine
-        ? (this._environment.global.jasmine._DEFAULT_TIMEOUT_INTERVAL = timeout)
-        : (this._environment.global[
-            Symbol.for('TEST_TIMEOUT_SYMBOL')
-          ] = timeout);
+      if (this._environment.global.jasmine) {
+        this._environment.global.jasmine._DEFAULT_TIMEOUT_INTERVAL = timeout;
+      } else {
+        // @ts-ignore: https://github.com/Microsoft/TypeScript/issues/24587
+        this._environment.global[testTimeoutSymbol] = timeout;
+      }
       return jestObject;
     };
 
     const retryTimes = (numTestRetries: number) => {
-      this._environment.global[Symbol.for('RETRY_TIMES')] = numTestRetries;
+      // @ts-ignore: https://github.com/Microsoft/TypeScript/issues/24587
+      this._environment.global[retryTimesSymbol] = numTestRetries;
       return jestObject;
     };
 
@@ -988,7 +978,7 @@ class Runtime {
       return this._environment.fakeTimers;
     };
 
-    const jestObject = {
+    const jestObject: Jest = {
       addMatchers: (matchers: Object) =>
         this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
@@ -1022,7 +1012,7 @@ class Runtime {
       runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
       runTimersToTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
-      setMock: (moduleName: string, mock: Object) =>
+      setMock: (moduleName: string, mock: unknown) =>
         setMockFactory(moduleName, () => mock),
       setTimeout,
       spyOn,
@@ -1034,8 +1024,8 @@ class Runtime {
   }
 
   _logFormattedReferenceError(errorMessage: string) {
-    const originalStack = new ReferenceError(errorMessage).stack
-      .split('\n')
+    const originalStack = new ReferenceError(errorMessage)
+      .stack!.split('\n')
       // Remove this file from the stack (jest-message-utils will keep one line)
       .filter(line => line.indexOf(__filename) === -1)
       .join('\n');
@@ -1051,4 +1041,4 @@ class Runtime {
 
 Runtime.ScriptTransformer = ScriptTransformer;
 
-module.exports = Runtime;
+export = Runtime;

@@ -21,7 +21,7 @@ type FindNodeModuleConfig = {
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
-  resolver?: Config.Path;
+  resolver?: Config.Path | null;
   rootDir?: Config.Path;
 };
 
@@ -403,7 +403,7 @@ const createNoMappedModuleFoundError = (
   updatedName: string,
   mappedModuleName: string,
   regex: RegExp,
-  resolver: Function | string,
+  resolver?: Function | string | null,
 ) => {
   const error = new Error(
     chalk.red(`${chalk.bold('Configuration error')}:

@@ -1,16 +1,13 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
-// @flow
-
-import type {Path} from 'types/Config';
-
 import path from 'path';
 import slash from 'slash';
 import glob from 'glob';
+import {Config} from '@jest/types';
 
 export const findSiblingsWithFileExtension = (
-  moduleFileExtensions: Array<string>,
-  from: Path,
+  moduleFileExtensions: Config.ProjectConfig['moduleFileExtensions'],
+  from: Config.Path,
   moduleName: string,
 ): string => {
   if (!path.isAbsolute(moduleName) && path.extname(moduleName) === '') {

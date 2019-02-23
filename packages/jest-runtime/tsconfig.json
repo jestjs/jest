@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  // TODO: Missing `jest-config`, `jest-validate` and `jest-environment-node`
+  "references": [
+    {"path": "../jest-environment"},
+    {"path": "../jest-haste-map"},
+    {"path": "../jest-message-util"},
+    {"path": "../jest-mock"},
+    {"path": "../jest-regex-util"},
+    {"path": "../jest-resolve"},
+    {"path": "../jest-snapshot"},
+    {"path": "../jest-util"},
+    {"path": "../jest-types"},
+    {"path": "../pretty-format"}
+  ]
+}

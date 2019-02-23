@@ -6,7 +6,8 @@
  */
 
 import path from 'path';
-import {Config, TestResult, Environment} from '@jest/types';
+import {Config, TestResult} from '@jest/types';
+import {JestEnvironment} from '@jest/environment';
 // @ts-ignore TODO Remove ignore when jest-runtime is migrated to ts
 import Runtime from 'jest-runtime'; // eslint-disable-line import/no-extraneous-dependencies
 import {SnapshotState} from 'jest-snapshot';
@@ -16,7 +17,7 @@ const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  environment: Environment.$JestEnvironment,
+  environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult.TestResult> => {
