@@ -8,8 +8,6 @@
 import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import {ConsoleBuffer} from './Console';
 
-export {CoverageMap};
-
 export type SerializableError = {
   code?: unknown;
   message: string;

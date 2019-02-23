@@ -7,7 +7,13 @@
 
 import {TestResult} from '@jest/types';
 
-function summarize(coverageMap: TestResult.CoverageMap) {
+type AggregatedResult = TestResult.AggregatedResult;
+
+function summarize(coverageMap: AggregatedResult['coverageMap']) {
+  if (!coverageMap) {
+    return coverageMap;
+  }
+
   const summaries = Object.create(null);
 
   coverageMap.files().forEach(file => {
@@ -32,11 +38,6 @@ function summarize(coverageMap: TestResult.CoverageMap) {
   return summaries;
 }
 
-export = function(
-  results: TestResult.AggregatedResult,
-): TestResult.AggregatedResult {
-  return {
-    ...results,
-    coverageMap: results.coverageMap && summarize(results.coverageMap),
-  };
+export = function(results: AggregatedResult): AggregatedResult {
+  return {...results, coverageMap: summarize(results.coverageMap)};
 };
