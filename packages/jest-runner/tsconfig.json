@@ -37,6 +37,9 @@
     },
     {
       "path": "../jest-resolve"
+    },
+    {
+      "path": "../jest-core"
     }
   ]
 }
