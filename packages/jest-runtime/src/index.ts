@@ -45,7 +45,9 @@ type InternalModuleOptions = {
   isInternalModule: boolean;
 };
 
-type ModuleRegistry = {[key: string]: Module};
+type InitialModule = Partial<Module> &
+  Pick<Module, 'children' | 'exports' | 'filename' | 'id' | 'loaded'>;
+type ModuleRegistry = {[key: string]: InitialModule};
 type ResolveOptions = Parameters<typeof require.resolve>[1];
 
 type BooleanObject = {[key: string]: boolean};
@@ -323,7 +325,7 @@ class Runtime {
       // We must register the pre-allocated module object first so that any
       // circular dependencies that may arise while evaluating the module can
       // be satisfied.
-      const localModule: Module = {
+      const localModule: InitialModule = {
         children: [],
         exports: {},
         filename: modulePath,
@@ -412,7 +414,7 @@ class Runtime {
       }
     }
     if (isManualMock) {
-      const localModule: Module = {
+      const localModule: InitialModule = {
         children: [],
         exports: {},
         filename: modulePath,
@@ -621,7 +623,7 @@ class Runtime {
   }
 
   private _execModule(
-    localModule: Module,
+    localModule: InitialModule,
     options: InternalModuleOptions | null | undefined,
     moduleRegistry: ModuleRegistry,
     from: Config.Path | null | undefined,
@@ -828,7 +830,7 @@ class Runtime {
   }
 
   private _createRequireImplementation(
-    from: Module,
+    from: InitialModule,
     options: InternalModuleOptions | null | undefined,
   ): LocalModuleRequire {
     // TODO: somehow avoid having to type the arguments - they should come from `LocalModuleRequire`
