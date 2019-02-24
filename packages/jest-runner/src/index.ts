@@ -6,12 +6,12 @@
  *
  */
 
-import {Config, TestResult} from '@jest/types';
+import { Config, TestResult } from '@jest/types';
 import exit from 'exit';
 import throat from 'throat';
 import Worker from 'jest-worker';
 import runTest from './runTest';
-import {WorkerData} from './testWorker';
+import { WorkerData } from './testWorker';
 import {
   OnTestFailure,
   OnTestStart,
@@ -52,12 +52,12 @@ class TestRunner {
     return await (options.serial
       ? this._createInBandTestRun(tests, watcher, onStart, onResult, onFailure)
       : this._createParallelTestRun(
-          tests,
-          watcher,
-          onStart,
-          onResult,
-          onFailure,
-        ));
+        tests,
+        watcher,
+        onStart,
+        onResult,
+        onFailure,
+      ));
   }
 
   async _createInBandTestRun(
@@ -101,11 +101,12 @@ class TestRunner {
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
   ) {
+
+    // TODO: Resolve typing since this is correct code
+    //@ts-ignore
     const worker = new Worker(TEST_WORKER_PATH, {
       exposedMethods: ['worker'],
-      // TODO: clarify this in PR
-      // doing this to satify the type
-      forkOptions: {stdio: ['pipe']},
+      forkOptions: { stdio: 'pipe' },
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
     }) as WorkerInterface;
@@ -141,7 +142,7 @@ class TestRunner {
       if (err.type === 'ProcessTerminatedError') {
         console.error(
           'A worker process has quit unexpectedly! ' +
-            'Most likely this is an initialization error.',
+          'Most likely this is an initialization error.',
         );
         exit(1);
       }
