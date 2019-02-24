@@ -12,6 +12,7 @@ import {
   TestResult,
   Console as ConsoleType,
 } from '@jest/types';
+// @ts-ignore: not migrated to TS
 import RuntimeClass from 'jest-runtime';
 import fs from 'graceful-fs';
 import {
@@ -24,12 +25,13 @@ import {
 } from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
 import Resolver from 'jest-resolve';
-import { getTestEnvironment } from 'jest-config';
+// @ts-ignore: not migrated to TS
+import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
-import { formatExecError } from 'jest-message-util';
+import {formatExecError} from 'jest-message-util';
 import sourcemapSupport from 'source-map-support';
 import chalk from 'chalk';
-import { TestFramework, TestRunnerContext } from './types';
+import {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
@@ -54,7 +56,7 @@ function freezeConsole(
     const formattedError = formatExecError(
       error,
       config,
-      { noStackTrace: false },
+      {noStackTrace: false},
       undefined,
       true,
     );
@@ -94,15 +96,12 @@ async function runTestInternal(
     });
   }
 
-  /* $FlowFixMe */
   const TestEnvironment = require(testEnvironment) as Environment.EnvironmentClass;
   const testFramework = (process.env.JEST_CIRCUS === '1'
     ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
-    : /* $FlowFixMe */
-    require(config.testRunner)) as TestFramework;
+    : require(config.testRunner)) as TestFramework;
   const Runtime = (config.moduleLoader
-    ? /* $FlowFixMe */
-    require(config.moduleLoader)
+    ? require(config.moduleLoader)
     : require('jest-runtime')) as RuntimeClass;
 
   let runtime: RuntimeClass = undefined;
@@ -143,7 +142,7 @@ async function runTestInternal(
     ? new LeakDetector(environment)
     : null;
 
-  const cacheFS = { [path]: testSource };
+  const cacheFS = {[path]: testSource};
 
   // @ts-ignore
   setGlobal(environment.global, 'console', testConsole);
@@ -172,7 +171,7 @@ async function runTestInternal(
             map: JSON.parse(fs.readFileSync(sourceMapSource)),
             url: source,
           };
-        } catch (e) { }
+        } catch (e) {}
       }
       return null;
     },
@@ -207,7 +206,7 @@ async function runTestInternal(
       const formattedError = formatExecError(
         error,
         config,
-        { noStackTrace: false },
+        {noStackTrace: false},
         undefined,
         true,
       );
@@ -246,7 +245,7 @@ async function runTestInternal(
       result.numPendingTests +
       result.numTodoTests;
 
-    result.perfStats = { end: Date.now(), start };
+    result.perfStats = {end: Date.now(), start};
     result.testFilePath = path;
     result.coverage = runtime.getAllCoverageInfoCopy();
     result.sourceMaps = runtime.getSourceMapInfo(
@@ -265,7 +264,7 @@ async function runTestInternal(
 
     // Delay the resolution to allow log messages to be output.
     return new Promise(resolve => {
-      setImmediate(() => resolve({ leakDetector, result }));
+      setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
     await environment.teardown();
@@ -283,7 +282,7 @@ export default async function runTest(
   resolver: Resolver,
   context?: TestRunnerContext,
 ): Promise<TestResult.TestResult> {
-  const { leakDetector, result } = await runTestInternal(
+  const {leakDetector, result} = await runTestInternal(
     path,
     globalConfig,
     config,

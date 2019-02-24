@@ -5,29 +5,13 @@
     "outDir": "build"
   },
   "references": [
-    {
-      "path": "../jest-docblock"
-    },
-    {
-      "path": "../jest-haste-map"
-    },
-    {
-      "path": "../jest-leak-detector"
-    },
-    {
-      "path": "../jest-message-util"
-    },
-    {
-      "path": "../jest-util"
-    },
-    {
-      "path": "../jest-worker"
-    },
-    {
-      "path": "../jest-types"
-    },
-    {
-      "path": "../jest-resolve"
-    },
+    {"path": "../jest-docblock"},
+    {"path": "../jest-haste-map"},
+    {"path": "../jest-leak-detector"},
+    {"path": "../jest-message-util"},
+    {"path": "../jest-resolve"},
+    {"path": "../jest-types"},
+    {"path": "../jest-worker"},
+    {"path": "../jest-util"}
   ]
 }

@@ -6,11 +6,12 @@
  *
  */
 
+import EventEmitter from 'events';
 import {Environment, Config, TestResult} from '@jest/types';
 import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
 import HasteResolver from 'jest-resolve';
+// @ts-ignore: not migrated to TS
 import Runtime from 'jest-runtime';
-import {TestWatcher as _TestWatcher} from '@jest/core';
 
 export type ErrorWithCode = Error & {code?: string};
 export type Test = {
@@ -26,14 +27,11 @@ export type Context = {
   resolver: HasteResolver;
 };
 
-// TODO: Obtain this from jest-reporter once its been migrated
+// TODO: Obtain this from @jest/reporters once its been migrated
 type ReporterOnStartOptions = {
   estimatedTime: number;
   showStatus: boolean;
 };
-
-// TODO: Obtain this from @jest/core once its been migrated
-export type TestWatcher = _TestWatcher;
 
 export type OnTestStart = (test: Test) => Promise<void>;
 export type OnTestFailure = (
@@ -83,3 +81,15 @@ export type TestRunData = Array<{
   context: Context;
   matches: {allTests: number; tests: Array<Test>; total: number};
 }>;
+
+// TODO: Should live in `@jest/core` or `jest-watcher`
+declare type State = {
+  interrupted: boolean;
+};
+export interface TestWatcher extends EventEmitter {
+  state: State;
+  new ({isWatchMode}: {isWatchMode: boolean}): TestWatcher;
+  setState(state: State): void;
+  isInterrupted(): boolean;
+  isWatchMode(): boolean;
+}
