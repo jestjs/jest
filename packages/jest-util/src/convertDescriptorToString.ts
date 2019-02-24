@@ -8,7 +8,7 @@
 // See: https://github.com/facebook/jest/pull/5154
 export default function convertDescriptorToString(
   descriptor: string | Function,
-): string {
+): string | undefined {
   if (
     typeof descriptor === 'string' ||
     typeof descriptor === 'number' ||

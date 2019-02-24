@@ -30,16 +30,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
-import CallTracker from './CallTracker';
-
+import CallTracker, {Context} from './CallTracker';
 import SpyStrategy from './SpyStrategy';
 
-type Spy = {
+interface Spy extends Record<string, any> {
+  (...args: any[]): unknown;
   and: SpyStrategy;
-  calls: SpyStrategy;
-};
+  calls: CallTracker;
+}
 
-function createSpy(name: string, originalFn: unknown): Spy {
+function createSpy(name: string, originalFn: Function): Spy {
   const spyStrategy = new SpyStrategy({
     name,
     fn: originalFn,
@@ -48,14 +48,14 @@ function createSpy(name: string, originalFn: unknown): Spy {
     },
   });
   const callTracker = new CallTracker();
-  const spy = function(this: unknown) {
-    const callData = {
+  const spy = function(this: unknown, ...args: any[]) {
+    const callData: Context = {
       object: this,
       args: Array.prototype.slice.apply(arguments),
     };
 
     callTracker.track(callData);
-    const returnValue = spyStrategy.exec.apply(this, arguments);
+    const returnValue = spyStrategy.exec.apply(this, args);
     callData.returnValue = returnValue;
 
     return returnValue;

@@ -7,23 +7,8 @@
 
 import {Config, TestResult} from '@jest/types';
 import {formatResultsErrors} from 'jest-message-util';
-
-export type Suite = {
-  description: string;
-};
-
-export type SpecResult = {
-  __callsite?: {
-    getColumnNumber: () => number;
-    getLineNumber: () => number;
-  };
-  description: string;
-  duration?: TestResult.Milliseconds;
-  failedExpectations: Array<TestResult.FailedAssertion>;
-  fullName: string;
-  id: string;
-  status: TestResult.Status;
-};
+import Spec, {SpecResult} from './jasmine/Spec';
+import Suite from './jasmine/Suite';
 
 type Microseconds = number;
 
@@ -52,7 +37,7 @@ export default class Jasmine2Reporter {
     this._startTimes = new Map();
   }
 
-  specStarted(spec: {id: string}) {
+  specStarted(spec: Spec) {
     this._startTimes.set(spec.id, Date.now());
   }
 

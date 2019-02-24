@@ -29,6 +29,9 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
+import {SpecResult} from './Spec';
+import Suite from './Suite';
+import Timer from './Timer';
 
 const noopTimer = {
   start() {},
@@ -42,20 +45,20 @@ export default class JsApiReporter {
   finished: boolean;
   runDetails: unknown;
   jasmineStarted: () => void;
-  jasmineDone: (runDetails: unknown) => void;
+  jasmineDone: (runDetails: SpecResult) => void;
   status: () => unknown;
   executionTime: () => unknown;
 
-  suiteStarted: (result: unknown) => void;
-  suiteDone: (result: unknown) => void;
-  suiteResults: (index: number, length: number) => unknown[];
-  suites: () => unknown;
+  suiteStarted: (result: Suite) => void;
+  suiteDone: (result: Suite) => void;
+  suiteResults: (index: number, length: number) => Suite[];
+  suites: () => {[key: string]: Suite};
 
-  specResults: (index: number, length: number) => unknown[];
-  specDone: (result: unknown) => void;
-  specs: () => unknown;
+  specResults: (index: number, length: number) => SpecResult[];
+  specDone: (result: SpecResult) => void;
+  specs: () => SpecResult[];
 
-  constructor(options: {timer?: unknown}) {
+  constructor(options: {timer?: Timer}) {
     const timer = options.timer || noopTimer;
     let status = 'loaded';
 
@@ -69,9 +72,9 @@ export default class JsApiReporter {
       timer.start();
     };
 
-    let executionTime;
+    let executionTime: number;
 
-    function validateAfterAllExceptions({failedExpectations}) {
+    function validateAfterAllExceptions({failedExpectations}: SpecResult) {
       if (failedExpectations && failedExpectations.length > 0) {
         throw failedExpectations[0];
       }
@@ -89,14 +92,14 @@ export default class JsApiReporter {
       return status;
     };
 
-    const suites = [];
-    const suites_hash = {};
+    const suites: Suite[] = [];
+    const suites_hash: {[key: string]: Suite} = {};
 
-    this.suiteStarted = function(result) {
+    this.suiteStarted = function(result: Suite) {
       suites_hash[result.id] = result;
     };
 
-    this.suiteDone = function(result) {
+    this.suiteDone = function(result: Suite) {
       storeSuite(result);
     };
 
@@ -104,7 +107,7 @@ export default class JsApiReporter {
       return suites.slice(index, index + length);
     };
 
-    function storeSuite(result) {
+    function storeSuite(result: Suite) {
       suites.push(result);
       suites_hash[result.id] = result;
     }
@@ -113,7 +116,7 @@ export default class JsApiReporter {
       return suites_hash;
     };
 
-    const specs = [];
+    const specs: SpecResult[] = [];
 
     this.specDone = function(result) {
       specs.push(result);

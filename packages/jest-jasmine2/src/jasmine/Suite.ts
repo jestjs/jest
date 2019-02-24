@@ -31,36 +31,45 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {convertDescriptorToString} from 'jest-util';
+import {Config} from '@jest/types';
 import ExpectationFailed from '../ExpectationFailed';
-import expectationResultFactory from '../expectationResultFactory';
+import expectationResultFactory, {
+  Options as ExpectationResultFactoryOptions,
+} from '../expectationResultFactory';
+import {QueueableFn} from '../queueRunner';
+
+type SuiteResult = {
+  id: string;
+  description: string;
+  fullName: string;
+  failedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
+  testPath: Config.Path;
+  status?: string;
+};
 
 export default class Suite {
-  id: unknown;
-  parentSuite: unknown;
-  description: unknown;
-  throwOnExpectationFailure: unknown;
-  beforeFns: unknown;
-  afterFns: unknown;
-  beforeAllFns: unknown;
-  afterAllFns: unknown;
+  id: string;
+  parentSuite?: Suite;
+  description: string;
+  throwOnExpectationFailure: boolean;
+  beforeFns: QueueableFn[];
+  afterFns: QueueableFn[];
+  beforeAllFns: QueueableFn[];
+  afterAllFns: QueueableFn[];
   disabled: boolean;
-  children: unknown;
-  result: {
-    id: unknown;
-    description: unknown;
-    fullName: string;
-    failedExpectations: [];
-    testPath: unknown;
-  };
-  markedPending: boolean;
-  sharedContext: unknown;
+  children: Suite[];
+  result: SuiteResult;
+  sharedContext?: object;
+  markedPending: boolean = false;
+  markedTodo: boolean = false;
+  isFocused: boolean = false;
 
   constructor(attrs: {
-    id: unknown;
-    parentSuite: unknown;
-    description: unknown;
-    throwOnExpectationFailure: unknown;
-    getTestPath: () => unknown;
+    id: string;
+    parentSuite?: Suite;
+    description?: string;
+    throwOnExpectationFailure?: boolean;
+    getTestPath: () => Config.Path;
   }) {
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
@@ -86,7 +95,7 @@ export default class Suite {
   getFullName() {
     const fullName = [];
     for (
-      let parentSuite = this;
+      let parentSuite: Suite | undefined = this;
       parentSuite;
       parentSuite = parentSuite.parentSuite
     ) {
@@ -99,23 +108,23 @@ export default class Suite {
   disable() {
     this.disabled = true;
   }
-  pend(message) {
+  pend(_message?: string) {
     this.markedPending = true;
   }
-  beforeEach(fn) {
+  beforeEach(fn: QueueableFn) {
     this.beforeFns.unshift(fn);
   }
-  beforeAll(fn) {
+  beforeAll(fn: QueueableFn) {
     this.beforeAllFns.push(fn);
   }
-  afterEach(fn) {
+  afterEach(fn: QueueableFn) {
     this.afterFns.unshift(fn);
   }
-  afterAll(fn) {
+  afterAll(fn: QueueableFn) {
     this.afterAllFns.unshift(fn);
   }
 
-  addChild(child) {
+  addChild(child: Suite) {
     this.children.push(child);
   }
 
@@ -144,7 +153,7 @@ export default class Suite {
   }
 
   getResult() {
-    this.result.status = this.status();
+    this.result.status! = this.status();
     return this.result;
   }
 
@@ -160,8 +169,8 @@ export default class Suite {
     return this.sharedUserContext();
   }
 
-  onException() {
-    if (arguments[0] instanceof ExpectationFailed) {
+  onException(...args: Array<ExpectationFailed | unknown>) {
+    if (args[0] instanceof ExpectationFailed) {
       return;
     }
 
@@ -177,14 +186,14 @@ export default class Suite {
     } else {
       for (let i = 0; i < this.children.length; i++) {
         const child = this.children[i];
-        child.onException.apply(child, arguments);
+        child.onException.apply(child, args);
       }
     }
   }
 
-  addExpectationResult() {
-    if (isAfterAll(this.children) && isFailure(arguments)) {
-      const data = arguments[1];
+  addExpectationResult(...args: ExpectationResultFactoryOptions[]) {
+    if (isAfterAll(this.children) && isFailure(args)) {
+      const data = args[1];
       this.result.failedExpectations.push(expectationResultFactory(data));
       if (this.throwOnExpectationFailure) {
         throw new ExpectationFailed();
@@ -193,7 +202,7 @@ export default class Suite {
       for (let i = 0; i < this.children.length; i++) {
         const child = this.children[i];
         try {
-          child.addExpectationResult.apply(child, arguments);
+          child.addExpectationResult.apply(child, args);
         } catch (e) {
           // keep going
         }
@@ -202,10 +211,10 @@ export default class Suite {
   }
 }
 
-function isAfterAll(children) {
+function isAfterAll(children: Suite[]) {
   return children && children[0] && children[0].result.status;
 }
 
-function isFailure(args) {
+function isFailure(args: unknown[]) {
   return !args[0];
 }

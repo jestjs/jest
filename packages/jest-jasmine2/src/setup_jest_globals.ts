@@ -12,8 +12,7 @@ import {
   SnapshotState,
   addSerializer,
 } from 'jest-snapshot';
-import {SpecResult} from './reporter';
-import JasmineSpec, {Attributes} from './jasmine/Spec';
+import JasmineSpec, {Attributes, SpecResult} from './jasmine/Spec';
 
 export type SetupOptions = {
   config: Config.ProjectConfig;
@@ -36,6 +35,7 @@ const addSuppressedErrors = (result: SpecResult) => {
       // passing error for custom test reporters
       error,
       expected: '',
+      matcherName: '',
       message: error.message,
       passed: false,
       stack: error.stack,
@@ -62,7 +62,7 @@ const patchJasmine = () => {
     class Spec extends realSpec {
       constructor(attr: Attributes) {
         const resultCallback = attr.resultCallback;
-        attr.resultCallback = function(result: SpecResult) {
+        attr.resultCallback = function(result: Spec['result']) {
           addSuppressedErrors(result);
           addAssertionErrors(result);
           resultCallback.call(attr, result);

@@ -31,25 +31,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 export default class SpyStrategy {
   identity: () => string;
-  exec: () => unknown;
+  exec: (...args: any[]) => unknown;
   callThrough: () => unknown;
   returnValue: (value: unknown) => unknown;
   returnValues: () => unknown;
-  throwError: (something: unknown) => unknown;
-  callFake: (fn: unknown) => unknown;
-  stub: (fn: unknown) => unknown;
+  throwError: (something: string | Error) => unknown;
+  callFake: (fn: Function) => unknown;
+  stub: (fn: Function) => unknown;
 
-  constructor(options?: {
-    name: string;
-    fn: () => unknown;
-    getSpy: () => unknown;
-  }) {
-    options = options || {};
-
-    const identity = options.name || 'unknown';
-    const originalFn = options.fn || function() {};
-    const getSpy = options.getSpy || function() {};
-    let plan = function() {};
+  constructor({
+    name = 'unknown',
+    fn = function() {},
+    getSpy = function() {},
+  }: {name?: string; fn?: Function; getSpy?: () => unknown} = {}) {
+    const identity = name;
+    const originalFn = fn;
+    let plan: Function = function() {};
 
     this.identity = function() {
       return identity;
@@ -98,7 +95,7 @@ export default class SpyStrategy {
       return getSpy();
     };
 
-    this.stub = function(fn) {
+    this.stub = function(_fn) {
       plan = function() {};
       return getSpy();
     };

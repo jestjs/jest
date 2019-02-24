@@ -39,7 +39,7 @@ const formatErrorMsg = (domain: string, usage?: string) => {
   return (msg: string) => domain + ' : ' + msg + usageDefinition;
 };
 
-function isSpy(putativeSpy) {
+function isSpy(putativeSpy: any) {
   if (!putativeSpy) {
     return false;
   }
@@ -67,14 +67,11 @@ export default class SpyRegistry {
     accessType: keyof PropertyDescriptor,
   ) => unknown;
 
-  constructor(options?: {currentSpies: () => unknown[]}) {
-    options = options || {};
-    const currentSpies =
-      options.currentSpies ||
-      function() {
-        return [];
-      };
-
+  constructor({
+    currentSpies = () => [],
+  }: {
+    currentSpies?: () => Array<{restoreObjectToOriginalState: () => void}>;
+  } = {}) {
     this.allowRespy = function(allow) {
       this.respy = allow;
     };

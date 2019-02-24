@@ -31,29 +31,53 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
-import queueRunner from '../queueRunner';
+import {ErrorWithStack} from 'jest-util';
+import queueRunner, {
+  Options as QueueRunnerOptions,
+  QueueableFn,
+} from '../queueRunner';
 import treeProcessor from '../treeProcessor';
 import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
-import {ErrorWithStack} from 'jest-util';
+import {$J, Reporter} from '../types';
+import Spec, {SpecResult} from './Spec';
+import Suite from './Suite';
 
-export default function(j$) {
+export default function(j$: $J) {
   class Env {
-    specFilter: () => boolean;
-    catchExceptions: (value: unknown) => unknown;
+    specFilter: (spec: Spec) => boolean;
+    catchExceptions: (value: unknown) => boolean;
     throwOnExpectationFailure: (value: unknown) => void;
-    catchingExceptions: () => unknown;
-    topSuite: () => unknown;
-    fail: (error: unknown) => void;
-    pending: (message: unknown) => void;
-    afterAll: (afterAllFunction: unknown, timeout: unknown) => void;
-    fit: (description: unknown, fn: unknown, timeout: unknown) => unknown;
+    catchingExceptions: () => boolean;
+    topSuite: () => Suite;
+    fail: (error: Error | AssertionError) => void;
+    pending: (message: string) => void;
+    afterAll: (afterAllFunction: QueueableFn['fn'], timeout?: number) => void;
+    fit: (description: string, fn: QueueableFn['fn'], timeout?: number) => void;
+    throwingExpectationFailures: () => boolean;
+    randomizeTests: (value: unknown) => void;
+    randomTests: () => boolean;
+    seed: (value: unknown) => unknown;
+    execute: (runnablesToRun: string[], suiteTree?: Suite) => Promise<void>;
+    fdescribe: (description: string, specDefinitions: Function) => Suite;
+    spyOn: () => any;
+    beforeEach: (
+      beforeEachFunction: QueueableFn['fn'],
+      timeout?: number,
+    ) => void;
+    afterEach: (afterEachFunction: QueueableFn['fn'], timeout?: number) => void;
+    clearReporters: () => void;
+    addReporter: (reporterToAdd: Reporter) => void;
+    it: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
+    xdescribe: (description: string, specDefinitions: Function) => Suite;
+    xit: () => any;
+    beforeAll: (beforeAllFunction: Function, timeout?: number) => void;
+    todo: () => Spec;
+    provideFallbackReporter: (reporterToAdd: Reporter) => void;
+    allowRespy: (allow: boolean) => void;
+    describe: (description: string, specDefinitions: Function) => Suite;
 
-    constructor(options?: {}) {
-      options = options || {};
-
-      const self = this;
-
+    constructor(_options?: object) {
       let totalSpecsDefined = 0;
 
       let catchExceptions = true;
@@ -61,13 +85,19 @@ export default function(j$) {
       const realSetTimeout = global.setTimeout;
       const realClearTimeout = global.clearTimeout;
 
-      const runnableResources = {};
-      let currentSpec = null;
-      const currentlyExecutingSuites = [];
-      let currentDeclarationSuite = null;
+      const runnableResources: {[key: string]: {spies: []}} = {};
+      const currentlyExecutingSuites: Suite[] = [];
+      let currentSpec: Spec | null = null;
       let throwOnExpectationFailure = false;
       let random = false;
-      let seed = null;
+      let seed: unknown | null = null;
+      const topSuite = new j$.Suite({
+        id: getNextSuiteId(),
+        getTestPath() {
+          return j$.testPath;
+        },
+      });
+      let currentDeclarationSuite = topSuite;
 
       const currentSuite = function() {
         return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
@@ -96,31 +126,34 @@ export default function(j$) {
       };
 
       let nextSuiteId = 0;
-      const getNextSuiteId = function() {
+      function getNextSuiteId() {
         return 'suite' + nextSuiteId++;
-      };
+      }
 
-      const defaultResourcesForRunnable = function(id, parentRunnableId) {
+      const defaultResourcesForRunnable = function(
+        id: string,
+        _parentRunnableId?: string,
+      ) {
         const resources = {spies: []};
 
         runnableResources[id] = resources;
       };
 
-      const clearResourcesForRunnable = function(id) {
+      const clearResourcesForRunnable = function(id: string) {
         spyRegistry.clearSpies();
         delete runnableResources[id];
       };
 
-      const beforeAndAfterFns = function(suite) {
+      const beforeAndAfterFns = function(suite: Suite) {
         return function() {
-          let afters = [];
-          let befores = [];
+          let afters: QueueableFn[] = [];
+          let befores: QueueableFn[] = [];
 
           while (suite) {
             befores = befores.concat(suite.beforeFns);
             afters = afters.concat(suite.afterFns);
 
-            suite = suite.parentSuite;
+            suite = suite.parentSuite!;
           }
 
           return {
@@ -130,7 +163,7 @@ export default function(j$) {
         };
       };
 
-      const getSpecName = function(spec, suite) {
+      const getSpecName = function(spec: Spec, suite: Suite) {
         const fullName = [spec.description];
         const suiteFullName = suite.getFullName();
 
@@ -173,27 +206,18 @@ export default function(j$) {
         return seed;
       };
 
-      function queueRunnerFactory(options) {
+      const queueRunnerFactory = (options: QueueRunnerOptions) => {
         options.clearTimeout = realClearTimeout;
-        options.fail = self.fail;
+        options.fail = this.fail;
         options.setTimeout = realSetTimeout;
         return queueRunner(options);
-      }
-
-      const topSuite = new j$.Suite({
-        id: getNextSuiteId(),
-        getTestPath() {
-          return j$.testPath;
-        },
-      });
-
-      currentDeclarationSuite = topSuite;
+      };
 
       this.topSuite = function() {
         return topSuite;
       };
 
-      const uncaught = err => {
+      const uncaught = (err: Error) => {
         if (currentSpec) {
           currentSpec.onException(err);
           currentSpec.cancel();
@@ -203,8 +227,8 @@ export default function(j$) {
         }
       };
 
-      let oldListenersException;
-      let oldListenersRejection;
+      let oldListenersException: NodeJS.UncaughtExceptionListener[];
+      let oldListenersRejection: NodeJS.UnhandledRejectionListener[];
       const executionSetup = function() {
         // Need to ensure we are the only ones handling these exceptions.
         oldListenersException = process.listeners('uncaughtException').slice();
@@ -315,7 +339,7 @@ export default function(j$) {
         return spyRegistry.spyOn.apply(spyRegistry, arguments);
       };
 
-      const suiteFactory = function(description) {
+      const suiteFactory = function(description: string) {
         const suite = new j$.Suite({
           id: getNextSuiteId(),
           description,
@@ -329,7 +353,7 @@ export default function(j$) {
         return suite;
       };
 
-      this.describe = function(description, specDefinitions) {
+      this.describe = function(description: string, specDefinitions) {
         const suite = suiteFactory(description);
         if (specDefinitions === undefined) {
           throw new Error(
@@ -361,7 +385,7 @@ export default function(j$) {
         return suite;
       };
 
-      const focusedRunnables = [];
+      const focusedRunnables: string[] = [];
 
       this.fdescribe = function(description, specDefinitions) {
         const suite = suiteFactory(description);
@@ -374,12 +398,12 @@ export default function(j$) {
         return suite;
       };
 
-      function addSpecsToSuite(suite, specDefinitions) {
+      const addSpecsToSuite = (suite: Suite, specDefinitions: Function) => {
         const parentSuite = currentDeclarationSuite;
         parentSuite.addChild(suite);
         currentDeclarationSuite = suite;
 
-        let declarationError = null;
+        let declarationError: null | Error = null;
         try {
           specDefinitions.call(suite);
         } catch (e) {
@@ -387,20 +411,20 @@ export default function(j$) {
         }
 
         if (declarationError) {
-          self.it('encountered a declaration exception', () => {
+          this.it('encountered a declaration exception', () => {
             throw declarationError;
           });
         }
 
         currentDeclarationSuite = parentSuite;
-      }
+      };
 
-      function findFocusedAncestor(suite) {
+      function findFocusedAncestor(suite: Suite) {
         while (suite) {
           if (suite.isFocused) {
             return suite.id;
           }
-          suite = suite.parentSuite;
+          suite = suite.parentSuite!;
         }
 
         return null;
@@ -418,13 +442,18 @@ export default function(j$) {
         }
       }
 
-      const specFactory = function(description, fn, suite, timeout) {
+      const specFactory = (
+        description: string,
+        fn: Function,
+        suite: Suite,
+        timeout?: number,
+      ) => {
         totalSpecsDefined++;
         const spec = new j$.Spec({
           id: getNextSpecId(),
           beforeAndAfterFns: beforeAndAfterFns(suite),
           resultCallback: specResultCallback,
-          getSpecName(spec) {
+          getSpecName(spec: Spec) {
             return getSpecName(spec, suite);
           },
           getTestPath() {
@@ -445,19 +474,19 @@ export default function(j$) {
           throwOnExpectationFailure,
         });
 
-        if (!self.specFilter(spec)) {
+        if (!this.specFilter(spec)) {
           spec.disable();
         }
 
         return spec;
 
-        function specResultCallback(result) {
+        function specResultCallback(result: SpecResult) {
           clearResourcesForRunnable(spec.id);
           currentSpec = null;
           reporter.specDone(result);
         }
 
-        function specStarted(spec) {
+        function specStarted(spec: Spec) {
           currentSpec = spec;
           defaultResourcesForRunnable(spec.id, suite.id);
           reporter.specStarted(spec.result);
@@ -495,18 +524,18 @@ export default function(j$) {
         if (currentSpec !== null) {
           throw new Error(
             'Tests cannot be nested. Test `' +
-            spec.description +
-            '` cannot run because it is nested within `' +
-            currentSpec.description +
-            '`.',
+              spec.description +
+              '` cannot run because it is nested within `' +
+              currentSpec.description +
+              '`.',
           );
         }
         currentDeclarationSuite.addChild(spec);
         return spec;
       };
 
-      this.xit = function() {
-        const spec = this.it.apply(this, arguments);
+      this.xit = function(...args: any[]) {
+        const spec = this.it.apply(this, args);
         spec.pend('Temporarily disabled with xit');
         return spec;
       };
@@ -520,7 +549,11 @@ export default function(j$) {
           );
         }
 
-        const spec = specFactory(description, () => {}, currentDeclarationSuite);
+        const spec = specFactory(
+          description,
+          () => {},
+          currentDeclarationSuite,
+        );
         spec.todo();
         currentDeclarationSuite.addChild(spec);
         return spec;
@@ -603,7 +636,7 @@ export default function(j$) {
           expected: '',
           actual: '',
           message,
-          error: checkIsError ? error : new Error(message),
+          error: checkIsError ? error : new Error(message!),
         });
       };
     }

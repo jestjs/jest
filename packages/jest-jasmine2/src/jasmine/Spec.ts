@@ -31,56 +31,67 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
+import {Config, TestResult} from '@jest/types';
 
 import ExpectationFailed from '../ExpectationFailed';
-import expectationResultFactory from '../expectationResultFactory';
+import expectationResultFactory, {
+  Options as ExpectationResultFactoryOptions,
+} from '../expectationResultFactory';
 import assertionErrorMessage from '../assertionErrorMessage';
-import {SpecResult} from '../reporter';
+import queueRunner, {QueueableFn} from '../queueRunner';
 
 export type Attributes = {
-  id: unknown;
-  resultCallback: (result: SpecResult) => void;
+  id: string;
+  resultCallback: (result: Spec['result']) => void;
   description: string;
   throwOnExpectationFailure: unknown;
-  getTestPath: () => unknown;
-  queueableFn: unknown;
-  beforeAndAfterFns: unknown;
-  userContext: unknown;
+  getTestPath: () => Config.Path;
+  queueableFn: QueueableFn;
+  beforeAndAfterFns: () => {befores: QueueableFn[]; afters: QueueableFn[]};
+  userContext: () => unknown;
   onStart: (context: Spec) => void;
-  getSpecName: () => string;
-  queueRunnerFactory: () => unknown;
+  getSpecName: (spec: Spec) => string;
+  queueRunnerFactory: typeof queueRunner;
+};
+
+export type SpecResult = {
+  id: string;
+  description: string;
+  fullName: string;
+  duration?: TestResult.Milliseconds;
+  failedExpectations: Array<TestResult.FailedAssertion>;
+  testPath: Config.Path;
+  passedExpectations: ReturnType<typeof expectationResultFactory>[];
+  pendingReason: string;
+  status: TestResult.Status;
+  __callsite?: {
+    getColumnNumber: () => number;
+    getLineNumber: () => number;
+  };
 };
 
 export default class Spec {
-  id: unknown;
+  id: string;
   description: string;
-  resultCallback: () => unknown;
-  queueableFn: unknown;
-  beforeAndAfterFns: () => {befores: unknown[]; afters: unknown[]};
+  resultCallback: (result: SpecResult) => void;
+  queueableFn: QueueableFn;
+  beforeAndAfterFns: () => {befores: QueueableFn[]; afters: QueueableFn[]};
   userContext: () => unknown;
-  onStart: () => unknown;
+  onStart: (spec: Spec) => void;
   getSpecName: (spec: Spec) => string;
-  queueRunnerFactory: () => unknown;
+  queueRunnerFactory: typeof queueRunner;
   throwOnExpectationFailure: boolean;
   initError: Error;
-  result: {
-    id: unknown;
-    description: unknown;
-    fullName: string;
-    failedExpectations: [];
-    testPath: unknown;
-    passedExpectations: unknown[];
-    pendingReason: string;
-  };
-  disabled: boolean;
-  currentRun: unknown;
-  markedTodo: boolean;
-  markedPending: boolean;
-  expand: boolean;
+  result: SpecResult;
+  disabled?: boolean;
+  currentRun?: ReturnType<typeof queueRunner>;
+  markedTodo?: boolean;
+  markedPending?: boolean;
+  expand?: boolean;
 
   static pendingSpecExceptionMessage = '=> marked Pending';
 
-  static isPendingSpecException(e: unknown) {
+  static isPendingSpecException(e: Error) {
     return !!(
       e &&
       e.toString &&
@@ -134,7 +145,11 @@ export default class Spec {
     };
   }
 
-  addExpectationResult(passed, data, isError) {
+  addExpectationResult(
+    passed: boolean,
+    data: ExpectationResultFactoryOptions,
+    isError?: boolean,
+  ) {
     const expectationResult = expectationResultFactory(data, this.initError);
     if (passed) {
       this.result.passedExpectations.push(expectationResult);
@@ -147,7 +162,7 @@ export default class Spec {
     }
   }
 
-  execute(onComplete, enabled) {
+  execute(onComplete: Function, enabled: boolean) {
     const self = this;
 
     this.onStart(this);
@@ -171,11 +186,14 @@ export default class Spec {
         self.onException.apply(self, arguments);
       },
       userContext: this.userContext(),
+      setTimeout,
+      clearTimeout,
+      fail: () => {},
     });
 
     this.currentRun.then(() => complete(true));
 
-    function complete(enabledAgain) {
+    function complete(enabledAgain: boolean) {
       self.result.status = self.status(enabledAgain);
       self.resultCallback(self.result);
 
@@ -185,13 +203,13 @@ export default class Spec {
     }
   }
 
-  cancelcancel() {
+  cancel() {
     if (this.currentRun) {
       this.currentRun.cancel();
     }
   }
 
-  onExceptiononException(error) {
+  onException(error: ExpectationFailed | AssertionError) {
     if (Spec.isPendingSpecException(error)) {
       this.pend(extractCustomPendingMessage(error));
       return;
@@ -222,7 +240,7 @@ export default class Spec {
     this.disabled = true;
   }
 
-  pend(message) {
+  pend(message: string) {
     this.markedPending = true;
     if (message) {
       this.result.pendingReason = message;
@@ -238,7 +256,7 @@ export default class Spec {
     return this.result;
   }
 
-  status(enabled: boolean) {
+  status(enabled?: boolean) {
     if (this.disabled || enabled === false) {
       return 'disabled';
     }
@@ -267,7 +285,7 @@ export default class Spec {
   }
 }
 
-const extractCustomPendingMessage = function(e) {
+const extractCustomPendingMessage = function(e: Error) {
   const fullMessage = e.toString();
   const boilerplateStart = fullMessage.indexOf(
     Spec.pendingSpecExceptionMessage,

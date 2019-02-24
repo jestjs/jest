@@ -4,6 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import Suite from './jasmine/Suite';
 
 type Options = {
   nodeComplete: (suite: TreeNode) => void;
@@ -13,16 +14,7 @@ type Options = {
   tree: TreeNode;
 };
 
-type TreeNode = {
-  afterAllFns: Array<any>;
-  beforeAllFns: Array<any>;
-  disabled?: boolean;
-  execute: (onComplete: () => void, enabled: boolean) => void;
-  id: string;
-  onException: (error: Error) => void;
-  sharedUserContext: () => any;
-  children?: Array<TreeNode>;
-};
+type TreeNode = Suite;
 
 export default function treeProcessor(options: Options) {
   const {

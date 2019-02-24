@@ -28,13 +28,14 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+import {Reporter} from '../types';
 
 export default class ReportDispatcher {
-  addReporter: (reporter: unknown) => void;
+  addReporter: (reporter: Reporter) => void;
   provideFallbackReporter: (reporter: unknown) => void;
   clearReporters: () => void;
 
-  constructor(methods: Array<string>) {
+  constructor(methods: Array<keyof Reporter>) {
     const dispatchedMethods = methods || [];
 
     for (let i = 0; i < dispatchedMethods.length; i++) {
@@ -46,7 +47,7 @@ export default class ReportDispatcher {
       })(method);
     }
 
-    let reporters = [];
+    let reporters: Reporter[] = [];
     let fallbackReporter = null;
 
     this.addReporter = function(reporter) {

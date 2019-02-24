@@ -29,9 +29,10 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-type Context = {
-  object: this;
+export type Context = {
+  object: unknown;
   args: unknown[];
+  returnValue?: unknown;
 };
 
 class CallTracker {

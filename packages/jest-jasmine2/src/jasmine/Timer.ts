@@ -39,7 +39,7 @@ export default class Timer {
   start: () => void;
   elapsed: () => number;
 
-  constructor(options: {now?: () => number}) {
+  constructor(options?: {now?: () => number}) {
     options = options || {};
 
     const now = options.now || defaultNow;

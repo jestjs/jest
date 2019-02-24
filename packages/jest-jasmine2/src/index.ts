@@ -8,6 +8,7 @@
 import path from 'path';
 import {Environment, Config, TestResult} from '@jest/types';
 import {SnapshotState} from 'jest-snapshot';
+// @ts-ignore TODO Remove ignore when jest-runtime is migrated to TS
 import Runtime from 'jest-runtime';
 
 import {getCallsite} from 'jest-util';
@@ -15,8 +16,9 @@ import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
 import JasmineReporter from './reporter';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
+import Spec from './jasmine/Spec';
 
-const JASMINE = require.resolve('./jasmine/jasmineLight.js');
+const JASMINE = require.resolve('./jasmine/jasmineLight.ts');
 
 async function jasmine2(
   globalConfig: Config.GlobalConfig,
@@ -146,7 +148,7 @@ async function jasmine2(
   config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
 
   if (globalConfig.enabledTestsMap) {
-    env.specFilter = spec => {
+    env.specFilter = (spec: Spec) => {
       const suiteMap =
         globalConfig.enabledTestsMap &&
         globalConfig.enabledTestsMap[spec.result.testPath];
@@ -154,7 +156,7 @@ async function jasmine2(
     };
   } else if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
-    env.specFilter = spec => testNameRegex.test(spec.getFullName());
+    env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }
 
   runtime.requireModule(testPath);
@@ -198,4 +200,4 @@ const addSnapshotData = (
   return results;
 };
 
-module.exports = jasmine2;
+export = jasmine2;

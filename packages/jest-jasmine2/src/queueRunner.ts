@@ -8,17 +8,22 @@
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
-type Options = {
-  clearTimeout: (timeoutID: number) => void;
-  fail: () => void;
+type Global = NodeJS.Global;
+
+export type Options = {
+  clearTimeout: (timeoutID: number) => void | Global['clearTimeout'];
+  fail: (error: Error) => void;
   onException: (error: Error) => void;
   queueableFns: Array<QueueableFn>;
-  setTimeout: (func: () => void, delay: number) => number;
+  setTimeout: (
+    func: () => void,
+    delay: number,
+  ) => number | Global['setTimeout'];
   userContext: any;
 };
 
-type QueueableFn = {
-  fn: (next: () => void) => void;
+export type QueueableFn = {
+  fn: (next: (...args: any[]) => void) => void;
   timeout?: () => number;
   initError?: Error;
 };
@@ -30,7 +35,7 @@ export default function queueRunner(options: Options) {
 
   const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
     let promise = new Promise(resolve => {
-      const next = function(...args: unknown[]) {
+      const next = function(...args: any[]) {
         const err = args[0];
         if (err) {
           options.fail.apply(null, args);
@@ -38,7 +43,7 @@ export default function queueRunner(options: Options) {
         resolve();
       };
 
-      next.fail = function(...args: unknown[]) {
+      next.fail = function(...args: any[]) {
         options.fail.apply(null, args);
         resolve();
       };

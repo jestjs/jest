@@ -14,19 +14,19 @@ class CancelError extends Error {
   }
 }
 
-class PCancelable extends Promise {
+// @ts-ignore
+class PCancelable<T> extends Promise {
   private _pending: boolean;
   private _canceled: boolean;
-  private _cancel?: () => unknown;
-  private _reject: (reason?: any) => unknown;
-  private _promise: Promise<unknown>;
+  private _cancel?: Function;
+  private _reject: (reason?: any) => void;
+  private _promise: Promise<T>;
 
   static CancelError: CancelError;
 
-  static fn(fn) {
-    return function() {
-      const args = [].slice.apply(arguments);
-      return new PCancelable((onCancel, resolve, reject) => {
+  static fn<F extends (...args: any[]) => any>(fn: F) {
+    return function(...args: Parameters<F>) {
+      return new PCancelable<ReturnType<F>>((onCancel, resolve, reject) => {
         args.unshift(onCancel);
         fn.apply(null, args).then(resolve, reject);
       });
@@ -38,18 +38,18 @@ class PCancelable extends Promise {
     this._pending = true;
     this._canceled = false;
 
-    this._promise = new Promise((resolve, reject) => {
+    this._promise = new Promise<T>((resolve, reject) => {
       this._reject = reject;
 
       return executor(
-        fn => {
+        (fn: Function) => {
           this._cancel = fn;
         },
-        val => {
+        (val: unknown) => {
           this._pending = false;
           resolve(val);
         },
-        err => {
+        (err?: any) => {
           this._pending = false;
           reject(err);
         },
@@ -57,11 +57,11 @@ class PCancelable extends Promise {
     });
   }
 
-  then(...args: unknown[]) {
+  then(...args: Parameters<Promise<T>['then']>) {
     return this._promise.then.apply(this._promise, args);
   }
 
-  catch(...args: unknown[]) {
+  catch(...args: Parameters<Promise<T>['catch']>) {
     return this._promise.catch.apply(this._promise, args);
   }
 
