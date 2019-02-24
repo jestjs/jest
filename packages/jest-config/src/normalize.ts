@@ -48,7 +48,10 @@ const createConfigError = (message: string) =>
 const mergeOptionWithPreset = (
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
-  optionName: 'moduleNameMapper' | 'transform',
+  optionName: keyof Pick<
+    Config.InitialOptions,
+    'moduleNameMapper' | 'transform'
+  >,
 ) => {
   if (options[optionName] && preset[optionName]) {
     options[optionName] = {
