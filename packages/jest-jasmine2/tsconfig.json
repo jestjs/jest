@@ -8,7 +8,7 @@
     {"path":  "../jest-types"},
     {"path":  "../expect"},
     {"path":  "../jest-matcher-utils"},
-    {"path":  "../jest-matcher-util"},
+    {"path":  "../jest-message-util"},
     {"path":  "../jest-snapshot"},
     {"path":  "../jest-util"},
     {"path":  "../pretty-format"},
