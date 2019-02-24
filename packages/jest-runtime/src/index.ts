@@ -833,21 +833,24 @@ class Runtime {
     from: InitialModule,
     options?: InternalModuleOptions,
   ): LocalModuleRequire {
-    // TODO: Should not be `any`, this isn't type safe. Should be `LocalModuleRequire`
-    const moduleRequire: any =
-      options && options.isInternalModule
-        ? (moduleName: string) =>
-            this.requireInternalModule(from.filename, moduleName)
-        : this.requireModuleOrMock.bind(this, from.filename);
+    // TODO: somehow avoid having to type the arguments - they should come from `NodeRequire/LocalModuleRequire.resolve`
+    const resolve = (moduleName: string, options: ResolveOptions) =>
+      this._requireResolve(from.filename, moduleName, options);
+    resolve.paths = (moduleName: string) =>
+      this._requireResolvePaths(from.filename, moduleName);
+
+    const moduleRequire = (options && options.isInternalModule
+      ? (moduleName: string) =>
+          this.requireInternalModule(from.filename, moduleName)
+      : this.requireModuleOrMock.bind(
+          this,
+          from.filename,
+        )) as LocalModuleRequire;
     moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
     moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
-    // TODO: somehow avoid having to type the arguments - they should come from `NodeRequire.resolve`
-    moduleRequire.resolve = (moduleName: string, options: ResolveOptions) =>
-      this._requireResolve(from.filename, moduleName, options);
-    moduleRequire.resolve.paths = (moduleName: string) =>
-      this._requireResolvePaths(from.filename, moduleName);
+    moduleRequire.resolve = resolve;
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
