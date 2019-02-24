@@ -8,19 +8,9 @@
 import * as Config from './Config';
 import * as Console from './Console';
 import * as Matchers from './Matchers';
-import * as PrettyFormat from './PrettyFormat';
 import * as SourceMaps from './SourceMaps';
 import * as TestResult from './TestResult';
 import * as Global from './Global';
 import * as Environment from './Environment';
 
-export {
-  Config,
-  Console,
-  Matchers,
-  PrettyFormat,
-  SourceMaps,
-  TestResult,
-  Global,
-  Environment,
-};
+export {Config, Console, Matchers, SourceMaps, TestResult, Global, Environment};
