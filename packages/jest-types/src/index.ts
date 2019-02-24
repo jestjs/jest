@@ -8,7 +8,6 @@
 import * as Config from './Config';
 import * as Console from './Console';
 import * as Matchers from './Matchers';
-import * as Mocks from './Mocks';
 import * as PrettyFormat from './PrettyFormat';
 import * as Snapshot from './Snapshot';
 import * as SourceMaps from './SourceMaps';
@@ -20,7 +19,6 @@ export {
   Config,
   Console,
   Matchers,
-  Mocks,
   PrettyFormat,
   Snapshot,
   SourceMaps,
