@@ -109,6 +109,7 @@ export type InitialOptions = {
   detectLeaks?: boolean,
   detectOpenHandles?: boolean,
   displayName?: string,
+  displayNameColor?: DisplayNameColor,
   expand?: boolean,
   extraGlobals?: Array<string>,
   filter?: Path,
@@ -189,6 +190,7 @@ export type InitialOptions = {
 };
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
+export type DisplayNameColor = 'white' | 'blue';
 
 export type GlobalConfig = {|
   bail: number,
@@ -259,6 +261,7 @@ export type ProjectConfig = {|
   detectLeaks: boolean,
   detectOpenHandles: boolean,
   displayName: ?string,
+  displayNameColor: ?DisplayNameColor,
   errorOnDeprecated: boolean,
   extraGlobals: Array<string>,
   filter: ?Path,

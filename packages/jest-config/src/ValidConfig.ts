@@ -42,6 +42,7 @@ const initialOptions: Config.InitialOptions = {
   cwd: '/root',
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: 'project-name',
+  displayNameColor: 'blue',
   errorOnDeprecated: false,
   expand: false,
   extraGlobals: [],

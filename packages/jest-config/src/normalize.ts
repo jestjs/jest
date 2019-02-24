@@ -757,6 +757,7 @@ export default function normalize(
       case 'detectLeaks':
       case 'detectOpenHandles':
       case 'displayName':
+      case 'displayNameColor':
       case 'errorOnDeprecated':
       case 'expand':
       case 'extraGlobals':

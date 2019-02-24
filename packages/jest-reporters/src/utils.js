@@ -24,12 +24,13 @@ type SummaryOptions = {|
 const PROGRESS_BAR_WIDTH = 40;
 
 export const printDisplayName = (config: ProjectConfig) => {
-  const {displayName} = config;
+  const {displayName, displayNameColor} = config;
+  const color = displayNameColor
+    ? chalk.reset.inverse[displayNameColor]
+    : chalk.reset.inverse.white;
 
   if (displayName) {
-    return chalk.supportsColor
-      ? chalk.reset.inverse.white(` ${displayName} `)
-      : displayName;
+    return chalk.supportsColor ? color(` ${displayName} `) : displayName;
   }
 
   return '';
