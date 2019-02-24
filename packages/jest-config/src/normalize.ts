@@ -48,7 +48,7 @@ const createConfigError = (message: string) =>
 const mergeOptionWithPreset = (
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
-  optionName: keyof Config.InitialOptions,
+  optionName: 'moduleNameMapper' | 'transform',
 ) => {
   if (options[optionName] && preset[optionName]) {
     options[optionName] = {
@@ -166,12 +166,16 @@ const setupBabelJest = (options: Config.InitialOptions) => {
 };
 
 const normalizeCollectCoverageOnlyFrom = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptions &
+    Required<Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>>,
   key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
 ) => {
-  const collectCoverageOnlyFrom: Config.Glob[] = Array.isArray(options[key])
-    ? options[key] // passed from argv
-    : Object.keys(options[key]); // passed from options
+  const initialCollectCoverageFrom = options[key];
+  const collectCoverageOnlyFrom: Config.Glob[] = Array.isArray(
+    initialCollectCoverageFrom,
+  )
+    ? initialCollectCoverageFrom // passed from argv
+    : Object.keys(initialCollectCoverageFrom); // passed from options
   return collectCoverageOnlyFrom.reduce((map, filePath) => {
     filePath = path.resolve(
       options.rootDir,
@@ -183,24 +187,26 @@ const normalizeCollectCoverageOnlyFrom = (
 };
 
 const normalizeCollectCoverageFrom = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptions &
+    Required<Pick<Config.InitialOptions, 'collectCoverageFrom'>>,
   key: keyof Pick<Config.InitialOptions, 'collectCoverageFrom'>,
 ) => {
+  const initialCollectCoverageFrom = options[key];
   let value: Config.Glob[] | undefined;
-  if (!options[key]) {
+  if (!initialCollectCoverageFrom) {
     value = [];
   }
 
-  if (!Array.isArray(options[key])) {
+  if (!Array.isArray(initialCollectCoverageFrom)) {
     try {
-      value = JSON.parse(options[key]);
+      value = JSON.parse(initialCollectCoverageFrom);
     } catch (e) {}
 
     if (options[key] && !Array.isArray(value)) {
-      value = [options[key]];
+      value = [initialCollectCoverageFrom];
     }
   } else {
-    value = options[key];
+    value = initialCollectCoverageFrom;
   }
 
   if (value) {
@@ -274,7 +280,7 @@ const normalizePreprocessor = (
 
 const normalizeMissingOptions = (
   options: Config.InitialOptions,
-  configPath: Config.Path | null,
+  configPath: Config.Path | null | undefined,
   projectIndex: number,
 ): Config.InitialOptions => {
   if (!options.name) {
@@ -473,7 +479,7 @@ export default function normalize(
   }
 
   setupBabelJest(options);
-  const newOptions: Partial<AllOptions> = {
+  const newOptions: AllOptions = {
     ...DEFAULT_CONFIG,
   };
 
@@ -492,22 +498,28 @@ export default function normalize(
     });
   }
 
-  Object.keys(options).reduce(
+  (Object.keys(options) as Array<keyof Config.InitialOptions>).reduce(
     (newOptions, key: keyof Config.InitialOptions) => {
       // The resolver has been resolved separately; skip it
       if (key === 'resolver') {
         return newOptions;
       }
+
+      // This is cheating, because it claims that all keys of InitialOptions are Required.
+      // We only really know it's Required for oldOptions[key], not for oldOptions.someOtherKey,
+      // so oldOptions[key] is the only way it should be used.
+      const oldOptions = options as Config.InitialOptions &
+        Required<Pick<Config.InitialOptions, typeof key>>;
       let value;
       switch (key) {
         case 'collectCoverageOnlyFrom':
-          value = normalizeCollectCoverageOnlyFrom(options, key);
+          value = normalizeCollectCoverageOnlyFrom(oldOptions, key);
           break;
         case 'setupFiles':
         case 'setupFilesAfterEnv':
         case 'snapshotSerializers':
           {
-            const option = options[key];
+            const option = oldOptions[key];
             value =
               option &&
               option.map(filePath =>
@@ -522,7 +534,7 @@ export default function normalize(
         case 'modulePaths':
         case 'roots':
           {
-            const option = options[key];
+            const option = oldOptions[key];
             value =
               option &&
               option.map(filePath =>
@@ -534,12 +546,12 @@ export default function normalize(
           }
           break;
         case 'collectCoverageFrom':
-          value = normalizeCollectCoverageFrom(options, key);
+          value = normalizeCollectCoverageFrom(oldOptions, key);
           break;
         case 'cacheDirectory':
         case 'coverageDirectory':
           {
-            const option = options[key];
+            const option = oldOptions[key];
             value =
               option &&
               path.resolve(
@@ -557,7 +569,7 @@ export default function normalize(
         case 'testRunner':
         case 'filter':
           {
-            const option = options[key];
+            const option = oldOptions[key];
             value =
               option &&
               resolve(newOptions.resolver, {
@@ -569,7 +581,7 @@ export default function normalize(
           break;
         case 'runner':
           {
-            const option = options[key];
+            const option = oldOptions[key];
             value =
               option &&
               getRunner(newOptions.resolver, {
@@ -584,7 +596,7 @@ export default function normalize(
             // from config or CLI, and the requested path isn't found. Otherwise we
             // set it to null and throw an error lazily when it is used.
 
-            const option = options[key];
+            const option = oldOptions[key];
 
             value =
               option &&
@@ -597,7 +609,7 @@ export default function normalize(
           }
           break;
         case 'moduleNameMapper':
-          const moduleNameMapper = options[key];
+          const moduleNameMapper = oldOptions[key];
           value =
             moduleNameMapper &&
             Object.keys(moduleNameMapper).map(regex => {
@@ -608,7 +620,7 @@ export default function normalize(
             });
           break;
         case 'transform':
-          const transform = options[key];
+          const transform = oldOptions[key];
           value =
             transform &&
             Object.keys(transform).map(regex => [
@@ -626,10 +638,10 @@ export default function normalize(
         case 'transformIgnorePatterns':
         case 'watchPathIgnorePatterns':
         case 'unmockedModulePathPatterns':
-          value = normalizeUnmockedModulePathPatterns(options, key);
+          value = normalizeUnmockedModulePathPatterns(oldOptions, key);
           break;
         case 'haste':
-          value = {...options[key]};
+          value = {...oldOptions[key]};
           if (value.hasteImplModulePath != null) {
             value.hasteImplModulePath = resolve(newOptions.resolver, {
               filePath: replaceRootDirInPath(
@@ -642,7 +654,7 @@ export default function normalize(
           }
           break;
         case 'projects':
-          value = (options[key] || [])
+          value = (oldOptions[key] || [])
             .map(project =>
               typeof project === 'string'
                 ? _replaceRootDirTags(options.rootDir, project)
@@ -664,7 +676,7 @@ export default function normalize(
           {
             const replacedRootDirTags = _replaceRootDirTags(
               escapeGlobCharacters(options.rootDir),
-              options[key],
+              oldOptions[key],
             );
 
             if (replacedRootDirTags) {
@@ -678,7 +690,7 @@ export default function normalize(
           break;
         case 'testRegex':
           {
-            const option = options[key];
+            const option = oldOptions[key];
             value = option
               ? (Array.isArray(option) ? option : [option]).map(
                   replacePathSepForRegex,
@@ -687,7 +699,7 @@ export default function normalize(
           }
           break;
         case 'moduleFileExtensions': {
-          value = options[key];
+          value = oldOptions[key];
 
           if (
             Array.isArray(value) && // If it's the wrong type, it can throw at a later time
@@ -717,7 +729,7 @@ export default function normalize(
           break;
         }
         case 'bail': {
-          const bail = options[key];
+          const bail = oldOptions[key];
           if (typeof bail === 'boolean') {
             value = bail ? 1 : 0;
           } else if (typeof bail === 'string') {
@@ -727,7 +739,7 @@ export default function normalize(
             // to be processed as an extra parameter
             argv._.push(bail);
           } else {
-            value = options[key];
+            value = oldOptions[key];
           }
           break;
         }
@@ -784,10 +796,10 @@ export default function normalize(
         case 'watch':
         case 'watchAll':
         case 'watchman':
-          value = options[key];
+          value = oldOptions[key];
           break;
         case 'watchPlugins':
-          value = (options[key] || []).map(watchPlugin => {
+          value = (oldOptions[key] || []).map(watchPlugin => {
             if (typeof watchPlugin === 'string') {
               return {
                 config: {},
