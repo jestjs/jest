@@ -53,14 +53,18 @@ const getErrorMsg = formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
 
 export default class SpyRegistry {
   allowRespy: (allow: unknown) => void;
-  spyOn: (obj: unknown, methodName: string, accessType?: string) => unknown;
+  spyOn: (
+    obj: {[key: string]: any},
+    methodName: string,
+    accessType?: keyof PropertyDescriptor,
+  ) => unknown;
   clearSpies: () => void;
   respy: unknown;
 
   private _spyOnProperty: (
-    obj: unknown,
+    obj: {[key: string]: any},
     propertyName: string,
-    accessType: string,
+    accessType: keyof PropertyDescriptor,
   ) => unknown;
 
   constructor(options?: {currentSpies: () => unknown[]}) {
@@ -75,7 +79,7 @@ export default class SpyRegistry {
       this.respy = allow;
     };
 
-    this.spyOn = function(obj, methodName, accessType?: string) {
+    this.spyOn = (obj, methodName, accessType) => {
       if (accessType) {
         return this._spyOnProperty(obj, methodName, accessType);
       }

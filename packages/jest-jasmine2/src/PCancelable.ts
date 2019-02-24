@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable no-this-before-super, constructor-super */
+
 class CancelError extends Error {
   constructor() {
     super('Promise was canceled');

@@ -33,10 +33,23 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import {AssertionError} from 'assert';
 
 import ExpectationFailed from '../ExpectationFailed';
-
 import expectationResultFactory from '../expectationResultFactory';
-
 import assertionErrorMessage from '../assertionErrorMessage';
+import {SpecResult} from '../reporter';
+
+export type Attributes = {
+  id: unknown;
+  resultCallback: (result: SpecResult) => void;
+  description: string;
+  throwOnExpectationFailure: unknown;
+  getTestPath: () => unknown;
+  queueableFn: unknown;
+  beforeAndAfterFns: unknown;
+  userContext: unknown;
+  onStart: (context: Spec) => void;
+  getSpecName: () => string;
+  queueRunnerFactory: () => unknown;
+};
 
 export default class Spec {
   id: unknown;
@@ -75,19 +88,7 @@ export default class Spec {
     );
   }
 
-  constructor(attrs: {
-    id: unknown;
-    resultCallback: () => unknown;
-    description: string;
-    throwOnExpectationFailure: unknown;
-    getTestPath: () => unknown;
-    queueableFn: unknown;
-    beforeAndAfterFns: unknown;
-    userContext: unknown;
-    onStart: unknown;
-    getSpecName: () => string;
-    queueRunnerFactory: () => unknown;
-  }) {
+  constructor(attrs: Attributes) {
     this.resultCallback = attrs.resultCallback || function() {};
     this.id = attrs.id;
     this.description = attrs.description || '';

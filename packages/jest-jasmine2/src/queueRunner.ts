@@ -30,9 +30,10 @@ export default function queueRunner(options: Options) {
 
   const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
     let promise = new Promise(resolve => {
-      const next = function(err) {
+      const next = function(...args: unknown[]) {
+        const err = args[0];
         if (err) {
-          options.fail.apply(null, arguments);
+          options.fail.apply(null, args);
         }
         resolve();
       };
