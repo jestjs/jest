@@ -6,12 +6,10 @@
  *
  */
 
-'use strict';
-
 import Suite from '../jasmine/Suite';
 
 describe('Suite', () => {
-  let suite;
+  let suite: Suite;
 
   beforeEach(() => {
     suite = new Suite({

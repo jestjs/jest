@@ -6,19 +6,17 @@
  *
  */
 
-'use strict';
-
 import JasmineReporter from '../reporter';
 
 describe('Jasmine2Reporter', () => {
-  let reporter;
+  let reporter: JasmineReporter;
 
   beforeEach(() => {
     reporter = new JasmineReporter({});
   });
 
   it('reports nested suites', () => {
-    const makeSpec = name => ({
+    const makeSpec = (name: string) => ({
       description: 'description',
       failedExpectations: [],
       fullName: name,

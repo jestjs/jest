@@ -6,6 +6,7 @@
  */
 
 import {Environment} from '@jest/types';
+// @ts-ignore TODO Remove ignore when jest-each is migrated to TS
 import {bind as bindEach} from 'jest-each';
 
 export default (environment: Environment.Environment): void => {

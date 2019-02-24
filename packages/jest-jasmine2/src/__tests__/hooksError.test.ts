@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 describe.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
   '%s hooks error throwing',
   fn => {

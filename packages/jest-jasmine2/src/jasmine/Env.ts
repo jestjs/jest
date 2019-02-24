@@ -38,563 +38,575 @@ import assertionErrorMessage from '../assertionErrorMessage';
 import {ErrorWithStack} from 'jest-util';
 
 export default function(j$) {
-  function Env(options) {
-    options = options || {};
+  class Env {
+    specFilter: () => boolean;
+    catchExceptions: (value: unknown) => unknown;
+    throwOnExpectationFailure: (value: unknown) => void;
+    catchingExceptions: () => unknown;
+    topSuite: () => unknown;
+    fail: (error: unknown) => void;
+    pending: (message: unknown) => void;
+    afterAll: (afterAllFunction: unknown, timeout: unknown) => void;
+    fit: (description: unknown, fn: unknown, timeout: unknown) => unknown;
 
-    const self = this;
+    constructor(options?: {}) {
+      options = options || {};
 
-    let totalSpecsDefined = 0;
+      const self = this;
 
-    let catchExceptions = true;
+      let totalSpecsDefined = 0;
 
-    const realSetTimeout = global.setTimeout;
-    const realClearTimeout = global.clearTimeout;
+      let catchExceptions = true;
 
-    const runnableResources = {};
-    let currentSpec = null;
-    const currentlyExecutingSuites = [];
-    let currentDeclarationSuite = null;
-    let throwOnExpectationFailure = false;
-    let random = false;
-    let seed = null;
+      const realSetTimeout = global.setTimeout;
+      const realClearTimeout = global.clearTimeout;
 
-    const currentSuite = function() {
-      return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
-    };
+      const runnableResources = {};
+      let currentSpec = null;
+      const currentlyExecutingSuites = [];
+      let currentDeclarationSuite = null;
+      let throwOnExpectationFailure = false;
+      let random = false;
+      let seed = null;
 
-    const currentRunnable = function() {
-      return currentSpec || currentSuite();
-    };
+      const currentSuite = function() {
+        return currentlyExecutingSuites[currentlyExecutingSuites.length - 1];
+      };
 
-    const reporter = new j$.ReportDispatcher([
-      'jasmineStarted',
-      'jasmineDone',
-      'suiteStarted',
-      'suiteDone',
-      'specStarted',
-      'specDone',
-    ]);
+      const currentRunnable = function() {
+        return currentSpec || currentSuite();
+      };
 
-    this.specFilter = function() {
-      return true;
-    };
+      const reporter = new j$.ReportDispatcher([
+        'jasmineStarted',
+        'jasmineDone',
+        'suiteStarted',
+        'suiteDone',
+        'specStarted',
+        'specDone',
+      ]);
 
-    let nextSpecId = 0;
-    const getNextSpecId = function() {
-      return 'spec' + nextSpecId++;
-    };
+      this.specFilter = function() {
+        return true;
+      };
 
-    let nextSuiteId = 0;
-    const getNextSuiteId = function() {
-      return 'suite' + nextSuiteId++;
-    };
+      let nextSpecId = 0;
+      const getNextSpecId = function() {
+        return 'spec' + nextSpecId++;
+      };
 
-    const defaultResourcesForRunnable = function(id, parentRunnableId) {
-      const resources = {spies: []};
+      let nextSuiteId = 0;
+      const getNextSuiteId = function() {
+        return 'suite' + nextSuiteId++;
+      };
 
-      runnableResources[id] = resources;
-    };
+      const defaultResourcesForRunnable = function(id, parentRunnableId) {
+        const resources = {spies: []};
 
-    const clearResourcesForRunnable = function(id) {
-      spyRegistry.clearSpies();
-      delete runnableResources[id];
-    };
+        runnableResources[id] = resources;
+      };
 
-    const beforeAndAfterFns = function(suite) {
-      return function() {
-        let afters = [];
-        let befores = [];
+      const clearResourcesForRunnable = function(id) {
+        spyRegistry.clearSpies();
+        delete runnableResources[id];
+      };
 
+      const beforeAndAfterFns = function(suite) {
+        return function() {
+          let afters = [];
+          let befores = [];
+
+          while (suite) {
+            befores = befores.concat(suite.beforeFns);
+            afters = afters.concat(suite.afterFns);
+
+            suite = suite.parentSuite;
+          }
+
+          return {
+            befores: befores.reverse(),
+            afters,
+          };
+        };
+      };
+
+      const getSpecName = function(spec, suite) {
+        const fullName = [spec.description];
+        const suiteFullName = suite.getFullName();
+
+        if (suiteFullName !== '') {
+          fullName.unshift(suiteFullName);
+        }
+
+        return fullName.join(' ');
+      };
+
+      this.catchExceptions = function(value) {
+        catchExceptions = !!value;
+        return catchExceptions;
+      };
+
+      this.catchingExceptions = function() {
+        return catchExceptions;
+      };
+
+      this.throwOnExpectationFailure = function(value) {
+        throwOnExpectationFailure = !!value;
+      };
+
+      this.throwingExpectationFailures = function() {
+        return throwOnExpectationFailure;
+      };
+
+      this.randomizeTests = function(value) {
+        random = !!value;
+      };
+
+      this.randomTests = function() {
+        return random;
+      };
+
+      this.seed = function(value) {
+        if (value) {
+          seed = value;
+        }
+        return seed;
+      };
+
+      function queueRunnerFactory(options) {
+        options.clearTimeout = realClearTimeout;
+        options.fail = self.fail;
+        options.setTimeout = realSetTimeout;
+        return queueRunner(options);
+      }
+
+      const topSuite = new j$.Suite({
+        id: getNextSuiteId(),
+        getTestPath() {
+          return j$.testPath;
+        },
+      });
+
+      currentDeclarationSuite = topSuite;
+
+      this.topSuite = function() {
+        return topSuite;
+      };
+
+      const uncaught = err => {
+        if (currentSpec) {
+          currentSpec.onException(err);
+          currentSpec.cancel();
+        } else {
+          console.error('Unhandled error');
+          console.error(err.stack);
+        }
+      };
+
+      let oldListenersException;
+      let oldListenersRejection;
+      const executionSetup = function() {
+        // Need to ensure we are the only ones handling these exceptions.
+        oldListenersException = process.listeners('uncaughtException').slice();
+        oldListenersRejection = process.listeners('unhandledRejection').slice();
+
+        j$.process.removeAllListeners('uncaughtException');
+        j$.process.removeAllListeners('unhandledRejection');
+
+        j$.process.on('uncaughtException', uncaught);
+        j$.process.on('unhandledRejection', uncaught);
+      };
+
+      const executionTeardown = function() {
+        j$.process.removeListener('uncaughtException', uncaught);
+        j$.process.removeListener('unhandledRejection', uncaught);
+
+        // restore previous exception handlers
+        oldListenersException.forEach(listener => {
+          j$.process.on('uncaughtException', listener);
+        });
+
+        oldListenersRejection.forEach(listener => {
+          j$.process.on('unhandledRejection', listener);
+        });
+      };
+
+      this.execute = async function(runnablesToRun, suiteTree = topSuite) {
+        if (!runnablesToRun) {
+          if (focusedRunnables.length) {
+            runnablesToRun = focusedRunnables;
+          } else {
+            runnablesToRun = [suiteTree.id];
+          }
+        }
+
+        if (currentlyExecutingSuites.length === 0) {
+          executionSetup();
+        }
+
+        const lastDeclarationSuite = currentDeclarationSuite;
+
+        await treeProcessor({
+          nodeComplete(suite) {
+            if (!suite.disabled) {
+              clearResourcesForRunnable(suite.id);
+            }
+            currentlyExecutingSuites.pop();
+            if (suite === topSuite) {
+              reporter.jasmineDone({
+                failedExpectations: topSuite.result.failedExpectations,
+              });
+            } else {
+              reporter.suiteDone(suite.getResult());
+            }
+          },
+          nodeStart(suite) {
+            currentlyExecutingSuites.push(suite);
+            defaultResourcesForRunnable(
+              suite.id,
+              suite.parentSuite && suite.parentSuite.id,
+            );
+            if (suite === topSuite) {
+              reporter.jasmineStarted({totalSpecsDefined});
+            } else {
+              reporter.suiteStarted(suite.result);
+            }
+          },
+          queueRunnerFactory,
+          runnableIds: runnablesToRun,
+          tree: suiteTree,
+        });
+
+        currentDeclarationSuite = lastDeclarationSuite;
+
+        if (currentlyExecutingSuites.length === 0) {
+          executionTeardown();
+        }
+      };
+
+      this.addReporter = function(reporterToAdd) {
+        reporter.addReporter(reporterToAdd);
+      };
+
+      this.provideFallbackReporter = function(reporterToAdd) {
+        reporter.provideFallbackReporter(reporterToAdd);
+      };
+
+      this.clearReporters = function() {
+        reporter.clearReporters();
+      };
+
+      const spyRegistry = new j$.SpyRegistry({
+        currentSpies() {
+          if (!currentRunnable()) {
+            throw new Error(
+              'Spies must be created in a before function or a spec',
+            );
+          }
+          return runnableResources[currentRunnable().id].spies;
+        },
+      });
+
+      this.allowRespy = function(allow) {
+        spyRegistry.allowRespy(allow);
+      };
+
+      this.spyOn = function() {
+        return spyRegistry.spyOn.apply(spyRegistry, arguments);
+      };
+
+      const suiteFactory = function(description) {
+        const suite = new j$.Suite({
+          id: getNextSuiteId(),
+          description,
+          parentSuite: currentDeclarationSuite,
+          throwOnExpectationFailure,
+          getTestPath() {
+            return j$.testPath;
+          },
+        });
+
+        return suite;
+      };
+
+      this.describe = function(description, specDefinitions) {
+        const suite = suiteFactory(description);
+        if (specDefinitions === undefined) {
+          throw new Error(
+            `Missing second argument. It must be a callback function.`,
+          );
+        }
+        if (typeof specDefinitions !== 'function') {
+          throw new Error(
+            `Invalid second argument, ${specDefinitions}. It must be a callback function.`,
+          );
+        }
+        if (specDefinitions.length > 0) {
+          throw new Error('describe does not expect any arguments');
+        }
+        if (currentDeclarationSuite.markedPending) {
+          suite.pend();
+        }
+        if (currentDeclarationSuite.markedTodo) {
+          suite.todo();
+        }
+        addSpecsToSuite(suite, specDefinitions);
+        return suite;
+      };
+
+      this.xdescribe = function(description, specDefinitions) {
+        const suite = suiteFactory(description);
+        suite.pend();
+        addSpecsToSuite(suite, specDefinitions);
+        return suite;
+      };
+
+      const focusedRunnables = [];
+
+      this.fdescribe = function(description, specDefinitions) {
+        const suite = suiteFactory(description);
+        suite.isFocused = true;
+
+        focusedRunnables.push(suite.id);
+        unfocusAncestor();
+        addSpecsToSuite(suite, specDefinitions);
+
+        return suite;
+      };
+
+      function addSpecsToSuite(suite, specDefinitions) {
+        const parentSuite = currentDeclarationSuite;
+        parentSuite.addChild(suite);
+        currentDeclarationSuite = suite;
+
+        let declarationError = null;
+        try {
+          specDefinitions.call(suite);
+        } catch (e) {
+          declarationError = e;
+        }
+
+        if (declarationError) {
+          self.it('encountered a declaration exception', () => {
+            throw declarationError;
+          });
+        }
+
+        currentDeclarationSuite = parentSuite;
+      }
+
+      function findFocusedAncestor(suite) {
         while (suite) {
-          befores = befores.concat(suite.beforeFns);
-          afters = afters.concat(suite.afterFns);
-
+          if (suite.isFocused) {
+            return suite.id;
+          }
           suite = suite.parentSuite;
         }
 
-        return {
-          befores: befores.reverse(),
-          afters,
-        };
-      };
-    };
-
-    const getSpecName = function(spec, suite) {
-      const fullName = [spec.description];
-      const suiteFullName = suite.getFullName();
-
-      if (suiteFullName !== '') {
-        fullName.unshift(suiteFullName);
+        return null;
       }
 
-      return fullName.join(' ');
-    };
-
-    this.catchExceptions = function(value) {
-      catchExceptions = !!value;
-      return catchExceptions;
-    };
-
-    this.catchingExceptions = function() {
-      return catchExceptions;
-    };
-
-    this.throwOnExpectationFailure = function(value) {
-      throwOnExpectationFailure = !!value;
-    };
-
-    this.throwingExpectationFailures = function() {
-      return throwOnExpectationFailure;
-    };
-
-    this.randomizeTests = function(value) {
-      random = !!value;
-    };
-
-    this.randomTests = function() {
-      return random;
-    };
-
-    this.seed = function(value) {
-      if (value) {
-        seed = value;
-      }
-      return seed;
-    };
-
-    function queueRunnerFactory(options) {
-      options.clearTimeout = realClearTimeout;
-      options.fail = self.fail;
-      options.setTimeout = realSetTimeout;
-      return queueRunner(options);
-    }
-
-    const topSuite = new j$.Suite({
-      id: getNextSuiteId(),
-      getTestPath() {
-        return j$.testPath;
-      },
-    });
-
-    currentDeclarationSuite = topSuite;
-
-    this.topSuite = function() {
-      return topSuite;
-    };
-
-    const uncaught = err => {
-      if (currentSpec) {
-        currentSpec.onException(err);
-        currentSpec.cancel();
-      } else {
-        console.error('Unhandled error');
-        console.error(err.stack);
-      }
-    };
-
-    let oldListenersException;
-    let oldListenersRejection;
-    const executionSetup = function() {
-      // Need to ensure we are the only ones handling these exceptions.
-      oldListenersException = process.listeners('uncaughtException').slice();
-      oldListenersRejection = process.listeners('unhandledRejection').slice();
-
-      j$.process.removeAllListeners('uncaughtException');
-      j$.process.removeAllListeners('unhandledRejection');
-
-      j$.process.on('uncaughtException', uncaught);
-      j$.process.on('unhandledRejection', uncaught);
-    };
-
-    const executionTeardown = function() {
-      j$.process.removeListener('uncaughtException', uncaught);
-      j$.process.removeListener('unhandledRejection', uncaught);
-
-      // restore previous exception handlers
-      oldListenersException.forEach(listener => {
-        j$.process.on('uncaughtException', listener);
-      });
-
-      oldListenersRejection.forEach(listener => {
-        j$.process.on('unhandledRejection', listener);
-      });
-    };
-
-    this.execute = async function(runnablesToRun, suiteTree = topSuite) {
-      if (!runnablesToRun) {
-        if (focusedRunnables.length) {
-          runnablesToRun = focusedRunnables;
-        } else {
-          runnablesToRun = [suiteTree.id];
-        }
-      }
-
-      if (currentlyExecutingSuites.length === 0) {
-        executionSetup();
-      }
-
-      const lastDeclarationSuite = currentDeclarationSuite;
-
-      await treeProcessor({
-        nodeComplete(suite) {
-          if (!suite.disabled) {
-            clearResourcesForRunnable(suite.id);
-          }
-          currentlyExecutingSuites.pop();
-          if (suite === topSuite) {
-            reporter.jasmineDone({
-              failedExpectations: topSuite.result.failedExpectations,
-            });
-          } else {
-            reporter.suiteDone(suite.getResult());
-          }
-        },
-        nodeStart(suite) {
-          currentlyExecutingSuites.push(suite);
-          defaultResourcesForRunnable(
-            suite.id,
-            suite.parentSuite && suite.parentSuite.id,
-          );
-          if (suite === topSuite) {
-            reporter.jasmineStarted({totalSpecsDefined});
-          } else {
-            reporter.suiteStarted(suite.result);
-          }
-        },
-        queueRunnerFactory,
-        runnableIds: runnablesToRun,
-        tree: suiteTree,
-      });
-
-      currentDeclarationSuite = lastDeclarationSuite;
-
-      if (currentlyExecutingSuites.length === 0) {
-        executionTeardown();
-      }
-    };
-
-    this.addReporter = function(reporterToAdd) {
-      reporter.addReporter(reporterToAdd);
-    };
-
-    this.provideFallbackReporter = function(reporterToAdd) {
-      reporter.provideFallbackReporter(reporterToAdd);
-    };
-
-    this.clearReporters = function() {
-      reporter.clearReporters();
-    };
-
-    const spyRegistry = new j$.SpyRegistry({
-      currentSpies() {
-        if (!currentRunnable()) {
-          throw new Error(
-            'Spies must be created in a before function or a spec',
-          );
-        }
-        return runnableResources[currentRunnable().id].spies;
-      },
-    });
-
-    this.allowRespy = function(allow) {
-      spyRegistry.allowRespy(allow);
-    };
-
-    this.spyOn = function() {
-      return spyRegistry.spyOn.apply(spyRegistry, arguments);
-    };
-
-    const suiteFactory = function(description) {
-      const suite = new j$.Suite({
-        id: getNextSuiteId(),
-        description,
-        parentSuite: currentDeclarationSuite,
-        throwOnExpectationFailure,
-        getTestPath() {
-          return j$.testPath;
-        },
-      });
-
-      return suite;
-    };
-
-    this.describe = function(description, specDefinitions) {
-      const suite = suiteFactory(description);
-      if (specDefinitions === undefined) {
-        throw new Error(
-          `Missing second argument. It must be a callback function.`,
-        );
-      }
-      if (typeof specDefinitions !== 'function') {
-        throw new Error(
-          `Invalid second argument, ${specDefinitions}. It must be a callback function.`,
-        );
-      }
-      if (specDefinitions.length > 0) {
-        throw new Error('describe does not expect any arguments');
-      }
-      if (currentDeclarationSuite.markedPending) {
-        suite.pend();
-      }
-      if (currentDeclarationSuite.markedTodo) {
-        suite.todo();
-      }
-      addSpecsToSuite(suite, specDefinitions);
-      return suite;
-    };
-
-    this.xdescribe = function(description, specDefinitions) {
-      const suite = suiteFactory(description);
-      suite.pend();
-      addSpecsToSuite(suite, specDefinitions);
-      return suite;
-    };
-
-    const focusedRunnables = [];
-
-    this.fdescribe = function(description, specDefinitions) {
-      const suite = suiteFactory(description);
-      suite.isFocused = true;
-
-      focusedRunnables.push(suite.id);
-      unfocusAncestor();
-      addSpecsToSuite(suite, specDefinitions);
-
-      return suite;
-    };
-
-    function addSpecsToSuite(suite, specDefinitions) {
-      const parentSuite = currentDeclarationSuite;
-      parentSuite.addChild(suite);
-      currentDeclarationSuite = suite;
-
-      let declarationError = null;
-      try {
-        specDefinitions.call(suite);
-      } catch (e) {
-        declarationError = e;
-      }
-
-      if (declarationError) {
-        self.it('encountered a declaration exception', () => {
-          throw declarationError;
-        });
-      }
-
-      currentDeclarationSuite = parentSuite;
-    }
-
-    function findFocusedAncestor(suite) {
-      while (suite) {
-        if (suite.isFocused) {
-          return suite.id;
-        }
-        suite = suite.parentSuite;
-      }
-
-      return null;
-    }
-
-    function unfocusAncestor() {
-      const focusedAncestor = findFocusedAncestor(currentDeclarationSuite);
-      if (focusedAncestor) {
-        for (let i = 0; i < focusedRunnables.length; i++) {
-          if (focusedRunnables[i] === focusedAncestor) {
-            focusedRunnables.splice(i, 1);
-            break;
+      function unfocusAncestor() {
+        const focusedAncestor = findFocusedAncestor(currentDeclarationSuite);
+        if (focusedAncestor) {
+          for (let i = 0; i < focusedRunnables.length; i++) {
+            if (focusedRunnables[i] === focusedAncestor) {
+              focusedRunnables.splice(i, 1);
+              break;
+            }
           }
         }
       }
-    }
 
-    const specFactory = function(description, fn, suite, timeout) {
-      totalSpecsDefined++;
-      const spec = new j$.Spec({
-        id: getNextSpecId(),
-        beforeAndAfterFns: beforeAndAfterFns(suite),
-        resultCallback: specResultCallback,
-        getSpecName(spec) {
-          return getSpecName(spec, suite);
-        },
-        getTestPath() {
-          return j$.testPath;
-        },
-        onStart: specStarted,
-        description,
-        queueRunnerFactory,
-        userContext() {
-          return suite.clonedSharedUserContext();
-        },
-        queueableFn: {
-          fn,
-          timeout() {
-            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
+      const specFactory = function(description, fn, suite, timeout) {
+        totalSpecsDefined++;
+        const spec = new j$.Spec({
+          id: getNextSpecId(),
+          beforeAndAfterFns: beforeAndAfterFns(suite),
+          resultCallback: specResultCallback,
+          getSpecName(spec) {
+            return getSpecName(spec, suite);
           },
-        },
-        throwOnExpectationFailure,
-      });
+          getTestPath() {
+            return j$.testPath;
+          },
+          onStart: specStarted,
+          description,
+          queueRunnerFactory,
+          userContext() {
+            return suite.clonedSharedUserContext();
+          },
+          queueableFn: {
+            fn,
+            timeout() {
+              return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
+            },
+          },
+          throwOnExpectationFailure,
+        });
 
-      if (!self.specFilter(spec)) {
-        spec.disable();
-      }
+        if (!self.specFilter(spec)) {
+          spec.disable();
+        }
 
-      return spec;
+        return spec;
 
-      function specResultCallback(result) {
-        clearResourcesForRunnable(spec.id);
-        currentSpec = null;
-        reporter.specDone(result);
-      }
+        function specResultCallback(result) {
+          clearResourcesForRunnable(spec.id);
+          currentSpec = null;
+          reporter.specDone(result);
+        }
 
-      function specStarted(spec) {
-        currentSpec = spec;
-        defaultResourcesForRunnable(spec.id, suite.id);
-        reporter.specStarted(spec.result);
-      }
-    };
+        function specStarted(spec) {
+          currentSpec = spec;
+          defaultResourcesForRunnable(spec.id, suite.id);
+          reporter.specStarted(spec.result);
+        }
+      };
 
-    this.it = function(description, fn, timeout) {
-      if (typeof description !== 'string') {
-        throw new Error(
-          `Invalid first argument, ${description}. It must be a string.`,
+      this.it = function(description, fn, timeout) {
+        if (typeof description !== 'string') {
+          throw new Error(
+            `Invalid first argument, ${description}. It must be a string.`,
+          );
+        }
+        if (fn === undefined) {
+          throw new Error(
+            'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
+          );
+        }
+        if (typeof fn !== 'function') {
+          throw new Error(
+            `Invalid second argument, ${fn}. It must be a callback function.`,
+          );
+        }
+        const spec = specFactory(
+          description,
+          fn,
+          currentDeclarationSuite,
+          timeout,
         );
-      }
-      if (fn === undefined) {
-        throw new Error(
-          'Missing second argument. It must be a callback function. Perhaps you want to use `test.todo` for a test placeholder.',
-        );
-      }
-      if (typeof fn !== 'function') {
-        throw new Error(
-          `Invalid second argument, ${fn}. It must be a callback function.`,
-        );
-      }
-      const spec = specFactory(
-        description,
-        fn,
-        currentDeclarationSuite,
-        timeout,
-      );
-      if (currentDeclarationSuite.markedPending) {
-        spec.pend();
-      }
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        }
 
-      // When a test is defined inside another, jasmine will not run it.
-      // This check throws an error to warn the user about the edge-case.
-      if (currentSpec !== null) {
-        throw new Error(
-          'Tests cannot be nested. Test `' +
+        // When a test is defined inside another, jasmine will not run it.
+        // This check throws an error to warn the user about the edge-case.
+        if (currentSpec !== null) {
+          throw new Error(
+            'Tests cannot be nested. Test `' +
             spec.description +
             '` cannot run because it is nested within `' +
             currentSpec.description +
             '`.',
+          );
+        }
+        currentDeclarationSuite.addChild(spec);
+        return spec;
+      };
+
+      this.xit = function() {
+        const spec = this.it.apply(this, arguments);
+        spec.pend('Temporarily disabled with xit');
+        return spec;
+      };
+
+      this.todo = function() {
+        const description = arguments[0];
+        if (arguments.length !== 1 || typeof description !== 'string') {
+          throw new ErrorWithStack(
+            'Todo must be called with only a description.',
+            test.todo,
+          );
+        }
+
+        const spec = specFactory(description, () => {}, currentDeclarationSuite);
+        spec.todo();
+        currentDeclarationSuite.addChild(spec);
+        return spec;
+      };
+
+      this.fit = function(description, fn, timeout) {
+        const spec = specFactory(
+          description,
+          fn,
+          currentDeclarationSuite,
+          timeout,
         );
-      }
-      currentDeclarationSuite.addChild(spec);
-      return spec;
-    };
+        currentDeclarationSuite.addChild(spec);
+        focusedRunnables.push(spec.id);
+        unfocusAncestor();
+        return spec;
+      };
 
-    this.xit = function() {
-      const spec = this.it.apply(this, arguments);
-      spec.pend('Temporarily disabled with xit');
-      return spec;
-    };
+      this.beforeEach = function(beforeEachFunction, timeout) {
+        currentDeclarationSuite.beforeEach({
+          fn: beforeEachFunction,
+          timeout() {
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
+          },
+        });
+      };
 
-    this.todo = function() {
-      const description = arguments[0];
-      if (arguments.length !== 1 || typeof description !== 'string') {
-        throw new ErrorWithStack(
-          'Todo must be called with only a description.',
-          test.todo,
-        );
-      }
+      this.beforeAll = function(beforeAllFunction, timeout) {
+        currentDeclarationSuite.beforeAll({
+          fn: beforeAllFunction,
+          timeout() {
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
+          },
+        });
+      };
 
-      const spec = specFactory(description, () => {}, currentDeclarationSuite);
-      spec.todo();
-      currentDeclarationSuite.addChild(spec);
-      return spec;
-    };
+      this.afterEach = function(afterEachFunction, timeout) {
+        currentDeclarationSuite.afterEach({
+          fn: afterEachFunction,
+          timeout() {
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
+          },
+        });
+      };
 
-    this.fit = function(description, fn, timeout) {
-      const spec = specFactory(
-        description,
-        fn,
-        currentDeclarationSuite,
-        timeout,
-      );
-      currentDeclarationSuite.addChild(spec);
-      focusedRunnables.push(spec.id);
-      unfocusAncestor();
-      return spec;
-    };
+      this.afterAll = function(afterAllFunction, timeout) {
+        currentDeclarationSuite.afterAll({
+          fn: afterAllFunction,
+          timeout() {
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
+          },
+        });
+      };
 
-    this.beforeEach = function(beforeEachFunction, timeout) {
-      currentDeclarationSuite.beforeEach({
-        fn: beforeEachFunction,
-        timeout() {
-          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
-        },
-      });
-    };
+      this.pending = function(message) {
+        let fullMessage = j$.Spec.pendingSpecExceptionMessage;
+        if (message) {
+          fullMessage += message;
+        }
+        throw fullMessage;
+      };
 
-    this.beforeAll = function(beforeAllFunction, timeout) {
-      currentDeclarationSuite.beforeAll({
-        fn: beforeAllFunction,
-        timeout() {
-          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
-        },
-      });
-    };
+      this.fail = function(error) {
+        let checkIsError;
+        let message;
 
-    this.afterEach = function(afterEachFunction, timeout) {
-      currentDeclarationSuite.afterEach({
-        fn: afterEachFunction,
-        timeout() {
-          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
-        },
-      });
-    };
+        if (error instanceof AssertionError) {
+          checkIsError = false;
+          message = assertionErrorMessage(error, {expand: j$.Spec.expand});
+        } else {
+          const check = isError(error);
 
-    this.afterAll = function(afterAllFunction, timeout) {
-      currentDeclarationSuite.afterAll({
-        fn: afterAllFunction,
-        timeout() {
-          return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
-        },
-      });
-    };
+          checkIsError = check.isError;
+          message = check.message;
+        }
 
-    this.pending = function(message) {
-      let fullMessage = j$.Spec.pendingSpecExceptionMessage;
-      if (message) {
-        fullMessage += message;
-      }
-      throw fullMessage;
-    };
-
-    this.fail = function(error) {
-      let checkIsError;
-      let message;
-
-      if (error instanceof AssertionError) {
-        checkIsError = false;
-        message = assertionErrorMessage(error, {expand: j$.Spec.expand});
-      } else {
-        const check = isError(error);
-
-        checkIsError = check.isError;
-        message = check.message;
-      }
-
-      currentRunnable().addExpectationResult(false, {
-        matcherName: '',
-        passed: false,
-        expected: '',
-        actual: '',
-        message,
-        error: checkIsError ? error : new Error(message),
-      });
-    };
+        currentRunnable().addExpectationResult(false, {
+          matcherName: '',
+          passed: false,
+          expected: '',
+          actual: '',
+          message,
+          error: checkIsError ? error : new Error(message),
+        });
+      };
+    }
   }
 
   return Env;

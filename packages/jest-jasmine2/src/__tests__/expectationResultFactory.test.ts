@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import expectationResultFactory from '../expectationResultFactory';
 
 describe('expectationResultFactory', () => {

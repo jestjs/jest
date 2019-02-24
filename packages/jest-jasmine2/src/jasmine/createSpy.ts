@@ -34,7 +34,7 @@ import CallTracker from './CallTracker';
 
 import SpyStrategy from './SpyStrategy';
 
-function createSpy(name, originalFn) {
+function createSpy(name: unknown, originalFn: unknown) {
   const spyStrategy = new SpyStrategy({
     name,
     fn: originalFn,

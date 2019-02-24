@@ -6,13 +6,13 @@
  */
 
 import {PrettyFormat, Config} from '@jest/types';
-
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
   buildSnapshotResolver,
   SnapshotState,
   addSerializer,
 } from 'jest-snapshot';
+import {SpecResult} from './reporter';
 
 export type SetupOptions = {
   config: Config.ProjectConfig;
@@ -24,7 +24,7 @@ export type SetupOptions = {
 // Get suppressed errors form  jest-matchers that weren't throw during
 // test execution and add them to the test result, potentially failing
 // a passing test.
-const addSuppressedErrors = result => {
+const addSuppressedErrors = (result: SpecResult) => {
   const {suppressedErrors} = getState();
   setState({suppressedErrors: []});
   if (suppressedErrors.length) {
@@ -42,7 +42,7 @@ const addSuppressedErrors = result => {
   }
 };
 
-const addAssertionErrors = result => {
+const addAssertionErrors = (result: SpecResult) => {
   const assertionErrors = extractExpectedAssertionsErrors();
   if (assertionErrors.length) {
     const jasmineErrors = assertionErrors.map(({actual, error, expected}) => ({
@@ -61,7 +61,7 @@ const patchJasmine = () => {
     class Spec extends realSpec {
       constructor(attr) {
         const resultCallback = attr.resultCallback;
-        attr.resultCallback = function(result) {
+        attr.resultCallback = function(result: SpecResult) {
           addSuppressedErrors(result);
           addAssertionErrors(result);
           resultCallback.call(attr, result);

@@ -28,64 +28,79 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* @flow */
 
-export default function SpyStrategy(options: Object) {
-  options = options || {};
+export default class SpyStrategy {
+  identity: () => string;
+  exec: () => unknown;
+  callThrough: () => unknown;
+  returnValue: (value: unknown) => unknown;
+  returnValues: () => unknown;
+  throwError: (something: unknown) => unknown;
+  callFake: (fn: unknown) => unknown;
+  stub: (fn: unknown) => unknown;
 
-  const identity = options.name || 'unknown';
-  const originalFn = options.fn || function() {};
-  const getSpy = options.getSpy || function() {};
-  let plan = function() {};
+  constructor(options?: {
+    name: string;
+    fn: () => unknown;
+    getSpy: () => unknown;
+  }) {
+    options = options || {};
 
-  this.identity = function() {
-    return identity;
-  };
+    const identity = options.name || 'unknown';
+    const originalFn = options.fn || function() {};
+    const getSpy = options.getSpy || function() {};
+    let plan = function() {};
 
-  this.exec = function() {
-    return plan.apply(this, arguments);
-  };
-
-  this.callThrough = function() {
-    plan = originalFn;
-    return getSpy();
-  };
-
-  this.returnValue = function(value) {
-    plan = function() {
-      return value;
+    this.identity = function() {
+      return identity;
     };
-    return getSpy();
-  };
 
-  this.returnValues = function() {
-    const values = Array.prototype.slice.call(arguments);
-    plan = function() {
-      return values.shift();
+    this.exec = function() {
+      return plan.apply(this, arguments);
     };
-    return getSpy();
-  };
 
-  this.throwError = function(something) {
-    const error = something instanceof Error ? something : new Error(something);
-    plan = function() {
-      throw error;
+    this.callThrough = function() {
+      plan = originalFn;
+      return getSpy();
     };
-    return getSpy();
-  };
 
-  this.callFake = function(fn) {
-    if (typeof fn !== 'function') {
-      throw new Error(
-        'Argument passed to callFake should be a function, got ' + fn,
-      );
-    }
-    plan = fn;
-    return getSpy();
-  };
+    this.returnValue = function(value) {
+      plan = function() {
+        return value;
+      };
+      return getSpy();
+    };
 
-  this.stub = function(fn) {
-    plan = function() {};
-    return getSpy();
-  };
+    this.returnValues = function() {
+      const values = Array.prototype.slice.call(arguments);
+      plan = function() {
+        return values.shift();
+      };
+      return getSpy();
+    };
+
+    this.throwError = function(something) {
+      const error =
+        something instanceof Error ? something : new Error(something);
+      plan = function() {
+        throw error;
+      };
+      return getSpy();
+    };
+
+    this.callFake = function(fn) {
+      if (typeof fn !== 'function') {
+        throw new Error(
+          'Argument passed to callFake should be a function, got ' + fn,
+        );
+      }
+      plan = fn;
+      return getSpy();
+    };
+
+    this.stub = function(fn) {
+      plan = function() {};
+      return getSpy();
+    };
+  }
 }

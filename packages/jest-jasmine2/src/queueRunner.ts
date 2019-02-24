@@ -37,8 +37,8 @@ export default function queueRunner(options: Options) {
         resolve();
       };
 
-      next.fail = function() {
-        options.fail.apply(null, arguments);
+      next.fail = function(...args: unknown[]) {
+        options.fail.apply(null, args);
         resolve();
       };
       try {

@@ -47,6 +47,7 @@ export default (config: {expand: boolean}) => {
     Object.keys(jasmineMatchersObject).forEach(name => {
       jestMatchersObject[name] = function(
         this: Matchers.MatcherState,
+        ...args: unknown[]
       ): RawMatcherFn {
         // use "expect.extend" if you need to use equality testers (via this.equal)
         const result = jasmineMatchersObject[name](null, null);
@@ -54,8 +55,8 @@ export default (config: {expand: boolean}) => {
         const negativeCompare = result.negativeCompare || result.compare;
 
         return this.isNot
-          ? negativeCompare.apply(null, arguments)
-          : result.compare.apply(null, arguments);
+          ? negativeCompare.apply(null, args)
+          : result.compare.apply(null, args);
       };
     });
 

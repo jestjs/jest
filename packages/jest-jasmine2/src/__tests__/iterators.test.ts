@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 describe('iterators', () => {
   it('works for arrays', () => {
     const mixedArray = [1, {}, []];
@@ -55,9 +53,14 @@ describe('iterators', () => {
   });
 
   it('works for Maps', () => {
-    const keyValuePairs = [['key1', 'value1'], ['key2', 'value2']];
-    const smallerKeyValuePairs = [['key1', 'value1']];
-    const biggerKeyValuePairs = [
+    const keyValuePairs: ReadonlyArray<[string, string]> = [
+      ['key1', 'value1'],
+      ['key2', 'value2'],
+    ];
+    const smallerKeyValuePairs: ReadonlyArray<[string, string]> = [
+      ['key1', 'value1'],
+    ];
+    const biggerKeyValuePairs: ReadonlyArray<[string, string]> = [
       ['key1', 'value1'],
       ['key2', 'value2'],
       ['key3', 'value3'],

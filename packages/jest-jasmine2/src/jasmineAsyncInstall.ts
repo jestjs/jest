@@ -21,7 +21,7 @@ function isPromise(obj: any) {
 }
 
 function promisifyLifeCycleFunction(originalFn, env) {
-  return function(fn, timeout) {
+  return function(fn: Promise<unknown> | GeneratorFunction, timeout: number) {
     if (!fn) {
       return originalFn.call(env);
     }
@@ -123,13 +123,13 @@ function promisifyIt(originalFn, env, jasmine) {
   };
 }
 
-function makeConcurrent(originalFn: Function, env, mutex) {
+function makeConcurrent(originalFn: Function, env, mutex: ReturnType<typeof throat>) {
   return function(specName, fn, timeout) {
     if (env != null && !env.specFilter({getFullName: () => specName || ''})) {
       return originalFn.call(env, specName, () => Promise.resolve(), timeout);
     }
 
-    let promise;
+    let promise: Promise<unknown>;
     try {
       promise = mutex(() => {
         const promise = fn();

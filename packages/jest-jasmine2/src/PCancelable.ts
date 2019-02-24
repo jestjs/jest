@@ -12,7 +12,15 @@ class CancelError extends Error {
   }
 }
 
-class PCancelable {
+class PCancelable extends Promise {
+  private _pending: boolean;
+  private _canceled: boolean;
+  private _cancel?: () => unknown;
+  private _reject: (reason?: any) => unknown;
+  private _promise: Promise<unknown>;
+
+  static CancelError: CancelError;
+
   static fn(fn) {
     return function() {
       const args = [].slice.apply(arguments);
@@ -23,7 +31,8 @@ class PCancelable {
     };
   }
 
-  constructor(executor) {
+  // @ts-ignore
+  constructor(executor: (onCancel, resolve, reject) => any) {
     this._pending = true;
     this._canceled = false;
 
@@ -46,12 +55,12 @@ class PCancelable {
     });
   }
 
-  then() {
-    return this._promise.then.apply(this._promise, arguments);
+  then(...args: unknown[]) {
+    return this._promise.then.apply(this._promise, args);
   }
 
-  catch() {
-    return this._promise.catch.apply(this._promise, arguments);
+  catch(...args: unknown[]) {
+    return this._promise.catch.apply(this._promise, args);
   }
 
   cancel() {
@@ -76,7 +85,4 @@ class PCancelable {
   }
 }
 
-Object.setPrototypeOf(PCancelable.prototype, Promise.prototype);
-
-module.exports = PCancelable;
-module.exports.CancelError = CancelError;
+export = PCancelable;

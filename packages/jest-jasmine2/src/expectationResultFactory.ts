@@ -7,7 +7,7 @@
 
 import prettyFormat from 'pretty-format';
 
-function messageFormatter({error, message, passed}) {
+function messageFormatter({error, message, passed}: Options) {
   if (passed) {
     return 'Passed.';
   }
@@ -29,7 +29,11 @@ function messageFormatter({error, message, passed}) {
   return `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
 }
 
-function stackFormatter(options, initError, errorMessage) {
+function stackFormatter(
+  options: Options,
+  initError: Error | undefined,
+  errorMessage: string,
+) {
   if (options.passed) {
     return '';
   }

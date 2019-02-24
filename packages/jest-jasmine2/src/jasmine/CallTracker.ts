@@ -29,50 +29,62 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-function CallTracker() {
-  let calls = [];
+class CallTracker {
+  track: (context: unknown) => void;
+  any: () => boolean;
+  count: () => number;
+  argsFor: (index: number) => unknown[];
+  all: () => unknown[];
+  allArgs: () => unknown[];
+  first: () => unknown;
+  mostRecent: () => unknown;
+  reset: () => void;
 
-  this.track = function(context) {
-    calls.push(context);
-  };
+  constructor() {
+    let calls = [];
 
-  this.any = function() {
-    return !!calls.length;
-  };
+    this.track = function(context) {
+      calls.push(context);
+    };
 
-  this.count = function() {
-    return calls.length;
-  };
+    this.any = function() {
+      return !!calls.length;
+    };
 
-  this.argsFor = function(index) {
-    const call = calls[index];
-    return call ? call.args : [];
-  };
+    this.count = function() {
+      return calls.length;
+    };
 
-  this.all = function() {
-    return calls;
-  };
+    this.argsFor = function(index) {
+      const call = calls[index];
+      return call ? call.args : [];
+    };
 
-  this.allArgs = function() {
-    const callArgs = [];
-    for (let i = 0; i < calls.length; i++) {
-      callArgs.push(calls[i].args);
-    }
+    this.all = function() {
+      return calls;
+    };
 
-    return callArgs;
-  };
+    this.allArgs = function() {
+      const callArgs = [];
+      for (let i = 0; i < calls.length; i++) {
+        callArgs.push(calls[i].args);
+      }
 
-  this.first = function() {
-    return calls[0];
-  };
+      return callArgs;
+    };
 
-  this.mostRecent = function() {
-    return calls[calls.length - 1];
-  };
+    this.first = function() {
+      return calls[0];
+    };
 
-  this.reset = function() {
-    calls = [];
-  };
+    this.mostRecent = function() {
+      return calls[calls.length - 1];
+    };
+
+    this.reset = function() {
+      calls = [];
+    };
+  }
 }
 
 export default CallTracker;

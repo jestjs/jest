@@ -8,11 +8,11 @@
 import {Config, TestResult} from '@jest/types';
 import {formatResultsErrors} from 'jest-message-util';
 
-type Suite = {
+export type Suite = {
   description: string;
 };
 
-type SpecResult = {
+export type SpecResult = {
   __callsite?: {
     getColumnNumber: () => number;
     getLineNumber: () => number;

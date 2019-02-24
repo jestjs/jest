@@ -37,79 +37,98 @@ const noopTimer = {
   },
 };
 
-export default function JsApiReporter(options: Object) {
-  const timer = options.timer || noopTimer;
-  let status = 'loaded';
+export default class JsApiReporter {
+  started: boolean;
+  finished: boolean;
+  runDetails: unknown;
+  jasmineStarted: () => void;
+  jasmineDone: (runDetails: unknown) => void;
+  status: () => unknown;
+  executionTime: () => unknown;
 
-  this.started = false;
-  this.finished = false;
-  this.runDetails = {};
+  suiteStarted: (result: unknown) => void;
+  suiteDone: (result: unknown) => void;
+  suiteResults: (index: number, length: number) => unknown[];
+  suites: () => unknown;
 
-  this.jasmineStarted = function() {
-    this.started = true;
-    status = 'started';
-    timer.start();
-  };
+  specResults: (index: number, length: number) => unknown[];
+  specDone: (result: unknown) => void;
+  specs: () => unknown;
 
-  let executionTime;
+  constructor(options: {timer?: unknown}) {
+    const timer = options.timer || noopTimer;
+    let status = 'loaded';
 
-  function validateAfterAllExceptions({failedExpectations}) {
-    if (failedExpectations && failedExpectations.length > 0) {
-      throw failedExpectations[0];
+    this.started = false;
+    this.finished = false;
+    this.runDetails = {};
+
+    this.jasmineStarted = () => {
+      this.started = true;
+      status = 'started';
+      timer.start();
+    };
+
+    let executionTime;
+
+    function validateAfterAllExceptions({failedExpectations}) {
+      if (failedExpectations && failedExpectations.length > 0) {
+        throw failedExpectations[0];
+      }
     }
+
+    this.jasmineDone = function(runDetails) {
+      validateAfterAllExceptions(runDetails);
+      this.finished = true;
+      this.runDetails = runDetails;
+      executionTime = timer.elapsed();
+      status = 'done';
+    };
+
+    this.status = function() {
+      return status;
+    };
+
+    const suites = [];
+    const suites_hash = {};
+
+    this.suiteStarted = function(result) {
+      suites_hash[result.id] = result;
+    };
+
+    this.suiteDone = function(result) {
+      storeSuite(result);
+    };
+
+    this.suiteResults = function(index, length) {
+      return suites.slice(index, index + length);
+    };
+
+    function storeSuite(result) {
+      suites.push(result);
+      suites_hash[result.id] = result;
+    }
+
+    this.suites = function() {
+      return suites_hash;
+    };
+
+    const specs = [];
+
+    this.specDone = function(result) {
+      specs.push(result);
+    };
+
+    this.specResults = function(index, length) {
+      return specs.slice(index, index + length);
+    };
+
+    this.specs = function() {
+      return specs;
+    };
+
+    this.executionTime = function() {
+      return executionTime;
+    };
   }
-
-  this.jasmineDone = function(runDetails) {
-    validateAfterAllExceptions(runDetails);
-    this.finished = true;
-    this.runDetails = runDetails;
-    executionTime = timer.elapsed();
-    status = 'done';
-  };
-
-  this.status = function() {
-    return status;
-  };
-
-  const suites = [];
-  const suites_hash = {};
-
-  this.suiteStarted = function(result) {
-    suites_hash[result.id] = result;
-  };
-
-  this.suiteDone = function(result) {
-    storeSuite(result);
-  };
-
-  this.suiteResults = function(index, length) {
-    return suites.slice(index, index + length);
-  };
-
-  function storeSuite(result) {
-    suites.push(result);
-    suites_hash[result.id] = result;
-  }
-
-  this.suites = function() {
-    return suites_hash;
-  };
-
-  const specs = [];
-
-  this.specDone = function(result) {
-    specs.push(result);
-  };
-
-  this.specResults = function(index, length) {
-    return specs.slice(index, index + length);
-  };
-
-  this.specs = function() {
-    return specs;
-  };
-
-  this.executionTime = function() {
-    return executionTime;
-  };
 }

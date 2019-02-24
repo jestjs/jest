@@ -6,6 +6,4 @@
  *
  */
 
-'use strict';
-
 test('global.test', () => {});

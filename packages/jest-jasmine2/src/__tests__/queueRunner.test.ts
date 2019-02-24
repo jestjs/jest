@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import queueRunner from '../queueRunner';
 
 describe('queueRunner', () => {
@@ -87,7 +85,7 @@ describe('queueRunner', () => {
   });
 
   it('passes an error to `onException` on timeout.', async () => {
-    const fnOne = jest.fn(next => {});
+    const fnOne = jest.fn(_next => {});
     const fnTwo = jest.fn(next => next());
     const onException = jest.fn();
     const options = {

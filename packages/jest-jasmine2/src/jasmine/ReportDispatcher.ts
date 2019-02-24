@@ -29,43 +29,49 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export default function ReportDispatcher(methods: Array<string>) {
-  const dispatchedMethods = methods || [];
+export default class ReportDispatcher {
+  addReporter: (reporter: unknown) => void;
+  provideFallbackReporter: (reporter: unknown) => void;
+  clearReporters: () => void;
 
-  for (let i = 0; i < dispatchedMethods.length; i++) {
-    const method = dispatchedMethods[i];
-    this[method] = (function(m) {
-      return function() {
-        dispatch(m, arguments);
-      };
-    })(method);
-  }
+  constructor(methods: Array<string>) {
+    const dispatchedMethods = methods || [];
 
-  let reporters = [];
-  let fallbackReporter = null;
-
-  this.addReporter = function(reporter) {
-    reporters.push(reporter);
-  };
-
-  this.provideFallbackReporter = function(reporter) {
-    fallbackReporter = reporter;
-  };
-
-  this.clearReporters = function() {
-    reporters = [];
-  };
-
-  return this;
-
-  function dispatch(method, args) {
-    if (reporters.length === 0 && fallbackReporter !== null) {
-      reporters.push(fallbackReporter);
+    for (let i = 0; i < dispatchedMethods.length; i++) {
+      const method = dispatchedMethods[i];
+      this[method] = (function(m) {
+        return function() {
+          dispatch(m, arguments);
+        };
+      })(method);
     }
-    for (let i = 0; i < reporters.length; i++) {
-      const reporter = reporters[i];
-      if (reporter[method]) {
-        reporter[method].apply(reporter, args);
+
+    let reporters = [];
+    let fallbackReporter = null;
+
+    this.addReporter = function(reporter) {
+      reporters.push(reporter);
+    };
+
+    this.provideFallbackReporter = function(reporter) {
+      fallbackReporter = reporter;
+    };
+
+    this.clearReporters = function() {
+      reporters = [];
+    };
+
+    return this;
+
+    function dispatch(method: string, args) {
+      if (reporters.length === 0 && fallbackReporter !== null) {
+        reporters.push(fallbackReporter);
+      }
+      for (let i = 0; i < reporters.length; i++) {
+        const reporter = reporters[i];
+        if (reporter[method]) {
+          reporter[method].apply(reporter, args);
+        }
       }
     }
   }

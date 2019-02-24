@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 jest.useFakeTimers();
 
 import pTimeout from '../pTimeout';

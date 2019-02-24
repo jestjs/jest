@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 describe('test/it error throwing', () => {
   it(`it throws error with missing callback function`, () => {
     expect(() => {
@@ -18,11 +16,13 @@ describe('test/it error throwing', () => {
   });
   it(`it throws an error when first argument isn't a string`, () => {
     expect(() => {
+      // @ts-ignore
       it(() => {});
     }).toThrowError(`Invalid first argument, () => {}. It must be a string.`);
   });
   it('it throws an error when callback function is not a function', () => {
     expect(() => {
+      // @ts-ignore
       it('test3', 'test3b');
     }).toThrowError(
       'Invalid second argument, test3b. It must be a callback function.',
@@ -37,11 +37,13 @@ describe('test/it error throwing', () => {
   });
   test(`test throws an error when first argument isn't a string`, () => {
     expect(() => {
+      // @ts-ignore
       test(() => {});
     }).toThrowError(`Invalid first argument, () => {}. It must be a string.`);
   });
   test('test throws an error when callback function is not a function', () => {
     expect(() => {
+      // @ts-ignore
       test('test6', 'test6b');
     }).toThrowError(
       'Invalid second argument, test6b. It must be a callback function.',
