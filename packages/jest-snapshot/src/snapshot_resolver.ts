@@ -6,8 +6,14 @@
  */
 
 import path from 'path';
-import {Config, Snapshot} from '@jest/types';
+import {Config} from '@jest/types';
 import chalk from 'chalk';
+
+export type SnapshotResolver = {
+  testPathForConsistencyCheck: string;
+  resolveSnapshotPath(testPath: Config.Path, extension?: string): Config.Path;
+  resolveTestPath(snapshotPath: Config.Path, extension?: string): Config.Path;
+};
 
 export const EXTENSION = 'snap';
 export const DOT_EXTENSION = '.' + EXTENSION;
@@ -15,10 +21,10 @@ export const DOT_EXTENSION = '.' + EXTENSION;
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
 
-const cache: Map<Config.Path, Snapshot.SnapshotResolver> = new Map();
+const cache: Map<Config.Path, SnapshotResolver> = new Map();
 export const buildSnapshotResolver = (
   config: Config.ProjectConfig,
-): Snapshot.SnapshotResolver => {
+): SnapshotResolver => {
   const key = config.rootDir;
   if (!cache.has(key)) {
     cache.set(key, createSnapshotResolver(config.snapshotResolver));
@@ -28,13 +34,13 @@ export const buildSnapshotResolver = (
 
 function createSnapshotResolver(
   snapshotResolverPath?: Config.Path | null,
-): Snapshot.SnapshotResolver {
+): SnapshotResolver {
   return typeof snapshotResolverPath === 'string'
     ? createCustomSnapshotResolver(snapshotResolverPath)
     : createDefaultSnapshotResolver();
 }
 
-function createDefaultSnapshotResolver(): Snapshot.SnapshotResolver {
+function createDefaultSnapshotResolver(): SnapshotResolver {
   return {
     resolveSnapshotPath: (testPath: Config.Path) =>
       path.join(
@@ -59,10 +65,10 @@ function createDefaultSnapshotResolver(): Snapshot.SnapshotResolver {
 
 function createCustomSnapshotResolver(
   snapshotResolverPath: Config.Path,
-): Snapshot.SnapshotResolver {
-  const custom: Snapshot.SnapshotResolver = require(snapshotResolverPath);
+): SnapshotResolver {
+  const custom: SnapshotResolver = require(snapshotResolverPath);
 
-  const keys: [keyof Snapshot.SnapshotResolver, string][] = [
+  const keys: [keyof SnapshotResolver, string][] = [
     ['resolveSnapshotPath', 'function'],
     ['resolveTestPath', 'function'],
     ['testPathForConsistencyCheck', 'string'],
@@ -95,7 +101,7 @@ function mustImplement(propName: string, requiredType: string) {
   );
 }
 
-function verifyConsistentTransformations(custom: Snapshot.SnapshotResolver) {
+function verifyConsistentTransformations(custom: SnapshotResolver) {
   const resolvedSnapshotPath = custom.resolveSnapshotPath(
     custom.testPathForConsistencyCheck,
   );
