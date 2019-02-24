@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, Snapshot} from '@jest/types';
+import {Config} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map';
 import Resolver from 'jest-resolve';
-import {isSnapshotPath} from 'jest-snapshot';
+import {isSnapshotPath, SnapshotResolver} from 'jest-snapshot';
 
 namespace DependencyResolver {
   export type ResolvedModule = {
@@ -25,12 +25,12 @@ namespace DependencyResolver {
 class DependencyResolver {
   private _hasteFS: HasteFS;
   private _resolver: Resolver;
-  private _snapshotResolver: Snapshot.SnapshotResolver;
+  private _snapshotResolver: SnapshotResolver;
 
   constructor(
     resolver: Resolver,
     hasteFS: HasteFS,
-    snapshotResolver: Snapshot.SnapshotResolver,
+    snapshotResolver: SnapshotResolver,
   ) {
     this._resolver = resolver;
     this._hasteFS = hasteFS;
