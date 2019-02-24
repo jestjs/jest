@@ -6,7 +6,6 @@
  */
 
 import path from 'path';
-// import {Jest, LocalModuleRequire} from 'types/Jest';
 import {Argv, Config, Mocks, SourceMaps} from '@jest/types';
 import {
   Jest,
