@@ -646,7 +646,7 @@ export default function normalize(
         case 'haste':
           value = {...oldOptions[key]};
           if (value.hasteImplModulePath != null) {
-            value.hasteImplModulePath = resolve(newOptions.resolver, {
+            const resolvedHasteImpl = resolve(newOptions.resolver, {
               filePath: replaceRootDirInPath(
                 options.rootDir,
                 value.hasteImplModulePath,
@@ -654,6 +654,8 @@ export default function normalize(
               key: 'haste.hasteImplModulePath',
               rootDir: options.rootDir,
             });
+
+            value.hasteImplModulePath = resolvedHasteImpl || undefined;
           }
           break;
         case 'projects':
