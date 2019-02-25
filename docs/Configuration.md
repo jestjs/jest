@@ -937,6 +937,7 @@ This option allows the use of a custom results processor. This processor must be
   "numPassedTestSuites": number,
   "numFailedTestSuites": number,
   "numRuntimeErrorTestSuites": number,
+  "numTodoTests": number,
   "numTotalTests": number,
   "numPassedTests": number,
   "numFailedTests": number,
