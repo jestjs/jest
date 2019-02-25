@@ -10,7 +10,7 @@ import path from 'path';
 import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
 import yargs from 'yargs';
-import {Argv} from '@jest/types';
+import {Config} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
 import {Console, setGlobal} from 'jest-util';
 // @ts-ignore: Not migrated to TS
@@ -21,7 +21,7 @@ import {VERSION} from '../version';
 import {Context} from '../types';
 import * as args from './args';
 
-export function run(cliArgv?: Argv.Argv, cliInfo?: Array<string>) {
+export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   const realFs = require('fs');
   const fs = require('graceful-fs');
   fs.gracefulify(realFs);

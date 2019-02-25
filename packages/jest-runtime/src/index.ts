@@ -6,7 +6,7 @@
  */
 
 import path from 'path';
-import {Argv, Config, SourceMaps} from '@jest/types';
+import {Config, SourceMaps} from '@jest/types';
 import {
   Jest,
   JestEnvironment,
@@ -264,7 +264,7 @@ class Runtime {
     });
   }
 
-  static runCLI(args?: Argv.Argv, info?: Array<string>) {
+  static runCLI(args?: Config.Argv, info?: Array<string>) {
     return cliRun(args, info);
   }
 
