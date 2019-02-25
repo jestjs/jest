@@ -33,8 +33,8 @@ type WatcherState = {
 };
 
 class TestRunner {
-  _globalConfig: Config.GlobalConfig;
-  _context: TestRunnerContext;
+  private _globalConfig: Config.GlobalConfig;
+  private _context: TestRunnerContext;
 
   constructor(globalConfig: Config.GlobalConfig, context?: TestRunnerContext) {
     this._globalConfig = globalConfig;
@@ -60,7 +60,7 @@ class TestRunner {
         ));
   }
 
-  async _createInBandTestRun(
+  private async _createInBandTestRun(
     tests: Array<Test>,
     watcher: TestWatcher,
     onStart: OnTestStart,
@@ -94,7 +94,7 @@ class TestRunner {
     );
   }
 
-  async _createParallelTestRun(
+  private async _createParallelTestRun(
     tests: Array<Test>,
     watcher: TestWatcher,
     onStart: OnTestStart,
@@ -175,4 +175,4 @@ class CancelRun extends Error {
   }
 }
 
-module.exports = TestRunner;
+export = TestRunner;
