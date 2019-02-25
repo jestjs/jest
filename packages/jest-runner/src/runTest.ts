@@ -39,11 +39,11 @@ type RunTestInternalResult = {
 };
 
 function freezeConsole(
-  // @ts-ignore
+  // @ts-ignore: Correct types when `jest-util` is ESM
   testConsole: BufferedConsole | Console | NullConsole,
   config: Config.ProjectConfig,
 ) {
-  testConsole.log = function fakeConsolePush(_type: unknown, message: string) {
+  testConsole._log = function fakeConsolePush(_type: unknown, message: string) {
     const error = new ErrorWithStack(
       `${chalk.red(
         `${chalk.bold(
@@ -144,7 +144,6 @@ async function runTestInternal(
 
   const cacheFS = {[path]: testSource};
 
-  // @ts-ignore
   setGlobal(environment.global, 'console', testConsole);
 
   runtime = new Runtime(config, environment, resolver, cacheFS, {
@@ -166,9 +165,7 @@ async function runTestInternal(
       if (sourceMapSource) {
         try {
           return {
-            // @ts-ignore
-            // This code works
-            map: JSON.parse(fs.readFileSync(sourceMapSource)),
+            map: JSON.parse(fs.readFileSync(sourceMapSource, 'utf8')),
             url: source,
           };
         } catch (e) {}
@@ -190,14 +187,12 @@ async function runTestInternal(
 
   if (
     environment.global &&
-    (environment.global as NodeJS.Global).process &&
-    (environment.global as NodeJS.Global).process.exit
+    environment.global.process &&
+    environment.global.process.exit
   ) {
-    const realExit = (environment.global as NodeJS.Global).process.exit;
+    const realExit = environment.global.process.exit;
 
-    (environment.global as NodeJS.Global).process.exit = function exit(
-      ...args: Array<any>
-    ) {
+    environment.global.process.exit = function exit(...args: Array<any>) {
       const error = new ErrorWithStack(
         `process.exit called with "${args.join(', ')}"`,
         exit,
@@ -269,8 +264,7 @@ async function runTestInternal(
   } finally {
     await environment.teardown();
 
-    // @ts-ignore
-    // TODO: clarify this in PR why this is not on the module
+    // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33351
     sourcemapSupport.resetRetrieveHandlers();
   }
 }

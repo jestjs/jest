@@ -48,7 +48,7 @@ export interface Describe extends DescribeBase {
   skip: ItBase;
 }
 
-export interface Global {
+export interface Global extends NodeJS.Global {
   it: It;
   test: ItConcurrent;
   fit: ItBase;
