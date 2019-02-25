@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 import {Config, TestResult} from '@jest/types';
@@ -20,17 +19,14 @@ import {
   TestRunnerContext,
   TestRunnerOptions,
   TestWatcher,
+  WatcherState,
 } from './types';
 
 const TEST_WORKER_PATH = require.resolve('./testWorker');
 
-type WorkerInterface = Worker & {
+interface WorkerInterface extends Worker {
   worker: (workerData: WorkerData) => Promise<TestResult.TestResult>;
-};
-
-type WatcherState = {
-  interrupted: boolean;
-};
+}
 
 class TestRunner {
   private _globalConfig: Config.GlobalConfig;

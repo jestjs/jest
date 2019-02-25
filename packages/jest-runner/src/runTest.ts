@@ -29,7 +29,9 @@ import Resolver from 'jest-resolve';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
-import sourcemapSupport from 'source-map-support';
+import sourcemapSupport, {
+  Options as SourceMapOptions,
+} from 'source-map-support';
 import chalk from 'chalk';
 import {TestFramework, TestRunnerContext} from './types';
 
@@ -43,7 +45,10 @@ function freezeConsole(
   testConsole: BufferedConsole | Console | NullConsole,
   config: Config.ProjectConfig,
 ) {
-  testConsole._log = function fakeConsolePush(_type: unknown, message: string) {
+  testConsole._log = function fakeConsolePush(
+    _type: ConsoleType.LogType,
+    message: ConsoleType.LogMessage,
+  ) {
     const error = new ErrorWithStack(
       `${chalk.red(
         `${chalk.bold(
@@ -96,13 +101,14 @@ async function runTestInternal(
     });
   }
 
-  const TestEnvironment = require(testEnvironment) as Environment.EnvironmentClass;
-  const testFramework = (process.env.JEST_CIRCUS === '1'
-    ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
-    : require(config.testRunner)) as TestFramework;
-  const Runtime = (config.moduleLoader
+  const TestEnvironment: Environment.EnvironmentClass = require(testEnvironment);
+  const testFramework: TestFramework =
+    process.env.JEST_CIRCUS === '1'
+      ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
+      : require(config.testRunner);
+  const Runtime: RuntimeClass = config.moduleLoader
     ? require(config.moduleLoader)
-    : require('jest-runtime')) as RuntimeClass;
+    : require('jest-runtime');
 
   let runtime: RuntimeClass = undefined;
 
@@ -143,7 +149,6 @@ async function runTestInternal(
     : null;
 
   const cacheFS = {[path]: testSource};
-
   setGlobal(environment.global, 'console', testConsole);
 
   runtime = new Runtime(config, environment, resolver, cacheFS, {
@@ -155,10 +160,10 @@ async function runTestInternal(
 
   const start = Date.now();
 
-  const sourcemapOptions: sourcemapSupport.Options = {
+  const sourcemapOptions: SourceMapOptions = {
     environment: 'node',
     handleUncaughtExceptions: false,
-    retrieveSourceMap: (source: string) => {
+    retrieveSourceMap: source => {
       const sourceMaps = runtime && runtime.getSourceMaps();
       const sourceMapSource = sourceMaps && sourceMaps[source];
 

@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 import EventEmitter from 'events';
@@ -83,13 +82,13 @@ export type TestRunData = Array<{
 }>;
 
 // TODO: Should live in `@jest/core` or `jest-watcher`
-declare type State = {
+export type WatcherState = {
   interrupted: boolean;
 };
 export interface TestWatcher extends EventEmitter {
-  state: State;
+  state: WatcherState;
   new ({isWatchMode}: {isWatchMode: boolean}): TestWatcher;
-  setState(state: State): void;
+  setState(state: WatcherState): void;
   isInterrupted(): boolean;
   isWatchMode(): boolean;
 }
