@@ -10,7 +10,7 @@ import exit from 'exit';
 import throat from 'throat';
 import Worker from 'jest-worker';
 import runTest from './runTest';
-import {WorkerData} from './testWorker';
+import {worker} from './testWorker';
 import {
   OnTestFailure,
   OnTestStart,
@@ -25,7 +25,7 @@ import {
 const TEST_WORKER_PATH = require.resolve('./testWorker');
 
 interface WorkerInterface extends Worker {
-  worker: (workerData: WorkerData) => Promise<TestResult.TestResult>;
+  worker: typeof worker;
 }
 
 class TestRunner {

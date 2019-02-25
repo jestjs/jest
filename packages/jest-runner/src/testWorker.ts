@@ -15,7 +15,7 @@ import Runtime from 'jest-runtime';
 import {ErrorWithCode, TestRunnerContext} from './types';
 import runTest from './runTest';
 
-export type WorkerData = {
+type WorkerData = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   path: Config.Path;
