@@ -6,14 +6,14 @@
  */
 
 import path from 'path';
-import {Argv, Config, Mocks, SourceMaps} from '@jest/types';
+import {Argv, Config, SourceMaps} from '@jest/types';
 import {
   Jest,
   JestEnvironment,
   LocalModuleRequire,
   Module,
 } from '@jest/environment';
-import jestMock from 'jest-mock';
+import jestMock, {MockFunctionMetadata} from 'jest-mock';
 import HasteMap, {ModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import Resolver from 'jest-resolve';
@@ -85,7 +85,7 @@ class Runtime {
   private _isCurrentlyExecutingManualMock: string | null;
   private _mockFactories: {[key: string]: () => unknown};
   private _mockMetaDataCache: {
-    [key: string]: Mocks.MockFunctionMetadata<unknown, unknown[]>;
+    [key: string]: MockFunctionMetadata<unknown, unknown[]>;
   };
   private _mockRegistry: {[key: string]: any};
   private _isolatedMockRegistry: {[key: string]: any} | null;
@@ -504,7 +504,7 @@ class Runtime {
 
   getSourceMapInfo(coveredFiles: Set<string>) {
     return Object.keys(this._sourceMapRegistry).reduce<{
-      [path: string]: unknown;
+      [path: string]: string;
     }>((result, sourcePath) => {
       if (
         coveredFiles.has(sourcePath) &&
