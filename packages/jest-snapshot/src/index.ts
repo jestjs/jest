@@ -6,7 +6,7 @@
  */
 
 import fs from 'fs';
-import {Config, Matchers, Snapshot} from '@jest/types';
+import {Config, Matchers} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map';
 
 import diff from 'jest-diff';
@@ -14,6 +14,7 @@ import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
 import {
   buildSnapshotResolver,
   isSnapshotPath,
+  SnapshotResolver as JestSnapshotResolver,
   EXTENSION,
 } from './snapshot_resolver';
 import SnapshotState from './State';
@@ -31,7 +32,7 @@ const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
 const cleanup = (
   hasteFS: HasteFS,
   update: Config.SnapshotUpdateState,
-  snapshotResolver: Snapshot.SnapshotResolver,
+  snapshotResolver: JestSnapshotResolver,
 ) => {
   const pattern = '\\.' + EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
@@ -296,7 +297,7 @@ const _toThrowErrorMatchingSnapshot = ({
   });
 };
 
-export = {
+const JestSnapshot = {
   EXTENSION,
   SnapshotState,
   addSerializer,
@@ -310,3 +311,9 @@ export = {
   toThrowErrorMatchingSnapshot,
   utils,
 };
+/* eslint-disable-next-line no-redeclare */
+namespace JestSnapshot {
+  export type SnapshotResolver = JestSnapshotResolver;
+}
+
+export = JestSnapshot;

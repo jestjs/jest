@@ -4,16 +4,16 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {EnvironmentClass} from 'types/Environment';
-import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {Resolver} from 'types/Resolve';
-import type {TestFramework, TestRunnerContext} from 'types/TestRunner';
-import type {TestResult} from 'types/TestResult';
-import type RuntimeClass from 'jest-runtime';
-
+import {
+  Environment,
+  Config,
+  TestResult,
+  Console as ConsoleType,
+} from '@jest/types';
+// @ts-ignore: not migrated to TS
+import RuntimeClass from 'jest-runtime';
 import fs from 'graceful-fs';
 import {
   BufferedConsole,
@@ -24,22 +24,31 @@ import {
   setGlobal,
 } from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
+import Resolver from 'jest-resolve';
+// @ts-ignore: not migrated to TS
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
-import sourcemapSupport from 'source-map-support';
+import sourcemapSupport, {
+  Options as SourceMapOptions,
+} from 'source-map-support';
 import chalk from 'chalk';
+import {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
-  leakDetector: ?LeakDetector,
-  result: TestResult,
+  leakDetector: LeakDetector | null;
+  result: TestResult.TestResult;
 };
 
 function freezeConsole(
+  // @ts-ignore: Correct types when `jest-util` is ESM
   testConsole: BufferedConsole | Console | NullConsole,
-  config: ProjectConfig,
+  config: Config.ProjectConfig,
 ) {
-  testConsole._log = function fakeConsolePush(_type, message) {
+  testConsole._log = function fakeConsolePush(
+    _type: ConsoleType.LogType,
+    message: ConsoleType.LogMessage,
+  ) {
     const error = new ErrorWithStack(
       `${chalk.red(
         `${chalk.bold(
@@ -73,11 +82,11 @@ function freezeConsole(
 // references to verify if there is a leak, which is not maintainable and error
 // prone. That's why "runTestInternal" CANNOT be inlined inside "runTest".
 async function runTestInternal(
-  path: Path,
-  globalConfig: GlobalConfig,
-  config: ProjectConfig,
+  path: Config.Path,
+  globalConfig: Config.GlobalConfig,
+  config: Config.ProjectConfig,
   resolver: Resolver,
-  context: ?TestRunnerContext,
+  context?: TestRunnerContext,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const parsedDocblock = docblock.parse(docblock.extract(testSource));
@@ -92,21 +101,22 @@ async function runTestInternal(
     });
   }
 
-  /* $FlowFixMe */
-  const TestEnvironment = (require(testEnvironment): EnvironmentClass);
-  const testFramework = ((process.env.JEST_CIRCUS === '1'
-    ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
-    : /* $FlowFixMe */
-      require(config.testRunner)): TestFramework);
-  const Runtime = ((config.moduleLoader
-    ? /* $FlowFixMe */
-      require(config.moduleLoader)
-    : require('jest-runtime')): Class<RuntimeClass>);
+  const TestEnvironment: Environment.EnvironmentClass = require(testEnvironment);
+  const testFramework: TestFramework =
+    process.env.JEST_CIRCUS === '1'
+      ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
+      : require(config.testRunner);
+  const Runtime: RuntimeClass = config.moduleLoader
+    ? require(config.moduleLoader)
+    : require('jest-runtime');
 
-  let runtime = undefined;
+  let runtime: RuntimeClass = undefined;
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
-  const consoleFormatter = (type, message) =>
+  const consoleFormatter = (
+    type: ConsoleType.LogType,
+    message: ConsoleType.LogMessage,
+  ) =>
     getConsoleOutput(
       config.cwd,
       !!globalConfig.verbose,
@@ -150,7 +160,7 @@ async function runTestInternal(
 
   const start = Date.now();
 
-  const sourcemapOptions = {
+  const sourcemapOptions: SourceMapOptions = {
     environment: 'node',
     handleUncaughtExceptions: false,
     retrieveSourceMap: source => {
@@ -160,7 +170,7 @@ async function runTestInternal(
       if (sourceMapSource) {
         try {
           return {
-            map: JSON.parse(fs.readFileSync(sourceMapSource)),
+            map: JSON.parse(fs.readFileSync(sourceMapSource, 'utf8')),
             url: source,
           };
         } catch (e) {}
@@ -187,7 +197,7 @@ async function runTestInternal(
   ) {
     const realExit = environment.global.process.exit;
 
-    environment.global.process.exit = function exit(...args) {
+    environment.global.process.exit = function exit(...args: Array<any>) {
       const error = new ErrorWithStack(
         `process.exit called with "${args.join(', ')}"`,
         exit,
@@ -210,7 +220,7 @@ async function runTestInternal(
   try {
     await environment.setup();
 
-    let result: TestResult;
+    let result: TestResult.TestResult;
 
     try {
       result = await testFramework(
@@ -259,17 +269,18 @@ async function runTestInternal(
   } finally {
     await environment.teardown();
 
+    // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33351
     sourcemapSupport.resetRetrieveHandlers();
   }
 }
 
 export default async function runTest(
-  path: Path,
-  globalConfig: GlobalConfig,
-  config: ProjectConfig,
+  path: Config.Path,
+  globalConfig: Config.GlobalConfig,
+  config: Config.ProjectConfig,
   resolver: Resolver,
-  context: ?TestRunnerContext,
-): Promise<TestResult> {
+  context?: TestRunnerContext,
+): Promise<TestResult.TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
     globalConfig,

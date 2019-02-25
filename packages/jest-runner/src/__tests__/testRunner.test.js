@@ -7,7 +7,6 @@
  */
 
 import {TestWatcher} from '@jest/core';
-// eslint-disable-next-line import/default
 import TestRunner from '../index';
 
 let mockWorkerFarm;
