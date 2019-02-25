@@ -10,7 +10,6 @@ import {Config, TestResult} from '@jest/types';
 import HasteMap, {SerializableModuleMap, ModuleMap} from 'jest-haste-map';
 import exit from 'exit';
 import {separateMessageFromStack} from 'jest-message-util';
-// @ts-ignore: Not migrated to TS
 import Runtime from 'jest-runtime';
 import {ErrorWithCode, TestRunnerContext} from './types';
 import runTest from './runTest';

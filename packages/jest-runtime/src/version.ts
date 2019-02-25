@@ -5,6 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export {default as ScriptTransformer} from './ScriptTransformer';
-export {default as shouldInstrument} from './shouldInstrument';
-export {Transformer, ShouldInstrumentOptions} from './types';
+// For some reason, doing `require`ing here works, while inside `cli` fails
+export const VERSION: string = require('../package.json').version;

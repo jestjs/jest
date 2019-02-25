@@ -10,7 +10,7 @@ import {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replacePathSepForGlob} from 'jest-util';
 import micromatch from 'micromatch';
-import {Options} from './types';
+import {ShouldInstrumentOptions} from './types';
 
 const MOCKS_PATTERN = new RegExp(
   escapePathForRegex(path.sep + '__mocks__' + path.sep),
@@ -18,7 +18,7 @@ const MOCKS_PATTERN = new RegExp(
 
 export default function shouldInstrument(
   filename: Config.Path,
-  options: Options,
+  options: ShouldInstrumentOptions,
   config: Config.ProjectConfig,
 ): boolean {
   if (!options.collectCoverage) {

@@ -6,10 +6,10 @@
  */
 
 import {EventEmitter} from 'events';
-import {Environment, Config, TestResult} from '@jest/types';
+import {Config, TestResult} from '@jest/types';
+import {JestEnvironment} from '@jest/environment';
 import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
 import HasteResolver from 'jest-resolve';
-// @ts-ignore: not migrated to TS
 import Runtime from 'jest-runtime';
 
 export type ErrorWithCode = Error & {code?: string};
@@ -63,7 +63,7 @@ export type Reporter = {
 export type TestFramework = (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  environment: Environment.Environment,
+  environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
 ) => Promise<TestResult.TestResult>;
