@@ -80,7 +80,14 @@ export const getPath = (
     result.traversedPath.unshift(prop);
 
     if (lastProp) {
-      result.hasEndProp = prop in object;
+      try {
+        result.hasEndProp = newObject !== undefined || prop in object;
+      } catch (e) {
+        // A primitive value usually throws TypeError: Cannot use 'in' operator
+        // Beware: 'length' in string throws, but property does exist.
+        // However, string['length'] is number, not undefined.
+        result.hasEndProp = false;
+      }
       if (!result.hasEndProp) {
         result.traversedPath.shift();
       }
