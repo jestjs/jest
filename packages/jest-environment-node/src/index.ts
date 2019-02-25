@@ -3,32 +3,28 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Script} from 'vm';
-import type {ProjectConfig} from 'types/Config';
-import type {Global} from 'types/Global';
-import type {ModuleMocker} from 'jest-mock';
+import vm, {Script, Context} from 'vm';
+import {Global, Config} from '@jest/types';
+import {ModuleMocker} from 'jest-mock';
+import {installCommonGlobals} from 'jest-util';
+import FakeTimers from '../../jest-util/build/FakeTimers';
+// import FakeTimers from 'jest-util/build/FakeTimers';
 
-import vm from 'vm';
-import {FakeTimers, installCommonGlobals} from 'jest-util';
-import mock from 'jest-mock';
-
-type Timer = {|
-  id: number,
-  ref: () => Timer,
-  unref: () => Timer,
-|};
+type Timer = {
+  id: number;
+  ref: () => Timer;
+  unref: () => Timer;
+};
 
 class NodeEnvironment {
-  context: ?vm$Context;
-  fakeTimers: ?FakeTimers<Timer>;
-  global: ?Global;
-  moduleMocker: ?ModuleMocker;
+  context?: Context | null;
+  fakeTimers?: FakeTimers<Timer> | null;
+  global?: Global.Global | null;
+  moduleMocker?: ModuleMocker | null;
 
-  constructor(config: ProjectConfig) {
+  constructor(config: Config.ProjectConfig) {
     this.context = vm.createContext();
     const global = (this.global = vm.runInContext(
       'this',
@@ -47,7 +43,7 @@ class NodeEnvironment {
       global.URLSearchParams = URLSearchParams;
     }
     installCommonGlobals(global, config.globals);
-    this.moduleMocker = new mock.ModuleMocker(global);
+    this.moduleMocker = new ModuleMocker(global);
 
     const timerIdToRef = (id: number) => ({
       id,
@@ -59,7 +55,8 @@ class NodeEnvironment {
       },
     });
 
-    const timerRefToId = (timer: Timer): ?number => (timer && timer.id) || null;
+    const timerRefToId = (timer: Timer): number | undefined =>
+      timer && timer.id;
 
     const timerConfig = {
       idToRef: timerIdToRef,
@@ -88,7 +85,7 @@ class NodeEnvironment {
   }
 
   // Disabling rule as return type depends on script's return type.
-  runScript(script: Script): ?any {
+  runScript(script: Script): any | null | undefined {
     if (this.context) {
       return script.runInContext(this.context);
     }
