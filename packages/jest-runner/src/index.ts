@@ -101,8 +101,6 @@ class TestRunner {
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
   ) {
-    // TODO: Resolve typing since this is correct code
-    //@ts-ignore
     const worker = new Worker(TEST_WORKER_PATH, {
       exposedMethods: ['worker'],
       forkOptions: {stdio: 'pipe'},
