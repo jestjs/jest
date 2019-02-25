@@ -9,8 +9,7 @@ import vm, {Script, Context} from 'vm';
 import {Global, Config} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
-import FakeTimers from '../../jest-util/build/FakeTimers';
-// import FakeTimers from 'jest-util/build/FakeTimers';
+import FakeTimers from 'jest-util/build/FakeTimers';
 
 type Timer = {
   id: number;
@@ -56,7 +55,7 @@ class NodeEnvironment {
     });
 
     const timerRefToId = (timer: Timer): number | undefined =>
-      timer && timer.id;
+      (timer && timer.id) || undefined;
 
     const timerConfig = {
       idToRef: timerIdToRef,
