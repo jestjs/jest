@@ -482,9 +482,10 @@ export default function normalize(
   }
 
   setupBabelJest(options);
-  const newOptions: AllOptions = {
+  // TODO: Type this properly
+  const newOptions = ({
     ...DEFAULT_CONFIG,
-  };
+  } as unknown) as AllOptions;
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
