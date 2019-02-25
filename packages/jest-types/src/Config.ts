@@ -447,4 +447,3 @@ export type Argv = Arguments<{
   watchman: boolean;
   watchPathIgnorePatterns: Array<string>;
 }>;
-
