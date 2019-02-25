@@ -4,28 +4,24 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {SerializableError, TestResult} from 'types/TestResult';
-import type {SerializableModuleMap} from 'types/HasteMap';
-import type {ErrorWithCode} from 'types/Errors';
-import type {TestRunnerContext} from 'types/TestRunner';
-
+import {Config, TestResult} from '@jest/types';
+import HasteMap, {SerializableModuleMap, ModuleMap} from 'jest-haste-map';
 import exit from 'exit';
-import HasteMap from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
+// @ts-ignore: Not migrated to TS
 import Runtime from 'jest-runtime';
+import {ErrorWithCode, TestRunnerContext} from './types';
 import runTest from './runTest';
 
-export type WorkerData = {|
-  config: ProjectConfig,
-  globalConfig: GlobalConfig,
-  path: Path,
-  serializableModuleMap: ?SerializableModuleMap,
-  context?: TestRunnerContext,
-|};
+type WorkerData = {
+  config: Config.ProjectConfig;
+  globalConfig: Config.GlobalConfig;
+  path: Config.Path;
+  serializableModuleMap: SerializableModuleMap | null;
+  context?: TestRunnerContext;
+};
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
@@ -33,7 +29,9 @@ process.on('uncaughtException', err => {
   exit(1);
 });
 
-const formatError = (error: string | ErrorWithCode): SerializableError => {
+const formatError = (
+  error: string | ErrorWithCode,
+): TestResult.SerializableError => {
   if (typeof error === 'string') {
     const {message, stack} = separateMessageFromStack(error);
     return {
@@ -52,7 +50,10 @@ const formatError = (error: string | ErrorWithCode): SerializableError => {
 };
 
 const resolvers = Object.create(null);
-const getResolver = (config, moduleMap) => {
+const getResolver = (
+  config: Config.ProjectConfig,
+  moduleMap: ModuleMap | null,
+) => {
   // In watch mode, the raw module map with all haste modules is passed from
   // the test runner to the watch command. This is because jest-haste-map's
   // watch mode does not persist the haste map on disk after every file change.
@@ -77,7 +78,7 @@ export async function worker({
   path,
   serializableModuleMap,
   context,
-}: WorkerData): Promise<TestResult> {
+}: WorkerData): Promise<TestResult.TestResult> {
   try {
     const moduleMap = serializableModuleMap
       ? HasteMap.ModuleMap.fromJSON(serializableModuleMap)
