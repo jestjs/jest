@@ -12,7 +12,7 @@ import type {EnvironmentContext} from 'types/Environment';
 import type {Global} from 'types/Global';
 import type {ModuleMocker} from 'jest-mock';
 
-import FakeTimers from '@jest/fake-timers';
+import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
 import {installCommonGlobals} from 'jest-util';
 import mock from 'jest-mock';
 import {JSDOM, VirtualConsole} from 'jsdom';

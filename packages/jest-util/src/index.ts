@@ -6,7 +6,7 @@
  */
 
 // TODO: Remove this export in the next major
-import FakeTimers from '@jest/fake-timers';
+import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
 import BufferedConsole from './BufferedConsole';
 import clearLine from './clearLine';
 import CustomConsole from './CustomConsole';

@@ -7,7 +7,7 @@
 
 import vm from 'vm';
 import mock from 'jest-mock';
-import FakeTimers from '../';
+import FakeTimers from '../jestFakeTimers';
 
 const timerConfig = {
   idToRef: (id: number) => id,

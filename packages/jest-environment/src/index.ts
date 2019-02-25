@@ -9,7 +9,7 @@ import {Script} from 'vm';
 import {Config, Global} from '@jest/types';
 import jestMock, {ModuleMocker} from 'jest-mock';
 import {ScriptTransformer} from '@jest/transform';
-import FakeTimers from '@jest/fake-timers';
+import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
 
 type JestMockFn = typeof jestMock.fn;
 type JestMockSpyOn = typeof jestMock.spyOn;
