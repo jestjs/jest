@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import EventEmitter from 'events';
+import {EventEmitter} from 'events';
 import {Environment, Config, TestResult} from '@jest/types';
 import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
 import HasteResolver from 'jest-resolve';
