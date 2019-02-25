@@ -6,19 +6,14 @@
  */
 
 import {Script} from 'vm';
-import {Config} from '@jest/types';
+import {Config, Global} from '@jest/types';
 import moduleMocker from 'jest-mock';
 import {ScriptTransformer} from '@jest/transform';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {CoverageMapData} from 'istanbul-lib-coverage';
 
 export type EnvironmentContext = {
   console?: Console;
   testPath?: Config.Path;
 };
-
-// TODO: Get rid of this at some point
-type JasmineType = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
 
 // TODO: type this better: https://nodejs.org/api/modules.html#modules_the_module_wrapper
 type ModuleWrapper = (...args: Array<unknown>) => unknown;
@@ -31,8 +26,7 @@ export interface JestEnvironment {
   runScript(
     script: Script,
   ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null;
-  // TODO: Maybe add `| Window` in the future?
-  global: NodeJS.Global & {__coverage__: CoverageMapData; jasmine: JasmineType};
+  global: Global.Global;
   // TODO: When `jest-util` is ESM, this can just be `fakeTimers: import('jest-util').FakeTimers`
   fakeTimers: {
     clearAllTimers(): void;
