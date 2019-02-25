@@ -8,9 +8,9 @@
  */
 
 import path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
-import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../coverage-threshold');
 

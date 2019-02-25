@@ -7,8 +7,8 @@
  * @flow
  */
 
-import runJest from '../runJest';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import runJest from '../runJest';
 
 test('prints useful error for environment methods after test is done', () => {
   const {stderr} = runJest('environment-after-teardown');

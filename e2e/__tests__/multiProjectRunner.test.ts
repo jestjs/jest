@@ -7,11 +7,11 @@
  * @flow
  */
 
-import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
-import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(os.tmpdir(), 'multi-project-runner-test');
 

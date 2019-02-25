@@ -7,9 +7,9 @@
  * @flow
  */
 
-import runJest from '../runJest';
 import os from 'os';
 import path from 'path';
+import runJest from '../runJest';
 import {cleanup, writeFiles} from '../Utils';
 
 const DIR = path.resolve(os.tmpdir(), 'use-stderr-test');

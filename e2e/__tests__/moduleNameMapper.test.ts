@@ -7,9 +7,9 @@
  * @flow
  */
 
+import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest, {json as runWithJson} from '../runJest';
 import {extractSummary} from '../Utils';
-import {wrap} from 'jest-snapshot-serializer-raw';
 
 test('moduleNameMapper wrong configuration', () => {
   const {stderr, status} = runJest('module-name-mapper-wrong-config');

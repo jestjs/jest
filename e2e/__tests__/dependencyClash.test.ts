@@ -8,9 +8,9 @@
  */
 
 import path from 'path';
+import os from 'os';
 import {cleanup, createEmptyPackage, writeFiles} from '../Utils';
 import runJest from '../runJest';
-import os from 'os';
 import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 
 skipSuiteOnWindows();

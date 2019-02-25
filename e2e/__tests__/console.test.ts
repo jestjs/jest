@@ -7,9 +7,9 @@
  * @flow
  */
 
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
-import {wrap} from 'jest-snapshot-serializer-raw';
 
 test('console printing', () => {
   const {stderr, status} = runJest('console');

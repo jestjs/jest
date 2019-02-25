@@ -9,10 +9,10 @@
 'use strict';
 
 import path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 import {skipSuiteOnJestCircus} from '../../scripts/ConditionalTest';
-import {wrap} from 'jest-snapshot-serializer-raw';
 
 /**
  * NOTE: This test should be removed once jest-circus is rolled out as a breaking change.

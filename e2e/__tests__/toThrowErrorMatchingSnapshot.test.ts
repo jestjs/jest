@@ -9,9 +9,9 @@
 
 import path from 'path';
 import fs from 'fs';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
-import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../to-throw-error-matching-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');

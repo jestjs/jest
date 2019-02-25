@@ -10,8 +10,8 @@
 import os from 'os';
 import path from 'path';
 import HasteMap from 'jest-haste-map';
-import {cleanup, writeFiles} from '../Utils';
 import {sync as realpath} from 'realpath-native';
+import {cleanup, writeFiles} from '../Utils';
 
 const DIR = path.resolve(realpath(os.tmpdir()), 'haste_map_size');
 

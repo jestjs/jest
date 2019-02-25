@@ -8,11 +8,11 @@
  */
 
 import path from 'path';
-import runJest from '../runJest';
 import os from 'os';
+import {wrap} from 'jest-snapshot-serializer-raw';
+import runJest from '../runJest';
 import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 import {cleanup, writeFiles} from '../Utils';
-import {wrap} from 'jest-snapshot-serializer-raw';
 
 skipSuiteOnWindows();
 

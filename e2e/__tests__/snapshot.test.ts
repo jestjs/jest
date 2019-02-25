@@ -9,9 +9,9 @@
 
 import fs from 'fs';
 import path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
-import {wrap} from 'jest-snapshot-serializer-raw';
 
 const emptyTest = 'describe("", () => {it("", () => {})})';
 const snapshotDir = path.resolve(

@@ -7,8 +7,8 @@
  * @flow
  */
 
-import runJest, {until} from '../runJest';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import runJest, {until} from '../runJest';
 
 try {
   // $FlowFixMe: Node core

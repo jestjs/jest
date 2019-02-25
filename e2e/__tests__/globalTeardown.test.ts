@@ -8,9 +8,9 @@
 'use strict';
 
 import fs from 'fs';
-import {createDirectory} from 'jest-util';
 import os from 'os';
 import path from 'path';
+import {createDirectory} from 'jest-util';
 import runJest, {json as runWithJson} from '../runJest';
 import {cleanup} from '../Utils';
 

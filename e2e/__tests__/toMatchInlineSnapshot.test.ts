@@ -9,9 +9,9 @@
 
 import fs from 'fs';
 import path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
-import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../to-match-inline-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');

@@ -7,9 +7,9 @@
  * @flow
  */
 
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import {json as runWithJson} from '../runJest';
-import {wrap} from 'jest-snapshot-serializer-raw';
 
 test('testNamePattern skipped', () => {
   const {stderr, status} = runWithJson('test-name-pattern-skipped', [

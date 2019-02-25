@@ -7,8 +7,8 @@
  * @flow
  */
 
-import runJest from '../runJest';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import runJest from '../runJest';
 
 describe('Correct BeforeAll run', () => {
   it('ensures the BeforeAll of ignored suite is not run', () => {
