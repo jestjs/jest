@@ -941,6 +941,7 @@ This option allows the use of a custom results processor. This processor must be
   "numPassedTests": number,
   "numFailedTests": number,
   "numPendingTests": number,
+  "numTodoTests": number,
   "openHandles": Array<Error>,
   "testResults": [{
     "numFailingTests": number,
