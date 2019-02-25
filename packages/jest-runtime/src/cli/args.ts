@@ -9,7 +9,10 @@ import {Options} from 'yargs';
 
 export const usage = 'Usage: $0 [--config=<pathToConfigFile>] <file>';
 
-export const options: {[key: string]: Options} = {
+export const options: Record<
+  'cache' | 'config' | 'debug' | 'version' | 'watchman',
+  Options
+> = {
   cache: {
     default: true,
     description:
