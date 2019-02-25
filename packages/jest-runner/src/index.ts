@@ -3,12 +3,15 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {GlobalConfig} from 'types/Config';
-import type {
+import {Config, TestResult} from '@jest/types';
+import exit from 'exit';
+import throat from 'throat';
+import Worker from 'jest-worker';
+import runTest from './runTest';
+import {worker} from './testWorker';
+import {
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
@@ -16,24 +19,20 @@ import type {
   TestRunnerContext,
   TestRunnerOptions,
   TestWatcher,
-} from 'types/TestRunner';
-
-import typeof {worker} from './testWorker';
-
-import exit from 'exit';
-import runTest from './runTest';
-import throat from 'throat';
-import Worker from 'jest-worker';
+  WatcherState,
+} from './types';
 
 const TEST_WORKER_PATH = require.resolve('./testWorker');
 
-type WorkerInterface = Worker & {worker: worker};
+interface WorkerInterface extends Worker {
+  worker: typeof worker;
+}
 
 class TestRunner {
-  _globalConfig: GlobalConfig;
-  _context: TestRunnerContext;
+  private _globalConfig: Config.GlobalConfig;
+  private _context: TestRunnerContext;
 
-  constructor(globalConfig: GlobalConfig, context?: TestRunnerContext) {
+  constructor(globalConfig: Config.GlobalConfig, context?: TestRunnerContext) {
     this._globalConfig = globalConfig;
     this._context = context || {};
   }
@@ -57,7 +56,7 @@ class TestRunner {
         ));
   }
 
-  async _createInBandTestRun(
+  private async _createInBandTestRun(
     tests: Array<Test>,
     watcher: TestWatcher,
     onStart: OnTestStart,
@@ -91,19 +90,19 @@ class TestRunner {
     );
   }
 
-  async _createParallelTestRun(
+  private async _createParallelTestRun(
     tests: Array<Test>,
     watcher: TestWatcher,
     onStart: OnTestStart,
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
   ) {
-    const worker: WorkerInterface = new Worker(TEST_WORKER_PATH, {
+    const worker = new Worker(TEST_WORKER_PATH, {
       exposedMethods: ['worker'],
       forkOptions: {stdio: 'pipe'},
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
-    });
+    }) as WorkerInterface;
 
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
     if (worker.getStderr()) worker.getStderr().pipe(process.stderr);
@@ -112,7 +111,7 @@ class TestRunner {
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
-    const runTestInWorker = test =>
+    const runTestInWorker = (test: Test) =>
       mutex(async () => {
         if (watcher.isInterrupted()) {
           return Promise.reject();
@@ -131,7 +130,7 @@ class TestRunner {
         });
       });
 
-    const onError = async (err, test) => {
+    const onError = async (err: TestResult.SerializableError, test: Test) => {
       await onFailure(test, err);
       if (err.type === 'ProcessTerminatedError') {
         console.error(
@@ -143,7 +142,7 @@ class TestRunner {
     };
 
     const onInterrupt = new Promise((_, reject) => {
-      watcher.on('change', state => {
+      watcher.on('change', (state: WatcherState) => {
         if (state.interrupted) {
           reject(new CancelRun());
         }
@@ -164,10 +163,10 @@ class TestRunner {
 }
 
 class CancelRun extends Error {
-  constructor(message: ?string) {
+  constructor(message?: string) {
     super(message);
     this.name = 'CancelRun';
   }
 }
 
-module.exports = TestRunner;
+export = TestRunner;
