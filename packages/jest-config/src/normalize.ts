@@ -488,7 +488,7 @@ export default function normalize(
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
-    newOptions.cwd = realpath(newOptions.cwd!);
+    newOptions.cwd = realpath(newOptions.cwd);
   } catch (e) {
     // ignored
   }
@@ -501,336 +501,331 @@ export default function normalize(
     });
   }
 
-  (Object.keys(options) as Array<keyof Config.InitialOptions>).reduce(
-    (newOptions, key: keyof Config.InitialOptions) => {
-      // The resolver has been resolved separately; skip it
-      if (key === 'resolver') {
-        return newOptions;
-      }
+  const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
-      // This is cheating, because it claims that all keys of InitialOptions are Required.
-      // We only really know it's Required for oldOptions[key], not for oldOptions.someOtherKey,
-      // so oldOptions[key] is the only way it should be used.
-      const oldOptions = options as Config.InitialOptions &
-        Required<Pick<Config.InitialOptions, typeof key>>;
-      let value;
-      switch (key) {
-        case 'collectCoverageOnlyFrom':
-          value = normalizeCollectCoverageOnlyFrom(oldOptions, key);
-          break;
-        case 'setupFiles':
-        case 'setupFilesAfterEnv':
-        case 'snapshotSerializers':
-          {
-            const option = oldOptions[key];
-            value =
-              option &&
-              option.map(filePath =>
-                resolve(newOptions.resolver, {
-                  filePath,
-                  key,
-                  rootDir: options.rootDir,
-                }),
-              );
-          }
-          break;
-        case 'modulePaths':
-        case 'roots':
-          {
-            const option = oldOptions[key];
-            value =
-              option &&
-              option.map(filePath =>
-                path.resolve(
-                  options.rootDir,
-                  replaceRootDirInPath(options.rootDir, filePath),
-                ),
-              );
-          }
-          break;
-        case 'collectCoverageFrom':
-          value = normalizeCollectCoverageFrom(oldOptions, key);
-          break;
-        case 'cacheDirectory':
-        case 'coverageDirectory':
-          {
-            const option = oldOptions[key];
-            value =
-              option &&
-              path.resolve(
-                options.rootDir,
-                replaceRootDirInPath(options.rootDir, option),
-              );
-          }
-          break;
-        case 'dependencyExtractor':
-        case 'globalSetup':
-        case 'globalTeardown':
-        case 'moduleLoader':
-        case 'snapshotResolver':
-        case 'testResultsProcessor':
-        case 'testRunner':
-        case 'filter':
-          {
-            const option = oldOptions[key];
-            value =
-              option &&
-              resolve(newOptions.resolver, {
-                filePath: option,
-                key,
-                rootDir: options.rootDir,
-              });
-          }
-          break;
-        case 'runner':
-          {
-            const option = oldOptions[key];
-            value =
-              option &&
-              getRunner(newOptions.resolver, {
-                filePath: option,
-                rootDir: options.rootDir,
-              });
-          }
-          break;
-        case 'prettierPath':
-          {
-            // We only want this to throw if "prettierPath" is explicitly passed
-            // from config or CLI, and the requested path isn't found. Otherwise we
-            // set it to null and throw an error lazily when it is used.
+  optionKeys.reduce((newOptions, key: keyof Config.InitialOptions) => {
+    // The resolver has been resolved separately; skip it
+    if (key === 'resolver') {
+      return newOptions;
+    }
 
-            const option = oldOptions[key];
-
-            value =
-              option &&
-              resolve(newOptions.resolver, {
-                filePath: option,
-                key,
-                optional: option === DEFAULT_CONFIG[key],
-                rootDir: options.rootDir,
-              });
-          }
-          break;
-        case 'moduleNameMapper':
-          const moduleNameMapper = oldOptions[key];
+    // This is cheating, because it claims that all keys of InitialOptions are Required.
+    // We only really know it's Required for oldOptions[key], not for oldOptions.someOtherKey,
+    // so oldOptions[key] is the only way it should be used.
+    const oldOptions = options as Config.InitialOptions &
+      Required<Pick<Config.InitialOptions, typeof key>>;
+    let value;
+    switch (key) {
+      case 'collectCoverageOnlyFrom':
+        value = normalizeCollectCoverageOnlyFrom(oldOptions, key);
+        break;
+      case 'setupFiles':
+      case 'setupFilesAfterEnv':
+      case 'snapshotSerializers':
+        {
+          const option = oldOptions[key];
           value =
-            moduleNameMapper &&
-            Object.keys(moduleNameMapper).map(regex => {
-              const item = moduleNameMapper && moduleNameMapper[regex];
-              return (
-                item && [regex, _replaceRootDirTags(options.rootDir, item)]
-              );
-            });
-          break;
-        case 'transform':
-          const transform = oldOptions[key];
-          value =
-            transform &&
-            Object.keys(transform).map(regex => [
-              regex,
+            option &&
+            option.map(filePath =>
               resolve(newOptions.resolver, {
-                filePath: transform[regex],
+                filePath,
                 key,
                 rootDir: options.rootDir,
               }),
-            ]);
-          break;
-        case 'coveragePathIgnorePatterns':
-        case 'modulePathIgnorePatterns':
-        case 'testPathIgnorePatterns':
-        case 'transformIgnorePatterns':
-        case 'watchPathIgnorePatterns':
-        case 'unmockedModulePathPatterns':
-          value = normalizeUnmockedModulePathPatterns(oldOptions, key);
-          break;
-        case 'haste':
-          value = {...oldOptions[key]};
-          if (value.hasteImplModulePath != null) {
-            const resolvedHasteImpl = resolve(newOptions.resolver, {
-              filePath: replaceRootDirInPath(
+            );
+        }
+        break;
+      case 'modulePaths':
+      case 'roots':
+        {
+          const option = oldOptions[key];
+          value =
+            option &&
+            option.map(filePath =>
+              path.resolve(
                 options.rootDir,
-                value.hasteImplModulePath,
+                replaceRootDirInPath(options.rootDir, filePath),
               ),
-              key: 'haste.hasteImplModulePath',
+            );
+        }
+        break;
+      case 'collectCoverageFrom':
+        value = normalizeCollectCoverageFrom(oldOptions, key);
+        break;
+      case 'cacheDirectory':
+      case 'coverageDirectory':
+        {
+          const option = oldOptions[key];
+          value =
+            option &&
+            path.resolve(
+              options.rootDir,
+              replaceRootDirInPath(options.rootDir, option),
+            );
+        }
+        break;
+      case 'dependencyExtractor':
+      case 'globalSetup':
+      case 'globalTeardown':
+      case 'moduleLoader':
+      case 'snapshotResolver':
+      case 'testResultsProcessor':
+      case 'testRunner':
+      case 'filter':
+        {
+          const option = oldOptions[key];
+          value =
+            option &&
+            resolve(newOptions.resolver, {
+              filePath: option,
+              key,
               rootDir: options.rootDir,
             });
-
-            value.hasteImplModulePath = resolvedHasteImpl || undefined;
-          }
-          break;
-        case 'projects':
-          value = (oldOptions[key] || [])
-            .map(project =>
-              typeof project === 'string'
-                ? _replaceRootDirTags(options.rootDir, project)
-                : project,
-            )
-            .reduce((projects, project) => {
-              // Project can be specified as globs. If a glob matches any files,
-              // We expand it to these paths. If not, we keep the original path
-              // for the future resolution.
-              const globMatches =
-                typeof project === 'string' ? glob.sync(project) : [];
-              return projects.concat(
-                globMatches.length ? globMatches : project,
-              );
-            }, []);
-          break;
-        case 'moduleDirectories':
-        case 'testMatch':
-          {
-            const replacedRootDirTags = _replaceRootDirTags(
-              escapeGlobCharacters(options.rootDir),
-              oldOptions[key],
-            );
-
-            if (replacedRootDirTags) {
-              value = Array.isArray(replacedRootDirTags)
-                ? replacedRootDirTags.map(replacePathSepForGlob)
-                : replacePathSepForGlob(replacedRootDirTags);
-            } else {
-              value = replacedRootDirTags;
-            }
-          }
-          break;
-        case 'testRegex':
-          {
-            const option = oldOptions[key];
-            value = option
-              ? (Array.isArray(option) ? option : [option]).map(
-                  replacePathSepForRegex,
-                )
-              : [];
-          }
-          break;
-        case 'moduleFileExtensions': {
-          value = oldOptions[key];
-
-          if (
-            Array.isArray(value) && // If it's the wrong type, it can throw at a later time
-            (options.runner === undefined ||
-              options.runner === DEFAULT_CONFIG.runner) && // Only require 'js' for the default jest-runner
-            !value.includes('js')
-          ) {
-            const errorMessage =
-              `  moduleFileExtensions must include 'js':\n` +
-              `  but instead received:\n` +
-              `    ${chalk.bold.red(JSON.stringify(value))}`;
-
-            // If `js` is not included, any dependency Jest itself injects into
-            // the environment, like jasmine or sourcemap-support, will need to
-            // `require` its modules with a file extension. This is not plausible
-            // in the long run, so it's way easier to just fail hard early.
-            // We might consider throwing if `json` is missing as well, as it's a
-            // fair assumption from modules that they can do
-            // `require('some-package/package') without the trailing `.json` as it
-            // works in Node normally.
-            throw createConfigError(
-              errorMessage +
-                "\n  Please change your configuration to include 'js'.",
-            );
-          }
-
-          break;
         }
-        case 'bail': {
-          const bail = oldOptions[key];
-          if (typeof bail === 'boolean') {
-            value = bail ? 1 : 0;
-          } else if (typeof bail === 'string') {
-            value = 1;
-            // If Jest is invoked as `jest --bail someTestPattern` then need to
-            // move the pattern from the `bail` configuration and into `argv._`
-            // to be processed as an extra parameter
-            argv._.push(bail);
-          } else {
-            value = oldOptions[key];
-          }
-          break;
+        break;
+      case 'runner':
+        {
+          const option = oldOptions[key];
+          value =
+            option &&
+            getRunner(newOptions.resolver, {
+              filePath: option,
+              rootDir: options.rootDir,
+            });
         }
-        case 'automock':
-        case 'browser':
-        case 'cache':
-        case 'changedSince':
-        case 'changedFilesWithAncestor':
-        case 'clearMocks':
-        case 'collectCoverage':
-        case 'coverageReporters':
-        case 'coverageThreshold':
-        case 'detectLeaks':
-        case 'detectOpenHandles':
-        case 'displayName':
-        case 'errorOnDeprecated':
-        case 'expand':
-        case 'extraGlobals':
-        case 'globals':
-        case 'findRelatedTests':
-        case 'forceCoverageMatch':
-        case 'forceExit':
-        case 'lastCommit':
-        case 'listTests':
-        case 'logHeapUsage':
-        case 'maxConcurrency':
-        case 'mapCoverage':
-        case 'name':
-        case 'noStackTrace':
-        case 'notify':
-        case 'notifyMode':
-        case 'onlyChanged':
-        case 'outputFile':
-        case 'passWithNoTests':
-        case 'replname':
-        case 'reporters':
-        case 'resetMocks':
-        case 'resetModules':
-        case 'restoreMocks':
-        case 'rootDir':
-        case 'runTestsByPath':
-        case 'silent':
-        case 'skipFilter':
-        case 'skipNodeResolution':
-        case 'testEnvironment':
-        case 'testEnvironmentOptions':
-        case 'testFailureExitCode':
-        case 'testLocationInResults':
-        case 'testNamePattern':
-        case 'testURL':
-        case 'timers':
-        case 'useStderr':
-        case 'verbose':
-        case 'watch':
-        case 'watchAll':
-        case 'watchman':
-          value = oldOptions[key];
-          break;
-        case 'watchPlugins':
-          value = (oldOptions[key] || []).map(watchPlugin => {
-            if (typeof watchPlugin === 'string') {
-              return {
-                config: {},
-                path: getWatchPlugin(newOptions.resolver, {
-                  filePath: watchPlugin,
-                  rootDir: options.rootDir,
-                }),
-              };
-            } else {
-              return {
-                config: watchPlugin[1] || {},
-                path: getWatchPlugin(newOptions.resolver, {
-                  filePath: watchPlugin[0],
-                  rootDir: options.rootDir,
-                }),
-              };
-            }
+        break;
+      case 'prettierPath':
+        {
+          // We only want this to throw if "prettierPath" is explicitly passed
+          // from config or CLI, and the requested path isn't found. Otherwise we
+          // set it to null and throw an error lazily when it is used.
+
+          const option = oldOptions[key];
+
+          value =
+            option &&
+            resolve(newOptions.resolver, {
+              filePath: option,
+              key,
+              optional: option === DEFAULT_CONFIG[key],
+              rootDir: options.rootDir,
+            });
+        }
+        break;
+      case 'moduleNameMapper':
+        const moduleNameMapper = oldOptions[key];
+        value =
+          moduleNameMapper &&
+          Object.keys(moduleNameMapper).map(regex => {
+            const item = moduleNameMapper && moduleNameMapper[regex];
+            return item && [regex, _replaceRootDirTags(options.rootDir, item)];
           });
-          break;
+        break;
+      case 'transform':
+        const transform = oldOptions[key];
+        value =
+          transform &&
+          Object.keys(transform).map(regex => [
+            regex,
+            resolve(newOptions.resolver, {
+              filePath: transform[regex],
+              key,
+              rootDir: options.rootDir,
+            }),
+          ]);
+        break;
+      case 'coveragePathIgnorePatterns':
+      case 'modulePathIgnorePatterns':
+      case 'testPathIgnorePatterns':
+      case 'transformIgnorePatterns':
+      case 'watchPathIgnorePatterns':
+      case 'unmockedModulePathPatterns':
+        value = normalizeUnmockedModulePathPatterns(oldOptions, key);
+        break;
+      case 'haste':
+        value = {...oldOptions[key]};
+        if (value.hasteImplModulePath != null) {
+          const resolvedHasteImpl = resolve(newOptions.resolver, {
+            filePath: replaceRootDirInPath(
+              options.rootDir,
+              value.hasteImplModulePath,
+            ),
+            key: 'haste.hasteImplModulePath',
+            rootDir: options.rootDir,
+          });
+
+          value.hasteImplModulePath = resolvedHasteImpl || undefined;
+        }
+        break;
+      case 'projects':
+        value = (oldOptions[key] || [])
+          .map(project =>
+            typeof project === 'string'
+              ? _replaceRootDirTags(options.rootDir, project)
+              : project,
+          )
+          .reduce((projects, project) => {
+            // Project can be specified as globs. If a glob matches any files,
+            // We expand it to these paths. If not, we keep the original path
+            // for the future resolution.
+            const globMatches =
+              typeof project === 'string' ? glob.sync(project) : [];
+            return projects.concat(globMatches.length ? globMatches : project);
+          }, []);
+        break;
+      case 'moduleDirectories':
+      case 'testMatch':
+        {
+          const replacedRootDirTags = _replaceRootDirTags(
+            escapeGlobCharacters(options.rootDir),
+            oldOptions[key],
+          );
+
+          if (replacedRootDirTags) {
+            value = Array.isArray(replacedRootDirTags)
+              ? replacedRootDirTags.map(replacePathSepForGlob)
+              : replacePathSepForGlob(replacedRootDirTags);
+          } else {
+            value = replacedRootDirTags;
+          }
+        }
+        break;
+      case 'testRegex':
+        {
+          const option = oldOptions[key];
+          value = option
+            ? (Array.isArray(option) ? option : [option]).map(
+                replacePathSepForRegex,
+              )
+            : [];
+        }
+        break;
+      case 'moduleFileExtensions': {
+        value = oldOptions[key];
+
+        if (
+          Array.isArray(value) && // If it's the wrong type, it can throw at a later time
+          (options.runner === undefined ||
+            options.runner === DEFAULT_CONFIG.runner) && // Only require 'js' for the default jest-runner
+          !value.includes('js')
+        ) {
+          const errorMessage =
+            `  moduleFileExtensions must include 'js':\n` +
+            `  but instead received:\n` +
+            `    ${chalk.bold.red(JSON.stringify(value))}`;
+
+          // If `js` is not included, any dependency Jest itself injects into
+          // the environment, like jasmine or sourcemap-support, will need to
+          // `require` its modules with a file extension. This is not plausible
+          // in the long run, so it's way easier to just fail hard early.
+          // We might consider throwing if `json` is missing as well, as it's a
+          // fair assumption from modules that they can do
+          // `require('some-package/package') without the trailing `.json` as it
+          // works in Node normally.
+          throw createConfigError(
+            errorMessage +
+              "\n  Please change your configuration to include 'js'.",
+          );
+        }
+
+        break;
       }
-      // @ts-ignore: automock is missing in GlobalConfig, so what
-      newOptions[key] = value;
-      return newOptions;
-    },
-    newOptions,
-  );
+      case 'bail': {
+        const bail = oldOptions[key];
+        if (typeof bail === 'boolean') {
+          value = bail ? 1 : 0;
+        } else if (typeof bail === 'string') {
+          value = 1;
+          // If Jest is invoked as `jest --bail someTestPattern` then need to
+          // move the pattern from the `bail` configuration and into `argv._`
+          // to be processed as an extra parameter
+          argv._.push(bail);
+        } else {
+          value = oldOptions[key];
+        }
+        break;
+      }
+      case 'automock':
+      case 'browser':
+      case 'cache':
+      case 'changedSince':
+      case 'changedFilesWithAncestor':
+      case 'clearMocks':
+      case 'collectCoverage':
+      case 'coverageReporters':
+      case 'coverageThreshold':
+      case 'detectLeaks':
+      case 'detectOpenHandles':
+      case 'displayName':
+      case 'errorOnDeprecated':
+      case 'expand':
+      case 'extraGlobals':
+      case 'globals':
+      case 'findRelatedTests':
+      case 'forceCoverageMatch':
+      case 'forceExit':
+      case 'lastCommit':
+      case 'listTests':
+      case 'logHeapUsage':
+      case 'maxConcurrency':
+      case 'mapCoverage':
+      case 'name':
+      case 'noStackTrace':
+      case 'notify':
+      case 'notifyMode':
+      case 'onlyChanged':
+      case 'outputFile':
+      case 'passWithNoTests':
+      case 'replname':
+      case 'reporters':
+      case 'resetMocks':
+      case 'resetModules':
+      case 'restoreMocks':
+      case 'rootDir':
+      case 'runTestsByPath':
+      case 'silent':
+      case 'skipFilter':
+      case 'skipNodeResolution':
+      case 'testEnvironment':
+      case 'testEnvironmentOptions':
+      case 'testFailureExitCode':
+      case 'testLocationInResults':
+      case 'testNamePattern':
+      case 'testURL':
+      case 'timers':
+      case 'useStderr':
+      case 'verbose':
+      case 'watch':
+      case 'watchAll':
+      case 'watchman':
+        value = oldOptions[key];
+        break;
+      case 'watchPlugins':
+        value = (oldOptions[key] || []).map(watchPlugin => {
+          if (typeof watchPlugin === 'string') {
+            return {
+              config: {},
+              path: getWatchPlugin(newOptions.resolver, {
+                filePath: watchPlugin,
+                rootDir: options.rootDir,
+              }),
+            };
+          } else {
+            return {
+              config: watchPlugin[1] || {},
+              path: getWatchPlugin(newOptions.resolver, {
+                filePath: watchPlugin[0],
+                rootDir: options.rootDir,
+              }),
+            };
+          }
+        });
+        break;
+    }
+    // @ts-ignore: automock is missing in GlobalConfig, so what
+    newOptions[key] = value;
+    return newOptions;
+  }, newOptions);
 
   newOptions.nonFlagArgs = argv._;
   newOptions.testPathPattern = buildTestPathPattern(argv);
