@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+// TODO: Remove this export in the next major
+import FakeTimers from '@jest/fake-timers';
 import BufferedConsole from './BufferedConsole';
 import clearLine from './clearLine';
 import CustomConsole from './CustomConsole';
 import createDirectory from './createDirectory';
 import ErrorWithStack from './ErrorWithStack';
-import FakeTimers from './FakeTimers';
 import formatTestResults from './formatTestResults';
 import getFailedSnapshotTests from './getFailedSnapshotTests';
 import getConsoleOutput from './getConsoleOutput';
