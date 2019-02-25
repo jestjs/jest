@@ -3,26 +3,25 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Argv} from 'types/Argv';
-import type {EnvironmentClass} from 'types/Environment';
-
-import chalk from 'chalk';
 import os from 'os';
 import path from 'path';
+import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
 import yargs from 'yargs';
+import {Config} from '@jest/types';
+import {JestEnvironment} from '@jest/environment';
 import {Console, setGlobal} from 'jest-util';
+// @ts-ignore: Not migrated to TS
 import {validateCLIOptions} from 'jest-validate';
+// @ts-ignore: Not migrated to TS
 import {readConfig, deprecationEntries} from 'jest-config';
+import {VERSION} from '../version';
+import {Context} from '../types';
 import * as args from './args';
 
-const VERSION = (require('../../package.json').version: string);
-
-export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
+export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   const realFs = require('fs');
   const fs = require('graceful-fs');
   fs.gracefulify(realFs);
@@ -74,23 +73,22 @@ export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
   };
 
   // Break circular dependency
-  const Runtime = require('..');
+  const Runtime: any = require('..');
 
-  Runtime.createContext(config, {
+  (Runtime.createContext(config, {
     maxWorkers: Math.max(os.cpus().length - 1, 1),
     watchman: globalConfig.watchman,
-  })
+  }) as Promise<Context>)
     .then(hasteMap => {
-      /* $FlowFixMe */
-      const Environment = (require(config.testEnvironment): EnvironmentClass);
+      const Environment: JestEnvironment = require(config.testEnvironment);
       const environment = new Environment(config);
       setGlobal(
         environment.global,
         'console',
         new Console(process.stdout, process.stderr),
       );
-      environment.global.jestProjectConfig = config;
-      environment.global.jestGlobalConfig = globalConfig;
+      setGlobal(environment.global, 'jestProjectConfig', config);
+      setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
 
       const runtime = new Runtime(config, environment, hasteMap.resolver);
       runtime.requireModule(filePath);

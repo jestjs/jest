@@ -6,13 +6,8 @@
  *
  */
 
-import {
-  Environment,
-  Config,
-  TestResult,
-  Console as ConsoleType,
-} from '@jest/types';
-// @ts-ignore: not migrated to TS
+import {Config, TestResult, Console as ConsoleType} from '@jest/types';
+import {JestEnvironment} from '@jest/environment';
 import RuntimeClass from 'jest-runtime';
 import fs from 'graceful-fs';
 import {
@@ -101,16 +96,16 @@ async function runTestInternal(
     });
   }
 
-  const TestEnvironment: Environment.EnvironmentClass = require(testEnvironment);
+  const TestEnvironment: JestEnvironment = require(testEnvironment);
   const testFramework: TestFramework =
     process.env.JEST_CIRCUS === '1'
       ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
       : require(config.testRunner);
-  const Runtime: RuntimeClass = config.moduleLoader
+  const Runtime: typeof RuntimeClass = config.moduleLoader
     ? require(config.moduleLoader)
     : require('jest-runtime');
 
-  let runtime: RuntimeClass = undefined;
+  let runtime: RuntimeClass | undefined = undefined;
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (
