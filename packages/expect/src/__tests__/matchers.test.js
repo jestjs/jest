@@ -614,12 +614,14 @@ describe('.toEqual()', () => {
       const b = {};
       b.x = b;
       expect(a).toEqual(b);
+      expect(b).toEqual(a);
 
       const c = {};
       c.x = a;
       const d = {};
       d.x = b;
       expect(c).toEqual(d);
+      expect(d).toEqual(c);
     });
 
     test('properties with different circularity are not equal', () => {
@@ -630,12 +632,14 @@ describe('.toEqual()', () => {
       b.x = bx;
       bx.y = bx;
       expect(a).not.toEqual(b);
+      expect(b).not.toEqual(a);
 
       const c = {};
       c.x = a;
       const d = {};
       d.x = b;
       expect(c).not.toEqual(d);
+      expect(d).not.toEqual(c);
     });
 
     test('are not equal if circularity is not on the same property', () => {
@@ -645,15 +649,14 @@ describe('.toEqual()', () => {
       b.a = {};
       b.a.a = a;
       expect(a).not.toEqual(b);
-    });
-
-    test('equality is symmetrical', () => {
-      const a = {};
-      a.x = {x: a};
-      const b = {};
-      b.x = b;
-      expect(a).not.toEqual(b);
       expect(b).not.toEqual(a);
+
+      const c = {};
+      c.x = {x: c};
+      const d = {};
+      d.x = d;
+      expect(c).not.toEqual(d);
+      expect(d).not.toEqual(c);
     });
   });
 });
