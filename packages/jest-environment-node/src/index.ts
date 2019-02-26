@@ -9,7 +9,7 @@ import vm, {Script, Context} from 'vm';
 import {Global, Config} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
-import FakeTimers from 'jest-util/build/FakeTimers';
+import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
 
 type Timer = {
   id: number;
