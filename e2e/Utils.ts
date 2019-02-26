@@ -4,23 +4,24 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-'use strict';
-
-import type {Path} from 'types/Config';
-
-import {sync as spawnSync} from 'execa';
 import fs from 'fs';
 import path from 'path';
+import {Config} from '@jest/types';
+
+import {sync as spawnSync, ExecaReturns} from 'execa';
 import {createDirectory} from 'jest-util';
 import rimraf from 'rimraf';
 
-export const run = (cmd: string, cwd?: Path) => {
+export type RunResult = ExecaReturns & {
+  status: number;
+  error: Error;
+};
+export const run = (cmd: string, cwd?: Config.Path): RunResult => {
   const args = cmd.split(/\s/).slice(1);
   const spawnOptions = {cwd, reject: false};
-  const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions);
+  const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
 
   // For compat with cross-spawn
   result.status = result.code;
@@ -39,7 +40,7 @@ export const run = (cmd: string, cwd?: Path) => {
   return result;
 };
 
-export const linkJestPackage = (packageName: string, cwd: Path) => {
+export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
@@ -50,8 +51,8 @@ export const linkJestPackage = (packageName: string, cwd: Path) => {
 
 export const makeTemplate = (
   str: string,
-): ((values?: Array<any>) => string) => (values: ?Array<any>) =>
-  str.replace(/\$(\d+)/g, (match, number) => {
+): ((values?: Array<any>) => string) => (values?: Array<any>) =>
+  str.replace(/\$(\d+)/g, (_match, number) => {
     if (!Array.isArray(values)) {
       throw new Error('Array of values must be passed to the template.');
     }
@@ -83,6 +84,7 @@ export const writeFiles = (
       createDirectory(path.join.apply(path, [directory].concat(filePath)));
     }
     fs.writeFileSync(
+      // @ts-ignore
       path.resolve.apply(path, [directory].concat(filePath, [filename])),
       files[fileOrPath],
     );
@@ -118,7 +120,7 @@ export const sortLines = (output: string) =>
     .join('\n');
 
 export const createEmptyPackage = (
-  directory: Path,
+  directory: Config.Path,
   packageJson?: {[keys: string]: any},
 ) => {
   const DEFAULT_PACKAGE_JSON = {
@@ -168,7 +170,7 @@ export const extractSummary = (stdout: string) => {
 const sortTests = (stdout: string) =>
   stdout
     .split('\n')
-    .reduce((tests, line, i) => {
+    .reduce((tests: Array<Array<string>>, line) => {
       if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
         tests.push([line.trimRight()]);
       } else if (line) {
@@ -194,11 +196,11 @@ export const extractSortedSummary = (stdout: string) => {
 
 export const extractSummaries = (
   stdout: string,
-): Array<{rest: string, summary: string}> => {
+): Array<{rest: string; summary: string}> => {
   const regex = /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
 
   let match = regex.exec(stdout);
-  const matches = [];
+  const matches: Array<RegExpExecArray> = [];
 
   while (match) {
     matches.push(match);
