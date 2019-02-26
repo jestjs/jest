@@ -607,40 +607,54 @@ describe('.toEqual()', () => {
     expect(actual).toEqual({x: 3});
   });
 
-  test('cyclic object properties with the same circularity are equal', () => {
-    const a = {};
-    a.x = a;
-    const b = {};
-    b.x = b;
-    expect(a).toEqual(b);
-  });
+  describe('cyclic object equality', () => {
+    test('properties with the same circularity are equal', () => {
+      const a = {};
+      a.x = a;
+      const b = {};
+      b.x = b;
+      expect(a).toEqual(b);
 
-  test('cyclic objects properties with different circularity are not equal', () => {
-    const a = {};
-    a.x = {y: a};
-    const b = {};
-    const bx = {};
-    b.x = bx;
-    bx.y = bx;
-    expect(a).not.toEqual(b);
-  });
+      const c = {};
+      c.x = a;
+      const d = {};
+      d.x = b;
+      expect(c).toEqual(d);
+    });
 
-  test('cyclic objects are not equal if circularity is not on the same property', () => {
-    const a = {};
-    const b = {};
-    a.a = a;
-    b.a = {};
-    b.a.a = a;
-    expect(a).not.toEqual(b);
-  });
+    test('properties with different circularity are not equal', () => {
+      const a = {};
+      a.x = {y: a};
+      const b = {};
+      const bx = {};
+      b.x = bx;
+      bx.y = bx;
+      expect(a).not.toEqual(b);
 
-  test('cyclic object equality is symmetrical', () => {
-    const a = {};
-    a.x = {x: a};
-    const b = {};
-    b.x = b;
-    expect(a).not.toEqual(b);
-    expect(b).not.toEqual(a);
+      const c = {};
+      c.x = a;
+      const d = {};
+      d.x = b;
+      expect(c).not.toEqual(d);
+    });
+
+    test('are not equal if circularity is not on the same property', () => {
+      const a = {};
+      const b = {};
+      a.a = a;
+      b.a = {};
+      b.a.a = a;
+      expect(a).not.toEqual(b);
+    });
+
+    test('equality is symmetrical', () => {
+      const a = {};
+      a.x = {x: a};
+      const b = {};
+      b.x = b;
+      expect(a).not.toEqual(b);
+      expect(b).not.toEqual(a);
+    });
   });
 });
 

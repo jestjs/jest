@@ -34,7 +34,7 @@ export function equals(
   strictCheck?: boolean,
 ): boolean {
   customTesters = customTesters || [];
-  return eq(a, b, undefined, customTesters, strictCheck ? hasKey : hasDefinedKey);
+  return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
 }
 
 function isAsymmetric(obj: any) {
@@ -64,9 +64,9 @@ function asymmetricMatch(a: any, b: any) {
 function eq(
   a: any,
   b: any,
-  aStack: any,
-  bStack: any,
-  customTesters: any,
+  aStack: Array<unknown>,
+  bStack: Array<unknown>,
+  customTesters: Array<Tester>,
   hasKey: any,
 ): boolean {
   var result = true;
@@ -149,28 +149,21 @@ function eq(
     return false;
   }
 
-  // Use memos to handle cycles.
-  if (memos === undefined) {
-    memos = {
-      a: new Map(),
-      b: new Map(),
-      position: 0
-    };
-  } else {
-    // We prevent up to two map.has(x) calls by directly retrieving the value
-    // and checking for undefined. The map can only contain numbers, so it is
-    // safe to check for undefined only.
-    const bMemoA = memos.a.get(a);
-    const bMemoB = memos.b.get(b);
-    if (bMemoA !== undefined || bMemoB !== undefined) {
-      return bMemoA === bMemoB;
+  // Used to detect circular references.
+  var length = aStack.length;
+  while (length--) {
+    // Linear search. Performance is inversely proportional to the number of
+    // unique nested structures.
+    // circular references at same depth are equal
+    // circular reference is not equal to non-circular one
+    if (aStack[length] === a) {
+      return bStack[length] === b;
+    } else if (bStack[length] === b) {
+      return aStack[length] === a;
     }
-    memos.position++;
   }
-
-  memos.a.set(a, memos.position);
-  memos.b.set(b, memos.position);
-
+  aStack.push(a);
+  bStack.push(b);
   var size = 0;
   // Recursively compare objects and arrays.
   // Compare array lengths to determine if a deep comparison is necessary.
@@ -181,7 +174,7 @@ function eq(
     }
 
     while (size--) {
-      result = eq(a[size], b[size], memos, customTesters, hasKey);
+      result = eq(a[size], b[size], aStack, bStack, customTesters, hasKey);
       if (!result) {
         return false;
       }
@@ -204,15 +197,15 @@ function eq(
     // Deep compare each member
     result =
       hasKey(b, key) &&
-      eq(a[key], b[key], memos, customTesters, hasKey);
+      eq(a[key], b[key], aStack, bStack, customTesters, hasKey);
 
     if (!result) {
       return false;
     }
   }
 
-  memos.a.delete(a);
-  memos.b.delete(b);
+  aStack.pop();
+  bStack.pop();
 
   return result;
 }
