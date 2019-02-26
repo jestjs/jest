@@ -15,6 +15,20 @@ module.exports = {
     'prettier/flowtype',
   ],
   overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint/eslint-plugin'],
+      rules: {
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {argsIgnorePattern: '^_'},
+        ],
+        'import/order': 'error',
+        'no-dupe-class-members': 'off',
+        'no-unused-vars': 'off',
+      },
+    },
     // to make it more suitable for running on code examples in docs/ folder
     {
       files: ['*.md'],
@@ -50,7 +64,7 @@ module.exports = {
       },
     },
     {
-      files: 'types/**/*',
+      files: ['types/**/*', 'packages/jest-types/**/*'],
       rules: {
         'import/no-extraneous-dependencies': 0,
       },
@@ -122,6 +136,7 @@ module.exports = {
           '^types/(.*)': './types/$1',
         },
       },
+      'eslint-import-resolver-typescript': true,
     },
   },
 };

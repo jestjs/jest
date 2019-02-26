@@ -33,6 +33,6 @@ FAIL __tests__/test.js
         |                  ^
       4 | 
 
-      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:203:17)
+      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:202:17)
       at Object.require (index.js:3:18)
 `;

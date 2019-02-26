@@ -8,9 +8,14 @@
   },
   "license": "MIT",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/types": "^24.1.0",
     "execa": "^1.0.0",
     "throat": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/execa": "^0.9.0"
   },
   "engines": {
     "node": ">= 6"

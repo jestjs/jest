@@ -281,6 +281,14 @@ describe('.toStrictEqual()', () => {
     }).not.toStrictEqual({b: 2});
   });
 
+  it('does not ignore keys with undefined values inside an array', () => {
+    expect([{a: undefined}]).not.toStrictEqual([{}]);
+  });
+
+  it('does not ignore keys with undefined values deep inside an object', () => {
+    expect([{a: [{a: undefined}]}]).not.toStrictEqual([{a: [{}]}]);
+  });
+
   it('passes when comparing same type', () => {
     expect({
       test: new TestClassA(1, 2),
@@ -336,6 +344,8 @@ describe('.toEqual()', () => {
     [true, false],
     [1, 2],
     [0, -0],
+    [0, Number.MIN_VALUE], // issues/7941
+    [Number.MIN_VALUE, 0],
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
     [null, undefined],
@@ -418,7 +428,16 @@ describe('.toEqual()', () => {
   [
     [true, true],
     [1, 1],
+    [NaN, NaN],
+    // eslint-disable-next-line no-new-wrappers
+    [0, new Number(0)],
+    // eslint-disable-next-line no-new-wrappers
+    [new Number(0), 0],
     ['abc', 'abc'],
+    // eslint-disable-next-line no-new-wrappers
+    [new String('abc'), 'abc'],
+    // eslint-disable-next-line no-new-wrappers
+    ['abc', new String('abc')],
     [[1], [1]],
     [[1, 2], [1, 2]],
     [Immutable.List([1]), Immutable.List([1])],
@@ -1034,6 +1053,59 @@ describe('.toBeCloseTo()', () => {
       ).toThrowErrorMatchingSnapshot();
     });
   });
+
+  describe('throws: Matcher error', () => {
+    test('promise empty isNot false received', () => {
+      const precision = 3;
+      const expected = 0;
+      const received = '';
+      expect(() => {
+        jestExpect(received).toBeCloseTo(expected, precision);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise empty isNot true expected', () => {
+      const received = 0.1;
+      // expected is undefined
+      expect(() => {
+        jestExpect(received).not.toBeCloseTo();
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise rejects isNot false expected', () => {
+      const expected = '0';
+      const received = Promise.reject(0.01);
+      return expect(
+        jestExpect(received).rejects.toBeCloseTo(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise rejects isNot true received', () => {
+      const expected = 0;
+      const received = Promise.reject(Symbol('0.1'));
+      return expect(
+        jestExpect(received).rejects.not.toBeCloseTo(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise resolves isNot false received', () => {
+      const precision = 3;
+      const expected = 0;
+      const received = Promise.resolve(false);
+      return expect(
+        jestExpect(received).resolves.toBeCloseTo(expected, precision),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise resolves isNot true expected', () => {
+      const precision = 3;
+      const expected = null;
+      const received = Promise.resolve(0.1);
+      expect(
+        jestExpect(received).resolves.not.toBeCloseTo(expected, precision),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+  });
 });
 
 describe('.toMatch()', () => {
@@ -1126,14 +1198,50 @@ describe('.toHaveLength', () => {
     ).toThrowErrorMatchingSnapshot();
     expect(() => jestExpect(0).toHaveLength(1)).toThrowErrorMatchingSnapshot();
     expect(() =>
-      jestExpect(undefined).toHaveLength(1),
+      jestExpect(undefined).not.toHaveLength(1),
     ).toThrowErrorMatchingSnapshot();
   });
 
-  test('matcher error expected length', () => {
-    expect(() =>
-      jestExpect('abc').toHaveLength('3'),
-    ).toThrowErrorMatchingSnapshot();
+  describe('matcher error expected length', () => {
+    test('not number', () => {
+      const expected = '3';
+      const received = 'abc';
+      expect(() => {
+        jestExpect(received).not.toHaveLength(expected);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('number Infinity', () => {
+      const expected = Infinity;
+      const received = Promise.reject('abc');
+      return expect(
+        jestExpect(received).rejects.toHaveLength(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('number NaN', () => {
+      const expected = NaN;
+      const received = Promise.reject('abc');
+      return expect(
+        jestExpect(received).rejects.not.toHaveLength(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('number float', () => {
+      const expected = 0.5;
+      const received = Promise.resolve('abc');
+      return expect(
+        jestExpect(received).resolves.toHaveLength(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('number negative integer', () => {
+      const expected = -3;
+      const received = Promise.resolve('abc');
+      return expect(
+        jestExpect(received).resolves.not.toHaveLength(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
   });
 });
 

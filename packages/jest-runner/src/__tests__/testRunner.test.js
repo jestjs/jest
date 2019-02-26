@@ -6,10 +6,8 @@
  *
  */
 
-'use strict';
-
-const TestRunner = require('../index');
-const {TestWatcher} = require('jest-cli');
+import {TestWatcher} from '@jest/core';
+import TestRunner from '../index';
 
 let mockWorkerFarm;
 
@@ -31,6 +29,7 @@ test('injects the serializable module map into each worker in watch mode', () =>
   const globalConfig = {maxWorkers: 2, watch: true};
   const config = {rootDir: '/path/'};
   const serializableModuleMap = jest.fn();
+  const runContext = {};
   const context = {
     config,
     moduleMap: {toJSON: () => serializableModuleMap},
@@ -46,10 +45,19 @@ test('injects the serializable module map into each worker in watch mode', () =>
     )
     .then(() => {
       expect(mockWorkerFarm.worker.mock.calls).toEqual([
-        [{config, globalConfig, path: './file.test.js', serializableModuleMap}],
         [
           {
             config,
+            context: runContext,
+            globalConfig,
+            path: './file.test.js',
+            serializableModuleMap,
+          },
+        ],
+        [
+          {
+            config,
+            context: runContext,
             globalConfig,
             path: './file2.test.js',
             serializableModuleMap,
@@ -63,8 +71,9 @@ test('does not inject the serializable module map in serial mode', () => {
   const globalConfig = {maxWorkers: 1, watch: false};
   const config = {rootDir: '/path/'};
   const context = {config};
+  const runContext = {};
 
-  return new TestRunner(globalConfig)
+  return new TestRunner(globalConfig, runContext)
     .runTests(
       [{context, path: './file.test.js'}, {context, path: './file2.test.js'}],
       new TestWatcher({isWatchMode: globalConfig.watch}),
@@ -78,6 +87,7 @@ test('does not inject the serializable module map in serial mode', () => {
         [
           {
             config,
+            context: runContext,
             globalConfig,
             path: './file.test.js',
             serializableModuleMap: null,
@@ -86,6 +96,7 @@ test('does not inject the serializable module map in serial mode', () => {
         [
           {
             config,
+            context: runContext,
             globalConfig,
             path: './file2.test.js',
             serializableModuleMap: null,
