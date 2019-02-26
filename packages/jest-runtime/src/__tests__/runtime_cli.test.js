@@ -6,11 +6,11 @@
  *
  * @flow
  */
-'use strict';
 
 import path from 'path';
 import {sync as spawnSync} from 'execa';
-import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
+// $FlowFixMe: It's TS
+import {skipSuiteOnWindows} from '@jest/test-utils';
 
 skipSuiteOnWindows();
 
