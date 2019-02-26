@@ -4,11 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {GlobalConfig, ProjectConfig} from 'types/Config';
-import type {TestResult} from 'types/TestResult';
+import {Config, TestResult} from '@jest/types';
 
 import chalk from 'chalk';
 import {formatTestPath, printDisplayName} from './utils';
@@ -28,9 +26,9 @@ const PASS = chalk.supportsColor
   : PASS_TEXT;
 
 export default (
-  result: TestResult,
-  globalConfig: GlobalConfig,
-  projectConfig?: ProjectConfig,
+  result: TestResult.TestResult,
+  globalConfig: Config.GlobalConfig,
+  projectConfig?: Config.ProjectConfig,
 ) => {
   const testPath = result.testFilePath;
   const status =
@@ -46,7 +44,7 @@ export default (
   }
 
   if (result.memoryUsage) {
-    const toMB = bytes => Math.floor(bytes / 1024 / 1024);
+    const toMB = (bytes: number) => Math.floor(bytes / 1024 / 1024);
     testDetail.push(`${toMB(result.memoryUsage)} MB heap size`);
   }
 

@@ -4,18 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {GlobalConfig} from 'types/Config';
-import type {AggregatedResult} from 'types/TestResult';
-import type {TestSchedulerContext} from 'types/TestScheduler';
-import type {Context} from 'types/Context';
-
-import exit from 'exit';
 import path from 'path';
 import util from 'util';
+import exit from 'exit';
+import {Config, TestResult} from '@jest/types';
 import notifier from 'node-notifier';
+import {TestSchedulerContext, Context} from './types';
 import BaseReporter from './base_reporter';
 
 const isDarwin = process.platform === 'darwin';
@@ -23,12 +19,12 @@ const isDarwin = process.platform === 'darwin';
 const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 export default class NotifyReporter extends BaseReporter {
-  _startRun: (globalConfig: GlobalConfig) => *;
-  _globalConfig: GlobalConfig;
+  _startRun: (globalConfig: Config.GlobalConfig) => any;
+  _globalConfig: Config.GlobalConfig;
   _context: TestSchedulerContext;
   constructor(
-    globalConfig: GlobalConfig,
-    startRun: (globalConfig: GlobalConfig) => *,
+    globalConfig: Config.GlobalConfig,
+    startRun: (globalConfig: Config.GlobalConfig) => any,
     context: TestSchedulerContext,
   ) {
     super();
@@ -37,7 +33,10 @@ export default class NotifyReporter extends BaseReporter {
     this._context = context;
   }
 
-  onRunComplete(contexts: Set<Context>, result: AggregatedResult): void {
+  onRunComplete(
+    contexts: Set<Context>,
+    result: TestResult.AggregatedResult,
+  ): void {
     const success =
       result.numFailedTests === 0 && result.numRuntimeErrorTestSuites === 0;
 
@@ -117,13 +116,14 @@ export default class NotifyReporter extends BaseReporter {
       } else {
         notifier.notify(
           {
+            // @ts-ignore @types/node-notifier doesn't have `actions`
             actions: [restartAnswer, quitAnswer],
             closeLabel: 'Close',
             icon,
             message,
             title,
           },
-          (err, _, metadata) => {
+          (err: any, _: any, metadata: any) => {
             if (err || !metadata) {
               return;
             }

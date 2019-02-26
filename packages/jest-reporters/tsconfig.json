@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "references": [
+    {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../jest-worker"},
+    {"path": "../jest-haste-map"},
+    {"path": "../jest-resolve"},
+    {"path": "../jest-runtime"},
+    {"path": "../jest-environment"}
+  ]
+}

@@ -4,40 +4,33 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {GlobalConfig} from 'types/Config';
-import type {
-  AggregatedResult,
-  AssertionResult,
-  Suite,
-  TestResult,
-} from 'types/TestResult';
-import type {Test} from 'types/TestRunner';
+import {Config, TestResult} from '@jest/types';
 
 import chalk from 'chalk';
 import {specialChars} from 'jest-util';
+import {Test} from './types';
 import DefaultReporter from './default_reporter';
 
 const {ICONS} = specialChars;
 
 export default class VerboseReporter extends DefaultReporter {
-  _globalConfig: GlobalConfig;
+  _globalConfig: Config.GlobalConfig;
 
-  constructor(globalConfig: GlobalConfig) {
+  constructor(globalConfig: Config.GlobalConfig) {
     super(globalConfig);
     this._globalConfig = globalConfig;
   }
 
   static filterTestResults(
-    testResults: Array<AssertionResult>,
-  ): Array<AssertionResult> {
+    testResults: Array<TestResult.AssertionResult>,
+  ): Array<TestResult.AssertionResult> {
     return testResults.filter(({status}) => status !== 'pending');
   }
 
-  static groupTestsBySuites(testResults: Array<AssertionResult>) {
-    const root = {suites: [], tests: [], title: ''};
+  static groupTestsBySuites(testResults: Array<TestResult.AssertionResult>) {
+    const root: TestResult.Suite = {suites: [], tests: [], title: ''};
     testResults.forEach(testResult => {
       let targetSuite = root;
 
@@ -59,8 +52,8 @@ export default class VerboseReporter extends DefaultReporter {
 
   onTestResult(
     test: Test,
-    result: TestResult,
-    aggregatedResults: AggregatedResult,
+    result: TestResult.TestResult,
+    aggregatedResults: TestResult.AggregatedResult,
   ) {
     super.testFinished(test.context.config, result, aggregatedResults);
     if (!result.skipped) {
@@ -81,12 +74,12 @@ export default class VerboseReporter extends DefaultReporter {
     super.forceFlushBufferedOutput();
   }
 
-  _logTestResults(testResults: Array<AssertionResult>) {
+  _logTestResults(testResults: Array<TestResult.AssertionResult>) {
     this._logSuite(VerboseReporter.groupTestsBySuites(testResults), 0);
     this._logLine();
   }
 
-  _logSuite(suite: Suite, indentLevel: number) {
+  _logSuite(suite: TestResult.Suite, indentLevel: number) {
     if (suite.title) {
       this._logLine(suite.title, indentLevel);
     }
@@ -108,13 +101,13 @@ export default class VerboseReporter extends DefaultReporter {
     }
   }
 
-  _logTest(test: AssertionResult, indentLevel: number) {
+  _logTest(test: TestResult.AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
     const time = test.duration ? ` (${test.duration.toFixed(0)}ms)` : '';
     this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
   }
 
-  _logTests(tests: Array<AssertionResult>, indentLevel: number) {
+  _logTests(tests: Array<TestResult.AssertionResult>, indentLevel: number) {
     if (this._globalConfig.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {

@@ -4,48 +4,45 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {
-  AggregatedResult,
-  CoverageMap,
-  FileCoverage,
-  CoverageSummary,
-  TestResult,
-} from 'types/TestResult';
-import typeof {worker} from './coverage_worker';
-
-import type {GlobalConfig, Path} from 'types/Config';
-import type {Context} from 'types/Context';
-import type {Test} from 'types/TestRunner';
+import path from 'path';
+import {TestResult, Config} from '@jest/types';
 
 import {clearLine, isInteractive} from 'jest-util';
+// @ts-ignore Apparently there aren't any types for this package?
 import {createReporter} from 'istanbul-api';
 import chalk from 'chalk';
-import istanbulCoverage from 'istanbul-lib-coverage';
-import libSourceMaps from 'istanbul-lib-source-maps';
+import istanbulCoverage, {
+  CoverageMap,
+  FileCoverage,
+  Totals,
+} from 'istanbul-lib-coverage';
+import libSourceMaps, {MapStore} from 'istanbul-lib-source-maps';
 import Worker from 'jest-worker';
-import BaseReporter from './base_reporter';
-import path from 'path';
 import glob from 'glob';
+import BaseReporter from './base_reporter';
+import {
+  Context,
+  Test,
+  CoverageSummary,
+  CoverageWorker,
+  CoverageReporterOptions,
+} from './types';
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
-type CoverageWorker = {worker: worker};
-
-export type CoverageReporterOptions = {
-  changedFiles?: Set<Path>,
-};
-
 export default class CoverageReporter extends BaseReporter {
   _coverageMap: CoverageMap;
-  _globalConfig: GlobalConfig;
-  _sourceMapStore: any;
+  _globalConfig: Config.GlobalConfig;
+  _sourceMapStore: MapStore;
   _options: CoverageReporterOptions;
 
-  constructor(globalConfig: GlobalConfig, options?: CoverageReporterOptions) {
+  constructor(
+    globalConfig: Config.GlobalConfig,
+    options?: CoverageReporterOptions,
+  ) {
     super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
@@ -55,8 +52,8 @@ export default class CoverageReporter extends BaseReporter {
 
   onTestResult(
     test: Test,
-    testResult: TestResult,
-    aggregatedResults: AggregatedResult,
+    testResult: TestResult.TestResult,
+    aggregatedResults: TestResult.AggregatedResult,
   ) {
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
@@ -64,12 +61,12 @@ export default class CoverageReporter extends BaseReporter {
       delete testResult.coverage;
 
       Object.keys(testResult.sourceMaps).forEach(sourcePath => {
-        let inputSourceMap: ?Object;
+        let inputSourceMap: any;
         try {
           const coverage: FileCoverage = this._coverageMap.fileCoverageFor(
             sourcePath,
           );
-          ({inputSourceMap} = coverage.toJSON());
+          ({inputSourceMap} = coverage.toJSON() as any);
         } finally {
           if (inputSourceMap) {
             this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
@@ -86,7 +83,7 @@ export default class CoverageReporter extends BaseReporter {
 
   async onRunComplete(
     contexts: Set<Context>,
-    aggregatedResults: AggregatedResult,
+    aggregatedResults: TestResult.AggregatedResult,
   ) {
     await this._addUntestedFiles(this._globalConfig, contexts);
     const {map, sourceFinder} = this._sourceMapStore.transformCoverage(
@@ -122,10 +119,10 @@ export default class CoverageReporter extends BaseReporter {
   }
 
   async _addUntestedFiles(
-    globalConfig: GlobalConfig,
+    globalConfig: Config.GlobalConfig,
     contexts: Set<Context>,
   ): Promise<void> {
-    const files = [];
+    const files: Array<{config: Config.ProjectConfig; path: string}> = [];
 
     contexts.forEach(context => {
       const config = context.config;
@@ -154,7 +151,7 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
-    let worker: CoverageWorker;
+    let worker: CoverageWorker | Worker;
 
     if (this._globalConfig.maxWorkers <= 1) {
       worker = require('./coverage_worker');
@@ -170,7 +167,7 @@ export default class CoverageReporter extends BaseReporter {
       const filename = fileObj.path;
       const config = fileObj.config;
 
-      if (!this._coverageMap.data[filename]) {
+      if (!this._coverageMap.data[filename] && 'worker' in worker) {
         try {
           const result = await worker.worker({
             config,
@@ -210,38 +207,41 @@ export default class CoverageReporter extends BaseReporter {
       clearLine(process.stderr);
     }
 
-    if (worker && typeof worker.end === 'function') {
+    if (worker && 'end' in worker && typeof worker.end === 'function') {
       worker.end();
     }
   }
 
-  _checkThreshold(globalConfig: GlobalConfig, map: CoverageMap) {
+  _checkThreshold(globalConfig: Config.GlobalConfig, map: CoverageMap) {
     if (globalConfig.coverageThreshold) {
-      function check(name, thresholds, actuals) {
-        return ['statements', 'branches', 'lines', 'functions'].reduce(
-          (errors, key) => {
-            const actual = actuals[key].pct;
-            const actualUncovered = actuals[key].total - actuals[key].covered;
-            const threshold = thresholds[key];
+      function check(
+        name: string,
+        thresholds: {[index: string]: number},
+        actuals: {[index: string]: Totals},
+      ) {
+        return ['statements', 'branches', 'lines', 'functions'].reduce<
+          string[]
+        >((errors, key) => {
+          const actual = actuals[key].pct;
+          const actualUncovered = actuals[key].total - actuals[key].covered;
+          const threshold = thresholds[key];
 
-            if (threshold != null) {
-              if (threshold < 0) {
-                if (threshold * -1 < actualUncovered) {
-                  errors.push(
-                    `Jest: Uncovered count for ${key} (${actualUncovered})` +
-                      `exceeds ${name} threshold (${-1 * threshold})`,
-                  );
-                }
-              } else if (actual < threshold) {
+          if (threshold != null) {
+            if (threshold < 0) {
+              if (threshold * -1 < actualUncovered) {
                 errors.push(
-                  `Jest: "${name}" coverage threshold for ${key} (${threshold}%) not met: ${actual}%`,
+                  `Jest: Uncovered count for ${key} (${actualUncovered})` +
+                    `exceeds ${name} threshold (${-1 * threshold})`,
                 );
               }
+            } else if (actual < threshold) {
+              errors.push(
+                `Jest: "${name}" coverage threshold for ${key} (${threshold}%) not met: ${actual}%`,
+              );
             }
-            return errors;
-          },
-          [],
-        );
+          }
+          return errors;
+        }, []);
       }
 
       const THRESHOLD_GROUP_TYPES = {
@@ -251,73 +251,71 @@ export default class CoverageReporter extends BaseReporter {
       };
       const coveredFiles = map.files();
       const thresholdGroups = Object.keys(globalConfig.coverageThreshold);
-      const groupTypeByThresholdGroup = {};
-      const filesByGlob = {};
+      const groupTypeByThresholdGroup: {[index: string]: string} = {};
+      const filesByGlob: {[index: string]: string[]} = {};
 
-      const coveredFilesSortedIntoThresholdGroup = coveredFiles.reduce(
-        (files, file) => {
-          const pathOrGlobMatches = thresholdGroups.reduce(
-            (agg, thresholdGroup) => {
-              const absoluteThresholdGroup = path.resolve(thresholdGroup);
+      const coveredFilesSortedIntoThresholdGroup = coveredFiles.reduce<
+        Array<[string, string | undefined]>
+      >((files, file) => {
+        const pathOrGlobMatches = thresholdGroups.reduce<
+          Array<[string, string]>
+        >((agg, thresholdGroup) => {
+          const absoluteThresholdGroup = path.resolve(thresholdGroup);
 
-              // The threshold group might be a path:
+          // The threshold group might be a path:
 
-              if (file.indexOf(absoluteThresholdGroup) === 0) {
-                groupTypeByThresholdGroup[thresholdGroup] =
-                  THRESHOLD_GROUP_TYPES.PATH;
-                return agg.concat([[file, thresholdGroup]]);
-              }
-
-              // If the threshold group is not a path it might be a glob:
-
-              // Note: glob.sync is slow. By memoizing the files matching each glob
-              // (rather than recalculating it for each covered file) we save a tonne
-              // of execution time.
-              if (filesByGlob[absoluteThresholdGroup] === undefined) {
-                filesByGlob[absoluteThresholdGroup] = glob
-                  .sync(absoluteThresholdGroup)
-                  .map(filePath => path.resolve(filePath));
-              }
-
-              if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
-                groupTypeByThresholdGroup[thresholdGroup] =
-                  THRESHOLD_GROUP_TYPES.GLOB;
-                return agg.concat([[file, thresholdGroup]]);
-              }
-
-              return agg;
-            },
-            [],
-          );
-
-          if (pathOrGlobMatches.length > 0) {
-            return files.concat(pathOrGlobMatches);
+          if (file.indexOf(absoluteThresholdGroup) === 0) {
+            groupTypeByThresholdGroup[thresholdGroup] =
+              THRESHOLD_GROUP_TYPES.PATH;
+            return agg.concat([[file, thresholdGroup]]);
           }
 
-          // Neither a glob or a path? Toss it in global if there's a global threshold:
-          if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
-            groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
-              THRESHOLD_GROUP_TYPES.GLOBAL;
-            return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);
+          // If the threshold group is not a path it might be a glob:
+
+          // Note: glob.sync is slow. By memoizing the files matching each glob
+          // (rather than recalculating it for each covered file) we save a tonne
+          // of execution time.
+          if (filesByGlob[absoluteThresholdGroup] === undefined) {
+            filesByGlob[absoluteThresholdGroup] = glob
+              .sync(absoluteThresholdGroup)
+              .map(filePath => path.resolve(filePath));
           }
 
-          // A covered file that doesn't have a threshold:
-          return files.concat([[file, undefined]]);
-        },
-        [],
-      );
+          if (filesByGlob[absoluteThresholdGroup].indexOf(file) > -1) {
+            groupTypeByThresholdGroup[thresholdGroup] =
+              THRESHOLD_GROUP_TYPES.GLOB;
+            return agg.concat([[file, thresholdGroup]]);
+          }
 
-      const getFilesInThresholdGroup = thresholdGroup =>
+          return agg;
+        }, []);
+
+        if (pathOrGlobMatches.length > 0) {
+          return files.concat(pathOrGlobMatches);
+        }
+
+        // Neither a glob or a path? Toss it in global if there's a global threshold:
+        if (thresholdGroups.indexOf(THRESHOLD_GROUP_TYPES.GLOBAL) > -1) {
+          groupTypeByThresholdGroup[THRESHOLD_GROUP_TYPES.GLOBAL] =
+            THRESHOLD_GROUP_TYPES.GLOBAL;
+          return files.concat([[file, THRESHOLD_GROUP_TYPES.GLOBAL]]);
+        }
+
+        // A covered file that doesn't have a threshold:
+        return files.concat([[file, undefined]]);
+      }, []);
+
+      const getFilesInThresholdGroup = (thresholdGroup: string) =>
         coveredFilesSortedIntoThresholdGroup
           .filter(fileAndGroup => fileAndGroup[1] === thresholdGroup)
           .map(fileAndGroup => fileAndGroup[0]);
 
-      function combineCoverage(filePaths) {
+      function combineCoverage(filePaths: string[]) {
         return filePaths
           .map(filePath => map.fileCoverageFor(filePath))
           .reduce(
             (
-              combinedCoverage: ?CoverageSummary,
+              combinedCoverage: CoverageSummary | null | undefined,
               nextFileCoverage: FileCoverage,
             ) => {
               if (combinedCoverage === undefined || combinedCoverage === null) {

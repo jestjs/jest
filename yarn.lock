@@ -1643,6 +1643,11 @@
     "@types/istanbul-lib-coverage" "*"
     source-map "^0.6.1"
 
+"@types/istanbul@^0.4.30":
+  version "0.4.30"
+  resolved "https://registry.yarnpkg.com/@types/istanbul/-/istanbul-0.4.30.tgz#073159320ab3296b2cfeb481f756a1f8f4c9c8e4"
+  integrity sha512-+hQU4fh2G96ze78uI5/V6+SRDZD1UnVrFn23i2eDetwfbBq3s0/zYP92xj/3qyvVMM3WnvS88N56zjz+HmL04A==
+
 "@types/jest-diff@*":
   version "20.0.1"
   resolved "https://registry.yarnpkg.com/@types/jest-diff/-/jest-diff-20.0.1.tgz#35cc15b9c4f30a18ef21852e255fdb02f6d59b89"
