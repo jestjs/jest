@@ -4,13 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
-'use strict';
 
 import path from 'path';
 import fs from 'fs';
-import execa from 'execa';
+import execa, {ExecaChildProcess, ExecaReturns} from 'execa';
 import {Writable} from 'readable-stream';
 import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
@@ -18,10 +16,10 @@ import {normalizeIcons} from './Utils';
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
 type RunJestOptions = {
-  nodePath?: string,
-  skipPkgJsonCheck?: boolean, // don't complain if can't find package.json
-  stripAnsi?: boolean, // remove colors from stdout and stderr,
-  timeout?: number, // kill the Jest process after X milliseconds
+  nodePath?: string;
+  skipPkgJsonCheck?: boolean; // don't complain if can't find package.json
+  stripAnsi?: boolean; // remove colors from stdout and stderr,
+  timeout?: number; // kill the Jest process after X milliseconds
 };
 
 // return the result of the spawned process:
@@ -61,6 +59,7 @@ function spawnJest(
   }
 
   const env = {...process.env, FORCE_COLOR: 0};
+  // @ts-ignore
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
   const spawnArgs = [JEST_PATH, ...(args || [])];
@@ -74,17 +73,28 @@ function spawnJest(
   return (spawnAsync ? execa : execa.sync)(
     process.execPath,
     spawnArgs,
+    // @ts-ignore
     spawnOptions,
   );
 }
 
-function normalizeResult(result, options) {
+type ResultType = (ExecaReturns | ExecaChildProcess) & {
+  status?: number;
+  code?: number;
+  json?: (
+    dir: string,
+    args: Array<string> | undefined,
+    options: RunJestOptions,
+  ) => ResultType;
+};
+
+function normalizeResult(result: ResultType, options: RunJestOptions) {
   // For compat with cross-spawn
   result.status = result.code;
 
-  result.stdout = normalizeIcons(result.stdout);
+  result.stdout = normalizeIcons(result.stdout as string);
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
-  result.stderr = normalizeIcons(result.stderr);
+  result.stderr = normalizeIcons(result.stderr as string);
   if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
 
   return result;
@@ -119,15 +129,20 @@ export const json = function(
 // Runs `jest` until a given output is achieved, then kills it with `SIGTERM`
 export const until = async function(
   dir: string,
-  args?: Array<string>,
+  args: Array<string> | undefined,
   text: string,
   options: RunJestOptions = {},
 ) {
-  const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
+  const jestPromise: execa.ExecaChildProcess = spawnJest(
+    dir,
+    args,
+    {timeout: 30000, ...options},
+    true,
+  );
 
   jestPromise.stderr.pipe(
     new Writable({
-      write(chunk, encoding, callback) {
+      write(chunk, _encoding, callback) {
         const output = chunk.toString('utf8');
 
         if (output.includes(text)) {
