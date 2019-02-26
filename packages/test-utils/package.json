@@ -3,5 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "main": "src/index.ts"
+  "main": "build/index.js",
+  "types": "src/index.d.ts"
 }

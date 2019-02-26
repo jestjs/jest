@@ -9,7 +9,6 @@
 
 import path from 'path';
 import {sync as spawnSync} from 'execa';
-// $FlowFixMe: It's TS
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
 skipSuiteOnWindows();
