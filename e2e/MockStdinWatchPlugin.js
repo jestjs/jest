@@ -26,11 +26,7 @@ class MockStdinWatchPlugin {
 }
 
 /**
- * Tried re-writing this in typescript but the tests just failed
- *
- * I've tried exporting them the following way
- * 1. "module.exports = MockStdinWatchPlugin"
- * 2. "exports = MockStdinWatchPlugin"
- * 3. "export default = MockStdinWatchPlugin" (in Progress)
+ * Watch plugins are not transpiled hence why we're leaving
+ * this file out of typescript migration
  */
 module.exports = MockStdinWatchPlugin;
