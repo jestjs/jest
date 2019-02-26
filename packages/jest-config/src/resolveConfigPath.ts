@@ -3,20 +3,17 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-import type {Path} from 'types/Config';
 
 import path from 'path';
 import fs from 'fs';
+import {Config} from '@jest/types';
 import {JEST_CONFIG, PACKAGE_JSON} from './constants';
 
-const isFile = filePath =>
+const isFile = (filePath: Config.Path) =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
-export default (pathToResolve: Path, cwd: Path): Path => {
+export default (pathToResolve: Config.Path, cwd: Config.Path): Config.Path => {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -50,10 +47,10 @@ export default (pathToResolve: Path, cwd: Path): Path => {
 };
 
 const resolveConfigPathByTraversing = (
-  pathToResolve: Path,
-  initialPath: Path,
-  cwd: Path,
-) => {
+  pathToResolve: Config.Path,
+  initialPath: Config.Path,
+  cwd: Config.Path,
+): Config.Path => {
   const jestConfig = path.resolve(pathToResolve, JEST_CONFIG);
   if (isFile(jestConfig)) {
     return jestConfig;
@@ -78,7 +75,10 @@ const resolveConfigPathByTraversing = (
   );
 };
 
-const makeResolutionErrorMessage = (initialPath: Path, cwd: Path) =>
+const makeResolutionErrorMessage = (
+  initialPath: Config.Path,
+  cwd: Config.Path,
+) =>
   'Could not find a config file based on provided values:\n' +
   `path: "${initialPath}"\n` +
   `cwd: "${cwd}"\n` +

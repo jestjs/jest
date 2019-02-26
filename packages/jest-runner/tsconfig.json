@@ -5,6 +5,7 @@
     "outDir": "build"
   },
   "references": [
+    {"path": "../jest-config"},
     {"path": "../jest-docblock"},
     {"path": "../jest-environment"},
     {"path": "../jest-haste-map"},

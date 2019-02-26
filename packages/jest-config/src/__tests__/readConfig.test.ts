@@ -5,6 +5,7 @@ import {readConfig} from '../index';
 test('readConfig() throws when an object is passed without a file path', () => {
   expect(() => {
     readConfig(
+      // @ts-ignore
       null /* argv */,
       {} /* packageRootOrConfig */,
       false /* skipArgvConfigOption */,

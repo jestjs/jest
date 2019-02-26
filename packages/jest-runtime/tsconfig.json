@@ -4,8 +4,9 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  // TODO: Missing `jest-config`, `jest-validate` and `jest-environment-node`
+  // TODO: Missing `jest-validate` and `jest-environment-node`
   "references": [
+    {"path": "../jest-config"},
     {"path": "../jest-environment"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-message-util"},

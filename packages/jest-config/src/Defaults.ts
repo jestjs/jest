@@ -3,19 +3,16 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {DefaultOptions} from 'types/Config';
-
+import {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';
 import getCacheDirectory from './getCacheDirectory';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
-export default ({
+const defaultOptions: Config.DefaultOptions = {
   automock: false,
   bail: 0,
   browser: false,
@@ -83,4 +80,6 @@ export default ({
   watch: false,
   watchPathIgnorePatterns: [],
   watchman: true,
-}: DefaultOptions);
+};
+
+export default defaultOptions;
