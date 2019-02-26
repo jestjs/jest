@@ -71,7 +71,7 @@ module.exports = {
     },
     {
       files: [
-        'e2e/__tests__/**/*',
+        'e2e/__tests__/**/*.js',
         'packages/babel-jest/**/*.test.js',
         'packages/babel-plugin-jest-hoist/**/*.test.js',
         'packages/babel-preset-jest/**/*.test.js',
