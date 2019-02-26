@@ -47,7 +47,8 @@ const jestAdapter = async (
   });
 
   if (config.timers === 'fake') {
-    environment.fakeTimers.useFakeTimers();
+    // during setup, this cannot be null (and it's fine to explode if it is)
+    environment.fakeTimers!.useFakeTimers();
   }
 
   globals.beforeEach(() => {
@@ -63,7 +64,8 @@ const jestAdapter = async (
       runtime.resetAllMocks();
 
       if (config.timers === 'fake') {
-        environment.fakeTimers.useFakeTimers();
+        // during setup, this cannot be null (and it's fine to explode if it is)
+        environment.fakeTimers!.useFakeTimers();
       }
     }
 
