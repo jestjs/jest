@@ -159,9 +159,10 @@ function eq(
     if (aStack[length] === a) {
       return bStack[length] === b;
     } else if (bStack[length] === b) {
-      return aStack[length] === a;
+      return false;
     }
   }
+  // Add the first object to the stack of traversed objects.
   aStack.push(a);
   bStack.push(b);
   var size = 0;
@@ -203,7 +204,7 @@ function eq(
       return false;
     }
   }
-
+  // Remove the first object from the stack of traversed objects.
   aStack.pop();
   bStack.pop();
 
