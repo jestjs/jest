@@ -4,8 +4,8 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  // TODO: This is missing `jest-validate`, in addition to and `jest-jasmine2`,
-  // but those are just `require.resolve`d, so no real use for their types
+  // TODO: This is missing `jest-jasmine2`, but that is just
+  // `require.resolve`d, so no real use for its types
   "references": [
     {"path": "../jest-environment-jsdom"},
     {"path": "../jest-environment-node"},
@@ -14,6 +14,7 @@
     {"path": "../jest-resolve"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
+    {"path": "../jest-validate"},
     {"path": "../pretty-format"}
   ]
 }

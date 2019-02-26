@@ -9,7 +9,6 @@ import crypto from 'crypto';
 import path from 'path';
 import glob from 'glob';
 import {Config} from '@jest/types';
-// @ts-ignore: Not migrated to TS
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';

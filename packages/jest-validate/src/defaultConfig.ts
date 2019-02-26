@@ -3,11 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {ValidationOptions} from './types';
+import {ValidationOptions} from './types';
 
 import {deprecationWarning} from './deprecated';
 import {unknownOptionWarning} from './warnings';
@@ -15,7 +13,7 @@ import {errorMessage} from './errors';
 import {validationCondition} from './condition';
 import {ERROR, DEPRECATION, WARNING} from './utils';
 
-export default ({
+const validationOptions: ValidationOptions = {
   comment: '',
   condition: validationCondition,
   deprecate: deprecationWarning,
@@ -31,4 +29,6 @@ export default ({
     warning: WARNING,
   },
   unknown: unknownOptionWarning,
-}: ValidationOptions);
+};
+
+export default validationOptions;

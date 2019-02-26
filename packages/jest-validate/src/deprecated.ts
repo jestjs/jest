@@ -3,11 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {ValidationOptions} from './types';
+import {DeprecatedOptions, ValidationOptions} from './types';
 
 import {logValidationWarning, DEPRECATION} from './utils';
 
@@ -19,9 +17,9 @@ const deprecationMessage = (message: string, options: ValidationOptions) => {
 };
 
 export const deprecationWarning = (
-  config: Object,
+  config: {[key: string]: any},
   option: string,
-  deprecatedOptions: Object,
+  deprecatedOptions: DeprecatedOptions,
   options: ValidationOptions,
 ): boolean => {
   if (option in deprecatedOptions) {
