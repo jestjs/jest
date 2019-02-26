@@ -57,9 +57,8 @@ function spawnJest(
     `,
     );
   }
+  const env = Object.assign({}, process.env, {FORCE_COLOR: '0'});
 
-  const env = {...process.env, FORCE_COLOR: 0};
-  // @ts-ignore
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
   const spawnArgs = [JEST_PATH, ...(args || [])];
@@ -73,22 +72,21 @@ function spawnJest(
   return (spawnAsync ? execa : execa.sync)(
     process.execPath,
     spawnArgs,
-    // @ts-ignore
     spawnOptions,
   );
 }
 
-type ResultType = (ExecaReturns | ExecaChildProcess) & {
+type RunJestResult = (ExecaReturns | ExecaChildProcess) & {
   status?: number;
   code?: number;
   json?: (
     dir: string,
     args: Array<string> | undefined,
     options: RunJestOptions,
-  ) => ResultType;
+  ) => RunJestResult;
 };
 
-function normalizeResult(result: ResultType, options: RunJestOptions) {
+function normalizeResult(result: RunJestResult, options: RunJestOptions) {
   // For compat with cross-spawn
   result.status = result.code;
 
@@ -106,7 +104,7 @@ function normalizeResult(result: ResultType, options: RunJestOptions) {
 //   'numPendingTests', 'testResults'
 export const json = function(
   dir: string,
-  args?: Array<string>,
+  args: Array<string> | undefined,
   options: RunJestOptions = {},
 ) {
   args = [...(args || []), '--json'];
@@ -133,12 +131,12 @@ export const until = async function(
   text: string,
   options: RunJestOptions = {},
 ) {
-  const jestPromise: execa.ExecaChildProcess = spawnJest(
+  const jestPromise = spawnJest(
     dir,
     args,
     {timeout: 30000, ...options},
     true,
-  );
+  ) as ExecaChildProcess;
 
   jestPromise.stderr.pipe(
     new Writable({
