@@ -1,19 +1,18 @@
 {
-  "name": "@jest/environment",
+  "name": "@jest/fake-timers",
   "version": "24.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
-    "directory": "packages/jest-environment"
+    "directory": "packages/jest-fake-timers"
   },
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/fake-timers": "^24.1.0",
-    "@jest/transform": "^24.1.0",
     "@jest/types": "^24.1.0",
     "@types/node": "*",
+    "jest-message-util": "^24.0.0",
     "jest-mock": "^24.0.0"
   },
   "engines": {

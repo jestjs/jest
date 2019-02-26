@@ -60,6 +60,7 @@
 - `[jest-phabricator]`: Migrate to TypeScript ([#7965](https://github.com/facebook/jest/pull/7965))
 - `[jest-runner]`: Migrate to TypeScript ([#7968](https://github.com/facebook/jest/pull/7968))
 - `[jest-runtime]`: Migrate to TypeScript ([#7964](https://github.com/facebook/jest/pull/7964))
+- `[@jest/fake-timers]`: Extract FakeTimers class from `jest-util` into a new separate package ([#7987](https://github.com/facebook/jest/pull/7987))
 
 ### Performance
 

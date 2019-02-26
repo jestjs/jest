@@ -7,9 +7,7 @@
 
 import vm from 'vm';
 import mock from 'jest-mock';
-import FakeTimers from '../FakeTimers';
-// TODO: import this type directly from jest-mock once TS migration is done
-type ModuleMocker = typeof mock;
+import FakeTimers from '../jestFakeTimers';
 
 const timerConfig = {
   idToRef: (id: number) => id,
@@ -22,7 +20,7 @@ const config = {
 };
 
 describe('FakeTimers', () => {
-  let moduleMocker: ModuleMocker;
+  let moduleMocker: mock.ModuleMocker;
 
   beforeEach(() => {
     const global = vm.runInNewContext('this');

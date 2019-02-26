@@ -7,8 +7,12 @@
 
 import {Script} from 'vm';
 import {Config, Global} from '@jest/types';
-import moduleMocker from 'jest-mock';
+import jestMock, {ModuleMocker} from 'jest-mock';
 import {ScriptTransformer} from '@jest/transform';
+import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+
+type JestMockFn = typeof jestMock.fn;
+type JestMockSpyOn = typeof jestMock.spyOn;
 
 export type EnvironmentContext = {
   console?: Console;
@@ -27,21 +31,10 @@ export interface JestEnvironment {
     script: Script,
   ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null;
   global: Global.Global;
-  // TODO: When `jest-util` is ESM, this can just be `fakeTimers: import('jest-util').FakeTimers`
-  fakeTimers: {
-    clearAllTimers(): void;
-    runAllImmediates(): void;
-    runAllTicks(): void;
-    runAllTimers(): void;
-    advanceTimersByTime(msToRun: number): void;
-    runOnlyPendingTimers(): void;
-    runWithRealTimers(callback: () => void): void;
-    getTimerCount(): number;
-    useFakeTimers(): void;
-    useRealTimers(): void;
-  };
+  // TODO: This is nullable, and TS doesn't understand we deal with it in `jest-runtime`. Should be fixed
+  fakeTimers: FakeTimers<unknown>;
   testFilePath: Config.Path;
-  moduleMocker: typeof moduleMocker;
+  moduleMocker: ModuleMocker;
   setup(): Promise<void>;
   teardown(): Promise<void>;
 }
@@ -112,7 +105,7 @@ export interface Jest {
   /**
    * Creates a mock function. Optionally takes a mock implementation.
    */
-  fn: typeof moduleMocker.fn;
+  fn: JestMockFn;
   /**
    * Given the name of a module, use the automatic mocking system to generate a
    * mocked version of the module for you.
@@ -124,7 +117,7 @@ export interface Jest {
   /**
    * Determines if the given function is a mocked function.
    */
-  isMockFunction(fn: Function): fn is ReturnType<typeof moduleMocker.fn>;
+  isMockFunction(fn: Function): fn is ReturnType<JestMockFn>;
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
@@ -235,7 +228,7 @@ export interface Jest {
    * Note: By default, jest.spyOn also calls the spied method. This is
    * different behavior from most other test libraries.
    */
-  spyOn: typeof moduleMocker.spyOn;
+  spyOn: JestMockSpyOn;
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module from require() (e.g. that it should always return the
