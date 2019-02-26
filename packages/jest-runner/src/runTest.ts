@@ -96,7 +96,7 @@ async function runTestInternal(
     });
   }
 
-  const TestEnvironment: JestEnvironment = require(testEnvironment);
+  const TestEnvironment: typeof JestEnvironment = require(testEnvironment);
   const testFramework: TestFramework =
     process.env.JEST_CIRCUS === '1'
       ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies

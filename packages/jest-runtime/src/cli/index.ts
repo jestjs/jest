@@ -80,7 +80,7 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
     watchman: globalConfig.watchman,
   }) as Promise<Context>)
     .then(hasteMap => {
-      const Environment: JestEnvironment = require(config.testEnvironment);
+      const Environment: typeof JestEnvironment = require(config.testEnvironment);
       const environment = new Environment(config);
       setGlobal(
         environment.global,
