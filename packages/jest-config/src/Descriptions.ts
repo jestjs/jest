@@ -3,11 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-export default ({
+import {Config} from '@jest/types';
+
+const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   automock: 'All imported modules in your tests should be mocked automatically',
   bail: 'Stop running tests after `n` failures',
   browser: 'Respect "browser" field in package.json when resolving modules',
@@ -91,4 +91,6 @@ export default ({
   watchPathIgnorePatterns:
     'An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode',
   watchman: 'Whether to use watchman for file crawling',
-}: {[string]: string});
+};
+
+export default descriptions;

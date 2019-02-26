@@ -3,14 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 import chalk from 'chalk';
 import prettyFormat from 'pretty-format';
 
-const format = (value: mixed) => prettyFormat(value, {min: true});
+const format = (value: unknown) => prettyFormat(value, {min: true});
 
 export default {
   mapCoverage: () => `  Option ${chalk.bold(
@@ -20,7 +18,7 @@ export default {
   Please update your configuration.`,
 
   preprocessorIgnorePatterns: (options: {
-    preprocessorIgnorePatterns: Array<string>,
+    preprocessorIgnorePatterns: Array<string>;
   }) => `  Option ${chalk.bold(
     '"preprocessorIgnorePatterns"',
   )} was replaced by ${chalk.bold(
@@ -37,7 +35,7 @@ export default {
   Please update your configuration.`,
 
   scriptPreprocessor: (options: {
-    scriptPreprocessor: string,
+    scriptPreprocessor: string;
   }) => `  Option ${chalk.bold(
     '"scriptPreprocessor"',
   )} was replaced by ${chalk.bold(
@@ -53,8 +51,8 @@ export default {
 
   Please update your configuration.`,
 
-  setupTestFrameworkScriptFile: (options: {
-    setupTestFrameworkScriptFile: Array<string>,
+  setupTestFrameworkScriptFile: (_options: {
+    setupTestFrameworkScriptFile: Array<string>;
   }) => `  Option ${chalk.bold(
     '"setupTestFrameworkScriptFile"',
   )} was replaced by configuration ${chalk.bold(
@@ -64,7 +62,7 @@ export default {
   Please update your configuration.`,
 
   testPathDirs: (options: {
-    testPathDirs: Array<string>,
+    testPathDirs: Array<string>;
   }) => `  Option ${chalk.bold('"testPathDirs"')} was replaced by ${chalk.bold(
     '"roots"',
   )}.

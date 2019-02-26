@@ -6,16 +6,17 @@
  *
  */
 
+import {Config} from '@jest/types';
 import setFromArgv from '../setFromArgv';
 
 test('maps special values to valid options', () => {
-  const options = {};
+  const options = {} as Config.InitialOptions;
   const argv = {
     coverage: true,
     env: 'node',
     json: true,
     watchAll: true,
-  };
+  } as Config.Argv;
 
   expect(setFromArgv(options, argv)).toMatchObject({
     collectCoverage: true,
@@ -27,12 +28,12 @@ test('maps special values to valid options', () => {
 });
 
 test('maps regular values to themselves', () => {
-  const options = {};
+  const options = {} as Config.InitialOptions;
   const argv = {
     collectCoverageOnlyFrom: ['a', 'b'],
     coverageDirectory: 'covDir',
     watchman: true,
-  };
+  } as Config.Argv;
 
   expect(setFromArgv(options, argv)).toMatchObject({
     collectCoverageOnlyFrom: ['a', 'b'],
@@ -42,11 +43,11 @@ test('maps regular values to themselves', () => {
 });
 
 test('works with string objects', () => {
-  const options = {};
+  const options = {} as Config.InitialOptions;
   const argv = {
     moduleNameMapper: '{"types/(.*)": "<rootDir>/src/types/$1"}',
     transform: '{"*.js": "<rootDir>/transformer"}',
-  };
+  } as Config.Argv;
   expect(setFromArgv(options, argv)).toMatchObject({
     moduleNameMapper: {
       'types/(.*)': '<rootDir>/src/types/$1',
@@ -58,10 +59,10 @@ test('works with string objects', () => {
 });
 
 test('explicit flags override those from --config', () => {
-  const options = {};
+  const options = {} as Config.InitialOptions;
   const argv = {
     config: '{"watch": false}',
     watch: true,
-  };
+  } as Config.Argv;
   expect(setFromArgv(options, argv)).toMatchObject({watch: true});
 });

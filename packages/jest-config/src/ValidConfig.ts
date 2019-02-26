@@ -3,21 +3,19 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {InitialOptions} from 'types/Config';
-
+import {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
+// @ts-ignore: Not migrated to TS
 import {multipleValidOptions} from 'jest-validate';
 import {NODE_MODULES} from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
-export default ({
+const initialOptions: Config.InitialOptions = {
   automock: false,
-  bail: (multipleValidOptions(false, 0): any),
+  bail: multipleValidOptions(false, 0),
   browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
@@ -40,6 +38,7 @@ export default ({
       statements: 100,
     },
   },
+  // @ts-ignore: Missing from initial options... https://github.com/facebook/jest/pull/7923
   cwd: '/root',
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: 'project-name',
@@ -135,4 +134,6 @@ export default ({
     ],
   ],
   watchman: true,
-}: InitialOptions);
+};
+
+export default initialOptions;
