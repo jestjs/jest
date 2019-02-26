@@ -52,6 +52,7 @@ export default function queueRunner(options: Options) {
     });
 
     // `new Array` to avoid contaminated array prototypes
+    // $FlowFixMe
     promise = Promise.race(new Array(promise, token));
 
     if (!timeout) {
