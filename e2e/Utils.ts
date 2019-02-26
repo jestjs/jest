@@ -77,16 +77,12 @@ export const writeFiles = (
 ) => {
   createDirectory(directory);
   Object.keys(files).forEach(fileOrPath => {
-    const filePath = fileOrPath.split('/'); // ['tmp', 'a.js']
-    const filename = filePath.pop(); // filepath becomes dirPath (no filename)
+    const dirname = path.dirname(fileOrPath);
 
-    if (filePath.length) {
-      createDirectory(path.join(directory, ...filePath));
+    if (dirname !== '/') {
+      createDirectory(path.join(directory, dirname));
     }
-    fs.writeFileSync(
-      path.resolve(directory, ...filePath, filename || ''),
-      files[fileOrPath],
-    );
+    fs.writeFileSync(path.resolve(directory, fileOrPath), files[fileOrPath]);
   });
 };
 
