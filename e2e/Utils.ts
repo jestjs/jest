@@ -81,11 +81,10 @@ export const writeFiles = (
     const filename = filePath.pop(); // filepath becomes dirPath (no filename)
 
     if (filePath.length) {
-      createDirectory(path.join.apply(path, [directory].concat(filePath)));
+      createDirectory(path.join(directory, ...filePath));
     }
     fs.writeFileSync(
-      // @ts-ignore
-      path.resolve.apply(path, [directory].concat(filePath, [filename])),
+      path.resolve(directory, ...filePath, filename || ''),
       files[fileOrPath],
     );
   });
