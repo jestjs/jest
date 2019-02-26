@@ -8,7 +8,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import execa, {ExecaChildProcess, ExecaReturns} from 'execa';
+import execa, {ExecaChildProcess, ExecaChildPromise, ExecaReturns} from 'execa';
 import {Writable} from 'readable-stream';
 import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
@@ -33,13 +33,26 @@ export default function runJest(
   return normalizeResult(spawnJest(dir, args, options), options);
 }
 
+function spawnJest(
+  dir: string,
+  args?: Array<string>,
+  options?: RunJestOptions,
+  spawnAsync?: false,
+): ExecaReturns;
+function spawnJest(
+  dir: string,
+  args?: Array<string>,
+  options?: RunJestOptions,
+  spawnAsync?: true,
+): ExecaChildPromise;
+
 // Spawns Jest and returns either a Promise (if spawnAsync is true) or the completed child process
 function spawnJest(
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},
   spawnAsync: boolean = false,
-) {
+): ExecaReturns | ExecaChildPromise {
   const isRelative = !path.isAbsolute(dir);
 
   if (isRelative) {
@@ -76,7 +89,7 @@ function spawnJest(
   );
 }
 
-type RunJestResult = (ExecaReturns | ExecaChildProcess) & {
+type RunJestResult = ExecaReturns & {
   status?: number;
   code?: number;
   json?: (
@@ -106,11 +119,11 @@ export const json = function(
   dir: string,
   args: Array<string> | undefined,
   options: RunJestOptions = {},
-) {
+): RunJestResult {
   args = [...(args || []), '--json'];
   const result = runJest(dir, args, options);
   try {
-    result.json = JSON.parse((result.stdout || '').toString());
+    result.json = JSON.parse(result.stdout || '');
   } catch (e) {
     throw new Error(
       `

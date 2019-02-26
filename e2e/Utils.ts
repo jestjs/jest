@@ -82,7 +82,10 @@ export const writeFiles = (
     if (dirname !== '/') {
       createDirectory(path.join(directory, dirname));
     }
-    fs.writeFileSync(path.resolve(directory, fileOrPath), files[fileOrPath]);
+    fs.writeFileSync(
+      path.resolve(directory, ...fileOrPath.split('/')),
+      files[fileOrPath],
+    );
   });
 };
 

@@ -18,7 +18,7 @@ const SAMPLE_FILE_CONTENT = 'module.exports = {};';
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
-test('--listTests doesnt duplicate the test files', () => {
+test("--listTests doesn't duplicate the test files", () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
     '/project1.js': `module.exports = {rootDir: './', displayName: 'BACKEND'}`,
