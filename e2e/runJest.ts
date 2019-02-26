@@ -8,7 +8,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import execa, {ExecaChildProcess, ExecaChildPromise, ExecaReturns} from 'execa';
+import execa, {ExecaChildProcess, ExecaReturns} from 'execa';
 import {Writable} from 'readable-stream';
 import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
@@ -44,7 +44,7 @@ function spawnJest(
   args?: Array<string>,
   options?: RunJestOptions,
   spawnAsync?: true,
-): ExecaChildPromise;
+): ExecaChildProcess;
 
 // Spawns Jest and returns either a Promise (if spawnAsync is true) or the completed child process
 function spawnJest(
@@ -52,7 +52,7 @@ function spawnJest(
   args?: Array<string>,
   options: RunJestOptions = {},
   spawnAsync: boolean = false,
-): ExecaReturns | ExecaChildPromise {
+): ExecaReturns | ExecaChildProcess {
   const isRelative = !path.isAbsolute(dir);
 
   if (isRelative) {
@@ -103,9 +103,9 @@ function normalizeResult(result: RunJestResult, options: RunJestOptions) {
   // For compat with cross-spawn
   result.status = result.code;
 
-  result.stdout = normalizeIcons(result.stdout as string);
+  result.stdout = normalizeIcons(result.stdout);
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
-  result.stderr = normalizeIcons(result.stderr as string);
+  result.stderr = normalizeIcons(result.stderr);
   if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
 
   return result;
@@ -144,12 +144,7 @@ export const until = async function(
   text: string,
   options: RunJestOptions = {},
 ) {
-  const jestPromise = spawnJest(
-    dir,
-    args,
-    {timeout: 30000, ...options},
-    true,
-  ) as ExecaChildProcess;
+  const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
 
   jestPromise.stderr.pipe(
     new Writable({
