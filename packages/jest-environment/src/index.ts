@@ -22,19 +22,15 @@ export type EnvironmentContext = {
 // TODO: type this better: https://nodejs.org/api/modules.html#modules_the_module_wrapper
 type ModuleWrapper = (...args: Array<unknown>) => unknown;
 
-export interface JestEnvironment {
-  new (
-    config: Config.ProjectConfig,
-    context?: EnvironmentContext,
-  ): JestEnvironment;
+export declare class JestEnvironment {
+  constructor(config: Config.ProjectConfig);
+  constructor(config: Config.ProjectConfig, context: EnvironmentContext);
+  global: Global.Global;
+  fakeTimers: FakeTimers<unknown> | null;
+  moduleMocker: ModuleMocker | null;
   runScript(
     script: Script,
   ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null;
-  global: Global.Global;
-  // TODO: This is nullable, and TS doesn't understand we deal with it in `jest-runtime`. Should be fixed
-  fakeTimers: FakeTimers<unknown>;
-  testFilePath: Config.Path;
-  moduleMocker: ModuleMocker;
   setup(): Promise<void>;
   teardown(): Promise<void>;
 }
