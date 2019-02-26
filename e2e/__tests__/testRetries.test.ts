@@ -7,8 +7,8 @@
 
 import fs from 'fs';
 import path from 'path';
+import {skipSuiteOnJasmine} from '@jest/test-utils';
 import runJest from '../runJest';
-import {skipSuiteOnJasmine} from '../../scripts/ConditionalTest';
 
 skipSuiteOnJasmine();
 

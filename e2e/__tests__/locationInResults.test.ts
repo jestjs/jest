@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isJestCircusRun} from '@jest/test-utils';
 import {json as runWithJson} from '../runJest';
-import {isJestCircusRun} from '../../scripts/ConditionalTest';
 
 it('defaults to null for location', () => {
   const {json: result} = runWithJson('location-in-results');

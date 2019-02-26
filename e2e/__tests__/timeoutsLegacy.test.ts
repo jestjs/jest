@@ -3,16 +3,13 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- * @flow
  */
-
-'use strict';
 
 import path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import {skipSuiteOnJestCircus} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
-import {skipSuiteOnJestCircus} from '../../scripts/ConditionalTest';
 
 /**
  * NOTE: This test should be removed once jest-circus is rolled out as a breaking change.

@@ -6,9 +6,9 @@
  */
 
 import path from 'path';
+import {skipSuiteOnJasmine} from '@jest/test-utils';
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
-import {skipSuiteOnJasmine} from '../../scripts/ConditionalTest';
 
 const dir = path.resolve(__dirname, '../empty-describe-with-hooks');
 

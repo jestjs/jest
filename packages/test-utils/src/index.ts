@@ -5,11 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import runJest from '../runJest';
-
-test('supports NODE_PATH', () => {
-  const result = runJest('node-path', [], {
-    nodePath: ['../node-path/src'],
-  });
-  expect(result.status).toBe(0);
-});
+export {
+  isJestCircusRun,
+  skipSuiteOnJasmine,
+  skipSuiteOnJestCircus,
+  skipSuiteOnWindows,
+} from './ConditionalTest';

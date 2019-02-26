@@ -7,7 +7,7 @@
 
 import path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 

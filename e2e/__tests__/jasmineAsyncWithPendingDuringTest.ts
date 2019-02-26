@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {skipSuiteOnJestCircus} from '@jest/test-utils';
 import {json as runWithJson} from '../runJest';
-import {skipSuiteOnJestCircus} from '../../scripts/ConditionalTest';
 
 describe('async jasmine with pending during test', () => {
   skipSuiteOnJestCircus();

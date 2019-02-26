@@ -7,9 +7,9 @@
 
 import path from 'path';
 import os from 'os';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 import {cleanup, createEmptyPackage, writeFiles} from '../Utils';
 import runJest from '../runJest';
-import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 
 skipSuiteOnWindows();
 

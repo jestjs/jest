@@ -8,8 +8,8 @@
 import path from 'path';
 import os from 'os';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 import runJest from '../runJest';
-import {skipSuiteOnWindows} from '../../scripts/ConditionalTest';
 import {cleanup, writeFiles} from '../Utils';
 
 skipSuiteOnWindows();

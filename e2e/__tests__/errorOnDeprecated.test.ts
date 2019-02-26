@@ -6,9 +6,9 @@
  */
 
 import {wrap} from 'jest-snapshot-serializer-raw';
+import {skipSuiteOnJestCircus} from '@jest/test-utils';
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
-import {skipSuiteOnJestCircus} from '../../scripts/ConditionalTest';
 
 skipSuiteOnJestCircus();
 
