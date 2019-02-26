@@ -125,7 +125,8 @@ class Runtime {
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);
     this._mockRegistry = Object.create(null);
-    this._moduleMocker = this._environment.moduleMocker;
+    // during setup, this cannot be null (and it's fine to explode if it is)
+    this._moduleMocker = this._environment.moduleMocker!;
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
     this._moduleRegistry = Object.create(null);
@@ -170,7 +171,7 @@ class Runtime {
     }
   }
 
-  // TODO: Can this be `static shouldInstrument = shouldInstrument;`?
+  // TODO: Make this `static shouldInstrument = shouldInstrument;` after https://github.com/facebook/jest/issues/7846
   static shouldInstrument(
     filename: Config.Path,
     options: ShouldInstrumentOptions,
@@ -934,11 +935,11 @@ class Runtime {
       return jestObject;
     };
     const useFakeTimers = () => {
-      this._environment.fakeTimers.useFakeTimers();
+      _getFakeTimers().useFakeTimers();
       return jestObject;
     };
     const useRealTimers = () => {
-      this._environment.fakeTimers.useRealTimers();
+      _getFakeTimers().useRealTimers();
       return jestObject;
     };
     const resetModules = () => {
@@ -968,7 +969,7 @@ class Runtime {
       return jestObject;
     };
 
-    const _getFakeTimers = () => {
+    const _getFakeTimers = (): NonNullable<JestEnvironment['fakeTimers']> => {
       if (!this._environment.fakeTimers) {
         this._logFormattedReferenceError(
           'You are trying to access a property or method of the Jest environment after it has been torn down.',
@@ -976,7 +977,8 @@ class Runtime {
         process.exitCode = 1;
       }
 
-      return this._environment.fakeTimers;
+      // We've logged a user message above, so it doesn't matter if we return `null` here
+      return this._environment.fakeTimers!;
     };
 
     const jestObject: Jest = {
@@ -1024,7 +1026,7 @@ class Runtime {
     return jestObject;
   }
 
-  _logFormattedReferenceError(errorMessage: string) {
+  private _logFormattedReferenceError(errorMessage: string) {
     const originalStack = new ReferenceError(errorMessage)
       .stack!.split('\n')
       // Remove this file from the stack (jest-message-utils will keep one line)

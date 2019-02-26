@@ -6,8 +6,8 @@
  * @flow
  */
 
-import type {ReporterConfig} from 'types/Config';
-
+import {Config} from '@jest/types';
+// @ts-ignore: Not migrated to TS
 import {ValidationError} from 'jest-validate';
 import chalk from 'chalk';
 import getType from 'jest-get-type';
@@ -26,7 +26,7 @@ const ERROR = `${BULLET}Reporter Validation Error`;
  */
 export function createReporterError(
   reporterIndex: number,
-  reporterValue: Array<ReporterConfig> | string,
+  reporterValue: Array<Config.ReporterConfig> | string,
 ): ValidationError {
   const errorMessage =
     `  Reporter at index ${reporterIndex} must be of type:\n` +
@@ -38,7 +38,7 @@ export function createReporterError(
 }
 
 export function createArrayReporterError(
-  arrayReporter: ReporterConfig,
+  arrayReporter: Config.ReporterConfig,
   reporterIndex: number,
   valueIndex: number,
   value: string | Object,
@@ -63,7 +63,7 @@ export function createArrayReporterError(
 }
 
 export function validateReporters(
-  reporterConfig: Array<ReporterConfig | string>,
+  reporterConfig: Array<Config.ReporterConfig | string>,
 ): boolean {
   return reporterConfig.every((reporter, index) => {
     if (Array.isArray(reporter)) {
@@ -77,7 +77,7 @@ export function validateReporters(
 }
 
 function validateArrayReporter(
-  arrayReporter: ReporterConfig,
+  arrayReporter: Config.ReporterConfig,
   reporterIndex: number,
 ) {
   const [path, options] = arrayReporter;

@@ -5,18 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import mock from 'jest-mock';
+import {ModuleMocker} from 'jest-mock';
 import {formatStackTrace, StackTraceConfig} from 'jest-message-util';
-import setGlobal from './setGlobal';
 
-type ModuleMocker = typeof mock;
-
-/**
- * We don't know the type of arguments for a callback ahead of time which is why
- * we are disabling the flowtype/no-weak-types rule here.
- */
-
-type Callback = (...args: any) => void;
+type Callback = (...args: Array<unknown>) => void;
 
 type TimerID = string;
 
@@ -49,6 +41,16 @@ type TimerConfig<Ref> = {
 };
 
 const MS_IN_A_YEAR = 31536000000;
+
+// TODO: Copied from `jest-util` to avoid cyclic dependency. Import from `jest-util` in the next major
+const setGlobal = (
+  globalToMutate: NodeJS.Global | Window,
+  key: string,
+  value: unknown,
+) => {
+  // @ts-ignore: no index
+  globalToMutate[key] = value;
+};
 
 export default class FakeTimers<TimerRef> {
   private _cancelledImmediates!: {[key: string]: boolean};

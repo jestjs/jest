@@ -3,26 +3,16 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Argv} from 'types/Argv';
-import type {
-  GlobalConfig,
-  InitialOptions,
-  Path,
-  ProjectConfig,
-} from 'types/Config';
-
-import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
+import {Config} from '@jest/types';
+import chalk from 'chalk';
 import {isJSONString, replaceRootDirInPath} from './utils';
 import normalize from './normalize';
 import resolveConfigPath from './resolveConfigPath';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
-
 export {getTestEnvironment, isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
@@ -30,22 +20,24 @@ export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './Defaults';
 export {default as descriptions} from './Descriptions';
 
+type ReadConfig = {
+  configPath: Config.Path | null | undefined;
+  globalConfig: Config.GlobalConfig;
+  hasDeprecationWarnings: boolean;
+  projectConfig: Config.ProjectConfig;
+};
+
 export function readConfig(
-  argv: Argv,
-  packageRootOrConfig: Path | InitialOptions,
+  argv: Config.Argv,
+  packageRootOrConfig: Config.Path | Config.InitialOptions,
   // Whether it needs to look into `--config` arg passed to CLI.
   // It only used to read initial config. If the initial config contains
   // `project` property, we don't want to read `--config` value and rather
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
-  parentConfigPath: ?Path,
-  projectIndex?: number = Infinity,
-): {
-  configPath: ?Path,
-  globalConfig: GlobalConfig,
-  hasDeprecationWarnings: boolean,
-  projectConfig: ProjectConfig,
-} {
+  parentConfigPath?: Config.Path | null,
+  projectIndex: number = Infinity,
+): ReadConfig {
   let rawOptions;
   let configPath = null;
 
@@ -104,8 +96,11 @@ export function readConfig(
 }
 
 const groupOptions = (
-  options: Object,
-): {globalConfig: GlobalConfig, projectConfig: ProjectConfig} => ({
+  options: Config.ProjectConfig & Config.GlobalConfig,
+): {
+  globalConfig: Config.GlobalConfig;
+  projectConfig: Config.ProjectConfig;
+} => ({
   globalConfig: Object.freeze({
     bail: options.bail,
     changedFilesWithAncestor: options.changedFilesWithAncestor,
@@ -218,11 +213,15 @@ const groupOptions = (
   }),
 });
 
-const ensureNoDuplicateConfigs = (parsedConfigs, projects) => {
+const ensureNoDuplicateConfigs = (
+  parsedConfigs: Array<ReadConfig>,
+  projects: Config.GlobalConfig['projects'],
+) => {
   const configPathMap = new Map();
 
   for (const config of parsedConfigs) {
     const {configPath} = config;
+
     if (configPathMap.has(configPath)) {
       const message = `Whoops! Two projects resolved to the same config path: ${chalk.bold(
         String(configPath),
@@ -256,18 +255,18 @@ This usually means that your ${chalk.bold(
 // If no projects are specified, process.cwd() will be used as the default
 // (and only) project.
 export function readConfigs(
-  argv: Argv,
-  projectPaths: Array<Path>,
+  argv: Config.Argv,
+  projectPaths: Array<Config.Path>,
 ): {
-  globalConfig: GlobalConfig,
-  configs: Array<ProjectConfig>,
-  hasDeprecationWarnings: boolean,
+  globalConfig: Config.GlobalConfig;
+  configs: Array<Config.ProjectConfig>;
+  hasDeprecationWarnings: boolean;
 } {
   let globalConfig;
   let hasDeprecationWarnings;
-  let configs: Array<ProjectConfig> = [];
+  let configs: Array<Config.ProjectConfig> = [];
   let projects = projectPaths;
-  let configPath: ?Path;
+  let configPath: Config.Path | null | undefined;
 
   if (projectPaths.length === 1) {
     const parsedConfig = readConfig(argv, projects[0]);
