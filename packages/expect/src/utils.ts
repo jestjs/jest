@@ -80,14 +80,22 @@ export const getPath = (
     result.traversedPath.unshift(prop);
 
     if (lastProp) {
-      try {
-        result.hasEndProp = newObject !== undefined || prop in object;
-      } catch (e) {
-        // A primitive value usually throws TypeError: Cannot use 'in' operator
-        // Beware: 'length' in string throws, but property does exist.
-        // However, string['length'] is number, not undefined.
-        result.hasEndProp = false;
+      if (newObject === undefined) {
+        // Does object have the property with an undefined value?
+        // At this point, object cannot be null nor undefined.
+        // Although primitive values support bracket notation (above)
+        // they would throw TypeError for in operator (below).
+        const type = typeof object;
+        result.hasEndProp =
+          type !== 'boolean' &&
+          type !== 'number' &&
+          type !== 'string' &&
+          type !== 'symbol' &&
+          prop in object;
+      } else {
+        result.hasEndProp = true;
       }
+
       if (!result.hasEndProp) {
         result.traversedPath.shift();
       }
