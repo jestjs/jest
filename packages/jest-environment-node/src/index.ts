@@ -10,6 +10,7 @@ import {Global, Config} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+import {JestEnvironment} from '@jest/environment';
 
 type Timer = {
   id: number;
@@ -17,11 +18,11 @@ type Timer = {
   unref: () => Timer;
 };
 
-class NodeEnvironment {
-  context?: Context | null;
-  fakeTimers?: FakeTimers<Timer> | null;
-  global?: Global.Global | null;
-  moduleMocker?: ModuleMocker | null;
+class NodeEnvironment implements JestEnvironment {
+  context: Context | null;
+  fakeTimers: FakeTimers<Timer> | null;
+  global: Global.Global;
+  moduleMocker: ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig) {
     this.context = vm.createContext();
@@ -70,11 +71,11 @@ class NodeEnvironment {
     });
   }
 
-  setup(): Promise<void> {
+  setup() {
     return Promise.resolve();
   }
 
-  teardown(): Promise<void> {
+  teardown() {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
@@ -83,8 +84,9 @@ class NodeEnvironment {
     return Promise.resolve();
   }
 
-  // Disabling rule as return type depends on script's return type.
-  runScript(script: Script): any | null | undefined {
+  // TS infers the return type to be `any`, since that's what `runInContext`
+  // returns.
+  runScript(script: Script) {
     if (this.context) {
       return script.runInContext(this.context);
     }
@@ -92,4 +94,4 @@ class NodeEnvironment {
   }
 }
 
-module.exports = NodeEnvironment;
+export = NodeEnvironment;
