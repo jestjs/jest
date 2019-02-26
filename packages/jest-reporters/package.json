@@ -28,7 +28,6 @@
   "devDependencies": {
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
-    "@types/istanbul": "^0.4.30",
     "@types/istanbul-lib-coverage": "^1.1.0",
     "@types/istanbul-lib-instrument": "^1.7.2",
     "@types/istanbul-lib-source-maps": "^1.2.1",
