@@ -54,7 +54,7 @@ module.exports = {
     '/packages/jest-validate/src/__tests__/fixtures/',
     '/packages/jest-worker/src/__performance_tests__',
     '/packages/pretty-format/perf/test.js',
-    '/e2e/__tests__/iterator-to-null-test.js',
+    '/e2e/__tests__/iterator-to-null-test.ts',
   ],
   transform: {
     '^.+\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
