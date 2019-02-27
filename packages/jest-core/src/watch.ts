@@ -56,20 +56,20 @@ const INTERNAL_PLUGINS = [
   QuitPlugin,
 ];
 
-// TODO: Is it correct with constructor here?
 const RESERVED_KEY_PLUGINS = new Map<
-  WatchPlugin,
-  {forbiddenOverwriteMessage: string; key?: string}
+  // TODO: Should be WatchPlugin
+  Function,
+  Pick<ReservedInfo, 'forbiddenOverwriteMessage' | 'key'>
 >([
   [
-    UpdateSnapshotsPlugin.constructor,
+    UpdateSnapshotsPlugin,
     {forbiddenOverwriteMessage: 'updating snapshots', key: 'u'},
   ],
   [
-    UpdateSnapshotsInteractivePlugin.constructor,
+    UpdateSnapshotsInteractivePlugin,
     {forbiddenOverwriteMessage: 'updating snapshots interactively', key: 'i'},
   ],
-  [QuitPlugin.constructor, {forbiddenOverwriteMessage: 'quitting watch mode'}],
+  [QuitPlugin, {forbiddenOverwriteMessage: 'quitting watch mode'}],
 ]);
 
 export default function watch(
