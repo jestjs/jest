@@ -7,8 +7,6 @@
  *
  */
 
-import path from 'path';
-
 import Runtime from 'jest-runtime';
 import yargs from 'yargs';
 // @ts-ignore: Wait for jest-validate to get migrated
@@ -16,9 +14,9 @@ import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
 import * as args from './args';
 
-const {version: VERSION} = require("../../package.json");
+const {version: VERSION} = require('../../package.json');
 
-const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
+const REPL_SCRIPT = require.resolve('./repl.js');
 
 export = function() {
   const argv = yargs.usage(args.usage).options(args.options).argv;
@@ -27,6 +25,6 @@ export = function() {
 
   argv._ = [REPL_SCRIPT];
 
-  //@ts-ignore Get feedback first in PR
+  // @ts-ignore: not the same arguments
   Runtime.runCLI(argv, [`Jest REPL v${VERSION}`]);
 };

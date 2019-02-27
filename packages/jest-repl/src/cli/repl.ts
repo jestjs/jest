@@ -7,8 +7,8 @@
  *
  */
 
-declare var jestGlobalConfig: Config.GlobalConfig;
-declare var jestProjectConfig: Config.ProjectConfig;
+declare const jestGlobalConfig: Config.GlobalConfig;
+declare const jestProjectConfig: Config.ProjectConfig;
 
 import path from 'path';
 import repl from 'repl';
@@ -23,7 +23,6 @@ const evalCommand: repl.REPLEval = (
   _context: any,
   _filename: string,
   callback: (e: Error | null, result?: any) => void,
-  _config?: any,
 ) => {
   let result;
   try {
