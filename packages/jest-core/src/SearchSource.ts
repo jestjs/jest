@@ -16,10 +16,11 @@ import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {replacePathSepForGlob, testPathPatternToRegExp} from 'jest-util';
+import {Stats, TestPathCases, TestPathCasesWithPathPattern} from './types';
 
 type SearchResult = {
   noSCM?: boolean;
-  stats?: {[key: string]: number};
+  stats?: Stats;
   collectCoverageFrom?: Set<string>;
   tests: Array<Test>;
   total?: number;
@@ -38,14 +39,6 @@ export type TestSelectionConfig = {
 type FilterResult = {
   test: string;
   message: string;
-};
-
-type TestPathCases = {
-  roots: (path: Config.Path) => boolean;
-  testMatch: (path: Config.Path) => boolean;
-  testRegex: (path: Config.Path) => boolean;
-  testPathIgnorePatterns: (path: Config.Path) => boolean;
-  testPathPattern?: (path: Config.Path) => boolean;
 };
 
 const globsToMatcher = (globs?: Array<Config.Glob> | null) => {
@@ -105,11 +98,16 @@ export default class SearchSource {
     testPathPattern?: string,
   ): SearchResult {
     const data: {
-      stats: {[key in keyof TestPathCases]: number};
+      stats: Stats;
       tests: Array<Test>;
       total: number;
     } = {
-      stats: {},
+      stats: {
+        roots: 0,
+        testMatch: 0,
+        testPathIgnorePatterns: 0,
+        testRegex: 0,
+      },
       tests: [],
       total: allPaths.length,
     };
@@ -117,15 +115,17 @@ export default class SearchSource {
     const testCases = Object.assign({}, this._testPathCases);
     if (testPathPattern) {
       const regex = testPathPatternToRegExp(testPathPattern);
-      testCases.testPathPattern = (path: Config.Path) => regex.test(path);
+      (testCases as TestPathCasesWithPathPattern).testPathPattern = (
+        path: Config.Path,
+      ) => regex.test(path);
     }
 
-    const testCasesKeys = Object.keys(testCases) as Array<keyof TestPathCases>;
+    const testCasesKeys = Object.keys(testCases) as Array<keyof Stats>;
     data.tests = allPaths.filter(test =>
       testCasesKeys.reduce((flag, key) => {
         if (testCases[key](test.path)) {
           if (data.stats[key] === undefined) {
-            data.stats[key] = 1;
+            data.stats[key] = 0;
           }
           ++data.stats[key]!;
           return flag && true;
@@ -134,6 +134,13 @@ export default class SearchSource {
         return false;
       }, true),
     );
+
+    // TODO: Is this necessary? Done to keep the object the same as before the TS migration
+    testCasesKeys.forEach(key => {
+      if (data.stats[key] === 0) {
+        delete data.stats[key];
+      }
+    });
 
     return data;
   }

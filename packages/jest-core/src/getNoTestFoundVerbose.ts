@@ -3,24 +3,25 @@
 import chalk from 'chalk';
 import {Config} from '@jest/types';
 import pluralize from './pluralize';
-import {TestRunData} from './types';
+import {Stats, TestRunData} from './types';
 
 export default function getNoTestFoundVerbose(
   testRunData: TestRunData,
   globalConfig: Config.GlobalConfig,
 ): string {
   const individualResults = testRunData.map(testRun => {
-    const stats = testRun.matches.stats || {};
+    const stats = testRun.matches.stats || ({} as Stats);
     const config = testRun.context.config;
-    const statsMessage = Object.keys(stats)
+    const statsMessage = (Object.keys(stats) as Array<keyof Stats>)
       .map(key => {
         if (key === 'roots' && config.roots.length === 1) {
           return null;
         }
         const value = config[key];
         if (value) {
+          const valueAsString = Array.isArray(value) ? value.join(', ') : value;
           const matches = pluralize('match', stats[key], 'es');
-          return `  ${key}: ${chalk.yellow(value)} - ${matches}`;
+          return `  ${key}: ${chalk.yellow(valueAsString)} - ${matches}`;
         }
         return null;
       })

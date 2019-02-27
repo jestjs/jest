@@ -10,9 +10,8 @@ import {BaseWatchPlugin, JestHookSubscriber} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
-  _snapshotInteractiveMode: SnapshotInteractiveMode;
-  _failedSnapshotTestPaths: Array<unknown>;
-  _failedSnapshotTestAssertions: Array<TestResult.AssertionLocation>;
+  private _snapshotInteractiveMode: SnapshotInteractiveMode;
+  private _failedSnapshotTestAssertions: Array<TestResult.AssertionLocation>;
   isInternal: true;
 
   constructor(options: {

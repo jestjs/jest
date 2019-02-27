@@ -18,12 +18,12 @@ const {ARROW, CLEAR} = specialChars;
 export default class SnapshotInteractiveMode {
   private _pipe: NodeJS.WritableStream;
   private _isActive: boolean;
-  private _updateTestRunnerConfig: (
+  private _updateTestRunnerConfig!: (
     assertion: TestResult.AssertionLocation | null,
     shouldUpdateSnapshot: boolean,
   ) => unknown;
-  private _testAssertions: Array<TestResult.AssertionLocation>;
-  private _countPaths: number;
+  private _testAssertions!: Array<TestResult.AssertionLocation>;
+  private _countPaths!: number;
   private _skippedNum: number;
 
   constructor(pipe: NodeJS.WritableStream) {

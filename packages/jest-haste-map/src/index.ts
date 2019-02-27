@@ -31,6 +31,8 @@ import watchmanCrawl from './crawlers/watchman';
 import WatchmanWatcher from './lib/WatchmanWatcher';
 import * as fastPath from './lib/fast_path';
 import {
+  ChangeEvent,
+  EventsQueue,
   FileMetaData,
   HasteMap as InternalHasteMapObject,
   HasteRegExp,
@@ -104,6 +106,7 @@ namespace HasteMap {
   export type SerializableModuleMap = HasteSerializableModuleMap;
   export type FS = HasteFS;
   export type HasteMapObject = InternalHasteMapObject;
+  export type HasteChangeEvent = ChangeEvent;
 }
 
 const CHANGE_INTERVAL = 30;
@@ -764,11 +767,7 @@ class HasteMap extends EventEmitter {
     const rootDir = this._options.rootDir;
 
     let changeQueue: Promise<null | void> = Promise.resolve();
-    let eventsQueue: Array<{
-      filePath: Config.Path;
-      stat: fs.Stats | undefined;
-      type: string;
-    }> = [];
+    let eventsQueue: EventsQueue = [];
     // We only need to copy the entire haste map once on every "frame".
     let mustCopy = true;
 
@@ -797,7 +796,7 @@ class HasteMap extends EventEmitter {
     const emitChange = () => {
       if (eventsQueue.length) {
         mustCopy = true;
-        this.emit('change', {
+        const changeEvent: ChangeEvent = {
           eventsQueue,
           hasteFS: new HasteFS({
             files: hasteMap.files,
@@ -809,7 +808,8 @@ class HasteMap extends EventEmitter {
             mocks: hasteMap.mocks,
             rootDir,
           }),
-        });
+        };
+        this.emit('change', changeEvent);
         eventsQueue = [];
       }
     };

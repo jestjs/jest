@@ -19,7 +19,9 @@ class QuitPlugin extends BaseWatchPlugin {
   }
 
   async run() {
+    // @ts-ignore
     if (typeof this._stdin.setRawMode === 'function') {
+      // @ts-ignore
       this._stdin.setRawMode(false);
     }
     this._stdout.write('\n');

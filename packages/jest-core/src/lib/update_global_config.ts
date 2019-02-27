@@ -68,6 +68,7 @@ export default (
     newConfig.coverageReporters = options.coverageReporters;
   }
 
+  // @ts-ignore: does it make sense to be able to set this?
   if (options.noSCM) {
     newConfig.noSCM = true;
   }

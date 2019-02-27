@@ -8,7 +8,7 @@
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import exit from 'exit';
-import HasteMap from 'jest-haste-map';
+import HasteMap, {HasteChangeEvent} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 // @ts-ignore: Not migrated to TS
@@ -35,6 +35,15 @@ import {
 } from './lib/watch_plugins_helpers';
 import activeFilters from './lib/active_filters_message';
 
+type ReservedInfo = {
+  forbiddenOverwriteMessage?: string;
+  key?: string;
+  overwritable: boolean;
+  plugin: WatchPlugin;
+};
+
+type WatchPluginKeysMap = Map<string, ReservedInfo>;
+
 const {print: preRunMessagePrint} = preRunMessage;
 
 let hasExitListener = false;
@@ -47,16 +56,20 @@ const INTERNAL_PLUGINS = [
   QuitPlugin,
 ];
 
-const RESERVED_KEY_PLUGINS = new Map([
+// TODO: Is it correct with constructor here?
+const RESERVED_KEY_PLUGINS = new Map<
+  WatchPlugin,
+  {forbiddenOverwriteMessage: string; key?: string}
+>([
   [
-    UpdateSnapshotsPlugin,
+    UpdateSnapshotsPlugin.constructor,
     {forbiddenOverwriteMessage: 'updating snapshots', key: 'u'},
   ],
   [
-    UpdateSnapshotsInteractivePlugin,
+    UpdateSnapshotsInteractivePlugin.constructor,
     {forbiddenOverwriteMessage: 'updating snapshots interactively', key: 'i'},
   ],
-  [QuitPlugin, {forbiddenOverwriteMessage: 'quitting watch mode'}],
+  [QuitPlugin.constructor, {forbiddenOverwriteMessage: 'quitting watch mode'}],
 ]);
 
 export default function watch(
@@ -134,9 +147,10 @@ export default function watch(
   });
 
   if (globalConfig.watchPlugins != null) {
-    const watchPluginKeys = new Map();
+    const watchPluginKeys: WatchPluginKeysMap = new Map();
     for (const plugin of watchPlugins) {
-      const reservedInfo = RESERVED_KEY_PLUGINS.get(plugin.constructor) || {};
+      const reservedInfo =
+        RESERVED_KEY_PLUGINS.get(plugin.constructor) || ({} as ReservedInfo);
       const key = reservedInfo.key || getPluginKey(plugin, globalConfig);
       if (!key) {
         continue;
@@ -190,34 +204,38 @@ export default function watch(
   emitFileChange();
 
   hasteMapInstances.forEach((hasteMapInstance, index) => {
-    hasteMapInstance.on('change', ({eventsQueue, hasteFS, moduleMap}) => {
-      const validPaths = eventsQueue.filter(({filePath}) =>
-        isValidPath(globalConfig, filePath),
-      );
+    hasteMapInstance.on(
+      'change',
+      ({eventsQueue, hasteFS, moduleMap}: HasteChangeEvent) => {
+        const validPaths = eventsQueue.filter(({filePath}) =>
+          isValidPath(globalConfig, filePath),
+        );
 
-      if (validPaths.length) {
-        const context = (contexts[index] = createContext(
-          contexts[index].config,
-          {hasteFS, moduleMap},
-        ));
+        if (validPaths.length) {
+          const context = (contexts[index] = createContext(
+            contexts[index].config,
+            {hasteFS, moduleMap},
+          ));
 
-        activePlugin = null;
+          activePlugin = null;
 
-        searchSources = searchSources.slice();
-        searchSources[index] = {
-          context,
-          searchSource: new SearchSource(context),
-        };
-        emitFileChange();
-        startRun(globalConfig);
-      }
-    });
+          searchSources = searchSources.slice();
+          searchSources[index] = {
+            context,
+            searchSource: new SearchSource(context),
+          };
+          emitFileChange();
+          startRun(globalConfig);
+        }
+      },
+    );
   });
 
   if (!hasExitListener) {
     hasExitListener = true;
     process.on('exit', () => {
       if (activePlugin) {
+        // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33423
         outputStream.write(ansiEscapes.cursorDown());
         outputStream.write(ansiEscapes.eraseDown);
       }
@@ -383,6 +401,7 @@ export default function watch(
         break;
       case 'w':
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
+          // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33423
           outputStream.write(ansiEscapes.cursorUp());
           outputStream.write(ansiEscapes.eraseDown);
           outputStream.write(usage(globalConfig, watchPlugins));
@@ -413,7 +432,7 @@ export default function watch(
 }
 
 const checkForConflicts = (
-  watchPluginKeys,
+  watchPluginKeys: WatchPluginKeysMap,
   plugin: WatchPlugin,
   globalConfig: Config.GlobalConfig,
 ) => {

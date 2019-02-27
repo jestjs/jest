@@ -7,12 +7,33 @@
 
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
-import {TestResult} from '@jest/types';
+import {Config, TestResult} from '@jest/types';
 
 export type TestRunData = Array<{
   context: Context;
-  matches: {allTests: number; tests: Array<Test>; total?: number};
+  matches: {
+    allTests: number;
+    tests: Array<Test>;
+    total?: number;
+    stats?: Stats;
+  };
 }>;
+
+export type Stats = Record<
+  keyof (TestPathCases | TestPathCasesWithPathPattern),
+  number
+>;
+
+export type TestPathCases = {
+  roots: (path: Config.Path) => boolean;
+  testMatch: (path: Config.Path) => boolean;
+  testPathIgnorePatterns: (path: Config.Path) => boolean;
+  testRegex: (path: Config.Path) => boolean;
+};
+
+export type TestPathCasesWithPathPattern = TestPathCases & {
+  testPathPattern: (path: Config.Path) => boolean;
+};
 
 // TODO: Obtain this from @jest/reporters once its been migrated
 export type ReporterOnStartOptions = {
