@@ -11,6 +11,7 @@ import {Test} from 'jest-runner';
 import {
   PatternPrompt,
   Prompt,
+  ScrollOptions,
   printPatternCaret,
   printRestoredPatternCaret,
 } from 'jest-watcher';
