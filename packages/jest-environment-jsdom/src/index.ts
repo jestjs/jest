@@ -13,6 +13,8 @@ import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
 import {JestEnvironment, EnvironmentContext} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
+// The `Window` interface does not have an `Error.stackTraceLimit` property, but
+// `JSDOMEnvironment` assumes it is there.
 interface Win extends Window {
   Error: {
     stackTraceLimit: number;
@@ -39,6 +41,9 @@ class JSDOMEnvironment implements JestEnvironment {
       virtualConsole: new VirtualConsole().sendTo(options.console || console),
       ...config.testEnvironmentOptions,
     });
+
+    // `defaultView` returns a `Window` type, which is missing the
+    // `Error.stackTraceLimit` property. See the `Win` interface above.
     const global = (this.global = this.dom.window.document
       .defaultView as Win | null);
 
