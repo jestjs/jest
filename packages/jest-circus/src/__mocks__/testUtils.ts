@@ -12,7 +12,7 @@ import path from 'path';
 import crypto from 'crypto';
 import {sync as spawnSync, ExecaReturns} from 'execa';
 // @ts-ignore
-import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 
 const CIRCUS_PATH = require.resolve('../../build');
 const CIRCUS_RUN_PATH = require.resolve('../../build/run');

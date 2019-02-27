@@ -606,6 +606,59 @@ describe('.toEqual()', () => {
     });
     expect(actual).toEqual({x: 3});
   });
+
+  describe('cyclic object equality', () => {
+    test('properties with the same circularity are equal', () => {
+      const a = {};
+      a.x = a;
+      const b = {};
+      b.x = b;
+      expect(a).toEqual(b);
+      expect(b).toEqual(a);
+
+      const c = {};
+      c.x = a;
+      const d = {};
+      d.x = b;
+      expect(c).toEqual(d);
+      expect(d).toEqual(c);
+    });
+
+    test('properties with different circularity are not equal', () => {
+      const a = {};
+      a.x = {y: a};
+      const b = {};
+      const bx = {};
+      b.x = bx;
+      bx.y = bx;
+      expect(a).not.toEqual(b);
+      expect(b).not.toEqual(a);
+
+      const c = {};
+      c.x = a;
+      const d = {};
+      d.x = b;
+      expect(c).not.toEqual(d);
+      expect(d).not.toEqual(c);
+    });
+
+    test('are not equal if circularity is not on the same property', () => {
+      const a = {};
+      const b = {};
+      a.a = a;
+      b.a = {};
+      b.a.a = a;
+      expect(a).not.toEqual(b);
+      expect(b).not.toEqual(a);
+
+      const c = {};
+      c.x = {x: c};
+      const d = {};
+      d.x = d;
+      expect(c).not.toEqual(d);
+      expect(d).not.toEqual(c);
+    });
+  });
 });
 
 describe('.toBeInstanceOf()', () => {

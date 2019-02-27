@@ -7,7 +7,7 @@
  */
 
 import crypto from 'crypto';
-import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 
 function mockHashContents(contents) {
   return crypto
