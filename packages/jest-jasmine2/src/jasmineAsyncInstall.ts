@@ -16,6 +16,12 @@ import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
 import isError from './isError';
 import {$J, Jasmine} from './types';
+import Spec from './jasmine/Spec';
+
+interface DoneFn {
+  (): void;
+  fail: (error: Error) => void;
+}
 
 function isPromise(obj: any) {
   return obj && typeof obj.then === 'function';
@@ -23,7 +29,7 @@ function isPromise(obj: any) {
 
 function promisifyLifeCycleFunction(originalFn: Function, env: $J['Env']) {
   return function(
-    fn: Promise<unknown> | GeneratorFunction | undefined,
+    fn: () => Promise<unknown> | GeneratorFunction | undefined,
     timeout: number,
   ) {
     if (!fn) {
@@ -47,9 +53,9 @@ function promisifyLifeCycleFunction(originalFn: Function, env: $J['Env']) {
 
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
-    const asyncJestLifecycle = function(done: Function) {
+    const asyncJestLifecycle = function(done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
-      const returnValue = wrappedFn.call({});
+      const returnValue = wrappedFn.call({}) as Promise<any>;
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), (error: Error) => {
@@ -71,8 +77,8 @@ function promisifyLifeCycleFunction(originalFn: Function, env: $J['Env']) {
 
 // Similar to promisifyLifeCycleFunction but throws an error
 // when the return value is neither a Promise nor `undefined`
-function promisifyIt(originalFn: Global.It, env: Env, jasmine: Jasmine) {
-  return function(specName: string, fn, timeout?: number) {
+function promisifyIt(originalFn: Function, env: $J['Env'], jasmine: Jasmine) {
+  return function(specName: string, fn: Function, timeout?: number) {
     if (!fn) {
       const spec = originalFn.call(env, specName);
       spec.pend('not implemented');
@@ -93,7 +99,7 @@ function promisifyIt(originalFn: Global.It, env: Env, jasmine: Jasmine) {
     // https://crbug.com/v8/7142
     extraError.stack = extraError.stack;
 
-    const asyncJestTest = function(done: Function) {
+    const asyncJestTest = function(done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
       const returnValue = wrappedFn.call({});
 
@@ -106,7 +112,7 @@ function promisifyIt(originalFn: Global.It, env: Env, jasmine: Jasmine) {
           }
 
           if (jasmine.Spec.isPendingSpecException(error)) {
-            env.pending(message);
+            env.pending(message!);
             done();
           } else {
             done.fail(checkIsError ? error : extraError);
@@ -129,11 +135,14 @@ function promisifyIt(originalFn: Global.It, env: Env, jasmine: Jasmine) {
 
 function makeConcurrent(
   originalFn: Function,
-  env,
+  env: $J['Env'],
   mutex: ReturnType<typeof throat>,
 ) {
   return function(specName: string, fn: () => Promise<any>, timeout: number) {
-    if (env != null && !env.specFilter({getFullName: () => specName || ''})) {
+    if (
+      env != null &&
+      !env.specFilter({getFullName: () => specName || ''} as Spec)
+    ) {
       return originalFn.call(env, specName, () => Promise.resolve(), timeout);
     }
 

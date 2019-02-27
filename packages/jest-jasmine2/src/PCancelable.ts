@@ -19,6 +19,7 @@ class PCancelable<T> extends Promise {
   private _pending: boolean;
   private _canceled: boolean;
   private _cancel?: Function;
+  // @ts-ignore
   private _reject: (reason?: any) => void;
   private _promise: Promise<T>;
 
@@ -35,9 +36,11 @@ class PCancelable<T> extends Promise {
 
   // @ts-ignore
   constructor(executor: (onCancel, resolve, reject) => any) {
+    // @ts-ignore
     this._pending = true;
+    // @ts-ignore
     this._canceled = false;
-
+    // @ts-ignore
     this._promise = new Promise<T>((resolve, reject) => {
       this._reject = reject;
 
@@ -45,7 +48,7 @@ class PCancelable<T> extends Promise {
         (fn: Function) => {
           this._cancel = fn;
         },
-        (val: unknown) => {
+        (val: T) => {
           this._pending = false;
           resolve(val);
         },

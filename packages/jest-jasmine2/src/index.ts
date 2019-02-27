@@ -43,7 +43,7 @@ async function jasmine2(
   // in a future version
   if (config.testLocationInResults === true) {
     const originalIt = environment.global.it;
-    environment.global.it = (...args) => {
+    environment.global.it = (...args: any[]) => {
       const stack = getCallsite(1, runtime.getSourceMaps());
       const it = originalIt(...args);
 
@@ -53,7 +53,7 @@ async function jasmine2(
     };
 
     const originalXit = environment.global.xit;
-    environment.global.xit = (...args) => {
+    environment.global.xit = (...args: any[]) => {
       const stack = getCallsite(1, runtime.getSourceMaps());
       const xit = originalXit(...args);
 
@@ -63,7 +63,7 @@ async function jasmine2(
     };
 
     const originalFit = environment.global.fit;
-    environment.global.fit = (...args) => {
+    environment.global.fit = (...args: any[]) => {
       const stack = getCallsite(1, runtime.getSourceMaps());
       const fit = originalFit(...args);
 
@@ -145,7 +145,9 @@ async function jasmine2(
       testPath,
     });
 
-  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
+  config.setupFilesAfterEnv.forEach((path: Config.Path) =>
+    runtime.requireModule(path),
+  );
 
   if (globalConfig.enabledTestsMap) {
     env.specFilter = (spec: Spec) => {
@@ -172,13 +174,15 @@ const addSnapshotData = (
   results: TestResult.TestResult,
   snapshotState: typeof SnapshotState.prototype,
 ) => {
-  results.testResults.forEach(({fullName, status}) => {
-    if (status === 'pending' || status === 'failed') {
-      // if test is skipped or failed, we don't want to mark
-      // its snapshots as obsolete.
-      snapshotState.markSnapshotsAsCheckedForTest(fullName);
-    }
-  });
+  results.testResults.forEach(
+    ({fullName, status}: TestResult.AssertionResult) => {
+      if (status === 'pending' || status === 'failed') {
+        // if test is skipped or failed, we don't want to mark
+        // its snapshots as obsolete.
+        snapshotState.markSnapshotsAsCheckedForTest(fullName);
+      }
+    },
+  );
 
   const uncheckedCount = snapshotState.getUncheckedCount();
   const uncheckedKeys = snapshotState.getUncheckedKeys();

@@ -5,9 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+export type SharedHookType = 'afterAll' | 'beforeAll';
+export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
+
 describe.each([['beforeEach'], ['beforeAll'], ['afterEach'], ['afterAll']])(
   '%s hooks error throwing',
-  fn => {
+  (fn: HookType) => {
     test.each([
       ['String'],
       [1],

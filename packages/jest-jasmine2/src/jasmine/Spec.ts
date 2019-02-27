@@ -39,6 +39,7 @@ import expectationResultFactory, {
 } from '../expectationResultFactory';
 import assertionErrorMessage from '../assertionErrorMessage';
 import queueRunner, {QueueableFn} from '../queueRunner';
+import {AssertionErrorWithStack} from '../types';
 
 export type Attributes = {
   id: string;
@@ -134,6 +135,7 @@ export default class Spec {
 
     this.queueableFn.initError = this.initError;
 
+    // @ts-ignore
     this.result = {
       id: this.id,
       description: this.description,
@@ -183,6 +185,7 @@ export default class Spec {
     this.currentRun = this.queueRunnerFactory({
       queueableFns: allFns,
       onException() {
+        // @ts-ignore
         self.onException.apply(self, arguments);
       },
       userContext: this.userContext(),
@@ -209,7 +212,7 @@ export default class Spec {
     }
   }
 
-  onException(error: ExpectationFailed | AssertionError) {
+  onException(error: ExpectationFailed | AssertionErrorWithStack) {
     if (Spec.isPendingSpecException(error)) {
       this.pend(extractCustomPendingMessage(error));
       return;
@@ -219,10 +222,6 @@ export default class Spec {
       return;
     }
 
-    if (error instanceof AssertionError) {
-      error = assertionErrorMessage(error, {expand: this.expand});
-    }
-
     this.addExpectationResult(
       false,
       {
@@ -230,7 +229,10 @@ export default class Spec {
         passed: false,
         expected: '',
         actual: '',
-        error,
+        error:
+          error instanceof AssertionError
+            ? assertionErrorMessage(error, {expand: this.expand})
+            : error,
       },
       true,
     );

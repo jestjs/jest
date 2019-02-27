@@ -55,8 +55,17 @@ export default (config: {expand: boolean}) => {
         const negativeCompare = result.negativeCompare || result.compare;
 
         return this.isNot
-          ? negativeCompare.apply(null, args)
-          : result.compare.apply(null, args);
+          ? negativeCompare.apply(
+              null,
+              // @ts-ignore
+              args,
+            )
+          : // @ts-ignore
+            result.compare.apply(
+              null,
+              // @ts-ignore
+              args,
+            );
       };
     });
 

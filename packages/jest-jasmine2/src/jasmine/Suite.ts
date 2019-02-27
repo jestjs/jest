@@ -209,6 +209,8 @@ export default class Suite {
       }
     }
   }
+
+  execute(..._args: any[]) {}
 }
 
 function isAfterAll(children: Suite[]) {

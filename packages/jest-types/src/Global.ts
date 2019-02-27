@@ -48,7 +48,7 @@ export interface Describe extends DescribeBase {
   skip: ItBase;
 }
 
-export interface Global extends NodeJS.Global {
+export interface Global {
   it: It;
   test: ItConcurrent;
   fit: ItBase;
@@ -60,6 +60,9 @@ export interface Global extends NodeJS.Global {
 }
 
 declare global {
+  namespace jest {
+    interface _Global extends Global {}
+  }
   module NodeJS {
     interface Global {
       it: It;

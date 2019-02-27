@@ -7,19 +7,11 @@
 
 import {diff, printReceived, printExpected} from 'jest-matcher-utils';
 import chalk from 'chalk';
+import {AssertionErrorWithStack} from './types';
 
 // TODO replace with import {DiffOptions} from 'jest-matcher-utils';
 type DiffOptions = Parameters<typeof diff>[2];
 
-type AssertionError = {
-  actual: string | null;
-  expected: string | null;
-  generatedMessage: boolean;
-  message: string;
-  name: string;
-  operator: string | null;
-  stack: string;
-};
 
 const assertOperatorsMap: {[key: string]: string} = {
   '!=': 'notEqual',
@@ -89,7 +81,10 @@ const assertMatcherHint = (operator: string | null, operatorName: string) => {
   return message;
 };
 
-function assertionErrorMessage(error: AssertionError, options: DiffOptions) {
+function assertionErrorMessage(
+  error: AssertionErrorWithStack,
+  options: DiffOptions,
+) {
   const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);
   const hasCustomMessage = !generatedMessage;

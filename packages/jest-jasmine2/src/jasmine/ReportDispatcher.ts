@@ -34,8 +34,9 @@ export default class ReportDispatcher {
   addReporter: (reporter: Reporter) => void;
   provideFallbackReporter: (reporter: unknown) => void;
   clearReporters: () => void;
+  [key: string]: any;
 
-  constructor(methods: Array<keyof Reporter>) {
+  constructor(methods: Array<string>) {
     const dispatchedMethods = methods || [];
 
     for (let i = 0; i < dispatchedMethods.length; i++) {
@@ -48,7 +49,7 @@ export default class ReportDispatcher {
     }
 
     let reporters: Reporter[] = [];
-    let fallbackReporter = null;
+    let fallbackReporter: Reporter | null = null;
 
     this.addReporter = function(reporter) {
       reporters.push(reporter);
@@ -64,7 +65,7 @@ export default class ReportDispatcher {
 
     return this;
 
-    function dispatch(method: string, args) {
+    function dispatch(method: string, args: any) {
       if (reporters.length === 0 && fallbackReporter !== null) {
         reporters.push(fallbackReporter);
       }

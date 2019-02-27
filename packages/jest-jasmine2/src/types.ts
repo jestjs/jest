@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {AssertionError} from 'assert';
 import {Config} from '@jest/types';
 import expect from 'expect';
 import Spec from './jasmine/Spec';
@@ -16,6 +17,10 @@ import createSpy from './jasmine/createSpy';
 import ReportDispatcher from './jasmine/ReportDispatcher';
 import SpyRegistry from './jasmine/spyRegistry';
 import Suite from './jasmine/Suite';
+
+export interface AssertionErrorWithStack extends AssertionError {
+  stack: string;
+}
 
 // TODO Add expect types to @jest/types or leave it here
 // Borrowed from "expect"
@@ -48,7 +53,7 @@ export interface $J extends NodeJS.Global {
   currentEnv_: ReturnType<typeof Env>['prototype'];
   getEnv: (options: object) => ReturnType<typeof Env>;
   createSpy: typeof createSpy;
-  Env: ReturnType<typeof Env>;
+  Env: ReturnType<typeof Env>['prototype'];
   JsApiReporter: typeof JsApiReporter;
   ReportDispatcher: typeof ReportDispatcher;
   Spec: typeof Spec;
@@ -60,6 +65,11 @@ export interface $J extends NodeJS.Global {
 }
 
 declare global {
+ /* namespace jest {
+    interface Global {
+      jasmine: Jasmine;
+    }
+  }*/
   module NodeJS {
     interface Global {
       jasmine: Jasmine;

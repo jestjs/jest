@@ -15,10 +15,7 @@ export type Options = {
   fail: (error: Error) => void;
   onException: (error: Error) => void;
   queueableFns: Array<QueueableFn>;
-  setTimeout: (
-    func: () => void,
-    delay: number,
-  ) => number | Global['setTimeout'];
+  setTimeout: Global['setTimeout'];
   userContext: any;
 };
 
@@ -35,7 +32,7 @@ export default function queueRunner(options: Options) {
 
   const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
     let promise = new Promise(resolve => {
-      const next = function(...args: any[]) {
+      const next = function(...args: [Error]) {
         const err = args[0];
         if (err) {
           options.fail.apply(null, args);
@@ -43,7 +40,7 @@ export default function queueRunner(options: Options) {
         resolve();
       };
 
-      next.fail = function(...args: any[]) {
+      next.fail = function(...args: [Error]) {
         options.fail.apply(null, args);
         resolve();
       };
