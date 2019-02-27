@@ -13,11 +13,22 @@ import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
 import {JestEnvironment, EnvironmentContext} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
+interface Win extends Window {
+  Error: {
+    stackTraceLimit: number;
+  };
+}
+
+function isWin(globals: Win | Global.Global): globals is Win {
+  return (globals as Win).document !== undefined;
+}
+
 class JSDOMEnvironment implements JestEnvironment {
   dom: JSDOM | null;
   fakeTimers: FakeTimers<number> | null;
-  global: Global.Global;
-  errorEventListener: ((event: Event & {error: any}) => void) | null;
+  // @ts-ignore
+  global: Global.Global | Win | null;
+  errorEventListener: ((event: Event & {error: unknown}) => void) | null;
   moduleMocker: ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
@@ -28,7 +39,16 @@ class JSDOMEnvironment implements JestEnvironment {
       virtualConsole: new VirtualConsole().sendTo(options.console || console),
       ...config.testEnvironmentOptions,
     });
-    const global = (this.global = this.dom.window.document.defaultView);
+    const global = (this.global = this.dom.window.document
+      .defaultView as Win | null);
+
+    if (!global || !this.global) {
+      this.fakeTimers = null;
+      this.errorEventListener = null;
+      this.moduleMocker = null;
+      return;
+    }
+
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
@@ -84,12 +104,14 @@ class JSDOMEnvironment implements JestEnvironment {
       this.fakeTimers.dispose();
     }
     if (this.global) {
-      if (this.errorEventListener) {
+      if (this.errorEventListener && isWin(this.global)) {
         this.global.removeEventListener('error', this.errorEventListener);
       }
       // Dispose "document" to prevent "load" event from triggering.
       Object.defineProperty(this.global, 'document', {value: null});
-      this.global.close();
+      if (isWin(this.global)) {
+        this.global.close();
+      }
     }
     this.errorEventListener = null;
     this.global = null;
@@ -100,11 +122,12 @@ class JSDOMEnvironment implements JestEnvironment {
 
   runScript(script: Script) {
     if (this.dom) {
-      // `runVMScript` returns `void` and JestEnvironment.runScript is expected
-      // to return `... | null` so we don't return (`void`) early here:
-      //
-      // return this.dom.runVMScript(script);
-      this.dom.runVMScript(script);
+      // Explicitly returning `unknown` since `runVMScript` currently returns
+      // `void`, which is wrong
+
+      // WORK IN PROGRESS:
+      // return this.dom.runVMScript(script) as unknown;
+      return this.dom.runVMScript(script) as any;
     }
     return null;
   }

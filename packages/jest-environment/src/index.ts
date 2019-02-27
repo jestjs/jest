@@ -28,6 +28,9 @@ export declare class JestEnvironment {
   global: Global.Global;
   fakeTimers: FakeTimers<unknown> | null;
   moduleMocker: ModuleMocker | null;
+  // runScript(
+  //   script: Script,
+  // ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null | unknown;
   runScript(
     script: Script,
   ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null;
