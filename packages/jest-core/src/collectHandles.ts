@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+// We can stick the import here since we transform to lazy requires
+import asyncHooks, {AsyncHook} from 'async_hooks';
 import {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
 import stripAnsi from 'strip-ansi';
-
-type AsyncHook = import('async_hooks').AsyncHook;
 
 function stackIsFromUser(stack: string) {
   // Either the test file, or something required by it
@@ -42,7 +42,6 @@ export default function collectHandles(): () => Array<Error> {
   let hook: AsyncHook;
 
   try {
-    const asyncHooks: typeof import('async_hooks') = require('async_hooks');
     hook = asyncHooks.createHook({
       destroy(asyncId) {
         activeHandles.delete(asyncId);

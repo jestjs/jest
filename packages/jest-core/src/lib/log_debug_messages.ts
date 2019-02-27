@@ -11,8 +11,8 @@ const VERSION = require('../../package.json').version;
 
 export default function logDebugMessages(
   globalConfig: Config.GlobalConfig,
-  configs: Array<Config.ProjectConfig>,
-  outputStream: NodeJS.WritableStream,
+  configs: Array<Config.ProjectConfig> | Config.ProjectConfig,
+  outputStream: NodeJS.WriteStream,
 ): void {
   const output = {
     configs,

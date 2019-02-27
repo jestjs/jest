@@ -6,9 +6,12 @@
  *
  */
 
-'use strict';
-
 import path from 'path';
+import Runtime from 'jest-runtime';
+import {normalize} from 'jest-config';
+import {Test} from 'jest-runner';
+import {Config} from '@jest/types';
+import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
 
@@ -17,22 +20,13 @@ const testRegex = path.sep + '__testtests__' + path.sep;
 const testMatch = ['**/__testtests__/**/*'];
 const maxWorkers = 1;
 
-const toPaths = tests => tests.map(({path}) => path);
+const toPaths = (tests: Array<Test>) => tests.map(({path}) => path);
 
-let findMatchingTests;
-let normalize;
+let findMatchingTests: (config: Config.ProjectConfig) => Promise<SearchResult>;
 
 describe('SearchSource', () => {
   const name = 'SearchSource';
-  let Runtime;
-  let SearchSource;
-  let searchSource;
-
-  beforeEach(() => {
-    Runtime = require('jest-runtime');
-    SearchSource = require('../SearchSource').default;
-    normalize = require('jest-config').normalize;
-  });
+  let searchSource: SearchSource;
 
   describe('isTestFilePath', () => {
     let config;
@@ -44,11 +38,13 @@ describe('SearchSource', () => {
           rootDir: '.',
           roots: [],
         },
-        {},
+        {} as Config.Argv,
       ).options;
-      return Runtime.createContext(config, {maxWorkers}).then(context => {
-        searchSource = new SearchSource(context);
-      });
+      return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
+        context => {
+          searchSource = new SearchSource(context);
+        },
+      );
     });
 
     // micromatch doesn't support '..' through the globstar ('**') to avoid
@@ -60,13 +56,14 @@ describe('SearchSource', () => {
             name,
             rootDir: '.',
             roots: [],
-            testMatch: null,
+            testMatch: undefined,
             testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
           },
-          {},
+          {} as Config.Argv,
         ).options;
         return Runtime.createContext(config, {
           maxWorkers,
+          watchman: false,
         }).then(context => {
           searchSource = new SearchSource(context);
 
@@ -95,9 +92,10 @@ describe('SearchSource', () => {
 
   describe('testPathsMatching', () => {
     beforeEach(() => {
-      findMatchingTests = config =>
+      findMatchingTests = (config: Config.ProjectConfig) =>
         Runtime.createContext(config, {
           maxWorkers,
+          watchman: false,
         }).then(context => new SearchSource(context).findMatchingTests());
     });
 
@@ -107,10 +105,10 @@ describe('SearchSource', () => {
           moduleFileExtensions: ['js', 'jsx', 'txt'],
           name,
           rootDir,
-          testMatch: null,
+          testMatch: undefined,
           testRegex: 'not-really-a-test',
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests)
@@ -134,7 +132,7 @@ describe('SearchSource', () => {
           testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
           testRegex: '',
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests)
@@ -155,10 +153,10 @@ describe('SearchSource', () => {
           moduleFileExtensions: ['js', 'jsx'],
           name,
           rootDir,
-          testMatch: null,
+          testMatch: undefined,
           testRegex: 'test.jsx?',
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
@@ -180,7 +178,7 @@ describe('SearchSource', () => {
           testMatch: ['**/test.js?(x)'],
           testRegex: '',
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
@@ -198,10 +196,10 @@ describe('SearchSource', () => {
         {
           name,
           rootDir,
-          testMatch: null,
+          testMatch: undefined,
           testRegex,
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
@@ -222,7 +220,7 @@ describe('SearchSource', () => {
           testMatch,
           testRegex: '',
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
@@ -241,9 +239,9 @@ describe('SearchSource', () => {
           name,
           rootDir: path.resolve(__dirname, 'test_root_with_(parentheses)'),
           testMatch: ['<rootDir>**/__testtests__/**/*'],
-          testRegex: null,
+          testRegex: undefined,
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
@@ -263,7 +261,7 @@ describe('SearchSource', () => {
           rootDir,
           testMatch,
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
@@ -284,7 +282,7 @@ describe('SearchSource', () => {
           rootDir,
           testMatch,
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
@@ -305,7 +303,7 @@ describe('SearchSource', () => {
           rootDir,
           testMatch,
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
@@ -323,10 +321,10 @@ describe('SearchSource', () => {
         {
           name,
           rootDir,
-          testMatch: null,
+          testMatch: undefined,
           testRegex,
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
@@ -347,7 +345,7 @@ describe('SearchSource', () => {
           testMatch,
           testRegex: '',
         },
-        {},
+        {} as Config.Argv,
       );
       return findMatchingTests(config).then(data => {
         const relPaths = toPaths(data.tests).map(absPath =>
@@ -388,16 +386,19 @@ describe('SearchSource', () => {
               '__tests__',
               'haste_impl.js',
             ),
+            providesModuleNodeModules: [],
           },
           name: 'SearchSource-findRelatedTests-tests',
           rootDir,
         },
-        {},
+        {} as Config.Argv,
       );
-      Runtime.createContext(config, {maxWorkers}).then(context => {
-        searchSource = new SearchSource(context);
-        done();
-      });
+      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
+        context => {
+          searchSource = new SearchSource(context);
+          done();
+        },
+      );
     });
 
     it('makes sure a file is related to itself', () => {
@@ -429,7 +430,7 @@ describe('SearchSource', () => {
         new Set([regular, requireRegular, unrelatedFile]),
         true,
       );
-      expect(Array.from(data.collectCoverageFrom)).toEqual([
+      expect(Array.from(data.collectCoverageFrom || [])).toEqual([
         'RegularModule.js',
       ]);
     });
@@ -444,16 +445,18 @@ describe('SearchSource', () => {
           rootDir,
           testMatch,
         },
-        {},
+        {} as Config.Argv,
       );
-      Runtime.createContext(config, {maxWorkers}).then(context => {
-        searchSource = new SearchSource(context);
-        done();
-      });
+      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
+        context => {
+          searchSource = new SearchSource(context);
+          done();
+        },
+      );
     });
 
     it('returns empty search result for empty input', () => {
-      const input = [];
+      const input: Array<Config.Path> = [];
       const data = searchSource.findRelatedTestsFromPattern(input);
       expect(data.tests).toEqual([]);
     });
@@ -500,11 +503,11 @@ describe('SearchSource', () => {
             rootDir: '.',
             roots: ['/foo/bar/prefix'],
           },
-          {},
+          {} as Config.Argv,
         ).options;
 
         searchSource = new SearchSource(
-          await Runtime.createContext(config, {maxWorkers}),
+          await Runtime.createContext(config, {maxWorkers, watchman: false}),
         );
 
         const input = ['/foo/bar/prefix-suffix/__tests__/my-test.test.js'];

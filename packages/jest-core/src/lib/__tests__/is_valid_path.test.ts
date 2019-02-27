@@ -3,13 +3,10 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import isValidPath from '../is_valid_path';
 import path from 'path';
-//$FlowFixMe: Converted to TS
+import isValidPath from '../is_valid_path';
 import {makeGlobalConfig} from '../../../../../TestUtils';
 
 const rootDir = path.resolve(path.sep, 'root');
