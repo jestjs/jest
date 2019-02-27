@@ -52,12 +52,14 @@ class JSDOMEnvironment implements JestEnvironment {
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
-    installCommonGlobals(global, config.globals);
+    // `global` is of type `Win`, but `installCommonGlobals` expects
+    // `NodeJS.Global`, so using `any` for now
+    installCommonGlobals(global as any, config.globals);
 
     // Report uncaught errors.
     this.errorEventListener = event => {
       if (userErrorListenerCount === 0 && event.error) {
-        process.emit('uncaughtException', event.error);
+        (process as NodeJS.EventEmitter).emit('uncaughtException', event.error);
       }
     };
     global.addEventListener('error', this.errorEventListener);
@@ -71,16 +73,20 @@ class JSDOMEnvironment implements JestEnvironment {
       if (name === 'error') {
         userErrorListenerCount++;
       }
-      return originalAddListener.apply(this, arguments);
+      // TODO: remove `any` type assertion
+      return originalAddListener.apply(this, arguments as any);
     };
     global.removeEventListener = function(name: string) {
       if (name === 'error') {
         userErrorListenerCount--;
       }
-      return originalRemoveListener.apply(this, arguments);
+      // TODO: remove `any` type assertion
+      return originalRemoveListener.apply(this, arguments as any);
     };
 
-    this.moduleMocker = new mock.ModuleMocker(global);
+    // `global` is of type `Win`, but `ModuleMocker` expects `NodeJS.Global`, so
+    // using `any` for now
+    this.moduleMocker = new mock.ModuleMocker(global as any);
 
     const timerConfig = {
       idToRef: (id: number) => id,
@@ -89,7 +95,9 @@ class JSDOMEnvironment implements JestEnvironment {
 
     this.fakeTimers = new FakeTimers({
       config,
-      global,
+      // `global` is of type `Win`, but `FakeTimers` expects `NodeJS.Global`, so
+      // using `any` for now
+      global: global as any,
       moduleMocker: this.moduleMocker,
       timerConfig,
     });
@@ -124,10 +132,7 @@ class JSDOMEnvironment implements JestEnvironment {
     if (this.dom) {
       // Explicitly returning `unknown` since `runVMScript` currently returns
       // `void`, which is wrong
-
-      // WORK IN PROGRESS:
-      // return this.dom.runVMScript(script) as unknown;
-      return this.dom.runVMScript(script) as any;
+      return this.dom.runVMScript(script) as unknown;
     }
     return null;
   }
