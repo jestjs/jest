@@ -6,6 +6,7 @@
   },
   "references": [
     {"path": "../jest-get-type"},
+    {"path": "../jest-types"},
     {"path": "../jest-util"},
     {"path": "../pretty-format"}
   ]
