@@ -13,17 +13,17 @@ declare var jestProjectConfig: Config.ProjectConfig;
 import path from 'path';
 import repl from 'repl';
 import vm from 'vm';
-import {Transformer} from '@jest/transform';
-import {Config} from '@jest/types';
+import { Transformer } from '@jest/transform';
+import { Config } from '@jest/types';
 
 let transformer: Transformer;
 
-const evalCommand = (
+const evalCommand: repl.REPLEval = (
   cmd: string,
   _context: any,
   _filename: string,
   callback: (e: Error | null, result?: any) => void,
-  _config: Config.GlobalConfig,
+  _config?: any
 ) => {
   let result;
   try {
@@ -76,7 +76,7 @@ const replInstance: repl.REPLServer = repl.start({
   eval: evalCommand,
   prompt: '\u203A ',
   useGlobal: true,
-} as repl.ReplOptions);
+});
 
 replInstance.context.require = (moduleName: string) => {
   if (/(\/|\\|\.)/.test(moduleName)) {
