@@ -100,7 +100,11 @@ class JSDOMEnvironment implements JestEnvironment {
 
   runScript(script: Script) {
     if (this.dom) {
-      return this.dom.runVMScript(script);
+      // `runVMScript` returns `void` and JestEnvironment.runScript is expected
+      // to return `... | null` so we don't return (`void`) early here:
+      //
+      // return this.dom.runVMScript(script);
+      this.dom.runVMScript(script);
     }
     return null;
   }
