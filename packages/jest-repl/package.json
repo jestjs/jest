@@ -11,7 +11,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/transform": "^24.1.0",
-    "@types/jest": "^24.0.9",
+    "@jest/types": "^24.1.0",
     "jest-config": "^24.1.0",
     "jest-runtime": "^24.1.0",
     "jest-validate": "^24.0.0",
