@@ -14,8 +14,9 @@ import yargs from 'yargs';
 // @ts-ignore: Wait for jest-validate to get migrated
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
-import {version as VERSION} from '../../package.json';
 import * as args from './args';
+
+const {version: VERSION} = require("../../package.json");
 
 const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
 
