@@ -15,7 +15,7 @@ import {
 import {TestResult} from '@jest/types';
 
 export default class TestNamePatternPrompt extends PatternPrompt {
-  private _cachedTestResults: Array<TestResult.TestResult>;
+  _cachedTestResults: Array<TestResult.TestResult>;
 
   constructor(pipe: NodeJS.WritableStream, prompt: Prompt) {
     super(pipe, prompt);
@@ -23,18 +23,18 @@ export default class TestNamePatternPrompt extends PatternPrompt {
     this._cachedTestResults = [];
   }
 
-  private _onChange(pattern: string, options: ScrollOptions) {
-    super._onChange();
+  _onChange(pattern: string, options: ScrollOptions) {
+    super._onChange(pattern, options);
     this._printPrompt(pattern, options);
   }
 
-  private _printPrompt(pattern: string) {
+  _printPrompt(pattern: string, options: ScrollOptions) {
     const pipe = this._pipe;
     printPatternCaret(pattern, pipe);
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
   }
 
-  private _getMatchedTests(pattern: string) {
+  _getMatchedTests(pattern: string) {
     let regex: RegExp;
 
     try {

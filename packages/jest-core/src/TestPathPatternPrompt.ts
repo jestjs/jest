@@ -22,25 +22,25 @@ type SearchSources = Array<{
 }>;
 
 export default class TestPathPatternPrompt extends PatternPrompt {
-  private _searchSources: SearchSources;
+  _searchSources: SearchSources;
 
   constructor(pipe: NodeJS.WritableStream, prompt: Prompt) {
     super(pipe, prompt);
     this._entityName = 'filenames';
   }
 
-  protected _onChange(pattern: string) {
-    super._onChange();
-    this._printPrompt(pattern);
+  _onChange(pattern: string, options: ScrollOptions) {
+    super._onChange(pattern, options);
+    this._printPrompt(pattern, options);
   }
 
-  private _printPrompt(pattern: string) {
+  _printPrompt(pattern: string, options: ScrollOptions) {
     const pipe = this._pipe;
     printPatternCaret(pattern, pipe);
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
   }
 
-  private _getMatchedTests(pattern: string): Array<Test> {
+  _getMatchedTests(pattern: string): Array<Test> {
     let regex;
 
     try {
@@ -49,7 +49,7 @@ export default class TestPathPatternPrompt extends PatternPrompt {
 
     let tests: Array<Test> = [];
     if (regex) {
-      this._searchSources.forEach(({searchSource}) => {
+      this._searchSources.forEach(({searchSource, context}) => {
         tests = tests.concat(searchSource.findMatchingTests(pattern).tests);
       });
     }
