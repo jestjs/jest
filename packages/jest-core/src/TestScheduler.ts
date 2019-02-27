@@ -312,7 +312,6 @@ export default class TestScheduler {
       if (path === 'default') return;
 
       try {
-        // $FlowFixMe
         const Reporter = require(path);
         this.addReporter(new Reporter(this._globalConfig, options));
       } catch (error) {

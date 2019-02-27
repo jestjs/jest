@@ -14,15 +14,15 @@ import {
 } from './types';
 
 class BaseWatchPlugin implements WatchPlugin {
-  protected _stdin: NodeJS.ReadableStream;
-  protected _stdout: NodeJS.WritableStream;
+  protected _stdin: NodeJS.ReadStream;
+  protected _stdout: NodeJS.WriteStream;
 
   constructor({
     stdin,
     stdout,
   }: {
-    stdin: NodeJS.ReadableStream;
-    stdout: NodeJS.WritableStream;
+    stdin: NodeJS.ReadStream;
+    stdout: NodeJS.WriteStream;
   }) {
     this._stdin = stdin;
     this._stdout = stdout;

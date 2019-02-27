@@ -64,7 +64,6 @@ export default async ({
         },
       );
 
-      // $FlowFixMe
       const globalModule = _interopRequireDefault(require(modulePath)).default;
 
       if (typeof globalModule !== 'function') {

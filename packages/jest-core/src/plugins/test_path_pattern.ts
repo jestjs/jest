@@ -11,13 +11,10 @@ import TestPathPatternPrompt from '../TestPathPatternPrompt';
 import activeFilters from '../lib/active_filters_message';
 
 class TestPathPatternPlugin extends BaseWatchPlugin {
-  _prompt: Prompt;
+  private _prompt: Prompt;
   isInternal: true;
 
-  constructor(options: {
-    stdin: NodeJS.ReadableStream;
-    stdout: NodeJS.WritableStream;
-  }) {
+  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
     super(options);
     this._prompt = new Prompt();
     this.isInternal = true;

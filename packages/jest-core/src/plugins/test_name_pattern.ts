@@ -14,10 +14,7 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
   _prompt: Prompt;
   isInternal: true;
 
-  constructor(options: {
-    stdin: NodeJS.ReadableStream;
-    stdout: NodeJS.WritableStream;
-  }) {
+  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
     super(options);
     this._prompt = new Prompt();
     this.isInternal = true;

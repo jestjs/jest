@@ -14,10 +14,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   private _failedSnapshotTestAssertions: Array<TestResult.AssertionLocation>;
   isInternal: true;
 
-  constructor(options: {
-    stdin: NodeJS.ReadableStream;
-    stdout: NodeJS.WritableStream;
-  }) {
+  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
     super(options);
     this._failedSnapshotTestAssertions = [];
     this._snapshotInteractiveMode = new SnapshotInteractiveMode(this._stdout);

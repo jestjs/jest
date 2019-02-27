@@ -75,7 +75,7 @@ const RESERVED_KEY_PLUGINS = new Map<
 export default function watch(
   initialGlobalConfig: Config.GlobalConfig,
   contexts: Array<Context>,
-  outputStream: NodeJS.WritableStream,
+  outputStream: NodeJS.WriteStream,
   hasteMapInstances: Array<HasteMap>,
   stdin: NodeJS.ReadStream = process.stdin,
   hooks: JestHook = new JestHook(),
@@ -164,7 +164,6 @@ export default function watch(
     }
 
     for (const pluginWithConfig of globalConfig.watchPlugins) {
-      // $FlowFixMe dynamic require
       const ThirdPartyPlugin = require(pluginWithConfig.path);
       const plugin: WatchPlugin = new ThirdPartyPlugin({
         config: pluginWithConfig.config,
@@ -305,7 +304,6 @@ export default function watch(
   const onKeypress = (key: string) => {
     if (key === KEYS.CONTROL_C || key === KEYS.CONTROL_D) {
       if (typeof stdin.setRawMode === 'function') {
-        // $FlowFixMe
         stdin.setRawMode(false);
       }
       outputStream.write('\n');
@@ -420,7 +418,6 @@ export default function watch(
   };
 
   if (typeof stdin.setRawMode === 'function') {
-    // $FlowFixMe
     stdin.setRawMode(true);
     stdin.resume();
     stdin.setEncoding('utf8');

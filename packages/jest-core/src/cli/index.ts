@@ -136,7 +136,7 @@ const _run = async (
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
-  outputStream: NodeJS.WritableStream,
+  outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,
 ) => {
   // Queries to hg/git can take a while, so we need to start the process
@@ -172,7 +172,7 @@ const runWatch = async (
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
-  outputStream: NodeJS.WritableStream,
+  outputStream: NodeJS.WriteStream,
   hasteMapInstances: Array<HasteMap>,
 ) => {
   if (hasDeprecationWarnings) {

@@ -16,10 +16,7 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   private _hasSnapshotFailure: boolean;
   isInternal: true;
 
-  constructor(options: {
-    stdin: NodeJS.ReadableStream;
-    stdout: NodeJS.WritableStream;
-  }) {
+  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
     super(options);
     this.isInternal = true;
     this._hasSnapshotFailure = false;

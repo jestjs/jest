@@ -10,18 +10,13 @@ import {BaseWatchPlugin} from 'jest-watcher';
 class QuitPlugin extends BaseWatchPlugin {
   isInternal: true;
 
-  constructor(options: {
-    stdin: NodeJS.ReadableStream;
-    stdout: NodeJS.WritableStream;
-  }) {
+  constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
     super(options);
     this.isInternal = true;
   }
 
   async run() {
-    // @ts-ignore
     if (typeof this._stdin.setRawMode === 'function') {
-      // @ts-ignore
       this._stdin.setRawMode(false);
     }
     this._stdout.write('\n');
