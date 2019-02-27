@@ -3,28 +3,24 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- * @flow
  */
 
-import type {Script} from 'vm';
-import type {ProjectConfig} from 'types/Config';
-import type {EnvironmentContext} from 'types/Environment';
-import type {Global} from 'types/Global';
-import type {ModuleMocker} from 'jest-mock';
-
-import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+import {Script} from 'vm';
+import {Global, Config} from '@jest/types';
+import mock, {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
-import mock from 'jest-mock';
+import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+import {JestEnvironment, EnvironmentContext} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
-class JSDOMEnvironment {
-  dom: ?Object;
-  fakeTimers: ?FakeTimers<number>;
-  global: ?Global;
-  errorEventListener: ?Function;
-  moduleMocker: ?ModuleMocker;
+class JSDOMEnvironment implements JestEnvironment {
+  dom: JSDOM | null;
+  fakeTimers: FakeTimers<number> | null;
+  global: Global.Global;
+  errorEventListener: ((event: Event & {error: any}) => void) | null;
+  moduleMocker: ModuleMocker | null;
 
-  constructor(config: ProjectConfig, options?: EnvironmentContext = {}) {
+  constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
     this.dom = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
       runScripts: 'dangerously',
@@ -51,13 +47,13 @@ class JSDOMEnvironment {
     const originalAddListener = global.addEventListener;
     const originalRemoveListener = global.removeEventListener;
     let userErrorListenerCount = 0;
-    global.addEventListener = function(name) {
+    global.addEventListener = function(name: string) {
       if (name === 'error') {
         userErrorListenerCount++;
       }
       return originalAddListener.apply(this, arguments);
     };
-    global.removeEventListener = function(name) {
+    global.removeEventListener = function(name: string) {
       if (name === 'error') {
         userErrorListenerCount--;
       }
@@ -79,11 +75,11 @@ class JSDOMEnvironment {
     });
   }
 
-  setup(): Promise<void> {
+  setup() {
     return Promise.resolve();
   }
 
-  teardown(): Promise<void> {
+  teardown() {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
@@ -102,7 +98,7 @@ class JSDOMEnvironment {
     return Promise.resolve();
   }
 
-  runScript(script: Script): ?any {
+  runScript(script: Script) {
     if (this.dom) {
       return this.dom.runVMScript(script);
     }
@@ -110,4 +106,4 @@ class JSDOMEnvironment {
   }
 }
 
-module.exports = JSDOMEnvironment;
+export = JSDOMEnvironment;
