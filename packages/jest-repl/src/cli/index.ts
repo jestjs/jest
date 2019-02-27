@@ -20,7 +20,7 @@ const {version: VERSION} = require("../../package.json");
 
 const REPL_SCRIPT = path.resolve(__dirname, './repl.js');
 
-exports = function() {
+export = function() {
   const argv = yargs.usage(args.usage).options(args.options).argv;
 
   validateCLIOptions(argv, {...args.options, deprecationEntries});
