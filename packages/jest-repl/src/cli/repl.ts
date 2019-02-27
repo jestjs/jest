@@ -13,8 +13,8 @@ declare var jestProjectConfig: Config.ProjectConfig;
 import path from 'path';
 import repl from 'repl';
 import vm from 'vm';
-import { Transformer } from '@jest/transform';
-import { Config } from '@jest/types';
+import {Transformer} from '@jest/transform';
+import {Config} from '@jest/types';
 
 let transformer: Transformer;
 
@@ -23,16 +23,20 @@ const evalCommand: repl.REPLEval = (
   _context: any,
   _filename: string,
   callback: (e: Error | null, result?: any) => void,
-  _config?: any
+  _config?: any,
 ) => {
   let result;
   try {
     if (transformer) {
-      cmd = transformer.process(
+      const transformResult = transformer.process(
         cmd,
         jestGlobalConfig.replname || 'jest.js',
         jestProjectConfig,
-      ) as string;
+      );
+      cmd =
+        typeof transformResult === 'string'
+          ? transformResult
+          : transformResult.code;
     }
     result = vm.runInThisContext(cmd);
   } catch (e) {
