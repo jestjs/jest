@@ -28,7 +28,7 @@ export default class TestNamePatternPrompt extends PatternPrompt {
     this._printPrompt(pattern, options);
   }
 
-  private _printPrompt(pattern: string, options: ScrollOptions) {
+  private _printPrompt(pattern: string) {
     const pipe = this._pipe;
     printPatternCaret(pattern, pipe);
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);

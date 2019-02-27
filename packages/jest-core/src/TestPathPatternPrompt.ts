@@ -11,7 +11,6 @@ import {Test} from 'jest-runner';
 import {
   PatternPrompt,
   Prompt,
-  ScrollOptions,
   printPatternCaret,
   printRestoredPatternCaret,
 } from 'jest-watcher';
@@ -48,9 +47,9 @@ export default class TestPathPatternPrompt extends PatternPrompt {
       regex = new RegExp(pattern, 'i');
     } catch (e) {}
 
-    let tests = [];
+    let tests: Array<Test> = [];
     if (regex) {
-      this._searchSources.forEach(({searchSource, context}) => {
+      this._searchSources.forEach(({searchSource}) => {
         tests = tests.concat(searchSource.findMatchingTests(pattern).tests);
       });
     }

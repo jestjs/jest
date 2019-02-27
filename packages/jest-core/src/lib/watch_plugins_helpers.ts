@@ -27,6 +27,10 @@ export const filterInteractivePlugins = (
   });
 };
 
+function notEmpty<T>(value: T | null | undefined): value is T {
+  return value != null;
+}
+
 export const getSortedUsageRows = (
   watchPlugins: Array<WatchPlugin>,
   globalConfig: Config.GlobalConfig,
@@ -52,4 +56,4 @@ export const getSortedUsageRows = (
       return 0;
     })
     .map(p => p.getUsageInfo && p.getUsageInfo(globalConfig))
-    .filter(Boolean);
+    .filter(notEmpty);

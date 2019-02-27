@@ -230,7 +230,7 @@ export default class SnapshotInteractiveMode {
   run(
     failedSnapshotTestAssertions: Array<TestResult.AssertionLocation>,
     onConfigChange: (
-      assertion: TestResult.AssertionLocation | undefined,
+      assertion: TestResult.AssertionLocation | null,
       shouldUpdateSnapshot: boolean,
     ) => unknown,
   ) {
@@ -238,7 +238,7 @@ export default class SnapshotInteractiveMode {
       return;
     }
 
-    this._testAssertions = [].concat(failedSnapshotTestAssertions);
+    this._testAssertions = [...failedSnapshotTestAssertions];
     this._countPaths = this._testAssertions.length;
     this._updateTestRunnerConfig = onConfigChange;
     this._isActive = true;
