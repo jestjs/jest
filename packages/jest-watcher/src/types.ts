@@ -56,6 +56,7 @@ export type AllowedConfigOptions = Partial<
     | 'notify'
     | 'notifyMode'
     | 'onlyFailures'
+    | 'passWithNoTests'
     | 'reporters'
     | 'testNamePattern'
     | 'testPathPattern'
@@ -64,16 +65,16 @@ export type AllowedConfigOptions = Partial<
   > & {mode: 'watch' | 'watchAll'}
 >;
 
+export type UpdateConfigCallback = (config?: AllowedConfigOptions) => void;
+
 export interface WatchPlugin {
   isInternal?: boolean;
   apply?: (hooks: JestHookSubscriber) => void;
-  getUsageInfo?: (
-    globalConfig: Config.GlobalConfig,
-  ) => UsageData | undefined | null;
+  getUsageInfo?: (globalConfig: Config.GlobalConfig) => UsageData | null;
   onKey?: (value: string) => void;
   run?: (
     globalConfig: Config.GlobalConfig,
-    updateConfigAndRun: (config?: AllowedConfigOptions) => void,
+    updateConfigAndRun: UpdateConfigCallback,
   ) => Promise<void | boolean>;
 }
 

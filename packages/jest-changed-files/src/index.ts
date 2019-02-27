@@ -15,6 +15,8 @@ import hg from './hg';
 
 type RootPromise = ReturnType<SCMAdapter['getRoot']>;
 
+export {ChangedFiles, ChangedFilesPromise} from './types';
+
 function notEmpty<T>(value: T | null | undefined): value is T {
   return value != null;
 }

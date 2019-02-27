@@ -32,7 +32,7 @@ import WatchmanWatcher from './lib/WatchmanWatcher';
 import * as fastPath from './lib/fast_path';
 import {
   FileMetaData,
-  HasteMap as HasteMapObject,
+  HasteMap as InternalHasteMapObject,
   HasteRegExp,
   InternalHasteMap,
   Mapper,
@@ -103,6 +103,7 @@ namespace HasteMap {
   export type ModuleMap = HasteModuleMap;
   export type SerializableModuleMap = HasteSerializableModuleMap;
   export type FS = HasteFS;
+  export type HasteMapObject = InternalHasteMapObject;
 }
 
 const CHANGE_INTERVAL = 30;
@@ -223,7 +224,7 @@ const getWhiteList = (list: Array<string> | undefined): RegExp | null => {
  */
 /* eslint-disable-next-line no-redeclare */
 class HasteMap extends EventEmitter {
-  private _buildPromise: Promise<HasteMapObject> | null;
+  private _buildPromise: Promise<InternalHasteMapObject> | null;
   private _cachePath: Config.Path;
   private _changeInterval?: NodeJS.Timeout;
   private _console: Console;
@@ -327,7 +328,7 @@ class HasteMap extends EventEmitter {
     return this._cachePath;
   }
 
-  build(): Promise<HasteMapObject> {
+  build(): Promise<InternalHasteMapObject> {
     if (!this._buildPromise) {
       this._buildPromise = this._buildFileMap()
         .then(data => this._buildHasteMap(data))

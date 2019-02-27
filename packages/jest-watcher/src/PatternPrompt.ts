@@ -35,7 +35,11 @@ export default class PatternPrompt {
     this._currentUsageRows = usageRows;
   }
 
-  run(onSuccess: () => void, onCancel: () => void, options?: {header: string}) {
+  run(
+    onSuccess: (value: string) => void,
+    onCancel: () => void,
+    options?: {header: string},
+  ) {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(CLEAR);
 
