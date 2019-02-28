@@ -64,12 +64,12 @@ export default function validateCLIOptions(
   argv: Config.Argv,
   options: {
     [s: string]: {alias?: string};
+    deprecationEntries: DeprecatedOptions;
   },
   rawArgv: string[] = [],
 ) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
-  const deprecationEntries = (options.deprecationEntries ||
-    {}) as DeprecatedOptions;
+  const deprecationEntries = options.deprecationEntries || {};
   const allowedOptions = Object.keys(options).reduce(
     (acc, option) => acc.add(option).add(options[option].alias || option),
     new Set(yargsSpecialOptions),
@@ -96,7 +96,7 @@ export default function validateCLIOptions(
       }
       return acc;
     },
-    {} as {[s: string]: Function},
+    {} as Record<string, Function>,
   );
   const deprecations = new Set(Object.keys(CLIDeprecations));
   const deprecatedOptions = Object.keys(argv).filter(

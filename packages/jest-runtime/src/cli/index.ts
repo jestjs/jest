@@ -28,7 +28,7 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   if (cliArgv) {
     argv = cliArgv;
   } else {
-    argv = yargs
+    argv = <Config.Argv>yargs
       .usage(args.usage)
       .help(false)
       .version(false)
