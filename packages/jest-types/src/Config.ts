@@ -223,6 +223,25 @@ type NotifyMode =
   | 'success-change'
   | 'failure-change';
 
+type DisplayNameColor =
+  | 'black'
+  | 'blue '
+  | 'blueBright'
+  | 'cyan'
+  | 'cyanBright'
+  | 'gray '
+  | 'green'
+  | 'greenBright'
+  | 'magenta'
+  | 'magentaBright'
+  | 'red'
+  | 'redBright'
+  | 'white'
+  | 'whiteBright'
+  | 'yellow'
+  | 'yellowBright'
+
+
 export type GlobalConfig = {
   bail: number;
   changedSince: string;
@@ -313,7 +332,8 @@ export type ProjectConfig = {
   dependencyExtractor?: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  displayName: string | null | undefined;
+  displayName?: string;
+  displayNameColor?: DisplayNameColor;
   errorOnDeprecated: boolean;
   extraGlobals: Array<keyof NodeJS.Global>;
   filter: Path | null | undefined;
