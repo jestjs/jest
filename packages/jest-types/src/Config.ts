@@ -130,6 +130,7 @@ export type InitialOptions = {
   detectLeaks?: boolean;
   detectOpenHandles?: boolean;
   displayName?: string;
+  displayNameColor?: DisplayNameColor;
   expand?: boolean;
   extraGlobals?: Array<string>;
   filter?: Path;
