@@ -15,7 +15,7 @@ const get = (object, lensPath) =>
   lensPath.reduce((acc, key) => acc[key], object);
 
 const getGlobalTestMocks = () => {
-  const globals = {
+  const globals: any = {
     describe: jest.fn(),
     fdescribe: jest.fn(),
     fit: jest.fn(),

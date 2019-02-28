@@ -3,6 +3,7 @@
   "version": "24.0.0",
   "description": "Parameterised tests for Jest",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,6 +18,7 @@
   "author": "Matt Phillips (mattphillips)",
   "license": "MIT",
   "dependencies": {
+    "@jest/types": "^24.1.0",
     "chalk": "^2.0.1",
     "jest-get-type": "^24.0.0",
     "jest-util": "^24.0.0",
