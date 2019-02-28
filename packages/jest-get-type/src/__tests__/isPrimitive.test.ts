@@ -6,7 +6,7 @@
  *
  */
 
-import isPrimitive from '../isPrimitive';
+import {isPrimitive} from '..';
 
 describe('.isPrimitive()', () => {
   test.each([null, undefined, 100, 'hello world', true, Symbol.for('a')])(
