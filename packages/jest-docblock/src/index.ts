@@ -8,7 +8,7 @@
 import {EOL} from 'os';
 import detectNewline from 'detect-newline';
 
-type Pragmas = {[key: string]: string | string[]};
+type Pragmas = {[key: string]: string | Array<string>};
 
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;
@@ -65,7 +65,10 @@ export function parseWithComments(
       typeof result[match[1]] === 'string' ||
       Array.isArray(result[match[1]])
     ) {
-      result[match[1]] = ([] as string[]).concat(result[match[1]], nextPragma);
+      result[match[1]] = ([] as Array<string>).concat(
+        result[match[1]],
+        nextPragma,
+      );
     } else {
       result[match[1]] = nextPragma;
     }
@@ -119,8 +122,8 @@ export function print({
   );
 }
 
-function printKeyValues(key: string, valueOrArray: string | string[]) {
-  return ([] as string[])
+function printKeyValues(key: string, valueOrArray: string | Array<string>) {
+  return ([] as Array<string>)
     .concat(valueOrArray)
     .map(value => `@${key} ${value}`.trim());
 }

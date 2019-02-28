@@ -33,7 +33,7 @@ const symbolToString = Symbol.prototype.toString;
  * Explicitly comparing typeof constructor to function avoids undefined as name
  * when mock identity-obj-proxy returns the key as the value for any key.
  */
-const getConstructorName = (val: new (...args: any[]) => any) =>
+const getConstructorName = (val: new (...args: Array<any>) => any) =>
   (typeof val.constructor === 'function' && val.constructor.name) || 'Object';
 
 /* global window */

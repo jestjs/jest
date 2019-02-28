@@ -488,7 +488,7 @@ const ensureMock = (mockOrSpy: any, matcherName: any) => {
 };
 
 const getPrintedCalls = (
-  calls: any[],
+  calls: Array<any>,
   limit: number,
   sep: string,
   fn: Function,
@@ -503,7 +503,7 @@ const getPrintedCalls = (
   return result.join(sep);
 };
 
-const getPrintedReturnValues = (calls: any[], limit: number): string => {
+const getPrintedReturnValues = (calls: Array<any>, limit: number): string => {
   const result = [];
 
   for (let i = 0; i < calls.length && i < limit; i += 1) {

@@ -13,7 +13,7 @@ import {isSnapshotPath, SnapshotResolver} from 'jest-snapshot';
 namespace DependencyResolver {
   export type ResolvedModule = {
     file: Config.Path;
-    dependencies: Config.Path[];
+    dependencies: Array<Config.Path>;
   };
 }
 
