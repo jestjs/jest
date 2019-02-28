@@ -1,16 +1,4 @@
 aliases:
-  - &restore-cache
-    keys:
-      - v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      # Fallback in case checksum fails
-      - v2-dependencies-{{ .Branch }}-
-
-  - &save-cache
-    paths:
-      - node_modules
-      - website/node_modules
-    key: v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-
   - &filter-ignore-gh-pages
     branches:
       ignore: gh-pages
@@ -23,9 +11,7 @@ jobs:
       - image: circleci/node:10
     steps:
       - checkout
-      - restore-cache: *restore-cache
       - run: yarn --no-progress --frozen-lockfile
-      - save-cache: *save-cache
       - run: echo server.max_workers=1 >> .flowconfig
       - run: yarn lint --format junit -o reports/junit/js-lint-results.xml && yarn typecheck && yarn lint-es5-build --format junit -o reports/junit/js-es5-lint-results.xml  && yarn lint:md:ci && yarn check-copyright-headers
       - store_test_results:
@@ -37,9 +23,7 @@ jobs:
       - image: circleci/node:6
     steps:
       - checkout
-      - restore-cache: *restore-cache
       - run: yarn --no-progress --frozen-lockfile --ignore-engines
-      - save-cache: *save-cache
       - run:
           # react-native does not work with node 6
           command: rm -rf examples/react-native && yarn test-ci-partial
@@ -52,9 +36,7 @@ jobs:
       - image: circleci/node:8
     steps:
       - checkout
-      - restore-cache: *restore-cache
       - run: yarn --no-progress --frozen-lockfile
-      - save-cache: *save-cache
       - run:
           command: yarn test-ci-partial
       - store_test_results:
@@ -66,9 +48,7 @@ jobs:
       - image: circleci/node:10
     steps:
       - checkout
-      - restore-cache: *restore-cache
       - run: yarn --no-progress --frozen-lockfile
-      - save-cache: *save-cache
       - run:
           command: yarn test-ci
       - store_test_results:
@@ -80,9 +60,7 @@ jobs:
       - image: circleci/node:10
     steps:
       - checkout
-      - restore-cache: *restore-cache
       - run: yarn --no-progress --frozen-lockfile
-      - save-cache: *save-cache
       - run:
           command: JEST_CIRCUS=1 yarn test-ci-partial
       - store_test_results:
@@ -94,9 +72,7 @@ jobs:
       - image: circleci/node:11
     steps:
       - checkout
-      - restore-cache: *restore-cache
       - run: yarn --no-progress --frozen-lockfile
-      - save-cache: *save-cache
       - run:
           command: yarn test-ci-partial
       - store_test_results:
@@ -108,9 +84,7 @@ jobs:
       - image: circleci/node:10-browsers
     steps:
       - checkout
-      - restore-cache: *restore-cache
       - run: yarn --no-progress --frozen-lockfile
-      - save-cache: *save-cache
       - run: yarn test-ci-es5-build-in-browser
 
   test-or-deploy-website:
@@ -120,9 +94,7 @@ jobs:
     resource_class: large
     steps:
       - checkout
-      - restore-cache: *restore-cache
       - run: yarn --no-progress --frozen-lockfile
-      - save-cache: *save-cache
       - run:
           name: Test or Deploy Jest Website
           command: ./.circleci/website.sh
