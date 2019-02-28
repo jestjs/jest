@@ -5,7 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import getType from './getType';
+import getTypeFunc from './getType';
+import isPrimitive from './isPrimitive';
 
-export default getType;
-export {default as isPrimitive} from './isPrimitive';
+function getType(value: unknown) {
+  return getTypeFunc(value);
+}
+
+getType.isPrimitive = isPrimitive;
+
+export = getType;
