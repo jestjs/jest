@@ -15,7 +15,6 @@ import {JestEnvironment} from '@jest/environment';
 import {Console, setGlobal} from 'jest-util';
 // @ts-ignore: Not migrated to TS
 import {validateCLIOptions} from 'jest-validate';
-// @ts-ignore: Not migrated to TS
 import {readConfig, deprecationEntries} from 'jest-config';
 import {VERSION} from '../version';
 import {Context} from '../types';
@@ -63,6 +62,8 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
     console.log(`Using Jest Runtime v${VERSION}${info}`);
   }
+  // TODO: Figure this out
+  // @ts-ignore: this might not have the correct arguments
   const options = readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
@@ -80,7 +81,7 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
     watchman: globalConfig.watchman,
   }) as Promise<Context>)
     .then(hasteMap => {
-      const Environment: JestEnvironment = require(config.testEnvironment);
+      const Environment: typeof JestEnvironment = require(config.testEnvironment);
       const environment = new Environment(config);
       setGlobal(
         environment.global,

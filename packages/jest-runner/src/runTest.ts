@@ -20,7 +20,6 @@ import {
 } from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
 import Resolver from 'jest-resolve';
-// @ts-ignore: not migrated to TS
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
@@ -90,13 +89,20 @@ async function runTestInternal(
   let testEnvironment = config.testEnvironment;
 
   if (customEnvironment) {
+    if (Array.isArray(customEnvironment)) {
+      throw new Error(
+        `You can only define a single test environment through docblocks, got "${customEnvironment.join(
+          ', ',
+        )}"`,
+      );
+    }
     testEnvironment = getTestEnvironment({
       ...config,
       testEnvironment: customEnvironment,
     });
   }
 
-  const TestEnvironment: JestEnvironment = require(testEnvironment);
+  const TestEnvironment: typeof JestEnvironment = require(testEnvironment);
   const testFramework: TestFramework =
     process.env.JEST_CIRCUS === '1'
       ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
