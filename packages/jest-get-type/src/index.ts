@@ -66,7 +66,6 @@ function getType(value: unknown): ValueType {
   throw new Error(`value of unknown type: ${value}`);
 }
 
-getType.isPrimitive = (value: unknown): boolean =>
-  PRIMITIVES.has(getType(value));
+getType.isPrimitive = (value: unknown) => PRIMITIVES.has(getType(value));
 
 export = getType;
