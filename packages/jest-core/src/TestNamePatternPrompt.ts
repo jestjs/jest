@@ -14,6 +14,7 @@ import {
 } from 'jest-watcher';
 import {TestResult} from '@jest/types';
 
+// TODO: Make underscored props `private`
 export default class TestNamePatternPrompt extends PatternPrompt {
   _cachedTestResults: Array<TestResult.TestResult>;
 
@@ -25,10 +26,10 @@ export default class TestNamePatternPrompt extends PatternPrompt {
 
   _onChange(pattern: string, options: ScrollOptions) {
     super._onChange(pattern, options);
-    this._printPrompt(pattern, options);
+    this._printPrompt(pattern);
   }
 
-  _printPrompt(pattern: string, options: ScrollOptions) {
+  _printPrompt(pattern: string) {
     const pipe = this._pipe;
     printPatternCaret(pattern, pipe);
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);

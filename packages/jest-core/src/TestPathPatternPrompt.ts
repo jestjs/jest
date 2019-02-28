@@ -22,8 +22,9 @@ type SearchSources = Array<{
   searchSource: SearchSource;
 }>;
 
+// TODO: Make underscored props `private`
 export default class TestPathPatternPrompt extends PatternPrompt {
-  _searchSources: SearchSources;
+  _searchSources?: SearchSources;
 
   constructor(pipe: NodeJS.WritableStream, prompt: Prompt) {
     super(pipe, prompt);
@@ -32,10 +33,10 @@ export default class TestPathPatternPrompt extends PatternPrompt {
 
   _onChange(pattern: string, options: ScrollOptions) {
     super._onChange(pattern, options);
-    this._printPrompt(pattern, options);
+    this._printPrompt(pattern);
   }
 
-  _printPrompt(pattern: string, options: ScrollOptions) {
+  _printPrompt(pattern: string) {
     const pipe = this._pipe;
     printPatternCaret(pattern, pipe);
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
@@ -49,8 +50,8 @@ export default class TestPathPatternPrompt extends PatternPrompt {
     } catch (e) {}
 
     let tests: Array<Test> = [];
-    if (regex) {
-      this._searchSources.forEach(({searchSource, context}) => {
+    if (regex && this._searchSources) {
+      this._searchSources.forEach(({searchSource}) => {
         tests = tests.concat(searchSource.findMatchingTests(pattern).tests);
       });
     }
