@@ -7,8 +7,6 @@
  *
  */
 
-'use strict';
-
 import path from 'path';
 import {relative, resolve} from '../fast_path';
 

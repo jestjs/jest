@@ -1,0 +1,46 @@
+{
+  "name": "@jest/reporters",
+  "description": "Jest's reporters",
+  "version": "24.1.0",
+  "main": "build/index.js",
+  "dependencies": {
+    "@jest/transform": "^24.1.0",
+    "chalk": "^2.0.1",
+    "exit": "^0.1.2",
+    "glob": "^7.1.2",
+    "istanbul-api": "^2.1.1",
+    "istanbul-lib-coverage": "^2.0.2",
+    "istanbul-lib-instrument": "^3.0.1",
+    "istanbul-lib-source-maps": "^3.0.1",
+    "jest-util": "^24.0.0",
+    "jest-worker": "^24.0.0",
+    "node-notifier": "^5.2.1",
+    "slash": "^2.0.0",
+    "string-length": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/exit": "^0.1.30",
+    "@types/glob": "^7.1.1",
+    "@types/istanbul-lib-coverage": "^1.1.0",
+    "@types/istanbul-lib-instrument": "^1.7.2",
+    "@types/istanbul-lib-source-maps": "^1.2.1",
+    "@types/node-notifier": "^0.0.28",
+    "@types/slash": "^2.0.0",
+    "@types/string-length": "^2.0.0",
+    "strip-ansi": "^5.0.0"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest",
+    "directory": "packages/jest-reporters"
+  },
+  "bugs": {
+    "url": "https://github.com/facebook/jest/issues"
+  },
+  "homepage": "https://jestjs.io/",
+  "license": "MIT",
+  "gitHead": "b16789230fd45056a7f2fa199bae06c7a1780deb"
+}

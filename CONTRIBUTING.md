@@ -72,6 +72,14 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 1.  If you haven't already, complete the CLA.
 
+#### Changelog entries
+
+All changes that add a feature to or fix a bug in any of Jest's packages require a changelog entry containing the names of the packages affected, a description of the change, and the number of and link to the pull request. Try to match the structure of the existing entries.
+
+For significant changes to the documentation or website and things like cleanup, refactoring, and dependency updates, the "Chore & Maintenance" section of the changelog can be used.
+
+You can add or edit the changelog entry in the GitHub web interface once you have opened the pull request and know the number and link to it.
+
 #### Testing
 
 Code that is written needs to be tested to ensure that it achieves the desired behaviour. Tests either fall into a unit test or an integration test.

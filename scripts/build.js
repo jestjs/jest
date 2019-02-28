@@ -15,7 +15,7 @@
  *  node ./scripts/build.js
  *  node ./scripts/build.js /users/123/jest/packages/jest-111/src/111.js
  *
- * NOTE: this script is node@4 compatible
+ * NOTE: this script is node@6 compatible
  */
 
 'use strict';
@@ -29,40 +29,24 @@ const babel = require('@babel/core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
 const prettier = require('prettier');
-const stringLength = require('string-length');
-const getPackages = require('./getPackages');
+const {getPackages, adjustToTerminalWidth, OK} = require('./buildUtils');
 const browserBuild = require('./browserBuild');
 
-const OK = chalk.reset.inverse.bold.green(' DONE ');
 const SRC_DIR = 'src';
 const BUILD_DIR = 'build';
 const BUILD_ES5_DIR = 'build-es5';
 const JS_FILES_PATTERN = '**/*.js';
+const TS_FILES_PATTERN = '**/*.ts';
 const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
 const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
 const transformOptions = require('../babel.config.js');
-transformOptions.babelrc = false;
 
 const prettierConfig = prettier.resolveConfig.sync(__filename);
 prettierConfig.trailingComma = 'none';
 prettierConfig.parser = 'babel';
-
-const adjustToTerminalWidth = str => {
-  const columns = process.stdout.columns || 80;
-  const WIDTH = columns - stringLength(OK) + 1;
-  const strs = str.match(new RegExp(`(.{1,${WIDTH}})`, 'g'));
-  let lastString = strs[strs.length - 1];
-  if (lastString.length < WIDTH) {
-    lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
-  }
-  return strs
-    .slice(0, -1)
-    .concat(lastString)
-    .join('\n');
-};
 
 function getPackageName(file) {
   return path.relative(PACKAGES_DIR, file).split(path.sep)[0];
@@ -73,19 +57,18 @@ function getBuildPath(file, buildFolder) {
   const pkgSrcPath = path.resolve(PACKAGES_DIR, pkgName, SRC_DIR);
   const pkgBuildPath = path.resolve(PACKAGES_DIR, pkgName, buildFolder);
   const relativeToSrcPath = path.relative(pkgSrcPath, file);
-  return path.resolve(pkgBuildPath, relativeToSrcPath);
+  return path.resolve(pkgBuildPath, relativeToSrcPath).replace(/\.ts$/, '.js');
 }
 
 function buildNodePackage(p) {
   const srcDir = path.resolve(p, SRC_DIR);
   const pattern = path.resolve(srcDir, '**/*');
-  const files = glob.sync(pattern, {
-    nodir: true,
-  });
+  const files = glob.sync(pattern, {nodir: true});
 
   process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
 
   files.forEach(file => buildFile(file, true));
+
   process.stdout.write(`${OK}\n`);
 }
 
@@ -104,11 +87,13 @@ function buildBrowserPackage(p) {
         `browser field for ${pkgJsonPath} should start with "${BUILD_ES5_DIR}"`
       );
     }
-    browserBuild(
-      p.split('/').pop(),
-      path.resolve(srcDir, 'index.js'),
-      path.resolve(p, browser)
-    )
+    let indexFile = path.resolve(srcDir, 'index.js');
+
+    if (!fs.existsSync(indexFile)) {
+      indexFile = indexFile.replace(/\.js$/, '.ts');
+    }
+
+    browserBuild(p.split('/').pop(), indexFile, path.resolve(p, browser))
       .then(() => {
         process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
         process.stdout.write(`${OK}\n`);
@@ -134,7 +119,10 @@ function buildFile(file, silent) {
   }
 
   mkdirp.sync(path.dirname(destPath), '777');
-  if (!micromatch.isMatch(file, JS_FILES_PATTERN)) {
+  if (
+    !micromatch.isMatch(file, JS_FILES_PATTERN) &&
+    !micromatch.isMatch(file, TS_FILES_PATTERN)
+  ) {
     fs.createReadStream(file).pipe(fs.createWriteStream(destPath));
     silent ||
       process.stdout.write(

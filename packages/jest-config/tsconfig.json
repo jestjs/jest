@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  // TODO: This is missing `jest-validate`, in addition to
+  // `jest-environment-jsdom` and `jest-jasmine2`, but those are just
+  // `require.resolve`d, so no real use for their types
+  "references": [
+    {"path": "../jest-environment-node"},
+    {"path": "../jest-get-type"},
+    {"path": "../jest-regex-util"},
+    {"path": "../jest-resolve"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../pretty-format"}
+  ]
+}

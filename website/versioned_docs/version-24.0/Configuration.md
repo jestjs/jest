@@ -725,7 +725,7 @@ _Note: `setupTestFrameworkScriptFile` is deprecated in favor of `setupFilesAfter
 
 Default: `undefined`
 
-The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores that snapshot files on disk.
+The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
 
 Example snapshot resolver module:
 
@@ -741,7 +741,7 @@ module.exports = {
       .replace('__snapshots__', '__tests__')
       .slice(0, -snapshotExtension.length),
 
-  // Example test path, used for preflight concistency check of the implementation above
+  // Example test path, used for preflight consistency check of the implementation above
   testPathForConsistencyCheck: 'some/__tests__/example.test.js',
 };
 ```
@@ -936,6 +936,7 @@ This option allows the use of a custom results processor. This processor must be
   "numPassedTests": number,
   "numFailedTests": number,
   "numPendingTests": number,
+  "numTodoTests": number,
   "openHandles": Array<Error>,
   "testResults": [{
     "numFailingTests": number,

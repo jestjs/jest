@@ -7,8 +7,6 @@
  *
  */
 
-'use strict';
-
 import getPlatformExtension from '../getPlatformExtension';
 
 describe('getPlatformExtension', () => {

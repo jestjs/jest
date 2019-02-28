@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "references": [
+    {"path": "../jest-config"},
+    {"path": "../jest-runtime"},
+    {"path": "../jest-transform"},
+    {"path": "../jest-types"}
+    // TODO: Wait for this to get migrated
+    // {"path": "../jest-validate"}
+  ]
+}

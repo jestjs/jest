@@ -6,10 +6,8 @@
  *
  */
 
-'use strict';
-
-import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
-const crypto = require('crypto');
+import crypto from 'crypto';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 
 function mockHashContents(contents) {
   return crypto
@@ -75,7 +73,7 @@ jest.mock('sane', () => ({
   WatchmanWatcher: mockWatcherConstructor,
 }));
 
-jest.mock('../lib/WatchmanWatcher.js', () => mockWatcherConstructor);
+jest.mock('../lib/WatchmanWatcher', () => mockWatcherConstructor);
 
 let mockChangedFiles;
 let mockFs;

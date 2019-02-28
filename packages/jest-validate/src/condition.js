@@ -15,6 +15,7 @@ function validationConditionSingle(option: any, validOption: any): boolean {
   return (
     option === null ||
     option === undefined ||
+    (typeof option === 'function' && typeof validOption === 'function') ||
     toString.call(option) === toString.call(validOption)
   );
 }
