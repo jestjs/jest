@@ -66,7 +66,7 @@ export default function validateCLIOptions(
     [s: string]: {alias?: string};
     deprecationEntries: DeprecatedOptions;
   },
-  rawArgv: string[] = [],
+  rawArgv: Array<string> = [],
 ) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const deprecationEntries = options.deprecationEntries || {};

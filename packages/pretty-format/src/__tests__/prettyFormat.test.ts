@@ -30,7 +30,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an empty array', () => {
-    const val: never[] = [];
+    const val: Array<never> = [];
     expect(prettyFormat(val)).toEqual('Array []');
   });
 
