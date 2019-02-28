@@ -1624,49 +1624,49 @@ Expected has value: <green>null</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '"11112111"' contains '"2"' 1`] = `
-"<dim>expect(</><red>string</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
-Expected value:  <green>\\"2\\"</>
-Received string: <red>\\"11112111\\"</>"
+Expected substring: not <green>\\"2\\"</>
+Received string:        <red>\\"1111<inverse>2</>111\\"</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '"abcdef"' contains '"abc"' 1`] = `
-"<dim>expect(</><red>string</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
-Expected value:  <green>\\"abc\\"</>
-Received string: <red>\\"abcdef\\"</>"
+Expected substring: not <green>\\"abc\\"</>
+Received string:        <red>\\"<inverse>abc</>def\\"</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '["a", "b", "c", "d"]' contains '"a"' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
-Expected value: <green>\\"a\\"</>
-Received array: <red>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>"
+Expected value: not <green>\\"a\\"</>
+Received array:     <red>[<inverse>\\"a\\"</>, \\"b\\", \\"c\\", \\"d\\"]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '["a", "b", "c", "d"]' contains a value equal to '"a"' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContainEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected value: <green>\\"a\\"</>
-Received array: <red>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>"
+Expected value: not <green>\\"a\\"</>
+Received array:     <red>[<inverse>\\"a\\"</>, \\"b\\", \\"c\\", \\"d\\"]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[{"a": "b"}, {"a": "c"}]' contains a value equal to '{"a": "b"}' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContainEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected value: <green>{\\"a\\": \\"b\\"}</>
-Received array: <red>[{\\"a\\": \\"b\\"}, {\\"a\\": \\"c\\"}]</>"
+Expected value: not <green>{\\"a\\": \\"b\\"}</>
+Received array:     <red>[<inverse>{\\"a\\": \\"b\\"}</>, {\\"a\\": \\"c\\"}]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[{"a": "b"}, {"a": "c"}]' does not contain a value equal to'{"a": "d"}' 1`] = `
-"<dim>expect(</><red>array</><dim>).toContainEqual(</><green>value</><dim>) // deep equality</>
+"<dim>expect(</><red>received</><dim>).</>toContainEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected value: <green>{\\"a\\": \\"d\\"}</>
 Received array: <red>[{\\"a\\": \\"b\\"}, {\\"a\\": \\"c\\"}]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '[]' 1`] = `
-"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
 Expected value: <green>[]</>
 Received array: <red>[{}, []]</>
@@ -1675,7 +1675,7 @@ Received array: <red>[{}, []]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[{}, []]' does not contain '{}' 1`] = `
-"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
 Expected value: <green>{}</>
 Received array: <red>[{}, []]</>
@@ -1684,105 +1684,105 @@ Received array: <red>[{}, []]</>
 `;
 
 exports[`.toContain(), .toContainEqual() '[0, 1]' contains '1' 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
-Expected value:  <green>1</>
-Received object: <red>[0, 1]</>"
+Expected value:  not <green>1</>
+Received object:     <red>[0, 1]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[0, 1]' contains a value equal to '1' 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContainEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected value:  <green>1</>
-Received object: <red>[0, 1]</>"
+Expected value:  not <green>1</>
+Received object:     <red>[0, 1]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[1, 2, 3, 4]' contains '1' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
-Expected value: <green>1</>
-Received array: <red>[1, 2, 3, 4]</>"
+Expected value: not <green>1</>
+Received array:     <red>[<inverse>1</>, 2, 3, 4]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[1, 2, 3, 4]' contains a value equal to '1' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContainEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected value: <green>1</>
-Received array: <red>[1, 2, 3, 4]</>"
+Expected value: not <green>1</>
+Received array:     <red>[<inverse>1</>, 2, 3, 4]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[1, 2, 3]' does not contain '4' 1`] = `
-"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
 Expected value: <green>4</>
 Received array: <red>[1, 2, 3]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[Symbol(a)]' contains 'Symbol(a)' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
-Expected value: <green>Symbol(a)</>
-Received array: <red>[Symbol(a)]</>"
+Expected value: not <green>Symbol(a)</>
+Received array:     <red>[<inverse>Symbol(a)</>]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[Symbol(a)]' contains a value equal to 'Symbol(a)' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContainEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected value: <green>Symbol(a)</>
-Received array: <red>[Symbol(a)]</>"
+Expected value: not <green>Symbol(a)</>
+Received array:     <red>[<inverse>Symbol(a)</>]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[null, undefined]' does not contain '1' 1`] = `
-"<dim>expect(</><red>array</><dim>).toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
 Expected value: <green>1</>
 Received array: <red>[null, undefined]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains 'null' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
-Expected value: <green>null</>
-Received array: <red>[undefined, null]</>"
+Expected value: not <green>null</>
+Received array:     <red>[undefined, <inverse>null</>]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains 'undefined' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
-Expected value: <green>undefined</>
-Received array: <red>[undefined, null]</>"
+Expected value: not <green>undefined</>
+Received array:     <red>[<inverse>undefined</>, null]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains a value equal to 'null' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContainEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected value: <green>null</>
-Received array: <red>[undefined, null]</>"
+Expected value: not <green>null</>
+Received array:     <red>[undefined, <inverse>null</>]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() '[undefined, null]' contains a value equal to 'undefined' 1`] = `
-"<dim>expect(</><red>array</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContainEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected value: <green>undefined</>
-Received array: <red>[undefined, null]</>"
+Expected value: not <green>undefined</>
+Received array:     <red>[<inverse>undefined</>, null]</>"
 `;
 
 exports[`.toContain(), .toContainEqual() 'Set {"abc", "def"}' contains '"abc"' 1`] = `
-"<dim>expect(</><red>set</><dim>).</>not<dim>.toContain(</><green>value</><dim>) // indexOf</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
-Expected value: <green>\\"abc\\"</>
-Received set:   <red>Set {\\"abc\\", \\"def\\"}</>"
+Expected value: not <green>\\"abc\\"</>
+Received set:       <red>Set {\\"abc\\", \\"def\\"}</>"
 `;
 
 exports[`.toContain(), .toContainEqual() 'Set {1, 2, 3, 4}' contains a value equal to '1' 1`] = `
-"<dim>expect(</><red>set</><dim>).</>not<dim>.toContainEqual(</><green>value</><dim>) // deep equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toContainEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected value: <green>1</>
-Received set:   <red>Set {1, 2, 3, 4}</>"
+Expected value: not <green>1</>
+Received set:       <red>Set {1, 2, 3, 4}</>"
 `;
 
 exports[`.toContain(), .toContainEqual() error cases 1`] = `
-"<dim>expect(</><red>received</><dim>).toContain(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toContain<dim>(</><green>expected</><dim>) // indexOf</>
 
 <bold>Matcher error</>: <red>received</> value must not be null nor undefined
 
@@ -1790,7 +1790,7 @@ Received has value: <red>null</>"
 `;
 
 exports[`.toContain(), .toContainEqual() error cases for toContainEqual 1`] = `
-"<dim>expect(</><red>received</><dim>).toContainEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toContainEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <bold>Matcher error</>: <red>received</> value must not be null nor undefined
 
@@ -3271,25 +3271,21 @@ With a value of:
 `;
 
 exports[`.toMatch() {pass: true} expect(Foo bar).toMatch(/^foo/i) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toMatch<dim>(</><green>expected</><dim>)</>
 
-Expected value not to match:
-  <green>/^foo/i</>
-Received:
-  <red>\\"Foo bar\\"</>"
+Expected pattern: not <green>/^foo/i</>
+Received string:      <red>\\"<inverse>Foo</> bar\\"</>"
 `;
 
 exports[`.toMatch() {pass: true} expect(foo).toMatch(foo) 1`] = `
-"<dim>expect(</><red>received</><dim>).not.toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toMatch<dim>(</><green>expected</><dim>)</>
 
-Expected value not to match:
-  <green>\\"foo\\"</>
-Received:
-  <red>\\"foo\\"</>"
+Expected substring: not <green>\\"foo\\"</>
+Received string:        <red>\\"<inverse>foo</>\\"</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [/foo/i, "foo"] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a string
 
@@ -3298,7 +3294,7 @@ Received has value: <red>/foo/i</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [[], "foo"] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a string
 
@@ -3307,7 +3303,7 @@ Received has value: <red>[]</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [[Function anonymous], "foo"] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a string
 
@@ -3316,7 +3312,7 @@ Received has value: <red>[Function anonymous]</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [{}, "foo"] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a string
 
@@ -3325,7 +3321,7 @@ Received has value: <red>{}</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [1, "foo"] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a string
 
@@ -3334,7 +3330,7 @@ Received has value: <red>1</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [true, "foo"] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a string
 
@@ -3343,7 +3339,7 @@ Received has value: <red>true</>"
 `;
 
 exports[`.toMatch() throws if non String actual value passed: [undefined, "foo"] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a string
 
@@ -3351,7 +3347,7 @@ Received has value: <red>undefined</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", []] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a string or regular expression
 
@@ -3360,7 +3356,7 @@ Expected has value: <green>[]</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", [Function anonymous]] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a string or regular expression
 
@@ -3369,7 +3365,7 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", {}] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a string or regular expression
 
@@ -3378,7 +3374,7 @@ Expected has value: <green>{}</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", 1] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a string or regular expression
 
@@ -3387,7 +3383,7 @@ Expected has value: <green>1</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", true] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a string or regular expression
 
@@ -3396,7 +3392,7 @@ Expected has value: <green>true</>"
 `;
 
 exports[`.toMatch() throws if non String/RegExp expected value passed: ["foo", undefined] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a string or regular expression
 
@@ -3404,21 +3400,17 @@ Expected has value: <green>undefined</>"
 `;
 
 exports[`.toMatch() throws: [bar, /foo/] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
-Expected value to match:
-  <green>/foo/</>
-Received:
-  <red>\\"bar\\"</>"
+Expected pattern: <green>/foo/</>
+Received string:  <red>\\"bar\\"</>"
 `;
 
 exports[`.toMatch() throws: [bar, foo] 1`] = `
-"<dim>expect(</><red>received</><dim>).toMatch(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toMatch<dim>(</><green>expected</><dim>)</>
 
-Expected value to match:
-  <green>\\"foo\\"</>
-Received:
-  <red>\\"bar\\"</>"
+Expected substring: <green>\\"foo\\"</>
+Received string:    <red>\\"bar\\"</>"
 `;
 
 exports[`.toStrictEqual() matches the expected snapshot when it fails 1`] = `
