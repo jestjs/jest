@@ -3,16 +3,13 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-
-import type {ValidationOptions} from './types';
 
 import chalk from 'chalk';
 import getType from 'jest-get-type';
 import {formatPrettyObject, ValidationError, ERROR} from './utils';
 import {getValues} from './condition';
+import {ValidationOptions} from './types';
 
 export const errorMessage = (
   option: string,

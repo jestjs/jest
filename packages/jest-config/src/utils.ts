@@ -7,7 +7,6 @@
 
 import path from 'path';
 import {Config} from '@jest/types';
-// @ts-ignore: Not migrated to TS
 import {ValidationError} from 'jest-validate';
 import Resolver from 'jest-resolve';
 import chalk from 'chalk';

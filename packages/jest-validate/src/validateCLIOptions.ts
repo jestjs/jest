@@ -3,17 +3,15 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Argv} from 'types/Argv';
-
+import {Config} from '@jest/types';
 import chalk from 'chalk';
 import camelcase from 'camelcase';
 import {createDidYouMeanMessage, format, ValidationError} from './utils';
 import {deprecationWarning} from './deprecated';
 import defaultConfig from './defaultConfig';
+import {DeprecatedOptions} from './types';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
@@ -51,8 +49,8 @@ const createCLIValidationError = (
 
 const logDeprecatedOptions = (
   deprecatedOptions: Array<string>,
-  deprecationEntries: Object,
-  argv: Argv,
+  deprecationEntries: DeprecatedOptions,
+  argv: Config.Argv,
 ) => {
   deprecatedOptions.forEach(opt => {
     deprecationWarning(argv, opt, deprecationEntries, {
@@ -63,8 +61,11 @@ const logDeprecatedOptions = (
 };
 
 export default function validateCLIOptions(
-  argv: Argv,
-  options: Object,
+  argv: Config.Argv,
+  options: {
+    [s: string]: {alias?: string};
+    deprecationEntries: DeprecatedOptions;
+  },
   rawArgv: string[] = [],
 ) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
@@ -88,13 +89,14 @@ export default function validateCLIOptions(
     (acc, entry) => {
       if (options[entry]) {
         acc[entry] = deprecationEntries[entry];
-        if (options[entry].alias) {
-          acc[options[entry].alias] = deprecationEntries[entry];
+        const alias = options[entry].alias;
+        if (alias) {
+          acc[alias] = deprecationEntries[entry];
         }
       }
       return acc;
     },
-    {},
+    {} as Record<string, Function>,
   );
   const deprecations = new Set(Object.keys(CLIDeprecations));
   const deprecatedOptions = Object.keys(argv).filter(

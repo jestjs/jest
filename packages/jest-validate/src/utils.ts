@@ -3,8 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 import chalk from 'chalk';
@@ -32,7 +30,7 @@ export class ValidationError extends Error {
   name: string;
   message: string;
 
-  constructor(name: string, message: string, comment: ?string) {
+  constructor(name: string, message: string, comment?: string | null) {
     super();
     comment = comment ? '\n\n' + comment : '\n';
     this.name = '';
@@ -44,7 +42,7 @@ export class ValidationError extends Error {
 export const logValidationWarning = (
   name: string,
   message: string,
-  comment?: ?string,
+  comment?: string | null,
 ) => {
   comment = comment ? '\n\n' + comment : '\n';
   console.warn(chalk.yellow(chalk.bold(name) + ':\n\n' + message + comment));
