@@ -48,15 +48,13 @@ class JSDOMEnvironment implements JestEnvironment {
 
     // `defaultView` returns a `Window` type, which is missing the
     // `Error.stackTraceLimit` property. See the `Win` interface above.
-    const global = (this.global = this.dom.window.document
-      .defaultView as Win | null);
+    const global = this.dom.window.document.defaultView as Win | null;
 
-    if (!global || !this.global) {
-      this.fakeTimers = null;
-      this.errorEventListener = null;
-      this.moduleMocker = null;
-      return;
+    if (!global) {
+      throw new Error('JSDOM did not return a Window object');
     }
+
+    this.global = global;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
