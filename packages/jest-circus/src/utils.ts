@@ -175,15 +175,9 @@ export const callAsyncCircusFn = (
     // soon as `done` called.
     if (fn.length) {
       const done = (reason?: Error | string): void => {
-        let errorAsErrorObject: Error;
-
-        if (checkIsError(reason)) {
-          errorAsErrorObject = reason;
-        } else {
-          errorAsErrorObject = new Error(
-            `Failed: ${prettyFormat(reason, {maxDepth: 3})}`,
-          );
-        }
+        const errorAsErrorObject = checkIsError(reason)
+          ? reason
+          : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`);
 
         // Consider always throwing, regardless if `reason` is set or not
         if (completed && reason) {
