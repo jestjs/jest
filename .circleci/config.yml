@@ -23,10 +23,10 @@ jobs:
       - image: circleci/node:6
     steps:
       - checkout
-      - run: yarn --no-progress --frozen-lockfile --ignore-engines
+      - run: rm -rf examples/react-native && yarn --no-progress --frozen-lockfile --ignore-engines
       - run:
           # react-native does not work with node 6
-          command: rm -rf examples/react-native && yarn test-ci-partial
+          command: yarn test-ci-partial
       - store_test_results:
           path: reports/junit
 
