@@ -153,84 +153,93 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
-export const callAsyncCircusFn = (
+function checkIsError(error: any): error is Error {
+  return !!(error && (error as Error).message && (error as Error).stack);
+}
+
+export const callAsyncCircusFn = async (
   fn: AsyncFn,
   testContext: TestContext | undefined,
   {isHook, timeout}: {isHook?: boolean | null; timeout: number},
 ): Promise<any> => {
-  let timeoutID: NodeJS.Timeout;
+  let timeoutID: NodeJS.Timeout | undefined;
+  let completed = false;
 
-  return new Promise((resolve, reject) => {
-    timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, !!isHook)),
-      timeout,
-    );
+  try {
+    return await new Promise((resolve, reject) => {
+      timeoutID = setTimeout(
+        () => reject(_makeTimeoutMessage(timeout, !!isHook)),
+        timeout,
+      );
 
-    // If this fn accepts `done` callback we return a promise that fulfills as
-    // soon as `done` called.
-    if (fn.length) {
-      const done = (reason?: Error | string): void => {
-        const isError =
-          reason && (reason as Error).message && (reason as Error).stack;
-        return reason
-          ? reject(
-              isError
-                ? reason
-                : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`),
-            )
-          : resolve();
-      };
+      // If this fn accepts `done` callback we return a promise that fulfills as
+      // soon as `done` called.
+      if (fn.length) {
+        const done = (reason?: Error | string): void => {
+          const errorAsErrorObject = checkIsError(reason)
+            ? reason
+            : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`);
 
-      return fn.call(testContext, done);
-    }
+          // Consider always throwing, regardless if `reason` is set or not
+          if (completed && reason) {
+            errorAsErrorObject.message =
+              'Caught error after test environment was torn down\n\n' +
+              errorAsErrorObject.message;
 
-    let returnedValue;
-    if (isGeneratorFn(fn)) {
-      returnedValue = co.wrap(fn).call({});
-    } else {
-      try {
-        returnedValue = fn.call(testContext);
-      } catch (error) {
-        return reject(error);
+            throw errorAsErrorObject;
+          }
+
+          return reason ? reject(errorAsErrorObject) : resolve();
+        };
+
+        return fn.call(testContext, done);
       }
-    }
 
-    // If it's a Promise, return it. Test for an object with a `then` function
-    // to support custom Promise implementations.
-    if (
-      typeof returnedValue === 'object' &&
-      returnedValue !== null &&
-      typeof returnedValue.then === 'function'
-    ) {
-      return returnedValue.then(resolve, reject);
-    }
+      let returnedValue;
+      if (isGeneratorFn(fn)) {
+        returnedValue = co.wrap(fn).call({});
+      } else {
+        try {
+          returnedValue = fn.call(testContext);
+        } catch (error) {
+          return reject(error);
+        }
+      }
 
-    if (!isHook && returnedValue !== void 0) {
-      return reject(
-        new Error(
-          `
+      // If it's a Promise, return it. Test for an object with a `then` function
+      // to support custom Promise implementations.
+      if (
+        typeof returnedValue === 'object' &&
+        returnedValue !== null &&
+        typeof returnedValue.then === 'function'
+      ) {
+        return returnedValue.then(resolve, reject);
+      }
+
+      if (!isHook && returnedValue !== void 0) {
+        return reject(
+          new Error(
+            `
       test functions can only return Promise or undefined.
       Returned value: ${String(returnedValue)}
       `,
-        ),
-      );
-    }
+          ),
+        );
+      }
 
-    // Otherwise this test is synchronous, and if it didn't throw it means
-    // it passed.
-    return resolve();
-  })
-    .then(() => {
-      // If timeout is not cleared/unrefed the node process won't exit until
-      // it's resolved.
-      timeoutID.unref && timeoutID.unref();
-      clearTimeout(timeoutID);
-    })
-    .catch(error => {
-      timeoutID.unref && timeoutID.unref();
-      clearTimeout(timeoutID);
-      throw error;
+      // Otherwise this test is synchronous, and if it didn't throw it means
+      // it passed.
+      return resolve();
     });
+  } finally {
+    completed = true;
+    // If timeout is not cleared/unrefed the node process won't exit until
+    // it's resolved.
+    if (timeoutID) {
+      timeoutID.unref && timeoutID.unref();
+      clearTimeout(timeoutID);
+    }
+  }
 };
 
 export const getTestDuration = (test: TestEntry): number | null => {
