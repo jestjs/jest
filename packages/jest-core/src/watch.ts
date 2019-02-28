@@ -243,9 +243,9 @@ export default function watch(
 
   const startRun = (
     globalConfig: Config.GlobalConfig,
-  ): Promise<void | null> | null => {
+  ): Promise<void | null> => {
     if (isRunning) {
-      return null;
+      return Promise.resolve(null);
     }
 
     testWatcher = new TestWatcher({isWatchMode: true});
