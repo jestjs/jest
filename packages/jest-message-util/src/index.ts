@@ -26,15 +26,6 @@ const stackUtils = new StackUtils({
   cwd: 'something which does not exist',
 });
 
-let nodeInternals: Array<RegExp> = [];
-
-try {
-  nodeInternals = StackUtils.nodeInternals();
-} catch (e) {
-  // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
-  // node internals in the browser though, so no issue.
-}
-
 export type StackTraceConfig = Pick<
   Config.ProjectConfig,
   'rootDir' | 'testMatch'
@@ -48,12 +39,6 @@ const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
 
 // filter for noisy stack trace lines
-const JASMINE_IGNORE = /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
-const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
-const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
-const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
-const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
 const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
@@ -151,55 +136,9 @@ export const formatExecError = (
 };
 
 const removeInternalStackEntries = (
-  lines: Array<string>,
-  options: StackTraceOptions,
-): Array<string> => {
-  let pathCounter = 0;
-
-  return lines.filter(line => {
-    if (ANONYMOUS_FN_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (ANONYMOUS_PROMISE_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (ANONYMOUS_GENERATOR_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (NATIVE_NEXT_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (nodeInternals.some(internal => internal.test(line))) {
-      return false;
-    }
-
-    if (!STACK_PATH_REGEXP.test(line)) {
-      return true;
-    }
-
-    if (JASMINE_IGNORE.test(line)) {
-      return false;
-    }
-
-    if (++pathCounter === 1) {
-      return true; // always keep the first line even if it's from Jest
-    }
-
-    if (options.noStackTrace) {
-      return false;
-    }
-
-    if (JEST_INTERNALS_IGNORE.test(line)) {
-      return false;
-    }
-
-    return true;
-  });
-};
+  lines: string[],
+  _options: StackTraceOptions,
+): string[] => lines;
 
 const formatPaths = (
   config: StackTraceConfig,
@@ -230,7 +169,7 @@ export const getStackTraceLines = (
   options: StackTraceOptions = {noStackTrace: false},
 ) => removeInternalStackEntries(stack.split(/\n/), options);
 
-export const getTopFrame = (lines: Array<string>): Frame | null => {
+export const getTopFrame = (lines: string[]): Frame | null => {
   for (const line of lines) {
     if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
       continue;
