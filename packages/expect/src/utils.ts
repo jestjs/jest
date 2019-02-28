@@ -6,6 +6,7 @@
  *
  */
 
+import {isPrimitive} from 'jest-get-type';
 import {
   equals,
   isA,
@@ -82,16 +83,9 @@ export const getPath = (
     if (lastProp) {
       if (newObject === undefined) {
         // Does object have the property with an undefined value?
-        // At this point, object cannot be null nor undefined.
         // Although primitive values support bracket notation (above)
         // they would throw TypeError for in operator (below).
-        const type = typeof object;
-        result.hasEndProp =
-          type !== 'boolean' &&
-          type !== 'number' &&
-          type !== 'string' &&
-          type !== 'symbol' &&
-          prop in object;
+        result.hasEndProp = !isPrimitive(object) && prop in object;
       } else {
         result.hasEndProp = true;
       }
