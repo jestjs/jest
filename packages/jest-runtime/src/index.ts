@@ -12,7 +12,6 @@ import {
   JestEnvironment,
   LocalModuleRequire,
   Module,
-  hasModuleWrapper
 } from '@jest/environment';
 import jestMock, {MockFunctionMetadata} from 'jest-mock';
 import HasteMap, {ModuleMap} from 'jest-haste-map';
@@ -680,7 +679,7 @@ class Runtime {
 
     const runScript = this._environment.runScript(transformedFile.script);
 
-    if (!hasModuleWrapper(runScript)) {
+    if (runScript === null) {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );

@@ -10,7 +10,11 @@ import {Global, Config} from '@jest/types';
 import mock, {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
-import {JestEnvironment, EnvironmentContext} from '@jest/environment';
+import {
+  JestEnvironment,
+  EnvironmentContext,
+  RunScriptResult,
+} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
@@ -135,9 +139,9 @@ class JSDOMEnvironment implements JestEnvironment {
 
   runScript(script: Script) {
     if (this.dom) {
-      // Explicitly returning `unknown` since `runVMScript` currently returns
-      // `void`, which is wrong
-      return this.dom.runVMScript(script) as unknown;
+      // Explicitly returning `RunScriptResult` since `runVMScript` currently
+      // returns `void`, which is wrong
+      return (this.dom.runVMScript(script) as unknown) as RunScriptResult;
     }
     return null;
   }
