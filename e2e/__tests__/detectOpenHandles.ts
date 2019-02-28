@@ -22,7 +22,7 @@ try {
   }
 }
 
-function getTextAfterTest(stderr) {
+function getTextAfterTest(stderr: string) {
   return (stderr.split(/Ran all test suites(.*)\n/)[2] || '').trim();
 }
 

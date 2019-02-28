@@ -8,9 +8,10 @@
 
 const vm = jest.requireActual('vm');
 
-const JSDOMEnvironment = jest.genMockFromModule('../index');
+const JSDOMEnvironment = jest.genMockFromModule('../index') as jest.Mock;
 
 JSDOMEnvironment.mockImplementation(function(config) {
+  // @ts-ignore
   this.global = {
     JSON,
     console: {},
@@ -18,14 +19,16 @@ JSDOMEnvironment.mockImplementation(function(config) {
 
   const globalValues = {...config.globals};
   for (const customGlobalKey in globalValues) {
+    // @ts-ignore
     this.global[customGlobalKey] = globalValues[customGlobalKey];
   }
 });
 
 JSDOMEnvironment.prototype.runSourceText.mockImplementation(function(
-  sourceText,
-  filename,
+  sourceText: string,
+  filename: string,
 ) {
+  // @ts-ignore
   return vm.runInNewContext(sourceText, this.global, {
     displayErrors: false,
     filename,

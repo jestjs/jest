@@ -10,7 +10,7 @@
 import util from 'util';
 import chalk from 'chalk';
 import pretty from 'pretty-format';
-import getType from 'jest-get-type';
+import {isPrimitive} from 'jest-get-type';
 import {ErrorWithStack} from 'jest-util';
 
 type Table = Array<Array<any>>;
@@ -24,13 +24,6 @@ const RECEIVED_COLOR = chalk.red;
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
-const PRIMITIVES = new Set([
-  'string',
-  'number',
-  'boolean',
-  'null',
-  'undefined',
-]);
 
 export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
   function eachBind(title: string, test: Function, timeout: number): void {
@@ -203,10 +196,9 @@ const getMatchingKeyPaths = title => (matches, key) =>
 const replaceKeyPathWithValue = data => (title, match) => {
   const keyPath = match.replace('$', '').split('.');
   const value = getPath(data, keyPath);
-  const valueType = getType(value);
 
-  if (PRIMITIVES.has(valueType)) {
-    return title.replace(match, value);
+  if (isPrimitive(value)) {
+    return title.replace(match, String(value));
   }
   return title.replace(match, pretty(value, {maxDepth: 1, min: true}));
 };

@@ -153,12 +153,17 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
+function checkIsError(error: any): error is Error {
+  return !!(error && (error as Error).message && (error as Error).stack);
+}
+
 export const callAsyncCircusFn = (
   fn: AsyncFn,
   testContext: TestContext | undefined,
   {isHook, timeout}: {isHook?: boolean | null; timeout: number},
 ): Promise<any> => {
   let timeoutID: NodeJS.Timeout;
+  let completed = false;
 
   return new Promise((resolve, reject) => {
     timeoutID = setTimeout(
@@ -170,15 +175,20 @@ export const callAsyncCircusFn = (
     // soon as `done` called.
     if (fn.length) {
       const done = (reason?: Error | string): void => {
-        const isError =
-          reason && (reason as Error).message && (reason as Error).stack;
-        return reason
-          ? reject(
-              isError
-                ? reason
-                : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`),
-            )
-          : resolve();
+        const errorAsErrorObject = checkIsError(reason)
+          ? reason
+          : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`);
+
+        // Consider always throwing, regardless if `reason` is set or not
+        if (completed && reason) {
+          errorAsErrorObject.message =
+            'Caught error after test environment was torn down\n\n' +
+            errorAsErrorObject.message;
+
+          throw errorAsErrorObject;
+        }
+
+        return reason ? reject(errorAsErrorObject) : resolve();
       };
 
       return fn.call(testContext, done);
@@ -221,12 +231,14 @@ export const callAsyncCircusFn = (
     return resolve();
   })
     .then(() => {
+      completed = true;
       // If timeout is not cleared/unrefed the node process won't exit until
       // it's resolved.
       timeoutID.unref && timeoutID.unref();
       clearTimeout(timeoutID);
     })
     .catch(error => {
+      completed = true;
       timeoutID.unref && timeoutID.unref();
       clearTimeout(timeoutID);
       throw error;

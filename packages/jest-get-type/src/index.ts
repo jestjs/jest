@@ -20,9 +20,18 @@ type ValueType =
   | 'symbol'
   | 'undefined';
 
+const PRIMITIVES = new Set<ValueType>([
+  'string',
+  'number',
+  'boolean',
+  'null',
+  'undefined',
+  'symbol',
+]);
+
 // get the type of a value with handling the edge cases like `typeof []`
 // and `typeof null`
-const getType = (value: unknown): ValueType => {
+function getType(value: unknown): ValueType {
   if (value === undefined) {
     return 'undefined';
   } else if (value === null) {
@@ -55,6 +64,8 @@ const getType = (value: unknown): ValueType => {
   }
 
   throw new Error(`value of unknown type: ${value}`);
-};
+}
+
+getType.isPrimitive = (value: unknown) => PRIMITIVES.has(getType(value));
 
 export = getType;

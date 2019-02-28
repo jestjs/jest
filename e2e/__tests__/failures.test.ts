@@ -12,9 +12,9 @@ import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
 
-const normalizeDots = text => text.replace(/\.{1,}$/gm, '.');
+const normalizeDots = (text: string) => text.replace(/\.{1,}$/gm, '.');
 
-function cleanStderr(stderr) {
+function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
   return rest
     .replace(/.*(jest-jasmine2|jest-circus).*\n/g, '')
@@ -181,4 +181,13 @@ test('works with named snapshot failures', () => {
   expect(
     wrap(result.substring(0, result.indexOf('Snapshot Summary'))),
   ).toMatchSnapshot();
+});
+
+test('errors after test has completed', () => {
+  const {stderr} = runJest(dir, ['errorAfterTestComplete.test.js']);
+
+  expect(stderr).toMatch(
+    /Error: Caught error after test environment was torn down/,
+  );
+  expect(stderr).toMatch(/Failed: "fail async"/);
 });
