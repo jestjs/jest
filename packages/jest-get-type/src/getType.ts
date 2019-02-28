@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-type ValueType =
+export type ValueType =
   | 'array'
   | 'boolean'
   | 'function'
