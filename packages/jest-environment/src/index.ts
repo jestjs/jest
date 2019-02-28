@@ -22,17 +22,15 @@ export type EnvironmentContext = {
 // TODO: type this better: https://nodejs.org/api/modules.html#modules_the_module_wrapper
 type ModuleWrapper = (...args: Array<unknown>) => unknown;
 
-export type RunScriptResult = {
-  [ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper;
-} | null;
-
 export declare class JestEnvironment {
   constructor(config: Config.ProjectConfig);
   constructor(config: Config.ProjectConfig, context: EnvironmentContext);
   global: Global.Global;
   fakeTimers: FakeTimers<unknown> | null;
   moduleMocker: ModuleMocker | null;
-  runScript(script: Script): RunScriptResult;
+  runScript(
+    script: Script,
+  ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
 }

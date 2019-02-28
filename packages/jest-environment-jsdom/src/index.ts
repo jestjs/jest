@@ -7,14 +7,10 @@
 
 import {Script} from 'vm';
 import {Global, Config} from '@jest/types';
-import mock, {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
+import mock, {ModuleMocker} from 'jest-mock';
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
-import {
-  JestEnvironment,
-  EnvironmentContext,
-  RunScriptResult,
-} from '@jest/environment';
+import {JestEnvironment, EnvironmentContext} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
@@ -29,12 +25,15 @@ function isWin(globals: Win | Global.Global): globals is Win {
   return (globals as Win).document !== undefined;
 }
 
+// A lot of the globals expected by other APIs are `NodeJS.Global` and not
+// `Window`, so we need to cast here and there
+
 class JSDOMEnvironment implements JestEnvironment {
   dom: JSDOM | null;
   fakeTimers: FakeTimers<number> | null;
   // @ts-ignore
   global: Global.Global | Win | null;
-  errorEventListener: ((event: Event & {error: unknown}) => void) | null;
+  errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
@@ -45,28 +44,21 @@ class JSDOMEnvironment implements JestEnvironment {
       virtualConsole: new VirtualConsole().sendTo(options.console || console),
       ...config.testEnvironmentOptions,
     });
-
-    // `defaultView` returns a `Window` type, which is missing the
-    // `Error.stackTraceLimit` property. See the `Win` interface above.
-    const global = this.dom.window.document.defaultView as Win | null;
+    const global = (this.global = this.dom.window.document.defaultView as Win);
 
     if (!global) {
       throw new Error('JSDOM did not return a Window object');
     }
 
-    this.global = global;
-
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
-    // `global` is of type `Win`, but `installCommonGlobals` expects
-    // `NodeJS.Global`, so using `any` for now
     installCommonGlobals(global as any, config.globals);
 
     // Report uncaught errors.
     this.errorEventListener = event => {
       if (userErrorListenerCount === 0 && event.error) {
-        (process as NodeJS.EventEmitter).emit('uncaughtException', event.error);
+        process.emit('uncaughtException', event.error);
       }
     };
     global.addEventListener('error', this.errorEventListener);
@@ -76,23 +68,23 @@ class JSDOMEnvironment implements JestEnvironment {
     const originalAddListener = global.addEventListener;
     const originalRemoveListener = global.removeEventListener;
     let userErrorListenerCount = 0;
-    global.addEventListener = function(name: string) {
-      if (name === 'error') {
+    global.addEventListener = function(
+      ...args: Parameters<typeof originalAddListener>
+    ) {
+      if (args[0] === 'error') {
         userErrorListenerCount++;
       }
-      // TODO: remove `any` type assertion
-      return originalAddListener.apply(this, arguments as any);
+      return originalAddListener.apply(this, args);
     };
-    global.removeEventListener = function(name: string) {
-      if (name === 'error') {
+    global.removeEventListener = function(
+      ...args: Parameters<typeof originalRemoveListener>
+    ) {
+      if (args[0] === 'error') {
         userErrorListenerCount--;
       }
-      // TODO: remove `any` type assertion
-      return originalRemoveListener.apply(this, arguments as any);
+      return originalRemoveListener.apply(this, args);
     };
 
-    // `global` is of type `Win`, but `ModuleMocker` expects `NodeJS.Global`, so
-    // using `any` for now
     this.moduleMocker = new mock.ModuleMocker(global as any);
 
     const timerConfig = {
@@ -102,8 +94,6 @@ class JSDOMEnvironment implements JestEnvironment {
 
     this.fakeTimers = new FakeTimers({
       config,
-      // `global` is of type `Win`, but `FakeTimers` expects `NodeJS.Global`, so
-      // using `any` for now
       global: global as any,
       moduleMocker: this.moduleMocker,
       timerConfig,
@@ -137,9 +127,7 @@ class JSDOMEnvironment implements JestEnvironment {
 
   runScript(script: Script) {
     if (this.dom) {
-      // Explicitly returning `RunScriptResult` since `runVMScript` currently
-      // returns `void`, which is wrong
-      return (this.dom.runVMScript(script) as unknown) as RunScriptResult;
+      return this.dom.runVMScript(script) as any;
     }
     return null;
   }
