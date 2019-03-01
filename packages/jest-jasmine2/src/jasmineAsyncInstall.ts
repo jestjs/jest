@@ -77,7 +77,11 @@ function promisifyLifeCycleFunction(originalFn: Function, env: $J['Env']) {
 
 // Similar to promisifyLifeCycleFunction but throws an error
 // when the return value is neither a Promise nor `undefined`
-function promisifyIt(originalFn: Function, env: $J['Env'], jasmine: Jasmine) {
+function promisifyIt(
+  originalFn: Function,
+  env: $J['currentEnv_'],
+  jasmine: Jasmine,
+) {
   return function(specName: string, fn: Function, timeout?: number) {
     if (!fn) {
       const spec = originalFn.call(env, specName);
@@ -135,7 +139,7 @@ function promisifyIt(originalFn: Function, env: $J['Env'], jasmine: Jasmine) {
 
 function makeConcurrent(
   originalFn: Function,
-  env: $J['Env'],
+  env: $J['currentEnv_'],
   mutex: ReturnType<typeof throat>,
 ) {
   return function(specName: string, fn: () => Promise<any>, timeout: number) {

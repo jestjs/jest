@@ -32,7 +32,7 @@ import {Reporter} from '../types';
 
 export default class ReportDispatcher {
   addReporter: (reporter: Reporter) => void;
-  provideFallbackReporter: (reporter: unknown) => void;
+  provideFallbackReporter: (reporter: Reporter) => void;
   clearReporters: () => void;
   [key: string]: any;
 

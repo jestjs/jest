@@ -51,9 +51,9 @@ export type Jasmine = {
 export interface $J extends NodeJS.Global {
   _DEFAULT_TIMEOUT_INTERVAL: number;
   currentEnv_: ReturnType<typeof Env>['prototype'];
-  getEnv: (options: object) => ReturnType<typeof Env>;
+  getEnv: (options: object) => ReturnType<typeof Env>['prototype'];
   createSpy: typeof createSpy;
-  Env: ReturnType<typeof Env>['prototype'];
+  Env: ReturnType<typeof Env>;
   JsApiReporter: typeof JsApiReporter;
   ReportDispatcher: typeof ReportDispatcher;
   Spec: typeof Spec;
@@ -64,12 +64,11 @@ export interface $J extends NodeJS.Global {
   testPath: Config.Path;
 }
 
+interface Global {
+  jasmine: Jasmine;
+}
+
 declare global {
- /* namespace jest {
-    interface Global {
-      jasmine: Jasmine;
-    }
-  }*/
   module NodeJS {
     interface Global {
       jasmine: Jasmine;

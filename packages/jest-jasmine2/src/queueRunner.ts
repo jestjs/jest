@@ -11,7 +11,7 @@ import pTimeout from './pTimeout';
 type Global = NodeJS.Global;
 
 export type Options = {
-  clearTimeout: (timeoutID: number) => void | Global['clearTimeout'];
+  clearTimeout: Global['clearTimeout'];
   fail: (error: Error) => void;
   onException: (error: Error) => void;
   queueableFns: Array<QueueableFn>;

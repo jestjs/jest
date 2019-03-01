@@ -48,7 +48,7 @@ function createSpy(name: string, originalFn: Function): Spy {
     },
   });
   const callTracker = new CallTracker();
-  const spy = function(this: unknown, ...args: any[]) {
+  const spy = function(this: {[key: string]: any}, ...args: any[]) {
     const callData: Context = {
       object: this,
       args: Array.prototype.slice.apply(arguments),

@@ -39,7 +39,7 @@ import queueRunner, {
 import treeProcessor from '../treeProcessor';
 import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
-import {$J, Reporter} from '../types';
+import {$J, AssertionErrorWithStack, Reporter} from "../types";
 import Spec, {SpecResult} from './Spec';
 import Suite from './Suite';
 
@@ -50,7 +50,7 @@ export default function(j$: $J) {
     throwOnExpectationFailure: (value: unknown) => void;
     catchingExceptions: () => boolean;
     topSuite: () => Suite;
-    fail: (error: Error | AssertionError) => void;
+    fail: (error: Error | AssertionErrorWithStack) => void;
     pending: (message: string) => void;
     afterAll: (afterAllFunction: QueueableFn['fn'], timeout?: number) => void;
     fit: (description: string, fn: QueueableFn['fn'], timeout?: number) => void;
