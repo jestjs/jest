@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`retryTimes set 1`] = `1`;
+
+exports[`retryTimes set 2`] = `1`;
+
+exports[`retryTimes set 3`] = `1`;
+
+exports[`retryTimes set 4`] = `1`;

@@ -9,5 +9,6 @@
 jest.retryTimes(3);
 
 it('retryTimes set', () => {
+  expect(1).toMatchSnapshot();
   expect(true).toBeFalsy();
 });
