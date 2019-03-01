@@ -24,7 +24,7 @@ jobs:
     steps:
       - checkout
       - run: rm -rf examples/react-native && yarn --no-progress --frozen-lockfile --ignore-engines
-      - run: yarn clear-cache
+      - run: yarn jest --clear-cache
       - run:
           # react-native does not work with node 6
           command: yarn test-ci-partial
