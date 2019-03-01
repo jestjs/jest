@@ -8,11 +8,11 @@
 
 import chalk from 'chalk';
 import pretty from 'pretty-format';
-import {isPrimitive} from 'jest-get-type';
 import {ErrorWithStack} from 'jest-util';
 
 // TODO: renmae this
 import arrayTableToX from './table/array';
+import templateTableToX from './table/template';
 
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
@@ -68,7 +68,7 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
       return arrayTableToX(title, tableArg).forEach(row =>
         cb(
           row.title,
-          applyRestParams(supportsDone, row.arguments, test),
+          applyArguments(supportsDone, row.arguments, test),
           timeout,
         ),
       );
@@ -78,7 +78,6 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
     const data = args.slice(1);
 
     const keys = getHeadingKeys(templateStrings[0]);
-    const table = buildTable(data, keys.length, keys);
 
     const missingData = data.length % keys.length;
 
@@ -102,12 +101,8 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
       });
     }
 
-    return table.forEach(row =>
-      cb(
-        interpolate(title, row),
-        applyObjectParams(supportsDone, row, test),
-        timeout,
-      ),
+    return templateTableToX(title, keys, data).forEach(row =>
+      cb(row.title, applyArguments(supportsDone, row.arguments, test), timeout),
     );
   };
 
@@ -118,7 +113,7 @@ const isEmptyString = (str: string) =>
 
 type Done = () => {};
 
-const applyRestParams = (
+const applyArguments = (
   supportsDone: boolean,
   params: Array<any>,
   test: Function,
@@ -130,55 +125,5 @@ const applyRestParams = (
 const getHeadingKeys = (headings: string): Array<string> =>
   headings.replace(/\s/g, '').split('|');
 
-const buildTable = (
-  data: Array<any>,
-  rowSize: number,
-  keys: Array<string>,
-): Array<any> =>
-  Array.from({length: data.length / rowSize})
-    .map((_, index) => data.slice(index * rowSize, index * rowSize + rowSize))
-    .map(row =>
-      row.reduce(
-        (acc, value, index) => Object.assign(acc, {[keys[index]]: value}),
-        {},
-      ),
-    );
-
-const getMatchingKeyPaths = (title: string) => (
-  matches: Array<string>,
-  key: string,
-) => matches.concat(title.match(new RegExp(`\\$${key}[\\.\\w]*`, 'g')) || []);
-
-const replaceKeyPathWithValue = (data: any) => (
-  title: string,
-  match: string,
-) => {
-  const keyPath = match.replace('$', '').split('.');
-  const value = getPath(data, keyPath);
-
-  if (isPrimitive(value)) {
-    return title.replace(match, String(value));
-  }
-  return title.replace(match, pretty(value, {maxDepth: 1, min: true}));
-};
-
-const interpolate = (title: string, data: any) =>
-  Object.keys(data)
-    .reduce(getMatchingKeyPaths(title), []) // aka flatMap
-    .reduce(replaceKeyPathWithValue(data), title);
-
-const applyObjectParams = (supportsDone: boolean, obj: any, test: Function) =>
-  supportsDone && test.length > 1
-    ? (done: Done) => test(obj, done)
-    : () => test(obj);
-
 const pluralize = (word: string, count: number) =>
   word + (count === 1 ? '' : 's');
-
-const getPath = (
-  o: {[key: string]: any},
-  [head, ...tail]: Array<string>,
-): any => {
-  if (!head || !o.hasOwnProperty || !o.hasOwnProperty(head)) return o;
-  return getPath(o[head], tail);
-};
