@@ -8,7 +8,9 @@
 
 import chalk from 'chalk';
 import pretty from 'pretty-format';
-import {TemplateData} from '@jest/types/build/Global';
+import {Global} from '@jest/types';
+
+type TemplateData = Global.TemplateData;
 
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
