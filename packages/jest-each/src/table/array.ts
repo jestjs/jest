@@ -1,6 +1,6 @@
 import util from 'util';
 import pretty from 'pretty-format';
-import {EachTable} from '../bind';
+import {EachTests} from '../bind';
 
 type Col = unknown;
 type Row = Array<Col>;
@@ -11,7 +11,7 @@ const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
 
-export default (title: string, arrayTable: ArrayTable): EachTable =>
+export default (title: string, arrayTable: ArrayTable): EachTests =>
   normaliseTable(arrayTable).map((row, index) => ({
     title: formatTitle(title, row, index),
     arguments: row,

@@ -19,22 +19,35 @@ const RECEIVED_COLOR = chalk.red;
 
 type EachTestFn = (...args: any[]) => Promise<any> | void | undefined;
 
-export type EachTable = Array<{
+// TODO: re-use these everywhere
+type Col = unknown;
+type Row = Array<Col>;
+type Table = Array<Row>;
+type ArrayTable = Table | Row;
+type TemplateTable = TemplateStringsArray;
+
+export type TemplateData = Array<unknown>;
+export type EachTable = ArrayTable | TemplateTable;
+// type Each = (table: EachTable, ...rest: Array<unknown>) => JestFunction;
+// type Bind = (cb: JestFunction) => Each;
+
+export type EachTests = Array<{
   title: string;
   arguments: Array<unknown>;
 }>;
 
 // TODO: update cb to ItBase | DescribeBase and deprecate supportsDone
-// TODO: update args from any
-export default (cb: ItBase, supportsDone: boolean = true) => (...args: any) =>
+export default (cb: ItBase, supportsDone: boolean = true) => (
+  table: EachTable,
+  ...taggedTemplateData: TemplateData
+) =>
   function eachBind(title: string, test: EachTestFn, timeout?: number): void {
-    if (args.length === 1) {
-      const [tableArg] = args;
-
-      if (!Array.isArray(tableArg)) {
+    if (taggedTemplateData.length === 0) {
+      if (!Array.isArray(table)) {
+        // TODO: extract validation
         const error = new ErrorWithStack(
           '`.each` must be called with an Array or Tagged Template Literal.\n\n' +
-            `Instead was called with: ${pretty(tableArg, {
+            `Instead was called with: ${pretty(table, {
               maxDepth: 1,
               min: true,
             })}\n`,
@@ -45,8 +58,8 @@ export default (cb: ItBase, supportsDone: boolean = true) => (...args: any) =>
         });
       }
 
-      if (isTaggedTemplateLiteral(tableArg)) {
-        if (isEmptyString(tableArg[0])) {
+      if (isTaggedTemplateLiteral(table)) {
+        if (isEmptyString(table[0])) {
           const error = new ErrorWithStack(
             'Error: `.each` called with an empty Tagged Template Literal of table data.\n',
             eachBind,
@@ -65,7 +78,7 @@ export default (cb: ItBase, supportsDone: boolean = true) => (...args: any) =>
         });
       }
 
-      if (isEmptyTable(tableArg)) {
+      if (isEmptyTable(table)) {
         const error = new ErrorWithStack(
           'Error: `.each` called with an empty Array of table data.\n',
           eachBind,
@@ -74,7 +87,7 @@ export default (cb: ItBase, supportsDone: boolean = true) => (...args: any) =>
           throw error;
         });
       }
-      return convertArrayTable(title, tableArg).forEach(row =>
+      return convertArrayTable(title, table).forEach(row =>
         cb(
           row.title,
           applyArguments(supportsDone, row.arguments, test),
@@ -83,12 +96,9 @@ export default (cb: ItBase, supportsDone: boolean = true) => (...args: any) =>
       );
     }
 
-    const templateStrings = args[0];
-    const data = args.slice(1);
+    const keys = getHeadingKeys(table[0] as string);
 
-    const keys = getHeadingKeys(templateStrings[0]);
-
-    const missingData = data.length % keys.length;
+    const missingData = taggedTemplateData.length % keys.length;
 
     if (missingData > 0) {
       const error = new ErrorWithStack(
@@ -96,7 +106,7 @@ export default (cb: ItBase, supportsDone: boolean = true) => (...args: any) =>
           EXPECTED_COLOR(keys.join(' | ')) +
           '\n\n' +
           'Received:\n' +
-          RECEIVED_COLOR(pretty(data)) +
+          RECEIVED_COLOR(pretty(taggedTemplateData)) +
           '\n\n' +
           `Missing ${RECEIVED_COLOR(missingData.toString())} ${pluralize(
             'argument',
@@ -110,14 +120,14 @@ export default (cb: ItBase, supportsDone: boolean = true) => (...args: any) =>
       });
     }
 
-    return convertTemplateTable(title, keys, data).forEach(row =>
+    return convertTemplateTable(title, keys, taggedTemplateData).forEach(row =>
       cb(row.title, applyArguments(supportsDone, row.arguments, test), timeout),
     );
   };
 
 const isTaggedTemplateLiteral = (array: any) => array.raw !== undefined;
 const isEmptyTable = (table: Array<any>) => table.length === 0;
-const isEmptyString = (str: string) =>
+const isEmptyString = (str: string | unknown) =>
   typeof str === 'string' && str.trim() === '';
 
 const applyArguments = (

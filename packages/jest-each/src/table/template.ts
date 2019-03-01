@@ -1,6 +1,6 @@
 import pretty from 'pretty-format';
 import {isPrimitive} from 'jest-get-type';
-import {EachTable} from '../bind';
+import {EachTests} from '../bind';
 
 type Col = unknown;
 type Row = Array<Col>;
@@ -9,7 +9,7 @@ type Template = {[key: string]: unknown};
 type Templates = Array<Template>;
 type Headings = Array<string>;
 
-export default (title: string, headings: Headings, row: Row): EachTable => {
+export default (title: string, headings: Headings, row: Row): EachTests => {
   const table = convertRowToTable(row, headings);
   const templates = convertTableToTemplates(table, headings);
   return templates.map(template => ({
