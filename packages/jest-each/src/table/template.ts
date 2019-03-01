@@ -1,6 +1,7 @@
 import pretty from 'pretty-format';
 import {isPrimitive} from 'jest-get-type';
-import {EachTests, Row, Table} from '../bind';
+import {Row, Table} from '@jest/types/build/Global';
+import {EachTests} from '../bind';
 
 type Template = {[key: string]: unknown};
 type Templates = Array<Template>;

@@ -6,8 +6,8 @@
  *
  */
 
-import {TestFn} from '@jest/types/build/Global';
-import bind, {EachTable, TemplateData} from './bind';
+import {TestFn, EachTable, TemplateData} from '@jest/types/build/Global';
+import bind from './bind';
 
 type Global = NodeJS.Global;
 

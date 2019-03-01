@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import pretty from 'pretty-format';
-import {TemplateData} from './bind';
+import {TemplateData} from '@jest/types/build/Global';
 
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;

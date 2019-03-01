@@ -16,8 +16,19 @@ export type BlockName = string;
 // TODO: Get rid of this at some point
 type JasmineType = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
 
-// TODO Replace with actual type when `jest-each` is ready
-type Each = () => void;
+export type Col = unknown;
+export type Row = Array<Col>;
+export type Table = Array<Row>;
+export type ArrayTable = Table | Row;
+export type TemplateTable = TemplateStringsArray;
+export type TemplateData = Array<unknown>;
+export type EachTable = ArrayTable | TemplateTable;
+export type EachTestFn = (...args: any[]) => Promise<any> | void | undefined;
+
+type Each = (
+  table: EachTable,
+  ...taggedTemplateData: Array<unknown>
+) => (title: string, test: EachTestFn, timeout?: number) => void;
 
 export interface ItBase {
   (testName: TestName, fn: TestFn, timeout?: number): void;

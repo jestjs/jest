@@ -6,29 +6,28 @@
  *
  */
 
-import {DoneFn, ItBase} from '@jest/types/build/Global';
+import {
+  DoneFn,
+  EachTable,
+  TemplateData,
+  EachTestFn,
+  ArrayTable,
+} from '@jest/types/build/Global';
 import {ErrorWithStack} from 'jest-util';
 
 import convertArrayTable from './table/array';
 import convertTemplateTable from './table/template';
 import {validateArrayTable, validateTemplateTableHeadings} from './validation';
 
-type EachTestFn = (...args: any[]) => Promise<any> | void | undefined;
-
-export type Col = unknown;
-export type Row = Array<Col>;
-export type Table = Array<Row>;
-export type ArrayTable = Table | Row;
-type TemplateTable = TemplateStringsArray;
-export type TemplateData = Array<unknown>;
-export type EachTable = ArrayTable | TemplateTable;
-
 export type EachTests = Array<{
   title: string;
   arguments: Array<unknown>;
 }>;
 
-export default (cb: ItBase, supportsDone: boolean = true) => (
+type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
+type GlobalCallback = (testName: string, fn: TestFn, timeout?: number) => void;
+
+export default (cb: GlobalCallback, supportsDone: boolean = true) => (
   table: EachTable,
   ...taggedTemplateData: TemplateData
 ) =>

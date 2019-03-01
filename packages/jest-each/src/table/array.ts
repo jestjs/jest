@@ -1,7 +1,8 @@
 import util from 'util';
 import pretty from 'pretty-format';
 
-import {ArrayTable, Col, EachTests, Row, Table} from '../bind';
+import {ArrayTable, Table, Row, Col} from '@jest/types/build/Global';
+import {EachTests} from '../bind';
 
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
