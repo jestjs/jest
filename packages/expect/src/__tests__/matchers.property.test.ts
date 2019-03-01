@@ -6,12 +6,13 @@
  *
  */
 
-const chalk = require('chalk');
+import chalk from 'chalk';
 const chalkEnabled = chalk.enabled;
-const fc = require('fast-check');
+import fc from 'fast-check';
 
 // settings for anything arbitrary
 const anythingSettings = {
+  key: fc.oneof(fc.string(), fc.constantFrom('k1', 'k2', 'k3')),
   withBoxedValues: true,
   withMap: false,
   withSet: false,
