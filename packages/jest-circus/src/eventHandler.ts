@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import fs from 'fs';
+
 import {EventHandler, TEST_TIMEOUT_SYMBOL} from './types';
 
 import {
@@ -147,7 +149,29 @@ const eventHandler: EventHandler = (event, state): void => {
       break;
     }
     case 'test_retry': {
+      // Clear errors so tests can be retried (and not immediately fail)
       event.test.errors = [];
+
+      // Clear any snapshot data that occurred in previous test run
+      const tmpSnapshotState = global.expect.getState().snapshotState;
+
+      if (tmpSnapshotState) {
+        if (
+          tmpSnapshotState._snapshotPath &&
+          fs.existsSync(tmpSnapshotState._snapshotPath)
+        ) {
+          fs.unlinkSync(tmpSnapshotState._snapshotPath);
+        }
+        global.expect.getState().snapshotState._snapshotData = {};
+        global.expect.getState().snapshotState._inlineSnapshots = [];
+        global.expect.getState().snapshotState._counters = new Map([]);
+        global.expect.getState().snapshotState._index = 0;
+        global.expect.getState().snapshotState.added = 0;
+        global.expect.getState().snapshotState.matched = 0;
+        global.expect.getState().snapshotState.unmatched = 0;
+        global.expect.getState().snapshotState.updated = 0;
+      }
+
       break;
     }
     case 'run_start': {
