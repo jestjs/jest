@@ -32,6 +32,7 @@
 
 ### Chore & Maintenance
 
+- `[jest-each]`: Refactor into multiple files with better types ([#8018](https://github.com/facebook/jest/pull/8018))
 - `[jest-each]`: Migrate to Typescript ([#8007](https://github.com/facebook/jest/pull/8007))
 - `[jest-environment-jsdom]`: Migrate to TypeScript ([#7985](https://github.com/facebook/jest/pull/8003))
 - `[jest-environment-node]`: Migrate to TypeScript ([#7985](https://github.com/facebook/jest/pull/7985))
