@@ -11,7 +11,6 @@ import exit from 'exit';
 import HasteMap, {HasteChangeEvent} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {isInteractive, preRunMessage, specialChars} from 'jest-util';
-// @ts-ignore: Not migrated to TS
 import {ValidationError} from 'jest-validate';
 import {Context} from 'jest-runtime';
 import {Config} from '@jest/types';
