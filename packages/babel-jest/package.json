@@ -20,7 +20,8 @@
     "slash": "^2.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.0",
+    "@babel/core": "~7.2.2",
+    "@babel/parser": "~7.2.3",
     "@types/slash": "^2.0.0"
   },
   "peerDependencies": {
