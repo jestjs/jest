@@ -16,7 +16,7 @@ import DefaultReporter from './default_reporter';
 const {ICONS} = specialChars;
 
 export default class VerboseReporter extends DefaultReporter {
-  _globalConfig: Config.GlobalConfig;
+  protected _globalConfig: Config.GlobalConfig;
 
   constructor(globalConfig: Config.GlobalConfig) {
     super(globalConfig);
@@ -74,12 +74,12 @@ export default class VerboseReporter extends DefaultReporter {
     super.forceFlushBufferedOutput();
   }
 
-  _logTestResults(testResults: Array<TestResult.AssertionResult>) {
+  private _logTestResults(testResults: Array<TestResult.AssertionResult>) {
     this._logSuite(VerboseReporter.groupTestsBySuites(testResults), 0);
     this._logLine();
   }
 
-  _logSuite(suite: TestResult.Suite, indentLevel: number) {
+  private _logSuite(suite: TestResult.Suite, indentLevel: number) {
     if (suite.title) {
       this._logLine(suite.title, indentLevel);
     }
@@ -89,7 +89,7 @@ export default class VerboseReporter extends DefaultReporter {
     suite.suites.forEach(suite => this._logSuite(suite, indentLevel + 1));
   }
 
-  _getIcon(status: string) {
+  private _getIcon(status: string) {
     if (status === 'failed') {
       return chalk.red(ICONS.failed);
     } else if (status === 'pending') {
@@ -101,13 +101,16 @@ export default class VerboseReporter extends DefaultReporter {
     }
   }
 
-  _logTest(test: TestResult.AssertionResult, indentLevel: number) {
+  private _logTest(test: TestResult.AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
     const time = test.duration ? ` (${test.duration.toFixed(0)}ms)` : '';
     this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
   }
 
-  _logTests(tests: Array<TestResult.AssertionResult>, indentLevel: number) {
+  private _logTests(
+    tests: Array<TestResult.AssertionResult>,
+    indentLevel: number,
+  ) {
     if (this._globalConfig.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
@@ -146,7 +149,7 @@ export default class VerboseReporter extends DefaultReporter {
     }
   }
 
-  _logSummedTests(
+  private _logSummedTests(
     prefix: string,
     icon: string,
     count: number,
@@ -156,7 +159,7 @@ export default class VerboseReporter extends DefaultReporter {
     this._logLine(`${icon} ${text}`, indentLevel);
   }
 
-  _logLine(str?: string, indentLevel?: number) {
+  private _logLine(str?: string, indentLevel?: number) {
     const indentation = '  '.repeat(indentLevel || 0);
     this.log(indentation + (str || ''));
   }

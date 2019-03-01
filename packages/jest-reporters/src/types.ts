@@ -69,21 +69,6 @@ export interface Reporter {
   readonly getLastError: () => Error | void;
 }
 
-type FileCoverageTotal = {
-  total: number;
-  covered: number;
-  skipped: number;
-  pct: number;
-};
-
-export type CoverageSummary = {
-  lines: FileCoverageTotal;
-  statements: FileCoverageTotal;
-  branches: FileCoverageTotal;
-  functions: FileCoverageTotal;
-  merge: (other: CoverageSummary) => void;
-};
-
 export type SummaryOptions = {
   estimatedTime?: number;
   roundTime?: boolean;

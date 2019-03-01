@@ -27,7 +27,10 @@ const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
  * shifting the whole list.
  */
 class CurrentTestList {
-  _array: Array<{testPath: Config.Path; config: Config.ProjectConfig} | null>;
+  private _array: Array<{
+    testPath: Config.Path;
+    config: Config.ProjectConfig;
+  } | null>;
 
   constructor() {
     this._array = [];
@@ -114,7 +117,7 @@ export default class Status {
   }
 
   testFinished(
-    config: Config.ProjectConfig,
+    _config: Config.ProjectConfig,
     testResult: TestResult.TestResult,
     aggregatedResults: TestResult.AggregatedResult,
   ) {

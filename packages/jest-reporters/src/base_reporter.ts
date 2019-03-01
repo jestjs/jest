@@ -13,33 +13,33 @@ import {ReporterOnStartOptions, Context, Test, Reporter} from './types';
 const {remove: preRunMessageRemove} = preRunMessage;
 
 export default class BaseReporter implements Reporter {
-  _error?: Error;
+  private _error?: Error;
 
   log(message: string) {
     process.stderr.write(message + '\n');
   }
 
   onRunStart(
-    results: TestResult.AggregatedResult,
-    options: ReporterOnStartOptions,
+    _results: TestResult.AggregatedResult,
+    _options: ReporterOnStartOptions,
   ) {
     preRunMessageRemove(process.stderr);
   }
 
   onTestResult(
-    test: Test,
-    testResult: TestResult.TestResult,
-    results: TestResult.AggregatedResult,
+    _test: Test,
+    _testResult: TestResult.TestResult,
+    _results: TestResult.AggregatedResult,
   ) {}
 
-  onTestStart(test: Test) {}
+  onTestStart(_test: Test) {}
 
   onRunComplete(
-    contexts: Set<Context>,
-    aggregatedResults: TestResult.AggregatedResult,
+    _contexts: Set<Context>,
+    _aggregatedResults: TestResult.AggregatedResult,
   ): Promise<void> | void {}
 
-  _setError(error: Error) {
+  protected _setError(error: Error) {
     this._error = error;
   }
 

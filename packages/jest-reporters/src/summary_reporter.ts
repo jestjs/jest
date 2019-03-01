@@ -48,8 +48,8 @@ const NPM_EVENTS = new Set([
 ]);
 
 export default class SummaryReporter extends BaseReporter {
-  _estimatedTime: number;
-  _globalConfig: Config.GlobalConfig;
+  private _estimatedTime: number;
+  private _globalConfig: Config.GlobalConfig;
 
   constructor(globalConfig: Config.GlobalConfig) {
     super();
@@ -62,7 +62,7 @@ export default class SummaryReporter extends BaseReporter {
   // in Node.js 0.10 and still persists in Node.js 6.7+.
   // Let's print the test failure summary character by character which is safer
   // when hundreds of tests are failing.
-  _write(string: string) {
+  private _write(string: string) {
     for (let i = 0; i < string.length; i++) {
       process.stderr.write(string.charAt(i));
     }
@@ -117,7 +117,7 @@ export default class SummaryReporter extends BaseReporter {
     }
   }
 
-  _printSnapshotSummary(
+  private _printSnapshotSummary(
     snapshots: TestResult.SnapshotSummary,
     globalConfig: Config.GlobalConfig,
   ) {
@@ -162,7 +162,7 @@ export default class SummaryReporter extends BaseReporter {
     }
   }
 
-  _printSummary(
+  private _printSummary(
     aggregatedResults: TestResult.AggregatedResult,
     globalConfig: Config.GlobalConfig,
   ) {
@@ -190,7 +190,10 @@ export default class SummaryReporter extends BaseReporter {
     }
   }
 
-  _getTestSummary(contexts: Set<Context>, globalConfig: Config.GlobalConfig) {
+  private _getTestSummary(
+    contexts: Set<Context>,
+    globalConfig: Config.GlobalConfig,
+  ) {
     const getMatchingTestsInfo = () => {
       const prefix = globalConfig.findRelatedTests
         ? ' related to files matching '

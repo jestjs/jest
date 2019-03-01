@@ -6,6 +6,9 @@
  *
  */
 
+// TODO: Remove this
+/// <reference path="./node-notifier.d.ts" />
+
 import path from 'path';
 import util from 'util';
 import exit from 'exit';
@@ -19,9 +22,10 @@ const isDarwin = process.platform === 'darwin';
 const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 export default class NotifyReporter extends BaseReporter {
-  _startRun: (globalConfig: Config.GlobalConfig) => any;
-  _globalConfig: Config.GlobalConfig;
-  _context: TestSchedulerContext;
+  private _startRun: (globalConfig: Config.GlobalConfig) => any;
+  private _globalConfig: Config.GlobalConfig;
+  private _context: TestSchedulerContext;
+
   constructor(
     globalConfig: Config.GlobalConfig,
     startRun: (globalConfig: Config.GlobalConfig) => any,
@@ -116,7 +120,6 @@ export default class NotifyReporter extends BaseReporter {
       } else {
         notifier.notify(
           {
-            // @ts-ignore @types/node-notifier doesn't have `actions`
             actions: [restartAnswer, quitAnswer],
             closeLabel: 'Close',
             icon,

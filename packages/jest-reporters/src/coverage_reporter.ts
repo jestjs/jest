@@ -6,38 +6,36 @@
  *
  */
 
+// TODO: Remove this
+/// <reference path="./istanbul-lib-coverage.d.ts" />
+/// <reference path="./istanbul-api.d.ts" />
+
 import path from 'path';
 import {TestResult, Config} from '@jest/types';
 
 import {clearLine, isInteractive} from 'jest-util';
-// @ts-ignore Apparently there aren't any types for this package?
 import {createReporter} from 'istanbul-api';
 import chalk from 'chalk';
 import istanbulCoverage, {
   CoverageMap,
   FileCoverage,
-  Totals,
+  CoverageSummary,
+  CoverageSummaryData,
 } from 'istanbul-lib-coverage';
 import libSourceMaps, {MapStore} from 'istanbul-lib-source-maps';
 import Worker from 'jest-worker';
 import glob from 'glob';
 import BaseReporter from './base_reporter';
-import {
-  Context,
-  Test,
-  CoverageSummary,
-  CoverageWorker,
-  CoverageReporterOptions,
-} from './types';
+import {Context, Test, CoverageWorker, CoverageReporterOptions} from './types';
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 export default class CoverageReporter extends BaseReporter {
-  _coverageMap: CoverageMap;
-  _globalConfig: Config.GlobalConfig;
-  _sourceMapStore: MapStore;
-  _options: CoverageReporterOptions;
+  private _coverageMap: CoverageMap;
+  private _globalConfig: Config.GlobalConfig;
+  private _sourceMapStore: MapStore;
+  private _options: CoverageReporterOptions;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -51,9 +49,9 @@ export default class CoverageReporter extends BaseReporter {
   }
 
   onTestResult(
-    test: Test,
+    _test: Test,
     testResult: TestResult.TestResult,
-    aggregatedResults: TestResult.AggregatedResult,
+    _aggregatedResults: TestResult.AggregatedResult,
   ) {
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
@@ -118,7 +116,7 @@ export default class CoverageReporter extends BaseReporter {
     this._checkThreshold(this._globalConfig, map);
   }
 
-  async _addUntestedFiles(
+  private async _addUntestedFiles(
     globalConfig: Config.GlobalConfig,
     contexts: Set<Context>,
   ): Promise<void> {
@@ -212,18 +210,23 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
-  _checkThreshold(globalConfig: Config.GlobalConfig, map: CoverageMap) {
+  private _checkThreshold(globalConfig: Config.GlobalConfig, map: CoverageMap) {
     if (globalConfig.coverageThreshold) {
       function check(
         name: string,
         thresholds: {[index: string]: number},
-        actuals: {[index: string]: Totals},
+        actuals: CoverageSummaryData,
       ) {
         return ['statements', 'branches', 'lines', 'functions'].reduce<
           string[]
         >((errors, key) => {
-          const actual = actuals[key].pct;
-          const actualUncovered = actuals[key].total - actuals[key].covered;
+          // Without this TypeScript complains if i put
+          // `key: keyof CoverageSummaryData` or if i call `actuals[key]`
+          // without casting
+          const typedKey: keyof CoverageSummaryData = key as keyof CoverageSummaryData;
+          const actual = actuals[typedKey].pct;
+          const actualUncovered =
+            actuals[typedKey].total - actuals[typedKey].covered;
           const threshold = thresholds[key];
 
           if (threshold != null) {
@@ -327,7 +330,7 @@ export default class CoverageReporter extends BaseReporter {
           );
       }
 
-      let errors = [];
+      let errors: string[] = [];
 
       thresholdGroups.forEach(thresholdGroup => {
         switch (groupTypeByThresholdGroup[thresholdGroup]) {

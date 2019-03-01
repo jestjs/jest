@@ -28,10 +28,8 @@
   "devDependencies": {
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
-    "@types/istanbul-lib-coverage": "^1.1.0",
     "@types/istanbul-lib-instrument": "^1.7.2",
     "@types/istanbul-lib-source-maps": "^1.2.1",
-    "@types/node-notifier": "^0.0.28",
     "@types/slash": "^2.0.0",
     "@types/string-length": "^2.0.0",
     "strip-ansi": "^5.0.0"
