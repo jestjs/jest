@@ -6,17 +6,18 @@
  *
  */
 
-type Global = NodeJS.Global;
-
+import {TestFn} from '@jest/types/build/Global';
 import bind from './bind';
 
+type Global = NodeJS.Global;
+
 const install = (g: Global, ...args: Array<any>) => {
-  const test = (title: string, test: Function, timeout?: number) =>
+  const test = (title: string, test: TestFn, timeout?: number) =>
     bind(g.test)(...args)(title, test, timeout);
   test.skip = bind(g.test.skip)(...args);
   test.only = bind(g.test.only)(...args);
 
-  const it = (title: string, test: Function, timeout?: number) =>
+  const it = (title: string, test: TestFn, timeout?: number) =>
     bind(g.it)(...args)(title, test, timeout);
   it.skip = bind(g.it.skip)(...args);
   it.only = bind(g.it.only)(...args);
@@ -25,7 +26,7 @@ const install = (g: Global, ...args: Array<any>) => {
   const fit = bind(g.fit)(...args);
   const xtest = bind(g.xtest)(...args);
 
-  const describe = (title: string, suite: Function, timeout?: number) =>
+  const describe = (title: string, suite: TestFn, timeout?: number) =>
     bind(g.describe, false)(...args)(title, suite, timeout);
   describe.skip = bind(g.describe.skip, false)(...args);
   describe.only = bind(g.describe.only, false)(...args);

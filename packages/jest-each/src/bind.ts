@@ -6,6 +6,7 @@
  *
  */
 
+import {DoneFn, ItBase} from '@jest/types/build/Global';
 import chalk from 'chalk';
 import pretty from 'pretty-format';
 import {ErrorWithStack} from 'jest-util';
@@ -16,13 +17,17 @@ import convertTemplateTable from './table/template';
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
 
+type EachTestFn = (...args: any[]) => Promise<any> | void | undefined;
+
 export type EachTable = Array<{
   title: string;
   arguments: Array<unknown>;
 }>;
 
-export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
-  function eachBind(title: string, test: Function, timeout?: number): void {
+// TODO: update cb to ItBase | DescribeBase and deprecate supportsDone
+// TODO: update args from any
+export default (cb: ItBase, supportsDone: boolean = true) => (...args: any) =>
+  function eachBind(title: string, test: EachTestFn, timeout?: number): void {
     if (args.length === 1) {
       const [tableArg] = args;
 
@@ -115,15 +120,13 @@ const isEmptyTable = (table: Array<any>) => table.length === 0;
 const isEmptyString = (str: string) =>
   typeof str === 'string' && str.trim() === '';
 
-type Done = () => {};
-
 const applyArguments = (
   supportsDone: boolean,
-  params: Array<any>,
-  test: Function,
-) =>
+  params: Array<unknown>,
+  test: EachTestFn,
+): EachTestFn =>
   supportsDone && params.length < test.length
-    ? (done: Done) => test(...params, done)
+    ? (done: DoneFn) => test(...params, done)
     : () => test(...params);
 
 const getHeadingKeys = (headings: string): Array<string> =>
