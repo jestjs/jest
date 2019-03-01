@@ -21,6 +21,19 @@ type Cache = {
   [key: string]: [0 | 1, number],
 };
 
+/**
+ * The TestSequencer will ultimately decide which tests should run first.
+ * It is responsible for storing and reading from a local cache
+ * map that stores context information for a given test, such as how long it
+ * took to run during the last run and if it has failed or not.
+ * Such information is used on:
+ * TestSequencer.sort(tests: Array<Test>)
+ * to sort the order of the provided tests.
+ *
+ * After the results are collected,
+ * TestSequencer.cacheResults(tests: Array<Test>, results: AggregatedResult)
+ * is called to store/update this information on the cache map.
+ */
 export default class TestSequencer {
   _cache: Map<Context, Cache>;
 
@@ -56,14 +69,24 @@ export default class TestSequencer {
     return cache;
   }
 
-  // When running more tests than we have workers available, sort the tests
-  // by size - big test files usually take longer to complete, so we run
-  // them first in an effort to minimize worker idle time at the end of a
-  // long test run.
-  //
-  // After a test run we store the time it took to run a test and on
-  // subsequent runs we use that to run the slowest tests first, yielding the
-  // fastest results.
+  /**
+   * Sorting tests is very important because it has a great impact on the
+   * user-perceived responsiveness and speed of the test run.
+   *
+   * If such information is on cache, tests are sorted based on:
+   * -> Has it failed during the last run ?
+   * Since it's important to provide the most expected feedback as quickly
+   * as possible.
+   * -> How long it took to run ?
+   * Because running long tests first is an effort to minimize worker idle
+   * time at the end of a long test run.
+   * And if that information is not available they are sorted based on file size
+   * since big test files usually take longer to complete.
+   *
+   * Note that a possible improvement would be to analyse other information
+   * from the file other than its size.
+   *
+   */
   sort(tests: Array<Test>): Array<Test> {
     const stats = {};
     const fileSize = ({path, context: {hasteFS}}) =>
