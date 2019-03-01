@@ -1,10 +1,7 @@
 import pretty from 'pretty-format';
 import {isPrimitive} from 'jest-get-type';
-import {EachTests} from '../bind';
+import {EachTests, Row, Table} from '../bind';
 
-type Col = unknown;
-type Row = Array<Col>;
-type Table = Array<Row>;
 type Template = {[key: string]: unknown};
 type Templates = Array<Template>;
 type Headings = Array<string>;

@@ -19,11 +19,10 @@ const RECEIVED_COLOR = chalk.red;
 
 type EachTestFn = (...args: any[]) => Promise<any> | void | undefined;
 
-// TODO: re-use these everywhere
-type Col = unknown;
-type Row = Array<Col>;
-type Table = Array<Row>;
-type ArrayTable = Table | Row;
+export type Col = unknown;
+export type Row = Array<Col>;
+export type Table = Array<Row>;
+export type ArrayTable = Table | Row;
 type TemplateTable = TemplateStringsArray;
 export type TemplateData = Array<unknown>;
 export type EachTable = ArrayTable | TemplateTable;

@@ -1,11 +1,7 @@
 import util from 'util';
 import pretty from 'pretty-format';
-import {EachTests} from '../bind';
 
-type Col = unknown;
-type Row = Array<Col>;
-type Table = Array<Row>;
-type ArrayTable = Table | Row;
+import {ArrayTable, Col, EachTests, Row, Table} from '../bind';
 
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
