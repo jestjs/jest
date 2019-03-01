@@ -259,9 +259,9 @@
   integrity sha512-tXZCqWtlOOP4wgCp6RjRvLmfuhnqTLy9VHwRochJBCP2nDm27JnnuFEnXFASVyQNHk36jD1tAammsCEEqgscIQ==
 
 "@babel/parser@^7.2.2":
-  version "7.2.3"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.2.3.tgz#32f5df65744b70888d17872ec106b02434ba1489"
-  integrity sha512-0LyEcVlfCoFmci8mXx8A5oIkpkOgyo8dRHtxBnK9RRBwxO2+JZPNsqtVEZQ7mJFPxnXF9lfmU24mHOPI0qnlkA==
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.3.0.tgz#930251fe6714df47ce540a919ccdf6dcfb652b61"
+  integrity sha512-8M30TzMpLHGmuthHZStm4F+az5wxyYeh8U+LWK7+b2qnlQ0anXBmOQ1I8DCMV1K981wPY3C3kWZ4SA1lR3Y3xQ==
 
 "@babel/plugin-external-helpers@^7.0.0":
   version "7.2.0"
