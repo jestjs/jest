@@ -13,7 +13,7 @@ export function shouldRunInBand(
   tests: Array<Test>,
   isWatchMode: boolean,
   maxWorkers: number,
-  timings: number[],
+  timings: Array<number>,
 ) {
   // Run in band if we only have one test or one worker available, unless we
   // are using the watch mode, in which case the TTY has to be responsive and
