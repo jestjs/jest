@@ -6,23 +6,16 @@
  *
  */
 
-import util from 'util';
 import chalk from 'chalk';
 import pretty from 'pretty-format';
 import {isPrimitive} from 'jest-get-type';
 import {ErrorWithStack} from 'jest-util';
 
-type Table = Array<Array<any>>;
-type PrettyArgs = {
-  args: Array<any>;
-  title: string;
-};
+// TODO: renmae this
+import arrayTableToX from './table/array';
 
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
-const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
-const PRETTY_PLACEHOLDER = '%p';
-const INDEX_PLACEHOLDER = '%#';
 
 export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
   function eachBind(title: string, test: Function, timeout?: number): void {
@@ -72,13 +65,10 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
           throw error;
         });
       }
-      const table: Table = tableArg.every(Array.isArray)
-        ? tableArg
-        : tableArg.map(entry => [entry]);
-      return table.forEach((row, i) =>
+      return arrayTableToX(title, tableArg).forEach(row =>
         cb(
-          arrayFormat(title, i, ...row),
-          applyRestParams(supportsDone, row, test),
+          row.title,
+          applyRestParams(supportsDone, row.arguments, test),
           timeout,
         ),
       );
@@ -125,44 +115,6 @@ const isTaggedTemplateLiteral = (array: any) => array.raw !== undefined;
 const isEmptyTable = (table: Array<any>) => table.length === 0;
 const isEmptyString = (str: string) =>
   typeof str === 'string' && str.trim() === '';
-
-const getPrettyIndexes = (placeholders: RegExpMatchArray) =>
-  placeholders.reduce((indexes: Array<number>, placeholder, index) => {
-    if (placeholder === PRETTY_PLACEHOLDER) {
-      indexes.push(index);
-    }
-    return indexes;
-  }, []);
-
-const arrayFormat = (title: string, rowIndex: number, ...args: Array<any>) => {
-  const placeholders = title.match(SUPPORTED_PLACEHOLDERS) || [];
-  const prettyIndexes = getPrettyIndexes(placeholders);
-
-  const {title: prettyTitle, args: remainingArgs} = args.reduce(
-    (acc: PrettyArgs, arg, index) => {
-      if (prettyIndexes.indexOf(index) !== -1) {
-        return {
-          args: acc.args,
-          title: acc.title.replace(
-            PRETTY_PLACEHOLDER,
-            pretty(arg, {maxDepth: 1, min: true}),
-          ),
-        };
-      }
-
-      return {
-        args: acc.args.concat([arg]),
-        title: acc.title,
-      };
-    },
-    {args: [], title},
-  );
-
-  return util.format(
-    prettyTitle.replace(INDEX_PLACEHOLDER, rowIndex.toString()),
-    ...remainingArgs.slice(0, placeholders.length - prettyIndexes.length),
-  );
-};
 
 type Done = () => {};
 
