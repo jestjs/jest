@@ -10,12 +10,16 @@ import chalk from 'chalk';
 import pretty from 'pretty-format';
 import {ErrorWithStack} from 'jest-util';
 
-// TODO: renmae this
-import arrayTableToX from './table/array';
-import templateTableToX from './table/template';
+import convertArrayTable from './table/array';
+import convertTemplateTable from './table/template';
 
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
+
+export type EachTable = Array<{
+  title: string;
+  arguments: Array<unknown>;
+}>;
 
 export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
   function eachBind(title: string, test: Function, timeout?: number): void {
@@ -65,7 +69,7 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
           throw error;
         });
       }
-      return arrayTableToX(title, tableArg).forEach(row =>
+      return convertArrayTable(title, tableArg).forEach(row =>
         cb(
           row.title,
           applyArguments(supportsDone, row.arguments, test),
@@ -101,7 +105,7 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
       });
     }
 
-    return templateTableToX(title, keys, data).forEach(row =>
+    return convertTemplateTable(title, keys, data).forEach(row =>
       cb(row.title, applyArguments(supportsDone, row.arguments, test), timeout),
     );
   };

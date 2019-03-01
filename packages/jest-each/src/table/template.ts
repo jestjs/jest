@@ -1,5 +1,6 @@
 import pretty from 'pretty-format';
 import {isPrimitive} from 'jest-get-type';
+import {EachTable} from '../bind';
 
 type Col = unknown;
 type Row = Array<Col>;
@@ -8,12 +9,7 @@ type Template = {[key: string]: unknown};
 type Templates = Array<Template>;
 type Headings = Array<string>;
 
-type X = Array<{
-  title: string;
-  arguments: Array<unknown>;
-}>;
-
-export default (title: string, headings: Headings, row: Row): X => {
+export default (title: string, headings: Headings, row: Row): EachTable => {
   const table = convertRowToTable(row, headings);
   const templates = convertTableToTemplates(table, headings);
   return templates.map(template => ({
@@ -22,10 +18,7 @@ export default (title: string, headings: Headings, row: Row): X => {
   }));
 };
 
-const convertRowToTable = (
-  row: Row,
-  headings: Headings,
-): Table => // TODO: update this type to include values in headings
+const convertRowToTable = (row: Row, headings: Headings): Table =>
   Array.from({length: row.length / headings.length}).map((_, index) =>
     row.slice(
       index * headings.length,
