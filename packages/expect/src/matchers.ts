@@ -381,7 +381,7 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    if (received === null || received === undefined) {
+    if (received == null) {
       throw new Error(
         matcherErrorMessage(
           matcherHint('toContain', undefined, undefined, options),
@@ -449,7 +449,7 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    if (received === null || received === undefined) {
+    if (received == null) {
       throw new Error(
         matcherErrorMessage(
           matcherHint('toContainEqual', undefined, undefined, options),
