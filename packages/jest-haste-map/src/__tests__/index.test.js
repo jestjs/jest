@@ -7,7 +7,7 @@
  */
 
 import crypto from 'crypto';
-import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 
 function mockHashContents(contents) {
   return crypto
@@ -128,6 +128,7 @@ const useBuitinsInContext = value => {
 };
 
 let consoleWarn;
+let consoleError;
 let defaultConfig;
 let fs;
 let H;
@@ -180,7 +181,10 @@ describe('HasteMap', () => {
     fs = require('graceful-fs');
 
     consoleWarn = console.warn;
+    consoleError = console.error;
+
     console.warn = jest.fn();
+    console.error = jest.fn();
 
     HasteMap = require('../');
     H = HasteMap.H;
@@ -203,6 +207,7 @@ describe('HasteMap', () => {
 
   afterEach(() => {
     console.warn = consoleWarn;
+    console.error = consoleError;
   });
 
   it('exports constants', () => {
@@ -522,6 +527,8 @@ describe('HasteMap', () => {
   });
 
   it('warns on duplicate mock files', () => {
+    expect.assertions(1);
+
     // Duplicate mock files for blueberry
     mockFs['/project/fruits1/__mocks__/subdir/Blueberry.js'] = `
       // Blueberry
@@ -530,10 +537,14 @@ describe('HasteMap', () => {
       // Blueberry too!
     `;
 
-    return new HasteMap({mocksPattern: '__mocks__', ...defaultConfig})
+    return new HasteMap({
+      mocksPattern: '__mocks__',
+      throwOnModuleCollision: true,
+      ...defaultConfig,
+    })
       .build()
-      .then(({__hasteMapForTest: data}) => {
-        expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+      .catch(({__hasteMapForTest: data}) => {
+        expect(console.error.mock.calls[0][0]).toMatchSnapshot();
       });
   });
 

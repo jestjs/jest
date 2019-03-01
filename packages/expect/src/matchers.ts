@@ -602,9 +602,9 @@ const matchers: MatchersObject = {
     const result = getPath(object, keyPath);
     const {lastTraversedObject, hasEndProp} = result;
 
-    const pass = valuePassed
-      ? equals(result.value, value, [iterableEquality])
-      : hasEndProp;
+    const pass =
+      hasEndProp &&
+      (!valuePassed || equals(result.value, value, [iterableEquality]));
 
     const traversedPath = result.traversedPath.join('.');
 

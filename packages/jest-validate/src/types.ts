@@ -1,0 +1,44 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+type Title = {
+  deprecation?: string;
+  error?: string;
+  warning?: string;
+};
+
+export type DeprecatedOptions = Record<string, Function>;
+
+export type ValidationOptions = {
+  comment?: string;
+  condition?: (option: any, validOption: any) => boolean;
+  deprecate?: (
+    config: {[key: string]: any},
+    option: string,
+    deprecatedOptions: DeprecatedOptions,
+    options: ValidationOptions,
+  ) => boolean;
+  deprecatedConfig?: DeprecatedOptions;
+  error?: (
+    option: string,
+    received: any,
+    defaultValue: any,
+    options: ValidationOptions,
+    path?: Array<string>,
+  ) => void;
+  exampleConfig: {[key: string]: any};
+  recursive?: boolean;
+  recursiveBlacklist?: Array<string>;
+  title?: Title;
+  unknown?: (
+    config: {[key: string]: any},
+    exampleConfig: {[key: string]: any},
+    option: string,
+    options: ValidationOptions,
+    path?: Array<string>,
+  ) => void;
+};

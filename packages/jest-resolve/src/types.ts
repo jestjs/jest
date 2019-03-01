@@ -9,14 +9,14 @@ import {Config} from '@jest/types';
 
 export type ResolverConfig = {
   browser?: boolean;
-  defaultPlatform?: string;
+  defaultPlatform?: string | null;
   extensions: Array<string>;
   hasCoreModules: boolean;
   moduleDirectories: Array<string>;
-  moduleNameMapper?: Array<ModuleNameMapperConfig>;
+  moduleNameMapper?: Array<ModuleNameMapperConfig> | null;
   modulePaths: Array<Config.Path>;
   platforms?: Array<string>;
-  resolver: Config.Path;
+  resolver?: Config.Path | null;
   rootDir: Config.Path;
 };
 

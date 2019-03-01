@@ -16,13 +16,7 @@ exports[`HasteMap file system changes processing recovery from duplicate module 
 "
 `;
 
-exports[`HasteMap throws on duplicate module ids if "throwOnModuleCollision" is set to true 1`] = `
-[Error: jest-haste-map: Haste module naming collision:
-  Duplicate module name: Strawberry
-  Paths: /project/fruits/another/Strawberry.js collides with /project/fruits/Strawberry.js
-
-This error is caused by \`hasteImpl\` returning the same name for different files.]
-`;
+exports[`HasteMap throws on duplicate module ids if "throwOnModuleCollision" is set to true 1`] = `[Error: Duplicated files or mocks. Please check the console for more info]`;
 
 exports[`HasteMap tries to crawl using node as a fallback 1`] = `
 "jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
@@ -31,23 +25,17 @@ exports[`HasteMap tries to crawl using node as a fallback 1`] = `
 `;
 
 exports[`HasteMap warns on duplicate mock files 1`] = `
-"jest-haste-map: duplicate manual mock found:
-  Module name: subdir/Blueberry
-  Duplicate Mock path: /project/fruits2/__mocks__/subdir/Blueberry.js
-This warning is caused by two manual mock files with the same file name.
-Jest will use the mock file found in: 
-/project/fruits2/__mocks__/subdir/Blueberry.js
- Please delete one of the following two files: 
- /project/fruits1/__mocks__/subdir/Blueberry.js
-/project/fruits2/__mocks__/subdir/Blueberry.js
-
+"jest-haste-map: duplicate manual mock found: subdir/Blueberry
+  The following files share their name; please delete one of them:
+    * <rootDir>/fruits1/__mocks__/subdir/Blueberry.js
+    * <rootDir>/fruits2/__mocks__/subdir/Blueberry.js
 "
 `;
 
 exports[`HasteMap warns on duplicate module ids 1`] = `
-"jest-haste-map: Haste module naming collision:
-  Duplicate module name: Strawberry
-  Paths: /project/fruits/other/Strawberry.js collides with /project/fruits/Strawberry.js
-
-This warning is caused by \`hasteImpl\` returning the same name for different files."
+"jest-haste-map: Haste module naming collision: Strawberry
+  The following files share their name; please adjust your hasteImpl:
+    * <rootDir>/fruits/Strawberry.js
+    * <rootDir>/fruits/other/Strawberry.js
+"
 `;

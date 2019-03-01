@@ -6,9 +6,10 @@
  */
 
 import path from 'path';
-import {Config, TestResult, Environment} from '@jest/types';
-// @ts-ignore TODO Remove ignore when jest-runtime is migrated to ts
-import Runtime from 'jest-runtime'; // eslint-disable-line import/no-extraneous-dependencies
+import {Config, TestResult} from '@jest/types';
+import {JestEnvironment} from '@jest/environment';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Runtime from 'jest-runtime';
 import {SnapshotState} from 'jest-snapshot';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
@@ -16,7 +17,7 @@ const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  environment: Environment.$JestEnvironment,
+  environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult.TestResult> => {
@@ -46,7 +47,8 @@ const jestAdapter = async (
   });
 
   if (config.timers === 'fake') {
-    environment.fakeTimers.useFakeTimers();
+    // during setup, this cannot be null (and it's fine to explode if it is)
+    environment.fakeTimers!.useFakeTimers();
   }
 
   globals.beforeEach(() => {
@@ -62,7 +64,8 @@ const jestAdapter = async (
       runtime.resetAllMocks();
 
       if (config.timers === 'fake') {
-        environment.fakeTimers.useFakeTimers();
+        // during setup, this cannot be null (and it's fine to explode if it is)
+        environment.fakeTimers!.useFakeTimers();
       }
     }
 

@@ -5,11 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {CoverageMapData} from 'istanbul-lib-coverage';
+
 export type DoneFn = (reason?: string | Error) => void;
 export type TestName = string;
 export type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
 export type BlockFn = () => void;
 export type BlockName = string;
+
+// TODO: Get rid of this at some point
+type JasmineType = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
 
 // TODO Replace with actual type when `jest-each` is ready
 type Each = () => void;
@@ -48,7 +53,8 @@ export interface Describe extends DescribeBase {
   skip: ItBase;
 }
 
-export interface Global {
+// TODO: Maybe add `| Window` in the future?
+export interface Global extends NodeJS.Global {
   it: It;
   test: ItConcurrent;
   fit: ItBase;
@@ -57,6 +63,8 @@ export interface Global {
   describe: Describe;
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
+  __coverage__: CoverageMapData;
+  jasmine: JasmineType;
 }
 
 declare global {

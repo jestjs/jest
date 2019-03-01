@@ -107,6 +107,14 @@ Time:        0.232s, estimated 1s
 Ran all test suites.
 ```
 
+##### Using jest-circus
+
+There may be cases where you want to run jest using `jest-circus` instead of `jest-jasmine2` (which is the default runner) for integration testing. In situtations like this just set the environment variable `JEST_CIRCUS` to 1. That will configure jest to use `jest-circus`. So something like this.
+
+```bash
+JEST_CIRCUS=1 yarn jest
+```
+
 #### Additional Workflow for any changes made to website or docs
 
 If you are making changes to the website or documentation, test the website folder and run the server to check if your changes are being displayed accurately.

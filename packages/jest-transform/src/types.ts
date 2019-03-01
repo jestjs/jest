@@ -9,17 +9,18 @@ import {Script} from 'vm';
 import {RawSourceMap} from 'source-map';
 import {Config} from '@jest/types';
 
-export type Options = Pick<
+export type ShouldInstrumentOptions = Pick<
   Config.GlobalConfig,
-  | 'collectCoverage'
-  | 'collectCoverageFrom'
-  | 'collectCoverageOnlyFrom'
-  | 'extraGlobals'
+  'collectCoverage' | 'collectCoverageFrom' | 'collectCoverageOnlyFrom'
 > & {
   changedFiles: Set<Config.Path> | undefined;
-  isCoreModule?: boolean;
-  isInternalModule?: boolean;
 };
+
+export type Options = ShouldInstrumentOptions &
+  Pick<Config.GlobalConfig, 'extraGlobals'> & {
+    isCoreModule?: boolean;
+    isInternalModule?: boolean;
+  };
 
 // https://stackoverflow.com/a/48216010/1850276
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;

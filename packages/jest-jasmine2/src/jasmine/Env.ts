@@ -629,14 +629,24 @@ export default function(j$: $J) {
           checkIsError = check.isError;
           message = check.message;
         }
+        const errorAsErrorObject = checkIsError ? error : new Error(message);
+        const runnable = currentRunnable();
 
-        currentRunnable().addExpectationResult(false, {
+        if (!runnable) {
+          errorAsErrorObject.message =
+            'Caught error after test environment was torn down\n\n' +
+            errorAsErrorObject.message;
+
+          throw errorAsErrorObject;
+        }
+
+        runnable.addExpectationResult(false, {
           matcherName: '',
           passed: false,
           expected: '',
           actual: '',
           message,
-          error: checkIsError ? error : new Error(message!),
+          error: errorAsErrorObject,
         });
       };
     }

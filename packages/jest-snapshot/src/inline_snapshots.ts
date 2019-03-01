@@ -25,7 +25,7 @@ export type InlineSnapshot = {
 };
 
 export const saveInlineSnapshots = (
-  snapshots: InlineSnapshot[],
+  snapshots: Array<InlineSnapshot>,
   prettier: any,
   babelTraverse: Function,
 ) => {
@@ -93,7 +93,7 @@ const saveSnapshotsForFile = (
 const groupSnapshotsBy = (
   createKey: (inlineSnapshot: InlineSnapshot) => string,
 ) => (snapshots: Array<InlineSnapshot>) =>
-  snapshots.reduce<{[key: string]: InlineSnapshot[]}>(
+  snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
     (object, inlineSnapshot) => {
       const key = createKey(inlineSnapshot);
       return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
@@ -109,7 +109,7 @@ const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
 const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
 const createParser = (
-  snapshots: InlineSnapshot[],
+  snapshots: Array<InlineSnapshot>,
   inferredParser: string,
   babelTraverse: Function,
 ) => (
