@@ -13,7 +13,7 @@ const fc = require('fast-check');
 // settings for anything arbitrary
 const anythingSettings = {
   withBoxedValues: true,
-  withMap: true,
+  withMap: false,
   withSet: false,
 };
 
