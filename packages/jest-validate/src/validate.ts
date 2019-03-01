@@ -3,11 +3,9 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {ValidationOptions} from './types';
+import {ValidationOptions} from './types';
 
 import defaultConfig from './defaultConfig';
 
@@ -16,15 +14,15 @@ let hasDeprecationWarnings = false;
 const shouldSkipValidationForPath = (
   path: Array<string>,
   key: string,
-  blacklist: ?Array<string>,
+  blacklist?: Array<string>,
 ) => (blacklist ? blacklist.includes([...path, key].join('.')) : false);
 
 const _validate = (
-  config: Object,
-  exampleConfig: Object,
+  config: {[key: string]: any},
+  exampleConfig: {[key: string]: any},
   options: ValidationOptions,
   path: Array<string> = [],
-) => {
+): {hasDeprecationWarnings: boolean} => {
   if (
     typeof config !== 'object' ||
     config == null ||
@@ -48,7 +46,7 @@ const _validate = (
       );
 
       hasDeprecationWarnings = hasDeprecationWarnings || isDeprecatedKey;
-    } else if (hasOwnProperty.call(exampleConfig, key)) {
+    } else if (Object.hasOwnProperty.call(exampleConfig, key)) {
       if (
         typeof options.condition === 'function' &&
         typeof options.error === 'function' &&
@@ -78,14 +76,14 @@ const _validate = (
   return {hasDeprecationWarnings};
 };
 
-const validate = (config: Object, options: ValidationOptions) => {
+const validate = (config: {[key: string]: any}, options: ValidationOptions) => {
   hasDeprecationWarnings = false;
 
   // Preserve default blacklist entries even with user-supplied blacklist
-  const combinedBlacklist: Array<string> = [].concat(
-    defaultConfig.recursiveBlacklist || [],
-    options.recursiveBlacklist || [],
-  );
+  const combinedBlacklist: Array<string> = [
+    ...(defaultConfig.recursiveBlacklist || []),
+    ...(options.recursiveBlacklist || []),
+  ];
 
   const defaultedOptions: ValidationOptions = Object.assign({
     ...defaultConfig,

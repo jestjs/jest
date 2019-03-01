@@ -30,7 +30,7 @@ type BooleanObject = {[key: string]: boolean};
 namespace Resolver {
   export type ResolveModuleConfig = {
     skipNodeResolution?: boolean;
-    paths?: Config.Path[];
+    paths?: Array<Config.Path>;
   };
 }
 

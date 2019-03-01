@@ -5,30 +5,37 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
-import type {GlobalConfig, ProjectConfig} from 'types/Config';
-
-declare var jestGlobalConfig: GlobalConfig;
-declare var jestProjectConfig: ProjectConfig;
-declare var jest: Object;
+declare const jestGlobalConfig: Config.GlobalConfig;
+declare const jestProjectConfig: Config.ProjectConfig;
 
 import path from 'path';
 import repl from 'repl';
 import vm from 'vm';
+import {Transformer} from '@jest/transform';
+import {Config} from '@jest/types';
 
-let transformer;
+let transformer: Transformer;
 
-const evalCommand = (cmd, context, filename, callback, config) => {
+const evalCommand: repl.REPLEval = (
+  cmd: string,
+  _context: any,
+  _filename: string,
+  callback: (e: Error | null, result?: any) => void,
+) => {
   let result;
   try {
     if (transformer) {
-      cmd = transformer.process(
+      const transformResult = transformer.process(
         cmd,
         jestGlobalConfig.replname || 'jest.js',
         jestProjectConfig,
       );
+      cmd =
+        typeof transformResult === 'string'
+          ? transformResult
+          : transformResult.code;
     }
     result = vm.runInThisContext(cmd);
   } catch (e) {
@@ -37,7 +44,7 @@ const evalCommand = (cmd, context, filename, callback, config) => {
   return callback(null, result);
 };
 
-const isRecoverableError = error => {
+const isRecoverableError = (error: Error) => {
   if (error && error.name === 'SyntaxError') {
     return [
       'Unterminated template',
@@ -59,7 +66,6 @@ if (jestProjectConfig.transform) {
     }
   }
   if (transformerPath) {
-    /* $FlowFixMe */
     transformer = require(transformerPath);
     if (typeof transformer.process !== 'function') {
       throw new TypeError(
@@ -69,17 +75,15 @@ if (jestProjectConfig.transform) {
   }
 }
 
-const replInstance = repl.start({
+const replInstance: repl.REPLServer = repl.start({
   eval: evalCommand,
   prompt: '\u203A ',
   useGlobal: true,
 });
 
-// $FlowFixMe: https://github.com/facebook/flow/pull/4713
-replInstance.context.require = moduleName => {
+replInstance.context.require = (moduleName: string) => {
   if (/(\/|\\|\.)/.test(moduleName)) {
     moduleName = path.resolve(process.cwd(), moduleName);
   }
-  /* $FlowFixMe */
   return require(moduleName);
 };

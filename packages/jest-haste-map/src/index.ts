@@ -64,6 +64,7 @@ type Options = {
   retainAllFiles: boolean;
   rootDir: string;
   roots: Array<string>;
+  skipPackageJson?: boolean;
   throwOnModuleCollision?: boolean;
   useWatchman?: boolean;
   watch?: boolean;
@@ -87,6 +88,7 @@ type InternalOptions = {
   retainAllFiles: boolean;
   rootDir: string;
   roots: Array<string>;
+  skipPackageJson: boolean;
   throwOnModuleCollision: boolean;
   useWatchman: boolean;
   watch: boolean;
@@ -108,6 +110,7 @@ namespace HasteMap {
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
+const PACKAGE_JSON = path.sep + 'package.json';
 
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
@@ -256,6 +259,7 @@ class HasteMap extends EventEmitter {
       retainAllFiles: options.retainAllFiles,
       rootDir: options.rootDir,
       roots: Array.from(new Set(options.roots)),
+      skipPackageJson: !!options.skipPackageJson,
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
@@ -432,27 +436,31 @@ class HasteMap extends EventEmitter {
         H.GENERIC_PLATFORM;
 
       const existingModule = moduleMap[platform];
+
       if (existingModule && existingModule[H.PATH] !== module[H.PATH]) {
-        const message =
-          `jest-haste-map: Haste module naming collision:\n` +
-          `  Duplicate module name: ${id}\n` +
-          `  Paths: ${fastPath.resolve(
-            rootDir,
-            module[H.PATH],
-          )} collides with ` +
-          `${fastPath.resolve(rootDir, existingModule[H.PATH])}\n\nThis ` +
-          `${this._options.throwOnModuleCollision ? 'error' : 'warning'} ` +
-          `is caused by \`hasteImpl\` returning the same name for different` +
-          ` files.`;
+        const method = this._options.throwOnModuleCollision ? 'error' : 'warn';
+
+        this._console[method](
+          [
+            'jest-haste-map: Haste module naming collision: ' + id,
+            '  The following files share their name; please adjust your hasteImpl:',
+            '    * <rootDir>' + path.sep + existingModule[H.PATH],
+            '    * <rootDir>' + path.sep + module[H.PATH],
+            '',
+          ].join('\n'),
+        );
+
         if (this._options.throwOnModuleCollision) {
-          throw new Error(message);
+          throw new DuplicateError(existingModule[H.PATH], module[H.PATH]);
         }
-        this._console.warn(message);
+
         // We do NOT want consumers to use a module that is ambiguous.
         delete moduleMap[platform];
+
         if (Object.keys(moduleMap).length === 1) {
           map.delete(id);
         }
+
         let dupsByPlatform = hasteMap.duplicates.get(id);
         if (dupsByPlatform == null) {
           dupsByPlatform = new Map();
@@ -553,18 +561,26 @@ class HasteMap extends EventEmitter {
     ) {
       const mockPath = getMockName(filePath);
       const existingMockPath = mocks.get(mockPath);
+
       if (existingMockPath) {
-        this._console.warn(
-          `jest-haste-map: duplicate manual mock found:\n` +
-            `  Module name: ${mockPath}\n` +
-            `  Duplicate Mock path: ${filePath}\nThis warning ` +
-            `is caused by two manual mock files with the same file name.\n` +
-            `Jest will use the mock file found in: \n` +
-            `${filePath}\n` +
-            ` Please delete one of the following two files: \n ` +
-            `${path.join(rootDir, existingMockPath)}\n${filePath}\n\n`,
+        const secondMockPath = fastPath.relative(rootDir, filePath);
+        const method = this._options.throwOnModuleCollision ? 'error' : 'warn';
+
+        this._console[method](
+          [
+            'jest-haste-map: duplicate manual mock found: ' + mockPath,
+            '  The following files share their name; please delete one of them:',
+            '    * <rootDir>' + path.sep + existingMockPath,
+            '    * <rootDir>' + path.sep + secondMockPath,
+            '',
+          ].join('\n'),
         );
+
+        if (this._options.throwOnModuleCollision) {
+          throw new DuplicateError(existingMockPath, secondMockPath);
+        }
       }
+
       mocks.set(mockPath, relativeFilePath);
     }
 
@@ -623,6 +639,12 @@ class HasteMap extends EventEmitter {
     }
 
     for (const relativeFilePath of hasteMap.files.keys()) {
+      if (
+        this._options.skipPackageJson &&
+        relativeFilePath.endsWith(PACKAGE_JSON)
+      ) {
+        continue;
+      }
       // SHA-1, if requested, should already be present thanks to the crawler.
       const filePath = fastPath.resolve(
         this._options.rootDir,
@@ -1069,7 +1091,20 @@ class HasteMap extends EventEmitter {
   }
 
   static H: HType;
+  static DuplicateError: typeof DuplicateError;
   static ModuleMap: typeof HasteModuleMap;
+}
+
+class DuplicateError extends Error {
+  mockPath1: string;
+  mockPath2: string;
+
+  constructor(mockPath1: string, mockPath2: string) {
+    super('Duplicated files or mocks. Please check the console for more info');
+
+    this.mockPath1 = mockPath1;
+    this.mockPath2 = mockPath2;
+  }
 }
 
 function copy<T extends Object>(object: T): T {
@@ -1081,6 +1116,7 @@ function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
 }
 
 HasteMap.H = H;
+HasteMap.DuplicateError = DuplicateError;
 HasteMap.ModuleMap = HasteModuleMap;
 
 export = HasteMap;

@@ -2844,6 +2844,8 @@ exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('unde
 Expected has value: <green>undefined</>"
 `;
 
+exports[`.toHaveProperty() {error} expect({}).toHaveProperty('') 1`] = `"pass must be initialized"`;
+
 exports[`.toHaveProperty() {error} expect(null).toHaveProperty('a.b') 1`] = `
 "<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
@@ -2858,6 +2860,16 @@ exports[`.toHaveProperty() {error} expect(undefined).toHaveProperty('a') 1`] = `
 <bold>Matcher error</>: <red>received</> value must not be null nor undefined
 
 Received has value: <red>undefined</>"
+`;
+
+exports[`.toHaveProperty() {pass: false} expect("").toHaveProperty('key') 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+
+Expected the object:
+  <red>\\"\\"</>
+To have a nested property:
+  <green>\\"key\\"</>
+"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect("abc").toHaveProperty('a.b.c') 1`] = `
@@ -2985,6 +2997,19 @@ Difference:
   Comparing two different types of values. Expected <green>undefined</> but received <red>number</>."
 `;
 
+exports[`.toHaveProperty() {pass: false} expect({"a": {}}).toHaveProperty('a.b', undefined) 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"a\\": {}}</>
+To have a nested property:
+  <green>\\"a.b\\"</>
+With a value of:
+  <green>undefined</>
+Received:
+  <red>object</>.a: <red>{}</>"
+`;
+
 exports[`.toHaveProperty() {pass: false} expect({"a": 1}).toHaveProperty('a.b.c.d') 1`] = `
 "<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
@@ -3032,6 +3057,16 @@ With a value of:
   <green>2</>
 Received:
   <red>1</>"
+`;
+
+exports[`.toHaveProperty() {pass: false} expect({"key": 1}).toHaveProperty('not') 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+
+Expected the object:
+  <red>{\\"key\\": 1}</>
+To have a nested property:
+  <green>\\"not\\"</>
+"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('a') 1`] = `
@@ -3090,6 +3125,16 @@ Difference:
   Comparing two different types of values. Expected <green>undefined</> but received <red>string</>."
 `;
 
+exports[`.toHaveProperty() {pass: false} expect(0).toHaveProperty('key') 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+
+Expected the object:
+  <red>0</>
+To have a nested property:
+  <green>\\"key\\"</>
+"
+`;
+
 exports[`.toHaveProperty() {pass: false} expect(1).toHaveProperty('a.b.c') 1`] = `
 "<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
@@ -3109,6 +3154,50 @@ To have a nested property:
   <green>\\"a.b.c\\"</>
 With a value of:
   <green>\\"test\\"</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: false} expect(Symbol()).toHaveProperty('key') 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+
+Expected the object:
+  <red>Symbol()</>
+To have a nested property:
+  <green>\\"key\\"</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: false} expect(false).toHaveProperty('key') 1`] = `
+"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+
+Expected the object:
+  <red>false</>
+To have a nested property:
+  <green>\\"key\\"</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect("").toHaveProperty('length', 0) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>\\"\\"</>
+Not to have a nested property:
+  <green>\\"length\\"</>
+With a value of:
+  <green>0</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect([Function memoized]).toHaveProperty('memo', []) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>[Function memoized]</>
+Not to have a nested property:
+  <green>\\"memo\\"</>
+With a value of:
+  <green>[]</>
 "
 `;
 
@@ -3256,6 +3345,18 @@ With a value of:
 "
 `;
 
+exports[`.toHaveProperty() {pass: true} expect({"nodeName": "DIV"}).toHaveProperty('nodeType', 1) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"nodeName\\": \\"DIV\\"}</>
+Not to have a nested property:
+  <green>\\"nodeType\\"</>
+With a value of:
+  <green>1</>
+"
+`;
+
 exports[`.toHaveProperty() {pass: true} expect({"property": 1}).toHaveProperty('property', 1) 1`] = `
 "<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
 
@@ -3265,6 +3366,42 @@ Not to have a nested property:
   <green>\\"property\\"</>
 With a value of:
   <green>1</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"val": true}).toHaveProperty('a', undefined) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"val\\": true}</>
+Not to have a nested property:
+  <green>\\"a\\"</>
+With a value of:
+  <green>undefined</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"val": true}).toHaveProperty('c', "c") 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"val\\": true}</>
+Not to have a nested property:
+  <green>\\"c\\"</>
+With a value of:
+  <green>\\"c\\"</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"val": true}).toHaveProperty('val', true) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{\\"val\\": true}</>
+Not to have a nested property:
+  <green>\\"val\\"</>
+With a value of:
+  <green>true</>
 "
 `;
 
@@ -3289,6 +3426,18 @@ Not to have a nested property:
   <green>\\"b\\"</>
 With a value of:
   <green>\\"b\\"</>
+"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('setter', undefined) 1`] = `
+"<dim>expect(</><red>object</><dim>).not.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected the object:
+  <red>{}</>
+Not to have a nested property:
+  <green>\\"setter\\"</>
+With a value of:
+  <green>undefined</>
 "
 `;
 

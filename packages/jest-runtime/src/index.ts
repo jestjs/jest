@@ -85,7 +85,7 @@ class Runtime {
   private _isCurrentlyExecutingManualMock: string | null;
   private _mockFactories: {[key: string]: () => unknown};
   private _mockMetaDataCache: {
-    [key: string]: MockFunctionMetadata<unknown, unknown[]>;
+    [key: string]: MockFunctionMetadata<unknown, Array<unknown>>;
   };
   private _mockRegistry: {[key: string]: any};
   private _isolatedMockRegistry: {[key: string]: any} | null;

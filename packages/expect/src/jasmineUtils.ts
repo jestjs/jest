@@ -64,9 +64,9 @@ function asymmetricMatch(a: any, b: any) {
 function eq(
   a: any,
   b: any,
-  aStack: any,
-  bStack: any,
-  customTesters: any,
+  aStack: Array<unknown>,
+  bStack: Array<unknown>,
+  customTesters: Array<Tester>,
   hasKey: any,
 ): boolean {
   var result = true;
@@ -134,14 +134,17 @@ function eq(
     return a.isEqualNode(b);
   }
 
-  // Assume equality for cyclic structures. The algorithm for detecting cyclic
-  // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
+  // Used to detect circular references.
   var length = aStack.length;
   while (length--) {
     // Linear search. Performance is inversely proportional to the number of
     // unique nested structures.
-    if (aStack[length] == a) {
-      return bStack[length] == b;
+    // circular references at same depth are equal
+    // circular reference is not equal to non-circular one
+    if (aStack[length] === a) {
+      return bStack[length] === b;
+    } else if (bStack[length] === b) {
+      return false;
     }
   }
   // Add the first object to the stack of traversed objects.

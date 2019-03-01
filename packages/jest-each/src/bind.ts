@@ -4,19 +4,18 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
  */
 
 import util from 'util';
 import chalk from 'chalk';
 import pretty from 'pretty-format';
-import getType from 'jest-get-type';
+import {isPrimitive} from 'jest-get-type';
 import {ErrorWithStack} from 'jest-util';
 
 type Table = Array<Array<any>>;
 type PrettyArgs = {
-  args: Array<mixed>,
-  title: string,
+  args: Array<any>;
+  title: string;
 };
 
 const EXPECTED_COLOR = chalk.green;
@@ -24,16 +23,9 @@ const RECEIVED_COLOR = chalk.red;
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
-const PRIMITIVES = new Set([
-  'string',
-  'number',
-  'boolean',
-  'null',
-  'undefined',
-]);
 
 export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
-  function eachBind(title: string, test: Function, timeout: number): void {
+  function eachBind(title: string, test: Function, timeout?: number): void {
     if (args.length === 1) {
       const [tableArg] = args;
 
@@ -129,19 +121,20 @@ export default (cb: Function, supportsDone: boolean = true) => (...args: any) =>
     );
   };
 
-const isTaggedTemplateLiteral = array => array.raw !== undefined;
-const isEmptyTable = table => table.length === 0;
-const isEmptyString = str => typeof str === 'string' && str.trim() === '';
+const isTaggedTemplateLiteral = (array: any) => array.raw !== undefined;
+const isEmptyTable = (table: Array<any>) => table.length === 0;
+const isEmptyString = (str: string) =>
+  typeof str === 'string' && str.trim() === '';
 
-const getPrettyIndexes = placeholders =>
-  placeholders.reduce((indexes, placeholder, index) => {
+const getPrettyIndexes = (placeholders: RegExpMatchArray) =>
+  placeholders.reduce((indexes: Array<number>, placeholder, index) => {
     if (placeholder === PRETTY_PLACEHOLDER) {
       indexes.push(index);
     }
     return indexes;
   }, []);
 
-const arrayFormat = (title, rowIndex, ...args) => {
+const arrayFormat = (title: string, rowIndex: number, ...args: Array<any>) => {
   const placeholders = title.match(SUPPORTED_PLACEHOLDERS) || [];
   const prettyIndexes = getPrettyIndexes(placeholders);
 
@@ -171,13 +164,15 @@ const arrayFormat = (title, rowIndex, ...args) => {
   );
 };
 
+type Done = () => {};
+
 const applyRestParams = (
   supportsDone: boolean,
   params: Array<any>,
   test: Function,
 ) =>
   supportsDone && params.length < test.length
-    ? done => test(...params, done)
+    ? (done: Done) => test(...params, done)
     : () => test(...params);
 
 const getHeadingKeys = (headings: string): Array<string> =>
@@ -197,16 +192,20 @@ const buildTable = (
       ),
     );
 
-const getMatchingKeyPaths = title => (matches, key) =>
-  matches.concat(title.match(new RegExp(`\\$${key}[\\.\\w]*`, 'g')) || []);
+const getMatchingKeyPaths = (title: string) => (
+  matches: Array<string>,
+  key: string,
+) => matches.concat(title.match(new RegExp(`\\$${key}[\\.\\w]*`, 'g')) || []);
 
-const replaceKeyPathWithValue = data => (title, match) => {
+const replaceKeyPathWithValue = (data: any) => (
+  title: string,
+  match: string,
+) => {
   const keyPath = match.replace('$', '').split('.');
   const value = getPath(data, keyPath);
-  const valueType = getType(value);
 
-  if (PRIMITIVES.has(valueType)) {
-    return title.replace(match, value);
+  if (isPrimitive(value)) {
+    return title.replace(match, String(value));
   }
   return title.replace(match, pretty(value, {maxDepth: 1, min: true}));
 };
@@ -217,12 +216,17 @@ const interpolate = (title: string, data: any) =>
     .reduce(replaceKeyPathWithValue(data), title);
 
 const applyObjectParams = (supportsDone: boolean, obj: any, test: Function) =>
-  supportsDone && test.length > 1 ? done => test(obj, done) : () => test(obj);
+  supportsDone && test.length > 1
+    ? (done: Done) => test(obj, done)
+    : () => test(obj);
 
 const pluralize = (word: string, count: number) =>
   word + (count === 1 ? '' : 's');
 
-const getPath = (o: Object, [head, ...tail]: Array<string>) => {
+const getPath = (
+  o: {[key: string]: any},
+  [head, ...tail]: Array<string>,
+): any => {
   if (!head || !o.hasOwnProperty || !o.hasOwnProperty(head)) return o;
   return getPath(o[head], tail);
 };

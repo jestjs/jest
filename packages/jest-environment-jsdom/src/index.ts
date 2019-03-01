@@ -3,28 +3,40 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- * @flow
  */
 
-import type {Script} from 'vm';
-import type {ProjectConfig} from 'types/Config';
-import type {EnvironmentContext} from 'types/Environment';
-import type {Global} from 'types/Global';
-import type {ModuleMocker} from 'jest-mock';
-
-import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+import {Script} from 'vm';
+import {Global, Config} from '@jest/types';
 import {installCommonGlobals} from 'jest-util';
-import mock from 'jest-mock';
+import mock, {ModuleMocker} from 'jest-mock';
+import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+import {JestEnvironment, EnvironmentContext} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
-class JSDOMEnvironment {
-  dom: ?Object;
-  fakeTimers: ?FakeTimers<number>;
-  global: ?Global;
-  errorEventListener: ?Function;
-  moduleMocker: ?ModuleMocker;
+// The `Window` interface does not have an `Error.stackTraceLimit` property, but
+// `JSDOMEnvironment` assumes it is there.
+interface Win extends Window {
+  Error: {
+    stackTraceLimit: number;
+  };
+}
 
-  constructor(config: ProjectConfig, options?: EnvironmentContext = {}) {
+function isWin(globals: Win | Global.Global): globals is Win {
+  return (globals as Win).document !== undefined;
+}
+
+// A lot of the globals expected by other APIs are `NodeJS.Global` and not
+// `Window`, so we need to cast here and there
+
+class JSDOMEnvironment implements JestEnvironment {
+  dom: JSDOM | null;
+  fakeTimers: FakeTimers<number> | null;
+  // @ts-ignore
+  global: Global.Global | Win | null;
+  errorEventListener: ((event: Event & {error: Error}) => void) | null;
+  moduleMocker: ModuleMocker | null;
+
+  constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
     this.dom = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
       runScripts: 'dangerously',
@@ -32,11 +44,16 @@ class JSDOMEnvironment {
       virtualConsole: new VirtualConsole().sendTo(options.console || console),
       ...config.testEnvironmentOptions,
     });
-    const global = (this.global = this.dom.window.document.defaultView);
+    const global = (this.global = this.dom.window.document.defaultView as Win);
+
+    if (!global) {
+      throw new Error('JSDOM did not return a Window object');
+    }
+
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
-    installCommonGlobals(global, config.globals);
+    installCommonGlobals(global as any, config.globals);
 
     // Report uncaught errors.
     this.errorEventListener = event => {
@@ -51,20 +68,24 @@ class JSDOMEnvironment {
     const originalAddListener = global.addEventListener;
     const originalRemoveListener = global.removeEventListener;
     let userErrorListenerCount = 0;
-    global.addEventListener = function(name) {
-      if (name === 'error') {
+    global.addEventListener = function(
+      ...args: Parameters<typeof originalAddListener>
+    ) {
+      if (args[0] === 'error') {
         userErrorListenerCount++;
       }
-      return originalAddListener.apply(this, arguments);
+      return originalAddListener.apply(this, args);
     };
-    global.removeEventListener = function(name) {
-      if (name === 'error') {
+    global.removeEventListener = function(
+      ...args: Parameters<typeof originalRemoveListener>
+    ) {
+      if (args[0] === 'error') {
         userErrorListenerCount--;
       }
-      return originalRemoveListener.apply(this, arguments);
+      return originalRemoveListener.apply(this, args);
     };
 
-    this.moduleMocker = new mock.ModuleMocker(global);
+    this.moduleMocker = new mock.ModuleMocker(global as any);
 
     const timerConfig = {
       idToRef: (id: number) => id,
@@ -73,27 +94,29 @@ class JSDOMEnvironment {
 
     this.fakeTimers = new FakeTimers({
       config,
-      global,
+      global: global as any,
       moduleMocker: this.moduleMocker,
       timerConfig,
     });
   }
 
-  setup(): Promise<void> {
+  setup() {
     return Promise.resolve();
   }
 
-  teardown(): Promise<void> {
+  teardown() {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
     if (this.global) {
-      if (this.errorEventListener) {
+      if (this.errorEventListener && isWin(this.global)) {
         this.global.removeEventListener('error', this.errorEventListener);
       }
       // Dispose "document" to prevent "load" event from triggering.
       Object.defineProperty(this.global, 'document', {value: null});
-      this.global.close();
+      if (isWin(this.global)) {
+        this.global.close();
+      }
     }
     this.errorEventListener = null;
     this.global = null;
@@ -102,12 +125,12 @@ class JSDOMEnvironment {
     return Promise.resolve();
   }
 
-  runScript(script: Script): ?any {
+  runScript(script: Script) {
     if (this.dom) {
-      return this.dom.runVMScript(script);
+      return this.dom.runVMScript(script) as any;
     }
     return null;
   }
 }
 
-module.exports = JSDOMEnvironment;
+export = JSDOMEnvironment;

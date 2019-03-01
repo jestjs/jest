@@ -128,7 +128,7 @@ const diffExpand = (
   const isCommon: Callbacks['isCommon'] = (aIndex, bIndex) =>
     aLinesUn[aIndex] === bLinesUn[bIndex];
 
-  const array: string[] = [];
+  const array: Array<string> = [];
   const put = (line: string) => {
     array.push(line);
   };

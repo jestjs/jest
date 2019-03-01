@@ -7,7 +7,6 @@
 
 import {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
-// @ts-ignore: Not migrated to TS
 import {multipleValidOptions} from 'jest-validate';
 import {NODE_MODULES} from './constants';
 
@@ -15,6 +14,7 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 const initialOptions: Config.InitialOptions = {
   automock: false,
+  // @ts-ignore TODO: type this properly
   bail: multipleValidOptions(false, 0),
   browser: false,
   cache: true,
