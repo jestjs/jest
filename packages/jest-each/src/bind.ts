@@ -25,16 +25,15 @@ type Row = Array<Col>;
 type Table = Array<Row>;
 type ArrayTable = Table | Row;
 type TemplateTable = TemplateStringsArray;
-
 export type TemplateData = Array<unknown>;
 export type EachTable = ArrayTable | TemplateTable;
-// type Each = (table: EachTable, ...rest: Array<unknown>) => JestFunction;
-// type Bind = (cb: JestFunction) => Each;
 
 export type EachTests = Array<{
   title: string;
   arguments: Array<unknown>;
 }>;
+
+type Result = EachTests | string;
 
 // TODO: update cb to ItBase | DescribeBase and deprecate supportsDone
 export default (cb: ItBase, supportsDone: boolean = true) => (
@@ -42,88 +41,74 @@ export default (cb: ItBase, supportsDone: boolean = true) => (
   ...taggedTemplateData: TemplateData
 ) =>
   function eachBind(title: string, test: EachTestFn, timeout?: number): void {
-    if (taggedTemplateData.length === 0) {
-      if (!Array.isArray(table)) {
-        // TODO: extract validation
-        const error = new ErrorWithStack(
-          '`.each` must be called with an Array or Tagged Template Literal.\n\n' +
-            `Instead was called with: ${pretty(table, {
-              maxDepth: 1,
-              min: true,
-            })}\n`,
-          eachBind,
-        );
-        return cb(title, () => {
-          throw error;
-        });
-      }
+    const result = isArrayTable(taggedTemplateData)
+      ? buildArrayTests(title, table)
+      : buildTemplateTests(title, table, taggedTemplateData);
 
-      if (isTaggedTemplateLiteral(table)) {
-        if (isEmptyString(table[0])) {
-          const error = new ErrorWithStack(
-            'Error: `.each` called with an empty Tagged Template Literal of table data.\n',
-            eachBind,
-          );
-          return cb(title, () => {
-            throw error;
-          });
-        }
-
-        const error = new ErrorWithStack(
-          'Error: `.each` called with a Tagged Template Literal with no data, remember to interpolate with ${expression} syntax.\n',
-          eachBind,
-        );
-        return cb(title, () => {
-          throw error;
-        });
-      }
-
-      if (isEmptyTable(table)) {
-        const error = new ErrorWithStack(
-          'Error: `.each` called with an empty Array of table data.\n',
-          eachBind,
-        );
-        return cb(title, () => {
-          throw error;
-        });
-      }
-      return convertArrayTable(title, table).forEach(row =>
-        cb(
-          row.title,
-          applyArguments(supportsDone, row.arguments, test),
-          timeout,
-        ),
-      );
-    }
-
-    const keys = getHeadingKeys(table[0] as string);
-
-    const missingData = taggedTemplateData.length % keys.length;
-
-    if (missingData > 0) {
-      const error = new ErrorWithStack(
-        'Not enough arguments supplied for given headings:\n' +
-          EXPECTED_COLOR(keys.join(' | ')) +
-          '\n\n' +
-          'Received:\n' +
-          RECEIVED_COLOR(pretty(taggedTemplateData)) +
-          '\n\n' +
-          `Missing ${RECEIVED_COLOR(missingData.toString())} ${pluralize(
-            'argument',
-            missingData,
-          )}`,
-        eachBind,
-      );
-
+    if (typeof result === 'string') {
+      const error = new ErrorWithStack(result, eachBind);
       return cb(title, () => {
         throw error;
       });
     }
 
-    return convertTemplateTable(title, keys, taggedTemplateData).forEach(row =>
+    return result.forEach(row =>
       cb(row.title, applyArguments(supportsDone, row.arguments, test), timeout),
     );
   };
+
+const isArrayTable = (data: TemplateData) => data.length === 0;
+
+const buildArrayTests = (title: string, table: EachTable): Result => {
+  if (!Array.isArray(table)) {
+    return (
+      '`.each` must be called with an Array or Tagged Template Literal.\n\n' +
+      `Instead was called with: ${pretty(table, {
+        maxDepth: 1,
+        min: true,
+      })}\n`
+    );
+  }
+
+  if (isTaggedTemplateLiteral(table)) {
+    if (isEmptyString(table[0])) {
+      return 'Error: `.each` called with an empty Tagged Template Literal of table data.\n';
+    }
+
+    return 'Error: `.each` called with a Tagged Template Literal with no data, remember to interpolate with ${expression} syntax.\n';
+  }
+
+  if (isEmptyTable(table)) {
+    return 'Error: `.each` called with an empty Array of table data.\n';
+  }
+  return convertArrayTable(title, table);
+};
+
+const buildTemplateTests = (
+  title: string,
+  table: EachTable,
+  taggedTemplateData: TemplateData,
+): Result => {
+  const keys = getHeadingKeys(table[0] as string);
+  const missingData = taggedTemplateData.length % keys.length;
+
+  if (missingData > 0) {
+    return (
+      'Not enough arguments supplied for given headings:\n' +
+      EXPECTED_COLOR(keys.join(' | ')) +
+      '\n\n' +
+      'Received:\n' +
+      RECEIVED_COLOR(pretty(taggedTemplateData)) +
+      '\n\n' +
+      `Missing ${RECEIVED_COLOR(missingData.toString())} ${pluralize(
+        'argument',
+        missingData,
+      )}`
+    );
+  }
+
+  return convertTemplateTable(title, keys, taggedTemplateData);
+};
 
 const isTaggedTemplateLiteral = (array: any) => array.raw !== undefined;
 const isEmptyTable = (table: Array<any>) => table.length === 0;
