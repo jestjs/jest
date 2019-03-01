@@ -129,24 +129,9 @@ function eq(
 
   var aIsDomNode = isDomNode(a);
   var bIsDomNode = isDomNode(b);
-  if (aIsDomNode && bIsDomNode) {
-    // At first try to use DOM3 method isEqualNode
-    if (a.isEqualNode) {
-      return a.isEqualNode(b);
-    }
-    // IE8 doesn't support isEqualNode, try to use outerHTML && innerText
-    var aIsElement = a instanceof Element;
-    var bIsElement = b instanceof Element;
-    if (aIsElement && bIsElement) {
-      return a.outerHTML == b.outerHTML;
-    }
-    if (aIsElement || bIsElement) {
-      return false;
-    }
-    return a.innerText == b.innerText && a.textContent == b.textContent;
-  }
-  if (aIsDomNode || bIsDomNode) {
-    return false;
+  // Use DOM3 method isEqualNode (IE>=9)
+  if (aIsDomNode && typeof a.isEqualNode === 'function' && bIsDomNode) {
+    return a.isEqualNode(b);
   }
 
   // Used to detect circular references.
@@ -263,12 +248,9 @@ export function isA(typeName: string, value: unknown) {
 }
 
 function isDomNode(obj: any): obj is Node {
-  return (
-    obj !== null &&
-    typeof obj === 'object' &&
-    typeof obj.nodeType === 'number' &&
-    typeof obj.nodeName === 'string'
-  );
+  // In some test environments (e.g. "node") there is no `Node` even though
+  // we might be comparing things that look like DOM nodes.
+  return typeof Node !== 'undefined' && obj instanceof Node;
 }
 
 export function fnNameFor(func: Function) {
