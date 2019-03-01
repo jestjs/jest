@@ -24,6 +24,7 @@ jobs:
     steps:
       - checkout
       - run: rm -rf examples/react-native && yarn --no-progress --frozen-lockfile --ignore-engines
+      - run: yarn clear-cache
       - run:
           # react-native does not work with node 6
           command: yarn test-ci-partial
@@ -104,12 +105,4 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - lint-and-typecheck
       - test-node-6
-      - test-node-8
-      - test-node-10
-      - test-jest-circus
-      - test-node-11 # current
-      - test-browser
-      - test-or-deploy-website:
-          filters: *filter-ignore-gh-pages
