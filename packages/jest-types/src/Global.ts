@@ -23,7 +23,9 @@ export type ArrayTable = Table | Row;
 export type TemplateTable = TemplateStringsArray;
 export type TemplateData = Array<unknown>;
 export type EachTable = ArrayTable | TemplateTable;
-export type EachTestFn = (...args: any[]) => Promise<any> | void | undefined;
+export type EachTestFn = (
+  ...args: Array<any>
+) => Promise<any> | void | undefined;
 
 type Each = (
   table: EachTable,

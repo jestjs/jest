@@ -6,13 +6,7 @@
  *
  */
 
-import {
-  DoneFn,
-  EachTable,
-  TemplateData,
-  EachTestFn,
-  ArrayTable,
-} from '@jest/types/build/Global';
+import {Global} from '@jest/types/';
 import {ErrorWithStack} from 'jest-util';
 
 import convertArrayTable from './table/array';
@@ -24,14 +18,18 @@ export type EachTests = Array<{
   arguments: Array<unknown>;
 }>;
 
-type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
+type TestFn = (done?: Global.DoneFn) => Promise<any> | void | undefined;
 type GlobalCallback = (testName: string, fn: TestFn, timeout?: number) => void;
 
 export default (cb: GlobalCallback, supportsDone: boolean = true) => (
-  table: EachTable,
-  ...taggedTemplateData: TemplateData
+  table: Global.EachTable,
+  ...taggedTemplateData: Global.TemplateData
 ) =>
-  function eachBind(title: string, test: EachTestFn, timeout?: number): void {
+  function eachBind(
+    title: string,
+    test: Global.EachTestFn,
+    timeout?: number,
+  ): void {
     try {
       const tests = isArrayTable(taggedTemplateData)
         ? buildArrayTests(title, table)
@@ -52,17 +50,17 @@ export default (cb: GlobalCallback, supportsDone: boolean = true) => (
     }
   };
 
-const isArrayTable = (data: TemplateData) => data.length === 0;
+const isArrayTable = (data: Global.TemplateData) => data.length === 0;
 
-const buildArrayTests = (title: string, table: EachTable): EachTests => {
+const buildArrayTests = (title: string, table: Global.EachTable): EachTests => {
   validateArrayTable(table);
-  return convertArrayTable(title, table as ArrayTable);
+  return convertArrayTable(title, table as Global.ArrayTable);
 };
 
 const buildTemplateTests = (
   title: string,
-  table: EachTable,
-  taggedTemplateData: TemplateData,
+  table: Global.EachTable,
+  taggedTemplateData: Global.TemplateData,
 ): EachTests => {
   const headings = getHeadingKeys(table[0] as string);
   validateTemplateTableHeadings(headings, taggedTemplateData);
@@ -75,8 +73,8 @@ const getHeadingKeys = (headings: string): Array<string> =>
 const applyArguments = (
   supportsDone: boolean,
   params: Array<unknown>,
-  test: EachTestFn,
-): EachTestFn =>
+  test: Global.EachTestFn,
+): Global.EachTestFn =>
   supportsDone && params.length < test.length
-    ? (done: DoneFn) => test(...params, done)
+    ? (done: Global.DoneFn) => test(...params, done)
     : () => test(...params);

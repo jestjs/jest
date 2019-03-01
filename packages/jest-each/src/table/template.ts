@@ -1,13 +1,17 @@
 import pretty from 'pretty-format';
 import {isPrimitive} from 'jest-get-type';
-import {Row, Table} from '@jest/types/build/Global';
+import {Global} from '@jest/types';
 import {EachTests} from '../bind';
 
 type Template = {[key: string]: unknown};
 type Templates = Array<Template>;
 type Headings = Array<string>;
 
-export default (title: string, headings: Headings, row: Row): EachTests => {
+export default (
+  title: string,
+  headings: Headings,
+  row: Global.Row,
+): EachTests => {
   const table = convertRowToTable(row, headings);
   const templates = convertTableToTemplates(table, headings);
   return templates.map(template => ({
@@ -16,7 +20,7 @@ export default (title: string, headings: Headings, row: Row): EachTests => {
   }));
 };
 
-const convertRowToTable = (row: Row, headings: Headings): Table =>
+const convertRowToTable = (row: Global.Row, headings: Headings): Global.Table =>
   Array.from({length: row.length / headings.length}).map((_, index) =>
     row.slice(
       index * headings.length,
@@ -24,7 +28,10 @@ const convertRowToTable = (row: Row, headings: Headings): Table =>
     ),
   );
 
-const convertTableToTemplates = (table: Table, headings: Headings): Templates =>
+const convertTableToTemplates = (
+  table: Global.Table,
+  headings: Headings,
+): Templates =>
   table.map(row =>
     row.reduce<Template>(
       (acc, value, index) => Object.assign(acc, {[headings[index]]: value}),

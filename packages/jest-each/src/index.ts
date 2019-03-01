@@ -6,18 +6,22 @@
  *
  */
 
-import {TestFn, EachTable, TemplateData} from '@jest/types/build/Global';
+import {Global} from '@jest/types';
 import bind from './bind';
 
 type Global = NodeJS.Global;
 
-const install = (g: Global, table: EachTable, ...data: TemplateData) => {
-  const test = (title: string, test: TestFn, timeout?: number) =>
+const install = (
+  g: Global,
+  table: Global.EachTable,
+  ...data: Global.TemplateData
+) => {
+  const test = (title: string, test: Global.TestFn, timeout?: number) =>
     bind(g.test)(table, ...data)(title, test, timeout);
   test.skip = bind(g.test.skip)(table, ...data);
   test.only = bind(g.test.only)(table, ...data);
 
-  const it = (title: string, test: TestFn, timeout?: number) =>
+  const it = (title: string, test: Global.TestFn, timeout?: number) =>
     bind(g.it)(table, ...data)(title, test, timeout);
   it.skip = bind(g.it.skip)(table, ...data);
   it.only = bind(g.it.only)(table, ...data);
@@ -26,7 +30,7 @@ const install = (g: Global, table: EachTable, ...data: TemplateData) => {
   const fit = bind(g.fit)(table, ...data);
   const xtest = bind(g.xtest)(table, ...data);
 
-  const describe = (title: string, suite: TestFn, timeout?: number) =>
+  const describe = (title: string, suite: Global.TestFn, timeout?: number) =>
     bind(g.describe, false)(table, ...data)(title, suite, timeout);
   describe.skip = bind(g.describe.skip, false)(table, ...data);
   describe.only = bind(g.describe.only, false)(table, ...data);
@@ -36,11 +40,13 @@ const install = (g: Global, table: EachTable, ...data: TemplateData) => {
   return {describe, fdescribe, fit, it, test, xdescribe, xit, xtest};
 };
 
-const each = (table: EachTable, ...data: TemplateData) =>
+const each = (table: Global.EachTable, ...data: Global.TemplateData) =>
   install(global, table, ...data);
 
-each.withGlobal = (g: Global) => (table: EachTable, ...data: TemplateData) =>
-  install(g, table, ...data);
+each.withGlobal = (g: Global) => (
+  table: Global.EachTable,
+  ...data: Global.TemplateData
+) => install(g, table, ...data);
 
 export {bind};
 
