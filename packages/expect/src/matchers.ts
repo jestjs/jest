@@ -375,9 +375,10 @@ const matchers: MatchersObject = {
     received: ContainIterable | string,
     expected: unknown,
   ) {
+    const isNot = this.isNot;
     const options: MatcherHintOptions = {
       comment: 'indexOf',
-      isNot: this.isNot,
+      isNot,
       promise: this.promise,
     };
 
@@ -391,48 +392,65 @@ const matchers: MatchersObject = {
       );
     }
 
-    const isArray = Array.isArray(received); // has indexOf
-    const isString = typeof received === 'string'; // has indexOf
-    const converted: any =
-      isArray || isString ? received : Array.from(received);
+    if (typeof received === 'string') {
+      const index = received.indexOf(String(expected));
+      const pass = index !== -1;
 
-    // At this point, we're either a string or an Array,
-    // which was converted from an array-like structure.
-    const index = converted.indexOf(expected);
+      const message = () => {
+        const labelExpected = `Expected ${
+          typeof expected === 'string' ? 'substring' : 'value'
+        }`;
+        const labelReceived = 'Received string';
+        const printLabel = getLabelPrinter(labelExpected, labelReceived);
+
+        return (
+          matcherHint('toContain', undefined, undefined, options) +
+          '\n\n' +
+          `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
+            expected,
+          )}\n` +
+          `${printLabel(labelReceived)}${isNot ? '    ' : ''}${
+            isNot
+              ? printReceivedStringContainExpectedSubstring(
+                  received,
+                  index,
+                  String(expected).length,
+                )
+              : printReceived(received)
+          }`
+        );
+      };
+
+      return {message, pass};
+    }
+
+    const indexable = Array.isArray(received) ? received : Array.from(received);
+    const index = indexable.indexOf(expected);
     const pass = index !== -1;
 
     const message = () => {
-      const labelExpected = `Expected ${
-        isString && typeof expected === 'string' ? 'substring' : 'value'
-      }`;
+      const labelExpected = 'Expected value';
       const labelReceived = `Received ${getType(received)}`;
       const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
-      return pass
-        ? matcherHint('toContain', undefined, undefined, options) +
-            '\n\n' +
-            `${printLabel(labelExpected)}not ${printExpected(expected)}\n` +
-            `${printLabel(labelReceived)}    ${
-              Array.isArray(received)
-                ? printReceivedArrayContainExpectedItem(received, index)
-                : typeof received === 'string'
-                ? printReceivedStringContainExpectedSubstring(
-                    received,
-                    index,
-                    String(expected).length,
-                  )
-                : printReceived(received)
-            }`
-        : matcherHint('toContain', undefined, undefined, options) +
-            '\n\n' +
-            `${printLabel(labelExpected)}${printExpected(expected)}\n` +
-            `${printLabel(labelReceived)}${printReceived(received)}` +
-            (converted instanceof Array &&
-            converted.findIndex(item =>
-              equals(item, expected, [iterableEquality]),
-            ) !== -1
-              ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
-              : '');
+      return (
+        matcherHint('toContain', undefined, undefined, options) +
+        '\n\n' +
+        `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
+          expected,
+        )}\n` +
+        `${printLabel(labelReceived)}${isNot ? '    ' : ''}${
+          isNot && Array.isArray(received)
+            ? printReceivedArrayContainExpectedItem(received, index)
+            : printReceived(received)
+        }` +
+        (!isNot &&
+        indexable.findIndex(item =>
+          equals(item, expected, [iterableEquality]),
+        ) !== -1
+          ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
+          : '')
+      );
     };
 
     return {message, pass};
@@ -443,9 +461,10 @@ const matchers: MatchersObject = {
     received: ContainIterable,
     expected: unknown,
   ) {
+    const isNot = this.isNot;
     const options: MatcherHintOptions = {
       comment: 'deep equality',
-      isNot: this.isNot,
+      isNot,
       promise: this.promise,
     };
 
@@ -459,9 +478,8 @@ const matchers: MatchersObject = {
       );
     }
 
-    const converted = Array.isArray(received) ? received : Array.from(received);
-
-    const index = converted.findIndex(item =>
+    const indexable = Array.isArray(received) ? received : Array.from(received);
+    const index = indexable.findIndex(item =>
       equals(item, expected, [iterableEquality]),
     );
     const pass = index !== -1;
@@ -471,19 +489,18 @@ const matchers: MatchersObject = {
       const labelReceived = `Received ${getType(received)}`;
       const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
-      return pass
-        ? matcherHint('toContainEqual', undefined, undefined, options) +
-            '\n\n' +
-            `${printLabel(labelExpected)}not ${printExpected(expected)}\n` +
-            `${printLabel(labelReceived)}    ${
-              Array.isArray(received)
-                ? printReceivedArrayContainExpectedItem(received, index)
-                : printReceived(received)
-            }`
-        : matcherHint('toContainEqual', undefined, undefined, options) +
-            '\n\n' +
-            `${printLabel(labelExpected)}${printExpected(expected)}\n` +
-            `${printLabel(labelReceived)}${printReceived(received)}`;
+      return (
+        matcherHint('toContainEqual', undefined, undefined, options) +
+        '\n\n' +
+        `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
+          expected,
+        )}\n` +
+        `${printLabel(labelReceived)}${isNot ? '    ' : ''}${
+          isNot && Array.isArray(received)
+            ? printReceivedArrayContainExpectedItem(received, index)
+            : printReceived(received)
+        }`
+      );
     };
 
     return {message, pass};
