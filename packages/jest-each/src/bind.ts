@@ -45,7 +45,7 @@ export default (cb: GlobalCallback, supportsDone: boolean = true) => (
         ),
       );
     } catch (e) {
-      const error = new ErrorWithStack(e, eachBind);
+      const error = new ErrorWithStack(e.message, eachBind);
       return cb(title, () => {
         throw error;
       });

@@ -7,23 +7,31 @@ const RECEIVED_COLOR = chalk.red;
 
 export const validateArrayTable = (table: any) => {
   if (!Array.isArray(table)) {
-    throw '`.each` must be called with an Array or Tagged Template Literal.\n\n' +
-      `Instead was called with: ${pretty(table, {
-        maxDepth: 1,
-        min: true,
-      })}\n`;
+    throw new Error(
+      '`.each` must be called with an Array or Tagged Template Literal.\n\n' +
+        `Instead was called with: ${pretty(table, {
+          maxDepth: 1,
+          min: true,
+        })}\n`,
+    );
   }
 
   if (isTaggedTemplateLiteral(table)) {
     if (isEmptyString(table[0])) {
-      throw 'Error: `.each` called with an empty Tagged Template Literal of table data.\n';
+      throw new Error(
+        'Error: `.each` called with an empty Tagged Template Literal of table data.\n',
+      );
     }
 
-    throw 'Error: `.each` called with a Tagged Template Literal with no data, remember to interpolate with ${expression} syntax.\n';
+    throw new Error(
+      'Error: `.each` called with a Tagged Template Literal with no data, remember to interpolate with ${expression} syntax.\n',
+    );
   }
 
   if (isEmptyTable(table)) {
-    throw 'Error: `.each` called with an empty Array of table data.\n';
+    throw new Error(
+      'Error: `.each` called with an empty Array of table data.\n',
+    );
   }
 };
 
@@ -39,16 +47,18 @@ export const validateTemplateTableHeadings = (
   const missingData = data.length % headings.length;
 
   if (missingData > 0) {
-    throw 'Not enough arguments supplied for given headings:\n' +
-      EXPECTED_COLOR(headings.join(' | ')) +
-      '\n\n' +
-      'Received:\n' +
-      RECEIVED_COLOR(pretty(data)) +
-      '\n\n' +
-      `Missing ${RECEIVED_COLOR(missingData.toString())} ${pluralize(
-        'argument',
-        missingData,
-      )}`;
+    throw new Error(
+      'Not enough arguments supplied for given headings:\n' +
+        EXPECTED_COLOR(headings.join(' | ')) +
+        '\n\n' +
+        'Received:\n' +
+        RECEIVED_COLOR(pretty(data)) +
+        '\n\n' +
+        `Missing ${RECEIVED_COLOR(missingData.toString())} ${pluralize(
+          'argument',
+          missingData,
+        )}`,
+    );
   }
 };
 
