@@ -29,6 +29,7 @@
 - `[expect]` Fix non-object received value in toHaveProperty ([#7986](https://github.com/facebook/jest/pull/7986))
 - `[jest-jasmine2]`: Throw explicit error when errors happen after test is considered complete ([#8005](https://github.com/facebook/jest/pull/8005))
 - `[jest-circus]`: Throw explicit error when errors happen after test is considered complete ([#8005](https://github.com/facebook/jest/pull/8005))
+- `[expect]` Remove duck typing and obsolete browser support code when comparing DOM nodes and use DOM-Level-3 API instead ([#7995](https://github.com/facebook/jest/pull/7995))
 
 ### Chore & Maintenance
 
