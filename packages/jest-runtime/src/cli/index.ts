@@ -13,7 +13,6 @@ import yargs from 'yargs';
 import {Config} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
 import {Console, setGlobal} from 'jest-util';
-// @ts-ignore: Not migrated to TS
 import {validateCLIOptions} from 'jest-validate';
 import {readConfig, deprecationEntries} from 'jest-config';
 import {VERSION} from '../version';
@@ -29,12 +28,13 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   if (cliArgv) {
     argv = cliArgv;
   } else {
-    argv = yargs
+    argv = <Config.Argv>yargs
       .usage(args.usage)
       .help(false)
       .version(false)
       .options(args.options).argv;
 
+    // @ts-ignore: fix this at some point
     validateCLIOptions(argv, {...args.options, deprecationEntries});
   }
 

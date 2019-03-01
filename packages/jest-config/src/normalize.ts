@@ -9,7 +9,6 @@ import crypto from 'crypto';
 import path from 'path';
 import glob from 'glob';
 import {Config} from '@jest/types';
-// @ts-ignore: Not migrated to TS
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
@@ -174,7 +173,7 @@ const normalizeCollectCoverageOnlyFrom = (
   key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
 ) => {
   const initialCollectCoverageFrom = options[key];
-  const collectCoverageOnlyFrom: Config.Glob[] = Array.isArray(
+  const collectCoverageOnlyFrom: Array<Config.Glob> = Array.isArray(
     initialCollectCoverageFrom,
   )
     ? initialCollectCoverageFrom // passed from argv
@@ -195,7 +194,7 @@ const normalizeCollectCoverageFrom = (
   key: keyof Pick<Config.InitialOptions, 'collectCoverageFrom'>,
 ) => {
   const initialCollectCoverageFrom = options[key];
-  let value: Config.Glob[] | undefined;
+  let value: Array<Config.Glob> | undefined;
   if (!initialCollectCoverageFrom) {
     value = [];
   }

@@ -3,13 +3,10 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {ValidationOptions} from './types';
-
 import chalk from 'chalk';
+import {ValidationOptions} from './types';
 import {
   format,
   logValidationWarning,
@@ -18,8 +15,8 @@ import {
 } from './utils';
 
 export const unknownOptionWarning = (
-  config: Object,
-  exampleConfig: Object,
+  config: {[s: string]: any},
+  exampleConfig: {[key: string]: any},
   option: string,
   options: ValidationOptions,
   path?: Array<string>,

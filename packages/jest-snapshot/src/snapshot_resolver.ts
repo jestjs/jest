@@ -68,7 +68,7 @@ function createCustomSnapshotResolver(
 ): SnapshotResolver {
   const custom: SnapshotResolver = require(snapshotResolverPath);
 
-  const keys: [keyof SnapshotResolver, string][] = [
+  const keys: Array<[keyof SnapshotResolver, string]> = [
     ['resolveSnapshotPath', 'function'],
     ['resolveTestPath', 'function'],
     ['testPathForConsistencyCheck', 'string'],

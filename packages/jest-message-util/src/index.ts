@@ -26,7 +26,7 @@ const stackUtils = new StackUtils({
   cwd: 'something which does not exist',
 });
 
-let nodeInternals: RegExp[] = [];
+let nodeInternals: Array<RegExp> = [];
 
 try {
   nodeInternals = StackUtils.nodeInternals();
@@ -151,9 +151,9 @@ export const formatExecError = (
 };
 
 const removeInternalStackEntries = (
-  lines: string[],
+  lines: Array<string>,
   options: StackTraceOptions,
-): string[] => {
+): Array<string> => {
   let pathCounter = 0;
 
   return lines.filter(line => {
@@ -230,7 +230,7 @@ export const getStackTraceLines = (
   options: StackTraceOptions = {noStackTrace: false},
 ) => removeInternalStackEntries(stack.split(/\n/), options);
 
-export const getTopFrame = (lines: string[]): Frame | null => {
+export const getTopFrame = (lines: Array<string>): Frame | null => {
   for (const line of lines) {
     if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
       continue;

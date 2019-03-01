@@ -4,7 +4,6 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  // TODO: Missing `jest-validate`
   "references": [
     {"path": "../jest-config"},
     {"path": "../jest-environment"},
@@ -15,8 +14,9 @@
     {"path": "../jest-regex-util"},
     {"path": "../jest-resolve"},
     {"path": "../jest-snapshot"},
-    {"path": "../jest-util"},
     {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../jest-validate"},
     {"path": "../pretty-format"}
   ]
 }
