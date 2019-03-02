@@ -76,6 +76,12 @@ export interface WatchPlugin {
     updateConfigAndRun: UpdateConfigCallback,
   ) => Promise<void | boolean>;
 }
+export interface WatchPluginClass {
+  new (options: {
+    stdin: NodeJS.ReadStream;
+    stdout: NodeJS.WriteStream;
+  }): WatchPlugin;
+}
 
 export type ScrollOptions = {
   offset: number;

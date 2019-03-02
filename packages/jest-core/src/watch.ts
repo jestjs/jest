@@ -14,7 +14,13 @@ import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {Context} from 'jest-runtime';
 import {Config} from '@jest/types';
-import {AllowedConfigOptions, KEYS, JestHook, WatchPlugin} from 'jest-watcher';
+import {
+  AllowedConfigOptions,
+  KEYS,
+  JestHook,
+  WatchPlugin,
+  WatchPluginClass,
+} from 'jest-watcher';
 import getChangedFilesPromise from './getChangedFilesPromise';
 import isValidPath from './lib/is_valid_path';
 import createContext from './lib/create_context';
@@ -56,8 +62,7 @@ const INTERNAL_PLUGINS = [
 ];
 
 const RESERVED_KEY_PLUGINS = new Map<
-  // TODO: Should be WatchPlugin
-  Function,
+  WatchPluginClass,
   Pick<ReservedInfo, 'forbiddenOverwriteMessage' | 'key'>
 >([
   [
@@ -149,7 +154,8 @@ export default function watch(
     const watchPluginKeys: WatchPluginKeysMap = new Map();
     for (const plugin of watchPlugins) {
       const reservedInfo =
-        RESERVED_KEY_PLUGINS.get(plugin.constructor) || ({} as ReservedInfo);
+        RESERVED_KEY_PLUGINS.get(plugin.constructor as WatchPluginClass) ||
+        ({} as ReservedInfo);
       const key = reservedInfo.key || getPluginKey(plugin, globalConfig);
       if (!key) {
         continue;

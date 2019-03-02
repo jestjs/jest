@@ -17,6 +17,7 @@ export {
   UpdateConfigCallback,
   UsageData,
   WatchPlugin,
+  WatchPluginClass,
 } from './types';
 export {default as Prompt} from './lib/Prompt';
 export * from './lib/patternModeHelpers';
