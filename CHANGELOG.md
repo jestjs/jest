@@ -50,7 +50,7 @@
 - `[jest-serializer]`: Migrate to TypeScript ([#7841](https://github.com/facebook/jest/pull/7841))
 - `[jest-message-util]`: Migrate to TypeScript ([#7834](https://github.com/facebook/jest/pull/7834))
 - `[@jest/types]`: New package to handle shared types ([#7834](https://github.com/facebook/jest/pull/7834))
-- `[jest-util]`: Migrate to TypeScript ([#7844](https://github.com/facebook/jest/pull/7844))
+- `[jest-util]`: Migrate to TypeScript ([#7844](https://github.com/facebook/jest/pull/7844), [#8021](https://github.com/facebook/jest/pull/8021))
 - `[jest-watcher]`: Migrate to TypeScript ([#7843](https://github.com/facebook/jest/pull/7843))
 - `[jest-mock]`: Migrate to TypeScript ([#7847](https://github.com/facebook/jest/pull/7847), [#7850](https://github.com/facebook/jest/pull/7850), [#7971](https://github.com/facebook/jest/pull/7971))
 - `[jest-worker]`: Migrate to TypeScript ([#7853](https://github.com/facebook/jest/pull/7853))
