@@ -3,6 +3,7 @@
   "description": "Delightful JavaScript Testing.",
   "version": "24.1.0",
   "main": "build/jest.js",
+  "types": "build/jest.d.ts",
   "dependencies": {
     "@jest/types": "^24.1.0",
     "@jest/reporters": "^24.1.0",
