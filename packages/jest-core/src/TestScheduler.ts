@@ -35,7 +35,7 @@ import {Reporter} from './types';
 TestRunner;
 
 export type TestSchedulerOptions = {
-  startRun: (globalConfig: Config.GlobalConfig) => unknown;
+  startRun: (globalConfig: Config.GlobalConfig) => void;
 };
 export type TestSchedulerContext = {
   firstRun: boolean;

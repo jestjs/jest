@@ -131,9 +131,9 @@ export default (async function runJest({
   outputStream: NodeJS.WritableStream;
   testWatcher: TestWatcher;
   jestHooks?: JestHookEmitter;
-  startRun: (globalConfig: Config.GlobalConfig) => unknown;
+  startRun: (globalConfig: Config.GlobalConfig) => void;
   changedFilesPromise?: ChangedFilesPromise;
-  onComplete: (testResults: TestResult.AggregatedResult) => any;
+  onComplete: (testResults: TestResult.AggregatedResult) => void;
   failedTestsCache?: FailedTestsCache;
 }) {
   const sequencer = new TestSequencer();
