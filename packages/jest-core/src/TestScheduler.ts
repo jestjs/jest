@@ -333,7 +333,7 @@ export default class TestScheduler {
    */
   private _getReporterProps(
     reporter: string | Config.ReporterConfig,
-  ): {path: string; options?: Object} {
+  ): {path: string; options: {[key: string]: unknown}} {
     if (typeof reporter === 'string') {
       return {options: this._options, path: reporter};
     } else if (Array.isArray(reporter)) {
