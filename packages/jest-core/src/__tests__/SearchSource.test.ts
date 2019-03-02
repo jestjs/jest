@@ -402,7 +402,7 @@ describe('SearchSource', () => {
     });
 
     it('makes sure a file is related to itself', () => {
-      const data = searchSource.findRelatedTests(new Set([rootPath]));
+      const data = searchSource.findRelatedTests(new Set([rootPath]), false);
       expect(toPaths(data.tests)).toEqual([rootPath]);
     });
 
@@ -411,7 +411,7 @@ describe('SearchSource', () => {
       const file2Path = path.join(rootDir, 'RequireRegularModule.js');
       const loggingDep = path.join(rootDir, 'logging.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
-      const data = searchSource.findRelatedTests(new Set([filePath]));
+      const data = searchSource.findRelatedTests(new Set([filePath]), false);
       expect(toPaths(data.tests).sort()).toEqual([
         parentDep,
         filePath,
@@ -457,25 +457,25 @@ describe('SearchSource', () => {
 
     it('returns empty search result for empty input', () => {
       const input: Array<Config.Path> = [];
-      const data = searchSource.findRelatedTestsFromPattern(input);
+      const data = searchSource.findRelatedTestsFromPattern(input, false);
       expect(data.tests).toEqual([]);
     });
 
     it('returns empty search result for invalid input', () => {
       const input = ['non-existend.js'];
-      const data = searchSource.findRelatedTestsFromPattern(input);
+      const data = searchSource.findRelatedTestsFromPattern(input, false);
       expect(data.tests).toEqual([]);
     });
 
     it('returns empty search result if no related tests were found', () => {
       const input = ['no_tests.js'];
-      const data = searchSource.findRelatedTestsFromPattern(input);
+      const data = searchSource.findRelatedTestsFromPattern(input, false);
       expect(data.tests).toEqual([]);
     });
 
     it('finds tests for a single file', () => {
       const input = ['packages/jest-core/src/__tests__/test_root/module.jsx'];
-      const data = searchSource.findRelatedTestsFromPattern(input);
+      const data = searchSource.findRelatedTestsFromPattern(input, false);
       expect(toPaths(data.tests).sort()).toEqual([
         path.join(rootDir, '__testtests__', 'test.js'),
         path.join(rootDir, '__testtests__', 'test.jsx'),
@@ -487,7 +487,7 @@ describe('SearchSource', () => {
         'packages/jest-core/src/__tests__/test_root/module.jsx',
         'packages/jest-core/src/__tests__/test_root/module.foobar',
       ];
-      const data = searchSource.findRelatedTestsFromPattern(input);
+      const data = searchSource.findRelatedTestsFromPattern(input, false);
       expect(toPaths(data.tests).sort()).toEqual([
         path.join(rootDir, '__testtests__', 'test.foobar'),
         path.join(rootDir, '__testtests__', 'test.js'),

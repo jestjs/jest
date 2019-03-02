@@ -161,7 +161,7 @@ export default class SearchSource {
 
   findRelatedTests(
     allPaths: Set<Config.Path>,
-    collectCoverage?: boolean,
+    collectCoverage: boolean,
   ): SearchResult {
     const dependencyResolver = new DependencyResolver(
       this._context.resolver,
@@ -233,7 +233,7 @@ export default class SearchSource {
 
   findRelatedTestsFromPattern(
     paths: Array<Config.Path>,
-    collectCoverage?: boolean,
+    collectCoverage: boolean,
   ): SearchResult {
     if (Array.isArray(paths) && paths.length) {
       const resolvedPaths = paths.map(p =>
@@ -246,7 +246,7 @@ export default class SearchSource {
 
   findTestRelatedToChangedFiles(
     changedFilesInfo: ChangedFiles,
-    collectCoverage?: boolean,
+    collectCoverage: boolean,
   ) {
     const {repos, changedFiles} = changedFilesInfo;
     // no SCM (git/hg/...) is found in any of the roots.
