@@ -424,7 +424,7 @@ const matchers: MatchersObject = {
       return {message, pass};
     }
 
-    const indexable = Array.isArray(received) ? received : Array.from(received);
+    const indexable = Array.from(received);
     const index = indexable.indexOf(expected);
     const pass = index !== -1;
 
@@ -478,8 +478,7 @@ const matchers: MatchersObject = {
       );
     }
 
-    const indexable = Array.isArray(received) ? received : Array.from(received);
-    const index = indexable.findIndex(item =>
+    const index = Array.from(received).findIndex(item =>
       equals(item, expected, [iterableEquality]),
     );
     const pass = index !== -1;
