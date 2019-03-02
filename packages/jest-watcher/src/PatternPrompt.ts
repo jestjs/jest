@@ -9,6 +9,7 @@ import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import {specialChars} from 'jest-util';
 import Prompt from './lib/Prompt';
+import {ScrollOptions} from './types';
 
 const {CLEAR} = specialChars;
 
@@ -35,7 +36,11 @@ export default class PatternPrompt {
     this._currentUsageRows = usageRows;
   }
 
-  run(onSuccess: () => void, onCancel: () => void, options?: {header: string}) {
+  run(
+    onSuccess: (value: string) => void,
+    onCancel: () => void,
+    options?: {header: string},
+  ) {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(CLEAR);
 
@@ -52,7 +57,7 @@ export default class PatternPrompt {
     this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  protected _onChange() {
+  protected _onChange(_pattern: string, _options: ScrollOptions) {
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
   }

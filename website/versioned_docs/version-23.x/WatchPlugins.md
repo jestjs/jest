@@ -165,6 +165,7 @@ For stability and safety reasons, only part of the global configuration keys can
 - [`notify`](configuration.html#notify-boolean)
 - [`notifyMode`](configuration.html#notifymode-string)
 - [`onlyFailures`](configuration.html#onlyfailures-boolean)
+- [`passWithNoTests`](cli.html#passwithnotests)
 - [`reporters`](configuration.html#reporters-array-modulename-modulename-options)
 - [`testNamePattern`](cli.html#testnamepattern-regex)
 - [`testPathPattern`](cli.html#testpathpattern-regex)

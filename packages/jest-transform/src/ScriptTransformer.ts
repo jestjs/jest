@@ -223,7 +223,7 @@ export default class ScriptTransformer {
     // Ignore cache if `config.cache` is set (--no-cache)
     let code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
-    const shouldCallTransform = transform && this._shouldTransform(filename);
+    const shouldCallTransform = transform && this.shouldTransform(filename);
 
     // That means that the transform has a custom instrumentation
     // logic and will handle it based on `config.collectCoverage` option
@@ -322,7 +322,7 @@ export default class ScriptTransformer {
     const willTransform =
       !isInternalModule &&
       !isCoreModule &&
-      (this._shouldTransform(filename) || instrument);
+      (this.shouldTransform(filename) || instrument);
 
     try {
       const extraGlobals = (options && options.extraGlobals) || [];
@@ -399,7 +399,15 @@ export default class ScriptTransformer {
     return result;
   }
 
+  /**
+   * @deprecated use `this.shouldTransform` instead
+   */
+  // @ts-ignore: Unused and private - remove in Jest 25
   private _shouldTransform(filename: Config.Path): boolean {
+    return this.shouldTransform(filename);
+  }
+
+  shouldTransform(filename: Config.Path): boolean {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
