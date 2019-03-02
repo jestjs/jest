@@ -10,4 +10,4 @@ import {Config} from '@jest/types';
 export type ProjectPackageJson = {
   jest?: Partial<Config.GlobalConfig>;
   scripts?: {[key: string]: string};
-}
+};

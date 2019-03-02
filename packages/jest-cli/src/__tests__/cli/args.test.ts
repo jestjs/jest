@@ -6,55 +6,56 @@
  *
  */
 
-'use strict';
-
-import type {Argv} from 'types/Argv';
+import {Config} from '@jest/types';
 import {check} from '../../cli/args';
 import {buildArgv} from '../../cli';
 
 describe('check', () => {
   it('returns true if the arguments are valid', () => {
-    const argv: Argv = {};
+    const argv = {} as Config.Argv;
     expect(check(argv)).toBe(true);
   });
 
   it('raises an exception if runInBand and maxWorkers are both specified', () => {
-    const argv: Argv = {maxWorkers: 2, runInBand: true};
+    const argv = {maxWorkers: 2, runInBand: true} as Config.Argv;
     expect(() => check(argv)).toThrow(
       'Both --runInBand and --maxWorkers were specified',
     );
   });
 
   it('raises an exception if onlyChanged and watchAll are both specified', () => {
-    const argv: Argv = {onlyChanged: true, watchAll: true};
+    const argv = {onlyChanged: true, watchAll: true} as Config.Argv;
     expect(() => check(argv)).toThrow(
       'Both --onlyChanged and --watchAll were specified',
     );
   });
 
   it('raises an exception when lastCommit and watchAll are both specified', () => {
-    const argv: Argv = {lastCommit: true, watchAll: true};
+    const argv = {lastCommit: true, watchAll: true} as Config.Argv;
     expect(() => check(argv)).toThrow(
       'Both --lastCommit and --watchAll were specified',
     );
   });
 
   it('raises an exception if findRelatedTests is specified with no file paths', () => {
-    const argv: Argv = {_: [], findRelatedTests: true};
+    const argv = {
+      _: [] as Array<string>,
+      findRelatedTests: true,
+    } as Config.Argv;
     expect(() => check(argv)).toThrow(
       'The --findRelatedTests option requires file paths to be specified',
     );
   });
 
   it('raises an exception if maxWorkers is specified with no number', () => {
-    const argv: Argv = {maxWorkers: undefined};
+    const argv = {maxWorkers: undefined} as unknown as Config.Argv;
     expect(() => check(argv)).toThrow(
       'The --maxWorkers (-w) option requires a number to be specified',
     );
   });
 
   it('raises an exception if config is not a valid JSON string', () => {
-    const argv: Argv = {config: 'x:1'};
+    const argv = {config: 'x:1'} as Config.Argv;
     expect(() => check(argv)).toThrow(
       'The --config option requires a JSON string literal, or a file path with a .js or .json extension',
     );
@@ -63,9 +64,11 @@ describe('check', () => {
 
 describe('buildArgv', () => {
   it('should return only camelcased args ', () => {
+    // @ts-ignore
     const mockProcessArgv = jest
       .spyOn(process.argv, 'slice')
       .mockImplementation(() => ['--clear-mocks']);
+    // @ts-ignore
     const actual = buildArgv(null);
     expect(actual).not.toHaveProperty('clear-mocks');
     expect(actual).toHaveProperty('clearMocks', true);
