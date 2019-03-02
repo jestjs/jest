@@ -194,7 +194,7 @@ const runWithoutWatch = async (
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,
 ) => {
-  const startRun: () => Promise<void | null> = async () => {
+  const startRun = async (): Promise<void | null> => {
     if (!globalConfig.listTests) {
       preRunMessagePrint(outputStream);
     }
