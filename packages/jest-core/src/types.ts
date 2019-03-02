@@ -19,10 +19,14 @@ export type TestRunData = Array<{
   };
 }>;
 
-export type Stats = Record<
-  keyof (TestPathCases | TestPathCasesWithPathPattern),
+type TestPathCaseStats = Record<keyof (TestPathCases), number>;
+
+export type TestPathCaseWithPathPatternStats = Record<
+  keyof (TestPathCasesWithPathPattern),
   number
 >;
+
+export type Stats = TestPathCaseStats | TestPathCaseWithPathPatternStats;
 
 export type TestPathCases = {
   roots: (path: Config.Path) => boolean;

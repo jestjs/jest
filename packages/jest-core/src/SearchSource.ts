@@ -16,7 +16,12 @@ import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {replacePathSepForGlob, testPathPatternToRegExp} from 'jest-util';
-import {Stats, TestPathCases, TestPathCasesWithPathPattern} from './types';
+import {
+  Stats,
+  TestPathCases,
+  TestPathCasesWithPathPattern,
+  TestPathCaseWithPathPatternStats,
+} from './types';
 
 export type SearchResult = {
   noSCM?: boolean;
@@ -118,29 +123,21 @@ export default class SearchSource {
       (testCases as TestPathCasesWithPathPattern).testPathPattern = (
         path: Config.Path,
       ) => regex.test(path);
+      (data.stats as TestPathCaseWithPathPatternStats).testPathPattern = 0;
     }
 
     const testCasesKeys = Object.keys(testCases) as Array<keyof Stats>;
     data.tests = allPaths.filter(test =>
       testCasesKeys.reduce((flag, key) => {
+        const {stats} = data;
         if (testCases[key](test.path)) {
-          if (data.stats[key] === undefined) {
-            data.stats[key] = 0;
-          }
-          ++data.stats[key]!;
+          stats[key] = stats[key] === undefined ? 1 : stats[key] + 1;
           return flag && true;
         }
-        data.stats[key] = data.stats[key] || 0;
+        stats[key] = stats[key] || 0;
         return false;
       }, true),
     );
-
-    // TODO: Is this necessary? Done to keep the object the same as before the TS migration
-    testCasesKeys.forEach(key => {
-      if (data.stats[key] === 0) {
-        delete data.stats[key];
-      }
-    });
 
     return data;
   }
