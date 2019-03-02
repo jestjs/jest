@@ -29,8 +29,8 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+import {Spy} from '../types';
 import CallTracker from './CallTracker';
-
 import createSpy from './createSpy';
 import SpyStrategy from './SpyStrategy';
 
@@ -57,7 +57,7 @@ export default class SpyRegistry {
     obj: {[key: string]: any},
     methodName: string,
     accessType?: keyof PropertyDescriptor,
-  ) => unknown;
+  ) => Spy;
   clearSpies: () => void;
   respy: unknown;
 
@@ -65,7 +65,7 @@ export default class SpyRegistry {
     obj: {[key: string]: any},
     propertyName: string,
     accessType: keyof PropertyDescriptor,
-  ) => unknown;
+  ) => Spy;
 
   constructor({
     currentSpies = () => [],

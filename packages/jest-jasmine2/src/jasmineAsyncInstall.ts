@@ -32,7 +32,7 @@ function promisifyLifeCycleFunction(
   env: Jasmine['currentEnv_'],
 ) {
   return function<T>(
-    fn: () => Promise<T> | GeneratorFunction | undefined,
+    fn: Function | (() => Promise<T>) | GeneratorFunction | undefined,
     timeout: number,
   ) {
     if (!fn) {

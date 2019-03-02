@@ -24,6 +24,9 @@ export type EachTestFn = (
   ...args: Array<any>
 ) => Promise<any> | void | undefined;
 
+// TODO: Get rid of this at some point
+type Jasmine = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
+
 type Each = (
   table: EachTable,
   ...taggedTemplateData: Array<unknown>

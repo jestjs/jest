@@ -17,6 +17,8 @@ import createSpy from './jasmine/createSpy';
 import ReportDispatcher from './jasmine/ReportDispatcher';
 import SpyRegistry from './jasmine/spyRegistry';
 import Suite from './jasmine/Suite';
+import SpyStrategy from './jasmine/SpyStrategy';
+import CallTracker from './jasmine/CallTracker';
 
 export interface AssertionErrorWithStack extends AssertionError {
   stack: string;
@@ -43,6 +45,12 @@ export type RawMatcherFn = (
 
 export type Reporter = JsApiReporter | Jasmine2Reporter;
 
+export interface Spy extends Record<string, any> {
+  (...args: Array<any>): unknown;
+  and: SpyStrategy;
+  calls: CallTracker;
+}
+
 export type Jasmine = {
   _DEFAULT_TIMEOUT_INTERVAL: number;
   DEFAULT_TIMEOUT_INTERVAL: number;
@@ -66,6 +74,7 @@ declare module '@jest/types' {
   namespace Global {
     interface Global {
       jasmine: Jasmine;
+      [key: string]: any;
     }
   }
 }

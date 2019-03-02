@@ -30,14 +30,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
+import {Spy} from '../types';
 import CallTracker, {Context} from './CallTracker';
 import SpyStrategy from './SpyStrategy';
-
-interface Spy extends Record<string, any> {
-  (...args: Array<any>): unknown;
-  and: SpyStrategy;
-  calls: CallTracker;
-}
 
 function createSpy(name: string, originalFn: Function): Spy {
   const spyStrategy = new SpyStrategy({

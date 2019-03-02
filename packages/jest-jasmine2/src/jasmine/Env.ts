@@ -39,7 +39,7 @@ import queueRunner, {
 import treeProcessor from '../treeProcessor';
 import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
-import {Jasmine, AssertionErrorWithStack, Reporter} from '../types';
+import {Jasmine, AssertionErrorWithStack, Reporter, Spy} from '../types';
 import Spec, {SpecResult} from './Spec';
 import Suite from './Suite';
 
@@ -67,7 +67,7 @@ export default function(j$: Jasmine) {
       obj: {[key: string]: any},
       methodName: string,
       accessType?: keyof PropertyDescriptor,
-    ) => any;
+    ) => Spy;
     beforeEach: (
       beforeEachFunction: QueueableFn['fn'],
       timeout?: number,
@@ -343,8 +343,8 @@ export default function(j$: Jasmine) {
         spyRegistry.allowRespy(allow);
       };
 
-      this.spyOn = function() {
-        return spyRegistry.spyOn.apply(spyRegistry, arguments);
+      this.spyOn = function(...args) {
+        return spyRegistry.spyOn.apply(spyRegistry, args);
       };
 
       const suiteFactory = function(description: string) {
