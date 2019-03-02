@@ -23,11 +23,9 @@ export default (title: string, arrayTable: Global.ArrayTable): EachTests =>
   }));
 
 const normaliseTable = (table: Global.ArrayTable): Global.Table =>
-  isTable(table)
-    ? (table as Global.Table)
-    : (table as Global.Row).map(colToRow);
+  isTable(table) ? table : table.map(colToRow);
 
-const isTable = (table: Global.ArrayTable): boolean =>
+const isTable = (table: Global.ArrayTable): table is Global.Table =>
   table.every(Array.isArray);
 
 const colToRow = (col: Global.Col): Global.Row => [col];
