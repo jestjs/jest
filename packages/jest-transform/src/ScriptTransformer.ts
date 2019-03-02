@@ -399,6 +399,14 @@ export default class ScriptTransformer {
     return result;
   }
 
+  /**
+   * @deprecated use `this.shouldTransform` instead
+   */
+  // @ts-ignore
+  private _shouldTransform(filename: Config.Path): boolean {
+    return this.shouldTransform(filename);
+  }
+
   shouldTransform(filename: Config.Path): boolean {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;

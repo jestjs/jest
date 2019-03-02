@@ -6,6 +6,7 @@
  *
  */
 
+import {wrap} from 'jest-snapshot-serializer-raw';
 import logDebugMessages from '../log_debug_messages';
 import {makeGlobalConfig, makeProjectConfig} from '../../../../../TestUtils';
 
@@ -16,7 +17,7 @@ jest.mock('myRunner', () => ({name: 'My Runner'}), {virtual: true});
 const getOutputStream = () =>
   ({
     write(message: string) {
-      expect(message).toMatchSnapshot();
+      expect(wrap(message)).toMatchSnapshot();
     },
   } as NodeJS.WriteStream);
 
