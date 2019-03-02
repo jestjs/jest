@@ -70,9 +70,10 @@ const _dispatchDescribe = (
   if (isPromise(describeReturn)) {
     console.warn(
       formatExecError(
-        new Error(
+        new ErrorWithStack(
           'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
             'Returning a value from "describe" will fail the test in a future version of Jest.',
+          describeFn,
         ),
         {rootDir: '', testMatch: []},
         {noStackTrace: false},
@@ -81,9 +82,10 @@ const _dispatchDescribe = (
   } else if (describeReturn !== undefined) {
     console.warn(
       formatExecError(
-        new Error(
+        new ErrorWithStack(
           'A "describe" callback must not return a value.\n' +
             'Returning a value from "describe" will fail the test in a future version of Jest.',
+          describeFn,
         ),
         {rootDir: '', testMatch: []},
         {noStackTrace: false},
