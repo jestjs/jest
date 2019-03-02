@@ -9,9 +9,13 @@ import {replacePathSepForRegex} from 'jest-regex-util';
 import {Config} from '@jest/types';
 import {AllowedConfigOptions} from 'jest-watcher';
 
+type ExtraConfigOptions = Partial<
+  Pick<Config.GlobalConfig, 'noSCM' | 'passWithNoTests'>
+>;
+
 export default (
   globalConfig: Config.GlobalConfig,
-  options: AllowedConfigOptions = {},
+  options: AllowedConfigOptions & ExtraConfigOptions = {},
 ): Config.GlobalConfig => {
   const newConfig: Config.GlobalConfig = {...globalConfig};
 
@@ -68,7 +72,6 @@ export default (
     newConfig.coverageReporters = options.coverageReporters;
   }
 
-  // @ts-ignore: does it make sense to be able to set this?
   if (options.noSCM) {
     newConfig.noSCM = true;
   }

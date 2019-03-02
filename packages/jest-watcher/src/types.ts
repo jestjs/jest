@@ -56,7 +56,6 @@ export type AllowedConfigOptions = Partial<
     | 'notify'
     | 'notifyMode'
     | 'onlyFailures'
-    | 'passWithNoTests'
     | 'reporters'
     | 'testNamePattern'
     | 'testPathPattern'
