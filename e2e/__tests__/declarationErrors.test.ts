@@ -13,7 +13,10 @@ it('warns if describe returns a Promise', () => {
   ]);
 
   expect(result.status).toBe(0);
-  expect(result.stdout).toMatch(/Tests must be defined synchronously/);
+  expect(result.stdout).toContain('Tests must be defined synchronously');
+  expect(result.stdout).toContain(
+    'at Object.describe (__tests__/describeReturnPromise.test.js',
+  );
 });
 
 it('warns if describe returns something', () => {
@@ -22,5 +25,10 @@ it('warns if describe returns something', () => {
   ]);
 
   expect(result.status).toBe(0);
-  expect(result.stdout).toMatch(/"describe" callback must not return a value/);
+  expect(result.stdout).toContain(
+    '"describe" callback must not return a value',
+  );
+  expect(result.stdout).toContain(
+    'at Object.describe (__tests__/describeReturnSomething.test.js',
+  );
 });

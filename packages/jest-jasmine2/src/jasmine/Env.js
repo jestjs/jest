@@ -35,6 +35,7 @@ import queueRunner from '../queueRunner';
 import treeProcessor from '../treeProcessor';
 import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
+import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
 
 export default function(j$) {
@@ -379,13 +380,25 @@ export default function(j$) {
       // TODO throw in Jest 25: declarationError = new Error
       if (isPromise(describeReturnValue)) {
         console.warn(
-          'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-            'Returning a value from "describe" will fail the test in a future version of Jest.',
+          formatExecError(
+            new Error(
+              'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
+                'Returning a value from "describe" will fail the test in a future version of Jest.',
+            ),
+            {rootDir: '', testMatch: []},
+            {noStackTrace: false},
+          ),
         );
       } else if (describeReturnValue !== undefined) {
         console.warn(
-          'A "describe" callback must not return a value.\n' +
-            'Returning a value from "describe" will fail the test in a future version of Jest.',
+          formatExecError(
+            new Error(
+              'A "describe" callback must not return a value.\n' +
+                'Returning a value from "describe" will fail the test in a future version of Jest.',
+            ),
+            {rootDir: '', testMatch: []},
+            {noStackTrace: false},
+          ),
         );
       }
 
