@@ -422,9 +422,16 @@ export default function(j$: Jasmine) {
           declarationError = e;
         }
 
+        // TODO throw in Jest 25: declarationError = new Error
         if (isPromise(describeReturnValue)) {
-          declarationError = new Error(
-            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
+          console.warn(
+            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
+              'Returning a value from "describe" will fail the test in a future version of Jest.',
+          );
+        } else if (describeReturnValue !== undefined) {
+          console.warn(
+            'A "describe" callback must not return a value.\n' +
+              'Returning a value from "describe" will fail the test in a future version of Jest.',
           );
         }
 

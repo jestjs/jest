@@ -64,12 +64,20 @@ const _dispatchDescribe = (
     name: 'start_describe_definition',
   });
   const describeReturn = blockFn();
+
+  // TODO throw in Jest 25
   if (isPromise(describeReturn)) {
-    throw new ErrorWithStack(
-      'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
-      describeFn,
+    console.warn(
+      'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
+        'Returning a value from "describe" will fail the test in a future version of Jest.',
+    );
+  } else if (describeReturn !== undefined) {
+    console.warn(
+      'A "describe" callback must not return a value.\n' +
+        'Returning a value from "describe" will fail the test in a future version of Jest.',
     );
   }
+
   dispatch({blockName, mode, name: 'finish_describe_definition'});
 };
 
