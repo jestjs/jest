@@ -13,6 +13,7 @@
 
 ### Fixes
 
+- `[jest-environment-node]` Add mising globals: TextEncoder and TextDecoder ([#8022](https://github.com/facebook/jest/pull/8022))
 - `[jest-cli]` Fix prototype pollution vulnerability in dependency ([#7904](https://github.com/facebook/jest/pull/7904))
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
 - `[expect]` Fix custom async matcher stack trace ([#7652](https://github.com/facebook/jest/pull/7652))
