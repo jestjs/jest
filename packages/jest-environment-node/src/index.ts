@@ -42,6 +42,15 @@ class NodeEnvironment implements JestEnvironment {
       global.URL = URL;
       global.URLSearchParams = URLSearchParams;
     }
+    // TextDecoder and TextDecoder are global in Node >= 11
+    if (
+      typeof TextEncoder !== 'undefined' &&
+      typeof TextDecoder !== 'undefined'
+    ) {
+      /* global TextEncoder, TextDecoder */
+      global.TextEncoder = TextEncoder;
+      global.TextDecoder = TextDecoder;
+    }
     installCommonGlobals(global, config.globals);
     this.moduleMocker = new ModuleMocker(global);
 

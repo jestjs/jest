@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary} from '../Utils';
+import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 
 test('console printing', () => {
@@ -52,6 +53,18 @@ test('does not print to console with --silent', () => {
 // issue: https://github.com/facebook/jest/issues/5223
 test('the jsdom console is the same as the test console', () => {
   const {stderr, stdout, status} = runJest('console-jsdom');
+  const {summary, rest} = extractSummary(stderr);
+
+  expect(status).toBe(0);
+  expect(wrap(stdout)).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+});
+
+test('does not error out when using winston', () => {
+  const dir = path.resolve(__dirname, '../console-winston');
+  run('yarn', dir);
+  const {stderr, stdout, status} = runJest(dir);
   const {summary, rest} = extractSummary(stderr);
 
   expect(status).toBe(0);

@@ -50,6 +50,33 @@ Time:        <<REPLACED>>
 Ran all test suites.
 `;
 
+exports[`does not error out when using winston 1`] = ``;
+
+exports[`does not error out when using winston 2`] = `
+PASS __tests__/console.test.js
+  ● Console
+
+    console.log node_modules/winston/lib/winston/transports/console.js:79
+      {"level":"info","message":"Log message from winston"}
+      
+    console.log node_modules/winston/lib/winston/transports/console.js:79
+      {"message":"Info message from winston","level":"info"}
+      
+    console.log node_modules/winston/lib/winston/transports/console.js:79
+      {"message":"Warn message from winston","level":"warn"}
+      
+    console.log node_modules/winston/lib/winston/transports/console.js:79
+      {"message":"Error message from winston","level":"error"}
+`;
+
+exports[`does not error out when using winston 3`] = `
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
 exports[`does not print to console with --silent 1`] = ``;
 
 exports[`does not print to console with --silent 2`] = `PASS __tests__/console.test.js`;

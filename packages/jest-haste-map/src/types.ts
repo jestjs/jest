@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import fs from 'fs';
 import {Config} from '@jest/types';
 import ModuleMap from './ModuleMap';
 import HasteFS from './HasteFS';
@@ -102,3 +103,15 @@ export type HType = {
 };
 
 export type HTypeValue = HType[keyof HType];
+
+export type EventsQueue = Array<{
+  filePath: Config.Path;
+  stat: fs.Stats | undefined;
+  type: string;
+}>;
+
+export type ChangeEvent = {
+  eventsQueue: EventsQueue;
+  hasteFS: HasteFS;
+  moduleMap: ModuleMap;
+};
