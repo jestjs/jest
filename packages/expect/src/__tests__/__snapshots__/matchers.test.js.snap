@@ -1996,6 +1996,28 @@ Expected: <green>{\\"a\\": 99}</>
 Received: <red>{\\"a\\": 99}</>"
 `;
 
+exports[`.toEqual() {pass: false} expect({"nodeName": "div", "nodeType": 1}).not.toEqual({"nodeName": "div", "nodeType": 1}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+
+Expected: <green>{\\"nodeName\\": \\"div\\", \\"nodeType\\": 1}</>
+Received: <red>{\\"nodeName\\": \\"div\\", \\"nodeType\\": 1}</>"
+`;
+
+exports[`.toEqual() {pass: false} expect({"nodeName": "div", "nodeType": 1}).toEqual({"nodeName": "p", "nodeType": 1}) 1`] = `
+"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+
+Difference:
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"nodeName\\": \\"p\\",</>
+<red>+   \\"nodeName\\": \\"div\\",</>
+<dim>    \\"nodeType\\": 1,</>
+<dim>  }</>"
+`;
+
 exports[`.toEqual() {pass: false} expect({"target": {"nodeType": 1, "value": "a"}}).toEqual({"target": {"nodeType": 1, "value": "b"}}) 1`] = `
 "<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
 
