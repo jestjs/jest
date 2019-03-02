@@ -80,12 +80,28 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
       const {currentDescribeBlock} = state;
       const {asyncError, fn, hookType: type, timeout} = event;
       const parent = currentDescribeBlock;
+
+      if (state.hasStarted) {
+        asyncError.message =
+          'Cannot add a hook after tests have started running. Hooks must be defined synchronously.';
+        state.unhandledErrors.push(asyncError);
+        break;
+      }
+
       currentDescribeBlock.hooks.push({asyncError, fn, parent, timeout, type});
       break;
     }
     case 'add_test': {
       const {currentDescribeBlock} = state;
       const {asyncError, fn, mode, testName: name, timeout} = event;
+
+      if (state.hasStarted) {
+        asyncError.message =
+          'Cannot add a test after tests have started running. Tests must be defined synchronously.';
+        state.unhandledErrors.push(asyncError);
+        break;
+      }
+
       const test = makeTest(
         fn,
         mode,
@@ -150,6 +166,7 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
       break;
     }
     case 'run_start': {
+      state.hasStarted = true;
       global[TEST_TIMEOUT_SYMBOL] &&
         (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
       break;

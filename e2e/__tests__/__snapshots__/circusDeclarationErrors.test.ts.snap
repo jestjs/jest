@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`defining tests and hooks asynchronously throws 1`] = `
+"FAIL __tests__/asyncDefinition.test.js
+
+
+  ● Test suite failed to run
+
+    Cannot add a test after tests have started running. Tests must be defined synchronously.
+
+      3 | 
+      4 |   Promise.resolve().then(() => {
+    > 5 |     test('async definition inside describe', () => {});
+        |     ^
+      6 |     afterAll(() => {});
+      7 |   });
+      8 | });
+
+      at test (__tests__/asyncDefinition.test.js:5:5)
+
+  ● Test suite failed to run
+
+    Cannot add a hook after tests have started running. Hooks must be defined synchronously.
+
+      4 |   Promise.resolve().then(() => {
+      5 |     test('async definition inside describe', () => {});
+    > 6 |     afterAll(() => {});
+        |     ^
+      7 |   });
+      8 | });
+      9 | 
+
+      at afterAll (__tests__/asyncDefinition.test.js:6:5)
+
+  ● Test suite failed to run
+
+    Cannot add a test after tests have started running. Tests must be defined synchronously.
+
+       9 | 
+      10 | Promise.resolve().then(() => {
+    > 11 |   test('async definition outside describe', () => {});
+         |   ^
+      12 |   afterAll(() => {});
+      13 | });
+      14 | 
+
+      at test (__tests__/asyncDefinition.test.js:11:3)
+
+  ● Test suite failed to run
+
+    Cannot add a hook after tests have started running. Hooks must be defined synchronously.
+
+      10 | Promise.resolve().then(() => {
+      11 |   test('async definition outside describe', () => {});
+    > 12 |   afterAll(() => {});
+         |   ^
+      13 | });
+      14 | 
+
+      at afterAll (__tests__/asyncDefinition.test.js:12:3)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        0.281s, estimated 1s
+Ran all test suites matching /asyncDefinition.test.js/i.
+"
+`;
