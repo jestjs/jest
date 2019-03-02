@@ -6,9 +6,9 @@
  */
 
 import path from 'path';
-import {Environment, Config, TestResult} from '@jest/types';
+import {Config, TestResult} from '@jest/types';
+import {Environment} from '@jest/enviroment';
 import {SnapshotState} from 'jest-snapshot';
-// @ts-ignore TODO Remove ignore when jest-runtime is migrated to TS
 import Runtime from 'jest-runtime';
 
 import {getCallsite} from 'jest-util';
@@ -23,7 +23,7 @@ const JASMINE = require.resolve('./jasmine/jasmineLight.ts');
 async function jasmine2(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  environment: Environment.Environment,
+  environment: Environment,
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult.TestResult> {
@@ -43,7 +43,7 @@ async function jasmine2(
   // in a future version
   if (config.testLocationInResults === true) {
     const originalIt = environment.global.it;
-    environment.global.it = (...args: any[]) => {
+    environment.global.it = (...args: Array<any>) => {
       const stack = getCallsite(1, runtime.getSourceMaps());
       const it = originalIt(...args);
 
@@ -53,7 +53,7 @@ async function jasmine2(
     };
 
     const originalXit = environment.global.xit;
-    environment.global.xit = (...args: any[]) => {
+    environment.global.xit = (...args: Array<any>) => {
       const stack = getCallsite(1, runtime.getSourceMaps());
       const xit = originalXit(...args);
 
@@ -63,7 +63,7 @@ async function jasmine2(
     };
 
     const originalFit = environment.global.fit;
-    environment.global.fit = (...args: any[]) => {
+    environment.global.fit = (...args: Array<any>) => {
       const stack = getCallsite(1, runtime.getSourceMaps());
       const fit = originalFit(...args);
 

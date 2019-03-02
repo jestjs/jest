@@ -12,6 +12,7 @@
     {"path":  "../jest-snapshot"},
     {"path":  "../jest-util"},
     {"path":  "../pretty-format"},
-    {"path":  "../jest-diff"}
+    {"path":  "../jest-diff"},
+    {"path":  "../jest-runtime"}
   ]
 }

@@ -12,7 +12,6 @@ import {AssertionErrorWithStack} from './types';
 // TODO replace with import {DiffOptions} from 'jest-matcher-utils';
 type DiffOptions = Parameters<typeof diff>[2];
 
-
 const assertOperatorsMap: {[key: string]: string} = {
   '!=': 'notEqual',
   '!==': 'notStrictEqual',

@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {PrettyFormat, Config} from '@jest/types';
+import {Config} from '@jest/types';
+import {Plugin} from 'pretty-format';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
   buildSnapshotResolver,
@@ -17,7 +18,7 @@ import JasmineSpec, {Attributes, SpecResult} from './jasmine/Spec';
 export type SetupOptions = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
-  localRequire: (moduleName: string) => PrettyFormat.Plugin;
+  localRequire: (moduleName: string) => Plugin;
   testPath: Config.Path;
 };
 

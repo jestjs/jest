@@ -20,6 +20,7 @@ export type FailedAssertion = {
   message?: string;
   actual?: any;
   pass?: boolean;
+  passed?: boolean;
   expected?: any;
   isNot?: boolean;
   stack?: string;

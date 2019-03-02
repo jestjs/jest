@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 export type Context = {
   object: unknown;
-  args: unknown[];
+  args: Array<unknown>;
   returnValue?: unknown;
 };
 
@@ -39,15 +39,15 @@ class CallTracker {
   track: (context: Context) => void;
   any: () => boolean;
   count: () => number;
-  argsFor: (index: number) => unknown[];
-  all: () => Context[];
-  allArgs: () => unknown[];
+  argsFor: (index: number) => Array<unknown>;
+  all: () => Array<Context>;
+  allArgs: () => Array<unknown>;
   first: () => Context;
   mostRecent: () => Context;
   reset: () => void;
 
   constructor() {
-    let calls: Context[] = [];
+    let calls: Array<Context> = [];
 
     this.track = function(context: Context) {
       calls.push(context);

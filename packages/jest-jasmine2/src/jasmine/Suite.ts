@@ -52,12 +52,12 @@ export default class Suite {
   parentSuite?: Suite;
   description: string;
   throwOnExpectationFailure: boolean;
-  beforeFns: QueueableFn[];
-  afterFns: QueueableFn[];
-  beforeAllFns: QueueableFn[];
-  afterAllFns: QueueableFn[];
+  beforeFns: Array<QueueableFn>;
+  afterFns: Array<QueueableFn>;
+  beforeAllFns: Array<QueueableFn>;
+  afterAllFns: Array<QueueableFn>;
   disabled: boolean;
-  children: Suite[];
+  children: Array<Suite | Suite>;
   result: SuiteResult;
   sharedContext?: object;
   markedPending: boolean = false;
@@ -67,7 +67,7 @@ export default class Suite {
   constructor(attrs: {
     id: string;
     parentSuite?: Suite;
-    description?: string;
+    description: string;
     throwOnExpectationFailure?: boolean;
     getTestPath: () => Config.Path;
   }) {
@@ -124,7 +124,7 @@ export default class Suite {
     this.afterAllFns.unshift(fn);
   }
 
-  addChild(child: Suite) {
+  addChild(child: Suite | Suite) {
     this.children.push(child);
   }
 
@@ -191,7 +191,7 @@ export default class Suite {
     }
   }
 
-  addExpectationResult(...args: ExpectationResultFactoryOptions[]) {
+  addExpectationResult(...args: Array<ExpectationResultFactoryOptions>) {
     if (isAfterAll(this.children) && isFailure(args)) {
       const data = args[1];
       this.result.failedExpectations.push(expectationResultFactory(data));
@@ -210,13 +210,13 @@ export default class Suite {
     }
   }
 
-  execute(..._args: any[]) {}
+  execute(..._args: Array<any>) {}
 }
 
-function isAfterAll(children: Suite[]) {
+function isAfterAll(children: Array<Suite>) {
   return children && children[0] && children[0].result.status;
 }
 
-function isFailure(args: unknown[]) {
+function isFailure(args: Array<unknown>) {
   return !args[0];
 }

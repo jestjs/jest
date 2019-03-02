@@ -49,7 +49,7 @@ export function installErrorOnPrivate(global: Global.Global): void {
   }
 
   const original = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-  // $FlowFixMe Flow seems to be confused about accessors and tries to enfoce having a `value` property.
+
   Object.defineProperty(jasmine, 'DEFAULT_TIMEOUT_INTERVAL', {
     configurable: true,
     enumerable: true,

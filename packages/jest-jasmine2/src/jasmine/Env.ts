@@ -39,11 +39,11 @@ import queueRunner, {
 import treeProcessor from '../treeProcessor';
 import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
-import {$J, AssertionErrorWithStack, Reporter} from "../types";
+import {Jasmine, AssertionErrorWithStack, Reporter} from '../types';
 import Spec, {SpecResult} from './Spec';
 import Suite from './Suite';
 
-export default function(j$: $J) {
+export default function(j$: Jasmine) {
   class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -58,9 +58,16 @@ export default function(j$: $J) {
     randomizeTests: (value: unknown) => void;
     randomTests: () => boolean;
     seed: (value: unknown) => unknown;
-    execute: (runnablesToRun: string[], suiteTree?: Suite) => Promise<void>;
+    execute: (
+      runnablesToRun: Array<string>,
+      suiteTree?: Suite,
+    ) => Promise<void>;
     fdescribe: (description: string, specDefinitions: Function) => Suite;
-    spyOn: () => any;
+    spyOn: (
+      obj: {[key: string]: any},
+      methodName: string,
+      accessType?: keyof PropertyDescriptor,
+    ) => any;
     beforeEach: (
       beforeEachFunction: QueueableFn['fn'],
       timeout?: number,
@@ -70,7 +77,7 @@ export default function(j$: $J) {
     addReporter: (reporterToAdd: Reporter) => void;
     it: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
     xdescribe: (description: string, specDefinitions: Function) => Suite;
-    xit: () => any;
+    xit: (description: string, fn: QueueableFn['fn'], timeout?: number) => any;
     beforeAll: (beforeAllFunction: Function, timeout?: number) => void;
     todo: () => Spec;
     provideFallbackReporter: (reporterToAdd: Reporter) => void;
@@ -86,13 +93,14 @@ export default function(j$: $J) {
       const realClearTimeout = global.clearTimeout;
 
       const runnableResources: {[key: string]: {spies: []}} = {};
-      const currentlyExecutingSuites: Suite[] = [];
+      const currentlyExecutingSuites: Array<Suite> = [];
       let currentSpec: Spec | null = null;
       let throwOnExpectationFailure = false;
       let random = false;
       let seed: unknown | null = null;
       const topSuite = new j$.Suite({
         id: getNextSuiteId(),
+        description: '',
         getTestPath() {
           return j$.testPath;
         },
@@ -146,8 +154,8 @@ export default function(j$: $J) {
 
       const beforeAndAfterFns = function(suite: Suite) {
         return function() {
-          let afters: QueueableFn[] = [];
-          let befores: QueueableFn[] = [];
+          let afters: Array<QueueableFn> = [];
+          let befores: Array<QueueableFn> = [];
 
           while (suite) {
             befores = befores.concat(suite.beforeFns);
@@ -227,8 +235,8 @@ export default function(j$: $J) {
         }
       };
 
-      let oldListenersException: NodeJS.UncaughtExceptionListener[];
-      let oldListenersRejection: NodeJS.UnhandledRejectionListener[];
+      let oldListenersException: Array<NodeJS.UncaughtExceptionListener>;
+      let oldListenersRejection: Array<NodeJS.UnhandledRejectionListener>;
       const executionSetup = function() {
         // Need to ensure we are the only ones handling these exceptions.
         oldListenersException = process.listeners('uncaughtException').slice();
@@ -385,7 +393,7 @@ export default function(j$: $J) {
         return suite;
       };
 
-      const focusedRunnables: string[] = [];
+      const focusedRunnables: Array<string> = [];
 
       this.fdescribe = function(description, specDefinitions) {
         const suite = suiteFactory(description);
@@ -444,10 +452,10 @@ export default function(j$: $J) {
 
       const specFactory = (
         description: string,
-        fn: Function,
+        fn: QueueableFn['fn'],
         suite: Suite,
         timeout?: number,
-      ) => {
+      ): Spec => {
         totalSpecsDefined++;
         const spec = new j$.Spec({
           id: getNextSpecId(),
@@ -534,7 +542,7 @@ export default function(j$: $J) {
         return spec;
       };
 
-      this.xit = function(...args: any[]) {
+      this.xit = function(...args) {
         const spec = this.it.apply(this, args);
         spec.pend('Temporarily disabled with xit');
         return spec;
@@ -629,7 +637,7 @@ export default function(j$: $J) {
           checkIsError = check.isError;
           message = check.message;
         }
-        const errorAsErrorObject = checkIsError ? error : new Error(message);
+        const errorAsErrorObject = checkIsError ? error : new Error(message!);
         const runnable = currentRunnable();
 
         if (!runnable) {
@@ -640,6 +648,7 @@ export default function(j$: $J) {
           throw errorAsErrorObject;
         }
 
+        // @ts-ignore
         runnable.addExpectationResult(false, {
           matcherName: '',
           passed: false,

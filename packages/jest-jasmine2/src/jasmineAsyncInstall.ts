@@ -15,7 +15,7 @@ import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
 import isError from './isError';
-import {$J, Jasmine} from './types';
+import {Jasmine} from './types';
 import Spec from './jasmine/Spec';
 
 interface DoneFn {
@@ -27,9 +27,12 @@ function isPromise(obj: any) {
   return obj && typeof obj.then === 'function';
 }
 
-function promisifyLifeCycleFunction(originalFn: Function, env: $J['Env']) {
-  return function(
-    fn: () => Promise<unknown> | GeneratorFunction | undefined,
+function promisifyLifeCycleFunction(
+  originalFn: Function,
+  env: Jasmine['currentEnv_'],
+) {
+  return function<T>(
+    fn: () => Promise<T> | GeneratorFunction | undefined,
     timeout: number,
   ) {
     if (!fn) {
@@ -79,7 +82,7 @@ function promisifyLifeCycleFunction(originalFn: Function, env: $J['Env']) {
 // when the return value is neither a Promise nor `undefined`
 function promisifyIt(
   originalFn: Function,
-  env: $J['currentEnv_'],
+  env: Jasmine['currentEnv_'],
   jasmine: Jasmine,
 ) {
   return function(specName: string, fn: Function, timeout?: number) {
@@ -139,7 +142,7 @@ function promisifyIt(
 
 function makeConcurrent(
   originalFn: Function,
-  env: $J['currentEnv_'],
+  env: Jasmine['currentEnv_'],
   mutex: ReturnType<typeof throat>,
 ) {
   return function(specName: string, fn: () => Promise<any>, timeout: number) {

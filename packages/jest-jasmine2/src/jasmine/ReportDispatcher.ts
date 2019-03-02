@@ -48,7 +48,7 @@ export default class ReportDispatcher {
       })(method);
     }
 
-    let reporters: Reporter[] = [];
+    let reporters: Array<Reporter> = [];
     let fallbackReporter: Reporter | null = null;
 
     this.addReporter = function(reporter) {

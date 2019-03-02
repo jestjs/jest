@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 export default class SpyStrategy {
   identity: () => string;
-  exec: (...args: any[]) => unknown;
+  exec: (...args: Array<any>) => unknown;
   callThrough: () => unknown;
   returnValue: (value: unknown) => unknown;
   returnValues: () => unknown;

@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Environment} from '@jest/types';
-// @ts-ignore TODO Remove ignore when jest-each is migrated to TS
+import {Environment} from '@jest/environment';
 import {bind as bindEach} from 'jest-each';
 
-export default (environment: Environment.Environment): void => {
+export default (environment: Environment): void => {
   environment.global.it.each = bindEach(environment.global.it);
   environment.global.fit.each = bindEach(environment.global.fit);
   environment.global.xit.each = bindEach(environment.global.xit);

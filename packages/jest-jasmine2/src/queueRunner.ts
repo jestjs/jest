@@ -20,7 +20,7 @@ export type Options = {
 };
 
 export type QueueableFn = {
-  fn: (next: (...args: any[]) => void) => void;
+  fn: (done: (error?: any) => void) => void;
   timeout?: () => number;
   initError?: Error;
 };

@@ -13,9 +13,6 @@ export type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
 export type BlockFn = () => void;
 export type BlockName = string;
 
-// TODO: Get rid of this at some point
-type JasmineType = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
-
 export type Col = unknown;
 export type Row = Array<Col>;
 export type Table = Array<Row>;
@@ -77,13 +74,9 @@ export interface Global extends NodeJS.Global {
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
   __coverage__: CoverageMapData;
-  jasmine: JasmineType;
 }
 
 declare global {
-  namespace jest {
-    interface _Global extends Global {}
-  }
   module NodeJS {
     interface Global {
       it: It;

@@ -25,7 +25,7 @@ class PCancelable<T> extends Promise {
 
   static CancelError: CancelError;
 
-  static fn<F extends (...args: any[]) => any>(fn: F) {
+  static fn<F extends (...args: Array<any>) => any>(fn: F) {
     return function(...args: Parameters<F>) {
       return new PCancelable<ReturnType<F>>((onCancel, resolve, reject) => {
         args.unshift(onCancel);

@@ -48,7 +48,10 @@ export type Attributes = {
   throwOnExpectationFailure: unknown;
   getTestPath: () => Config.Path;
   queueableFn: QueueableFn;
-  beforeAndAfterFns: () => {befores: QueueableFn[]; afters: QueueableFn[]};
+  beforeAndAfterFns: () => {
+    befores: Array<QueueableFn>;
+    afters: Array<QueueableFn>;
+  };
   userContext: () => unknown;
   onStart: (context: Spec) => void;
   getSpecName: (spec: Spec) => string;
@@ -62,7 +65,7 @@ export type SpecResult = {
   duration?: TestResult.Milliseconds;
   failedExpectations: Array<TestResult.FailedAssertion>;
   testPath: Config.Path;
-  passedExpectations: ReturnType<typeof expectationResultFactory>[];
+  passedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
   pendingReason: string;
   status: TestResult.Status;
   __callsite?: {
@@ -76,7 +79,10 @@ export default class Spec {
   description: string;
   resultCallback: (result: SpecResult) => void;
   queueableFn: QueueableFn;
-  beforeAndAfterFns: () => {befores: QueueableFn[]; afters: QueueableFn[]};
+  beforeAndAfterFns: () => {
+    befores: Array<QueueableFn>;
+    afters: Array<QueueableFn>;
+  };
   userContext: () => unknown;
   onStart: (spec: Spec) => void;
   getSpecName: (spec: Spec) => string;
@@ -242,7 +248,7 @@ export default class Spec {
     this.disabled = true;
   }
 
-  pend(message: string) {
+  pend(message?: string) {
     this.markedPending = true;
     if (message) {
       this.result.pendingReason = message;

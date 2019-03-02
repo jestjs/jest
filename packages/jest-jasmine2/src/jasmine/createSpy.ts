@@ -34,7 +34,7 @@ import CallTracker, {Context} from './CallTracker';
 import SpyStrategy from './SpyStrategy';
 
 interface Spy extends Record<string, any> {
-  (...args: any[]): unknown;
+  (...args: Array<any>): unknown;
   and: SpyStrategy;
   calls: CallTracker;
 }
@@ -48,7 +48,7 @@ function createSpy(name: string, originalFn: Function): Spy {
     },
   });
   const callTracker = new CallTracker();
-  const spy = function(this: {[key: string]: any}, ...args: any[]) {
+  const spy = function(this: {[key: string]: any}, ...args: Array<any>) {
     const callData: Context = {
       object: this,
       args: Array.prototype.slice.apply(arguments),

@@ -30,7 +30,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
-import {Jasmine, $J} from '../types';
+import {Jasmine} from '../types';
 import createSpy from './createSpy';
 import Env from './Env';
 import JsApiReporter from './JsApiReporter';
@@ -40,12 +40,12 @@ import SpyRegistry from './spyRegistry';
 import Suite from './Suite';
 import Timer from './Timer';
 
-const create = function(createOptions: Object): $J {
-  const j$ = {...createOptions} as $J;
+const create = function(createOptions: Object): Jasmine {
+  const j$ = {...createOptions} as Jasmine;
 
   j$._DEFAULT_TIMEOUT_INTERVAL = 5000;
 
-  j$.getEnv = function(options: object) {
+  j$.getEnv = function(options?: object) {
     const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
@@ -63,8 +63,7 @@ const create = function(createOptions: Object): $J {
   return j$;
 };
 
-// Interface is a reserved word in strict mode, so can't export it as ESM
-const interface = function(jasmine: Jasmine, env: any) {
+const _interface = function(jasmine: Jasmine, env: any) {
   const jasmineInterface = {
     describe(description: string, specDefinitions: Function) {
       return env.describe(description, specDefinitions);
@@ -148,4 +147,5 @@ const interface = function(jasmine: Jasmine, env: any) {
   return jasmineInterface;
 };
 
-export = {create, interface};
+// Interface is a reserved word in strict mode, so can't export it as ESM
+export = {create, interface: _interface};

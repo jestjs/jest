@@ -42,16 +42,12 @@ export type RawMatcherFn = (
 // -------END-------
 
 export type Reporter = JsApiReporter | Jasmine2Reporter;
-export type Jasmine = {
-  Spec: typeof Spec;
-  JsApiReporter: typeof JsApiReporter;
-  Timer: typeof Timer;
-} & typeof expect;
 
-export interface $J extends NodeJS.Global {
+export type Jasmine = {
   _DEFAULT_TIMEOUT_INTERVAL: number;
+  DEFAULT_TIMEOUT_INTERVAL: number;
   currentEnv_: ReturnType<typeof Env>['prototype'];
-  getEnv: (options: object) => ReturnType<typeof Env>['prototype'];
+  getEnv: (options?: object) => ReturnType<typeof Env>['prototype'];
   createSpy: typeof createSpy;
   Env: ReturnType<typeof Env>;
   JsApiReporter: typeof JsApiReporter;
@@ -62,10 +58,16 @@ export interface $J extends NodeJS.Global {
   Timer: typeof Timer;
   version: string;
   testPath: Config.Path;
-}
+  addMatchers: Function;
+} & typeof expect &
+  NodeJS.Global;
 
-interface Global {
-  jasmine: Jasmine;
+declare module '@jest/types' {
+  namespace Global {
+    interface Global {
+      jasmine: Jasmine;
+    }
+  }
 }
 
 declare global {

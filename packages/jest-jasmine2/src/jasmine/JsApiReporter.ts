@@ -51,12 +51,12 @@ export default class JsApiReporter {
 
   suiteStarted: (result: Suite) => void;
   suiteDone: (result: Suite) => void;
-  suiteResults: (index: number, length: number) => Suite[];
+  suiteResults: (index: number, length: number) => Array<Suite>;
   suites: () => {[key: string]: Suite};
 
-  specResults: (index: number, length: number) => SpecResult[];
+  specResults: (index: number, length: number) => Array<SpecResult>;
   specDone: (result: SpecResult) => void;
-  specs: () => SpecResult[];
+  specs: () => Array<SpecResult>;
 
   constructor(options: {timer?: Timer}) {
     const timer = options.timer || noopTimer;
@@ -92,7 +92,7 @@ export default class JsApiReporter {
       return status;
     };
 
-    const suites: Suite[] = [];
+    const suites: Array<Suite> = [];
     const suites_hash: {[key: string]: Suite} = {};
 
     this.suiteStarted = function(result: Suite) {
@@ -116,7 +116,7 @@ export default class JsApiReporter {
       return suites_hash;
     };
 
-    const specs: SpecResult[] = [];
+    const specs: Array<SpecResult> = [];
 
     this.specDone = function(result) {
       specs.push(result);
