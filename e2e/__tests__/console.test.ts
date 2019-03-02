@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary} from '../Utils';
+import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 
 test('console printing', () => {
@@ -61,20 +62,13 @@ test('the jsdom console is the same as the test console', () => {
 });
 
 test('does not error out when using winston', () => {
-  const {stderr, stdout, status} = runJest('console-winston');
+  const dir = path.resolve(__dirname, '../console-winston');
+  run('yarn', dir);
+  const {stderr, stdout, status} = runJest(dir);
   const {summary, rest} = extractSummary(stderr);
 
-  expect(wrap(stdout)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
-  expect(wrap(rest)).toMatchInlineSnapshot(`
-PASS __tests__/console.test.js
-FAIL __tests__/console.test.js
-  ● Test suite failed to run
-
-    TypeError: message.split is not a function
-
-      at buffer.reduce (../../packages/jest-util/build/getConsoleOutput.js:54:8)
-          at Array.reduce (<anonymous>)
-`);
   expect(status).toBe(0);
+  expect(wrap(stdout)).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
