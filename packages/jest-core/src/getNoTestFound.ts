@@ -15,7 +15,7 @@ export default function getNoTestFound(
   globalConfig: Config.GlobalConfig,
 ): string {
   const testFiles = testRunData.reduce(
-    (current, testRun) => current + (testRun.matches.total || 0) || 0,
+    (current, testRun) => current + (testRun.matches.total || 0),
     0,
   );
   let dataMessage;
