@@ -8,6 +8,6 @@
 import {Config} from '@jest/types';
 
 export type ProjectPackageJson = {
-  jest?: Partial<Config.GlobalConfig>;
+  jest?: Partial<Config.InitialOptions>;
   scripts?: {[key: string]: string};
 };
