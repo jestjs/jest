@@ -7,6 +7,7 @@
 
 import {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
+import {Jasmine} from './types';
 
 // prettier-ignore
 const disabledGlobals: {[key: string]: string} = {
@@ -28,7 +29,7 @@ const disabledJasmineMethods: {[key: string]: string} = {
 };
 
 export function installErrorOnPrivate(global: Global.Global): void {
-  const {jasmine} = global;
+  const jasmine = global.jasmine as Jasmine;
   Object.keys(disabledGlobals).forEach(functionName => {
     global[functionName] = () => {
       throwAtFunction(disabledGlobals[functionName], global[functionName]);

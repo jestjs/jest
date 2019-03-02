@@ -14,7 +14,7 @@ import {
   toThrowErrorMatchingSnapshot,
   toThrowErrorMatchingInlineSnapshot,
 } from 'jest-snapshot';
-import {RawMatcherFn} from './types';
+import {RawMatcherFn, Jasmine} from './types';
 
 type JasmineMatcher = {
   (matchersUtil: any, context: any): JasmineMatcher;
@@ -35,7 +35,7 @@ export default (config: {expand: boolean}) => {
   });
   expect.addSnapshotSerializer = addSerializer;
 
-  const jasmine = global.jasmine;
+  const jasmine = global.jasmine as Jasmine;
   jasmine.anything = expect.anything;
   jasmine.any = expect.any;
   jasmine.objectContaining = expect.objectContaining;

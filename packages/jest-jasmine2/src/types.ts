@@ -7,6 +7,7 @@
 
 import {AssertionError} from 'assert';
 import {Config} from '@jest/types';
+
 import expect from 'expect';
 import Spec from './jasmine/Spec';
 import JsApiReporter from './jasmine/JsApiReporter';
@@ -46,9 +47,10 @@ export type RawMatcherFn = (
 export type Reporter = JsApiReporter | Jasmine2Reporter;
 
 export interface Spy extends Record<string, any> {
-  (...args: Array<any>): unknown;
+  (this: {[key: string]: any}, ...args: Array<any>): unknown;
   and: SpyStrategy;
   calls: CallTracker;
+  [key: string]: any;
 }
 
 export type Jasmine = {
@@ -69,20 +71,3 @@ export type Jasmine = {
   addMatchers: Function;
 } & typeof expect &
   NodeJS.Global;
-
-declare module '@jest/types' {
-  namespace Global {
-    interface Global {
-      jasmine: Jasmine;
-      [key: string]: any;
-    }
-  }
-}
-
-declare global {
-  module NodeJS {
-    interface Global {
-      jasmine: Jasmine;
-    }
-  }
-}

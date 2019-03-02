@@ -7,7 +7,7 @@
 
 import path from 'path';
 import {Config, TestResult} from '@jest/types';
-import {Environment} from '@jest/enviroment';
+import {JestEnvironment} from '@jest/environment';
 import {SnapshotState} from 'jest-snapshot';
 import Runtime from 'jest-runtime';
 
@@ -17,13 +17,14 @@ import {installErrorOnPrivate} from './errorOnPrivate';
 import JasmineReporter from './reporter';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
 import Spec from './jasmine/Spec';
+import {Jasmine as JestJasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight.ts');
 
 async function jasmine2(
   globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
-  environment: Environment,
+  config: Config.JestEnviroment,
+  environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
 ): Promise<TestResult.TestResult> {
@@ -203,5 +204,10 @@ const addSnapshotData = (
 
   return results;
 };
+
+// eslint-disable-next-line
+namespace jasmine2 {
+  export type Jasmine = JestJasmine;
+}
 
 export = jasmine2;

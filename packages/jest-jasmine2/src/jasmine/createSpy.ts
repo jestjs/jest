@@ -34,7 +34,12 @@ import {Spy} from '../types';
 import CallTracker, {Context} from './CallTracker';
 import SpyStrategy from './SpyStrategy';
 
-function createSpy(name: string, originalFn: Function): Spy {
+interface Fn {
+  (): any;
+  [key: string]: any;
+}
+
+function createSpy(name: string, originalFn: Fn): Spy {
   const spyStrategy = new SpyStrategy({
     name,
     fn: originalFn,
@@ -43,7 +48,7 @@ function createSpy(name: string, originalFn: Function): Spy {
     },
   });
   const callTracker = new CallTracker();
-  const spy = function(this: {[key: string]: any}, ...args: Array<any>) {
+  const spy: Spy = function(...args) {
     const callData: Context = {
       object: this,
       args: Array.prototype.slice.apply(arguments),

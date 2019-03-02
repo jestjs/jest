@@ -13,6 +13,7 @@
     {"path":  "../jest-util"},
     {"path":  "../pretty-format"},
     {"path":  "../jest-diff"},
-    {"path":  "../jest-runtime"}
+    {"path":  "../jest-runtime"},
+    {"path":  "../jest-environment"}
   ]
 }

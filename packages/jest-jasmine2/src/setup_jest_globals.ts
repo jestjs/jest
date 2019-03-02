@@ -14,6 +14,7 @@ import {
   addSerializer,
 } from 'jest-snapshot';
 import JasmineSpec, {Attributes, SpecResult} from './jasmine/Spec';
+import {Jasmine} from './types';
 
 export type SetupOptions = {
   config: Config.ProjectConfig;
@@ -59,7 +60,7 @@ const addAssertionErrors = (result: SpecResult) => {
 };
 
 const patchJasmine = () => {
-  global.jasmine.Spec = (realSpec => {
+  (global.jasmine as Jasmine).Spec = (realSpec => {
     class Spec extends realSpec {
       constructor(attr: Attributes) {
         const resultCallback = attr.resultCallback;
@@ -78,7 +79,7 @@ const patchJasmine = () => {
     }
 
     return Spec;
-  })(global.jasmine.Spec);
+  })((global.jasmine as Jasmine).Spec);
 };
 
 export default ({

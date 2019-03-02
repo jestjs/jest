@@ -77,6 +77,7 @@ export interface Global extends NodeJS.Global {
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
   __coverage__: CoverageMapData;
+  jasmine: Jasmine;
 }
 
 declare global {
@@ -90,6 +91,7 @@ declare global {
       describe: Describe;
       xdescribe: DescribeBase;
       fdescribe: DescribeBase;
+      jasmine: Jasmine;
     }
   }
 }
