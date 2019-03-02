@@ -402,7 +402,7 @@ export default class ScriptTransformer {
   /**
    * @deprecated use `this.shouldTransform` instead
    */
-  // @ts-ignore
+  // @ts-ignore: Unused and private - remove in Jest 25
   private _shouldTransform(filename: Config.Path): boolean {
     return this.shouldTransform(filename);
   }
