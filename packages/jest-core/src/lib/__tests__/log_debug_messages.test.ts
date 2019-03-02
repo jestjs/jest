@@ -14,32 +14,40 @@ jest.mock('../../../package.json', () => ({version: 123}));
 
 jest.mock('myRunner', () => ({name: 'My Runner'}), {virtual: true});
 
-const getOutputStream = () =>
+const getOutputStream = (resolve: (message: string) => void) =>
   ({
     write(message: string) {
-      expect(wrap(message)).toMatchSnapshot();
+      resolve(message);
     },
   } as NodeJS.WriteStream);
 
-it('prints the jest version', () => {
+it('prints the jest version', async () => {
   expect.assertions(1);
-  logDebugMessages(
-    makeGlobalConfig({watch: true}),
-    makeProjectConfig({testRunner: 'myRunner'}),
-    getOutputStream(),
-  );
+  const message = await new Promise<string>(resolve => {
+    logDebugMessages(
+      makeGlobalConfig({watch: true}),
+      makeProjectConfig({testRunner: 'myRunner'}),
+      getOutputStream(resolve),
+    );
+  });
+
+  expect(JSON.parse(message).version).toBe(123);
 });
 
-it('prints the test framework name', () => {
+it('prints the test framework name', async () => {
   expect.assertions(1);
-  logDebugMessages(
-    makeGlobalConfig({watch: true}),
-    makeProjectConfig({testRunner: 'myRunner'}),
-    getOutputStream(),
-  );
+  const message = await new Promise<string>(resolve => {
+    logDebugMessages(
+      makeGlobalConfig({watch: true}),
+      makeProjectConfig({testRunner: 'myRunner'}),
+      getOutputStream(resolve),
+    );
+  });
+
+  expect(JSON.parse(message).configs.testRunner).toBe('myRunner');
 });
 
-it('prints the config object', () => {
+it('prints the config object', async () => {
   expect.assertions(1);
   const globalConfig = makeGlobalConfig({
     watch: true,
@@ -50,5 +58,8 @@ it('prints the config object', () => {
     roots: ['path/to/dir/test'],
     testRunner: 'myRunner',
   });
-  logDebugMessages(globalConfig, config, getOutputStream());
+  const message = await new Promise<string>(resolve => {
+    logDebugMessages(globalConfig, config, getOutputStream(resolve));
+  });
+  expect(wrap(message)).toMatchSnapshot();
 });
