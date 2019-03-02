@@ -235,9 +235,7 @@ export default (async function runJest({
 
   const results = await new TestScheduler(
     globalConfig,
-    {
-      startRun,
-    },
+    {startRun},
     testSchedulerContext,
   ).scheduleTests(allTests, testWatcher);
 

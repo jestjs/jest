@@ -43,10 +43,10 @@ export type TestSchedulerContext = {
   changedFiles?: Set<Config.Path>;
 };
 export default class TestScheduler {
-  _dispatcher: ReporterDispatcher;
-  _globalConfig: Config.GlobalConfig;
-  _options: TestSchedulerOptions;
-  _context: TestSchedulerContext;
+  private _dispatcher: ReporterDispatcher;
+  private _globalConfig: Config.GlobalConfig;
+  private _options: TestSchedulerOptions;
+  private _context: TestSchedulerContext;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -222,7 +222,7 @@ export default class TestScheduler {
     return aggregatedResults;
   }
 
-  _partitionTests(
+  private _partitionTests(
     testRunners: {[key: string]: TestRunner},
     tests: Array<Test>,
   ) {
@@ -245,7 +245,7 @@ export default class TestScheduler {
     }
   }
 
-  _shouldAddDefaultReporters(
+  private _shouldAddDefaultReporters(
     reporters?: Array<string | Config.ReporterConfig>,
   ): boolean {
     return (
@@ -256,7 +256,7 @@ export default class TestScheduler {
     );
   }
 
-  _setupReporters() {
+  private _setupReporters() {
     const {collectCoverage, notify, reporters} = this._globalConfig;
     const isDefault = this._shouldAddDefaultReporters(reporters);
 
@@ -287,7 +287,7 @@ export default class TestScheduler {
     }
   }
 
-  _setupDefaultReporters(collectCoverage: boolean) {
+  private _setupDefaultReporters(collectCoverage: boolean) {
     this.addReporter(
       this._globalConfig.verbose
         ? new VerboseReporter(this._globalConfig)
@@ -305,7 +305,9 @@ export default class TestScheduler {
     this.addReporter(new SummaryReporter(this._globalConfig));
   }
 
-  _addCustomReporters(reporters: Array<string | Config.ReporterConfig>) {
+  private _addCustomReporters(
+    reporters: Array<string | Config.ReporterConfig>,
+  ) {
     reporters.forEach(reporter => {
       const {options, path} = this._getReporterProps(reporter);
 
@@ -329,7 +331,7 @@ export default class TestScheduler {
    * Get properties of a reporter in an object
    * to make dealing with them less painful.
    */
-  _getReporterProps(
+  private _getReporterProps(
     reporter: string | Config.ReporterConfig,
   ): {path: string; options?: Object} {
     if (typeof reporter === 'string') {
@@ -342,7 +344,7 @@ export default class TestScheduler {
     throw new Error('Reporter should be either a string or an array');
   }
 
-  _bailIfNeeded(
+  private _bailIfNeeded(
     contexts: Set<Context>,
     aggregatedResults: TestResult.AggregatedResult,
     watcher: TestWatcher,
