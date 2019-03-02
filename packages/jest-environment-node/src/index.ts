@@ -43,7 +43,10 @@ class NodeEnvironment implements JestEnvironment {
       global.URLSearchParams = URLSearchParams;
     }
     // TextDecoder and TextDecoder are global in Node >= 11
-    if (typeof TextEncoder !== 'undefined' && typeof TextDecoder !== 'undefined') {
+    if (
+      typeof TextEncoder !== 'undefined' &&
+      typeof TextDecoder !== 'undefined'
+    ) {
       /* global TextEncoder, TextDecoder */
       global.TextEncoder = TextEncoder;
       global.TextDecoder = TextDecoder;
