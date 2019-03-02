@@ -19,7 +19,7 @@ import init from '../init';
 import getVersion from '../version';
 import * as args from './args';
 
-export async function run(maybeArgv?: Config.Argv, project?: Config.Path) {
+export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
   try {
     const argv: Config.Argv = buildArgv(maybeArgv);
 
@@ -41,23 +41,21 @@ export async function run(maybeArgv?: Config.Argv, project?: Config.Path) {
   }
 }
 
-export const buildArgv = (maybeArgv?: Config.Argv): Config.Argv => {
+export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
   const version =
     getVersion() +
     (__dirname.includes(`packages${path.sep}jest-cli`) ? '-dev' : '');
 
   const rawArgv: Config.Argv | Array<string> =
     maybeArgv || process.argv.slice(2);
-  const argv =
-    maybeArgv ||
-    yargs(process.argv.slice(2))
-      .usage(args.usage)
-      .version(version)
-      .alias('help', 'h')
-      .options(args.options)
-      .epilogue(args.docs)
-      // @ts-ignore: it's unable to infer what arguments it contains
-      .check(args.check).argv;
+  const argv: Config.Argv = yargs(rawArgv)
+    .usage(args.usage)
+    .version(version)
+    .alias('help', 'h')
+    .options(args.options)
+    .epilogue(args.docs)
+    // @ts-ignore: it's unable to infer what arguments it contains
+    .check(args.check).argv;
 
   validateCLIOptions(
     argv,
