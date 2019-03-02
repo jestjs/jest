@@ -3,15 +3,14 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
+import {Config} from '@jest/types';
 import {defaults, descriptions} from 'jest-config';
 
 const stringifyOption = (
-  option: string,
-  map: Object,
+  option: keyof Config.InitialOptions,
+  map: Partial<Config.InitialOptions>,
   linePrefix: string = '',
 ): string => {
   const optionDescription = `  // ${descriptions[option]}`;
@@ -32,7 +31,7 @@ const stringifyOption = (
   );
 };
 
-const generateConfigFile = (results: {[string]: boolean}): string => {
+const generateConfigFile = (results: {[key: string]: unknown}): string => {
   const {coverage, clearMocks, environment} = results;
 
   const overrides: Object = {};
@@ -55,15 +54,21 @@ const generateConfigFile = (results: {[string]: boolean}): string => {
     });
   }
 
-  const overrideKeys: Array<string> = Object.keys(overrides);
+  const overrideKeys = Object.keys(overrides) as Array<
+    keyof Config.InitialOptions
+  >;
 
   const properties: Array<string> = [];
 
   for (const option in descriptions) {
-    if (overrideKeys.includes(option)) {
-      properties.push(stringifyOption(option, overrides));
+    const opt = option as keyof typeof descriptions;
+
+    if (overrideKeys.includes(opt)) {
+      properties.push(stringifyOption(opt, overrides));
     } else {
-      properties.push(stringifyOption(option, defaults, '// '));
+      properties.push(
+        stringifyOption(opt, defaults as Config.InitialOptions, '// '),
+      );
     }
   }
 

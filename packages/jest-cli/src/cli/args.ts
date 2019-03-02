@@ -3,16 +3,14 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Argv} from 'types/Argv';
-
+import {Config} from '@jest/types';
 import {isJSONString} from 'jest-config';
 import isCI from 'is-ci';
+import {Options} from 'yargs';
 
-export const check = (argv: Argv) => {
+export const check = (argv: Config.Argv) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +
@@ -69,7 +67,7 @@ export const usage =
   'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
 export const docs = 'Documentation: https://jestjs.io/';
 
-export const options = {
+export const options: Record<keyof Config.Argv, Options> = {
   all: {
     default: undefined,
     description:

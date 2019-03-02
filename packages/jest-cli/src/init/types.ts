@@ -3,12 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import {version as VERSION} from '../package.json';
+import {Config} from '@jest/types';
 
-export default function getVersion() {
-  return VERSION;
+export type ProjectPackageJson = {
+  jest?: Partial<Config.GlobalConfig>;
+  scripts?: {[key: string]: string};
 }

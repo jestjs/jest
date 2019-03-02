@@ -3,19 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-type Question = {|
-  initial?: boolean | number,
-  message: string,
-  name: string,
-  type: string,
-  choices?: Array<{title: string, value: string}>,
-|};
+import {PromptObject} from 'prompts';
 
-const defaultQuestions: Array<Question> = [
+const defaultQuestions: Array<PromptObject> = [
   {
     choices: [
       {title: 'node', value: 'node'},
@@ -42,7 +34,7 @@ const defaultQuestions: Array<Question> = [
 
 export default defaultQuestions;
 
-export const testScriptQuestion: Question = {
+export const testScriptQuestion: PromptObject = {
   initial: true,
   message:
     'Would you like to use Jest when running "test" script in "package.json"?',
