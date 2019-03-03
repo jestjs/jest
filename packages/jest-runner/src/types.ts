@@ -26,12 +26,6 @@ export type Context = {
   resolver: HasteResolver;
 };
 
-// TODO: Obtain this from @jest/reporters once its been migrated
-type ReporterOnStartOptions = {
-  estimatedTime: number;
-  showStatus: boolean;
-};
-
 export type OnTestStart = (test: Test) => Promise<void>;
 export type OnTestFailure = (
   test: Test,
@@ -41,24 +35,6 @@ export type OnTestSuccess = (
   test: Test,
   testResult: TestResult.TestResult,
 ) => Promise<void>;
-
-export type Reporter = {
-  onTestResult: (
-    test: Test,
-    testResult: TestResult.TestResult,
-    aggregatedResult: TestResult.AggregatedResult,
-  ) => Promise<void>;
-  onRunStart: (
-    results: TestResult.AggregatedResult,
-    options: ReporterOnStartOptions,
-  ) => Promise<void>;
-  onTestStart: (test: Test) => Promise<void>;
-  onRunComplete: (
-    contexts: Set<Context>,
-    results: TestResult.AggregatedResult,
-  ) => Promise<void>;
-  getLastError: () => Error;
-};
 
 export type TestFramework = (
   globalConfig: Config.GlobalConfig,
@@ -75,11 +51,6 @@ export type TestRunnerOptions = {
 export type TestRunnerContext = {
   changedFiles?: Set<Config.Path>;
 };
-
-export type TestRunData = Array<{
-  context: Context;
-  matches: {allTests: number; tests: Array<Test>; total: number};
-}>;
 
 // TODO: Should live in `@jest/core` or `jest-watcher`
 export type WatcherState = {

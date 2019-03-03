@@ -64,17 +64,23 @@ export type AllowedConfigOptions = Partial<
   > & {mode: 'watch' | 'watchAll'}
 >;
 
+export type UpdateConfigCallback = (config?: AllowedConfigOptions) => void;
+
 export interface WatchPlugin {
   isInternal?: boolean;
   apply?: (hooks: JestHookSubscriber) => void;
-  getUsageInfo?: (
-    globalConfig: Config.GlobalConfig,
-  ) => UsageData | undefined | null;
+  getUsageInfo?: (globalConfig: Config.GlobalConfig) => UsageData | null;
   onKey?: (value: string) => void;
   run?: (
     globalConfig: Config.GlobalConfig,
-    updateConfigAndRun: (config?: AllowedConfigOptions) => void,
+    updateConfigAndRun: UpdateConfigCallback,
   ) => Promise<void | boolean>;
+}
+export interface WatchPluginClass {
+  new (options: {
+    stdin: NodeJS.ReadStream;
+    stdout: NodeJS.WriteStream;
+  }): WatchPlugin;
 }
 
 export type ScrollOptions = {

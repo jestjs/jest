@@ -18,7 +18,6 @@
     "graceful-fs": "^4.1.15",
     "is-ci": "^2.0.0",
     "mkdirp": "^0.5.1",
-    "readable-stream": "^3.1.1",
     "slash": "^2.0.0",
     "source-map": "^0.6.0"
   },
@@ -26,7 +25,6 @@
     "@types/graceful-fs": "^4.1.2",
     "@types/is-ci": "^1.0.10",
     "@types/mkdirp": "^0.5.2",
-    "@types/readable-stream": "^2.3.0",
     "@types/slash": "^2.0.0"
   },
   "engines": {

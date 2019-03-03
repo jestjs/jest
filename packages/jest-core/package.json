@@ -3,7 +3,9 @@
   "description": "Delightful JavaScript Testing.",
   "version": "24.1.0",
   "main": "build/jest.js",
+  "types": "build/jest.d.ts",
   "dependencies": {
+    "@jest/types": "^24.1.0",
     "@jest/reporters": "^24.1.0",
     "@jest/transform": "^24.1.0",
     "ansi-escapes": "^3.0.0",
@@ -24,7 +26,7 @@
     "jest-watcher": "^24.0.0",
     "micromatch": "^3.1.10",
     "p-each-series": "^1.0.0",
-    "pirates": "^4.0.0",
+    "pirates": "^4.0.1",
     "realpath-native": "^1.1.0",
     "rimraf": "^2.5.4",
     "strip-ansi": "^5.0.0"
