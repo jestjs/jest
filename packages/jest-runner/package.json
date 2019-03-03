@@ -10,6 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/console": "^24.1.0",
     "@jest/environment": "^24.1.0",
     "@jest/types": "^24.1.0",
     "chalk": "^2.4.2",

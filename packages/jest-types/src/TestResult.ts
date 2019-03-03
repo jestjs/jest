@@ -6,7 +6,7 @@
  */
 
 import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
-import {ConsoleBuffer} from './Console';
+import {ConsoleBuffer} from '@jest/console';
 
 export type SerializableError = {
   code?: unknown;
