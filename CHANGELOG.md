@@ -68,7 +68,7 @@
 - `[@jest/transform]`: Migrate to TypeScript ([#7918](https://github.com/facebook/jest/pull/7918), [#7945](https://github.com/facebook/jest/pull/7945))
 - `[docs]` Add missing import to docs ([#7928](https://github.com/facebook/jest/pull/7928))
 - `[jest-resolve-dependencies]`: Migrate to TypeScript ([#7922](https://github.com/facebook/jest/pull/7922))
-- `[expect]`: Migrate to TypeScript ([#7919](https://github.com/facebook/jest/pull/7919))
+- `[expect]`: Migrate to TypeScript ([#7919](https://github.com/facebook/jest/pull/7919), [#8028](https://github.com/facebook/jest/pull/8028))
 - `[jest-circus]`: Migrate to TypeScript ([#7916](https://github.com/facebook/jest/pull/7916))
 - `[jest-phabricator]`: Migrate to TypeScript ([#7965](https://github.com/facebook/jest/pull/7965))
 - `[jest-runner]`: Migrate to TypeScript ([#7968](https://github.com/facebook/jest/pull/7968))
