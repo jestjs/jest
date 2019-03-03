@@ -314,6 +314,7 @@ const JestSnapshot = {
 /* eslint-disable-next-line no-redeclare */
 namespace JestSnapshot {
   export type SnapshotResolver = JestSnapshotResolver;
+  export type SnapshotStateType = SnapshotState;
 }
 
 export = JestSnapshot;

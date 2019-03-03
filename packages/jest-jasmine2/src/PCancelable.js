@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable no-this-before-super, constructor-super */
+'use strict';
 
 class CancelError extends Error {
   constructor() {
@@ -14,42 +14,33 @@ class CancelError extends Error {
   }
 }
 
-class PCancelable<T> {
-  private _pending: boolean;
-  private _canceled: boolean;
-  private _cancel?: Function;
-  // @ts-ignore
-  private _reject: (reason?: any) => void;
-  private _promise: Promise<T>;
-
-  static CancelError: CancelError;
-
-  static fn<F extends (...args: Array<any>) => any>(fn: F) {
-    return function(...args: Parameters<F>) {
-      return new PCancelable<ReturnType<F>>((onCancel, resolve, reject) => {
+class PCancelable {
+  static fn(fn) {
+    return function() {
+      const args = [].slice.apply(arguments);
+      return new PCancelable((onCancel, resolve, reject) => {
         args.unshift(onCancel);
         fn.apply(null, args).then(resolve, reject);
       });
     };
   }
 
-  constructor(
-    executor: (onCancel: Function, resolve: Function, reject: Function) => any,
-  ) {
+  constructor(executor) {
     this._pending = true;
     this._canceled = false;
-    this._promise = new Promise<T>((resolve, reject) => {
+
+    this._promise = new Promise((resolve, reject) => {
       this._reject = reject;
 
       return executor(
-        (fn: Function) => {
+        fn => {
           this._cancel = fn;
         },
-        (val: T) => {
+        val => {
           this._pending = false;
           resolve(val);
         },
-        (err?: any) => {
+        err => {
           this._pending = false;
           reject(err);
         },
@@ -57,12 +48,12 @@ class PCancelable<T> {
     });
   }
 
-  then(...args: Parameters<Promise<T>['then']>) {
-    return this._promise.then.apply(this._promise, args);
+  then() {
+    return this._promise.then.apply(this._promise, arguments);
   }
 
-  catch(...args: Parameters<Promise<T>['catch']>) {
-    return this._promise.catch.apply(this._promise, args);
+  catch() {
+    return this._promise.catch.apply(this._promise, arguments);
   }
 
   cancel() {
@@ -89,4 +80,5 @@ class PCancelable<T> {
 
 Object.setPrototypeOf(PCancelable.prototype, Promise.prototype);
 
-export = PCancelable;
+module.exports = PCancelable;
+module.exports.CancelError = CancelError;

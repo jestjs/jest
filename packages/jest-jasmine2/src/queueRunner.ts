@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+// @ts-ignore ignore vendor file
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
@@ -26,7 +27,7 @@ export type QueueableFn = {
 };
 
 export default function queueRunner(options: Options) {
-  const token = new PCancelable((onCancel, resolve) => {
+  const token = new PCancelable((onCancel: Function, resolve: Function) => {
     onCancel(resolve);
   });
 

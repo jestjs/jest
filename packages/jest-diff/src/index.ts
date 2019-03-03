@@ -150,4 +150,9 @@ function compareObjects(a: Object, b: Object, options?: DiffOptions) {
   return diffMessage;
 }
 
+/* eslint-disable-next-line no-redeclare */
+namespace diff {
+  export type DiffOptionsType = DiffOptions;
+}
+
 export = diff;

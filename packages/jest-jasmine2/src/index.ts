@@ -8,7 +8,7 @@
 import path from 'path';
 import {Config, Global, TestResult} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
-import {SnapshotState} from 'jest-snapshot';
+import {SnapshotStateType} from 'jest-snapshot';
 import Runtime from 'jest-runtime';
 
 import {getCallsite} from 'jest-util';
@@ -139,8 +139,7 @@ async function jasmine2(
     });
   }
 
-  // TODO: make just snapshotState: SnapshotState when `jest-snapshot` is ESM
-  const snapshotState: typeof SnapshotState.prototype = runtime
+  const snapshotState: SnapshotStateType = runtime
     .requireInternalModule(path.resolve(__dirname, './setup_jest_globals.js'))
     .default({
       config,
@@ -173,10 +172,9 @@ async function jasmine2(
   return addSnapshotData(results, snapshotState);
 }
 
-// TODO: make just snapshotState: SnapshotState when `jest-snapshot` is ESM
 const addSnapshotData = (
   results: TestResult.TestResult,
-  snapshotState: typeof SnapshotState.prototype,
+  snapshotState: SnapshotStateType,
 ) => {
   results.testResults.forEach(
     ({fullName, status}: TestResult.AssertionResult) => {

@@ -6,11 +6,9 @@
  */
 
 import {diff, printReceived, printExpected} from 'jest-matcher-utils';
+import jestDiff from 'jest-diff';
 import chalk from 'chalk';
 import {AssertionErrorWithStack} from './types';
-
-// TODO replace with import {DiffOptions} from 'jest-matcher-utils';
-type DiffOptions = Parameters<typeof diff>[2];
 
 const assertOperatorsMap: {[key: string]: string} = {
   '!=': 'notEqual',
@@ -82,7 +80,7 @@ const assertMatcherHint = (operator: string | null, operatorName: string) => {
 
 function assertionErrorMessage(
   error: AssertionErrorWithStack,
-  options: DiffOptions,
+  options: jestDiff.DiffOptionsType,
 ) {
   const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);
