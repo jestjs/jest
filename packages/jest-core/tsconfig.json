@@ -8,6 +8,7 @@
   "references": [
     {"path": "../jest-changed-files"},
     {"path": "../jest-config"},
+    {"path": "../jest-console"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-message-util"},
     {"path": "../jest-regex-util"},
