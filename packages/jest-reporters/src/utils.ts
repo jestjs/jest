@@ -3,27 +3,18 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {Path, ProjectConfig, GlobalConfig} from 'types/Config';
-import type {AggregatedResult} from 'types/TestResult';
-
 import path from 'path';
+import {Config, TestResult} from '@jest/types';
 import chalk from 'chalk';
 import slash from 'slash';
 import {pluralize} from 'jest-util';
-
-type SummaryOptions = {|
-  estimatedTime?: number,
-  roundTime?: boolean,
-  width?: number,
-|};
+import {SummaryOptions} from './types';
 
 const PROGRESS_BAR_WIDTH = 40;
 
-export const printDisplayName = (config: ProjectConfig) => {
+export const printDisplayName = (config: Config.ProjectConfig) => {
   const {displayName} = config;
 
   if (displayName) {
@@ -37,8 +28,8 @@ export const printDisplayName = (config: ProjectConfig) => {
 
 export const trimAndFormatPath = (
   pad: number,
-  config: ProjectConfig | GlobalConfig,
-  testPath: Path,
+  config: Config.ProjectConfig | Config.GlobalConfig,
+  testPath: Config.Path,
   columns: number,
 ): string => {
   const maxLength = columns - pad;
@@ -73,28 +64,31 @@ export const trimAndFormatPath = (
 };
 
 export const formatTestPath = (
-  config: GlobalConfig | ProjectConfig,
-  testPath: Path,
+  config: Config.GlobalConfig | Config.ProjectConfig,
+  testPath: Config.Path,
 ) => {
   const {dirname, basename} = relativePath(config, testPath);
   return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
 };
 
 export const relativePath = (
-  config: GlobalConfig | ProjectConfig,
-  testPath: Path,
+  config: Config.GlobalConfig | Config.ProjectConfig,
+  testPath: Config.Path,
 ) => {
   // this function can be called with ProjectConfigs or GlobalConfigs. GlobalConfigs
   // do not have config.cwd, only config.rootDir. Try using config.cwd, fallback
   // to config.rootDir. (Also, some unit just use config.rootDir, which is ok)
-  testPath = path.relative(config.cwd || config.rootDir, testPath);
+  testPath = path.relative(
+    (config as Config.ProjectConfig).cwd || config.rootDir,
+    testPath,
+  );
   const dirname = path.dirname(testPath);
   const basename = path.basename(testPath);
   return {basename, dirname};
 };
 
 export const getSummary = (
-  aggregatedResults: AggregatedResult,
+  aggregatedResults: TestResult.AggregatedResult,
   options?: SummaryOptions,
 ) => {
   let runTime = (Date.now() - aggregatedResults.startTime) / 1000;
@@ -180,7 +174,7 @@ export const getSummary = (
   return [suites, tests, snapshots, time].join('\n');
 };
 
-const renderTime = (runTime, estimatedTime, width) => {
+const renderTime = (runTime: number, estimatedTime: number, width: number) => {
   // If we are more than one second over the estimated time, highlight it.
   const renderedTime =
     estimatedTime && runTime >= estimatedTime + 1

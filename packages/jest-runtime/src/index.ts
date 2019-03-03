@@ -6,13 +6,14 @@
  */
 
 import path from 'path';
-import {Config, SourceMaps} from '@jest/types';
+import {Config} from '@jest/types';
 import {
   Jest,
   JestEnvironment,
   LocalModuleRequire,
   Module,
 } from '@jest/environment';
+import {SourceMapRegistry} from '@jest/source-map';
 import jestMock, {MockFunctionMetadata} from 'jest-mock';
 import HasteMap, {ModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
@@ -102,7 +103,7 @@ class Runtime {
   private _shouldAutoMock: boolean;
   private _shouldMockModuleCache: BooleanObject;
   private _shouldUnmockTransitiveDependenciesCache: BooleanObject;
-  private _sourceMapRegistry: SourceMaps.SourceMapRegistry;
+  private _sourceMapRegistry: SourceMapRegistry;
   private _scriptTransformer: ScriptTransformer;
   private _transitiveShouldMock: BooleanObject;
   private _unmockList: RegExp | undefined;
@@ -523,7 +524,7 @@ class Runtime {
     }, {});
   }
 
-  getSourceMaps(): SourceMaps.SourceMapRegistry {
+  getSourceMaps(): SourceMapRegistry {
     return this._sourceMapRegistry;
   }
 

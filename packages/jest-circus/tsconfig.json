@@ -5,7 +5,6 @@
     "rootDir": "src"
   },
   "references": [
-    {"path": "../jest-diff"},
     {"path": "../jest-each"},
     {"path": "../jest-environment"},
     {"path": "../jest-matcher-utils"},
