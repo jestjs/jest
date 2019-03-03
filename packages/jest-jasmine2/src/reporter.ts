@@ -111,7 +111,7 @@ export default class Jasmine2Reporter implements Reporter {
     return this._resultsPromise;
   }
 
-  _addMissingMessageToStack(stack: string, message: string | undefined) {
+  private _addMissingMessageToStack(stack: string, message?: string) {
     // Some errors (e.g. Angular injection error) don't prepend error.message
     // to stack, instead the first line of the stack is just plain 'Error'
     const ERROR_REGEX = /^Error\s*\n/;
@@ -126,7 +126,7 @@ export default class Jasmine2Reporter implements Reporter {
     return stack;
   }
 
-  _extractSpecResults(
+  private _extractSpecResults(
     specResult: SpecResult,
     ancestorTitles: Array<string>,
   ): TestResult.AssertionResult {
