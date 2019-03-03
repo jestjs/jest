@@ -5,32 +5,41 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {WatchPlugin} from './types';
+import {Config} from '@jest/types';
+import {
+  JestHookSubscriber,
+  UpdateConfigCallback,
+  UsageData,
+  WatchPlugin,
+} from './types';
 
 class BaseWatchPlugin implements WatchPlugin {
-  protected _stdin: NodeJS.ReadableStream;
-  protected _stdout: NodeJS.WritableStream;
+  protected _stdin: NodeJS.ReadStream;
+  protected _stdout: NodeJS.WriteStream;
 
   constructor({
     stdin,
     stdout,
   }: {
-    stdin: NodeJS.ReadableStream;
-    stdout: NodeJS.WritableStream;
+    stdin: NodeJS.ReadStream;
+    stdout: NodeJS.WriteStream;
   }) {
     this._stdin = stdin;
     this._stdout = stdout;
   }
 
-  apply() {}
+  apply(_hooks: JestHookSubscriber) {}
 
-  getUsageInfo() {
+  getUsageInfo(_globalConfig: Config.GlobalConfig): UsageData | null {
     return null;
   }
 
-  onKey() {}
+  onKey(_key: string) {}
 
-  run() {
+  run(
+    _globalConfig: Config.GlobalConfig,
+    _updateConfigAndRun: UpdateConfigCallback,
+  ): Promise<void | boolean> {
     return Promise.resolve();
   }
 }

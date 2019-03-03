@@ -8,7 +8,6 @@
 import assert from 'assert';
 import {Console} from 'console';
 import {format} from 'util';
-import {Writable} from 'readable-stream';
 import chalk from 'chalk';
 import {Console as ConsoleType, SourceMaps} from '@jest/types';
 import getCallsite from './getCallsite';
@@ -24,12 +23,13 @@ export default class BufferedConsole extends Console {
     getSourceMaps: () => SourceMaps.SourceMapRegistry | null | undefined,
   ) {
     const buffer: ConsoleType.ConsoleBuffer = [];
-    super(
-      new Writable({
-        write: message =>
-          BufferedConsole.write(buffer, 'log', message, null, getSourceMaps()),
-      }),
-    );
+    super({
+      write: (message: string) => {
+        BufferedConsole.write(buffer, 'log', message, null, getSourceMaps());
+
+        return true;
+      },
+    } as NodeJS.WritableStream);
     this._getSourceMaps = getSourceMaps;
     this._buffer = buffer;
     this._counters = {};
