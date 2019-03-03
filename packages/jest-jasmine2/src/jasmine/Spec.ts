@@ -96,7 +96,7 @@ export default class Spec {
   markedPending?: boolean;
   expand?: boolean;
 
-  static pendingSpecExceptionMessage = '=> marked Pending';
+  static pendingSpecExceptionMessage: string;
 
   static isPendingSpecException(e: Error) {
     return !!(
@@ -292,6 +292,8 @@ export default class Spec {
     return this.getSpecName(this);
   }
 }
+
+Spec.pendingSpecExceptionMessage = '=> marked Pending';
 
 const extractCustomPendingMessage = function(e: Error) {
   const fullMessage = e.toString();

@@ -67,11 +67,14 @@ export default class Suite {
   children: Array<Suite | Spec>;
   result: SuiteResult;
   sharedContext?: object;
-  markedPending: boolean = false;
-  markedTodo: boolean = false;
-  isFocused: boolean = false;
+  markedPending: boolean;
+  markedTodo: boolean;
+  isFocused: boolean;
 
   constructor(attrs: Attributes) {
+    this.markedPending = false;
+    this.markedTodo = false;
+    this.isFocused = false;
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
     this.description = convertDescriptorToString(attrs.description);
