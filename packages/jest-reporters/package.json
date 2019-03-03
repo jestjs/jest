@@ -22,6 +22,7 @@
     "jest-worker": "^24.0.0",
     "node-notifier": "^5.2.1",
     "slash": "^2.0.0",
+    "source-map": "^0.6.0",
     "string-length": "^2.0.0"
   },
   "devDependencies": {

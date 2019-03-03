@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 // TODO: Remove this
@@ -25,6 +24,7 @@ import istanbulCoverage, {
 import libSourceMaps, {MapStore} from 'istanbul-lib-source-maps';
 import Worker from 'jest-worker';
 import glob from 'glob';
+import {RawSourceMap} from 'source-map';
 import BaseReporter from './base_reporter';
 import {Context, Test, CoverageWorker, CoverageReporterOptions} from './types';
 
@@ -59,7 +59,7 @@ export default class CoverageReporter extends BaseReporter {
       delete testResult.coverage;
 
       Object.keys(testResult.sourceMaps).forEach(sourcePath => {
-        let inputSourceMap: any;
+        let inputSourceMap: RawSourceMap | undefined;
         try {
           const coverage: FileCoverage = this._coverageMap.fileCoverageFor(
             sourcePath,
@@ -217,16 +217,11 @@ export default class CoverageReporter extends BaseReporter {
         thresholds: {[index: string]: number},
         actuals: CoverageSummaryData,
       ) {
-        return ['statements', 'branches', 'lines', 'functions'].reduce<
-          Array<string>
-        >((errors, key) => {
-          // Without this TypeScript complains if i put
-          // `key: keyof CoverageSummaryData` or if i call `actuals[key]`
-          // without casting
-          const typedKey: keyof CoverageSummaryData = key as keyof CoverageSummaryData;
-          const actual = actuals[typedKey].pct;
-          const actualUncovered =
-            actuals[typedKey].total - actuals[typedKey].covered;
+        return (['statements', 'branches', 'lines', 'functions'] as Array<
+          keyof CoverageSummaryData
+        >).reduce<Array<string>>((errors, key) => {
+          const actual = actuals[key].pct;
+          const actualUncovered = actuals[key].total - actuals[key].covered;
           const threshold = thresholds[key];
 
           if (threshold != null) {

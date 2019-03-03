@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 import {TestResult, Config} from '@jest/types';
@@ -175,12 +174,12 @@ export default class Status {
     return (this._cache = {clear, content});
   }
 
-  _emit() {
+  private _emit() {
     this._cache = null;
     if (this._callback) this._callback();
   }
 
-  _debouncedEmit() {
+  private _debouncedEmit() {
     if (!this._emitScheduled) {
       // Perf optimization to avoid two separate renders When
       // one test finishes and another test starts executing.
@@ -192,7 +191,7 @@ export default class Status {
     }
   }
 
-  _tick() {
+  private _tick() {
     this._debouncedEmit();
   }
 }
