@@ -5,12 +5,12 @@
     "outDir": "build"
   },
   "references": [
-    {"path": "../jest-types"},
-    {"path": "../jest-util"},
-    {"path": "../jest-worker"},
+    {"path": "../jest-environment"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-resolve"},
     {"path": "../jest-runtime"},
-    {"path": "../jest-environment"}
+    {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../jest-worker"}
   ]
 }

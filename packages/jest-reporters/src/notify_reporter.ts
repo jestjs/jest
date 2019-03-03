@@ -126,7 +126,7 @@ export default class NotifyReporter extends BaseReporter {
             message,
             title,
           },
-          (err: any, _: any, metadata: any) => {
+          (err, _, metadata) => {
             if (err || !metadata) {
               return;
             }

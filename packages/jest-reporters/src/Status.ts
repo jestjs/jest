@@ -64,17 +64,15 @@ class CurrentTestList {
  * from the terminal.
  */
 export default class Status {
-  _cache: {content: string; clear: string} | null;
-  _callback?: () => void;
-  _currentTests: CurrentTestList;
-  _done: boolean;
-  _emitScheduled: boolean;
-  _estimatedTime: number;
-  _height: number;
-  _interval?: NodeJS.Timeout;
-  _aggregatedResults?: TestResult.AggregatedResult;
-  _lastUpdated?: number;
-  _showStatus: boolean;
+  private _cache: {content: string; clear: string} | null;
+  private _callback?: () => void;
+  private _currentTests: CurrentTestList;
+  private _done: boolean;
+  private _emitScheduled: boolean;
+  private _estimatedTime: number;
+  private _interval?: NodeJS.Timeout;
+  private _aggregatedResults?: TestResult.AggregatedResult;
+  private _showStatus: boolean;
 
   constructor() {
     this._cache = null;
@@ -82,7 +80,6 @@ export default class Status {
     this._done = false;
     this._emitScheduled = false;
     this._estimatedTime = 0;
-    this._height = 0;
     this._showStatus = false;
   }
 
@@ -180,7 +177,6 @@ export default class Status {
 
   _emit() {
     this._cache = null;
-    this._lastUpdated = Date.now();
     if (this._callback) this._callback();
   }
 

@@ -6,9 +6,6 @@
  *
  */
 
-// import type {Path, ProjectConfig, GlobalConfig} from 'types/Config';
-// import type {AggregatedResult} from 'types/TestResult';
-
 import path from 'path';
 import {Config, TestResult} from '@jest/types';
 import chalk from 'chalk';
