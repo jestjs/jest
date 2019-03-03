@@ -19,7 +19,7 @@ import jasmineAsyncInstall from './jasmineAsyncInstall';
 import Spec from './jasmine/Spec';
 import {Jasmine as JestJasmine} from './types';
 
-const JASMINE = require.resolve('./jasmine/jasmineLight.ts');
+const JASMINE = require.resolve('./jasmine/jasmineLight.js');
 
 async function jasmine2(
   globalConfig: Config.GlobalConfig,

@@ -14,8 +14,7 @@ class CancelError extends Error {
   }
 }
 
-// @ts-ignore
-class PCancelable<T> extends Promise {
+class PCancelable<T> {
   private _pending: boolean;
   private _canceled: boolean;
   private _cancel?: Function;
@@ -34,13 +33,11 @@ class PCancelable<T> extends Promise {
     };
   }
 
-  // @ts-ignore
-  constructor(executor: (onCancel, resolve, reject) => any) {
-    // @ts-ignore
+  constructor(
+    executor: (onCancel: Function, resolve: Function, reject: Function) => any,
+  ) {
     this._pending = true;
-    // @ts-ignore
     this._canceled = false;
-    // @ts-ignore
     this._promise = new Promise<T>((resolve, reject) => {
       this._reject = reject;
 
@@ -89,5 +86,7 @@ class PCancelable<T> extends Promise {
     return this._canceled;
   }
 }
+
+Object.setPrototypeOf(PCancelable.prototype, Promise.prototype);
 
 export = PCancelable;

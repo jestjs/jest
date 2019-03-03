@@ -44,7 +44,7 @@ import Spec, {SpecResult} from './Spec';
 import Suite from './Suite';
 
 export default function(j$: Jasmine) {
-  class Env {
+  return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
     throwOnExpectationFailure: (value: unknown) => void;
@@ -98,6 +98,17 @@ export default function(j$: Jasmine) {
       let throwOnExpectationFailure = false;
       let random = false;
       let seed: unknown | null = null;
+      let nextSpecId = 0;
+      let nextSuiteId = 0;
+
+      const getNextSpecId = function() {
+        return 'spec' + nextSpecId++;
+      };
+
+      const getNextSuiteId = function() {
+        return 'suite' + nextSuiteId++;
+      };
+
       const topSuite = new j$.Suite({
         id: getNextSuiteId(),
         description: '',
@@ -127,16 +138,6 @@ export default function(j$: Jasmine) {
       this.specFilter = function() {
         return true;
       };
-
-      let nextSpecId = 0;
-      const getNextSpecId = function() {
-        return 'spec' + nextSpecId++;
-      };
-
-      let nextSuiteId = 0;
-      function getNextSuiteId() {
-        return 'suite' + nextSuiteId++;
-      }
 
       const defaultResourcesForRunnable = function(
         id: string,
@@ -380,6 +381,7 @@ export default function(j$: Jasmine) {
           suite.pend();
         }
         if (currentDeclarationSuite.markedTodo) {
+          // @ts-ignore TODO Possible error: Suite does not have todo method
           suite.todo();
         }
         addSpecsToSuite(suite, specDefinitions);
@@ -630,6 +632,7 @@ export default function(j$: Jasmine) {
 
         if (error instanceof AssertionError) {
           checkIsError = false;
+          // @ts-ignore TODO Possible error: j$.Spec does not have expand property
           message = assertionErrorMessage(error, {expand: j$.Spec.expand});
         } else {
           const check = isError(error);
@@ -658,7 +661,5 @@ export default function(j$: Jasmine) {
         });
       };
     }
-  }
-
-  return Env;
+  };
 }

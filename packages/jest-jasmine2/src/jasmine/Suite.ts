@@ -46,6 +46,14 @@ export type SuiteResult = {
   status?: string;
 };
 
+export type Attributes = {
+  id: string;
+  parentSuite?: Suite;
+  description: string;
+  throwOnExpectationFailure?: boolean;
+  getTestPath: () => Config.Path;
+};
+
 export default class Suite {
   id: string;
   parentSuite?: Suite;
@@ -63,13 +71,7 @@ export default class Suite {
   markedTodo: boolean = false;
   isFocused: boolean = false;
 
-  constructor(attrs: {
-    id: string;
-    parentSuite?: Suite;
-    description: string;
-    throwOnExpectationFailure?: boolean;
-    getTestPath: () => Config.Path;
-  }) {
+  constructor(attrs: Attributes) {
     this.id = attrs.id;
     this.parentSuite = attrs.parentSuite;
     this.description = convertDescriptorToString(attrs.description);

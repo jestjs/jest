@@ -26,6 +26,7 @@ describe('queueRunner', () => {
       ],
       setTimeout,
     };
+    // @ts-ignore
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
     expect(fnTwo).toHaveBeenCalled();
@@ -49,6 +50,7 @@ describe('queueRunner', () => {
       ],
       setTimeout,
     };
+    // @ts-ignore
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
     expect(fail).toHaveBeenCalled();
@@ -77,6 +79,7 @@ describe('queueRunner', () => {
       ],
       setTimeout,
     };
+    // @ts-ignore
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
     expect(onException).toHaveBeenCalledWith(error);
@@ -104,6 +107,7 @@ describe('queueRunner', () => {
       ],
       setTimeout,
     };
+    // @ts-ignore
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
     expect(onException).toHaveBeenCalled();
@@ -123,6 +127,7 @@ describe('queueRunner', () => {
       queueableFns: [{fn: failFn}],
       setTimeout,
     };
+    // @ts-ignore
     await queueRunner(options);
 
     expect(options.fail).toHaveBeenCalledWith('miserably', 'failed');
@@ -147,6 +152,7 @@ describe('queueRunner', () => {
       ],
       setTimeout,
     };
+    // @ts-ignore
     await queueRunner(options);
     expect(fnOne).toHaveBeenCalled();
     expect(fail).toHaveBeenCalledWith(error);

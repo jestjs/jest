@@ -6,7 +6,7 @@
  *
  */
 
-import Suite from '../jasmine/Suite';
+import Suite, {Attributes} from '../jasmine/Suite';
 
 describe('Suite', () => {
   let suite: Suite;
@@ -14,11 +14,12 @@ describe('Suite', () => {
   beforeEach(() => {
     suite = new Suite({
       getTestPath: () => '',
-    });
+    } as Attributes);
   });
 
   it("doesn't throw on addExpectationResult when there are no children", () => {
     expect(() => {
+      // @ts-ignore
       suite.addExpectationResult();
     }).not.toThrow();
   });
