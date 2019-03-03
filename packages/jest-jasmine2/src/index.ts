@@ -206,9 +206,4 @@ const addSnapshotData = (
   return results;
 };
 
-// eslint-disable-next-line
-namespace jasmine2 {
-  export type Jasmine = JestJasmine;
-}
-
 export = jasmine2;
