@@ -5,8 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {diff, printReceived, printExpected} from 'jest-matcher-utils';
-import jestDiff from 'jest-diff'; // eslint-disable-line import/no-extraneous-dependencies
+import {
+  diff,
+  printReceived,
+  printExpected,
+  DiffOptions,
+} from 'jest-matcher-utils';
 import chalk from 'chalk';
 import {AssertionErrorWithStack} from './types';
 
@@ -80,7 +84,7 @@ const assertMatcherHint = (operator: string | null, operatorName: string) => {
 
 function assertionErrorMessage(
   error: AssertionErrorWithStack,
-  options: jestDiff.DiffOptions,
+  options: DiffOptions,
 ) {
   const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);

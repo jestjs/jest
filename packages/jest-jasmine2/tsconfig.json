@@ -5,16 +5,15 @@
     "outDir": "build"
   },
   "references": [
-    {"path":  "../jest-types"},
-    {"path":  "../expect"},
-    {"path":  "../jest-matcher-utils"},
-    {"path":  "../jest-message-util"},
-    {"path":  "../jest-snapshot"},
-    {"path":  "../jest-util"},
-    {"path":  "../pretty-format"},
-    {"path":  "../jest-diff"},
-    {"path":  "../jest-runtime"},
-    {"path":  "../jest-environment"},
-    {"path":  "../jest-each"}
+    {"path": "../expect"},
+    {"path": "../jest-each"},
+    {"path": "../jest-environment"},
+    {"path": "../jest-matcher-utils"},
+    {"path": "../jest-message-util"},
+    {"path": "../jest-runtime"},
+    {"path": "../jest-snapshot"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../pretty-format"}
   ]
 }
