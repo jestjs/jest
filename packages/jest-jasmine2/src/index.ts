@@ -19,7 +19,7 @@ import jasmineAsyncInstall from './jasmineAsyncInstall';
 import Spec from './jasmine/Spec';
 import {Jasmine as JestJasmine} from './types';
 
-const JASMINE = require.resolve('./jasmine/jasmineLight.js');
+const JASMINE = require.resolve('./jasmine/jasmineLight');
 
 async function jasmine2(
   globalConfig: Config.GlobalConfig,
@@ -205,5 +205,10 @@ const addSnapshotData = (
 
   return results;
 };
+
+// eslint-disable-next-line no-redeclare
+namespace jasmine2 {
+  export type Jasmine = JestJasmine;
+}
 
 export = jasmine2;
