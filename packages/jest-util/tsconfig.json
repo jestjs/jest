@@ -6,6 +6,7 @@
   },
   "references": [
     {"path": "../jest-fake-timers"},
+    {"path": "../jest-source-map"},
     {"path": "../jest-types"}
   ]
 }

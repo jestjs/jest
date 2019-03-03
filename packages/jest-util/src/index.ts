@@ -7,6 +7,7 @@
 
 // TODO: Remove this export in the next major
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+import {getCallsite} from '@jest/source-map';
 import BufferedConsole from './BufferedConsole';
 import clearLine from './clearLine';
 import CustomConsole from './CustomConsole';
@@ -18,7 +19,6 @@ import getConsoleOutput from './getConsoleOutput';
 import installCommonGlobals from './installCommonGlobals';
 import NullConsole from './NullConsole';
 import isInteractive from './isInteractive';
-import getCallsite from './getCallsite';
 import setGlobal from './setGlobal';
 import deepCyclicCopy from './deepCyclicCopy';
 import convertDescriptorToString from './convertDescriptorToString';
