@@ -45,7 +45,7 @@
 - `[diff-sequences]`: Migrate to Typescript ([#7820](https://github.com/facebook/jest/pull/7820))
 - `[jest-get-type]`: Migrate to TypeScript ([#7818](https://github.com/facebook/jest/pull/7818))
 - `[jest-regex-util]`: Migrate to TypeScript ([#7822](https://github.com/facebook/jest/pull/7822))
-- `[jest-diff]`: Migrate to TypeScript ([#7824](https://github.com/facebook/jest/pull/7824))
+- `[jest-diff]`: Migrate to TypeScript ([#7824](https://github.com/facebook/jest/pull/7824), [#8027](https://github.com/facebook/jest/pull/8027))
 - `[jest-leak-detector]`: Migrate to TypeScript ([#7825](https://github.com/facebook/jest/pull/7825))
 - `[jest-changed-files]`: Migrate to TypeScript ([#7827](https://github.com/facebook/jest/pull/7827))
 - `[jest-matcher-utils]`: Migrate to TypeScript ([#7835](https://github.com/facebook/jest/pull/7835))

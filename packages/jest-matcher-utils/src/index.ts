@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import jestDiff from 'jest-diff';
+import jestDiff, {DiffOptions} from 'jest-diff';
 import getType from 'jest-get-type';
 import prettyFormat from 'pretty-format';
 const {
@@ -34,6 +34,8 @@ export type MatcherHintOptions = {
   promise?: string;
   secondArgument?: string;
 };
+
+export {DiffOptions};
 
 export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;

@@ -80,7 +80,7 @@ const assertMatcherHint = (operator: string | null, operatorName: string) => {
 
 function assertionErrorMessage(
   error: AssertionErrorWithStack,
-  options: jestDiff.DiffOptionsType,
+  options: jestDiff.DiffOptions,
 ) {
   const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);
