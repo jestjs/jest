@@ -7,6 +7,7 @@
 - `[expect]`: Improve report when matcher fails, part 9 ([#7940](https://github.com/facebook/jest/pull/7940))
 - `[expect]`: Improve report when matcher fails, part 10 ([#7960](https://github.com/facebook/jest/pull/7960))
 - `[expect]`: Improve report when matcher fails, part 11 ([#8008](https://github.com/facebook/jest/pull/8008))
+- `[expect]`: Improve report when matcher fails, part 12 ([#8033](https://github.com/facebook/jest/pull/8033))
 - `[pretty-format]` Support `React.memo` ([#7891](https://github.com/facebook/jest/pull/7891))
 - `[jest-config]` Print error information on preset normalization error ([#7935](https://github.com/facebook/jest/pull/7935))
 - `[jest-haste-map]` Add `skipPackageJson` option ([#7778](https://github.com/facebook/jest/pull/7778))
