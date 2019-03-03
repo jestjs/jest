@@ -31,6 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
+import chalk from 'chalk';
 import queueRunner from '../queueRunner';
 import treeProcessor from '../treeProcessor';
 import isError from '../isError';
@@ -379,22 +380,26 @@ export default function(j$) {
 
       // TODO throw in Jest 25: declarationError = new Error
       if (isPromise(describeReturnValue)) {
-        console.warn(
+        console.log(
           formatExecError(
             new Error(
-              'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-                'Returning a value from "describe" will fail the test in a future version of Jest.',
+              chalk.yellow(
+                'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
+                  'Returning a value from "describe" will fail the test in a future version of Jest.',
+              ),
             ),
             {rootDir: '', testMatch: []},
             {noStackTrace: false},
           ),
         );
       } else if (describeReturnValue !== undefined) {
-        console.warn(
+        console.log(
           formatExecError(
             new Error(
-              'A "describe" callback must not return a value.\n' +
-                'Returning a value from "describe" will fail the test in a future version of Jest.',
+              chalk.yellow(
+                'A "describe" callback must not return a value.\n' +
+                  'Returning a value from "describe" will fail the test in a future version of Jest.',
+              ),
             ),
             {rootDir: '', testMatch: []},
             {noStackTrace: false},

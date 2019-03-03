@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import chalk from 'chalk';
 import {bind as bindEach} from 'jest-each';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
@@ -68,11 +69,13 @@ const _dispatchDescribe = (
 
   // TODO throw in Jest 25
   if (isPromise(describeReturn)) {
-    console.warn(
+    console.log(
       formatExecError(
         new ErrorWithStack(
-          'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-            'Returning a value from "describe" will fail the test in a future version of Jest.',
+          chalk.yellow(
+            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
+              'Returning a value from "describe" will fail the test in a future version of Jest.',
+          ),
           describeFn,
         ),
         {rootDir: '', testMatch: []},
@@ -80,11 +83,13 @@ const _dispatchDescribe = (
       ),
     );
   } else if (describeReturn !== undefined) {
-    console.warn(
+    console.log(
       formatExecError(
         new ErrorWithStack(
-          'A "describe" callback must not return a value.\n' +
-            'Returning a value from "describe" will fail the test in a future version of Jest.',
+          chalk.yellow(
+            'A "describe" callback must not return a value.\n' +
+              'Returning a value from "describe" will fail the test in a future version of Jest.',
+          ),
           describeFn,
         ),
         {rootDir: '', testMatch: []},

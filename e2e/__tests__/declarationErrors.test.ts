@@ -9,7 +9,7 @@ import runJest from '../runJest';
 
 const normalizeCircusJasmine = (str: string) =>
   str
-    .replace(/console\.warn .+:\d+/, 'console.warn')
+    .replace(/console\.log .+:\d+/, 'console.log')
     .replace(/.+addSpecsToSuite (.+:\d+:\d+).+\n/, '');
 
 it('warns if describe returns a Promise', () => {
