@@ -12,7 +12,8 @@ import {sync as realpath} from 'realpath-native';
 import yargs from 'yargs';
 import {Config} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
-import {Console, setGlobal} from 'jest-util';
+import {CustomConsole} from '@jest/console';
+import {setGlobal} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {readConfig, deprecationEntries} from 'jest-config';
 import {VERSION} from '../version';
@@ -86,7 +87,7 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
       setGlobal(
         environment.global,
         'console',
-        new Console(process.stdout, process.stderr),
+        new CustomConsole(process.stdout, process.stderr),
       );
       setGlobal(environment.global, 'jestProjectConfig', config);
       setGlobal(environment.global, 'jestGlobalConfig', globalConfig);

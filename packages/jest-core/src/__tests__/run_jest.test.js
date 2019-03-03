@@ -2,7 +2,7 @@
 
 import runJest from '../runJest';
 
-jest.mock('jest-util');
+jest.mock('@jest/console');
 
 const processErrWriteFn = process.stderr.write;
 describe('runJest', () => {

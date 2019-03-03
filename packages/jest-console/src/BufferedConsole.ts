@@ -9,20 +9,24 @@ import assert from 'assert';
 import {Console} from 'console';
 import {format} from 'util';
 import chalk from 'chalk';
-import {Console as ConsoleType, SourceMaps} from '@jest/types';
-import getCallsite from './getCallsite';
+import {getCallsite, SourceMapRegistry} from '@jest/source-map';
+import {
+  ConsoleBuffer,
+  LogCounters,
+  LogMessage,
+  LogTimers,
+  LogType,
+} from './types';
 
 export default class BufferedConsole extends Console {
-  private _buffer: ConsoleType.ConsoleBuffer;
-  private _counters: ConsoleType.LogCounters;
-  private _timers: ConsoleType.LogTimers;
+  private _buffer: ConsoleBuffer;
+  private _counters: LogCounters;
+  private _timers: LogTimers;
   private _groupDepth: number;
-  private _getSourceMaps: () => SourceMaps.SourceMapRegistry | null | undefined;
+  private _getSourceMaps: () => SourceMapRegistry | null | undefined;
 
-  constructor(
-    getSourceMaps: () => SourceMaps.SourceMapRegistry | null | undefined,
-  ) {
-    const buffer: ConsoleType.ConsoleBuffer = [];
+  constructor(getSourceMaps: () => SourceMapRegistry | null | undefined) {
+    const buffer: ConsoleBuffer = [];
     super({
       write: (message: string) => {
         BufferedConsole.write(buffer, 'log', message, null, getSourceMaps());
@@ -38,11 +42,11 @@ export default class BufferedConsole extends Console {
   }
 
   static write(
-    buffer: ConsoleType.ConsoleBuffer,
-    type: ConsoleType.LogType,
-    message: ConsoleType.LogMessage,
+    buffer: ConsoleBuffer,
+    type: LogType,
+    message: LogMessage,
     level?: number | null,
-    sourceMaps?: SourceMaps.SourceMapRegistry | null,
+    sourceMaps?: SourceMapRegistry | null,
   ) {
     const callsite = getCallsite(level != null ? level : 2, sourceMaps);
     const origin = callsite.getFileName() + ':' + callsite.getLineNumber();
@@ -56,7 +60,7 @@ export default class BufferedConsole extends Console {
     return buffer;
   }
 
-  private _log(type: ConsoleType.LogType, message: ConsoleType.LogMessage) {
+  private _log(type: LogType, message: LogMessage) {
     BufferedConsole.write(
       this._buffer,
       type,
@@ -155,7 +159,7 @@ export default class BufferedConsole extends Console {
     this._log('warn', format(firstArg, ...rest));
   }
 
-  getBuffer(): ConsoleType.ConsoleBuffer {
+  getBuffer(): ConsoleBuffer {
     return this._buffer;
   }
 }
