@@ -218,7 +218,7 @@ export default class CoverageReporter extends BaseReporter {
         actuals: CoverageSummaryData,
       ) {
         return ['statements', 'branches', 'lines', 'functions'].reduce<
-          string[]
+          Array<string>
         >((errors, key) => {
           // Without this TypeScript complains if i put
           // `key: keyof CoverageSummaryData` or if i call `actuals[key]`
@@ -255,7 +255,7 @@ export default class CoverageReporter extends BaseReporter {
       const coveredFiles = map.files();
       const thresholdGroups = Object.keys(globalConfig.coverageThreshold);
       const groupTypeByThresholdGroup: {[index: string]: string} = {};
-      const filesByGlob: {[index: string]: string[]} = {};
+      const filesByGlob: {[index: string]: Array<string>} = {};
 
       const coveredFilesSortedIntoThresholdGroup = coveredFiles.reduce<
         Array<[string, string | undefined]>
@@ -313,7 +313,7 @@ export default class CoverageReporter extends BaseReporter {
           .filter(fileAndGroup => fileAndGroup[1] === thresholdGroup)
           .map(fileAndGroup => fileAndGroup[0]);
 
-      function combineCoverage(filePaths: string[]) {
+      function combineCoverage(filePaths: Array<string>) {
         return filePaths
           .map(filePath => map.fileCoverageFor(filePath))
           .reduce(
@@ -330,7 +330,7 @@ export default class CoverageReporter extends BaseReporter {
           );
       }
 
-      let errors: string[] = [];
+      let errors: Array<string> = [];
 
       thresholdGroups.forEach(thresholdGroup => {
         switch (groupTypeByThresholdGroup[thresholdGroup]) {

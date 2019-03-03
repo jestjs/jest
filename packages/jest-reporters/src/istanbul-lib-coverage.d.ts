@@ -1,8 +1,10 @@
-// Type definitions for istanbul-lib-coverage 2.0.3
-// Project: https://github.com/istanbuljs/istanbuljs
-// Definitions by: Jason Cheatham <https://github.com/jason0x43>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version: 2.4
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
 
 declare module 'istanbul-lib-coverage' {
   export interface CoverageSummaryData {
@@ -33,7 +35,7 @@ declare module 'istanbul-lib-coverage' {
     addFileCoverage(
       pathOrObject: string | FileCoverage | FileCoverageData,
     ): void;
-    files(): string[];
+    files(): Array<string>;
     fileCoverageFor(filename: string): FileCoverage;
     filter(callback: (key: string) => boolean): void;
     getCoverageSummary(): CoverageSummary;
@@ -55,7 +57,7 @@ declare module 'istanbul-lib-coverage' {
   export interface BranchMapping {
     loc: Range;
     type: string;
-    locations: Range[];
+    locations: Array<Range>;
     line: number;
   }
 
@@ -73,7 +75,7 @@ declare module 'istanbul-lib-coverage' {
     branchMap: {[key: string]: BranchMapping};
     s: {[key: string]: number};
     f: {[key: string]: number};
-    b: {[key: string]: number[]};
+    b: {[key: string]: Array<number>};
   }
 
   export interface Totals {
@@ -94,7 +96,7 @@ declare module 'istanbul-lib-coverage' {
     merge(other: FileCoverageData): void;
     getBranchCoverageByLine(): {[line: number]: Coverage};
     getLineCoverage(): {[line: number]: number};
-    getUncoveredLines(): number[];
+    getUncoveredLines(): Array<number>;
     resetHits(): void;
     computeBranchTotals(): Totals;
     computeSimpleTotals(): Totals;
@@ -108,7 +110,7 @@ declare module 'istanbul-lib-coverage' {
     branchMap: {[key: string]: BranchMapping};
     s: {[key: string]: number};
     f: {[key: string]: number};
-    b: {[key: string]: number[]};
+    b: {[key: string]: Array<number>};
   }
 
   export const classes: {

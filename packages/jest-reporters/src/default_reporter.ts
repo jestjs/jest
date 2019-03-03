@@ -48,7 +48,7 @@ export default class DefaultReporter extends BaseReporter {
   private _wrapStdio(stream: NodeJS.WritableStream | NodeJS.WriteStream) {
     const originalWrite = stream.write;
 
-    let buffer: string[] = [];
+    let buffer: Array<string> = [];
     let timeout: NodeJS.Timeout | null = null;
 
     const flushBufferedOutput = () => {
