@@ -6,7 +6,7 @@
  */
 
 import {diff, printReceived, printExpected} from 'jest-matcher-utils';
-import jestDiff from 'jest-diff';
+import jestDiff from 'jest-diff'; // eslint-disable-line import/no-extraneous-dependencies
 import chalk from 'chalk';
 import {AssertionErrorWithStack} from './types';
 

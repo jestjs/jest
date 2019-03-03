@@ -20,6 +20,7 @@
     "jest-each": "^24.0.0",
     "jest-matcher-utils": "^24.0.0",
     "jest-message-util": "^24.0.0",
+    "jest-runtime": "^24.1.0",
     "jest-snapshot": "^24.1.0",
     "jest-util": "^24.0.0",
     "pretty-format": "^24.0.0",
@@ -27,8 +28,7 @@
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.0.4",
-    "jest-diff": "^24.0.0",
-    "jest-runtime": "^24.1.0"
+    "jest-diff": "^24.0.0"
   },
   "engines": {
     "node": ">= 6"
