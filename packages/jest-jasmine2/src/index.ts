@@ -6,7 +6,7 @@
  */
 
 import path from 'path';
-import {Config, TestResult} from '@jest/types';
+import { Config, Global, TestResult } from "@jest/types";
 import {JestEnvironment} from '@jest/environment';
 import {SnapshotState} from 'jest-snapshot';
 import Runtime from 'jest-runtime';
@@ -23,7 +23,7 @@ const JASMINE = require.resolve('./jasmine/jasmineLight.ts');
 
 async function jasmine2(
   globalConfig: Config.GlobalConfig,
-  config: Config.JestEnviroment,
+  config: Config.ProjectConfig,
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
@@ -44,34 +44,37 @@ async function jasmine2(
   // in a future version
   if (config.testLocationInResults === true) {
     const originalIt = environment.global.it;
-    environment.global.it = (...args: Array<any>) => {
+    environment.global.it = ((...args) => {
       const stack = getCallsite(1, runtime.getSourceMaps());
       const it = originalIt(...args);
 
+      // @ts-ignore
       it.result.__callsite = stack;
 
       return it;
-    };
+    }) as Global.Global['it'];
 
     const originalXit = environment.global.xit;
-    environment.global.xit = (...args: Array<any>) => {
+    environment.global.xit = ((...args) => {
       const stack = getCallsite(1, runtime.getSourceMaps());
       const xit = originalXit(...args);
 
+      // @ts-ignore
       xit.result.__callsite = stack;
 
       return xit;
-    };
+    }) as Global.Global['xit'];
 
     const originalFit = environment.global.fit;
-    environment.global.fit = (...args: Array<any>) => {
+    environment.global.fit = ((...args) => {
       const stack = getCallsite(1, runtime.getSourceMaps());
       const fit = originalFit(...args);
 
+      // @ts-ignore
       fit.result.__callsite = stack;
 
       return fit;
-    };
+    }) as Global.Global['fit'];
   }
 
   jasmineAsyncInstall(globalConfig, environment.global);
@@ -87,7 +90,7 @@ async function jasmine2(
   environment.global.describe.only = environment.global.fdescribe;
 
   if (config.timers === 'fake') {
-    environment.fakeTimers.useFakeTimers();
+    environment.fakeTimers!.useFakeTimers();
   }
 
   env.beforeEach(() => {
@@ -103,7 +106,7 @@ async function jasmine2(
       runtime.resetAllMocks();
 
       if (config.timers === 'fake') {
-        environment.fakeTimers.useFakeTimers();
+        environment.fakeTimers!.useFakeTimers();
       }
     }
 

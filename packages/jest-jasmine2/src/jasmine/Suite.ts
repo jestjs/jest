@@ -33,12 +33,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import {convertDescriptorToString} from 'jest-util';
 import {Config} from '@jest/types';
 import ExpectationFailed from '../ExpectationFailed';
-import expectationResultFactory, {
-  Options as ExpectationResultFactoryOptions,
-} from '../expectationResultFactory';
+import expectationResultFactory from '../expectationResultFactory';
 import {QueueableFn} from '../queueRunner';
+import Spec from './Spec';
 
-type SuiteResult = {
+export type SuiteResult = {
   id: string;
   description: string;
   fullName: string;
@@ -57,7 +56,7 @@ export default class Suite {
   beforeAllFns: Array<QueueableFn>;
   afterAllFns: Array<QueueableFn>;
   disabled: boolean;
-  children: Array<Suite | Suite>;
+  children: Array<Suite | Spec>;
   result: SuiteResult;
   sharedContext?: object;
   markedPending: boolean = false;
@@ -124,7 +123,7 @@ export default class Suite {
     this.afterAllFns.unshift(fn);
   }
 
-  addChild(child: Suite | Suite) {
+  addChild(child: Suite | Spec) {
     this.children.push(child);
   }
 
@@ -169,7 +168,7 @@ export default class Suite {
     return this.sharedUserContext();
   }
 
-  onException(...args: Array<ExpectationFailed | unknown>) {
+  onException(...args: Parameters<Spec['onException']>) {
     if (args[0] instanceof ExpectationFailed) {
       return;
     }
@@ -191,7 +190,7 @@ export default class Suite {
     }
   }
 
-  addExpectationResult(...args: Array<ExpectationResultFactoryOptions>) {
+  addExpectationResult(...args: Parameters<Spec['addExpectationResult']>) {
     if (isAfterAll(this.children) && isFailure(args)) {
       const data = args[1];
       this.result.failedExpectations.push(expectationResultFactory(data));
@@ -213,7 +212,7 @@ export default class Suite {
   execute(..._args: Array<any>) {}
 }
 
-function isAfterAll(children: Array<Suite>) {
+function isAfterAll(children: Array<Spec | Suite>) {
   return children && children[0] && children[0].result.status;
 }
 

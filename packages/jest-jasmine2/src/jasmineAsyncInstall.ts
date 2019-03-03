@@ -33,7 +33,7 @@ function promisifyLifeCycleFunction(
 ) {
   return function<T>(
     fn: Function | (() => Promise<T>) | GeneratorFunction | undefined,
-    timeout: number,
+    timeout?: number,
   ) {
     if (!fn) {
       return originalFn.call(env);
@@ -144,8 +144,8 @@ function makeConcurrent(
   originalFn: Function,
   env: Jasmine['currentEnv_'],
   mutex: ReturnType<typeof throat>,
-) {
-  return function(specName: string, fn: () => Promise<any>, timeout: number) {
+): Global.ItConcurrentBase {
+  return function(specName, fn, timeout) {
     if (
       env != null &&
       !env.specFilter({getFullName: () => specName || ''} as Spec)
@@ -182,9 +182,16 @@ export default function jasmineAsyncInstall(
   const env = jasmine.getEnv();
   env.it = promisifyIt(env.it, env, jasmine);
   env.fit = promisifyIt(env.fit, env, jasmine);
-  global.it.concurrent = makeConcurrent(env.it, env, mutex);
-  global.it.concurrent.only = makeConcurrent(env.fit, env, mutex);
-  global.it.concurrent.skip = makeConcurrent(env.xit, env, mutex);
+  global.it.concurrent = (env => {
+    const concurrent = makeConcurrent(
+      env.it,
+      env,
+      mutex,
+    ) as Global.ItConcurrentExtended;
+    concurrent.only = makeConcurrent(env.fit, env, mutex);
+    concurrent.skip = makeConcurrent(env.xit, env, mutex);
+    return concurrent;
+  })(env);
   global.fit.concurrent = makeConcurrent(env.fit, env, mutex);
   env.afterAll = promisifyLifeCycleFunction(env.afterAll, env);
   env.afterEach = promisifyLifeCycleFunction(env.afterEach, env);

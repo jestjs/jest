@@ -9,16 +9,25 @@ import {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
 import {Jasmine} from './types';
 
+type DisabledGlobalKeys = 'fail' | 'pending' | 'spyOn' | 'spyOnProperty';
 // prettier-ignore
-const disabledGlobals: {[key: string]: string} = {
+const disabledGlobals: {[K in DisabledGlobalKeys]: string} = {
   fail: 'Illegal usage of global `fail`, prefer throwing an error, or the `done.fail` callback.',
   pending: 'Illegal usage of global `pending`, prefer explicitly skipping a test using `test.skip`',
   spyOn: 'Illegal usage of global `spyOn`, prefer `jest.spyOn`.',
   spyOnProperty: 'Illegal usage of global `spyOnProperty`, prefer `jest.spyOn`.',
 };
 
+type DisabledJasmineMethodsKeys =
+  | 'addMatchers'
+  | 'any'
+  | 'anything'
+  | 'arrayContaining'
+  | 'createSpy'
+  | 'objectContaining'
+  | 'stringMatching';
 // prettier-ignore
-const disabledJasmineMethods: {[key: string]: string} = {
+const disabledJasmineMethods: {[key in DisabledJasmineMethodsKeys]: string} = {
   addMatchers: 'Illegal usage of `jasmine.addMatchers`, prefer `expect.extends`.',
   any: 'Illegal usage of `jasmine.any`, prefer `expect.any`.',
   anything: 'Illegal usage of `jasmine.anything`, prefer `expect.anything`.',
@@ -30,13 +39,16 @@ const disabledJasmineMethods: {[key: string]: string} = {
 
 export function installErrorOnPrivate(global: Global.Global): void {
   const jasmine = global.jasmine as Jasmine;
-  Object.keys(disabledGlobals).forEach(functionName => {
+
+  Object.keys(disabledGlobals).forEach(key => {
+    const functionName = key as DisabledGlobalKeys;
     global[functionName] = () => {
       throwAtFunction(disabledGlobals[functionName], global[functionName]);
     };
   });
 
-  Object.keys(disabledJasmineMethods).forEach(methodName => {
+  Object.keys(disabledJasmineMethods).forEach(key => {
+    const methodName = key as DisabledJasmineMethodsKeys;
     jasmine[methodName] = () => {
       throwAtFunction(disabledJasmineMethods[methodName], jasmine[methodName]);
     };

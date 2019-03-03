@@ -70,7 +70,7 @@ export default class SpyRegistry {
   constructor({
     currentSpies = () => [],
   }: {
-    currentSpies?: () => Array<{restoreObjectToOriginalState: () => void}>;
+    currentSpies?: () => Array<Spy>;
   } = {}) {
     this.allowRespy = function(allow) {
       this.respy = allow;
@@ -140,7 +140,7 @@ export default class SpyRegistry {
 
       currentSpies().push({
         restoreObjectToOriginalState: restoreStrategy,
-      });
+      } as Spy);
 
       obj[methodName] = spiedMethod;
 
@@ -214,7 +214,7 @@ export default class SpyRegistry {
 
       currentSpies().push({
         restoreObjectToOriginalState: restoreStrategy,
-      });
+      } as Spy);
 
       const spiedDescriptor = {...descriptor, [accessType]: spiedProperty};
 
@@ -227,7 +227,7 @@ export default class SpyRegistry {
       const spies = currentSpies();
       for (let i = spies.length - 1; i >= 0; i--) {
         const spyEntry = spies[i];
-        spyEntry.restoreObjectToOriginalState();
+        spyEntry.restoreObjectToOriginalState!();
       }
     };
   }

@@ -7,20 +7,21 @@
 
 import {Config, TestResult} from '@jest/types';
 import {formatResultsErrors} from 'jest-message-util';
-import Spec, {SpecResult} from './jasmine/Spec';
-import Suite from './jasmine/Suite';
+import {SpecResult} from './jasmine/Spec';
+import {SuiteResult} from './jasmine/Suite';
+import {Reporter, RunDetails} from './types';
 
 type Microseconds = number;
 
-export default class Jasmine2Reporter {
-  _testResults: Array<TestResult.AssertionResult>;
-  _globalConfig: Config.GlobalConfig;
-  _config: Config.ProjectConfig;
-  _currentSuites: Array<string>;
-  _resolve: any;
-  _resultsPromise: Promise<TestResult.TestResult>;
-  _startTimes: Map<string, Microseconds>;
-  _testPath: Config.Path;
+export default class Jasmine2Reporter implements Reporter {
+  private _testResults: Array<TestResult.AssertionResult>;
+  private _globalConfig: Config.GlobalConfig;
+  private _config: Config.ProjectConfig;
+  private _currentSuites: Array<string>;
+  private _resolve: any;
+  private _resultsPromise: Promise<TestResult.TestResult>;
+  private _startTimes: Map<string, Microseconds>;
+  private _testPath: Config.Path;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -37,7 +38,9 @@ export default class Jasmine2Reporter {
     this._startTimes = new Map();
   }
 
-  specStarted(spec: Spec) {
+  jasmineStarted(_runDetails: RunDetails) {}
+
+  specStarted(spec: SpecResult) {
     this._startTimes.set(spec.id, Date.now());
   }
 
@@ -47,15 +50,15 @@ export default class Jasmine2Reporter {
     );
   }
 
-  suiteStarted(suite: Suite): void {
+  suiteStarted(suite: SuiteResult): void {
     this._currentSuites.push(suite.description);
   }
 
-  suiteDone(): void {
+  suiteDone(_result: SuiteResult): void {
     this._currentSuites.pop();
   }
 
-  jasmineDone(): void {
+  jasmineDone(_runDetails: RunDetails): void {
     let numFailingTests = 0;
     let numPassingTests = 0;
     let numPendingTests = 0;

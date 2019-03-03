@@ -14,7 +14,16 @@ type Options = {
   tree: TreeNode;
 };
 
-type TreeNode = Suite;
+export type TreeNode = {
+  afterAllFns: Array<any>;
+  beforeAllFns: Array<any>;
+  disabled?: boolean;
+  execute: (onComplete: () => void, enabled: boolean) => void;
+  id: string;
+  onException: (error: Error) => void;
+  sharedUserContext: () => any;
+  children?: Array<TreeNode>;
+} & Pick<Suite, 'getResult' | 'parentSuite' | 'result'>;
 
 export default function treeProcessor(options: Options) {
   const {

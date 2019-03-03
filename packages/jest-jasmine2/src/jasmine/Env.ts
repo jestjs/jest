@@ -36,7 +36,7 @@ import queueRunner, {
   Options as QueueRunnerOptions,
   QueueableFn,
 } from '../queueRunner';
-import treeProcessor from '../treeProcessor';
+import treeProcessor, {TreeNode} from '../treeProcessor';
 import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
 import {Jasmine, AssertionErrorWithStack, Reporter, Spy} from '../types';
@@ -78,7 +78,7 @@ export default function(j$: Jasmine) {
     it: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
     xdescribe: (description: string, specDefinitions: Function) => Suite;
     xit: (description: string, fn: QueueableFn['fn'], timeout?: number) => any;
-    beforeAll: (beforeAllFunction: Function, timeout?: number) => void;
+    beforeAll: (beforeAllFunction: QueueableFn['fn'], timeout?: number) => void;
     todo: () => Spec;
     provideFallbackReporter: (reporterToAdd: Reporter) => void;
     allowRespy: (allow: boolean) => void;
@@ -92,7 +92,7 @@ export default function(j$: Jasmine) {
       const realSetTimeout = global.setTimeout;
       const realClearTimeout = global.clearTimeout;
 
-      const runnableResources: {[key: string]: {spies: []}} = {};
+      const runnableResources: {[key: string]: {spies: Array<Spy>}} = {};
       const currentlyExecutingSuites: Array<Suite> = [];
       let currentSpec: Spec | null = null;
       let throwOnExpectationFailure = false;
@@ -293,7 +293,7 @@ export default function(j$: Jasmine) {
             }
           },
           nodeStart(suite) {
-            currentlyExecutingSuites.push(suite);
+            currentlyExecutingSuites.push(suite as Suite);
             defaultResourcesForRunnable(
               suite.id,
               suite.parentSuite && suite.parentSuite.id,
@@ -306,7 +306,7 @@ export default function(j$: Jasmine) {
           },
           queueRunnerFactory,
           runnableIds: runnablesToRun,
-          tree: suiteTree,
+          tree: suiteTree as TreeNode,
         });
 
         currentDeclarationSuite = lastDeclarationSuite;
@@ -648,7 +648,6 @@ export default function(j$: Jasmine) {
           throw errorAsErrorObject;
         }
 
-        // @ts-ignore
         runnable.addExpectationResult(false, {
           matcherName: '',
           passed: false,

@@ -62,7 +62,7 @@ export type Options = {
   actual?: any;
   error?: any;
   expected?: any;
-  message?: string;
+  message?: string | null;
 };
 
 export default function expectationResultFactory(

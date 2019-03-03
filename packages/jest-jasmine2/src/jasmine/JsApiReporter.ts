@@ -30,8 +30,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 import {SpecResult} from './Spec';
-import Suite from './Suite';
+import {SuiteResult} from "./Suite";
 import Timer from './Timer';
+import {Reporter, RunDetails} from '../types';
 
 const noopTimer = {
   start() {},
@@ -40,23 +41,24 @@ const noopTimer = {
   },
 };
 
-export default class JsApiReporter {
+export default class JsApiReporter implements Reporter {
   started: boolean;
   finished: boolean;
-  runDetails: unknown;
-  jasmineStarted: () => void;
-  jasmineDone: (runDetails: SpecResult) => void;
+  runDetails: RunDetails;
+  jasmineStarted: (runDetails: RunDetails) => void;
+  jasmineDone: (runDetails: RunDetails) => void;
   status: () => unknown;
   executionTime: () => unknown;
 
-  suiteStarted: (result: Suite) => void;
-  suiteDone: (result: Suite) => void;
-  suiteResults: (index: number, length: number) => Array<Suite>;
-  suites: () => {[key: string]: Suite};
+  suiteStarted: (result: SuiteResult) => void;
+  suiteDone: (result: SuiteResult) => void;
+  suiteResults: (index: number, length: number) => Array<SuiteResult>;
+  suites: () => {[key: string]: SuiteResult};
 
   specResults: (index: number, length: number) => Array<SpecResult>;
   specDone: (result: SpecResult) => void;
   specs: () => Array<SpecResult>;
+  specStarted: (spec: SpecResult) => void;
 
   constructor(options: {timer?: Timer}) {
     const timer = options.timer || noopTimer;
@@ -74,7 +76,7 @@ export default class JsApiReporter {
 
     let executionTime: number;
 
-    function validateAfterAllExceptions({failedExpectations}: SpecResult) {
+    function validateAfterAllExceptions({failedExpectations}: RunDetails) {
       if (failedExpectations && failedExpectations.length > 0) {
         throw failedExpectations[0];
       }
@@ -92,14 +94,16 @@ export default class JsApiReporter {
       return status;
     };
 
-    const suites: Array<Suite> = [];
-    const suites_hash: {[key: string]: Suite} = {};
+    const suites: Array<SuiteResult> = [];
+    const suites_hash: {[key: string]: SuiteResult} = {};
 
-    this.suiteStarted = function(result: Suite) {
+    this.specStarted = function() {};
+
+    this.suiteStarted = function(result: SuiteResult) {
       suites_hash[result.id] = result;
     };
 
-    this.suiteDone = function(result: Suite) {
+    this.suiteDone = function(result: SuiteResult) {
       storeSuite(result);
     };
 
@@ -107,7 +111,7 @@ export default class JsApiReporter {
       return suites.slice(index, index + length);
     };
 
-    function storeSuite(result: Suite) {
+    function storeSuite(result: SuiteResult) {
       suites.push(result);
       suites_hash[result.id] = result;
     }

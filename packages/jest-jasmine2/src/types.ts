@@ -9,15 +9,14 @@ import {AssertionError} from 'assert';
 import {Config} from '@jest/types';
 
 import expect from 'expect';
-import Spec from './jasmine/Spec';
+import Spec, {SpecResult} from './jasmine/Spec';
 import JsApiReporter from './jasmine/JsApiReporter';
-import Jasmine2Reporter from './reporter';
 import Timer from './jasmine/Timer';
 import Env from './jasmine/Env';
 import createSpy from './jasmine/createSpy';
 import ReportDispatcher from './jasmine/ReportDispatcher';
 import SpyRegistry from './jasmine/spyRegistry';
-import Suite from './jasmine/Suite';
+import Suite, {SuiteResult} from './jasmine/Suite';
 import SpyStrategy from './jasmine/SpyStrategy';
 import CallTracker from './jasmine/CallTracker';
 
@@ -44,12 +43,25 @@ export type RawMatcherFn = (
 ) => ExpectationResult;
 // -------END-------
 
-export type Reporter = JsApiReporter | Jasmine2Reporter;
+export type RunDetails = {
+  totalSpecsDefined?: number;
+  failedExpectations?: SuiteResult['failedExpectations'];
+};
+
+export type Reporter = {
+  jasmineDone: (runDetails: RunDetails) => void;
+  jasmineStarted: (runDetails: RunDetails) => void;
+  specDone: (result: SpecResult) => void;
+  specStarted: (spec: SpecResult) => void;
+  suiteDone: (result: SuiteResult) => void;
+  suiteStarted: (result: SuiteResult) => void;
+};
 
 export interface Spy extends Record<string, any> {
   (this: {[key: string]: any}, ...args: Array<any>): unknown;
   and: SpyStrategy;
   calls: CallTracker;
+  restoreObjectToOriginalState?: () => void;
   [key: string]: any;
 }
 
@@ -71,3 +83,11 @@ export type Jasmine = {
   addMatchers: Function;
 } & typeof expect &
   NodeJS.Global;
+
+declare global {
+  module NodeJS {
+    interface Global {
+      expect: typeof expect;
+    }
+  }
+}

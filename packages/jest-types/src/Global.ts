@@ -62,15 +62,15 @@ export interface DescribeBase {
 }
 
 export interface Describe extends DescribeBase {
-  only: ItBase;
-  skip: ItBase;
+  only: DescribeBase;
+  skip: DescribeBase;
 }
 
 // TODO: Maybe add `| Window` in the future?
 export interface Global extends NodeJS.Global {
-  it: It;
+  it: ItConcurrent;
   test: ItConcurrent;
-  fit: ItBase;
+  fit: ItBase & {concurrent?: ItConcurrentBase};
   xit: ItBase;
   xtest: ItBase;
   describe: Describe;
@@ -78,6 +78,10 @@ export interface Global extends NodeJS.Global {
   fdescribe: DescribeBase;
   __coverage__: CoverageMapData;
   jasmine: Jasmine;
+  fail: () => void;
+  pending: () => void;
+  spyOn: () => void;
+  spyOnProperty: () => void;
 }
 
 declare global {

@@ -28,15 +28,29 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import {Reporter} from '../types';
+import {Reporter, RunDetails} from '../types';
+import {SpecResult} from './Spec';
+import {SuiteResult} from './Suite';
 
-export default class ReportDispatcher {
+export default class ReportDispatcher implements Reporter {
   addReporter: (reporter: Reporter) => void;
   provideFallbackReporter: (reporter: Reporter) => void;
   clearReporters: () => void;
-  [key: string]: any;
 
-  constructor(methods: Array<string>) {
+  // @ts-ignore
+  jasmineDone: (runDetails: RunDetails) => void;
+  // @ts-ignore
+  jasmineStarted: (runDetails: RunDetails) => void;
+  // @ts-ignore
+  specDone: (result: SpecResult) => void;
+  // @ts-ignore
+  specStarted: (spec: SpecResult) => void;
+  // @ts-ignore
+  suiteDone: (result: SuiteResult) => void;
+  // @ts-ignore
+  suiteStarted: (result: SuiteResult) => void;
+
+  constructor(methods: Array<keyof Reporter>) {
     const dispatchedMethods = methods || [];
 
     for (let i = 0; i < dispatchedMethods.length; i++) {
@@ -65,13 +79,14 @@ export default class ReportDispatcher {
 
     return this;
 
-    function dispatch(method: string, args: any) {
+    function dispatch(method: keyof Reporter, args: any) {
       if (reporters.length === 0 && fallbackReporter !== null) {
         reporters.push(fallbackReporter);
       }
       for (let i = 0; i < reporters.length; i++) {
         const reporter = reporters[i];
         if (reporter[method]) {
+          // @ts-ignore
           reporter[method].apply(reporter, args);
         }
       }
