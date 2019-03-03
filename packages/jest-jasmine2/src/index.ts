@@ -6,7 +6,7 @@
  */
 
 import path from 'path';
-import { Config, Global, TestResult } from "@jest/types";
+import {Config, Global, TestResult} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
 import {SnapshotState} from 'jest-snapshot';
 import Runtime from 'jest-runtime';
