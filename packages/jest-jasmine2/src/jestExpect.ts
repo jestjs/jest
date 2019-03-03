@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Matchers} from '@jest/types';
-import expect from 'expect';
+import expect, {MatcherState} from 'expect';
 import {
   addSerializer,
   toMatchSnapshot,
@@ -46,7 +45,7 @@ export default (config: {expand: boolean}) => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
       jestMatchersObject[name] = function(
-        this: Matchers.MatcherState,
+        this: MatcherState,
         ...args: Array<unknown>
       ): RawMatcherFn {
         // use "expect.extend" if you need to use equality testers (via this.equal)
