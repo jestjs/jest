@@ -361,7 +361,7 @@ const formatReceived = (
           '\n'
         );
       }
-    } else if (expected !== undefined) {
+    } else if (expected instanceof RegExp) {
       return (
         label +
         printReceivedStringContainExpectedResult(
