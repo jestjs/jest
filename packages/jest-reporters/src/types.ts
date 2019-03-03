@@ -11,8 +11,6 @@ import {JestEnvironment as Environment} from '@jest/environment';
 import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
 import HasteResolver from 'jest-resolve';
 import Runtime from 'jest-runtime';
-// @ts-ignore Not migrated yet
-import {TestWatcher as _TestWatcher} from '@jest/core';
 import {worker} from './coverage_worker';
 
 export type ReporterOnStartOptions = {
@@ -32,8 +30,6 @@ export type Test = {
   duration?: number;
   path: Config.Path;
 };
-
-export type TestWatcher = _TestWatcher;
 
 export type CoverageWorker = {worker: typeof worker};
 

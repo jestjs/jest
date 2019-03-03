@@ -6,10 +6,15 @@
  *
  */
 
+// TODO: Remove this
+/// <reference path="./istanbul-lib-coverage.d.ts" />
+
 import {Config} from '@jest/types';
 import {readInitialCoverage} from 'istanbul-lib-instrument';
-import {FileCoverage} from 'istanbul-lib-coverage';
+import {classes} from 'istanbul-lib-coverage';
 import {shouldInstrument, ScriptTransformer} from '@jest/transform';
+
+const FileCoverage = classes.FileCoverage;
 
 export type CoverageWorkerResult = {
   coverage: any;

@@ -112,7 +112,7 @@ declare module 'istanbul-lib-coverage' {
   }
 
   export const classes: {
-    FileCoverage: FileCoverage;
+    FileCoverage: typeof FileCoverage;
   };
 
   export function createCoverageMap(

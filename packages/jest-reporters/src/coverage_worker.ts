@@ -9,8 +9,7 @@
 import fs from 'fs';
 import {Config} from '@jest/types';
 import exit from 'exit';
-// @ts-ignore
-import {CoverageReporterOptions} from './coverage_reporter';
+import {CoverageReporterOptions} from './types';
 
 import generateEmptyCoverage, {
   CoverageWorkerResult,
