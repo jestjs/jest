@@ -5,15 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TestResult} from '@jest/types';
+import {
+  AggregatedResult,
+  AssertionResult,
+  CodeCoverageFormatter,
+  CodeCoverageReporter,
+  FormattedAssertionResult,
+  FormattedTestResult,
+  FormattedTestResults,
+  TestResult,
+} from './types';
 
 const formatResult = (
-  testResult: TestResult.TestResult,
-  codeCoverageFormatter: TestResult.CodeCoverageFormatter,
-  reporter: TestResult.CodeCoverageReporter,
-): TestResult.FormattedTestResult => {
+  testResult: TestResult,
+  codeCoverageFormatter: CodeCoverageFormatter,
+  reporter: CodeCoverageReporter,
+): FormattedTestResult => {
   const now = Date.now();
-  const output: TestResult.FormattedTestResult = {
+  const output: FormattedTestResult = {
     assertionResults: [],
     coverage: {},
     endTime: now,
@@ -45,9 +54,9 @@ const formatResult = (
 };
 
 function formatTestAssertion(
-  assertion: TestResult.AssertionResult,
-): TestResult.FormattedAssertionResult {
-  const result: TestResult.FormattedAssertionResult = {
+  assertion: AssertionResult,
+): FormattedAssertionResult {
+  const result: FormattedAssertionResult = {
     ancestorTitles: assertion.ancestorTitles,
     failureMessages: null,
     fullName: assertion.fullName,
@@ -62,10 +71,10 @@ function formatTestAssertion(
 }
 
 export default function formatTestResults(
-  results: TestResult.AggregatedResult,
-  codeCoverageFormatter?: TestResult.CodeCoverageFormatter | null,
-  reporter?: TestResult.CodeCoverageReporter,
-): TestResult.FormattedTestResults {
+  results: AggregatedResult,
+  codeCoverageFormatter?: CodeCoverageFormatter | null,
+  reporter?: CodeCoverageReporter,
+): FormattedTestResults {
   const formatter = codeCoverageFormatter || (coverage => coverage);
 
   const testResults = results.testResults.map(testResult =>

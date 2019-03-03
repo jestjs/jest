@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TestResult, Config} from '@jest/types';
-
+import {Config} from '@jest/types';
+import {AggregatedResult, TestResult} from '@jest/test-result';
 import chalk from 'chalk';
 import stringLength from 'string-length';
 import {ReporterOnStartOptions} from './types';
@@ -70,7 +70,7 @@ export default class Status {
   private _emitScheduled: boolean;
   private _estimatedTime: number;
   private _interval?: NodeJS.Timeout;
-  private _aggregatedResults?: TestResult.AggregatedResult;
+  private _aggregatedResults?: AggregatedResult;
   private _showStatus: boolean;
 
   constructor() {
@@ -87,7 +87,7 @@ export default class Status {
   }
 
   runStarted(
-    aggregatedResults: TestResult.AggregatedResult,
+    aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
     this._estimatedTime = (options && options.estimatedTime) || 0;
@@ -114,8 +114,8 @@ export default class Status {
 
   testFinished(
     _config: Config.ProjectConfig,
-    testResult: TestResult.TestResult,
-    aggregatedResults: TestResult.AggregatedResult,
+    testResult: TestResult,
+    aggregatedResults: AggregatedResult,
   ) {
     const {testFilePath} = testResult;
     this._aggregatedResults = aggregatedResults;

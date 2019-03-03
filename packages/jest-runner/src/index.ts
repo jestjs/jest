@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {SerializableError} from '@jest/test-result';
 import exit from 'exit';
 import throat from 'throat';
 import Worker from 'jest-worker';
@@ -135,10 +136,7 @@ class TestRunner {
         });
       });
 
-    const onError = async (
-      err: TestResult.SerializableError,
-      test: JestTest,
-    ) => {
+    const onError = async (err: SerializableError, test: JestTest) => {
       await onFailure(test, err);
       if (err.type === 'ProcessTerminatedError') {
         console.error(

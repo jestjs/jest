@@ -14,10 +14,10 @@ import {
   NullConsole,
   getConsoleOutput,
 } from '@jest/console';
+import {formatTestResults} from '@jest/test-result';
 import clearLine from './clearLine';
 import createDirectory from './createDirectory';
 import ErrorWithStack from './ErrorWithStack';
-import formatTestResults from './formatTestResults';
 import getFailedSnapshotTests from './getFailedSnapshotTests';
 import installCommonGlobals from './installCommonGlobals';
 import isInteractive from './isInteractive';

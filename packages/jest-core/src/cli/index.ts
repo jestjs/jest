@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {AggregatedResult} from '@jest/test-result';
 import {CustomConsole} from '@jest/console';
 import {createDirectory, preRunMessage} from 'jest-util';
 import {readConfigs} from 'jest-config';
@@ -27,20 +28,20 @@ import logDebugMessages from '../lib/log_debug_messages';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
-type OnCompleteCallback = (results: TestResult.AggregatedResult) => void;
+type OnCompleteCallback = (results: AggregatedResult) => void;
 
 export const runCLI = async (
   argv: Config.Argv,
   projects: Array<Config.Path>,
 ): Promise<{
-  results: TestResult.AggregatedResult;
+  results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
 }> => {
   const realFs = require('fs');
   const fs = require('graceful-fs');
   fs.gracefulify(realFs);
 
-  let results: TestResult.AggregatedResult | undefined;
+  let results: AggregatedResult | undefined;
 
   // If we output a JSON object, we can't write anything to stdout, since
   // it'll break the JSON structure and it won't be valid.

@@ -6,8 +6,9 @@
  */
 
 import path from 'path';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
+import {TestResult} from '@jest/test-result';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Runtime from 'jest-runtime';
 import {SnapshotState} from 'jest-snapshot';
@@ -20,7 +21,7 @@ const jestAdapter = async (
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult.TestResult> => {
+): Promise<TestResult> => {
   const {
     initialize,
     runAndTransformResultsToJestFormat,
@@ -86,7 +87,7 @@ const jestAdapter = async (
 };
 
 const _addSnapshotData = (
-  results: TestResult.TestResult,
+  results: TestResult,
   // TODO: make just snapshotState: SnapshotState when `jest-snapshot` is ESM
   snapshotState: typeof SnapshotState.prototype,
 ) => {

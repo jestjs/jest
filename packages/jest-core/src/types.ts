@@ -7,7 +7,8 @@
 
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {AggregatedResult, TestResult} from '@jest/test-result';
 
 export type TestRunData = Array<{
   context: Context;
@@ -48,17 +49,17 @@ export type ReporterOnStartOptions = {
 export type Reporter = {
   onTestResult: (
     test: Test,
-    testResult: TestResult.TestResult,
-    aggregatedResult: TestResult.AggregatedResult,
+    testResult: TestResult,
+    aggregatedResult: AggregatedResult,
   ) => Promise<void>;
   onRunStart: (
-    results: TestResult.AggregatedResult,
+    results: AggregatedResult,
     options: ReporterOnStartOptions,
   ) => Promise<void>;
   onTestStart: (test: Test) => Promise<void>;
   onRunComplete: (
     contexts: Set<Context>,
-    results: TestResult.AggregatedResult,
+    results: AggregatedResult,
   ) => Promise<void>;
   getLastError: () => Error;
 };

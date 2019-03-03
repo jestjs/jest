@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {BaseWatchPlugin, JestHookSubscriber} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   private _snapshotInteractiveMode: SnapshotInteractiveMode;
-  private _failedSnapshotTestAssertions: Array<TestResult.AssertionLocation>;
+  private _failedSnapshotTestAssertions: Array<AssertionLocation>;
   isInternal: true;
 
   constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
@@ -22,9 +23,9 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   }
 
   getFailedSnapshotTestAssertions(
-    testResults: TestResult.AggregatedResult,
-  ): Array<TestResult.AssertionLocation> {
-    const failedTestPaths: Array<TestResult.AssertionLocation> = [];
+    testResults: AggregatedResult,
+  ): Array<AssertionLocation> {
+    const failedTestPaths: Array<AssertionLocation> = [];
     if (testResults.numFailedTests === 0 || !testResults.testResults) {
       return failedTestPaths;
     }

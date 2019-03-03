@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {AggregatedResult, SerializableError, TestResult} from './types';
 
-export const makeEmptyAggregatedTestResult = (): TestResult.AggregatedResult => ({
+export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
   numFailedTestSuites: 0,
   numFailedTests: 0,
   numPassedTestSuites: 0,
@@ -43,8 +44,8 @@ export const makeEmptyAggregatedTestResult = (): TestResult.AggregatedResult => 
 
 export const buildFailureTestResult = (
   testPath: Config.Path,
-  err: TestResult.SerializableError,
-): TestResult.TestResult => ({
+  err: SerializableError,
+): TestResult => ({
   console: null,
   displayName: '',
   failureMessage: null,
@@ -76,8 +77,8 @@ export const buildFailureTestResult = (
 
 // Add individual test result to an aggregated test result
 export const addResult = (
-  aggregatedResults: TestResult.AggregatedResult,
-  testResult: TestResult.TestResult,
+  aggregatedResults: AggregatedResult,
+  testResult: TestResult,
 ): void => {
   // `todos` are new as of Jest 24, and not all runners return it.
   // Set it to `0` to avoid `NaN`

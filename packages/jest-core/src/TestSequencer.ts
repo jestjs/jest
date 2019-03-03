@@ -6,7 +6,7 @@
  */
 
 import fs from 'fs';
-import {TestResult} from '@jest/types';
+import {AggregatedResult} from '@jest/test-result';
 import {getCacheFilePath} from 'jest-haste-map';
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
@@ -90,7 +90,7 @@ export default class TestSequencer {
     });
   }
 
-  cacheResults(tests: Array<Test>, results: TestResult.AggregatedResult) {
+  cacheResults(tests: Array<Test>, results: AggregatedResult) {
     const map = Object.create(null);
     tests.forEach(test => (map[test.path] = test));
     results.testResults.forEach(testResult => {
