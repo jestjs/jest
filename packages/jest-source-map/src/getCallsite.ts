@@ -8,7 +8,7 @@
 import fs from 'graceful-fs';
 import callsites, {CallSite} from 'callsites';
 import {SourceMapConsumer} from 'source-map';
-import {SourceMaps} from '@jest/types';
+import {SourceMapRegistry} from './types';
 
 // Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
 const addSourceMapConsumer = (
@@ -46,10 +46,7 @@ const addSourceMapConsumer = (
   });
 };
 
-export default (
-  level: number,
-  sourceMaps?: SourceMaps.SourceMapRegistry | null,
-) => {
+export default (level: number, sourceMaps?: SourceMapRegistry | null) => {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
   const sourceMapFileName = sourceMaps && sourceMaps[stack.getFileName() || ''];

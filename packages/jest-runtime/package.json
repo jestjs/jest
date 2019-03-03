@@ -11,6 +11,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/environment": "^24.1.0",
+    "@jest/source-map": "^24.1.0",
     "@jest/transform": "^24.1.0",
     "@jest/types": "^24.1.0",
     "@types/yargs": "^12.0.2",

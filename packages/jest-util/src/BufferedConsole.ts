@@ -9,19 +9,17 @@ import assert from 'assert';
 import {Console} from 'console';
 import {format} from 'util';
 import chalk from 'chalk';
-import {Console as ConsoleType, SourceMaps} from '@jest/types';
-import getCallsite from './getCallsite';
+import {Console as ConsoleType} from '@jest/types';
+import {getCallsite, SourceMapRegistry} from '@jest/source-map';
 
 export default class BufferedConsole extends Console {
   private _buffer: ConsoleType.ConsoleBuffer;
   private _counters: ConsoleType.LogCounters;
   private _timers: ConsoleType.LogTimers;
   private _groupDepth: number;
-  private _getSourceMaps: () => SourceMaps.SourceMapRegistry | null | undefined;
+  private _getSourceMaps: () => SourceMapRegistry | null | undefined;
 
-  constructor(
-    getSourceMaps: () => SourceMaps.SourceMapRegistry | null | undefined,
-  ) {
+  constructor(getSourceMaps: () => SourceMapRegistry | null | undefined) {
     const buffer: ConsoleType.ConsoleBuffer = [];
     super({
       write: (message: string) => {
@@ -42,7 +40,7 @@ export default class BufferedConsole extends Console {
     type: ConsoleType.LogType,
     message: ConsoleType.LogMessage,
     level?: number | null,
-    sourceMaps?: SourceMaps.SourceMapRegistry | null,
+    sourceMaps?: SourceMapRegistry | null,
   ) {
     const callsite = getCallsite(level != null ? level : 2, sourceMaps);
     const origin = callsite.getFileName() + ':' + callsite.getLineNumber();
