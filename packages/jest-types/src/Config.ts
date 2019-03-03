@@ -223,6 +223,15 @@ type NotifyMode =
   | 'success-change'
   | 'failure-change';
 
+type CoverageThreshold = {
+  [path: string]: {
+    [key: string]: number;
+  };
+  global: {
+    [key: string]: number;
+  };
+};
+
 export type GlobalConfig = {
   bail: number;
   changedSince: string;
@@ -238,11 +247,7 @@ export type GlobalConfig = {
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageReporters: Array<string>;
-  coverageThreshold: {
-    global: {
-      [key: string]: number;
-    };
-  };
+  coverageThreshold: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
   enabledTestsMap:

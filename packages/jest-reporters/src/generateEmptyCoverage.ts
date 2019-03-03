@@ -3,30 +3,30 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
+// TODO: Remove this
+/// <reference path="./istanbul-lib-coverage.d.ts" />
 
+import {Config} from '@jest/types';
 import {readInitialCoverage} from 'istanbul-lib-instrument';
 import {classes} from 'istanbul-lib-coverage';
 import {shouldInstrument, ScriptTransformer} from '@jest/transform';
 
-export type CoverageWorkerResult = {|
-  coverage: any,
-  sourceMapPath: ?string,
-|};
+const FileCoverage = classes.FileCoverage;
 
-const {FileCoverage} = classes;
+export type CoverageWorkerResult = {
+  coverage: any;
+  sourceMapPath?: string | null;
+};
 
 export default function(
   source: string,
-  filename: Path,
-  globalConfig: GlobalConfig,
-  config: ProjectConfig,
-  changedFiles: ?Set<Path>,
-): ?CoverageWorkerResult {
+  filename: Config.Path,
+  globalConfig: Config.GlobalConfig,
+  config: Config.ProjectConfig,
+  changedFiles?: Set<Config.Path>,
+): CoverageWorkerResult | null {
   const coverageOptions = {
     changedFiles,
     collectCoverage: globalConfig.collectCoverage,
