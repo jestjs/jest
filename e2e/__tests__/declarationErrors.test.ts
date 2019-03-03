@@ -7,16 +7,18 @@
 
 import runJest from '../runJest';
 
+const normalizeCircusJasmine = (str: string) =>
+  str
+    .replace(/console\.warn .+:\d+/, 'console.warn')
+    .replace(/.+addSpecsToSuite (.+:\d+:\d+).+\n/, '');
+
 it('warns if describe returns a Promise', () => {
   const result = runJest('declaration-errors', [
     'describeReturnPromise.test.js',
   ]);
 
   expect(result.status).toBe(0);
-  expect(result.stdout).toContain('Tests must be defined synchronously');
-  expect(result.stdout).toContain(
-    'at Object.describe (__tests__/describeReturnPromise.test.js',
-  );
+  expect(normalizeCircusJasmine(result.stdout)).toMatchSnapshot();
 });
 
 it('warns if describe returns something', () => {
@@ -25,10 +27,5 @@ it('warns if describe returns something', () => {
   ]);
 
   expect(result.status).toBe(0);
-  expect(result.stdout).toContain(
-    '"describe" callback must not return a value',
-  );
-  expect(result.stdout).toContain(
-    'at Object.describe (__tests__/describeReturnSomething.test.js',
-  );
+  expect(normalizeCircusJasmine(result.stdout)).toMatchSnapshot();
 });
