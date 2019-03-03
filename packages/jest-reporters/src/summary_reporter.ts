@@ -6,12 +6,9 @@
  */
 
 import {TestResult, Config} from '@jest/types';
-
 import chalk from 'chalk';
 import {testPathPatternToRegExp} from 'jest-util';
-
 import {Context, ReporterOnStartOptions} from './types';
-
 import BaseReporter from './base_reporter';
 import {getSummary} from './utils';
 import getResultHeader from './get_result_header';
