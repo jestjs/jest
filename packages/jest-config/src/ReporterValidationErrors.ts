@@ -7,7 +7,6 @@
  */
 
 import {Config} from '@jest/types';
-// @ts-ignore: Not migrated to TS
 import {ValidationError} from 'jest-validate';
 import chalk from 'chalk';
 import getType from 'jest-get-type';
@@ -27,7 +26,7 @@ const ERROR = `${BULLET}Reporter Validation Error`;
 export function createReporterError(
   reporterIndex: number,
   reporterValue: Array<Config.ReporterConfig> | string,
-): ValidationError {
+) {
   const errorMessage =
     `  Reporter at index ${reporterIndex} must be of type:\n` +
     `    ${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
@@ -44,7 +43,7 @@ export function createArrayReporterError(
   value: string | Object,
   expectedType: string,
   valueName: string,
-): ValidationError {
+) {
   const errorMessage =
     `  Unexpected value for ${valueName} ` +
     `at index ${valueIndex} of reporter at index ${reporterIndex}\n` +

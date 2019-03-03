@@ -15,7 +15,7 @@ import {
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
-  Test,
+  Test as JestTest,
   TestRunnerContext,
   TestRunnerOptions,
   TestWatcher,
@@ -28,6 +28,11 @@ interface WorkerInterface extends Worker {
   worker: typeof worker;
 }
 
+namespace TestRunner {
+  export type Test = JestTest;
+}
+
+/* eslint-disable-next-line no-redeclare */
 class TestRunner {
   private _globalConfig: Config.GlobalConfig;
   private _context: TestRunnerContext;
@@ -38,7 +43,7 @@ class TestRunner {
   }
 
   async runTests(
-    tests: Array<Test>,
+    tests: Array<JestTest>,
     watcher: TestWatcher,
     onStart: OnTestStart,
     onResult: OnTestSuccess,
@@ -57,7 +62,7 @@ class TestRunner {
   }
 
   private async _createInBandTestRun(
-    tests: Array<Test>,
+    tests: Array<JestTest>,
     watcher: TestWatcher,
     onStart: OnTestStart,
     onResult: OnTestSuccess,
@@ -91,7 +96,7 @@ class TestRunner {
   }
 
   private async _createParallelTestRun(
-    tests: Array<Test>,
+    tests: Array<JestTest>,
     watcher: TestWatcher,
     onStart: OnTestStart,
     onResult: OnTestSuccess,
@@ -111,7 +116,7 @@ class TestRunner {
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
-    const runTestInWorker = (test: Test) =>
+    const runTestInWorker = (test: JestTest) =>
       mutex(async () => {
         if (watcher.isInterrupted()) {
           return Promise.reject();
@@ -130,7 +135,10 @@ class TestRunner {
         });
       });
 
-    const onError = async (err: TestResult.SerializableError, test: Test) => {
+    const onError = async (
+      err: TestResult.SerializableError,
+      test: JestTest,
+    ) => {
       await onFailure(test, err);
       if (err.type === 'ProcessTerminatedError') {
         console.error(

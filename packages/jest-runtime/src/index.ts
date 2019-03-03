@@ -30,7 +30,7 @@ import stripBOM from 'strip-bom';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
-import {Context} from './types';
+import {Context as JestContext} from './types';
 
 type HasteMapOptions = {
   console?: Console;
@@ -52,6 +52,10 @@ type ResolveOptions = Parameters<typeof require.resolve>[1];
 type BooleanObject = {[key: string]: boolean};
 type CacheFS = {[path: string]: string};
 
+namespace Runtime {
+  export type Context = JestContext;
+}
+
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 
@@ -72,6 +76,7 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
 
 const unmockRegExpCache = new WeakMap();
 
+/* eslint-disable-next-line no-redeclare */
 class Runtime {
   static ScriptTransformer: typeof ScriptTransformer;
 
@@ -85,7 +90,7 @@ class Runtime {
   private _isCurrentlyExecutingManualMock: string | null;
   private _mockFactories: {[key: string]: () => unknown};
   private _mockMetaDataCache: {
-    [key: string]: MockFunctionMetadata<unknown, unknown[]>;
+    [key: string]: MockFunctionMetadata<unknown, Array<unknown>>;
   };
   private _mockRegistry: {[key: string]: any};
   private _isolatedMockRegistry: {[key: string]: any} | null;
@@ -188,7 +193,7 @@ class Runtime {
       watch?: boolean;
       watchman: boolean;
     },
-  ): Promise<Context> {
+  ): Promise<JestContext> {
     createDirectory(config.cacheDirectory);
     const instance = Runtime.createHasteMap(config, {
       console: options.console,

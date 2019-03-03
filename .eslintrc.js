@@ -20,6 +20,7 @@ module.exports = {
       parser: '@typescript-eslint/parser',
       plugins: ['@typescript-eslint/eslint-plugin'],
       rules: {
+        '@typescript-eslint/array-type': ['error', 'generic'],
         '@typescript-eslint/no-unused-vars': [
           'error',
           {argsIgnorePattern: '^_'},
@@ -71,7 +72,7 @@ module.exports = {
     },
     {
       files: [
-        'e2e/__tests__/**/*',
+        'e2e/__tests__/**/*.js',
         'packages/babel-jest/**/*.test.js',
         'packages/babel-plugin-jest-hoist/**/*.test.js',
         'packages/babel-preset-jest/**/*.test.js',

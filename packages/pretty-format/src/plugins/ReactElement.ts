@@ -23,7 +23,7 @@ const memoSymbol = Symbol.for('react.memo');
 
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
-const getChildren = (arg: any[], children = []) => {
+const getChildren = (arg: Array<any>, children = []) => {
   if (Array.isArray(arg)) {
     arg.forEach(item => {
       getChildren(item, children);

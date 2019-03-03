@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import jestDiff from 'jest-diff';
+import jestDiff, {DiffOptions} from 'jest-diff';
 import getType from 'jest-get-type';
 import prettyFormat from 'pretty-format';
 const {
@@ -35,8 +35,11 @@ export type MatcherHintOptions = {
   secondArgument?: string;
 };
 
+export {DiffOptions};
+
 export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
+export const INVERTED_COLOR = chalk.inverse;
 const DIM_COLOR = chalk.dim;
 
 const NUMBERS = [

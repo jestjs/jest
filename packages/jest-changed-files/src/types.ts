@@ -14,12 +14,10 @@ export type Options = {
   includePaths?: Array<Config.Path>;
 };
 
-type ChangedFiles = Set<Config.Path>;
-export type Repos = {git: ChangedFiles; hg: ChangedFiles};
-export type ChangedFilesPromise = Promise<{
-  repos: Repos;
-  changedFiles: ChangedFiles;
-}>;
+type Paths = Set<Config.Path>;
+export type Repos = {git: Paths; hg: Paths};
+export type ChangedFiles = {repos: Repos; changedFiles: Paths};
+export type ChangedFilesPromise = Promise<ChangedFiles>;
 
 export type SCMAdapter = {
   findChangedFiles: (

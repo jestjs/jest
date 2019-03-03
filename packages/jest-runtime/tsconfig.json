@@ -4,18 +4,19 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  // TODO: Missing `jest-validate` and `jest-environment-node`
   "references": [
     {"path": "../jest-config"},
     {"path": "../jest-environment"},
+    {"path": "../jest-environment-node"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-message-util"},
     {"path": "../jest-mock"},
     {"path": "../jest-regex-util"},
     {"path": "../jest-resolve"},
     {"path": "../jest-snapshot"},
-    {"path": "../jest-util"},
     {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../jest-validate"},
     {"path": "../pretty-format"}
   ]
 }

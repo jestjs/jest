@@ -64,9 +64,9 @@ function asymmetricMatch(a: any, b: any) {
 function eq(
   a: any,
   b: any,
-  aStack: any,
-  bStack: any,
-  customTesters: any,
+  aStack: Array<unknown>,
+  bStack: Array<unknown>,
+  customTesters: Array<Tester>,
   hasKey: any,
 ): boolean {
   var result = true;
@@ -129,34 +129,22 @@ function eq(
 
   var aIsDomNode = isDomNode(a);
   var bIsDomNode = isDomNode(b);
-  if (aIsDomNode && bIsDomNode) {
-    // At first try to use DOM3 method isEqualNode
-    if (a.isEqualNode) {
-      return a.isEqualNode(b);
-    }
-    // IE8 doesn't support isEqualNode, try to use outerHTML && innerText
-    var aIsElement = a instanceof Element;
-    var bIsElement = b instanceof Element;
-    if (aIsElement && bIsElement) {
-      return a.outerHTML == b.outerHTML;
-    }
-    if (aIsElement || bIsElement) {
-      return false;
-    }
-    return a.innerText == b.innerText && a.textContent == b.textContent;
-  }
-  if (aIsDomNode || bIsDomNode) {
-    return false;
+  // Use DOM3 method isEqualNode (IE>=9)
+  if (aIsDomNode && typeof a.isEqualNode === 'function' && bIsDomNode) {
+    return a.isEqualNode(b);
   }
 
-  // Assume equality for cyclic structures. The algorithm for detecting cyclic
-  // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
+  // Used to detect circular references.
   var length = aStack.length;
   while (length--) {
     // Linear search. Performance is inversely proportional to the number of
     // unique nested structures.
-    if (aStack[length] == a) {
-      return bStack[length] == b;
+    // circular references at same depth are equal
+    // circular reference is not equal to non-circular one
+    if (aStack[length] === a) {
+      return bStack[length] === b;
+    } else if (bStack[length] === b) {
+      return false;
     }
   }
   // Add the first object to the stack of traversed objects.
@@ -260,12 +248,9 @@ export function isA(typeName: string, value: unknown) {
 }
 
 function isDomNode(obj: any): obj is Node {
-  return (
-    obj !== null &&
-    typeof obj === 'object' &&
-    typeof obj.nodeType === 'number' &&
-    typeof obj.nodeName === 'string'
-  );
+  // In some test environments (e.g. "node") there is no `Node` even though
+  // we might be comparing things that look like DOM nodes.
+  return typeof Node !== 'undefined' && obj instanceof Node;
 }
 
 export function fnNameFor(func: Function) {

@@ -10,7 +10,7 @@ import chalk from 'chalk';
 import getType from 'jest-get-type';
 import diffStrings from './diffStrings';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
-import {DiffOptions} from './types';
+import {DiffOptions as JestDiffOptions} from './types';
 
 const {
   AsymmetricMatcher,
@@ -42,7 +42,7 @@ const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
-function diff(a: any, b: any, options?: DiffOptions): string | null {
+function diff(a: any, b: any, options?: JestDiffOptions): string | null {
   if (Object.is(a, b)) {
     return NO_DIFF_MESSAGE;
   }
@@ -95,7 +95,7 @@ function diff(a: any, b: any, options?: DiffOptions): string | null {
 function comparePrimitive(
   a: number | boolean,
   b: number | boolean,
-  options?: DiffOptions,
+  options?: JestDiffOptions,
 ) {
   return diffStrings(
     prettyFormat(a, FORMAT_OPTIONS),
@@ -112,7 +112,7 @@ function sortSet(set: Set<unknown>) {
   return new Set(Array.from(set.values()).sort());
 }
 
-function compareObjects(a: Object, b: Object, options?: DiffOptions) {
+function compareObjects(a: Object, b: Object, options?: JestDiffOptions) {
   let diffMessage;
   let hasThrown = false;
 
@@ -148,6 +148,11 @@ function compareObjects(a: Object, b: Object, options?: DiffOptions) {
   }
 
   return diffMessage;
+}
+
+// eslint-disable-next-line no-redeclare
+namespace diff {
+  export type DiffOptions = JestDiffOptions;
 }
 
 export = diff;

@@ -7,7 +7,7 @@
 
 beforeEach(() => jest.resetModules());
 
-const testPath = (names: string[]) => {
+const testPath = (names: Array<string>) => {
   const {addSerializer, getSerializers} = require('../plugins');
   const prev = getSerializers();
   const added = names.map(name =>
