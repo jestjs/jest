@@ -14,7 +14,9 @@ import fc from 'fast-check';
 const anythingSettings = {
   key: fc.oneof(fc.string(), fc.constantFrom('k1', 'k2', 'k3')),
   withBoxedValues: true,
+  // Issue #7975 have to be fixed before enabling the generation of Map
   withMap: false,
+  // Issue #7975 have to be fixed before enabling the generation of Set
   withSet: false,
 };
 
@@ -29,7 +31,7 @@ afterAll(() => {
   chalk.enabled = chalkEnabled;
 });
 
-describe('.toStrictEqual()', () => {
+describe('toStrictEqual', () => {
   it('should distinguish distinct values', () => {
     fc.assert(
       fc.property(
@@ -50,7 +52,12 @@ describe('.toStrictEqual()', () => {
           expect(a).not.toStrictEqual(b);
         },
       ),
-      assertSettings,
+      {
+        ...assertSettings,
+        examples: [
+          [[{a: undefined}], [{}]], // Issue #7937
+        ],
+      },
     );
   });
 
@@ -90,7 +97,7 @@ describe('.toStrictEqual()', () => {
   });
 });
 
-describe('.toEqual()', () => {
+describe('toEqual', () => {
   it('should be reflexive', () => {
     fc.assert(
       fc.property(fc.dedup(fc.anything(anythingSettings), 2), ([a, b]) => {
@@ -122,12 +129,21 @@ describe('.toEqual()', () => {
           expect(safeExpectEqual(a, b)).toBe(safeExpectEqual(b, a));
         },
       ),
-      assertSettings,
+      {
+        ...assertSettings,
+        examples: [
+          [0, 5e-324], // Issue #7941
+          // [
+          //   new Set([false, true]),
+          //   new Set([new Boolean(true), new Boolean(true)]),
+          // ], // Issue #7975
+        ],
+      },
     );
   });
 });
 
-describe('.toContain()', () => {
+describe('toContain', () => {
   it('should always find the value when inside the array', () => {
     fc.assert(
       fc.property(
@@ -136,7 +152,7 @@ describe('.toContain()', () => {
         fc.anything(anythingSettings).filter(v => !Number.isNaN(v)),
         (startValues, endValues, v) => {
           // Given:  startValues, endValues arrays and v value (not NaN)
-          // Assert: We expect `expect([...startValues, v, ...endValues]).toContainEqual(v)`
+          // Assert: We expect `expect([...startValues, v, ...endValues]).toContain(v)`
           expect([...startValues, v, ...endValues]).toContain(v);
         },
       ),
@@ -152,9 +168,9 @@ describe('.toContain()', () => {
         fc.dedup(fc.anything(anythingSettings), 2),
         (startValues, endValues, [a, b]) => {
           // Given:  startValues, endValues arrays
-          //         and [a, b] identical values
+          //         and [a, b] equal, but not the same values
           //         with `typeof a === 'object && a !== null`
-          // Assert: We expect `expect([...startValues, a, ...endValues]).toContain(b)`
+          // Assert: We expect `expect([...startValues, a, ...endValues]).not.toContain(b)`
           fc.pre(typeof a === 'object' && a !== null);
           expect([...startValues, a, ...endValues]).not.toContain(b);
         },
@@ -164,7 +180,7 @@ describe('.toContain()', () => {
   });
 });
 
-describe('.toContainEqual()', () => {
+describe('toContainEqual', () => {
   it('should always find the value when inside the array', () => {
     fc.assert(
       fc.property(
