@@ -9,25 +9,25 @@ import fs from 'fs';
 import path from 'path';
 import semver from 'semver';
 import {loadPartialConfig} from '@babel/core';
-import {parse} from '@babel/parser';
+import {parse, ParserOptions} from '@babel/parser';
 import {
   templateElement,
   templateLiteral,
   file,
   CallExpression,
 } from '@babel/types';
+import {Frame} from 'jest-message-util';
 
 import {Config} from '@jest/types';
 import {escapeBacktickString} from './utils';
-import type {Path} from 'types/Config';
 
-export type InlineSnapshot = {|
-  snapshot: string,
-  frame: {line: number, column: number, file: string},
-  sliceStart?: number,
-  sliceEnd?: number,
-  shouldHaveCommaPrefix?: boolean,
-|};
+export type InlineSnapshot = {
+  snapshot: string;
+  frame: Frame;
+  sliceStart?: number | null;
+  sliceEnd?: number | null;
+  shouldHaveCommaPrefix?: boolean;
+};
 
 export const saveInlineSnapshots = (
   snapshots: Array<InlineSnapshot>,
@@ -77,7 +77,10 @@ const saveSnapshotsForFile = (
       parser: createParser(snapshots, inferredParser, babelTraverse),
     });
   } else {
-    const {options} = loadPartialConfig({filename: sourceFilePath});
+    const {options} = loadPartialConfig({filename: sourceFilePath})!;
+    if (!options.plugins) {
+      options.plugins = []
+    }
 
     // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
     if (/\.tsx?$/.test(sourceFilePath)) {
@@ -87,7 +90,7 @@ const saveSnapshotsForFile = (
       options.plugins.push('jsx');
     }
 
-    const ast = parse(sourceFile, options);
+    const ast = parse(sourceFile, options as ParserOptions);
     traverseAst(snapshots, ast, sourceFile, babelTraverse);
 
     // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
@@ -195,7 +198,7 @@ const traverseAst = (
           inlineSnapshot.sliceStart = args[args.length - 1].end;
           inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
         } else {
-          inlineSnapshot.sliceStart = text.indexOf('(', callee.end) + 1;
+          inlineSnapshot.sliceStart = text.indexOf('(', callee.end!) + 1;
           inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
         }
         remainingSnapshots.delete(snapshot);
