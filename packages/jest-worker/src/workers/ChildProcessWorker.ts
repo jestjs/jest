@@ -158,10 +158,20 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   getStdout(): NodeJS.ReadableStream {
+    if (this._child.stdout === null) {
+      throw new Error(
+        'stdout is null - this should never happen. Please open up an issue at https://github.com/facebook/jest',
+      );
+    }
     return this._child.stdout;
   }
 
   getStderr(): NodeJS.ReadableStream {
+    if (this._child.stderr === null) {
+      throw new Error(
+        'stderr is null - this should never happen. Please open up an issue at https://github.com/facebook/jest',
+      );
+    }
     return this._child.stderr;
   }
 }

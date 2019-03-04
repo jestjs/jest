@@ -1108,7 +1108,7 @@ class DuplicateError extends Error {
   }
 }
 
-function copy<T extends Object>(object: T): T {
+function copy<T extends Record<string, any>>(object: T): T {
   return Object.assign(Object.create(null), object);
 }
 

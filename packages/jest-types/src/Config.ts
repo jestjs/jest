@@ -21,7 +21,7 @@ export type HasteConfig = {
 
 export type ReporterConfig = [string, {[key: string]: unknown}];
 
-export type ConfigGlobals = Object;
+export type ConfigGlobals = Record<string, any>;
 
 export type DefaultOptions = {
   automock: boolean;
@@ -80,7 +80,7 @@ export type DefaultOptions = {
   skipFilter: boolean;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
-  testEnvironmentOptions: Object;
+  testEnvironmentOptions: Record<string, any>;
   testFailureExitCode: string | number;
   testLocationInResults: boolean;
   testMatch: Array<Glob>;
@@ -186,7 +186,7 @@ export type InitialOptions = {
   snapshotSerializers?: Array<Path>;
   errorOnDeprecated?: boolean;
   testEnvironment?: string;
-  testEnvironmentOptions?: Object;
+  testEnvironmentOptions?: Record<string, any>;
   testFailureExitCode?: string | number;
   testLocationInResults?: boolean;
   testMatch?: Array<Glob>;
@@ -210,7 +210,7 @@ export type InitialOptions = {
   watch?: boolean;
   watchAll?: boolean;
   watchman?: boolean;
-  watchPlugins?: Array<string | [string, Object]>;
+  watchPlugins?: Array<string | [string, Record<string, any>]>;
 };
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -301,7 +301,7 @@ export type GlobalConfig = {
   watchPlugins:
     | Array<{
         path: string;
-        config: Object;
+        config: Record<string, any>;
       }>
     | null
     | undefined;
@@ -349,7 +349,7 @@ export type ProjectConfig = {
   snapshotResolver: Path | null | undefined;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
-  testEnvironmentOptions: Object;
+  testEnvironmentOptions: Record<string, any>;
   testMatch: Array<Glob>;
   testLocationInResults: boolean;
   testPathIgnorePatterns: Array<string>;

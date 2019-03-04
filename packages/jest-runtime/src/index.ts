@@ -988,7 +988,7 @@ class Runtime {
     };
 
     const jestObject: Jest = {
-      addMatchers: (matchers: Object) =>
+      addMatchers: (matchers: Record<string, any>) =>
         this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
