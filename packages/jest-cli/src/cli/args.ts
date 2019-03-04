@@ -355,16 +355,16 @@ export const options = {
     description:
       'An array of directory names to be searched recursively ' +
       "up from the requiring module's location.",
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   moduleFileExtensions: {
     description:
       'An array of file extensions your modules use. If you ' +
       'require modules without specifying a file extension, these are the ' +
       'extensions Jest will look for. ',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   moduleNameMapper: {
     description:
@@ -378,16 +378,16 @@ export const options = {
       'An array of regexp pattern strings that are matched ' +
       'against all module paths before those paths are to be considered ' +
       '"visible" to the module loader.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   modulePaths: {
     description:
       'An alternative API to setting the NODE_PATH env variable, ' +
       'modulePaths is an array of absolute paths to additional locations to ' +
       'search when resolving modules.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   noStackTrace: {
     default: undefined,
@@ -444,13 +444,13 @@ export const options = {
     description:
       'A list of projects that use Jest to run all tests of all ' +
       'projects in a single instance of Jest.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   reporters: {
     description: 'A list of custom reporters for the test suite.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   resetMocks: {
     default: undefined,
@@ -487,8 +487,8 @@ export const options = {
     description:
       'A list of paths to directories that Jest should use to ' +
       'search for files in.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   runInBand: {
     alias: 'i',
@@ -517,15 +517,15 @@ export const options = {
     description:
       'A list of paths to modules that run some code to configure or ' +
       'set up the testing environment before each test. ',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   setupFilesAfterEnv: {
     description:
       'A list of paths to modules that run some code to configure or ' +
       'set up the testing framework before each test ',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   showConfig: {
     default: undefined,
@@ -548,8 +548,8 @@ export const options = {
     description:
       'A list of paths to snapshot serializer modules Jest should ' +
       'use for snapshot testing.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   testEnvironment: {
     description: 'Alias for --env',
@@ -572,8 +572,8 @@ export const options = {
   },
   testMatch: {
     description: 'The glob patterns Jest uses to detect test files.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   testNamePattern: {
     alias: 't',
@@ -585,21 +585,21 @@ export const options = {
       'An array of regexp pattern strings that are matched ' +
       'against all test paths before executing the test. If the test path ' +
       'matches any of the patterns, it will be skipped.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   testPathPattern: {
     description:
       'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   testRegex: {
     description:
       'A string or array of string regexp patterns that Jest uses to detect test files.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   testResultsProcessor: {
     description:
@@ -635,16 +635,16 @@ export const options = {
     description:
       'An array of regexp pattern strings that are matched ' +
       'against all source file paths before transformation.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   unmockedModulePathPatterns: {
     description:
       'An array of regexp pattern strings that are matched ' +
       'against all modules before the module loader will automatically ' +
       'return a mock for them.',
-    type: 'array' as 'array',
     string: true as true,
+    type: 'array' as 'array',
   },
   updateSnapshot: {
     alias: 'u',
