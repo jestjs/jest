@@ -40,7 +40,7 @@ export function createArrayReporterError(
   arrayReporter: Config.ReporterConfig,
   reporterIndex: number,
   valueIndex: number,
-  value: string | Object,
+  value: string | Record<string, any>,
   expectedType: string,
   valueName: string,
 ) {

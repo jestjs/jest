@@ -21,6 +21,7 @@ module.exports = {
       plugins: ['@typescript-eslint/eslint-plugin'],
       rules: {
         '@typescript-eslint/array-type': ['error', 'generic'],
+        '@typescript-eslint/ban-types': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
           {argsIgnorePattern: '^_'},
