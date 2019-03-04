@@ -850,7 +850,8 @@ class ModuleMockerClass {
     if (
       metadata.type !== 'undefined' &&
       metadata.type !== 'null' &&
-      mock.prototype
+      mock.prototype &&
+      typeof mock.prototype === 'object'
     ) {
       mock.prototype.constructor = mock;
     }
