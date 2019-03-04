@@ -9,12 +9,14 @@ import fs from 'fs';
 import path from 'path';
 import semver from 'semver';
 import {loadPartialConfig} from '@babel/core';
+import generate from '@babel/generator';
 import {parse, ParserOptions} from '@babel/parser';
+import traverse from '@babel/traverse'
 import {
   templateElement,
   templateLiteral,
   file,
-  CallExpression,
+  Expression,
 } from '@babel/types';
 import {Frame} from 'jest-message-util';
 
@@ -24,10 +26,9 @@ import {escapeBacktickString} from './utils';
 export type InlineSnapshot = {
   snapshot: string;
   frame: Frame;
-  sliceStart?: number | null;
-  sliceEnd?: number | null;
-  shouldHaveCommaPrefix?: boolean;
+  node?: Expression;
 };
+type BabelTraverse = typeof traverse
 
 export const saveInlineSnapshots = (
   snapshots: Array<InlineSnapshot>,
@@ -41,7 +42,7 @@ export const saveInlineSnapshots = (
       snapshotsByFile[sourceFilePath],
       sourceFilePath,
       prettier && semver.gte(prettier.version, '1.5.0') ? prettier : null,
-      babelTraverse,
+      babelTraverse as BabelTraverse,
     );
   }
 };
@@ -50,7 +51,7 @@ const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: Config.Path,
   prettier: any,
-  babelTraverse: Function,
+  babelTraverse: BabelTraverse,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
@@ -60,8 +61,8 @@ const saveSnapshotsForFile = (
     // For older versions of Prettier, do not load configuration.
     const config = prettier.resolveConfig
       ? prettier.resolveConfig.sync(sourceFilePath, {
-          editorconfig: true,
-        })
+        editorconfig: true,
+      })
       : null;
 
     // Detect the parser for the test file.
@@ -79,7 +80,7 @@ const saveSnapshotsForFile = (
   } else {
     const {options} = loadPartialConfig({filename: sourceFilePath})!;
     if (!options.plugins) {
-      options.plugins = []
+      options.plugins = [];
     }
 
     // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
@@ -91,22 +92,21 @@ const saveSnapshotsForFile = (
     }
 
     const ast = parse(sourceFile, options as ParserOptions);
-    traverseAst(snapshots, ast, sourceFile, babelTraverse);
+    traverseAst(snapshots, ast, babelTraverse);
 
     // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
     newSourceFile = snapshots.reduceRight((sourceSoFar, nextSnapshot) => {
       if (
-        typeof nextSnapshot.sliceStart !== 'number' ||
-        typeof nextSnapshot.sliceEnd !== 'number'
+        !nextSnapshot.node ||
+        typeof nextSnapshot.node.start !== 'number' ||
+        typeof nextSnapshot.node.end !== 'number'
       ) {
         throw new Error('Jest: no snapshot insert location found');
       }
       return (
-        sourceSoFar.slice(0, nextSnapshot.sliceStart) +
-        (nextSnapshot.shouldHaveCommaPrefix ? ', `' : '`') +
-        escapeBacktickString(nextSnapshot.snapshot) +
-        '`' +
-        sourceSoFar.slice(nextSnapshot.sliceEnd)
+        sourceSoFar.slice(0, nextSnapshot.node.start) +
+        generate(nextSnapshot.node).code +
+        sourceSoFar.slice(nextSnapshot.node.end)
       );
     }, sourceFile);
   }
@@ -119,13 +119,13 @@ const saveSnapshotsForFile = (
 const groupSnapshotsBy = (
   createKey: (inlineSnapshot: InlineSnapshot) => string,
 ) => (snapshots: Array<InlineSnapshot>) =>
-  snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
-    (object, inlineSnapshot) => {
-      const key = createKey(inlineSnapshot);
-      return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
-    },
-    {},
-  );
+    snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
+      (object, inlineSnapshot) => {
+        const key = createKey(inlineSnapshot);
+        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+      },
+      {},
+    );
 
 const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
   typeof line === 'number' && typeof column === 'number'
@@ -137,26 +137,25 @@ const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 const createParser = (
   snapshots: Array<InlineSnapshot>,
   inferredParser: string,
-  babelTraverse: Function,
+  babelTraverse: BabelTraverse,
 ) => (
   text: string,
   parsers: {[key: string]: (text: string) => any},
   options: any,
-) => {
-  // Workaround for https://github.com/prettier/prettier/issues/3150
-  options.parser = inferredParser;
-  const ast = parsers[inferredParser](text);
+  ) => {
+    // Workaround for https://github.com/prettier/prettier/issues/3150
+    options.parser = inferredParser;
+    const ast = parsers[inferredParser](text);
 
-  traverseAst(snapshots, ast, text, babelTraverse);
+    traverseAst(snapshots, ast, babelTraverse);
 
-  return ast;
-};
+    return ast;
+  };
 
 const traverseAst = (
   snapshots: InlineSnapshot[],
   ast: any,
-  text: string,
-  babelTraverse: Function,
+  babelTraverse: BabelTraverse,
 ) => {
   // Flow uses a 'Program' parent node, babel expects a 'File'.
   if (ast.type !== 'File') {
@@ -168,7 +167,8 @@ const traverseAst = (
   const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
 
   babelTraverse(ast, {
-    CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
+    CallExpression({node}) {
+      const {arguments: args, callee} = node;
       if (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier'
@@ -189,18 +189,8 @@ const traverseAst = (
         ({type}) => type === 'TemplateLiteral',
       );
       const values = snapshotsForFrame.map(inlineSnapshot => {
+        inlineSnapshot.node = node;
         const {snapshot} = inlineSnapshot;
-        if (snapshotIndex > -1) {
-          inlineSnapshot.sliceStart = args[snapshotIndex].start;
-          inlineSnapshot.sliceEnd = args[snapshotIndex].end;
-        } else if (args.length > 0) {
-          inlineSnapshot.shouldHaveCommaPrefix = true;
-          inlineSnapshot.sliceStart = args[args.length - 1].end;
-          inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
-        } else {
-          inlineSnapshot.sliceStart = text.indexOf('(', callee.end!) + 1;
-          inlineSnapshot.sliceEnd = inlineSnapshot.sliceStart;
-        }
         remainingSnapshots.delete(snapshot);
 
         return templateLiteral(

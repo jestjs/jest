@@ -11,6 +11,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/core": "^7.2.2",
+    "@babel/generator": "^7.3.4",
     "@babel/parser": "^7.2.3",
     "@babel/types": "^7.0.0",
     "@jest/types": "^24.1.0",
