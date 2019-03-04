@@ -80,8 +80,10 @@
 - `[jest-validate]`: Migrate to TypeScript ([#7991](https://github.com/facebook/jest/pull/7991))
 - `[docs]`: Update CONTRIBUTING.md to add information about running jest with `jest-circus` locally ([#8013](https://github.com/facebook/jest/pull/8013)).
 - `[@jest/core]`: Migrate to TypeScript ([#7998](https://github.com/facebook/jest/pull/7998))
+- `[docs]` Update/Organize TestSequencer and testSchedulerHelper code comments([#7984](https://github.com/facebook/jest/pull/7984))
 - `[@jest/source-map]`: Extract `getCallsite` function from `jest-util` into a new separate package ([#8029](https://github.com/facebook/jest/pull/8029))
 - `[@jest/console]`: Extract custom `console` implementations from `jest-util` into a new separate package ([#8030](https://github.com/facebook/jest/pull/8030))
+- `[docs]`: Improve runAllTimers doc (it exhausts the micro-task queue) ([#8031](https://github.com/facebook/jest/pull/8031))
 
 ### Performance
 
@@ -513,7 +515,7 @@
 - `[jest-jasmine2]` Add stack trace for thrown non-`Error`s ([#6008](https://github.com/facebook/jest/pull/6008))
 - `[jest-runtime]` Prevent modules from marking themselves as their own parent ([#5235](https://github.com/facebook/jest/issues/5235))
 - `[jest-mock]` Add support for auto-mocking generator functions ([#5983](https://github.com/facebook/jest/pull/5983))
-- `[expect]` Add support for async matchers  ([#5919](https://github.com/facebook/jest/pull/5919))
+- `[expect]` Add support for async matchers ([#5919](https://github.com/facebook/jest/pull/5919))
 - `[expect]` Suggest toContainEqual ([#5948](https://github.com/facebook/jest/pull/5953))
 - `[jest-config]` Export Jest's default options ([#5948](https://github.com/facebook/jest/pull/5948))
 - `[jest-editor-support]` Move `coverage` to `ProjectWorkspace.collectCoverage` ([#5929](https://github.com/facebook/jest/pull/5929))
