@@ -74,7 +74,7 @@
 - `[jest-runner]`: Migrate to TypeScript ([#7968](https://github.com/facebook/jest/pull/7968))
 - `[jest-runtime]`: Migrate to TypeScript ([#7964](https://github.com/facebook/jest/pull/7964), [#7988](https://github.com/facebook/jest/pull/7988))
 - `[@jest/fake-timers]`: Extract FakeTimers class from `jest-util` into a new separate package ([#7987](https://github.com/facebook/jest/pull/7987))
-- `[@jest/reporters]`: Migrate to TypeScript ([#7994](https://github.com/facebook/jest/pull/7994))
+- `[@jest/reporters]`: Migrate to TypeScript ([#7994](https://github.com/facebook/jest/pull/7994), [#8045](https://github.com/facebook/jest/pull/8045))
 - `[jest-repl]`: Migrate to TypeScript ([#8000](https://github.com/facebook/jest/pull/8000))
 - `[jest-validate]`: Migrate to TypeScript ([#7991](https://github.com/facebook/jest/pull/7991))
 - `[docs]`: Update CONTRIBUTING.md to add information about running jest with `jest-circus` locally ([#8013](https://github.com/facebook/jest/pull/8013)).
