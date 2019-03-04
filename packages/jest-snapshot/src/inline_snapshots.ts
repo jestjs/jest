@@ -56,8 +56,8 @@ const saveSnapshotsForFile = (
     // For older versions of Prettier, do not load configuration.
     const config = prettier.resolveConfig
       ? prettier.resolveConfig.sync(sourceFilePath, {
-          editorconfig: true,
-        })
+        editorconfig: true,
+      })
       : null;
 
     // Detect the parser for the test file.
@@ -114,13 +114,13 @@ const saveSnapshotsForFile = (
 const groupSnapshotsBy = (
   createKey: (inlineSnapshot: InlineSnapshot) => string,
 ) => (snapshots: Array<InlineSnapshot>) =>
-  snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
-    (object, inlineSnapshot) => {
-      const key = createKey(inlineSnapshot);
-      return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
-    },
-    {},
-  );
+    snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
+      (object, inlineSnapshot) => {
+        const key = createKey(inlineSnapshot);
+        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+      },
+      {},
+    );
 
 const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
   typeof line === 'number' && typeof column === 'number'
@@ -137,18 +137,18 @@ const createParser = (
   text: string,
   parsers: {[key: string]: (text: string) => any},
   options: any,
-) => {
-  // Workaround for https://github.com/prettier/prettier/issues/3150
-  options.parser = inferredParser;
-  const ast = parsers[inferredParser](text);
+  ) => {
+    // Workaround for https://github.com/prettier/prettier/issues/3150
+    options.parser = inferredParser;
+    const ast = parsers[inferredParser](text);
 
-  traverseAst(snapshots, ast, babelTraverse);
+    traverseAst(snapshots, ast, babelTraverse);
 
-  return ast;
-};
+    return ast;
+  };
 
 const traverseAst = (
-  snapshots: InlineSnapshot[],
+  snapshots: Array<InlineSnapshot>,
   ast: any,
   babelTraverse: BabelTraverse,
 ) => {
