@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "references": [
+    {"path": "../jest-get-type"},
+    {"path": "../jest-matcher-utils"},
+    {"path": "../jest-message-util"},
+    {"path": "../jest-regex-util"},
+    {"path": "../jest-types"}
+  ]
+}

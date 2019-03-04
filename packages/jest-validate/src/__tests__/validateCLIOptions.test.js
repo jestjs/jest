@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import validateCLIOptions from '../validateCLIOptions';
 
 test('validates yargs special options', () => {

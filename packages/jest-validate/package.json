@@ -8,14 +8,16 @@
   },
   "license": "MIT",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/types": "^24.1.0",
     "camelcase": "^5.0.0",
     "chalk": "^2.0.1",
     "jest-get-type": "^24.0.0",
     "leven": "^2.1.0",
     "pretty-format": "^24.0.0"
   },
-  "devDependencies":  {
+  "devDependencies": {
     "@types/camelcase": "^4.1.0",
     "@types/leven": "^2.1.1"
   },

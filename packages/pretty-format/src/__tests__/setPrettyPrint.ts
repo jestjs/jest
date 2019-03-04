@@ -5,9 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// @ts-ignore
-import diff from 'jest-diff';
-
 import prettyFormat from '../';
 import {OptionsReceived, Plugins} from '../types';
 
@@ -34,7 +31,7 @@ const setPrettyPrint = (plugins: Plugins) => {
             `Received:\n` +
             `  ${this.utils.printReceived(prettyFormatted)}`
         : () => {
-            const diffString = diff(expected, prettyFormatted, {
+            const diffString = this.utils.diff(expected, prettyFormatted, {
               expand: this.expand,
             });
             return (

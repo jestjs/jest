@@ -8,7 +8,11 @@
   },
   "license": "MIT",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/console": "^24.1.0",
+    "@jest/environment": "^24.1.0",
+    "@jest/types": "^24.1.0",
     "chalk": "^2.4.2",
     "exit": "^0.1.2",
     "graceful-fs": "^4.1.15",
@@ -18,13 +22,14 @@
     "jest-jasmine2": "^24.1.0",
     "jest-leak-detector": "^24.0.0",
     "jest-message-util": "^24.0.0",
+    "jest-resolve": "^24.1.0",
     "jest-runtime": "^24.1.0",
     "jest-util": "^24.0.0",
     "jest-worker": "^24.0.0",
     "source-map-support": "^0.5.6",
     "throat": "^4.0.0"
   },
-  "devDependencies":  {
+  "devDependencies": {
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/source-map-support": "^0.4.1"

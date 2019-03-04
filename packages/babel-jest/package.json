@@ -9,7 +9,11 @@
   },
   "license": "MIT",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/transform": "^24.1.0",
+    "@jest/types": "^24.1.0",
+    "@types/babel__core": "^7.1.0",
     "babel-plugin-istanbul": "^5.1.0",
     "babel-preset-jest": "^24.1.0",
     "chalk": "^2.4.2",
@@ -17,7 +21,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
-    "@types/babel__core": "^7.0.4",
     "@types/slash": "^2.0.0"
   },
   "peerDependencies": {

@@ -156,6 +156,7 @@ class MyWatchPlugin {
 For stability and safety reasons, only part of the global configuration keys can be updated with `updateConfigAndRun`. The current white list is as follows:
 
 - [`bail`](configuration.html#bail-number-boolean)
+- [`changedSince`](cli.html#changedsince)
 - [`collectCoverage`](configuration.html#collectcoverage-boolean)
 - [`collectCoverageFrom`](configuration.html#collectcoveragefrom-array)
 - [`collectCoverageOnlyFrom`](configuration.html#collectcoverageonlyfrom-array)

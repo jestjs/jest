@@ -156,6 +156,8 @@ Calls to jest.mock are hoisted to the top of the code. You can specify a mock la
 
 ```javascript
 import SoundPlayer from './sound-player';
+import SoundPlayerConsumer from './sound-player-consumer';
+
 jest.mock('./sound-player');
 
 describe('When SoundPlayer throws an error', () => {

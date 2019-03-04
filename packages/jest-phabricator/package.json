@@ -6,6 +6,10 @@
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-phabricator"
   },
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "@jest/types": "^24.1.0"
+  },
   "engines": {
     "node": ">= 6"
   },

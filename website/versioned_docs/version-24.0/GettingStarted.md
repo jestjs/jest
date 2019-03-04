@@ -152,6 +152,22 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 
 ### Using TypeScript
 
-Jest supports TypeScript out of the box, via Babel.
+Jest supports TypeScript, via Babel. First make sure you followed the instructions on [using Babel](#using-babel) above. Next install the `@babel/preset-typescript` via `yarn`:
 
-However, there are some caveats to using Typescript with Babel, see http://artsy.github.io/blog/2017/11/27/Babel-7-and-TypeScript/. Another caveat is that Jest will not typecheck your tests. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+```bash
+yarn add --dev @babel/preset-typescript
+```
+
+Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
+
+```javascript
+// babel.config.js
+module.exports = {
+  presets: [
+    ['@babel/preset-env', {targets: {node: 'current'}}],
+    '@babel/preset-typescript',
+  ],
+};
+```
+
+Note that there are some caveats to using Typescript with Babel, see http://artsy.github.io/blog/2017/11/27/Babel-7-and-TypeScript/. Another caveat is that Jest will not typecheck your tests. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
