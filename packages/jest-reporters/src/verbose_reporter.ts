@@ -118,14 +118,14 @@ export default class VerboseReporter extends DefaultReporter {
           if (test.status === 'pending') {
             result.pending += 1;
           } else if (test.status === 'todo') {
-            result.todo += 1;
+            result.todo.push(test);
           } else {
             this._logTest(test, indentLevel);
           }
 
           return result;
         },
-        {pending: 0, todo: 0},
+        {pending: 0, todo: [] as Array<TestResult.AssertionResult>},
       );
 
       if (summedTests.pending > 0) {
@@ -137,15 +137,27 @@ export default class VerboseReporter extends DefaultReporter {
         );
       }
 
-      if (summedTests.todo > 0) {
-        this._logSummedTests(
-          'todo',
-          this._getIcon('todo'),
-          summedTests.todo,
-          indentLevel,
-        );
+      if (summedTests.todo.length > 0) {
+        summedTests.todo.forEach(todoTest => {
+          this._logTodoTest(
+            'todo',
+            this._getIcon('todo'),
+            todoTest,
+            indentLevel,
+          );
+        });
       }
     }
+  }
+
+  private _logTodoTest(
+    prefix: string,
+    icon: string,
+    todoTest: TestResult.AssertionResult,
+    indentLevel: number,
+  ) {
+    const text = chalk.dim(`${prefix} ${todoTest.title}`);
+    this._logLine(`${icon} ${text}`, indentLevel);
   }
 
   private _logSummedTests(

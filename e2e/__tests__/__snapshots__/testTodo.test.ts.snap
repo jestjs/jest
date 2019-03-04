@@ -45,12 +45,20 @@ FAIL __tests__/todoNoArgs.test.js
       at Object.todo (__tests__/todoNoArgs.test.js:8:4)
 `;
 
+exports[`shows todo messages when in verbose mode 1`] = `
+PASS __tests__/verbose.test.js
+  todos in verbose reporter
+    ✎ todo this
+    ✎ todo should
+    ✎ todo work
+`;
+
 exports[`works with all statuses 1`] = `
 FAIL __tests__/statuses.test.js
   ✓ passes
   ✕ fails
   ○ skipped 1 test
-  ✎ todo 1 test
+  ✎ todo todo
 
   ● fails
 
