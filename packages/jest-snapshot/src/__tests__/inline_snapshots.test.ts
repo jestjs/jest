@@ -9,11 +9,11 @@ jest.mock('fs');
 jest.mock('prettier');
 jest.mock('@babel/core');
 
-const fs = require('fs');
-const path = require('path');
-const prettier = require('prettier');
-const babelTraverse = require('@babel/traverse').default;
-const babelCore = require('@babel/core');
+import fs from 'fs';
+import path from 'path';
+import prettier from 'prettier';
+import babelTraverse from '@babel/traverse';
+import * as babelCore from '@babel/core';
 import {Frame} from 'jest-message-util';
 
 import {saveInlineSnapshots} from '../inline_snapshots';
@@ -297,7 +297,7 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
   );
 });
 
-test.each([[prettier], [null]])(
+test.each([prettier, null])(
   'saveInlineSnapshots() creates template literal with property matchers',
   prettierModule => {
     const filename = path.join(__dirname, 'my.test.js');
