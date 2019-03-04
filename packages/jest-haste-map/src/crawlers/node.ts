@@ -96,6 +96,11 @@ function findNative(
 
   const child = spawn('find', args);
   let stdout = '';
+  if (child.stdout === null) {
+    throw new Error(
+      'stdout is null - this should never happen. Please open up an issue at https://github.com/facebook/jest',
+    );
+  }
   child.stdout.setEncoding('utf-8');
   child.stdout.on('data', data => (stdout += data));
 

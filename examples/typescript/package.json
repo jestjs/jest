@@ -3,16 +3,16 @@
   "version": "0.0.0",
   "name": "example-typescript",
   "dependencies": {
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0",
-    "typescript": "^3.0.0"
+    "react": "*",
+    "react-dom": "*",
+    "typescript": "*"
   },
   "devDependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "*",
     "@babel/preset-react": "*",
     "@babel/preset-typescript": "*",
-    "@types/jest": "^24.0.0",
+    "@types/jest": "*",
     "babel-jest": "*",
     "jest": "*"
   },

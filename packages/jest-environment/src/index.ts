@@ -49,7 +49,7 @@ export interface Jest {
    *
    * @deprecated Use `expect.extend` instead
    */
-  addMatchers(matchers: Object): void;
+  addMatchers(matchers: Record<string, any>): void;
   /**
    * Disables automatic mocking in the module loader.
    */
