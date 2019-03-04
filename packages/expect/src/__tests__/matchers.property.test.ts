@@ -43,9 +43,13 @@ describe('toStrictEqual', () => {
           const replacer = (k, v) => {
             if (v === undefined) return '<undefined>';
             if (v instanceof Set)
-              return `new Set([${JSON.stringify(Array.from(v), replacer)}])`;
+              return `new Set([${Array.from(v)
+                .map(v => JSON.stringify(v, replacer))
+                .sort()}])`;
             if (v instanceof Map)
-              return `new Map([${JSON.stringify(Array.from(v), replacer)}])`;
+              return `new Map([${Array.from(v)
+                .map(v => JSON.stringify(v, replacer))
+                .sort()}])`;
             return v;
           };
           fc.pre(JSON.stringify(a, replacer) !== JSON.stringify(b, replacer));
