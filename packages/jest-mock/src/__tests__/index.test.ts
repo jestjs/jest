@@ -880,6 +880,14 @@ describe('moduleMocker', () => {
         expect(fn1()).toEqual('abcd');
         expect(fn2()).toEqual('abcde');
       });
+
+      it('handles a property called `prototype`', () => {
+        expect(() =>
+          moduleMocker.generateFromMetadata(
+            moduleMocker.getMetadata({prototype: 1}),
+          ),
+        ).not.toThrow();
+      });
     });
   });
 
