@@ -89,6 +89,20 @@ test('recursively omits null and undefined config values', () => {
   });
 });
 
+test.each([
+  [function() {}, function() {}],
+  [async function() {}, function() {}],
+  [function() {}, async function() {}],
+  [async function() {}, async function() {}],
+])(
+  'treat async and non-async functions as equivalent',
+  (value, exampleValue) => {
+    expect(
+      validate({name: value}, {exampleConfig: {name: exampleValue}}),
+    ).toEqual({hasDeprecationWarnings: false, isValid: true});
+  },
+);
+
 test('respects blacklist', () => {
   const warn = console.warn;
   console.warn = jest.fn();

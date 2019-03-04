@@ -11,7 +11,6 @@ import type {Environment} from 'types/Environment';
 import type {GlobalConfig, ProjectConfig} from 'types/Config';
 import type {SnapshotState} from 'jest-snapshot';
 import type {TestResult} from 'types/TestResult';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type Runtime from 'jest-runtime';
 
 import path from 'path';
@@ -76,7 +75,7 @@ async function jasmine2(
     };
   }
 
-  jasmineAsyncInstall(environment.global);
+  jasmineAsyncInstall(globalConfig, environment.global);
 
   installEach(environment);
 
@@ -125,7 +124,7 @@ async function jasmine2(
   if (globalConfig.errorOnDeprecated) {
     installErrorOnPrivate(environment.global);
   } else {
-    // $FlowFixMe Flow seems to be confused about accessors and tries to enfoce having a `value` property.
+    // $FlowFixMe Flow seems to be confused about accessors and tries to enforce having a `value` property.
     Object.defineProperty(jasmine, 'DEFAULT_TIMEOUT_INTERVAL', {
       configurable: true,
       enumerable: true,

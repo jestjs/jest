@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@babel/preset-flow": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "\\.js$": "<rootDir>/transformer.js"
+    }
+  }
+}

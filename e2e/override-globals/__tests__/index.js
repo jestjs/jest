@@ -15,8 +15,16 @@ describe('parent', () => {
   });
 
   describe('child', () => {
-    it('works well', () => {
-      expect(() => new Promise()).toThrow('Booo');
+    it('works well', done => {
+      // A timeout to guarantee it doesn't finish after 0 ms
+      setTimeout(() => {
+        try {
+          expect(() => new Promise()).toThrow('Booo');
+          done();
+        } catch (e) {
+          done.fail(e);
+        }
+      }, 10);
     });
   });
 });

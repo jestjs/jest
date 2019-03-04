@@ -11,7 +11,8 @@
 import vm from 'vm';
 import path from 'path';
 import os from 'os';
-import ScriptTransformer from '../ScriptTransformer';
+import {ScriptTransformer} from '@jest/transform';
+import {makeProjectConfig} from '../../../../TestUtils';
 
 jest.mock('vm');
 
@@ -21,11 +22,11 @@ const FILE_PATH_TO_INSTRUMENT = path.resolve(
 );
 
 it('instruments files', () => {
-  const config = {
+  const config = makeProjectConfig({
     cache: false,
     cacheDirectory: os.tmpdir(),
     rootDir: '/',
-  };
+  });
   const instrumented = new ScriptTransformer(config).transform(
     FILE_PATH_TO_INSTRUMENT,
     {collectCoverage: true},

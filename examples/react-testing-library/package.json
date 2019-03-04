@@ -7,11 +7,12 @@
     "react-dom": "^16.7.0"
   },
   "devDependencies": {
+    "@babel/core": "*",
     "@babel/preset-env": "*",
     "@babel/preset-react": "*",
     "babel-jest": "*",
-    "react-testing-library": "*",
-    "jest": "*"
+    "jest": "*",
+    "react-testing-library": "*"
   },
   "scripts": {
     "test": "jest"
