@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import micromatch from 'micromatch';
+import micromatch from '@jest/micromatch';
 import {replacePathSepForGlob} from 'jest-util';
 import {Config} from '@jest/types';
 import {FileData} from './types';

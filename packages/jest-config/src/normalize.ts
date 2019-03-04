@@ -12,7 +12,7 @@ import {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
-import micromatch from 'micromatch';
+import micromatch from '@jest/micromatch';
 import {sync as realpath} from 'realpath-native';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';

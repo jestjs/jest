@@ -10,6 +10,7 @@
   "main": "build/index.js",
   "dependencies": {
     "@babel/core": "^7.1.0",
+    "@jest/micromatch": "^24.1.0",
     "@jest/types": "^24.1.0",
     "babel-plugin-istanbul": "^5.1.0",
     "chalk": "^2.0.1",
@@ -19,7 +20,6 @@
     "jest-haste-map": "^24.0.0",
     "jest-regex-util": "^24.0.0",
     "jest-util": "^24.0.0",
-    "micromatch": "^3.1.10",
     "realpath-native": "^1.1.0",
     "slash": "^2.0.0",
     "source-map": "^0.6.1",

@@ -9,7 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import {Config, TestResult} from '@jest/types';
 import chalk from 'chalk';
-import micromatch from 'micromatch';
+import micromatch from '@jest/micromatch';
 import slash from 'slash';
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils from 'stack-utils';

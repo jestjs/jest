@@ -6,7 +6,7 @@
  */
 
 import path from 'path';
-import micromatch from 'micromatch';
+import micromatch from '@jest/micromatch';
 import {Context} from 'jest-runtime';
 import {Config} from '@jest/types';
 import {Test} from 'jest-runner';

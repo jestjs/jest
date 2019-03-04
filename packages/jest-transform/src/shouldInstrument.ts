@@ -9,7 +9,7 @@ import path from 'path';
 import {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replacePathSepForGlob} from 'jest-util';
-import micromatch from 'micromatch';
+import micromatch from '@jest/micromatch';
 import {ShouldInstrumentOptions} from './types';
 
 const MOCKS_PATTERN = new RegExp(

@@ -10,6 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/micromatch": "^24.1.0",
     "@jest/types": "^24.1.0",
     "fb-watchman": "^2.0.0",
     "graceful-fs": "^4.1.15",
@@ -17,7 +18,6 @@
     "jest-serializer": "^24.0.0",
     "jest-util": "^24.0.0",
     "jest-worker": "^24.0.0",
-    "micromatch": "^3.1.10",
     "sane": "^3.0.0"
   },
   "devDependencies": {

@@ -6,6 +6,7 @@
   "types": "build/jest.d.ts",
   "dependencies": {
     "@jest/console": "^24.1.0",
+    "@jest/micromatch": "^24.1.0",
     "@jest/types": "^24.1.0",
     "@jest/reporters": "^24.1.0",
     "@jest/transform": "^24.1.0",
@@ -25,7 +26,6 @@
     "jest-util": "^24.0.0",
     "jest-validate": "^24.0.0",
     "jest-watcher": "^24.0.0",
-    "micromatch": "^3.1.10",
     "p-each-series": "^1.0.0",
     "pirates": "^4.0.1",
     "realpath-native": "^1.1.0",
