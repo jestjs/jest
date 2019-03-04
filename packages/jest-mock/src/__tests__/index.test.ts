@@ -882,11 +882,11 @@ describe('moduleMocker', () => {
       });
 
       it('handles a property called `prototype`', () => {
-        expect(() =>
-          moduleMocker.generateFromMetadata(
-            moduleMocker.getMetadata({prototype: 1}),
-          ),
-        ).not.toThrow();
+        const mock = moduleMocker.generateFromMetadata(
+          moduleMocker.getMetadata({prototype: 1}),
+        );
+
+        expect(mock.prototype).toBe(1);
       });
     });
   });
