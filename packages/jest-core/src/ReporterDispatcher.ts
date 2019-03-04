@@ -8,7 +8,7 @@
 import {TestResult} from '@jest/types';
 import {Test} from 'jest-runner';
 import {Context} from 'jest-runtime';
-import {Reporter, ReporterOnStartOptions} from './types';
+import {Reporter, ReporterOnStartOptions} from '@jest/reporters';
 
 export default class ReporterDispatcher {
   private _reporters: Array<Reporter>;
