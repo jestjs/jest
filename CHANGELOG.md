@@ -113,6 +113,7 @@
 - `[jest-snapshot]` Write and read snapshots from disk even if `fs` is mocked ([#7080](https://github.com/facebook/jest/pull/7080))
 - `[jest-config]` Normalize `config.cwd` and `config.rootDir` using `realpath ([#7598](https://github.com/facebook/jest/pull/7598))
 - `[jest-environment-node]` Fix buffer property is not ArrayBuffer issue. ([#7626](https://github.com/facebook/jest/pull/7626))
+- `[jest-mock]` Adds a type check to prototype to allow mocks of mongoose library without error. ([#8040](https://github.com/facebook/jest/pull/8040))
 
 ### Chore & Maintenance
 
