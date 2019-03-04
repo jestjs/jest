@@ -418,7 +418,7 @@ class Index extends React.Component {
                   ),
                   image: '/img/content/matchers/different-types.png',
                   imageAlign: 'right',
-                  title: <translate>Great Exceptions</translate>,
+                  title: <translate>Great Expectations</translate>,
                 },
               ]}
             />
