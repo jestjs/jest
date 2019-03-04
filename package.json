@@ -40,7 +40,7 @@
     "flow-bin": "^0.94.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.15",
-    "isbinaryfile": "^3.0.3",
+    "isbinaryfile": "^4.0.0",
     "istanbul-api": "^2.0.8",
     "istanbul-lib-coverage": "^2.0.2",
     "jasmine-reporters": "^2.2.0",
