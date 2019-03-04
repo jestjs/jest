@@ -6,18 +6,18 @@
  *
  */
 
-import vm from 'vm';
+import vm, {Context} from 'vm';
+import {ModuleMocker} from '../';
 
 describe('moduleMocker', () => {
-  let moduleMocker;
-  let mockContext;
-  let mockGlobals;
+  let moduleMocker: ModuleMocker;
+  let mockContext: Context;
+  let mockGlobals: NodeJS.Global;
 
   beforeEach(() => {
-    const mock = require('../');
     mockContext = vm.createContext();
     mockGlobals = vm.runInNewContext('this', mockContext);
-    moduleMocker = new mock.ModuleMocker(mockGlobals);
+    moduleMocker = new ModuleMocker(mockGlobals);
   });
 
   describe('getMetadata', () => {
