@@ -34,7 +34,7 @@ const stringifyOption = (
 const generateConfigFile = (results: {[key: string]: unknown}): string => {
   const {coverage, clearMocks, environment} = results;
 
-  const overrides: Object = {};
+  const overrides: Record<string, any> = {};
 
   if (coverage) {
     Object.assign(overrides, {
