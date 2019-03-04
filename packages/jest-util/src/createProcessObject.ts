@@ -19,7 +19,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
     return deepCyclicCopy(process.env);
   }
 
-  const proto: Object = Object.getPrototypeOf(process.env);
+  const proto: Record<string, any> = Object.getPrototypeOf(process.env);
   const real = Object.create(proto);
   const lookup: typeof process.env = {};
 

@@ -385,7 +385,7 @@ class ModuleMockerClass {
     this._invocationCallCounter = 1;
   }
 
-  private _getSlots(object?: Object): Array<string> {
+  private _getSlots(object?: Record<string, any>): Array<string> {
     if (!object) {
       return [];
     }
@@ -480,7 +480,7 @@ class ModuleMockerClass {
   private _makeComponent<T, Y extends Array<unknown>>(
     metadata: JestMock.MockFunctionMetadata<T, Y, 'object'>,
     restore?: () => void,
-  ): Object;
+  ): Record<string, any>;
   private _makeComponent<T, Y extends Array<unknown>>(
     metadata: JestMock.MockFunctionMetadata<T, Y, 'array'>,
     restore?: () => void,
@@ -504,7 +504,13 @@ class ModuleMockerClass {
   private _makeComponent<T, Y extends Array<unknown>>(
     metadata: JestMock.MockFunctionMetadata<T, Y>,
     restore?: () => void,
-  ): Object | Array<unknown> | RegExp | T | undefined | Mock<T, Y> {
+  ):
+    | Record<string, any>
+    | Array<unknown>
+    | RegExp
+    | T
+    | undefined
+    | Mock<T, Y> {
     if (metadata.type === 'object') {
       return new this._environmentGlobal.Object();
     } else if (metadata.type === 'array') {
@@ -812,7 +818,7 @@ class ModuleMockerClass {
     callbacks: Array<Function>,
     refs: {
       [key: string]:
-        | Object
+        | Record<string, any>
         | Array<unknown>
         | RegExp
         | T

@@ -52,7 +52,7 @@ export type MatcherState = {
   };
 };
 
-export type AsymmetricMatcher = Object;
+export type AsymmetricMatcher = Record<string, any>;
 export type MatchersObject = {[id: string]: RawMatcherFn};
 export type Expect = {
   (expected: any): ExpectationObject;
@@ -71,7 +71,7 @@ export type Expect = {
   any(expectedObject: any): AsymmetricMatcher;
   anything(): AsymmetricMatcher;
   arrayContaining(sample: Array<any>): AsymmetricMatcher;
-  objectContaining(sample: Object): AsymmetricMatcher;
+  objectContaining(sample: Record<string, any>): AsymmetricMatcher;
   stringContaining(expected: string): AsymmetricMatcher;
   stringMatching(expected: string | RegExp): AsymmetricMatcher;
   [id: string]: AsymmetricMatcher;
