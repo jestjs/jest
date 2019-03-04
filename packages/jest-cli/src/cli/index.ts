@@ -54,7 +54,6 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
     .alias('help', 'h')
     .options(args.options)
     .epilogue(args.docs)
-    // @ts-ignore: it's unable to infer what arguments it contains
     .check(args.check).argv;
 
   validateCLIOptions(
