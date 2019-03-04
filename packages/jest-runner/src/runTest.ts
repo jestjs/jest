@@ -6,18 +6,19 @@
  *
  */
 
-import {Config, TestResult, Console as ConsoleType} from '@jest/types';
+import {Config, TestResult} from '@jest/types';
+import {
+  BufferedConsole,
+  CustomConsole,
+  NullConsole,
+  LogType,
+  LogMessage,
+  getConsoleOutput,
+} from '@jest/console';
 import {JestEnvironment} from '@jest/environment';
 import RuntimeClass from 'jest-runtime';
 import fs from 'graceful-fs';
-import {
-  BufferedConsole,
-  Console,
-  ErrorWithStack,
-  NullConsole,
-  getConsoleOutput,
-  setGlobal,
-} from 'jest-util';
+import {ErrorWithStack, setGlobal} from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
 import Resolver from 'jest-resolve';
 import {getTestEnvironment} from 'jest-config';
@@ -35,13 +36,13 @@ type RunTestInternalResult = {
 };
 
 function freezeConsole(
-  // @ts-ignore: Correct types when `jest-util` is ESM
-  testConsole: BufferedConsole | Console | NullConsole,
+  testConsole: BufferedConsole | CustomConsole | NullConsole,
   config: Config.ProjectConfig,
 ) {
+  // @ts-ignore: `_log` is `private` - we should figure out some proper API here
   testConsole._log = function fakeConsolePush(
-    _type: ConsoleType.LogType,
-    message: ConsoleType.LogMessage,
+    _type: LogType,
+    message: LogMessage,
   ) {
     const error = new ErrorWithStack(
       `${chalk.red(
@@ -114,10 +115,7 @@ async function runTestInternal(
   let runtime: RuntimeClass | undefined = undefined;
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
-  const consoleFormatter = (
-    type: ConsoleType.LogType,
-    message: ConsoleType.LogMessage,
-  ) =>
+  const consoleFormatter = (type: LogType, message: LogMessage) =>
     getConsoleOutput(
       config.cwd,
       !!globalConfig.verbose,
@@ -136,7 +134,11 @@ async function runTestInternal(
   if (globalConfig.silent) {
     testConsole = new NullConsole(consoleOut, process.stderr, consoleFormatter);
   } else if (globalConfig.verbose) {
-    testConsole = new Console(consoleOut, process.stderr, consoleFormatter);
+    testConsole = new CustomConsole(
+      consoleOut,
+      process.stderr,
+      consoleFormatter,
+    );
   } else {
     testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
   }

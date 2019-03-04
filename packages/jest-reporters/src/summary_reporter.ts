@@ -3,17 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {AggregatedResult, SnapshotSummary} from 'types/TestResult';
-import type {GlobalConfig} from 'types/Config';
-import type {Context} from 'types/Context';
-import type {ReporterOnStartOptions} from 'types/Reporters';
-
+import {TestResult, Config} from '@jest/types';
 import chalk from 'chalk';
 import {testPathPatternToRegExp} from 'jest-util';
+import {Context, ReporterOnStartOptions} from './types';
 import BaseReporter from './base_reporter';
 import {getSummary} from './utils';
 import getResultHeader from './get_result_header';
@@ -49,10 +44,10 @@ const NPM_EVENTS = new Set([
 ]);
 
 export default class SummaryReporter extends BaseReporter {
-  _estimatedTime: number;
-  _globalConfig: GlobalConfig;
+  private _estimatedTime: number;
+  private _globalConfig: Config.GlobalConfig;
 
-  constructor(globalConfig: GlobalConfig) {
+  constructor(globalConfig: Config.GlobalConfig) {
     super();
     this._globalConfig = globalConfig;
     this._estimatedTime = 0;
@@ -63,21 +58,24 @@ export default class SummaryReporter extends BaseReporter {
   // in Node.js 0.10 and still persists in Node.js 6.7+.
   // Let's print the test failure summary character by character which is safer
   // when hundreds of tests are failing.
-  _write(string: string) {
+  private _write(string: string) {
     for (let i = 0; i < string.length; i++) {
       process.stderr.write(string.charAt(i));
     }
   }
 
   onRunStart(
-    aggregatedResults: AggregatedResult,
+    aggregatedResults: TestResult.AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
     super.onRunStart(aggregatedResults, options);
     this._estimatedTime = options.estimatedTime;
   }
 
-  onRunComplete(contexts: Set<Context>, aggregatedResults: AggregatedResult) {
+  onRunComplete(
+    contexts: Set<Context>,
+    aggregatedResults: TestResult.AggregatedResult,
+  ) {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
     if (numTotalTestSuites) {
       const lastResult = testResults[testResults.length - 1];
@@ -115,9 +113,9 @@ export default class SummaryReporter extends BaseReporter {
     }
   }
 
-  _printSnapshotSummary(
-    snapshots: SnapshotSummary,
-    globalConfig: GlobalConfig,
+  private _printSnapshotSummary(
+    snapshots: TestResult.SnapshotSummary,
+    globalConfig: Config.GlobalConfig,
   ) {
     if (
       snapshots.added ||
@@ -127,7 +125,7 @@ export default class SummaryReporter extends BaseReporter {
       snapshots.updated
     ) {
       let updateCommand;
-      const event = process.env.npm_lifecycle_event;
+      const event = process.env.npm_lifecycle_event || '';
       const prefix = NPM_EVENTS.has(event) ? '' : 'run ';
       const isYarn =
         typeof process.env.npm_config_user_agent === 'string' &&
@@ -160,9 +158,9 @@ export default class SummaryReporter extends BaseReporter {
     }
   }
 
-  _printSummary(
-    aggregatedResults: AggregatedResult,
-    globalConfig: GlobalConfig,
+  private _printSummary(
+    aggregatedResults: TestResult.AggregatedResult,
+    globalConfig: Config.GlobalConfig,
   ) {
     // If there were any failing tests and there was a large number of tests
     // executed, re-print the failing results at the end of execution output.
@@ -188,7 +186,10 @@ export default class SummaryReporter extends BaseReporter {
     }
   }
 
-  _getTestSummary(contexts: Set<Context>, globalConfig: GlobalConfig) {
+  private _getTestSummary(
+    contexts: Set<Context>,
+    globalConfig: Config.GlobalConfig,
+  ) {
     const getMatchingTestsInfo = () => {
       const prefix = globalConfig.findRelatedTests
         ? ' related to files matching '
