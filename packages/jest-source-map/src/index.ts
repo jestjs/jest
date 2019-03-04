@@ -5,8 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as Config from './Config';
-import * as TestResult from './TestResult';
-import * as Global from './Global';
-
-export {Config, TestResult, Global};
+export {default as getCallsite} from './getCallsite';
+export {SourceMapRegistry} from './types';

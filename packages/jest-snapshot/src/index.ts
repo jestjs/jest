@@ -6,8 +6,9 @@
  */
 
 import fs from 'fs';
-import {Config, Matchers} from '@jest/types';
+import {Config} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map';
+import {MatcherState} from 'expect';
 
 import diff from 'jest-diff';
 import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
@@ -21,8 +22,7 @@ import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import * as utils from './utils';
 
-// TODO: use MatcherState directly from `expect` once whole project is migrated
-type Context = Matchers.MatcherState & {
+type Context = MatcherState & {
   snapshotState: SnapshotState;
 };
 

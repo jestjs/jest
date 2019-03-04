@@ -3,27 +3,25 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {GlobalConfig, ProjectConfig, Path} from 'types/Config';
-import type {CoverageReporterOptions} from './coverage_reporter';
-
-import exit from 'exit';
 import fs from 'fs';
+import {Config} from '@jest/types';
+import exit from 'exit';
+import {CoverageReporterOptions} from './types';
+
 import generateEmptyCoverage, {
-  type CoverageWorkerResult,
+  CoverageWorkerResult,
 } from './generateEmptyCoverage';
 
-export type CoverageWorkerData = {|
-  globalConfig: GlobalConfig,
-  config: ProjectConfig,
-  path: Path,
-  options?: CoverageReporterOptions,
-|};
+export type CoverageWorkerData = {
+  globalConfig: Config.GlobalConfig;
+  config: Config.ProjectConfig;
+  path: Config.Path;
+  options?: CoverageReporterOptions;
+};
 
-export type {CoverageWorkerResult};
+export {CoverageWorkerResult};
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
@@ -36,7 +34,7 @@ export function worker({
   globalConfig,
   path,
   options,
-}: CoverageWorkerData): ?CoverageWorkerResult {
+}: CoverageWorkerData): CoverageWorkerResult | null {
   return generateEmptyCoverage(
     fs.readFileSync(path, 'utf8'),
     path,
