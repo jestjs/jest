@@ -84,7 +84,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 
   saveInlineSnapshots(
     [2, 4, 5].map(line => ({
-      frame: {column: 11, file: filename, line},
+      frame: {column: 11, file: filename, line} as Frame,
       snapshot: `[1, 2]`,
     })),
     null,
@@ -117,7 +117,7 @@ expect(a).toMatchInlineSnapshot();
   saveInlineSnapshots(
     [
       {
-        frame: {column: 11, file: filename, line: 5},
+        frame: {column: 11, file: filename, line: 5} as Frame,
         snapshot: `[{ foo: 'one' }, { foo: 'two' }]`,
       },
     ],
@@ -153,7 +153,7 @@ it('foos', async () => {
   saveInlineSnapshots(
     [
       {
-        frame: {column: 13, file: filename, line: 4},
+        frame: {column: 13, file: filename, line: 4} as Frame,
         snapshot: `<div>hello</div>`,
       },
     ],
@@ -192,7 +192,7 @@ expect(a).toMatchInlineSnapshot();
   saveInlineSnapshots(
     [
       {
-        frame: {column: 11, file: filename, line: 3},
+        frame: {column: 11, file: filename, line: 3} as Frame,
         snapshot: `<div>hello</div>`,
       },
     ],
@@ -225,7 +225,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
 
   saveInlineSnapshots(
     [2, 4, 5].map(line => ({
-      frame: {column: 11, file: filename, line},
+      frame: {column: 11, file: filename, line} as Frame,
       snapshot: `[1, 2]`,
     })),
     prettier,
@@ -308,7 +308,7 @@ test.each([[prettier], [null]])(
     saveInlineSnapshots(
       [
         {
-          frame: {column: 11, file: filename, line: 1},
+          frame: {column: 11, file: filename, line: 1} as Frame,
           snapshot: `1`,
         },
       ],
