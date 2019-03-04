@@ -82,6 +82,7 @@
 - `[docs]` Update/Organize TestSequencer and testSchedulerHelper code comments([#7984](https://github.com/facebook/jest/pull/7984))
 - `[@jest/source-map]`: Extract `getCallsite` function from `jest-util` into a new separate package ([#8029](https://github.com/facebook/jest/pull/8029))
 - `[@jest/console]`: Extract custom `console` implementations from `jest-util` into a new separate package ([#8030](https://github.com/facebook/jest/pull/8030))
+- `[docs]`: Improve runAllTimers doc (it exhausts the micro-task queue) ([#8031](https://github.com/facebook/jest/pull/8031))
 
 ### Performance
 
