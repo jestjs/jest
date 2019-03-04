@@ -11,13 +11,8 @@ import semver from 'semver';
 import {loadPartialConfig} from '@babel/core';
 import generate from '@babel/generator';
 import {parse, ParserOptions} from '@babel/parser';
-import traverse from '@babel/traverse'
-import {
-  templateElement,
-  templateLiteral,
-  file,
-  Expression,
-} from '@babel/types';
+import traverse from '@babel/traverse';
+import {templateElement, templateLiteral, file, Expression} from '@babel/types';
 import {Frame} from 'jest-message-util';
 
 import {Config} from '@jest/types';
@@ -28,7 +23,7 @@ export type InlineSnapshot = {
   frame: Frame;
   node?: Expression;
 };
-type BabelTraverse = typeof traverse
+type BabelTraverse = typeof traverse;
 
 export const saveInlineSnapshots = (
   snapshots: Array<InlineSnapshot>,
@@ -61,8 +56,8 @@ const saveSnapshotsForFile = (
     // For older versions of Prettier, do not load configuration.
     const config = prettier.resolveConfig
       ? prettier.resolveConfig.sync(sourceFilePath, {
-        editorconfig: true,
-      })
+          editorconfig: true,
+        })
       : null;
 
     // Detect the parser for the test file.
@@ -119,13 +114,13 @@ const saveSnapshotsForFile = (
 const groupSnapshotsBy = (
   createKey: (inlineSnapshot: InlineSnapshot) => string,
 ) => (snapshots: Array<InlineSnapshot>) =>
-    snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
-      (object, inlineSnapshot) => {
-        const key = createKey(inlineSnapshot);
-        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
-      },
-      {},
-    );
+  snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
+    (object, inlineSnapshot) => {
+      const key = createKey(inlineSnapshot);
+      return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+    },
+    {},
+  );
 
 const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
   typeof line === 'number' && typeof column === 'number'
@@ -142,15 +137,15 @@ const createParser = (
   text: string,
   parsers: {[key: string]: (text: string) => any},
   options: any,
-  ) => {
-    // Workaround for https://github.com/prettier/prettier/issues/3150
-    options.parser = inferredParser;
-    const ast = parsers[inferredParser](text);
+) => {
+  // Workaround for https://github.com/prettier/prettier/issues/3150
+  options.parser = inferredParser;
+  const ast = parsers[inferredParser](text);
 
-    traverseAst(snapshots, ast, babelTraverse);
+  traverseAst(snapshots, ast, babelTraverse);
 
-    return ast;
-  };
+  return ast;
+};
 
 const traverseAst = (
   snapshots: InlineSnapshot[],
