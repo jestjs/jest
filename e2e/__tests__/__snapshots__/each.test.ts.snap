@@ -38,7 +38,7 @@ PASS __tests__/describeOnly.test.js
     ✓ passes
     ✓ passes
   fails all rows expected false == true
-    ○ skipped 1 test
+    ○ skipped "fails"
 `;
 
 exports[`shows error message when not enough arguments are supplied to tests 1`] = `
@@ -100,7 +100,10 @@ PASS __tests__/eachOnly.test.js
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
-  ○ skipped 4 tests
+  ○ skipped "Should not be ran: fails all rows expected true == false"
+  ○ skipped "Should not be ran: fails all rows expected true == true"
+  ○ skipped "Should not be ran: fails all rows expected true == false"
+  ○ skipped "Should not be ran: fails all rows expected true == false"
 `;
 
 exports[`shows only the tests without .skip as being ran 1`] = `
@@ -109,9 +112,13 @@ PASS __tests__/eachSkip.test.js
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
   ✓ passes one row expected true == true
-  ○ skipped 4 tests
+  ○ skipped "Should not be ran: fails all rows expected true == false"
+  ○ skipped "Should not be ran: fails all rows expected true == true"
+  ○ skipped "Should not be ran: fails all rows expected true == false"
+  ○ skipped "Should not be ran: fails all rows expected true == false"
   passes all rows expected true == true
-    ○ skipped 2 tests
+    ○ skipped "passes"
+    ○ skipped "passes"
 `;
 
 exports[`shows the correct errors in stderr when failing tests 1`] = `

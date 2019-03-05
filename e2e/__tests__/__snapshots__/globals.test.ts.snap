@@ -106,7 +106,7 @@ PASS __tests__/onlyConstructs.test.js
   ✓ test.only
   ✓ it.only
   ✓ fit
-  ○ skipped 1 test
+  ○ skipped "it"
   fdescribe
     ✓ it
     ✓ test
@@ -150,13 +150,17 @@ Ran all test suites.
 exports[`skips 1`] = `
 PASS __tests__/skipsConstructs.test.js
   ✓ it
-  ○ skipped 4 tests
+  ○ skipped "xtest"
+  ○ skipped "xit"
+  ○ skipped "it.skip"
+  ○ skipped "test.skip"
   xdescribe
-    ○ skipped 2 tests
+    ○ skipped "it"
+    ○ skipped "test"
   describe.skip
-    ○ skipped 1 test
+    ○ skipped "test"
     describe
-      ○ skipped 1 test
+      ○ skipped "test"
 `;
 
 exports[`skips 2`] = `
