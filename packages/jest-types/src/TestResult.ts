@@ -16,13 +16,15 @@ export type SerializableError = {
 };
 
 export type FailedAssertion = {
-  matcherName: string;
+  matcherName?: string;
   message?: string;
   actual?: any;
   pass?: boolean;
+  passed?: boolean;
   expected?: any;
   isNot?: boolean;
   stack?: string;
+  error?: any;
 };
 
 export type AssertionLocation = {

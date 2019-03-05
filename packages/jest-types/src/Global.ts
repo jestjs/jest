@@ -13,9 +13,6 @@ export type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
 export type BlockFn = () => void;
 export type BlockName = string;
 
-// TODO: Get rid of this at some point
-type JasmineType = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
-
 export type Col = unknown;
 export type Row = Array<Col>;
 export type Table = Array<Row>;
@@ -26,6 +23,9 @@ export type EachTable = ArrayTable | TemplateTable;
 export type EachTestFn = (
   ...args: Array<any>
 ) => Promise<any> | void | undefined;
+
+// TODO: Get rid of this at some point
+type Jasmine = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
 
 type Each = (
   table: EachTable,
@@ -62,22 +62,26 @@ export interface DescribeBase {
 }
 
 export interface Describe extends DescribeBase {
-  only: ItBase;
-  skip: ItBase;
+  only: DescribeBase;
+  skip: DescribeBase;
 }
 
 // TODO: Maybe add `| Window` in the future?
 export interface Global extends NodeJS.Global {
-  it: It;
+  it: ItConcurrent;
   test: ItConcurrent;
-  fit: ItBase;
+  fit: ItBase & {concurrent?: ItConcurrentBase};
   xit: ItBase;
   xtest: ItBase;
   describe: Describe;
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
   __coverage__: CoverageMapData;
-  jasmine: JasmineType;
+  jasmine: Jasmine;
+  fail: () => void;
+  pending: () => void;
+  spyOn: () => void;
+  spyOnProperty: () => void;
 }
 
 declare global {
@@ -91,6 +95,7 @@ declare global {
       describe: Describe;
       xdescribe: DescribeBase;
       fdescribe: DescribeBase;
+      jasmine: Jasmine;
     }
   }
 }
