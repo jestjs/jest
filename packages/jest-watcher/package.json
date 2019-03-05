@@ -30,5 +30,8 @@
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
 }

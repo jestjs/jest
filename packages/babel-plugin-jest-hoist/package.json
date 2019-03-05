@@ -18,5 +18,8 @@
   "devDependencies": {
     "@babel/types": "^7.3.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "gitHead": "b16789230fd45056a7f2fa199bae06c7a1780deb"
 }
