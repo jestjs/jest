@@ -27,5 +27,8 @@
     "benchmark": "^2.1.4",
     "diff": "^4.0.1"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
 }

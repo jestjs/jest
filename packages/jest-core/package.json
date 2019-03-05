@@ -80,5 +80,8 @@
     "testing",
     "typescript",
     "watch"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
