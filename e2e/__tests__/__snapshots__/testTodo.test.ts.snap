@@ -48,17 +48,17 @@ FAIL __tests__/todoNoArgs.test.js
 exports[`shows todo messages when in verbose mode 1`] = `
 PASS __tests__/verbose.test.js
   todos in verbose reporter
-    ✎ todo "this"
-    ✎ todo "should"
-    ✎ todo "work"
+    ✎ todo this
+    ✎ todo should
+    ✎ todo work
 `;
 
 exports[`works with all statuses 1`] = `
 FAIL __tests__/statuses.test.js
   ✓ passes
   ✕ fails
-  ○ skipped "skips"
-  ✎ todo "todo"
+  ○ skipped skips
+  ✎ todo todo
 
   ● fails
 
