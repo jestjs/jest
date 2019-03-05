@@ -40,7 +40,7 @@ import SpyRegistry from './spyRegistry';
 import Suite from './Suite';
 import Timer from './Timer';
 
-const create = function(createOptions: Object): Jasmine {
+const create = function(createOptions: Record<string, any>): Jasmine {
   const j$ = {...createOptions} as Jasmine;
 
   j$._DEFAULT_TIMEOUT_INTERVAL = 5000;
@@ -133,7 +133,7 @@ const _interface = function(jasmine: Jasmine, env: any) {
       return env.fail.apply(env, arguments);
     },
 
-    spyOn(obj: Object, methodName: string, accessType?: string) {
+    spyOn(obj: Record<string, any>, methodName: string, accessType?: string) {
       return env.spyOn(obj, methodName, accessType);
     },
 
