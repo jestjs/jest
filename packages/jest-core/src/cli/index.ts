@@ -6,7 +6,8 @@
  */
 
 import {Config, TestResult} from '@jest/types';
-import {Console, createDirectory, preRunMessage} from 'jest-util';
+import {CustomConsole} from '@jest/console';
+import {createDirectory, preRunMessage} from 'jest-util';
 import {readConfigs} from 'jest-config';
 import Runtime, {Context} from 'jest-runtime';
 import {ChangedFilesPromise} from 'jest-changed-files';
@@ -118,7 +119,8 @@ const buildContextsAndHasteMaps = async (
     configs.map(async (config, index) => {
       createDirectory(config.cacheDirectory);
       const hasteMapInstance = Runtime.createHasteMap(config, {
-        console: new Console(outputStream, outputStream),
+        console: new CustomConsole(outputStream, outputStream),
+        deferCacheWrite: true,
         maxWorkers: globalConfig.maxWorkers,
         resetCache: !config.cache,
         watch: globalConfig.watch || globalConfig.watchAll,
@@ -149,22 +151,28 @@ const _run = async (
     outputStream,
   );
 
-  globalConfig.watch || globalConfig.watchAll
-    ? await runWatch(
-        contexts,
-        configs,
-        hasDeprecationWarnings,
-        globalConfig,
-        outputStream,
-        hasteMapInstances,
-      )
-    : await runWithoutWatch(
-        globalConfig,
-        contexts,
-        outputStream,
-        onComplete,
-        changedFilesPromise,
-      );
+  const runResult =
+    globalConfig.watch || globalConfig.watchAll
+      ? runWatch(
+          contexts,
+          configs,
+          hasDeprecationWarnings,
+          globalConfig,
+          outputStream,
+          hasteMapInstances,
+        )
+      : runWithoutWatch(
+          globalConfig,
+          contexts,
+          outputStream,
+          onComplete,
+          changedFilesPromise,
+        );
+
+  await Promise.all([
+    runResult,
+    ...hasteMapInstances.map(hasteMapInstance => hasteMapInstance.writeCache()),
+  ]);
 };
 
 const runWatch = async (

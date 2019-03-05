@@ -12,7 +12,7 @@ import {emptyObject} from './utils';
 
 export class AsymmetricMatcher<T> {
   protected sample: T;
-  $$typeof: Symbol;
+  $$typeof: symbol;
   inverse?: boolean;
 
   constructor(sample: T) {
@@ -139,8 +139,8 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
-class ObjectContaining extends AsymmetricMatcher<Object> {
-  constructor(sample: Object, inverse: boolean = false) {
+class ObjectContaining extends AsymmetricMatcher<Record<string, any>> {
+  constructor(sample: Record<string, any>, inverse: boolean = false) {
     super(sample);
     this.inverse = inverse;
   }
@@ -245,9 +245,9 @@ export const arrayContaining = (sample: Array<unknown>) =>
   new ArrayContaining(sample);
 export const arrayNotContaining = (sample: Array<unknown>) =>
   new ArrayContaining(sample, true);
-export const objectContaining = (sample: Object) =>
+export const objectContaining = (sample: Record<string, any>) =>
   new ObjectContaining(sample);
-export const objectNotContaining = (sample: Object) =>
+export const objectNotContaining = (sample: Record<string, any>) =>
   new ObjectContaining(sample, true);
 export const stringContaining = (expected: string) =>
   new StringContaining(expected);

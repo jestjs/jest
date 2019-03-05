@@ -6,7 +6,7 @@
  */
 
 import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
-import {ConsoleBuffer} from './Console';
+import {ConsoleBuffer} from '@jest/console';
 
 export type SerializableError = {
   code?: unknown;
@@ -164,7 +164,7 @@ export type CodeCoverageReporter = any;
 export type CodeCoverageFormatter = (
   coverage: CoverageMapData | null | undefined,
   reporter: CodeCoverageReporter,
-) => Object | null | undefined;
+) => Record<string, any> | null | undefined;
 
 export type UncheckedSnapshot = {
   filePath: string;

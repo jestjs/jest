@@ -111,7 +111,7 @@ function jsonParse(content: string) {
 
 // In memory functions.
 
-export function deserialize(buffer: Buffer): any {
+export function deserialize<T = unknown>(buffer: Buffer): T {
   return v8.deserialize
     ? v8.deserialize(buffer)
     : jsonParse(buffer.toString('utf8'));
@@ -125,21 +125,40 @@ export function serialize(content: unknown): Buffer {
 
 // Synchronous filesystem functions.
 
-export function readFileSync(filePath: Path): any {
-  return v8.deserialize
-    ? v8.deserialize(fs.readFileSync(filePath))
-    : jsonParse(fs.readFileSync(filePath, 'utf8'));
+export async function readFile<T = unknown>(filePath: Path): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    fs.readFile(filePath, (err, data) => {
+      try {
+        if (err) {
+          throw err;
+        }
+        resolve(deserialize<T>(data));
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  });
 }
 
-export function writeFileSync(filePath: Path, content: any) {
-  return v8.serialize
-    ? fs.writeFileSync(filePath, v8.serialize(content))
-    : fs.writeFileSync(filePath, jsonStringify(content), 'utf8');
+export function writeFile(filePath: Path, content: any): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      fs.writeFile(filePath, serialize(content), err => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    } catch (ex) {
+      reject(ex);
+    }
+  });
 }
 
 export default {
   deserialize,
-  readFileSync,
+  readFile,
   serialize,
-  writeFileSync,
+  writeFile,
 };

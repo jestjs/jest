@@ -6,13 +6,14 @@
  */
 
 import path from 'path';
-import {Config, SourceMaps} from '@jest/types';
+import {Config} from '@jest/types';
 import {
   Jest,
   JestEnvironment,
   LocalModuleRequire,
   Module,
 } from '@jest/environment';
+import {SourceMapRegistry} from '@jest/source-map';
 import jestMock, {MockFunctionMetadata} from 'jest-mock';
 import HasteMap, {ModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
@@ -37,6 +38,7 @@ type HasteMapOptions = {
   maxWorkers: number;
   resetCache: boolean;
   watch?: boolean;
+  deferCacheWrite?: boolean;
   watchman: boolean;
 };
 
@@ -102,7 +104,7 @@ class Runtime {
   private _shouldAutoMock: boolean;
   private _shouldMockModuleCache: BooleanObject;
   private _shouldUnmockTransitiveDependenciesCache: BooleanObject;
-  private _sourceMapRegistry: SourceMaps.SourceMapRegistry;
+  private _sourceMapRegistry: SourceMapRegistry;
   private _scriptTransformer: ScriptTransformer;
   private _transitiveShouldMock: BooleanObject;
   private _unmockList: RegExp | undefined;
@@ -234,6 +236,7 @@ class Runtime {
       cacheDirectory: config.cacheDirectory,
       computeSha1: config.haste.computeSha1,
       console: options && options.console,
+      deferCacheWrite: options ? Boolean(options.deferCacheWrite) : false,
       dependencyExtractor: config.dependencyExtractor,
       extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
       hasteImplModulePath: config.haste.hasteImplModulePath,
@@ -523,7 +526,7 @@ class Runtime {
     }, {});
   }
 
-  getSourceMaps(): SourceMaps.SourceMapRegistry {
+  getSourceMaps(): SourceMapRegistry {
     return this._sourceMapRegistry;
   }
 
@@ -987,7 +990,7 @@ class Runtime {
     };
 
     const jestObject: Jest = {
-      addMatchers: (matchers: Object) =>
+      addMatchers: (matchers: Record<string, any>) =>
         this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),

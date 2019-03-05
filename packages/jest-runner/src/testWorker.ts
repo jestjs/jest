@@ -49,7 +49,7 @@ const formatError = (
 };
 
 const resolvers = Object.create(null);
-const getResolver = (
+const getResolver = async (
   config: Config.ProjectConfig,
   moduleMap: ModuleMap | null,
 ) => {
@@ -64,7 +64,7 @@ const getResolver = (
     if (!resolvers[name]) {
       resolvers[name] = Runtime.createResolver(
         config,
-        Runtime.createHasteMap(config).readModuleMap(),
+        await Runtime.createHasteMap(config).readModuleMap(),
       );
     }
     return resolvers[name];
@@ -86,7 +86,7 @@ export async function worker({
       path,
       globalConfig,
       config,
-      getResolver(config, moduleMap),
+      await getResolver(config, moduleMap),
       context,
     );
   } catch (error) {

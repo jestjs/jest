@@ -3,19 +3,13 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-/* global stream$Writable, tty$WriteStream */
-
-import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
-import type {Test} from 'types/TestRunner';
-import type {ReporterOnStartOptions} from 'types/Reporters';
+import {TestResult, Config} from '@jest/types';
 
 import {clearLine, getConsoleOutput, isInteractive} from 'jest-util';
 import chalk from 'chalk';
+import {Test, ReporterOnStartOptions} from './types';
 import BaseReporter from './base_reporter';
 import Status from './Status';
 import getResultHeader from './get_result_header';
@@ -27,14 +21,14 @@ type FlushBufferedOutput = () => void;
 const TITLE_BULLET = chalk.bold('\u25cf ');
 
 export default class DefaultReporter extends BaseReporter {
-  _clear: string; // ANSI clear sequence for the last printed status
-  _err: write;
-  _globalConfig: GlobalConfig;
-  _out: write;
-  _status: Status;
-  _bufferedOutput: Set<FlushBufferedOutput>;
+  private _clear: string; // ANSI clear sequence for the last printed status
+  private _err: write;
+  protected _globalConfig: Config.GlobalConfig;
+  private _out: write;
+  private _status: Status;
+  private _bufferedOutput: Set<FlushBufferedOutput>;
 
-  constructor(globalConfig: GlobalConfig) {
+  constructor(globalConfig: Config.GlobalConfig) {
     super();
     this._globalConfig = globalConfig;
     this._clear = '';
@@ -50,11 +44,11 @@ export default class DefaultReporter extends BaseReporter {
     });
   }
 
-  _wrapStdio(stream: stream$Writable | tty$WriteStream) {
+  private _wrapStdio(stream: NodeJS.WritableStream | NodeJS.WriteStream) {
     const originalWrite = stream.write;
 
-    let buffer = [];
-    let timeout = null;
+    let buffer: Array<string> = [];
+    let timeout: NodeJS.Timeout | null = null;
 
     const flushBufferedOutput = () => {
       const string = buffer.join('');
@@ -88,8 +82,7 @@ export default class DefaultReporter extends BaseReporter {
       }
     };
 
-    // $FlowFixMe
-    stream.write = chunk => {
+    stream.write = (chunk: string) => {
       buffer.push(chunk);
       debouncedFlush();
       return true;
@@ -103,7 +96,7 @@ export default class DefaultReporter extends BaseReporter {
     }
   }
 
-  _clearStatus() {
+  private _clearStatus() {
     if (isInteractive) {
       if (this._globalConfig.useStderr) {
         this._err(this._clear);
@@ -113,7 +106,7 @@ export default class DefaultReporter extends BaseReporter {
     }
   }
 
-  _printStatus() {
+  private _printStatus() {
     const {content, clear} = this._status.get();
     this._clear = clear;
     if (isInteractive) {
@@ -126,7 +119,7 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   onRunStart(
-    aggregatedResults: AggregatedResult,
+    aggregatedResults: TestResult.AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
     this._status.runStarted(aggregatedResults, options);
@@ -139,17 +132,15 @@ export default class DefaultReporter extends BaseReporter {
   onRunComplete() {
     this.forceFlushBufferedOutput();
     this._status.runFinished();
-    // $FlowFixMe
     process.stdout.write = this._out;
-    // $FlowFixMe
     process.stderr.write = this._err;
     clearLine(process.stderr);
   }
 
   onTestResult(
     test: Test,
-    testResult: TestResult,
-    aggregatedResults: AggregatedResult,
+    testResult: TestResult.TestResult,
+    aggregatedResults: TestResult.AggregatedResult,
   ) {
     this.testFinished(test.context.config, testResult, aggregatedResults);
     if (!testResult.skipped) {
@@ -168,17 +159,17 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   testFinished(
-    config: ProjectConfig,
-    testResult: TestResult,
-    aggregatedResults: AggregatedResult,
+    config: Config.ProjectConfig,
+    testResult: TestResult.TestResult,
+    aggregatedResults: TestResult.AggregatedResult,
   ) {
     this._status.testFinished(config, testResult, aggregatedResults);
   }
 
   printTestFileHeader(
-    testPath: Path,
-    config: ProjectConfig,
-    result: TestResult,
+    _testPath: Config.Path,
+    config: Config.ProjectConfig,
+    result: TestResult.TestResult,
   ) {
     this.log(getResultHeader(result, this._globalConfig, config));
     const consoleBuffer = result.console;
@@ -197,9 +188,9 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   printTestFileFailureMessage(
-    testPath: Path,
-    config: ProjectConfig,
-    result: TestResult,
+    _testPath: Config.Path,
+    _config: Config.ProjectConfig,
+    result: TestResult.TestResult,
   ) {
     if (result.failureMessage) {
       this.log(result.failureMessage);

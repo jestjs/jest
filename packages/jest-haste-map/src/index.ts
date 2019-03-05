@@ -42,6 +42,7 @@ import {
   ModuleMapData,
   ModuleMetaData,
   WorkerMetadata,
+  CrawlerOptions,
 } from './types';
 
 type HType = typeof H;
@@ -51,6 +52,7 @@ type Options = {
   computeDependencies?: boolean;
   computeSha1?: boolean;
   console?: Console;
+  deferCacheWrite?: boolean;
   dependencyExtractor?: string;
   extensions: Array<string>;
   forceNodeFilesystemAPI?: boolean;
@@ -76,6 +78,7 @@ type InternalOptions = {
   cacheDirectory: string;
   computeDependencies: boolean;
   computeSha1: boolean;
+  deferCacheWrite: boolean;
   dependencyExtractor?: string;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
@@ -100,7 +103,10 @@ type Watcher = {
   close(callback: () => void): void;
 };
 
-type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
+type WorkerInterface = {
+  worker: typeof worker;
+  getSha1: typeof getSha1;
+};
 
 // TODO: Ditch namespace when this module exports ESM
 namespace HasteMap {
@@ -231,6 +237,7 @@ const getWhiteList = (list: Array<string> | undefined): RegExp | null => {
 /* eslint-disable-next-line no-redeclare */
 class HasteMap extends EventEmitter {
   private _buildPromise: Promise<InternalHasteMapObject> | null;
+  private _internalHasteMap?: InternalHasteMap;
   private _cachePath: Config.Path;
   private _changeInterval?: NodeJS.Timeout;
   private _console: Console;
@@ -248,6 +255,7 @@ class HasteMap extends EventEmitter {
           ? true
           : options.computeDependencies,
       computeSha1: options.computeSha1 || false,
+      deferCacheWrite: !!options.deferCacheWrite,
       dependencyExtractor: options.dependencyExtractor,
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
@@ -339,23 +347,29 @@ class HasteMap extends EventEmitter {
     if (!this._buildPromise) {
       this._buildPromise = this._buildFileMap()
         .then(data => this._buildHasteMap(data))
-        .then(hasteMap => {
-          this._persist(hasteMap);
-
+        .then(internalHasteMap => {
           const rootDir = this._options.rootDir;
           const hasteFS = new HasteFS({
-            files: hasteMap.files,
+            files: internalHasteMap.files,
             rootDir,
           });
           const moduleMap = new HasteModuleMap({
-            duplicates: hasteMap.duplicates,
-            map: hasteMap.map,
-            mocks: hasteMap.mocks,
+            duplicates: internalHasteMap.duplicates,
+            map: internalHasteMap.map,
+            mocks: internalHasteMap.mocks,
             rootDir,
           });
           const __hasteMapForTest =
-            (process.env.NODE_ENV === 'test' && hasteMap) || null;
-          return this._watch(hasteMap).then(() => ({
+            (process.env.NODE_ENV === 'test' && internalHasteMap) || null;
+          this._internalHasteMap = internalHasteMap;
+
+          const promises: Array<Promise<unknown>> = [];
+          if (!this._options.deferCacheWrite) {
+            promises.push(this.writeCache());
+          }
+          promises.push(this._watch(internalHasteMap));
+
+          return Promise.all(promises).then(() => ({
             __hasteMapForTest,
             hasteFS,
             moduleMap,
@@ -368,11 +382,11 @@ class HasteMap extends EventEmitter {
   /**
    * 1. read data from the cache or create an empty structure.
    */
-  read(): InternalHasteMap {
+  async read(): Promise<InternalHasteMap> {
     let hasteMap: InternalHasteMap;
 
     try {
-      hasteMap = serializer.readFileSync(this._cachePath);
+      hasteMap = await serializer.readFile<InternalHasteMap>(this._cachePath);
     } catch (err) {
       hasteMap = this._createEmptyMap();
     }
@@ -380,8 +394,8 @@ class HasteMap extends EventEmitter {
     return hasteMap;
   }
 
-  readModuleMap(): HasteModuleMap {
-    const data = this.read();
+  async readModuleMap(): Promise<HasteModuleMap> {
+    const data = await this.read();
     return new HasteModuleMap({
       duplicates: data.duplicates,
       map: data.map,
@@ -393,28 +407,32 @@ class HasteMap extends EventEmitter {
   /**
    * 2. crawl the file system.
    */
-  private _buildFileMap(): Promise<{
+  private async _buildFileMap(): Promise<{
     deprecatedFiles: Array<{moduleName: string; path: string}>;
     hasteMap: InternalHasteMap;
   }> {
-    const read = this._options.resetCache ? this._createEmptyMap : this.read;
+    let cachedHasteMap: InternalHasteMap;
+    try {
+      if (this._options.resetCache) {
+        cachedHasteMap = this._createEmptyMap();
+      } else {
+        cachedHasteMap = await this.read();
+      }
+    } catch {
+      cachedHasteMap = this._createEmptyMap();
+    }
 
-    return Promise.resolve()
-      .then(() => read.call(this))
-      .catch(() => this._createEmptyMap())
-      .then(cachedHasteMap => {
-        const cachedFiles: Array<{moduleName: string; path: string}> = [];
-        for (const [relativeFilePath, fileMetadata] of cachedHasteMap.files) {
-          const moduleName = fileMetadata[H.ID];
-          cachedFiles.push({moduleName, path: relativeFilePath});
-        }
-        return this._crawl(cachedHasteMap).then(hasteMap => {
-          const deprecatedFiles = cachedFiles.filter(
-            file => !hasteMap.files.has(file.path),
-          );
-          return {deprecatedFiles, hasteMap};
-        });
-      });
+    const cachedFiles: Array<{moduleName: string; path: string}> = [];
+    for (const [relativeFilePath, fileMetadata] of cachedHasteMap.files) {
+      const moduleName = fileMetadata[H.ID];
+      cachedFiles.push({moduleName, path: relativeFilePath});
+    }
+    return this._crawl(cachedHasteMap).then(hasteMap => {
+      const deprecatedFiles = cachedFiles.filter(
+        file => !hasteMap.files.has(file.path),
+      );
+      return {deprecatedFiles, hasteMap};
+    });
   }
 
   /**
@@ -686,10 +704,14 @@ class HasteMap extends EventEmitter {
   }
 
   /**
-   * 4. serialize the new `HasteMap` in a cache file.
+   * Serialize the new `HasteMap` in a cache file.
    */
-  private _persist(hasteMap: InternalHasteMap) {
-    serializer.writeFileSync(this._cachePath, hasteMap);
+  public writeCache() {
+    if (!this._internalHasteMap) {
+      throw new Error('Write cache failed: cannot write cache before build.');
+    }
+
+    return serializer.writeFile(this._cachePath, this._internalHasteMap);
   }
 
   /**
@@ -717,6 +739,16 @@ class HasteMap extends EventEmitter {
     const ignore = this._ignore.bind(this);
     const crawl =
       canUseWatchman && this._options.useWatchman ? watchmanCrawl : nodeCrawl;
+    const crawlerOptions: CrawlerOptions = {
+      computeSha1: options.computeSha1,
+      data: hasteMap,
+      extensions: options.extensions,
+      forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
+      ignore,
+      mapper: options.mapper,
+      rootDir: options.rootDir,
+      roots: options.roots,
+    };
 
     const retry = (error: Error) => {
       if (crawl === watchmanCrawl) {
@@ -729,16 +761,7 @@ class HasteMap extends EventEmitter {
             `  ` +
             error,
         );
-        return nodeCrawl({
-          computeSha1: options.computeSha1,
-          data: hasteMap,
-          extensions: options.extensions,
-          forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
-          ignore,
-          mapper: options.mapper,
-          rootDir: options.rootDir,
-          roots: options.roots,
-        }).catch(e => {
+        return nodeCrawl(crawlerOptions).catch(e => {
           throw new Error(
             `Crawler retry failed:\n` +
               `  Original error: ${error.message}\n` +
@@ -751,15 +774,7 @@ class HasteMap extends EventEmitter {
     };
 
     try {
-      return crawl({
-        computeSha1: options.computeSha1,
-        data: hasteMap,
-        extensions: options.extensions,
-        forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
-        ignore,
-        rootDir: options.rootDir,
-        roots: options.roots,
-      }).catch(retry);
+      return crawl(crawlerOptions).catch(retry);
     } catch (error) {
       return retry(error);
     }
@@ -1108,7 +1123,7 @@ class DuplicateError extends Error {
   }
 }
 
-function copy<T extends Object>(object: T): T {
+function copy<T extends Record<string, any>>(object: T): T {
   return Object.assign(Object.create(null), object);
 }
 

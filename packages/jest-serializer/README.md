@@ -10,7 +10,7 @@ $ yarn add jest-serializer
 
 ## API
 
-Three kinds of API groups are exposed:
+Two kinds of API groups are exposed:
 
 ### In-memory serialization: `serialize` and `deserialize`
 
@@ -28,12 +28,12 @@ const buffer = serialize(myObject);
 const myCopyObject = deserialize(buffer);
 ```
 
-### Synchronous persistent filesystem: `readFileSync` and `writeFileSync`
+### Persistent filesystem: `readFile` and `writeFile`
 
-This set of functions allow to send to disk a serialization result and retrieve it back, in a synchronous way. It mimics the `fs` API so it looks familiar.
+This set of functions allow to send to disk a serialization result and retrieve it back. It mimics the `fs` API so it looks familiar.
 
 ```javascript
-import {readFileSync, writeFileSync} from 'jest-serializer';
+import {readFile, writeFile} from 'jest-serializer';
 
 const myObject = {
   foo: 'bar',
@@ -42,6 +42,9 @@ const myObject = {
 
 const myFile = '/tmp/obj';
 
-writeFileSync(myFile, myObject);
-const myCopyObject = readFileSync(myFile);
+writeFile(myFile, myObject).then(() => {
+  readFile(myFile).then(myCopyObject => {
+    // ...
+  });
+});
 ```

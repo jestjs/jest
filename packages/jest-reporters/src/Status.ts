@@ -3,16 +3,13 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {ProjectConfig, Path} from 'types/Config';
-import type {ReporterOnStartOptions} from 'types/Reporters';
+import {TestResult, Config} from '@jest/types';
 
 import chalk from 'chalk';
 import stringLength from 'string-length';
+import {ReporterOnStartOptions} from './types';
 import {
   getSummary,
   trimAndFormatPath,
@@ -29,13 +26,16 @@ const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
  * shifting the whole list.
  */
 class CurrentTestList {
-  _array: Array<{testPath: Path, config: ProjectConfig} | null>;
+  private _array: Array<{
+    testPath: Config.Path;
+    config: Config.ProjectConfig;
+  } | null>;
 
   constructor() {
     this._array = [];
   }
 
-  add(testPath, config) {
+  add(testPath: Config.Path, config: Config.ProjectConfig) {
     const index = this._array.indexOf(null);
     const record = {config, testPath};
     if (index !== -1) {
@@ -45,9 +45,9 @@ class CurrentTestList {
     }
   }
 
-  delete(testPath) {
+  delete(testPath: Config.Path) {
     const record = this._array.find(
-      record => record && record.testPath === testPath,
+      record => record !== null && record.testPath === testPath,
     );
     this._array[this._array.indexOf(record || null)] = null;
   }
@@ -63,17 +63,15 @@ class CurrentTestList {
  * from the terminal.
  */
 export default class Status {
-  _cache: ?{content: string, clear: string};
-  _callback: () => void;
-  _currentTests: CurrentTestList;
-  _done: boolean;
-  _emitScheduled: boolean;
-  _estimatedTime: number;
-  _height: number;
-  _interval: IntervalID;
-  _aggregatedResults: AggregatedResult;
-  _lastUpdated: number;
-  _showStatus: boolean;
+  private _cache: {content: string; clear: string} | null;
+  private _callback?: () => void;
+  private _currentTests: CurrentTestList;
+  private _done: boolean;
+  private _emitScheduled: boolean;
+  private _estimatedTime: number;
+  private _interval?: NodeJS.Timeout;
+  private _aggregatedResults?: TestResult.AggregatedResult;
+  private _showStatus: boolean;
 
   constructor() {
     this._cache = null;
@@ -81,7 +79,6 @@ export default class Status {
     this._done = false;
     this._emitScheduled = false;
     this._estimatedTime = 0;
-    this._height = 0;
     this._showStatus = false;
   }
 
@@ -90,7 +87,7 @@ export default class Status {
   }
 
   runStarted(
-    aggregatedResults: AggregatedResult,
+    aggregatedResults: TestResult.AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
     this._estimatedTime = (options && options.estimatedTime) || 0;
@@ -102,11 +99,11 @@ export default class Status {
 
   runFinished() {
     this._done = true;
-    clearInterval(this._interval);
+    if (this._interval) clearInterval(this._interval);
     this._emit();
   }
 
-  testStarted(testPath: Path, config: ProjectConfig) {
+  testStarted(testPath: Config.Path, config: Config.ProjectConfig) {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
       this._emit();
@@ -116,9 +113,9 @@ export default class Status {
   }
 
   testFinished(
-    config: ProjectConfig,
-    testResult: TestResult,
-    aggregatedResults: AggregatedResult,
+    _config: Config.ProjectConfig,
+    testResult: TestResult.TestResult,
+    aggregatedResults: TestResult.AggregatedResult,
   ) {
     const {testFilePath} = testResult;
     this._aggregatedResults = aggregatedResults;
@@ -135,8 +132,7 @@ export default class Status {
       return {clear: '', content: ''};
     }
 
-    // $FlowFixMe
-    const width: number = process.stdout.columns;
+    const width: number = process.stdout.columns!;
     let content = '\n';
     this._currentTests.get().forEach(record => {
       if (record) {
@@ -178,13 +174,12 @@ export default class Status {
     return (this._cache = {clear, content});
   }
 
-  _emit() {
+  private _emit() {
     this._cache = null;
-    this._lastUpdated = Date.now();
-    this._callback();
+    if (this._callback) this._callback();
   }
 
-  _debouncedEmit() {
+  private _debouncedEmit() {
     if (!this._emitScheduled) {
       // Perf optimization to avoid two separate renders When
       // one test finishes and another test starts executing.
@@ -196,7 +191,7 @@ export default class Status {
     }
   }
 
-  _tick() {
+  private _tick() {
     this._debouncedEmit();
   }
 }

@@ -10,7 +10,9 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/console": "^24.1.0",
     "@jest/fake-timers": "^24.1.0",
+    "@jest/source-map": "^24.1.0",
     "@jest/types": "^24.1.0",
     "@types/node": "*",
     "callsites": "^3.0.0",

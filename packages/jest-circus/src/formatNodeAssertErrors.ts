@@ -6,13 +6,15 @@
  */
 
 import {AssertionError} from 'assert';
-import {diff, printExpected, printReceived} from 'jest-matcher-utils';
+import {
+  diff,
+  printExpected,
+  printReceived,
+  DiffOptions,
+} from 'jest-matcher-utils';
 import chalk from 'chalk';
 import prettyFormat from 'pretty-format';
 import {Event, State, TestError} from './types';
-
-// TODO replace with import {DiffOptions} from 'jest-matcher-utils';
-type DiffOptions = Parameters<typeof diff>[2];
 
 interface AssertionErrorWithStack extends AssertionError {
   stack: string;

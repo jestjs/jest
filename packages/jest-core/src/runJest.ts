@@ -8,7 +8,8 @@
 import path from 'path';
 import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
-import {Console, formatTestResults} from 'jest-util';
+import {CustomConsole} from '@jest/console';
+import {formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
@@ -38,7 +39,7 @@ const getTestPaths = async (
   const data = await source.getTestPaths(globalConfig, changedFiles);
 
   if (!data.tests.length && globalConfig.onlyChanged && data.noSCM) {
-    new Console(outputStream, outputStream).log(
+    new CustomConsole(outputStream, outputStream).log(
       'Jest can only find uncommitted changed files in a git or hg ' +
         'repository. If you make your project a git or hg ' +
         'repository (`git init` or `hg init`), Jest will be able ' +
@@ -204,9 +205,9 @@ export default (async function runJest({
       globalConfig.lastCommit ||
       globalConfig.onlyChanged
     ) {
-      new Console(outputStream, outputStream).log(noTestsFoundMessage);
+      new CustomConsole(outputStream, outputStream).log(noTestsFoundMessage);
     } else {
-      new Console(outputStream, outputStream).error(noTestsFoundMessage);
+      new CustomConsole(outputStream, outputStream).error(noTestsFoundMessage);
 
       exit(1);
     }

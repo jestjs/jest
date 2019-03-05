@@ -10,16 +10,14 @@
 import prettyFormat from 'pretty-format';
 
 import fs from 'fs';
-import os from 'os';
-import path from 'path';
 import v8 from 'v8';
 
 import serializer from '..';
 
 const v8s = [
   {
-    deserialize: v8.deserialize,
-    serialize: v8.serialize,
+    deserialize: v8['deserialize'],
+    serialize: v8['serialize'],
   },
   {
     deserialize: undefined,
@@ -39,14 +37,31 @@ const objs = [
   {buf: Buffer.from([0, 255, 127])},
 ];
 
-const file = path.join(os.tmpdir(), '__jest-serialize-test__');
+let mockFs: {[key: string]: unknown};
+const mockFile = './__jest-serialize-file__';
+const mockFailureFile = './__jest-serialize-failure-file__';
+jest.mock('fs', () => ({
+  readFile: jest.fn((path, callback) => {
+    if (mockFs[path] && path !== mockFailureFile) {
+      callback(undefined, mockFs[path]);
+      return;
+    }
 
-afterEach(() => {
-  try {
-    fs.unlinkSync(file);
-  } catch (err) {
-    // Do nothing if file does not exist.
-  }
+    callback(new Error(`Cannot read path '${path}'.`));
+  }),
+  writeFile: jest.fn((path, data, callback) => {
+    if (path === mockFailureFile) {
+      callback(new Error(`Cannot write path '${path}'.`));
+      return;
+    }
+
+    mockFs[path] = data;
+    callback();
+  }),
+}));
+
+beforeEach(() => {
+  mockFs = {};
 });
 
 // We execute the same suite of tests over multiple objects ("objs") and over
@@ -55,18 +70,28 @@ afterEach(() => {
 v8s.forEach((mockV8, i) => {
   describe('Using V8 implementation ' + i, () => {
     beforeEach(() => {
-      v8.serialize = mockV8.serialize;
-      v8.deserialize = mockV8.deserialize;
+      v8['serialize'] = mockV8.serialize;
+      v8['deserialize'] = mockV8.deserialize;
     });
 
-    it('throws the error with an invalid serialization', () => {
+    it('reject promise when invalid serialization', async () => {
       // No chance this is a valid serialization, neither in JSON nor V8.
       const invalidBuffer = Buffer.from([0, 85, 170, 255]);
 
-      fs.writeFileSync(file, invalidBuffer);
+      await new Promise(resolve =>
+        fs.writeFile(mockFile, invalidBuffer, resolve),
+      );
 
       expect(() => serializer.deserialize(invalidBuffer)).toThrow();
-      expect(() => serializer.readFileSync(file)).toThrow();
+      expect(serializer.readFile(mockFile)).rejects.toThrow();
+    });
+
+    it('rejects promise when file does not exist', () => {
+      expect(serializer.readFile('does-not-exist')).rejects.toThrow();
+    });
+
+    it('rejects promise when file write fails', () => {
+      expect(serializer.writeFile(mockFailureFile, {})).rejects.toThrow();
     });
 
     objs.forEach((obj, i) => {
@@ -81,10 +106,10 @@ v8s.forEach((mockV8, i) => {
           );
         });
 
-        it('serializes/deserializes in disk', () => {
-          serializer.writeFileSync(file, obj);
+        it('serializes/deserializes in disk', async () => {
+          await serializer.writeFile(mockFile, obj);
 
-          expect(prettyFormat(serializer.readFileSync(file))).toEqual(
+          expect(prettyFormat(await serializer.readFile(mockFile))).toEqual(
             prettyFormat(obj),
           );
         });

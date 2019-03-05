@@ -4,13 +4,14 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  // TODO: This is missing `@jest/reporters`
   "references": [
     {"path": "../jest-changed-files"},
     {"path": "../jest-config"},
+    {"path": "../jest-console"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-message-util"},
     {"path": "../jest-regex-util"},
+    {"path": "../jest-reporters"},
     {"path": "../jest-resolve-dependencies"},
     {"path": "../jest-runner"},
     {"path": "../jest-runtime"},

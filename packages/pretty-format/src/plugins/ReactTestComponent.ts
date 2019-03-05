@@ -8,9 +8,9 @@
 import {Config, Printer, NewPlugin, Refs} from '../types';
 
 export type ReactTestObject = {
-  $$typeof: Symbol;
+  $$typeof: symbol;
   type: string;
-  props?: Object;
+  props?: Record<string, any>;
   children?: null | Array<ReactTestChild>;
 };
 

@@ -32,6 +32,7 @@
 - `[jest-jasmine2]`: Throw explicit error when errors happen after test is considered complete ([#8005](https://github.com/facebook/jest/pull/8005))
 - `[jest-circus]`: Throw explicit error when errors happen after test is considered complete ([#8005](https://github.com/facebook/jest/pull/8005))
 - `[expect]` Remove duck typing and obsolete browser support code when comparing DOM nodes and use DOM-Level-3 API instead ([#7995](https://github.com/facebook/jest/pull/7995))
+- `[jest-mock]` Adds a type check to `prototype` to allow mocks of objects with a primitive `prototype` property. ([#8040](https://github.com/facebook/jest/pull/8040))
 
 ### Chore & Maintenance
 
@@ -44,7 +45,7 @@
 - `[diff-sequences]`: Migrate to Typescript ([#7820](https://github.com/facebook/jest/pull/7820))
 - `[jest-get-type]`: Migrate to TypeScript ([#7818](https://github.com/facebook/jest/pull/7818))
 - `[jest-regex-util]`: Migrate to TypeScript ([#7822](https://github.com/facebook/jest/pull/7822))
-- `[jest-diff]`: Migrate to TypeScript ([#7824](https://github.com/facebook/jest/pull/7824))
+- `[jest-diff]`: Migrate to TypeScript ([#7824](https://github.com/facebook/jest/pull/7824), [#8027](https://github.com/facebook/jest/pull/8027))
 - `[jest-leak-detector]`: Migrate to TypeScript ([#7825](https://github.com/facebook/jest/pull/7825))
 - `[jest-changed-files]`: Migrate to TypeScript ([#7827](https://github.com/facebook/jest/pull/7827))
 - `[jest-matcher-utils]`: Migrate to TypeScript ([#7835](https://github.com/facebook/jest/pull/7835))
@@ -68,18 +69,26 @@
 - `[@jest/transform]`: Migrate to TypeScript ([#7918](https://github.com/facebook/jest/pull/7918), [#7945](https://github.com/facebook/jest/pull/7945))
 - `[docs]` Add missing import to docs ([#7928](https://github.com/facebook/jest/pull/7928))
 - `[jest-resolve-dependencies]`: Migrate to TypeScript ([#7922](https://github.com/facebook/jest/pull/7922))
-- `[expect]`: Migrate to TypeScript ([#7919](https://github.com/facebook/jest/pull/7919))
+- `[expect]`: Migrate to TypeScript ([#7919](https://github.com/facebook/jest/pull/7919), [#8028](https://github.com/facebook/jest/pull/8028))
 - `[jest-circus]`: Migrate to TypeScript ([#7916](https://github.com/facebook/jest/pull/7916))
 - `[jest-phabricator]`: Migrate to TypeScript ([#7965](https://github.com/facebook/jest/pull/7965))
 - `[jest-runner]`: Migrate to TypeScript ([#7968](https://github.com/facebook/jest/pull/7968))
 - `[jest-runtime]`: Migrate to TypeScript ([#7964](https://github.com/facebook/jest/pull/7964), [#7988](https://github.com/facebook/jest/pull/7988))
 - `[@jest/fake-timers]`: Extract FakeTimers class from `jest-util` into a new separate package ([#7987](https://github.com/facebook/jest/pull/7987))
+- `[@jest/reporters]`: Migrate to TypeScript ([#7994](https://github.com/facebook/jest/pull/7994), [#8045](https://github.com/facebook/jest/pull/8045))
 - `[jest-repl]`: Migrate to TypeScript ([#8000](https://github.com/facebook/jest/pull/8000))
 - `[jest-validate]`: Migrate to TypeScript ([#7991](https://github.com/facebook/jest/pull/7991))
 - `[docs]`: Update CONTRIBUTING.md to add information about running jest with `jest-circus` locally ([#8013](https://github.com/facebook/jest/pull/8013)).
 - `[@jest/core]`: Migrate to TypeScript ([#7998](https://github.com/facebook/jest/pull/7998))
+- `[docs]` Update/Organize TestSequencer and testSchedulerHelper code comments([#7984](https://github.com/facebook/jest/pull/7984))
+- `[@jest/source-map]`: Extract `getCallsite` function from `jest-util` into a new separate package ([#8029](https://github.com/facebook/jest/pull/8029))
+- `[@jest/console]`: Extract custom `console` implementations from `jest-util` into a new separate package ([#8030](https://github.com/facebook/jest/pull/8030))
+- `[docs]`: Improve runAllTimers doc (it exhausts the micro-task queue) ([#8031](https://github.com/facebook/jest/pull/8031))
 
 ### Performance
+
+- `[jest-haste-map]`: [**BREAKING**] Parallelize haste map cache file write, add `deferCacheWrite`, expose `writeFileCache` ([#8047](https://github.com/facebook/jest/pull/8047))
+- `[jest-serializer]`: [**BREAKING**] Switch from sync to async `fs` APIs ([#8047](https://github.com/facebook/jest/pull/8047))
 
 ## 24.1.0
 
@@ -509,7 +518,7 @@
 - `[jest-jasmine2]` Add stack trace for thrown non-`Error`s ([#6008](https://github.com/facebook/jest/pull/6008))
 - `[jest-runtime]` Prevent modules from marking themselves as their own parent ([#5235](https://github.com/facebook/jest/issues/5235))
 - `[jest-mock]` Add support for auto-mocking generator functions ([#5983](https://github.com/facebook/jest/pull/5983))
-- `[expect]` Add support for async matchers  ([#5919](https://github.com/facebook/jest/pull/5919))
+- `[expect]` Add support for async matchers ([#5919](https://github.com/facebook/jest/pull/5919))
 - `[expect]` Suggest toContainEqual ([#5948](https://github.com/facebook/jest/pull/5953))
 - `[jest-config]` Export Jest's default options ([#5948](https://github.com/facebook/jest/pull/5948))
 - `[jest-editor-support]` Move `coverage` to `ProjectWorkspace.collectCoverage` ([#5929](https://github.com/facebook/jest/pull/5929))

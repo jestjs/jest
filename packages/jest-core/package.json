@@ -5,6 +5,7 @@
   "main": "build/jest.js",
   "types": "build/jest.d.ts",
   "dependencies": {
+    "@jest/console": "^24.1.0",
     "@jest/types": "^24.1.0",
     "@jest/reporters": "^24.1.0",
     "@jest/transform": "^24.1.0",
