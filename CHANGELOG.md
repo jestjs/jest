@@ -34,6 +34,7 @@
 - `[jest-circus]`: Throw explicit error when errors happen after test is considered complete ([#8005](https://github.com/facebook/jest/pull/8005))
 - `[expect]` Remove duck typing and obsolete browser support code when comparing DOM nodes and use DOM-Level-3 API instead ([#7995](https://github.com/facebook/jest/pull/7995))
 - `[jest-mock]` Adds a type check to `prototype` to allow mocks of objects with a primitive `prototype` property. ([#8040](https://github.com/facebook/jest/pull/8040))
+- `[jest-changed-files]` Change method of obtaining git root (fixes #3214) ([#8052](https://github.com/facebook/jest/pull/8052))
 
 ### Chore & Maintenance
 
