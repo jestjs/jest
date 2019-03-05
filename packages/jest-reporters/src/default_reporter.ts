@@ -217,8 +217,8 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   printCompactFailureMessage(
-    testPath: Path,
-    config: ProjectConfig,
+    _testPath: Config.Path,
+    config: Config.ProjectConfig,
     result: TestResult,
   ) {
     result.testResults.forEach((assertionResult: AssertionResult) => {

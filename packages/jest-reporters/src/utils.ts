@@ -282,7 +282,7 @@ export const getLocation = (assertionResult: AssertionResult) => {
 
 export const formatFullPath = (
   testFilePath: string,
-  config: GlobalConfig | ProjectConfig,
+  config: Config.GlobalConfig | Config.ProjectConfig,
   assertionResult: AssertionResult,
 ) => {
   let path = formatTestPath(config, testFilePath);
