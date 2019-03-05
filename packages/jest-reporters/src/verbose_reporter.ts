@@ -143,7 +143,8 @@ export default class VerboseReporter extends DefaultReporter {
 
   private _logTodoOrPendingTest(indentLevel: number) {
     return (test: TestResult.AssertionResult) => {
-      const printedTestStatus = test.status === "pending" ? "skipped": test.status;
+      const printedTestStatus =
+        test.status === 'pending' ? 'skipped' : test.status;
       const icon = this._getIcon(test.status);
       const text = chalk.dim(`${printedTestStatus} ${test.title}`);
       this._logLine(`${icon} ${text}`, indentLevel);
