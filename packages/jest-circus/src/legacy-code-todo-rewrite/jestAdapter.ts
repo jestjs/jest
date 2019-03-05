@@ -11,7 +11,7 @@ import {JestEnvironment} from '@jest/environment';
 import {TestResult} from '@jest/test-result';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Runtime from 'jest-runtime';
-import {SnapshotState} from 'jest-snapshot';
+import {SnapshotStateType} from 'jest-snapshot';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
@@ -88,8 +88,7 @@ const jestAdapter = async (
 
 const _addSnapshotData = (
   results: TestResult,
-  // TODO: make just snapshotState: SnapshotState when `jest-snapshot` is ESM
-  snapshotState: typeof SnapshotState.prototype,
+  snapshotState: SnapshotStateType,
 ) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {
