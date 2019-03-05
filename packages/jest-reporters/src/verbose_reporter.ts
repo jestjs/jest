@@ -113,10 +113,13 @@ export default class VerboseReporter extends DefaultReporter {
     if (this._globalConfig.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
-      const summedTests = tests.reduce(
+      const summedTests = tests.reduce<{
+        pending: Array<TestResult.AssertionResult>;
+        todo: Array<TestResult.AssertionResult>;
+      }>(
         (result, test) => {
           if (test.status === 'pending') {
-            result.pending += 1;
+            result.pending.push(test);
           } else if (test.status === 'todo') {
             result.todo.push(test);
           } else {
@@ -125,49 +128,26 @@ export default class VerboseReporter extends DefaultReporter {
 
           return result;
         },
-        {pending: 0, todo: [] as Array<TestResult.AssertionResult>},
+        {pending: [], todo: []},
       );
 
-      if (summedTests.pending > 0) {
-        this._logSummedTests(
-          'skipped',
-          this._getIcon('pending'),
-          summedTests.pending,
-          indentLevel,
-        );
+      if (summedTests.pending.length > 0) {
+        summedTests.pending.forEach(this._logTodoOrPendingTest(indentLevel));
       }
 
       if (summedTests.todo.length > 0) {
-        summedTests.todo.forEach(todoTest => {
-          this._logTodoTest(
-            'todo',
-            this._getIcon('todo'),
-            todoTest,
-            indentLevel,
-          );
-        });
+        summedTests.todo.forEach(this._logTodoOrPendingTest(indentLevel));
       }
     }
   }
 
-  private _logTodoTest(
-    prefix: string,
-    icon: string,
-    todoTest: TestResult.AssertionResult,
-    indentLevel: number,
-  ) {
-    const text = chalk.dim(`${prefix} ${todoTest.title}`);
-    this._logLine(`${icon} ${text}`, indentLevel);
-  }
-
-  private _logSummedTests(
-    prefix: string,
-    icon: string,
-    count: number,
-    indentLevel: number,
-  ) {
-    const text = chalk.dim(`${prefix} ${count} test${count === 1 ? '' : 's'}`);
-    this._logLine(`${icon} ${text}`, indentLevel);
+  private _logTodoOrPendingTest(indentLevel: number) {
+    return (test: TestResult.AssertionResult) => {
+      const printedTestStatus = test.status === "pending" ? "skipped": test.status;
+      const icon = this._getIcon(test.status);
+      const text = chalk.dim(`${printedTestStatus} "${test.title}"`);
+      this._logLine(`${icon} ${text}`, indentLevel);
+    };
   }
 
   private _logLine(str?: string, indentLevel?: number) {
