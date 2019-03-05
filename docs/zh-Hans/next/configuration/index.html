@@ -135,6 +135,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   expect(utils.isAuthorized(<span class="hljs-string">'not_wizard'</span>)).toBeTruthy();
 });
 </code></pre>
+<p><em>Note: Node modules are automatically mocked when you have a manual mock in place (e.g.: <code>__mocks__/lodash.js</code>). More info <a href="manual-mocks.html#mocking-node-modules">here</a>.</em></p>
 <p><em>注意：类似 <code>fs</code> 这样的核心模块，默认是不模拟的。它们可以像 <code>jest.mock('fs')</code> 这样被显式地指定模拟。</em></p>
 <p><em>注意：自动模拟会有一些性能的消耗，特别在一些大型工程中会更明显。请参考 <a href="troubleshooting.html#tests-are-slow-when-leveraging-automocking">这里</a> 获取详细的应对方法。</em></p>
 <h3><a class="anchor" aria-hidden="true" id="bail-number-boolean"></a><a href="#bail-number-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>bail</code> [number | boolean]</h3>
