@@ -8,7 +8,7 @@
 
 'use strict';
 
-import {skipSuiteOnWindows} from '../../../../../scripts/ConditionalTest';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 
 jest.mock('child_process', () => ({
   spawn: jest.fn((cmd, args) => {

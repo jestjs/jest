@@ -9,7 +9,7 @@
 
 import {spawnSync} from 'child_process';
 import path from 'path';
-import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
 

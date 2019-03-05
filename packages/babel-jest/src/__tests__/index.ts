@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, Transform} from '@jest/types';
+import {Config} from '@jest/types';
 import babelJest from '../index';
 
 //Mock data for all the tests
@@ -30,14 +30,12 @@ test(`Returns source string with inline maps when no transformOptions is passed`
     sourceString,
     'dummy_path.js',
     (mockConfig as unknown) as Config.ProjectConfig,
-  ) as Transform.TransformedSource;
+  ) as any;
   expect(typeof result).toBe('object');
   expect(result.code).toBeDefined();
   expect(result.map).toBeDefined();
   expect(result.code).toMatch('//# sourceMappingURL');
   expect(result.code).toMatch('customMultiply');
-  // @ts-ignore: it's fine if we get wrong types, the tests will fail then
   expect(result.map.sources).toEqual(['dummy_path.js']);
-  // @ts-ignore: it's fine if we get wrong types, the tests will fail then
   expect(JSON.stringify(result.map.sourcesContent)).toMatch('customMultiply');
 });

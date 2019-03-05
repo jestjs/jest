@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  // TODO: This is missing `jest-jasmine2`, but that is just
+  // `require.resolve`d, so no real use for its types
+  "references": [
+    {"path": "../jest-environment-jsdom"},
+    {"path": "../jest-environment-node"},
+    {"path": "../jest-get-type"},
+    {"path": "../jest-regex-util"},
+    {"path": "../jest-resolve"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../jest-validate"},
+    {"path": "../pretty-format"}
+  ]
+}

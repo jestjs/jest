@@ -7,22 +7,25 @@
  */
 
 import shouldInstrument from '../shouldInstrument';
-import {makeGlobalConfig} from '../../../../TestUtils';
+import {makeProjectConfig} from '../../../../TestUtils';
 
 describe('shouldInstrument', () => {
   const defaultFilename = 'source_file.test.js';
   const defaultOptions = {
     collectCoverage: true,
   };
-  const defaultConfig = makeGlobalConfig({rootDir: '/'});
-
+  const defaultConfig = makeProjectConfig({rootDir: '/'});
   describe('should return true', () => {
     const testShouldInstrument = (
       filename = defaultFilename,
-      options = defaultOptions,
-      config = defaultConfig,
+      options,
+      config,
     ) => {
-      const result = shouldInstrument(filename, options, config);
+      const result = shouldInstrument(
+        filename,
+        {...defaultOptions, ...options},
+        {...defaultConfig, ...config},
+      );
       expect(result).toBe(true);
     };
 
@@ -74,7 +77,6 @@ describe('shouldInstrument', () => {
       testShouldInstrument(
         'collect/only/from/here.js',
         {
-          collectCoverage: true,
           collectCoverageOnlyFrom: {'collect/only/from/here.js': true},
         },
         defaultConfig,
@@ -85,7 +87,6 @@ describe('shouldInstrument', () => {
       testShouldInstrument(
         'do/collect/coverage.js',
         {
-          collectCoverage: true,
           collectCoverageFrom: ['!**/dont/**/*.js', '**/do/**/*.js'],
         },
         defaultConfig,
@@ -95,14 +96,12 @@ describe('shouldInstrument', () => {
     it('should return true if the file is not in coveragePathIgnorePatterns', () => {
       testShouldInstrument('do/collect/coverage.js', defaultOptions, {
         coveragePathIgnorePatterns: ['dont'],
-        rootDir: '/',
       });
     });
 
     it('should return true if file is a testfile but forceCoverageMatch is set', () => {
       testShouldInstrument('do/collect/sum.coverage.test.js', defaultOptions, {
         forceCoverageMatch: ['**/*.(coverage).(test).js'],
-        rootDir: '/',
         testRegex: ['.*\\.(test)\\.(js)$'],
       });
     });
@@ -111,10 +110,14 @@ describe('shouldInstrument', () => {
   describe('should return false', () => {
     const testShouldInstrument = (
       filename = defaultFilename,
-      options = defaultOptions,
-      config = defaultConfig,
+      options,
+      config,
     ) => {
-      const result = shouldInstrument(filename, options, config);
+      const result = shouldInstrument(
+        filename,
+        {...defaultOptions, ...options},
+        {...defaultConfig, ...config},
+      );
       expect(result).toBe(false);
     };
 
@@ -164,7 +167,6 @@ describe('shouldInstrument', () => {
       testShouldInstrument(
         'source_file.js',
         {
-          collectCoverage: true,
           collectCoverageOnlyFrom: {'collect/only/from/here.js': true},
         },
         defaultConfig,
@@ -175,7 +177,6 @@ describe('shouldInstrument', () => {
       testShouldInstrument(
         'dont/collect/coverage.js',
         {
-          collectCoverage: true,
           collectCoverageFrom: ['!**/dont/**/*.js', '**/do/**/*.js'],
         },
         defaultConfig,
@@ -185,7 +186,6 @@ describe('shouldInstrument', () => {
     it('if the file is in coveragePathIgnorePatterns', () => {
       testShouldInstrument('dont/collect/coverage.js', defaultOptions, {
         coveragePathIgnorePatterns: ['dont'],
-        rootDir: '/',
       });
     });
 
@@ -201,27 +201,23 @@ describe('shouldInstrument', () => {
     it('if file is a globalSetup file', () => {
       testShouldInstrument('globalSetup.js', defaultOptions, {
         globalSetup: 'globalSetup.js',
-        rootDir: '/',
       });
     });
 
     it('if file is globalTeardown file', () => {
       testShouldInstrument('globalTeardown.js', defaultOptions, {
         globalTeardown: 'globalTeardown.js',
-        rootDir: '/',
       });
     });
 
     it('if file is in setupFiles', () => {
       testShouldInstrument('setupTest.js', defaultOptions, {
-        rootDir: '/',
         setupFiles: ['setupTest.js'],
       });
     });
 
     it('if file is in setupFilesAfterEnv', () => {
       testShouldInstrument('setupTest.js', defaultOptions, {
-        rootDir: '/',
         setupFilesAfterEnv: ['setupTest.js'],
       });
     });

@@ -9,7 +9,7 @@
 
 const fs = require('fs');
 const {execSync} = require('child_process');
-const isbinaryfile = require('isbinaryfile');
+const {isBinaryFileSync} = require('isbinaryfile');
 
 const getFileContents = path => fs.readFileSync(path, {encoding: 'utf-8'});
 const isDirectory = path => fs.lstatSync(path).isDirectory();
@@ -99,7 +99,7 @@ const CUSTOM_IGNORED_PATTERNS = [
   '\\.(example|map)$',
   '^examples/.*',
   '^flow-typed/.*',
-  '^packages/expect/src/jasmineUtils\\.js$',
+  '^packages/expect/src/jasmineUtils\\.ts$',
   '^packages/jest-config/src/vendor/jsonlint\\.js$',
 ].map(createRegExp);
 
@@ -132,7 +132,7 @@ function check() {
       INCLUDED_PATTERNS.some(pattern => pattern.test(file)) &&
       !IGNORED_PATTERNS.some(pattern => pattern.test(file)) &&
       !isDirectory(file) &&
-      !isbinaryfile.sync(file) &&
+      !isBinaryFileSync(file) &&
       needsCopyrightHeader(file)
   );
 

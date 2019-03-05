@@ -5,8 +5,10 @@
     "outDir": "build"
   },
   "references": [
-    {"path": "../jest-types"},
-    {"path": "../jest-message-util"},
-    {"path": "../jest-mock"}
+    {"path": "../jest-console"},
+    {"path": "../jest-fake-timers"},
+    {"path": "../jest-source-map"},
+    {"path": "../jest-test-result"},
+    {"path": "../jest-types"}
   ]
 }

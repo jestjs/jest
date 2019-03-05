@@ -5,6 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {EventEmitter} from 'events';
+import {ForkOptions} from 'child_process';
+
 // Because of the dynamic nature of a worker communication process, all messages
 // coming from any of the other processes cannot be typed. Thus, many types
 // include "unknown" as a TS type, which is (unfortunately) correct here.
@@ -23,18 +26,7 @@ export type PARENT_MESSAGE_ERROR =
 
 // Option objects.
 
-const EventEmitter = require('events');
-
-export type ForkOptions = {
-  cwd?: string;
-  env?: NodeJS.ProcessEnv;
-  execPath?: string;
-  execArgv?: Array<string>;
-  silent?: boolean;
-  stdio?: Array<any>;
-  uid?: number;
-  gid?: number;
-};
+export {ForkOptions};
 
 export interface WorkerPoolInterface {
   getStderr(): NodeJS.ReadableStream;
@@ -147,6 +139,7 @@ export type ParentMessageError = [
 export type ParentMessage = ParentMessageOk | ParentMessageError;
 
 // Queue types.
+
 export type OnStart = (worker: WorkerInterface) => void;
 export type OnEnd = (err: Error | null, result: unknown) => void;
 
@@ -154,5 +147,9 @@ export type QueueChildMessage = {
   request: ChildMessage;
   onStart: OnStart;
   onEnd: OnEnd;
-  next?: QueueChildMessage;
+};
+
+export type QueueItem = {
+  task: QueueChildMessage;
+  next: QueueItem | null;
 };

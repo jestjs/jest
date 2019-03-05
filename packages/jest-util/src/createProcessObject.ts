@@ -19,7 +19,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
     return deepCyclicCopy(process.env);
   }
 
-  const proto: Object = Object.getPrototypeOf(process.env);
+  const proto: Record<string, any> = Object.getPrototypeOf(process.env);
   const real = Object.create(proto);
   const lookup: typeof process.env = {};
 
@@ -75,7 +75,19 @@ export default function() {
     keepPrototype: true,
   });
 
-  newProcess[Symbol.toStringTag] = 'process';
+  try {
+    // This fails on Node 12, but it's already set to 'process'
+    newProcess[Symbol.toStringTag] = 'process';
+  } catch (e) {
+    // Make sure it's actually set instead of potentially ignoring errors
+    if (newProcess[Symbol.toStringTag] !== 'process') {
+      e.message =
+        'Unable to set toStringTag on process. Please open up an issue at https://github.com/facebook/jest\n\n' +
+        e.message;
+
+      throw e;
+    }
+  }
 
   // Sequentially execute all constructors over the object.
   let proto = process;

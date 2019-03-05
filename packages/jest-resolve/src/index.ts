@@ -15,22 +15,24 @@ import isBuiltinModule from './isBuiltinModule';
 import defaultResolver from './defaultResolver';
 import {ResolverConfig} from './types';
 
-type ResolveModuleConfig = {
-  skipNodeResolution?: boolean;
-  paths?: Config.Path[];
-};
-
 type FindNodeModuleConfig = {
   basedir: Config.Path;
   browser?: boolean;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
-  resolver?: Config.Path;
+  resolver?: Config.Path | null;
   rootDir?: Config.Path;
 };
 
 type BooleanObject = {[key: string]: boolean};
+
+namespace Resolver {
+  export type ResolveModuleConfig = {
+    skipNodeResolution?: boolean;
+    paths?: Array<Config.Path>;
+  };
+}
 
 const NATIVE_PLATFORM = 'native';
 
@@ -44,6 +46,7 @@ const nodePaths = process.env.NODE_PATH
       .map(p => path.resolve(resolvedCwd, p))
   : null;
 
+/* eslint-disable-next-line no-redeclare */
 class Resolver {
   private readonly _options: ResolverConfig;
   private readonly _moduleMap: ModuleMap;
@@ -102,7 +105,7 @@ class Resolver {
   resolveModuleFromDirIfExists(
     dirname: Config.Path,
     moduleName: string,
-    options?: ResolveModuleConfig,
+    options?: Resolver.ResolveModuleConfig,
   ): Config.Path | null {
     const paths = (options && options.paths) || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
@@ -185,7 +188,7 @@ class Resolver {
   resolveModule(
     from: Config.Path,
     moduleName: string,
-    options?: ResolveModuleConfig,
+    options?: Resolver.ResolveModuleConfig,
   ): Config.Path {
     const dirname = path.dirname(from);
     const module = this.resolveModuleFromDirIfExists(
@@ -400,7 +403,7 @@ const createNoMappedModuleFoundError = (
   updatedName: string,
   mappedModuleName: string,
   regex: RegExp,
-  resolver: Function | string,
+  resolver?: Function | string | null,
 ) => {
   const error = new Error(
     chalk.red(`${chalk.bold('Configuration error')}:

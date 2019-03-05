@@ -12,8 +12,8 @@ export default class Prompt {
   private _entering: boolean;
   private _value: string;
   private _onChange: () => void;
-  private _onSuccess: (value?: string) => void;
-  private _onCancel: (value?: string) => void;
+  private _onSuccess: (value: string) => void;
+  private _onCancel: (value: string) => void;
   private _offset: number;
   private _promptLength: number;
   private _selection: string | null;
@@ -39,7 +39,7 @@ export default class Prompt {
 
   enter(
     onChange: (pattern: string, options: ScrollOptions) => void,
-    onSuccess: () => void,
+    onSuccess: (pattern: string) => void,
     onCancel: () => void,
   ) {
     this._entering = true;

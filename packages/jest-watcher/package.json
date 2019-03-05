@@ -4,14 +4,16 @@
   "version": "24.0.0",
   "main": "build/index.js",
   "dependencies": {
+    "@jest/test-result": "^24.1.0",
     "@jest/types": "^24.1.0",
     "@types/node": "*",
+    "@types/yargs": "^12.0.9",
     "ansi-escapes": "^3.0.0",
     "chalk": "^2.0.1",
     "jest-util": "^24.0.0",
     "string-length": "^2.0.0"
   },
-  "devDependencies":  {
+  "devDependencies": {
     "@types/ansi-escapes": "^3.0.0",
     "@types/string-length": "^2.0.0"
   },

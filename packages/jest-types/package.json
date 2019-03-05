@@ -13,6 +13,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "source-map": "^0.6.1"
+    "@types/istanbul-lib-coverage": "^1.1.0",
+    "@types/yargs": "^12.0.9"
   }
 }

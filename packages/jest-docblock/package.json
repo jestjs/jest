@@ -11,7 +11,7 @@
   "dependencies": {
     "detect-newline": "^2.1.0"
   },
-  "devDependencies":  {
+  "devDependencies": {
     "@types/detect-newline": "^2.1.0"
   },
   "engines": {
