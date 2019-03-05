@@ -18,7 +18,7 @@ function getExposedMethods(
 
   // If no methods list is given, try getting it by auto-requiring the module.
   if (!exposedMethods) {
-    const module: Function | Object = require(workerPath);
+    const module: Function | Record<string, any> = require(workerPath);
 
     exposedMethods = Object.keys(module).filter(
       // @ts-ignore: no index

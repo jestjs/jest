@@ -8,14 +8,13 @@
 import {dispatch} from './state';
 import {GlobalErrorHandlers} from './types';
 
-type Process = NodeJS.Process;
-
-const uncaught = (error: Error) => {
+const uncaught: NodeJS.UncaughtExceptionListener &
+  NodeJS.UnhandledRejectionListener = (error: unknown) => {
   dispatch({error, name: 'error'});
 };
 
 export const injectGlobalErrorHandlers = (
-  parentProcess: Process,
+  parentProcess: NodeJS.Process,
 ): GlobalErrorHandlers => {
   const uncaughtException = process.listeners('uncaughtException').slice();
   const unhandledRejection = process.listeners('unhandledRejection').slice();
@@ -27,7 +26,7 @@ export const injectGlobalErrorHandlers = (
 };
 
 export const restoreGlobalErrorHandlers = (
-  parentProcess: Process,
+  parentProcess: NodeJS.Process,
   originalErrorHandlers: GlobalErrorHandlers,
 ) => {
   parentProcess.removeListener('uncaughtException', uncaught);

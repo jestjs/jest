@@ -39,8 +39,9 @@ export default function setFromArgv(
         case 'moduleNameMapper':
         case 'transform':
         case 'haste':
-          if (isJSONString(argv[key])) {
-            options[key] = JSON.parse(argv[key]);
+          const str = argv[key];
+          if (isJSONString(str)) {
+            options[key] = JSON.parse(str);
           }
           break;
         default:

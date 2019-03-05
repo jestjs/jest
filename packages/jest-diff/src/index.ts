@@ -112,7 +112,11 @@ function sortSet(set: Set<unknown>) {
   return new Set(Array.from(set.values()).sort());
 }
 
-function compareObjects(a: Object, b: Object, options?: JestDiffOptions) {
+function compareObjects(
+  a: Record<string, any>,
+  b: Record<string, any>,
+  options?: JestDiffOptions,
+) {
   let diffMessage;
   let hasThrown = false;
 
