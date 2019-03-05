@@ -226,7 +226,8 @@ export default function(j$: Jasmine) {
         return topSuite;
       };
 
-      const uncaught = (err: Error) => {
+      const uncaught: NodeJS.UncaughtExceptionListener &
+        NodeJS.UnhandledRejectionListener = (err: any) => {
         if (currentSpec) {
           currentSpec.onException(err);
           currentSpec.cancel();
