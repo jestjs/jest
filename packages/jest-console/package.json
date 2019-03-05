@@ -1,6 +1,6 @@
 {
   "name": "@jest/console",
-  "version": "24.1.0",
+  "version": "24.2.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/source-map": "^24.1.0",
+    "@jest/source-map": "^24.2.0-alpha.0",
     "@types/node": "*",
     "chalk": "^2.0.1",
     "slash": "^2.0.0"

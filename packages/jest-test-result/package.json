@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-result",
-  "version": "24.1.0",
+  "version": "24.2.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,8 +10,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/console": "^24.1.0",
-    "@jest/types": "^24.1.0",
+    "@jest/console": "^24.2.0-alpha.0",
+    "@jest/types": "^24.2.0-alpha.0",
     "@types/istanbul-lib-coverage": "^1.1.0"
   },
   "engines": {

@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "24.0.0",
+  "version": "24.2.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -13,7 +13,7 @@
   "browser": "build-es5/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/types": "^24.1.0",
+    "@jest/types": "^24.2.0-alpha.0",
     "ansi-regex": "^4.0.0",
     "ansi-styles": "^3.2.0"
   },

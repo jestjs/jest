@@ -1,6 +1,6 @@
 {
   "name": "@jest/environment",
-  "version": "24.1.0",
+  "version": "24.2.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,11 +10,11 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/fake-timers": "^24.1.0",
-    "@jest/transform": "^24.1.0",
-    "@jest/types": "^24.1.0",
+    "@jest/fake-timers": "^24.2.0-alpha.0",
+    "@jest/transform": "^24.2.0-alpha.0",
+    "@jest/types": "^24.2.0-alpha.0",
     "@types/node": "*",
-    "jest-mock": "^24.0.0"
+    "jest-mock": "^24.2.0-alpha.0"
   },
   "engines": {
     "node": ">= 6"
