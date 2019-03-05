@@ -72,12 +72,12 @@ const adapter: SCMAdapter = {
   },
 
   getRoot: async cwd => {
-    const options = ['rev-parse', '--show-toplevel'];
+    const options = ['rev-parse', '--show-cdup'];
 
     try {
       const result = await execa('git', options, {cwd});
 
-      return result.stdout;
+      return path.join(cwd, result.stdout);
     } catch (e) {
       return null;
     }
