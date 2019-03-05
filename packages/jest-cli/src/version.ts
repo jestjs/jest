@@ -3,12 +3,10 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import {version as VERSION} from '../package.json';
+const {version: VERSION} = require('../package.json');
 
-export default function getVersion() {
+export default function getVersion(): string {
   return VERSION;
 }

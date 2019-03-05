@@ -84,6 +84,8 @@
 - `[@jest/source-map]`: Extract `getCallsite` function from `jest-util` into a new separate package ([#8029](https://github.com/facebook/jest/pull/8029))
 - `[@jest/console]`: Extract custom `console` implementations from `jest-util` into a new separate package ([#8030](https://github.com/facebook/jest/pull/8030))
 - `[docs]`: Improve runAllTimers doc (it exhausts the micro-task queue) ([#8031](https://github.com/facebook/jest/pull/8031))
+- `[jest-cli]`: Migrate to TypeScript ([#8024](https://github.com/facebook/jest/pull/8024))
+- `[jest]`: Migrate to TypeScript ([#8024](https://github.com/facebook/jest/pull/8024))
 
 ### Performance
 

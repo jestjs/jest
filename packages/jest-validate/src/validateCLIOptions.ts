@@ -8,6 +8,8 @@
 import {Config} from '@jest/types';
 import chalk from 'chalk';
 import camelcase from 'camelcase';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import {Options} from 'yargs';
 import {createDidYouMeanMessage, format, ValidationError} from './utils';
 import {deprecationWarning} from './deprecated';
 import defaultConfig from './defaultConfig';
@@ -63,15 +65,16 @@ const logDeprecatedOptions = (
 export default function validateCLIOptions(
   argv: Config.Argv,
   options: {
-    [s: string]: {alias?: string};
     deprecationEntries: DeprecatedOptions;
+    [s: string]: Options;
   },
   rawArgv: Array<string> = [],
 ) {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const deprecationEntries = options.deprecationEntries || {};
   const allowedOptions = Object.keys(options).reduce(
-    (acc, option) => acc.add(option).add(options[option].alias || option),
+    (acc, option) =>
+      acc.add(option).add((options[option].alias as string) || option),
     new Set(yargsSpecialOptions),
   );
   const unrecognizedOptions = Object.keys(argv).filter(
@@ -89,7 +92,7 @@ export default function validateCLIOptions(
     (acc, entry) => {
       if (options[entry]) {
         acc[entry] = deprecationEntries[entry];
-        const alias = options[entry].alias;
+        const alias = options[entry].alias as string;
         if (alias) {
           acc[alias] = deprecationEntries[entry];
         }
