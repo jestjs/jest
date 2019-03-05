@@ -15,7 +15,7 @@
 
 ### Fixes
 
-- `[jest-environment-node]` Add mising globals: TextEncoder and TextDecoder ([#8022](https://github.com/facebook/jest/pull/8022))
+- `[jest-environment-node]` Add missing globals: TextEncoder and TextDecoder ([#8022](https://github.com/facebook/jest/pull/8022))
 - `[jest-cli]` Fix prototype pollution vulnerability in dependency ([#7904](https://github.com/facebook/jest/pull/7904))
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
 - `[expect]` Fix custom async matcher stack trace ([#7652](https://github.com/facebook/jest/pull/7652))
@@ -24,7 +24,7 @@
 - `[jest-changed-files]` Improve default file selection for Mercurial repos ([#7880](https://github.com/facebook/jest/pull/7880))
 - `[jest-validate]` Fix validating async functions ([#7894](https://github.com/facebook/jest/issues/7894))
 - `[jest-circus]` Fix bug with test.only ([#7888](https://github.com/facebook/jest/pull/7888))
-- `[jest-transform]` Normalize config and remove unecessary checks, convert `TestUtils.js` to TypeScript ([#7801](https://github.com/facebook/jest/pull/7801))
+- `[jest-transform]` Normalize config and remove unnecessary checks, convert `TestUtils.js` to TypeScript ([#7801](https://github.com/facebook/jest/pull/7801))
 - `[jest-worker]` Fix `jest-worker` when using pre-allocated jobs ([#7934](https://github.com/facebook/jest/pull/7934))
 - `[jest-changed-files]` Fix `getChangedFilesFromRoots` to not return parts of the commit messages as if they were files, when the commit messages contained multiple paragraphs ([#7961](https://github.com/facebook/jest/pull/7961))
 - `[jest-haste-map]` Enforce uniqueness in names (mocks and haste ids) ([#8002](https://github.com/facebook/jest/pull/8002))
