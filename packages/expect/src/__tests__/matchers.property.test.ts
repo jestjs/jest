@@ -32,39 +32,6 @@ afterAll(() => {
 });
 
 describe('toStrictEqual', () => {
-  it('should distinguish distinct values', () => {
-    fc.assert(
-      fc.property(
-        fc.anything(anythingSettings),
-        fc.anything(anythingSettings),
-        (a, b) => {
-          // Given:  a and b values such as a different from b
-          // Assert: We expect `expect(a).not.toStrictEqual(b)`
-          const replacer = (k, v) => {
-            if (v === undefined) return '<undefined>';
-            if (v instanceof Set)
-              return `new Set([${Array.from(v)
-                .map(v => JSON.stringify(v, replacer))
-                .sort()}])`;
-            if (v instanceof Map)
-              return `new Map([${Array.from(v)
-                .map(v => JSON.stringify(v, replacer))
-                .sort()}])`;
-            return v;
-          };
-          fc.pre(JSON.stringify(a, replacer) !== JSON.stringify(b, replacer));
-          expect(a).not.toStrictEqual(b);
-        },
-      ),
-      {
-        ...assertSettings,
-        examples: [
-          [[{a: undefined}], [{}]], // Issue #7937
-        ],
-      },
-    );
-  });
-
   it('should be reflexive', () => {
     fc.assert(
       fc.property(fc.dedup(fc.anything(anythingSettings), 2), ([a, b]) => {
