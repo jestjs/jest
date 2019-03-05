@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
-
+import {Config} from '@jest/types';
+import {TestResult} from '@jest/test-result';
 import chalk from 'chalk';
 import {formatTestPath, printDisplayName} from './utils';
 
@@ -25,7 +25,7 @@ const PASS = chalk.supportsColor
   : PASS_TEXT;
 
 export default (
-  result: TestResult.TestResult,
+  result: TestResult,
   globalConfig: Config.GlobalConfig,
   projectConfig?: Config.ProjectConfig,
 ) => {

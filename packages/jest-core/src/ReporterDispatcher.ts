@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TestResult} from '@jest/types';
+import {AggregatedResult, TestResult} from '@jest/test-result';
 import {Test} from 'jest-runner';
 import {Context} from 'jest-runtime';
 import {Reporter, ReporterOnStartOptions} from '@jest/reporters';
@@ -29,8 +29,8 @@ export default class ReporterDispatcher {
 
   async onTestResult(
     test: Test,
-    testResult: TestResult.TestResult,
-    results: TestResult.AggregatedResult,
+    testResult: TestResult,
+    results: AggregatedResult,
   ) {
     for (const reporter of this._reporters) {
       reporter.onTestResult &&
@@ -44,19 +44,13 @@ export default class ReporterDispatcher {
     }
   }
 
-  async onRunStart(
-    results: TestResult.AggregatedResult,
-    options: ReporterOnStartOptions,
-  ) {
+  async onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
     for (const reporter of this._reporters) {
       reporter.onRunStart && (await reporter.onRunStart(results, options));
     }
   }
 
-  async onRunComplete(
-    contexts: Set<Context>,
-    results: TestResult.AggregatedResult,
-  ) {
+  async onRunComplete(contexts: Set<Context>, results: AggregatedResult) {
     for (const reporter of this._reporters) {
       reporter.onRunComplete &&
         (await reporter.onRunComplete(contexts, results));

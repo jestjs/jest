@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TestResult, Config} from '@jest/types';
+import {Config} from '@jest/types';
+import {AggregatedResult, SnapshotSummary} from '@jest/test-result';
 import chalk from 'chalk';
 import {testPathPatternToRegExp} from 'jest-util';
 import {Context, ReporterOnStartOptions} from './types';
@@ -65,17 +66,14 @@ export default class SummaryReporter extends BaseReporter {
   }
 
   onRunStart(
-    aggregatedResults: TestResult.AggregatedResult,
+    aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
     super.onRunStart(aggregatedResults, options);
     this._estimatedTime = options.estimatedTime;
   }
 
-  onRunComplete(
-    contexts: Set<Context>,
-    aggregatedResults: TestResult.AggregatedResult,
-  ) {
+  onRunComplete(contexts: Set<Context>, aggregatedResults: AggregatedResult) {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
     if (numTotalTestSuites) {
       const lastResult = testResults[testResults.length - 1];
@@ -114,7 +112,7 @@ export default class SummaryReporter extends BaseReporter {
   }
 
   private _printSnapshotSummary(
-    snapshots: TestResult.SnapshotSummary,
+    snapshots: SnapshotSummary,
     globalConfig: Config.GlobalConfig,
   ) {
     if (
@@ -159,7 +157,7 @@ export default class SummaryReporter extends BaseReporter {
   }
 
   private _printSummary(
-    aggregatedResults: TestResult.AggregatedResult,
+    aggregatedResults: AggregatedResult,
     globalConfig: Config.GlobalConfig,
   ) {
     // If there were any failing tests and there was a large number of tests

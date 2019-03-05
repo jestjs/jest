@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {AssertionResult, TestResult} from '@jest/test-result';
 import {formatResultsErrors} from 'jest-message-util';
 import {SpecResult} from './jasmine/Spec';
 import {SuiteResult} from './jasmine/Suite';
@@ -14,12 +15,12 @@ import {Reporter, RunDetails} from './types';
 type Microseconds = number;
 
 export default class Jasmine2Reporter implements Reporter {
-  private _testResults: Array<TestResult.AssertionResult>;
+  private _testResults: Array<AssertionResult>;
   private _globalConfig: Config.GlobalConfig;
   private _config: Config.ProjectConfig;
   private _currentSuites: Array<string>;
   private _resolve: any;
-  private _resultsPromise: Promise<TestResult.TestResult>;
+  private _resultsPromise: Promise<TestResult>;
   private _startTimes: Map<string, Microseconds>;
   private _testPath: Config.Path;
 
@@ -107,7 +108,7 @@ export default class Jasmine2Reporter implements Reporter {
     this._resolve(testResult);
   }
 
-  getResults(): Promise<TestResult.TestResult> {
+  getResults(): Promise<TestResult> {
     return this._resultsPromise;
   }
 
@@ -129,7 +130,7 @@ export default class Jasmine2Reporter implements Reporter {
   private _extractSpecResults(
     specResult: SpecResult,
     ancestorTitles: Array<string>,
-  ): TestResult.AssertionResult {
+  ): AssertionResult {
     const start = this._startTimes.get(specResult.id);
     const duration = start ? Date.now() - start : undefined;
     const status =
@@ -140,7 +141,7 @@ export default class Jasmine2Reporter implements Reporter {
           line: specResult.__callsite.getLineNumber(),
         }
       : null;
-    const results: TestResult.AssertionResult = {
+    const results: AssertionResult = {
       ancestorTitles,
       duration,
       failureMessages: [],

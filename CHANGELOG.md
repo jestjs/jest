@@ -90,6 +90,7 @@
 - `[jest-cli]`: Migrate to TypeScript ([#8024](https://github.com/facebook/jest/pull/8024))
 - `[jest]`: Migrate to TypeScript ([#8024](https://github.com/facebook/jest/pull/8024))
 - `[docs]` Update automock configuration, add note related to manual mocks ([#8051](https://github.com/facebook/jest/pull/8051))
+- `[@jest/test-result]`: Extract TestResult types and helpers into a new separate package ([#8034](https://github.com/facebook/jest/pull/8034))
 
 ### Performance
 

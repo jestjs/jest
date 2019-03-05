@@ -8,9 +8,8 @@
 
 import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
-import {TestResult} from '@jest/types';
+import {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {KEYS} from 'jest-watcher';
-
 import {pluralize, specialChars} from 'jest-util';
 
 const {ARROW, CLEAR} = specialChars;
@@ -19,10 +18,10 @@ export default class SnapshotInteractiveMode {
   private _pipe: NodeJS.WritableStream;
   private _isActive: boolean;
   private _updateTestRunnerConfig!: (
-    assertion: TestResult.AssertionLocation | null,
+    assertion: AssertionLocation | null,
     shouldUpdateSnapshot: boolean,
   ) => unknown;
-  private _testAssertions!: Array<TestResult.AssertionLocation>;
+  private _testAssertions!: Array<AssertionLocation>;
   private _countPaths!: number;
   private _skippedNum: number;
 
@@ -205,7 +204,7 @@ export default class SnapshotInteractiveMode {
     this._run(false);
   }
 
-  updateWithResults(results: TestResult.AggregatedResult) {
+  updateWithResults(results: AggregatedResult) {
     const hasSnapshotFailure = !!results.snapshot.failure;
     if (hasSnapshotFailure) {
       this._drawUIOverlay();
@@ -228,9 +227,9 @@ export default class SnapshotInteractiveMode {
   }
 
   run(
-    failedSnapshotTestAssertions: Array<TestResult.AssertionLocation>,
+    failedSnapshotTestAssertions: Array<AssertionLocation>,
     onConfigChange: (
-      assertion: TestResult.AssertionLocation | null,
+      assertion: AssertionLocation | null,
       shouldUpdateSnapshot: boolean,
     ) => unknown,
   ) {

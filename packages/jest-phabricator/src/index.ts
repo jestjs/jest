@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TestResult} from '@jest/types';
+import {AggregatedResult} from '@jest/test-result';
 
-type AggregatedResult = TestResult.AggregatedResult;
 type CoverageMap = AggregatedResult['coverageMap'];
 
 function summarize(coverageMap: CoverageMap): CoverageMap {

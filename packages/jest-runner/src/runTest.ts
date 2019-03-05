@@ -6,7 +6,8 @@
  *
  */
 
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {TestResult} from '@jest/test-result';
 import {
   BufferedConsole,
   CustomConsole,
@@ -32,7 +33,7 @@ import {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
-  result: TestResult.TestResult;
+  result: TestResult;
 };
 
 function freezeConsole(
@@ -223,7 +224,7 @@ async function runTestInternal(
   try {
     await environment.setup();
 
-    let result: TestResult.TestResult;
+    let result: TestResult;
 
     try {
       result = await testFramework(
@@ -283,7 +284,7 @@ export default async function runTest(
   config: Config.ProjectConfig,
   resolver: Resolver,
   context?: TestRunnerContext,
-): Promise<TestResult.TestResult> {
+): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
     globalConfig,

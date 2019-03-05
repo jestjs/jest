@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TestResult} from '@jest/types';
 import formatTestResults from '../formatTestResults';
+import {AggregatedResult} from '../types';
 
 describe('formatTestResults', () => {
   const assertion = {
@@ -15,7 +15,7 @@ describe('formatTestResults', () => {
     title: 'returns true',
   };
 
-  const results: TestResult.AggregatedResult = {
+  const results: AggregatedResult = {
     testResults: [
       {
         numFailingTests: 0,

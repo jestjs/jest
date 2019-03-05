@@ -5,8 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
-
+import {Config} from '@jest/types';
+import {
+  AggregatedResult,
+  AssertionResult,
+  Suite,
+  TestResult,
+} from '@jest/test-result';
 import chalk from 'chalk';
 import {specialChars} from 'jest-util';
 import {Test} from './types';
@@ -23,13 +28,13 @@ export default class VerboseReporter extends DefaultReporter {
   }
 
   static filterTestResults(
-    testResults: Array<TestResult.AssertionResult>,
-  ): Array<TestResult.AssertionResult> {
+    testResults: Array<AssertionResult>,
+  ): Array<AssertionResult> {
     return testResults.filter(({status}) => status !== 'pending');
   }
 
-  static groupTestsBySuites(testResults: Array<TestResult.AssertionResult>) {
-    const root: TestResult.Suite = {suites: [], tests: [], title: ''};
+  static groupTestsBySuites(testResults: Array<AssertionResult>) {
+    const root: Suite = {suites: [], tests: [], title: ''};
     testResults.forEach(testResult => {
       let targetSuite = root;
 
@@ -51,8 +56,8 @@ export default class VerboseReporter extends DefaultReporter {
 
   onTestResult(
     test: Test,
-    result: TestResult.TestResult,
-    aggregatedResults: TestResult.AggregatedResult,
+    result: TestResult,
+    aggregatedResults: AggregatedResult,
   ) {
     super.testFinished(test.context.config, result, aggregatedResults);
     if (!result.skipped) {
@@ -73,12 +78,12 @@ export default class VerboseReporter extends DefaultReporter {
     super.forceFlushBufferedOutput();
   }
 
-  private _logTestResults(testResults: Array<TestResult.AssertionResult>) {
+  private _logTestResults(testResults: Array<AssertionResult>) {
     this._logSuite(VerboseReporter.groupTestsBySuites(testResults), 0);
     this._logLine();
   }
 
-  private _logSuite(suite: TestResult.Suite, indentLevel: number) {
+  private _logSuite(suite: Suite, indentLevel: number) {
     if (suite.title) {
       this._logLine(suite.title, indentLevel);
     }
@@ -100,16 +105,13 @@ export default class VerboseReporter extends DefaultReporter {
     }
   }
 
-  private _logTest(test: TestResult.AssertionResult, indentLevel: number) {
+  private _logTest(test: AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
     const time = test.duration ? ` (${test.duration.toFixed(0)}ms)` : '';
     this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
   }
 
-  private _logTests(
-    tests: Array<TestResult.AssertionResult>,
-    indentLevel: number,
-  ) {
+  private _logTests(tests: Array<AssertionResult>, indentLevel: number) {
     if (this._globalConfig.expand) {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {

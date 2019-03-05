@@ -8,7 +8,7 @@
   },
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^24.1.0"
+    "@jest/test-result": "^24.1.0"
   },
   "engines": {
     "node": ">= 6"
