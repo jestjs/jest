@@ -128,7 +128,7 @@ export default class SearchSource {
 
     const testCasesKeys = Object.keys(testCases) as Array<keyof Stats>;
     data.tests = allPaths.filter(test =>
-      testCasesKeys.reduce((flag, key) => {
+      testCasesKeys.reduce<boolean>((flag, key) => {
         const {stats} = data;
         if (testCases[key](test.path)) {
           stats[key] = stats[key] === undefined ? 1 : stats[key] + 1;

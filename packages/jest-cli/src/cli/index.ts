@@ -3,32 +3,25 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import type {AggregatedResult} from 'types/TestResult';
-import type {Argv} from 'types/Argv';
-import type {GlobalConfig, Path} from 'types/Config';
-
 import path from 'path';
+import {Config, TestResult} from '@jest/types';
 import {clearLine} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
 import {runCLI} from '@jest/core';
-import * as args from './args';
 import chalk from 'chalk';
 import exit from 'exit';
 import yargs from 'yargs';
 import {sync as realpath} from 'realpath-native';
 import init from '../init';
+import getVersion from '../version';
+import * as args from './args';
 
-import {version as VERSION} from '../../package.json';
-
-export async function run(maybeArgv?: Argv, project?: Path) {
+export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
   try {
-    // $FlowFixMe:`allow reduced return
-    const argv: Argv = buildArgv(maybeArgv);
+    const argv: Config.Argv = buildArgv(maybeArgv);
 
     if (argv.init) {
       await init();
@@ -48,12 +41,14 @@ export async function run(maybeArgv?: Argv, project?: Path) {
   }
 }
 
-export const buildArgv = (maybeArgv: ?Argv) => {
+export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
   const version =
-    VERSION + (__dirname.includes(`packages${path.sep}jest-cli`) ? '-dev' : '');
+    getVersion() +
+    (__dirname.includes(`packages${path.sep}jest-cli`) ? '-dev' : '');
 
-  const rawArgv: Argv | string[] = maybeArgv || process.argv.slice(2);
-  const argv: Argv = yargs(rawArgv)
+  const rawArgv: Config.Argv | Array<string> =
+    maybeArgv || process.argv.slice(2);
+  const argv: Config.Argv = yargs(rawArgv)
     .usage(args.usage)
     .version(version)
     .alias('help', 'h')
@@ -71,16 +66,21 @@ export const buildArgv = (maybeArgv: ?Argv) => {
   );
 
   // strip dashed args
-  return Object.keys(argv).reduce((result, key) => {
-    if (!key.includes('-')) {
-      // $FlowFixMe:`allow reduced return
-      result[key] = argv[key];
-    }
-    return result;
-  }, {});
+  return Object.keys(argv).reduce(
+    (result, key) => {
+      if (!key.includes('-')) {
+        result[key] = argv[key];
+      }
+      return result;
+    },
+    {} as Config.Argv,
+  );
 };
 
-const getProjectListFromCLIArgs = (argv, project: ?Path) => {
+const getProjectListFromCLIArgs = (
+  argv: Config.Argv,
+  project?: Config.Path,
+) => {
   const projects = argv.projects ? argv.projects : [];
 
   if (project) {
@@ -104,8 +104,8 @@ const getProjectListFromCLIArgs = (argv, project: ?Path) => {
 };
 
 const readResultsAndExit = (
-  result: ?AggregatedResult,
-  globalConfig: GlobalConfig,
+  result: TestResult.AggregatedResult | null,
+  globalConfig: Config.GlobalConfig,
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
 
@@ -140,7 +140,6 @@ const readResultsAndExit = (
               '`--detectOpenHandles` to troubleshoot this issue.',
           ),
       );
-      // $FlowFixMe: `unref` exists in Node
     }, 1000).unref();
   }
 };

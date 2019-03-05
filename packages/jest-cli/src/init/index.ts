@@ -3,13 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
+import chalk from 'chalk';
 import prompts from 'prompts';
 import {sync as realpath} from 'realpath-native';
 import defaultQuestions, {testScriptQuestion} from './questions';
@@ -17,12 +15,13 @@ import {NotFoundPackageJsonError, MalformedPackageJsonError} from './errors';
 import {PACKAGE_JSON, JEST_CONFIG} from './constants';
 import generateConfigFile from './generate_config_file';
 import modifyPackageJson from './modify_package_json';
+import {ProjectPackageJson} from './types';
 
 type PromptsResults = {
-  clearMocks: boolean,
-  coverage: boolean,
-  environment: boolean,
-  scripts: boolean,
+  clearMocks: boolean;
+  coverage: boolean;
+  environment: boolean;
+  scripts: boolean;
 };
 
 export default async (rootDir: string = realpath(process.cwd())) => {
@@ -37,7 +36,7 @@ export default async (rootDir: string = realpath(process.cwd())) => {
   const questions = defaultQuestions.slice(0);
   let hasJestProperty: boolean = false;
   let hasJestConfig: boolean = false;
-  let projectPackageJson: ?Object;
+  let projectPackageJson: ProjectPackageJson;
 
   try {
     projectPackageJson = JSON.parse(
@@ -89,6 +88,7 @@ export default async (rootDir: string = realpath(process.cwd())) => {
 
   let promptAborted: boolean = false;
 
+  // @ts-ignore: Return type cannot be object - faulty typings
   const results: PromptsResults = await prompts(questions, {
     onCancel: () => {
       promptAborted = true;

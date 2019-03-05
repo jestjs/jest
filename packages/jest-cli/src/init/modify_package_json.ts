@@ -3,17 +3,16 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
+
+import {ProjectPackageJson} from './types';
 
 const modifyPackageJson = ({
   projectPackageJson,
   shouldModifyScripts,
-  hasJestProperty,
 }: {
-  projectPackageJson: Object,
-  shouldModifyScripts: boolean,
+  projectPackageJson: ProjectPackageJson;
+  shouldModifyScripts: boolean;
 }): string => {
   if (shouldModifyScripts) {
     projectPackageJson.scripts
