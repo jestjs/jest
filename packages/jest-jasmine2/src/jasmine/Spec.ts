@@ -31,7 +31,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
 
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory, {
@@ -62,12 +63,12 @@ export type SpecResult = {
   id: string;
   description: string;
   fullName: string;
-  duration?: TestResult.Milliseconds;
-  failedExpectations: Array<TestResult.FailedAssertion>;
+  duration?: Milliseconds;
+  failedExpectations: Array<FailedAssertion>;
   testPath: Config.Path;
   passedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
   pendingReason: string;
-  status: TestResult.Status;
+  status: Status;
   __callsite?: {
     getColumnNumber: () => number;
     getLineNumber: () => number;

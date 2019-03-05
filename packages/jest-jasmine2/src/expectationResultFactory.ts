@@ -6,7 +6,7 @@
  */
 
 import prettyFormat from 'pretty-format';
-import {TestResult} from '@jest/types';
+import {FailedAssertion} from '@jest/test-result';
 
 function messageFormatter({error, message, passed}: Options) {
   if (passed) {
@@ -68,7 +68,7 @@ export type Options = {
 export default function expectationResultFactory(
   options: Options,
   initError?: Error,
-): TestResult.FailedAssertion {
+): FailedAssertion {
   const message = messageFormatter(options);
   const stack = stackFormatter(options, initError, message);
 

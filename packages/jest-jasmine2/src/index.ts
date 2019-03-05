@@ -6,7 +6,8 @@
  */
 
 import path from 'path';
-import {Config, Global, TestResult} from '@jest/types';
+import {Config, Global} from '@jest/types';
+import {AssertionResult, TestResult} from '@jest/test-result';
 import {JestEnvironment} from '@jest/environment';
 import {SnapshotStateType} from 'jest-snapshot';
 import Runtime from 'jest-runtime';
@@ -27,7 +28,7 @@ async function jasmine2(
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult.TestResult> {
+): Promise<TestResult> {
   const reporter = new JasmineReporter(globalConfig, config, testPath);
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create({
@@ -173,18 +174,16 @@ async function jasmine2(
 }
 
 const addSnapshotData = (
-  results: TestResult.TestResult,
+  results: TestResult,
   snapshotState: SnapshotStateType,
 ) => {
-  results.testResults.forEach(
-    ({fullName, status}: TestResult.AssertionResult) => {
-      if (status === 'pending' || status === 'failed') {
-        // if test is skipped or failed, we don't want to mark
-        // its snapshots as obsolete.
-        snapshotState.markSnapshotsAsCheckedForTest(fullName);
-      }
-    },
-  );
+  results.testResults.forEach(({fullName, status}: AssertionResult) => {
+    if (status === 'pending' || status === 'failed') {
+      // if test is skipped or failed, we don't want to mark
+      // its snapshots as obsolete.
+      snapshotState.markSnapshotsAsCheckedForTest(fullName);
+    }
+  });
 
   const uncheckedCount = snapshotState.getUncheckedCount();
   const uncheckedKeys = snapshotState.getUncheckedKeys();
