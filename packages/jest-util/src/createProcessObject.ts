@@ -81,9 +81,11 @@ export default function() {
   } catch (e) {
     // Make sure it's actually set instead of potentially ignoring errors
     if (newProcess[Symbol.toStringTag] !== 'process') {
-      throw new Error(
-        'Unable to set toStringTag on process. Please open up an issue at https://github.com/facebook/jest',
-      );
+      e.message =
+        'Unable to set toStringTag on process. Please open up an issue at https://github.com/facebook/jest\n\n' +
+        e.message;
+
+      throw e;
     }
   }
 
