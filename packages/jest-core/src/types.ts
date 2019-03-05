@@ -8,7 +8,6 @@
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
 import {Config} from '@jest/types';
-import {AggregatedResult, TestResult} from '@jest/test-result';
 
 export type TestRunData = Array<{
   context: Context;
@@ -38,28 +37,4 @@ export type TestPathCases = {
 
 export type TestPathCasesWithPathPattern = TestPathCases & {
   testPathPattern: (path: Config.Path) => boolean;
-};
-
-// TODO: Obtain this from @jest/reporters once its been migrated
-export type ReporterOnStartOptions = {
-  estimatedTime: number;
-  showStatus: boolean;
-};
-
-export type Reporter = {
-  onTestResult: (
-    test: Test,
-    testResult: TestResult,
-    aggregatedResult: AggregatedResult,
-  ) => Promise<void>;
-  onRunStart: (
-    results: AggregatedResult,
-    options: ReporterOnStartOptions,
-  ) => Promise<void>;
-  onTestStart: (test: Test) => Promise<void>;
-  onRunComplete: (
-    contexts: Set<Context>,
-    results: AggregatedResult,
-  ) => Promise<void>;
-  getLastError: () => Error;
 };

@@ -23,7 +23,7 @@ export type HookFn = (done?: DoneFn) => Promise<any> | null | undefined;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
-export type TestContext = Object;
+export type TestContext = Record<string, any>;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 export type Hook = {

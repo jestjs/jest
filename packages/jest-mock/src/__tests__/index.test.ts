@@ -6,18 +6,18 @@
  *
  */
 
-import vm from 'vm';
+import vm, {Context} from 'vm';
+import {ModuleMocker} from '../';
 
 describe('moduleMocker', () => {
-  let moduleMocker;
-  let mockContext;
-  let mockGlobals;
+  let moduleMocker: ModuleMocker;
+  let mockContext: Context;
+  let mockGlobals: NodeJS.Global;
 
   beforeEach(() => {
-    const mock = require('../');
     mockContext = vm.createContext();
     mockGlobals = vm.runInNewContext('this', mockContext);
-    moduleMocker = new mock.ModuleMocker(mockGlobals);
+    moduleMocker = new ModuleMocker(mockGlobals);
   });
 
   describe('getMetadata', () => {
@@ -879,6 +879,14 @@ describe('moduleMocker', () => {
         expect(fn2.mock.invocationCallOrder).toEqual([]);
         expect(fn1()).toEqual('abcd');
         expect(fn2()).toEqual('abcde');
+      });
+
+      it('handles a property called `prototype`', () => {
+        const mock = moduleMocker.generateFromMetadata(
+          moduleMocker.getMetadata({prototype: 1}),
+        );
+
+        expect(mock.prototype).toBe(1);
       });
     });
   });

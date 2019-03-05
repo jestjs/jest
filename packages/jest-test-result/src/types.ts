@@ -165,7 +165,7 @@ export type CodeCoverageReporter = any;
 export type CodeCoverageFormatter = (
   coverage: CoverageMapData | null | undefined,
   reporter: CodeCoverageReporter,
-) => Object | null | undefined;
+) => Record<string, any> | null | undefined;
 
 export type UncheckedSnapshot = {
   filePath: string;

@@ -217,8 +217,9 @@ export const getRunner = (
     rootDir,
   });
 
-export const isJSONString = (text?: string) =>
-  text &&
+type JSONString = string & {readonly $$type: never}; // newtype
+export const isJSONString = (text?: JSONString | string): text is JSONString =>
+  text != null &&
   typeof text === 'string' &&
   text.startsWith('{') &&
   text.endsWith('}');

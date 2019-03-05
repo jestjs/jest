@@ -9,7 +9,7 @@ import {resolve} from 'path';
 
 import {run} from '../Utils';
 
-const dir = resolve(__dirname, '..', 'run-programatically');
+const dir = resolve(__dirname, '..', 'run-programmatically');
 
 test('run Jest programatically', () => {
   const {stdout} = run(`node index.js --version`, dir);

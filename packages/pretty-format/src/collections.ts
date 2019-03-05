@@ -8,7 +8,7 @@
 
 import {Config, Printer, Refs} from './types';
 
-const getKeysOfEnumerableProperties = (object: Object) => {
+const getKeysOfEnumerableProperties = (object: Record<string, any>) => {
   const keys: Array<string | symbol> = Object.keys(object).sort();
 
   if (Object.getOwnPropertySymbols) {
@@ -168,7 +168,7 @@ export function printListItems(
  * without surrounding punctuation (for example, braces)
  */
 export function printObjectProperties(
-  val: Object,
+  val: Record<string, any>,
   config: Config,
   indentation: string,
   depth: number,
