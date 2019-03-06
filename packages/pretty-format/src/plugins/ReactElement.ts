@@ -50,7 +50,7 @@ const getType = (element: any) => {
     }
 
     if (ReactIs.isForwardRef(element)) {
-      const functionName = type.render.displayName || type.element.name || '';
+      const functionName = type.render.displayName || type.render.name || '';
 
       return functionName !== ''
         ? 'ForwardRef(' + functionName + ')'
