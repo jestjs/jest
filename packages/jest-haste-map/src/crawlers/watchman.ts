@@ -182,7 +182,7 @@ export = async function watchmanCrawl(
       const relativeFilePath = fastPath.relative(rootDir, filePath);
       const existingFileData = data.files.get(relativeFilePath);
 
-      // If watchman is fresh, the deprecated files map starts with all files
+      // If watchman is fresh, the removed files map starts with all files
       // and we remove them as we verify they still exist.
       if (isFresh && existingFileData && fileData.exists) {
         removedFiles.delete(relativeFilePath);

@@ -221,7 +221,7 @@ describe('watchman watch', () => {
     });
   });
 
-  test('updates file map and deprecatedFile when the clock is given', () => {
+  test('updates file map and removedFiles when the clock is given', () => {
     mockResponse = {
       'list-capabilities': {
         [undefined]: {
@@ -291,7 +291,7 @@ describe('watchman watch', () => {
     });
   });
 
-  test('resets the file map and tracks deprecatedFile when watchman is fresh', () => {
+  test('resets the file map and tracks removedFiles when watchman is fresh', () => {
     const mockTomatoSha1 = '321f6b7e8bf7f29aab89c5e41a555b1b0baa41a9';
 
     mockResponse = {

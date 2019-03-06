@@ -178,7 +178,7 @@ describe('node crawler', () => {
     });
   });
 
-  it('returns deprecated files', () => {
+  it('returns removed files', () => {
     process.platform = 'linux';
 
     nodeCrawl = require('../node');
