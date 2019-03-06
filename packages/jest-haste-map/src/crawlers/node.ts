@@ -171,8 +171,8 @@ export = function nodeCrawl(
       data.files = files;
 
       resolve({
-        removedFiles,
         hasteMap: data,
+        removedFiles,
       });
     };
 

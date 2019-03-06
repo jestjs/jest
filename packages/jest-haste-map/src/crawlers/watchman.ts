@@ -254,7 +254,7 @@ export = async function watchmanCrawl(
 
   data.files = files;
   return {
-    removedFiles,
     hasteMap: data,
+    removedFiles,
   };
 };

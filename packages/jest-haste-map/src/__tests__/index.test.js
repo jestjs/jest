@@ -62,8 +62,8 @@ jest.mock('../crawlers/watchman', () =>
     }
 
     return Promise.resolve({
-      removedFiles,
       hasteMap: data,
+      removedFiles,
     });
   }),
 );
@@ -425,8 +425,8 @@ describe('HasteMap', () => {
           });
 
           return Promise.resolve({
-            removedFiles: new Map(),
             hasteMap: data,
+            removedFiles: new Map(),
           });
         });
 
@@ -990,7 +990,7 @@ describe('HasteMap', () => {
       mockImpl(options).then(() => {
         const {data} = options;
         data.files.set('fruits/invalid/file.js', ['', 34, 44, 0, []]);
-        return {removedFiles: new Map(), hasteMap: data};
+        return {hasteMap: data, removedFiles: new Map()};
       }),
     );
     return new HasteMap(defaultConfig)
@@ -1089,8 +1089,8 @@ describe('HasteMap', () => {
         'fruits/Banana.js': ['', 32, 42, 0, [], null],
       });
       return Promise.resolve({
-        removedFiles: new Map(),
         hasteMap: data,
+        removedFiles: new Map(),
       });
     });
 
@@ -1123,8 +1123,8 @@ describe('HasteMap', () => {
         'fruits/Banana.js': ['', 32, 42, 0, [], null],
       });
       return Promise.resolve({
-        removedFiles: new Map(),
         hasteMap: data,
+        removedFiles: new Map(),
       });
     });
 
