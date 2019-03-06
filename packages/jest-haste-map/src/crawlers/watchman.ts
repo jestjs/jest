@@ -189,11 +189,15 @@ export = async function watchmanCrawl(
       }
 
       if (!fileData.exists) {
-        // If watchman is not fresh, we will know what specific files were
-        // deleted since we last ran and can track only those files.
-        if (!isFresh && existingFileData) {
-          deprecatedFiles.set(relativeFilePath, existingFileData);
+        // No need to act on files that do not exist and were not tracked.
+        if (existingFileData) {
           files.delete(relativeFilePath);
+
+          // If watchman is not fresh, we will know what specific files were
+          // deleted since we last ran and can track only those files.
+          if (!isFresh) {
+            deprecatedFiles.set(relativeFilePath, existingFileData);
+          }
         }
       } else if (!ignore(filePath)) {
         const mtime =
