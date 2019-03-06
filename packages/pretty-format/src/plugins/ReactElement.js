@@ -16,11 +16,9 @@ import {
   printProps,
 } from './lib/markup';
 
+import * as ReactIs from 'react-is';
+
 const elementSymbol = Symbol.for('react.element');
-const fragmentSymbol = Symbol.for('react.fragment');
-const forwardRefSymbol = Symbol.for('react.forward_ref');
-const providerSymbol = Symbol.for('react.provider');
-const contextSymbol = Symbol.for('react.context');
 
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
@@ -43,19 +41,19 @@ const getType = element => {
   if (typeof type === 'function') {
     return type.displayName || type.name || 'Unknown';
   }
-  if (type === fragmentSymbol) {
+  if (ReactIs.isFragment(element)) {
     return 'React.Fragment';
   }
   if (typeof type === 'object' && type !== null) {
-    if (type.$$typeof === providerSymbol) {
+    if (ReactIs.isContextProvider(element)) {
       return 'Context.Provider';
     }
 
-    if (type.$$typeof === contextSymbol) {
+    if (ReactIs.isContextConsumer(element)) {
       return 'Context.Consumer';
     }
 
-    if (type.$$typeof === forwardRefSymbol) {
+    if (ReactIs.isForwardRef(element)) {
       const functionName = type.render.displayName || type.render.name || '';
 
       return functionName !== ''
