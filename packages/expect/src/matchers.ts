@@ -633,9 +633,9 @@ const matchers: MatchersObject = {
     const result = getPath(object, keyPath);
     const {lastTraversedObject, hasEndProp} = result;
 
-    const pass =
-      hasEndProp &&
-      (!valuePassed || equals(result.value, value, [iterableEquality]));
+    const pass = valuePassed
+      ? equals(result.value, value, [iterableEquality])
+      : hasEndProp;
 
     const traversedPath = result.traversedPath.join('.');
 
