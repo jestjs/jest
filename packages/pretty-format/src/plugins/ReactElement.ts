@@ -15,8 +15,6 @@ import {
   printProps,
 } from './lib/markup';
 
-const memoSymbol = Symbol.for('react.memo');
-
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
 const getChildren = (arg: Array<any>, children = []) => {
@@ -58,7 +56,7 @@ const getType = (element: any) => {
         : 'ForwardRef';
     }
 
-    if (type.$$typeof === memoSymbol) {
+    if (ReactIs.isMemo(type)) {
       const functionName = type.type.displayName || type.type.name || '';
 
       return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
