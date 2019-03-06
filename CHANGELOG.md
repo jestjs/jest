@@ -94,6 +94,8 @@
 
 ### Performance
 
+- `[jest-haste-map]` Optimize haste map tracking of deleted files with Watchman. ([#8056](https://github.com/facebook/jest/pull/8056))
+
 ## 24.1.0
 
 ### Features
