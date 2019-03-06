@@ -136,7 +136,7 @@ function findNative(
 export = function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<{
-  deprecatedFiles: FileData;
+  removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
   if (options.mapper) {
@@ -155,7 +155,7 @@ export = function nodeCrawl(
   return new Promise(resolve => {
     const callback = (list: Result) => {
       const files = new Map();
-      const deprecatedFiles = new Map(data.files);
+      const removedFiles = new Map(data.files);
       list.forEach(fileData => {
         const [filePath, mtime, size] = fileData;
         const relativeFilePath = fastPath.relative(rootDir, filePath);
@@ -166,12 +166,12 @@ export = function nodeCrawl(
           // See ../constants.js; SHA-1 will always be null and fulfilled later.
           files.set(relativeFilePath, ['', mtime, size, 0, [], null]);
         }
-        deprecatedFiles.delete(relativeFilePath);
+        removedFiles.delete(relativeFilePath);
       });
       data.files = files;
 
       resolve({
-        deprecatedFiles,
+        removedFiles,
         hasteMap: data,
       });
     };

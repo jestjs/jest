@@ -396,7 +396,7 @@ class HasteMap extends EventEmitter {
    * 2. crawl the file system.
    */
   private _buildFileMap(): Promise<{
-    deprecatedFiles: FileData;
+    removedFiles: FileData;
     hasteMap: InternalHasteMap;
   }> {
     const read = this._options.resetCache ? this._createEmptyMap : this.read;
@@ -619,15 +619,15 @@ class HasteMap extends EventEmitter {
   }
 
   private _buildHasteMap(data: {
-    deprecatedFiles: FileData;
+    removedFiles: FileData;
     hasteMap: InternalHasteMap;
   }): Promise<InternalHasteMap> {
-    const {deprecatedFiles, hasteMap} = data;
+    const {removedFiles, hasteMap} = data;
     const map = new Map();
     const mocks = new Map();
     const promises = [];
 
-    for (const [relativeFilePath, fileMetadata] of deprecatedFiles) {
+    for (const [relativeFilePath, fileMetadata] of removedFiles) {
       this._recoverDuplicates(hasteMap, relativeFilePath, fileMetadata[H.ID]);
     }
 

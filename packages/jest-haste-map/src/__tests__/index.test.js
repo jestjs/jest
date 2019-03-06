@@ -40,7 +40,7 @@ jest.mock('../crawlers/watchman', () =>
 
     const {data, ignore, rootDir, roots, computeSha1} = options;
     const list = mockChangedFiles || mockFs;
-    const deprecatedFiles = new Map();
+    const removedFiles = new Map();
 
     data.clocks = mockClocks;
 
@@ -54,7 +54,7 @@ jest.mock('../crawlers/watchman', () =>
         } else {
           const fileData = data.files.get(relativeFilePath);
           if (fileData) {
-            deprecatedFiles.set(relativeFilePath, fileData);
+            removedFiles.set(relativeFilePath, fileData);
             data.files.delete(relativeFilePath);
           }
         }
@@ -62,7 +62,7 @@ jest.mock('../crawlers/watchman', () =>
     }
 
     return Promise.resolve({
-      deprecatedFiles,
+      removedFiles,
       hasteMap: data,
     });
   }),
@@ -425,7 +425,7 @@ describe('HasteMap', () => {
           });
 
           return Promise.resolve({
-            deprecatedFiles: new Map(),
+            removedFiles: new Map(),
             hasteMap: data,
           });
         });
@@ -990,7 +990,7 @@ describe('HasteMap', () => {
       mockImpl(options).then(() => {
         const {data} = options;
         data.files.set('fruits/invalid/file.js', ['', 34, 44, 0, []]);
-        return {deprecatedFiles: new Map(), hasteMap: data};
+        return {removedFiles: new Map(), hasteMap: data};
       }),
     );
     return new HasteMap(defaultConfig)
@@ -1089,7 +1089,7 @@ describe('HasteMap', () => {
         'fruits/Banana.js': ['', 32, 42, 0, [], null],
       });
       return Promise.resolve({
-        deprecatedFiles: new Map(),
+        removedFiles: new Map(),
         hasteMap: data,
       });
     });
@@ -1123,7 +1123,7 @@ describe('HasteMap', () => {
         'fruits/Banana.js': ['', 32, 42, 0, [], null],
       });
       return Promise.resolve({
-        deprecatedFiles: new Map(),
+        removedFiles: new Map(),
         hasteMap: data,
       });
     });

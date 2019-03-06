@@ -114,7 +114,7 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/project/fruits', '/project/vegtables'],
-    }).then(({hasteMap, deprecatedFiles}) => {
+    }).then(({hasteMap, removedFiles}) => {
       expect(childProcess.spawn).lastCalledWith('find', [
         '/project/fruits',
         '/project/vegtables',
@@ -139,7 +139,7 @@ describe('node crawler', () => {
         }),
       );
 
-      expect(deprecatedFiles).toEqual(new Map());
+      expect(removedFiles).toEqual(new Map());
     });
 
     return promise;
@@ -163,7 +163,7 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/project/fruits'],
-    }).then(({hasteMap, deprecatedFiles}) => {
+    }).then(({hasteMap, removedFiles}) => {
       expect(hasteMap.files).toEqual(
         createMap({
           'fruits/strawberry.js': ['', 32, 42, 0, [], null],
@@ -174,7 +174,7 @@ describe('node crawler', () => {
       // Make sure it is the *same* unchanged object.
       expect(hasteMap.files.get('fruits/tomato.js')).toBe(tomato);
 
-      expect(deprecatedFiles).toEqual(new Map());
+      expect(removedFiles).toEqual(new Map());
     });
   });
 
@@ -197,14 +197,14 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/project/fruits'],
-    }).then(({hasteMap, deprecatedFiles}) => {
+    }).then(({hasteMap, removedFiles}) => {
       expect(hasteMap.files).toEqual(
         createMap({
           'fruits/strawberry.js': ['', 32, 42, 0, [], null],
           'fruits/tomato.js': ['', 33, 42, 0, [], null],
         }),
       );
-      expect(deprecatedFiles).toEqual(
+      expect(removedFiles).toEqual(
         createMap({
           'fruits/previouslyExisted.js': ['', 30, 40, 1, [], null],
         }),
@@ -225,14 +225,14 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/project/fruits'],
-    }).then(({hasteMap, deprecatedFiles}) => {
+    }).then(({hasteMap, removedFiles}) => {
       expect(hasteMap.files).toEqual(
         createMap({
           'fruits/directory/strawberry.js': ['', 33, 42, 0, [], null],
           'fruits/tomato.js': ['', 32, 42, 0, [], null],
         }),
       );
-      expect(deprecatedFiles).toEqual(new Map());
+      expect(removedFiles).toEqual(new Map());
     });
   });
 
@@ -249,14 +249,14 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/project/fruits'],
-    }).then(({hasteMap, deprecatedFiles}) => {
+    }).then(({hasteMap, removedFiles}) => {
       expect(hasteMap.files).toEqual(
         createMap({
           'fruits/directory/strawberry.js': ['', 33, 42, 0, [], null],
           'fruits/tomato.js': ['', 32, 42, 0, [], null],
         }),
       );
-      expect(deprecatedFiles).toEqual(new Map());
+      expect(removedFiles).toEqual(new Map());
     });
   });
 
@@ -273,9 +273,9 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: [],
-    }).then(({hasteMap, deprecatedFiles}) => {
+    }).then(({hasteMap, removedFiles}) => {
       expect(hasteMap.files).toEqual(new Map());
-      expect(deprecatedFiles).toEqual(new Map());
+      expect(removedFiles).toEqual(new Map());
     });
   });
 
@@ -291,9 +291,9 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/error'],
-    }).then(({hasteMap, deprecatedFiles}) => {
+    }).then(({hasteMap, removedFiles}) => {
       expect(hasteMap.files).toEqual(new Map());
-      expect(deprecatedFiles).toEqual(new Map());
+      expect(removedFiles).toEqual(new Map());
     });
   });
 });
