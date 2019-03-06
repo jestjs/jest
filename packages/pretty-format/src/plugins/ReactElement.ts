@@ -57,7 +57,7 @@ const getType = (element: any) => {
         : 'ForwardRef';
     }
 
-    if (ReactIs.isMemo(element)) {
+    if (ReactIs.isMemo(type)) {
       const functionName = type.type.displayName || type.type.name || '';
 
       return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
