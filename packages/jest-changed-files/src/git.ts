@@ -32,7 +32,7 @@ const adapter: SCMAdapter = {
     const includePaths: Array<Config.Path> = (
       (options && options.includePaths) ||
       []
-    ).map(absoluteRoot => path.relative(cwd, absoluteRoot));
+    ).map(absoluteRoot => path.normalize(path.relative(cwd, absoluteRoot)));
 
     if (options && options.lastCommit) {
       return findChangedFilesUsingCommand(
