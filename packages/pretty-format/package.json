@@ -12,7 +12,8 @@
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
     "ansi-regex": "^4.0.0",
-    "ansi-styles": "^3.2.0"
+    "ansi-styles": "^3.2.0",
+    "react-is": "16.8.4"
   },
   "devDependencies": {
     "immutable": "4.0.0-rc.9",
