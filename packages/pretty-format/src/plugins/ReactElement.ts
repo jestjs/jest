@@ -4,6 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import * as ReactIs from 'react-is';
 
 import {Config, NewPlugin, Printer, Refs} from '../types';
 
@@ -14,7 +15,7 @@ import {
   printProps,
 } from './lib/markup';
 
-import * as ReactIs from 'react-is';
+const memoSymbol = Symbol.for('react.memo');
 
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
@@ -57,12 +58,10 @@ const getType = (element: any) => {
         : 'ForwardRef';
     }
 
-    if (ReactIs.isMemo(element)) {
+    if (type.$$typeof === memoSymbol) {
       const functionName = type.type.displayName || type.type.name || '';
 
-      return functionName !== '' 
-        ? 'Memo(' + functionName + ')' 
-        : 'Memo';
+      return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
     }
   }
   return 'UNDEFINED';
