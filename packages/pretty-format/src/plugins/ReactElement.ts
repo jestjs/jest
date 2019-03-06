@@ -39,19 +39,19 @@ const getType = (element: any) => {
     return type.displayName || type.name || 'Unknown';
   }
 
-  if (ReactIs.isFragment(element) === true) {
+  if (ReactIs.isFragment(element)) {
     return 'React.Fragment';
   }
   if (typeof type === 'object' && type !== null) {
-    if (ReactIs.isContextProvider(type) === true) {
+    if (ReactIs.isContextProvider(type)) {
       return 'Context.Provider';
     }
 
-    if (ReactIs.isContextConsumer(type) === true) {
+    if (ReactIs.isContextConsumer(type)) {
       return 'Context.Consumer';
     }
 
-    if (ReactIs.isForwardRef(type) === true) {
+    if (ReactIs.isForwardRef(type)) {
       const functionName = type.render.displayName || type.render.name || '';
 
       return functionName !== ''
@@ -59,7 +59,7 @@ const getType = (element: any) => {
         : 'ForwardRef';
     }
 
-    if (ReactIs.isMemo(type) === true) {
+    if (ReactIs.isMemo(type)) {
       const functionName = type.type.displayName || type.type.name || '';
 
       return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
