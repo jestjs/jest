@@ -128,7 +128,7 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(data => {
+    }).then(({hasteMap, deprecatedFiles}) => {
       const client = watchman.Client.mock.instances[0];
       const calls = client.command.mock.calls;
 
@@ -159,13 +159,15 @@ describe('watchman watch', () => {
         'vegetables/**/*.json',
       ]);
 
-      expect(data.clocks).toEqual(
+      expect(hasteMap.clocks).toEqual(
         createMap({
           '': 'c:fake-clock:1',
         }),
       );
 
-      expect(data.files).toEqual(mockFiles);
+      expect(hasteMap.files).toEqual(mockFiles);
+
+      expect(deprecatedFiles).toEqual(new Map());
 
       expect(client.end).toBeCalled();
     }));
@@ -208,17 +210,18 @@ describe('watchman watch', () => {
           : null,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(data => {
-      expect(data.files).toEqual(
+    }).then(({hasteMap, deprecatedFiles}) => {
+      expect(hasteMap.files).toEqual(
         createMap({
           [path.join(DURIAN_RELATIVE, 'foo.1.js')]: ['', 33, 43, 0, [], null],
           [path.join(DURIAN_RELATIVE, 'foo.2.js')]: ['', 33, 43, 0, [], null],
         }),
       );
+      expect(deprecatedFiles).toEqual(new Map());
     });
   });
 
-  test('updates the file object when the clock is given', () => {
+  test('updates file map and deprecatedFile when the clock is given', () => {
     mockResponse = {
       'list-capabilities': {
         [undefined]: {
@@ -262,27 +265,33 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(data => {
+    }).then(({hasteMap, deprecatedFiles}) => {
       // The object was reused.
-      expect(data.files).toBe(mockFiles);
+      expect(hasteMap.files).toBe(mockFiles);
 
-      expect(data.clocks).toEqual(
+      expect(hasteMap.clocks).toEqual(
         createMap({
           '': 'c:fake-clock:2',
         }),
       );
 
-      expect(data.files).toEqual(
+      expect(hasteMap.files).toEqual(
         createMap({
           [KIWI_RELATIVE]: ['', 42, 40, 0, [], null],
           [MELON_RELATIVE]: ['', 33, 43, 0, [], null],
           [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, [], null],
         }),
       );
+
+      expect(deprecatedFiles).toEqual(
+        createMap({
+          [TOMATO_RELATIVE]: ['', 31, 41, 0, [], null],
+        }),
+      );
     });
   });
 
-  test('resets the file object when watchman is restarted', () => {
+  test('resets the file map and tracks deprecatedFile when watchman is fresh', () => {
     const mockTomatoSha1 = '321f6b7e8bf7f29aab89c5e41a555b1b0baa41a9';
 
     mockResponse = {
@@ -340,18 +349,18 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(data => {
+    }).then(({hasteMap, deprecatedFiles}) => {
       // The file object was *not* reused.
-      expect(data.files).not.toBe(mockFiles);
+      expect(hasteMap.files).not.toBe(mockFiles);
 
-      expect(data.clocks).toEqual(
+      expect(hasteMap.clocks).toEqual(
         createMap({
           '': 'c:fake-clock:3',
         }),
       );
 
-      // /fruits/strawberry.js was removed from the file list.
-      expect(data.files).toEqual(
+      // strawberry and melon removed from the file list.
+      expect(hasteMap.files).toEqual(
         createMap({
           [BANANA_RELATIVE]: mockBananaMetadata,
           [KIWI_RELATIVE]: ['', 42, 52, 0, [], null],
@@ -361,10 +370,17 @@ describe('watchman watch', () => {
 
       // Even though the file list was reset, old file objects are still reused
       // if no changes have been made
-      expect(data.files.get(BANANA_RELATIVE)).toBe(mockBananaMetadata);
+      expect(hasteMap.files.get(BANANA_RELATIVE)).toBe(mockBananaMetadata);
 
       // Old file objects are not reused if they have a different mtime
-      expect(data.files.get(TOMATO_RELATIVE)).not.toBe(mockTomatoMetadata);
+      expect(hasteMap.files.get(TOMATO_RELATIVE)).not.toBe(mockTomatoMetadata);
+
+      expect(deprecatedFiles).toEqual(
+        createMap({
+          [MELON_RELATIVE]: ['', 33, 43, 0, [], null],
+          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, [], null],
+        }),
+      );
     });
   });
 
@@ -427,18 +443,25 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(data => {
-      expect(data.clocks).toEqual(
+    }).then(({hasteMap, deprecatedFiles}) => {
+      expect(hasteMap.clocks).toEqual(
         createMap({
           [FRUITS_RELATIVE]: 'c:fake-clock:3',
           [VEGETABLES_RELATIVE]: 'c:fake-clock:4',
         }),
       );
 
-      expect(data.files).toEqual(
+      expect(hasteMap.files).toEqual(
         createMap({
           [KIWI_RELATIVE]: ['', 42, 52, 0, [], null],
           [MELON_RELATIVE]: ['', 33, 43, 0, [], null],
+        }),
+      );
+
+      expect(deprecatedFiles).toEqual(
+        createMap({
+          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, [], null],
+          [TOMATO_RELATIVE]: ['', 31, 41, 0, [], null],
         }),
       );
     });
@@ -483,7 +506,7 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: [...ROOTS, ROOT_MOCK],
-    }).then(data => {
+    }).then(({hasteMap, deprecatedFiles}) => {
       const client = watchman.Client.mock.instances[0];
       const calls = client.command.mock.calls;
 
@@ -509,13 +532,15 @@ describe('watchman watch', () => {
 
       expect(query[2].glob).toEqual(['**/*.js', '**/*.json']);
 
-      expect(data.clocks).toEqual(
+      expect(hasteMap.clocks).toEqual(
         createMap({
           '': 'c:fake-clock:1',
         }),
       );
 
-      expect(data.files).toEqual(createMap({}));
+      expect(hasteMap.files).toEqual(new Map());
+
+      expect(deprecatedFiles).toEqual(new Map());
 
       expect(client.end).toBeCalled();
     });

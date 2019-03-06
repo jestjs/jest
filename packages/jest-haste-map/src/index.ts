@@ -42,6 +42,8 @@ import {
   ModuleMapData,
   ModuleMetaData,
   WorkerMetadata,
+  CrawlerOptions,
+  FileData,
 } from './types';
 
 type HType = typeof H;
@@ -394,7 +396,7 @@ class HasteMap extends EventEmitter {
    * 2. crawl the file system.
    */
   private _buildFileMap(): Promise<{
-    deprecatedFiles: Array<{moduleName: string; path: string}>;
+    deprecatedFiles: FileData;
     hasteMap: InternalHasteMap;
   }> {
     const read = this._options.resetCache ? this._createEmptyMap : this.read;
@@ -402,19 +404,7 @@ class HasteMap extends EventEmitter {
     return Promise.resolve()
       .then(() => read.call(this))
       .catch(() => this._createEmptyMap())
-      .then(cachedHasteMap => {
-        const cachedFiles: Array<{moduleName: string; path: string}> = [];
-        for (const [relativeFilePath, fileMetadata] of cachedHasteMap.files) {
-          const moduleName = fileMetadata[H.ID];
-          cachedFiles.push({moduleName, path: relativeFilePath});
-        }
-        return this._crawl(cachedHasteMap).then(hasteMap => {
-          const deprecatedFiles = cachedFiles.filter(
-            file => !hasteMap.files.has(file.path),
-          );
-          return {deprecatedFiles, hasteMap};
-        });
-      });
+      .then(hasteMap => this._crawl(hasteMap));
   }
 
   /**
@@ -629,7 +619,7 @@ class HasteMap extends EventEmitter {
   }
 
   private _buildHasteMap(data: {
-    deprecatedFiles: Array<{moduleName: string; path: string}>;
+    deprecatedFiles: FileData;
     hasteMap: InternalHasteMap;
   }): Promise<InternalHasteMap> {
     const {deprecatedFiles, hasteMap} = data;
@@ -637,9 +627,8 @@ class HasteMap extends EventEmitter {
     const mocks = new Map();
     const promises = [];
 
-    for (let i = 0; i < deprecatedFiles.length; ++i) {
-      const file = deprecatedFiles[i];
-      this._recoverDuplicates(hasteMap, file.path, file.moduleName);
+    for (const [relativeFilePath, fileMetadata] of deprecatedFiles) {
+      this._recoverDuplicates(hasteMap, relativeFilePath, fileMetadata[H.ID]);
     }
 
     for (const relativeFilePath of hasteMap.files.keys()) {
@@ -712,11 +701,21 @@ class HasteMap extends EventEmitter {
     return this._worker;
   }
 
-  private _crawl(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
+  private _crawl(hasteMap: InternalHasteMap) {
     const options = this._options;
     const ignore = this._ignore.bind(this);
     const crawl =
       canUseWatchman && this._options.useWatchman ? watchmanCrawl : nodeCrawl;
+    const crawlerOptions: CrawlerOptions = {
+      computeSha1: options.computeSha1,
+      data: hasteMap,
+      extensions: options.extensions,
+      forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
+      ignore,
+      mapper: options.mapper,
+      rootDir: options.rootDir,
+      roots: options.roots,
+    };
 
     const retry = (error: Error) => {
       if (crawl === watchmanCrawl) {
@@ -729,16 +728,7 @@ class HasteMap extends EventEmitter {
             `  ` +
             error,
         );
-        return nodeCrawl({
-          computeSha1: options.computeSha1,
-          data: hasteMap,
-          extensions: options.extensions,
-          forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
-          ignore,
-          mapper: options.mapper,
-          rootDir: options.rootDir,
-          roots: options.roots,
-        }).catch(e => {
+        return nodeCrawl(crawlerOptions).catch(e => {
           throw new Error(
             `Crawler retry failed:\n` +
               `  Original error: ${error.message}\n` +
@@ -751,15 +741,7 @@ class HasteMap extends EventEmitter {
     };
 
     try {
-      return crawl({
-        computeSha1: options.computeSha1,
-        data: hasteMap,
-        extensions: options.extensions,
-        forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
-        ignore,
-        rootDir: options.rootDir,
-        roots: options.roots,
-      }).catch(retry);
+      return crawl(crawlerOptions).catch(retry);
     } catch (error) {
       return retry(error);
     }

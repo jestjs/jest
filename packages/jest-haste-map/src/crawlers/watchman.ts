@@ -11,7 +11,12 @@ import {Config} from '@jest/types';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
 import H from '../constants';
-import {InternalHasteMap, CrawlerOptions, FileMetaData} from '../types';
+import {
+  InternalHasteMap,
+  CrawlerOptions,
+  FileMetaData,
+  FileData,
+} from '../types';
 
 type WatchmanRoots = Map<string, Array<string>>;
 
@@ -27,7 +32,10 @@ function WatchmanError(error: Error): Error {
 
 export = async function watchmanCrawl(
   options: CrawlerOptions,
-): Promise<InternalHasteMap> {
+): Promise<{
+  deprecatedFiles: FileData;
+  hasteMap: InternalHasteMap;
+}> {
   const fields = ['name', 'exists', 'mtime_ms', 'size'];
   const {data, extensions, ignore, rootDir, roots} = options;
   const defaultWatchExpression = [
@@ -139,7 +147,9 @@ export = async function watchmanCrawl(
   }
 
   let files = data.files;
+  let deprecatedFiles = new Map();
   let watchmanFiles: Map<string, any>;
+  let isFresh = false;
   try {
     const watchmanRoots = await getWatchmanRoots(roots);
     const watchmanFileResults = await queryWatchmanForDirs(watchmanRoots);
@@ -148,6 +158,8 @@ export = async function watchmanCrawl(
     // files.
     if (watchmanFileResults.isFresh) {
       files = new Map();
+      deprecatedFiles = new Map(data.files);
+      isFresh = true;
     }
 
     watchmanFiles = watchmanFileResults.files;
@@ -168,9 +180,21 @@ export = async function watchmanCrawl(
     for (const fileData of response.files) {
       const filePath = fsRoot + path.sep + normalizePathSep(fileData.name);
       const relativeFilePath = fastPath.relative(rootDir, filePath);
+      const existingFileData = data.files.get(relativeFilePath);
+
+      // If watchman is fresh, the deprecated files map starts with all files
+      // and we remove them as we verify they still exist.
+      if (isFresh && existingFileData && fileData.exists) {
+        deprecatedFiles.delete(relativeFilePath);
+      }
 
       if (!fileData.exists) {
-        files.delete(relativeFilePath);
+        // If watchman is not fresh, we will know what specific files were
+        // deleted since we last ran and can track only those files.
+        if (!isFresh && existingFileData) {
+          deprecatedFiles.set(relativeFilePath, existingFileData);
+          files.delete(relativeFilePath);
+        }
       } else if (!ignore(filePath)) {
         const mtime =
           typeof fileData.mtime_ms === 'number'
@@ -183,7 +207,6 @@ export = async function watchmanCrawl(
           sha1hex = null;
         }
 
-        const existingFileData = data.files.get(relativeFilePath);
         let nextData: FileMetaData;
 
         if (existingFileData && existingFileData[H.MTIME] === mtime) {
@@ -226,5 +249,8 @@ export = async function watchmanCrawl(
   }
 
   data.files = files;
-  return data;
+  return {
+    deprecatedFiles,
+    hasteMap: data,
+  };
 };

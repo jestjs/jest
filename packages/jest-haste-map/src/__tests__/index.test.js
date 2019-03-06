@@ -40,6 +40,7 @@ jest.mock('../crawlers/watchman', () =>
 
     const {data, ignore, rootDir, roots, computeSha1} = options;
     const list = mockChangedFiles || mockFs;
+    const deprecatedFiles = new Map();
 
     data.clocks = mockClocks;
 
@@ -51,12 +52,19 @@ jest.mock('../crawlers/watchman', () =>
 
           data.files.set(relativeFilePath, ['', 32, 42, 0, [], hash]);
         } else {
-          data.files.delete(relativeFilePath);
+          const fileData = data.files.get(relativeFilePath);
+          if (fileData) {
+            deprecatedFiles.set(relativeFilePath, fileData);
+            data.files.delete(relativeFilePath);
+          }
         }
       }
     }
 
-    return Promise.resolve(data);
+    return Promise.resolve({
+      deprecatedFiles,
+      hasteMap: data,
+    });
   }),
 );
 
@@ -416,7 +424,10 @@ describe('HasteMap', () => {
             'vegetables/Melon.js': ['Melon', 32, 42, 0, [], null],
           });
 
-          return Promise.resolve(data);
+          return Promise.resolve({
+            deprecatedFiles: new Map(),
+            hasteMap: data,
+          });
         });
 
         const hasteMap = new HasteMap({
@@ -543,7 +554,7 @@ describe('HasteMap', () => {
       ...defaultConfig,
     })
       .build()
-      .catch(({__hasteMapForTest: data}) => {
+      .catch(() => {
         expect(console.error.mock.calls[0][0]).toMatchSnapshot();
       });
   });
@@ -979,7 +990,7 @@ describe('HasteMap', () => {
       mockImpl(options).then(() => {
         const {data} = options;
         data.files.set('fruits/invalid/file.js', ['', 34, 44, 0, []]);
-        return data;
+        return {deprecatedFiles: new Map(), hasteMap: data};
       }),
     );
     return new HasteMap(defaultConfig)
@@ -1077,7 +1088,10 @@ describe('HasteMap', () => {
       data.files = createMap({
         'fruits/Banana.js': ['', 32, 42, 0, [], null],
       });
-      return Promise.resolve(data);
+      return Promise.resolve({
+        deprecatedFiles: new Map(),
+        hasteMap: data,
+      });
     });
 
     return new HasteMap(defaultConfig)
@@ -1108,7 +1122,10 @@ describe('HasteMap', () => {
       data.files = createMap({
         'fruits/Banana.js': ['', 32, 42, 0, [], null],
       });
-      return Promise.resolve(data);
+      return Promise.resolve({
+        deprecatedFiles: new Map(),
+        hasteMap: data,
+      });
     });
 
     return new HasteMap(defaultConfig)
