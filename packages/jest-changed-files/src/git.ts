@@ -29,8 +29,10 @@ const adapter: SCMAdapter = {
     const changedSince: string | undefined =
       options && (options.withAncestor ? 'HEAD^' : options.changedSince);
 
-    const includePaths: Array<Config.Path> =
-      (options && options.includePaths) || [];
+    const includePaths: Array<Config.Path> = (
+      (options && options.includePaths) ||
+      []
+    ).map(absoluteRoot => path.relative(cwd, absoluteRoot));
 
     if (options && options.lastCommit) {
       return findChangedFilesUsingCommand(
