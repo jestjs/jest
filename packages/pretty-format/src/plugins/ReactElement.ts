@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as ReactIs from 'react-is';
 import {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {
@@ -15,11 +16,6 @@ import {
 } from './lib/markup';
 
 const elementSymbol = Symbol.for('react.element');
-const fragmentSymbol = Symbol.for('react.fragment');
-const forwardRefSymbol = Symbol.for('react.forward_ref');
-const providerSymbol = Symbol.for('react.provider');
-const contextSymbol = Symbol.for('react.context');
-const memoSymbol = Symbol.for('react.memo');
 
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
@@ -42,19 +38,20 @@ const getType = (element: any) => {
   if (typeof type === 'function') {
     return type.displayName || type.name || 'Unknown';
   }
-  if (type === fragmentSymbol) {
+
+  if (ReactIs.isFragment(element) === true) {
     return 'React.Fragment';
   }
   if (typeof type === 'object' && type !== null) {
-    if (type.$$typeof === providerSymbol) {
+    if (ReactIs.isContextProvider(type) === true) {
       return 'Context.Provider';
     }
 
-    if (type.$$typeof === contextSymbol) {
+    if (ReactIs.isContextConsumer(type) === true) {
       return 'Context.Consumer';
     }
 
-    if (type.$$typeof === forwardRefSymbol) {
+    if (ReactIs.isForwardRef(type) === true) {
       const functionName = type.render.displayName || type.render.name || '';
 
       return functionName !== ''
@@ -62,7 +59,7 @@ const getType = (element: any) => {
         : 'ForwardRef';
     }
 
-    if (type.$$typeof === memoSymbol) {
+    if (ReactIs.isMemo(type) === true) {
       const functionName = type.type.displayName || type.type.name || '';
 
       return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
