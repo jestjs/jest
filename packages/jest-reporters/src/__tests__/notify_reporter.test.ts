@@ -5,21 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {TestSchedulerContext} from 'types/TestScheduler';
+import {AggregatedResult} from '@jest/test-result';
+import {Config} from '@jest/types';
 import NotifyReporter from '../notify_reporter';
-import type {AggregatedResult} from '../../../../types/TestResult';
+import {makeGlobalConfig} from '../../../../TestUtils';
 
 jest.mock('../default_reporter');
 jest.mock('node-notifier', () => ({
   notify: jest.fn(),
 }));
 
-const initialContext: TestSchedulerContext = {
+const initialContext = {
   firstRun: true,
   previousSuccess: false,
 };
 
-const aggregatedResultsSuccess: AggregatedResult = {
+const aggregatedResultsSuccess = {
   numFailedTestSuites: 0,
   numFailedTests: 0,
   numPassedTestSuites: 1,
@@ -28,9 +29,9 @@ const aggregatedResultsSuccess: AggregatedResult = {
   numTotalTestSuites: 1,
   numTotalTests: 3,
   success: true,
-};
+} as AggregatedResult;
 
-const aggregatedResultsFailure: AggregatedResult = {
+const aggregatedResultsFailure = {
   numFailedTestSuites: 1,
   numFailedTests: 3,
   numPassedTestSuites: 0,
@@ -39,9 +40,9 @@ const aggregatedResultsFailure: AggregatedResult = {
   numTotalTestSuites: 1,
   numTotalTests: 3,
   success: false,
-};
+} as AggregatedResult;
 
-const aggregatedResultsNoTests: AggregatedResult = {
+const aggregatedResultsNoTests = {
   numFailedTestSuites: 0,
   numFailedTests: 0,
   numPassedTestSuites: 0,
@@ -51,7 +52,7 @@ const aggregatedResultsNoTests: AggregatedResult = {
   numRuntimeErrorTestSuites: 0,
   numTotalTestSuites: 0,
   numTotalTests: 0,
-};
+} as AggregatedResult;
 
 // Simulated sequence of events for NotifyReporter
 const notifyEvents = [
@@ -64,8 +65,19 @@ const notifyEvents = [
   aggregatedResultsFailure,
 ];
 
-const testModes = ({notifyMode, arl, rootDir, moduleName}) => {
+const testModes = ({
+  notifyMode,
+  arl,
+  rootDir,
+  moduleName,
+}: {arl: Array<AggregatedResult>; moduleName?: string} & Pick<
+  Config.GlobalConfig,
+  'notifyMode'
+> &
+  Partial<Pick<Config.ProjectConfig, 'rootDir'>>) => {
   const notify = require('node-notifier');
+
+  const config = makeGlobalConfig({notify: true, notifyMode, rootDir});
 
   let previousContext = initialContext;
   arl.forEach((ar, i) => {
@@ -73,11 +85,7 @@ const testModes = ({notifyMode, arl, rootDir, moduleName}) => {
       firstRun: i === 0,
       previousSuccess: previousContext.previousSuccess,
     });
-    const reporter = new NotifyReporter(
-      {notify: true, notifyMode, rootDir},
-      {},
-      newContext,
-    );
+    const reporter = new NotifyReporter(config, () => {}, newContext);
     previousContext = newContext;
     const contexts = new Set();
 
@@ -102,8 +110,9 @@ const testModes = ({notifyMode, arl, rootDir, moduleName}) => {
     }
   });
 
+  const calls: Array<any> = notify.notify.mock.calls;
   expect(
-    notify.notify.mock.calls.map(([{message, title}]) => ({
+    calls.map(([{message, title}]) => ({
       message: message.replace('\u26D4\uFE0F ', '').replace('\u2705 ', ''),
       title,
     })),
