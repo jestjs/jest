@@ -372,10 +372,11 @@ export default class TestScheduler {
     return Promise.resolve();
   }
 
-  _getReporterOption(reporterName: string): Object {
+  _getReporterOption(reporterName: string): Record<string, any> {
     const reporters = this._globalConfig.reporters || [];
     const config = reporters.find(
-      item => Array.isArray(item) && item[0] === reporterName,
+      (item): item is Config.ReporterConfig =>
+        Array.isArray(item) && item[0] === reporterName,
     );
     return (config && config[1]) || {};
   }
