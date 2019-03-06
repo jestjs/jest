@@ -41,23 +41,23 @@ const getType = (element: any) => {
     return 'React.Fragment';
   }
   if (typeof type === 'object' && type !== null) {
-    if (ReactIs.isContextProvider(type)) {
+    if (ReactIs.isContextProvider(element)) {
       return 'Context.Provider';
     }
 
-    if (ReactIs.isContextConsumer(type)) {
+    if (ReactIs.isContextConsumer(element)) {
       return 'Context.Consumer';
     }
 
-    if (ReactIs.isForwardRef(type)) {
-      const functionName = type.render.displayName || type.render.name || '';
+    if (ReactIs.isForwardRef(element)) {
+      const functionName = type.render.displayName || type.element.name || '';
 
       return functionName !== ''
         ? 'ForwardRef(' + functionName + ')'
         : 'ForwardRef';
     }
 
-    if (ReactIs.isMemo(type)) {
+    if (ReactIs.isMemo(element)) {
       const functionName = type.type.displayName || type.type.name || '';
 
       return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
