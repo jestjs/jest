@@ -36,6 +36,7 @@
 - `[jest-mock]` Adds a type check to `prototype` to allow mocks of objects with a primitive `prototype` property. ([#8040](https://github.com/facebook/jest/pull/8040))
 - `[jest-util]`Make sure to not fail if unable to assign `toStringTag` to the `process` object, which is read only in Node 12 ([#8050](https://github.com/facebook/jest/pull/8050))
 - `[expect]` Compare DOM nodes even if there are multiple Node classes ([#8064](https://github.com/facebook/jest/pull/8064))
+- `[expect]` Revert change to distinguish undefined value from no property ([#8067](https://github.com/facebook/jest/pull/8067))
 
 ### Chore & Maintenance
 
@@ -94,6 +95,8 @@
 - `[@jest/test-result]`: Extract TestResult types and helpers into a new separate package ([#8034](https://github.com/facebook/jest/pull/8034))
 
 ### Performance
+
+- `[jest-haste-map]` Optimize haste map tracking of deleted files with Watchman. ([#8056](https://github.com/facebook/jest/pull/8056))
 
 ## 24.1.0
 

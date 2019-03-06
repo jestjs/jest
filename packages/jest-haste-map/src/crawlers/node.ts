@@ -10,7 +10,12 @@ import path from 'path';
 import {spawn} from 'child_process';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
-import {IgnoreMatcher, InternalHasteMap, CrawlerOptions} from '../types';
+import {
+  IgnoreMatcher,
+  InternalHasteMap,
+  CrawlerOptions,
+  FileData,
+} from '../types';
 
 type Result = Array<[/* id */ string, /* mtime */ number, /* size */ number]>;
 
@@ -130,7 +135,10 @@ function findNative(
 
 export = function nodeCrawl(
   options: CrawlerOptions,
-): Promise<InternalHasteMap> {
+): Promise<{
+  removedFiles: FileData;
+  hasteMap: InternalHasteMap;
+}> {
   if (options.mapper) {
     throw new Error(`Option 'mapper' isn't supported by the Node crawler`);
   }
@@ -147,6 +155,7 @@ export = function nodeCrawl(
   return new Promise(resolve => {
     const callback = (list: Result) => {
       const files = new Map();
+      const removedFiles = new Map(data.files);
       list.forEach(fileData => {
         const [filePath, mtime, size] = fileData;
         const relativeFilePath = fastPath.relative(rootDir, filePath);
@@ -157,9 +166,14 @@ export = function nodeCrawl(
           // See ../constants.js; SHA-1 will always be null and fulfilled later.
           files.set(relativeFilePath, ['', mtime, size, 0, [], null]);
         }
+        removedFiles.delete(relativeFilePath);
       });
       data.files = files;
-      resolve(data);
+
+      resolve({
+        hasteMap: data,
+        removedFiles,
+      });
     };
 
     if (forceNodeFilesystemAPI || process.platform === 'win32') {

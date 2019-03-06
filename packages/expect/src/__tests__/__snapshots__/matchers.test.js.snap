@@ -2997,19 +2997,6 @@ Difference:
   Comparing two different types of values. Expected <green>undefined</> but received <red>number</>."
 `;
 
-exports[`.toHaveProperty() {pass: false} expect({"a": {}}).toHaveProperty('a.b', undefined) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
-
-Expected the object:
-  <red>{\\"a\\": {}}</>
-To have a nested property:
-  <green>\\"a.b\\"</>
-With a value of:
-  <green>undefined</>
-Received:
-  <red>object</>.a: <red>{}</>"
-`;
-
 exports[`.toHaveProperty() {pass: false} expect({"a": 1}).toHaveProperty('a.b.c.d') 1`] = `
 "<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
 
