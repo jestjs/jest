@@ -1355,7 +1355,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
-    [{a: {}}, 'a.b', undefined],
+    // [{a: {}}, 'a.b', undefined], // wait until Jest 25
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,

@@ -5,7 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {
+  AggregatedResult,
+  SerializableError,
+  TestResult,
+} from '@jest/test-result';
 import {JestEnvironment as Environment} from '@jest/environment';
 import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
 import HasteResolver from 'jest-resolve';
@@ -39,27 +44,24 @@ export type CoverageReporterOptions = {
 export type OnTestStart = (test: Test) => Promise<void>;
 export type OnTestFailure = (
   test: Test,
-  error: TestResult.SerializableError,
+  error: SerializableError,
 ) => Promise<any>;
-export type OnTestSuccess = (
-  test: Test,
-  result: TestResult.TestResult,
-) => Promise<any>;
+export type OnTestSuccess = (test: Test, result: TestResult) => Promise<any>;
 
 export interface Reporter {
   readonly onTestResult: (
     test: Test,
-    testResult: TestResult.TestResult,
-    aggregatedResult: TestResult.AggregatedResult,
+    testResult: TestResult,
+    aggregatedResult: AggregatedResult,
   ) => Promise<void> | void;
   readonly onRunStart: (
-    results: TestResult.AggregatedResult,
+    results: AggregatedResult,
     options: ReporterOnStartOptions,
   ) => Promise<void> | void;
   readonly onTestStart: (test: Test) => Promise<void> | void;
   readonly onRunComplete: (
     contexts: Set<Context>,
-    results: TestResult.AggregatedResult,
+    results: AggregatedResult,
   ) => Promise<void> | void;
   readonly getLastError: () => Error | void;
 }
@@ -76,7 +78,7 @@ export type TestFramework = (
   environment: Environment,
   runtime: Runtime,
   testPath: string,
-) => Promise<TestResult.TestResult>;
+) => Promise<TestResult>;
 
 export type TestRunnerOptions = {
   serial: boolean;

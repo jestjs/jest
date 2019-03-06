@@ -6,7 +6,8 @@
  */
 
 import path from 'path';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {AggregatedResult} from '@jest/test-result';
 import {clearLine} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
@@ -104,7 +105,7 @@ const getProjectListFromCLIArgs = (
 };
 
 const readResultsAndExit = (
-  result: TestResult.AggregatedResult | null,
+  result: AggregatedResult | null,
   globalConfig: Config.GlobalConfig,
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;

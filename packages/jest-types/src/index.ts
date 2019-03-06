@@ -6,7 +6,6 @@
  */
 
 import * as Config from './Config';
-import * as TestResult from './TestResult';
 import * as Global from './Global';
 
-export {Config, TestResult, Global};
+export {Config, Global};

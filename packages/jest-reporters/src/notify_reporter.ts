@@ -11,7 +11,8 @@
 import path from 'path';
 import util from 'util';
 import exit from 'exit';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {AggregatedResult} from '@jest/test-result';
 import notifier from 'node-notifier';
 import {TestSchedulerContext, Context} from './types';
 import BaseReporter from './base_reporter';
@@ -36,10 +37,7 @@ export default class NotifyReporter extends BaseReporter {
     this._context = context;
   }
 
-  onRunComplete(
-    contexts: Set<Context>,
-    result: TestResult.AggregatedResult,
-  ): void {
+  onRunComplete(contexts: Set<Context>, result: AggregatedResult): void {
     const success =
       result.numFailedTests === 0 && result.numRuntimeErrorTestSuites === 0;
 

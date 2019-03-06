@@ -13,5 +13,8 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
 }

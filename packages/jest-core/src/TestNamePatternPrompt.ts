@@ -12,11 +12,11 @@ import {
   printPatternCaret,
   printRestoredPatternCaret,
 } from 'jest-watcher';
-import {TestResult} from '@jest/types';
+import {TestResult} from '@jest/test-result';
 
 // TODO: Make underscored props `private`
 export default class TestNamePatternPrompt extends PatternPrompt {
-  _cachedTestResults: Array<TestResult.TestResult>;
+  _cachedTestResults: Array<TestResult>;
 
   constructor(pipe: NodeJS.WritableStream, prompt: Prompt) {
     super(pipe, prompt);
@@ -57,7 +57,7 @@ export default class TestNamePatternPrompt extends PatternPrompt {
     return matchedTests;
   }
 
-  updateCachedTestResults(testResults: Array<TestResult.TestResult> = []) {
+  updateCachedTestResults(testResults: Array<TestResult> = []) {
     this._cachedTestResults = testResults;
   }
 }

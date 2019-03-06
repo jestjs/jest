@@ -12,6 +12,7 @@
   "dependencies": {
     "@jest/console": "^24.1.0",
     "@jest/environment": "^24.1.0",
+    "@jest/test-result": "^24.1.0",
     "@jest/types": "^24.1.0",
     "chalk": "^2.4.2",
     "exit": "^0.1.2",
@@ -36,6 +37,9 @@
   },
   "engines": {
     "node": ">= 6"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "b16789230fd45056a7f2fa199bae06c7a1780deb"
 }

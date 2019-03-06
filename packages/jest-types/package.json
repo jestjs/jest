@@ -13,7 +13,10 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/console": "^24.1.0",
-    "@types/istanbul-lib-coverage": "^1.1.0"
+    "@types/istanbul-lib-coverage": "^1.1.0",
+    "@types/yargs": "^12.0.9"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
