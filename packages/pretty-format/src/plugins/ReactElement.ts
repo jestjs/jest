@@ -15,8 +15,6 @@ import {
   printProps,
 } from './lib/markup';
 
-const elementSymbol = Symbol.for('react.element');
-
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
 const getChildren = (arg: Array<any>, children = []) => {
@@ -109,7 +107,7 @@ export const serialize = (
         indentation,
       );
 
-export const test = (val: any) => val && val.$$typeof === elementSymbol;
+export const test = (val: any) => val && ReactIs.isElement(val);
 
 const plugin: NewPlugin = {serialize, test};
 
