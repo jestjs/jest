@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,14 +8,14 @@
 
 'use strict';
 
-import {stringify} from 'jest-matcher-utils';
-import {
+const {stringify} = require('jest-matcher-utils');
+const {
   emptyObject,
   getObjectSubset,
   getPath,
   hasOwnProperty,
   subsetEquality,
-} from '../utils';
+} = require('../utils');
 
 describe('getPath()', () => {
   test('property exists', () => {
@@ -73,6 +73,18 @@ describe('getPath()', () => {
       lastTraversedObject: {c: 'c'},
       traversedPath: ['b', 'c'],
       value: 'c',
+    });
+  });
+
+  test('property is inherited', () => {
+    class A {}
+    A.prototype.a = 'a';
+
+    expect(getPath(new A(), 'a')).toEqual({
+      hasEndProp: true,
+      lastTraversedObject: new A(),
+      traversedPath: ['a'],
+      value: 'a',
     });
   });
 

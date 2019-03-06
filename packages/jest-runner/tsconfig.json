@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "references": [
+    {"path": "../jest-config"},
+    {"path": "../jest-console"},
+    {"path": "../jest-docblock"},
+    {"path": "../jest-environment"},
+    {"path": "../jest-haste-map"},
+    {"path": "../jest-leak-detector"},
+    {"path": "../jest-message-util"},
+    {"path": "../jest-resolve"},
+    {"path": "../jest-runtime"},
+    {"path": "../jest-test-result"},
+    {"path": "../jest-types"},
+    {"path": "../jest-worker"},
+    {"path": "../jest-util"}
+  ]
+}

@@ -3,15 +3,16 @@
   "version": "0.0.0",
   "name": "example-react-testing-library",
   "dependencies": {
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "react": "*",
+    "react-dom": "*"
   },
   "devDependencies": {
+    "@babel/core": "*",
     "@babel/preset-env": "*",
     "@babel/preset-react": "*",
     "babel-jest": "*",
-    "react-testing-library": "*",
-    "jest": "*"
+    "jest": "*",
+    "react-testing-library": "*"
   },
   "scripts": {
     "test": "jest"

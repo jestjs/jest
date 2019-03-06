@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,8 +8,8 @@
 
 'use strict';
 
-import jestExpect from '../';
-import {
+const jestExpect = require('../');
+const {
   any,
   anything,
   arrayContaining,
@@ -17,10 +17,10 @@ import {
   objectContaining,
   objectNotContaining,
   stringContaining,
-  stringMatching,
   stringNotContaining,
+  stringMatching,
   stringNotMatching,
-} from '../asymmetricMatchers';
+} = require('../asymmetricMatchers');
 
 test('Any.asymmetricMatch()', () => {
   const Thing = function() {};

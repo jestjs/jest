@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -77,6 +77,7 @@ describe('WorkerPool', () => {
   it('should create a NodeThreadWorker and send to it', () => {
     jest.mock('worker_threads', () => 'Defined');
     const workerPool = new WorkerPool('/path', {
+      enableWorkerThreads: true,
       forkOptions: {},
       maxRetries: 1,
       numWorkers: 1,
@@ -95,6 +96,34 @@ describe('WorkerPool', () => {
       workerPath: '/path',
     });
     expect(ChildProcessWorker).not.toBeCalled();
+    expect(workerPool._workers[0].send).toBeCalledWith(
+      {foo: 'bar'},
+      onStart,
+      onEnd,
+    );
+  });
+
+  it('should avoid NodeThreadWorker if not passed enableWorkerThreads', () => {
+    jest.mock('worker_threads', () => 'Defined');
+    const workerPool = new WorkerPool('/path', {
+      forkOptions: {},
+      maxRetries: 1,
+      numWorkers: 1,
+      workerId: 0,
+      workerPath: '/path',
+    });
+
+    const onStart = () => {};
+    const onEnd = () => {};
+    workerPool.send(0, {foo: 'bar'}, onStart, onEnd);
+
+    expect(ChildProcessWorker).toBeCalledWith({
+      forkOptions: {},
+      maxRetries: 1,
+      workerId: 0,
+      workerPath: '/path',
+    });
+    expect(NodeThreadWorker).not.toBeCalled();
     expect(workerPool._workers[0].send).toBeCalledWith(
       {foo: 'bar'},
       onStart,

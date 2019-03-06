@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const path = require('path');
-const customImportResolver = path.resolve('./eslintImportResolver');
+const customImportResolver = require.resolve('./eslintImportResolver');
 
 module.exports = {
   extends: [
@@ -16,6 +15,22 @@ module.exports = {
     'prettier/flowtype',
   ],
   overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint/eslint-plugin'],
+      rules: {
+        '@typescript-eslint/array-type': ['error', 'generic'],
+        '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {argsIgnorePattern: '^_'},
+        ],
+        'import/order': 'error',
+        'no-dupe-class-members': 'off',
+        'no-unused-vars': 'off',
+      },
+    },
     // to make it more suitable for running on code examples in docs/ folder
     {
       files: ['*.md'],
@@ -51,14 +66,14 @@ module.exports = {
       },
     },
     {
-      files: 'types/**/*',
+      files: ['types/**/*', 'packages/jest-types/**/*'],
       rules: {
         'import/no-extraneous-dependencies': 0,
       },
     },
     {
       files: [
-        'e2e/__tests__/**/*',
+        'e2e/__tests__/**/*.js',
         'packages/babel-jest/**/*.test.js',
         'packages/babel-plugin-jest-hoist/**/*.test.js',
         'packages/babel-preset-jest/**/*.test.js',
@@ -123,6 +138,7 @@ module.exports = {
           '^types/(.*)': './types/$1',
         },
       },
+      'eslint-import-resolver-typescript': true,
     },
   },
 };

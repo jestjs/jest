@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -63,7 +63,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
-  expect(childProcess.mock.calls[0][0]).toBe(child);
+  expect(childProcess.mock.calls[0][0]).toBe(child.replace(/\.ts$/, '.js'));
   expect(childProcess.mock.calls[0][1]).toEqual({
     eval: false,
     stderr: true,
@@ -87,7 +87,7 @@ it('passes workerId to the child process and assign it to env.JEST_WORKER_ID', (
   });
 
   expect(childProcess.mock.calls[0][1].workerData.env.JEST_WORKER_ID).toEqual(
-    2,
+    '2',
   );
 });
 

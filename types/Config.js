@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -46,8 +46,7 @@ export type DefaultOptions = {|
   globalSetup: ?string,
   globalTeardown: ?string,
   haste: HasteConfig,
-  detectLeaks: boolean,
-  detectOpenHandles: boolean,
+  maxConcurrency: number,
   moduleDirectories: Array<string>,
   moduleFileExtensions: Array<string>,
   moduleNameMapper: {[key: string]: string},
@@ -126,6 +125,7 @@ export type InitialOptions = {
   lastCommit?: boolean,
   listTests?: boolean,
   mapCoverage?: boolean,
+  maxConcurrency?: number,
   moduleDirectories?: Array<string>,
   moduleFileExtensions?: Array<string>,
   moduleLoader?: Path,
@@ -215,6 +215,7 @@ export type GlobalConfig = {|
   lastCommit: boolean,
   logHeapUsage: boolean,
   listTests: boolean,
+  maxConcurrency: number,
   maxWorkers: number,
   noStackTrace: boolean,
   nonFlagArgs: Array<string>,
