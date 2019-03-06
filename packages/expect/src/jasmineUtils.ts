@@ -247,10 +247,14 @@ export function isA(typeName: string, value: unknown) {
   return Object.prototype.toString.apply(value) === '[object ' + typeName + ']';
 }
 
-function isDomNode(obj: any): obj is Node {
-  // In some test environments (e.g. "node") there is no `Node` even though
-  // we might be comparing things that look like DOM nodes.
-  return typeof Node !== 'undefined' && obj instanceof Node;
+function isDomNode(obj: any): boolean {
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    typeof obj.nodeType === 'number' &&
+    typeof obj.nodeName === 'string' &&
+    typeof obj.isEqualNode === 'function'
+  );
 }
 
 export function fnNameFor(func: Function) {
