@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-cli]` export functions compatible with `import {default}` ([#8080](https://github.com/facebook/jest/pull/8080))
+
 ### Chore & Maintenance
 
 - `[pretty-format]`: Use `react-is` instead of manual `$$typeof` checks ([#8060](https://github.com/facebook/jest/pull/8060))

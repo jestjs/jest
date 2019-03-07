@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -8,6 +7,8 @@
  * @flow
  */
 
-require('@babel/register');
+import myJestImport from 'jest';
 
-require('./esm');
+// Running Jest like this is not officially supported,
+// but it is common practice until there is a proper API as a substitute.
+myJestImport.run(process.argv);
