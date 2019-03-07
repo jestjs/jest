@@ -43,10 +43,13 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _child!: ChildProcess;
   private _options: WorkerOptions;
   private _onProcessEnd!: OnEnd;
+  private _request: ChildMessage | null;
   private _retries!: number;
 
   constructor(options: WorkerOptions) {
     this._options = options;
+    this._request = null;
+
     this.initialize();
   }
 
@@ -99,6 +102,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
+        this._request = null;
         this._onProcessEnd(null, response[1]);
         break;
 
@@ -121,6 +125,7 @@ export default class ChildProcessWorker implements WorkerInterface {
           }
         }
 
+        this._request = null;
         this._onProcessEnd(error, null);
         break;
 
@@ -131,6 +136,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         error.type = response[1];
         error.stack = response[3];
 
+        this._request = null;
         this._onProcessEnd(error, null);
         break;
 
@@ -142,6 +148,10 @@ export default class ChildProcessWorker implements WorkerInterface {
   onExit(exitCode: number) {
     if (exitCode !== 0) {
       this.initialize();
+
+      if (this._request) {
+        this._child.send(this._request);
+      }
     }
   }
 
@@ -149,6 +159,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     onProcessStart(this);
     this._onProcessEnd = onProcessEnd;
 
+    this._request = request;
     this._retries = 0;
     this._child.send(request);
   }
