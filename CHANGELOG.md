@@ -2,6 +2,26 @@
 
 ### Features
 
+
+
+### Fixes
+
+
+
+### Chore & Maintenance
+
+
+
+### Performance
+
+
+
+## 24.3.0
+
+We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0` or a newer version instead.
+
+### Features
+
 - `[expect]`: Improve report when matcher fails, part 10 ([#7960](https://github.com/facebook/jest/pull/7960))
 - `[expect]`: Improve report when matcher fails, part 11 ([#8008](https://github.com/facebook/jest/pull/8008))
 - `[expect]`: Improve report when matcher fails, part 12 ([#8033](https://github.com/facebook/jest/pull/8033))
