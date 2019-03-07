@@ -27,10 +27,12 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _worker!: Worker;
   private _options: WorkerOptions;
   private _onProcessEnd!: OnEnd;
+  private _request: ChildMessage | null;
   private _retries!: number;
 
   constructor(options: WorkerOptions) {
     this._options = options;
+    this._request = null;
     this.initialize();
   }
 
@@ -126,13 +128,23 @@ export default class ExperimentalWorker implements WorkerInterface {
   onExit(exitCode: number) {
     if (exitCode !== 0) {
       this.initialize();
+
+      if (this._request) {
+        this._worker.postMessage(this._request);
+      }
     }
   }
 
   send(request: ChildMessage, onProcessStart: OnStart, onProcessEnd: OnEnd) {
     onProcessStart(this);
-    this._onProcessEnd = onProcessEnd;
+    this._onProcessEnd = (...args) => {
+      // Clean the request to avoid sending past requests to workers that fail
+      // while waiting for a new request (timers, unhandled rejections...)
+      this._request = null;
+      return onProcessEnd(...args);
+    };
 
+    this._request = request;
     this._retries = 0;
 
     this._worker.postMessage(request);

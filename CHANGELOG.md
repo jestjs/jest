@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-cli]` export functions compatible with `import {default}` ([#8080](https://github.com/facebook/jest/pull/8080))
+- `[jest-worker]`: Fix retries and error notification in workers ([#8079](https://github.com/facebook/jest/pull/8079))
 
 ### Chore & Maintenance
 
