@@ -6,6 +6,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/environment": "^24.1.0",
+    "@jest/test-result": "^24.1.0",
     "@jest/transform": "^24.1.0",
     "@jest/types": "^24.1.0",
     "chalk": "^2.0.1",
@@ -47,5 +48,8 @@
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "gitHead": "b16789230fd45056a7f2fa199bae06c7a1780deb"
 }

@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {AggregatedResult} from '@jest/test-result';
 
-function getFailedSnapshotTests(testResults: TestResult.AggregatedResult) {
+function getFailedSnapshotTests(testResults: AggregatedResult) {
   const failedTestPaths: Array<Config.Path> = [];
   if (testResults.numFailedTests === 0 || !testResults.testResults) {
     return failedTestPaths;

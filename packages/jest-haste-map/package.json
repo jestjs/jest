@@ -18,7 +18,7 @@
     "jest-util": "^24.0.0",
     "jest-worker": "^24.0.0",
     "micromatch": "^3.1.10",
-    "sane": "^3.0.0"
+    "sane": "^4.0.3"
   },
   "devDependencies": {
     "@types/fb-watchman": "^2.0.0",
@@ -30,6 +30,9 @@
   },
   "engines": {
     "node": ">= 6"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
 }

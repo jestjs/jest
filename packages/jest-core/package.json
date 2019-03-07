@@ -8,6 +8,7 @@
     "@jest/console": "^24.1.0",
     "@jest/types": "^24.1.0",
     "@jest/reporters": "^24.1.0",
+    "@jest/test-result": "^24.1.0",
     "@jest/transform": "^24.1.0",
     "ansi-escapes": "^3.0.0",
     "chalk": "^2.0.1",
@@ -79,5 +80,8 @@
     "testing",
     "typescript",
     "watch"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

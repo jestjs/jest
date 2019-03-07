@@ -7,14 +7,17 @@
 - `[expect]`: Improve report when matcher fails, part 9 ([#7940](https://github.com/facebook/jest/pull/7940))
 - `[expect]`: Improve report when matcher fails, part 10 ([#7960](https://github.com/facebook/jest/pull/7960))
 - `[expect]`: Improve report when matcher fails, part 11 ([#8008](https://github.com/facebook/jest/pull/8008))
+- `[expect]`: Improve report when matcher fails, part 12 ([#8033](https://github.com/facebook/jest/pull/8033))
 - `[pretty-format]` Support `React.memo` ([#7891](https://github.com/facebook/jest/pull/7891))
 - `[jest-config]` Print error information on preset normalization error ([#7935](https://github.com/facebook/jest/pull/7935))
 - `[jest-haste-map]` Add `skipPackageJson` option ([#7778](https://github.com/facebook/jest/pull/7778))
 - `[jest-get-type]` Add `isPrimitive` function ([#7708](https://github.com/facebook/jest/pull/7708))
+- `[jest-circus/jest-jasmine2]` Warn if describe returns a value ([#7852](https://github.com/facebook/jest/pull/7852))
+- `[jest-util]` Add `isPromise` ([#7852](https://github.com/facebook/jest/pull/7852))
 
 ### Fixes
 
-- `[jest-environment-node]` Add mising globals: TextEncoder and TextDecoder ([#8022](https://github.com/facebook/jest/pull/8022))
+- `[jest-environment-node]` Add missing globals: TextEncoder and TextDecoder ([#8022](https://github.com/facebook/jest/pull/8022))
 - `[jest-cli]` Fix prototype pollution vulnerability in dependency ([#7904](https://github.com/facebook/jest/pull/7904))
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
 - `[expect]` Fix custom async matcher stack trace ([#7652](https://github.com/facebook/jest/pull/7652))
@@ -23,7 +26,7 @@
 - `[jest-changed-files]` Improve default file selection for Mercurial repos ([#7880](https://github.com/facebook/jest/pull/7880))
 - `[jest-validate]` Fix validating async functions ([#7894](https://github.com/facebook/jest/issues/7894))
 - `[jest-circus]` Fix bug with test.only ([#7888](https://github.com/facebook/jest/pull/7888))
-- `[jest-transform]` Normalize config and remove unecessary checks, convert `TestUtils.js` to TypeScript ([#7801](https://github.com/facebook/jest/pull/7801))
+- `[jest-transform]` Normalize config and remove unnecessary checks, convert `TestUtils.js` to TypeScript ([#7801](https://github.com/facebook/jest/pull/7801))
 - `[jest-worker]` Fix `jest-worker` when using pre-allocated jobs ([#7934](https://github.com/facebook/jest/pull/7934))
 - `[jest-changed-files]` Fix `getChangedFilesFromRoots` to not return parts of the commit messages as if they were files, when the commit messages contained multiple paragraphs ([#7961](https://github.com/facebook/jest/pull/7961))
 - `[jest-haste-map]` Enforce uniqueness in names (mocks and haste ids) ([#8002](https://github.com/facebook/jest/pull/8002))
@@ -33,9 +36,12 @@
 - `[jest-circus]`: Throw explicit error when errors happen after test is considered complete ([#8005](https://github.com/facebook/jest/pull/8005))
 - `[expect]` Remove duck typing and obsolete browser support code when comparing DOM nodes and use DOM-Level-3 API instead ([#7995](https://github.com/facebook/jest/pull/7995))
 - `[jest-mock]` Adds a type check to `prototype` to allow mocks of objects with a primitive `prototype` property. ([#8040](https://github.com/facebook/jest/pull/8040))
+- `[jest-util]`Make sure to not fail if unable to assign `toStringTag` to the `process` object, which is read only in Node 12 ([#8050](https://github.com/facebook/jest/pull/8050))
+- `[expect]` Revert change to distinguish undefined value from no property ([#8067](https://github.com/facebook/jest/pull/8067))
 
 ### Chore & Maintenance
 
+- `[jest-jasmine2]`: TS migration ([#7970](https://github.com/facebook/jest/pull/7970))
 - `[jest-each]`: Refactor into multiple files with better types ([#8018](https://github.com/facebook/jest/pull/8018))
 - `[jest-each]`: Migrate to Typescript ([#8007](https://github.com/facebook/jest/pull/8007))
 - `[jest-environment-jsdom]`: Migrate to TypeScript ([#7985](https://github.com/facebook/jest/pull/8003))
@@ -84,9 +90,15 @@
 - `[@jest/source-map]`: Extract `getCallsite` function from `jest-util` into a new separate package ([#8029](https://github.com/facebook/jest/pull/8029))
 - `[@jest/console]`: Extract custom `console` implementations from `jest-util` into a new separate package ([#8030](https://github.com/facebook/jest/pull/8030))
 - `[docs]`: Improve runAllTimers doc (it exhausts the micro-task queue) ([#8031](https://github.com/facebook/jest/pull/8031))
+- `[jest-cli]`: Migrate to TypeScript ([#8024](https://github.com/facebook/jest/pull/8024))
+- `[jest]`: Migrate to TypeScript ([#8024](https://github.com/facebook/jest/pull/8024))
+- `[docs]` Update automock configuration, add note related to manual mocks ([#8051](https://github.com/facebook/jest/pull/8051))
+- `[@jest/test-result]`: Extract TestResult types and helpers into a new separate package ([#8034](https://github.com/facebook/jest/pull/8034))
 - `[pretty-format]`: Use `react-is` instead of manual `$$typeof` checks ([#8060](https://github.com/facebook/jest/pull/8060))
 
 ### Performance
+
+- `[jest-haste-map]` Optimize haste map tracking of deleted files with Watchman. ([#8056](https://github.com/facebook/jest/pull/8056))
 
 ## 24.1.0
 

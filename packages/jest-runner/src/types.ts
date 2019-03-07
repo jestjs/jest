@@ -6,7 +6,8 @@
  */
 
 import {EventEmitter} from 'events';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {SerializableError, TestResult} from '@jest/test-result';
 import {JestEnvironment} from '@jest/environment';
 import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
 import HasteResolver from 'jest-resolve';
@@ -29,11 +30,11 @@ export type Context = {
 export type OnTestStart = (test: Test) => Promise<void>;
 export type OnTestFailure = (
   test: Test,
-  serializableError: TestResult.SerializableError,
+  serializableError: SerializableError,
 ) => Promise<void>;
 export type OnTestSuccess = (
   test: Test,
-  testResult: TestResult.TestResult,
+  testResult: TestResult,
 ) => Promise<void>;
 
 export type TestFramework = (
@@ -42,7 +43,7 @@ export type TestFramework = (
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
-) => Promise<TestResult.TestResult>;
+) => Promise<TestResult>;
 
 export type TestRunnerOptions = {
   serial: boolean;

@@ -6,7 +6,8 @@
  */
 
 import {Test} from 'jest-runner';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {TestResult} from '@jest/test-result';
 
 type TestMap = {[key: string]: {[key: string]: boolean}};
 
@@ -22,7 +23,7 @@ export default class FailedTestsCache {
     return tests.filter(testResult => enabledTestsMap[testResult.path]);
   }
 
-  setTestResults(testResults: Array<TestResult.TestResult>) {
+  setTestResults(testResults: Array<TestResult>) {
     this._enabledTestsMap = (testResults || [])
       .filter(testResult => testResult.numFailingTests)
       .reduce<TestMap>((suiteMap, testResult) => {

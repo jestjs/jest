@@ -6,7 +6,8 @@
  *
  */
 
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {SerializableError, TestResult} from '@jest/test-result';
 import HasteMap, {SerializableModuleMap, ModuleMap} from 'jest-haste-map';
 import exit from 'exit';
 import {separateMessageFromStack} from 'jest-message-util';
@@ -28,9 +29,7 @@ process.on('uncaughtException', err => {
   exit(1);
 });
 
-const formatError = (
-  error: string | ErrorWithCode,
-): TestResult.SerializableError => {
+const formatError = (error: string | ErrorWithCode): SerializableError => {
   if (typeof error === 'string') {
     const {message, stack} = separateMessageFromStack(error);
     return {
@@ -77,7 +76,7 @@ export async function worker({
   path,
   serializableModuleMap,
   context,
-}: WorkerData): Promise<TestResult.TestResult> {
+}: WorkerData): Promise<TestResult> {
   try {
     const moduleMap = serializableModuleMap
       ? HasteMap.ModuleMap.fromJSON(serializableModuleMap)

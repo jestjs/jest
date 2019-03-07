@@ -14,6 +14,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/code-frame": "^7.0.0",
+    "@jest/test-result": "^24.1.0",
     "@jest/types": "^24.1.0",
     "@types/stack-utils": "^1.0.1",
     "chalk": "^2.0.1",
@@ -25,6 +26,9 @@
     "@types/babel__code-frame": "^7.0.0",
     "@types/micromatch": "^3.1.0",
     "@types/slash": "^2.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
 }

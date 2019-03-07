@@ -13,6 +13,7 @@
     "@jest/console": "^24.1.0",
     "@jest/fake-timers": "^24.1.0",
     "@jest/source-map": "^24.1.0",
+    "@jest/test-result": "^24.1.0",
     "@jest/types": "^24.1.0",
     "@types/node": "*",
     "callsites": "^3.0.0",
@@ -31,6 +32,9 @@
   },
   "engines": {
     "node": ">= 6"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
 }

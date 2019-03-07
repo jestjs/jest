@@ -24,7 +24,7 @@ class customError extends Error {
 }
 
 ['toThrowError', 'toThrow'].forEach(toThrow => {
-  describe('.' + toThrow + '()', () => {
+  describe(toThrow, () => {
     class Err extends customError {}
     class Err2 extends customError {}
 
@@ -35,7 +35,7 @@ class customError extends Error {
       jestExpect(() => {}).not[toThrow]();
     });
 
-    describe('strings', () => {
+    describe('substring', () => {
       it('passes', () => {
         jestExpect(() => {
           throw new customError('apple');
@@ -78,8 +78,8 @@ class customError extends Error {
       test('threw, but message should not match (error)', () => {
         expect(() => {
           jestExpect(() => {
-            throw new customError('apple');
-          }).not[toThrow]('apple');
+            throw new customError('Invalid array length');
+          }).not[toThrow]('array');
         }).toThrowErrorMatchingSnapshot();
       });
 
@@ -130,8 +130,8 @@ class customError extends Error {
       test('threw, but message should not match (error)', () => {
         expect(() => {
           jestExpect(() => {
-            throw new customError('apple');
-          }).not[toThrow](/apple/);
+            throw new customError('Invalid array length');
+          }).not[toThrow](/ array /);
         }).toThrowErrorMatchingSnapshot();
       });
 
@@ -225,10 +225,11 @@ class customError extends Error {
         });
 
         test('isNot true', () => {
+          const message = 'Invalid array length';
           expect(() =>
             jestExpect(() => {
-              throw new ErrorMessage('apple');
-            }).not[toThrow](expected),
+              throw new ErrorMessage(message);
+            }).not[toThrow]({message}),
           ).toThrowErrorMatchingSnapshot();
         });
       });
