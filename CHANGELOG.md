@@ -2,19 +2,13 @@
 
 ### Features
 
-
-
 ### Fixes
-
-
 
 ### Chore & Maintenance
 
-
+- `[pretty-format]`: Use `react-is` instead of manual `$$typeof` checks ([#8060](https://github.com/facebook/jest/pull/8060))
 
 ### Performance
-
-
 
 ## 24.3.0
 
@@ -113,9 +107,6 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 - `[jest-watcher]`: Migrate to TypeScript ([#7843](https://github.com/facebook/jest/pull/7843))
 - `[jest-worker]`: Migrate to TypeScript ([#7853](https://github.com/facebook/jest/pull/7853))
 - `[jest]`: Migrate to TypeScript ([#8024](https://github.com/facebook/jest/pull/8024))
-- `[docs]` Update automock configuration, add note related to manual mocks ([#8051](https://github.com/facebook/jest/pull/8051))
-- `[@jest/test-result]`: Extract TestResult types and helpers into a new separate package ([#8034](https://github.com/facebook/jest/pull/8034))
-- `[pretty-format]`: Use `react-is` instead of manual `$$typeof` checks ([#8060](https://github.com/facebook/jest/pull/8060))
 - `[pretty-format]`: Migrate to TypeScript ([#7809](https://github.com/facebook/jest/pull/7809), [#7809](https://github.com/facebook/jest/pull/7972))
 
 ### Performance
