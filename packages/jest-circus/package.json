@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "24.3.0",
+  "version": "24.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,20 +11,20 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/traverse": "^7.1.0",
-    "@jest/environment": "^24.3.0",
+    "@jest/environment": "^24.3.1",
     "@jest/test-result": "^24.3.0",
     "@jest/types": "^24.3.0",
     "@types/node": "*",
     "chalk": "^2.0.1",
     "co": "^4.6.0",
-    "expect": "^24.3.0",
+    "expect": "^24.3.1",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "^24.3.0",
-    "jest-matcher-utils": "^24.3.0",
+    "jest-each": "^24.3.1",
+    "jest-matcher-utils": "^24.3.1",
     "jest-message-util": "^24.3.0",
-    "jest-snapshot": "^24.3.0",
+    "jest-snapshot": "^24.3.1",
     "jest-util": "^24.3.0",
-    "pretty-format": "^24.3.0",
+    "pretty-format": "^24.3.1",
     "stack-utils": "^1.0.1",
     "throat": "^4.0.0"
   },
@@ -34,7 +34,7 @@
     "@types/co": "^4.6.0",
     "@types/stack-utils": "^1.0.1",
     "execa": "^1.0.0",
-    "jest-runtime": "^24.3.0"
+    "jest-runtime": "^24.3.1"
   },
   "engines": {
     "node": ">= 6"
