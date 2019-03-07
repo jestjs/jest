@@ -31,13 +31,12 @@
 - `[jest-changed-files]` Fix `getChangedFilesFromRoots` to not return parts of the commit messages as if they were files, when the commit messages contained multiple paragraphs ([#7961](https://github.com/facebook/jest/pull/7961))
 - `[jest-haste-map]` Enforce uniqueness in names (mocks and haste ids) ([#8002](https://github.com/facebook/jest/pull/8002))
 - `[static]` Remove console log '-' on the front page
-- `[expect]` Fix non-object received value in toHaveProperty ([#7986](https://github.com/facebook/jest/pull/7986))
+- `[expect]` Fix non-object received value in toHaveProperty ([#7986](https://github.com/facebook/jest/pull/7986), [#8067](https://github.com/facebook/jest/pull/8067))
 - `[jest-jasmine2]`: Throw explicit error when errors happen after test is considered complete ([#8005](https://github.com/facebook/jest/pull/8005))
 - `[jest-circus]`: Throw explicit error when errors happen after test is considered complete ([#8005](https://github.com/facebook/jest/pull/8005))
 - `[expect]` Remove duck typing and obsolete browser support code when comparing DOM nodes and use DOM-Level-3 API instead ([#7995](https://github.com/facebook/jest/pull/7995))
 - `[jest-mock]` Adds a type check to `prototype` to allow mocks of objects with a primitive `prototype` property. ([#8040](https://github.com/facebook/jest/pull/8040))
 - `[jest-util]`Make sure to not fail if unable to assign `toStringTag` to the `process` object, which is read only in Node 12 ([#8050](https://github.com/facebook/jest/pull/8050))
-- `[expect]` Revert change to distinguish undefined value from no property ([#8067](https://github.com/facebook/jest/pull/8067))
 
 ### Chore & Maintenance
 
