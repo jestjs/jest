@@ -23,6 +23,7 @@
 - `[expect]` Fix non-symmetric equal for Number ([#7948](https://github.com/facebook/jest/pull/7948))
 - `[expect]` Remove duck typing and obsolete browser support code when comparing DOM nodes and use DOM-Level-3 API instead ([#7995](https://github.com/facebook/jest/pull/7995))
 - `[jest-changed-files]` Fix `getChangedFilesFromRoots` to not return parts of the commit messages as if they were files, when the commit messages contained multiple paragraphs ([#7961](https://github.com/facebook/jest/pull/7961))
+- `[jest-changed-files]` Fix pattern for HG changed files ([#8066](https://github.com/facebook/jest/pull/8066))
 - `[jest-changed-files]` Improve default file selection for Mercurial repos ([#7880](https://github.com/facebook/jest/pull/7880))
 - `[jest-circus]` Fix bug with test.only ([#7888](https://github.com/facebook/jest/pull/7888))
 - `[jest-circus]`: Throw explicit error when errors happen after test is considered complete ([#8005](https://github.com/facebook/jest/pull/8005))
