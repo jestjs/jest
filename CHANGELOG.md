@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect]`: Improve report when matcher fails, part 13 ([#8077](https://github.com/facebook/jest/pull/8077))
+
 ### Fixes
 
 ### Chore & Maintenance
