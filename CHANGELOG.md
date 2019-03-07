@@ -2,19 +2,13 @@
 
 ### Features
 
-
-
 ### Fixes
-
-
 
 ### Chore & Maintenance
 
-
+- `[pretty-format]`: Use `react-is` instead of manual `$$typeof` checks ([#8060](https://github.com/facebook/jest/pull/8060))
 
 ### Performance
-
-
 
 ## 24.3.0
 
