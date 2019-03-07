@@ -87,7 +87,6 @@ export default class ExperimentalWorker implements WorkerInterface {
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
-        this._request = null;
         this._onProcessEnd(null, response[1]);
         break;
 
@@ -110,7 +109,6 @@ export default class ExperimentalWorker implements WorkerInterface {
           }
         }
 
-        this._request = null;
         this._onProcessEnd(error, null);
         break;
       case PARENT_MESSAGE_SETUP_ERROR:
@@ -120,7 +118,6 @@ export default class ExperimentalWorker implements WorkerInterface {
         error.type = response[1];
         error.stack = response[3];
 
-        this._request = null;
         this._onProcessEnd(error, null);
         break;
       default:
@@ -140,7 +137,12 @@ export default class ExperimentalWorker implements WorkerInterface {
 
   send(request: ChildMessage, onProcessStart: OnStart, onProcessEnd: OnEnd) {
     onProcessStart(this);
-    this._onProcessEnd = onProcessEnd;
+    this._onProcessEnd = (...args) => {
+      // Clean the request to avoid sending past requests to workers that fail
+      // while waiting for a new request (timers, unhandled rejections...)
+      this._request = null;
+      return onProcessEnd(...args);
+    }
 
     this._request = request;
     this._retries = 0;
