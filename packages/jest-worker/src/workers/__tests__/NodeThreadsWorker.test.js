@@ -160,6 +160,29 @@ it('sends the task to the child process', () => {
   expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
 });
 
+it('resends the task to the child process after a retry', () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo/bar/baz.js',
+  });
+
+  const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
+
+  worker.send(request, () => {}, () => {});
+
+  // Skipping call "0" because it corresponds to the "initialize" one.
+  expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
+
+  const previousWorker = worker._worker;
+  worker._worker.emit('exit');
+
+  expect(worker._worker).not.toBe(previousWorker);
+
+  // Skipping call "0" because it corresponds to the "initialize" one.
+  expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
+});
+
 it('calls the onProcessStart method synchronously if the queue is empty', () => {
   const worker = new Worker({
     forkOptions: {},
