@@ -1,16 +1,16 @@
 {
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "24.0.0",
+  "version": "24.3.0",
   "main": "build/index.js",
   "dependencies": {
-    "@jest/test-result": "^24.1.0",
-    "@jest/types": "^24.1.0",
+    "@jest/test-result": "^24.3.0",
+    "@jest/types": "^24.3.0",
     "@types/node": "*",
     "@types/yargs": "^12.0.9",
     "ansi-escapes": "^3.0.0",
     "chalk": "^2.0.1",
-    "jest-util": "^24.0.0",
+    "jest-util": "^24.3.0",
     "string-length": "^2.0.0"
   },
   "devDependencies": {
@@ -30,5 +30,8 @@
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",
-  "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "3a7a4f3a3f5489ac8e07dcddf76bb949c482ec87"
 }
