@@ -159,7 +159,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       // while waiting for a new request (timers, unhandled rejections...)
       this._request = null;
       return onProcessEnd(...args);
-    }
+    };
 
     this._request = request;
     this._retries = 0;
