@@ -1,20 +1,20 @@
 {
   "name": "jest-cli",
   "description": "Delightful JavaScript Testing.",
-  "version": "24.3.0",
+  "version": "24.3.1",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/core": "^24.3.0",
+    "@jest/core": "^24.3.1",
     "@jest/test-result": "^24.3.0",
     "@jest/types": "^24.3.0",
     "chalk": "^2.0.1",
     "exit": "^0.1.2",
     "import-local": "^2.0.0",
     "is-ci": "^2.0.0",
-    "jest-config": "^24.3.0",
+    "jest-config": "^24.3.1",
     "jest-util": "^24.3.0",
-    "jest-validate": "^24.3.0",
+    "jest-validate": "^24.3.1",
     "prompts": "^2.0.1",
     "realpath-native": "^1.1.0",
     "yargs": "^12.0.2"
@@ -70,5 +70,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "3a7a4f3a3f5489ac8e07dcddf76bb949c482ec87"
+  "gitHead": "65c6e9d5e398711c011078bb72648c77fc8a8cb3"
 }
