@@ -21,6 +21,7 @@ import ErrorWithStack from './ErrorWithStack';
 import getFailedSnapshotTests from './getFailedSnapshotTests';
 import installCommonGlobals from './installCommonGlobals';
 import isInteractive from './isInteractive';
+import isPromise from './isPromise';
 import setGlobal from './setGlobal';
 import deepCyclicCopy from './deepCyclicCopy';
 import convertDescriptorToString from './convertDescriptorToString';
@@ -46,6 +47,7 @@ export = {
   getFailedSnapshotTests,
   installCommonGlobals,
   isInteractive,
+  isPromise,
   pluralize,
   preRunMessage,
   replacePathSepForGlob,
