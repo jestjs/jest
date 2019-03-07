@@ -34,7 +34,7 @@
     "strip-ansi": "^5.0.0"
   },
   "devDependencies": {
-    "@types/ansi-escapes": "^3.0.0",
+    "@types/ansi-escapes": "^3.0.1",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^3.1.0",

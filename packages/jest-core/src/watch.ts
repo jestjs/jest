@@ -239,7 +239,6 @@ export default function watch(
     hasExitListener = true;
     process.on('exit', () => {
       if (activePlugin) {
-        // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33423
         outputStream.write(ansiEscapes.cursorDown());
         outputStream.write(ansiEscapes.eraseDown);
       }
@@ -404,7 +403,6 @@ export default function watch(
         break;
       case 'w':
         if (!shouldDisplayWatchUsage && !isWatchUsageDisplayed) {
-          // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33423
           outputStream.write(ansiEscapes.cursorUp());
           outputStream.write(ansiEscapes.eraseDown);
           outputStream.write(usage(globalConfig, watchPlugins));
