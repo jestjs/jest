@@ -153,6 +153,7 @@ it('provides stdout and stderr from the child processes', async () => {
   worker._worker.emit('exit');
   worker._worker.stdout.end('World!', {encoding: 'utf8'});
   worker._worker.stderr.end('Workers!', {encoding: 'utf8'});
+  worker._worker.emit('exit', 0);
 
   await expect(getStream(stdout)).resolves.toEqual('Hello World!');
   await expect(getStream(stderr)).resolves.toEqual('Jest Workers!');

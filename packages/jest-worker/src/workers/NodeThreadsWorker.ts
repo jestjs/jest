@@ -6,6 +6,7 @@
  */
 
 import path from 'path';
+import {PassThrough} from 'stream';
 // ESLint doesn't know about this experimental module
 // eslint-disable-next-line import/no-unresolved
 import {Worker} from 'worker_threads';
@@ -32,12 +33,14 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _retries!: number;
   private _stderr: ReturnType<typeof mergeStream> | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
+  private _fakeStream: PassThrough | null;
 
   constructor(options: WorkerOptions) {
     this._options = options;
     this._request = null;
     this._stderr = null;
     this._stdout = null;
+    this._fakeStream = null;
 
     this.initialize();
   }
@@ -62,7 +65,9 @@ export default class ExperimentalWorker implements WorkerInterface {
 
     if (this._worker.stdout) {
       if (!this._stdout) {
-        this._stdout = mergeStream();
+        // We need to add a permanent stream to the merged stream to prevent it
+        // from ending when the subprocess stream ends
+        this._stdout = mergeStream(this._getFakeStream());
       }
 
       this._stdout.add(this._worker.stdout);
@@ -70,7 +75,9 @@ export default class ExperimentalWorker implements WorkerInterface {
 
     if (this._worker.stderr) {
       if (!this._stderr) {
-        this._stderr = mergeStream();
+        // We need to add a permanent stream to the merged stream to prevent it
+        // from ending when the subprocess stream ends
+        this._stderr = mergeStream(this._getFakeStream());
       }
 
       this._stderr.add(this._worker.stderr);
@@ -101,6 +108,14 @@ export default class ExperimentalWorker implements WorkerInterface {
         error.stack!,
         {type: 'WorkerError'},
       ]);
+    }
+  }
+
+  private _shutdown() {
+    // End the permanent stream so the merged stream end too
+    if (this._fakeStream) {
+      this._fakeStream.end();
+      this._fakeStream = null;
     }
   }
 
@@ -154,6 +169,8 @@ export default class ExperimentalWorker implements WorkerInterface {
       if (this._request) {
         this._worker.postMessage(this._request);
       }
+    } else {
+      this._shutdown();
     }
   }
 
@@ -182,5 +199,12 @@ export default class ExperimentalWorker implements WorkerInterface {
 
   getStderr(): NodeJS.ReadableStream | null {
     return this._stderr;
+  }
+
+  private _getFakeStream() {
+    if (!this._fakeStream) {
+      this._fakeStream = new PassThrough();
+    }
+    return this._fakeStream;
   }
 }

@@ -6,6 +6,7 @@
  */
 
 import childProcess, {ChildProcess} from 'child_process';
+import {PassThrough} from 'stream';
 import mergeStream from 'merge-stream';
 import supportsColor from 'supports-color';
 
@@ -44,6 +45,7 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _child!: ChildProcess;
   private _options: WorkerOptions;
   private _onProcessEnd!: OnEnd;
+  private _fakeStream: PassThrough | null;
   private _request: ChildMessage | null;
   private _retries!: number;
   private _stderr: ReturnType<typeof mergeStream> | null;
@@ -51,6 +53,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   constructor(options: WorkerOptions) {
     this._options = options;
+    this._fakeStream = null;
     this._request = null;
     this._stderr = null;
     this._stdout = null;
@@ -75,7 +78,9 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     if (child.stdout) {
       if (!this._stdout) {
-        this._stdout = mergeStream();
+        // We need to add a permanent stream to the merged stream to prevent it
+        // from ending when the subprocess stream ends
+        this._stdout = mergeStream(this._getFakeStream());
       }
 
       this._stdout.add(child.stdout);
@@ -83,7 +88,9 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     if (child.stderr) {
       if (!this._stderr) {
-        this._stderr = mergeStream();
+        // We need to add a permanent stream to the merged stream to prevent it
+        // from ending when the subprocess stream ends
+        this._stderr = mergeStream(this._getFakeStream());
       }
 
       this._stderr.add(child.stderr);
@@ -116,6 +123,14 @@ export default class ChildProcessWorker implements WorkerInterface {
         error.stack!,
         {type: 'WorkerError'},
       ]);
+    }
+  }
+
+  private _shutdown() {
+    // End the temporary streams so the merged streams end too
+    if (this._fakeStream) {
+      this._fakeStream.end();
+      this._fakeStream = null;
     }
   }
 
@@ -171,6 +186,8 @@ export default class ChildProcessWorker implements WorkerInterface {
       if (this._request) {
         this._child.send(this._request);
       }
+    } else {
+      this._shutdown();
     }
   }
 
@@ -198,5 +215,12 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   getStderr(): NodeJS.ReadableStream | null {
     return this._stderr;
+  }
+
+  private _getFakeStream() {
+    if (!this._fakeStream) {
+      this._fakeStream = new PassThrough();
+    }
+    return this._fakeStream;
   }
 }

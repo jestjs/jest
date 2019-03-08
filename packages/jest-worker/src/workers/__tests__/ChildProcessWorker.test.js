@@ -141,6 +141,7 @@ it('provides stdout and stderr from the child processes', async () => {
   forkInterface.emit('exit');
   forkInterface.stdout.end('World!', {encoding: 'utf8'});
   forkInterface.stderr.end('Workers!', {encoding: 'utf8'});
+  forkInterface.emit('exit', 0);
 
   await expect(getStream(stdout)).resolves.toEqual('Hello World!');
   await expect(getStream(stderr)).resolves.toEqual('Jest Workers!');
