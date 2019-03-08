@@ -1,13 +1,13 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "24.3.0",
+  "version": "24.3.1",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/environment": "^24.3.0",
+    "@jest/environment": "^24.3.1",
     "@jest/test-result": "^24.3.0",
-    "@jest/transform": "^24.3.0",
+    "@jest/transform": "^24.3.1",
     "@jest/types": "^24.3.0",
     "chalk": "^2.0.1",
     "exit": "^0.1.2",
@@ -16,12 +16,12 @@
     "istanbul-lib-coverage": "^2.0.2",
     "istanbul-lib-instrument": "^3.0.1",
     "istanbul-lib-source-maps": "^3.0.1",
-    "jest-haste-map": "^24.3.0",
+    "jest-haste-map": "^24.3.1",
     "jest-message-util": "^24.3.0",
-    "jest-resolve": "^24.3.0",
-    "jest-runtime": "^24.3.0",
+    "jest-resolve": "^24.3.1",
+    "jest-runtime": "^24.3.1",
     "jest-util": "^24.3.0",
-    "jest-worker": "^24.3.0",
+    "jest-worker": "^24.3.1",
     "node-notifier": "^5.2.1",
     "slash": "^2.0.0",
     "source-map": "^0.6.0",
@@ -52,5 +52,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "3a7a4f3a3f5489ac8e07dcddf76bb949c482ec87"
+  "gitHead": "65c6e9d5e398711c011078bb72648c77fc8a8cb3"
 }
