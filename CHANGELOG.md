@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-worker]` `worker.getStdout()` can return `null`
+
 ### Chore & Maintenance
 
 ### Performance
