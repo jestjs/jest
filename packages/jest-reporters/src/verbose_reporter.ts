@@ -24,7 +24,7 @@ export default class VerboseReporter extends DefaultReporter {
 
   constructor(
     globalConfig: Config.GlobalConfig,
-    options: DefaultReporterOptions,
+    options?: DefaultReporterOptions,
   ) {
     super(globalConfig, options);
     this._globalConfig = globalConfig;
