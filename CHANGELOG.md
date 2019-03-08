@@ -9,6 +9,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` Make sure to copy over `d.ts` files to the `build` directory when building ([#8086](https://github.com/facebook/jest/pull/8086))
+
 ### Performance
 
 ## 24.3.1
