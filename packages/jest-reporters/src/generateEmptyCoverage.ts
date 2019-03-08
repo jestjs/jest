@@ -6,7 +6,7 @@
  */
 
 // TODO: Remove this
-/// <reference path="./istanbul-lib-coverage.d.ts" />
+/// <reference path="../istanbul-lib-coverage.d.ts" />
 
 import {Config} from '@jest/types';
 import {readInitialCoverage} from 'istanbul-lib-instrument';

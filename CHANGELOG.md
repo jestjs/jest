@@ -9,6 +9,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` Make sure to include `d.ts` files in the tarball when building ([#8086](https://github.com/facebook/jest/pull/8086))
+
 ### Performance
 
 ## 24.3.1
