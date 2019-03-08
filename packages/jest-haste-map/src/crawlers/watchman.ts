@@ -163,6 +163,10 @@ export = async function watchmanCrawl(
   // watch root. These arrays are used as "directory filters" in the 2nd phase.
   const watched = new Map<Config.Path, string[]>();
 
+  // Store newfound dependency links in a local variable until the crawl phase,
+  // which is when we can know if Watchman is a fresh instance.
+  const dependencyLinks = new Map<Config.Path, LinkMetaData>();
+
   /**
    * Look for linked dependencies in every "node_modules" directory within the
    * given root. Repeat for every linked dependency found that resolves to a
@@ -217,10 +221,10 @@ export = async function watchmanCrawl(
 
         const metaData = data.links.get(linkPath);
         const mtime = testModified(metaData, link.mtime_ms);
-        if (mtime !== 0) {
-          // See ../constants.ts
-          data.links.set(linkPath, [target, mtime]);
-        }
+        dependencyLinks.set(
+          linkPath,
+          mtime !== 0 ? [target, mtime] : metaData!,
+        );
 
         if (fs.statSync(target).isDirectory() && isValidRoot(target)) {
           roots.push(target);
@@ -265,7 +269,11 @@ export = async function watchmanCrawl(
     if (isFresh) {
       removedFiles = new Map(data.files);
       data.files = new Map();
-      data.links = new Map();
+      data.links = dependencyLinks;
+    } else {
+      dependencyLinks.forEach((link, linkPath) => {
+        data.links.set(linkPath, link);
+      });
     }
 
     // Update the file map and symlink map.
