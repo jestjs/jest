@@ -6,8 +6,8 @@
  */
 
 // TODO: Remove this
-/// <reference path="./istanbul-lib-coverage.d.ts" />
-/// <reference path="./istanbul-api.d.ts" />
+/// <reference path="../istanbul-lib-coverage.d.ts" />
+/// <reference path="../istanbul-api.d.ts" />
 
 import path from 'path';
 import {Config} from '@jest/types';

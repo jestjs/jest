@@ -6,7 +6,7 @@
  */
 
 // TODO: Remove this
-/// <reference path="./node-notifier.d.ts" />
+/// <reference path="../node-notifier.d.ts" />
 
 import path from 'path';
 import util from 'util';
