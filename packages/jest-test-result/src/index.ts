@@ -22,4 +22,5 @@ export {
   Status,
   Suite,
   TestResult,
+  Callsite,
 } from './types';
