@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[expect]` Compare DOM nodes even if there are multiple Node classes ([#8064](https://github.com/facebook/jest/pull/8064))
+
 ### Chore & Maintenance
 
 ### Performance
