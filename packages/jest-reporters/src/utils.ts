@@ -276,8 +276,8 @@ export const getLocation = (
   const matches = assertionResult.failureMessages[0].match(/(\d+):(\d+)/);
   return (
     matches && {
-      column: matches[2],
-      line: matches[1],
+      column: parseInt(matches[2], 10),
+      line: parseInt(matches[1], 10),
     }
   );
 };
