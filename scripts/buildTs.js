@@ -12,8 +12,6 @@ const path = require('path');
 
 const chalk = require('chalk');
 const execa = require('execa');
-const glob = require('glob');
-const cpFile = require('cp-file');
 const {getPackages, adjustToTerminalWidth, OK} = require('./buildUtils');
 
 const packages = getPackages();
@@ -29,16 +27,6 @@ process.stdout.write(adjustToTerminalWidth('Building\n'));
 
 try {
   execa.sync('tsc', args, {stdio: 'inherit'});
-  packagesWithTs.forEach(p => {
-    const srcDir = path.resolve(p, 'src');
-    const buildDir = path.resolve(p, 'build');
-
-    glob.sync(path.join(srcDir, '**/*.d.ts')).forEach(file => {
-      const resultFile = path.resolve(buildDir, path.relative(srcDir, file));
-
-      cpFile.sync(file, resultFile);
-    });
-  });
   process.stdout.write(`${OK}\n`);
 } catch (e) {
   process.stdout.write('\n');
