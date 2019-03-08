@@ -1201,7 +1201,7 @@ exports[`.toBeInstanceOf() failing "a" and [Function String] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>String</>
-Received value does not have a prototype chain
+Received value has no prototype
 Received value: <red>\\"a\\"</>"
 `;
 
@@ -1216,7 +1216,7 @@ exports[`.toBeInstanceOf() failing {} and [Function A] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>A</>
-Received value does not have a prototype chain
+Received value has no prototype
 Received value: <red>{}</>"
 `;
 
@@ -1239,7 +1239,7 @@ exports[`.toBeInstanceOf() failing 1 and [Function Number] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>Number</>
-Received value does not have a prototype chain
+Received value has no prototype
 Received value: <red>1</>"
 `;
 
@@ -1247,7 +1247,7 @@ exports[`.toBeInstanceOf() failing null and [Function String] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>String</>
-Received value does not have a prototype chain
+Received value has no prototype
 Received value: <red>null</>"
 `;
 
@@ -1255,7 +1255,7 @@ exports[`.toBeInstanceOf() failing true and [Function Boolean] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>Boolean</>
-Received value does not have a prototype chain
+Received value has no prototype
 Received value: <red>true</>"
 `;
 
@@ -1263,7 +1263,7 @@ exports[`.toBeInstanceOf() failing undefined and [Function String] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>String</>
-Received value does not have a prototype chain
+Received value has no prototype
 Received value: <red>undefined</>"
 `;
 

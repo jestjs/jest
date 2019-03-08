@@ -259,7 +259,7 @@ const matchers: MatchersObject = {
             ? `Expected constructor: ${EXPECTED_COLOR(expected.name)}\n`
             : '') +
           (isPrimitive(received) || Object.getPrototypeOf(received) === null
-            ? 'Received value does not have a prototype chain\n'
+            ? 'Received value has no prototype\n'
             : typeof received.constructor === 'function' &&
               typeof received.constructor.name === 'string' &&
               received.constructor.name.length !== 0
