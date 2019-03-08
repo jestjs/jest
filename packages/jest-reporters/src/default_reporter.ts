@@ -38,7 +38,7 @@ export default class DefaultReporter extends BaseReporter {
   ) {
     super();
     this._globalConfig = globalConfig;
-    this._options = options || {};
+    this._options = options;
     this._clear = '';
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
