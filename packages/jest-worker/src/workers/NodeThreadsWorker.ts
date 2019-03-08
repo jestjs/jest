@@ -150,15 +150,15 @@ export default class ExperimentalWorker implements WorkerInterface {
     this._worker.postMessage(request);
   }
 
-  getWorkerId(): number {
+  getWorkerId() {
     return this._options.workerId;
   }
 
-  getStdout(): NodeJS.ReadableStream {
+  getStdout() {
     return this._worker.stdout;
   }
 
-  getStderr(): NodeJS.ReadableStream {
+  getStderr() {
     return this._worker.stderr;
   }
 }
