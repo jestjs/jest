@@ -224,7 +224,7 @@ export = async function watchmanCrawl(
         const mtime = testModified(metaData, link.mtime_ms);
         dependencyLinks.set(
           relativePath,
-          mtime !== 0 ? [target, mtime] : metaData!,
+          mtime !== 0 ? [fastPath.relative(rootDir, target), mtime] : metaData!,
         );
 
         if (fs.statSync(target).isDirectory() && isValidRoot(target)) {
