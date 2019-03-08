@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-worker]` `worker.getStdout()` can return `null`
+- `[jest-worker]` `worker.getStdout()` can return `null` ([#8083](https://github.com/facebook/jest/pull/8083))
 
 ### Chore & Maintenance
 
