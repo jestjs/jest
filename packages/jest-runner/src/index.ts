@@ -110,8 +110,14 @@ class TestRunner {
       numWorkers: this._globalConfig.maxWorkers,
     }) as WorkerInterface;
 
-    if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
-    if (worker.getStderr()) worker.getStderr().pipe(process.stderr);
+    if (worker.getStdout()) {
+      worker
+        .getStdout()
+        .pipe(this._globalConfig.useStderr ? process.stderr : process.stdout);
+    }
+    if (worker.getStderr()) {
+      worker.getStderr().pipe(process.stderr);
+    }
 
     const mutex = throat(this._globalConfig.maxWorkers);
 
