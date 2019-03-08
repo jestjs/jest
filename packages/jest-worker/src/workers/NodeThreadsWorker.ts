@@ -36,8 +36,8 @@ export default class ExperimentalWorker implements WorkerInterface {
   constructor(options: WorkerOptions) {
     this._options = options;
     this._request = null;
-    this._stdout = null;
     this._stderr = null;
+    this._stdout = null;
 
     this.initialize();
   }
@@ -64,6 +64,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       if (!this._stdout) {
         this._stdout = mergeStream();
       }
+
       this._stdout.add(this._worker.stdout);
     }
 
@@ -71,6 +72,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       if (!this._stderr) {
         this._stderr = mergeStream();
       }
+
       this._stderr.add(this._worker.stderr);
     }
 
