@@ -6,6 +6,7 @@
  */
 
 import childProcess, {ChildProcess} from 'child_process';
+import mergeStream from 'merge-stream';
 import supportsColor from 'supports-color';
 
 import {
@@ -45,10 +46,14 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _onProcessEnd!: OnEnd;
   private _request: ChildMessage | null;
   private _retries!: number;
+  private _stderr: ReturnType<typeof mergeStream> | null;
+  private _stdout: ReturnType<typeof mergeStream> | null;
 
   constructor(options: WorkerOptions) {
     this._options = options;
     this._request = null;
+    this._stdout = null;
+    this._stderr = null;
 
     this.initialize();
   }
@@ -68,6 +73,20 @@ export default class ChildProcessWorker implements WorkerInterface {
       ...this._options.forkOptions,
     });
 
+    if (child.stdout) {
+      if (!this._stdout) {
+        this._stdout = mergeStream();
+      }
+      this._stdout.add(child.stdout);
+    }
+
+    if (child.stderr) {
+      if (!this._stderr) {
+        this._stderr = mergeStream();
+      }
+      this._stderr.add(child.stderr);
+    }
+
     child.on('message', this.onMessage.bind(this));
     child.on('exit', this.onExit.bind(this));
 
@@ -79,6 +98,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     ]);
 
     this._child = child;
+
     this._retries++;
 
     // If we exceeded the amount of retries, we will emulate an error reply
@@ -170,11 +190,11 @@ export default class ChildProcessWorker implements WorkerInterface {
     return this._options.workerId;
   }
 
-  getStdout() {
-    return this._child.stdout;
+  getStdout(): NodeJS.ReadableStream | null {
+    return this._stdout;
   }
 
-  getStderr() {
-    return this._child.stderr;
+  getStderr(): NodeJS.ReadableStream | null {
+    return this._stderr;
   }
 }

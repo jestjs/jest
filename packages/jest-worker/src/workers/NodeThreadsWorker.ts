@@ -9,6 +9,7 @@ import path from 'path';
 // ESLint doesn't know about this experimental module
 // eslint-disable-next-line import/no-unresolved
 import {Worker} from 'worker_threads';
+import mergeStream from 'merge-stream';
 
 import {
   CHILD_MESSAGE_INITIALIZE,
@@ -29,10 +30,15 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _onProcessEnd!: OnEnd;
   private _request: ChildMessage | null;
   private _retries!: number;
+  private _stderr: ReturnType<typeof mergeStream> | null;
+  private _stdout: ReturnType<typeof mergeStream> | null;
 
   constructor(options: WorkerOptions) {
     this._options = options;
     this._request = null;
+    this._stdout = null;
+    this._stderr = null;
+
     this.initialize();
   }
 
@@ -53,6 +59,20 @@ export default class ExperimentalWorker implements WorkerInterface {
         ...this._options.forkOptions,
       },
     });
+
+    if (this._worker.stdout) {
+      if (!this._stdout) {
+        this._stdout = mergeStream();
+      }
+      this._stdout.add(this._worker.stdout);
+    }
+
+    if (this._worker.stderr) {
+      if (!this._stderr) {
+        this._stderr = mergeStream();
+      }
+      this._stderr.add(this._worker.stderr);
+    }
 
     this._worker.on('message', this.onMessage.bind(this));
     this._worker.on('exit', this.onExit.bind(this));
@@ -154,11 +174,11 @@ export default class ExperimentalWorker implements WorkerInterface {
     return this._options.workerId;
   }
 
-  getStdout() {
-    return this._worker.stdout;
+  getStdout(): NodeJS.ReadableStream | null {
+    return this._stdout;
   }
 
-  getStderr() {
-    return this._worker.stderr;
+  getStderr(): NodeJS.ReadableStream | null {
+    return this._stderr;
   }
 }
