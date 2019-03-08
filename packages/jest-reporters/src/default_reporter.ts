@@ -34,7 +34,7 @@ export default class DefaultReporter extends BaseReporter {
 
   constructor(
     globalConfig: Config.GlobalConfig,
-    options?: DefaultReporterOptions,
+    options: DefaultReporterOptions = {},
   ) {
     super();
     this._globalConfig = globalConfig;
