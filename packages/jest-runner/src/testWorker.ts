@@ -87,7 +87,7 @@ export async function worker({
       config,
       getResolver(config, moduleMap),
       context && {
-        ...config,
+        ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
       },
     );
