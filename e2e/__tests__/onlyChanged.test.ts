@@ -153,12 +153,38 @@ test('do not pickup non-tested files when reporting coverage on only changed fil
     'package.json': JSON.stringify({name: 'new name'}),
   });
 
-  const {stderr, stdout} = runJest(DIR, ['-o', '--coverage']);
-
+  const {stderr, stdout, status} = runJest(DIR, ['-o', '--coverage']);
   expect(stderr).toEqual(
     expect.not.stringContaining('Failed to collect coverage from'),
   );
   expect(stdout).toEqual(expect.not.stringContaining('package.json'));
+  expect(status).toBe(0);
+});
+
+test('collect test coverage when using onlyChanged', () => {
+  writeFiles(DIR, {
+    'a.js': 'module.exports = {}',
+    'b.test.js': 'module.exports = {}',
+    'package.json': JSON.stringify({
+      jest: {collectCoverageFrom: ['a.js']},
+      name: 'original name',
+    }),
+  });
+
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
+  run(`${GIT} checkout -b new-branch`, DIR);
+
+  writeFiles(DIR, {
+    'b.test.js': 'it("passes", () => {expect(1).toBe(1)})',
+  });
+
+  const {stderr, status} = runJest(DIR, ['-o', '--coverage']);
+  expect(stderr).toEqual(
+    expect.not.stringContaining('Failed to collect coverage from'),
+  );
+  expect(status).toBe(0);
 });
 
 test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
