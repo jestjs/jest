@@ -13,6 +13,7 @@
     "@jest/types": "^24.3.0",
     "browser-resolve": "^1.11.3",
     "chalk": "^2.0.1",
+    "jest-pnp-resolver": "^1.2.1",
     "realpath-native": "^1.1.0"
   },
   "devDependencies": {

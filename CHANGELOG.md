@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-resolve]` Now supports PnP environment without plugins ([#8094](https://github.com/facebook/jest/pull/8094))
+
 ### Fixes
 
 - `[expect]` Compare DOM nodes even if there are multiple Node classes ([#8064](https://github.com/facebook/jest/pull/8064))
