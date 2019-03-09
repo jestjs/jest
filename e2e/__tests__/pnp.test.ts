@@ -16,9 +16,12 @@ beforeEach(() => {
 });
 
 it('sucessfully runs the tests inside `pnp/`', () => {
-  const {json} = runWithJson(DIR, ['--no-cache', '--coverage'], {
-    nodeOptions: `--require ${DIR}/.pnp.js`,
-  });
-  expect(json.success).toBe(true);
-  expect(json.numTotalTestSuites).toBe(1);
+  // https://github.com/facebook/jest/pull/8094#issuecomment-471220694
+  if (process.platform !== 'win32') {
+    const {json} = runWithJson(DIR, ['--no-cache', '--coverage'], {
+      nodeOptions: `--require ${DIR}/.pnp.js`,
+    });
+    expect(json.success).toBe(true);
+    expect(json.numTotalTestSuites).toBe(1);
+  }
 });
