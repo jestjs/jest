@@ -8,6 +8,7 @@
 import fs from 'fs';
 import path from 'path';
 import browserResolve from 'browser-resolve';
+import pnpResolver from 'jest-pnp-resolver';
 import {Config} from '@jest/types';
 import isBuiltinModule from './isBuiltinModule';
 import nodeModulesPaths from './nodeModulesPaths';
@@ -26,6 +27,10 @@ export default function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
 ): Config.Path {
+  if (process.versions.pnp) {
+    return pnpResolver(path, options);
+  }
+
   const resolve = options.browser ? browserResolve.sync : resolveSync;
 
   return resolve(path, {
