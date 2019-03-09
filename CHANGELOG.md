@@ -10,6 +10,7 @@
 - `[jest-fake-timers]` `getTimerCount` will not include cancelled immediates ([#8764](https://github.com/facebook/jest/pull/8764))
 - `[jest-leak-detector]` [**BREAKING**] Use `weak-napi` instead of `weak` package ([#8686](https://github.com/facebook/jest/pull/8686))
 - `[jest-snapshot]` Remove only the added newlines in multiline snapshots ([#8859](https://github.com/facebook/jest/pull/8859))
+- `[jest-circus]` Throw a proper error if a test / hooks is defined asynchronously ([#8096](https://github.com/facebook/jest/pull/8096))
 
 ### Chore & Maintenance
 
