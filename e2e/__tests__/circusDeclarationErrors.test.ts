@@ -6,6 +6,8 @@
  */
 
 import {skipSuiteOnJasmine} from '@jest/test-utils';
+import {wrap} from 'jest-snapshot-serializer-raw';
+import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 skipSuiteOnJasmine();
@@ -16,5 +18,7 @@ it('defining tests and hooks asynchronously throws', () => {
   ]);
 
   expect(result.status).toBe(1);
-  expect(result.stderr).toMatchSnapshot();
+
+  const {rest} = extractSummary(result.stderr);
+  expect(wrap(rest)).toMatchSnapshot();
 });
