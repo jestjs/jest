@@ -127,7 +127,12 @@ class TestRunner {
 
         return worker.worker({
           config: test.context.config,
-          context: this._context,
+          context: {
+            ...this._context,
+            changedFiles:
+              this._context.changedFiles &&
+              Array.from(this._context.changedFiles),
+          },
           globalConfig: this._globalConfig,
           path: test.path,
           serializableModuleMap: watcher.isWatchMode()

@@ -3,10 +3,18 @@
 ### Features
 
 - `[jest-cli]`: Add `compact` option to default reporter ([#7845](https://github.com/facebook/jest/pull/7845))
+- `[jest-resolve]` Now supports PnP environment without plugins ([#8094](https://github.com/facebook/jest/pull/8094))
 
 ### Fixes
 
+- `[expect]` Compare DOM nodes even if there are multiple Node classes ([#8064](https://github.com/facebook/jest/pull/8064))
+- `[jest-worker]` `worker.getStdout()` can return `null` ([#8083](https://github.com/facebook/jest/pull/8083))
+- `[jest-worker]` Re-attach stdout and stderr from new processes/threads created after retries ([#8087](https://github.com/facebook/jest/pull/8087))
+- `[jest-reporters/jest-runner]` Serialize `changedFiles` passed to workers ([#8090](https://github.com/facebook/jest/pull/8090))
+
 ### Chore & Maintenance
+
+- `[*]` Make sure to include `d.ts` files in the tarball when building ([#8086](https://github.com/facebook/jest/pull/8086))
 
 ### Performance
 
