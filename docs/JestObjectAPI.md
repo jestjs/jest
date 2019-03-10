@@ -119,6 +119,92 @@ test('implementation created by jest.genMockFromModule', () => {
 });
 ```
 
+This is how `genMockFromModule` will mock the follwing data types:
+
+#### `Function`
+
+A new function will be created. The new function will have no formal parameters and when called will return `undefined`. This functionality also applies to `async functions`.
+
+#### `Class`
+
+A new class will be created. The interface of the original class is maintained however all of the class member functions will be mocked.
+
+#### `Object`
+
+Objects are deeply cloned. Their interfaces are maintained and their values are mocked.
+
+#### `Array`
+
+The original array is ignored and a new empty array is created.
+
+#### `String`
+
+A new copy of the original stirng is mocked.
+
+#### `Number`
+
+A new copy of the original number is mocked.
+
+Example:
+
+<!-- prettier-ignore -->
+```js
+// example.js
+module.exports = {
+  function: function foo(a, b) {
+    return a + b;
+  },
+  asyncFunction: async function asyncFoo(a, b) {
+    const result = await a + b;
+    return result;
+  },
+  class: new class Bar {
+    foo() {}
+  },
+  object: {
+    baz: 'foo',
+    bar: {
+      fiz: 1,
+      buzz: [1, 2, 3],
+    },
+  },
+  array: [1, 2, 3],
+  number: 123,
+  string: 'baz',
+};
+```
+
+```js
+// __tests__/example.test.js
+const example = jest.genMockFromModule('./example');
+
+test('should run example code', () => {
+  // a new mocked function with no formal arguments.
+  expect(example.function.name).toEqual('foo');
+  expect(example.function.length).toEqual(0);
+  // async functions are treated just like standard synchronous functions.
+  expect(example.asyncFunction.name).toEqual('asyncFoo');
+  expect(example.asyncFunction.length).toEqual(0);
+  // a new mocked class that maintains the original interface and mocks member functions.
+  expect(example.class.constructor.name).toEqual('Bar');
+  expect(example.class.foo.name).toEqual('foo');
+  // a deeply cloned object that maintains the original interface and mocks it's values.
+  expect(example.object).toEqual({
+    baz: 'foo',
+    bar: {
+      fiz: 1,
+      buzz: [],
+    },
+  });
+  // the original array is ignored and a new emtpy array is mocked.
+  expect(example.array.length).toEqual(0);
+  // a new copy of the original number.
+  expect(example.number).toEqual(123);
+  // a new copy of the original string.
+  expect(example.string).toEqual('baz');
+});
+```
+
 ### `jest.mock(moduleName, factory, options)`
 
 Mocks a module with an auto-mocked version when it is being required. `factory` and `options` are optional. For example:
