@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 24.4.0
+
+### Features
+
 - `[jest-resolve]` Now supports PnP environment without plugins ([#8094](https://github.com/facebook/jest/pull/8094))
 
 ### Fixes
@@ -14,8 +24,6 @@
 ### Chore & Maintenance
 
 - `[*]` Make sure to include `d.ts` files in the tarball when building ([#8086](https://github.com/facebook/jest/pull/8086))
-
-### Performance
 
 ## 24.3.1
 

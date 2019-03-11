@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-jsdom",
-  "version": "24.3.1",
+  "version": "24.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/environment": "^24.3.1",
+    "@jest/environment": "^24.4.0",
     "@jest/fake-timers": "^24.3.0",
     "@jest/types": "^24.3.0",
     "jest-mock": "^24.3.0",
@@ -26,5 +26,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "65c6e9d5e398711c011078bb72648c77fc8a8cb3"
+  "gitHead": "a018000fc162db3cfd0ebf9f23fdb734f05821a6"
 }

@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "24.3.1",
+  "version": "24.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -12,19 +12,19 @@
   "dependencies": {
     "@babel/core": "^7.1.0",
     "@jest/types": "^24.3.0",
-    "babel-jest": "^24.3.1",
+    "babel-jest": "^24.4.0",
     "chalk": "^2.0.1",
     "glob": "^7.1.1",
-    "jest-environment-jsdom": "^24.3.1",
-    "jest-environment-node": "^24.3.1",
+    "jest-environment-jsdom": "^24.4.0",
+    "jest-environment-node": "^24.4.0",
     "jest-get-type": "^24.3.0",
-    "jest-jasmine2": "^24.3.1",
+    "jest-jasmine2": "^24.4.0",
     "jest-regex-util": "^24.3.0",
-    "jest-resolve": "^24.3.1",
+    "jest-resolve": "^24.4.0",
     "jest-util": "^24.3.0",
-    "jest-validate": "^24.3.1",
+    "jest-validate": "^24.4.0",
     "micromatch": "^3.1.10",
-    "pretty-format": "^24.3.1",
+    "pretty-format": "^24.4.0",
     "realpath-native": "^1.1.0"
   },
   "devDependencies": {
@@ -38,5 +38,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "65c6e9d5e398711c011078bb72648c77fc8a8cb3"
+  "gitHead": "a018000fc162db3cfd0ebf9f23fdb734f05821a6"
 }
