@@ -123,7 +123,7 @@ This is how `genMockFromModule` will mock the follwing data types:
 
 #### `Function`
 
-A new function will be created. The new function will have no formal parameters and when called will return `undefined`. This functionality also applies to `async functions`.
+A new [mock function](https://jestjs.io/docs/en/mock-functions.html) will be created. The new function will have no formal parameters and when called will return `undefined`. This functionality also applies to `async functions`.
 
 #### `Class`
 
