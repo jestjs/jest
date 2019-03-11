@@ -24,6 +24,7 @@
 ### Chore & Maintenance
 
 - `[*]` Make sure to include `d.ts` files in the tarball when building ([#8086](https://github.com/facebook/jest/pull/8086))
+- `[expect]` Export `Matchers` interface from `expect` ([#8093](https://github.com/facebook/jest/pull/8093))
 
 ## 24.3.1
 
