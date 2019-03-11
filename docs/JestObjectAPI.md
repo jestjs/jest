@@ -127,7 +127,7 @@ A new [mock function](https://jestjs.io/docs/en/mock-functions.html) will be cre
 
 #### `Class`
 
-A new class will be created. The interface of the original class is maintained however all of the class member functions will be mocked.
+A new class will be created. The interface of the original class is maintained however all of the class member functions and properties will be mocked.
 
 #### `Object`
 
@@ -159,6 +159,9 @@ module.exports = {
     return result;
   },
   class: new class Bar {
+    constructor() {
+      this.array = [1, 2, 3];
+    }
     foo() {}
   },
   object: {
@@ -182,12 +185,16 @@ test('should run example code', () => {
   // a new mocked function with no formal arguments.
   expect(example.function.name).toEqual('foo');
   expect(example.function.length).toEqual(0);
+
   // async functions are treated just like standard synchronous functions.
   expect(example.asyncFunction.name).toEqual('asyncFoo');
   expect(example.asyncFunction.length).toEqual(0);
-  // a new mocked class that maintains the original interface and mocks member functions.
+
+  // a new mocked class that maintains the original interface and mocks member functions and properties.
   expect(example.class.constructor.name).toEqual('Bar');
   expect(example.class.foo.name).toEqual('foo');
+  expect(example.class.array.length).toEqual(0);
+
   // a deeply cloned object that maintains the original interface and mocks it's values.
   expect(example.object).toEqual({
     baz: 'foo',
@@ -196,10 +203,13 @@ test('should run example code', () => {
       buzz: [],
     },
   });
+
   // the original array is ignored and a new emtpy array is mocked.
   expect(example.array.length).toEqual(0);
+
   // a new copy of the original number.
   expect(example.number).toEqual(123);
+
   // a new copy of the original string.
   expect(example.string).toEqual('baz');
 });
