@@ -1,6 +1,6 @@
 {
   "name": "expect",
-  "version": "24.1.0",
+  "version": "24.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,12 +11,12 @@
   "types": "build/index.d.ts",
   "browser": "build-es5/index.js",
   "dependencies": {
-    "@jest/types": "^24.1.0",
+    "@jest/types": "^24.3.0",
     "ansi-styles": "^3.2.0",
-    "jest-get-type": "^24.0.0",
-    "jest-matcher-utils": "^24.0.0",
-    "jest-message-util": "^24.0.0",
-    "jest-regex-util": "^24.0.0"
+    "jest-get-type": "^24.3.0",
+    "jest-matcher-utils": "^24.4.0",
+    "jest-message-util": "^24.3.0",
+    "jest-regex-util": "^24.3.0"
   },
   "devDependencies": {
     "@types/ansi-styles": "^3.2.1"
@@ -24,5 +24,8 @@
   "engines": {
     "node": ">= 6"
   },
-  "gitHead": "b16789230fd45056a7f2fa199bae06c7a1780deb"
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "a018000fc162db3cfd0ebf9f23fdb734f05821a6"
 }

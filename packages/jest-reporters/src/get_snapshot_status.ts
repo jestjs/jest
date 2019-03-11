@@ -5,10 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TestResult} from '@jest/types';
-
 import chalk from 'chalk';
-
+import {TestResult} from '@jest/test-result';
 import {pluralize} from 'jest-util';
 
 const ARROW = ' \u203A ';
@@ -19,7 +17,7 @@ const SNAPSHOT_UPDATED = chalk.bold.green;
 const SNAPSHOT_OUTDATED = chalk.bold.yellow;
 
 export default (
-  snapshot: TestResult.TestResult['snapshot'],
+  snapshot: TestResult['snapshot'],
   afterUpdate: boolean,
 ): Array<string> => {
   const statuses = [];

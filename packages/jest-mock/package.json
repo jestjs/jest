@@ -1,6 +1,6 @@
 {
   "name": "jest-mock",
-  "version": "24.0.0",
+  "version": "24.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,11 +10,14 @@
     "node": ">= 6"
   },
   "dependencies": {
-    "@jest/types": "^24.1.0"
+    "@jest/types": "^24.3.0"
   },
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "browser": "build-es5/index.js",
-  "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "3a7a4f3a3f5489ac8e07dcddf76bb949c482ec87"
 }

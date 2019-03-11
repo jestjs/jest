@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TestResult} from '@jest/types';
+import {AggregatedResult, TestResult} from '@jest/test-result';
 import {preRunMessage} from 'jest-util';
 import {ReporterOnStartOptions, Context, Test, Reporter} from './types';
 
@@ -18,24 +18,21 @@ export default class BaseReporter implements Reporter {
     process.stderr.write(message + '\n');
   }
 
-  onRunStart(
-    _results: TestResult.AggregatedResult,
-    _options: ReporterOnStartOptions,
-  ) {
+  onRunStart(_results: AggregatedResult, _options: ReporterOnStartOptions) {
     preRunMessageRemove(process.stderr);
   }
 
   onTestResult(
     _test: Test,
-    _testResult: TestResult.TestResult,
-    _results: TestResult.AggregatedResult,
+    _testResult: TestResult,
+    _results: AggregatedResult,
   ) {}
 
   onTestStart(_test: Test) {}
 
   onRunComplete(
     _contexts: Set<Context>,
-    _aggregatedResults: TestResult.AggregatedResult,
+    _aggregatedResults: AggregatedResult,
   ): Promise<void> | void {}
 
   protected _setError(error: Error) {
