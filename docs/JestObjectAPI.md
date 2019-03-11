@@ -119,7 +119,7 @@ test('implementation created by jest.genMockFromModule', () => {
 });
 ```
 
-This is how `genMockFromModule` will mock the follwing data types:
+This is how `genMockFromModule` will mock the following data types:
 
 #### `Function`
 
