@@ -131,7 +131,7 @@ A new class will be created. The interface of the original class is maintained h
 
 #### `Object`
 
-Objects are deeply cloned. Their interfaces are maintained and their values are mocked.
+Objects are deeply cloned. Their keys are maintained and their values are mocked.
 
 #### `Array`
 
