@@ -1,6 +1,7 @@
 ## master
 
 ### Features
+
 - `[jest-snapshots]`: Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
 
 ### Fixes
