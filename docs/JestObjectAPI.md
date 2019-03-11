@@ -139,7 +139,7 @@ The original array is ignored and a new empty array is created.
 
 #### `String`
 
-A new copy of the original stirng is mocked.
+A new copy of the original string is mocked.
 
 #### `Number`
 
