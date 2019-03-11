@@ -15,6 +15,7 @@ export {
   AggregatedResult,
   AssertionLocation,
   AssertionResult,
+  Callsite,
   FailedAssertion,
   Milliseconds,
   SerializableError,
@@ -22,5 +23,4 @@ export {
   Status,
   Suite,
   TestResult,
-  Callsite,
 } from './types';

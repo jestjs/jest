@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-cli]`: Add `compact` option to default reporter ([#7845](https://github.com/facebook/jest/pull/7845))
+- `[@jest/reporters]`: Add `compact` option to default reporter ([#7845](https://github.com/facebook/jest/pull/7845))
 - `[jest-resolve]` Now supports PnP environment without plugins ([#8094](https://github.com/facebook/jest/pull/8094))
 
 ### Fixes
