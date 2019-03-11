@@ -18,8 +18,8 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type RawMatcherFn = (
+  received: any,
   expected: any,
-  actual: any,
   options?: any,
 ) => ExpectationResult;
 
@@ -100,7 +100,7 @@ export interface Matchers<R> {
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  nthCalledWith(nthCall: number, ...params: Array<unknown>): R;
+  nthCalledWith(nthCall: number, ...args: Array<unknown>): R;
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
@@ -159,7 +159,7 @@ export interface Matchers<R> {
    * Ensure that an object is an instance of a class.
    * This matcher uses `instanceof` underneath.
    */
-  toBeInstanceOf(expected: unknown): R;
+  toBeInstanceOf(expected: Function): R;
   /**
    * For comparing floating point numbers.
    */
@@ -214,16 +214,16 @@ export interface Matchers<R> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toHaveBeenCalledWith(...params: Array<unknown>): R;
+  toHaveBeenCalledWith(...args: Array<unknown>): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  toHaveBeenNthCalledWith(nthCall: number, ...params: Array<unknown>): R;
+  toHaveBeenNthCalledWith(nthCall: number, ...args: Array<unknown>): R;
   /**
    * If you have a mock function, you can use `.toHaveBeenLastCalledWith`
    * to test what arguments it was last called with.
    */
-  toHaveBeenLastCalledWith(...params: Array<unknown>): R;
+  toHaveBeenLastCalledWith(...args: Array<unknown>): R;
   /**
    * Use to test the specific value that a mock function last returned.
    * If the last call to the mock function threw an error, then this matcher will fail
@@ -254,7 +254,7 @@ export interface Matchers<R> {
    *
    * expect(houseForSale).toHaveProperty('kitchen.area', 20);
    */
-  toHaveProperty(propertyPath: string | Array<unknown>, value?: unknown): R;
+  toHaveProperty(keyPath: string | Array<string>, value?: unknown): R;
   /**
    * Use to test that the mock function successfully returned (i.e., did not throw an error) at least one time
    */
@@ -275,7 +275,7 @@ export interface Matchers<R> {
   /**
    * Used to check that a JavaScript object matches a subset of the properties of an object
    */
-  toMatchObject(expected: {} | Array<unknown>): R;
+  toMatchObject(expected: Record<string, unknown> | Array<unknown>): R;
   /**
    * Ensure that a mock function has returned (as opposed to thrown) at least once.
    */
@@ -291,7 +291,7 @@ export interface Matchers<R> {
   /**
    * Use to test that objects have the same types as well as structure.
    */
-  toStrictEqual(expected: {}): R;
+  toStrictEqual(expected: unknown): R;
   /**
    * Used to test that a function throws when it is called.
    */
