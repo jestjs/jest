@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
-
+import {Config} from '@jest/types';
+import {SnapshotSummary} from '@jest/test-result';
 import chalk from 'chalk';
 import {pluralize} from 'jest-util';
 import {formatTestPath} from './utils';
@@ -23,7 +23,7 @@ const SNAPSHOT_SUMMARY = chalk.bold;
 const SNAPSHOT_UPDATED = chalk.bold.green;
 
 export default (
-  snapshots: TestResult.SnapshotSummary,
+  snapshots: SnapshotSummary,
   globalConfig: Config.GlobalConfig,
   updateCommand: string,
 ): Array<string> => {

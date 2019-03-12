@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
-
+import {Config} from '@jest/types';
+import {AssertionResult, Status, TestResult} from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
@@ -127,7 +127,7 @@ export const runAndTransformResultsToJestFormat = async ({
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   testPath: string;
-}): Promise<TestResult.TestResult> => {
+}): Promise<TestResult> => {
   const runResult: RunResult = await run();
 
   let numFailingTests = 0;
@@ -135,43 +135,43 @@ export const runAndTransformResultsToJestFormat = async ({
   let numPendingTests = 0;
   let numTodoTests = 0;
 
-  const assertionResults: Array<
-    TestResult.AssertionResult
-  > = runResult.testResults.map(testResult => {
-    let status: TestResult.Status;
-    if (testResult.status === 'skip') {
-      status = 'pending';
-      numPendingTests += 1;
-    } else if (testResult.status === 'todo') {
-      status = 'todo';
-      numTodoTests += 1;
-    } else if (testResult.errors.length) {
-      status = 'failed';
-      numFailingTests += 1;
-    } else {
-      status = 'passed';
-      numPassingTests += 1;
-    }
+  const assertionResults: Array<AssertionResult> = runResult.testResults.map(
+    testResult => {
+      let status: Status;
+      if (testResult.status === 'skip') {
+        status = 'pending';
+        numPendingTests += 1;
+      } else if (testResult.status === 'todo') {
+        status = 'todo';
+        numTodoTests += 1;
+      } else if (testResult.errors.length) {
+        status = 'failed';
+        numFailingTests += 1;
+      } else {
+        status = 'passed';
+        numPassingTests += 1;
+      }
 
-    const ancestorTitles = testResult.testPath.filter(
-      name => name !== ROOT_DESCRIBE_BLOCK_NAME,
-    );
-    const title = ancestorTitles.pop();
+      const ancestorTitles = testResult.testPath.filter(
+        name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+      );
+      const title = ancestorTitles.pop();
 
-    return {
-      ancestorTitles,
-      duration: testResult.duration,
-      failureMessages: testResult.errors,
-      fullName: title
-        ? ancestorTitles.concat(title).join(' ')
-        : ancestorTitles.join(' '),
-      invocations: testResult.invocations,
-      location: testResult.location,
-      numPassingAsserts: 0,
-      status,
-      title: testResult.testPath[testResult.testPath.length - 1],
-    };
-  });
+      return {
+        ancestorTitles,
+        duration: testResult.duration,
+        failureMessages: testResult.errors,
+        fullName: title
+          ? ancestorTitles.concat(title).join(' ')
+          : ancestorTitles.join(' '),
+        invocations: testResult.invocations,
+        location: testResult.location,
+        numPassingAsserts: 0,
+        status,
+        title: testResult.testPath[testResult.testPath.length - 1],
+      };
+    },
+  );
 
   let failureMessage = formatResultsErrors(
     assertionResults,

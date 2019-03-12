@@ -4,6 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+// TODO: Remove this
+/// <reference path="../v8.d.ts" />
 
 import fs from 'fs';
 import v8 from 'v8';

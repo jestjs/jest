@@ -14,13 +14,14 @@ import {
   NullConsole,
   getConsoleOutput,
 } from '@jest/console';
+import {formatTestResults} from '@jest/test-result';
 import clearLine from './clearLine';
 import createDirectory from './createDirectory';
 import ErrorWithStack from './ErrorWithStack';
-import formatTestResults from './formatTestResults';
 import getFailedSnapshotTests from './getFailedSnapshotTests';
 import installCommonGlobals from './installCommonGlobals';
 import isInteractive from './isInteractive';
+import isPromise from './isPromise';
 import setGlobal from './setGlobal';
 import deepCyclicCopy from './deepCyclicCopy';
 import convertDescriptorToString from './convertDescriptorToString';
@@ -46,6 +47,7 @@ export = {
   getFailedSnapshotTests,
   installCommonGlobals,
   isInteractive,
+  isPromise,
   pluralize,
   preRunMessage,
   replacePathSepForGlob,

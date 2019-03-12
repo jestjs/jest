@@ -15,14 +15,17 @@ import fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {
+  AggregatedResult,
+  makeEmptyAggregatedTestResult,
+} from '@jest/test-result';
 import {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
 import TestScheduler, {TestSchedulerContext} from './TestScheduler';
 import TestSequencer from './TestSequencer';
-import {makeEmptyAggregatedTestResult} from './testResultHelpers';
 import FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
 import TestWatcher from './TestWatcher';
@@ -68,12 +71,12 @@ type ProcessResultOptions = Pick<
   'json' | 'outputFile' | 'testResultsProcessor'
 > & {
   collectHandles?: () => Array<Error>;
-  onComplete?: (result: TestResult.AggregatedResult) => void;
+  onComplete?: (result: AggregatedResult) => void;
   outputStream: NodeJS.WritableStream;
 };
 
 const processResults = (
-  runResults: TestResult.AggregatedResult,
+  runResults: AggregatedResult,
   options: ProcessResultOptions,
 ) => {
   const {
@@ -134,7 +137,7 @@ export default (async function runJest({
   jestHooks?: JestHookEmitter;
   startRun: (globalConfig: Config.GlobalConfig) => void;
   changedFilesPromise?: ChangedFilesPromise;
-  onComplete: (testResults: TestResult.AggregatedResult) => void;
+  onComplete: (testResults: AggregatedResult) => void;
   failedTestsCache?: FailedTestsCache;
 }) {
   const sequencer = new TestSequencer();
