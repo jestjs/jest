@@ -69,6 +69,7 @@ function browserBuild(pkgName, entryPath, destination) {
         },
         node: {
           fs: 'empty',
+          net: 'empty',
         },
       },
       /* eslint-enable */
