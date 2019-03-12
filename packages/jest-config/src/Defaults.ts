@@ -38,6 +38,7 @@ const defaultOptions: Config.DefaultOptions = {
   haste: {
     computeSha1: false,
     providesModuleNodeModules: [],
+    throwOnModuleCollision: false,
   },
   maxConcurrency: 5,
   moduleDirectories: ['node_modules'],
