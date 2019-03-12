@@ -6,7 +6,7 @@
   },
   "references": [
     {
-      "path": "../jest-types"
+      "path": "../jest-test-result"
     }
   ]
 }

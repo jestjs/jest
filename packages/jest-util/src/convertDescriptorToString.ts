@@ -6,9 +6,9 @@
  */
 
 // See: https://github.com/facebook/jest/pull/5154
-export default function convertDescriptorToString(
-  descriptor: string | Function,
-): string {
+export default function convertDescriptorToString<
+  T extends number | string | Function | undefined
+>(descriptor: T): T | string {
   if (
     typeof descriptor === 'string' ||
     typeof descriptor === 'number' ||

@@ -74,4 +74,4 @@ export default {
 
   Please update your configuration.
   `,
-};
+} as Record<string, Function>;

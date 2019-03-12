@@ -7,7 +7,7 @@
 
 import chalk from 'chalk';
 import {formatExecError} from 'jest-message-util';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
 import snapshot from 'jest-snapshot';
 import TestRunner, {Test} from 'jest-runner';
 import {Context} from 'jest-runtime';
@@ -22,9 +22,12 @@ import {
 import exit from 'exit';
 import {
   addResult,
+  AggregatedResult,
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
-} from './testResultHelpers';
+  SerializableError,
+  TestResult,
+} from '@jest/test-result';
 import ReporterDispatcher from './ReporterDispatcher';
 import TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
@@ -90,7 +93,7 @@ export default class TestScheduler {
       timings,
     );
 
-    const onResult = async (test: Test, testResult: TestResult.TestResult) => {
+    const onResult = async (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
         return Promise.resolve();
       }
@@ -126,10 +129,7 @@ export default class TestScheduler {
       return this._bailIfNeeded(contexts, aggregatedResults, watcher);
     };
 
-    const onFailure = async (
-      test: Test,
-      error: TestResult.SerializableError,
-    ) => {
+    const onFailure = async (test: Test, error: SerializableError) => {
       if (watcher.isInterrupted()) {
         return;
       }
@@ -345,7 +345,7 @@ export default class TestScheduler {
 
   private _bailIfNeeded(
     contexts: Set<Context>,
-    aggregatedResults: TestResult.AggregatedResult,
+    aggregatedResults: AggregatedResult,
     watcher: TestWatcher,
   ): Promise<void> {
     if (
