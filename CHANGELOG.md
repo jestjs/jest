@@ -2,13 +2,17 @@
 
 ### Features
 
-- `[jest-haste-map]` Expose `throwOnModuleCollision` via `config.haste` ([#8113](https://github.com/facebook/jest/pull/8113))
-
 ### Fixes
 
 ### Chore & Maintenance
 
 ### Performance
+
+## 24.5.0
+
+### Features
+
+- `[jest-haste-map]` Expose `throwOnModuleCollision` via `config.haste` ([#8113](https://github.com/facebook/jest/pull/8113))
 
 ## 24.4.0
 
