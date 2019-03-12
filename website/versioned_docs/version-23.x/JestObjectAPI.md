@@ -178,7 +178,7 @@ This is how `genMockFromModule` will mock the following data types:
 
 #### `Function`
 
-Creates a new [mock function](https://jestjs.io/docs/en/mock-functions.html). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async functions`.
+Creates a new [mock function](https://jestjs.io/docs/en/mock-functions.html). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async` functions.
 
 #### `Class`
 
@@ -194,7 +194,7 @@ Creates a new empty array, ignoring the original.
 
 #### `Primitives`
 
-Creates a new copy of the original primitive.
+Creates a new property with the same primitive value as the original property.
 
 Example:
 
