@@ -101,6 +101,7 @@ const CUSTOM_IGNORED_PATTERNS = [
   '^flow-typed/.*',
   '^packages/expect/src/jasmineUtils\\.ts$',
   '^packages/jest-config/src/vendor/jsonlint\\.js$',
+  '^packages/micromatch/.*$',
 ].map(createRegExp);
 
 const IGNORED_PATTERNS = [
