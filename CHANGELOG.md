@@ -14,7 +14,7 @@
 ### Chore & Maintenance
 
 - `[*]` Make sure to include `d.ts` files in the tarball when building ([#8086](https://github.com/facebook/jest/pull/8086))
-- `[@babel/plugin-proposal-class-properties]` Use property initializer syntax in Jest codebase  [#8117](https://github.com/facebook/jest/pull/8117)
+- `[*]` Use property initializer syntax in Jest codebase [#8117](https://github.com/facebook/jest/pull/8117)
 
 ### Performance
 
