@@ -234,11 +234,11 @@ const example = jest.genMockFromModule('./example');
 
 test('should run example code', () => {
   // creates a new mocked function with no formal arguments.
-  expect(example.function.name).toEqual('foo');
+  expect(example.function.name).toEqual('square');
   expect(example.function.length).toEqual(0);
 
   // async functions get the same treatment as standard synchronous functions.
-  expect(example.asyncFunction.name).toEqual('asyncFoo');
+  expect(example.asyncFunction.name).toEqual('asyncSquare');
   expect(example.asyncFunction.length).toEqual(0);
 
   // creates a new class with the same interface, member functions and properties are mocked.
