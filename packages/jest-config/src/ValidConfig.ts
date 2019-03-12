@@ -57,6 +57,7 @@ const initialOptions: Config.InitialOptions = {
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],
     providesModuleNodeModules: ['react', 'react-native'],
+    throwOnModuleCollision: false,
   },
   json: false,
   lastCommit: false,

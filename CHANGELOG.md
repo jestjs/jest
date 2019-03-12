@@ -10,6 +10,16 @@
 
 ### Performance
 
+## 24.5.0
+
+### Features
+
+- `[jest-haste-map]` Expose `throwOnModuleCollision` via `config.haste` ([#8113](https://github.com/facebook/jest/pull/8113))
+
+### Chore & Maintenance
+
+- `[expect]` Export `Matchers` interface from `expect` ([#8093](https://github.com/facebook/jest/pull/8093))
+
 ## 24.4.0
 
 ### Features
