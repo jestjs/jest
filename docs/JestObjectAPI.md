@@ -123,39 +123,34 @@ This is how `genMockFromModule` will mock the following data types:
 
 #### `Function`
 
-A new [mock function](https://jestjs.io/docs/en/mock-functions.html) will be created. The new function will have no formal parameters and when called will return `undefined`. This functionality also applies to `async functions`.
+Creates a new [mock function](https://jestjs.io/docs/en/mock-functions.html). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async functions`.
 
 #### `Class`
 
-A new class will be created. The interface of the original class is maintained however all of the class member functions and properties will be mocked.
+Creates new class. The interface of the original class is maintained, all of the class member functions and properties will be mocked.
 
 #### `Object`
 
-Objects are deeply cloned. Their keys are maintained and their values are mocked.
+Creates a new deeply cloned object. The object keys are maintained and their values are mocked.
 
 #### `Array`
 
-The original array is ignored and a new empty array is created.
+Creates a new empty array, ignoring the original.
 
-#### `String`
+#### `Primitives`
 
-A new copy of the original string is mocked.
-
-#### `Number`
-
-A new copy of the original number is mocked.
+Creates a new copy of the original primitive.
 
 Example:
 
-<!-- prettier-ignore -->
-```js
+```
 // example.js
 module.exports = {
-  function: function foo(a, b) {
-    return a + b;
+  function: function square(a, b) {
+    return a * b;
   },
-  asyncFunction: async function asyncFoo(a, b) {
-    const result = await a + b;
+  asyncFunction: async function asyncSquare(a, b) {
+    const result = await a * b;
     return result;
   },
   class: new class Bar {
@@ -174,6 +169,8 @@ module.exports = {
   array: [1, 2, 3],
   number: 123,
   string: 'baz',
+  boolean: true,
+  symbol: Symbol.for('a.b.c'),
 };
 ```
 
@@ -182,20 +179,20 @@ module.exports = {
 const example = jest.genMockFromModule('./example');
 
 test('should run example code', () => {
-  // a new mocked function with no formal arguments.
+  // creates a new mocked function with no formal arguments.
   expect(example.function.name).toEqual('foo');
   expect(example.function.length).toEqual(0);
 
-  // async functions are treated just like standard synchronous functions.
+  // async functions get the same treatment as standard synchronous functions.
   expect(example.asyncFunction.name).toEqual('asyncFoo');
   expect(example.asyncFunction.length).toEqual(0);
 
-  // a new mocked class that maintains the original interface and mocks member functions and properties.
+  // creates a new class with the same interface, member functions and properties are mocked.
   expect(example.class.constructor.name).toEqual('Bar');
   expect(example.class.foo.name).toEqual('foo');
   expect(example.class.array.length).toEqual(0);
 
-  // a deeply cloned object that maintains the original interface and mocks it's values.
+  // creates a deeply cloned version of the original object.
   expect(example.object).toEqual({
     baz: 'foo',
     bar: {
@@ -204,14 +201,14 @@ test('should run example code', () => {
     },
   });
 
-  // the original array is ignored and a new emtpy array is mocked.
+  // creates a new empty array, ignoring the original array.
   expect(example.array.length).toEqual(0);
 
-  // a new copy of the original number.
+  // creates a new copy of the original primitive.
   expect(example.number).toEqual(123);
-
-  // a new copy of the original string.
   expect(example.string).toEqual('baz');
+  expect(example.boolean).toEqual(true);
+  expect(example.symbol).toEqual(Symbol.for('a.b.c'));
 });
 ```
 
