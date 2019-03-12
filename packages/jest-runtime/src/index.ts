@@ -248,6 +248,7 @@ class Runtime {
       retainAllFiles: false,
       rootDir: config.rootDir,
       roots: config.roots,
+      throwOnModuleCollision: config.haste.throwOnModuleCollision,
       useWatchman: options && options.watchman,
       watch: options && options.watch,
     });

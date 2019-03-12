@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-haste-map]` Expose `throwOnModuleCollision` via `config.haste` ([#8113](https://github.com/facebook/jest/pull/8113))
+
 ### Fixes
 
 ### Chore & Maintenance
