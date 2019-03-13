@@ -704,7 +704,7 @@ describe('.toBeInstanceOf()', () => {
     [[], Array],
     [new A(), A],
     [new C(), B], // subclass
-    [new HasStaticNameMethod(), HasStaticNameMethod], // omit Expected constuctor
+    [new HasStaticNameMethod(), HasStaticNameMethod],
   ].forEach(([a, b]) => {
     test(`passing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
@@ -723,8 +723,8 @@ describe('.toBeInstanceOf()', () => {
     [Object.create(null), A],
     [undefined, String],
     [null, String],
-    [/\w+/, function() {}], // omit Received constructor
-    [new DefinesNameProp(), RegExp], // omit Expected constructor
+    [/\w+/, function() {}],
+    [new DefinesNameProp(), RegExp],
   ].forEach(([a, b]) => {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
