@@ -13,6 +13,7 @@
     <a href="http://badge.fury.io/js/jest"><img src="https://badge.fury.io/js/jest.svg" alt="npm version"></a>
     <a href="https://dependabot.com/compatibility-score.html?dependency-name=jest&amp;package-manager=npm_and_yarn&amp;version-scheme=semver"><img src="https://api.dependabot.com/badges/compatibility_score?dependency-name=jest&amp;package-manager=npm_and_yarn&amp;version-scheme=semver" alt="SemVer">
     <a href="https://twitter.com/acdlite/status/974390255393505280"><img src="https://img.shields.io/badge/speed-blazing%20%F0%9F%94%A5-brightgreen.svg" alt="Blazing Fast"></a>
+    <a href="https://lernajs.io/"><img src="https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg" alt="Maintained with lerna"></a>
 </p>
 <p align="center">
     <a href="#backers"><img src="https://opencollective.com/jest/backers/badge.svg" alt="Backers on Open Collective"></a>
