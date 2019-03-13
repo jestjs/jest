@@ -16,8 +16,7 @@ describe('toStrictEqual', () => {
   it('should be reflexive', () => {
     fc.assert(
       fc.property(fc.dedup(fc.anything(anythingSettings), 2), ([a, b]) => {
-        // Given:  a and b identical values
-        // Assert: We expect `expect(a).toStrictEqual(b)`
+        // Given: a and b identical values
         expect(a).toStrictEqual(b);
       }),
       assertSettings,
@@ -27,7 +26,7 @@ describe('toStrictEqual', () => {
   it('should be symmetric', () => {
     const safeExpectStrictEqual = (a, b) => {
       try {
-        expect(a).toEqual(b);
+        expect(a).toStrictEqual(b);
         return true;
       } catch (err) {
         return false;

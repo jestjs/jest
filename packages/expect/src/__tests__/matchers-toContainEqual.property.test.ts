@@ -20,8 +20,7 @@ describe('toContainEqual', () => {
         fc.array(fc.anything(anythingSettings)),
         fc.anything(anythingSettings),
         (startValues, endValues, v) => {
-          // Given:  startValues, endValues arrays and v any value
-          // Assert: We expect `expect([...startValues, v, ...endValues]).toContainEqual(v)`
+          // Given: startValues, endValues arrays and v any value
           expect([...startValues, v, ...endValues]).toContainEqual(v);
         },
       ),
@@ -36,9 +35,8 @@ describe('toContainEqual', () => {
         fc.array(fc.anything(anythingSettings)),
         fc.dedup(fc.anything(anythingSettings), 2),
         (startValues, endValues, [a, b]) => {
-          // Given:  startValues, endValues arrays
-          //         and [a, b] identical values
-          // Assert: We expect `expect([...startValues, a, ...endValues]).toContainEqual(b)`
+          // Given: startValues, endValues arrays
+          //        and [a, b] identical values
           expect([...startValues, a, ...endValues]).toContainEqual(b);
         },
       ),

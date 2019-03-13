@@ -20,8 +20,7 @@ describe('toContain', () => {
         fc.array(fc.anything(anythingSettings)),
         fc.anything(anythingSettings).filter(v => !Number.isNaN(v)),
         (startValues, endValues, v) => {
-          // Given:  startValues, endValues arrays and v value (not NaN)
-          // Assert: We expect `expect([...startValues, v, ...endValues]).toContain(v)`
+          // Given: startValues, endValues arrays and v value (not NaN)
           expect([...startValues, v, ...endValues]).toContain(v);
         },
       ),
@@ -36,10 +35,9 @@ describe('toContain', () => {
         fc.array(fc.anything(anythingSettings)),
         fc.dedup(fc.anything(anythingSettings), 2),
         (startValues, endValues, [a, b]) => {
-          // Given:  startValues, endValues arrays
-          //         and [a, b] equal, but not the same values
-          //         with `typeof a === 'object && a !== null`
-          // Assert: We expect `expect([...startValues, a, ...endValues]).not.toContain(b)`
+          // Given: startValues, endValues arrays
+          //        and [a, b] equal, but not the same values
+          //        with `typeof a === 'object && a !== null`
           fc.pre(typeof a === 'object' && a !== null);
           expect([...startValues, a, ...endValues]).not.toContain(b);
         },

@@ -16,8 +16,7 @@ describe('toEqual', () => {
   it('should be reflexive', () => {
     fc.assert(
       fc.property(fc.dedup(fc.anything(anythingSettings), 2), ([a, b]) => {
-        // Given:  a and b identical values
-        // Assert: We expect `expect(a).toEqual(b)`
+        // Given: a and b identical values
         expect(a).toEqual(b);
       }),
       assertSettings,
@@ -38,7 +37,7 @@ describe('toEqual', () => {
         fc.anything(anythingSettings),
         fc.anything(anythingSettings),
         (a, b) => {
-          // Given: a and b values
+          // Given:  a and b values
           // Assert: We expect `expect(a).toEqual(b)`
           //         to be equivalent to `expect(b).toEqual(a)`
           expect(safeExpectEqual(a, b)).toBe(safeExpectEqual(b, a));
