@@ -247,7 +247,7 @@ But the last call returned:
   <red>\\"foo\\"</>"
 `;
 
-exports[`lastReturnedWith works with three calls 1`] = `
+exports[`lastReturnedWith works with three calls (3rd) 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.lastReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have last returned:
@@ -426,7 +426,7 @@ Expected mock function \\"named-mock\\" first call to have returned with:
 But it was <red>not called</>"
 `;
 
-exports[`nthReturnedWith incomplete recursive calls are handled properly 1`] = `
+exports[`nthReturnedWith incomplete recursive calls are handled properly  1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to have returned with:
@@ -434,7 +434,7 @@ Expected mock function first call to have returned with:
 But the first call <red>has not returned yet</>"
 `;
 
-exports[`nthReturnedWith incomplete recursive calls are handled properly 2`] = `
+exports[`nthReturnedWith incomplete recursive calls are handled properly  2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function second call to have returned with:
@@ -442,7 +442,7 @@ Expected mock function second call to have returned with:
 But the second call <red>has not returned yet</>"
 `;
 
-exports[`nthReturnedWith incomplete recursive calls are handled properly 3`] = `
+exports[`nthReturnedWith incomplete recursive calls are handled properly  3`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function third call to not have returned with:
@@ -451,7 +451,7 @@ But the third call returned exactly:
   <red>1</>"
 `;
 
-exports[`nthReturnedWith incomplete recursive calls are handled properly 4`] = `
+exports[`nthReturnedWith incomplete recursive calls are handled properly  4`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.nthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function 4th call to not have returned with:
@@ -1625,7 +1625,7 @@ But the last call returned:
   <red>\\"foo\\"</>"
 `;
 
-exports[`toHaveLastReturnedWith works with three calls 1`] = `
+exports[`toHaveLastReturnedWith works with three calls (3rd) 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toHaveLastReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function to not have last returned:
@@ -1667,7 +1667,7 @@ Expected mock function \\"named-mock\\" first call to have returned with:
 But it was <red>not called</>"
 `;
 
-exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly 1`] = `
+exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly  1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function first call to have returned with:
@@ -1675,7 +1675,7 @@ Expected mock function first call to have returned with:
 But the first call <red>has not returned yet</>"
 `;
 
-exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly 2`] = `
+exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly  2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function second call to have returned with:
@@ -1683,7 +1683,7 @@ Expected mock function second call to have returned with:
 But the second call <red>has not returned yet</>"
 `;
 
-exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly 3`] = `
+exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly  3`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function third call to not have returned with:
@@ -1692,7 +1692,7 @@ But the third call returned exactly:
   <red>1</>"
 `;
 
-exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly 4`] = `
+exports[`toHaveNthReturnedWith incomplete recursive calls are handled properly  4`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toHaveNthReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function 4th call to not have returned with:
@@ -2009,7 +2009,7 @@ exports[`toHaveReturnedTimes includes the custom mock name in the error message 
 Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
 `;
 
-exports[`toHaveReturnedTimes incomplete recursive calls are handled properly 1`] = `
+exports[`toHaveReturnedTimes incomplete recursive calls are handled properly (2nd) 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
 
 Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
@@ -2108,7 +2108,7 @@ Expected mock function \\"named-mock\\" to have returned:
 But it did <red>not return</>."
 `;
 
-exports[`toHaveReturnedWith incomplete recursive calls are handled properly 1`] = `
+exports[`toHaveReturnedWith incomplete recursive calls are handled properly (3rd) 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedWith(</><green>expected</><dim>)</>
 
 Expected mock function to have returned:
@@ -2404,7 +2404,7 @@ exports[`toReturnTimes includes the custom mock name in the error message 1`] = 
 Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
 `;
 
-exports[`toReturnTimes incomplete recursive calls are handled properly 1`] = `
+exports[`toReturnTimes incomplete recursive calls are handled properly (2nd) 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
 
 Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
@@ -2503,7 +2503,7 @@ Expected mock function \\"named-mock\\" to have returned:
 But it did <red>not return</>."
 `;
 
-exports[`toReturnWith incomplete recursive calls are handled properly 1`] = `
+exports[`toReturnWith incomplete recursive calls are handled properly (3rd) 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toReturnWith(</><green>expected</><dim>)</>
 
 Expected mock function to have returned:

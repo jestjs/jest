@@ -3,11 +3,7 @@
 import React from 'react';
 
 export default class Clock extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {seconds: Date.now() / 1000};
-  }
+  state = {seconds: Date.now() / 1000};
 
   componentDidMount() {
     this.timerID = setInterval(() => this.tick(), 1000);
