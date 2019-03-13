@@ -8,9 +8,13 @@ const STATUS = {
 };
 
 export default class Link extends React.Component {
-  state = {
-    class: STATUS.NORMAL,
-  };
+  constructor() {
+    super();
+
+    this.state = {
+      class: STATUS.NORMAL,
+    };
+  }
 
   _onMouseEnter = () => {
     this.setState({class: STATUS.HOVERED});
