@@ -238,6 +238,9 @@ const matchers: MatchersObject = {
 
     const pass = received instanceof expected;
 
+    const NAME_IS_NOT_STRING = ' name is not a string\n';
+    const NAME_IS_EMPTY_STRING = ' name is an empty string\n';
+
     const message = pass
       ? () =>
           matcherHint('toBeInstanceOf', undefined, undefined, options) +
@@ -245,9 +248,11 @@ const matchers: MatchersObject = {
           // A truthy test for `expected.name` property has false positive for:
           // function with a defined name property
           // class with a static name method
-          (typeof expected.name === 'string' && expected.name.length !== 0
-            ? `Expected constructor: not ${EXPECTED_COLOR(expected.name)}\n`
-            : '') +
+          (typeof expected.name !== 'string'
+            ? 'Expected constructor' + NAME_IS_NOT_STRING
+            : expected.name.length === 0
+            ? 'Expected constructor' + NAME_IS_EMPTY_STRING
+            : `Expected constructor: not ${EXPECTED_COLOR(expected.name)}\n`) +
           `Received value: ${printReceived(received)}`
       : () =>
           matcherHint('toBeInstanceOf', undefined, undefined, options) +
@@ -255,18 +260,22 @@ const matchers: MatchersObject = {
           // A truthy test for `expected.name` property has false positive for:
           // function with a defined name property
           // class with a static name method
-          (typeof expected.name === 'string' && expected.name.length !== 0
-            ? `Expected constructor: ${EXPECTED_COLOR(expected.name)}\n`
-            : '') +
+          (typeof expected.name !== 'string'
+            ? 'Expected constructor' + NAME_IS_NOT_STRING
+            : expected.name.length === 0
+            ? 'Expected constructor' + NAME_IS_EMPTY_STRING
+            : `Expected constructor: ${EXPECTED_COLOR(expected.name)}\n`) +
           (isPrimitive(received) || Object.getPrototypeOf(received) === null
             ? 'Received value has no prototype\n'
-            : typeof received.constructor === 'function' &&
-              typeof received.constructor.name === 'string' &&
-              received.constructor.name.length !== 0
-            ? `Received constructor: ${RECEIVED_COLOR(
+            : typeof received.constructor !== 'function'
+            ? ''
+            : typeof received.constructor.name !== 'string'
+            ? 'Received constructor' + NAME_IS_NOT_STRING
+            : received.constructor.name.length === 0
+            ? 'Received constructor' + NAME_IS_EMPTY_STRING
+            : `Received constructor: ${RECEIVED_COLOR(
                 received.constructor.name,
-              )}\n`
-            : '') +
+              )}\n`) +
           `Received value: ${printReceived(received)}`;
 
     return {message, pass};

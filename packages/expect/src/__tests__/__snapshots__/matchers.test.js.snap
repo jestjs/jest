@@ -1208,6 +1208,7 @@ Received value: <red>\\"a\\"</>"
 exports[`.toBeInstanceOf() failing /\\w+/ and [Function anonymous] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
+Expected constructor name is an empty string
 Received constructor: <red>RegExp</>
 Received value: <red>/\\\\w+/</>"
 `;
@@ -1232,6 +1233,7 @@ exports[`.toBeInstanceOf() failing {} and [Function RegExp] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>RegExp</>
+Received constructor name is an empty string
 Received value: <red>{}</>"
 `;
 
@@ -1291,6 +1293,7 @@ Received value: <red>{}</>"
 exports[`.toBeInstanceOf() passing {} and [Function name() {}] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
+Expected constructor name is not a string
 Received value: <red>{}</>"
 `;
 
