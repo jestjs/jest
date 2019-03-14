@@ -1248,7 +1248,7 @@ exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 
 Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
 
-### `.toThrowErrorMatchingInlineSnapshot()`
+### `.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)`
 
 This matcher is much like [`.toThrowErrorMatchingSnapshot`](#tothrowerrormatchingsnapshot), except instead of writing the snapshot value to a `.snap` file, it will be written into the source code automatically.
 
