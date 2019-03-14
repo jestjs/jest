@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` Remove flow from code base ([#8061](https://github.com/facebook/jest/pull/8061))
+
 ### Performance
 
 ## 24.5.0
