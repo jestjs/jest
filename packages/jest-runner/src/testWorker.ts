@@ -12,7 +12,7 @@ import HasteMap, {SerializableModuleMap, ModuleMap} from 'jest-haste-map';
 import exit from 'exit';
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime from 'jest-runtime';
-import {ErrorWithCode, TestRunnerContext} from './types';
+import {ErrorWithCode, TestRunnerSerializedContext} from './types';
 import runTest from './runTest';
 
 type WorkerData = {
@@ -20,7 +20,7 @@ type WorkerData = {
   globalConfig: Config.GlobalConfig;
   path: Config.Path;
   serializableModuleMap: SerializableModuleMap | null;
-  context?: TestRunnerContext;
+  context?: TestRunnerSerializedContext;
 };
 
 // Make sure uncaught errors are logged before we exit.
@@ -86,7 +86,10 @@ export async function worker({
       globalConfig,
       config,
       getResolver(config, moduleMap),
-      context,
+      context && {
+        ...context,
+        changedFiles: context.changedFiles && new Set(context.changedFiles),
+      },
     );
   } catch (error) {
     throw formatError(error);

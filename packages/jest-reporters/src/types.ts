@@ -41,6 +41,10 @@ export type CoverageReporterOptions = {
   changedFiles?: Set<Config.Path>;
 };
 
+export type CoverageReporterSerializedOptions = {
+  changedFiles?: Array<Config.Path>;
+};
+
 export type OnTestStart = (test: Test) => Promise<void>;
 export type OnTestFailure = (
   test: Test,

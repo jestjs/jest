@@ -1,6 +1,6 @@
 {
   "name": "jest-runner",
-  "version": "24.1.0",
+  "version": "24.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,23 +10,23 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/console": "^24.1.0",
-    "@jest/environment": "^24.1.0",
-    "@jest/test-result": "^24.1.0",
-    "@jest/types": "^24.1.0",
+    "@jest/console": "^24.3.0",
+    "@jest/environment": "^24.5.0",
+    "@jest/test-result": "^24.5.0",
+    "@jest/types": "^24.5.0",
     "chalk": "^2.4.2",
     "exit": "^0.1.2",
     "graceful-fs": "^4.1.15",
-    "jest-config": "^24.1.0",
-    "jest-docblock": "^24.0.0",
-    "jest-haste-map": "^24.0.0",
-    "jest-jasmine2": "^24.1.0",
-    "jest-leak-detector": "^24.0.0",
-    "jest-message-util": "^24.0.0",
-    "jest-resolve": "^24.1.0",
-    "jest-runtime": "^24.1.0",
-    "jest-util": "^24.0.0",
-    "jest-worker": "^24.0.0",
+    "jest-config": "^24.5.0",
+    "jest-docblock": "^24.3.0",
+    "jest-haste-map": "^24.5.0",
+    "jest-jasmine2": "^24.5.0",
+    "jest-leak-detector": "^24.5.0",
+    "jest-message-util": "^24.5.0",
+    "jest-resolve": "^24.5.0",
+    "jest-runtime": "^24.5.0",
+    "jest-util": "^24.5.0",
+    "jest-worker": "^24.4.0",
     "source-map-support": "^0.5.6",
     "throat": "^4.0.0"
   },
@@ -38,5 +38,8 @@
   "engines": {
     "node": ">= 6"
   },
-  "gitHead": "b16789230fd45056a7f2fa199bae06c7a1780deb"
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
 }

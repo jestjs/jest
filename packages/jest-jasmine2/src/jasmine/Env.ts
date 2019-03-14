@@ -31,7 +31,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
-import {ErrorWithStack} from 'jest-util';
+import chalk from 'chalk';
+import {formatExecError} from 'jest-message-util';
+import {ErrorWithStack, isPromise} from 'jest-util';
 import queueRunner, {
   Options as QueueRunnerOptions,
   QueueableFn,
@@ -415,10 +417,40 @@ export default function(j$: Jasmine) {
         currentDeclarationSuite = suite;
 
         let declarationError: null | Error = null;
+        let describeReturnValue: null | Error = null;
         try {
-          specDefinitions.call(suite);
+          describeReturnValue = specDefinitions.call(suite);
         } catch (e) {
           declarationError = e;
+        }
+
+        // TODO throw in Jest 25: declarationError = new Error
+        if (isPromise(describeReturnValue)) {
+          console.log(
+            formatExecError(
+              new Error(
+                chalk.yellow(
+                  'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
+                    'Returning a value from "describe" will fail the test in a future version of Jest.',
+                ),
+              ),
+              {rootDir: '', testMatch: []},
+              {noStackTrace: false},
+            ),
+          );
+        } else if (describeReturnValue !== undefined) {
+          console.log(
+            formatExecError(
+              new Error(
+                chalk.yellow(
+                  'A "describe" callback must not return a value.\n' +
+                    'Returning a value from "describe" will fail the test in a future version of Jest.',
+                ),
+              ),
+              {rootDir: '', testMatch: []},
+              {noStackTrace: false},
+            ),
+          );
         }
 
         if (declarationError) {

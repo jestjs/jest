@@ -6,8 +6,8 @@
  */
 
 // TODO: Remove this
-/// <reference path="./istanbul-lib-coverage.d.ts" />
-/// <reference path="./istanbul-api.d.ts" />
+/// <reference path="../istanbul-lib-coverage.d.ts" />
+/// <reference path="../istanbul-api.d.ts" />
 
 import path from 'path';
 import {Config} from '@jest/types';
@@ -170,7 +170,12 @@ export default class CoverageReporter extends BaseReporter {
           const result = await worker.worker({
             config,
             globalConfig,
-            options: this._options,
+            options: {
+              ...this._options,
+              changedFiles:
+                this._options.changedFiles &&
+                Array.from(this._options.changedFiles),
+            },
             path: filename,
           });
 

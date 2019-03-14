@@ -24,7 +24,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "globals": {},
       "haste": {
         "computeSha1": false,
-        "providesModuleNodeModules": []
+        "providesModuleNodeModules": [],
+        "throwOnModuleCollision": false
       },
       "moduleDirectories": [
         "node_modules"
