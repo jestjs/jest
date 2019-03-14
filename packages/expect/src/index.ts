@@ -11,12 +11,12 @@ import {
   AsyncExpectationResult,
   SyncExpectationResult,
   ExpectationResult,
+  Matchers as MatcherInterface,
   MatcherState as JestMatcherState,
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
   PromiseMatcherFn,
-  ExpectationObject,
   Expect,
 } from './types';
 
@@ -82,7 +82,7 @@ const getPromiseMatcher = (name: string, matcher: any) => {
   return null;
 };
 
-const expect: any = (actual: any, ...rest: Array<any>): ExpectationObject => {
+const expect: any = (actual: any, ...rest: Array<any>) => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
   }
@@ -412,6 +412,7 @@ const expectExport = expect as Expect;
 // eslint-disable-next-line no-redeclare
 namespace expectExport {
   export type MatcherState = JestMatcherState;
+  export interface Matchers<R> extends MatcherInterface<R> {}
 }
 
 export = expectExport;

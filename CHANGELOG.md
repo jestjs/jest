@@ -2,6 +2,28 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+- `[*]` Remove flow from code base ([#8061](https://github.com/facebook/jest/pull/8061))
+
+### Performance
+
+## 24.5.0
+
+### Features
+
+- `[jest-haste-map]` Expose `throwOnModuleCollision` via `config.haste` ([#8113](https://github.com/facebook/jest/pull/8113))
+
+### Chore & Maintenance
+
+- `[expect]` Export `Matchers` interface from `expect` ([#8093](https://github.com/facebook/jest/pull/8093))
+
+## 24.4.0
+
+### Features
+
 - `[jest-resolve]` Now supports PnP environment without plugins ([#8094](https://github.com/facebook/jest/pull/8094))
 
 ### Fixes
@@ -15,8 +37,6 @@
 
 - `[*]` Make sure to include `d.ts` files in the tarball when building ([#8086](https://github.com/facebook/jest/pull/8086))
 - `[*]` Use property initializer syntax in Jest codebase [#8117](https://github.com/facebook/jest/pull/8117)
-
-### Performance
 
 ## 24.3.1
 
