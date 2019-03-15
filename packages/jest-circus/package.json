@@ -14,7 +14,6 @@
     "@jest/environment": "^24.5.0",
     "@jest/test-result": "^24.5.0",
     "@jest/types": "^24.5.0",
-    "@types/node": "*",
     "chalk": "^2.0.1",
     "co": "^4.6.0",
     "expect": "^24.5.0",

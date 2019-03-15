@@ -13,7 +13,6 @@
     "@jest/fake-timers": "^24.5.0",
     "@jest/transform": "^24.5.0",
     "@jest/types": "^24.5.0",
-    "@types/node": "*",
     "jest-mock": "^24.5.0"
   },
   "engines": {

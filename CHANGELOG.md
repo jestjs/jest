@@ -9,6 +9,7 @@
 - `[*]` Remove flow from code base ([#8061](https://github.com/facebook/jest/pull/8061))
 - `[*]` Use property initializer syntax in Jest codebase [#8117](https://github.com/facebook/jest/pull/8117)
 - `[docs]` Improve description of optional arguments in ExpectAPI.md [#8126](https://github.com/facebook/jest/pull/8126)
+- `[*]` Move @types/node to the root package.json [#8129](https://github.com/facebook/jest/pull/8129)
 
 ### Performance
 
