@@ -11,7 +11,12 @@ import {FS as HasteFS} from 'jest-haste-map';
 import {MatcherState} from 'expect';
 
 import diff from 'jest-diff';
-import {EXPECTED_COLOR, matcherHint, RECEIVED_COLOR} from 'jest-matcher-utils';
+import {
+  EXPECTED_COLOR,
+  matcherHint,
+  MatcherHintOptions,
+  RECEIVED_COLOR,
+} from 'jest-matcher-utils';
 import {
   buildSnapshotResolver,
   isSnapshotPath,
@@ -24,6 +29,37 @@ import * as utils from './utils';
 
 type Context = MatcherState & {
   snapshotState: SnapshotState;
+};
+
+type MatchSnapshotConfig = {
+  context: Context;
+  expectedArgument: string;
+  inlineSnapshot?: string;
+  matcherName: string;
+  options: MatcherHintOptions;
+  propertyMatchers?: any;
+  received: any;
+  testName?: string;
+};
+
+const DID_NOT_THROW = 'Received function did not throw';
+const NOT_SNAPSHOT_MATCHERS = '\n\n.not cannot be used with snapshot matchers';
+
+// Display key in report when matcher fails same as in snapshot file,
+// but with optional name argument in green.
+const printKey = (path = '', name = '', count: number): string => {
+  const hasPath = path.length !== 0;
+  const hasName = name.length !== 0;
+
+  return (
+    '`' +
+    (hasPath ? utils.escapeBacktickString(path) : '') +
+    (hasPath && hasName ? ': ' : '') +
+    (hasName ? EXPECTED_COLOR(utils.escapeBacktickString(name)) : '') +
+    ' ' +
+    count +
+    '`'
+  );
 };
 
 const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
@@ -58,6 +94,28 @@ const toMatchSnapshot = function(
   propertyMatchers?: any,
   testName?: Config.Path,
 ) {
+  const matcherName = 'toMatchSnapshot';
+  let expectedArgument = '';
+  let secondArgument = '';
+
+  if (typeof propertyMatchers === 'object' && propertyMatchers !== null) {
+    expectedArgument = 'properties';
+    if (typeof testName === 'string' && testName.length !== 0) {
+      secondArgument = 'name';
+    }
+  } else if (
+    typeof propertyMatchers === 'string' &&
+    propertyMatchers.length !== 0
+  ) {
+    expectedArgument = 'name';
+  }
+
+  const options: MatcherHintOptions = {
+    isNot: this.isNot,
+    promise: this.promise,
+    secondArgument,
+  };
+
   if (arguments.length === 3 && !propertyMatchers) {
     throw new Error(
       'Property matchers must be an object.\n\nTo provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
@@ -66,6 +124,9 @@ const toMatchSnapshot = function(
 
   return _toMatchSnapshot({
     context: this,
+    expectedArgument,
+    matcherName,
+    options,
     propertyMatchers,
     received,
     testName,
@@ -78,6 +139,28 @@ const toMatchInlineSnapshot = function(
   propertyMatchersOrInlineSnapshot?: any,
   inlineSnapshot?: string,
 ) {
+  const matcherName = 'toMatchInlineSnapshot';
+  let expectedArgument = '';
+  let secondArgument = '';
+
+  if (typeof propertyMatchersOrInlineSnapshot === 'string') {
+    expectedArgument = 'snapshot';
+  } else if (
+    typeof propertyMatchersOrInlineSnapshot === 'object' &&
+    propertyMatchersOrInlineSnapshot !== null
+  ) {
+    expectedArgument = 'properties';
+    if (typeof inlineSnapshot === 'string') {
+      secondArgument = 'snapshot';
+    }
+  }
+
+  const options: MatcherHintOptions = {
+    isNot: this.isNot,
+    promise: this.promise,
+    secondArgument,
+  };
+
   let propertyMatchers;
   if (typeof propertyMatchersOrInlineSnapshot === 'string') {
     inlineSnapshot = propertyMatchersOrInlineSnapshot;
@@ -86,7 +169,10 @@ const toMatchInlineSnapshot = function(
   }
   return _toMatchSnapshot({
     context: this,
+    expectedArgument,
     inlineSnapshot: inlineSnapshot || '',
+    matcherName,
+    options,
     propertyMatchers,
     received,
   });
@@ -94,34 +180,31 @@ const toMatchInlineSnapshot = function(
 
 const _toMatchSnapshot = ({
   context,
-  received,
-  propertyMatchers,
-  testName,
+  expectedArgument,
   inlineSnapshot,
-}: {
-  context: Context;
-  received: any;
-  propertyMatchers?: any;
-  testName?: string;
-  inlineSnapshot?: string;
-}) => {
+  matcherName,
+  options,
+  propertyMatchers,
+  received,
+  testName,
+}: MatchSnapshotConfig) => {
   context.dontThrow && context.dontThrow();
   testName = typeof propertyMatchers === 'string' ? propertyMatchers : testName;
 
   const {currentTestName, isNot, snapshotState} = context;
 
   if (isNot) {
-    const matcherName =
-      typeof inlineSnapshot === 'string'
-        ? 'toMatchInlineSnapshot'
-        : 'toMatchSnapshot';
     throw new Error(
-      `Jest: \`.not\` cannot be used with \`.${matcherName}()\`.`,
+      matcherHint(matcherName, undefined, expectedArgument, options) +
+        NOT_SNAPSHOT_MATCHERS,
     );
   }
 
   if (!snapshotState) {
-    throw new Error('Jest: snapshot state must be initialized.');
+    throw new Error(
+      matcherHint(matcherName, undefined, expectedArgument, options) +
+        '\n\nsnapshot state must be initialized',
+    );
   }
 
   const fullTestName =
@@ -140,21 +223,22 @@ const _toMatchSnapshot = ({
 
     if (!propertyPass) {
       const key = snapshotState.fail(fullTestName, received);
+      const matched = /(\d+)$/.exec(key);
+      const count = matched === null ? 1 : Number(matched[1]);
 
       const report = () =>
-        `${RECEIVED_COLOR('Received value')} does not match ` +
-        `${EXPECTED_COLOR(`snapshot properties for "${key}"`)}.\n\n` +
-        `Expected snapshot to match properties:\n` +
-        `  ${context.utils.printExpected(propertyMatchers)}` +
-        `\nReceived:\n` +
-        `  ${context.utils.printReceived(received)}`;
+        `Snapshot key: ${printKey(currentTestName, testName, count)}\n\n` +
+        `Expected properties: ${context.utils.printExpected(
+          propertyMatchers,
+        )}\n` +
+        `Received value:      ${context.utils.printReceived(received)}`;
 
       return {
         message: () =>
-          matcherHint('.toMatchSnapshot', 'value', 'properties') +
+          matcherHint(matcherName, undefined, expectedArgument, options) +
           '\n\n' +
           report(),
-        name: 'toMatchSnapshot',
+        name: matcherName,
         pass: false,
         report,
       };
@@ -169,7 +253,7 @@ const _toMatchSnapshot = ({
     received,
     testName: fullTestName,
   });
-  const {pass} = result;
+  const {count, pass} = result;
   let {actual, expected} = result;
 
   let report: () => string;
@@ -193,8 +277,7 @@ const _toMatchSnapshot = ({
     });
 
     report = () =>
-      `${RECEIVED_COLOR('Received value')} does not match ` +
-      `${EXPECTED_COLOR(`stored snapshot "${result.key}"`)}.\n\n` +
+      `Snapshot key: ${printKey(currentTestName, testName, count)}\n\n` +
       (diffMessage ||
         EXPECTED_COLOR('- ' + (expected || '')) +
           '\n' +
@@ -207,8 +290,10 @@ const _toMatchSnapshot = ({
     actual,
     expected,
     message: () =>
-      matcherHint('.toMatchSnapshot', 'value', '') + '\n\n' + report(),
-    name: 'toMatchSnapshot',
+      matcherHint(matcherName, undefined, expectedArgument, options) +
+      '\n\n' +
+      report(),
+    name: matcherName,
     pass: false,
     report,
   };
@@ -217,15 +302,29 @@ const _toMatchSnapshot = ({
 const toThrowErrorMatchingSnapshot = function(
   this: Context,
   received: any,
-  testName: string | undefined,
+  testName: string | undefined, // because error TS1016 for testName?: string
   fromPromise: boolean,
 ) {
-  return _toThrowErrorMatchingSnapshot({
-    context: this,
+  const matcherName = 'toThrowErrorMatchingSnapshot';
+  const expectedArgument =
+    typeof testName === 'string' && testName.length !== 0 ? 'name' : '';
+  const options = {
+    isNot: this.isNot,
+    promise: this.promise,
+    secondArgument: '',
+  };
+
+  return _toThrowErrorMatchingSnapshot(
+    {
+      context: this,
+      expectedArgument,
+      matcherName,
+      options,
+      received,
+      testName,
+    },
     fromPromise,
-    received,
-    testName,
-  });
+  );
 };
 
 const toThrowErrorMatchingInlineSnapshot = function(
@@ -234,37 +333,46 @@ const toThrowErrorMatchingInlineSnapshot = function(
   inlineSnapshot?: string,
   fromPromise?: boolean,
 ) {
-  return _toThrowErrorMatchingSnapshot({
-    context: this,
+  const matcherName = 'toThrowErrorMatchingInlineSnapshot';
+  const expectedArgument = typeof inlineSnapshot === 'string' ? 'snapshot' : '';
+  const options: MatcherHintOptions = {
+    isNot: this.isNot,
+    promise: this.promise,
+    secondArgument: '',
+  };
+
+  return _toThrowErrorMatchingSnapshot(
+    {
+      context: this,
+      expectedArgument,
+      inlineSnapshot: inlineSnapshot || '',
+      matcherName,
+      options,
+      received,
+    },
     fromPromise,
-    inlineSnapshot: inlineSnapshot || '',
-    received,
-  });
+  );
 };
 
-const _toThrowErrorMatchingSnapshot = ({
-  context,
-  received,
-  testName,
-  fromPromise,
-  inlineSnapshot,
-}: {
-  context: Context;
-  received: any;
-  testName?: string;
-  fromPromise?: boolean;
-  inlineSnapshot?: string;
-}) => {
+const _toThrowErrorMatchingSnapshot = (
+  {
+    context,
+    expectedArgument,
+    inlineSnapshot,
+    matcherName,
+    options,
+    received,
+    testName,
+  }: MatchSnapshotConfig,
+  fromPromise?: boolean,
+) => {
   context.dontThrow && context.dontThrow();
   const {isNot} = context;
-  const matcherName =
-    typeof inlineSnapshot === 'string'
-      ? 'toThrowErrorMatchingInlineSnapshot'
-      : 'toThrowErrorMatchingSnapshot';
 
   if (isNot) {
     throw new Error(
-      `Jest: \`.not\` cannot be used with \`.${matcherName}()\`.`,
+      matcherHint(matcherName, undefined, expectedArgument, options) +
+        NOT_SNAPSHOT_MATCHERS,
     );
   }
 
@@ -282,16 +390,18 @@ const _toThrowErrorMatchingSnapshot = ({
 
   if (error === undefined) {
     throw new Error(
-      matcherHint(`.${matcherName}`, '() => {}', '') +
+      matcherHint(matcherName, undefined, expectedArgument, options) +
         '\n\n' +
-        `Expected the function to throw an error.\n` +
-        `But it didn't throw anything.`,
+        DID_NOT_THROW,
     );
   }
 
   return _toMatchSnapshot({
     context,
+    expectedArgument,
     inlineSnapshot,
+    matcherName,
+    options,
     received: error.message,
     testName,
   });

@@ -42,7 +42,7 @@ test('basic support', () => {
       [filename]: template(['{apple: "updated value"}']),
     });
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Received value does not match stored snapshot');
+    expect(stderr).toMatch('Snapshot key: `snapshots 1`');
     expect(status).toBe(1);
   }
 
@@ -107,7 +107,7 @@ test('first snapshot fails, second passes', () => {
   {
     writeFiles(TESTS_DIR, {[filename]: template([`'kiwi'`, `'banana'`])});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Received value does not match stored snapshot');
+    expect(stderr).toMatch('Snapshot key: `snapshots 1`');
     expect(stderr).toMatch('- "apple"\n    + "kiwi"');
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(status).toBe(1);
@@ -178,9 +178,7 @@ test('handles property matchers', () => {
   {
     writeFiles(TESTS_DIR, {[filename]: template(['"string"'])});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch(
-      'Received value does not match snapshot properties for "handles property matchers 1".',
-    );
+    expect(stderr).toMatch('Snapshot key: `handles property matchers 1`');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(status).toBe(1);
   }
@@ -253,9 +251,9 @@ test('handles property matchers with custom name', () => {
     writeFiles(TESTS_DIR, {[filename]: template(['"string"'])});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(
-      'Received value does not match snapshot properties for "handles property matchers with name: custom-name 1".',
+      'Snapshot key: `handles property matchers with name: custom-name 1`',
     );
-    expect(stderr).toMatch('Expected snapshot to match properties:');
+    expect(stderr).toMatch('Expected properties:');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(status).toBe(1);
   }
@@ -285,9 +283,9 @@ test('handles property matchers with deep properties', () => {
     writeFiles(TESTS_DIR, {[filename]: template(['"string"', '"Jest"'])});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(
-      'Received value does not match snapshot properties for "handles property matchers with deep properties 1".',
+      'Snapshot key: `handles property matchers with deep properties 1`',
     );
-    expect(stderr).toMatch('Expected snapshot to match properties:');
+    expect(stderr).toMatch('Expected properties:');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(status).toBe(1);
   }
@@ -296,7 +294,7 @@ test('handles property matchers with deep properties', () => {
     writeFiles(TESTS_DIR, {[filename]: template(['new Date()', '"CHANGED"'])});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(
-      'Received value does not match stored snapshot "handles property matchers with deep properties 1"',
+      '`handles property matchers with deep properties 1`',
     );
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(status).toBe(1);

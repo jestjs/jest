@@ -387,9 +387,9 @@ FAIL __tests__/snapshotNamed.test.js
 
   ● failing named snapshot
 
-    expect(value).toMatchSnapshot()
+    expect(received).toMatchSnapshot(name)
 
-    Received value does not match stored snapshot "failing named snapshot: snapname 1".
+    Snapshot key: \`failing named snapshot: snapname 1\`
 
     - Snapshot
     + Received
@@ -819,9 +819,9 @@ FAIL __tests__/snapshot.test.js
 
   ● failing snapshot
 
-    expect(value).toMatchSnapshot()
+    expect(received).toMatchSnapshot()
 
-    Received value does not match stored snapshot "failing snapshot 1".
+    Snapshot key: \`failing snapshot 1\`
 
     - Snapshot
     + Received

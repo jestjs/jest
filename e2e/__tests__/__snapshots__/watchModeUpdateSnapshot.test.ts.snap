@@ -4,8 +4,8 @@ exports[`can press "u" to update snapshots: test results 1`] = `
 FAIL __tests__/bar.spec.js
   ✕ bar
   ● bar
-    expect(value).toMatchSnapshot()
-    Received value does not match stored snapshot "bar 1".
+    expect(received).toMatchSnapshot()
+    Snapshot key: \`bar 1\`
     - Snapshot
     + Received
     - "foo"
