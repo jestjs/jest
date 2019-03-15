@@ -43,7 +43,7 @@ type MatchSnapshotConfig = {
 };
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
-const NOT_SNAPSHOT_MATCHERS = '\n\n.not cannot be used with snapshot matchers';
+const NOT_SNAPSHOT_MATCHERS = '.not cannot be used with snapshot matchers';
 
 // Display key in report when matcher fails same as in snapshot file,
 // but with optional name argument in green.
@@ -196,6 +196,7 @@ const _toMatchSnapshot = ({
   if (isNot) {
     throw new Error(
       matcherHint(matcherName, undefined, expectedArgument, options) +
+        '\n\n' +
         NOT_SNAPSHOT_MATCHERS,
     );
   }
@@ -372,6 +373,7 @@ const _toThrowErrorMatchingSnapshot = (
   if (isNot) {
     throw new Error(
       matcherHint(matcherName, undefined, expectedArgument, options) +
+        '\n\n' +
         NOT_SNAPSHOT_MATCHERS,
     );
   }
