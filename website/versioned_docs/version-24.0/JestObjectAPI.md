@@ -205,7 +205,7 @@ test('should run example code', () => {
   // creates a new empty array, ignoring the original array.
   expect(example.array.length).toEqual(0);
 
-  // creates a new copy of the original primitive.
+  // creates a new property with the same primitive value as the original property.
   expect(example.number).toEqual(123);
   expect(example.string).toEqual('baz');
   expect(example.boolean).toEqual(true);
