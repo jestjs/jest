@@ -294,7 +294,7 @@ test('handles property matchers with deep properties', () => {
     writeFiles(TESTS_DIR, {[filename]: template(['new Date()', '"CHANGED"'])});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(
-      '`handles property matchers with deep properties 1`',
+      'Snapshot key: `handles property matchers with deep properties 1`',
     );
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(status).toBe(1);
