@@ -42,7 +42,7 @@ type MatchSnapshotConfig = {
   testName?: string;
 };
 
-const DID_NOT_THROW = 'Received function did not throw';
+const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
 const NOT_SNAPSHOT_MATCHERS = '\n\n.not cannot be used with snapshot matchers';
 
 // Display key in report when matcher fails same as in snapshot file,
