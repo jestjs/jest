@@ -14,6 +14,7 @@
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.0",
     "@types/jest": "^24.0.4",
+    "@types/node": "*",
     "@typescript-eslint/eslint-plugin": "^1.4.2",
     "@typescript-eslint/parser": "^1.4.2",
     "ansi-regex": "^4.0.0",
