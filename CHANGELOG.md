@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-snapshot]` Improve report when matcher fails, part 14 ([#8132](https://github.com/facebook/jest/pull/8132))
+
 ### Fixes
 
 ### Chore & Maintenance
