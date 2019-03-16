@@ -129,7 +129,7 @@ Automatically clear mock calls and instances between every test. Equivalent to c
 
 ### `collectCoverage` [boolean]
 
-Default: `false`
+Default: `true`
 
 Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
