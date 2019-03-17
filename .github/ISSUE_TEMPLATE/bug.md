@@ -1,6 +1,6 @@
 ---
 name: 🐛 Bug report
-labels: ':bug: Bug'
+labels: 'Bug Report', 'Needs Triage', 'Needs Repro'
 about: Create a report to help us improve
 ---
 
