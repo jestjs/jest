@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[*]` Add documentation and tests related to auto-mocking ([#8086](https://github.com/facebook/jest/pull/8099))
+
 ### Fixes
 
 - `[pretty-format]` Print `BigInt` as a readable number instead of `{}` [#8138](https://github.com/facebook/jest/pull/8138)
@@ -40,7 +42,6 @@
 
 ### Chore & Maintenance
 
-- `[*]` Add documentation and tests related to auto-mocking ([#8086](https://github.com/facebook/jest/pull/8099))
 - `[*]` Make sure to include `d.ts` files in the tarball when building ([#8086](https://github.com/facebook/jest/pull/8086))
 
 ## 24.3.1
