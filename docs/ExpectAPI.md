@@ -65,7 +65,7 @@ test('numeric ranges', () => {
 });
 ```
 
-Tip: In TypeScript, you can declare the new `toBeWithinRange` matcher like this:
+Tip: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
 
 ```ts
 declare global {
