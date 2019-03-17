@@ -5641,14 +5641,6 @@ fancy-log@^1.3.2:
     parse-node-version "^1.0.0"
     time-stamp "^1.0.0"
 
-fast-check@^1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-1.12.0.tgz#bff7908aa357703f207ee1877ffcf4486a698aa0"
-  integrity sha512-r/zmvxG/8IsxyOzf9T6wnjJQjSLmymAETeRVfs4/0VzxBmyK48o871BRKmEIgEBLmrg9klh3e4A4BZc3yrH2QQ==
-  dependencies:
-    lorem-ipsum "~1.0.6"
-    pure-rand "^1.6.2"
-
 fast-deep-equal@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
@@ -8356,13 +8348,6 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.3.1, loose-envify@^1.4
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-lorem-ipsum@~1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/lorem-ipsum/-/lorem-ipsum-1.0.6.tgz#69e9ab02bbb0991915d71b5559fe016d526f013f"
-  integrity sha512-Rx4XH8X4KSDCKAVvWGYlhAfNqdUP5ZdT4rRyf0jjrvWgtViZimDIlopWNfn/y3lGM5K4uuiAoY28TaD+7YKFrQ==
-  dependencies:
-    minimist "~1.2.0"
-
 loud-rejection@^1.0.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/loud-rejection/-/loud-rejection-1.6.0.tgz#5b46f80147edee578870f086d04821cf998e551f"
@@ -8927,7 +8912,7 @@ minimist@0.0.8:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
   integrity sha1-hX/Kv8M5fSYluCKCYuhqp6ARsF0=
 
-minimist@1.2.0, minimist@^1.1.1, minimist@^1.1.3, minimist@^1.2.0, minimist@~1.2.0:
+minimist@1.2.0, minimist@^1.1.1, minimist@^1.1.3, minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
   integrity sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ=
@@ -10704,11 +10689,6 @@ punycode@^2.1.0, punycode@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
-
-pure-rand@^1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-1.6.2.tgz#90b3ae78efe36f7e6e27bfffedf934f77382e6e6"
-  integrity sha512-HNwHOH63m7kCxe0kWEe5jSLwJiL2N83RUUN8POniFuZS+OsbFcMWlvXgxIU2nwKy2zYG2bQan40WBNK4biYPRg==
 
 q@0.9.7:
   version "0.9.7"
