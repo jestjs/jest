@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[pretty-format]` Print `BigInt` as a readable number instead of `{}` [#8138](https://github.com/facebook/jest/pull/8138)
+
 ### Chore & Maintenance
 
 - `[*]` Remove flow from code base ([#8061](https://github.com/facebook/jest/pull/8061))
