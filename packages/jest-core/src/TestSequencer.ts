@@ -32,11 +32,7 @@ type Cache = {
  * is called to store/update this information on the cache map.
  */
 export default class TestSequencer {
-  private _cache: Map<Context, Cache>;
-
-  constructor() {
-    this._cache = new Map();
-  }
+  private _cache: Map<Context, Cache> = new Map();
 
   _getCachePath(context: Context) {
     const {config} = context;

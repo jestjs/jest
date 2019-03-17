@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "24.3.1",
+  "version": "24.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,16 +11,16 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/types": "^7.0.0",
-    "@jest/types": "^24.3.0",
+    "@jest/types": "^24.5.0",
     "chalk": "^2.0.1",
-    "expect": "^24.3.1",
-    "jest-diff": "^24.3.1",
-    "jest-matcher-utils": "^24.3.1",
-    "jest-message-util": "^24.3.0",
-    "jest-resolve": "^24.3.1",
+    "expect": "^24.5.0",
+    "jest-diff": "^24.5.0",
+    "jest-matcher-utils": "^24.5.0",
+    "jest-message-util": "^24.5.0",
+    "jest-resolve": "^24.5.0",
     "mkdirp": "^0.5.1",
     "natural-compare": "^1.4.0",
-    "pretty-format": "^24.3.1",
+    "pretty-format": "^24.5.0",
     "semver": "^5.5.0"
   },
   "peerDependencies": {
@@ -31,7 +31,7 @@
     "@types/natural-compare": "^1.4.0",
     "@types/prettier": "^1.16.1",
     "@types/semver": "^5.5.0",
-    "jest-haste-map": "^24.3.1",
+    "jest-haste-map": "^24.5.0",
     "prettier": "^1.13.4"
   },
   "engines": {
@@ -40,5 +40,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "65c6e9d5e398711c011078bb72648c77fc8a8cb3"
+  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
 }

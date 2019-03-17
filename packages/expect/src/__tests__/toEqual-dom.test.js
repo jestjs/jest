@@ -208,7 +208,6 @@ describe('toEqual', () => {
         a.appendChild(aSpan2);
         b.appendChild(bSpan1);
         b.appendChild(bSpan2);
-        console.log(a.innerHTML);
 
         expect(a).not.toEqual(b);
         expect(b).not.toEqual(a);

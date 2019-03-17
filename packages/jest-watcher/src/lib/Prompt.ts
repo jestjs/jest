@@ -29,13 +29,11 @@ export default class Prompt {
     this._onChange = () => {};
     this._onSuccess = () => {};
     this._onCancel = () => {};
-
-    this._onResize = this._onResize.bind(this);
   }
 
-  private _onResize() {
+  private _onResize = () => {
     this._onChange();
-  }
+  };
 
   enter(
     onChange: (pattern: string, options: ScrollOptions) => void,
