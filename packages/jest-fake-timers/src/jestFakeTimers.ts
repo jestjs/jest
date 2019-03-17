@@ -65,7 +65,7 @@ export default class FakeTimers<TimerRef> {
   private _now!: number;
   private _ticks!: Array<Tick>;
   private _timerAPIs: TimerAPI;
-  private _timers!: {[key: string]: Timer};
+  private _timers!: Map<string, Timer>;
   private _uuidCounter: number;
   private _timerConfig: TimerConfig<TimerRef>;
 
@@ -108,9 +108,7 @@ export default class FakeTimers<TimerRef> {
     this._immediates.forEach(immediate =>
       this._fakeClearImmediate(immediate.uuid),
     );
-    for (const uuid in this._timers) {
-      delete this._timers[uuid];
-    }
+    this._timers.clear();
   }
 
   dispose() {
@@ -124,7 +122,7 @@ export default class FakeTimers<TimerRef> {
     this._now = 0;
     this._ticks = [];
     this._immediates = [];
-    this._timers = {};
+    this._timers = new Map();
   }
 
   runAllTicks() {
@@ -227,11 +225,13 @@ export default class FakeTimers<TimerRef> {
   }
 
   runOnlyPendingTimers() {
-    const timers = {...this._timers};
     this._checkFakeTimers();
     this._immediates.forEach(this._runImmediate, this);
-    Object.keys(timers)
-      .sort((left, right) => timers[left].expiry - timers[right].expiry)
+    Array.from(this._timers.keys())
+      .sort(
+        (left, right) =>
+          this._timers.get(left).expiry - this._timers.get(right).expiry
+      )
       .forEach(this._runTimerHandle, this);
   }
 
@@ -248,7 +248,7 @@ export default class FakeTimers<TimerRef> {
         break;
       }
 
-      const nextTimerExpiry = this._timers[timerHandle].expiry;
+      const nextTimerExpiry = this._timers.get(timerHandle).expiry;
       if (this._now + msToRun < nextTimerExpiry) {
         // There are no timers between now and the target we're running to, so
         // adjust our time cursor and quit
@@ -333,7 +333,7 @@ export default class FakeTimers<TimerRef> {
   getTimerCount() {
     this._checkFakeTimers();
 
-    return Object.keys(this._timers).length;
+    return this._timers.size;
   }
 
   private _checkFakeTimers() {
@@ -374,8 +374,8 @@ export default class FakeTimers<TimerRef> {
   private _fakeClearTimer(timerRef: TimerRef) {
     const uuid = this._timerConfig.refToId(timerRef);
 
-    if (uuid && this._timers.hasOwnProperty(uuid)) {
-      delete this._timers[String(uuid)];
+    if (uuid && this._timers.has(uuid)) {
+      this._timers.delete(String(uuid));
     }
   }
 
@@ -444,12 +444,12 @@ export default class FakeTimers<TimerRef> {
 
     const uuid = this._uuidCounter++;
 
-    this._timers[String(uuid)] = {
+    this._timers.set(String(uuid), {
       callback: () => callback.apply(null, args),
       expiry: this._now + intervalDelay,
       interval: intervalDelay,
       type: 'interval',
-    };
+    });
 
     return this._timerConfig.idToRef(uuid);
   }
@@ -468,12 +468,12 @@ export default class FakeTimers<TimerRef> {
 
     const uuid = this._uuidCounter++;
 
-    this._timers[String(uuid)] = {
+    this._timers.set(String(uuid), {
       callback: () => callback.apply(null, args),
       expiry: this._now + delay,
       interval: undefined,
       type: 'timeout',
-    };
+    });
 
     return this._timerConfig.idToRef(uuid);
   }
@@ -483,19 +483,18 @@ export default class FakeTimers<TimerRef> {
     let uuid;
     let soonestTime = MS_IN_A_YEAR;
     let timer;
-    for (uuid in this._timers) {
-      timer = this._timers[uuid];
+    this._timers.forEach((timer, uuid) => {
       if (timer.expiry < soonestTime) {
         soonestTime = timer.expiry;
         nextTimerHandle = uuid;
       }
-    }
+    });
 
     return nextTimerHandle;
   }
 
   private _runTimerHandle(timerHandle: TimerID) {
-    const timer = this._timers[timerHandle];
+    const timer = this._timers.get(timerHandle);
 
     if (!timer) {
       return;
@@ -504,7 +503,7 @@ export default class FakeTimers<TimerRef> {
     switch (timer.type) {
       case 'timeout':
         const callback = timer.callback;
-        delete this._timers[timerHandle];
+        this._timers.delete(timerHandle);
         callback();
         break;
 
