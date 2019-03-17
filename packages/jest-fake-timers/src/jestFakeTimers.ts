@@ -333,7 +333,7 @@ export default class FakeTimers<TimerRef> {
   getTimerCount() {
     this._checkFakeTimers();
 
-    return this._timers.size;
+    return this._timers.size + this._immediates.length + this._ticks.length;
   }
 
   private _checkFakeTimers() {
