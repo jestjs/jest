@@ -134,6 +134,7 @@
     ]
   },
   "dependencies": {
+    "jest-watch-typeahead": "^0.2.1",
     "opencollective": "^1.0.3"
   },
   "collective": {
