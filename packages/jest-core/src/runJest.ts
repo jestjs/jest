@@ -29,7 +29,7 @@ import TestSequencer from './TestSequencer';
 import FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
 import TestWatcher from './TestWatcher';
-import {TestRunData} from './types';
+import {TestRunData, Filter} from './types';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
@@ -37,14 +37,10 @@ const getTestPaths = async (
   outputStream: NodeJS.WritableStream,
   changedFiles: ChangedFiles | undefined,
   jestHooks: JestHookEmitter,
-  filterSetupPromise?: Promise<void>,
+  filter?: Filter,
 ) => {
   const source = new SearchSource(context);
-  const data = await source.getTestPaths(
-    globalConfig,
-    changedFiles,
-    filterSetupPromise,
-  );
+  const data = await source.getTestPaths(globalConfig, changedFiles, filter);
 
   if (!data.tests.length && globalConfig.onlyChanged && data.noSCM) {
     new CustomConsole(outputStream, outputStream).log(
@@ -134,7 +130,7 @@ export default (async function runJest({
   changedFilesPromise,
   onComplete,
   failedTestsCache,
-  filterSetupPromise,
+  filter,
 }: {
   globalConfig: Config.GlobalConfig;
   contexts: Array<Context>;
@@ -145,7 +141,7 @@ export default (async function runJest({
   changedFilesPromise?: ChangedFilesPromise;
   onComplete: (testResults: AggregatedResult) => void;
   failedTestsCache?: FailedTestsCache;
-  filterSetupPromise?: Promise<void>;
+  filter?: Filter;
 }) {
   const sequencer = new TestSequencer();
   let allTests: Array<Test> = [];
@@ -175,7 +171,7 @@ export default (async function runJest({
         outputStream,
         changedFilesPromise && (await changedFilesPromise),
         jestHooks,
-        filterSetupPromise,
+        filter,
       );
       allTests = allTests.concat(matches.tests);
 

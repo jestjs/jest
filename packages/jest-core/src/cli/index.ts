@@ -16,6 +16,7 @@ import HasteMap from 'jest-haste-map';
 import chalk from 'chalk';
 import rimraf from 'rimraf';
 import exit from 'exit';
+import {Filter} from '../types';
 import createContext from '../lib/create_context';
 import getChangedFilesPromise from '../getChangedFilesPromise';
 import {formatHandleErrors} from '../collectHandles';
@@ -147,12 +148,19 @@ const _run = async (
 
   // Filter may need to do an HTTP call or something similar to setup.
   // We will not wait on an async response from this before using the filter.
-  let filterSetupPromise: Promise<void> | undefined;
+  let filter: Filter | undefined;
   if (globalConfig.filter && !globalConfig.skipFilter) {
-    const filter = require(globalConfig.filter);
-    if (filter.setup) {
-      filterSetupPromise = filter.setup();
+    const rawFilter = require(globalConfig.filter);
+    let filterSetupPromise: Promise<void> | undefined;
+    if (rawFilter.setup) {
+      filterSetupPromise = rawFilter.setup();
     }
+    filter = async (testPaths: Array<string>) => {
+      if (filterSetupPromise) {
+        await filterSetupPromise;
+      }
+      return rawFilter(testPaths);
+    };
   }
 
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
@@ -169,7 +177,7 @@ const _run = async (
         globalConfig,
         outputStream,
         hasteMapInstances,
-        filterSetupPromise,
+        filter,
       )
     : await runWithoutWatch(
         globalConfig,
@@ -177,7 +185,7 @@ const _run = async (
         outputStream,
         onComplete,
         changedFilesPromise,
-        filterSetupPromise,
+        filter,
       );
 };
 
@@ -188,18 +196,34 @@ const runWatch = async (
   globalConfig: Config.GlobalConfig,
   outputStream: NodeJS.WriteStream,
   hasteMapInstances: Array<HasteMap>,
-  filterSetupPromise?: Promise<void>,
+  filter?: Filter,
 ) => {
   if (hasDeprecationWarnings) {
     try {
       await handleDeprecationWarnings(outputStream, process.stdin);
-      return watch(globalConfig, contexts, outputStream, hasteMapInstances);
+      return watch(
+        globalConfig,
+        contexts,
+        outputStream,
+        hasteMapInstances,
+        undefined,
+        undefined,
+        filter,
+      );
     } catch (e) {
       exit(0);
     }
   }
 
-  return watch(globalConfig, contexts, outputStream, hasteMapInstances);
+  return watch(
+    globalConfig,
+    contexts,
+    outputStream,
+    hasteMapInstances,
+    undefined,
+    undefined,
+    filter,
+  );
 };
 
 const runWithoutWatch = async (
@@ -208,7 +232,7 @@ const runWithoutWatch = async (
   outputStream: NodeJS.WritableStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,
-  filterSetupPromise?: Promise<void>,
+  filter?: Filter,
 ) => {
   const startRun = async (): Promise<void | null> => {
     if (!globalConfig.listTests) {
@@ -223,7 +247,7 @@ const runWithoutWatch = async (
       outputStream,
       startRun,
       testWatcher: new TestWatcher({isWatchMode: false}),
-      filterSetupPromise,
+      filter,
     });
   };
   return startRun();

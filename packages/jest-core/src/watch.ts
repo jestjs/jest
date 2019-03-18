@@ -39,6 +39,7 @@ import {
   filterInteractivePlugins,
 } from './lib/watch_plugins_helpers';
 import activeFilters from './lib/active_filters_message';
+import {Filter} from './types';
 
 type ReservedInfo = {
   forbiddenOverwriteMessage?: string;
@@ -83,7 +84,7 @@ export default function watch(
   hasteMapInstances: Array<HasteMap>,
   stdin: NodeJS.ReadStream = process.stdin,
   hooks: JestHook = new JestHook(),
-  filterSetupPromise?: Promise<void>,
+  filter?: Filter,
 ): Promise<void> {
   // `globalConfig` will be constantly updated and reassigned as a result of
   // watch mode interactions.
@@ -294,7 +295,7 @@ export default function watch(
       outputStream,
       startRun,
       testWatcher,
-      filterSetupPromise,
+      filter,
     }).catch(error =>
       // Errors thrown inside `runJest`, e.g. by resolvers, are caught here for
       // continuous watch mode execution. We need to reprint them to the
