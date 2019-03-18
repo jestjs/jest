@@ -290,6 +290,7 @@ export default class SearchSource {
   async getTestPaths(
     globalConfig: Config.GlobalConfig,
     changedFiles: ChangedFiles | undefined,
+    filterSetupPromise?: Promise<void>,
   ): Promise<SearchResult> {
     const searchResult = this._getTestPaths(globalConfig, changedFiles);
 
@@ -299,6 +300,9 @@ export default class SearchSource {
       const tests = searchResult.tests;
 
       const filter = require(filterPath);
+      if (filterSetupPromise) {
+        await filterSetupPromise;
+      }
       const filterResult: {filtered: Array<FilterResult>} = await filter(
         tests.map(test => test.path),
       );

@@ -37,9 +37,14 @@ const getTestPaths = async (
   outputStream: NodeJS.WritableStream,
   changedFiles: ChangedFiles | undefined,
   jestHooks: JestHookEmitter,
+  filterSetupPromise?: Promise<void>,
 ) => {
   const source = new SearchSource(context);
-  const data = await source.getTestPaths(globalConfig, changedFiles);
+  const data = await source.getTestPaths(
+    globalConfig,
+    changedFiles,
+    filterSetupPromise,
+  );
 
   if (!data.tests.length && globalConfig.onlyChanged && data.noSCM) {
     new CustomConsole(outputStream, outputStream).log(
@@ -129,6 +134,7 @@ export default (async function runJest({
   changedFilesPromise,
   onComplete,
   failedTestsCache,
+  filterSetupPromise,
 }: {
   globalConfig: Config.GlobalConfig;
   contexts: Array<Context>;
@@ -139,6 +145,7 @@ export default (async function runJest({
   changedFilesPromise?: ChangedFilesPromise;
   onComplete: (testResults: AggregatedResult) => void;
   failedTestsCache?: FailedTestsCache;
+  filterSetupPromise?: Promise<void>;
 }) {
   const sequencer = new TestSequencer();
   let allTests: Array<Test> = [];
@@ -168,6 +175,7 @@ export default (async function runJest({
         outputStream,
         changedFilesPromise && (await changedFilesPromise),
         jestHooks,
+        filterSetupPromise,
       );
       allTests = allTests.concat(matches.tests);
 

@@ -147,10 +147,11 @@ const _run = async (
 
   // Filter may need to do an HTTP call or something similar to setup.
   // We will not wait on an async response from this before using the filter.
+  let filterSetupPromise: Promise<void> | undefined;
   if (globalConfig.filter && !globalConfig.skipFilter) {
     const filter = require(globalConfig.filter);
     if (filter.setup) {
-      filter.setup();
+      filterSetupPromise = filter.setup();
     }
   }
 
@@ -168,6 +169,7 @@ const _run = async (
         globalConfig,
         outputStream,
         hasteMapInstances,
+        filterSetupPromise,
       )
     : await runWithoutWatch(
         globalConfig,
@@ -175,6 +177,7 @@ const _run = async (
         outputStream,
         onComplete,
         changedFilesPromise,
+        filterSetupPromise,
       );
 };
 
@@ -185,6 +188,7 @@ const runWatch = async (
   globalConfig: Config.GlobalConfig,
   outputStream: NodeJS.WriteStream,
   hasteMapInstances: Array<HasteMap>,
+  filterSetupPromise?: Promise<void>,
 ) => {
   if (hasDeprecationWarnings) {
     try {
@@ -204,6 +208,7 @@ const runWithoutWatch = async (
   outputStream: NodeJS.WritableStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,
+  filterSetupPromise?: Promise<void>,
 ) => {
   const startRun = async (): Promise<void | null> => {
     if (!globalConfig.listTests) {
@@ -218,6 +223,7 @@ const runWithoutWatch = async (
       outputStream,
       startRun,
       testWatcher: new TestWatcher({isWatchMode: false}),
+      filterSetupPromise,
     });
   };
   return startRun();

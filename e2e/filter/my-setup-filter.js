@@ -14,6 +14,9 @@ module.exports = function(tests) {
   };
 };
 
-module.exports.setup = function() {
+module.exports.setup = async function() {
+  await new Promise(resolve => {
+    setTimeout(() => resolve(), 1000);
+  });
   setupData.filterText = 'foo';
 };
