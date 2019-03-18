@@ -1,5 +1,7 @@
 ## master
 
+- `[*]` Add documentation and tests related to auto-mocking ([#8086](https://github.com/facebook/jest/pull/8099))
+
 ### Features
 
 ### Fixes

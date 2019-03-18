@@ -119,6 +119,99 @@ test('implementation created by jest.genMockFromModule', () => {
 });
 ```
 
+This is how `genMockFromModule` will mock the following data types:
+
+#### `Function`
+
+Creates a new [mock function](https://jestjs.io/docs/en/mock-functions.html). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async` functions.
+
+#### `Class`
+
+Creates new class. The interface of the original class is maintained, all of the class member functions and properties will be mocked.
+
+#### `Object`
+
+Creates a new deeply cloned object. The object keys are maintained and their values are mocked.
+
+#### `Array`
+
+Creates a new empty array, ignoring the original.
+
+#### `Primitives`
+
+Creates a new property with the same primitive value as the original property.
+
+Example:
+
+```
+// example.js
+module.exports = {
+  function: function square(a, b) {
+    return a * b;
+  },
+  asyncFunction: async function asyncSquare(a, b) {
+    const result = await a * b;
+    return result;
+  },
+  class: new class Bar {
+    constructor() {
+      this.array = [1, 2, 3];
+    }
+    foo() {}
+  },
+  object: {
+    baz: 'foo',
+    bar: {
+      fiz: 1,
+      buzz: [1, 2, 3],
+    },
+  },
+  array: [1, 2, 3],
+  number: 123,
+  string: 'baz',
+  boolean: true,
+  symbol: Symbol.for('a.b.c'),
+};
+```
+
+```js
+// __tests__/example.test.js
+const example = jest.genMockFromModule('./example');
+
+test('should run example code', () => {
+  // creates a new mocked function with no formal arguments.
+  expect(example.function.name).toEqual('square');
+  expect(example.function.length).toEqual(0);
+
+  // async functions get the same treatment as standard synchronous functions.
+  expect(example.asyncFunction.name).toEqual('asyncSquare');
+  expect(example.asyncFunction.length).toEqual(0);
+
+  // creates a new class with the same interface, member functions and properties are mocked.
+  expect(example.class.constructor.name).toEqual('Bar');
+  expect(example.class.foo.name).toEqual('foo');
+  expect(example.class.array.length).toEqual(0);
+
+  // creates a deeply cloned version of the original object.
+  expect(example.object).toEqual({
+    baz: 'foo',
+    bar: {
+      fiz: 1,
+      buzz: [],
+    },
+  });
+
+  // creates a new empty array, ignoring the original array.
+  expect(example.array.length).toEqual(0);
+
+  // creates a new property with the same primitive value as the original property.
+  expect(example.number).toEqual(123);
+  expect(example.string).toEqual('baz');
+  expect(example.boolean).toEqual(true);
+  expect(example.symbol).toEqual(Symbol.for('a.b.c'));
+});
+```
+
 ### `jest.mock(moduleName, factory, options)`
 
 Mocks a module with an auto-mocked version when it is being required. `factory` and `options` are optional. For example:
