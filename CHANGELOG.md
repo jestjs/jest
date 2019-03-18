@@ -1,13 +1,12 @@
 ## master
 
-- `[*]` Add documentation and tests related to auto-mocking ([#8086](https://github.com/facebook/jest/pull/8099))
-
 ### Features
 
 ### Fixes
 
 - `[jest-each]` Fix test function type ([#8145](https://github.com/facebook/jest/pull/8145))
 - `[pretty-format]` Print `BigInt` as a readable number instead of `{}` ([#8138](https://github.com/facebook/jest/pull/8138))
+- `[jest-fake-timers]` `getTimerCount` not taking immediates and ticks into account ([#8139](https://github.com/facebook/jest/pull/8139))
 
 ### Chore & Maintenance
 
@@ -15,6 +14,7 @@
 - `[*]` Use property initializer syntax in Jest codebase ([#8117](https://github.com/facebook/jest/pull/8117))
 - `[docs]` Improve description of optional arguments in ExpectAPI.md ([#8126](https://github.com/facebook/jest/pull/8126)
 - `[*]` Move @types/node to the root package.json [#8129](https://github.com/facebook/jest/pull/8129))
+- `[*]` Add documentation and tests related to auto-mocking ([#8086](https://github.com/facebook/jest/pull/8099))
 
 ### Performance
 
