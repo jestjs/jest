@@ -43,4 +43,11 @@ describe('Dynamic test filtering', () => {
     expect(result.stderr).toContain('did not return a valid test list');
     expect(result.stderr).toContain('my-clowny-filter');
   });
+
+  it('will call setup on filter before filtering', () => {
+    const result = runJest('filter', ['--filter=<rootDir>/my-setup-filter.js']);
+
+    expect(result.status).toBe(0);
+    expect(result.stderr).toContain('1 total');
+  });
 });

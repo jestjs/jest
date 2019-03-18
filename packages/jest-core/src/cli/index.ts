@@ -145,6 +145,15 @@ const _run = async (
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
+  // Filter may need to do an HTTP call or something similar to setup.
+  // We will not wait on an async response from this before using the filter.
+  if (globalConfig.filter && !globalConfig.skipFilter) {
+    const filter = require(globalConfig.filter);
+    if (filter.setup) {
+      filter.setup();
+    }
+  }
+
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
     configs,
     globalConfig,
