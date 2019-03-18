@@ -1,6 +1,6 @@
 {
   "name": "jest-serializer",
-  "version": "24.3.0",
+  "version": "24.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -15,5 +15,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "3a7a4f3a3f5489ac8e07dcddf76bb949c482ec87"
+  "gitHead": "a018000fc162db3cfd0ebf9f23fdb734f05821a6"
 }

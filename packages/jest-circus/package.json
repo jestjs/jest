@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "24.3.1",
+  "version": "24.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,30 +11,29 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/traverse": "^7.1.0",
-    "@jest/environment": "^24.3.1",
-    "@jest/test-result": "^24.3.0",
-    "@jest/types": "^24.3.0",
-    "@types/node": "*",
+    "@jest/environment": "^24.5.0",
+    "@jest/test-result": "^24.5.0",
+    "@jest/types": "^24.5.0",
     "chalk": "^2.0.1",
     "co": "^4.6.0",
-    "expect": "^24.3.1",
+    "expect": "^24.5.0",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "^24.3.1",
-    "jest-matcher-utils": "^24.3.1",
-    "jest-message-util": "^24.3.0",
-    "jest-snapshot": "^24.3.1",
-    "jest-util": "^24.3.0",
-    "pretty-format": "^24.3.1",
+    "jest-each": "^24.5.0",
+    "jest-matcher-utils": "^24.5.0",
+    "jest-message-util": "^24.5.0",
+    "jest-snapshot": "^24.5.0",
+    "jest-util": "^24.5.0",
+    "pretty-format": "^24.5.0",
     "stack-utils": "^1.0.1",
     "throat": "^4.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^24.3.0",
+    "@jest/test-utils": "^24.4.0",
     "@types/babel__traverse": "^7.0.4",
     "@types/co": "^4.6.0",
     "@types/stack-utils": "^1.0.1",
     "execa": "^1.0.0",
-    "jest-runtime": "^24.3.1"
+    "jest-runtime": "^24.5.0"
   },
   "engines": {
     "node": ">= 6"
@@ -42,5 +41,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "65c6e9d5e398711c011078bb72648c77fc8a8cb3"
+  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
 }
