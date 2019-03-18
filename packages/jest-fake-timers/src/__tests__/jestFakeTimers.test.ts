@@ -1165,9 +1165,8 @@ describe('FakeTimers', () => {
 
       expect(timers.getTimerCount()).toEqual(0);
     });
-  });
 
-  it('includes immediates and ticks', () => {
+    it('includes immediates and ticks', () => {
       const timers = new FakeTimers({
         config,
         global,

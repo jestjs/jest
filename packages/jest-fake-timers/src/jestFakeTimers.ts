@@ -225,14 +225,13 @@ export default class FakeTimers<TimerRef> {
   }
 
   runOnlyPendingTimers() {
+    const timerEntries = Array.from(this._timers.entries());
     this._checkFakeTimers();
     this._immediates.forEach(this._runImmediate, this);
-    Array.from(this._timers.keys())
-      .sort(
-        (left, right) =>
-          this._timers.get(left).expiry - this._timers.get(right).expiry
-      )
-      .forEach(this._runTimerHandle, this);
+
+    timerEntries
+      .sort(([, left], [, right]) => left.expiry - right.expiry)
+      .forEach(([timerHandle]) => this._runTimerHandle(timerHandle));
   }
 
   advanceTimersByTime(msToRun: number) {
@@ -247,8 +246,11 @@ export default class FakeTimers<TimerRef> {
       if (timerHandle === null) {
         break;
       }
-
-      const nextTimerExpiry = this._timers.get(timerHandle).expiry;
+      const timerValue = this._timers.get(timerHandle);
+      if (timerValue === undefined) {
+        break;
+      }
+      const nextTimerExpiry = timerValue.expiry;
       if (this._now + msToRun < nextTimerExpiry) {
         // There are no timers between now and the target we're running to, so
         // adjust our time cursor and quit
@@ -374,7 +376,7 @@ export default class FakeTimers<TimerRef> {
   private _fakeClearTimer(timerRef: TimerRef) {
     const uuid = this._timerConfig.refToId(timerRef);
 
-    if (uuid && this._timers.has(uuid)) {
+    if (uuid) {
       this._timers.delete(String(uuid));
     }
   }
@@ -480,9 +482,8 @@ export default class FakeTimers<TimerRef> {
 
   private _getNextTimerHandle() {
     let nextTimerHandle = null;
-    let uuid;
     let soonestTime = MS_IN_A_YEAR;
-    let timer;
+
     this._timers.forEach((timer, uuid) => {
       if (timer.expiry < soonestTime) {
         soonestTime = timer.expiry;
