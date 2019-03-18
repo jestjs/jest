@@ -264,6 +264,7 @@ export default function watch(
       changedFilesPromise,
       contexts,
       failedTestsCache,
+      filter,
       globalConfig,
       jestHooks: hooks.getEmitter(),
       onComplete: results => {
@@ -295,7 +296,6 @@ export default function watch(
       outputStream,
       startRun,
       testWatcher,
-      filter,
     }).catch(error =>
       // Errors thrown inside `runJest`, e.g. by resolvers, are caught here for
       // continuous watch mode execution. We need to reprint them to the

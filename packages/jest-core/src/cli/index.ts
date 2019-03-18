@@ -242,12 +242,12 @@ const runWithoutWatch = async (
       changedFilesPromise,
       contexts,
       failedTestsCache: undefined,
+      filter,
       globalConfig,
       onComplete,
       outputStream,
       startRun,
       testWatcher: new TestWatcher({isWatchMode: false}),
-      filter,
     });
   };
   return startRun();
