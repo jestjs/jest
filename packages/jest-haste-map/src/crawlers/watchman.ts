@@ -34,6 +34,7 @@ export = async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<{
   removedFiles: FileData;
+  changedFiles?: FileData;
   hasteMap: InternalHasteMap;
 }> {
   const fields = ['name', 'exists', 'mtime_ms', 'size'];
@@ -148,6 +149,7 @@ export = async function watchmanCrawl(
 
   let files = data.files;
   let removedFiles = new Map();
+  const changedFiles = new Map();
   let watchmanFiles: Map<string, any>;
   let isFresh = false;
   try {
@@ -243,10 +245,12 @@ export = async function watchmanCrawl(
                 absoluteVirtualFilePath,
               );
               files.set(relativeVirtualFilePath, nextData);
+              changedFiles.set(relativeVirtualFilePath, nextData);
             }
           }
         } else {
           files.set(relativeFilePath, nextData);
+          changedFiles.set(relativeFilePath, nextData);
         }
       }
     }
@@ -256,5 +260,6 @@ export = async function watchmanCrawl(
   return {
     hasteMap: data,
     removedFiles,
+    changedFiles: isFresh ? undefined : changedFiles,
   };
 };
