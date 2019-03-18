@@ -227,10 +227,10 @@ test('handles invalid property matchers', () => {
   }
 });
 
-test('handles property matchers with custom name', () => {
-  const filename = 'handle-property-matchers-with-name.test.js';
-  const template = makeTemplate(`test('handles property matchers with name', () => {
-      expect({createdAt: $1}).toMatchSnapshot({createdAt: expect.any(Date)}, 'custom-name');
+test('handles property matchers with hint', () => {
+  const filename = 'handle-property-matchers-with-hint.test.js';
+  const template = makeTemplate(`test('handles property matchers with hint', () => {
+      expect({createdAt: $1}).toMatchSnapshot({createdAt: expect.any(Date)}, 'descriptive hint');
     });
     `);
 
@@ -251,7 +251,7 @@ test('handles property matchers with custom name', () => {
     writeFiles(TESTS_DIR, {[filename]: template(['"string"'])});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch(
-      'Snapshot name: `handles property matchers with name: custom-name 1`',
+      'Snapshot name: `handles property matchers with hint: descriptive hint 1`',
     );
     expect(stderr).toMatch('Expected properties:');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');

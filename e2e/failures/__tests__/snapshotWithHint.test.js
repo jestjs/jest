@@ -8,6 +8,6 @@
  */
 'use strict';
 
-test('failing named snapshot', () => {
-  expect('foo').toMatchSnapshot('snapname');
+test('failing snapshot with hint', () => {
+  expect('foo').toMatchSnapshot('descriptive hint');
 });

@@ -381,35 +381,6 @@ FAIL __tests__/asyncFailures.test.js
       at Object.test (__tests__/asyncFailures.test.js:23:1)
 `;
 
-exports[`works with named snapshot failures 1`] = `
-FAIL __tests__/snapshotNamed.test.js
-  ✕ failing named snapshot
-
-  ● failing named snapshot
-
-    expect(received).toMatchSnapshot(hint)
-
-    Snapshot name: \`failing named snapshot: snapname 1\`
-
-    - Snapshot
-    + Received
-
-    - "bar"
-    + "foo"
-
-      10 | 
-      11 | test('failing named snapshot', () => {
-    > 12 |   expect('foo').toMatchSnapshot('snapname');
-         |                 ^
-      13 | });
-      14 | 
-
-      at Object.toMatchSnapshot (__tests__/snapshotNamed.test.js:12:17)
-
- › 1 snapshot failed.
-
-`;
-
 exports[`works with node assert 1`] = `
 FAIL __tests__/assertionError.test.js
   ✕ assert
@@ -837,6 +808,35 @@ FAIL __tests__/snapshot.test.js
       14 | 
 
       at Object.toMatchSnapshot (__tests__/snapshot.test.js:12:17)
+
+ › 1 snapshot failed.
+
+`;
+
+exports[`works with snapshot failures with hint 1`] = `
+FAIL __tests__/snapshotWithHint.test.js
+  ✕ failing snapshot with hint
+
+  ● failing snapshot with hint
+
+    expect(received).toMatchSnapshot(hint)
+
+    Snapshot name: \`failing snapshot with hint: descriptive hint 1\`
+
+    - Snapshot
+    + Received
+
+    - "bar"
+    + "foo"
+
+      10 | 
+      11 | test('failing snapshot with hint', () => {
+    > 12 |   expect('foo').toMatchSnapshot('descriptive hint');
+         |                 ^
+      13 | });
+      14 | 
+
+      at Object.toMatchSnapshot (__tests__/snapshotWithHint.test.js:12:17)
 
  › 1 snapshot failed.
 
