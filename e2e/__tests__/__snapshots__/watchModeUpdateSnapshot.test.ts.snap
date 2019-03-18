@@ -5,7 +5,7 @@ FAIL __tests__/bar.spec.js
   ✕ bar
   ● bar
     expect(received).toMatchSnapshot()
-    Snapshot key: \`bar 1\`
+    Snapshot name: \`bar 1\`
     - Snapshot
     + Received
     - "foo"

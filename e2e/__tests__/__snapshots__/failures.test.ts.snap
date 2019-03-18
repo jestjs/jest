@@ -387,9 +387,9 @@ FAIL __tests__/snapshotNamed.test.js
 
   ● failing named snapshot
 
-    expect(received).toMatchSnapshot(name)
+    expect(received).toMatchSnapshot(hint)
 
-    Snapshot key: \`failing named snapshot: snapname 1\`
+    Snapshot name: \`failing named snapshot: snapname 1\`
 
     - Snapshot
     + Received
@@ -821,7 +821,7 @@ FAIL __tests__/snapshot.test.js
 
     expect(received).toMatchSnapshot()
 
-    Snapshot key: \`failing snapshot 1\`
+    Snapshot name: \`failing snapshot 1\`
 
     - Snapshot
     + Received

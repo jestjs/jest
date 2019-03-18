@@ -52,7 +52,7 @@ test('basic support', () => {
     });
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
-    expect(stderr).toMatch('Snapshot key: `inline snapshots 1`');
+    expect(stderr).toMatch('Snapshot name: `inline snapshots 1`');
     expect(status).toBe(1);
     expect(wrap(fileAfter)).toMatchSnapshot('snapshot mismatch');
   }
@@ -101,7 +101,7 @@ test('handles property matchers', () => {
     });
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
-    expect(stderr).toMatch('Snapshot key: `handles property matchers 1`');
+    expect(stderr).toMatch('Snapshot name: `handles property matchers 1`');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(status).toBe(1);
     expect(wrap(fileAfter)).toMatchSnapshot('snapshot failed');

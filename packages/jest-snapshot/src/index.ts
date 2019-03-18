@@ -12,6 +12,7 @@ import {MatcherState} from 'expect';
 
 import diff from 'jest-diff';
 import {
+  BOLD_WEIGHT,
   EXPECTED_COLOR,
   matcherHint,
   MatcherHintOptions,
@@ -43,7 +44,9 @@ type MatchSnapshotConfig = {
 };
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
-const NOT_SNAPSHOT_MATCHERS = '.not cannot be used with snapshot matchers';
+const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
+  'not',
+)} cannot be used with snapshot matchers`;
 
 // Display key in report when matcher fails same as in snapshot file,
 // but with optional name argument in green.
@@ -55,7 +58,7 @@ const printKey = (path = '', name = '', count: number): string => {
     '`' +
     (hasPath ? utils.escapeBacktickString(path) : '') +
     (hasPath && hasName ? ': ' : '') +
-    (hasName ? EXPECTED_COLOR(utils.escapeBacktickString(name)) : '') +
+    (hasName ? BOLD_WEIGHT(utils.escapeBacktickString(name)) : '') +
     ' ' +
     count +
     '`'
@@ -101,13 +104,13 @@ const toMatchSnapshot = function(
   if (typeof propertyMatchers === 'object' && propertyMatchers !== null) {
     expectedArgument = 'properties';
     if (typeof testName === 'string' && testName.length !== 0) {
-      secondArgument = 'name';
+      secondArgument = BOLD_WEIGHT('hint');
     }
   } else if (
     typeof propertyMatchers === 'string' &&
     propertyMatchers.length !== 0
   ) {
-    expectedArgument = 'name';
+    expectedArgument = BOLD_WEIGHT('hint');
   }
 
   const options: MatcherHintOptions = {
@@ -228,7 +231,8 @@ const _toMatchSnapshot = ({
       const count = matched === null ? 1 : Number(matched[1]);
 
       const report = () =>
-        `Snapshot key: ${printKey(currentTestName, testName, count)}\n\n` +
+        `Snapshot name: ${printKey(currentTestName, testName, count)}\n` +
+        '\n' +
         `Expected properties: ${context.utils.printExpected(
           propertyMatchers,
         )}\n` +
@@ -278,7 +282,7 @@ const _toMatchSnapshot = ({
     });
 
     report = () =>
-      `Snapshot key: ${printKey(currentTestName, testName, count)}\n\n` +
+      `Snapshot name: ${printKey(currentTestName, testName, count)}\n\n` +
       (diffMessage ||
         EXPECTED_COLOR('- ' + (expected || '')) +
           '\n' +
@@ -308,7 +312,9 @@ const toThrowErrorMatchingSnapshot = function(
 ) {
   const matcherName = 'toThrowErrorMatchingSnapshot';
   const expectedArgument =
-    typeof testName === 'string' && testName.length !== 0 ? 'name' : '';
+    typeof testName === 'string' && testName.length !== 0
+      ? BOLD_WEIGHT('hint')
+      : '';
   const options = {
     isNot: this.isNot,
     promise: this.promise,
