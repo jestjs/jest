@@ -6,7 +6,7 @@
  */
 
 import fs from 'fs';
-import {TestResult} from '@jest/types';
+import {AggregatedResult} from '@jest/test-result';
 import {getCacheFilePath} from 'jest-haste-map';
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
@@ -32,11 +32,7 @@ type Cache = {
  * is called to store/update this information on the cache map.
  */
 export default class TestSequencer {
-  private _cache: Map<Context, Cache>;
-
-  constructor() {
-    this._cache = new Map();
-  }
+  private _cache: Map<Context, Cache> = new Map();
 
   _getCachePath(context: Context) {
     const {config} = context;
@@ -113,7 +109,7 @@ export default class TestSequencer {
     });
   }
 
-  cacheResults(tests: Array<Test>, results: TestResult.AggregatedResult) {
+  cacheResults(tests: Array<Test>, results: AggregatedResult) {
     const map = Object.create(null);
     tests.forEach(test => (map[test.path] = test));
     results.testResults.forEach(testResult => {

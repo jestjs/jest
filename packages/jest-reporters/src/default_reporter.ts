@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {TestResult, Config} from '@jest/types';
-
+import {Config} from '@jest/types';
+import {AggregatedResult, TestResult} from '@jest/test-result';
 import {clearLine, getConsoleOutput, isInteractive} from 'jest-util';
 import chalk from 'chalk';
 import {Test, ReporterOnStartOptions} from './types';
@@ -119,7 +119,7 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   onRunStart(
-    aggregatedResults: TestResult.AggregatedResult,
+    aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
   ) {
     this._status.runStarted(aggregatedResults, options);
@@ -139,8 +139,8 @@ export default class DefaultReporter extends BaseReporter {
 
   onTestResult(
     test: Test,
-    testResult: TestResult.TestResult,
-    aggregatedResults: TestResult.AggregatedResult,
+    testResult: TestResult,
+    aggregatedResults: AggregatedResult,
   ) {
     this.testFinished(test.context.config, testResult, aggregatedResults);
     if (!testResult.skipped) {
@@ -160,8 +160,8 @@ export default class DefaultReporter extends BaseReporter {
 
   testFinished(
     config: Config.ProjectConfig,
-    testResult: TestResult.TestResult,
-    aggregatedResults: TestResult.AggregatedResult,
+    testResult: TestResult,
+    aggregatedResults: AggregatedResult,
   ) {
     this._status.testFinished(config, testResult, aggregatedResults);
   }
@@ -169,7 +169,7 @@ export default class DefaultReporter extends BaseReporter {
   printTestFileHeader(
     _testPath: Config.Path,
     config: Config.ProjectConfig,
-    result: TestResult.TestResult,
+    result: TestResult,
   ) {
     this.log(getResultHeader(result, this._globalConfig, config));
     const consoleBuffer = result.console;
@@ -190,7 +190,7 @@ export default class DefaultReporter extends BaseReporter {
   printTestFileFailureMessage(
     _testPath: Config.Path,
     _config: Config.ProjectConfig,
-    result: TestResult.TestResult,
+    result: TestResult,
   ) {
     if (result.failureMessage) {
       this.log(result.failureMessage);

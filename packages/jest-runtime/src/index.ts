@@ -248,6 +248,7 @@ class Runtime {
       retainAllFiles: false,
       rootDir: config.rootDir,
       roots: config.roots,
+      throwOnModuleCollision: config.haste.throwOnModuleCollision,
       useWatchman: options && options.watchman,
       watch: options && options.watch,
     });
@@ -988,7 +989,7 @@ class Runtime {
     };
 
     const jestObject: Jest = {
-      addMatchers: (matchers: Object) =>
+      addMatchers: (matchers: Record<string, any>) =>
         this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
