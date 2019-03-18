@@ -116,8 +116,8 @@ export default class VerboseReporter extends DefaultReporter {
       tests.forEach(test => this._logTest(test, indentLevel));
     } else {
       const summedTests = tests.reduce<{
-        pending: Array<TestResult.AssertionResult>;
-        todo: Array<TestResult.AssertionResult>;
+        pending: Array<AssertionResult>;
+        todo: Array<AssertionResult>;
       }>(
         (result, test) => {
           if (test.status === 'pending') {
@@ -144,7 +144,7 @@ export default class VerboseReporter extends DefaultReporter {
   }
 
   private _logTodoOrPendingTest(indentLevel: number) {
-    return (test: TestResult.AssertionResult) => {
+    return (test: AssertionResult) => {
       const printedTestStatus =
         test.status === 'pending' ? 'skipped' : test.status;
       const icon = this._getIcon(test.status);
