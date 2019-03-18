@@ -83,7 +83,7 @@ class Contributors extends React.Component {
         </p>
         <div>
           {backers
-            .filter(b => b.tier === 'backer')
+            .filter(b => b.tier === 'backer' && !b.slug.includes('adult'))
             .map(b => (
               <a
                 key={b.id}
