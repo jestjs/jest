@@ -12846,10 +12846,10 @@ typescript@*:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.3333.tgz#171b2c5af66c59e9431199117a3bcadc66fdcfd6"
   integrity sha512-JjSKsAfuHBE/fB2oZ8NxtRTk5iGcg6hkYXMnZ3Wc+b2RSqejEqTaem11mHASMnFilHrax3sLK0GDzcJrekZYLw==
 
-typescript@^3.4.0-rc:
-  version "3.4.0-rc"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.4.0-rc.tgz#bc4026c3c517a30fa514b896f2684c6ba92caadb"
-  integrity sha512-wtm2GwuV0Yy2zvmpFaMDtWHnRbzfERi9FLpL+K+JqGkHoclgEQ6TmD1AMxMIjs80NWRIq0Xp1veQyuZbGsUYsg==
+typescript@next:
+  version "3.4.0-dev.20190316"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.4.0-dev.20190316.tgz#484348eeae7e95e307d0f9ab9df81a8450303c39"
+  integrity sha512-BMkCN4Eb1L4pJi7aU+y6rvDrO9v0qEJ/vdXFapdCX3I3q5bT4/77oGXP7gFQkpaUDnxs+m907PGQYiClITDpng==
 
 ua-parser-js@^0.7.18:
   version "0.7.19"

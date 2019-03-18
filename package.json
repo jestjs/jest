@@ -70,7 +70,7 @@
     "slash": "^2.0.0",
     "string-length": "^2.0.0",
     "strip-ansi": "^5.0.0",
-    "typescript": "^3.4.0-rc",
+    "typescript": "next",
     "webpack": "^4.28.4"
   },
   "scripts": {
