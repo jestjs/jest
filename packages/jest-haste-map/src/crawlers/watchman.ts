@@ -33,8 +33,8 @@ function WatchmanError(error: Error): Error {
 export = async function watchmanCrawl(
   options: CrawlerOptions,
 ): Promise<{
-  removedFiles: FileData;
   changedFiles?: FileData;
+  removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
   const fields = ['name', 'exists', 'mtime_ms', 'size'];
@@ -258,8 +258,8 @@ export = async function watchmanCrawl(
 
   data.files = files;
   return {
+    changedFiles: isFresh ? undefined : changedFiles,
     hasteMap: data,
     removedFiles,
-    changedFiles: isFresh ? undefined : changedFiles,
   };
 };
