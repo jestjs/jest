@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- `[jest-each]` Fix test function type [#8145](https://github.com/facebook/jest/pull/8145)
 - `[pretty-format]` Print `BigInt` as a readable number instead of `{}` [#8138](https://github.com/facebook/jest/pull/8138)
 
 ### Chore & Maintenance
