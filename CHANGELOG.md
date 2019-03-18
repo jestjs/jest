@@ -15,6 +15,7 @@
 - `[docs]` Improve description of optional arguments in ExpectAPI.md ([#8126](https://github.com/facebook/jest/pull/8126)
 - `[*]` Move @types/node to the root package.json [#8129](https://github.com/facebook/jest/pull/8129))
 - `[*]` Add documentation and tests related to auto-mocking ([#8086](https://github.com/facebook/jest/pull/8099))
+- `[*]` Add `jest-watch-typeahead` as a devDependency ([#6449](https://github.com/facebook/jest/pull/6449/files))
 
 ### Performance
 
@@ -522,7 +523,6 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 
 ### Chore & Maintenance
 
-- Add jest-watch-typeahead as a devDependency ([#6449](https://github.com/facebook/jest/pull/6449/files))
 - `[docs]` Add jest-each docs for 1 dimensional arrays ([#6444](https://github.com/facebook/jest/pull/6444/files))
 
 ## 23.1.0
