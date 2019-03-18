@@ -15,6 +15,7 @@
 - `[docs]` Improve description of optional arguments in ExpectAPI.md ([#8126](https://github.com/facebook/jest/pull/8126)
 - `[*]` Move @types/node to the root package.json [#8129](https://github.com/facebook/jest/pull/8129))
 - `[*]` Add documentation and tests related to auto-mocking ([#8086](https://github.com/facebook/jest/pull/8099))
+- `[*]` Add `jest-watch-typeahead` as a devDependency ([#6449](https://github.com/facebook/jest/pull/6449/files))
 
 ### Performance
 
