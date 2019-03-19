@@ -151,13 +151,25 @@ const _run = async (
   let filter: Filter | undefined;
   if (globalConfig.filter && !globalConfig.skipFilter) {
     const rawFilter = require(globalConfig.filter);
-    let filterSetupPromise: Promise<void> | undefined;
+    let filterSetupPromise: Promise<Error | undefined> | undefined;
     if (rawFilter.setup) {
-      filterSetupPromise = rawFilter.setup();
+      // Wrap filter setup Promise to avoid "uncaught Promise" error.
+      // If an error is returned, we surface it in the return value.
+      filterSetupPromise = (async () => {
+        try {
+          await rawFilter.setup();
+        } catch (err) {
+          return err;
+        }
+      })();
     }
     filter = async (testPaths: Array<string>) => {
       if (filterSetupPromise) {
-        await filterSetupPromise;
+        // Expect an undefined return value unless there was an error.
+        const err = await filterSetupPromise;
+        if (err) {
+          throw err;
+        }
       }
       return rawFilter(testPaths);
     };
