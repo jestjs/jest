@@ -117,9 +117,9 @@ test('but there is a "stop" in Christoph', () => {
 });
 ```
 
-## Arrays and Sets
+## Arrays and iterables
 
-You can check if an array or set contains a particular item using `toContain`:
+You can check if an array or iterable contains a particular item using `toContain`:
 
 ```js
 const shoppingList = [
