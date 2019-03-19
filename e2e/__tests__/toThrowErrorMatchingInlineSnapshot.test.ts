@@ -81,9 +81,7 @@ test('cannot be used with .not', () => {
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch(
-      'Jest: `.not` cannot be used with `.toThrowErrorMatchingInlineSnapshot()`.',
-    );
+    expect(stderr).toMatch('.not cannot be used with snapshot matchers');
     expect(status).toBe(1);
   }
 });
