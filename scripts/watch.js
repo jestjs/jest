@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,7 +13,7 @@ const fs = require('fs');
 const {execSync} = require('child_process');
 const path = require('path');
 const chalk = require('chalk');
-const getPackages = require('./getPackages');
+const {getPackages} = require('./buildUtils');
 
 const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;
 
@@ -27,11 +27,12 @@ const exists = filename => {
 };
 const rebuild = filename => filesToBuild.set(filename, true);
 
-getPackages().forEach(p => {
+const packages = getPackages();
+packages.forEach(p => {
   const srcDir = path.resolve(p, 'src');
   try {
     fs.accessSync(srcDir, fs.F_OK);
-    fs.watch(path.resolve(p, 'src'), {recursive: true}, (event, filename) => {
+    fs.watch(srcDir, {recursive: true}, (event, filename) => {
       const filePath = path.resolve(srcDir, filename);
 
       if ((event === 'change' || event === 'rename') && exists(filePath)) {

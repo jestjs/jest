@@ -1,17 +1,26 @@
 {
   "name": "jest-environment-node",
-  "version": "23.4.0",
+  "version": "24.5.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest.git"
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-environment-node"
   },
   "license": "MIT",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
-    "jest-mock": "^23.2.0",
-    "jest-util": "^23.4.0"
+    "@jest/environment": "^24.5.0",
+    "@jest/fake-timers": "^24.5.0",
+    "@jest/types": "^24.5.0",
+    "jest-mock": "^24.5.0",
+    "jest-util": "^24.5.0"
   },
   "engines": {
     "node": ">= 6"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
 }

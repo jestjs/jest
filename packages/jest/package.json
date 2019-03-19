@@ -1,11 +1,12 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "23.6.0",
+  "version": "24.5.0",
   "main": "build/jest.js",
+  "types": "build/jest.d.ts",
   "dependencies": {
     "import-local": "^2.0.0",
-    "jest-cli": "^23.6.0"
+    "jest-cli": "^24.5.0"
   },
   "bin": {
     "jest": "./bin/jest.js"
@@ -44,5 +45,9 @@
     "testing",
     "typescript",
     "watch"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
 }

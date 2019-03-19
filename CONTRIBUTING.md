@@ -72,6 +72,14 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 1.  If you haven't already, complete the CLA.
 
+#### Changelog entries
+
+All changes that add a feature to or fix a bug in any of Jest's packages require a changelog entry containing the names of the packages affected, a description of the change, and the number of and link to the pull request. Try to match the structure of the existing entries.
+
+For significant changes to the documentation or website and things like cleanup, refactoring, and dependency updates, the "Chore & Maintenance" section of the changelog can be used.
+
+You can add or edit the changelog entry in the GitHub web interface once you have opened the pull request and know the number and link to it.
+
 #### Testing
 
 Code that is written needs to be tested to ensure that it achieves the desired behaviour. Tests either fall into a unit test or an integration test.
@@ -97,6 +105,14 @@ Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        0.232s, estimated 1s
 Ran all test suites.
+```
+
+##### Using jest-circus
+
+There may be cases where you want to run jest using `jest-circus` instead of `jest-jasmine2` (which is the default runner) for integration testing. In situtations like this just set the environment variable `JEST_CIRCUS` to 1. That will configure jest to use `jest-circus`. So something like this.
+
+```bash
+JEST_CIRCUS=1 yarn jest
 ```
 
 #### Additional Workflow for any changes made to website or docs

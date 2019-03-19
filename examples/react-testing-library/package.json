@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-react-testing-library",
+  "dependencies": {
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@babel/core": "*",
+    "@babel/plugin-proposal-class-properties": "*",
+    "@babel/preset-env": "*",
+    "@babel/preset-react": "*",
+    "babel-jest": "*",
+    "jest": "*",
+    "react-testing-library": "*"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}

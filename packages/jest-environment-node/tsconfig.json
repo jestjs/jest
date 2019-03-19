@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": "src"
+  },
+  "references": [
+    {"path": "../jest-environment"},
+    {"path": "../jest-fake-timers"},
+    {"path": "../jest-mock"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"}
+  ]
+}

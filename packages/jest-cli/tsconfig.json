@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "references": [
+    {"path": "../jest-core"},
+    {"path": "../jest-config"},
+    {"path": "../jest-test-result"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../jest-validate"}
+  ]
+}
