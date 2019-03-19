@@ -350,8 +350,6 @@ class Runtime {
         options,
         moduleRegistry,
       );
-
-      localModule.loaded = true;
     }
     return moduleRegistry[modulePath].exports;
   }
