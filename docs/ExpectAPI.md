@@ -65,13 +65,13 @@ test('numeric ranges', () => {
 });
 ```
 
-Tip: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
+_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
 
 ```ts
 declare global {
   namespace jest {
     interface Matchers<R> {
-      toBeWithinRange(a: number, b: number): R
+      toBeWithinRange(a: number, b: number): R;
     }
   }
 }
