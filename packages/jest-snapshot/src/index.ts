@@ -35,12 +35,12 @@ type Context = MatcherState & {
 type MatchSnapshotConfig = {
   context: Context;
   expectedArgument: string;
+  hint?: string;
   inlineSnapshot?: string;
   matcherName: string;
   options: MatcherHintOptions;
   propertyMatchers?: any;
   received: any;
-  testName?: string;
 };
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
@@ -48,17 +48,25 @@ const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
   'not',
 )} cannot be used with snapshot matchers`;
 
-// Display key in report when matcher fails same as in snapshot file,
-// but with optional name argument in green.
-const printKey = (path = '', name = '', count: number): string => {
-  const hasPath = path.length !== 0;
-  const hasName = name.length !== 0;
+const HINT_ARG = BOLD_WEIGHT('hint');
+const INLINE_SNAPSHOT_ARG = 'snapshot';
+const PROPERTY_MATCHERS_ARG = 'properties';
+
+// Display name in report when matcher fails same as in snapshot file,
+// but with optional hint argument in bold weight.
+const printName = (
+  concatenatedBlockNames = '',
+  hint = '',
+  count: number,
+): string => {
+  const hasNames = concatenatedBlockNames.length !== 0;
+  const hasHint = hint.length !== 0;
 
   return (
     '`' +
-    (hasPath ? utils.escapeBacktickString(path) : '') +
-    (hasPath && hasName ? ': ' : '') +
-    (hasName ? BOLD_WEIGHT(utils.escapeBacktickString(name)) : '') +
+    (hasNames ? utils.escapeBacktickString(concatenatedBlockNames) : '') +
+    (hasNames && hasHint ? ': ' : '') +
+    (hasHint ? BOLD_WEIGHT(utils.escapeBacktickString(hint)) : '') +
     ' ' +
     count +
     '`'
@@ -95,22 +103,22 @@ const toMatchSnapshot = function(
   this: Context,
   received: any,
   propertyMatchers?: any,
-  testName?: Config.Path,
+  hint?: Config.Path,
 ) {
   const matcherName = 'toMatchSnapshot';
   let expectedArgument = '';
   let secondArgument = '';
 
   if (typeof propertyMatchers === 'object' && propertyMatchers !== null) {
-    expectedArgument = 'properties';
-    if (typeof testName === 'string' && testName.length !== 0) {
-      secondArgument = BOLD_WEIGHT('hint');
+    expectedArgument = PROPERTY_MATCHERS_ARG;
+    if (typeof hint === 'string' && hint.length !== 0) {
+      secondArgument = HINT_ARG;
     }
   } else if (
     typeof propertyMatchers === 'string' &&
     propertyMatchers.length !== 0
   ) {
-    expectedArgument = BOLD_WEIGHT('hint');
+    expectedArgument = HINT_ARG;
   }
 
   const options: MatcherHintOptions = {
@@ -128,11 +136,11 @@ const toMatchSnapshot = function(
   return _toMatchSnapshot({
     context: this,
     expectedArgument,
+    hint,
     matcherName,
     options,
     propertyMatchers,
     received,
-    testName,
   });
 };
 
@@ -147,14 +155,14 @@ const toMatchInlineSnapshot = function(
   let secondArgument = '';
 
   if (typeof propertyMatchersOrInlineSnapshot === 'string') {
-    expectedArgument = 'snapshot';
+    expectedArgument = INLINE_SNAPSHOT_ARG;
   } else if (
     typeof propertyMatchersOrInlineSnapshot === 'object' &&
     propertyMatchersOrInlineSnapshot !== null
   ) {
-    expectedArgument = 'properties';
+    expectedArgument = PROPERTY_MATCHERS_ARG;
     if (typeof inlineSnapshot === 'string') {
-      secondArgument = 'snapshot';
+      secondArgument = INLINE_SNAPSHOT_ARG;
     }
   }
 
@@ -170,6 +178,7 @@ const toMatchInlineSnapshot = function(
   } else {
     propertyMatchers = propertyMatchersOrInlineSnapshot;
   }
+
   return _toMatchSnapshot({
     context: this,
     expectedArgument,
@@ -189,10 +198,10 @@ const _toMatchSnapshot = ({
   options,
   propertyMatchers,
   received,
-  testName,
+  hint,
 }: MatchSnapshotConfig) => {
   context.dontThrow && context.dontThrow();
-  testName = typeof propertyMatchers === 'string' ? propertyMatchers : testName;
+  hint = typeof propertyMatchers === 'string' ? propertyMatchers : hint;
 
   const {currentTestName, isNot, snapshotState} = context;
 
@@ -212,9 +221,9 @@ const _toMatchSnapshot = ({
   }
 
   const fullTestName =
-    testName && currentTestName
-      ? `${currentTestName}: ${testName}`
-      : currentTestName || '';
+    currentTestName && hint
+      ? `${currentTestName}: ${hint}`
+      : currentTestName || ''; // future BREAKING change: || hint
 
   if (typeof propertyMatchers === 'object') {
     if (propertyMatchers === null) {
@@ -231,7 +240,7 @@ const _toMatchSnapshot = ({
       const count = matched === null ? 1 : Number(matched[1]);
 
       const report = () =>
-        `Snapshot name: ${printKey(currentTestName, testName, count)}\n` +
+        `Snapshot name: ${printName(currentTestName, hint, count)}\n` +
         '\n' +
         `Expected properties: ${context.utils.printExpected(
           propertyMatchers,
@@ -282,7 +291,7 @@ const _toMatchSnapshot = ({
     });
 
     report = () =>
-      `Snapshot name: ${printKey(currentTestName, testName, count)}\n\n` +
+      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` +
       (diffMessage ||
         EXPECTED_COLOR('- ' + (expected || '')) +
           '\n' +
@@ -307,14 +316,12 @@ const _toMatchSnapshot = ({
 const toThrowErrorMatchingSnapshot = function(
   this: Context,
   received: any,
-  testName: string | undefined, // because error TS1016 for testName?: string
+  hint: string | undefined, // because error TS1016 for hint?: string
   fromPromise: boolean,
 ) {
   const matcherName = 'toThrowErrorMatchingSnapshot';
   const expectedArgument =
-    typeof testName === 'string' && testName.length !== 0
-      ? BOLD_WEIGHT('hint')
-      : '';
+    typeof hint === 'string' && hint.length !== 0 ? HINT_ARG : '';
   const options = {
     isNot: this.isNot,
     promise: this.promise,
@@ -325,10 +332,10 @@ const toThrowErrorMatchingSnapshot = function(
     {
       context: this,
       expectedArgument,
+      hint,
       matcherName,
       options,
       received,
-      testName,
     },
     fromPromise,
   );
@@ -341,7 +348,8 @@ const toThrowErrorMatchingInlineSnapshot = function(
   fromPromise?: boolean,
 ) {
   const matcherName = 'toThrowErrorMatchingInlineSnapshot';
-  const expectedArgument = typeof inlineSnapshot === 'string' ? 'snapshot' : '';
+  const expectedArgument =
+    typeof inlineSnapshot === 'string' ? INLINE_SNAPSHOT_ARG : '';
   const options: MatcherHintOptions = {
     isNot: this.isNot,
     promise: this.promise,
@@ -369,7 +377,7 @@ const _toThrowErrorMatchingSnapshot = (
     matcherName,
     options,
     received,
-    testName,
+    hint,
   }: MatchSnapshotConfig,
   fromPromise?: boolean,
 ) => {
@@ -407,11 +415,11 @@ const _toThrowErrorMatchingSnapshot = (
   return _toMatchSnapshot({
     context,
     expectedArgument,
+    hint,
     inlineSnapshot,
     matcherName,
     options,
     received: error.message,
-    testName,
   });
 };
 
