@@ -16,8 +16,9 @@
 - `[*]` Use property initializer syntax in Jest codebase ([#8117](https://github.com/facebook/jest/pull/8117))
 - `[docs]` Improve description of optional arguments in ExpectAPI.md ([#8126](https://github.com/facebook/jest/pull/8126)
 - `[*]` Move @types/node to the root package.json [#8129](https://github.com/facebook/jest/pull/8129))
-- `[*]` Add documentation and tests related to auto-mocking ([#8086](https://github.com/facebook/jest/pull/8099))
+- `[*]` Add documentation and tests related to auto-mocking ([#8099](https://github.com/facebook/jest/pull/8099))
 - `[*]` Add `jest-watch-typeahead` as a devDependency ([#6449](https://github.com/facebook/jest/pull/6449/files))
+- `[*]` upgrade TS to 3.4.0-dev\* for inceremental builds ([#8149](https://github.com/facebook/jest/pull/8149))
 
 ### Performance
 
