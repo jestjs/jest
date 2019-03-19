@@ -193,12 +193,12 @@ const toMatchInlineSnapshot = function(
 const _toMatchSnapshot = ({
   context,
   expectedArgument,
+  hint,
   inlineSnapshot,
   matcherName,
   options,
   propertyMatchers,
   received,
-  hint,
 }: MatchSnapshotConfig) => {
   context.dontThrow && context.dontThrow();
   hint = typeof propertyMatchers === 'string' ? propertyMatchers : hint;
