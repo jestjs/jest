@@ -161,6 +161,7 @@ const _run = async (
         } catch (err) {
           return err;
         }
+        return undefined;
       })();
     }
     filter = async (testPaths: Array<string>) => {
