@@ -38,3 +38,10 @@ test('shows error messages when called with invalid argument', () => {
   const {rest} = extractSummary(result.stderr);
   expect(wrap(rest)).toMatchSnapshot();
 });
+
+test('shows todo messages when in verbose mode', () => {
+  const result = runJest(dir, ['verbose.test.js', '--verbose']);
+  expect(result.status).toBe(0);
+  const {rest} = extractSummary(result.stderr);
+  expect(wrap(rest)).toMatchSnapshot();
+});

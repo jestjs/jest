@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[@jest/reporter]` Display todo and skip test descriptions when verbose is true ([#8038](https://github.com/facebook/jest/pull/8038))
+
 ### Fixes
 
 - `[jest-each]` Fix test function type ([#8145](https://github.com/facebook/jest/pull/8145))
