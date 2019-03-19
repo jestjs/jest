@@ -7,7 +7,7 @@
 - `[jest-each]` Fix test function type ([#8145](https://github.com/facebook/jest/pull/8145))
 - `[pretty-format]` Print `BigInt` as a readable number instead of `{}` ([#8138](https://github.com/facebook/jest/pull/8138))
 - `[jest-fake-timers]` `getTimerCount` not taking immediates and ticks into account ([#8139](https://github.com/facebook/jest/pull/8139))
-- `[jest-worker]`Move from `process.exit` to `exit` ([#7327](https://github.com/facebook/jest/pull/7327))
+- `[jest-worker]` Move from `process.exit` to `exit` ([#7327](https://github.com/facebook/jest/pull/7327))
 
 ### Chore & Maintenance
 
