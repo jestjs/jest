@@ -1111,8 +1111,6 @@ The optional `propertyMatchers` argument allows you to specify asymmetric matche
 
 The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
 
-_Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot._
-
 ### `.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)`
 
 Ensures that a value matches the most recent snapshot. Unlike [`.toMatchSnapshot()`](#tomatchsnapshotpropertymatchers-snapshotname), the snapshots will be written to the current source file, inline.

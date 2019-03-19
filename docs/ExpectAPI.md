@@ -1121,8 +1121,6 @@ You can provide an optional `propertyMatchers` object argument, which has asymme
 
 You can provide an optional `snapshotName` string argument that is appended to the test name. Jest always appends a number at the end of a snapshot key to differentiate snapshots from a single `it` or `test` block. Jest sorts snapshots by key in the corresponding `.snap` file.
 
-_Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot._
-
 ### `.toMatchInlineSnapshot(propertyMatchers?, inlineSnapshot)`
 
 Ensures that a value matches the most recent snapshot.
