@@ -38,3 +38,14 @@ export type TestPathCases = {
 export type TestPathCasesWithPathPattern = TestPathCases & {
   testPathPattern: (path: Config.Path) => boolean;
 };
+
+export type FilterResult = {
+  test: string;
+  message: string;
+};
+
+export type Filter = (
+  testPaths: Array<string>,
+) => Promise<{
+  filtered: Array<FilterResult>;
+}>;
