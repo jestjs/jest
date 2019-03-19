@@ -65,6 +65,18 @@ test('numeric ranges', () => {
 });
 ```
 
+_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
+
+```ts
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinRange(a: number, b: number): R;
+    }
+  }
+}
+```
+
 #### Async Matchers
 
 `expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a matcher called `toBeDivisibleByExternalValue`, where the divisible number is going to be pulled from an external source.
