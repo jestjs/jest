@@ -2,6 +2,8 @@
 
 'use strict';
 
-module.exports = async function(tests) {
-  throw new Error('My broken filter error.');
+module.exports = function(tests) {
+  return new Promise((resolve, reject) => {
+    reject(new Error('My broken filter error.'));
+  });
 };
