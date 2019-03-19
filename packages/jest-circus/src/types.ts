@@ -27,7 +27,7 @@ export type TestContext = Record<string, any>;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 export type Hook = {
-  asyncError: Exception;
+  asyncError: Error;
   fn: HookFn;
   type: HookType;
   parent: DescribeBlock;
@@ -41,7 +41,7 @@ export type Event =
       name: 'include_test_location_in_result';
     }
   | {
-      asyncError: Exception;
+      asyncError: Error;
       mode: BlockMode;
       name: 'start_describe_definition';
       blockName: BlockName;
@@ -52,14 +52,14 @@ export type Event =
       blockName: BlockName;
     }
   | {
-      asyncError: Exception;
+      asyncError: Error;
       name: 'add_hook';
       hookType: HookType;
       fn: HookFn;
       timeout: number | undefined;
     }
   | {
-      asyncError: Exception;
+      asyncError: Error;
       name: 'add_test';
       testName: TestName;
       fn?: TestFn;
