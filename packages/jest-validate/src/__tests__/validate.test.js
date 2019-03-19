@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -88,6 +88,20 @@ test('recursively omits null and undefined config values', () => {
     isValid: true,
   });
 });
+
+test.each([
+  [function() {}, function() {}],
+  [async function() {}, function() {}],
+  [function() {}, async function() {}],
+  [async function() {}, async function() {}],
+])(
+  'treat async and non-async functions as equivalent',
+  (value, exampleValue) => {
+    expect(
+      validate({name: value}, {exampleConfig: {name: exampleValue}}),
+    ).toEqual({hasDeprecationWarnings: false, isValid: true});
+  },
+);
 
 test('respects blacklist', () => {
   const warn = console.warn;

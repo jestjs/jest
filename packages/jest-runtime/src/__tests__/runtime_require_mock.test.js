@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -7,8 +7,6 @@
  */
 
 'use strict';
-
-const path = require('path');
 
 let createRuntime;
 const consoleWarn = console.warn;
@@ -136,29 +134,6 @@ describe('Runtime', () => {
           runtime.requireMock(runtime.__mockRootPath, 'DoesntExist');
         }).toThrow();
       }));
-
-    it('uses the closest manual mock when duplicates exist', () => {
-      console.warn = jest.fn();
-      return createRuntime(__filename, {
-        rootDir: path.resolve(
-          path.dirname(__filename),
-          'test_root_with_dup_mocks',
-        ),
-      }).then(runtime => {
-        expect(console.warn).toBeCalled();
-        const exports1 = runtime.requireMock(
-          runtime.__mockRootPath,
-          './subdir1/my_module',
-        );
-        expect(exports1.modulePath).toEqual('subdir1/__mocks__/my_module.js');
-
-        const exports2 = runtime.requireMock(
-          runtime.__mockRootPath,
-          './subdir2/my_module',
-        );
-        expect(exports2.modulePath).toEqual('subdir2/__mocks__/my_module.js');
-      });
-    });
 
     it('uses manual mocks when using a custom resolver', () =>
       createRuntime(__filename, {

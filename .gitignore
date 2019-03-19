@@ -1,3 +1,4 @@
+.idea
 .DS_STORE
 .eslintcache
 *.swp
@@ -5,6 +6,8 @@
 /examples/*/node_modules/
 
 /e2e/*/node_modules
+/e2e/*/.pnp
+/e2e/*/.pnp.js
 !/e2e/presets/json/node_modules
 !/e2e/presets/js/node_modules
 /e2e/transform/*/coverage
@@ -25,9 +28,13 @@
 /website/translated_docs
 /website/i18n/*
 
+/reports/*
+
 coverage
 lerna-debug.log
 npm-debug.log
 npm-debug.log*
 yarn-error.log*
 junit.xml
+
+*.tsbuildinfo
