@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[*]` Filter API pre-filter setup hook ([#8142](https://github.com/facebook/jest/pull/8142))
+
 ### Fixes
 
 - `[pretty-format]` Print `BigInt` as a readable number instead of `{}` [#8138](https://github.com/facebook/jest/pull/8138)

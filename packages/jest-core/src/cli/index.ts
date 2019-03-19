@@ -147,7 +147,7 @@ const _run = async (
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
   // Filter may need to do an HTTP call or something similar to setup.
-  // We will not wait on an async response from this before using the filter.
+  // We will wait on an async response from this before using the filter.
   let filter: Filter | undefined;
   if (globalConfig.filter && !globalConfig.skipFilter) {
     const rawFilter = require(globalConfig.filter);
