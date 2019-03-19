@@ -137,7 +137,13 @@ const IteratorSymbol = Symbol.iterator;
 
 const hasIterator = (object: any) =>
   !!(object != null && object[IteratorSymbol]);
-export const iterableEquality = (a: any, b: any) => {
+
+export const iterableEquality = (
+  a: any,
+  b: any,
+  aStack: Array<any> = [],
+  bStack: Array<any> = [],
+) => {
   if (
     typeof a !== 'object' ||
     typeof b !== 'object' ||
@@ -152,6 +158,24 @@ export const iterableEquality = (a: any, b: any) => {
     return false;
   }
 
+  let length = aStack.length;
+  while (length--) {
+    // Linear search. Performance is inversely proportional to the number of
+    // unique nested structures.
+    // circular references at same depth are equal
+    // circular reference is not equal to non-circular one
+    if (aStack[length] === a) {
+      return bStack[length] === b;
+    } else if (bStack[length] === b) {
+      return false;
+    }
+  }
+  aStack.push(a);
+  bStack.push(b);
+
+  const iterableEqualityWithStack = (a: any, b: any) =>
+    iterableEquality(a, b, aStack, bStack);
+
   if (a.size !== undefined) {
     if (a.size !== b.size) {
       return false;
@@ -161,7 +185,7 @@ export const iterableEquality = (a: any, b: any) => {
         if (!b.has(aValue)) {
           let has = false;
           for (const bValue of b) {
-            const isEqual = equals(aValue, bValue, [iterableEquality]);
+            const isEqual = equals(aValue, bValue, [iterableEqualityWithStack]);
             if (isEqual === true) {
               has = true;
             }
@@ -173,25 +197,30 @@ export const iterableEquality = (a: any, b: any) => {
           }
         }
       }
-      if (allFound) {
-        return true;
-      }
+
+      aStack.pop();
+      bStack.pop();
+
+      return allFound;
     } else if (isA('Map', a) || isImmutableUnorderedKeyed(a)) {
       let allFound = true;
       for (const aEntry of a) {
         if (
           !b.has(aEntry[0]) ||
-          !equals(aEntry[1], b.get(aEntry[0]), [iterableEquality])
+          !equals(aEntry[1], b.get(aEntry[0]), [iterableEqualityWithStack])
         ) {
           let has = false;
           for (const bEntry of b) {
-            const matchedKey = equals(aEntry[0], bEntry[0], [iterableEquality]);
+            const matchedKey = equals(aEntry[0], bEntry[0], [
+              iterableEqualityWithStack,
+            ]);
 
             let matchedValue = false;
             if (matchedKey === true) {
-              matchedValue = equals(aEntry[1], bEntry[1], [iterableEquality]);
+              matchedValue = equals(aEntry[1], bEntry[1], [
+                iterableEqualityWithStack,
+              ]);
             }
-
             if (matchedValue === true) {
               has = true;
             }
@@ -203,9 +232,9 @@ export const iterableEquality = (a: any, b: any) => {
           }
         }
       }
-      if (allFound) {
-        return true;
-      }
+      aStack.pop();
+      bStack.pop();
+      return allFound;
     }
   }
 
@@ -213,13 +242,21 @@ export const iterableEquality = (a: any, b: any) => {
 
   for (const aValue of a) {
     const nextB = bIterator.next();
-    if (nextB.done || !equals(aValue, nextB.value, [iterableEquality])) {
+    if (
+      nextB.done ||
+      !equals(aValue, nextB.value, [
+        (a: any, b: any) => iterableEquality(a, b, aStack, bStack),
+      ])
+    ) {
       return false;
     }
   }
   if (!bIterator.next().done) {
     return false;
   }
+
+  aStack.pop();
+  bStack.pop();
   return true;
 };
 
