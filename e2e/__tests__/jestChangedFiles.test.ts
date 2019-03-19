@@ -54,8 +54,8 @@ test('gets hg SCM roots and dedups them', async () => {
   // NOTE: This test can break if you have a .hg repo initialized inside your
   // os tmp directory.
   expect(hgRepos).toHaveLength(2);
-  expect(hgRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo$/);
-  expect(hgRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo$/);
+  expect(hgRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo\/?$/);
+  expect(hgRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
 });
 
 test('gets git SCM roots and dedups them', async () => {
@@ -88,8 +88,8 @@ test('gets git SCM roots and dedups them', async () => {
   // NOTE: This test can break if you have a .git repo initialized inside your
   // os tmp directory.
   expect(gitRepos).toHaveLength(2);
-  expect(gitRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo$/);
-  expect(gitRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo$/);
+  expect(gitRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo\/?$/);
+  expect(gitRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
 });
 
 test('gets mixed git and hg SCM roots and dedups them', async () => {
@@ -121,8 +121,8 @@ test('gets mixed git and hg SCM roots and dedups them', async () => {
   // inside your os tmp directory.
   expect(gitRepos).toHaveLength(1);
   expect(hgRepos).toHaveLength(1);
-  expect(gitRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo$/);
-  expect(hgRepos[0]).toMatch(/\/jest-changed-files-test-dir\/second-repo$/);
+  expect(gitRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo\/?$/);
+  expect(hgRepos[0]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
 });
 
 test('gets changed files for git', async () => {

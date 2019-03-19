@@ -53,6 +53,10 @@ export type TestRunnerContext = {
   changedFiles?: Set<Config.Path>;
 };
 
+export type TestRunnerSerializedContext = {
+  changedFiles?: Array<Config.Path>;
+};
+
 // TODO: Should live in `@jest/core` or `jest-watcher`
 export type WatcherState = {
   interrupted: boolean;

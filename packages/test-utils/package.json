@@ -1,8 +1,8 @@
 {
   "name": "@jest/test-utils",
-  "version": "24.3.0",
+  "version": "24.4.0",
   "private": true,
   "license": "MIT",
   "main": "build/index.js",
-  "types": "src/index.d.ts"
+  "types": "build/index.d.ts"
 }

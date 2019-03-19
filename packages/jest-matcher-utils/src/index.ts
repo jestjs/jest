@@ -40,6 +40,7 @@ export {DiffOptions};
 export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
 export const INVERTED_COLOR = chalk.inverse;
+export const BOLD_WEIGHT = chalk.bold;
 const DIM_COLOR = chalk.dim;
 
 const NUMBERS = [

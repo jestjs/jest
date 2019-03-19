@@ -16,6 +16,7 @@ import {normalizeIcons} from './Utils';
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
 type RunJestOptions = {
+  nodeOptions?: string;
   nodePath?: string;
   skipPkgJsonCheck?: boolean; // don't complain if can't find package.json
   stripAnsi?: boolean; // remove colors from stdout and stderr,
@@ -72,6 +73,7 @@ function spawnJest(
   }
   const env = Object.assign({}, process.env, {FORCE_COLOR: '0'});
 
+  if (options.nodeOptions) env['NODE_OPTIONS'] = options.nodeOptions;
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
   const spawnArgs = [JEST_PATH, ...(args || [])];

@@ -29,8 +29,10 @@ const adapter: SCMAdapter = {
     const changedSince: string | undefined =
       options && (options.withAncestor ? 'HEAD^' : options.changedSince);
 
-    const includePaths: Array<Config.Path> =
-      (options && options.includePaths) || [];
+    const includePaths: Array<Config.Path> = (
+      (options && options.includePaths) ||
+      []
+    ).map(absoluteRoot => path.normalize(path.relative(cwd, absoluteRoot)));
 
     if (options && options.lastCommit) {
       return findChangedFilesUsingCommand(
@@ -72,12 +74,12 @@ const adapter: SCMAdapter = {
   },
 
   getRoot: async cwd => {
-    const options = ['rev-parse', '--show-toplevel'];
+    const options = ['rev-parse', '--show-cdup'];
 
     try {
       const result = await execa('git', options, {cwd});
 
-      return result.stdout;
+      return path.resolve(cwd, result.stdout);
     } catch (e) {
       return null;
     }

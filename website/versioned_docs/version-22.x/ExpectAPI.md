@@ -61,6 +61,18 @@ test('even and odd numbers', () => {
 });
 ```
 
+_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
+
+```ts
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinRange(a: number, b: number): R;
+    }
+  }
+}
+```
+
 Matchers should return an object with two keys. `pass` indicates whether there was a match or not, and `message` provides a function with no arguments that returns an error message in case of failure. Thus, when `pass` is false, `message` should return the error message for when `expect(x).yourMatcher()` fails. And when `pass` is true, `message` should return the error message for when `expect(x).not.yourMatcher()` fails.
 
 These helper functions and properties can be found on `this` inside a custom matcher:
@@ -844,8 +856,6 @@ test('this house has my desired features', () => {
 This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](SnapshotTesting.md) for more information.
 
 You can also specify an optional snapshot name. Otherwise, the name is inferred from the test.
-
-_Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot._
 
 ### `.toThrow(error)`
 

@@ -8,7 +8,7 @@
 import fs from 'fs';
 import {Config} from '@jest/types';
 import exit from 'exit';
-import {CoverageReporterOptions} from './types';
+import {CoverageReporterSerializedOptions} from './types';
 
 import generateEmptyCoverage, {
   CoverageWorkerResult,
@@ -18,7 +18,7 @@ export type CoverageWorkerData = {
   globalConfig: Config.GlobalConfig;
   config: Config.ProjectConfig;
   path: Config.Path;
-  options?: CoverageReporterOptions;
+  options?: CoverageReporterSerializedOptions;
 };
 
 export {CoverageWorkerResult};
@@ -40,6 +40,6 @@ export function worker({
     path,
     globalConfig,
     config,
-    options && options.changedFiles,
+    options && options.changedFiles && new Set(options.changedFiles),
   );
 }

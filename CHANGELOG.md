@@ -3,14 +3,69 @@
 ### Features
 
 - `[expect]`: Improve report when matcher fails, part 13 ([#8077](https://github.com/facebook/jest/pull/8077))
+- `[@jest/core]` Filter API pre-filter setup hook ([#8142](https://github.com/facebook/jest/pull/8142))
+- `[jest-snapshot]` Improve report when matcher fails, part 14 ([#8132](https://github.com/facebook/jest/pull/8132))
+- `[@jest/reporter]` Display todo and skip test descriptions when verbose is true ([#8038](https://github.com/facebook/jest/pull/8038))
 
 ### Fixes
+
+- `[jest-changed-files]` Change method of obtaining git root ([#8052](https://github.com/facebook/jest/pull/8052))
+- `[jest-each]` Fix test function type ([#8145](https://github.com/facebook/jest/pull/8145))
+- `[jest-fake-timers]` `getTimerCount` not taking immediates and ticks into account ([#8139](https://github.com/facebook/jest/pull/8139))
+- `[jest-runtime]` Allow json file as manual mock ([#8159](https://github.com/facebook/jest/pull/8159))
+- `[pretty-format]` Print `BigInt` as a readable number instead of `{}` ([#8138](https://github.com/facebook/jest/pull/8138))
+
+### Chore & Maintenance
+
+- `[*]` Remove flow from code base ([#8061](https://github.com/facebook/jest/pull/8061))
+- `[*]` Use property initializer syntax in Jest codebase ([#8117](https://github.com/facebook/jest/pull/8117))
+- `[*]` Move @types/node to the root package.json [#8129](https://github.com/facebook/jest/pull/8129))
+- `[*]` Add documentation and tests related to auto-mocking ([#8099](https://github.com/facebook/jest/pull/8099))
+- `[*]` Add `jest-watch-typeahead` as a devDependency ([#6449](https://github.com/facebook/jest/pull/6449))
+- `[*]` upgrade TS to 3.4.0-dev\* for inceremental builds ([#8149](https://github.com/facebook/jest/pull/8149))
+- `[docs]` Improve description of optional arguments in ExpectAPI.md ([#8126](https://github.com/facebook/jest/pull/8126)
+
+### Performance
+
+- `[jest-haste-map]` Avoid persisting haste map or processing files when not changed ([#8153](https://github.com/facebook/jest/pull/8153))
+
+## 24.5.0
+
+### Features
+
+- `[jest-haste-map]` Expose `throwOnModuleCollision` via `config.haste` ([#8113](https://github.com/facebook/jest/pull/8113))
+
+### Chore & Maintenance
+
+- `[expect]` Export `Matchers` interface from `expect` ([#8093](https://github.com/facebook/jest/pull/8093))
+
+## 24.4.0
+
+### Features
+
+- `[jest-resolve]` Now supports PnP environment without plugins ([#8094](https://github.com/facebook/jest/pull/8094))
+
+### Fixes
+
+- `[expect]` Compare DOM nodes even if there are multiple Node classes ([#8064](https://github.com/facebook/jest/pull/8064))
+- `[jest-worker]` `worker.getStdout()` can return `null` ([#8083](https://github.com/facebook/jest/pull/8083))
+- `[jest-worker]` Re-attach stdout and stderr from new processes/threads created after retries ([#8087](https://github.com/facebook/jest/pull/8087))
+- `[jest-reporters/jest-runner]` Serialize `changedFiles` passed to workers ([#8090](https://github.com/facebook/jest/pull/8090))
+
+### Chore & Maintenance
+
+- `[*]` Make sure to include `d.ts` files in the tarball when building ([#8086](https://github.com/facebook/jest/pull/8086))
+
+## 24.3.1
+
+### Fixes
+
+- `[jest-cli]` export functions compatible with `import {default}` ([#8080](https://github.com/facebook/jest/pull/8080))
+- `[jest-worker]`: Fix retries and error notification in workers ([#8079](https://github.com/facebook/jest/pull/8079))
 
 ### Chore & Maintenance
 
 - `[pretty-format]`: Use `react-is` instead of manual `$$typeof` checks ([#8060](https://github.com/facebook/jest/pull/8060))
-
-### Performance
 
 ## 24.3.0
 
