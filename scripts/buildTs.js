@@ -22,7 +22,11 @@ const packagesWithTs = packages.filter(p =>
 
 const args = [
   '--max-old-space-size=4096',
-  'node_modules/.bin/tsc',
+  path.resolve(
+    require.resolve('typescript/package.json'),
+    '..',
+    require('typescript/package.json').bin.tsc
+  ),
   '-b',
   ...packagesWithTs,
   ...process.argv.slice(2),
