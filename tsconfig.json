@@ -23,5 +23,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "exclude": ["**/__tests__/**/*", "**/build/**/*", "**/build-es5/**/*"]
+  "exclude": [
+    ".yarn/releases/*",
+    "**/__tests__/**/*",
+    "**/build/**/*",
+    "**/build-es5/**/*"
+  ]
 }

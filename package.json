@@ -2,6 +2,7 @@
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-class-properties": "^7.3.4",
     "@babel/plugin-transform-modules-commonjs": "^7.1.0",
     "@babel/plugin-transform-strict-mode": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
@@ -13,6 +14,7 @@
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.0",
     "@types/jest": "^24.0.4",
+    "@types/node": "*",
     "@typescript-eslint/eslint-plugin": "^1.4.2",
     "@typescript-eslint/parser": "^1.4.2",
     "ansi-regex": "^4.0.0",
@@ -37,7 +39,6 @@
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-relay": "~0.0.19",
     "execa": "^1.0.0",
-    "flow-bin": "^0.94.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.15",
     "isbinaryfile": "^4.0.0",
@@ -87,14 +88,13 @@
     "lint:md": "yarn --silent lint:md:ci --fix",
     "lint:md:ci": "prettylint '**/*.{md,yml,yaml}' --ignore-path .gitignore",
     "postinstall": "opencollective postinstall && yarn build",
-    "publish": "yarn build-clean && yarn typecheck && yarn build && lerna publish --silent",
+    "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
     "test-ci": "yarn jest-coverage -i --config jest.config.ci.js && yarn test-leak && node scripts/mapCoverage.js && codecov",
     "test-ci-partial": "yarn jest -i --config jest.config.ci.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
-    "test": "yarn typecheck && yarn lint && yarn jest",
-    "typecheck": "flow check --include-warnings",
+    "test": "yarn lint && yarn jest",
     "watch": "yarn build && node ./scripts/watch.js",
     "watch:ts": "yarn build:ts --watch"
   },
@@ -134,6 +134,7 @@
     ]
   },
   "dependencies": {
+    "jest-watch-typeahead": "^0.2.2-0",
     "opencollective": "^1.0.3"
   },
   "collective": {

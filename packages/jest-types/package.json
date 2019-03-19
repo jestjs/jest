@@ -1,6 +1,6 @@
 {
   "name": "@jest/types",
-  "version": "24.1.0",
+  "version": "24.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -18,5 +18,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
 }
