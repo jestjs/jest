@@ -19,7 +19,7 @@ import {
 import {JestEnvironment} from '@jest/environment';
 import RuntimeClass from 'jest-runtime';
 import fs from 'graceful-fs';
-import {ErrorWithStack, setGlobal} from 'jest-util';
+import {ErrorWithStack, setGlobal, interopRequireDefault} from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
 import Resolver from 'jest-resolve';
 import {getTestEnvironment} from 'jest-config';
@@ -104,7 +104,9 @@ async function runTestInternal(
     });
   }
 
-  const TestEnvironment: typeof JestEnvironment = require(testEnvironment);
+  const TestEnvironment: typeof JestEnvironment = interopRequireDefault(
+    require(testEnvironment),
+  ).default;
   const testFramework: TestFramework =
     process.env.JEST_CIRCUS === '1'
       ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
