@@ -845,8 +845,6 @@ This ensures that a value matches the most recent snapshot. Check out [the Snaps
 
 You can also specify an optional snapshot name. Otherwise, the name is inferred from the test.
 
-_Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot._
-
 ### `.toThrow(error)`
 
 Also under the alias: `.toThrowError(error)`
