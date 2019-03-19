@@ -369,11 +369,12 @@ class HasteMap extends EventEmitter {
         });
         const __hasteMapForTest =
           (process.env.NODE_ENV === 'test' && hasteMap) || null;
-        return this._watch(hasteMap).then(() => ({
+        await this._watch(hasteMap);
+        return {
           __hasteMapForTest,
           hasteFS,
           moduleMap,
-        }));
+        };
       })();
     }
     return this._buildPromise;
