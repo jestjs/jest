@@ -1,35 +1,19 @@
-<h1 align="center">
-  <img src="https://jestjs.io/img/jest.png" height="150" width="150"/>
-  <p align="center">Jest</p>
-  <p align="center" style="font-size: 0.5em">🃏 Delightful JavaScript Testing</p>
-</h1>
-
-<p align="center">
-    <a href="https://circleci.com/gh/facebook/jest"><img src="https://circleci.com/gh/facebook/jest.svg?style=shield" alt="CircleCI Build Status"></a>
-    <a href="https://dev.azure.com/jestjs/jest/_build/latest?definitionId=1?branchName=master"><img src="https://dev.azure.com/jestjs/jest/_apis/build/status/facebook.jest?branchName=master" alt="Azure Pipelines Build Status"></a>
-    <a href="https://travis-ci.org/facebook/jest"><img src="https://travis-ci.org/facebook/jest.svg?branch=master" alt="Travis Build Status"></a>
-    <a href="https://ci.appveyor.com/project/Daniel15/jest/branch/master"><img src="https://ci.appveyor.com/api/projects/status/8n38o44k585hhvhd/branch/master?svg=true" alt="Windows Build Status"></a>
-    <a href="https://codecov.io/gh/facebook/jest"><img src="https://codecov.io/gh/facebook/jest/branch/master/graph/badge.svg" alt="Codecov badge"></a>
-    <a href="http://badge.fury.io/js/jest"><img src="https://badge.fury.io/js/jest.svg" alt="npm version"></a>
-    <a href="https://dependabot.com/compatibility-score.html?dependency-name=jest&amp;package-manager=npm_and_yarn&amp;version-scheme=semver"><img src="https://api.dependabot.com/badges/compatibility_score?dependency-name=jest&amp;package-manager=npm_and_yarn&amp;version-scheme=semver" alt="SemVer">
-    <a href="https://twitter.com/acdlite/status/974390255393505280"><img src="https://img.shields.io/badge/speed-blazing%20%F0%9F%94%A5-brightgreen.svg" alt="Blazing Fast"></a>
-</p>
-<p align="center">
-    <a href="#backers"><img src="https://opencollective.com/jest/backers/badge.svg" alt="Backers on Open Collective"></a>
-    <a href="#sponsors"><img src="https://opencollective.com/jest/sponsors/badge.svg" alt="Sponsors on Open Collective"></a>
-    <a href="https://github.com/facebook/jest/blob/master/CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg" alt="PR's welcome"></a>
-    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-     <a href="https://snyk.io/test/github/facebook/jest?targetFile=packages/jest/package.json"><img src="https://snyk.io/test/github/facebook/jest/badge.svg?targetFile=packages/jest/package.json" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/facebook/jest?targetFile=packages/jest/package.json" style="max-width:100%;"></a>
-</p>
-<p align="center">
-    <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>  
+<p>
+  <a href="http://badge.fury.io/js/jest"><img src="https://badge.fury.io/js/jest.svg" alt="npm version"></a>
+  <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img align="right" src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>
 </p>
 
-**👩🏻‍💻 Developer Ready**: Complete and ready to set-up JavaScript testing solution. Works out of the box for any React project.
+<p align="center"><img src="website/static/img/jest-readme-headline.png" height="289" width="700"/></p>
 
-**🏃🏽 Instant Feedback**: Fast interactive watch mode runs only test files related to changed files and is optimized to give signal quickly.
+<h1 align="center">🃏 Delightful JavaScript Testing</h1>
 
-**📸 Snapshot Testing**: Capture snapshots of React trees or other serializable values to simplify testing and to analyze how state changes over time.
+**👩🏻‍💻 Developer Ready**: A comprehensive JavaScript testing solution. Works out of the box for most JavaScript projects.
+
+**🏃🏽 Instant Feedback**: Fast, interactive watch mode only runs test files related to changed files.
+
+**📸 Snapshot Testing**: Capture snapshots of large objects to simplify testing and to analyze how they change over time.
+
+<p align="right"><em>See more on <a href="https://jestjs.io">jestjs.io</a></em></p>
 
 ## Getting Started
 
@@ -119,25 +103,18 @@ To use [Babel](http://babeljs.io/), install required dependencies via `yarn`:
 yarn add --dev babel-jest @babel/core @babel/preset-env
 ```
 
-Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
+If you do not already have babel configured for your project, you can use Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
 
 ```javascript
 // babel.config.js
 module.exports = {
-  presets: [
-    [
-      '@babel/preset-env',
-      {
-        targets: {
-          node: 'current',
-        },
-      },
-    ],
-  ],
+  presets: [['@babel/preset-env', {targets: {node: 'current'}}]],
 };
 ```
 
-**The ideal configuration for Babel will depend on your project.** See [Babel's docs](https://babeljs.io/docs/en/) for more details.
+_The ideal configuration for Babel will depend on your project._ See [Babel's docs](https://babeljs.io/docs/en/) for more details.
+
+<details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
 
 Jest will set `process.env.NODE_ENV` to `'test'` if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
 
@@ -162,20 +139,9 @@ module.exports = {
 };
 ```
 
-#### Babel 6
+</details>
 
-Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel 7, which is actively maintained. However, if you cannot upgrade to Babel 7, either keep using Jest 23 or upgrade to Jest 24 with `babel-jest` locked at version 23, like in the example below:
-
-```
-"dependencies": {
-  "babel-core": "^6.26.3",
-  "babel-jest": "^23.6.0",
-  "babel-preset-env": "^1.7.0",
-  "jest": "^24.0.0"
-}
-```
-
-While we generally recommend using the same version of every Jest package, this workaround will allow you to continue using the latest version of Jest with Babel 6 for now.
+<!-- Note that the Babel 6 section in the Getting Started was removed -->
 
 ### Using webpack
 
@@ -183,9 +149,25 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 
 ### Using TypeScript
 
-Jest supports TypeScript out of the box, via Babel.
+Jest supports TypeScript, via Babel. First make sure you followed the instructions on [using Babel](#using-babel) above. Next install the `@babel/preset-typescript` via `yarn`:
 
-However, there are some caveats to using Typescript with Babel, see http://artsy.github.io/blog/2017/11/27/Babel-7-and-TypeScript/. Another caveat is that Jest will not typecheck your tests. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+```bash
+yarn add --dev @babel/preset-typescript
+```
+
+Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
+
+```diff
+// babel.config.js
+module.exports = {
+  presets: [
+    ['@babel/preset-env', {targets: {node: 'current'}}],
++    '@babel/preset-typescript',
+  ],
+};
+```
+
+Note, there are some [caveats](https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is just transpilation, Jest will not type-check your tests as they are ran. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
 
 <!-- end copied -->
 
@@ -200,7 +182,7 @@ Learn more about using [Jest on the official site!](https://jestjs.io)
 
 ## Badge
 
-Show the world you're using _Jest_ → [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
+Show the world you're using _Jest_ `→` [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 
 ```md
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)

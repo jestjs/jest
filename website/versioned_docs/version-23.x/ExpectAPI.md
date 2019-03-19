@@ -66,6 +66,18 @@ test('numeric ranges', () => {
 });
 ```
 
+_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
+
+```ts
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinRange(a: number, b: number): R;
+    }
+  }
+}
+```
+
 #### Async Matchers
 
 `expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a matcher called `toBeDivisibleByExternalValue`, where the divisible number is going to be pulled from an external source.
@@ -1110,8 +1122,6 @@ This ensures that a value matches the most recent snapshot. Check out [the Snaps
 The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values. Any value will be matched exactly if not provided as a matcher.
 
 The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
-
-_Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot._
 
 ### `.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)`
 
