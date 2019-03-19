@@ -128,7 +128,7 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(({hasteMap, removedFiles}) => {
+    }).then(({changedFiles, hasteMap, removedFiles}) => {
       const client = watchman.Client.mock.instances[0];
       const calls = client.command.mock.calls;
 
@@ -164,6 +164,8 @@ describe('watchman watch', () => {
           '': 'c:fake-clock:1',
         }),
       );
+
+      expect(changedFiles).toEqual(undefined);
 
       expect(hasteMap.files).toEqual(mockFiles);
 
@@ -210,7 +212,8 @@ describe('watchman watch', () => {
           : null,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(({hasteMap, removedFiles}) => {
+    }).then(({changedFiles, hasteMap, removedFiles}) => {
+      expect(changedFiles).toEqual(undefined);
       expect(hasteMap.files).toEqual(
         createMap({
           [path.join(DURIAN_RELATIVE, 'foo.1.js')]: ['', 33, 43, 0, [], null],
@@ -265,13 +268,19 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(({hasteMap, removedFiles}) => {
+    }).then(({changedFiles, hasteMap, removedFiles}) => {
       // The object was reused.
       expect(hasteMap.files).toBe(mockFiles);
 
       expect(hasteMap.clocks).toEqual(
         createMap({
           '': 'c:fake-clock:2',
+        }),
+      );
+
+      expect(changedFiles).toEqual(
+        createMap({
+          [KIWI_RELATIVE]: ['', 42, 40, 0, [], null],
         }),
       );
 
@@ -349,7 +358,7 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(({hasteMap, removedFiles}) => {
+    }).then(({changedFiles, hasteMap, removedFiles}) => {
       // The file object was *not* reused.
       expect(hasteMap.files).not.toBe(mockFiles);
 
@@ -358,6 +367,8 @@ describe('watchman watch', () => {
           '': 'c:fake-clock:3',
         }),
       );
+
+      expect(changedFiles).toEqual(undefined);
 
       // strawberry and melon removed from the file list.
       expect(hasteMap.files).toEqual(
@@ -443,13 +454,15 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(({hasteMap, removedFiles}) => {
+    }).then(({changedFiles, hasteMap, removedFiles}) => {
       expect(hasteMap.clocks).toEqual(
         createMap({
           [FRUITS_RELATIVE]: 'c:fake-clock:3',
           [VEGETABLES_RELATIVE]: 'c:fake-clock:4',
         }),
       );
+
+      expect(changedFiles).toEqual(undefined);
 
       expect(hasteMap.files).toEqual(
         createMap({
@@ -506,7 +519,7 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: [...ROOTS, ROOT_MOCK],
-    }).then(({hasteMap, removedFiles}) => {
+    }).then(({changedFiles, hasteMap, removedFiles}) => {
       const client = watchman.Client.mock.instances[0];
       const calls = client.command.mock.calls;
 
@@ -537,6 +550,8 @@ describe('watchman watch', () => {
           '': 'c:fake-clock:1',
         }),
       );
+
+      expect(changedFiles).toEqual(new Map());
 
       expect(hasteMap.files).toEqual(new Map());
 
