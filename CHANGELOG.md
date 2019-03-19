@@ -7,6 +7,7 @@
 - `[jest-each]` Fix test function type ([#8145](https://github.com/facebook/jest/pull/8145))
 - `[pretty-format]` Print `BigInt` as a readable number instead of `{}` ([#8138](https://github.com/facebook/jest/pull/8138))
 - `[jest-fake-timers]` `getTimerCount` not taking immediates and ticks into account ([#8139](https://github.com/facebook/jest/pull/8139))
+- `[jest-worker]`Move from `process.exit` to `exit` ([#7327](https://github.com/facebook/jest/pull/7327))
 
 ### Chore & Maintenance
 
@@ -15,7 +16,7 @@
 - `[docs]` Improve description of optional arguments in ExpectAPI.md ([#8126](https://github.com/facebook/jest/pull/8126)
 - `[*]` Move @types/node to the root package.json [#8129](https://github.com/facebook/jest/pull/8129))
 - `[*]` Add documentation and tests related to auto-mocking ([#8086](https://github.com/facebook/jest/pull/8099))
-- `[*]` Add `jest-watch-typeahead` as a devDependency ([#6449](https://github.com/facebook/jest/pull/6449/files))
+- `[*]` Add `jest-watch-typeahead` as a devDependency ([#6449](https://github.com/facebook/jest/pull/6449))
 
 ### Performance
 
