@@ -3,14 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-'use strict';
 
 import path from 'path';
 import {sync as spawnSync} from 'execa';
-import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 
 skipSuiteOnWindows();
 

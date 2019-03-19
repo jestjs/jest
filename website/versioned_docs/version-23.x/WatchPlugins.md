@@ -156,6 +156,7 @@ class MyWatchPlugin {
 For stability and safety reasons, only part of the global configuration keys can be updated with `updateConfigAndRun`. The current white list is as follows:
 
 - [`bail`](configuration.html#bail-boolean)
+- [`changedSince`](cli.html#changedsince)
 - [`collectCoverage`](configuration.html#collectcoverage-boolean)
 - [`collectCoverageFrom`](configuration.html#collectcoveragefrom-array)
 - [`collectCoverageOnlyFrom`](configuration.html#collectcoverageonlyfrom-array)
@@ -164,6 +165,7 @@ For stability and safety reasons, only part of the global configuration keys can
 - [`notify`](configuration.html#notify-boolean)
 - [`notifyMode`](configuration.html#notifymode-string)
 - [`onlyFailures`](configuration.html#onlyfailures-boolean)
+- [`passWithNoTests`](cli.html#passwithnotests)
 - [`reporters`](configuration.html#reporters-array-modulename-modulename-options)
 - [`testNamePattern`](cli.html#testnamepattern-regex)
 - [`testPathPattern`](cli.html#testpathpattern-regex)

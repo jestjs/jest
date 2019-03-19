@@ -66,6 +66,18 @@ test('numeric ranges', () => {
 });
 ```
 
+_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
+
+```ts
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinRange(a: number, b: number): R;
+    }
+  }
+}
+```
+
 #### Async Matchers
 
 `expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a matcher called `toBeDivisibleByExternalValue`, where the divisible number is going to be pulled from an external source.
@@ -1029,7 +1041,7 @@ test('the house has my desired features', () => {
 ```
 
 ```js
-describe('toMatchObject applied to arrays arrays', () => {
+describe('toMatchObject applied to arrays', () => {
   test('the number of elements must match exactly', () => {
     expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}, {baz: 1}]);
   });
@@ -1111,13 +1123,11 @@ The optional `propertyMatchers` argument allows you to specify asymmetric matche
 
 The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
 
-_Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot._
-
 ### `.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)`
 
 Ensures that a value matches the most recent snapshot. Unlike [`.toMatchSnapshot()`](#tomatchsnapshotpropertymatchers-snapshotname), the snapshots will be written to the current source file, inline.
 
-Check out the section on [Inline Snapshots](./SnapshotTesting.md#inline-snapshots) for more info.
+Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots) for more info.
 
 ### `.toStrictEqual(value)`
 
@@ -1227,4 +1237,4 @@ Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-1
 
 This matcher is much like [`.toThrowErrorMatchingSnapshot`](#tothrowerrormatchingsnapshot), except instead of writing the snapshot value to a `.snap` file, it will be written into the source code automatically.
 
-Check out the section on [Inline Snapshots](./SnapshotTesting.md#inline-snapshots) for more info.
+Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots) for more info.

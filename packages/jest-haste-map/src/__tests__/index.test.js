@@ -6,10 +6,8 @@
  *
  */
 
-'use strict';
-
-import {skipSuiteOnWindows} from '../../../../scripts/ConditionalTest';
-const crypto = require('crypto');
+import crypto from 'crypto';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 
 function mockHashContents(contents) {
   return crypto
@@ -42,6 +40,7 @@ jest.mock('../crawlers/watchman', () =>
 
     const {data, ignore, rootDir, roots, computeSha1} = options;
     const list = mockChangedFiles || mockFs;
+    const removedFiles = new Map();
 
     data.clocks = mockClocks;
 
@@ -53,12 +52,19 @@ jest.mock('../crawlers/watchman', () =>
 
           data.files.set(relativeFilePath, ['', 32, 42, 0, [], hash]);
         } else {
-          data.files.delete(relativeFilePath);
+          const fileData = data.files.get(relativeFilePath);
+          if (fileData) {
+            removedFiles.set(relativeFilePath, fileData);
+            data.files.delete(relativeFilePath);
+          }
         }
       }
     }
 
-    return Promise.resolve(data);
+    return Promise.resolve({
+      hasteMap: data,
+      removedFiles,
+    });
   }),
 );
 
@@ -75,7 +81,7 @@ jest.mock('sane', () => ({
   WatchmanWatcher: mockWatcherConstructor,
 }));
 
-jest.mock('../lib/WatchmanWatcher.js', () => mockWatcherConstructor);
+jest.mock('../lib/WatchmanWatcher', () => mockWatcherConstructor);
 
 let mockChangedFiles;
 let mockFs;
@@ -130,6 +136,7 @@ const useBuitinsInContext = value => {
 };
 
 let consoleWarn;
+let consoleError;
 let defaultConfig;
 let fs;
 let H;
@@ -182,7 +189,10 @@ describe('HasteMap', () => {
     fs = require('graceful-fs');
 
     consoleWarn = console.warn;
+    consoleError = console.error;
+
     console.warn = jest.fn();
+    console.error = jest.fn();
 
     HasteMap = require('../');
     H = HasteMap.H;
@@ -205,6 +215,7 @@ describe('HasteMap', () => {
 
   afterEach(() => {
     console.warn = consoleWarn;
+    console.error = consoleError;
   });
 
   it('exports constants', () => {
@@ -413,7 +424,10 @@ describe('HasteMap', () => {
             'vegetables/Melon.js': ['Melon', 32, 42, 0, [], null],
           });
 
-          return Promise.resolve(data);
+          return Promise.resolve({
+            hasteMap: data,
+            removedFiles: new Map(),
+          });
         });
 
         const hasteMap = new HasteMap({
@@ -524,6 +538,8 @@ describe('HasteMap', () => {
   });
 
   it('warns on duplicate mock files', () => {
+    expect.assertions(1);
+
     // Duplicate mock files for blueberry
     mockFs['/project/fruits1/__mocks__/subdir/Blueberry.js'] = `
       // Blueberry
@@ -532,10 +548,14 @@ describe('HasteMap', () => {
       // Blueberry too!
     `;
 
-    return new HasteMap({mocksPattern: '__mocks__', ...defaultConfig})
+    return new HasteMap({
+      mocksPattern: '__mocks__',
+      throwOnModuleCollision: true,
+      ...defaultConfig,
+    })
       .build()
-      .then(({__hasteMapForTest: data}) => {
-        expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+      .catch(() => {
+        expect(console.error.mock.calls[0][0]).toMatchSnapshot();
       });
   });
 
@@ -970,7 +990,7 @@ describe('HasteMap', () => {
       mockImpl(options).then(() => {
         const {data} = options;
         data.files.set('fruits/invalid/file.js', ['', 34, 44, 0, []]);
-        return data;
+        return {hasteMap: data, removedFiles: new Map()};
       }),
     );
     return new HasteMap(defaultConfig)
@@ -1068,7 +1088,10 @@ describe('HasteMap', () => {
       data.files = createMap({
         'fruits/Banana.js': ['', 32, 42, 0, [], null],
       });
-      return Promise.resolve(data);
+      return Promise.resolve({
+        hasteMap: data,
+        removedFiles: new Map(),
+      });
     });
 
     return new HasteMap(defaultConfig)
@@ -1099,7 +1122,10 @@ describe('HasteMap', () => {
       data.files = createMap({
         'fruits/Banana.js': ['', 32, 42, 0, [], null],
       });
-      return Promise.resolve(data);
+      return Promise.resolve({
+        hasteMap: data,
+        removedFiles: new Map(),
+      });
     });
 
     return new HasteMap(defaultConfig)

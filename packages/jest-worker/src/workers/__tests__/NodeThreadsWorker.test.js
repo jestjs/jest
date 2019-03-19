@@ -9,6 +9,8 @@
 
 /* eslint-disable no-new */
 
+import getStream from 'get-stream';
+
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
@@ -24,10 +26,12 @@ beforeEach(() => {
   jest.mock('worker_threads', () => {
     const fakeClass = jest.fn(() => {
       const EventEmitter = require('events');
+      const {PassThrough} = require('stream');
+
       const thread = new EventEmitter();
       thread.postMessage = jest.fn();
-      thread.stdout = 'stdout';
-      thread.stderr = 'stderr';
+      thread.stdout = new PassThrough();
+      thread.stderr = new PassThrough();
       return thread;
     });
 
@@ -63,7 +67,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
-  expect(childProcess.mock.calls[0][0]).toBe(child);
+  expect(childProcess.mock.calls[0][0]).toBe(child.replace(/\.ts$/, '.js'));
   expect(childProcess.mock.calls[0][1]).toEqual({
     eval: false,
     stderr: true,
@@ -87,7 +91,7 @@ it('passes workerId to the child process and assign it to env.JEST_WORKER_ID', (
   });
 
   expect(childProcess.mock.calls[0][1].workerData.env.JEST_WORKER_ID).toEqual(
-    2,
+    '2',
   );
 });
 
@@ -134,15 +138,25 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
   expect(onProcessEnd.mock.calls[0][1]).toBe(null);
 });
 
-it('provides stdout and stderr fields from the child process', () => {
+it('provides stdout and stderr from the child processes', async () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
-  expect(worker.getStdout()).toBe('stdout');
-  expect(worker.getStderr()).toBe('stderr');
+  const stdout = worker.getStdout();
+  const stderr = worker.getStderr();
+
+  worker._worker.stdout.end('Hello ', {encoding: 'utf8'});
+  worker._worker.stderr.end('Jest ', {encoding: 'utf8'});
+  worker._worker.emit('exit');
+  worker._worker.stdout.end('World!', {encoding: 'utf8'});
+  worker._worker.stderr.end('Workers!', {encoding: 'utf8'});
+  worker._worker.emit('exit', 0);
+
+  await expect(getStream(stdout)).resolves.toEqual('Hello World!');
+  await expect(getStream(stderr)).resolves.toEqual('Jest Workers!');
 });
 
 it('sends the task to the child process', () => {
@@ -155,6 +169,29 @@ it('sends the task to the child process', () => {
   const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
 
   worker.send(request, () => {}, () => {});
+
+  // Skipping call "0" because it corresponds to the "initialize" one.
+  expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
+});
+
+it('resends the task to the child process after a retry', () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo/bar/baz.js',
+  });
+
+  const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
+
+  worker.send(request, () => {}, () => {});
+
+  // Skipping call "0" because it corresponds to the "initialize" one.
+  expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
+
+  const previousWorker = worker._worker;
+  worker._worker.emit('exit');
+
+  expect(worker._worker).not.toBe(previousWorker);
 
   // Skipping call "0" because it corresponds to the "initialize" one.
   expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);

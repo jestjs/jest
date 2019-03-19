@@ -96,6 +96,8 @@ test('if utils mocked automatically', () => {
 });
 ```
 
+_Note: Node modules are automatically mocked when you have a manual mock in place (e.g.: `__mocks__/lodash.js`). More info [here](manual-mocks.html#mocking-node-modules)._
+
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`._
 
 _Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
@@ -725,7 +727,7 @@ _Note: `setupTestFrameworkScriptFile` is deprecated in favor of `setupFilesAfter
 
 Default: `undefined`
 
-The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores that snapshot files on disk.
+The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
 
 Example snapshot resolver module:
 
@@ -741,7 +743,7 @@ module.exports = {
       .replace('__snapshots__', '__tests__')
       .slice(0, -snapshotExtension.length),
 
-  // Example test path, used for preflight concistency check of the implementation above
+  // Example test path, used for preflight consistency check of the implementation above
   testPathForConsistencyCheck: 'some/__tests__/example.test.js',
 };
 ```
@@ -936,6 +938,7 @@ This option allows the use of a custom results processor. This processor must be
   "numPassedTests": number,
   "numFailedTests": number,
   "numPendingTests": number,
+  "numTodoTests": number,
   "openHandles": Array<Error>,
   "testResults": [{
     "numFailingTests": number,

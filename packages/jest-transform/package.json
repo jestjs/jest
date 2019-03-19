@@ -1,0 +1,43 @@
+{
+  "name": "@jest/transform",
+  "version": "24.5.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-transform"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "dependencies": {
+    "@babel/core": "^7.1.0",
+    "@jest/types": "^24.5.0",
+    "babel-plugin-istanbul": "^5.1.0",
+    "chalk": "^2.0.1",
+    "convert-source-map": "^1.4.0",
+    "fast-json-stable-stringify": "^2.0.0",
+    "graceful-fs": "^4.1.15",
+    "jest-haste-map": "^24.5.0",
+    "jest-regex-util": "^24.3.0",
+    "jest-util": "^24.5.0",
+    "micromatch": "^3.1.10",
+    "realpath-native": "^1.1.0",
+    "slash": "^2.0.0",
+    "source-map": "^0.6.1",
+    "write-file-atomic": "2.4.1"
+  },
+  "devDependencies": {
+    "@types/babel__core": "^7.1.0",
+    "@types/convert-source-map": "^1.5.1",
+    "@types/fast-json-stable-stringify": "^2.0.0",
+    "@types/graceful-fs": "^4.1.2",
+    "@types/micromatch": "^3.1.0",
+    "@types/write-file-atomic": "^2.1.1"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
+}

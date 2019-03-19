@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "references": [
+    {"path": "../expect"},
+    {"path": "../jest-diff"},
+    {"path": "../jest-haste-map"},
+    {"path": "../jest-matcher-utils"},
+    {"path": "../jest-message-util"},
+    {"path": "../jest-resolve"},
+    {"path": "../jest-types"},
+    {"path": "../pretty-format"}
+  ]
+}

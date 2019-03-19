@@ -130,7 +130,7 @@ describe('Scoped / Nested block', () => {
 
 ## Order of execution of describe and test blocks
 
-Jest executes all describe handlers in a test file _before_ it executes any of the actual tests. This is another reason to do setup and teardown in `before*` and `after*` handlers rather in the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on.
+Jest executes all describe handlers in a test file _before_ it executes any of the actual tests. This is another reason to do setup and teardown inside `before*` and `after*` handlers rather than inside the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on.
 
 Consider the following illustrative test file and output:
 

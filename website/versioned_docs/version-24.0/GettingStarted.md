@@ -82,31 +82,53 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install the `babel-jest` and `@babel/core` packages via `yarn`:
+To use [Babel](http://babeljs.io/), install required dependencies via `yarn`:
 
 ```bash
-yarn add --dev babel-jest @babel/core
+yarn add --dev babel-jest @babel/core @babel/preset-env
 ```
 
-Don't forget to add a [`babel.config.js`](https://babeljs.io/docs/en/config-files) file in your project's root folder. For example, if you are using ES2018 and [React](https://reactjs.org) with the [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and [`@babel/preset-react`](https://babeljs.io/docs/en/babel-preset-react) presets:
+Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
 
-```js
+```javascript
+// babel.config.js
 module.exports = {
-  presets: ['@babel/preset-env', '@babel/preset-react'],
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          node: 'current',
+        },
+      },
+    ],
+  ],
 };
 ```
 
-You are now set up to use all ES2018 features and React-specific syntax.
+**The ideal configuration for Babel will depend on your project.** See [Babel's docs](https://babeljs.io/docs/en/) for more details.
+
+Jest will set `process.env.NODE_ENV` to `'test'` if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
+
+```javascript
+// babel.config.js
+module.exports = api => {
+  const isTest = api.env('test');
+  // You can use isTest to determine what presets and plugins to use.
+
+  return {
+    // ...
+  };
+};
+```
 
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
-```json
-// package.json
-{
-  "jest": {
-    "transform": {}
-  }
-}
+```javascript
+// jest.config.js
+module.exports = {
+  transform: {},
+};
 ```
 
 #### Babel 6
@@ -130,6 +152,22 @@ Jest can be used in projects that use [webpack](https://webpack.github.io/) to m
 
 ### Using TypeScript
 
-Jest supports TypeScript out of the box, via Babel.
+Jest supports TypeScript, via Babel. First make sure you followed the instructions on [using Babel](#using-babel) above. Next install the `@babel/preset-typescript` via `yarn`:
 
-However, there are some caveats to using Typescript with Babel, see http://artsy.github.io/blog/2017/11/27/Babel-7-and-TypeScript/. Another caveat is that Jest will not typecheck your tests. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+```bash
+yarn add --dev @babel/preset-typescript
+```
+
+Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
+
+```javascript
+// babel.config.js
+module.exports = {
+  presets: [
+    ['@babel/preset-env', {targets: {node: 'current'}}],
+    '@babel/preset-typescript',
+  ],
+};
+```
+
+Note that there are some caveats to using Typescript with Babel, see http://artsy.github.io/blog/2017/11/27/Babel-7-and-TypeScript/. Another caveat is that Jest will not typecheck your tests. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).

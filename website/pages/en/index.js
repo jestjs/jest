@@ -83,7 +83,7 @@ class Contributors extends React.Component {
         </p>
         <div>
           {backers
-            .filter(b => b.tier === 'backer')
+            .filter(b => b.tier === 'backer' && !b.slug.includes('adult'))
             .map(b => (
               <a
                 key={b.id}
@@ -316,8 +316,8 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Tests runs parallel in their own processes to maximize
-                      performance.
+                      Tests are parallelized by running them in their own
+                      processes to maximize performance.
                     </translate>
                   ),
                   title: <translate>Isolated</translate>,

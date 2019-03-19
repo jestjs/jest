@@ -1,6 +1,6 @@
 {
   "name": "jest-docblock",
-  "version": "24.0.0",
+  "version": "24.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,8 +11,14 @@
   "dependencies": {
     "detect-newline": "^2.1.0"
   },
+  "devDependencies": {
+    "@types/detect-newline": "^2.1.0"
+  },
   "engines": {
     "node": ">= 6"
   },
-  "gitHead": "634e5a54f46b2a62d1dc81a170562e6f4e55ad60"
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "3a7a4f3a3f5489ac8e07dcddf76bb949c482ec87"
 }

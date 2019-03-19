@@ -1,0 +1,55 @@
+{
+  "name": "@jest/reporters",
+  "description": "Jest's reporters",
+  "version": "24.5.0",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "@jest/environment": "^24.5.0",
+    "@jest/test-result": "^24.5.0",
+    "@jest/transform": "^24.5.0",
+    "@jest/types": "^24.5.0",
+    "chalk": "^2.0.1",
+    "exit": "^0.1.2",
+    "glob": "^7.1.2",
+    "istanbul-api": "^2.1.1",
+    "istanbul-lib-coverage": "^2.0.2",
+    "istanbul-lib-instrument": "^3.0.1",
+    "istanbul-lib-source-maps": "^3.0.1",
+    "jest-haste-map": "^24.5.0",
+    "jest-resolve": "^24.5.0",
+    "jest-runtime": "^24.5.0",
+    "jest-util": "^24.5.0",
+    "jest-worker": "^24.4.0",
+    "node-notifier": "^5.2.1",
+    "slash": "^2.0.0",
+    "source-map": "^0.6.0",
+    "string-length": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/exit": "^0.1.30",
+    "@types/glob": "^7.1.1",
+    "@types/istanbul-lib-instrument": "^1.7.2",
+    "@types/istanbul-lib-source-maps": "^1.2.1",
+    "@types/slash": "^2.0.0",
+    "@types/string-length": "^2.0.0",
+    "strip-ansi": "^5.0.0"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest",
+    "directory": "packages/jest-reporters"
+  },
+  "bugs": {
+    "url": "https://github.com/facebook/jest/issues"
+  },
+  "homepage": "https://jestjs.io/",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
+}

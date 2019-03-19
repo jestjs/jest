@@ -66,6 +66,18 @@ test('numeric ranges', () => {
 });
 ```
 
+_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
+
+```ts
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinRange(a: number, b: number): R;
+    }
+  }
+}
+```
+
 #### Async Matchers
 
 `expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a matcher called `toBeDivisibleByExternalValue`, where the divisible number is going to be pulled from an external source.
@@ -746,7 +758,7 @@ test('drink returns expected nth calls', () => {
 
 Note: the nth argument must be positive integer starting from 1.
 
-### `.toBeCloseTo(number, numDigits)`
+### `.toBeCloseTo(number, numDigits?)`
 
 Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
 
@@ -766,7 +778,7 @@ test('adding works sanely with simple decimals', () => {
 });
 ```
 
-The default for `numDigits` is 2, which has proved to be a good default in most cases.
+The optional `numDigits` argument has default value `2` which means the criterion is `Math.abs(expected - received) < 0.005` (that is, `10 ** -2 / 2`).
 
 ### `.toBeDefined()`
 
@@ -1040,7 +1052,7 @@ test('the house has my desired features', () => {
 ```
 
 ```js
-describe('toMatchObject applied to arrays arrays', () => {
+describe('toMatchObject applied to arrays', () => {
   test('the number of elements must match exactly', () => {
     expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}, {baz: 1}]);
   });
@@ -1060,11 +1072,11 @@ describe('toMatchObject applied to arrays arrays', () => {
 });
 ```
 
-### `.toHaveProperty(keyPath, value)`
+### `.toHaveProperty(keyPath, value?)`
 
 Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object. For checking deeply nested properties in an object you may use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) or an array containing the keyPath for deep references.
 
-Optionally, you can provide a `value` to check if it's equal to the value present at `keyPath` on the target object. This matcher uses 'deep equality' (like `toEqual()`) and recursively checks the equality of all fields.
+You can provide an optional `value` argument to compare the received property value (recursively for all properties of object instances, also known as deep equality, like the `toEqual` matcher).
 
 The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty` to check for the existence and values of various properties in the object.
 
@@ -1114,21 +1126,23 @@ test('this house has my desired features', () => {
 });
 ```
 
-### `.toMatchSnapshot(propertyMatchers, snapshotName)`
+### `.toMatchSnapshot(propertyMatchers?, hint?)`
 
 This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](SnapshotTesting.md) for more information.
 
-The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values. Any value will be matched exactly if not provided as a matcher.
+You can provide an optional `propertyMatchers` object argument, which has asymmetric matchers as values of a subset of expected properties, **if** the received value will be an **object** instance. It is like `toMatchObject` with flexible criteria for a subset of properties, followed by a snapshot test as exact criteria for the rest of the properties.
 
-The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
+You can provide an optional `hint` string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate **multiple** snapshots in a **single** `it` or `test` block. Jest sorts snapshots by name in the corresponding `.snap` file.
 
-_Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot._
+### `.toMatchInlineSnapshot(propertyMatchers?, inlineSnapshot)`
 
-### `.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)`
+Ensures that a value matches the most recent snapshot.
 
-Ensures that a value matches the most recent snapshot. Unlike [`.toMatchSnapshot()`](#tomatchsnapshotpropertymatchers-snapshotname), the snapshots will be written to the current source file, inline.
+You can provide an optional `propertyMatchers` object argument, which has asymmetric matchers as values of a subset of expected properties, **if** the received value will be an **object** instance. It is like `toMatchObject` with flexible criteria for a subset of properties, followed by a snapshot test as exact criteria for the rest of the properties.
 
-Check out the section on [Inline Snapshots](./SnapshotTesting.md#inline-snapshots) for more info.
+Jest adds the `inlineSnapshot` string argument to the matcher in the test file (instead of an external `.snap` file) the first time that the test runs.
+
+Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots) for more info.
 
 ### `.toStrictEqual(value)`
 
@@ -1155,9 +1169,9 @@ describe('the La Croix cans on my desk', () => {
 });
 ```
 
-### `.toThrow(error)`
+### `.toThrow(error?)`
 
-Also under the alias: `.toThrowError(error)`
+Also under the alias: `.toThrowError(error?)`
 
 Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
 
@@ -1169,7 +1183,7 @@ test('throws on octopus', () => {
 });
 ```
 
-To test that a specific error is thrown, you can provide an argument:
+You can provide an optional argument to test that a specific error is thrown:
 
 - regular expression: error message **matches** the pattern
 - string: error message **includes** the substring
@@ -1210,9 +1224,13 @@ test('throws on octopus', () => {
 
 > Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
 
-### `.toThrowErrorMatchingSnapshot()`
+### `.toThrowErrorMatchingSnapshot(hint?)`
 
-Use `.toThrowErrorMatchingSnapshot` to test that a function throws an error matching the most recent snapshot when it is called. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
+Use `.toThrowErrorMatchingSnapshot` to test that a function throws an error matching the most recent snapshot when it is called.
+
+You can provide an optional `hint` string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate **multiple** snapshots in a **single** `it` or `test` block. Jest sorts snapshots by name in the corresponding `.snap` file.
+
+For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
@@ -1243,8 +1261,10 @@ exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 
 Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
 
-### `.toThrowErrorMatchingInlineSnapshot()`
+### `.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)`
 
-This matcher is much like [`.toThrowErrorMatchingSnapshot`](#tothrowerrormatchingsnapshot), except instead of writing the snapshot value to a `.snap` file, it will be written into the source code automatically.
+Use `.toThrowErrorMatchingInlineSnapshot` to test that a function throws an error matching the most recent snapshot when it is called.
 
-Check out the section on [Inline Snapshots](./SnapshotTesting.md#inline-snapshots) for more info.
+Jest adds the `inlineSnapshot` string argument to the matcher in the test file (instead of an external `.snap` file) the first time that the test runs.
+
+Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots) for more info.
