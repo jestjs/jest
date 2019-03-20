@@ -31,6 +31,8 @@ const SUB_NAME = 'sane-sub';
 export default function WatchmanWatcher(dir, opts) {
   common.assignOptions(this, opts);
   this.root = path.resolve(dir);
+  this.ended = false;
+  this.connecting = true;
   this.init();
 }
 
@@ -52,7 +54,7 @@ WatchmanWatcher.prototype.init = function() {
 
   this.client = new watchman.Client();
   this.client.on('error', error => {
-    if (error && error.code === 'EAGAIN') {
+    if (!this.ended && this.connecting && error && error.code === 'EAGAIN') {
       this.eagCounter = this.eagCounter ? this.eagCounter + 1 : 1;
       if (this.eagCounter < 10) {
         console.warn(
@@ -63,7 +65,11 @@ WatchmanWatcher.prototype.init = function() {
 
         // Try again as instructed by Watchman.
         // Wait 500-2000ms (depending on how long we've been trying).
-        setTimeout(() => this.init(), Math.min(this.eagCounter * 500, 2000));
+        setTimeout(() => {
+          if (!this.ended && this.connecting) {
+            this.init();
+          }
+        }, Math.min(this.eagCounter * 500, 2000));
         return;
       }
     }
@@ -83,6 +89,8 @@ WatchmanWatcher.prototype.init = function() {
   }
 
   function onCapability(error, resp) {
+    this.connecting = false;
+
     if (handleError(self, error)) {
       // The Watchman watcher is unusable on this system, we cannot continue
       return;
@@ -193,7 +201,7 @@ WatchmanWatcher.prototype.init = function() {
     {
       optional: ['wildmatch', 'relative_root'],
     },
-    onCapability,
+    onCapability.bind(this),
   );
 };
 
@@ -300,6 +308,8 @@ WatchmanWatcher.prototype.emitEvent = function(
  */
 
 WatchmanWatcher.prototype.close = function(callback) {
+  this.ended = true;
+  this.connecting = false;
   this.client.removeAllListeners();
   this.client.end();
   callback && callback(null, true);
