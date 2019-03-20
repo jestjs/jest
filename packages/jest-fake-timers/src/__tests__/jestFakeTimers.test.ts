@@ -1165,5 +1165,22 @@ describe('FakeTimers', () => {
 
       expect(timers.getTimerCount()).toEqual(0);
     });
+
+    it('includes immediates and ticks', () => {
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+
+      timers.useFakeTimers();
+
+      global.setTimeout(() => {}, 0);
+      global.setImmediate(() => {});
+      process.nextTick(() => {});
+
+      expect(timers.getTimerCount()).toEqual(3);
+    });
   });
 });

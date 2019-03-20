@@ -684,8 +684,28 @@ describe('.toEqual()', () => {
 describe('.toBeInstanceOf()', () => {
   class A {}
   class B {}
+  class C extends B {}
 
-  [[new Map(), Map], [[], Array], [new A(), A]].forEach(([a, b]) => {
+  class HasStaticNameMethod {
+    constructor() {}
+    static name() {}
+  }
+
+  function DefinesNameProp() {}
+  Object.defineProperty(DefinesNameProp, 'name', {
+    configurable: true,
+    enumerable: false,
+    value: '',
+    writable: true,
+  });
+
+  [
+    [new Map(), Map],
+    [[], Array],
+    [new A(), A],
+    [new C(), B], // subclass
+    [new HasStaticNameMethod(), HasStaticNameMethod],
+  ].forEach(([a, b]) => {
     test(`passing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
         jestExpect(a).not.toBeInstanceOf(b),
@@ -703,6 +723,8 @@ describe('.toBeInstanceOf()', () => {
     [Object.create(null), A],
     [undefined, String],
     [null, String],
+    [/\w+/, function() {}],
+    [new DefinesNameProp(), RegExp],
   ].forEach(([a, b]) => {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>

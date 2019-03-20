@@ -4,7 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+'use strict';
 
-// Some of the `jest-runtime` tests are very slow and cause
-// timeouts on travis
-jest.setTimeout(70000);
+describe('todos in verbose reporter', () => {
+  test.todo('this');
+  test.todo('should');
+  test.todo('work');
+});

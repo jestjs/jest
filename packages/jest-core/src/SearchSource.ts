@@ -21,6 +21,7 @@ import {
   TestPathCases,
   TestPathCasesWithPathPattern,
   TestPathCaseWithPathPatternStats,
+  Filter,
 } from './types';
 
 export type SearchResult = {
@@ -39,11 +40,6 @@ export type TestSelectionConfig = {
   shouldTreatInputAsPattern?: boolean;
   testPathPattern?: string;
   watch?: boolean;
-};
-
-type FilterResult = {
-  test: string;
-  message: string;
 };
 
 const globsToMatcher = (globs?: Array<Config.Glob> | null) => {
@@ -290,18 +286,16 @@ export default class SearchSource {
   async getTestPaths(
     globalConfig: Config.GlobalConfig,
     changedFiles: ChangedFiles | undefined,
+    filter?: Filter,
   ): Promise<SearchResult> {
     const searchResult = this._getTestPaths(globalConfig, changedFiles);
 
     const filterPath = globalConfig.filter;
 
-    if (filterPath && !globalConfig.skipFilter) {
+    if (filter) {
       const tests = searchResult.tests;
 
-      const filter = require(filterPath);
-      const filterResult: {filtered: Array<FilterResult>} = await filter(
-        tests.map(test => test.path),
-      );
+      const filterResult = await filter(tests.map(test => test.path));
 
       if (!Array.isArray(filterResult.filtered)) {
         throw new Error(

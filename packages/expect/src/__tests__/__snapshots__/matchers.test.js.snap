@@ -1198,84 +1198,114 @@ Received:    <red>34</>"
 `;
 
 exports[`.toBeInstanceOf() failing "a" and [Function String] 1`] = `
-"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>String</>
-Received constructor: <red>String</>
+Received value has no prototype
 Received value: <red>\\"a\\"</>"
 `;
 
+exports[`.toBeInstanceOf() failing /\\w+/ and [Function anonymous] 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
+
+Expected constructor name is an empty string
+Received constructor: <red>RegExp</>
+Received value: <red>/\\\\w+/</>"
+`;
+
 exports[`.toBeInstanceOf() failing {} and [Function A] 1`] = `
-"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>A</>
-Received constructor: <red>undefined</>
+Received value has no prototype
 Received value: <red>{}</>"
 `;
 
 exports[`.toBeInstanceOf() failing {} and [Function B] 1`] = `
-"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>B</>
 Received constructor: <red>A</>
 Received value: <red>{}</>"
 `;
 
+exports[`.toBeInstanceOf() failing {} and [Function RegExp] 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: <green>RegExp</>
+Received constructor name is an empty string
+Received value: <red>{}</>"
+`;
+
 exports[`.toBeInstanceOf() failing 1 and [Function Number] 1`] = `
-"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>Number</>
-Received constructor: <red>Number</>
+Received value has no prototype
 Received value: <red>1</>"
 `;
 
 exports[`.toBeInstanceOf() failing null and [Function String] 1`] = `
-"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>String</>
-Received constructor: 
+Received value has no prototype
 Received value: <red>null</>"
 `;
 
 exports[`.toBeInstanceOf() failing true and [Function Boolean] 1`] = `
-"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>Boolean</>
-Received constructor: <red>Boolean</>
+Received value has no prototype
 Received value: <red>true</>"
 `;
 
 exports[`.toBeInstanceOf() failing undefined and [Function String] 1`] = `
-"<dim>expect(</><red>value</><dim>).toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>String</>
-Received constructor: 
+Received value has no prototype
 Received value: <red>undefined</>"
 `;
 
 exports[`.toBeInstanceOf() passing [] and [Function Array] 1`] = `
-"<dim>expect(</><red>value</><dim>).</>not<dim>.toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
-Expected constructor: <green>Array</>
+Expected constructor: not <green>Array</>
 Received value: <red>[]</>"
 `;
 
 exports[`.toBeInstanceOf() passing {} and [Function A] 1`] = `
-"<dim>expect(</><red>value</><dim>).</>not<dim>.toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
-Expected constructor: <green>A</>
+Expected constructor: not <green>A</>
+Received value: <red>{}</>"
+`;
+
+exports[`.toBeInstanceOf() passing {} and [Function B] 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>B</>
+Received value: <red>{}</>"
+`;
+
+exports[`.toBeInstanceOf() passing {} and [Function name() {}] 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
+
+Expected constructor name is not a string
 Received value: <red>{}</>"
 `;
 
 exports[`.toBeInstanceOf() passing Map {} and [Function Map] 1`] = `
-"<dim>expect(</><red>value</><dim>).</>not<dim>.toBeInstanceOf(</><green>constructor</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
-Expected constructor: <green>Map</>
+Expected constructor: not <green>Map</>
 Received value: <red>Map {}</>"
 `;
 
 exports[`.toBeInstanceOf() throws if constructor is not a function 1`] = `
-"<dim>expect(</><red>received</><dim>).toBeInstanceOf(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a function
 

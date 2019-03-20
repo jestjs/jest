@@ -5,6 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Some of the `jest-runtime` tests are very slow and cause
-// timeouts on travis
-jest.setTimeout(70000);
+'use strict';
+
+jest.mock('../data.json');
+
+const extractData = require('../');
+
+describe('extractData', () => {
+  it('should read the data', () => {
+    expect(extractData()).toEqual(['foo']);
+  });
+});
