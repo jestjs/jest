@@ -44,19 +44,33 @@ WatchmanWatcher.prototype.__proto__ = EventEmitter.prototype;
  */
 
 WatchmanWatcher.prototype.init = function() {
+  const self = this;
+
   if (this.client) {
     this.client.removeAllListeners();
   }
 
-  const self = this;
   this.client = new watchman.Client();
   this.client.on('error', error => {
-    self.emit('error', error);
+    if (error && error.code === 'EAGAIN') {
+      this.eagCounter = this.eagCounter ? this.eagCounter + 1 : 1;
+      if (this.eagCounter < 10) {
+        console.warn(
+          `[sane] Warning: Error EAGAIN on connect, trying again.. (#${
+            this.eagCounter
+          })`,
+        );
+        this.init();
+        return;
+      }
+    }
+
+    this.emit('error', error);
   });
   this.client.on('subscription', this.handleChangeEvent.bind(this));
   this.client.on('end', () => {
     console.warn('[sane] Warning: Lost connection to watchman, reconnecting..');
-    self.init();
+    this.init();
   });
 
   this.watchProjectInfo = null;
