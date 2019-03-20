@@ -51,12 +51,28 @@ export default async ({
       // transformer in order to transform it in the require hooks
       transformer.preloadTransformer(modulePath);
 
+      let transforming = false;
       const revertHook = addHook(
-        (code, filename) =>
-          transformer.transformSource(filename, code, false).code || code,
+        (code, filename) => {
+          try {
+            transforming = true;
+            return (
+              transformer.transformSource(filename, code, false).code || code
+            );
+          } finally {
+            transforming = false;
+          }
+        },
         {
           exts: [extname(modulePath)],
-          matcher: transformer.shouldTransform.bind(transformer),
+          ignoreNodeModules: false,
+          matcher: (...args) => {
+            if (transforming) {
+              // Don't transform any dependency required by the transformer itself
+              return false;
+            }
+            return transformer.shouldTransform(...args);
+          },
         },
       );
 
