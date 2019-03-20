@@ -60,7 +60,10 @@ WatchmanWatcher.prototype.init = function() {
             this.eagCounter
           })`,
         );
-        this.init();
+
+        // Try again as instructed by Watchman.
+        // Wait 500-2000ms (depending on how long we've been trying).
+        setTimeout(() => this.init(), Math.min(this.eagCounter * 500, 2000));
         return;
       }
     }
