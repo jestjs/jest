@@ -7,6 +7,7 @@
 - `[jest-snapshot]` Improve report when matcher fails, part 14 ([#8132](https://github.com/facebook/jest/pull/8132))
 - `[@jest/reporter]` Display todo and skip test descriptions when verbose is true ([#8038](https://github.com/facebook/jest/pull/8038))
 - `[jest-runner]` Support default exports for test environments ([#8163](https://github.com/facebook/jest/pull/8163))
+- `[pretty-format]` Support React.Suspense ([#8180](https://github.com/facebook/jest/pull/8180))
 
 ### Fixes
 
