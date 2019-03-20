@@ -195,10 +195,9 @@ export const iterableEquality = (
           }
         }
       }
-
+      // Remove the first value from the stack of traversed values.
       aStack.pop();
       bStack.pop();
-
       return allFound;
     } else if (isA('Map', a) || isImmutableUnorderedKeyed(a)) {
       let allFound = true;
@@ -230,6 +229,7 @@ export const iterableEquality = (
           }
         }
       }
+      // Remove the first value from the stack of traversed values.
       aStack.pop();
       bStack.pop();
       return allFound;
@@ -242,9 +242,7 @@ export const iterableEquality = (
     const nextB = bIterator.next();
     if (
       nextB.done ||
-      !equals(aValue, nextB.value, [
-        (a: any, b: any) => iterableEquality(a, b, aStack, bStack),
-      ])
+      !equals(aValue, nextB.value, [iterableEqualityWithStack])
     ) {
       return false;
     }
@@ -253,6 +251,7 @@ export const iterableEquality = (
     return false;
   }
 
+  // Remove the first value from the stack of traversed values.
   aStack.pop();
   bStack.pop();
   return true;
