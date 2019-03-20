@@ -51,7 +51,7 @@ export type FileMetaData = [
   /* mtime */ number,
   /* size */ number,
   /* visited */ 0 | 1,
-  /* dependencies */ Array<string>,
+  /* dependencies */ string,
   /* sha1 */ string | null | undefined
 ];
 

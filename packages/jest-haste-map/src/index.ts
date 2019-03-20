@@ -326,7 +326,7 @@ class HasteMap extends EventEmitter {
     name: string,
     ...extra: Array<string>
   ): string {
-    const hash = crypto.createHash('md5').update(extra.join(''));
+    const hash = crypto.createHash('md5').update(extra.join('') + 'v2');
     return path.join(
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
@@ -522,7 +522,9 @@ class HasteMap extends EventEmitter {
         setModule(metadataId, metadataModule);
       }
 
-      fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+      fileMetadata[H.DEPENDENCIES] = metadata.dependencies
+        ? metadata.dependencies.join('\t')
+        : '';
 
       if (computeSha1) {
         fileMetadata[H.SHA1] = metadata.sha1;
@@ -940,7 +942,7 @@ class HasteMap extends EventEmitter {
               stat ? stat.mtime.getTime() : -1,
               stat ? stat.size : 0,
               0,
-              [],
+              '',
               null,
             ];
             hasteMap.files.set(relativeFilePath, fileMetadata);
