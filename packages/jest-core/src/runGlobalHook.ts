@@ -11,11 +11,7 @@ import {addHook} from 'pirates';
 import {Config} from '@jest/types';
 import {Test} from 'jest-runner';
 import {ScriptTransformer} from '@jest/transform';
-
-// copied from https://github.com/babel/babel/blob/56044c7851d583d498f919e9546caddf8f80a72f/packages/babel-helpers/src/helpers.js#L558-L562
-function _interopRequireDefault(obj: any) {
-  return obj && obj.__esModule ? obj : {default: obj};
-}
+import {interopRequireDefault} from 'jest-util';
 
 export default async ({
   allTests,
@@ -64,7 +60,7 @@ export default async ({
         },
       );
 
-      const globalModule = _interopRequireDefault(require(modulePath)).default;
+      const globalModule = interopRequireDefault(require(modulePath)).default;
 
       if (typeof globalModule !== 'function') {
         throw new TypeError(

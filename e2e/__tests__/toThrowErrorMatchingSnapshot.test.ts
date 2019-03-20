@@ -43,7 +43,7 @@ test(`throws the error if tested function didn't throw error`, () => {
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch(`Expected the function to throw an error.`);
+    expect(stderr).toMatch('Received function did not throw');
     expect(status).toBe(1);
   }
 });
@@ -74,9 +74,7 @@ test('cannot be used with .not', () => {
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch(
-      'Jest: `.not` cannot be used with `.toThrowErrorMatchingSnapshot()`.',
-    );
+    expect(stderr).toMatch('.not cannot be used with snapshot matchers');
     expect(status).toBe(1);
   }
 });

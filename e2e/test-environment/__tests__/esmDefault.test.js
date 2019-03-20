@@ -3,8 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @jest-environment ./EsmDefaultEnvironment.js
  */
+'use strict';
 
-// Some of the `jest-runtime` tests are very slow and cause
-// timeouts on travis
-jest.setTimeout(70000);
+test('access env', () => {
+  expect(property).toBe('value'); // eslint-disable-line no-undef
+});
