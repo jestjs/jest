@@ -108,9 +108,9 @@ describe('watchman watch', () => {
     };
 
     mockFiles = createMap({
-      [MELON_RELATIVE]: ['', 33, 43, 0, [], null],
-      [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, [], null],
-      [TOMATO_RELATIVE]: ['', 31, 41, 0, [], null],
+      [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
+      [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
+      [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
     });
   });
 
@@ -216,8 +216,8 @@ describe('watchman watch', () => {
       expect(changedFiles).toEqual(undefined);
       expect(hasteMap.files).toEqual(
         createMap({
-          [path.join(DURIAN_RELATIVE, 'foo.1.js')]: ['', 33, 43, 0, [], null],
-          [path.join(DURIAN_RELATIVE, 'foo.2.js')]: ['', 33, 43, 0, [], null],
+          [path.join(DURIAN_RELATIVE, 'foo.1.js')]: ['', 33, 43, 0, '', null],
+          [path.join(DURIAN_RELATIVE, 'foo.2.js')]: ['', 33, 43, 0, '', null],
         }),
       );
       expect(removedFiles).toEqual(new Map());
@@ -280,21 +280,21 @@ describe('watchman watch', () => {
 
       expect(changedFiles).toEqual(
         createMap({
-          [KIWI_RELATIVE]: ['', 42, 40, 0, [], null],
+          [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
         }),
       );
 
       expect(hasteMap.files).toEqual(
         createMap({
-          [KIWI_RELATIVE]: ['', 42, 40, 0, [], null],
-          [MELON_RELATIVE]: ['', 33, 43, 0, [], null],
-          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, [], null],
+          [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
+          [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
+          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
         }),
       );
 
       expect(removedFiles).toEqual(
         createMap({
-          [TOMATO_RELATIVE]: ['', 31, 41, 0, [], null],
+          [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
         }),
       );
     });
@@ -374,7 +374,7 @@ describe('watchman watch', () => {
       expect(hasteMap.files).toEqual(
         createMap({
           [BANANA_RELATIVE]: mockBananaMetadata,
-          [KIWI_RELATIVE]: ['', 42, 52, 0, [], null],
+          [KIWI_RELATIVE]: ['', 42, 52, 0, '', null],
           [TOMATO_RELATIVE]: ['Tomato', 76, 41, 1, [], mockTomatoSha1],
         }),
       );
@@ -388,8 +388,8 @@ describe('watchman watch', () => {
 
       expect(removedFiles).toEqual(
         createMap({
-          [MELON_RELATIVE]: ['', 33, 43, 0, [], null],
-          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, [], null],
+          [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
+          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
         }),
       );
     });
@@ -466,15 +466,15 @@ describe('watchman watch', () => {
 
       expect(hasteMap.files).toEqual(
         createMap({
-          [KIWI_RELATIVE]: ['', 42, 52, 0, [], null],
-          [MELON_RELATIVE]: ['', 33, 43, 0, [], null],
+          [KIWI_RELATIVE]: ['', 42, 52, 0, '', null],
+          [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
         }),
       );
 
       expect(removedFiles).toEqual(
         createMap({
-          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, [], null],
-          [TOMATO_RELATIVE]: ['', 31, 41, 0, [], null],
+          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
+          [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
         }),
       );
     });

@@ -522,7 +522,9 @@ class HasteMap extends EventEmitter {
         setModule(metadataId, metadataModule);
       }
 
-      fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+      fileMetadata[H.DEPENDENCIES] = metadata.dependencies
+        ? metadata.dependencies.join(H.DEPENDENCY_DELIM)
+        : '';
 
       if (computeSha1) {
         fileMetadata[H.SHA1] = metadata.sha1;
@@ -944,7 +946,7 @@ class HasteMap extends EventEmitter {
               stat ? stat.mtime.getTime() : -1,
               stat ? stat.size : 0,
               0,
-              [],
+              '',
               null,
             ];
             hasteMap.files.set(relativeFilePath, fileMetadata);

@@ -164,7 +164,7 @@ export = function nodeCrawl(
           files.set(relativeFilePath, existingFile);
         } else {
           // See ../constants.js; SHA-1 will always be null and fulfilled later.
-          files.set(relativeFilePath, ['', mtime, size, 0, [], null]);
+          files.set(relativeFilePath, ['', mtime, size, 0, '', null]);
         }
         removedFiles.delete(relativeFilePath);
       });

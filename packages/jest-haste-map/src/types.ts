@@ -51,7 +51,7 @@ export type FileMetaData = [
   /* mtime */ number,
   /* size */ number,
   /* visited */ 0 | 1,
-  /* dependencies */ Array<string>,
+  /* dependencies */ string,
   /* sha1 */ string | null | undefined
 ];
 
@@ -100,6 +100,7 @@ export type HType = {
   PACKAGE: 1;
   GENERIC_PLATFORM: 'g';
   NATIVE_PLATFORM: 'native';
+  DEPENDENCY_DELIM: '\0';
 };
 
 export type HTypeValue = HType[keyof HType];
