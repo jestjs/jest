@@ -326,7 +326,7 @@ class HasteMap extends EventEmitter {
     name: string,
     ...extra: Array<string>
   ): string {
-    const hash = crypto.createHash('md5').update(extra.join('') + 'v2');
+    const hash = crypto.createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
