@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[expect]` Fix circular references in iterable equality ([#8160](https://github.com/facebook/jest/pull/8160))
+- `[jest-changed-files]` Change method of obtaining git root ([#8052](https://github.com/facebook/jest/pull/8052))
 - `[jest-each]` Fix test function type ([#8145](https://github.com/facebook/jest/pull/8145))
 - `[pretty-format]` Print `BigInt` as a readable number instead of `{}` ([#8138](https://github.com/facebook/jest/pull/8138))
 - `[jest-fake-timers]` `getTimerCount` not taking immediates and ticks into account ([#8139](https://github.com/facebook/jest/pull/8139))
