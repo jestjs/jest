@@ -523,7 +523,7 @@ class HasteMap extends EventEmitter {
       }
 
       fileMetadata[H.DEPENDENCIES] = metadata.dependencies
-        ? metadata.dependencies.join('\t')
+        ? metadata.dependencies.join(H.DEPENDENCY_DELIM)
         : '';
 
       if (computeSha1) {

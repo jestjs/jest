@@ -341,7 +341,7 @@ describe('HasteMap', () => {
       expect(data.files).toEqual(
         createMap({
           'fruits/Banana.js': ['Banana', 32, 42, 1, 'Strawberry', null],
-          'fruits/Pear.js': ['Pear', 32, 42, 1, 'Banana\tStrawberry', null],
+          'fruits/Pear.js': ['Pear', 32, 42, 1, 'Banana:Strawberry', null],
           'fruits/Strawberry.js': ['Strawberry', 32, 42, 1, '', null],
           'fruits/__mocks__/Pear.js': ['', 32, 42, 1, 'Melon', null],
           // node modules
@@ -411,7 +411,7 @@ describe('HasteMap', () => {
           // The node crawler returns "null" for the SHA-1.
           data.files = createMap({
             'fruits/Banana.js': ['Banana', 32, 42, 0, 'Strawberry', null],
-            'fruits/Pear.js': ['Pear', 32, 42, 0, 'Banana\tStrawberry', null],
+            'fruits/Pear.js': ['Pear', 32, 42, 0, 'Banana:Strawberry', null],
             'fruits/Strawberry.js': ['Strawberry', 32, 42, 0, '', null],
             'fruits/__mocks__/Pear.js': ['', 32, 42, 0, 'Melon', null],
             'vegetables/Melon.js': ['Melon', 32, 42, 0, '', null],
@@ -447,7 +447,7 @@ describe('HasteMap', () => {
               32,
               42,
               1,
-              'Banana\tStrawberry',
+              'Banana:Strawberry',
               '89d0c2cc11dcc5e1df50b8af04ab1b597acfba2f',
             ],
             'fruits/Strawberry.js': [
