@@ -100,7 +100,7 @@ export type HType = {
   PACKAGE: 1;
   GENERIC_PLATFORM: 'g';
   NATIVE_PLATFORM: 'native';
-  DEPENDENCY_DELIM: ':';
+  DEPENDENCY_DELIM: '\0';
 };
 
 export type HTypeValue = HType[keyof HType];
