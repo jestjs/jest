@@ -16,6 +16,7 @@
 - `[jest-runtime]` Allow json file as manual mock ([#8159](https://github.com/facebook/jest/pull/8159))
 - `[pretty-format]` Print `BigInt` as a readable number instead of `{}` ([#8138](https://github.com/facebook/jest/pull/8138))
 - `[jest-core]` Fix ability to transform dependencies required from globalSetup script [#8143](https://github.com/facebook/jest/pull/8143)
+- `[@jest/reporters]` Fix Cannot read property converageData of null ([#8168](https://github.com/facebook/jest/pull/8168))
 
 ### Chore & Maintenance
 
