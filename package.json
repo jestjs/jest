@@ -79,7 +79,7 @@
     "build:ts": "node scripts/buildTs.js",
     "check-copyright-headers": "node ./scripts/checkCopyrightHeaders.js",
     "clean-all": "rm -rf ./node_modules && rm -rf ./packages/*/node_modules && yarn clean-e2e && yarn build-clean",
-    "clean-e2e": "find ./e2e -not \\( -path ./e2e/presets/js -prune \\) -not \\( -path ./e2e/presets/json -prune \\) -mindepth 2 -type d \\( -name node_modules -prune \\) -exec rm -r '{}' +",
+    "clean-e2e": "find ./e2e -not \\( -path ./e2e/presets/js -prune \\) -not \\( -path ./e2e/presets/json -prune \\) -not \\( -path ./e2e/global-setup-node-modules -prune \\) -mindepth 1 -type d \\( -name node_modules -prune \\) -exec rm -r '{}' +",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --report-unused-disable-directives --ext js,jsx,ts,tsx,md",
