@@ -563,11 +563,18 @@ Although the `.toBe` matcher **checks** referential identity, it **reports** a d
 
 Also under the alias: `.toBeCalled()`
 
+
 Use `.toHaveBeenCalled` to ensure that a mock function got called.
 
-For example, let's say you have a `drinkAll(drink, flavor)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavor is really weird and why would anything be octopus-flavored? You can do that with this test suite:
+For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavor is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
 ```js
+function drinkAll(callback, flavour) {
+  if (flavour !== 'octopus') {
+    callback(flavour);
+  }
+}
+
 describe('drinkAll', () => {
   test('drinks something lemon-flavored', () => {
     const drink = jest.fn();
