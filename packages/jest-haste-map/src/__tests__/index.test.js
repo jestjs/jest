@@ -1072,7 +1072,7 @@ describe('HasteMap', () => {
     node.mockImplementation(options => {
       const {data} = options;
       data.files = createMap({
-        'fruits/Banana.js': ['', 32, 42, 0, [], null],
+        'fruits/Banana.js': ['', 32, 42, 0, '', null],
       });
       return Promise.resolve({
         hasteMap: data,
@@ -1106,7 +1106,7 @@ describe('HasteMap', () => {
     node.mockImplementation(options => {
       const {data} = options;
       data.files = createMap({
-        'fruits/Banana.js': ['', 32, 42, 0, [], null],
+        'fruits/Banana.js': ['', 32, 42, 0, '', null],
       });
       return Promise.resolve({
         hasteMap: data,
