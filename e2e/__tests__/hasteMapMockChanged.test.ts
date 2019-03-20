@@ -28,9 +28,9 @@ test('should not warn when a mock file changes', async () => {
     retainAllFiles: false,
     rootDir: DIR,
     roots: [DIR],
+    throwOnModuleCollision: true,
     useWatchman: true,
     watch: false,
-    throwOnModuleCollision: true,
   };
 
   // Populate the cache.
