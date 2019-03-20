@@ -33,7 +33,7 @@ export default class HasteFS {
 
   getDependencies(file: Config.Path): Array<string> | null {
     const fileMetadata = this._getFileData(file);
-    return (fileMetadata && fileMetadata[H.DEPENDENCIES]) || null;
+    return (fileMetadata && fileMetadata[H.DEPENDENCIES].split('\t')) || null;
   }
 
   getSha1(file: Config.Path): string | null {

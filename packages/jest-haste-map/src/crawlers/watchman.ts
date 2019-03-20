@@ -232,7 +232,7 @@ export = async function watchmanCrawl(
           ];
         } else {
           // See ../constants.ts
-          nextData = ['', mtime, size, 0, [], sha1hex];
+          nextData = ['', mtime, size, 0, '', sha1hex];
         }
 
         const mappings = options.mapper ? options.mapper(filePath) : null;
