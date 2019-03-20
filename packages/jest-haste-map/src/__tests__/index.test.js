@@ -411,7 +411,7 @@ describe('HasteMap', () => {
           // The node crawler returns "null" for the SHA-1.
           data.files = createMap({
             'fruits/Banana.js': ['Banana', 32, 42, 0, 'Strawberry', null],
-            'fruits/Pear.js': ['Pear', 32, 42, 0, 'Banana/Strawberry', null],
+            'fruits/Pear.js': ['Pear', 32, 42, 0, 'Banana\tStrawberry', null],
             'fruits/Strawberry.js': ['Strawberry', 32, 42, 0, '', null],
             'fruits/__mocks__/Pear.js': ['', 32, 42, 0, 'Melon', null],
             'vegetables/Melon.js': ['Melon', 32, 42, 0, '', null],
