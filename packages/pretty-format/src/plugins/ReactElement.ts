@@ -40,6 +40,9 @@ const getType = (element: any) => {
   if (ReactIs.isFragment(element)) {
     return 'React.Fragment';
   }
+  if (ReactIs.isSuspense(element)) {
+    return 'React.Suspense';
+  }
   if (typeof type === 'object' && type !== null) {
     if (ReactIs.isContextProvider(element)) {
       return 'Context.Provider';
