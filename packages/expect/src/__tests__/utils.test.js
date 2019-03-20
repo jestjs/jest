@@ -241,6 +241,17 @@ describe('iterableEquality', () => {
     ).toBe(false);
   });
 
+  test('returns true when given circular Set shape', () => {
+    const a1 = new Set();
+    const a2 = new Set();
+    a1.add(a2);
+    a2.add(a1);
+    const b = new Set();
+    b.add(b);
+
+    expect(iterableEquality(a1, b)).toBe(true);
+  });
+
   test('returns true when given circular key in Map', () => {
     const a = new Map();
     a.set(a, 'a');

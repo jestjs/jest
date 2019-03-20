@@ -166,8 +166,6 @@ export const iterableEquality = (
     // circular reference is not equal to non-circular one
     if (aStack[length] === a) {
       return bStack[length] === b;
-    } else if (bStack[length] === b) {
-      return false;
     }
   }
   aStack.push(a);
