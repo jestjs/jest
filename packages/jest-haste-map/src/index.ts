@@ -574,20 +574,24 @@ class HasteMap extends EventEmitter {
 
       if (existingMockPath) {
         const secondMockPath = fastPath.relative(rootDir, filePath);
-        const method = this._options.throwOnModuleCollision ? 'error' : 'warn';
+        if (existingMockPath !== secondMockPath) {
+          const method = this._options.throwOnModuleCollision
+            ? 'error'
+            : 'warn';
 
-        this._console[method](
-          [
-            'jest-haste-map: duplicate manual mock found: ' + mockPath,
-            '  The following files share their name; please delete one of them:',
-            '    * <rootDir>' + path.sep + existingMockPath,
-            '    * <rootDir>' + path.sep + secondMockPath,
-            '',
-          ].join('\n'),
-        );
+          this._console[method](
+            [
+              'jest-haste-map: duplicate manual mock found: ' + mockPath,
+              '  The following files share their name; please delete one of them:',
+              '    * <rootDir>' + path.sep + existingMockPath,
+              '    * <rootDir>' + path.sep + secondMockPath,
+              '',
+            ].join('\n'),
+          );
 
-        if (this._options.throwOnModuleCollision) {
-          throw new DuplicateError(existingMockPath, secondMockPath);
+          if (this._options.throwOnModuleCollision) {
+            throw new DuplicateError(existingMockPath, secondMockPath);
+          }
         }
       }
 
