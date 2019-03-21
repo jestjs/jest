@@ -9,6 +9,14 @@ import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
 import {Config} from '@jest/types';
 
+export type Stats = {
+  roots: number;
+  testMatch: number;
+  testPathIgnorePatterns: number;
+  testRegex: number;
+  testPathPattern?: number;
+};
+
 export type TestRunData = Array<{
   context: Context;
   matches: {
@@ -19,21 +27,10 @@ export type TestRunData = Array<{
   };
 }>;
 
-type TestPathCaseStats = Record<keyof (TestPathCases), number>;
-
-export type TestPathCaseWithPathPatternStats = Record<
-  keyof (TestPathCasesWithPathPattern),
-  number
->;
-
-export type Stats = TestPathCaseStats | TestPathCaseWithPathPatternStats;
-
-export type TestPathCases = {
-  roots: (path: Config.Path) => boolean;
-  testMatch: (path: Config.Path) => boolean;
-  testPathIgnorePatterns: (path: Config.Path) => boolean;
-  testRegex: (path: Config.Path) => boolean;
-};
+export type TestPathCases = Array<{
+  stat: keyof Stats;
+  isMatch: (path: Config.Path) => boolean;
+}>;
 
 export type TestPathCasesWithPathPattern = TestPathCases & {
   testPathPattern: (path: Config.Path) => boolean;
