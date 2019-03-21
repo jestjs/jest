@@ -496,18 +496,24 @@ describe(<span class="hljs-string">'la lata'</span>, () =&gt; {
 <h3><a class="anchor" aria-hidden="true" id="tohavebeencalled"></a><a href="#tohavebeencalled" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveBeenCalled()</code></h3>
 <p>También bajo el alias: <code>.toBeCalled()</code></p>
 <p>Usa <code>.toHaveBeenCalled</code> para asegurar que una función &quot;mock&quot; fue llamada.</p>
-<p>Por ejemplo, digamos que tienes una función <code>beberTodo(beber, sabor)</code> que tiene una función <code>beber</code> y la aplica a todas las bebidas disponibles. Podrías querer comprobar que este <code>beber</code> es llamado para <code>'limon'</code>, pero no para <code>'pulpo'</code>, porque el sabor de <code>'pulpo'</code> es realmente extraño y, ¿por qué iba a tener algo sabor a pulpo? Puedes hacerlo con esta serie de tests:</p>
-<pre><code class="hljs css language-js">describe(<span class="hljs-string">'beberTodo'</span>, () =&gt; {
-  test(<span class="hljs-string">'bebe algo con sabor a limon'</span>, () =&gt; {
-    <span class="hljs-keyword">const</span> beber = jest.fn();
-    beberTodo(beber, <span class="hljs-string">'limon'</span>);
-    expect(beber).toHaveBeenCalled();
+<p>For example, let's say you have a <code>drinkAll(drink, flavour)</code> function that takes a <code>drink</code> function and applies it to all available beverages. You might want to check that <code>drink</code> gets called for <code>'lemon'</code>, but not for <code>'octopus'</code>, because <code>'octopus'</code> flavour is really weird and why would anything be octopus-flavoured? Puedes hacerlo con esta serie de tests:</p>
+<pre><code class="hljs css language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">drinkAll</span>(<span class="hljs-params">callback, flavour</span>) </span>{
+  <span class="hljs-keyword">if</span> (flavour !== <span class="hljs-string">'octopus'</span>) {
+    callback(flavour);
+  }
+}
+
+describe(<span class="hljs-string">'drinkAll'</span>, () =&gt; {
+  test(<span class="hljs-string">'drinks something lemon-flavoured'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> drink = jest.fn();
+    drinkAll(drink, <span class="hljs-string">'lemon'</span>);
+    expect(drink).toHaveBeenCalled();
   });
 
-  test(<span class="hljs-string">'no bebe algo con sabor a pulpo'</span>, () =&gt; {
-    <span class="hljs-keyword">const</span> beber = jest.fn();
-    drinkAll(beber, <span class="hljs-string">'pulpo'</span>);
-    expect(beber).not.toHaveBeenCalled();
+  test(<span class="hljs-string">'does not drink something octopus-flavoured'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> drink = jest.fn();
+    drinkAll(drink, <span class="hljs-string">'octopus'</span>);
+    expect(drink).not.toHaveBeenCalled();
   });
 });
 </code></pre>
