@@ -51,13 +51,11 @@ const toTests = (context: Context, tests: Array<Config.Path>) =>
 
 export default class SearchSource {
   private _context: Context;
-  private _testPathCases: TestPathCases;
+  private _testPathCases: TestPathCases = [];
 
   constructor(context: Context) {
     const {config} = context;
     this._context = context;
-
-    this._testPathCases = [];
 
     const rootPattern = new RegExp(
       config.roots.map(dir => escapePathForRegex(dir + path.sep)).join('|'),
@@ -111,7 +109,7 @@ export default class SearchSource {
       total: allPaths.length,
     };
 
-    const testCases = this._testPathCases.slice(0);
+    const testCases = Array.from(this._testPathCases); // clone
     if (testPathPattern) {
       const regex = testPathPatternToRegExp(testPathPattern);
       testCases.push({
