@@ -50,9 +50,9 @@ const nodePaths = process.env.NODE_PATH
 class Resolver {
   private readonly _options: ResolverConfig;
   private readonly _moduleMap: ModuleMap;
-  private readonly _moduleIDCache: {[key: string]: string};
-  private readonly _moduleNameCache: {[name: string]: Config.Path};
-  private readonly _modulePathCache: {[path: string]: Array<Config.Path>};
+  private readonly _moduleIDCache: Map<string, string>;
+  private readonly _moduleNameCache: Map<string, Config.Path>;
+  private readonly _modulePathCache: Map<string, Array<Config.Path>>;
   private readonly _supportsNativePlatform: boolean;
 
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
@@ -73,9 +73,9 @@ class Resolver {
       ? options.platforms.includes(NATIVE_PLATFORM)
       : false;
     this._moduleMap = moduleMap;
-    this._moduleIDCache = Object.create(null);
-    this._moduleNameCache = Object.create(null);
-    this._modulePathCache = Object.create(null);
+    this._moduleIDCache = new Map();
+    this._moduleNameCache = new Map();
+    this._modulePathCache = new Map();
   }
 
   static findNodeModule(
@@ -127,14 +127,16 @@ class Resolver {
 
     // 1. If we have already resolved this module for this directory name,
     // return a value from the cache.
-    if (this._moduleNameCache[key]) {
-      return this._moduleNameCache[key];
+    const cacheResult = this._moduleNameCache.get(key);
+    if (cacheResult) {
+      return cacheResult;
     }
 
     // 2. Check if the module is a haste module.
     module = this.getModule(moduleName);
     if (module) {
-      return (this._moduleNameCache[key] = module);
+      this._moduleNameCache.set(key, module);
+      return module;
     }
 
     // 3. Check if the module is a node module and resolve it based on
@@ -161,7 +163,8 @@ class Resolver {
       module = resolveNodeModule(moduleName);
 
       if (module) {
-        return (this._moduleNameCache[key] = module);
+        this._moduleNameCache.set(key, module);
+        return module;
       }
     }
 
@@ -177,8 +180,10 @@ class Resolver {
         );
         // try resolving with custom resolver first to support extensions,
         // then fallback to require.resolve
-        return (this._moduleNameCache[key] =
-          resolveNodeModule(module) || require.resolve(module));
+        const resolvedModule =
+          resolveNodeModule(module) || require.resolve(module);
+        this._moduleNameCache.set(key, resolvedModule);
+        return resolvedModule;
       } catch (ignoredError) {}
     }
 
@@ -250,16 +255,19 @@ class Resolver {
   }
 
   getModulePaths(from: Config.Path): Array<Config.Path> {
-    if (!this._modulePathCache[from]) {
-      const moduleDirectory = this._options.moduleDirectories;
-      const paths = nodeModulesPaths(from, {moduleDirectory});
-      if (paths[paths.length - 1] === undefined) {
-        // circumvent node-resolve bug that adds `undefined` as last item.
-        paths.pop();
-      }
-      this._modulePathCache[from] = paths;
+    const cachedModule = this._modulePathCache.get(from);
+    if (cachedModule) {
+      return cachedModule;
     }
-    return this._modulePathCache[from];
+
+    const moduleDirectory = this._options.moduleDirectories;
+    const paths = nodeModulesPaths(from, {moduleDirectory});
+    if (paths[paths.length - 1] === undefined) {
+      // circumvent node-resolve bug that adds `undefined` as last item.
+      paths.pop();
+    }
+    this._modulePathCache.set(from, paths);
+    return paths;
   }
 
   getModuleID(
@@ -270,8 +278,9 @@ class Resolver {
     const moduleName = _moduleName || '';
 
     const key = from + path.delimiter + moduleName;
-    if (this._moduleIDCache[key]) {
-      return this._moduleIDCache[key];
+    const cachedModuleID = this._moduleIDCache.get(key);
+    if (cachedModuleID) {
+      return cachedModuleID;
     }
 
     const moduleType = this._getModuleType(moduleName);
@@ -285,7 +294,8 @@ class Resolver {
       (absolutePath ? absolutePath + sep : '') +
       (mockPath ? mockPath + sep : '');
 
-    return (this._moduleIDCache[key] = id);
+    this._moduleIDCache.set(key, id);
+    return id;
   }
 
   private _getModuleType(moduleName: string): 'node' | 'user' {

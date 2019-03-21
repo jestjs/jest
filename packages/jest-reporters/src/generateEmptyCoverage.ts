@@ -33,18 +33,20 @@ export default function(
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
   };
+  let coverageWorkerResult: CoverageWorkerResult | null = null;
   if (shouldInstrument(filename, coverageOptions, config)) {
     // Transform file with instrumentation to make sure initial coverage data is well mapped to original code.
     const {code, mapCoverage, sourceMapPath} = new ScriptTransformer(
       config,
     ).transformSource(filename, source, true);
     const extracted = readInitialCoverage(code);
-
-    return {
-      coverage: new FileCoverage(extracted.coverageData),
-      sourceMapPath: mapCoverage ? sourceMapPath : null,
-    };
-  } else {
-    return null;
+    // Check extracted initial coverage is not null, this can happen when using /* istanbul ignore file */
+    if (extracted) {
+      coverageWorkerResult = {
+        coverage: new FileCoverage(extracted.coverageData),
+        sourceMapPath: mapCoverage ? sourceMapPath : null,
+      };
+    }
   }
+  return coverageWorkerResult;
 }

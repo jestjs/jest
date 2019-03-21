@@ -16,12 +16,7 @@ import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {replacePathSepForGlob, testPathPatternToRegExp} from 'jest-util';
-import {
-  Stats,
-  TestPathCases,
-  TestPathCasesWithPathPattern,
-  TestPathCaseWithPathPatternStats,
-} from './types';
+import {TestPathCases, Filter, Stats} from './types';
 
 export type SearchResult = {
   noSCM?: boolean;
@@ -41,28 +36,11 @@ export type TestSelectionConfig = {
   watch?: boolean;
 };
 
-type FilterResult = {
-  test: string;
-  message: string;
-};
+const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
+  micromatch.some(replacePathSepForGlob(path), globs, {dot: true});
 
-const globsToMatcher = (globs?: Array<Config.Glob> | null) => {
-  if (globs == null || globs.length === 0) {
-    return () => true;
-  }
-
-  return (path: Config.Path) =>
-    micromatch.some(replacePathSepForGlob(path), globs, {dot: true});
-};
-
-const regexToMatcher = (testRegex: Array<string>) => {
-  if (!testRegex.length) {
-    return () => true;
-  }
-
-  return (path: Config.Path) =>
-    testRegex.some(testRegex => new RegExp(testRegex).test(path));
-};
+const regexToMatcher = (testRegex: Array<string>) => (path: Config.Path) =>
+  testRegex.some(testRegex => new RegExp(testRegex).test(path));
 
 const toTests = (context: Context, tests: Array<Config.Path>) =>
   tests.map(path => ({
@@ -73,29 +51,43 @@ const toTests = (context: Context, tests: Array<Config.Path>) =>
 
 export default class SearchSource {
   private _context: Context;
-  private _rootPattern: RegExp;
-  private _testIgnorePattern: RegExp | null;
-  private _testPathCases: TestPathCases;
+  private _testPathCases: TestPathCases = [];
 
   constructor(context: Context) {
     const {config} = context;
     this._context = context;
-    this._rootPattern = new RegExp(
+
+    const rootPattern = new RegExp(
       config.roots.map(dir => escapePathForRegex(dir + path.sep)).join('|'),
     );
+    this._testPathCases.push({
+      isMatch: path => rootPattern.test(path),
+      stat: 'roots',
+    });
 
-    const ignorePattern = config.testPathIgnorePatterns;
-    this._testIgnorePattern = ignorePattern.length
-      ? new RegExp(ignorePattern.join('|'))
-      : null;
+    if (config.testMatch.length) {
+      this._testPathCases.push({
+        isMatch: globsToMatcher(config.testMatch),
+        stat: 'testMatch',
+      });
+    }
 
-    this._testPathCases = {
-      roots: path => this._rootPattern.test(path),
-      testMatch: globsToMatcher(config.testMatch),
-      testPathIgnorePatterns: path =>
-        !this._testIgnorePattern || !this._testIgnorePattern.test(path),
-      testRegex: regexToMatcher(config.testRegex),
-    };
+    if (config.testPathIgnorePatterns.length) {
+      const testIgnorePatternsRegex = new RegExp(
+        config.testPathIgnorePatterns.join('|'),
+      );
+      this._testPathCases.push({
+        isMatch: path => !testIgnorePatternsRegex.test(path),
+        stat: 'testPathIgnorePatterns',
+      });
+    }
+
+    if (config.testRegex.length) {
+      this._testPathCases.push({
+        isMatch: regexToMatcher(config.testRegex),
+        stat: 'testRegex',
+      });
+    }
   }
 
   private _filterTestPathsWithStats(
@@ -117,27 +109,27 @@ export default class SearchSource {
       total: allPaths.length,
     };
 
-    const testCases = Object.assign({}, this._testPathCases);
+    const testCases = Array.from(this._testPathCases); // clone
     if (testPathPattern) {
       const regex = testPathPatternToRegExp(testPathPattern);
-      (testCases as TestPathCasesWithPathPattern).testPathPattern = (
-        path: Config.Path,
-      ) => regex.test(path);
-      (data.stats as TestPathCaseWithPathPatternStats).testPathPattern = 0;
+      testCases.push({
+        isMatch: (path: Config.Path) => regex.test(path),
+        stat: 'testPathPattern',
+      });
+      data.stats.testPathPattern = 0;
     }
 
-    const testCasesKeys = Object.keys(testCases) as Array<keyof Stats>;
-    data.tests = allPaths.filter(test =>
-      testCasesKeys.reduce<boolean>((flag, key) => {
-        const {stats} = data;
-        if (testCases[key](test.path)) {
-          stats[key] = stats[key] === undefined ? 1 : stats[key] + 1;
-          return flag && true;
+    data.tests = allPaths.filter(test => {
+      let filterResult = true;
+      for (const {isMatch, stat} of testCases) {
+        if (isMatch(test.path)) {
+          data.stats[stat]!++;
+        } else {
+          filterResult = false;
         }
-        stats[key] = stats[key] || 0;
-        return false;
-      }, true),
-    );
+      }
+      return filterResult;
+    });
 
     return data;
   }
@@ -150,9 +142,7 @@ export default class SearchSource {
   }
 
   isTestFilePath(path: Config.Path): boolean {
-    return (Object.keys(this._testPathCases) as Array<
-      keyof TestPathCases
-    >).every(key => this._testPathCases[key](path));
+    return this._testPathCases.every(testCase => testCase.isMatch(path));
   }
 
   findMatchingTests(testPathPattern?: string): SearchResult {
@@ -290,18 +280,16 @@ export default class SearchSource {
   async getTestPaths(
     globalConfig: Config.GlobalConfig,
     changedFiles: ChangedFiles | undefined,
+    filter?: Filter,
   ): Promise<SearchResult> {
     const searchResult = this._getTestPaths(globalConfig, changedFiles);
 
     const filterPath = globalConfig.filter;
 
-    if (filterPath && !globalConfig.skipFilter) {
+    if (filter) {
       const tests = searchResult.tests;
 
-      const filter = require(filterPath);
-      const filterResult: {filtered: Array<FilterResult>} = await filter(
-        tests.map(test => test.path),
-      );
+      const filterResult = await filter(tests.map(test => test.path));
 
       if (!Array.isArray(filterResult.filtered)) {
         throw new Error(

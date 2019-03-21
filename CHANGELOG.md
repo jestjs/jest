@@ -2,13 +2,41 @@
 
 ### Features
 
+- `[expect]`: Improve report when matcher fails, part 13 ([#8077](https://github.com/facebook/jest/pull/8077))
+- `[@jest/core]` Filter API pre-filter setup hook ([#8142](https://github.com/facebook/jest/pull/8142))
+- `[jest-snapshot]` Improve report when matcher fails, part 14 ([#8132](https://github.com/facebook/jest/pull/8132))
+- `[@jest/reporter]` Display todo and skip test descriptions when verbose is true ([#8038](https://github.com/facebook/jest/pull/8038))
+- `[jest-runner]` Support default exports for test environments ([#8163](https://github.com/facebook/jest/pull/8163))
+- `[pretty-format]` Support React.Suspense ([#8180](https://github.com/facebook/jest/pull/8180))
 - `[jest-snapshots]`: Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
 
 ### Fixes
 
+- `[expect]` Fix circular references in iterable equality ([#8160](https://github.com/facebook/jest/pull/8160))
+- `[jest-changed-files]` Change method of obtaining git root ([#8052](https://github.com/facebook/jest/pull/8052))
+- `[jest-each]` Fix test function type ([#8145](https://github.com/facebook/jest/pull/8145))
+- `[jest-fake-timers]` `getTimerCount` not taking immediates and ticks into account ([#8139](https://github.com/facebook/jest/pull/8139))
+- `[jest-runtime]` Allow json file as manual mock ([#8159](https://github.com/facebook/jest/pull/8159))
+- `[pretty-format]` Print `BigInt` as a readable number instead of `{}` ([#8138](https://github.com/facebook/jest/pull/8138))
+- `[jest-core]` Fix ability to transform dependencies required from globalSetup script [#8143](https://github.com/facebook/jest/pull/8143)
+- `[@jest/reporters]` Fix Cannot read property converageData of null ([#8168](https://github.com/facebook/jest/pull/8168))
+
 ### Chore & Maintenance
 
+- `[*]` Remove flow from code base ([#8061](https://github.com/facebook/jest/pull/8061))
+- `[*]` Use property initializer syntax in Jest codebase ([#8117](https://github.com/facebook/jest/pull/8117))
+- `[*]` Move @types/node to the root package.json [#8129](https://github.com/facebook/jest/pull/8129))
+- `[*]` Add documentation and tests related to auto-mocking ([#8099](https://github.com/facebook/jest/pull/8099))
+- `[*]` Add `jest-watch-typeahead` as a devDependency ([#6449](https://github.com/facebook/jest/pull/6449))
+- `[*]` upgrade TS to 3.4.0-dev\* for inceremental builds ([#8149](https://github.com/facebook/jest/pull/8149))
+- `[docs]` Improve description of optional arguments in ExpectAPI.md ([#8126](https://github.com/facebook/jest/pull/8126)
+
 ### Performance
+
+- `[jest-haste-map]` Optimize haste map data structure for serialization/deserialization ([#8171](https://github.com/facebook/jest/pull/8171))
+- `[jest-haste-map]` Avoid persisting haste map or processing files when not changed ([#8153](https://github.com/facebook/jest/pull/8153))
+- `[jest-core]` Improve performance of SearchSource.findMatchingTests by 15% ([#8184](https://github.com/facebook/jest/pull/8184))
+- `[jest-resolve]` Optimize internal cache lookup performance ([#8183](https://github.com/facebook/jest/pull/8183))
 
 ## 24.5.0
 

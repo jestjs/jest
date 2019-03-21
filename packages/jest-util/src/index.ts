@@ -20,6 +20,7 @@ import createDirectory from './createDirectory';
 import ErrorWithStack from './ErrorWithStack';
 import getFailedSnapshotTests from './getFailedSnapshotTests';
 import installCommonGlobals from './installCommonGlobals';
+import interopRequireDefault from './interopRequireDefault';
 import isInteractive from './isInteractive';
 import isPromise from './isPromise';
 import setGlobal from './setGlobal';
@@ -46,6 +47,7 @@ export = {
   getConsoleOutput,
   getFailedSnapshotTests,
   installCommonGlobals,
+  interopRequireDefault,
   isInteractive,
   isPromise,
   pluralize,

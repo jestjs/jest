@@ -19,18 +19,21 @@ const customTransformDIR = path.join(
   os.tmpdir(),
   'jest-global-setup-custom-transform',
 );
+const nodeModulesDIR = path.join(os.tmpdir(), 'jest-global-setup-node-modules');
 
 beforeEach(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
   cleanup(customTransformDIR);
+  cleanup(nodeModulesDIR);
 });
 afterAll(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
   cleanup(customTransformDIR);
+  cleanup(nodeModulesDIR);
 });
 
 test('globalSetup is triggered once before all test suites', () => {
@@ -163,6 +166,12 @@ test('globalSetup throws with named export', () => {
 
 test('should not transpile the transformer', () => {
   const {status} = runJest('global-setup-custom-transform', [`--no-cache`]);
+
+  expect(status).toBe(0);
+});
+
+test('should transform node_modules if configured by transformIgnorePatterns', () => {
+  const {status} = runJest('global-setup-node-modules', [`--no-cache`]);
 
   expect(status).toBe(0);
 });

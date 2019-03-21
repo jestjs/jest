@@ -107,6 +107,8 @@ module.exports = {
 
 **The ideal configuration for Babel will depend on your project.** See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
+<details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
+
 Jest will set `process.env.NODE_ENV` to `'test'` if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
 
 ```javascript
@@ -130,7 +132,9 @@ module.exports = {
 };
 ```
 
-#### Babel 6
+</details>
+
+<details><summary markdown="span"><strong>Babel 6 support</strong></summary>
 
 Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel 7, which is actively maintained. However, if you cannot upgrade to Babel 7, either keep using Jest 23 or upgrade to Jest 24 with `babel-jest` locked at version 23, like in the example below:
 
@@ -144,6 +148,8 @@ Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel
 ```
 
 While we generally recommend using the same version of every Jest package, this workaround will allow you to continue using the latest version of Jest with Babel 6 for now.
+
+</details>
 
 ### Using webpack
 
@@ -159,14 +165,14 @@ yarn add --dev @babel/preset-typescript
 
 Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
 
-```javascript
+```diff
 // babel.config.js
 module.exports = {
   presets: [
     ['@babel/preset-env', {targets: {node: 'current'}}],
-    '@babel/preset-typescript',
++    '@babel/preset-typescript',
   ],
 };
 ```
 
-Note that there are some caveats to using Typescript with Babel, see http://artsy.github.io/blog/2017/11/27/Babel-7-and-TypeScript/. Another caveat is that Jest will not typecheck your tests. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+However, there are some [caveats](https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is just transpilation, Jest will not type-check your tests as they are ran. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).

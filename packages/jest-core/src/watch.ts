@@ -39,6 +39,7 @@ import {
   filterInteractivePlugins,
 } from './lib/watch_plugins_helpers';
 import activeFilters from './lib/active_filters_message';
+import {Filter} from './types';
 
 type ReservedInfo = {
   forbiddenOverwriteMessage?: string;
@@ -83,6 +84,7 @@ export default function watch(
   hasteMapInstances: Array<HasteMap>,
   stdin: NodeJS.ReadStream = process.stdin,
   hooks: JestHook = new JestHook(),
+  filter?: Filter,
 ): Promise<void> {
   // `globalConfig` will be constantly updated and reassigned as a result of
   // watch mode interactions.
@@ -262,6 +264,7 @@ export default function watch(
       changedFilesPromise,
       contexts,
       failedTestsCache,
+      filter,
       globalConfig,
       jestHooks: hooks.getEmitter(),
       onComplete: results => {

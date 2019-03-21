@@ -173,8 +173,8 @@ test('works with snapshot failures', () => {
   ).toMatchSnapshot();
 });
 
-test('works with named snapshot failures', () => {
-  const {stderr} = runJest(dir, ['snapshotNamed.test.js']);
+test('works with snapshot failures with hint', () => {
+  const {stderr} = runJest(dir, ['snapshotWithHint.test.js']);
 
   const result = normalizeDots(cleanStderr(stderr));
 
