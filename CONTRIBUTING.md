@@ -127,6 +127,8 @@ If you are making changes to the website or documentation, test the website fold
     ```
 1.  You can run a development server to check if the changes you made are being displayed accurately by running `yarn start` in the website directory.
 
+The Jest website also offers documentation for older versions of Jest, which you can edit in `website/versioned_docs`. After making changes to the current documentation in `docs`, please check if any older versions of the documentation have a copy of the file where the change is also relevant and apply the changes to the `versioned_docs` as well.
+
 ### Contributor License Agreement (CLA)
 
 In order to accept your pull request, we need you to submit a CLA. You only need to do this once, so if you've done this for another Facebook open source project, you're good to go. If you are submitting a pull request for the first time, just let us know that you have completed the CLA and we can cross-check with your GitHub username.
