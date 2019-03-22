@@ -52,6 +52,16 @@ export default function getNoTestFoundVerbose(
     )} - 0 matches`;
   }
 
+  if (globalConfig.passWithNoTests) {
+    return (
+      chalk.bold('No tests found, exiting with code 0') +
+      '\n' +
+      individualResults.join('\n') +
+      '\n' +
+      dataMessage
+    );
+  }
+
   return (
     chalk.bold('No tests found, exiting with code 1') +
     '\n' +

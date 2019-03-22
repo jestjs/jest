@@ -30,11 +30,7 @@ export default function getNoTestFound(
     )} - 0 matches`;
   }
 
-  return (
-    chalk.bold('No tests found, exiting with code 1') +
-    '\n' +
-    'Run with `--passWithNoTests` to exit with code 0' +
-    '\n' +
+  const fixedMessage =
     `In ${chalk.bold(globalConfig.rootDir)}` +
     '\n' +
     `  ${pluralize('file', testFiles, 's')} checked across ${pluralize(
@@ -43,6 +39,19 @@ export default function getNoTestFound(
       's',
     )}. Run with \`--verbose\` for more details.` +
     '\n' +
-    dataMessage
+    dataMessage;
+
+  if (globalConfig.passWithNoTests) {
+    return (
+      chalk.bold('No tests found, exiting with code 0') + '\n' + fixedMessage
+    );
+  }
+
+  return (
+    chalk.bold('No tests found, exiting with code 1') +
+    '\n' +
+    'Run with `--passWithNoTests` to exit with code 0' +
+    '\n' +
+    fixedMessage
   );
 }
