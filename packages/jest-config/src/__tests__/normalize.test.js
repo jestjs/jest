@@ -1519,3 +1519,26 @@ describe('Defaults', () => {
     expect(console.warn).not.toHaveBeenCalled();
   });
 });
+
+describe('displayName', () => {
+  test.each`
+    displayName             | description
+    ${{}}                   | ${'is an empty object'}
+    ${{name: 'hello'}}      | ${'missing color'}
+    ${{color: 'green'}}     | ${'missing name'}
+    ${{color: 2, name: []}} | ${'using invalid values'}
+  `(
+    'should throw an error when displayName is $description',
+    ({displayName}) => {
+      expect(() => {
+        normalize(
+          {
+            rootDir: '/root/',
+            displayName,
+          },
+          {},
+        );
+      }).toThrowErrorMatchingSnapshot();
+    },
+  );
+});
