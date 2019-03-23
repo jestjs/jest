@@ -329,7 +329,7 @@ class HasteMap extends EventEmitter {
     const hash = crypto.createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
-      name.replace(/\W/g, '-') + '--' + hash.digest('hex'),
+      name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
     );
   }
 
