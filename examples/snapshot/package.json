@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "name": "example-snapshot",
   "dependencies": {
-    "react": "^16.4.0"
+    "react": "*"
   },
   "devDependencies": {
     "@babel/core": "*",

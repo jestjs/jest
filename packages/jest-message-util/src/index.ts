@@ -7,7 +7,8 @@
 
 import fs from 'fs';
 import path from 'path';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {AssertionResult, SerializableError} from '@jest/test-result';
 import chalk from 'chalk';
 import micromatch from 'micromatch';
 import slash from 'slash';
@@ -18,13 +19,9 @@ import {Frame} from './types';
 export {Frame} from './types';
 
 type Path = Config.Path;
-type AssertionResult = TestResult.AssertionResult;
-type SerializableError = TestResult.SerializableError;
 
 // stack utils tries to create pretty stack by making paths relative.
-const stackUtils = new StackUtils({
-  cwd: 'something which does not exist',
-});
+const stackUtils = new StackUtils({cwd: 'something which does not exist'});
 
 let nodeInternals: Array<RegExp> = [];
 

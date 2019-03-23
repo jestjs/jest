@@ -42,6 +42,8 @@ import {
   ModuleMapData,
   ModuleMetaData,
   WorkerMetadata,
+  CrawlerOptions,
+  FileData,
 } from './types';
 
 type HType = typeof H;
@@ -337,30 +339,43 @@ class HasteMap extends EventEmitter {
 
   build(): Promise<InternalHasteMapObject> {
     if (!this._buildPromise) {
-      this._buildPromise = this._buildFileMap()
-        .then(data => this._buildHasteMap(data))
-        .then(hasteMap => {
-          this._persist(hasteMap);
+      this._buildPromise = (async () => {
+        const data = await this._buildFileMap();
 
-          const rootDir = this._options.rootDir;
-          const hasteFS = new HasteFS({
-            files: hasteMap.files,
-            rootDir,
-          });
-          const moduleMap = new HasteModuleMap({
-            duplicates: hasteMap.duplicates,
-            map: hasteMap.map,
-            mocks: hasteMap.mocks,
-            rootDir,
-          });
-          const __hasteMapForTest =
-            (process.env.NODE_ENV === 'test' && hasteMap) || null;
-          return this._watch(hasteMap).then(() => ({
-            __hasteMapForTest,
-            hasteFS,
-            moduleMap,
-          }));
+        // Persist when we don't know if files changed (changedFiles undefined)
+        // or when we know a file was changed or deleted.
+        let hasteMap: InternalHasteMap;
+        if (
+          data.changedFiles === undefined ||
+          data.changedFiles.size > 0 ||
+          data.removedFiles.size > 0
+        ) {
+          hasteMap = await this._buildHasteMap(data);
+          this._persist(hasteMap);
+        } else {
+          hasteMap = data.hasteMap;
+        }
+
+        const rootDir = this._options.rootDir;
+        const hasteFS = new HasteFS({
+          files: hasteMap.files,
+          rootDir,
         });
+        const moduleMap = new HasteModuleMap({
+          duplicates: hasteMap.duplicates,
+          map: hasteMap.map,
+          mocks: hasteMap.mocks,
+          rootDir,
+        });
+        const __hasteMapForTest =
+          (process.env.NODE_ENV === 'test' && hasteMap) || null;
+        await this._watch(hasteMap);
+        return {
+          __hasteMapForTest,
+          hasteFS,
+          moduleMap,
+        };
+      })();
     }
     return this._buildPromise;
   }
@@ -393,28 +408,19 @@ class HasteMap extends EventEmitter {
   /**
    * 2. crawl the file system.
    */
-  private _buildFileMap(): Promise<{
-    deprecatedFiles: Array<{moduleName: string; path: string}>;
+  private async _buildFileMap(): Promise<{
+    removedFiles: FileData;
+    changedFiles?: FileData;
     hasteMap: InternalHasteMap;
   }> {
-    const read = this._options.resetCache ? this._createEmptyMap : this.read;
-
-    return Promise.resolve()
-      .then(() => read.call(this))
-      .catch(() => this._createEmptyMap())
-      .then(cachedHasteMap => {
-        const cachedFiles: Array<{moduleName: string; path: string}> = [];
-        for (const [relativeFilePath, fileMetadata] of cachedHasteMap.files) {
-          const moduleName = fileMetadata[H.ID];
-          cachedFiles.push({moduleName, path: relativeFilePath});
-        }
-        return this._crawl(cachedHasteMap).then(hasteMap => {
-          const deprecatedFiles = cachedFiles.filter(
-            file => !hasteMap.files.has(file.path),
-          );
-          return {deprecatedFiles, hasteMap};
-        });
-      });
+    let hasteMap: InternalHasteMap;
+    try {
+      const read = this._options.resetCache ? this._createEmptyMap : this.read;
+      hasteMap = await read.call(this);
+    } catch {
+      hasteMap = this._createEmptyMap();
+    }
+    return this._crawl(hasteMap);
   }
 
   /**
@@ -516,7 +522,9 @@ class HasteMap extends EventEmitter {
         setModule(metadataId, metadataModule);
       }
 
-      fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+      fileMetadata[H.DEPENDENCIES] = metadata.dependencies
+        ? metadata.dependencies.join(H.DEPENDENCY_DELIM)
+        : '';
 
       if (computeSha1) {
         fileMetadata[H.SHA1] = metadata.sha1;
@@ -568,20 +576,24 @@ class HasteMap extends EventEmitter {
 
       if (existingMockPath) {
         const secondMockPath = fastPath.relative(rootDir, filePath);
-        const method = this._options.throwOnModuleCollision ? 'error' : 'warn';
+        if (existingMockPath !== secondMockPath) {
+          const method = this._options.throwOnModuleCollision
+            ? 'error'
+            : 'warn';
 
-        this._console[method](
-          [
-            'jest-haste-map: duplicate manual mock found: ' + mockPath,
-            '  The following files share their name; please delete one of them:',
-            '    * <rootDir>' + path.sep + existingMockPath,
-            '    * <rootDir>' + path.sep + secondMockPath,
-            '',
-          ].join('\n'),
-        );
+          this._console[method](
+            [
+              'jest-haste-map: duplicate manual mock found: ' + mockPath,
+              '  The following files share their name; please delete one of them:',
+              '    * <rootDir>' + path.sep + existingMockPath,
+              '    * <rootDir>' + path.sep + secondMockPath,
+              '',
+            ].join('\n'),
+          );
 
-        if (this._options.throwOnModuleCollision) {
-          throw new DuplicateError(existingMockPath, secondMockPath);
+          if (this._options.throwOnModuleCollision) {
+            throw new DuplicateError(existingMockPath, secondMockPath);
+          }
         }
       }
 
@@ -628,21 +640,34 @@ class HasteMap extends EventEmitter {
       .then(workerReply, workerError);
   }
 
-  private _buildHasteMap(data: {
-    deprecatedFiles: Array<{moduleName: string; path: string}>;
+  private async _buildHasteMap(data: {
+    removedFiles: FileData;
+    changedFiles?: FileData;
     hasteMap: InternalHasteMap;
   }): Promise<InternalHasteMap> {
-    const {deprecatedFiles, hasteMap} = data;
-    const map = new Map();
-    const mocks = new Map();
-    const promises = [];
+    const {removedFiles, changedFiles, hasteMap} = data;
 
-    for (let i = 0; i < deprecatedFiles.length; ++i) {
-      const file = deprecatedFiles[i];
-      this._recoverDuplicates(hasteMap, file.path, file.moduleName);
+    // If any files were removed or we did not track what files changed, process
+    // every file looking for changes. Otherwise, process only changed files.
+    let map: ModuleMapData;
+    let mocks: MockData;
+    let filesToProcess: FileData;
+    if (changedFiles === undefined || removedFiles.size) {
+      map = new Map();
+      mocks = new Map();
+      filesToProcess = hasteMap.files;
+    } else {
+      map = hasteMap.map;
+      mocks = hasteMap.mocks;
+      filesToProcess = changedFiles;
     }
 
-    for (const relativeFilePath of hasteMap.files.keys()) {
+    for (const [relativeFilePath, fileMetadata] of removedFiles) {
+      this._recoverDuplicates(hasteMap, relativeFilePath, fileMetadata[H.ID]);
+    }
+
+    const promises = [];
+    for (const relativeFilePath of filesToProcess.keys()) {
       if (
         this._options.skipPackageJson &&
         relativeFilePath.endsWith(PACKAGE_JSON)
@@ -660,17 +685,16 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    return Promise.all(promises)
-      .then(() => {
-        this._cleanup();
-        hasteMap.map = map;
-        hasteMap.mocks = mocks;
-        return hasteMap;
-      })
-      .catch(error => {
-        this._cleanup();
-        return Promise.reject(error);
-      });
+    try {
+      await Promise.all(promises);
+      this._cleanup();
+      hasteMap.map = map;
+      hasteMap.mocks = mocks;
+      return hasteMap;
+    } catch (error) {
+      this._cleanup();
+      throw error;
+    }
   }
 
   private _cleanup() {
@@ -712,11 +736,21 @@ class HasteMap extends EventEmitter {
     return this._worker;
   }
 
-  private _crawl(hasteMap: InternalHasteMap): Promise<InternalHasteMap> {
+  private _crawl(hasteMap: InternalHasteMap) {
     const options = this._options;
     const ignore = this._ignore.bind(this);
     const crawl =
       canUseWatchman && this._options.useWatchman ? watchmanCrawl : nodeCrawl;
+    const crawlerOptions: CrawlerOptions = {
+      computeSha1: options.computeSha1,
+      data: hasteMap,
+      extensions: options.extensions,
+      forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
+      ignore,
+      mapper: options.mapper,
+      rootDir: options.rootDir,
+      roots: options.roots,
+    };
 
     const retry = (error: Error) => {
       if (crawl === watchmanCrawl) {
@@ -729,16 +763,7 @@ class HasteMap extends EventEmitter {
             `  ` +
             error,
         );
-        return nodeCrawl({
-          computeSha1: options.computeSha1,
-          data: hasteMap,
-          extensions: options.extensions,
-          forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
-          ignore,
-          mapper: options.mapper,
-          rootDir: options.rootDir,
-          roots: options.roots,
-        }).catch(e => {
+        return nodeCrawl(crawlerOptions).catch(e => {
           throw new Error(
             `Crawler retry failed:\n` +
               `  Original error: ${error.message}\n` +
@@ -751,15 +776,7 @@ class HasteMap extends EventEmitter {
     };
 
     try {
-      return crawl({
-        computeSha1: options.computeSha1,
-        data: hasteMap,
-        extensions: options.extensions,
-        forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
-        ignore,
-        rootDir: options.rootDir,
-        roots: options.roots,
-      }).catch(retry);
+      return crawl(crawlerOptions).catch(retry);
     } catch (error) {
       return retry(error);
     }
@@ -781,8 +798,6 @@ class HasteMap extends EventEmitter {
     const Watcher: sane.Watcher =
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
-        : os.platform() === 'darwin'
-        ? sane.FSEventsWatcher
         : sane.NodeWatcher;
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
@@ -931,7 +946,7 @@ class HasteMap extends EventEmitter {
               stat ? stat.mtime.getTime() : -1,
               stat ? stat.size : 0,
               0,
-              [],
+              '',
               null,
             ];
             hasteMap.files.set(relativeFilePath, fileMetadata);
@@ -1108,7 +1123,7 @@ class DuplicateError extends Error {
   }
 }
 
-function copy<T extends Object>(object: T): T {
+function copy<T extends Record<string, any>>(object: T): T {
   return Object.assign(Object.create(null), object);
 }
 

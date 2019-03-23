@@ -114,7 +114,7 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/project/fruits', '/project/vegtables'],
-    }).then(data => {
+    }).then(({hasteMap, removedFiles}) => {
       expect(childProcess.spawn).lastCalledWith('find', [
         '/project/fruits',
         '/project/vegtables',
@@ -129,15 +129,17 @@ describe('node crawler', () => {
         ')',
       ]);
 
-      expect(data.files).not.toBe(null);
+      expect(hasteMap.files).not.toBe(null);
 
-      expect(data.files).toEqual(
+      expect(hasteMap.files).toEqual(
         createMap({
-          'fruits/strawberry.js': ['', 32, 42, 0, [], null],
-          'fruits/tomato.js': ['', 33, 42, 0, [], null],
-          'vegetables/melon.json': ['', 34, 42, 0, [], null],
+          'fruits/strawberry.js': ['', 32, 42, 0, '', null],
+          'fruits/tomato.js': ['', 33, 42, 0, '', null],
+          'vegetables/melon.json': ['', 34, 42, 0, '', null],
         }),
       );
+
+      expect(removedFiles).toEqual(new Map());
     });
 
     return promise;
@@ -149,9 +151,9 @@ describe('node crawler', () => {
     nodeCrawl = require('../node');
 
     // In this test sample, strawberry is changed and tomato is unchanged
-    const tomato = ['', 33, 42, 1, [], null];
+    const tomato = ['', 33, 42, 1, '', null];
     const files = createMap({
-      'fruits/strawberry.js': ['', 30, 40, 1, [], null],
+      'fruits/strawberry.js': ['', 30, 40, 1, '', null],
       'fruits/tomato.js': tomato,
     });
 
@@ -161,16 +163,52 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/project/fruits'],
-    }).then(data => {
-      expect(data.files).toEqual(
+    }).then(({hasteMap, removedFiles}) => {
+      expect(hasteMap.files).toEqual(
         createMap({
-          'fruits/strawberry.js': ['', 32, 42, 0, [], null],
+          'fruits/strawberry.js': ['', 32, 42, 0, '', null],
           'fruits/tomato.js': tomato,
         }),
       );
 
       // Make sure it is the *same* unchanged object.
-      expect(data.files.get('fruits/tomato.js')).toBe(tomato);
+      expect(hasteMap.files.get('fruits/tomato.js')).toBe(tomato);
+
+      expect(removedFiles).toEqual(new Map());
+    });
+  });
+
+  it('returns removed files', () => {
+    process.platform = 'linux';
+
+    nodeCrawl = require('../node');
+
+    // In this test sample, previouslyExisted was present before and will not be
+    // when crawling this directory.
+    const files = createMap({
+      'fruits/previouslyExisted.js': ['', 30, 40, 1, '', null],
+      'fruits/strawberry.js': ['', 33, 42, 0, '', null],
+      'fruits/tomato.js': ['', 32, 42, 0, '', null],
+    });
+
+    return nodeCrawl({
+      data: {files},
+      extensions: ['js'],
+      ignore: pearMatcher,
+      rootDir,
+      roots: ['/project/fruits'],
+    }).then(({hasteMap, removedFiles}) => {
+      expect(hasteMap.files).toEqual(
+        createMap({
+          'fruits/strawberry.js': ['', 32, 42, 0, '', null],
+          'fruits/tomato.js': ['', 33, 42, 0, '', null],
+        }),
+      );
+      expect(removedFiles).toEqual(
+        createMap({
+          'fruits/previouslyExisted.js': ['', 30, 40, 1, '', null],
+        }),
+      );
     });
   });
 
@@ -187,13 +225,14 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/project/fruits'],
-    }).then(data => {
-      expect(data.files).toEqual(
+    }).then(({hasteMap, removedFiles}) => {
+      expect(hasteMap.files).toEqual(
         createMap({
-          'fruits/directory/strawberry.js': ['', 33, 42, 0, [], null],
-          'fruits/tomato.js': ['', 32, 42, 0, [], null],
+          'fruits/directory/strawberry.js': ['', 33, 42, 0, '', null],
+          'fruits/tomato.js': ['', 32, 42, 0, '', null],
         }),
       );
+      expect(removedFiles).toEqual(new Map());
     });
   });
 
@@ -210,13 +249,14 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/project/fruits'],
-    }).then(data => {
-      expect(data.files).toEqual(
+    }).then(({hasteMap, removedFiles}) => {
+      expect(hasteMap.files).toEqual(
         createMap({
-          'fruits/directory/strawberry.js': ['', 33, 42, 0, [], null],
-          'fruits/tomato.js': ['', 32, 42, 0, [], null],
+          'fruits/directory/strawberry.js': ['', 33, 42, 0, '', null],
+          'fruits/tomato.js': ['', 32, 42, 0, '', null],
         }),
       );
+      expect(removedFiles).toEqual(new Map());
     });
   });
 
@@ -233,8 +273,9 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: [],
-    }).then(data => {
-      expect(data.files).toEqual(new Map());
+    }).then(({hasteMap, removedFiles}) => {
+      expect(hasteMap.files).toEqual(new Map());
+      expect(removedFiles).toEqual(new Map());
     });
   });
 
@@ -250,8 +291,9 @@ describe('node crawler', () => {
       ignore: pearMatcher,
       rootDir,
       roots: ['/error'],
-    }).then(data => {
-      expect(data.files).toEqual(new Map());
+    }).then(({hasteMap, removedFiles}) => {
+      expect(hasteMap.files).toEqual(new Map());
+      expect(removedFiles).toEqual(new Map());
     });
   });
 });

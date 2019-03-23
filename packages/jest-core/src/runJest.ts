@@ -8,24 +8,28 @@
 import path from 'path';
 import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
-import {Console, formatTestResults} from 'jest-util';
+import {CustomConsole} from '@jest/console';
+import {formatTestResults} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
-import {Config, TestResult} from '@jest/types';
+import {Config} from '@jest/types';
+import {
+  AggregatedResult,
+  makeEmptyAggregatedTestResult,
+} from '@jest/test-result';
 import {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
 import TestScheduler, {TestSchedulerContext} from './TestScheduler';
 import TestSequencer from './TestSequencer';
-import {makeEmptyAggregatedTestResult} from './testResultHelpers';
 import FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
 import TestWatcher from './TestWatcher';
-import {TestRunData} from './types';
+import {TestRunData, Filter} from './types';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
@@ -33,12 +37,13 @@ const getTestPaths = async (
   outputStream: NodeJS.WritableStream,
   changedFiles: ChangedFiles | undefined,
   jestHooks: JestHookEmitter,
+  filter?: Filter,
 ) => {
   const source = new SearchSource(context);
-  const data = await source.getTestPaths(globalConfig, changedFiles);
+  const data = await source.getTestPaths(globalConfig, changedFiles, filter);
 
   if (!data.tests.length && globalConfig.onlyChanged && data.noSCM) {
-    new Console(outputStream, outputStream).log(
+    new CustomConsole(outputStream, outputStream).log(
       'Jest can only find uncommitted changed files in a git or hg ' +
         'repository. If you make your project a git or hg ' +
         'repository (`git init` or `hg init`), Jest will be able ' +
@@ -67,12 +72,12 @@ type ProcessResultOptions = Pick<
   'json' | 'outputFile' | 'testResultsProcessor'
 > & {
   collectHandles?: () => Array<Error>;
-  onComplete?: (result: TestResult.AggregatedResult) => void;
+  onComplete?: (result: AggregatedResult) => void;
   outputStream: NodeJS.WritableStream;
 };
 
 const processResults = (
-  runResults: TestResult.AggregatedResult,
+  runResults: AggregatedResult,
   options: ProcessResultOptions,
 ) => {
   const {
@@ -125,6 +130,7 @@ export default (async function runJest({
   changedFilesPromise,
   onComplete,
   failedTestsCache,
+  filter,
 }: {
   globalConfig: Config.GlobalConfig;
   contexts: Array<Context>;
@@ -133,8 +139,9 @@ export default (async function runJest({
   jestHooks?: JestHookEmitter;
   startRun: (globalConfig: Config.GlobalConfig) => void;
   changedFilesPromise?: ChangedFilesPromise;
-  onComplete: (testResults: TestResult.AggregatedResult) => void;
+  onComplete: (testResults: AggregatedResult) => void;
   failedTestsCache?: FailedTestsCache;
+  filter?: Filter;
 }) {
   const sequencer = new TestSequencer();
   let allTests: Array<Test> = [];
@@ -164,6 +171,7 @@ export default (async function runJest({
         outputStream,
         changedFilesPromise && (await changedFilesPromise),
         jestHooks,
+        filter,
       );
       allTests = allTests.concat(matches.tests);
 
@@ -204,9 +212,9 @@ export default (async function runJest({
       globalConfig.lastCommit ||
       globalConfig.onlyChanged
     ) {
-      new Console(outputStream, outputStream).log(noTestsFoundMessage);
+      new CustomConsole(outputStream, outputStream).log(noTestsFoundMessage);
     } else {
-      new Console(outputStream, outputStream).error(noTestsFoundMessage);
+      new CustomConsole(outputStream, outputStream).error(noTestsFoundMessage);
 
       exit(1);
     }

@@ -13,6 +13,7 @@ import {OptionsReceived} from '../types';
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');
+const suspenseSymbol = Symbol.for('react.suspense');
 const testSymbol = Symbol.for('react.test.json');
 const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
@@ -306,6 +307,18 @@ test('supports a fragment with element child', () => {
       type: fragmentSymbol,
     }),
   ).toEqual('<React.Fragment>\n  <div>\n    test\n  </div>\n</React.Fragment>');
+});
+
+test('supports suspense', () => {
+  expect(
+    formatElement({
+      $$typeof: elementSymbol,
+      props: {
+        children: React.createElement('div', null, 'test'),
+      },
+      type: suspenseSymbol,
+    }),
+  ).toEqual('<React.Suspense>\n  <div>\n    test\n  </div>\n</React.Suspense>');
 });
 
 test('supports a single element with React elements with a child', () => {

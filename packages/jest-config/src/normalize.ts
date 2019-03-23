@@ -830,7 +830,7 @@ export default function normalize(
 
   newOptions.nonFlagArgs = argv._;
   newOptions.testPathPattern = buildTestPathPattern(argv);
-  newOptions.json = argv.json;
+  newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = parseInt(
     (newOptions.testFailureExitCode as unknown) as string,

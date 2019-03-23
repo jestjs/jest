@@ -6,7 +6,7 @@
  *
  */
 
-import getType from 'jest-get-type';
+import getType, {isPrimitive} from 'jest-get-type';
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -220,45 +220,62 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeInstanceOf(this: MatcherState, received: any, constructor: Function) {
-    const constType = getType(constructor);
+  toBeInstanceOf(this: MatcherState, received: any, expected: Function) {
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
 
-    if (constType !== 'function') {
+    if (typeof expected !== 'function') {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('.toBeInstanceOf', undefined, undefined, {
-            isNot: this.isNot,
-          }),
+          matcherHint('toBeInstanceOf', undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a function`,
-          printWithType('Expected', constructor, printExpected),
+          printWithType('Expected', expected, printExpected),
         ),
       );
     }
-    const pass = received instanceof constructor;
+
+    const pass = received instanceof expected;
+
+    const NAME_IS_NOT_STRING = ' name is not a string\n';
+    const NAME_IS_EMPTY_STRING = ' name is an empty string\n';
 
     const message = pass
       ? () =>
-          matcherHint('.toBeInstanceOf', 'value', 'constructor', {
-            isNot: this.isNot,
-          }) +
+          matcherHint('toBeInstanceOf', undefined, undefined, options) +
           '\n\n' +
-          `Expected constructor: ${EXPECTED_COLOR(
-            constructor.name || String(constructor),
-          )}\n` +
+          // A truthy test for `expected.name` property has false positive for:
+          // function with a defined name property
+          // class with a static name method
+          (typeof expected.name !== 'string'
+            ? 'Expected constructor' + NAME_IS_NOT_STRING
+            : expected.name.length === 0
+            ? 'Expected constructor' + NAME_IS_EMPTY_STRING
+            : `Expected constructor: not ${EXPECTED_COLOR(expected.name)}\n`) +
           `Received value: ${printReceived(received)}`
       : () =>
-          matcherHint('.toBeInstanceOf', 'value', 'constructor', {
-            isNot: this.isNot,
-          }) +
+          matcherHint('toBeInstanceOf', undefined, undefined, options) +
           '\n\n' +
-          `Expected constructor: ${EXPECTED_COLOR(
-            constructor.name || String(constructor),
-          )}\n` +
-          `Received constructor: ${RECEIVED_COLOR(
-            received != null
-              ? received.constructor && received.constructor.name
-              : '',
-          )}\n` +
+          // A truthy test for `expected.name` property has false positive for:
+          // function with a defined name property
+          // class with a static name method
+          (typeof expected.name !== 'string'
+            ? 'Expected constructor' + NAME_IS_NOT_STRING
+            : expected.name.length === 0
+            ? 'Expected constructor' + NAME_IS_EMPTY_STRING
+            : `Expected constructor: ${EXPECTED_COLOR(expected.name)}\n`) +
+          (isPrimitive(received) || Object.getPrototypeOf(received) === null
+            ? 'Received value has no prototype\n'
+            : typeof received.constructor !== 'function'
+            ? ''
+            : typeof received.constructor.name !== 'string'
+            ? 'Received constructor' + NAME_IS_NOT_STRING
+            : received.constructor.name.length === 0
+            ? 'Received constructor' + NAME_IS_EMPTY_STRING
+            : `Received constructor: ${RECEIVED_COLOR(
+                received.constructor.name,
+              )}\n`) +
           `Received value: ${printReceived(received)}`;
 
     return {message, pass};
@@ -633,9 +650,9 @@ const matchers: MatchersObject = {
     const result = getPath(object, keyPath);
     const {lastTraversedObject, hasEndProp} = result;
 
-    const pass =
-      hasEndProp &&
-      (!valuePassed || equals(result.value, value, [iterableEquality]));
+    const pass = valuePassed
+      ? equals(result.value, value, [iterableEquality])
+      : hasEndProp;
 
     const traversedPath = result.traversedPath.join('.');
 

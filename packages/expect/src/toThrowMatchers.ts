@@ -18,6 +18,10 @@ import {
   MatcherHintOptions,
 } from 'jest-matcher-utils';
 import {
+  printReceivedStringContainExpectedResult,
+  printReceivedStringContainExpectedSubstring,
+} from './print';
+import {
   MatchersObject,
   MatcherState,
   RawMatcherFn,
@@ -142,11 +146,15 @@ const toThrowExpectedRegExp = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected pattern: ', expected) +
+        formatExpected('Expected pattern: not ', expected) +
         (thrown !== null && thrown.hasMessage
-          ? formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown)
-          : formatReceived('Received value:   ', thrown, 'value'))
+          ? formatReceived(
+              'Received message:     ',
+              thrown,
+              'message',
+              expected,
+            ) + formatStack(thrown)
+          : formatReceived('Received value:       ', thrown, 'value'))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
@@ -177,7 +185,7 @@ const toThrowExpectedAsymmetric = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected asymmetric matcher: ', expected) +
+        formatExpected('Expected asymmetric matcher: not ', expected) +
         '\n' +
         (thrown !== null && thrown.hasMessage
           ? formatReceived('Received name:    ', thrown, 'name') +
@@ -212,11 +220,10 @@ const toThrowExpectedObject = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected message: ', expected.message) +
+        formatExpected('Expected message: not ', expected.message) +
         (thrown !== null && thrown.hasMessage
-          ? formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown)
-          : formatReceived('Received value:   ', thrown, 'value'))
+          ? formatStack(thrown)
+          : formatReceived('Received value:       ', thrown, 'value'))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
@@ -278,11 +285,15 @@ const toThrowExpectedString = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected substring: ', expected) +
+        formatExpected('Expected substring: not ', expected) +
         (thrown !== null && thrown.hasMessage
-          ? formatReceived('Received message:   ', thrown, 'message') +
-            formatStack(thrown)
-          : formatReceived('Received value:     ', thrown, 'value'))
+          ? formatReceived(
+              'Received message:       ',
+              thrown,
+              'message',
+              expected,
+            ) + formatStack(thrown)
+          : formatReceived('Received value:         ', thrown, 'value'))
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
@@ -324,13 +335,44 @@ const toThrow = (
 const formatExpected = (label: string, expected: unknown) =>
   label + printExpected(expected) + '\n';
 
-const formatReceived = (label: string, thrown: Thrown | null, key: string) => {
+const formatReceived = (
+  label: string,
+  thrown: Thrown | null,
+  key: string,
+  expected?: string | RegExp,
+) => {
   if (thrown === null) {
     return '';
   }
 
   if (key === 'message') {
-    return label + printReceived(thrown.message) + '\n';
+    const message = thrown.message;
+
+    if (typeof expected === 'string') {
+      const index = message.indexOf(expected);
+      if (index !== -1) {
+        return (
+          label +
+          printReceivedStringContainExpectedSubstring(
+            message,
+            index,
+            expected.length,
+          ) +
+          '\n'
+        );
+      }
+    } else if (expected instanceof RegExp) {
+      return (
+        label +
+        printReceivedStringContainExpectedResult(
+          message,
+          typeof expected.exec === 'function' ? expected.exec(message) : null,
+        ) +
+        '\n'
+      );
+    }
+
+    return label + printReceived(message) + '\n';
   }
 
   if (key === 'name') {

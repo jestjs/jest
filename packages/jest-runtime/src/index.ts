@@ -6,13 +6,14 @@
  */
 
 import path from 'path';
-import {Config, SourceMaps} from '@jest/types';
+import {Config} from '@jest/types';
 import {
   Jest,
   JestEnvironment,
   LocalModuleRequire,
   Module,
 } from '@jest/environment';
+import {SourceMapRegistry} from '@jest/source-map';
 import jestMock, {MockFunctionMetadata} from 'jest-mock';
 import HasteMap, {ModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
@@ -102,7 +103,7 @@ class Runtime {
   private _shouldAutoMock: boolean;
   private _shouldMockModuleCache: BooleanObject;
   private _shouldUnmockTransitiveDependenciesCache: BooleanObject;
-  private _sourceMapRegistry: SourceMaps.SourceMapRegistry;
+  private _sourceMapRegistry: SourceMapRegistry;
   private _scriptTransformer: ScriptTransformer;
   private _transitiveShouldMock: BooleanObject;
   private _unmockList: RegExp | undefined;
@@ -247,6 +248,7 @@ class Runtime {
       retainAllFiles: false,
       rootDir: config.rootDir,
       roots: config.roots,
+      throwOnModuleCollision: config.haste.throwOnModuleCollision,
       useWatchman: options && options.watchman,
       watch: options && options.watch,
     });
@@ -339,19 +341,15 @@ class Runtime {
         loaded: false,
       };
       moduleRegistry[modulePath] = localModule;
-      if (path.extname(modulePath) === '.json') {
-        localModule.exports = this._environment.global.JSON.parse(
-          stripBOM(fs.readFileSync(modulePath, 'utf8')),
-        );
-      } else if (path.extname(modulePath) === '.node') {
-        localModule.exports = require(modulePath);
-      } else {
-        // Only include the fromPath if a moduleName is given. Else treat as root.
-        const fromPath = moduleName ? from : null;
-        this._execModule(localModule, options, moduleRegistry, fromPath);
-      }
 
-      localModule.loaded = true;
+      this._loadModule(
+        localModule,
+        from,
+        moduleName,
+        modulePath,
+        options,
+        moduleRegistry,
+      );
     }
     return moduleRegistry[modulePath].exports;
   }
@@ -428,17 +426,44 @@ class Runtime {
         loaded: false,
       };
 
-      // Only include the fromPath if a moduleName is given. Else treat as root.
-      const fromPath = moduleName ? from : null;
-      this._execModule(localModule, undefined, mockRegistry, fromPath);
+      this._loadModule(
+        localModule,
+        from,
+        moduleName,
+        modulePath,
+        undefined,
+        mockRegistry,
+      );
+
       mockRegistry[moduleID] = localModule.exports;
-      localModule.loaded = true;
     } else {
       // Look for a real module to generate an automock from
       mockRegistry[moduleID] = this._generateMock(from, moduleName);
     }
 
     return mockRegistry[moduleID];
+  }
+
+  private _loadModule(
+    localModule: InitialModule,
+    from: Config.Path,
+    moduleName: string | undefined,
+    modulePath: Config.Path,
+    options: InternalModuleOptions | undefined,
+    moduleRegistry: ModuleRegistry,
+  ) {
+    if (path.extname(modulePath) === '.json') {
+      localModule.exports = this._environment.global.JSON.parse(
+        stripBOM(fs.readFileSync(modulePath, 'utf8')),
+      );
+    } else if (path.extname(modulePath) === '.node') {
+      localModule.exports = require(modulePath);
+    } else {
+      // Only include the fromPath if a moduleName is given. Else treat as root.
+      const fromPath = moduleName ? from : null;
+      this._execModule(localModule, options, moduleRegistry, fromPath);
+    }
+    localModule.loaded = true;
   }
 
   requireModuleOrMock(from: Config.Path, moduleName: string) {
@@ -523,7 +548,7 @@ class Runtime {
     }, {});
   }
 
-  getSourceMaps(): SourceMaps.SourceMapRegistry {
+  getSourceMaps(): SourceMapRegistry {
     return this._sourceMapRegistry;
   }
 
@@ -987,7 +1012,7 @@ class Runtime {
     };
 
     const jestObject: Jest = {
-      addMatchers: (matchers: Object) =>
+      addMatchers: (matchers: Record<string, any>) =>
         this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),

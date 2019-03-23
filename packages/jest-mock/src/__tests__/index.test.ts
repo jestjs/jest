@@ -6,18 +6,18 @@
  *
  */
 
-import vm from 'vm';
+import vm, {Context} from 'vm';
+import {ModuleMocker} from '../';
 
 describe('moduleMocker', () => {
-  let moduleMocker;
-  let mockContext;
-  let mockGlobals;
+  let moduleMocker: ModuleMocker;
+  let mockContext: Context;
+  let mockGlobals: NodeJS.Global;
 
   beforeEach(() => {
-    const mock = require('../');
     mockContext = vm.createContext();
     mockGlobals = vm.runInNewContext('this', mockContext);
-    moduleMocker = new mock.ModuleMocker(mockGlobals);
+    moduleMocker = new ModuleMocker(mockGlobals);
   });
 
   describe('getMetadata', () => {
@@ -34,6 +34,7 @@ describe('moduleMocker', () => {
       expect(moduleMocker.getMetadata('banana').value).toEqual('banana');
       expect(moduleMocker.getMetadata(27).value).toEqual(27);
       expect(moduleMocker.getMetadata(false).value).toEqual(false);
+      expect(moduleMocker.getMetadata(Infinity).value).toEqual(Infinity);
     });
 
     it('does not retrieve metadata for arrays', () => {
@@ -56,6 +57,51 @@ describe('moduleMocker', () => {
       expect(metadata.value).toBeNull();
       expect(metadata.members).toBeUndefined();
       expect(metadata.type).toEqual('null');
+    });
+
+    it('retrieves metadata for ES6 classes', () => {
+      class ClassFooMock {
+        bar() {}
+      }
+      const fooInstance = new ClassFooMock();
+      const metadata = moduleMocker.getMetadata(fooInstance);
+      expect(metadata.type).toEqual('object');
+      expect(metadata.members.constructor.name).toEqual('ClassFooMock');
+    });
+
+    it('retrieves synchronous function metadata', () => {
+      function functionFooMock() {}
+      const metadata = moduleMocker.getMetadata(functionFooMock);
+      expect(metadata.type).toEqual('function');
+      expect(metadata.name).toEqual('functionFooMock');
+    });
+
+    it('retrieves asynchronous function metadata', () => {
+      async function asyncFunctionFooMock() {}
+      const metadata = moduleMocker.getMetadata(asyncFunctionFooMock);
+      expect(metadata.type).toEqual('function');
+      expect(metadata.name).toEqual('asyncFunctionFooMock');
+    });
+
+    it("retrieves metadata for object literals and it's members", () => {
+      const metadata = moduleMocker.getMetadata({
+        bar: 'two',
+        foo: 1,
+      });
+      expect(metadata.type).toEqual('object');
+      expect(metadata.members.bar.value).toEqual('two');
+      expect(metadata.members.bar.type).toEqual('constant');
+      expect(metadata.members.foo.value).toEqual(1);
+      expect(metadata.members.foo.type).toEqual('constant');
+    });
+
+    it('retrieves Date object metadata', () => {
+      const metadata = moduleMocker.getMetadata(Date);
+      expect(metadata.type).toEqual('function');
+      expect(metadata.name).toEqual('Date');
+      expect(metadata.members.now.name).toEqual('now');
+      expect(metadata.members.parse.name).toEqual('parse');
+      expect(metadata.members.UTC.name).toEqual('UTC');
     });
   });
 
@@ -879,6 +925,14 @@ describe('moduleMocker', () => {
         expect(fn2.mock.invocationCallOrder).toEqual([]);
         expect(fn1()).toEqual('abcd');
         expect(fn2()).toEqual('abcde');
+      });
+
+      it('handles a property called `prototype`', () => {
+        const mock = moduleMocker.generateFromMetadata(
+          moduleMocker.getMetadata({prototype: 1}),
+        );
+
+        expect(mock.prototype).toBe(1);
       });
     });
   });

@@ -49,8 +49,8 @@ export interface WorkerInterface {
     onProcessEnd: OnEnd,
   ): void;
   getWorkerId(): number;
-  getStderr(): NodeJS.ReadableStream;
-  getStdout(): NodeJS.ReadableStream;
+  getStderr(): NodeJS.ReadableStream | null;
+  getStdout(): NodeJS.ReadableStream | null;
   onExit(exitCode: number): void;
   onMessage(message: ParentMessage): void;
 }

@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, TestResult} from '@jest/types';
-import {Console, createDirectory, preRunMessage} from 'jest-util';
+import {Config} from '@jest/types';
+import {AggregatedResult} from '@jest/test-result';
+import {CustomConsole} from '@jest/console';
+import {createDirectory, preRunMessage} from 'jest-util';
 import {readConfigs} from 'jest-config';
 import Runtime, {Context} from 'jest-runtime';
 import {ChangedFilesPromise} from 'jest-changed-files';
@@ -14,6 +16,7 @@ import HasteMap from 'jest-haste-map';
 import chalk from 'chalk';
 import rimraf from 'rimraf';
 import exit from 'exit';
+import {Filter} from '../types';
 import createContext from '../lib/create_context';
 import getChangedFilesPromise from '../getChangedFilesPromise';
 import {formatHandleErrors} from '../collectHandles';
@@ -26,20 +29,20 @@ import logDebugMessages from '../lib/log_debug_messages';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
-type OnCompleteCallback = (results: TestResult.AggregatedResult) => void;
+type OnCompleteCallback = (results: AggregatedResult) => void;
 
 export const runCLI = async (
   argv: Config.Argv,
   projects: Array<Config.Path>,
 ): Promise<{
-  results: TestResult.AggregatedResult;
+  results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
 }> => {
   const realFs = require('fs');
   const fs = require('graceful-fs');
   fs.gracefulify(realFs);
 
-  let results: TestResult.AggregatedResult | undefined;
+  let results: AggregatedResult | undefined;
 
   // If we output a JSON object, we can't write anything to stdout, since
   // it'll break the JSON structure and it won't be valid.
@@ -118,7 +121,7 @@ const buildContextsAndHasteMaps = async (
     configs.map(async (config, index) => {
       createDirectory(config.cacheDirectory);
       const hasteMapInstance = Runtime.createHasteMap(config, {
-        console: new Console(outputStream, outputStream),
+        console: new CustomConsole(outputStream, outputStream),
         maxWorkers: globalConfig.maxWorkers,
         resetCache: !config.cache,
         watch: globalConfig.watch || globalConfig.watchAll,
@@ -143,6 +146,36 @@ const _run = async (
   // as soon as possible, so by the time we need the result it's already there.
   const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
 
+  // Filter may need to do an HTTP call or something similar to setup.
+  // We will wait on an async response from this before using the filter.
+  let filter: Filter | undefined;
+  if (globalConfig.filter && !globalConfig.skipFilter) {
+    const rawFilter = require(globalConfig.filter);
+    let filterSetupPromise: Promise<Error | undefined> | undefined;
+    if (rawFilter.setup) {
+      // Wrap filter setup Promise to avoid "uncaught Promise" error.
+      // If an error is returned, we surface it in the return value.
+      filterSetupPromise = (async () => {
+        try {
+          await rawFilter.setup();
+        } catch (err) {
+          return err;
+        }
+        return undefined;
+      })();
+    }
+    filter = async (testPaths: Array<string>) => {
+      if (filterSetupPromise) {
+        // Expect an undefined return value unless there was an error.
+        const err = await filterSetupPromise;
+        if (err) {
+          throw err;
+        }
+      }
+      return rawFilter(testPaths);
+    };
+  }
+
   const {contexts, hasteMapInstances} = await buildContextsAndHasteMaps(
     configs,
     globalConfig,
@@ -157,6 +190,7 @@ const _run = async (
         globalConfig,
         outputStream,
         hasteMapInstances,
+        filter,
       )
     : await runWithoutWatch(
         globalConfig,
@@ -164,6 +198,7 @@ const _run = async (
         outputStream,
         onComplete,
         changedFilesPromise,
+        filter,
       );
 };
 
@@ -174,17 +209,34 @@ const runWatch = async (
   globalConfig: Config.GlobalConfig,
   outputStream: NodeJS.WriteStream,
   hasteMapInstances: Array<HasteMap>,
+  filter?: Filter,
 ) => {
   if (hasDeprecationWarnings) {
     try {
       await handleDeprecationWarnings(outputStream, process.stdin);
-      return watch(globalConfig, contexts, outputStream, hasteMapInstances);
+      return watch(
+        globalConfig,
+        contexts,
+        outputStream,
+        hasteMapInstances,
+        undefined,
+        undefined,
+        filter,
+      );
     } catch (e) {
       exit(0);
     }
   }
 
-  return watch(globalConfig, contexts, outputStream, hasteMapInstances);
+  return watch(
+    globalConfig,
+    contexts,
+    outputStream,
+    hasteMapInstances,
+    undefined,
+    undefined,
+    filter,
+  );
 };
 
 const runWithoutWatch = async (
@@ -193,6 +245,7 @@ const runWithoutWatch = async (
   outputStream: NodeJS.WritableStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,
+  filter?: Filter,
 ) => {
   const startRun = async (): Promise<void | null> => {
     if (!globalConfig.listTests) {
@@ -202,6 +255,7 @@ const runWithoutWatch = async (
       changedFilesPromise,
       contexts,
       failedTestsCache: undefined,
+      filter,
       globalConfig,
       onComplete,
       outputStream,

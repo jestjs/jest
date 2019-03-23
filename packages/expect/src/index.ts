@@ -11,12 +11,12 @@ import {
   AsyncExpectationResult,
   SyncExpectationResult,
   ExpectationResult,
-  MatcherState,
+  Matchers as MatcherInterface,
+  MatcherState as JestMatcherState,
   MatchersObject,
   RawMatcherFn,
   ThrowingMatcherFn,
   PromiseMatcherFn,
-  ExpectationObject,
   Expect,
 } from './types';
 
@@ -61,7 +61,7 @@ const createToThrowErrorMatchingSnapshotMatcher = function(
   matcher: RawMatcherFn,
 ) {
   return function(
-    this: MatcherState,
+    this: JestMatcherState,
     received: any,
     testNameOrInlineSnapshot?: string,
   ) {
@@ -82,7 +82,7 @@ const getPromiseMatcher = (name: string, matcher: any) => {
   return null;
 };
 
-const expect: any = (actual: any, ...rest: Array<any>): ExpectationObject => {
+const expect: any = (actual: any, ...rest: Array<any>) => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
   }
@@ -241,7 +241,7 @@ const makeThrowingMatcher = (
     let throws = true;
     const utils = {...matcherUtils, iterableEquality, subsetEquality};
 
-    const matcherContext: MatcherState = {
+    const matcherContext: JestMatcherState = {
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
@@ -407,4 +407,12 @@ expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
-export = expect as Expect;
+const expectExport = expect as Expect;
+
+// eslint-disable-next-line no-redeclare
+namespace expectExport {
+  export type MatcherState = JestMatcherState;
+  export interface Matchers<R> extends MatcherInterface<R> {}
+}
+
+export = expectExport;

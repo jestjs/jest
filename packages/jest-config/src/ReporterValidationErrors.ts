@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- * @flow
  */
 
 import {Config} from '@jest/types';
@@ -40,7 +39,7 @@ export function createArrayReporterError(
   arrayReporter: Config.ReporterConfig,
   reporterIndex: number,
   valueIndex: number,
-  value: string | Object,
+  value: string | Record<string, any>,
   expectedType: string,
   valueName: string,
 ) {

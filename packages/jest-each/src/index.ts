@@ -16,12 +16,12 @@ const install = (
   table: Global.EachTable,
   ...data: Global.TemplateData
 ) => {
-  const test = (title: string, test: Global.TestFn, timeout?: number) =>
+  const test = (title: string, test: Global.EachTestFn, timeout?: number) =>
     bind(g.test)(table, ...data)(title, test, timeout);
   test.skip = bind(g.test.skip)(table, ...data);
   test.only = bind(g.test.only)(table, ...data);
 
-  const it = (title: string, test: Global.TestFn, timeout?: number) =>
+  const it = (title: string, test: Global.EachTestFn, timeout?: number) =>
     bind(g.it)(table, ...data)(title, test, timeout);
   it.skip = bind(g.it.skip)(table, ...data);
   it.only = bind(g.it.only)(table, ...data);
@@ -30,8 +30,11 @@ const install = (
   const fit = bind(g.fit)(table, ...data);
   const xtest = bind(g.xtest)(table, ...data);
 
-  const describe = (title: string, suite: Global.TestFn, timeout?: number) =>
-    bind(g.describe, false)(table, ...data)(title, suite, timeout);
+  const describe = (
+    title: string,
+    suite: Global.EachTestFn,
+    timeout?: number,
+  ) => bind(g.describe, false)(table, ...data)(title, suite, timeout);
   describe.skip = bind(g.describe.skip, false)(table, ...data);
   describe.only = bind(g.describe.only, false)(table, ...data);
   const fdescribe = bind(g.fdescribe, false)(table, ...data);
