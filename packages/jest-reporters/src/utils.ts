@@ -36,8 +36,8 @@ export const trimAndFormatPath = (
 ): string => {
   const maxLength = columns - pad;
   const relative = relativePath(config, testPath);
-  const { basename } = relative;
-  let { dirname } = relative;
+  const {basename} = relative;
+  let {dirname} = relative;
 
   // length is ok
   if ((dirname + path.sep + basename).length <= maxLength) {
@@ -69,7 +69,7 @@ export const formatTestPath = (
   config: Config.GlobalConfig | Config.ProjectConfig,
   testPath: Config.Path,
 ) => {
-  const { dirname, basename } = relativePath(config, testPath);
+  const {dirname, basename} = relativePath(config, testPath);
   return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
 };
 
@@ -86,7 +86,7 @@ export const relativePath = (
   );
   const dirname = path.dirname(testPath);
   const basename = path.basename(testPath);
-  return { basename, dirname };
+  return {basename, dirname};
 };
 
 export const getSummary = (
@@ -153,13 +153,13 @@ export const getSummary = (
       : '') +
     (snapshotsFilesRemoved && !snapshotsDidUpdate
       ? chalk.bold.yellow(
-        pluralize('file', snapshotsFilesRemoved) + ' obsolete',
-      ) + ', '
+          pluralize('file', snapshotsFilesRemoved) + ' obsolete',
+        ) + ', '
       : '') +
     (snapshotsFilesRemoved && snapshotsDidUpdate
       ? chalk.bold.green(
-        pluralize('file', snapshotsFilesRemoved) + ' removed',
-      ) + ', '
+          pluralize('file', snapshotsFilesRemoved) + ' removed',
+        ) + ', '
       : '') +
     (snapshotsUpdated
       ? chalk.bold.green(`${snapshotsUpdated} updated`) + ', '

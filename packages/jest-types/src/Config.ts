@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Arguments } from 'yargs';
+import {Arguments} from 'yargs';
 
 export type Path = string;
 
@@ -20,7 +20,7 @@ export type HasteConfig = {
   throwOnModuleCollision?: boolean;
 };
 
-export type ReporterConfig = [string, { [key: string]: unknown }];
+export type ReporterConfig = [string, {[key: string]: unknown}];
 
 export type ConfigGlobals = Record<string, any>;
 
@@ -38,13 +38,13 @@ export type DefaultOptions = {
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<string>;
   coverageThreshold:
-  | {
-    global: {
-      [key: string]: number;
-    };
-  }
-  | null
-  | undefined;
+    | {
+        global: {
+          [key: string]: number;
+        };
+      }
+    | null
+    | undefined;
   cwd: Path;
   dependencyExtractor: string | null | undefined;
   errorOnDeprecated: boolean;
@@ -92,11 +92,11 @@ export type DefaultOptions = {
   testURL: string;
   timers: 'real' | 'fake';
   transform:
-  | {
-    [key: string]: string;
-  }
-  | null
-  | undefined;
+    | {
+        [key: string]: string;
+      }
+    | null
+    | undefined;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
   useStderr: boolean;
@@ -104,6 +104,13 @@ export type DefaultOptions = {
   watch: boolean;
   watchman: boolean;
 };
+
+export type DisplayName =
+  | string
+  | {
+      name?: string;
+      color?: DisplayNameColor;
+    };
 
 export type InitialOptions = {
   automock?: boolean;
@@ -130,8 +137,7 @@ export type InitialOptions = {
   dependencyExtractor?: string;
   detectLeaks?: boolean;
   detectOpenHandles?: boolean;
-  displayName?: string;
-  displayNameColor?: DisplayNameColor;
+  displayName?: DisplayName;
   expand?: boolean;
   extraGlobals?: Array<string>;
   filter?: Path;
@@ -226,25 +232,24 @@ type NotifyMode =
   | 'failure-change';
 
 type DisplayNameColor =
-  "black" |
-  "red" |
-  "green" |
-  "yellow" |
-  "blue" |
-  "magenta" |
-  "cyan" |
-  "white" |
-  "gray" |
-  "grey" |
-  "blackBright" |
-  "redBright" |
-  "greenBright" |
-  "yellowBright" |
-  "blueBright" |
-  "magentaBright" |
-  "cyanBright" |
-  "whiteBright"
-
+  | 'black'
+  | 'red'
+  | 'green'
+  | 'yellow'
+  | 'blue'
+  | 'magenta'
+  | 'cyan'
+  | 'white'
+  | 'gray'
+  | 'grey'
+  | 'blackBright'
+  | 'redBright'
+  | 'greenBright'
+  | 'yellowBright'
+  | 'blueBright'
+  | 'magentaBright'
+  | 'cyanBright'
+  | 'whiteBright';
 
 type CoverageThreshold = {
   [path: string]: {
@@ -262,11 +267,11 @@ export type GlobalConfig = {
   collectCoverage: boolean;
   collectCoverageFrom: Array<Glob>;
   collectCoverageOnlyFrom:
-  | {
-    [key: string]: boolean;
-  }
-  | null
-  | undefined;
+    | {
+        [key: string]: boolean;
+      }
+    | null
+    | undefined;
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageReporters: Array<string>;
@@ -274,13 +279,13 @@ export type GlobalConfig = {
   detectLeaks: boolean;
   detectOpenHandles: boolean;
   enabledTestsMap:
-  | {
-    [key: string]: {
-      [key: string]: boolean;
-    };
-  }
-  | null
-  | undefined;
+    | {
+        [key: string]: {
+          [key: string]: boolean;
+        };
+      }
+    | null
+    | undefined;
   expand: boolean;
   extraGlobals: Array<string>;
   filter: Path | null | undefined;
@@ -322,12 +327,12 @@ export type GlobalConfig = {
   watchAll: boolean;
   watchman: boolean;
   watchPlugins:
-  | Array<{
-    path: string;
-    config: Record<string, any>;
-  }>
-  | null
-  | undefined;
+    | Array<{
+        path: string;
+        config: Record<string, any>;
+      }>
+    | null
+    | undefined;
 };
 
 export type ProjectConfig = {
@@ -341,11 +346,7 @@ export type ProjectConfig = {
   dependencyExtractor?: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  displayName?: string | {
-    name: string;
-    color: DisplayNameColor;
-  };
-  displayNameColor?: DisplayNameColor;
+  displayName?: DisplayName;
   errorOnDeprecated: boolean;
   extraGlobals: Array<keyof NodeJS.Global>;
   filter: Path | null | undefined;
