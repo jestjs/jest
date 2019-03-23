@@ -17,6 +17,8 @@ import {
 import {Frame} from 'jest-message-util';
 
 import {Config} from '@jest/types';
+import {NodePath} from '@babel/traverse';
+import {TemplateLiteral} from 'babel-types';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {
@@ -78,15 +80,25 @@ const saveSnapshotsForFile = (
     ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
     : (config && config.parser) || simpleDetectParser(sourceFilePath);
 
-  // Format the source code using the custom parser API.
+  // Insert snapshots using the custom parser API. After insertion, the code is
+  // formatted, except snapshot indentation. Snapshots cannot be formatted until
+  // after the initial format because we don't know where the call expression
+  // will be placed (specifically it's indentation).
   const newSourceFile = prettier.format(sourceFile, {
     ...config,
     filepath: sourceFilePath,
-    parser: createParser(snapshots, inferredParser, babelTraverse),
+    parser: createInsertionParser(snapshots, inferredParser, babelTraverse),
   });
 
-  if (newSourceFile !== sourceFile) {
-    fs.writeFileSync(sourceFilePath, newSourceFile);
+  // Format the snapshots using the custom parser API.
+  const formattedNewSourceFile = prettier.format(newSourceFile, {
+    ...config,
+    filepath: sourceFilePath,
+    parser: createFormattingParser(inferredParser, babelTraverse),
+  });
+
+  if (formattedNewSourceFile !== sourceFile) {
+    fs.writeFileSync(sourceFilePath, formattedNewSourceFile);
   }
 };
 
@@ -108,7 +120,40 @@ const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
 );
 const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
-const createParser = (
+const indent = (snapshot: string, numIndents: number, indentation: string) => {
+  const lines = snapshot.split('\n');
+  return lines
+    .map((line, index) => {
+      if (index === 0) {
+        // First line is either a 1-line snapshot or a blank line.
+        return line;
+      } else if (index !== lines.length - 1) {
+        // Not last line, indent one level deeper than expect call.
+        return indentation.repeat(numIndents + 1) + line;
+      } else {
+        // The last line should be placed on the same level as the expect call.
+        return indentation.repeat(numIndents) + line;
+      }
+    })
+    .join('\n');
+};
+
+const getAst = (
+  parsers: {[key: string]: (text: string) => any},
+  inferredParser: string,
+  text: string,
+) => {
+  // Flow uses a 'Program' parent node, babel expects a 'File'.
+  let ast = parsers[inferredParser](text);
+  if (ast.type !== 'File') {
+    ast = file(ast, ast.comments, ast.tokens);
+    delete ast.program.comments;
+  }
+  return ast;
+};
+
+// This parser inserts snapshots into the AST.
+const createInsertionParser = (
   snapshots: Array<InlineSnapshot>,
   inferredParser: string,
   babelTraverse: Function,
@@ -122,14 +167,8 @@ const createParser = (
 
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
   const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
-  let ast = parsers[inferredParser](text);
 
-  // Flow uses a 'Program' parent node, babel expects a 'File'.
-  if (ast.type !== 'File') {
-    ast = file(ast, ast.comments, ast.tokens);
-    delete ast.program.comments;
-  }
-
+  const ast = getAst(parsers, inferredParser, text);
   babelTraverse(ast, {
     CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
       if (
@@ -172,6 +211,68 @@ const createParser = (
   if (remainingSnapshots.size) {
     throw new Error(`Jest: Couldn't locate all inline snapshots.`);
   }
+
+  return ast;
+};
+
+// This parser formats snapshots to the correct indentation.
+const createFormattingParser = (
+  inferredParser: string,
+  babelTraverse: Function,
+) => (
+  text: string,
+  parsers: {[key: string]: (text: string) => any},
+  options: any,
+) => {
+  // Workaround for https://github.com/prettier/prettier/issues/3150
+  options.parser = inferredParser;
+
+  const ast = getAst(parsers, inferredParser, text);
+  babelTraverse(ast, {
+    CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
+      if (
+        callee.type !== 'MemberExpression' ||
+        callee.property.type !== 'Identifier' ||
+        callee.property.name !== 'toMatchInlineSnapshot' ||
+        !callee.loc
+      ) {
+        return;
+      }
+
+      let snapshotIndex: number | undefined;
+      let snapshot: string | undefined;
+      for (let i = 0; i < args.length; i++) {
+        const node = args[i];
+        if (node.type === 'TemplateLiteral') {
+          snapshotIndex = i;
+          snapshot = node.quasis[0].value.raw;
+        }
+      }
+      if (snapshot === undefined || snapshotIndex === undefined) {
+        return;
+      }
+
+      snapshot = indent(
+        snapshot,
+        Math.ceil(
+          !options.useTabs
+            ? callee.loc.start.column / options.tabWidth
+            : callee.loc.start.column / 2,
+        ),
+        !options.useTabs ? ' '.repeat(options.tabWidth) : '\t',
+      );
+
+      const replacementNode = templateLiteral(
+        [
+          templateElement({
+            raw: snapshot,
+          }),
+        ],
+        [],
+      );
+      args[snapshotIndex] = replacementNode;
+    },
+  });
 
   return ast;
 };

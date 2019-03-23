@@ -73,6 +73,40 @@ const printName = (
   );
 };
 
+function stripAddedIndentation(inlineSnapshot: string) {
+  const match = inlineSnapshot.match(/^([^\S\n]*)\S/m);
+  if (!match || !match[1]) {
+    // No indentation.
+    return inlineSnapshot;
+  }
+
+  const indentation = match[1];
+  const lines = inlineSnapshot.split('\n');
+  if (lines.length <= 2) {
+    // Must be at least 3 lines.
+    return inlineSnapshot;
+  }
+
+  for (let i = 1; i < lines.length - 1; i++) {
+    if (lines[i].indexOf(indentation) !== 0) {
+      // All lines except first and last should have the same indent as the
+      // first line (or more). If this isn't the case it might be a custom
+      // serializer and we don't want to touch it.
+      return inlineSnapshot;
+    }
+
+    lines[i] = lines[i].substr(indentation.length);
+  }
+
+  // Last line is a special case because it won't have the same indent as others
+  // but may still have some indent to line up.
+  lines[lines.length - 1] = '';
+
+  // Return inline snapshot, now at indent 0.
+  inlineSnapshot = lines.join('\n');
+  return inlineSnapshot;
+}
+
 const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
@@ -182,7 +216,7 @@ const toMatchInlineSnapshot = function(
   return _toMatchSnapshot({
     context: this,
     expectedArgument,
-    inlineSnapshot: inlineSnapshot || '',
+    inlineSnapshot: stripAddedIndentation(inlineSnapshot || ''),
     matcherName,
     options,
     propertyMatchers,
