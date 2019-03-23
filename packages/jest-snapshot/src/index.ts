@@ -95,8 +95,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
   for (let i = 1; i < lines.length - 1; i++) {
     if (lines[i].indexOf(indentation) !== 0) {
       // All lines except first and last should have the same indent as the
-      // first line (or more). If this isn't the case it might be a custom
-      // serializer and we don't want to touch it.
+      // first line (or more). If this isn't the case we don't want to touch it.
       return inlineSnapshot;
     }
 
