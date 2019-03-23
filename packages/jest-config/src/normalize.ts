@@ -768,20 +768,25 @@ export default function normalize(
          *   }
          * }
          *
-         * This can't be done now since this is a breaking change
+         * This can't be done now since this will be a breaking change
+         * for custom reporters
          */
-        if (
-          isDisplayNameAnObject &&
-          typeof displayName.color !== 'string' &&
-          typeof displayName.name !== 'string'
-        ) {
+        if (isDisplayNameAnObject) {
           const errorMessage =
             `  Option "${chalk.bold('displayName')}" must be of type\n` +
             '  {\n' +
             '    name: string;\n' +
             '    color: string;\n' +
             '  }\n';
-          throw createConfigError(errorMessage);
+          const {name, color} = displayName;
+          if (
+            !name ||
+            !color ||
+            typeof name !== 'string' ||
+            typeof color !== 'string'
+          ) {
+            throw createConfigError(errorMessage);
+          }
         }
         value = oldOptions[key];
         break;
