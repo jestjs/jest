@@ -51,6 +51,7 @@ const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
 const HINT_ARG = BOLD_WEIGHT('hint');
 const INLINE_SNAPSHOT_ARG = 'snapshot';
 const PROPERTY_MATCHERS_ARG = 'properties';
+const INDENTATION_REGEX = /^([^\S\n]*)\S/m;
 
 // Display name in report when matcher fails same as in snapshot file,
 // but with optional hint argument in bold weight.
@@ -74,7 +75,8 @@ const printName = (
 };
 
 function stripAddedIndentation(inlineSnapshot: string) {
-  const match = inlineSnapshot.match(/^([^\S\n]*)\S/m);
+  // Find indentation if exists.
+  const match = inlineSnapshot.match(INDENTATION_REGEX);
   if (!match || !match[1]) {
     // No indentation.
     return inlineSnapshot;
