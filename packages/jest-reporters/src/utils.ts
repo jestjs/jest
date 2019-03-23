@@ -18,58 +18,19 @@ const PROGRESS_BAR_WIDTH = 40;
 export const printDisplayName = (config: Config.ProjectConfig) => {
   const {displayName} = config;
   const white = chalk.reset.inverse.white;
-  // handle the case that displayName is not provided
   if (!displayName) {
     return '';
   }
 
-  // handle the case that displayName is a string
   if (typeof displayName === 'string') {
-    return displayName;
+    return chalk.supportsColor ? white(` ${displayName} `) : displayName;
   }
 
-  /**
-   * handle the case that name or color is provided in displayName option, given the shape
-   * {
-   *  name?: string;
-   *  color?: string;
-   * }
-   */
-  if (displayName.name || displayName.color) {
-    const {name, color} = displayName;
-
-    /**
-     * handle the case that only color is provided
-     * default this to an empty name
-     */
-    if (!name && color && typeof color === 'string') {
-      return '';
-    }
-
-    /**
-     * handle the case only name is provided
-     * default printed displayName to white
-     */
-    if (!color && name && typeof name === 'string') {
-      return chalk.supportsColor ? white(` ${name} `) : name;
-    }
-
-    // handle case where both color and name are provided
-    if (
-      color &&
-      typeof color === 'string' &&
-      name &&
-      typeof name === 'string'
-    ) {
-      const displayColor = chalk.reset.inverse[color]
-        ? chalk.reset.inverse[color]
-        : white;
-      return chalk.supportsColor ? displayColor(` ${name} `) : name;
-    }
-  }
-
-  // All other permutations are invalid
-  return '';
+  const {name, color} = displayName;
+  const chosenColor = chalk.reset.inverse[color]
+    ? chalk.reset.inverse[color]
+    : white;
+  return chalk.supportsColor ? chosenColor(` ${name} `) : name;
 };
 
 export const trimAndFormatPath = (
