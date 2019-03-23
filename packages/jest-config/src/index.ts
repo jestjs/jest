@@ -168,7 +168,6 @@ const groupOptions = (
     detectLeaks: options.detectLeaks,
     detectOpenHandles: options.detectOpenHandles,
     displayName: options.displayName,
-    displayNameColor: options.displayNameColor,
     errorOnDeprecated: options.errorOnDeprecated,
     extraGlobals: options.extraGlobals,
     filter: options.filter,
