@@ -17,8 +17,6 @@ import {
 import {Frame} from 'jest-message-util';
 
 import {Config} from '@jest/types';
-import {NodePath} from '@babel/traverse';
-import {TemplateLiteral} from 'babel-types';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {
