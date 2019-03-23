@@ -81,7 +81,7 @@ const saveSnapshotsForFile = (
   // Insert snapshots using the custom parser API. After insertion, the code is
   // formatted, except snapshot indentation. Snapshots cannot be formatted until
   // after the initial format because we don't know where the call expression
-  // will be placed (specifically it's indentation).
+  // will be placed (specifically its indentation).
   const newSourceFile = prettier.format(sourceFile, {
     ...config,
     filepath: sourceFilePath,
