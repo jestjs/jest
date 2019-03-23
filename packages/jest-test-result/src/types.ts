@@ -8,6 +8,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import {ConsoleBuffer} from '@jest/console';
+import {Config} from '@jest/types';
 
 export type SerializableError = {
   code?: unknown;
@@ -102,7 +103,7 @@ export type Suite = {
 export type TestResult = {
   console?: ConsoleBuffer | null;
   coverage?: CoverageMapData;
-  displayName?: string | null;
+  displayName?: Config.DisplayName;
   failureMessage?: string | null;
   leaks: boolean;
   memoryUsage?: Bytes;
