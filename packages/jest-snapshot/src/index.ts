@@ -87,6 +87,11 @@ function stripAddedIndentation(inlineSnapshot: string) {
     return inlineSnapshot;
   }
 
+  if (lines[0].trim() !== '' || lines[lines.length - 1].trim() !== '') {
+    // If not blank first and last lines, abort.
+    return inlineSnapshot;
+  }
+
   for (let i = 1; i < lines.length - 1; i++) {
     if (lines[i].indexOf(indentation) !== 0) {
       // All lines except first and last should have the same indent as the
@@ -99,7 +104,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
   }
 
   // Last line is a special case because it won't have the same indent as others
-  // but may still have some indent to line up.
+  // but may still have been given some indent to line up.
   lines[lines.length - 1] = '';
 
   // Return inline snapshot, now at indent 0.
