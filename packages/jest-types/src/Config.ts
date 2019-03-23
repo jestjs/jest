@@ -108,8 +108,8 @@ export type DefaultOptions = {
 export type DisplayName =
   | string
   | {
-      name?: string;
-      color?: DisplayNameColor;
+      name: string;
+      color: DisplayNameColor;
     };
 
 export type InitialOptions = {
