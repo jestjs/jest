@@ -33,14 +33,10 @@ export type SerializableModuleMap = {
 
 export default class ModuleMap {
   static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;
-  private static nextUniqueID = 1; // Must be truthy.
-  public readonly uniqueID: number;
   private readonly _raw: RawModuleMap;
   private json: SerializableModuleMap | undefined;
 
   constructor(raw: RawModuleMap) {
-    this.uniqueID = ModuleMap.nextUniqueID;
-    ModuleMap.nextUniqueID++;
     this._raw = raw;
   }
 

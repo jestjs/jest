@@ -16,12 +16,15 @@ import Resolver from 'jest-resolve';
 import {ErrorWithCode, TestRunnerSerializedContext} from './types';
 import runTest from './runTest';
 
+export type SerializableResolver = {
+  config: Config.ProjectConfig;
+  serializableModuleMap: SerializableModuleMap;
+};
+
 type WorkerData = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   path: Config.Path;
-  serializableModuleMap: SerializableModuleMap | null;
-  moduleMapUniqueID: number | null;
   context?: TestRunnerSerializedContext;
 };
 
@@ -50,14 +53,7 @@ const formatError = (error: string | ErrorWithCode): SerializableError => {
 };
 
 const resolvers = new Map<string, Resolver>();
-const getResolver = (
-  config: Config.ProjectConfig,
-  moduleMap: ModuleMap | null,
-) => {
-  // In watch mode, the raw module map with all haste modules is passed from
-  // the test runner to the watch command. This is because jest-haste-map's
-  // watch mode does not persist the haste map on disk after every file change.
-  // To make this fast and consistent, we pass it from the TestRunner.
+const getResolver = (config: Config.ProjectConfig, moduleMap?: ModuleMap) => {
   const name = config.name;
   if (moduleMap || !resolvers.has(name)) {
     resolvers.set(
@@ -71,33 +67,35 @@ const getResolver = (
   return resolvers.get(name)!;
 };
 
-const deserializedModuleMaps = new Map<string, number>();
+export function setup(setupData?: {
+  serializableResolvers: Array<SerializableResolver>;
+}) {
+  // Setup data is only used in watch mode to pass the latest version of all
+  // module maps that will be used during the test runs. Otherwise, module maps
+  // are loaded from disk as needed.
+  if (setupData) {
+    for (const {
+      config,
+      serializableModuleMap,
+    } of setupData.serializableResolvers) {
+      const moduleMap = HasteMap.ModuleMap.fromJSON(serializableModuleMap);
+      getResolver(config, moduleMap);
+    }
+  }
+}
+
 export async function worker({
   config,
   globalConfig,
   path,
-  serializableModuleMap,
-  moduleMapUniqueID,
   context,
 }: WorkerData): Promise<TestResult> {
   try {
-    // If the module map ID does not match what is currently being used by the
-    // config's resolver was passed, deserialize it and update the resolver.
-    let moduleMap: ModuleMap | null = null;
-    if (
-      serializableModuleMap &&
-      moduleMapUniqueID &&
-      deserializedModuleMaps.get(config.name) !== moduleMapUniqueID
-    ) {
-      deserializedModuleMaps.set(config.name, moduleMapUniqueID);
-      moduleMap = HasteMap.ModuleMap.fromJSON(serializableModuleMap);
-    }
-
     return await runTest(
       path,
       globalConfig,
       config,
-      getResolver(config, moduleMap),
+      getResolver(config),
       context && {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
