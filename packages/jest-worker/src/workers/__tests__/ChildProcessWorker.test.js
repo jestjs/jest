@@ -72,7 +72,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
   });
 });
 
-it('passes workerId to the child process and assign it 1-indexed to env.JEST_WORKER_ID', () => {
+it('passes workerId to the child process and assign it to 1-indexed env.JEST_WORKER_ID', () => {
   new Worker({
     forkOptions: {},
     maxRetries: 3,
