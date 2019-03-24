@@ -67,7 +67,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       cwd: process.cwd(),
       env: {
         ...process.env,
-        JEST_WORKER_ID: String(this._options.workerId),
+        JEST_WORKER_ID: String(this._options.workerId + 1),
         ...forceColor,
       } as NodeJS.ProcessEnv,
       // Suppress --debug / --inspect flags while preserving others (like --harmony).
