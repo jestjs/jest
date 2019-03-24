@@ -16,6 +16,7 @@ import micromatch from 'micromatch';
 import {sync as realpath} from 'realpath-native';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
+import getType from 'jest-get-type';
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
@@ -747,8 +748,6 @@ export default function normalize(
       }
       case 'displayName': {
         const displayName = oldOptions[key] as Config.DisplayName;
-        const isDisplayNameAnObject =
-          typeof displayName === 'object' && !Array.isArray(displayName);
         if (typeof displayName === 'string') {
           value = displayName;
           break;
@@ -771,7 +770,7 @@ export default function normalize(
          * This can't be done now since this will be a breaking change
          * for custom reporters
          */
-        if (isDisplayNameAnObject) {
+        if (getType(displayName) === 'object') {
           const errorMessage =
             `  Option "${chalk.bold('displayName')}" must be of type\n` +
             '  {\n' +
