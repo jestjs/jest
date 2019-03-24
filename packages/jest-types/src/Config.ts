@@ -231,6 +231,11 @@ type NotifyMode =
   | 'success-change'
   | 'failure-change';
 
+/**
+ * Hard coding this until
+ * https://github.com/chalk/chalk/pull/336
+ * gets merged
+ */
 type DisplayNameColor =
   | 'black'
   | 'red'
@@ -249,7 +254,23 @@ type DisplayNameColor =
   | 'blueBright'
   | 'magentaBright'
   | 'cyanBright'
-  | 'whiteBright';
+  | 'whiteBright'
+  | 'bgBlack'
+  | 'bgRed'
+  | 'bgGreen'
+  | 'bgYellow'
+  | 'bgBlue'
+  | 'bgMagenta'
+  | 'bgCyan'
+  | 'bgWhite'
+  | 'bgBlackBright'
+  | 'bgRedBright'
+  | 'bgGreenBright'
+  | 'bgYellowBright'
+  | 'bgBlueBright'
+  | 'bgMagentaBright'
+  | 'bgCyanBright'
+  | 'bgWhiteBright';
 
 type CoverageThreshold = {
   [path: string]: {
