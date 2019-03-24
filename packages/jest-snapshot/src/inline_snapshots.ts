@@ -232,7 +232,8 @@ const createFormattingParser = (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier' ||
         callee.property.name !== 'toMatchInlineSnapshot' ||
-        !callee.loc
+        !callee.loc ||
+        callee.computed
       ) {
         return;
       }
@@ -250,14 +251,15 @@ const createFormattingParser = (
         return;
       }
 
+      const useSpaces = !options.useTabs;
       snapshot = indent(
         snapshot,
         Math.ceil(
-          !options.useTabs
+          useSpaces
             ? callee.loc.start.column / options.tabWidth
-            : callee.loc.start.column / 2,
+            : callee.loc.start.column / 2, // Each tab is 2 characters.
         ),
-        !options.useTabs ? ' '.repeat(options.tabWidth) : '\t',
+        useSpaces ? ' '.repeat(options.tabWidth) : '\t',
       );
 
       const replacementNode = templateLiteral(
