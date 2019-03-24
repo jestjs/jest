@@ -36,6 +36,7 @@
 - `[jest-haste-map]` Avoid persisting haste map or processing files when not changed ([#8153](https://github.com/facebook/jest/pull/8153))
 - `[jest-core]` Improve performance of SearchSource.findMatchingTests by 15% ([#8184](https://github.com/facebook/jest/pull/8184))
 - `[jest-resolve]` Optimize internal cache lookup performance ([#8183](https://github.com/facebook/jest/pull/8183))
+- `[jest-core]` Dramatically improve watch mode performance ([#8201](https://github.com/facebook/jest/pull/8201))
 
 ## 24.5.0
 
