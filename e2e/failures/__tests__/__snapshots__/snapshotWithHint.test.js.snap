@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`failing snapshot with hint: descriptive hint 1`] = `"bar"`;

@@ -72,6 +72,10 @@ function printNumber(val: number): string {
   return Object.is(val, -0) ? '-0' : String(val);
 }
 
+function printBigInt(val: bigint): string {
+  return String(`${val}n`);
+}
+
 function printFunction(val: Function, printFunctionName: boolean): string {
   if (!printFunctionName) {
     return '[Function]';
@@ -111,6 +115,9 @@ function printBasicValue(
 
   if (typeOf === 'number') {
     return printNumber(val);
+  }
+  if (typeOf === 'bigint') {
+    return printBigInt(val);
   }
   if (typeOf === 'string') {
     if (escapeString) {

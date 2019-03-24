@@ -66,6 +66,18 @@ test('numeric ranges', () => {
 });
 ```
 
+_Note_: In TypeScript, when using `@types/jest` for example, you can declare the new `toBeWithinRange` matcher like this:
+
+```ts
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeWithinRange(a: number, b: number): R;
+    }
+  }
+}
+```
+
 #### Async Matchers
 
 `expect.extend` also supports async matchers. Async matchers return a Promise so you will need to await the returned value. Let's use an example matcher to illustrate the usage of them. We are going to implement a matcher called `toBeDivisibleByExternalValue`, where the divisible number is going to be pulled from an external source.
@@ -553,17 +565,23 @@ Also under the alias: `.toBeCalled()`
 
 Use `.toHaveBeenCalled` to ensure that a mock function got called.
 
-For example, let's say you have a `drinkAll(drink, flavor)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavor is really weird and why would anything be octopus-flavored? You can do that with this test suite:
+For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
 ```js
+function drinkAll(callback, flavour) {
+  if (flavour !== 'octopus') {
+    callback(flavour);
+  }
+}
+
 describe('drinkAll', () => {
-  test('drinks something lemon-flavored', () => {
+  test('drinks something lemon-flavoured', () => {
     const drink = jest.fn();
     drinkAll(drink, 'lemon');
     expect(drink).toHaveBeenCalled();
   });
 
-  test('does not drink something octopus-flavored', () => {
+  test('does not drink something octopus-flavoured', () => {
     const drink = jest.fn();
     drinkAll(drink, 'octopus');
     expect(drink).not.toHaveBeenCalled();
@@ -1110,8 +1128,6 @@ This ensures that a value matches the most recent snapshot. Check out [the Snaps
 The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values. Any value will be matched exactly if not provided as a matcher.
 
 The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
-
-_Note: While snapshot testing is most commonly used with React components, any serializable value can be used as a snapshot._
 
 ### `.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)`
 

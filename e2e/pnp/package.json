@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "foo": "link:./lib"
+  },
+  "installConfig": {
+    "pnp": true
+  }
+}
