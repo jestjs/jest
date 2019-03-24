@@ -36,7 +36,7 @@ export default class ModuleMap {
   private readonly _raw: RawModuleMap;
   private json: SerializableModuleMap | undefined;
   static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;
-  private static nextUniqueID = 0;
+  private static nextUniqueID = 1; // Must be truthy.
 
   constructor(raw: RawModuleMap) {
     this.uniqueID = ModuleMap.nextUniqueID;
