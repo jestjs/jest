@@ -134,6 +134,9 @@ class TestRunner {
               Array.from(this._context.changedFiles),
           },
           globalConfig: this._globalConfig,
+          moduleMapUniqueID: watcher.isWatchMode()
+            ? test.context.moduleMap.uniqueID
+            : null,
           path: test.path,
           serializableModuleMap: watcher.isWatchMode()
             ? test.context.moduleMap.toJSON()

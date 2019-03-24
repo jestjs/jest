@@ -32,6 +32,6 @@ export default function getMaxWorkers(
     return parsed > 0 ? parsed : 1;
   } else {
     const cpus = os.cpus() ? os.cpus().length : 1;
-    return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
+    return Math.max(cpus - 1, 1);
   }
 }
