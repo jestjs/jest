@@ -107,6 +107,8 @@ Returns a `ReadableStream` where the standard error of all workers is piped. Not
 
 ### `end()`
 
+TODO explain returned Promise, adapt examples
+
 Finishes the workers by killing all workers. No further calls can be done to the `Worker` instance.
 
 **Note:** Each worker has a unique id (index that starts with `1`) which is available on `process.env.JEST_WORKER_ID`

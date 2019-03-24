@@ -25,6 +25,8 @@ import {
   WorkerOptions,
 } from '../types';
 
+// TODO
+
 export default class ExperimentalWorker implements WorkerInterface {
   private _worker!: Worker;
   private _options: WorkerOptions;

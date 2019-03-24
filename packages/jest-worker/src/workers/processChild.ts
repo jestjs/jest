@@ -8,6 +8,7 @@
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
+  CHILD_MESSAGE_FORCE_EXIT,
   CHILD_MESSAGE_INITIALIZE,
   ChildMessageCall,
   ChildMessageInitialize,
@@ -34,7 +35,7 @@ let initialized = false;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-process.on('message', (request: any) => {
+const messageListener = (request: any) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
@@ -51,12 +52,17 @@ process.on('message', (request: any) => {
       end();
       break;
 
+    case CHILD_MESSAGE_FORCE_EXIT:
+      forceExit();
+      break;
+
     default:
       throw new TypeError(
         'Unexpected request from parent process: ' + request[0],
       );
   }
-});
+};
+process.on('message', messageListener);
 
 function reportSuccess(result: any) {
   if (!process || !process.send) {
@@ -105,6 +111,11 @@ function end(): void {
 }
 
 function exitProcess(): void {
+  // Clean up open handles so the process ideally exits gracefully
+  process.removeListener('message', messageListener);
+}
+
+function forceExit(): void {
   process.exit(0);
 }
 

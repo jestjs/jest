@@ -17,6 +17,7 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
+  CHILD_MESSAGE_FORCE_EXIT,
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_OK,
@@ -314,6 +315,19 @@ it('calls the main export if the method call is "default" and it is a Babel tran
   expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67890]);
 });
 
+it('removes the message listener on END message', () => {
+  // So that there are no more open handles preventing Node from exiting
+  process.emit('message', [
+    CHILD_MESSAGE_INITIALIZE,
+    true, // Not really used here, but for flow type purity.
+    './my-fancy-worker',
+  ]);
+
+  process.emit('message', [CHILD_MESSAGE_END]);
+
+  expect(process.listenerCount('message')).toBe(0);
+});
+
 it('finishes the process with exit code 0 if requested', () => {
   process.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
@@ -322,7 +336,7 @@ it('finishes the process with exit code 0 if requested', () => {
   ]);
 
   process.emit('message', [
-    CHILD_MESSAGE_END,
+    CHILD_MESSAGE_FORCE_EXIT,
     true, // Not really used here, but for flow type purity.
   ]);
 

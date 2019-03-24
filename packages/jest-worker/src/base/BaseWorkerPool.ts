@@ -10,11 +10,16 @@ import mergeStream = require('merge-stream');
 
 import {
   CHILD_MESSAGE_END,
+  CHILD_MESSAGE_FORCE_EXIT,
+  PoolExitResult,
   WorkerInterface,
   WorkerOptions,
   WorkerPoolOptions,
 } from '../types';
 
+// How long to wait for the child process to terminate
+// after CHILD_MESSAGE_END before sending CHILD_MESSAGE_FORCE_EXIT
+const FORCE_EXIT_DELAY = 100;
 /* istanbul ignore next */
 const emptyMethod = () => {};
 
@@ -85,15 +90,32 @@ export default class BaseWorkerPool {
     throw Error('Missing method createWorker in WorkerPool');
   }
 
-  end(): void {
+  async end(): Promise<PoolExitResult> {
     // We do not cache the request object here. If so, it would only be only
     // processed by one of the workers, and we want them all to close.
-    for (let i = 0; i < this._workers.length; i++) {
-      this._workers[i].send(
-        [CHILD_MESSAGE_END, false],
-        emptyMethod,
-        emptyMethod,
-      );
-    }
+    const workerExitPromises = this._workers.map(async worker => {
+      worker.send([CHILD_MESSAGE_END, false], emptyMethod, emptyMethod);
+
+      // Schedule a force exit in case worker fails to exit gracefully so
+      // await worker.waitForExit() never takes longer than FORCE_EXIT_DELAY
+      let forceExited = false;
+      const forceExitTimeout = setTimeout(() => {
+        worker.send([CHILD_MESSAGE_FORCE_EXIT], emptyMethod, emptyMethod);
+        forceExited = true;
+      }, FORCE_EXIT_DELAY);
+
+      await worker.waitForExit();
+      // Worker ideally exited gracefully, don't send force exit then
+      clearTimeout(forceExitTimeout);
+
+      return forceExited;
+    });
+
+    return (await Promise.all(workerExitPromises)).reduce<PoolExitResult>(
+      (result, forceExited) => ({
+        forceExited: result.forceExited || forceExited,
+      }),
+      {forceExited: false},
+    );
   }
 }

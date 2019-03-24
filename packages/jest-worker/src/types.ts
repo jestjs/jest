@@ -15,6 +15,7 @@ import {ForkOptions} from 'child_process';
 export const CHILD_MESSAGE_INITIALIZE: 0 = 0;
 export const CHILD_MESSAGE_CALL: 1 = 1;
 export const CHILD_MESSAGE_END: 2 = 2;
+export const CHILD_MESSAGE_FORCE_EXIT: 3 = 3;
 
 export const PARENT_MESSAGE_OK: 0 = 0;
 export const PARENT_MESSAGE_CLIENT_ERROR: 1 = 1;
@@ -23,10 +24,6 @@ export const PARENT_MESSAGE_SETUP_ERROR: 2 = 2;
 export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
   | typeof PARENT_MESSAGE_SETUP_ERROR;
-
-// Option objects.
-
-export {ForkOptions};
 
 export interface WorkerPoolInterface {
   getStderr(): NodeJS.ReadableStream;
@@ -39,7 +36,7 @@ export interface WorkerPoolInterface {
     onStart: OnStart,
     onEnd: OnEnd,
   ): void;
-  end(): void;
+  end(): Promise<PoolExitResult>;
 }
 
 export interface WorkerInterface {
@@ -48,12 +45,20 @@ export interface WorkerInterface {
     onProcessStart: OnStart,
     onProcessEnd: OnEnd,
   ): void;
+  waitForExit(): Promise<void>;
+
   getWorkerId(): number;
   getStderr(): NodeJS.ReadableStream | null;
   getStdout(): NodeJS.ReadableStream | null;
-  onExit(exitCode: number): void;
-  onMessage(message: ParentMessage): void;
 }
+
+export type PoolExitResult = {
+  forceExited: boolean;
+};
+
+// Option objects.
+
+export {ForkOptions};
 
 export type FarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;
@@ -116,10 +121,13 @@ export type ChildMessageEnd = [
   boolean, // processed
 ];
 
+export type ChildMessageForceExit = [typeof CHILD_MESSAGE_FORCE_EXIT];
+
 export type ChildMessage =
   | ChildMessageInitialize
   | ChildMessageCall
-  | ChildMessageEnd;
+  | ChildMessageEnd
+  | ChildMessageForceExit;
 
 // Messages passed from the children to the parent.
 

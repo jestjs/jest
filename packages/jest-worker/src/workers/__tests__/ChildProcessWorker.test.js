@@ -298,6 +298,18 @@ it('does not restart the child if it cleanly exited', () => {
   expect(childProcess.fork).toHaveBeenCalledTimes(1);
 });
 
+it('resolves waitForExit() after the child process cleanly exited', async () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  });
+
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
+  forkInterface.emit('exit', 0);
+  await worker.waitForExit(); // should not timeout
+});
+
 it('restarts the child when the child process dies', () => {
   new Worker({
     workerPath: '/tmp/foo',
