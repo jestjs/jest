@@ -80,7 +80,7 @@ export default class TestSequencer {
    * from the file other than its size.
    *
    */
-  sort(tests: Array<Test>): Array<Test> {
+  sort(tests: Array<Test>, prioritySequence: Array<string> = []): Array<Test> {
     const stats: {[path: string]: number} = {};
     const fileSize = ({path, context: {hasteFS}}: Test) =>
       stats[path] || (stats[path] = hasteFS.getSize(path) || 0);
@@ -96,7 +96,13 @@ export default class TestSequencer {
       const failedA = hasFailed(cacheA, testA);
       const failedB = hasFailed(cacheB, testB);
       const hasTimeA = testA.duration != null;
-      if (failedA !== failedB) {
+      const priorityA = prioritySequence.indexOf(testA.path);
+      const priorityB = prioritySequence.indexOf(testB.path);
+      if (priorityA !== priorityB) {
+        if (priorityA === -1) return 1;
+        if (priorityB === -1) return -1;
+        return priorityA < priorityB ? -1 : 1;
+      } else if (failedA !== failedB) {
         return failedA ? -1 : 1;
       } else if (hasTimeA != (testB.duration != null)) {
         // If only one of two tests has timing information, run it last

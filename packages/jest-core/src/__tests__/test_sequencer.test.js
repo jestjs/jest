@@ -124,6 +124,36 @@ test('sorts based on failures, timing information and file size', () => {
   ]);
 });
 
+test('sorts based on prioritySequence failures, timing information and file size', () => {
+  fs.readFileSync = jest.fn(() =>
+    JSON.stringify({
+      '/test-a.js': [SUCCESS, 5],
+      '/test-ab.js': [FAIL, 1],
+      '/test-c.js': [FAIL],
+      '/test-d.js': [SUCCESS, 2],
+      '/test-efg.js': [FAIL],
+    }),
+  );
+  expect(
+    sequencer.sort(
+      toTests([
+        '/test-a.js',
+        '/test-ab.js',
+        '/test-c.js',
+        '/test-d.js',
+        '/test-efg.js',
+      ]),
+      ['/test-d.js', '/test-a.js'],
+    ),
+  ).toEqual([
+    {context, duration: 2, path: '/test-d.js'},
+    {context, duration: 5, path: '/test-a.js'},
+    {context, duration: undefined, path: '/test-efg.js'},
+    {context, duration: undefined, path: '/test-c.js'},
+    {context, duration: 1, path: '/test-ab.js'},
+  ]);
+});
+
 test('writes the cache based on results without existing cache', () => {
   fs.readFileSync = jest.fn(() => {
     throw new Error('File does not exist.');
