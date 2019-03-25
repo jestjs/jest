@@ -23,6 +23,9 @@ import {
   WorkerOptions,
 } from '../types';
 
+// How long to wait after SIGTERM before sending SIGKILL
+const SIGKILL_DELAY = 500;
+
 /**
  * This class wraps the child process and provides a nice interface to
  * communicate with. It takes care of:
@@ -193,7 +196,10 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   private _onExit(exitCode: number) {
-    if (exitCode !== 0) {
+    if (
+      exitCode !== 0 &&
+      exitCode <= 128 // importantly, do not reinitialize for 137 (SIGKILL) or 143 (SIGTERM)
+    ) {
       this.initialize();
 
       if (this._request) {
@@ -220,6 +226,15 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   waitForExit() {
     return this._exitPromise;
+  }
+
+  forceExit() {
+    this._child.kill('SIGTERM');
+    const sigkillTimeout = setTimeout(
+      () => this._child.kill('SIGKILL'),
+      SIGKILL_DELAY,
+    );
+    this._exitPromise.then(() => clearTimeout(sigkillTimeout));
   }
 
   getWorkerId() {

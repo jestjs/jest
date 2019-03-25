@@ -15,7 +15,6 @@ import {ForkOptions} from 'child_process';
 export const CHILD_MESSAGE_INITIALIZE: 0 = 0;
 export const CHILD_MESSAGE_CALL: 1 = 1;
 export const CHILD_MESSAGE_END: 2 = 2;
-export const CHILD_MESSAGE_FORCE_EXIT: 3 = 3;
 
 export const PARENT_MESSAGE_OK: 0 = 0;
 export const PARENT_MESSAGE_CLIENT_ERROR: 1 = 1;
@@ -46,6 +45,7 @@ export interface WorkerInterface {
     onProcessEnd: OnEnd,
   ): void;
   waitForExit(): Promise<void>;
+  forceExit(): void;
 
   getWorkerId(): number;
   getStderr(): NodeJS.ReadableStream | null;
@@ -121,13 +121,10 @@ export type ChildMessageEnd = [
   boolean, // processed
 ];
 
-export type ChildMessageForceExit = [typeof CHILD_MESSAGE_FORCE_EXIT];
-
 export type ChildMessage =
   | ChildMessageInitialize
   | ChildMessageCall
-  | ChildMessageEnd
-  | ChildMessageForceExit;
+  | ChildMessageEnd;
 
 // Messages passed from the children to the parent.
 

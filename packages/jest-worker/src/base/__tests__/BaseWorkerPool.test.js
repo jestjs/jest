@@ -7,7 +7,7 @@
 
 'use strict';
 
-import {CHILD_MESSAGE_END, CHILD_MESSAGE_FORCE_EXIT} from '../../types';
+import {CHILD_MESSAGE_END} from '../../types';
 
 import BaseWorkerPool from '../BaseWorkerPool';
 
@@ -28,6 +28,7 @@ describe('BaseWorkerPool', () => {
   beforeEach(() => {
     Worker.mockClear();
     Worker.mockImplementation(() => ({
+      forceExit: jest.fn(),
       getStderr: () => ({once() {}, pipe() {}}),
       getStdout: () => ({once() {}, pipe() {}}),
       send: jest.fn(),
@@ -227,6 +228,7 @@ describe('BaseWorkerPool', () => {
 
     it('resolves with forceExited=false if workers exited gracefully', async () => {
       Worker.mockImplementation(() => ({
+        forceExit: jest.fn(),
         getStderr: () => null,
         getStdout: () => null,
         send: jest.fn(),
@@ -245,18 +247,18 @@ describe('BaseWorkerPool', () => {
 
     it('force exits workers that do not exit gracefully and resolves with forceExited=true', async () => {
       // Set it up so that the first worker does not resolve waitForExit immediately,
-      // but only when it receives CHILD_MESSAGE_FORCE_EXIT
+      // but only when forceExit() is called
       let worker0Exited;
       Worker.mockImplementationOnce(() => ({
+        forceExit: () => {
+          worker0Exited();
+        },
         getStderr: () => null,
         getStdout: () => null,
-        send: request => {
-          if (request[0] === CHILD_MESSAGE_FORCE_EXIT) {
-            worker0Exited();
-          }
-        },
+        send: jest.fn(),
         waitForExit: () => new Promise(resolve => (worker0Exited = resolve)),
       })).mockImplementation(() => ({
+        forceExit: jest.fn(),
         getStderr: () => null,
         getStdout: () => null,
         send: jest.fn(),
@@ -273,9 +275,7 @@ describe('BaseWorkerPool', () => {
       const workers = pool.getWorkers();
       expect(await pool.end()).toEqual({forceExited: true});
 
-      expect(workers[1].send).not.toHaveBeenCalledWith([
-        CHILD_MESSAGE_FORCE_EXIT,
-      ]);
+      expect(workers[1].forceExit).not.toHaveBeenCalled();
     });
   });
 });

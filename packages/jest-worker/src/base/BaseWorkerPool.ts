@@ -10,7 +10,6 @@ import mergeStream = require('merge-stream');
 
 import {
   CHILD_MESSAGE_END,
-  CHILD_MESSAGE_FORCE_EXIT,
   PoolExitResult,
   WorkerInterface,
   WorkerOptions,
@@ -18,8 +17,9 @@ import {
 } from '../types';
 
 // How long to wait for the child process to terminate
-// after CHILD_MESSAGE_END before sending CHILD_MESSAGE_FORCE_EXIT
-const FORCE_EXIT_DELAY = 100;
+// after CHILD_MESSAGE_END before sending force exiting.
+const FORCE_EXIT_DELAY = 500;
+
 /* istanbul ignore next */
 const emptyMethod = () => {};
 
@@ -100,7 +100,7 @@ export default class BaseWorkerPool {
       // await worker.waitForExit() never takes longer than FORCE_EXIT_DELAY
       let forceExited = false;
       const forceExitTimeout = setTimeout(() => {
-        worker.send([CHILD_MESSAGE_FORCE_EXIT], emptyMethod, emptyMethod);
+        worker.forceExit();
         forceExited = true;
       }, FORCE_EXIT_DELAY);
 
@@ -111,7 +111,8 @@ export default class BaseWorkerPool {
       return forceExited;
     });
 
-    return (await Promise.all(workerExitPromises)).reduce<PoolExitResult>(
+    const workerExits = await Promise.all(workerExitPromises);
+    return workerExits.reduce<PoolExitResult>(
       (result, forceExited) => ({
         forceExited: result.forceExited || forceExited,
       }),

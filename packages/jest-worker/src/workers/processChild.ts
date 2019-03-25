@@ -8,7 +8,6 @@
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
-  CHILD_MESSAGE_FORCE_EXIT,
   CHILD_MESSAGE_INITIALIZE,
   ChildMessageCall,
   ChildMessageInitialize,
@@ -50,10 +49,6 @@ const messageListener = (request: any) => {
 
     case CHILD_MESSAGE_END:
       end();
-      break;
-
-    case CHILD_MESSAGE_FORCE_EXIT:
-      forceExit();
       break;
 
     default:
@@ -113,10 +108,6 @@ function end(): void {
 function exitProcess(): void {
   // Clean up open handles so the process ideally exits gracefully
   process.removeListener('message', messageListener);
-}
-
-function forceExit(): void {
-  process.exit(0);
 }
 
 function execMethod(method: string, args: Array<any>): void {
