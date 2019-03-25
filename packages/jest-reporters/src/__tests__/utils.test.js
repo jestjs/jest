@@ -8,7 +8,7 @@
 import path from 'path';
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
-import { trimAndFormatPath, wrapAnsiString, printDisplayName } from '../utils';
+import {trimAndFormatPath, wrapAnsiString, printDisplayName} from '../utils';
 
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {
@@ -37,7 +37,7 @@ describe('trimAndFormatPath()', () => {
     const columns = 25;
     const result = trimAndFormatPath(
       pad,
-      { rootDir: '' },
+      {rootDir: ''},
       path.join(dirname, basename),
       columns,
     );
@@ -53,7 +53,7 @@ describe('trimAndFormatPath()', () => {
     const columns = 30;
     const result = trimAndFormatPath(
       pad,
-      { rootDir: '' },
+      {rootDir: ''},
       path.join(dirname, basename),
       columns,
     );
@@ -69,7 +69,7 @@ describe('trimAndFormatPath()', () => {
     const columns = 15;
     const result = trimAndFormatPath(
       pad,
-      { rootDir: '' },
+      {rootDir: ''},
       path.join(dirname, basename),
       columns,
     );
@@ -86,7 +86,7 @@ describe('trimAndFormatPath()', () => {
     const totalLength = basename.length + path.sep.length + dirname.length;
     const result = trimAndFormatPath(
       pad,
-      { rootDir: '' },
+      {rootDir: ''},
       path.join(dirname, basename),
       columns,
     );
@@ -102,7 +102,7 @@ describe('trimAndFormatPath()', () => {
     const columns = 16;
     const result = trimAndFormatPath(
       pad,
-      { rootDir: '' },
+      {rootDir: ''},
       path.join(dirname, basename),
       columns,
     );
