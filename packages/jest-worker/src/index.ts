@@ -137,12 +137,12 @@ export default class JestWorker {
     return this._workerPool.getStdout();
   }
 
-  end(): Promise<PoolExitResult> {
+  async end(): Promise<PoolExitResult> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
     this._ending = true;
 
-    return this._workerPool.end();
+    return await this._workerPool.end();
   }
 }

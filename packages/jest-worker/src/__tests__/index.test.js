@@ -141,10 +141,10 @@ it('does not let end the farm after it is ended', () => {
 
   farm.end();
   expect(farm._workerPool.end).toHaveBeenCalledTimes(1);
-  expect(() => farm.end()).toThrow(
+  expect(farm.end()).rejects.toThrow(
     'Farm is ended, no more calls can be done to it',
   );
-  expect(() => farm.end()).toThrow(
+  expect(farm.end()).rejects.toThrow(
     'Farm is ended, no more calls can be done to it',
   );
   expect(farm._workerPool.end).toHaveBeenCalledTimes(1);
