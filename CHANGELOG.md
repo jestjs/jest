@@ -26,6 +26,7 @@
 - `[jest-resolve-dependencies]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
 - `[jest-resolve]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
 - `[jest-snapshot]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
+- `[jest-resolve]` Fix requireActual with moduleNameMapper ([#7981](https://github.com/facebook/jest/issues/7981))
 
 ### Chore & Maintenance
 
