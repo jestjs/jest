@@ -516,6 +516,18 @@ Default: `'prettier'`
 
 Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
 
+### `prioritySequence` [array<string>]
+
+Default: `[]`
+
+Use `prioritySequence` configuration can run certain tests first with giving sequence.
+
+```json
+{
+  "prioritySequence": ["<rootDir>/b.test.js", "<rootDir>/a.test.js"]
+}
+```
+
 ### `projects` [array<string | ProjectConfig>]
 
 Default: `undefined`

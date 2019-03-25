@@ -67,6 +67,7 @@ export type DefaultOptions = {
   notifyMode: string;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
+  prioritySequence: Array<string> | null | undefined;
   projects: Array<string | ProjectConfig> | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;
@@ -166,6 +167,7 @@ export type InitialOptions = {
   preprocessorIgnorePatterns?: Array<Glob>;
   preset?: string | null | undefined;
   prettierPath?: string | null | undefined;
+  prioritySequence?: Array<string>;
   projects?: Array<Glob>;
   replname?: string | null | undefined;
   resetMocks?: boolean;
@@ -281,6 +283,7 @@ export type GlobalConfig = {
   onlyChanged: boolean;
   onlyFailures: boolean;
   passWithNoTests: boolean;
+  prioritySequence: Array<string>;
   projects: Array<Glob>;
   replname: string | null | undefined;
   reporters: Array<string | ReporterConfig>;

@@ -78,6 +78,7 @@ const initialOptions: Config.InitialOptions = {
   onlyChanged: false,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
+  prioritySequence: [],
   projects: ['project-a', 'project-b/'],
   reporters: [
     'default',

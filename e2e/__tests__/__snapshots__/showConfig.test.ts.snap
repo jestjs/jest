@@ -110,6 +110,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "notify": false,
     "notifyMode": "failure-change",
     "passWithNoTests": false,
+    "prioritySequence": [],
     "projects": null,
     "rootDir": "<<REPLACED_ROOT_DIR>>",
     "runTestsByPath": false,

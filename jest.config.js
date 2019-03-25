@@ -23,6 +23,7 @@ module.exports = {
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
+  prioritySequence: ['<rootDir>/a.test.js'],
   projects: ['<rootDir>', '<rootDir>/examples/*/'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotSerializers: [

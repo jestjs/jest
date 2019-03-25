@@ -519,6 +519,7 @@ export default function normalize(
       case 'collectCoverageOnlyFrom':
         value = normalizeCollectCoverageOnlyFrom(oldOptions, key);
         break;
+      case 'prioritySequence':
       case 'setupFiles':
       case 'setupFilesAfterEnv':
       case 'snapshotSerializers':

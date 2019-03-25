@@ -50,6 +50,7 @@ const defaultOptions: Config.DefaultOptions = {
   notifyMode: 'failure-change',
   preset: null,
   prettierPath: 'prettier',
+  prioritySequence: [],
   projects: null,
   resetMocks: false,
   resetModules: false,

@@ -137,6 +137,7 @@ const groupOptions = (
     onlyFailures: options.onlyFailures,
     outputFile: options.outputFile,
     passWithNoTests: options.passWithNoTests,
+    prioritySequence: options.prioritySequence,
     projects: options.projects,
     replname: options.replname,
     reporters: options.reporters,
