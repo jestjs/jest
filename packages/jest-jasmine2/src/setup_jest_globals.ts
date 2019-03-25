@@ -105,7 +105,6 @@ export default ({
     expand,
     getBabelTraverse: () => require('@babel/traverse').default,
     getPrettier: () =>
-      // $FlowFixMe dynamic require
       config.prettierPath ? require(config.prettierPath) : null,
     updateSnapshot,
   });
