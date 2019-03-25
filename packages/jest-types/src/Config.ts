@@ -367,7 +367,7 @@ export type ProjectConfig = {
   dependencyExtractor?: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  displayName?: DisplayName;
+  displayName?: DisplayName | null | undefined;
   errorOnDeprecated: boolean;
   extraGlobals: Array<keyof NodeJS.Global>;
   filter: Path | null | undefined;
