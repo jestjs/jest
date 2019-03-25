@@ -1,0 +1,5 @@
+{
+  "jest": {
+    "prioritySequence": ["<rootDir>/d.test.js", "<rootDir>/b.test.js", "<rootDir>/c.test.js"]
+  }
+}
