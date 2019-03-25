@@ -8,9 +8,9 @@
 - `[@jest/reporter]` Display todo and skip test descriptions when verbose is true ([#8038](https://github.com/facebook/jest/pull/8038))
 - `[jest-runner]` Support default exports for test environments ([#8163](https://github.com/facebook/jest/pull/8163))
 - `[pretty-format]` Support React.Suspense ([#8180](https://github.com/facebook/jest/pull/8180))
-- `[jest-config]` Add `prioritySequence` option ([#8209](https://github.com/facebook/jest/pull/8180))
-- `[jest-core]` Add `prioritySequence` option ([#8209](https://github.com/facebook/jest/pull/8180))
-- `[jest-types]` Add `prioritySequence` option ([#8209](https://github.com/facebook/jest/pull/8180))
+- `[jest-config]` Add `prioritySequence` option ([#8209](https://github.com/facebook/jest/pull/8209))
+- `[jest-core]` Add `prioritySequence` option ([#8209](https://github.com/facebook/jest/pull/8209))
+- `[jest-types]` Add `prioritySequence` option ([#8209](https://github.com/facebook/jest/pull/8209))
 
 ### Fixes
 
