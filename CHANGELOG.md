@@ -8,6 +8,7 @@
 - `[@jest/reporter]` Display todo and skip test descriptions when verbose is true ([#8038](https://github.com/facebook/jest/pull/8038))
 - `[jest-runner]` Support default exports for test environments ([#8163](https://github.com/facebook/jest/pull/8163))
 - `[pretty-format]` Support React.Suspense ([#8180](https://github.com/facebook/jest/pull/8180))
+- `[jest-snapshot]` Indent inline snapshots ([#8198](https://github.com/facebook/jest/pull/8198))
 - `[jest-config]` Add `prioritySequence` option ([#8209](https://github.com/facebook/jest/pull/8209))
 - `[jest-core]` Add `prioritySequence` option ([#8209](https://github.com/facebook/jest/pull/8209))
 - `[jest-types]` Add `prioritySequence` option ([#8209](https://github.com/facebook/jest/pull/8209))
@@ -39,6 +40,7 @@
 - `[jest-haste-map]` Avoid persisting haste map or processing files when not changed ([#8153](https://github.com/facebook/jest/pull/8153))
 - `[jest-core]` Improve performance of SearchSource.findMatchingTests by 15% ([#8184](https://github.com/facebook/jest/pull/8184))
 - `[jest-resolve]` Optimize internal cache lookup performance ([#8183](https://github.com/facebook/jest/pull/8183))
+- `[jest-core]` Dramatically improve watch mode performance ([#8201](https://github.com/facebook/jest/pull/8201))
 
 ## 24.5.0
 

@@ -32,8 +32,9 @@ export type SerializableModuleMap = {
 };
 
 export default class ModuleMap {
-  private readonly _raw: RawModuleMap;
   static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;
+  private readonly _raw: RawModuleMap;
+  private json: SerializableModuleMap | undefined;
 
   constructor(raw: RawModuleMap) {
     this._raw = raw;
@@ -84,12 +85,15 @@ export default class ModuleMap {
   }
 
   toJSON(): SerializableModuleMap {
-    return {
-      duplicates: Array.from(this._raw.duplicates),
-      map: Array.from(this._raw.map),
-      mocks: Array.from(this._raw.mocks),
-      rootDir: this._raw.rootDir,
-    };
+    if (!this.json) {
+      this.json = {
+        duplicates: Array.from(this._raw.duplicates),
+        map: Array.from(this._raw.map),
+        mocks: Array.from(this._raw.mocks),
+        rootDir: this._raw.rootDir,
+      };
+    }
+    return this.json;
   }
 
   static fromJSON(serializableModuleMap: SerializableModuleMap) {
