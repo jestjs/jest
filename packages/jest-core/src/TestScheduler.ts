@@ -91,6 +91,7 @@ export default class TestScheduler {
       this._globalConfig.watch || this._globalConfig.watchAll,
       this._globalConfig.maxWorkers,
       timings,
+      this._globalConfig.prioritySequence,
     );
 
     const onResult = async (test: Test, testResult: TestResult) => {

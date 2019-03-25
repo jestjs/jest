@@ -23,23 +23,24 @@ const getTestMock = () => ({
 const getTestsMock = () => [getTestMock(), getTestMock()];
 
 test.each`
-  tests              | watch    | maxWorkers   | timings        | expectedResult
-  ${[getTestMock()]} | ${true}  | ${undefined} | ${[500, 500]}  | ${true}
-  ${getTestsMock()}  | ${true}  | ${1}         | ${[2000, 500]} | ${true}
-  ${getTestsMock()}  | ${true}  | ${2}         | ${[2000, 500]} | ${false}
-  ${[getTestMock()]} | ${true}  | ${undefined} | ${[2000, 500]} | ${false}
-  ${getTestMock()}   | ${true}  | ${undefined} | ${[500, 500]}  | ${false}
-  ${getTestsMock()}  | ${false} | ${1}         | ${[2000, 500]} | ${true}
-  ${getTestMock()}   | ${false} | ${2}         | ${[2000, 500]} | ${false}
-  ${[getTestMock()]} | ${false} | ${undefined} | ${[2000]}      | ${true}
-  ${getTestsMock()}  | ${false} | ${undefined} | ${[500, 500]}  | ${true}
-  ${new Array(45)}   | ${false} | ${undefined} | ${[500]}       | ${false}
-  ${getTestsMock()}  | ${false} | ${undefined} | ${[2000, 500]} | ${false}
+  tests              | watch    | maxWorkers   | timings        | prioritySequence  | expectedResult
+  ${getTestMock()}   | ${false} | ${undefined} | ${[500, 500]}  | ${['/a.test.js']} | ${true}
+  ${[getTestMock()]} | ${true}  | ${undefined} | ${[500, 500]}  | ${[]}             | ${true}
+  ${getTestsMock()}  | ${true}  | ${1}         | ${[2000, 500]} | ${[]}             | ${true}
+  ${getTestsMock()}  | ${true}  | ${2}         | ${[2000, 500]} | ${[]}             | ${false}
+  ${[getTestMock()]} | ${true}  | ${undefined} | ${[2000, 500]} | ${[]}             | ${false}
+  ${getTestMock()}   | ${true}  | ${undefined} | ${[500, 500]}  | ${[]}             | ${false}
+  ${getTestsMock()}  | ${false} | ${1}         | ${[2000, 500]} | ${[]}             | ${true}
+  ${getTestMock()}   | ${false} | ${2}         | ${[2000, 500]} | ${[]}             | ${false}
+  ${[getTestMock()]} | ${false} | ${undefined} | ${[2000]}      | ${[]}             | ${true}
+  ${getTestsMock()}  | ${false} | ${undefined} | ${[500, 500]}  | ${[]}             | ${true}
+  ${new Array(45)}   | ${false} | ${undefined} | ${[500]}       | ${[]}             | ${false}
+  ${getTestsMock()}  | ${false} | ${undefined} | ${[2000, 500]} | ${[]}             | ${false}
 `(
   'shouldRunInBand() - should return $expectedResult for runInBand mode',
-  ({tests, watch, maxWorkers, timings, expectedResult}) => {
-    expect(shouldRunInBand(tests, watch, maxWorkers, timings)).toBe(
-      expectedResult,
-    );
+  ({tests, watch, maxWorkers, timings, prioritySequence, expectedResult}) => {
+    expect(
+      shouldRunInBand(tests, watch, maxWorkers, timings, prioritySequence),
+    ).toBe(expectedResult);
   },
 );
