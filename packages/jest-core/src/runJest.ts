@@ -143,7 +143,8 @@ export default (async function runJest({
   failedTestsCache?: FailedTestsCache;
   filter?: Filter;
 }) {
-  const sequencer = new TestSequencer();
+  const Sequencer: typeof TestSequencer = require(globalConfig.testSequencer);
+  const sequencer = new Sequencer();
   let allTests: Array<Test> = [];
 
   if (changedFilesPromise && globalConfig.watch) {

@@ -615,6 +615,13 @@ export const options = {
       '`<rootDir>/path/to/testRunner.js`.',
     type: 'string' as 'string',
   },
+  testSequencer: {
+    description:
+      'Allows to specify a custom test sequencer. The default is ' +
+      '`jest-test-sequencer`. A path to a custom test sequencer can be ' +
+      'provided: `<rootDir>/path/to/testSequencer.js`',
+    type: 'string' as 'string',
+  },
   testURL: {
     description: 'This option sets the URL for the jsdom environment.',
     type: 'string' as 'string',

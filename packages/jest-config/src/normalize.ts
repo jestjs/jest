@@ -571,6 +571,7 @@ export default function normalize(
       case 'snapshotResolver':
       case 'testResultsProcessor':
       case 'testRunner':
+      case 'testSequencer':
       case 'filter':
         {
           const option = oldOptions[key];
