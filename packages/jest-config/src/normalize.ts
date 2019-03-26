@@ -487,13 +487,6 @@ export default function normalize(
     ...DEFAULT_CONFIG,
   } as unknown) as AllOptions;
 
-  try {
-    // try to resolve windows short paths, ignoring errors (permission errors, mostly)
-    newOptions.cwd = realpath(newOptions.cwd);
-  } catch (e) {
-    // ignored
-  }
-
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
       filePath: options.resolver,
@@ -870,6 +863,13 @@ export default function normalize(
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
+
+  try {
+    // try to resolve windows short paths, ignoring errors (permission errors, mostly)
+    newOptions.cwd = realpath(process.cwd());
+  } catch (e) {
+    // ignored
+  }
 
   newOptions.nonFlagArgs = argv._;
   newOptions.testPathPattern = buildTestPathPattern(argv);

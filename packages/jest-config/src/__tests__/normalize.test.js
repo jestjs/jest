@@ -1512,6 +1512,26 @@ describe('moduleFileExtensions', () => {
   });
 });
 
+describe('cwd', () => {
+  it('is set to process.cwd', () => {
+    const {options} = normalize({rootDir: '/root/'}, {});
+    expect(options.cwd).toBe(process.cwd());
+  });
+
+  it('is not lost if the config has its own cwd property', () => {
+    console.warn.mockImplementation(() => {});
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        cwd: '/tmp/config-sets-cwd-itself',
+      },
+      {},
+    );
+    expect(options.cwd).toBe(process.cwd());
+    expect(console.warn).toHaveBeenCalled();
+  });
+});
+
 describe('Defaults', () => {
   it('should be accepted by normalize', () => {
     normalize({...Defaults, rootDir: '/root'}, {});
