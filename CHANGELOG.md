@@ -9,6 +9,7 @@
 - `[jest-runner]` Support default exports for test environments ([#8163](https://github.com/facebook/jest/pull/8163))
 - `[pretty-format]` Support React.Suspense ([#8180](https://github.com/facebook/jest/pull/8180))
 - `[jest-snapshot]` Indent inline snapshots ([#8198](https://github.com/facebook/jest/pull/8198))
+- `[jest-config]` Support colors in `displayName` configuration ([#8025](https://github.com/facebook/jest/pull/8025))
 
 ### Fixes
 
