@@ -619,7 +619,7 @@ class MyCustomReporter {
 }
 ```
 
-For the full list of methods and argument types see `Reporter` type in [types/TestRunner.js](https://github.com/facebook/jest/blob/master/types/TestRunner.js)
+For the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/master/packages/jest-reporters/src/types.ts)
 
 ### `resetMocks` [boolean]
 
