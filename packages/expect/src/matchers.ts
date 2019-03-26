@@ -50,15 +50,18 @@ type ContainIterable =
 
 const matchers: MatchersObject = {
   toBe(this: MatcherState, received: unknown, expected: unknown) {
+    const matcherName = '.toBe';
     const comment = 'Object.is equality';
+    const options: MatcherHintOptions = {
+      comment,
+      isNot: this.isNot,
+    };
+
     const pass = Object.is(received, expected);
 
     const message = pass
       ? () =>
-          matcherHint('.toBe', undefined, undefined, {
-            comment,
-            isNot: true,
-          }) +
+          matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}`
@@ -73,10 +76,7 @@ const matchers: MatchersObject = {
           const diffString = diff(expected, received, {expand: this.expand});
 
           return (
-            matcherHint('.toBe', undefined, undefined, {
-              comment,
-              isNot: false,
-            }) +
+            matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
             `Expected: ${printExpected(expected)}\n` +
             `Received: ${printReceived(received)}` +
@@ -97,13 +97,14 @@ const matchers: MatchersObject = {
     expected: number,
     precision: number = 2,
   ) {
+    const matcherName = 'toBeCloseTo';
     const secondArgument = arguments.length === 3 ? 'precision' : undefined;
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
       secondArgument,
     };
-    ensureNumbers(received, expected, 'toBeCloseTo', options);
+    ensureNumbers(received, expected, matcherName, options);
 
     let pass = false;
     let expectedDiff = 0;
@@ -121,7 +122,7 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint('toBeCloseTo', undefined, undefined, options) +
+          matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: not ${printExpected(expected)}\n` +
           (receivedDiff === 0
@@ -132,7 +133,7 @@ const matchers: MatchersObject = {
               `Expected difference: not < ${printExpected(expectedDiff)}\n` +
               `Received difference:       ${printReceived(receivedDiff)}`)
       : () =>
-          matcherHint('toBeCloseTo', undefined, undefined, options) +
+          matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}\n` +
@@ -145,16 +146,17 @@ const matchers: MatchersObject = {
   },
 
   toBeDefined(this: MatcherState, received: unknown, expected: void) {
+    const matcherName = 'toBeDefined';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureNoExpected(expected, 'toBeDefined', options);
+    ensureNoExpected(expected, matcherName, options);
 
     const pass = received !== void 0;
 
     const message = () =>
-      matcherHint('toBeDefined', undefined, '', options) +
+      matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
@@ -162,16 +164,17 @@ const matchers: MatchersObject = {
   },
 
   toBeFalsy(this: MatcherState, received: unknown, expected: void) {
+    const matcherName = 'toBeFalsy';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureNoExpected(expected, 'toBeFalsy', options);
+    ensureNoExpected(expected, matcherName, options);
 
     const pass = !received;
 
     const message = () =>
-      matcherHint('toBeFalsy', undefined, '', options) +
+      matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
@@ -179,17 +182,18 @@ const matchers: MatchersObject = {
   },
 
   toBeGreaterThan(this: MatcherState, received: number, expected: number) {
+    const matcherName = 'toBeGreaterThan';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, 'toBeGreaterThan', options);
+    ensureNumbers(received, expected, matcherName, options);
 
     const pass = received > expected;
 
     const message = () =>
-      matcherHint('toBeGreaterThan', undefined, undefined, options) +
+      matcherHint(matcherName, undefined, undefined, options) +
       '\n\n' +
       `Expected:${isNot ? ' not' : ''} > ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}   ${printReceived(received)}`;
@@ -202,17 +206,18 @@ const matchers: MatchersObject = {
     received: number,
     expected: number,
   ) {
+    const matcherName = 'toBeGreaterThanOrEqual';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, 'toBeGreaterThanOrEqual', options);
+    ensureNumbers(received, expected, matcherName, options);
 
     const pass = received >= expected;
 
     const message = () =>
-      matcherHint('toBeGreaterThanOrEqual', undefined, undefined, options) +
+      matcherHint(matcherName, undefined, undefined, options) +
       '\n\n' +
       `Expected:${isNot ? ' not' : ''} >= ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}    ${printReceived(received)}`;
@@ -221,6 +226,7 @@ const matchers: MatchersObject = {
   },
 
   toBeInstanceOf(this: MatcherState, received: any, expected: Function) {
+    const matcherName = 'toBeInstanceOf';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
@@ -229,7 +235,7 @@ const matchers: MatchersObject = {
     if (typeof expected !== 'function') {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('toBeInstanceOf', undefined, undefined, options),
+          matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a function`,
           printWithType('Expected', expected, printExpected),
         ),
@@ -243,7 +249,7 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint('toBeInstanceOf', undefined, undefined, options) +
+          matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           // A truthy test for `expected.name` property has false positive for:
           // function with a defined name property
@@ -255,7 +261,7 @@ const matchers: MatchersObject = {
             : `Expected constructor: not ${EXPECTED_COLOR(expected.name)}\n`) +
           `Received value: ${printReceived(received)}`
       : () =>
-          matcherHint('toBeInstanceOf', undefined, undefined, options) +
+          matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           // A truthy test for `expected.name` property has false positive for:
           // function with a defined name property
@@ -282,17 +288,18 @@ const matchers: MatchersObject = {
   },
 
   toBeLessThan(this: MatcherState, received: number, expected: number) {
+    const matcherName = 'toBeLessThan';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, 'toBeLessThan', options);
+    ensureNumbers(received, expected, matcherName, options);
 
     const pass = received < expected;
 
     const message = () =>
-      matcherHint('toBeLessThan', undefined, undefined, options) +
+      matcherHint(matcherName, undefined, undefined, options) +
       '\n\n' +
       `Expected:${isNot ? ' not' : ''} < ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}   ${printReceived(received)}`;
@@ -301,17 +308,18 @@ const matchers: MatchersObject = {
   },
 
   toBeLessThanOrEqual(this: MatcherState, received: number, expected: number) {
+    const matcherName = 'toBeLessThanOrEqual';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, 'toBeLessThanOrEqual', options);
+    ensureNumbers(received, expected, matcherName, options);
 
     const pass = received <= expected;
 
     const message = () =>
-      matcherHint('toBeLessThanOrEqual', undefined, undefined, options) +
+      matcherHint(matcherName, undefined, undefined, options) +
       '\n\n' +
       `Expected:${isNot ? ' not' : ''} <= ${printExpected(expected)}\n` +
       `Received:${isNot ? '    ' : ''}    ${printReceived(received)}`;
@@ -320,16 +328,17 @@ const matchers: MatchersObject = {
   },
 
   toBeNaN(this: MatcherState, received: any, expected: void) {
+    const matcherName = 'toBeNaN';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureNoExpected(expected, 'toBeNaN', options);
+    ensureNoExpected(expected, matcherName, options);
 
     const pass = Number.isNaN(received);
 
     const message = () =>
-      matcherHint('toBeNaN', undefined, '', options) +
+      matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
@@ -337,16 +346,17 @@ const matchers: MatchersObject = {
   },
 
   toBeNull(this: MatcherState, received: unknown, expected: void) {
+    const matcherName = 'toBeNull';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureNoExpected(expected, 'toBeNull', options);
+    ensureNoExpected(expected, matcherName, options);
 
     const pass = received === null;
 
     const message = () =>
-      matcherHint('toBeNull', undefined, '', options) +
+      matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
@@ -354,16 +364,17 @@ const matchers: MatchersObject = {
   },
 
   toBeTruthy(this: MatcherState, received: unknown, expected: void) {
+    const matcherName = 'toBeTruthy';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureNoExpected(expected, 'toBeTruthy', options);
+    ensureNoExpected(expected, matcherName, options);
 
     const pass = !!received;
 
     const message = () =>
-      matcherHint('toBeTruthy', undefined, '', options) +
+      matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
@@ -371,16 +382,17 @@ const matchers: MatchersObject = {
   },
 
   toBeUndefined(this: MatcherState, received: unknown, expected: void) {
+    const matcherName = 'toBeUndefined';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureNoExpected(expected, 'toBeUndefined', options);
+    ensureNoExpected(expected, matcherName, options);
 
     const pass = received === void 0;
 
     const message = () =>
-      matcherHint('toBeUndefined', undefined, '', options) +
+      matcherHint(matcherName, undefined, '', options) +
       '\n\n' +
       `Received: ${printReceived(received)}`;
 
@@ -392,6 +404,7 @@ const matchers: MatchersObject = {
     received: ContainIterable | string,
     expected: unknown,
   ) {
+    const matcherName = 'toContain';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
       comment: 'indexOf',
@@ -402,7 +415,7 @@ const matchers: MatchersObject = {
     if (received == null) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('toContain', undefined, undefined, options),
+          matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must not be null nor undefined`,
           printWithType('Received', received, printReceived),
         ),
@@ -421,7 +434,7 @@ const matchers: MatchersObject = {
         const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
         return (
-          matcherHint('toContain', undefined, undefined, options) +
+          matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
             expected,
@@ -451,7 +464,7 @@ const matchers: MatchersObject = {
       const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
       return (
-        matcherHint('toContain', undefined, undefined, options) +
+        matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
           expected,
@@ -478,6 +491,7 @@ const matchers: MatchersObject = {
     received: ContainIterable,
     expected: unknown,
   ) {
+    const matcherName = 'toContainEqual';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
       comment: 'deep equality',
@@ -488,7 +502,7 @@ const matchers: MatchersObject = {
     if (received == null) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('toContainEqual', undefined, undefined, options),
+          matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must not be null nor undefined`,
           printWithType('Received', received, printReceived),
         ),
@@ -506,7 +520,7 @@ const matchers: MatchersObject = {
       const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
       return (
-        matcherHint('toContainEqual', undefined, undefined, options) +
+        matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
           expected,
@@ -523,26 +537,27 @@ const matchers: MatchersObject = {
   },
 
   toEqual(this: MatcherState, received: unknown, expected: unknown) {
+    const matcherName = '.toEqual';
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+    };
+
     const pass = equals(received, expected, [iterableEquality]);
 
     const message = pass
       ? () =>
-          matcherHint('.toEqual', undefined, undefined, {
-            isNot: this.isNot,
-          }) +
+          matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}`
       : () => {
-          const diffString = diff(expected, received, {expand: this.expand});
+          const difference = diff(expected, received, {expand: this.expand});
 
           return (
-            matcherHint('.toEqual', undefined, undefined, {
-              isNot: this.isNot,
-            }) +
+            matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
-            (diffString && diffString.includes('- Expect')
-              ? `Difference:\n\n${diffString}`
+            (difference && difference.includes('- Expect')
+              ? `Difference:\n\n${difference}`
               : `Expected: ${printExpected(expected)}\n` +
                 `Received: ${printReceived(received)}`)
           );
@@ -555,6 +570,7 @@ const matchers: MatchersObject = {
   },
 
   toHaveLength(this: MatcherState, received: any, expected: number) {
+    const matcherName = 'toHaveLength';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
       isNot,
@@ -567,7 +583,7 @@ const matchers: MatchersObject = {
     ) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('toHaveLength', undefined, undefined, options),
+          matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR(
             'received',
           )} value must have a length property whose value must be a number`,
@@ -576,7 +592,7 @@ const matchers: MatchersObject = {
       );
     }
 
-    ensureExpectedIsNonNegativeInteger(expected, 'toHaveLength', options);
+    ensureExpectedIsNonNegativeInteger(expected, matcherName, options);
 
     const pass = received.length === expected;
 
@@ -591,7 +607,7 @@ const matchers: MatchersObject = {
       );
 
       return (
-        matcherHint('toHaveLength', undefined, undefined, options) +
+        matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
         `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
           expected,
@@ -616,16 +632,18 @@ const matchers: MatchersObject = {
     keyPath: string | Array<string>,
     value?: unknown,
   ) {
+    const matcherName = '.toHaveProperty';
     const valuePassed = arguments.length === 3;
-    const secondArgument = valuePassed ? 'value' : null;
+    const secondArgument = valuePassed ? 'value' : '';
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+      secondArgument,
+    };
 
     if (object === null || object === undefined) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('.toHaveProperty', undefined, 'path', {
-            isNot: this.isNot,
-            secondArgument,
-          } as MatcherHintOptions),
+          matcherHint(matcherName, undefined, 'path', options),
           `${RECEIVED_COLOR('received')} value must not be null nor undefined`,
           printWithType('Received', object, printReceived),
         ),
@@ -637,10 +655,7 @@ const matchers: MatchersObject = {
     if (keyPathType !== 'string' && keyPathType !== 'array') {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('.toHaveProperty', undefined, 'path', {
-            isNot: this.isNot,
-            secondArgument,
-          } as MatcherHintOptions),
+          matcherHint(matcherName, undefined, 'path', options),
           `${EXPECTED_COLOR('expected')} path must be a string or array`,
           printWithType('Expected', keyPath, printExpected),
         ),
@@ -658,9 +673,7 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint('.not.toHaveProperty', 'object', 'path', {
-            secondArgument,
-          } as MatcherHintOptions) +
+          matcherHint(matcherName, 'object', 'path', options) +
           '\n\n' +
           `Expected the object:\n` +
           `  ${printReceived(object)}\n` +
@@ -668,14 +681,12 @@ const matchers: MatchersObject = {
           `  ${printExpected(keyPath)}\n` +
           (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
       : () => {
-          const diffString =
+          const difference =
             valuePassed && hasEndProp
               ? diff(value, result.value, {expand: this.expand})
               : '';
           return (
-            matcherHint('.toHaveProperty', 'object', 'path', {
-              secondArgument,
-            } as MatcherHintOptions) +
+            matcherHint(matcherName, 'object', 'path', options) +
             '\n\n' +
             `Expected the object:\n` +
             `  ${printReceived(object)}\n` +
@@ -687,7 +698,7 @@ const matchers: MatchersObject = {
             (hasEndProp
               ? `Received:\n` +
                 `  ${printReceived(result.value)}` +
-                (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+                (difference ? `\n\nDifference:\n\n${difference}` : '')
               : traversedPath
               ? `Received:\n  ${RECEIVED_COLOR(
                   'object',
@@ -703,6 +714,7 @@ const matchers: MatchersObject = {
   },
 
   toMatch(this: MatcherState, received: string, expected: string | RegExp) {
+    const matcherName = 'toMatch';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
@@ -711,7 +723,7 @@ const matchers: MatchersObject = {
     if (typeof received !== 'string') {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('toMatch', undefined, undefined, options),
+          matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a string`,
           printWithType('Received', received, printReceived),
         ),
@@ -724,7 +736,7 @@ const matchers: MatchersObject = {
     ) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('toMatch', undefined, undefined, options),
+          matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR(
             'expected',
           )} value must be a string or regular expression`,
@@ -741,7 +753,7 @@ const matchers: MatchersObject = {
     const message = pass
       ? () =>
           typeof expected === 'string'
-            ? matcherHint('toMatch', undefined, undefined, options) +
+            ? matcherHint(matcherName, undefined, undefined, options) +
               '\n\n' +
               `Expected substring: not ${printExpected(expected)}\n` +
               `Received string:        ${printReceivedStringContainExpectedSubstring(
@@ -749,7 +761,7 @@ const matchers: MatchersObject = {
                 received.indexOf(expected),
                 expected.length,
               )}`
-            : matcherHint('toMatch', undefined, undefined, options) +
+            : matcherHint(matcherName, undefined, undefined, options) +
               '\n\n' +
               `Expected pattern: not ${printExpected(expected)}\n` +
               `Received string:      ${printReceivedStringContainExpectedResult(
@@ -766,7 +778,7 @@ const matchers: MatchersObject = {
           const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
           return (
-            matcherHint('toMatch', undefined, undefined, options) +
+            matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
             `${printLabel(labelExpected)}${printExpected(expected)}\n` +
             `${printLabel(labelReceived)}${printReceived(received)}`
@@ -781,12 +793,15 @@ const matchers: MatchersObject = {
     receivedObject: object,
     expectedObject: object,
   ) {
+    const matcherName = '.toMatchObject';
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+    };
+
     if (typeof receivedObject !== 'object' || receivedObject === null) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('.toMatchObject', undefined, undefined, {
-            isNot: this.isNot,
-          }),
+          matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a non-null object`,
           printWithType('Received', receivedObject, printReceived),
         ),
@@ -796,9 +811,7 @@ const matchers: MatchersObject = {
     if (typeof expectedObject !== 'object' || expectedObject === null) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('.toMatchObject', undefined, undefined, {
-            isNot: this.isNot,
-          }),
+          matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a non-null object`,
           printWithType('Expected', expectedObject, printExpected),
         ),
@@ -812,13 +825,13 @@ const matchers: MatchersObject = {
 
     const message = pass
       ? () =>
-          matcherHint('.not.toMatchObject') +
+          matcherHint(matcherName, undefined, undefined, options) +
           `\n\nExpected value not to match object:\n` +
           `  ${printExpected(expectedObject)}` +
           `\nReceived:\n` +
           `  ${printReceived(receivedObject)}`
       : () => {
-          const diffString = diff(
+          const difference = diff(
             expectedObject,
             getObjectSubset(receivedObject, expectedObject),
             {
@@ -826,12 +839,12 @@ const matchers: MatchersObject = {
             },
           );
           return (
-            matcherHint('.toMatchObject') +
+            matcherHint(matcherName, undefined, undefined, options) +
             `\n\nExpected value to match object:\n` +
             `  ${printExpected(expectedObject)}` +
             `\nReceived:\n` +
             `  ${printReceived(receivedObject)}` +
-            (diffString ? `\nDifference:\n${diffString}` : '')
+            (difference ? `\nDifference:\n${difference}` : '')
           );
         };
 
@@ -839,6 +852,11 @@ const matchers: MatchersObject = {
   },
 
   toStrictEqual(this: MatcherState, received: unknown, expected: unknown) {
+    const matcherName = '.toStrictEqual';
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+    };
+
     const pass = equals(
       received,
       expected,
@@ -846,20 +864,20 @@ const matchers: MatchersObject = {
       true,
     );
 
-    const hint = matcherHint('.toStrictEqual', undefined, undefined, {
-      isNot: this.isNot,
-    });
     const message = pass
       ? () =>
-          hint +
+          matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}`
       : () => {
-          const diffString = diff(expected, received, {
+          const difference = diff(expected, received, {
             expand: this.expand,
           });
-          return hint + (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+          return (
+            matcherHint(matcherName, undefined, undefined, options) +
+            (difference ? `\n\nDifference:\n\n${difference}` : '')
+          );
         };
 
     // Passing the actual and expected objects so that a custom reporter
