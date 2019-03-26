@@ -6,8 +6,8 @@
  */
 
 import {Config} from '@jest/types';
-import {FS as HasteFS} from 'jest-haste-map';
-import Resolver from 'jest-resolve';
+import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
+import Resolver from 'jest-resolve'; // eslint-disable-line import/no-extraneous-dependencies
 import {isSnapshotPath, SnapshotResolver} from 'jest-snapshot';
 
 namespace DependencyResolver {

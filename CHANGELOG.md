@@ -23,6 +23,9 @@
 - `[@jest/reporters]` Fix Cannot read property converageData of null ([#8168](https://github.com/facebook/jest/pull/8168))
 - `[jest-worker]` `JEST_WORKER_ID` starts at 1 ([#8205](https://github.com/facebook/jest/pull/8205))
 - `[jest-config]` Use default cwd even if config contains a cwd property ([#7923](https://github.com/facebook/jest/pull/7923))
+- `[jest-resolve-dependencies]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
+- `[jest-resolve]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
+- `[jest-snapshot]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
 
 ### Chore & Maintenance
 
