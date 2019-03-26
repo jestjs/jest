@@ -289,7 +289,7 @@ The `extract` function should return an iterable (`Array`, `Set`, etc.) with the
 
 That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
 
-### `displayName` [string, object]
+### `displayName` [string]
 
 default: `undefined`
 

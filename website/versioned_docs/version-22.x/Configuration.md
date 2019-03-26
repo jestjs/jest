@@ -222,7 +222,7 @@ Jest will fail if:
 - The `./src/api/very-important-module.js` file has less than 100% coverage.
 - Every remaining file combined has less than 50% coverage (`global`).
 
-### `displayName` [string, object]
+### `displayName` [string]
 
 default: `undefined`
 
