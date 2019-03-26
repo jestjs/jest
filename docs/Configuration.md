@@ -295,19 +295,22 @@ default: `undefined`
 Allows for a label to be printed along side a test while it is running. This becomes more useful in multiproject repositories where there can be many jest configuration files. This visually tells which project a test belongs to. Here are sample valid values.
 
 ```js
-// jest.config.js
-{
+module.exports = { 
   "displayName": "CLIENT"
 }
+```
 
-{
+or
+
+```js
+module.exports = {
   "displayName": {
     "name": "CLIENT",
     "color": "blue"
   }
 }
-
 ```
+
 
 As a secondary option, an object with the properties `name` and `color` can be passed. This allows for a custom configuration of the background color of the displayName. `displayName` defaults to white when its value is a string. Jest uses [chalk](https://github.com/chalk/chalk) to provide the color. As such, all of the valid options for colors supported by chalk are also supported by jest.
 
