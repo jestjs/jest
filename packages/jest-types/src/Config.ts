@@ -45,7 +45,6 @@ export type DefaultOptions = {
       }
     | null
     | undefined;
-  cwd: Path;
   dependencyExtractor: string | null | undefined;
   errorOnDeprecated: boolean;
   expand: boolean;
