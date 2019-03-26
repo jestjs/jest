@@ -38,8 +38,6 @@ const initialOptions: Config.InitialOptions = {
       statements: 100,
     },
   },
-  // @ts-ignore: Missing from initial options... https://github.com/facebook/jest/pull/7923
-  cwd: '/root',
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: 'project-name',
   errorOnDeprecated: false,
