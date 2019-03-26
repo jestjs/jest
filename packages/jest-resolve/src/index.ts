@@ -83,8 +83,7 @@ class Resolver {
     options: FindNodeModuleConfig,
   ): Config.Path | null {
     const resolver = options.resolver
-      ? /* $FlowFixMe */
-        require(options.resolver)
+      ? require(options.resolver)
       : defaultResolver;
     const paths = options.paths;
 
