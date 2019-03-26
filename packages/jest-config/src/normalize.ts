@@ -765,7 +765,7 @@ export default function normalize(
          */
         if (getType(displayName) === 'object') {
           const errorMessage =
-            `  Option "${chalk.bold('displayName')}" must be of type\n` +
+            `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
             '  {\n' +
             '    name: string;\n' +
             '    color: string;\n' +
