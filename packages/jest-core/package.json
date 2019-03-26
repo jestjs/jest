@@ -8,6 +8,7 @@
     "@jest/console": "^24.3.0",
     "@jest/reporters": "^24.5.0",
     "@jest/test-result": "^24.5.0",
+    "@jest/test-sequencer": "^24.5.0",
     "@jest/transform": "^24.5.0",
     "@jest/types": "^24.5.0",
     "ansi-escapes": "^3.0.0",
