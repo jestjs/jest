@@ -47,7 +47,6 @@ const getOperatorName = (operator: string | null, stack: string) => {
 
 const operatorMessage = (operator: string | null) => {
   const niceOperatorName = getOperatorName(operator, '');
-  // $FlowFixMe: we default to the operator itself, so holes in the map doesn't matter
   const humanReadableOperator = humanReadableOperators[niceOperatorName];
 
   return typeof operator === 'string'

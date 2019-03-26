@@ -51,6 +51,7 @@ const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
 const HINT_ARG = BOLD_WEIGHT('hint');
 const INLINE_SNAPSHOT_ARG = 'snapshot';
 const PROPERTY_MATCHERS_ARG = 'properties';
+const INDENTATION_REGEX = /^([^\S\n]*)\S/m;
 
 // Display name in report when matcher fails same as in snapshot file,
 // but with optional hint argument in bold weight.
@@ -72,6 +73,45 @@ const printName = (
     '`'
   );
 };
+
+function stripAddedIndentation(inlineSnapshot: string) {
+  // Find indentation if exists.
+  const match = inlineSnapshot.match(INDENTATION_REGEX);
+  if (!match || !match[1]) {
+    // No indentation.
+    return inlineSnapshot;
+  }
+
+  const indentation = match[1];
+  const lines = inlineSnapshot.split('\n');
+  if (lines.length <= 2) {
+    // Must be at least 3 lines.
+    return inlineSnapshot;
+  }
+
+  if (lines[0].trim() !== '' || lines[lines.length - 1].trim() !== '') {
+    // If not blank first and last lines, abort.
+    return inlineSnapshot;
+  }
+
+  for (let i = 1; i < lines.length - 1; i++) {
+    if (lines[i].indexOf(indentation) !== 0) {
+      // All lines except first and last should have the same indent as the
+      // first line (or more). If this isn't the case we don't want to touch it.
+      return inlineSnapshot;
+    }
+
+    lines[i] = lines[i].substr(indentation.length);
+  }
+
+  // Last line is a special case because it won't have the same indent as others
+  // but may still have been given some indent to line up.
+  lines[lines.length - 1] = '';
+
+  // Return inline snapshot, now at indent 0.
+  inlineSnapshot = lines.join('\n');
+  return inlineSnapshot;
+}
 
 const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
@@ -182,7 +222,7 @@ const toMatchInlineSnapshot = function(
   return _toMatchSnapshot({
     context: this,
     expectedArgument,
-    inlineSnapshot: inlineSnapshot || '',
+    inlineSnapshot: stripAddedIndentation(inlineSnapshot || ''),
     matcherName,
     options,
     propertyMatchers,

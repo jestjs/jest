@@ -3,40 +3,40 @@
 exports[`basic support: initial write 1`] = `
 test('inline snapshots', () =>
   expect({apple: 'original value'}).toMatchInlineSnapshot(\`
-Object {
-  "apple": "original value",
-}
-\`));
+    Object {
+      "apple": "original value",
+    }
+  \`));
 
 `;
 
 exports[`basic support: snapshot mismatch 1`] = `
 test('inline snapshots', () =>
   expect({apple: 'updated value'}).toMatchInlineSnapshot(\`
-Object {
-  "apple": "original value",
-}
-\`));
+    Object {
+      "apple": "original value",
+    }
+  \`));
 
 `;
 
 exports[`basic support: snapshot passed 1`] = `
 test('inline snapshots', () =>
   expect({apple: 'original value'}).toMatchInlineSnapshot(\`
-Object {
-  "apple": "original value",
-}
-\`));
+    Object {
+      "apple": "original value",
+    }
+  \`));
 
 `;
 
 exports[`basic support: snapshot updated 1`] = `
 test('inline snapshots', () =>
   expect({apple: 'updated value'}).toMatchInlineSnapshot(\`
-Object {
-  "apple": "updated value",
-}
-\`));
+    Object {
+      "apple": "updated value",
+    }
+  \`));
 
 `;
 
@@ -45,10 +45,10 @@ test('handles property matchers', () => {
   expect({createdAt: new Date()}).toMatchInlineSnapshot(
     {createdAt: expect.any(Date)},
     \`
-Object {
-  "createdAt": Any<Date>,
-}
-\`
+    Object {
+      "createdAt": Any<Date>,
+    }
+  \`
   );
 });
 
@@ -59,10 +59,10 @@ test('handles property matchers', () => {
   expect({createdAt: "string"}).toMatchInlineSnapshot(
     {createdAt: expect.any(Date)},
     \`
-Object {
-  "createdAt": Any<Date>,
-}
-\`
+    Object {
+      "createdAt": Any<Date>,
+    }
+  \`
   );
 });
 
@@ -73,10 +73,10 @@ test('handles property matchers', () => {
   expect({createdAt: new Date()}).toMatchInlineSnapshot(
     {createdAt: expect.any(Date)},
     \`
-Object {
-  "createdAt": Any<Date>,
-}
-\`
+    Object {
+      "createdAt": Any<Date>,
+    }
+  \`
   );
 });
 
@@ -87,10 +87,10 @@ test('handles property matchers', () => {
   expect({createdAt: 'string'}).toMatchInlineSnapshot(
     {createdAt: expect.any(String)},
     \`
-Object {
-  "createdAt": Any<String>,
-}
-\`
+    Object {
+      "createdAt": Any<String>,
+    }
+  \`
   );
 });
 
@@ -139,10 +139,10 @@ test('inline snapshots', async () => {
 exports[`writes snapshots with non-literals in expect(...) 1`] = `
 it('works with inline snapshots', () => {
   expect({a: 1}).toMatchInlineSnapshot(\`
-Object {
-  "a": 1,
-}
-\`);
+    Object {
+      "a": 1,
+    }
+  \`);
 });
 
 `;

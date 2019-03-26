@@ -51,7 +51,6 @@ test('injects the serializable module map into each worker in watch mode', () =>
             context: runContext,
             globalConfig,
             path: './file.test.js',
-            serializableModuleMap,
           },
         ],
         [
@@ -60,7 +59,6 @@ test('injects the serializable module map into each worker in watch mode', () =>
             context: runContext,
             globalConfig,
             path: './file2.test.js',
-            serializableModuleMap,
           },
         ],
       ]);
@@ -90,7 +88,6 @@ test('does not inject the serializable module map in serial mode', () => {
             context: runContext,
             globalConfig,
             path: './file.test.js',
-            serializableModuleMap: null,
           },
         ],
         [
@@ -99,7 +96,6 @@ test('does not inject the serializable module map in serial mode', () => {
             context: runContext,
             globalConfig,
             path: './file2.test.js',
-            serializableModuleMap: null,
           },
         ],
       ]);
