@@ -16,6 +16,7 @@ import micromatch from 'micromatch';
 import {sync as realpath} from 'realpath-native';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
+import getType from 'jest-get-type';
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
@@ -738,6 +739,50 @@ export default function normalize(
         }
         break;
       }
+      case 'displayName': {
+        const displayName = oldOptions[key] as Config.DisplayName;
+        if (typeof displayName === 'string') {
+          value = displayName;
+          break;
+        }
+        /**
+         * Ensuring that displayName shape is correct here so that the
+         * reporters can trust the shape of the data
+         * TODO: Normalize "displayName" such that given a config option
+         * {
+         *  "displayName": "Test"
+         * }
+         * becomes
+         * {
+         *   displayName: {
+         *     name: "Test",
+         *     color: "white"
+         *   }
+         * }
+         *
+         * This can't be done now since this will be a breaking change
+         * for custom reporters
+         */
+        if (getType(displayName) === 'object') {
+          const errorMessage =
+            `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
+            '  {\n' +
+            '    name: string;\n' +
+            '    color: string;\n' +
+            '  }\n';
+          const {name, color} = displayName;
+          if (
+            !name ||
+            !color ||
+            typeof name !== 'string' ||
+            typeof color !== 'string'
+          ) {
+            throw createConfigError(errorMessage);
+          }
+        }
+        value = oldOptions[key];
+        break;
+      }
       case 'automock':
       case 'browser':
       case 'cache':
@@ -749,7 +794,6 @@ export default function normalize(
       case 'coverageThreshold':
       case 'detectLeaks':
       case 'detectOpenHandles':
-      case 'displayName':
       case 'errorOnDeprecated':
       case 'expand':
       case 'extraGlobals':

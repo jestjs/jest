@@ -39,7 +39,11 @@ const initialOptions: Config.InitialOptions = {
     },
   },
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
-  displayName: 'project-name',
+  // @ts-ignore TODO: type this properly
+  displayName: multipleValidOptions('test-config', {
+    color: 'blue',
+    name: 'test-config',
+  }),
   errorOnDeprecated: false,
   expand: false,
   extraGlobals: [],
