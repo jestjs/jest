@@ -222,6 +222,12 @@ Jest will fail if:
 - The `./src/api/very-important-module.js` file has less than 100% coverage.
 - Every remaining file combined has less than 50% coverage (`global`).
 
+### `displayName` [string, object]
+
+default: `undefined`
+
+Allows for a label to be printed along side a test while it is running. This becomes more useful in multiproject repositories where there can be many jest configuration files. This visually tells which project a test belongs to.
+
 ### `forceCoverageMatch` [array<string>]
 
 Default: `['']`

@@ -289,6 +289,12 @@ The `extract` function should return an iterable (`Array`, `Set`, etc.) with the
 
 That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
 
+### `displayName` [string, object]
+
+default: `undefined`
+
+Allows for a label to be printed along side a test while it is running. This becomes more useful in multiproject repositories where there can be many jest configuration files. This visually tells which project a test belongs to.
+
 ### `errorOnDeprecated` [boolean]
 
 Default: `false`
