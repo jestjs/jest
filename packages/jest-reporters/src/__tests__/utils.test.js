@@ -121,16 +121,6 @@ describe('printDisplayName', () => {
     expect(printDisplayName(config)).toMatchSnapshot();
   });
 
-  it('should default displayName color to white when only name is provided', () => {
-    const config = {
-      displayName: {
-        name: 'hello',
-      },
-    };
-
-    expect(printDisplayName(config)).toMatchSnapshot();
-  });
-
   it('should default displayName color to white when color is not a valid value', () => {
     const config = {
       displayName: {
