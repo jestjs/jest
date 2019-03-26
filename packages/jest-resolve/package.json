@@ -13,15 +13,12 @@
     "@jest/types": "^24.5.0",
     "browser-resolve": "^1.11.3",
     "chalk": "^2.0.1",
+    "jest-haste-map": "^24.5.0",
     "jest-pnp-resolver": "^1.2.1",
     "realpath-native": "^1.1.0"
   },
   "devDependencies": {
-    "@types/browser-resolve": "^0.0.5",
-    "jest-haste-map": "^24.5.0"
-  },
-  "peerDependencies": {
-    "jest-haste-map": "^24.0.0"
+    "@types/browser-resolve": "^0.0.5"
   },
   "engines": {
     "node": ">= 6"

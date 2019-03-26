@@ -15,6 +15,7 @@
     "chalk": "^2.0.1",
     "expect": "^24.5.0",
     "jest-diff": "^24.5.0",
+    "jest-haste-map": "^24.5.0",
     "jest-matcher-utils": "^24.5.0",
     "jest-message-util": "^24.5.0",
     "jest-resolve": "^24.5.0",
@@ -23,15 +24,11 @@
     "pretty-format": "^24.5.0",
     "semver": "^5.5.0"
   },
-  "peerDependencies": {
-    "jest-haste-map": "^24.0.0"
-  },
   "devDependencies": {
     "@types/mkdirp": "^0.5.2",
     "@types/natural-compare": "^1.4.0",
     "@types/prettier": "^1.16.1",
     "@types/semver": "^5.5.0",
-    "jest-haste-map": "^24.5.0",
     "prettier": "^1.13.4"
   },
   "engines": {
