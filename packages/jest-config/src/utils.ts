@@ -223,3 +223,15 @@ export const isJSONString = (text?: JSONString | string): text is JSONString =>
   typeof text === 'string' &&
   text.startsWith('{') &&
   text.endsWith('}');
+
+export const getSequencer = (
+  resolver: string | undefined | null,
+  {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
+) =>
+  resolveWithPrefix(resolver, {
+    filePath,
+    humanOptionName: 'Jest Sequencer',
+    optionName: 'sequencer',
+    prefix: 'jest-sequencer-',
+    rootDir,
+  });
