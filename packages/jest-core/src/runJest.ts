@@ -20,12 +20,12 @@ import {
   AggregatedResult,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
+import TestSequencer from '@jest/test-sequencer';
 import {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
 import TestScheduler, {TestSchedulerContext} from './TestScheduler';
-import TestSequencer from '@jest/test-sequencer';
 import FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
 import TestWatcher from './TestWatcher';
