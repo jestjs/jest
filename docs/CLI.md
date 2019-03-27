@@ -297,6 +297,10 @@ An array of regexp pattern strings that is tested against all tests paths before
 
 Lets you specify a custom test runner.
 
+### `--testSequencer=<path>`
+
+Lets you specify a custom test sequencer
+
 ### `--updateSnapshot`
 
 Alias: `-u`. Use this flag to re-record every snapshot that fails during this test run. Can be used together with a test suite pattern or with `--testNamePattern` to re-record snapshots.

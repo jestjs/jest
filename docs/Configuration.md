@@ -993,6 +993,31 @@ function testRunner(
 
 An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js).
 
+### `testSequencer` [string]
+
+Default: `@jest/test-sequencer`
+
+This option allows you to use a custom sequencer instead of Jest's default test runner.
+
+You need to export a sequencer class and set path in the config
+
+
+example:
+
+Sort test path alphabetically 
+```js
+const Sequencer = require('@jest/test-sequencer').default;
+
+class CustomSequencer extends Sequencer {
+  sort(tests) {
+    const copyTests = Array.from(tests);
+    return copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1));
+  }
+}
+
+module.exports = CustomSequencer;
+```
+
 ### `testURL` [string]
 
 Default: `http://localhost`
