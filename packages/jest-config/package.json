@@ -12,6 +12,7 @@
   "dependencies": {
     "@babel/core": "^7.1.0",
     "@jest/types": "^24.5.0",
+    "@jest/test-scheduler": "^24.5.0",
     "babel-jest": "^24.5.0",
     "chalk": "^2.0.1",
     "glob": "^7.1.1",
