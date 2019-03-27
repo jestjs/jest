@@ -618,7 +618,7 @@ export const options = {
   testSequencer: {
     description:
       'Allows to specify a custom test sequencer. The default is ' +
-      '`jest-test-sequencer`. A path to a custom test sequencer can be ' +
+      '`@jest/test-sequencer`. A path to a custom test sequencer can be ' +
       'provided: `<rootDir>/path/to/testSequencer.js`',
     type: 'string' as 'string',
   },
