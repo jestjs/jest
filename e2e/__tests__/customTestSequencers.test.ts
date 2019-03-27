@@ -10,22 +10,6 @@ import runJest from '../runJest';
 import {extractSummary} from '../Utils';
 const dir = path.resolve(__dirname, '../custom-test-sequencer');
 
-expect.extend({
-  toBeIn(received, arr) {
-    const isIn = arr.includes(received);
-    if (isIn)
-      return {
-        message: `expect ${received} not to be in [${arr.join(', ')}]`,
-        pass: true,
-      };
-    else
-      return {
-        message: `expect ${received} to be in [${arr.join(', ')}]`,
-        pass: false,
-      };
-  },
-});
-
 test('run prioritySequence first', () => {
   const result = runJest(dir, ['-i']);
   expect(result.status).toBe(0);
@@ -33,10 +17,10 @@ test('run prioritySequence first', () => {
     .rest.replace(/PASS /g, '')
     .split('\n');
   expect(sequence).toEqual([
-    './d.test.js',
+    './a.test.js',
     './b.test.js',
     './c.test.js',
-    expect.toBeIn(['./a.test.js', './e.test.js']),
-    expect.toBeIn(['./a.test.js', './e.test.js']),
+    './d.test.js',
+    './e.test.js',
   ]);
 });
