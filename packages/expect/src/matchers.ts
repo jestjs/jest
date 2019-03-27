@@ -51,9 +51,8 @@ type ContainIterable =
 const matchers: MatchersObject = {
   toBe(this: MatcherState, received: unknown, expected: unknown) {
     const matcherName = '.toBe';
-    const comment = 'Object.is equality';
     const options: MatcherHintOptions = {
-      comment,
+      comment: 'Object.is equality',
       isNot: this.isNot,
     };
 
