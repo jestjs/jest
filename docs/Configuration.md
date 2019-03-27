@@ -1001,10 +1001,10 @@ This option allows you to use a custom sequencer instead of Jest's default test 
 
 You need to export a sequencer class and set path in the config
 
-
 example:
 
-Sort test path alphabetically 
+Sort test path alphabetically
+
 ```js
 const Sequencer = require('@jest/test-sequencer').default;
 
