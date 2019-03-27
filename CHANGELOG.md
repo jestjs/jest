@@ -13,6 +13,7 @@
 
 ### Fixes
 
+- `[jest-circus]` Fix test retries with beforeAll/beforeEach failures ([#8227](https://github.com/facebook/jest/pull/8227))
 - `[expect]` Fix circular references in iterable equality ([#8160](https://github.com/facebook/jest/pull/8160))
 - `[jest-changed-files]` Change method of obtaining git root ([#8052](https://github.com/facebook/jest/pull/8052))
 - `[jest-each]` Fix test function type ([#8145](https://github.com/facebook/jest/pull/8145))
