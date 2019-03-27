@@ -31,7 +31,7 @@ type Cache = {
  * TestSequencer.cacheResults(tests: Array<Test>, results: AggregatedResult)
  * is called to store/update this information on the cache map.
  */
-class TestSequencer {
+export default class TestSequencer {
   private _cache: Map<Context, Cache> = new Map();
 
   _getCachePath(context: Context) {
@@ -128,5 +128,3 @@ class TestSequencer {
     );
   }
 }
-
-export = TestSequencer;
