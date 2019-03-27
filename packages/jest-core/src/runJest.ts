@@ -9,7 +9,7 @@ import path from 'path';
 import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
-import {formatTestResults} from 'jest-util';
+import {formatTestResults, interopRequireDefault} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
@@ -143,7 +143,9 @@ export default (async function runJest({
   failedTestsCache?: FailedTestsCache;
   filter?: Filter;
 }) {
-  const Sequencer: typeof TestSequencer = require(globalConfig.testSequencer);
+  const Sequencer: typeof TestSequencer = interopRequireDefault(
+    require(globalConfig.testSequencer),
+  ).default;
   const sequencer = new Sequencer();
   let allTests: Array<Test> = [];
 
