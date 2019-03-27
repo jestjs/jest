@@ -27,7 +27,7 @@ expect.extend({
 });
 
 test('run prioritySequence first', () => {
-  const result = runJest(dir);
+  const result = runJest(dir, ['-i']);
   expect(result.status).toBe(0);
   const sequence = extractSummary(result.stderr)
     .rest.replace(/PASS /g, '')
