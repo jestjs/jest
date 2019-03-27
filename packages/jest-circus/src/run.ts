@@ -48,11 +48,11 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   const deferredRetryTests = [];
 
   for (const test of describeBlock.tests) {
-    const isErrorsBeforeTestRun = test.errors.length > 0;
+    const hasErrorsBeforeTestRun = test.errors.length > 0;
     await _runTest(test);
 
     if (
-      isErrorsBeforeTestRun === false &&
+      hasErrorsBeforeTestRun === false &&
       retryTimes > 0 &&
       test.errors.length > 0
     ) {
