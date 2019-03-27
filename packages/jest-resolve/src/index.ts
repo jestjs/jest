@@ -195,11 +195,9 @@ class Resolver {
     options?: Resolver.ResolveModuleConfig,
   ): Config.Path {
     const dirname = path.dirname(from);
-    const module = this.resolveModuleFromDirIfExists(
-      dirname,
-      moduleName,
-      options,
-    );
+    const module =
+      this.resolveStubModuleName(from, moduleName) ||
+      this.resolveModuleFromDirIfExists(dirname, moduleName, options);
     if (module) return module;
 
     // 5. Throw an error if the module could not be found. `resolve.sync` only
