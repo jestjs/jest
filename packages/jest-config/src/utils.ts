@@ -231,7 +231,7 @@ export const getSequencer = (
   resolveWithPrefix(resolver, {
     filePath,
     humanOptionName: 'Jest Sequencer',
-    optionName: 'sequencer',
+    optionName: 'testSequencer',
     prefix: 'jest-sequencer-',
     rootDir,
   });
