@@ -102,11 +102,13 @@ describe('Test Retries', () => {
       ],
     };
 
-    runJest('test-retries', [
-      '--config',
-      JSON.stringify(reporterConfig),
-      'beforeAllFailure.test.js',
-    ]);
+    try {
+      runJest('test-retries', [
+        '--config',
+        JSON.stringify(reporterConfig),
+        'beforeAllFailure.test.js',
+      ]);
+    } catch (err) {}
 
     const testOutput = fs.readFileSync(outputFilePath, 'utf8');
 
