@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const fs = require('fs');
+const Sequencer = require('@jest/test-sequencer').default;
 const path = require('path');
-const {getCacheFilePath} = require('../../packages/jest-haste-map/build');
 
 const priorityOrder = [
   path.resolve('./d.test.js'),
@@ -15,40 +14,8 @@ const priorityOrder = [
   path.resolve('./c.test.js'),
 ];
 const FAIL = 0;
-const SUCCESS = 1;
 
-class TestSequencer {
-  constructor() {
-    this._cache = new Map();
-  }
-  _getCachePath(context) {
-    const {config} = context;
-    return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
-  }
-
-  _getCache(test) {
-    const {context} = test;
-    if (!this._cache.has(context) && context.config.cache) {
-      const cachePath = this._getCachePath(context);
-      if (fs.existsSync(cachePath)) {
-        try {
-          this._cache.set(
-            context,
-            JSON.parse(fs.readFileSync(cachePath, 'utf8'))
-          );
-        } catch (e) {}
-      }
-    }
-
-    let cache = this._cache.get(context);
-    if (!cache) {
-      cache = {};
-      this._cache.set(context, cache);
-    }
-
-    return cache;
-  }
-
+class CustomSequencer extends Sequencer {
   sort(tests) {
     const stats = {};
     const fileSize = ({path, context: {hasteFS}}) =>
@@ -83,25 +50,6 @@ class TestSequencer {
       }
     });
   }
-
-  cacheResults(tests, results) {
-    const map = Object.create(null);
-    tests.forEach(test => (map[test.path] = test));
-    results.testResults.forEach(testResult => {
-      if (testResult && map[testResult.testFilePath] && !testResult.skipped) {
-        const cache = this._getCache(map[testResult.testFilePath]);
-        const perf = testResult.perfStats;
-        cache[testResult.testFilePath] = [
-          testResult.numFailingTests ? FAIL : SUCCESS,
-          perf.end - perf.start || 0,
-        ];
-      }
-    });
-
-    this._cache.forEach((cache, context) =>
-      fs.writeFileSync(this._getCachePath(context), JSON.stringify(cache))
-    );
-  }
 }
 
-module.exports = TestSequencer;
+module.exports = CustomSequencer;
