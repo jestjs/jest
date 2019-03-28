@@ -997,11 +997,9 @@ An example of such function can be found in our default [jasmine2 test runner pa
 
 Default: `@jest/test-sequencer`
 
-This option allows you to use a custom sequencer instead of Jest's default test runner.
+This option allows you to use a custom sequencer instead of Jest's default.
 
-You need to export a sequencer class and set path in the config
-
-example:
+Example:
 
 Sort test path alphabetically
 
@@ -1009,7 +1007,9 @@ Sort test path alphabetically
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
-  sort(tests) {
+  sort(tests: Array<Test>) {
+    // Test structure information
+    // https://github.com/facebook/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21
     const copyTests = Array.from(tests);
     return copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1));
   }
