@@ -41,10 +41,10 @@ const formatTestResult = (
     return {
       assertionResults,
       coverage: codeCoverageFormatter
-        ? (testResult.coverage, reporter)
+        ? codeCoverageFormatter(testResult.coverage, reporter)
         : testResult.coverage,
       endTime: testResult.perfStats.end,
-      message: testResult.failureMessage ? testResult.failureMessage : '',
+      message: testResult.failureMessage || '',
       name: testResult.testFilePath,
       startTime: testResult.perfStats.start,
       status: allTestsPassed ? 'passed' : 'failed',
