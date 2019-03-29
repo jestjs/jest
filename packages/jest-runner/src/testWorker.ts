@@ -8,7 +8,7 @@
 
 import {Config} from '@jest/types';
 import {SerializableError, TestResult} from '@jest/test-result';
-import HasteMap, {ModuleMap, SerializableModuleMap} from 'jest-haste-map';
+import HasteMap, {SerializableModuleMap} from 'jest-haste-map';
 import exit from 'exit';
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime from 'jest-runtime';
