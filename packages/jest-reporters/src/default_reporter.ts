@@ -183,7 +183,6 @@ export default class DefaultReporter extends BaseReporter {
             result.console,
           ),
       );
-      result.console = undefined;
     }
   }
 
