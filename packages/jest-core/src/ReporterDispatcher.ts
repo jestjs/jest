@@ -36,6 +36,9 @@ export default class ReporterDispatcher {
       reporter.onTestResult &&
         (await reporter.onTestResult(test, testResult, results));
     }
+
+    // Release memory if unused later.
+    testResult.console = undefined;
   }
 
   async onTestStart(test: Test) {

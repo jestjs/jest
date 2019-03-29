@@ -196,7 +196,7 @@ export const runAndTransformResultsToJestFormat = async ({
 
   dispatch({name: 'teardown'});
   return {
-    console: null,
+    console: undefined,
     displayName: config.displayName,
     failureMessage,
     leaks: false, // That's legacy code, just adding it so Flow is happy.
