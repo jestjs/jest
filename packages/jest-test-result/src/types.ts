@@ -126,7 +126,7 @@ export type TestResult = {
     unmatched: number;
     updated: number;
   };
-  sourceMaps: {
+  sourceMaps?: {
     [sourcePath: string]: string;
   };
   testExecError?: SerializableError;

@@ -53,29 +53,35 @@ export default class CoverageReporter extends BaseReporter {
     testResult: TestResult,
     _aggregatedResults: AggregatedResult,
   ) {
+    // Coverage and source maps are only appended to the test result for this
+    // handler. Delete when processed to preserve memory.
+
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
-      // Remove coverage data to free up some memory.
-      delete testResult.coverage;
+      testResult.coverage = undefined;
+    }
 
-      Object.keys(testResult.sourceMaps).forEach(sourcePath => {
+    const sourceMaps = testResult.sourceMaps;
+    if (sourceMaps) {
+      Object.keys(sourceMaps).forEach(sourcePath => {
         let inputSourceMap: RawSourceMap | undefined;
         try {
           const coverage: FileCoverage = this._coverageMap.fileCoverageFor(
             sourcePath,
           );
-          ({inputSourceMap} = coverage.toJSON() as any);
+          inputSourceMap = (coverage.toJSON() as any).inputSourceMap;
         } finally {
           if (inputSourceMap) {
             this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
           } else {
             this._sourceMapStore.registerURL(
               sourcePath,
-              testResult.sourceMaps[sourcePath],
+              sourceMaps[sourcePath],
             );
           }
         }
       });
+      testResult.sourceMaps = undefined;
     }
   }
 
