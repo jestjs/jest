@@ -47,6 +47,7 @@
 - `[jest-resolve]` Optimize internal cache lookup performance ([#8183](https://github.com/facebook/jest/pull/8183))
 - `[jest-core]` Dramatically improve watch mode performance ([#8201](https://github.com/facebook/jest/pull/8201))
 - `[jest-transform]` Cache regular expression instead of creating anew for every file in ScriptTransformer ([#8235](https://github.com/facebook/jest/pull/8235))
+- `[jest-runtime]` Use `Map` instead of `Object` for module registry ([#8232](https://github.com/facebook/jest/pull/8232))
 
 ## 24.5.0
 
