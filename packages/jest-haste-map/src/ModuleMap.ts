@@ -12,7 +12,6 @@ import {
   ModuleMetaData,
   RawModuleMap,
   ModuleMapData,
-  DuplicatesIndex,
   MockData,
 } from './types';
 
@@ -25,7 +24,7 @@ const EMPTY_MAP = new Map();
 type ValueType<T> = T extends Map<string, infer V> ? V : never;
 
 export type SerializableModuleMap = {
-  duplicates: ReadonlyArray<[string, ValueType<DuplicatesIndex>]>;
+  duplicates: ReadonlyArray<[string, [string, [string, [string, number]]]]>;
   map: ReadonlyArray<[string, ValueType<ModuleMapData>]>;
   mocks: ReadonlyArray<[string, ValueType<MockData>]>;
   rootDir: Config.Path;
@@ -35,6 +34,30 @@ export default class ModuleMap {
   static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;
   private readonly _raw: RawModuleMap;
   private json: SerializableModuleMap | undefined;
+
+  private static mapToArrayRecursive(
+    map: Map<any, any>,
+  ): Array<[string, unknown]> {
+    let arr = Array.from(map);
+    if (arr[0] && arr[0][1] instanceof Map) {
+      arr = arr.map(
+        el => [el[0], this.mapToArrayRecursive(el[1])] as [string, unknown],
+      );
+    }
+    return arr;
+  }
+
+  private static mapFromArrayRecursive(
+    arr: ReadonlyArray<[string, unknown]>,
+  ): Map<string, unknown> {
+    if (arr[0] && Array.isArray(arr[1])) {
+      arr = arr.map(el => [
+        el[0],
+        this.mapFromArrayRecursive(el[1] as Array<[string, unknown]>),
+      ]) as Array<[string, unknown]>;
+    }
+    return new Map(arr);
+  }
 
   constructor(raw: RawModuleMap) {
     this._raw = raw;
@@ -87,7 +110,9 @@ export default class ModuleMap {
   toJSON(): SerializableModuleMap {
     if (!this.json) {
       this.json = {
-        duplicates: Array.from(this._raw.duplicates),
+        duplicates: ModuleMap.mapToArrayRecursive(
+          this._raw.duplicates,
+        ) as SerializableModuleMap['duplicates'],
         map: Array.from(this._raw.map),
         mocks: Array.from(this._raw.mocks),
         rootDir: this._raw.rootDir,
@@ -98,7 +123,9 @@ export default class ModuleMap {
 
   static fromJSON(serializableModuleMap: SerializableModuleMap) {
     return new ModuleMap({
-      duplicates: new Map(serializableModuleMap.duplicates),
+      duplicates: ModuleMap.mapFromArrayRecursive(
+        serializableModuleMap.duplicates,
+      ) as RawModuleMap['duplicates'],
       map: new Map(serializableModuleMap.map),
       mocks: new Map(serializableModuleMap.mocks),
       rootDir: serializableModuleMap.rootDir,
