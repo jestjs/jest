@@ -9,9 +9,11 @@ import {AggregatedResult} from '@jest/test-result';
 
 type CoverageMap = AggregatedResult['coverageMap'];
 
-function summarize(coverageMap: CoverageMap): CoverageMap {
+function summarize(
+  coverageMap: CoverageMap,
+): undefined | {[key: string]: {[key: string]: unknown}} {
   if (!coverageMap) {
-    return coverageMap;
+    return undefined;
   }
 
   const summaries = Object.create(null);
@@ -32,7 +34,10 @@ function summarize(coverageMap: CoverageMap): CoverageMap {
       }
     }
 
-    summaries[file] = covered.join('');
+    summaries[file] = {
+      path: file,
+      covered: covered.join(''),
+    };
   });
 
   return summaries;
