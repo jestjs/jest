@@ -26,3 +26,4 @@ export {
   Suite,
   TestResult,
 } from './types';
+export {CoverageMap} from 'istanbul-lib-coverage';

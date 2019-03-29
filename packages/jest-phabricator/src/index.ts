@@ -5,17 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AggregatedResult} from '@jest/test-result';
-
-type CoverageMap = AggregatedResult['coverageMap'];
+import {AggregatedResult, CoverageMap} from '@jest/test-result';
 
 function summarize(
   coverageMap: CoverageMap,
-): undefined | {[key: string]: {[key: string]: unknown}} {
-  if (!coverageMap) {
-    return undefined;
-  }
-
+): {[key: string]: {[key: string]: unknown}} {
   const summaries = Object.create(null);
 
   coverageMap.files().forEach(file => {
@@ -35,7 +29,6 @@ function summarize(
     }
 
     summaries[file] = {
-      covered: covered.join(''),
       path: file,
     };
   });
@@ -44,5 +37,11 @@ function summarize(
 }
 
 export = function(results: AggregatedResult): AggregatedResult {
-  return {...results, coverageMap: summarize(results.coverageMap)};
+  return {
+    ...results,
+    coverageMap:
+      results.coverageMap && typeof results.coverageMap.toJSON === 'function'
+        ? summarize(results.coverageMap as CoverageMap)
+        : results.coverageMap,
+  };
 };
