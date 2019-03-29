@@ -45,7 +45,6 @@ export type DefaultOptions = {
       }
     | null
     | undefined;
-  cwd: Path;
   dependencyExtractor: string | null | undefined;
   errorOnDeprecated: boolean;
   expand: boolean;
@@ -106,6 +105,13 @@ export type DefaultOptions = {
   watchman: boolean;
 };
 
+export type DisplayName =
+  | string
+  | {
+      name: string;
+      color: DisplayNameColor;
+    };
+
 export type InitialOptions = {
   automock?: boolean;
   bail?: boolean | number;
@@ -131,7 +137,7 @@ export type InitialOptions = {
   dependencyExtractor?: string;
   detectLeaks?: boolean;
   detectOpenHandles?: boolean;
-  displayName?: string;
+  displayName?: DisplayName;
   expand?: boolean;
   extraGlobals?: Array<string>;
   filter?: Path;
@@ -225,6 +231,47 @@ type NotifyMode =
   | 'change'
   | 'success-change'
   | 'failure-change';
+
+/**
+ * Hard coding this until
+ * https://github.com/chalk/chalk/pull/336
+ * gets merged
+ */
+type DisplayNameColor =
+  | 'black'
+  | 'red'
+  | 'green'
+  | 'yellow'
+  | 'blue'
+  | 'magenta'
+  | 'cyan'
+  | 'white'
+  | 'gray'
+  | 'grey'
+  | 'blackBright'
+  | 'redBright'
+  | 'greenBright'
+  | 'yellowBright'
+  | 'blueBright'
+  | 'magentaBright'
+  | 'cyanBright'
+  | 'whiteBright'
+  | 'bgBlack'
+  | 'bgRed'
+  | 'bgGreen'
+  | 'bgYellow'
+  | 'bgBlue'
+  | 'bgMagenta'
+  | 'bgCyan'
+  | 'bgWhite'
+  | 'bgBlackBright'
+  | 'bgRedBright'
+  | 'bgGreenBright'
+  | 'bgYellowBright'
+  | 'bgBlueBright'
+  | 'bgMagentaBright'
+  | 'bgCyanBright'
+  | 'bgWhiteBright';
 
 type CoverageThreshold = {
   [path: string]: {
@@ -322,7 +369,7 @@ export type ProjectConfig = {
   dependencyExtractor?: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  displayName: string | null | undefined;
+  displayName?: DisplayName;
   errorOnDeprecated: boolean;
   extraGlobals: Array<keyof NodeJS.Global>;
   filter: Path | null | undefined;

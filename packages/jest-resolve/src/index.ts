@@ -7,7 +7,7 @@
 
 import path from 'path';
 import {Config} from '@jest/types';
-import {ModuleMap} from 'jest-haste-map';
+import {ModuleMap} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 import {sync as realpath} from 'realpath-native';
 import chalk from 'chalk';
 import nodeModulesPaths from './nodeModulesPaths';
@@ -83,8 +83,7 @@ class Resolver {
     options: FindNodeModuleConfig,
   ): Config.Path | null {
     const resolver = options.resolver
-      ? /* $FlowFixMe */
-        require(options.resolver)
+      ? require(options.resolver)
       : defaultResolver;
     const paths = options.paths;
 
@@ -196,11 +195,9 @@ class Resolver {
     options?: Resolver.ResolveModuleConfig,
   ): Config.Path {
     const dirname = path.dirname(from);
-    const module = this.resolveModuleFromDirIfExists(
-      dirname,
-      moduleName,
-      options,
-    );
+    const module =
+      this.resolveStubModuleName(from, moduleName) ||
+      this.resolveModuleFromDirIfExists(dirname, moduleName, options);
     if (module) return module;
 
     // 5. Throw an error if the module could not be found. `resolve.sync` only

@@ -92,4 +92,35 @@ describe('Test Retries', () => {
     expect(jsonResult.numPendingTests).toBe(0);
     expect(jsonResult.testResults[0].testResults[0].invocations).toBe(1);
   });
+
+  it('tests are not retried if beforeAll hook failure occurs', () => {
+    let jsonResult;
+
+    const reporterConfig = {
+      reporters: [
+        ['<rootDir>/reporters/RetryReporter.js', {output: outputFilePath}],
+      ],
+    };
+
+    runJest('test-retries', [
+      '--config',
+      JSON.stringify(reporterConfig),
+      'beforeAllFailure.test.js',
+    ]);
+
+    const testOutput = fs.readFileSync(outputFilePath, 'utf8');
+
+    try {
+      jsonResult = JSON.parse(testOutput);
+    } catch (err) {
+      throw new Error(
+        `Can't parse the JSON result from ${outputFileName}, ${err.toString()}`,
+      );
+    }
+
+    expect(jsonResult.numPassedTests).toBe(0);
+    expect(jsonResult.numFailedTests).toBe(1);
+    expect(jsonResult.numPendingTests).toBe(0);
+    expect(jsonResult.testResults[0].testResults[0].invocations).toBe(1);
+  });
 });
