@@ -172,8 +172,7 @@ export default class DefaultReporter extends BaseReporter {
     result: TestResult,
   ) {
     this.log(getResultHeader(result, this._globalConfig, config));
-    const consoleBuffer = result.console;
-    if (consoleBuffer && consoleBuffer.length) {
+    if (result.console) {
       this.log(
         '  ' +
           TITLE_BULLET +
@@ -181,9 +180,10 @@ export default class DefaultReporter extends BaseReporter {
           getConsoleOutput(
             config.cwd,
             !!this._globalConfig.verbose,
-            consoleBuffer,
+            result.console,
           ),
       );
+      result.console = undefined;
     }
   }
 
