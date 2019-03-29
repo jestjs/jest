@@ -253,6 +253,7 @@ async function runTestInternal(
 
     result.perfStats = {end: Date.now(), start};
     result.testFilePath = path;
+    result.console = testConsole.getBuffer();
     result.skipped = testCount === result.numPendingTests;
     result.displayName = config.displayName;
 
