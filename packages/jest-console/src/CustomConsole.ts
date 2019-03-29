@@ -141,6 +141,6 @@ export default class CustomConsole extends Console {
   }
 
   getBuffer() {
-    return null;
+    return undefined;
   }
 }

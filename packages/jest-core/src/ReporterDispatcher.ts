@@ -40,6 +40,7 @@ export default class ReporterDispatcher {
     // Release memory if unused later.
     testResult.sourceMaps = undefined;
     testResult.coverage = undefined;
+    testResult.console = undefined;
   }
 
   async onTestStart(test: Test) {
