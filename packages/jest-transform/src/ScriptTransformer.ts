@@ -31,7 +31,8 @@ import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
 
 type ProjectCache = {
   configString: string;
-  ignorePatternsRegExp: RegExp | null;
+  ignorePatternsRegExp?: RegExp;
+  transformRegExp?: Array<[RegExp, string]>;
   transformedFiles: Map<string, TransformResult>;
 };
 
@@ -64,7 +65,8 @@ export default class ScriptTransformer {
     if (!projectCache) {
       projectCache = {
         configString: stableStringify(this._config),
-        ignorePatternsRegExp: calcIgnorePatternRegexp(this._config),
+        ignorePatternsRegExp: calcIgnorePatternRegExp(this._config),
+        transformRegExp: calcTransformRegExp(this._config),
         transformedFiles: new Map(),
       };
 
@@ -131,12 +133,18 @@ export default class ScriptTransformer {
   }
 
   private _getTransformPath(filename: Config.Path) {
-    for (let i = 0; i < this._config.transform.length; i++) {
-      if (new RegExp(this._config.transform[i][0]).test(filename)) {
-        return this._config.transform[i][1];
+    const transformRegExp = this._cache.transformRegExp;
+    if (!transformRegExp) {
+      return undefined;
+    }
+
+    for (const [regExp, transform] of transformRegExp) {
+      if (regExp.test(filename)) {
+        return transform;
       }
     }
-    return null;
+
+    return undefined;
   }
 
   private _getTransformer(filename: Config.Path) {
@@ -371,21 +379,19 @@ export default class ScriptTransformer {
     options: Options,
     fileSource?: string,
   ): TransformResult {
-    let scriptCacheKey = null;
+    let scriptCacheKey = undefined;
     let instrument = false;
-    let result: TransformResult | undefined;
 
     if (!options.isCoreModule) {
       instrument = shouldInstrument(filename, options, this._config);
       scriptCacheKey = getScriptCacheKey(filename, instrument);
-      result = this._cache.transformedFiles.get(scriptCacheKey);
+      const result = this._cache.transformedFiles.get(scriptCacheKey);
+      if (result) {
+        return result;
+      }
     }
 
-    if (result) {
-      return result;
-    }
-
-    result = this._transformAndBuildScript(
+    const result = this._transformAndBuildScript(
       filename,
       options,
       instrument,
@@ -539,17 +545,31 @@ const getScriptCacheKey = (filename: Config.Path, instrument: boolean) => {
   return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };
 
-const calcIgnorePatternRegexp = (
-  config: Config.ProjectConfig,
-): RegExp | null => {
+const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
   if (
     !config.transformIgnorePatterns ||
     config.transformIgnorePatterns.length === 0
   ) {
-    return null;
+    return;
   }
 
   return new RegExp(config.transformIgnorePatterns.join('|'));
+};
+
+const calcTransformRegExp = (config: Config.ProjectConfig) => {
+  if (!config.transform.length) {
+    return;
+  }
+
+  const transformRegexp: Array<[RegExp, string]> = [];
+  for (let i = 0; i < config.transform.length; i++) {
+    transformRegexp.push([
+      new RegExp(config.transform[i][0]),
+      config.transform[i][1],
+    ]);
+  }
+
+  return transformRegexp;
 };
 
 const wrap = (content: string, ...extras: Array<string>) => {
