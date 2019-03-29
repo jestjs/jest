@@ -64,8 +64,7 @@ const getResolver = (config: Config.ProjectConfig) => {
 export function setup(setupData: {
   serializableResolvers: Array<SerializableResolver>;
 }) {
-  // Setup data is used in watch mode to pass all module maps that will be used
-  // during the test runs.
+  // Module maps that will be needed for the test runs are passed.
   for (const {
     config,
     serializableModuleMap,
