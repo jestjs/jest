@@ -53,12 +53,8 @@ export default class CoverageReporter extends BaseReporter {
     testResult: TestResult,
     _aggregatedResults: AggregatedResult,
   ) {
-    // Coverage and source maps are only appended to the test result for this
-    // handler. Delete when processed to preserve memory.
-
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
-      testResult.coverage = undefined;
     }
 
     const sourceMaps = testResult.sourceMaps;
@@ -81,7 +77,6 @@ export default class CoverageReporter extends BaseReporter {
           }
         }
       });
-      testResult.sourceMaps = undefined;
     }
   }
 
