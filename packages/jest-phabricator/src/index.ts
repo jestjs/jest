@@ -35,8 +35,8 @@ function summarize(
     }
 
     summaries[file] = {
-      path: file,
       covered: covered.join(''),
+      path: file,
     };
   });
 

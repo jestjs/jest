@@ -150,8 +150,8 @@ const processResults = async (
       JSON.stringify({
         runResults: {
           ...runResults,
-          testResults: undefined,
           coverageMap: undefined,
+          testResults: undefined,
         },
       }),
     );
