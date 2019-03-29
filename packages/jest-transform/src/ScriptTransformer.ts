@@ -138,9 +138,9 @@ export default class ScriptTransformer {
       return undefined;
     }
 
-    for (const [regExp, transform] of transformRegExp) {
-      if (regExp.test(filename)) {
-        return transform;
+    for (let i = 0; i < transformRegExp.length; i++) {
+      if (transformRegExp[i][0].test(filename)) {
+        return transformRegExp[i][1];
       }
     }
 
