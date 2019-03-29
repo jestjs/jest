@@ -46,6 +46,7 @@
 - `[jest-core]` Improve performance of SearchSource.findMatchingTests by 15% ([#8184](https://github.com/facebook/jest/pull/8184))
 - `[jest-resolve]` Optimize internal cache lookup performance ([#8183](https://github.com/facebook/jest/pull/8183))
 - `[jest-core]` Dramatically improve watch mode performance ([#8201](https://github.com/facebook/jest/pull/8201))
+- `[jest-core]` Fix memory leak of source map info and minor performance improvements ([#8234](https://github.com/facebook/jest/pull/8234))
 - `[jest-console]` Fix memory leak by releasing console output reference when printed to stdout ([#8233](https://github.com/facebook/jest/pull/8233))
 - `[jest-runtime]` Use `Map` instead of `Object` for module registry ([#8232](https://github.com/facebook/jest/pull/8232))
 
