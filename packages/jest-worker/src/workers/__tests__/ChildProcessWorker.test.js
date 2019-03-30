@@ -117,10 +117,10 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
   worker.send(request, onProcessStart, onProcessEnd);
 
   // We fail four times (initial + three retries).
-  forkInterface.emit('exit');
-  forkInterface.emit('exit');
-  forkInterface.emit('exit');
-  forkInterface.emit('exit');
+  forkInterface.emit('exit', 1);
+  forkInterface.emit('exit', 1);
+  forkInterface.emit('exit', 1);
+  forkInterface.emit('exit', 1);
 
   expect(childProcess.fork).toHaveBeenCalledTimes(5);
   expect(onProcessStart).toBeCalledWith(worker);
@@ -142,7 +142,7 @@ it('provides stdout and stderr from the child processes', async () => {
 
   forkInterface.stdout.end('Hello ', {encoding: 'utf8'});
   forkInterface.stderr.end('Jest ', {encoding: 'utf8'});
-  forkInterface.emit('exit');
+  forkInterface.emit('exit', 1);
   forkInterface.stdout.end('World!', {encoding: 'utf8'});
   forkInterface.stderr.end('Workers!', {encoding: 'utf8'});
   forkInterface.emit('exit', 0);
@@ -182,7 +182,7 @@ it('resends the task to the child process after a retry', () => {
   expect(forkInterface.send.mock.calls[1][0]).toEqual(request);
 
   const previousForkInterface = forkInterface;
-  forkInterface.emit('exit');
+  forkInterface.emit('exit', 1);
 
   expect(forkInterface).not.toBe(previousForkInterface);
 
