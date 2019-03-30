@@ -1723,10 +1723,10 @@
   resolved "https://registry.yarnpkg.com/@types/is-ci/-/is-ci-1.1.0.tgz#583c5fbfcc461be9971106b9558930d67df49227"
   integrity sha512-NbyqP5D4hwl5UWnnW4Cz0gIRjhecgx/9OApcCIpp4+tjqjROGf/NBcKKDfbI3YFBTTkD3JBshiNSv5V7VoVJJg==
 
-"@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-1.1.0.tgz#2cc2ca41051498382b43157c8227fea60363f94a"
-  integrity sha512-ohkhb9LehJy+PA40rDtGAji61NCgdtKLAlFoYp4cnuuQEswwdK3vz9SOIkkyc3wrk8dzjphQApNs56yyXLStaQ==
+"@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.0.tgz#1eb8c033e98cf4e1a4cedcaf8bcafe8cb7591e85"
+  integrity sha512-eAtOAFZefEnfJiRFQBGw1eYqa5GTLCZ1y86N0XSI/D6EB+E8z6VPV/UL7Gi5UEclFqoQk+6NRqEDsfmDLXn8sg==
 
 "@types/istanbul-lib-instrument@^1.7.2":
   version "1.7.2"
@@ -1800,6 +1800,13 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@types/natural-compare/-/natural-compare-1.4.0.tgz#b3c54f7edc339758d573c5dcac7808c58cf8c31e"
   integrity sha512-bNtBj6AF1F90jp54KRPOrYfilGNfPr2kpaUN7rMJjauAtfGBXzT/T/REZN6jb4qUs9FTxU37kir3Nrn5WsTUDw==
+
+"@types/node-notifier@^5.4.0":
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/@types/node-notifier/-/node-notifier-5.4.0.tgz#4e66c85eb41cce8387b4cd9c6c67852be41a99db"
+  integrity sha512-M1XvCG6Rwej6+W0+kWultE46YS7erOy+W7suRmXtKwLGT3ytj6YEe9lqo47nRfL1xILzg9xJpKeNczIsWR8ymw==
+  dependencies:
+    "@types/node" "*"
 
 "@types/node@*":
   version "11.10.4"
@@ -1885,10 +1892,10 @@
   resolved "https://registry.yarnpkg.com/@types/slash/-/slash-2.0.0.tgz#2c37c08f5d2e0dad20aed808de79459e0a35ef9d"
   integrity sha512-LTVXHQ+ij5F973ulc7aJEFteAtUvCflhzI3oOdV8VhWUmjy4na4LnK2bZaH8hDBq9eFX+Nb9DT3HVctqLoTy+g==
 
-"@types/source-map-support@^0.4.1":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@types/source-map-support/-/source-map-support-0.4.2.tgz#5b9f4502183430511bb90e84a6e4bf4214e55a67"
-  integrity sha512-GbGWx39O8NdUHSChdrU0XeigBAgu1Teg3llwE0slSVcH2qISaQT70ftAiH+h4HIt3VIObFU34PSpXIKJuXCybQ==
+"@types/source-map-support@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@types/source-map-support/-/source-map-support-0.5.0.tgz#40f47e68bc0bdf54d19dddad4550f521cdb9968c"
+  integrity sha512-OrnAz5K5dXDgMdeRRoXIjDAvkodQ9ESvVJCyzrhzUJKmCkXgmYx/KLUBcVFe5eS4FiohfcY7YPxsdkmSwJz9wA==
   dependencies:
     "@types/node" "*"
 

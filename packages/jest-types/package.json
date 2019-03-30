@@ -13,7 +13,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@types/istanbul-lib-coverage": "^1.1.0",
+    "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/yargs": "^12.0.9"
   },
   "publishConfig": {

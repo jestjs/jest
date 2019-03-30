@@ -392,8 +392,7 @@ const formatStack = (thrown: Thrown | null) =>
   thrown === null || !thrown.isError
     ? ''
     : formatStackTrace(
-        // @ts-ignore
-        separateMessageFromStack(thrown.value.stack).stack,
+        separateMessageFromStack(thrown.value.stack!).stack,
         {
           rootDir: process.cwd(),
           testMatch: [],
