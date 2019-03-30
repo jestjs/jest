@@ -111,9 +111,36 @@ export default class SearchSource {
 
     const testCases = Array.from(this._testPathCases); // clone
     if (testPathPattern) {
-      const regex = testPathPatternToRegExp(testPathPattern);
+      let amendedTestPathPattern = testPathPattern;
+
+      const relativePathRegex = new RegExp(`[\.]+${path.sep}`);
+      if (relativePathRegex.test(amendedTestPathPattern)) {
+        /**
+         * This handles the scenario where the test path pattern passed is relative
+         * We amend the regular expression to make it optional so that the
+         * test pattern regex will match
+         *
+         * E.g `jest ./hello`
+         */
+        amendedTestPathPattern = amendedTestPathPattern.replace(
+          relativePathRegex,
+          relativePathMatch => `(${relativePathMatch})?`,
+        );
+      }
+      const regex = testPathPatternToRegExp(amendedTestPathPattern);
       testCases.push({
-        isMatch: (path: Config.Path) => regex.test(path),
+        isMatch: (path: Config.Path) => {
+          /**
+           * This prevents tests from being run when the test pattern passed
+           * matches any part of the the absolute path
+           *
+           * E.g. running `jest Users` will match all tests in the project
+           * directory on macos since /Users is part of the absolute path
+           * of all test files
+           */
+          const replacedPath = path.replace(process.cwd(), '');
+          return regex.test(replacedPath);
+        },
         stat: 'testPathPattern',
       });
       data.stats.testPathPattern = 0;
