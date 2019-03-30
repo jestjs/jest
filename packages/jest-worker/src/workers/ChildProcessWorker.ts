@@ -198,7 +198,8 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _onExit(exitCode: number) {
     if (
       exitCode !== 0 &&
-      exitCode <= 128 // importantly, do not reinitialize for 137 (SIGKILL) or 143 (SIGTERM)
+      exitCode !== 137 && // SIGKILL
+      exitCode !== 143 // SIGTERM
     ) {
       this.initialize();
 
