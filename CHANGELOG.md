@@ -29,6 +29,7 @@
 - `[jest-snapshot]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
 - `[jest-resolve]` Fix requireActual with moduleNameMapper ([#8210](https://github.com/facebook/jest/pull/8210))
 - `[jest-haste-map]` Fix haste map duplicate detection in watch mode ([#8237](https://github.com/facebook/jest/pull/8237))
+- `[@jest/core]` Fix all tests being run when testPathPattern matches any part of the absolute path to the test file ([#8243](https://github.com/facebook/jest/pull/8243))
 
 ### Chore & Maintenance
 
