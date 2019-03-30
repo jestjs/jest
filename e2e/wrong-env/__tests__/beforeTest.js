@@ -12,4 +12,6 @@
 
 const div = document.createElement('div');
 
+console.log(div);
+
 test('stub', () => expect(1).toBe(1));

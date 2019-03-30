@@ -82,7 +82,7 @@ exports[`Wrong globals for environment print useful error when it explodes durin
     > 13 | const div = document.createElement('div');
          |             ^
       14 |
-      15 | test('stub', () => expect(1).toBe(1));
+      15 | console.log(div);
       16 |
 
       at Object.<anonymous> (__tests__/beforeTest.js:13:13)"
