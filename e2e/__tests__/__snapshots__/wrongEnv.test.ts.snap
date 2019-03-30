@@ -7,7 +7,8 @@ exports[`Wrong globals for environment print useful error for document 1`] = `
 
   ● use document
 
-    Jest: You should use a jsdom test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    Consider using the \\"jsdom\\" test environment.
 
     ReferenceError: document is not defined
 
@@ -28,7 +29,8 @@ exports[`Wrong globals for environment print useful error for unref 1`] = `
 
   ● use unref
 
-    Jest: You should use a node test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    Consider using the \\"node\\" test environment.
 
     TypeError: setTimeout(...).unref is not a function
 
@@ -50,7 +52,8 @@ exports[`Wrong globals for environment print useful error for window 1`] = `
 
   ● use window
 
-    Jest: You should use a jsdom test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    Consider using the \\"jsdom\\" test environment.
 
     ReferenceError: window is not defined
 
@@ -69,7 +72,8 @@ exports[`Wrong globals for environment print useful error when it explodes durin
 "FAIL __tests__/beforeTest.js
   ● Test suite failed to run
 
-    Jest: You should use a jsdom test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    Consider using the \\"jsdom\\" test environment.
 
     ReferenceError: document is not defined
 

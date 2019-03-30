@@ -107,10 +107,10 @@ function checkForCommonEnvironmentErrors(error: string) {
 
 function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
   return (
-    chalk.red(
-      chalk.bold(
-        `Jest: You should use a ${env} test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.\n\n`,
-      ),
+    chalk.bold.red(
+      `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
+        'https://jestjs.io/docs/en/configuration#testenvironment-string',
+      )}.\nConsider using the "${env}" test environment.\n\n`,
     ) + error
   );
 }
