@@ -47,7 +47,7 @@ test("--listTests doesn't find any tests when test path is part of absolute path
   });
 
   // ignore first seperator
-  const [,, testPath] = DIR.split(path.sep);
+  const [, , testPath] = DIR.split(path.sep);
 
   const {stdout} = runJest(DIR, ['--listTests', testPath]);
   expect(stdout.split('\n')).toHaveLength(1);
