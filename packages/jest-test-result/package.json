@@ -12,7 +12,7 @@
   "dependencies": {
     "@jest/console": "^24.3.0",
     "@jest/types": "^24.5.0",
-    "@types/istanbul-lib-coverage": "^1.1.0"
+    "@types/istanbul-lib-coverage": "^2.0.0"
   },
   "engines": {
     "node": ">= 6"

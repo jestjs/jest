@@ -280,7 +280,6 @@ async function runTestInternal(
   } finally {
     await environment.teardown();
 
-    // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33351
     sourcemapSupport.resetRetrieveHandlers();
   }
 }

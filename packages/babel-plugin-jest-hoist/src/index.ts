@@ -161,6 +161,7 @@ export = () => {
     }
 
     const callee = expr.get('callee');
+    const expressionArguments = expr.get('arguments');
     // TODO: avoid type casts - the types can be arrays (is it possible to ignore that without casting?)
     const object = callee.get('object') as NodePath;
     const property = callee.get('property') as NodePath;
@@ -169,7 +170,7 @@ export = () => {
       FUNCTIONS[property.node.name] &&
       (object.isIdentifier(JEST_GLOBAL) ||
         (callee.isMemberExpression() && shouldHoistExpression(object))) &&
-      FUNCTIONS[property.node.name](expr.get('arguments'))
+      FUNCTIONS[property.node.name](expressionArguments)
     );
   };
 
