@@ -92,6 +92,29 @@ const getRenderedCallsite = (
 
 const blankStringRegexp = /^\s*$/;
 
+function checkForCommonEnvironmentErrors(error: string) {
+  if (
+    error.includes('ReferenceError: document is not defined') ||
+    error.includes('ReferenceError: window is not defined')
+  ) {
+    return warnAboutWrongTestEnvironment(error, 'jsdom');
+  } else if (error.includes('.unref is not a function')) {
+    return warnAboutWrongTestEnvironment(error, 'node');
+  }
+
+  return error;
+}
+
+function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
+  return (
+    chalk.red(
+      chalk.bold(
+        `Jest: You should use a ${env} test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.\n\n`,
+      ),
+    ) + error
+  );
+}
+
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
@@ -125,6 +148,8 @@ export const formatExecError = (
     // Often stack trace already contains the duplicate of the message
     message = separated.message;
   }
+
+  message = checkForCommonEnvironmentErrors(message);
 
   message = indentAllLines(message, MESSAGE_INDENT);
 
@@ -285,19 +310,21 @@ export const formatStackTrace = (
   return `${renderedCallsite}\n${stacktrace}`;
 };
 
+type FailedResults = Array<{
+  content: string;
+  result: AssertionResult;
+}>;
+
 export const formatResultsErrors = (
   testResults: Array<AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: Path,
 ): string | null => {
-  type FailedResults = Array<{
-    content: string;
-    result: AssertionResult;
-  }>;
-
   const failedResults: FailedResults = testResults.reduce((errors, result) => {
-    result.failureMessages.forEach(content => errors.push({content, result}));
+    result.failureMessages
+      .map(checkForCommonEnvironmentErrors)
+      .forEach(content => errors.push({content, result}));
     return errors;
   }, [] as FailedResults);
 
