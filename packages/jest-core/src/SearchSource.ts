@@ -115,7 +115,6 @@ export default class SearchSource {
 
       const pathSeperator = process.platform === 'win32' ? '\\\\' : path.sep;
       const relativePathRegex = new RegExp(`[\.]+${pathSeperator}`, 'g');
-      console.log(amendedTestPathPattern);
       if (relativePathRegex.test(amendedTestPathPattern)) {
         /**
          * This handles the scenario where the test path pattern passed is relative
