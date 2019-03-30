@@ -34,6 +34,26 @@ test("--listTests doesn't duplicate the test files", () => {
   expect(stdout).toMatch('inBothProjectsTest.js');
 });
 
+test("--listTests doesn't find any tests when test path is part of absolute path", () => {
+  writeFiles(DIR, {
+    './backend/__tests__/backend.test.js': `test('test', () => {});`,
+    './frontend/__tests__/frontend.test.js': `test('test', () => {});`,
+    '.watchmanconfig': '',
+    '/project1.js': `module.exports = {rootDir: './backend', displayName: 'BACKEND'}`,
+    '/project2.js': `module.exports = {rootDir: './frontend', displayName: 'BACKEND'}`,
+    'package.json': JSON.stringify({
+      jest: {projects: ['<rootDir>/project1.js', '<rootDir>/project2.js']},
+    }),
+  });
+
+  // ignore first seperator
+  const [, testPath] = DIR.split(path.sep);
+
+  const {stdout} = runJest(DIR, ['--listTests', testPath]);
+  expect(stdout.split('\n')).toHaveLength(1);
+  expect(stdout).toMatch('');
+});
+
 test('can pass projects or global config', () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
