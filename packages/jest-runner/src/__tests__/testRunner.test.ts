@@ -15,7 +15,7 @@ jest.mock('jest-worker', () =>
   jest.fn(
     worker =>
       (mockWorkerFarm = {
-        end: jest.fn(),
+        end: jest.fn().mockResolvedValue({forceExited: false}),
         getStderr: jest.fn(),
         getStdout: jest.fn(),
         worker: jest.fn((data, callback) => require(worker)(data, callback)),
