@@ -19,10 +19,6 @@
     "jest-resolve": "^24.5.0",
     "jest-runtime": "^24.5.0"
   },
-  "peerDependencies": {
-    "jest-haste-map": "^24.0.0",
-    "jest-resolve": "^24.1.0"
-  },
   "engines": {
     "node": ">= 6"
   },

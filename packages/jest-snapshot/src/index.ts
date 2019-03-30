@@ -7,7 +7,7 @@
 
 import fs from 'fs';
 import {Config} from '@jest/types';
-import {FS as HasteFS} from 'jest-haste-map';
+import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 import {MatcherState} from 'expect';
 
 import diff from 'jest-diff';

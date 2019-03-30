@@ -299,7 +299,7 @@ Lets you specify a custom test runner.
 
 ### `--testSequencer=<path>`
 
-Lets you specify a custom test sequencer
+Lets you specify a custom test sequencer. Please refer to the documentation of the corresponding configuration property for details.
 
 ### `--updateSnapshot`
 

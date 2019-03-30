@@ -18,7 +18,6 @@ import {
 
 const canUseWorkerThreads = () => {
   try {
-    // $FlowFixMe: Flow doesn't know about experimental APIs
     require('worker_threads');
     return true;
   } catch (_) {

@@ -20,9 +20,6 @@
     "@types/browser-resolve": "^0.0.5",
     "jest-haste-map": "^24.5.0"
   },
-  "peerDependencies": {
-    "jest-haste-map": "^24.0.0"
-  },
   "engines": {
     "node": ">= 6"
   },

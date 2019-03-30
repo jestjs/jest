@@ -9,11 +9,13 @@
 - `[jest-runner]` Support default exports for test environments ([#8163](https://github.com/facebook/jest/pull/8163))
 - `[pretty-format]` Support React.Suspense ([#8180](https://github.com/facebook/jest/pull/8180))
 - `[jest-snapshot]` Indent inline snapshots ([#8198](https://github.com/facebook/jest/pull/8198))
+- `[jest-config]` Support colors in `displayName` configuration ([#8025](https://github.com/facebook/jest/pull/8025))
 - `[@jest/core, @jest/test-sequencer]` Move `testSequencer` to individual package `@jest/test-sequencer` ([#8223](https://github.com/facebook/jest/pull/8223))
 - `[jest-config, jest-cli]` Add option `testSequencer` allow user use custom sequencer. ([#8223](https://github.com/facebook/jest/pull/8223))
 
 ### Fixes
 
+- `[jest-circus]` Fix test retries with beforeAll/beforeEach failures ([#8227](https://github.com/facebook/jest/pull/8227))
 - `[expect]` Fix circular references in iterable equality ([#8160](https://github.com/facebook/jest/pull/8160))
 - `[jest-changed-files]` Change method of obtaining git root ([#8052](https://github.com/facebook/jest/pull/8052))
 - `[jest-each]` Fix test function type ([#8145](https://github.com/facebook/jest/pull/8145))
@@ -22,6 +24,12 @@
 - `[pretty-format]` Print `BigInt` as a readable number instead of `{}` ([#8138](https://github.com/facebook/jest/pull/8138))
 - `[jest-core]` Fix ability to transform dependencies required from globalSetup script [#8143](https://github.com/facebook/jest/pull/8143)
 - `[@jest/reporters]` Fix Cannot read property converageData of null ([#8168](https://github.com/facebook/jest/pull/8168))
+- `[jest-worker]` `JEST_WORKER_ID` starts at 1 ([#8205](https://github.com/facebook/jest/pull/8205))
+- `[jest-config]` Use default cwd even if config contains a cwd property ([#7923](https://github.com/facebook/jest/pull/7923))
+- `[jest-resolve-dependencies]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
+- `[jest-resolve]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
+- `[jest-snapshot]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
+- `[jest-resolve]` Fix requireActual with moduleNameMapper ([#8210](https://github.com/facebook/jest/pull/8210))
 
 ### Chore & Maintenance
 
