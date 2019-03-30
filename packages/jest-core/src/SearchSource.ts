@@ -113,7 +113,8 @@ export default class SearchSource {
     if (testPathPattern) {
       let amendedTestPathPattern = testPathPattern;
 
-      const relativePathRegex = new RegExp(`[\.]+${path.sep}`);
+      const pathSeperator = process.platform === 'win32' ? '\\\\' : path.sep;
+      const relativePathRegex = new RegExp(`[\.]+${pathSeperator}`);
       if (relativePathRegex.test(amendedTestPathPattern)) {
         /**
          * This handles the scenario where the test path pattern passed is relative
