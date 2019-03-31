@@ -40,14 +40,14 @@ test("--listTests doesn't find any tests when test path is part of absolute path
     './frontend/__tests__/frontend.test.js': `test('test', () => {});`,
     '.watchmanconfig': '',
     '/project1.js': `module.exports = {rootDir: './backend', displayName: 'BACKEND'}`,
-    '/project2.js': `module.exports = {rootDir: './frontend', displayName: 'BACKEND'}`,
+    '/project2.js': `module.exports = {rootDir: './frontend', displayName: 'FRONTEND'}`,
     'package.json': JSON.stringify({
       jest: {projects: ['<rootDir>/project1.js', '<rootDir>/project2.js']},
     }),
   });
 
-  // ignore first seperator
-  const [, , testPath] = DIR.split(path.sep);
+  // This is part of the absolute path
+  const testPath = 'multi-project-runner-test';
 
   const {stdout} = runJest(DIR, ['--listTests', testPath]);
   expect(stdout.split('\n')).toHaveLength(1);
