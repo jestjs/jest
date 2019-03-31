@@ -45,7 +45,7 @@ export type Status =
 export type Bytes = number;
 
 export type Milliseconds = number;
-type Callsite = {
+export type Callsite = {
   column: number;
   line: number;
 };

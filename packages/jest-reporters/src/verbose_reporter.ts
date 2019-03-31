@@ -15,15 +15,18 @@ import {
 import chalk from 'chalk';
 import {specialChars} from 'jest-util';
 import {Test} from './types';
-import DefaultReporter from './default_reporter';
+import DefaultReporter, {DefaultReporterOptions} from './default_reporter';
 
 const {ICONS} = specialChars;
 
 export default class VerboseReporter extends DefaultReporter {
   protected _globalConfig: Config.GlobalConfig;
 
-  constructor(globalConfig: Config.GlobalConfig) {
-    super(globalConfig);
+  constructor(
+    globalConfig: Config.GlobalConfig,
+    options?: DefaultReporterOptions,
+  ) {
+    super(globalConfig, options);
     this._globalConfig = globalConfig;
   }
 

@@ -7,7 +7,7 @@
 
 import path from 'path';
 import {Config} from '@jest/types';
-import {AggregatedResult} from '@jest/test-result';
+import {AggregatedResult, AssertionResult, Callsite} from '@jest/test-result';
 import chalk from 'chalk';
 import slash from 'slash';
 import {pluralize} from 'jest-util';
@@ -271,4 +271,32 @@ export const wrapAnsiString = (string: string, terminalWidth: number) => {
       [''],
     )
     .join('\n');
+};
+
+export const getLocation = (
+  assertionResult: AssertionResult,
+): Callsite | null => {
+  if (assertionResult.location) {
+    return assertionResult.location;
+  }
+  const matches = assertionResult.failureMessages[0].match(/(\d+):(\d+)/);
+  return (
+    matches && {
+      column: parseInt(matches[2], 10),
+      line: parseInt(matches[1], 10),
+    }
+  );
+};
+
+export const formatFullPath = (
+  testFilePath: string,
+  config: Config.GlobalConfig | Config.ProjectConfig,
+  assertionResult: AssertionResult,
+) => {
+  let path = formatTestPath(config, testFilePath);
+  const location = getLocation(assertionResult);
+  if (location) {
+    path += `:${location.line}:${location.column}`;
+  }
+  return path;
 };

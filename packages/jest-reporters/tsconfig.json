@@ -7,6 +7,7 @@
   "references": [
     {"path": "../jest-environment"},
     {"path": "../jest-haste-map"},
+    {"path": "../jest-message-util"},
     {"path": "../jest-resolve"},
     {"path": "../jest-runtime"},
     {"path": "../jest-test-result"},

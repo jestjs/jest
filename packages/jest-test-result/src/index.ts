@@ -15,6 +15,7 @@ export {
   AggregatedResult,
   AssertionLocation,
   AssertionResult,
+  Callsite,
   FailedAssertion,
   Milliseconds,
   SerializableError,

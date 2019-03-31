@@ -289,8 +289,14 @@ export default class TestScheduler {
   private _setupDefaultReporters(collectCoverage: boolean) {
     this.addReporter(
       this._globalConfig.verbose
-        ? new VerboseReporter(this._globalConfig)
-        : new DefaultReporter(this._globalConfig),
+        ? new VerboseReporter(
+            this._globalConfig,
+            this._getReporterOption('verbose'),
+          )
+        : new DefaultReporter(
+            this._globalConfig,
+            this._getReporterOption('default'),
+          ),
     );
 
     if (collectCoverage) {
@@ -364,6 +370,15 @@ export default class TestScheduler {
       }
     }
     return Promise.resolve();
+  }
+
+  private _getReporterOption(reporterName: string): Record<string, any> {
+    const reporters = this._globalConfig.reporters || [];
+    const config = reporters.find(
+      (item): item is Config.ReporterConfig =>
+        Array.isArray(item) && item[0] === reporterName,
+    );
+    return (config && config[1]) || {};
   }
 }
 

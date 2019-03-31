@@ -6,19 +6,22 @@
  */
 
 import {Config} from '@jest/types';
-import {AggregatedResult, TestResult} from '@jest/test-result';
+import {AggregatedResult, TestResult, AssertionResult} from '@jest/test-result';
 import {clearLine, getConsoleOutput, isInteractive} from 'jest-util';
+import {formatFullTitle, TITLE_INDENT, TITLE_BULLET} from 'jest-message-util';
 import chalk from 'chalk';
 import {Test, ReporterOnStartOptions} from './types';
 import BaseReporter from './base_reporter';
 import Status from './Status';
 import getResultHeader from './get_result_header';
 import getSnapshotStatus from './get_snapshot_status';
+import {formatFullPath} from './utils';
 
 type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
 type FlushBufferedOutput = () => void;
-
-const TITLE_BULLET = chalk.bold('\u25cf ');
+export type DefaultReporterOptions = {
+  compact?: boolean;
+};
 
 export default class DefaultReporter extends BaseReporter {
   private _clear: string; // ANSI clear sequence for the last printed status
@@ -27,10 +30,15 @@ export default class DefaultReporter extends BaseReporter {
   private _out: write;
   private _status: Status;
   private _bufferedOutput: Set<FlushBufferedOutput>;
+  private _options: DefaultReporterOptions;
 
-  constructor(globalConfig: Config.GlobalConfig) {
+  constructor(
+    globalConfig: Config.GlobalConfig,
+    options: DefaultReporterOptions = {},
+  ) {
     super();
     this._globalConfig = globalConfig;
+    this._options = options;
     this._clear = '';
     this._out = process.stdout.write.bind(process.stdout);
     this._err = process.stderr.write.bind(process.stderr);
@@ -149,11 +157,19 @@ export default class DefaultReporter extends BaseReporter {
         test.context.config,
         testResult,
       );
-      this.printTestFileFailureMessage(
-        testResult.testFilePath,
-        test.context.config,
-        testResult,
-      );
+      if (this._options.compact) {
+        this.printCompactFailureMessage(
+          testResult.testFilePath,
+          test.context.config,
+          testResult,
+        );
+      } else {
+        this.printTestFileFailureMessage(
+          testResult.testFilePath,
+          test.context.config,
+          testResult,
+        );
+      }
     }
     this.forceFlushBufferedOutput();
   }
@@ -174,7 +190,7 @@ export default class DefaultReporter extends BaseReporter {
     this.log(getResultHeader(result, this._globalConfig, config));
     if (result.console) {
       this.log(
-        '  ' +
+        TITLE_INDENT +
           TITLE_BULLET +
           'Console\n\n' +
           getConsoleOutput(
@@ -197,5 +213,25 @@ export default class DefaultReporter extends BaseReporter {
     const didUpdate = this._globalConfig.updateSnapshot === 'all';
     const snapshotStatuses = getSnapshotStatus(result.snapshot, didUpdate);
     snapshotStatuses.forEach(this.log);
+  }
+
+  printCompactFailureMessage(
+    _testPath: Config.Path,
+    config: Config.ProjectConfig,
+    result: TestResult,
+  ) {
+    result.testResults.forEach((assertionResult: AssertionResult) => {
+      if (assertionResult.failureMessages.length) {
+        const fullPath = formatFullPath(
+          result.testFilePath,
+          config || this._globalConfig,
+          assertionResult,
+        );
+        const fullTitle = formatFullTitle(assertionResult);
+        this.log(
+          TITLE_INDENT + chalk.red(TITLE_BULLET + fullTitle) + ' ' + fullPath,
+        );
+      }
+    });
   }
 }
