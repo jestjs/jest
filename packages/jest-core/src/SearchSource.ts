@@ -116,13 +116,10 @@ export default class SearchSource {
       const pathSeperator = process.platform === 'win32' ? '\\\\' : path.sep;
       const relativePathRegex = new RegExp(`[\.]+${pathSeperator}`, 'g');
       if (relativePathRegex.test(amendedTestPathPattern)) {
-        /**
-         * This handles the scenario where the test path pattern passed is relative
-         * We amend the regular expression to make it optional so that the
-         * test pattern regex will match
-         *
-         * E.g `jest ./hello`
-         */
+        // This handles the scenario where the test path pattern passed is relative
+        // We amend the regular expression to make it optional so that the
+        // test pattern regex will match
+        // E.g `jest ./hello`
         amendedTestPathPattern = amendedTestPathPattern.replace(
           relativePathRegex,
           relativePathMatch => `(${relativePathMatch})?`,
@@ -131,14 +128,11 @@ export default class SearchSource {
       const regex = testPathPatternToRegExp(amendedTestPathPattern);
       testCases.push({
         isMatch: (path: Config.Path) => {
-          /**
-           * This prevents tests from being run when the test pattern passed
-           * matches any part of the the absolute path
-           *
-           * E.g. running `jest Users` will match all tests in the project
-           * directory on macos since /Users is part of the absolute path
-           * of all test files
-           */
+          // This prevents tests from being run when the test pattern passed
+          // matches any part of the the absolute path
+          // E.g. running `jest Users` will match all tests in the project
+          // directory on macos since /Users is part of the absolute path
+          // of all test files
           const replacedPath = path.replace(process.cwd(), '');
           return regex.test(replacedPath);
         },
