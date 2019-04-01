@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 24.6.0
+
+### Features
+
 - `[expect]`: Improve report when matcher fails, part 13 ([#8077](https://github.com/facebook/jest/pull/8077))
 - `[@jest/core]` Filter API pre-filter setup hook ([#8142](https://github.com/facebook/jest/pull/8142))
 - `[jest-snapshot]` Improve report when matcher fails, part 14 ([#8132](https://github.com/facebook/jest/pull/8132))
