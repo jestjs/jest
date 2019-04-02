@@ -9,6 +9,8 @@
 
 ### Chore & Maintenance
 
+- `[expect]` Remove repetition of matcherName and options in matchers ([#8224](https://github.com/facebook/jest/pull/8224))
+
 ### Performance
 
 ## 24.6.0
@@ -33,7 +35,7 @@
 - `[jest-fake-timers]` `getTimerCount` not taking immediates and ticks into account ([#8139](https://github.com/facebook/jest/pull/8139))
 - `[jest-runtime]` Allow json file as manual mock ([#8159](https://github.com/facebook/jest/pull/8159))
 - `[pretty-format]` Print `BigInt` as a readable number instead of `{}` ([#8138](https://github.com/facebook/jest/pull/8138))
-- `[jest-core]` Fix ability to transform dependencies required from globalSetup script [#8143](https://github.com/facebook/jest/pull/8143)
+- `[jest-core]` Fix ability to transform dependencies required from globalSetup script ([#8143](https://github.com/facebook/jest/pull/8143))
 - `[@jest/reporters]` Fix Cannot read property converageData of null ([#8168](https://github.com/facebook/jest/pull/8168))
 - `[jest-worker]` `JEST_WORKER_ID` starts at 1 ([#8205](https://github.com/facebook/jest/pull/8205))
 - `[jest-config]` Use default cwd even if config contains a cwd property ([#7923](https://github.com/facebook/jest/pull/7923))
@@ -47,12 +49,11 @@
 
 - `[*]` Remove flow from code base ([#8061](https://github.com/facebook/jest/pull/8061))
 - `[*]` Use property initializer syntax in Jest codebase ([#8117](https://github.com/facebook/jest/pull/8117))
-- `[*]` Move @types/node to the root package.json [#8129](https://github.com/facebook/jest/pull/8129))
+- `[*]` Move @types/node to the root package.json ([#8129](https://github.com/facebook/jest/pull/8129))
 - `[*]` Add documentation and tests related to auto-mocking ([#8099](https://github.com/facebook/jest/pull/8099))
 - `[*]` Add `jest-watch-typeahead` as a devDependency ([#6449](https://github.com/facebook/jest/pull/6449))
 - `[*]` upgrade TS to 3.4.0-dev\* for inceremental builds ([#8149](https://github.com/facebook/jest/pull/8149))
-- `[docs]` Improve description of optional arguments in ExpectAPI.md ([#8126](https://github.com/facebook/jest/pull/8126)
-- `[expect]` Remove repetition of matcherName and options in matchers ([#8224](https://github.com/facebook/jest/pull/8224)
+- `[docs]` Improve description of optional arguments in ExpectAPI.md ([#8126](https://github.com/facebook/jest/pull/8126))
 
 ### Performance
 
@@ -145,7 +146,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 - `[jest-util]`Make sure to not fail if unable to assign `toStringTag` to the `process` object, which is read only in Node 12 ([#8050](https://github.com/facebook/jest/pull/8050))
 - `[jest-validate]` Fix validating async functions ([#7894](https://github.com/facebook/jest/issues/7894))
 - `[jest-worker]` Fix `jest-worker` when using pre-allocated jobs ([#7934](https://github.com/facebook/jest/pull/7934))
-- `[static]` Remove console log '-' on the front page
+- `[static]` Remove console log '-' on the front page ([#7977](https://github.com/facebook/jest/pull/7977))
 
 ### Chore & Maintenance
 
