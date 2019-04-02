@@ -2,6 +2,19 @@
 
 ### Features
 
+- `[@jest/core, @jest/test-sequencer]` Move `testSequencer` to individual package `@jest/test-sequencer` ([#8223](https://github.com/facebook/jest/pull/8223))
+- `[@jest/core, jest-cli, jest-config]` Add option `testSequencer` allow user use custom sequencer. ([#8223](https://github.com/facebook/jest/pull/8223))
+
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 24.6.0
+
+### Features
+
 - `[expect]`: Improve report when matcher fails, part 13 ([#8077](https://github.com/facebook/jest/pull/8077))
 - `[@jest/core]` Filter API pre-filter setup hook ([#8142](https://github.com/facebook/jest/pull/8142))
 - `[jest-snapshot]` Improve report when matcher fails, part 14 ([#8132](https://github.com/facebook/jest/pull/8132))
@@ -10,8 +23,6 @@
 - `[pretty-format]` Support React.Suspense ([#8180](https://github.com/facebook/jest/pull/8180))
 - `[jest-snapshot]` Indent inline snapshots ([#8198](https://github.com/facebook/jest/pull/8198))
 - `[jest-config]` Support colors in `displayName` configuration ([#8025](https://github.com/facebook/jest/pull/8025))
-- `[@jest/core, @jest/test-sequencer]` Move `testSequencer` to individual package `@jest/test-sequencer` ([#8223](https://github.com/facebook/jest/pull/8223))
-- `[@jest/core, jest-cli, jest-config]` Add option `testSequencer` allow user use custom sequencer. ([#8223](https://github.com/facebook/jest/pull/8223))
 
 ### Fixes
 
@@ -30,6 +41,7 @@
 - `[jest-resolve]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
 - `[jest-snapshot]`: Remove internal peer dependencies ([#8215](https://github.com/facebook/jest/pull/8215))
 - `[jest-resolve]` Fix requireActual with moduleNameMapper ([#8210](https://github.com/facebook/jest/pull/8210))
+- `[jest-haste-map]` Fix haste map duplicate detection in watch mode ([#8237](https://github.com/facebook/jest/pull/8237))
 
 ### Chore & Maintenance
 
@@ -48,6 +60,10 @@
 - `[jest-core]` Improve performance of SearchSource.findMatchingTests by 15% ([#8184](https://github.com/facebook/jest/pull/8184))
 - `[jest-resolve]` Optimize internal cache lookup performance ([#8183](https://github.com/facebook/jest/pull/8183))
 - `[jest-core]` Dramatically improve watch mode performance ([#8201](https://github.com/facebook/jest/pull/8201))
+- `[jest-transform]` Cache regular expression instead of creating anew for every file in ScriptTransformer ([#8235](https://github.com/facebook/jest/pull/8235))
+- `[jest-core]` Fix memory leak of source map info and minor performance improvements ([#8234](https://github.com/facebook/jest/pull/8234))
+- `[jest-console]` Fix memory leak by releasing console output reference when printed to stdout ([#8233](https://github.com/facebook/jest/pull/8233))
+- `[jest-runtime]` Use `Map` instead of `Object` for module registry ([#8232](https://github.com/facebook/jest/pull/8232))
 
 ## 24.5.0
 

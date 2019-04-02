@@ -103,16 +103,13 @@ class TestRunner {
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
   ) {
-    let resolvers: Map<string, SerializableResolver> | undefined = undefined;
-    if (watcher.isWatchMode()) {
-      resolvers = new Map();
-      for (const test of tests) {
-        if (!resolvers.has(test.context.config.name)) {
-          resolvers.set(test.context.config.name, {
-            config: test.context.config,
-            serializableModuleMap: test.context.moduleMap.toJSON(),
-          });
-        }
+    const resolvers: Map<string, SerializableResolver> = new Map();
+    for (const test of tests) {
+      if (!resolvers.has(test.context.config.name)) {
+        resolvers.set(test.context.config.name, {
+          config: test.context.config,
+          serializableModuleMap: test.context.moduleMap.toJSON(),
+        });
       }
     }
 
@@ -121,13 +118,11 @@ class TestRunner {
       forkOptions: {stdio: 'pipe'},
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
-      setupArgs: resolvers
-        ? [
-            {
-              serializableResolvers: Array.from(resolvers.values()),
-            },
-          ]
-        : undefined,
+      setupArgs: [
+        {
+          serializableResolvers: Array.from(resolvers.values()),
+        },
+      ],
     }) as WorkerInterface;
 
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);

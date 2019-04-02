@@ -8,7 +8,7 @@
 
 import {Config} from '@jest/types';
 import {SerializableError, TestResult} from '@jest/test-result';
-import HasteMap, {ModuleMap, SerializableModuleMap} from 'jest-haste-map';
+import HasteMap, {SerializableModuleMap} from 'jest-haste-map';
 import exit from 'exit';
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime from 'jest-runtime';
@@ -53,34 +53,24 @@ const formatError = (error: string | ErrorWithCode): SerializableError => {
 };
 
 const resolvers = new Map<string, Resolver>();
-const getResolver = (config: Config.ProjectConfig, moduleMap?: ModuleMap) => {
-  const name = config.name;
-  if (moduleMap || !resolvers.has(name)) {
-    resolvers.set(
-      name,
-      Runtime.createResolver(
-        config,
-        moduleMap || Runtime.createHasteMap(config).readModuleMap(),
-      ),
-    );
+const getResolver = (config: Config.ProjectConfig) => {
+  const resolver = resolvers.get(config.name);
+  if (!resolver) {
+    throw new Error('Cannot find resolver for: ' + config.name);
   }
-  return resolvers.get(name)!;
+  return resolver;
 };
 
-export function setup(setupData?: {
+export function setup(setupData: {
   serializableResolvers: Array<SerializableResolver>;
 }) {
-  // Setup data is only used in watch mode to pass the latest version of all
-  // module maps that will be used during the test runs. Otherwise, module maps
-  // are loaded from disk as needed.
-  if (setupData) {
-    for (const {
-      config,
-      serializableModuleMap,
-    } of setupData.serializableResolvers) {
-      const moduleMap = HasteMap.ModuleMap.fromJSON(serializableModuleMap);
-      getResolver(config, moduleMap);
-    }
+  // Module maps that will be needed for the test runs are passed.
+  for (const {
+    config,
+    serializableModuleMap,
+  } of setupData.serializableResolvers) {
+    const moduleMap = HasteMap.ModuleMap.fromJSON(serializableModuleMap);
+    resolvers.set(config.name, Runtime.createResolver(config, moduleMap));
   }
 }
 

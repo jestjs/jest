@@ -46,7 +46,7 @@ export const buildFailureTestResult = (
   testPath: Config.Path,
   err: SerializableError,
 ): TestResult => ({
-  console: null,
+  console: undefined,
   displayName: '',
   failureMessage: null,
   leaks: false,

@@ -101,7 +101,7 @@ export type Suite = {
 };
 
 export type TestResult = {
-  console?: ConsoleBuffer | null;
+  console?: ConsoleBuffer;
   coverage?: CoverageMapData;
   displayName?: Config.DisplayName;
   failureMessage?: string | null;
@@ -126,7 +126,7 @@ export type TestResult = {
     unmatched: number;
     updated: number;
   };
-  sourceMaps: {
+  sourceMaps?: {
     [sourcePath: string]: string;
   };
   testExecError?: SerializableError;
