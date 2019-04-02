@@ -7,7 +7,7 @@
 
 ### Fixes
 
-- [jest-haste-map] Resolve fs watcher EMFILE error ([#8258](https://github.com/facebook/jest/pull/8258))
+- `[jest-haste-map]` Resolve fs watcher EMFILE error ([#8258](https://github.com/facebook/jest/pull/8258))
 
 ### Chore & Maintenance
 
