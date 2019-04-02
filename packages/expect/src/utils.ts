@@ -137,13 +137,7 @@ const IteratorSymbol = Symbol.iterator;
 
 const hasIterator = (object: any) =>
   !!(object != null && object[IteratorSymbol]);
-
-export const iterableEquality = (
-  a: any,
-  b: any,
-  aStack: Array<any> = [],
-  bStack: Array<any> = [],
-) => {
+export const iterableEquality = (a: any, b: any) => {
   if (
     typeof a !== 'object' ||
     typeof b !== 'object' ||
@@ -158,22 +152,6 @@ export const iterableEquality = (
     return false;
   }
 
-  let length = aStack.length;
-  while (length--) {
-    // Linear search. Performance is inversely proportional to the number of
-    // unique nested structures.
-    // circular references at same depth are equal
-    // circular reference is not equal to non-circular one
-    if (aStack[length] === a) {
-      return bStack[length] === b;
-    }
-  }
-  aStack.push(a);
-  bStack.push(b);
-
-  const iterableEqualityWithStack = (a: any, b: any) =>
-    iterableEquality(a, b, aStack, bStack);
-
   if (a.size !== undefined) {
     if (a.size !== b.size) {
       return false;
@@ -183,7 +161,7 @@ export const iterableEquality = (
         if (!b.has(aValue)) {
           let has = false;
           for (const bValue of b) {
-            const isEqual = equals(aValue, bValue, [iterableEqualityWithStack]);
+            const isEqual = equals(aValue, bValue, [iterableEquality]);
             if (isEqual === true) {
               has = true;
             }
@@ -195,29 +173,25 @@ export const iterableEquality = (
           }
         }
       }
-      // Remove the first value from the stack of traversed values.
-      aStack.pop();
-      bStack.pop();
-      return allFound;
+      if (allFound) {
+        return true;
+      }
     } else if (isA('Map', a) || isImmutableUnorderedKeyed(a)) {
       let allFound = true;
       for (const aEntry of a) {
         if (
           !b.has(aEntry[0]) ||
-          !equals(aEntry[1], b.get(aEntry[0]), [iterableEqualityWithStack])
+          !equals(aEntry[1], b.get(aEntry[0]), [iterableEquality])
         ) {
           let has = false;
           for (const bEntry of b) {
-            const matchedKey = equals(aEntry[0], bEntry[0], [
-              iterableEqualityWithStack,
-            ]);
+            const matchedKey = equals(aEntry[0], bEntry[0], [iterableEquality]);
 
             let matchedValue = false;
             if (matchedKey === true) {
-              matchedValue = equals(aEntry[1], bEntry[1], [
-                iterableEqualityWithStack,
-              ]);
+              matchedValue = equals(aEntry[1], bEntry[1], [iterableEquality]);
             }
+
             if (matchedValue === true) {
               has = true;
             }
@@ -229,10 +203,9 @@ export const iterableEquality = (
           }
         }
       }
-      // Remove the first value from the stack of traversed values.
-      aStack.pop();
-      bStack.pop();
-      return allFound;
+      if (allFound) {
+        return true;
+      }
     }
   }
 
@@ -240,20 +213,13 @@ export const iterableEquality = (
 
   for (const aValue of a) {
     const nextB = bIterator.next();
-    if (
-      nextB.done ||
-      !equals(aValue, nextB.value, [iterableEqualityWithStack])
-    ) {
+    if (nextB.done || !equals(aValue, nextB.value, [iterableEquality])) {
       return false;
     }
   }
   if (!bIterator.next().done) {
     return false;
   }
-
-  // Remove the first value from the stack of traversed values.
-  aStack.pop();
-  bStack.pop();
   return true;
 };
 

@@ -15,7 +15,6 @@ const {
   getPath,
   hasOwnProperty,
   subsetEquality,
-  iterableEquality,
 } = require('../utils');
 
 describe('getPath()', () => {
@@ -201,96 +200,5 @@ describe('subsetEquality()', () => {
 
   test('undefined does not return errors', () => {
     expect(subsetEquality(undefined, {foo: 'bar'})).not.toBeTruthy();
-  });
-});
-
-describe('iterableEquality', () => {
-  test('returns true when given circular iterators', () => {
-    class Iter {
-      *[Symbol.iterator]() {
-        yield this;
-      }
-    }
-
-    const a = new Iter();
-    const b = new Iter();
-
-    expect(iterableEquality(a, b)).toBe(true);
-  });
-
-  test('returns true when given circular Set', () => {
-    const a = new Set();
-    a.add(a);
-    const b = new Set();
-    b.add(b);
-    expect(iterableEquality(a, b)).toBe(true);
-  });
-
-  test('returns true when given nested Sets', () => {
-    expect(
-      iterableEquality(
-        new Set([new Set([[1]]), new Set([[2]])]),
-        new Set([new Set([[2]]), new Set([[1]])]),
-      ),
-    ).toBe(true);
-    expect(
-      iterableEquality(
-        new Set([new Set([[1]]), new Set([[2]])]),
-        new Set([new Set([[3]]), new Set([[1]])]),
-      ),
-    ).toBe(false);
-  });
-
-  test('returns true when given circular Set shape', () => {
-    const a1 = new Set();
-    const a2 = new Set();
-    a1.add(a2);
-    a2.add(a1);
-    const b = new Set();
-    b.add(b);
-
-    expect(iterableEquality(a1, b)).toBe(true);
-  });
-
-  test('returns true when given circular key in Map', () => {
-    const a = new Map();
-    a.set(a, 'a');
-    const b = new Map();
-    b.set(b, 'a');
-
-    expect(iterableEquality(a, b)).toBe(true);
-  });
-
-  test('returns true when given nested Maps', () => {
-    expect(
-      iterableEquality(
-        new Map([['hello', new Map([['world', 'foobar']])]]),
-        new Map([['hello', new Map([['world', 'qux']])]]),
-      ),
-    ).toBe(false);
-    expect(
-      iterableEquality(
-        new Map([['hello', new Map([['world', 'foobar']])]]),
-        new Map([['hello', new Map([['world', 'foobar']])]]),
-      ),
-    ).toBe(true);
-  });
-
-  test('returns true when given circular key and value in Map', () => {
-    const a = new Map();
-    a.set(a, a);
-    const b = new Map();
-    b.set(b, b);
-
-    expect(iterableEquality(a, b)).toBe(true);
-  });
-
-  test('returns true when given circular value in Map', () => {
-    const a = new Map();
-    a.set('a', a);
-    const b = new Map();
-    b.set('a', b);
-
-    expect(iterableEquality(a, b)).toBe(true);
   });
 });

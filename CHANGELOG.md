@@ -8,6 +8,7 @@
 ### Fixes
 
 - `[jest-haste-map]` Resolve fs watcher EMFILE error ([#8258](https://github.com/facebook/jest/pull/8258))
+- `[expect]` Revert "Fix circular references in iterable equality" ([#8160](https://github.com/facebook/jest/pull/8160))
 
 ### Chore & Maintenance
 
