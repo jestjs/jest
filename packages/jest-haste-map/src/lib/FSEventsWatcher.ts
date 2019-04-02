@@ -5,13 +5,14 @@ import path from 'path';
 import {EventEmitter} from 'events';
 import anymatch from 'anymatch';
 import micromatch from 'micromatch';
+// eslint-disable-next-line
 import {Watcher} from 'fsevents';
 // @ts-ignore no types
 import walker from 'walker';
 
 let fsevents: (path: string) => Watcher;
 try {
-  // eslint-disable-next-line import/no-unresolved
+  // eslint-disable-next-line
   fsevents = require('fsevents');
 } catch (e) {
   // Optional dependency, only supported on Darwin.
