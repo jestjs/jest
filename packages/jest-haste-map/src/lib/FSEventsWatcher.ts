@@ -38,7 +38,7 @@ class FSEventsWatcher extends EventEmitter {
   public readonly dot: boolean;
   public readonly hasIgnore: boolean;
   public readonly doIgnore: (path: string) => boolean;
-  public readonly watcher: any;
+  public readonly watcher: Watcher;
   private _tracked: Set<string>;
 
   static isSupported() {
