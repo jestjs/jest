@@ -12,7 +12,6 @@ import walker from 'walker';
 
 let fsevents: (path: string) => Watcher;
 try {
-  // eslint-disable-next-line
   fsevents = require('fsevents');
 } catch (e) {
   // Optional dependency, only supported on Darwin.
