@@ -12,8 +12,8 @@
   "dependencies": {
     "@jest/test-result": "^24.6.0",
     "jest-haste-map": "^24.6.0",
-    "jest-runtime": "^24.6.0",
-    "jest-runner": "^24.6.0"
+    "jest-runner": "^24.6.0",
+    "jest-runtime": "^24.6.0"
   },
   "engines": {
     "node": ">= 6"
