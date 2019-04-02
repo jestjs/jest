@@ -172,7 +172,7 @@ export const iterableEquality = (
   bStack.push(b);
 
   const iterableEqualityWithStack = (a: any, b: any) =>
-    iterableEquality(a, b, aStack, bStack);
+    iterableEquality(a, b, [...aStack], [...bStack]);
 
   if (a.size !== undefined) {
     if (a.size !== b.size) {
