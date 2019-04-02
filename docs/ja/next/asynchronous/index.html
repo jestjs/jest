@@ -105,7 +105,7 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>Be sure to return the promise - if you omit this <code>return</code> statement, your test will complete before the promise returned from <code>fetchData</code> resolves and then() has a chance to execute the callback.</p>
+<p>promiseを返していることを確認してください。- もしこの <code>return</code> 文を省略した場合、あなたのテストは、<code>fetchData</code>がresolveされpromiseが返ってくる前に実行され、then() 内のコールバックが実行される前に完了してしまいます。</p>
 <p>promiseがrejectされることを期待するケースでは <code>.catch</code> メソッドを使用してください。 想定した数のアサーションが呼ばれたことを確認するため、<code>expect.assertions</code>を必ず追加して下さい。 さもなければpromiseがrejectされなかった場合にテストが失敗したと判定されません。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
@@ -118,7 +118,7 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
   <span class="hljs-keyword">return</span> expect(fetchData()).resolves.toBe(<span class="hljs-string">'peanut butter'</span>);
 });
 </code></pre>
-<p>Be sure to return the assertion—if you omit this <code>return</code> statement, your test will complete before the promise returned from <code>fetchData</code> is resolved and then() has a chance to execute the callback.</p>
+<p>アサーションを返していることを確認してください。- もしこの <code>return</code> 文を省略した場合、あなたのテストは、<code>fetchData</code>がresolveされpromiseが返ってくる前に実行され、then() 内のコールバックが実行される前に完了してしまいます。</p>
 <p>promiseがrejectされることを期待するケースでは<code>.rejects</code> マッチャを使用してください。 <code>.resolves</code>マッチャと似た動作をします。 promiseが成功した場合は、テストは自動的に失敗します。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
   <span class="hljs-keyword">return</span> expect(fetchData()).rejects.toMatch(<span class="hljs-string">'error'</span>);
