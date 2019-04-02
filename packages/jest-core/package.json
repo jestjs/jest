@@ -34,14 +34,14 @@
     "strip-ansi": "^5.0.0"
   },
   "devDependencies": {
+    "@jest/test-sequencer": "^24.5.0",
     "@types/ansi-escapes": "^3.0.1",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^3.1.0",
     "@types/p-each-series": "^1.0.0",
     "@types/rimraf": "^2.0.2",
-    "@types/strip-ansi": "^3.0.0",
-    "@jest/test-sequencer": "^24.5.0"
+    "@types/strip-ansi": "^3.0.0"
   },
   "engines": {
     "node": ">= 6"
