@@ -71,6 +71,7 @@ const defaultOptions: Config.DefaultOptions = {
   testRegex: [],
   testResultsProcessor: null,
   testRunner: 'jasmine2',
+  testSequencer: '@jest/test-sequencer',
   testURL: 'http://localhost',
   timers: 'real',
   transform: null,

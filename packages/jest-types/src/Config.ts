@@ -88,6 +88,7 @@ export type DefaultOptions = {
   testRegex: Array<string>;
   testResultsProcessor: string | null | undefined;
   testRunner: string | null | undefined;
+  testSequencer: string;
   testURL: string;
   timers: 'real' | 'fake';
   transform:
@@ -203,6 +204,7 @@ export type InitialOptions = {
   testRegex?: string | Array<string>;
   testResultsProcessor?: string | null | undefined;
   testRunner?: string;
+  testSequencer?: string;
   testURL?: string;
   timers?: 'real' | 'fake';
   transform?: {
@@ -340,6 +342,7 @@ export type GlobalConfig = {
   testNamePattern: string;
   testPathPattern: string;
   testResultsProcessor: string | null | undefined;
+  testSequencer: string;
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose: boolean | null | undefined;
@@ -483,6 +486,7 @@ export type Argv = Arguments<
     testRegex: string | Array<string>;
     testResultsProcessor: string | null | undefined;
     testRunner: string;
+    testSequencer: string;
     testURL: string;
     timers: string;
     transform: string;

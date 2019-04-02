@@ -114,6 +114,7 @@ const initialOptions: Config.InitialOptions = {
   ),
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
+  testSequencer: '@jest/test-sequencer',
   testURL: 'http://localhost',
   timers: 'real',
   transform: {

@@ -29,6 +29,7 @@ import {
   getRunner,
   getWatchPlugin,
   resolve,
+  getSequencer,
 } from './utils';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import {validateReporters} from './ReporterValidationErrors';
@@ -583,6 +584,17 @@ export default function normalize(
           value =
             option &&
             getRunner(newOptions.resolver, {
+              filePath: option,
+              rootDir: options.rootDir,
+            });
+        }
+        break;
+      case 'testSequencer':
+        {
+          const option = oldOptions[key];
+          value =
+            option &&
+            getSequencer(newOptions.resolver, {
               filePath: option,
               rootDir: options.rootDir,
             });
