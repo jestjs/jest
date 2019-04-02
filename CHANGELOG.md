@@ -7,6 +7,8 @@
 
 ### Fixes
 
+- `[jest-haste-map]` Resolve fs watcher EMFILE error ([#8258](https://github.com/facebook/jest/pull/8258))
+
 ### Chore & Maintenance
 
 - `[expect]` Remove repetition of matcherName and options in matchers ([#8224](https://github.com/facebook/jest/pull/8224))
