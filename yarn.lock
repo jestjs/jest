@@ -1583,6 +1583,11 @@
   dependencies:
     "@types/color-name" "*"
 
+"@types/anymatch@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@types/anymatch/-/anymatch-1.3.1.tgz#336badc1beecb9dacc38bea2cf32adf627a8421a"
+  integrity sha512-/+CRPXpBDpo2RK9C68N3b2cOvO0Cf5B9aPijHsoDQTHivnGSObdOF2BRQOYjojWTDy6nQvMjmqRXIxH55VjxxA==
+
 "@types/babel-types@*":
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/@types/babel-types/-/babel-types-7.0.6.tgz#a7cfaaeee96e90c4c54da0e580aaff3f4cffacac"
@@ -1696,6 +1701,13 @@
   integrity sha512-Ao2jlksPEUGCEXBvJz5e2MuDpYUtxXgtUk45cg0g5Mmy4f0j7bQuDlOlqBMgKGRl9dZAK4ZTzFtukuzj2mURlQ==
   dependencies:
     "@types/events" "*"
+
+"@types/fsevents@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/fsevents/-/fsevents-1.1.0.tgz#11964ddbfed08bd45b037f37fbb53e5012609323"
+  integrity sha512-H29jEeDqjbolciuREYzd/f7xCc8l2QZmjfSHy+IQZoBHtl88/y4ZLOdz22SUbXSXsc/qI9bTOcDxwgdbY/RQ9A==
+  dependencies:
+    "@types/node" "*"
 
 "@types/glob@*", "@types/glob@^7.1.1":
   version "7.1.1"
@@ -13224,7 +13236,7 @@ wait-for-expect@^1.1.0:
   resolved "https://registry.yarnpkg.com/wait-for-expect/-/wait-for-expect-1.1.0.tgz#6607375c3f79d32add35cd2c87ce13f351a3d453"
   integrity sha512-vQDokqxyMyknfX3luCDn16bSaRcOyH6gGuUXMIbxBLeTo6nWuEWYqMTT9a+44FmW8c2m6TRWBdNvBBjA1hwEKg==
 
-walker@~1.0.5:
+walker@^1.0.7, walker@~1.0.5:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/walker/-/walker-1.0.7.tgz#2f7f9b8fd10d677262b18a884e28d19618e028fb"
   integrity sha1-L3+bj9ENZ3JisYqITijRlhjgKPs=
