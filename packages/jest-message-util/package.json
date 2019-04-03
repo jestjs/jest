@@ -1,6 +1,6 @@
 {
   "name": "jest-message-util",
-  "version": "24.6.0",
+  "version": "24.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -14,8 +14,8 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/code-frame": "^7.0.0",
-    "@jest/test-result": "^24.6.0",
-    "@jest/types": "^24.6.0",
+    "@jest/test-result": "^24.7.0",
+    "@jest/types": "^24.7.0",
     "@types/stack-utils": "^1.0.1",
     "chalk": "^2.0.1",
     "micromatch": "^3.1.10",
@@ -30,5 +30,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "04e6a66d2ba8b18bee080bb28547db74a255d2c7"
+  "gitHead": "eb0413622542bc0f70c32950d9daeeab9f6802ac"
 }

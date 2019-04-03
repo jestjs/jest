@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-sequencer",
-  "version": "24.6.0",
+  "version": "24.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,10 +10,10 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/test-result": "^24.6.0",
-    "jest-haste-map": "^24.6.0",
-    "jest-runner": "^24.6.0",
-    "jest-runtime": "^24.6.0"
+    "@jest/test-result": "^24.7.0",
+    "jest-haste-map": "^24.7.0",
+    "jest-runner": "^24.7.0",
+    "jest-runtime": "^24.7.0"
   },
   "engines": {
     "node": ">= 6"
@@ -21,5 +21,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
+  "gitHead": "eb0413622542bc0f70c32950d9daeeab9f6802ac"
 }

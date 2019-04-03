@@ -1,7 +1,7 @@
 {
   "name": "babel-jest",
   "description": "Jest plugin to use babel for transformation.",
-  "version": "24.6.0",
+  "version": "24.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,8 +11,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/transform": "^24.6.0",
-    "@jest/types": "^24.6.0",
+    "@jest/transform": "^24.7.0",
+    "@jest/types": "^24.7.0",
     "@types/babel__core": "^7.1.0",
     "babel-plugin-istanbul": "^5.1.0",
     "babel-preset-jest": "^24.6.0",
@@ -32,5 +32,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "04e6a66d2ba8b18bee080bb28547db74a255d2c7"
+  "gitHead": "eb0413622542bc0f70c32950d9daeeab9f6802ac"
 }
