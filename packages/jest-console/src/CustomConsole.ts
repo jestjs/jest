@@ -43,26 +43,24 @@ export default class CustomConsole extends Console {
   }
 
   private _log(type: LogType, message: string) {
-    const isErrorType = type === 'error' || type === 'assert';
-    const formattedMessage = this._formatBuffer(
-      type,
-      '  '.repeat(this._groupDepth) + message,
+    clearLine(this._stdout);
+    super.log(
+      this._formatBuffer(type, '  '.repeat(this._groupDepth) + message),
     );
+  }
 
-    if (isErrorType) {
-      clearLine(this._stderr);
-      super.error(formattedMessage);
-    } else {
-      clearLine(this._stdout);
-      super.log(formattedMessage);
-    }
+  private _logError(type: LogType, message: string) {
+    clearLine(this._stderr);
+    super.error(
+      this._formatBuffer(type, '  '.repeat(this._groupDepth) + message),
+    );
   }
 
   assert(value: any, message?: string | Error) {
     try {
       assert(value, message);
     } catch (error) {
-      this._log('assert', error.toString());
+      this._logError('assert', error.toString());
     }
   }
 
@@ -91,7 +89,7 @@ export default class CustomConsole extends Console {
   }
 
   error(firstArg: any, ...args: Array<any>) {
-    this._log('error', format(firstArg, ...args));
+    this._logError('error', format(firstArg, ...args));
   }
 
   group(title?: string, ...args: Array<any>) {
