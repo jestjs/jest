@@ -497,8 +497,8 @@ export default function normalize(
   }
 
   newOptions.testSequencer = getSequencer(newOptions.resolver, {
-    rootDir: options.rootDir,
     filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
+    rootDir: options.rootDir,
   });
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
