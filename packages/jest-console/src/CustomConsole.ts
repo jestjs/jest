@@ -12,8 +12,8 @@ import chalk from 'chalk';
 import {LogCounters, LogMessage, LogTimers, LogType} from './types';
 
 // TODO: Copied from `jest-util`. Import from it in Jest 25
-function clearLine(stream: NodeJS.WritableStream) {
-  if (process.stdout.isTTY) {
+function clearLine(stream: NodeJS.WritableStream & {isTTY?: boolean}) {
+  if (stream.isTTY) {
     stream.write('\x1b[999D\x1b[K');
   }
 }
@@ -22,6 +22,7 @@ type Formatter = (type: LogType, message: LogMessage) => string;
 
 export default class CustomConsole extends Console {
   private _stdout: NodeJS.WritableStream;
+  private _stderr: NodeJS.WritableStream;
   private _formatBuffer: Formatter;
   private _counters: LogCounters;
   private _timers: LogTimers;
@@ -34,21 +35,27 @@ export default class CustomConsole extends Console {
   ) {
     super(stdout, stderr);
     this._stdout = stdout;
+    this._stderr = stderr;
     this._formatBuffer = formatBuffer;
     this._counters = {};
     this._timers = {};
     this._groupDepth = 0;
   }
 
-  private _logToParentConsole(message: string) {
-    super.log(message);
-  }
-
   private _log(type: LogType, message: string) {
-    clearLine(this._stdout);
-    this._logToParentConsole(
-      this._formatBuffer(type, '  '.repeat(this._groupDepth) + message),
+    const isErrorType = type === 'error' || type === 'assert';
+    const formattedMessage = this._formatBuffer(
+      type,
+      '  '.repeat(this._groupDepth) + message,
     );
+
+    if (isErrorType) {
+      clearLine(this._stderr);
+      super.error(formattedMessage);
+    } else {
+      clearLine(this._stdout);
+      super.log(formattedMessage);
+    }
   }
 
   assert(value: any, message?: string | Error) {

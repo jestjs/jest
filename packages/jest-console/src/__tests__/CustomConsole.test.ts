@@ -5,47 +5,77 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {Writable} from 'stream';
 import chalk from 'chalk';
 import CustomConsole from '../CustomConsole';
 
 describe('CustomConsole', () => {
   let _console;
-  let _stdout = '';
+  let _stdout;
+  let _stderr;
 
   beforeEach(() => {
-    _console = new CustomConsole(process.stdout, process.stderr);
-    jest.spyOn(_console, '_logToParentConsole').mockImplementation(message => {
-      _stdout += message + '\n';
+    _stdout = '';
+    _stderr = '';
+
+    const stdout = new Writable({
+      write(chunk, encoding, callback) {
+        _stdout += chunk.toString();
+        callback();
+      },
     });
 
-    _stdout = '';
+    const stderr = new Writable({
+      write(chunk, encoding, callback) {
+        _stderr += chunk.toString();
+        callback();
+      },
+    });
+
+    _console = new CustomConsole(stdout, stderr);
+  });
+
+  describe('log', () => {
+    test('should print to stdout', () => {
+      _console.log('Hello world!');
+
+      expect(_stdout).toBe('Hello world!\n');
+    });
+  });
+
+  describe('error', () => {
+    test('should print to stderr', () => {
+      _console.error('Found some error!');
+
+      expect(_stderr).toBe('Found some error!\n');
+    });
   });
 
   describe('assert', () => {
     test('do not log when the assertion is truthy', () => {
       _console.assert(true);
 
-      expect(_stdout).toMatch('');
+      expect(_stderr).toMatch('');
     });
 
     test('do not log when the assertion is truthy and there is a message', () => {
       _console.assert(true, 'ok');
 
-      expect(_stdout).toMatch('');
+      expect(_stderr).toMatch('');
     });
 
     test('log the assertion error when the assertion is falsy', () => {
       _console.assert(false);
 
-      expect(_stdout).toMatch('AssertionError');
-      expect(_stdout).toMatch('false == true');
+      expect(_stderr).toMatch('AssertionError');
+      expect(_stderr).toMatch('false == true');
     });
 
     test('log the assertion error when the assertion is falsy with another message argument', () => {
       _console.assert(false, 'ok');
 
-      expect(_stdout).toMatch('AssertionError');
-      expect(_stdout).toMatch('ok');
+      expect(_stderr).toMatch('AssertionError');
+      expect(_stderr).toMatch('ok');
     });
   });
 
