@@ -117,7 +117,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "testFailureExitCode": 1,
     "testPathPattern": "",
     "testResultsProcessor": null,
-    "testSequencer": "@jest/test-sequencer",
+    "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
     "updateSnapshot": "all",
     "useStderr": false,
     "verbose": null,
