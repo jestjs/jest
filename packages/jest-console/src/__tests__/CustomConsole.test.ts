@@ -51,6 +51,14 @@ describe('CustomConsole', () => {
     });
   });
 
+  describe('warn', () => {
+    test('should print to stderr', () => {
+      _console.warn('Found some warning!');
+
+      expect(_stderr).toBe('Found some warning!\n');
+    });
+  });
+
   describe('assert', () => {
     test('do not log when the assertion is truthy', () => {
       _console.assert(true);

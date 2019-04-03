@@ -17,7 +17,7 @@
 
 ### Fixes
 
-- `[@jest/console]` Print to stderr when calling `console.error` or `console.assert` using the `jest-runtime` CLI ([#8261](https://github.com/facebook/jest/pull/8261))
+- `[@jest/console]` Print to stderr when calling `console.error`, `console.warn` or `console.assert` using the `jest-runtime` CLI ([#8261](https://github.com/facebook/jest/pull/8261))
 - `[expect]` Add negative equality tests for iterables ([#8260](https://github.com/facebook/jest/pull/8260))
 - `[jest-haste-map]` Resolve fs watcher EMFILE error ([#8258](https://github.com/facebook/jest/pull/8258))
 

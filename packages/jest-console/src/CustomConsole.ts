@@ -142,7 +142,7 @@ export default class CustomConsole extends Console {
   }
 
   warn(firstArg: any, ...args: Array<any>) {
-    this._log('warn', format(firstArg, ...args));
+    this._logError('warn', format(firstArg, ...args));
   }
 
   getBuffer() {
