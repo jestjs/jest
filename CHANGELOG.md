@@ -7,6 +7,7 @@
 
 ### Fixes
 
+- `[expect]` Add negative equality tests for iterables ([#8260](https://github.com/facebook/jest/pull/8260))
 - `[jest-haste-map]` Resolve fs watcher EMFILE error ([#8258](https://github.com/facebook/jest/pull/8258))
 
 ### Chore & Maintenance
