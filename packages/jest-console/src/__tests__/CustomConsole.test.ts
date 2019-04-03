@@ -76,7 +76,7 @@ describe('CustomConsole', () => {
       _console.assert(false);
 
       expect(_stderr).toMatch('AssertionError');
-      expect(_stderr).toMatch('false == true');
+      expect(_stderr).toMatch('The expression evaluated to a falsy value:');
     });
 
     test('log the assertion error when the assertion is falsy with another message argument', () => {
