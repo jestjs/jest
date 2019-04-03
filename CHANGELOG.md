@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[@jest/config]` Normalize `testSequencer` to its absolute path ([#8267](https://github.com/facebook/jest/pull/8267))
+
 ### Chore & Maintenance
 
 ### Performance
