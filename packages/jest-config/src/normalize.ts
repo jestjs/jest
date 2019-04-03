@@ -478,6 +478,10 @@ export default function normalize(
     options.testRunner = require.resolve('jest-jasmine2');
   }
 
+  if (!options.testSequencer) {
+    options.testSequencer = require.resolve('@jest/test-sequencer');
+  }
+
   if (!options.coverageDirectory) {
     options.coverageDirectory = path.resolve(options.rootDir, 'coverage');
   }
