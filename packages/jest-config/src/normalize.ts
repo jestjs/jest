@@ -589,17 +589,6 @@ export default function normalize(
             });
         }
         break;
-      case 'testSequencer':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            getSequencer(newOptions.resolver, {
-              filePath: option,
-              rootDir: options.rootDir,
-            });
-        }
-        break;
       case 'prettierPath':
         {
           // We only want this to throw if "prettierPath" is explicitly passed
@@ -882,6 +871,11 @@ export default function normalize(
   } catch (e) {
     // ignored
   }
+
+  newOptions.testSequencer = getSequencer(newOptions.resolver, {
+    filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
+    rootDir: options.rootDir,
+  });
 
   newOptions.nonFlagArgs = argv._;
   newOptions.testPathPattern = buildTestPathPattern(argv);
