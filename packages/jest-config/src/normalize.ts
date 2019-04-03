@@ -496,11 +496,6 @@ export default function normalize(
     });
   }
 
-  newOptions.testSequencer = getSequencer(newOptions.resolver, {
-    filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
-    rootDir: options.rootDir,
-  });
-
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
   optionKeys.reduce((newOptions, key: keyof Config.InitialOptions) => {
@@ -876,6 +871,11 @@ export default function normalize(
   } catch (e) {
     // ignored
   }
+
+  newOptions.testSequencer = getSequencer(newOptions.resolver, {
+    filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
+    rootDir: options.rootDir,
+  });
 
   newOptions.nonFlagArgs = argv._;
   newOptions.testPathPattern = buildTestPathPattern(argv);
