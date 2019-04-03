@@ -478,10 +478,6 @@ export default function normalize(
     options.testRunner = require.resolve('jest-jasmine2');
   }
 
-  if (!options.testSequencer) {
-    options.testSequencer = require.resolve('@jest/test-sequencer');
-  }
-
   if (!options.coverageDirectory) {
     options.coverageDirectory = path.resolve(options.rootDir, 'coverage');
   }
@@ -499,6 +495,11 @@ export default function normalize(
       rootDir: options.rootDir,
     });
   }
+
+  newOptions.testSequencer = getSequencer(newOptions.resolver, {
+    rootDir: options.rootDir,
+    filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
+  });
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
@@ -588,17 +589,6 @@ export default function normalize(
           value =
             option &&
             getRunner(newOptions.resolver, {
-              filePath: option,
-              rootDir: options.rootDir,
-            });
-        }
-        break;
-      case 'testSequencer':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            getSequencer(newOptions.resolver, {
               filePath: option,
               rootDir: options.rootDir,
             });
