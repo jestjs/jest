@@ -135,13 +135,9 @@ async function runTestInternal(
   let testConsole;
 
   if (globalConfig.silent) {
-    testConsole = new NullConsole(consoleOut, process.stderr, consoleFormatter);
+    testConsole = new NullConsole(consoleOut, consoleOut, consoleFormatter);
   } else if (globalConfig.verbose) {
-    testConsole = new CustomConsole(
-      consoleOut,
-      process.stderr,
-      consoleFormatter,
-    );
+    testConsole = new CustomConsole(consoleOut, consoleOut, consoleFormatter);
   } else {
     testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
   }
