@@ -76,14 +76,17 @@ describe('CustomConsole', () => {
       _console.assert(false);
 
       expect(_stderr).toMatch('AssertionError');
-      expect(_stderr).toMatch('The expression evaluated to a falsy value:');
+      expect(_stderr).toMatch(
+        // The message may differ across Node versions
+        /(false == true)|(The expression evaluated to a falsy value:)/,
+      );
     });
 
     test('log the assertion error when the assertion is falsy with another message argument', () => {
-      _console.assert(false, 'ok');
+      _console.assert(false, 'this should not happen');
 
       expect(_stderr).toMatch('AssertionError');
-      expect(_stderr).toMatch('ok');
+      expect(_stderr).toMatch('this should not happen');
     });
   });
 
