@@ -143,6 +143,6 @@ export default class JestWorker {
     }
     this._ending = true;
 
-    return await this._workerPool.end();
+    return this._workerPool.end();
   }
 }

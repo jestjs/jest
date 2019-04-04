@@ -19,13 +19,13 @@ import runJest from '../runJest';
 const DIR = resolve(tmpdir(), 'worker-force-exit');
 
 beforeEach(() => cleanup(DIR));
+afterEach(() => cleanup(DIR));
 const testFiles = {
   ...generateTestFilesToForceUsingWorkers(),
   'package.json': `{
       "testEnvironment": "node"
   }`,
 };
-afterEach(() => cleanup(DIR));
 
 const verifyNumPassed = stderr => {
   const numberOfTestsPassed = (stderr.match(/\bPASS\b/g) || []).length;
