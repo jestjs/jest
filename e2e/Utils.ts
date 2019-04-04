@@ -99,7 +99,7 @@ export const generateTestFilesToForceUsingWorkers = () => {
   const testFiles = {};
   for (let i = 0; i <= NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS; i++) {
     testFiles[`__tests__/test${i}.test.js`] = `
-      test('test ${i}', () => {});
+      test.todo('test ${i}');
     `;
   }
   return testFiles;
