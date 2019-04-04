@@ -4,8 +4,8 @@ node_js:
   - '10'
 
 branches:
-   only:
-   - master
+  only:
+    - master
 
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
