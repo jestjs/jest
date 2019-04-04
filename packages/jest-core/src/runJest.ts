@@ -20,7 +20,8 @@ import {
   AggregatedResult,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
-import TestSequencer from '@jest/test-sequencer'; // eslint-disable-line import/no-extraneous-dependencies
+// eslint-disable-next-line import/no-extraneous-dependencies
+import TestSequencer from '@jest/test-sequencer';
 import {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
