@@ -23,6 +23,10 @@ import {
   WorkerOptions,
 } from '../types';
 
+const SIGNAL_BASE_EXIT_CODE = 128;
+const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
+const SIGTERM_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 15;
+
 // How long to wait after SIGTERM before sending SIGKILL
 const SIGKILL_DELAY = 500;
 
@@ -198,8 +202,8 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _onExit(exitCode: number) {
     if (
       exitCode !== 0 &&
-      exitCode !== 137 && // SIGKILL
-      exitCode !== 143 // SIGTERM
+      exitCode !== SIGTERM_EXIT_CODE &&
+      exitCode !== SIGKILL_EXIT_CODE
     ) {
       this.initialize();
 
