@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "24.7.0",
+  "version": "24.7.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,18 +11,18 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/traverse": "^7.1.0",
-    "@jest/environment": "^24.7.0",
-    "@jest/test-result": "^24.7.0",
+    "@jest/environment": "^24.7.1",
+    "@jest/test-result": "^24.7.1",
     "@jest/types": "^24.7.0",
     "chalk": "^2.0.1",
     "co": "^4.6.0",
-    "expect": "^24.7.0",
+    "expect": "^24.7.1",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "^24.7.0",
+    "jest-each": "^24.7.1",
     "jest-matcher-utils": "^24.7.0",
-    "jest-message-util": "^24.7.0",
-    "jest-snapshot": "^24.7.0",
-    "jest-util": "^24.7.0",
+    "jest-message-util": "^24.7.1",
+    "jest-snapshot": "^24.7.1",
+    "jest-util": "^24.7.1",
     "pretty-format": "^24.7.0",
     "stack-utils": "^1.0.1",
     "throat": "^4.0.0"
@@ -33,7 +33,7 @@
     "@types/co": "^4.6.0",
     "@types/stack-utils": "^1.0.1",
     "execa": "^1.0.0",
-    "jest-runtime": "^24.7.0"
+    "jest-runtime": "^24.7.1"
   },
   "engines": {
     "node": ">= 6"
@@ -41,5 +41,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "eb0413622542bc0f70c32950d9daeeab9f6802ac"
+  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
 }

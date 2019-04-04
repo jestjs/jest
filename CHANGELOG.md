@@ -4,12 +4,16 @@
 
 ### Fixes
 
-- `[@jest/config]` Normalize `testSequencer` to its absolute path ([#8267](https://github.com/facebook/jest/pull/8267))
-- `[@jest/console]` Print to stderr when calling `console.error`, `console.warn` or `console.assert` using the `jest-runtime` CLI ([#8261](https://github.com/facebook/jest/pull/8261))
-
 ### Chore & Maintenance
 
 ### Performance
+
+## 24.7.1
+
+### Fixes
+
+- `[@jest/config]` Normalize `testSequencer` to its absolute path ([#8267](https://github.com/facebook/jest/pull/8267))
+- `[@jest/console]` Print to stderr when calling `console.error`, `console.warn` or `console.assert` using the `jest-runtime` CLI ([#8261](https://github.com/facebook/jest/pull/8261))
 
 ## 24.7.0
 
