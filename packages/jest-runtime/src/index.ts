@@ -27,7 +27,6 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import fs from 'graceful-fs';
-import stripBOM from 'strip-bom';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
@@ -464,18 +463,7 @@ class Runtime {
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
   ) {
-    if (
-      path.extname(modulePath) === '.json' &&
-      // We still need to fallback to this method for internal modules,
-      // as `ci-info` ends up throwing an exception when it fails to
-      // import a JSON file correctly
-      options &&
-      options.isInternalModule
-    ) {
-      localModule.exports = this._environment.global.JSON.parse(
-        stripBOM(fs.readFileSync(modulePath, 'utf8')),
-      );
-    } else if (path.extname(modulePath) === '.node') {
+    if (path.extname(modulePath) === '.node') {
       localModule.exports = require(modulePath);
     } else {
       // Only include the fromPath if a moduleName is given. Else treat as root.

@@ -331,6 +331,8 @@ export default class ScriptTransformer {
       !isInternalModule &&
       !isCoreModule &&
       (this.shouldTransform(filename) || instrument);
+    const isJson = path.extname(filename) === '.json';
+    const prefix = isJson ? 'module.exports = ' : '';
 
     try {
       const extraGlobals = (options && options.extraGlobals) || [];
@@ -342,11 +344,14 @@ export default class ScriptTransformer {
           instrument,
         );
 
-        wrappedCode = wrap(transformedSource.code, ...extraGlobals);
+        wrappedCode = wrap(
+          `${prefix}${transformedSource.code}`,
+          ...extraGlobals,
+        );
         sourceMapPath = transformedSource.sourceMapPath;
         mapCoverage = transformedSource.mapCoverage;
       } else {
-        wrappedCode = wrap(content, ...extraGlobals);
+        wrappedCode = wrap(`${prefix}${content}`, ...extraGlobals);
       }
 
       return {
