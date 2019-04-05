@@ -40,6 +40,30 @@ test('inline snapshots', () =>
 
 `;
 
+exports[`do not indent empty lines: initial write 1`] = `
+test('inline snapshots', () =>
+  expect(\`hello
+
+world\`).toMatchInlineSnapshot(\`
+    "hello
+
+    world"
+  \`));
+
+`;
+
+exports[`do not indent empty lines: snapshot passed 1`] = `
+test('inline snapshots', () =>
+  expect(\`hello
+
+world\`).toMatchInlineSnapshot(\`
+    "hello
+
+    world"
+  \`));
+
+`;
+
 exports[`handles property matchers: initial write 1`] = `
 test('handles property matchers', () => {
   expect({createdAt: new Date()}).toMatchInlineSnapshot(

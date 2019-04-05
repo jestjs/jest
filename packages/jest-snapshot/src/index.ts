@@ -95,13 +95,16 @@ function stripAddedIndentation(inlineSnapshot: string) {
   }
 
   for (let i = 1; i < lines.length - 1; i++) {
-    if (lines[i].indexOf(indentation) !== 0) {
-      // All lines except first and last should have the same indent as the
-      // first line (or more). If this isn't the case we don't want to touch it.
-      return inlineSnapshot;
-    }
+    if (lines[i] !== '') {
+      if (lines[i].indexOf(indentation) !== 0) {
+        // All lines except first and last should either be blank or have the same
+        // indent as the first line (or more). If this isn't the case we don't
+        // want to touch the snapshot at all.
+        return inlineSnapshot;
+      }
 
-    lines[i] = lines[i].substr(indentation.length);
+      lines[i] = lines[i].substr(indentation.length);
+    }
   }
 
   // Last line is a special case because it won't have the same indent as others

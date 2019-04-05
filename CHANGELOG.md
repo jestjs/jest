@@ -4,7 +4,8 @@
 
 ### Fixes
 
-- `[@jest/runtime]` Allow custom transforms for JSON dependencies
+- `[jest-snapshot]` Inline snapshots: do not indent empty lines ([#8277](https://github.com/facebook/jest/pull/8277))
+- `[@jest/runtime]` Allow custom transforms for JSON dependencies ([#2578](https://github.com/facebook/jest/pull/2578))
 
 ### Chore & Maintenance
 
