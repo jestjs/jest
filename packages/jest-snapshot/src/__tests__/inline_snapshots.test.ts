@@ -304,3 +304,36 @@ test('saveInlineSnapshots() indents snapshots after prettier reformats', () => {
       '  `));\n',
   );
 });
+
+test('saveInlineSnapshots() does not indent empty lines', () => {
+  const filename = path.join(__dirname, 'my.test.js');
+  (fs.readFileSync as jest.Mock).mockImplementation(
+    () =>
+      "it('is a test', () => expect(`hello\n\nworld`).toMatchInlineSnapshot());\n",
+  );
+  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+    bracketSpacing: false,
+    singleQuote: true,
+  });
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 9, file: filename, line: 3} as Frame,
+        snapshot: `\nhello\n\nworld\n`,
+      },
+    ],
+    prettier,
+    babelTraverse,
+  );
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    "it('is a test', () =>\n" +
+      '  expect(`hello\n\nworld`).toMatchInlineSnapshot(`\n' +
+      '    hello\n' +
+      '\n' +
+      '    world\n' +
+      '  `));\n',
+  );
+});

@@ -126,6 +126,11 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
         // First line is either a 1-line snapshot or a blank line.
         return line;
       } else if (index !== lines.length - 1) {
+        // Do not indent empty lines.
+        if (line === '') {
+          return line;
+        }
+
         // Not last line, indent one level deeper than expect call.
         return indentation.repeat(numIndents + 1) + line;
       } else {
