@@ -7,4 +7,8 @@
 
 'use strict';
 
-module.exports.process = () => `{"foo": "foo"}`;
+module.exports.process = source => {
+  const json = JSON.parse(source);
+  Object.keys(json).forEach(k => (json[k] = k));
+  return JSON.stringify(json);
+};
