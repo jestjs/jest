@@ -464,7 +464,11 @@ class Runtime {
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
   ) {
-    if (path.extname(modulePath) === '.json') {
+    if (
+      path.extname(modulePath) === '.json' &&
+      options &&
+      options.isInternalModule
+    ) {
       localModule.exports = this._environment.global.JSON.parse(
         stripBOM(fs.readFileSync(modulePath, 'utf8')),
       );
