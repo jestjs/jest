@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-snapshot]` Inline snapshots: do not indent empty lines ([#8277](https://github.com/facebook/jest/pull/8277))
+
 ### Chore & Maintenance
 
 ### Performance
