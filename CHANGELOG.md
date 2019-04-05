@@ -3,6 +3,7 @@
 ### Features
 
 ### Fixes
+
 - `[@jest/runtime]` Allow custom transforms for JSON dependencies
 
 ### Chore & Maintenance
