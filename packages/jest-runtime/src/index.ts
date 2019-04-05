@@ -466,6 +466,9 @@ class Runtime {
   ) {
     if (
       path.extname(modulePath) === '.json' &&
+      // We still need to fallback to this method for internal modules,
+      // as `ci-info` ends up throwing an exception when it fails to
+      // import a JSON file correctly
       options &&
       options.isInternalModule
     ) {
