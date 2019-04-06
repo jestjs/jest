@@ -225,12 +225,7 @@ Received has value: <red>undefined</>"
 `;
 
 exports[`.toBe() does not crash on circular references 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
-
-Expected: <green>{}</>
-Received: <red>{\\"circular\\": [Circular]}</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -242,99 +237,131 @@ Difference:
 `;
 
 exports[`.toBe() fails for '"a"' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>\\"a\\"</>
-Received: <red>\\"a\\"</>"
+Expected: not <green>\\"a\\"</>"
 `;
 
 exports[`.toBe() fails for '[]' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>[]</>
-Received: <red>[]</>"
+Expected: not <green>[]</>"
 `;
 
 exports[`.toBe() fails for '{}' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>{}</>
-Received: <red>{}</>"
+Expected: not <green>{}</>"
 `;
 
 exports[`.toBe() fails for '1' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>1</>
-Received: <red>1</>"
+Expected: not <green>1</>"
 `;
 
 exports[`.toBe() fails for 'false' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>false</>
-Received: <red>false</>"
+Expected: not <green>false</>"
 `;
 
 exports[`.toBe() fails for 'null' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>null</>
-Received: <red>null</>"
+Expected: not <green>null</>"
 `;
 
 exports[`.toBe() fails for 'undefined' with '.not' 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>undefined</>
-Received: <red>undefined</>"
+Expected: not <green>undefined</>"
 `;
 
 exports[`.toBe() fails for: "abc" and "cde" 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>\\"cde\\"</>
 Received: <red>\\"abc\\"</>"
 `;
 
+exports[`.toBe() fails for: "four
+4
+line
+string" and "3
+line
+string" 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<green>- 3</>
+<red>+ four</>
+<red>+ 4</>
+<dim>  line</>
+<dim>  string</>"
+`;
+
 exports[`.toBe() fails for: "with 
 trailing space" and "without trailing space" 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>\\"without trailing space\\"</>
 Received: <red>\\"with<inverse> </></>
 <red>trailing space\\"</>"
 `;
 
+exports[`.toBe() fails for: /received/ and /expected/ 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+Expected: <green>/expected/</>
+Received: <red>/received/</>"
+`;
+
 exports[`.toBe() fails for: [] and [] 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>[]</>
-Received: <red>[]</>
+Received value has no visual difference
 
-Difference:
+<dim>If the test should pass with deep equality, replace toBe with toStrictEqual</>"
+`;
 
-<dim>Compared values have no visual difference.</> <dim>Note that you are testing for equality with the stricter \`toBe\` matcher using \`Object.is\`. For deep equality only, use \`toEqual\` instead.</>"
+exports[`.toBe() fails for: [Error: received] and [Error: expected] 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+Expected: <green>[Error: expected]</>
+Received: <red>[Error: received]</>"
+`;
+
+exports[`.toBe() fails for: [Function anonymous] and [Function anonymous] 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+Expected: <green>[Function anonymous]</>
+Received value has no visual difference"
+`;
+
+exports[`.toBe() fails for: {"a": [Function a], "b": 2} and {"a": Any<Function>, "b": 2} 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+Expected: <green>{\\"a\\": Any<Function>, \\"b\\": 2}</>
+Received: <red>{\\"a\\": [Function a], \\"b\\": 2}</>
+
+<dim>If the test should pass with deep equality, replace toBe with toStrictEqual</>"
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>{\\"a\\": 1}</>
-Received: <red>{\\"a\\": 1}</>
+Received value has no visual difference
 
-Difference:
-
-<dim>Compared values have no visual difference.</> <dim>Note that you are testing for equality with the stricter \`toBe\` matcher using \`Object.is\`. For deep equality only, use \`toEqual\` instead.</>"
+<dim>If the test should pass with deep equality, replace toBe with toStrictEqual</>"
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
-
-Expected: <green>{\\"a\\": 5}</>
-Received: <red>{\\"a\\": 1}</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -345,44 +372,54 @@ Difference:
 <dim>  }</>"
 `;
 
+exports[`.toBe() fails for: {"a": undefined, "b": 2} and {"b": 2} 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+Expected: <green>{\\"b\\": 2}</>
+Received: <red>{\\"a\\": undefined, \\"b\\": 2}</>
+
+<dim>If the test should pass with deep equality, replace toBe with toEqual</>"
+`;
+
 exports[`.toBe() fails for: {} and {} 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>{}</>
-Received: <red>{}</>
+Received value has no visual difference
 
-Difference:
-
-<dim>Compared values have no visual difference.</> <dim>Note that you are testing for equality with the stricter \`toBe\` matcher using \`Object.is\`. For deep equality only, use \`toEqual\` instead.</>"
+<dim>If the test should pass with deep equality, replace toBe with toStrictEqual</>"
 `;
 
 exports[`.toBe() fails for: -0 and 0 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>0</>
 Received: <red>-0</>"
 `;
 
 exports[`.toBe() fails for: 1 and 2 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>2</>
 Received: <red>1</>"
 `;
 
+exports[`.toBe() fails for: Symbol(received) and Symbol(expected) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+Expected: <green>Symbol(expected)</>
+Received: <red>Symbol(received)</>"
+`;
+
 exports[`.toBe() fails for: null and undefined 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>undefined</>
-Received: <red>null</>
-
-Difference:
-
-  Comparing two different types of values. Expected <green>undefined</> but received <red>null</>."
+Received: <red>null</>"
 `;
 
 exports[`.toBe() fails for: true and false 1`] = `
-"<dim>expect(</><red>received</><dim>).toBe(</><green>expected</><dim>) // Object.is equality</>
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>false</>
 Received: <red>true</>"

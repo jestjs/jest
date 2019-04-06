@@ -8,9 +8,9 @@
 
 import getType, {isPrimitive} from 'jest-get-type';
 import {
+  DIM_COLOR,
   EXPECTED_COLOR,
   RECEIVED_COLOR,
-  SUGGEST_TO_EQUAL,
   SUGGEST_TO_CONTAIN_EQUAL,
   diff,
   ensureExpectedIsNonNegativeInteger,
@@ -22,6 +22,7 @@ import {
   printReceived,
   printExpected,
   printWithType,
+  stringify,
   MatcherHintOptions,
 } from 'jest-matcher-utils';
 import {MatchersObject, MatcherState} from './types';
@@ -41,6 +42,12 @@ import {
 } from './utils';
 import {equals} from './jasmineUtils';
 
+const toStrictEqualMatchers = [
+  iterableEquality,
+  typeEquality,
+  sparseArrayEquality,
+];
+
 type ContainIterable =
   | Array<unknown>
   | Set<unknown>
@@ -50,10 +57,11 @@ type ContainIterable =
 
 const matchers: MatchersObject = {
   toBe(this: MatcherState, received: unknown, expected: unknown) {
-    const matcherName = '.toBe';
+    const matcherName = 'toBe';
     const options: MatcherHintOptions = {
       comment: 'Object.is equality',
       isNot: this.isNot,
+      promise: this.promise,
     };
 
     const pass = Object.is(received, expected);
@@ -62,32 +70,55 @@ const matchers: MatchersObject = {
       ? () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          `Expected: ${printExpected(expected)}\n` +
-          `Received: ${printReceived(received)}`
+          `Expected: not ${printExpected(expected)}`
       : () => {
           const receivedType = getType(received);
           const expectedType = getType(expected);
-          const suggestToEqual =
-            receivedType === expectedType &&
-            (receivedType === 'object' || expectedType === 'array') &&
-            equals(received, expected, [iterableEquality]);
-          const oneline = isOneline(expected, received);
-          const diffString = diff(expected, received, {expand: this.expand});
+
+          const isShallow =
+            receivedType !== expectedType ||
+            (isPrimitive(expected) &&
+              (expectedType !== 'string' || isOneline(expected, received))) ||
+            expectedType === 'function' ||
+            expectedType === 'regexp' ||
+            (received instanceof Error && expected instanceof Error);
+
+          const deepEqualityName =
+            isShallow || (expectedType !== 'object' && expectedType !== 'array')
+              ? ''
+              : equals(received, expected, toStrictEqualMatchers, true)
+              ? 'toStrictEqual'
+              : equals(received, expected, [iterableEquality])
+              ? 'toEqual'
+              : '';
+
+          const hasDifference = stringify(expected) !== stringify(received);
+          const difference =
+            !isShallow && deepEqualityName === '' && hasDifference
+              ? diff(expected, received, {expand: this.expand})
+              : null;
 
           return (
             matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
-            `Expected: ${printExpected(expected)}\n` +
-            `Received: ${printReceived(received)}` +
-            (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : '') +
-            (suggestToEqual ? ` ${SUGGEST_TO_EQUAL}` : '')
+            (difference
+              ? difference
+              : `Expected: ${printExpected(expected)}\n` +
+                (hasDifference
+                  ? `Received: ${printReceived(received)}`
+                  : 'Received value has no visual difference') +
+                (deepEqualityName &&
+                  '\n\n' +
+                    DIM_COLOR(
+                      `If the test should pass with deep equality, replace toBe with ${deepEqualityName}`,
+                    )))
           );
         };
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
-    return {actual: received, expected, message, name: 'toBe', pass};
+    return {actual: received, expected, message, name: matcherName, pass};
   },
 
   toBeCloseTo(
@@ -856,12 +887,7 @@ const matchers: MatchersObject = {
       isNot: this.isNot,
     };
 
-    const pass = equals(
-      received,
-      expected,
-      [iterableEquality, typeEquality, sparseArrayEquality],
-      true,
-    );
+    const pass = equals(received, expected, toStrictEqualMatchers, true);
 
     const message = pass
       ? () =>
