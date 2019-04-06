@@ -27,6 +27,7 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import fs from 'graceful-fs';
+import stripBOM from 'strip-bom';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
@@ -463,7 +464,19 @@ class Runtime {
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
   ) {
-    if (path.extname(modulePath) === '.node') {
+    if (path.extname(modulePath) === '.json') {
+      const text = stripBOM(fs.readFileSync(modulePath, 'utf8'));
+
+      const transformedFile = this._scriptTransformer.transformJson(
+        modulePath,
+        options,
+        text,
+      );
+
+      localModule.exports = this._environment.global.JSON.parse(
+        transformedFile,
+      );
+    } else if (path.extname(modulePath) === '.node') {
       localModule.exports = require(modulePath);
     } else {
       // Only include the fromPath if a moduleName is given. Else treat as root.

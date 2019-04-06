@@ -331,8 +331,6 @@ export default class ScriptTransformer {
       !isInternalModule &&
       !isCoreModule &&
       (this.shouldTransform(filename) || instrument);
-    const isJson = path.extname(filename) === '.json';
-    const prefix = isJson ? 'module.exports = ' : '';
 
     try {
       const extraGlobals = (options && options.extraGlobals) || [];
@@ -344,14 +342,11 @@ export default class ScriptTransformer {
           instrument,
         );
 
-        wrappedCode = wrap(
-          `${prefix}${transformedSource.code}`,
-          ...extraGlobals,
-        );
+        wrappedCode = wrap(transformedSource.code, ...extraGlobals);
         sourceMapPath = transformedSource.sourceMapPath;
         mapCoverage = transformedSource.mapCoverage;
       } else {
-        wrappedCode = wrap(`${prefix}${content}`, ...extraGlobals);
+        wrappedCode = wrap(content, ...extraGlobals);
       }
 
       return {
@@ -408,6 +403,28 @@ export default class ScriptTransformer {
     }
 
     return result;
+  }
+
+  transformJson(
+    filename: Config.Path,
+    options: Pick<Options, 'isInternalModule' | 'isCoreModule'> | undefined,
+    fileSource: string,
+  ): string {
+    const isInternalModule = !!(options && options.isInternalModule);
+    const isCoreModule = !!(options && options.isCoreModule);
+    const willTransform =
+      !isInternalModule && !isCoreModule && this.shouldTransform(filename);
+
+    if (willTransform) {
+      const {code: transformedJsonSource} = this.transformSource(
+        filename,
+        fileSource,
+        false,
+      );
+      return transformedJsonSource;
+    }
+
+    return fileSource;
   }
 
   /**
