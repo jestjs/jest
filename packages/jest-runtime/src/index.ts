@@ -492,11 +492,11 @@ class Runtime {
   ): TransformationOptions {
     return {
       ...options,
-      extraGlobals: this._config.extraGlobals || [],
       changedFiles: this._coverageOptions.changedFiles,
       collectCoverage: this._coverageOptions.collectCoverage,
       collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
       collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
+      extraGlobals: this._config.extraGlobals || [],
     };
   }
 
