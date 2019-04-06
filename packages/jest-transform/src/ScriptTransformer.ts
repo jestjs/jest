@@ -407,11 +407,11 @@ export default class ScriptTransformer {
 
   transformJson(
     filename: Config.Path,
-    options: Pick<Options, 'isInternalModule' | 'isCoreModule'> | undefined,
+    options: Options,
     fileSource: string,
   ): string {
-    const isInternalModule = !!(options && options.isInternalModule);
-    const isCoreModule = !!(options && options.isCoreModule);
+    const isInternalModule = options.isInternalModule;
+    const isCoreModule = options.isCoreModule;
     const willTransform =
       !isInternalModule && !isCoreModule && this.shouldTransform(filename);
 

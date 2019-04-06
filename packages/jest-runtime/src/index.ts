@@ -25,6 +25,7 @@ import {
   ScriptTransformer,
   ShouldInstrumentOptions,
   shouldInstrument,
+  TransformationOptions,
 } from '@jest/transform';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
@@ -469,7 +470,7 @@ class Runtime {
 
       const transformedFile = this._scriptTransformer.transformJson(
         modulePath,
-        options,
+        this._getFullTransformationOptions(options),
         text,
       );
 
@@ -484,6 +485,19 @@ class Runtime {
       this._execModule(localModule, options, moduleRegistry, fromPath);
     }
     localModule.loaded = true;
+  }
+
+  private _getFullTransformationOptions(
+    options: InternalModuleOptions | undefined,
+  ): TransformationOptions {
+    return {
+      ...options,
+      extraGlobals: this._config.extraGlobals || [],
+      changedFiles: this._coverageOptions.changedFiles,
+      collectCoverage: this._coverageOptions.collectCoverage,
+      collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
+      collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
+    };
   }
 
   requireModuleOrMock(from: Config.Path, moduleName: string) {
@@ -684,7 +698,6 @@ class Runtime {
       return;
     }
 
-    const isInternalModule = !!(options && options.isInternalModule);
     const filename = localModule.filename;
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
     this._currentlyExecutingModulePath = filename;
@@ -709,14 +722,7 @@ class Runtime {
     const extraGlobals = this._config.extraGlobals || [];
     const transformedFile = this._scriptTransformer.transform(
       filename,
-      {
-        changedFiles: this._coverageOptions.changedFiles,
-        collectCoverage: this._coverageOptions.collectCoverage,
-        collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
-        collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
-        extraGlobals,
-        isInternalModule,
-      },
+      this._getFullTransformationOptions(options),
       this._cacheFS[filename],
     );
 
