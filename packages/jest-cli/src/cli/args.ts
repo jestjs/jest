@@ -229,7 +229,7 @@ export const options = {
     default: false,
     description:
       'Print out remaining open handles preventing Jest from exiting at the ' +
-      'end of a test run.',
+      'end of a test run. Implies `runInBand`.',
     type: 'boolean' as 'boolean',
   },
   env: {

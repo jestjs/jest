@@ -86,12 +86,7 @@ export default class TestScheduler {
       getEstimatedTime(timings, this._globalConfig.maxWorkers) / 1000,
     );
 
-    const runInBand = shouldRunInBand(
-      tests,
-      this._globalConfig.watch || this._globalConfig.watchAll,
-      this._globalConfig.maxWorkers,
-      timings,
-    );
+    const runInBand = shouldRunInBand(tests, timings, this._globalConfig);
 
     const onResult = async (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
