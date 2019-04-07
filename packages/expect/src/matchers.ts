@@ -42,7 +42,7 @@ import {
 } from './utils';
 import {equals} from './jasmineUtils';
 
-const toStrictEqualMatchers = [
+const toStrictEqualTesters = [
   iterableEquality,
   typeEquality,
   sparseArrayEquality,
@@ -87,7 +87,7 @@ const matchers: MatchersObject = {
           if (!isShallowInequality) {
             if (expectedType === 'object' || expectedType === 'array') {
               // If deep equality could pass when referential identity fails
-              if (equals(received, expected, toStrictEqualMatchers, true)) {
+              if (equals(received, expected, toStrictEqualTesters, true)) {
                 deepEqualityName = 'toStrictEqual';
               } else if (equals(received, expected, [iterableEquality])) {
                 deepEqualityName = 'toEqual';
@@ -890,7 +890,7 @@ const matchers: MatchersObject = {
       isNot: this.isNot,
     };
 
-    const pass = equals(received, expected, toStrictEqualMatchers, true);
+    const pass = equals(received, expected, toStrictEqualTesters, true);
 
     const message = pass
       ? () =>
