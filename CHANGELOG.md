@@ -10,6 +10,8 @@
 
 ### Performance
 
+- `[jest-runtime]` Fix module registry memory leak ([#8282](https://github.com/facebook/jest/pull/8282))
+
 ## 24.7.1
 
 ### Fixes
