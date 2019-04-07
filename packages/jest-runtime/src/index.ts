@@ -539,8 +539,8 @@ class Runtime {
   resetModules() {
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
-    this._mockRegistry = new Map();
-    this._moduleRegistry = new Map();
+    this._mockRegistry.clear();
+    this._moduleRegistry.clear();
 
     if (this._environment) {
       if (this._environment.global) {
