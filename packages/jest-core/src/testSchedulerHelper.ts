@@ -13,8 +13,13 @@ const SLOW_TEST_TIME = 1000;
 export function shouldRunInBand(
   tests: Array<Test>,
   timings: Array<number>,
-  {maxWorkers, watch, watchAll}: Config.GlobalConfig,
+  {detectOpenHandles, maxWorkers, watch, watchAll}: Config.GlobalConfig,
 ) {
+  // detectOpenHandles makes no sense without runInBand, because it cannot detect leaks in workers
+  if (detectOpenHandles) {
+    return true;
+  }
+
   /*
    * Run in band if we only have one test or one worker available, unless we
    * are using the watch mode, in which case the TTY has to be responsive and
