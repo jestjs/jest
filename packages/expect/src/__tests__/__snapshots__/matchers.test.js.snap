@@ -322,10 +322,10 @@ Received: <red>/received/</>"
 exports[`.toBe() fails for: [] and [] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>[]</>
-Received value has no visual difference
+<dim>If it should pass with deep equality, replace toBe with toStrictEqual</>
 
-<dim>If the test should pass with deep equality, replace toBe with toStrictEqual</>"
+Expected: <green>[]</>
+Received value has no visual difference"
 `;
 
 exports[`.toBe() fails for: [Error: received] and [Error: expected] 1`] = `
@@ -345,19 +345,25 @@ Received value has no visual difference"
 exports[`.toBe() fails for: {"a": [Function a], "b": 2} and {"a": Any<Function>, "b": 2} 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>{\\"a\\": Any<Function>, \\"b\\": 2}</>
-Received: <red>{\\"a\\": [Function a], \\"b\\": 2}</>
+<dim>If it should pass with deep equality, replace toBe with toStrictEqual</>
 
-<dim>If the test should pass with deep equality, replace toBe with toStrictEqual</>"
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"a\\": Any<Function>,</>
+<red>+   \\"a\\": [Function a],</>
+<dim>    \\"b\\": 2,</>
+<dim>  }</>"
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>{\\"a\\": 1}</>
-Received value has no visual difference
+<dim>If it should pass with deep equality, replace toBe with toStrictEqual</>
 
-<dim>If the test should pass with deep equality, replace toBe with toStrictEqual</>"
+Expected: <green>{\\"a\\": 1}</>
+Received value has no visual difference"
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
@@ -375,19 +381,24 @@ exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
 exports[`.toBe() fails for: {"a": undefined, "b": 2} and {"b": 2} 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>{\\"b\\": 2}</>
-Received: <red>{\\"a\\": undefined, \\"b\\": 2}</>
+<dim>If it should pass with deep equality, replace toBe with toEqual</>
 
-<dim>If the test should pass with deep equality, replace toBe with toEqual</>"
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<red>+   \\"a\\": undefined,</>
+<dim>    \\"b\\": 2,</>
+<dim>  }</>"
 `;
 
 exports[`.toBe() fails for: {} and {} 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>{}</>
-Received value has no visual difference
+<dim>If it should pass with deep equality, replace toBe with toStrictEqual</>
 
-<dim>If the test should pass with deep equality, replace toBe with toStrictEqual</>"
+Expected: <green>{}</>
+Received value has no visual difference"
 `;
 
 exports[`.toBe() fails for: -0 and 0 1`] = `

@@ -75,7 +75,7 @@ const matchers: MatchersObject = {
           const receivedType = getType(received);
           const expectedType = getType(expected);
 
-          const isShallow =
+          const isShallowInequality =
             receivedType !== expectedType ||
             (isPrimitive(expected) &&
               (expectedType !== 'string' || isOneline(expected, received))) ||
@@ -83,35 +83,38 @@ const matchers: MatchersObject = {
             expectedType === 'regexp' ||
             (received instanceof Error && expected instanceof Error);
 
-          const deepEqualityName =
-            isShallow || (expectedType !== 'object' && expectedType !== 'array')
-              ? ''
-              : equals(received, expected, toStrictEqualMatchers, true)
-              ? 'toStrictEqual'
-              : equals(received, expected, [iterableEquality])
-              ? 'toEqual'
-              : '';
+          let deepEqualityName = null;
+          if (!isShallowInequality) {
+            if (expectedType === 'object' || expectedType === 'array') {
+              // If deep equality could pass when referential identity fails
+              if (equals(received, expected, toStrictEqualMatchers, true)) {
+                deepEqualityName = 'toStrictEqual';
+              } else if (equals(received, expected, [iterableEquality])) {
+                deepEqualityName = 'toEqual';
+              }
+            }
+          }
 
           const hasDifference = stringify(expected) !== stringify(received);
           const difference =
-            !isShallow && deepEqualityName === '' && hasDifference
-              ? diff(expected, received, {expand: this.expand})
+            hasDifference && !isShallowInequality
+              ? diff(expected, received, {expand: this.expand}) // string | null
               : null;
 
           return (
             matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
-            (difference
+            (deepEqualityName !== null
+              ? DIM_COLOR(
+                  `If it should pass with deep equality, replace toBe with ${deepEqualityName}`,
+                ) + '\n\n'
+              : '') +
+            (difference !== null
               ? difference
               : `Expected: ${printExpected(expected)}\n` +
                 (hasDifference
                   ? `Received: ${printReceived(received)}`
-                  : 'Received value has no visual difference') +
-                (deepEqualityName &&
-                  '\n\n' +
-                    DIM_COLOR(
-                      `If the test should pass with deep equality, replace toBe with ${deepEqualityName}`,
-                    )))
+                  : 'Received value has no visual difference'))
           );
         };
 
