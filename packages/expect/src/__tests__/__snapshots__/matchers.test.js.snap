@@ -415,6 +415,22 @@ Expected: <green>2</>
 Received: <red>1</>"
 `;
 
+exports[`.toBe() fails for: 2020-02-20T00:00:00.000Z and 2020-02-20T00:00:00.000Z 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+<dim>If it should pass with deep equality, replace toBe with toStrictEqual</>
+
+Expected: <green>2020-02-20T00:00:00.000Z</>
+Received value has no visual difference"
+`;
+
+exports[`.toBe() fails for: 2020-02-21T00:00:00.000Z and 2020-02-20T00:00:00.000Z 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+Expected: <green>2020-02-20T00:00:00.000Z</>
+Received: <red>2020-02-21T00:00:00.000Z</>"
+`;
+
 exports[`.toBe() fails for: Symbol(received) and Symbol(expected) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 

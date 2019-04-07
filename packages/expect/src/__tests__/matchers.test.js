@@ -209,6 +209,8 @@ describe('.toBe()', () => {
     [{a: 1}, {a: 5}],
     [{a: () => {}, b: 2}, {a: expect.any(Function), b: 2}],
     [{a: undefined, b: 2}, {b: 2}],
+    [new Date('2020-02-20'), new Date('2020-02-20')],
+    [new Date('2020-02-21'), new Date('2020-02-20')],
     [/received/, /expected/],
     [Symbol('received'), Symbol('expected')],
     [new Error('received'), new Error('expected')],
