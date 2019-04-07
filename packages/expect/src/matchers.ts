@@ -75,29 +75,28 @@ const matchers: MatchersObject = {
           const receivedType = getType(received);
           const expectedType = getType(expected);
 
-          const isShallowInequality =
-            receivedType !== expectedType ||
-            (isPrimitive(expected) &&
-              (expectedType !== 'string' || isOneline(expected, received))) ||
-            expectedType === 'function' ||
-            expectedType === 'regexp' ||
-            (received instanceof Error && expected instanceof Error);
-
           let deepEqualityName = null;
-          if (!isShallowInequality) {
-            if (expectedType === 'object' || expectedType === 'array') {
-              // If deep equality could pass when referential identity fails
-              if (equals(received, expected, toStrictEqualTesters, true)) {
-                deepEqualityName = 'toStrictEqual';
-              } else if (equals(received, expected, [iterableEquality])) {
-                deepEqualityName = 'toEqual';
-              }
+          if (expectedType !== 'map' && expectedType !== 'set') {
+            // If deep equality passes when referential identity fails,
+            // but exclude map and set until review of their equality logic.
+            if (equals(received, expected, toStrictEqualTesters, true)) {
+              deepEqualityName = 'toStrictEqual';
+            } else if (equals(received, expected, [iterableEquality])) {
+              deepEqualityName = 'toEqual';
             }
           }
 
+          const hasConciseReport =
+            receivedType !== expectedType ||
+            (isPrimitive(expected) &&
+              (expectedType !== 'string' || isOneline(expected, received))) ||
+            expectedType === 'date' ||
+            expectedType === 'function' ||
+            expectedType === 'regexp' ||
+            (received instanceof Error && expected instanceof Error);
           const hasDifference = stringify(expected) !== stringify(received);
           const difference =
-            hasDifference && !isShallowInequality
+            !hasConciseReport && hasDifference
               ? diff(expected, received, {expand: this.expand}) // string | null
               : null;
 
