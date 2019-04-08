@@ -322,7 +322,7 @@ Received: <red>/received/</>"
 exports[`.toBe() fails for: [] and [] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-<dim>If it should pass with deep equality, replace toBe with toStrictEqual</>
+<dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>[]</>
 Received value has no visual difference"
@@ -345,7 +345,7 @@ Received value has no visual difference"
 exports[`.toBe() fails for: {"a": [Function a], "b": 2} and {"a": Any<Function>, "b": 2} 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-<dim>If it should pass with deep equality, replace toBe with toStrictEqual</>
+<dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -360,7 +360,7 @@ exports[`.toBe() fails for: {"a": [Function a], "b": 2} and {"a": Any<Function>,
 exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-<dim>If it should pass with deep equality, replace toBe with toStrictEqual</>
+<dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>{\\"a\\": 1}</>
 Received value has no visual difference"
@@ -381,7 +381,7 @@ exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
 exports[`.toBe() fails for: {"a": undefined, "b": 2} and {"b": 2} 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-<dim>If it should pass with deep equality, replace toBe with toEqual</>
+<dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toEqual\\"</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -395,7 +395,7 @@ exports[`.toBe() fails for: {"a": undefined, "b": 2} and {"b": 2} 1`] = `
 exports[`.toBe() fails for: {} and {} 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-<dim>If it should pass with deep equality, replace toBe with toStrictEqual</>
+<dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>{}</>
 Received value has no visual difference"
@@ -418,7 +418,7 @@ Received: <red>1</>"
 exports[`.toBe() fails for: 2020-02-20T00:00:00.000Z and 2020-02-20T00:00:00.000Z 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-<dim>If it should pass with deep equality, replace toBe with toStrictEqual</>
+<dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>2020-02-20T00:00:00.000Z</>
 Received value has no visual difference"
