@@ -185,7 +185,16 @@ jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>A limitation with the factory parameter is that, since calls to <code>jest.mock()</code> are hoisted to the top of the file, it's not possible to first define a variable and then use it in the factory. An exception is made for variables that start with the word 'mock'. It's up to you to guarantee that they will be initialized on time!</p>
+<p>A limitation with the factory parameter is that, since calls to <code>jest.mock()</code> are hoisted to the top of the file, it's not possible to first define a variable and then use it in the factory. An exception is made for variables that start with the word 'mock'. It's up to you to guarantee that they will be initialized on time! For example, the following will throw an out-of-scope error due to the use of 'fake' instead of 'mock' in the variable declaration:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Note: this will fail</span>
+<span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">const</span> fakePlaySoundFile = jest.fn();
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: fakePlaySoundFile};
+  });
+});
+</code></pre>
 <h3><a class="anchor" aria-hidden="true" id="replacing-the-mock-using-mockimplementation-docs-uk-mock-function-api-mockfnmockimplementationfn-or-mockimplementationonce-docs-uk-mock-function-api-mockfnmockimplementationoncefn"></a><a href="#replacing-the-mock-using-mockimplementation-docs-uk-mock-function-api-mockfnmockimplementationfn-or-mockimplementationonce-docs-uk-mock-function-api-mockfnmockimplementationoncefn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Replacing the mock using <a href="/docs/uk/mock-function-api#mockfnmockimplementationfn"><code>mockImplementation()</code></a> or <a href="/docs/uk/mock-function-api#mockfnmockimplementationoncefn"><code>mockImplementationOnce()</code></a></h3>
 <p>You can replace all of the above mocks in order to change the implementation, for a single test or all tests, by calling <code>mockImplementation()</code> on the existing mock.</p>
 <p>Calls to jest.mock are hoisted to the top of the code. You can specify a mock later, e.g. in <code>beforeAll()</code>, by calling <code>mockImplementation()</code> (or <code>mockImplementationOnce()</code>) on the existing mock instead of using the factory parameter. This also allows you to change the mock between tests, if needed:</p>

@@ -186,7 +186,16 @@ jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>Una limitación con la fábrica de parametros es que, ya que las llamadas a <code>jest.mock()</code> elevadas hasta el principio del archivo, no es posible definir una variable y luego usarla en la fábrica. Se hace un excepción para variables que empiecen con la palabra 'mock(simulación)'. ¡Depende de usted garantizar de que serán inicializadas a tiempo!</p>
+<p>Una limitación con la fábrica de parametros es que, ya que las llamadas a <code>jest.mock()</code> elevadas hasta el principio del archivo, no es posible definir una variable y luego usarla en la fábrica. Se hace un excepción para variables que empiecen con la palabra 'mock(simulación)'. ¡Depende de usted garantizar de que serán inicializadas a tiempo! For example, the following will throw an out-of-scope error due to the use of 'fake' instead of 'mock' in the variable declaration:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Note: this will fail</span>
+<span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">const</span> fakePlaySoundFile = jest.fn();
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: fakePlaySoundFile};
+  });
+});
+</code></pre>
 <h3><a class="anchor" aria-hidden="true" id="sustituir-la-simulacion-utilizando-mockimplementation-docs-es-es-23x-mock-function-api-mockfnmockimplementationfn-o-mockimplementationonce-docs-es-es-23x-mock-function-api-mockfnmockimplementationoncefn"></a><a href="#sustituir-la-simulacion-utilizando-mockimplementation-docs-es-es-23x-mock-function-api-mockfnmockimplementationfn-o-mockimplementationonce-docs-es-es-23x-mock-function-api-mockfnmockimplementationoncefn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Sustituir la simulación utilizando <a href="/docs/es-ES/23.x/mock-function-api#mockfnmockimplementationfn"><code>mockImplementation()</code></a> o <a href="/docs/es-ES/23.x/mock-function-api#mockfnmockimplementationoncefn"><code>mockImplementationOnce()</code></a></h3>
 <p>Puede reemplazar todas las simulaciones de arriba para cambiar la implementación, para una así como para todas las pruebas, al llamar <code>mockImplementation()</code> en la simulación existente.</p>
 <p>Las llamadas a jest.mock son elevadas al principio del código. Puede especificar una simulación luego, por ejemplo, en <code>beforeAll()</code>, al llamar <code>mockImplementation()</code> (o <code>mockImplementationOnce()</code>) en la simulación existente en lugar de usar el parámetro de fábrica. Esto también le permite cambiar la simulación entre pruebas, si se necesita:</p>
