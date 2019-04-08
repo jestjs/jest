@@ -9,6 +9,8 @@
 
 ### Chore & Maintenance
 
+- `[expect]` Fix label and add opposite assertion for toEqual tests ([#8288](https://github.com/facebook/jest/pull/8288))
+
 ### Performance
 
 - `[jest-runtime]` Fix module registry memory leak ([#8282](https://github.com/facebook/jest/pull/8282))
