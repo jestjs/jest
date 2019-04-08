@@ -105,7 +105,7 @@ const matchers: MatchersObject = {
             '\n\n' +
             (deepEqualityName !== null
               ? DIM_COLOR(
-                  `If it should pass with deep equality, replace toBe with ${deepEqualityName}`,
+                  `If it should pass with deep equality, replace "${matcherName}" with "${deepEqualityName}"`,
                 ) + '\n\n'
               : '') +
             (difference !== null
