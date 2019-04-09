@@ -40,13 +40,13 @@ const formatTitle = (
   row
     .reduce<string>((formattedTitle, value) => {
       const [placeholder] = getMatchingPlaceholders(formattedTitle);
-      const normalisedValued = normalisePlaceholderValue(value);
+      const normalisedValue = normalisePlaceholderValue(value);
       if (!placeholder) return formattedTitle;
 
       if (placeholder === PRETTY_PLACEHOLDER)
-        return interpolatePrettyPlaceholder(formattedTitle, normalisedValued);
+        return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
 
-      return util.format(formattedTitle, normalisedValued);
+      return util.format(formattedTitle, normalisedValue);
     }, interpolateTitleIndex(title, rowIndex))
     .replace(new RegExp(JEST_EACH_PLACEHOLDER_ESCAPE, 'g'), PLACEHOLDER_PREFIX);
 
