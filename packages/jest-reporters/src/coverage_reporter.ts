@@ -5,14 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO: Remove this
-/// <reference path="../istanbul-api.d.ts" />
-
 import path from 'path';
 import {Config} from '@jest/types';
 import {AggregatedResult, TestResult} from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
-import {createReporter} from 'istanbul-api';
+import istanbulReport from 'istanbul-lib-report';
+import istanbulReports from 'istanbul-reports';
 import chalk from 'chalk';
 import istanbulCoverage, {
   CoverageMap,
@@ -88,20 +86,21 @@ export default class CoverageReporter extends BaseReporter {
       this._coverageMap,
     );
 
-    const reporter = createReporter();
     try {
-      if (this._globalConfig.coverageDirectory) {
-        reporter.dir = this._globalConfig.coverageDirectory;
-      }
-
+      const reportContext = istanbulReport.createContext({
+        dir: this._globalConfig.coverageDirectory,
+        sourceFinder,
+      });
       const coverageReporters = this._globalConfig.coverageReporters || [];
 
       if (!this._globalConfig.useStderr && coverageReporters.length < 1) {
         coverageReporters.push('text-summary');
       }
 
-      reporter.addAll(coverageReporters);
-      reporter.write(map, sourceFinder && {sourceFinder});
+      const tree = istanbulReport.summarizers.pkg(map);
+      coverageReporters.forEach(_reporter => {
+        tree.visit(istanbulReports.create(_reporter, {}), reportContext);
+      });
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(
