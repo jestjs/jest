@@ -998,7 +998,7 @@ function testRunner(
 ): Promise<TestResult>;
 ```
 
-An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js).
+An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.ts).
 
 ### `testURL` [string]
 
