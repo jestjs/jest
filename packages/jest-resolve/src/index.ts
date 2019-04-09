@@ -41,14 +41,18 @@ namespace Resolver {
 const NATIVE_PLATFORM = 'native';
 
 // We might be inside a symlink.
-const cwd = process.cwd();
-const resolvedCwd = realpath(cwd) || cwd;
+let cwd = process.cwd();
+try {
+  cwd = realpath(cwd) || cwd;
+} catch (err) {
+  // realpath can throw, e.g. on mapped drives
+}
 const {NODE_PATH} = process.env;
 const nodePaths = NODE_PATH
   ? NODE_PATH.split(path.delimiter)
       .filter(Boolean)
       // The resolver expects absolute paths.
-      .map(p => path.resolve(resolvedCwd, p))
+      .map(p => path.resolve(cwd, p))
   : undefined;
 
 /* eslint-disable-next-line no-redeclare */
