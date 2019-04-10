@@ -35,6 +35,17 @@ describe('getMaxWorkers', () => {
     expect(getMaxWorkers({watch: true})).toBe(2);
   });
 
+  describe('number of cpus > CPU_UPPER_LIMIT', () => {
+    beforeEach(() => {
+      require('os').__setCpus({length: 36});
+    });
+
+    it('Returns based on default CPU upper limit', () => {
+      expect(getMaxWorkers({})).toBe(7);
+      expect(getMaxWorkers({watch: true})).toBe(4);
+    });
+  });
+
   describe('% based', () => {
     it('50% = 2 workers', () => {
       const argv = {maxWorkers: '50%'};

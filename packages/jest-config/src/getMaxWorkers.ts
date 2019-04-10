@@ -7,6 +7,7 @@
 
 import os from 'os';
 import {Config} from '@jest/types';
+const CPU_UPPER_LIMIT = 8;
 
 export default function getMaxWorkers(
   argv: Partial<Pick<Config.Argv, 'maxWorkers' | 'runInBand' | 'watch'>>,
@@ -32,7 +33,8 @@ export default function getMaxWorkers(
     return parsed > 0 ? parsed : 1;
   } else {
     // In watch mode, Jest should be unobtrusive and not use all available CPUs.
-    const cpus = os.cpus() ? os.cpus().length : 1;
+    // It should not use more than CPU_UPPER_LIMIT workers when 'maxWorkers' not specified
+    const cpus = os.cpus() ? Math.min(CPU_UPPER_LIMIT, os.cpus().length) : 1;
     return Math.max(argv.watch ? Math.floor(cpus / 2) : cpus - 1, 1);
   }
 }
