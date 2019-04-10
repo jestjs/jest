@@ -25,6 +25,18 @@ function sha1hex(content: string | Buffer): string {
     .digest('hex');
 }
 
+function getFileBuffer(filePath: string): Buffer {
+  const stat = fs.lstatSync(filePath);
+
+  if (stat.isFile()) {
+    return fs.readFileSync(filePath);
+  } else if (stat.isSymbolicLink()) {
+    return fs.readlinkSync(filePath, 'buffer');
+  } else {
+    throw new Error('Unsupported file type');
+  }
+}
+
 export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
   if (
     data.hasteImplModulePath &&
@@ -47,7 +59,14 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
 
   const getContent = (): string => {
     if (content === undefined) {
-      content = fs.readFileSync(filePath, 'utf8');
+      const stat = fs.lstatSync(filePath);
+      if (stat.isFile()) {
+        content = fs.readFileSync(filePath, 'utf8');
+      } else if (stat.isSymbolicLink()) {
+        content = fs.readlinkSync(filePath, 'utf8');
+      } else {
+        throw new Error('Unsupported file type');
+      }
     }
 
     return content;
@@ -93,16 +112,14 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
 
   // If a SHA-1 is requested on update, compute it.
   if (computeSha1) {
-    sha1 = sha1hex(getContent() || fs.readFileSync(filePath));
+    sha1 = sha1hex(getContent() || getFileBuffer(filePath));
   }
 
   return {dependencies, id, module, sha1};
 }
 
 export async function getSha1(data: WorkerMessage): Promise<WorkerMetadata> {
-  const sha1 = data.computeSha1
-    ? sha1hex(fs.readFileSync(data.filePath))
-    : null;
+  const sha1 = data.computeSha1 ? sha1hex(getFileBuffer(data.filePath)) : null;
 
   return {
     dependencies: undefined,

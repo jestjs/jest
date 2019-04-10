@@ -18,8 +18,12 @@ const {worker, getSha1} = require('../worker');
 
 const rootDir = '/project';
 let mockFs;
+let lstatSync;
+let lstat;
 let readFileSync;
 let readFile;
+let readlinkSync;
+let readlink;
 
 describe('worker', () => {
   skipSuiteOnWindows();
@@ -34,6 +38,9 @@ describe('worker', () => {
         const Strawberry = require('Strawberry');
         const Lime = loadModule('Lime');
       `,
+      '/project/fruits/Plantain.js': `
+        ./Banana.js
+      `.trim(),
       '/project/fruits/Strawberry.js': `
         // Strawberry!
       `,
@@ -55,10 +62,39 @@ describe('worker', () => {
       `,
     };
 
+    const symlinks = new Set();
+    symlinks.add('/project/fruits/Plantain.js');
+
+    lstatSync = fs.lstatSync;
+    lstat = fs.lstat;
     readFileSync = fs.readFileSync;
     readFile = fs.readFile;
+    readlinkSync = fs.readlinkSync;
+    readlink = fs.readlink;
+
+    fs.lstatSync = jest.fn(path => {
+      if (symlinks.has(path)) {
+        return {
+          isFile: () => false,
+          isSymbolicLink: () => true,
+        };
+      }
+
+      if (mockFs[path]) {
+        return {
+          isFile: () => true,
+          isSymbolicLink: () => false,
+        };
+      }
+
+      throw new Error(`Cannot read path '${path}'.`);
+    });
 
     fs.readFileSync = jest.fn((path, options) => {
+      if (symlinks.has(path)) {
+        throw new Error(`Path '${path}' is a symlink and can't be read.`);
+      }
+
       if (mockFs[path]) {
         return options === 'utf8' ? mockFs[path] : Buffer.from(mockFs[path]);
       }
@@ -66,12 +102,30 @@ describe('worker', () => {
       throw new Error(`Cannot read path '${path}'.`);
     });
 
+    fs.readlinkSync = jest.fn((path, options) => {
+      if (!symlinks.has(path)) {
+        throw new Error(`Path '${path}' isn't a symlink and can't be read.`);
+      }
+
+      if (mockFs[path]) {
+        return options === 'utf8' ? mockFs[path] : Buffer.from(mockFs[path]);
+      }
+
+      throw new Error(`Cannot read path '${path}'.`);
+    });
+
+    fs.lstat = jest.fn(lstat);
     fs.readFile = jest.fn(readFile);
+    fs.readlink = jest.fn(readlink);
   });
 
   afterEach(() => {
+    fs.lstatSync = lstatSync;
+    fs.lstat = lstat;
     fs.readFileSync = readFileSync;
     fs.readFile = readFile;
+    fs.readlinkSync = readlinkSync;
+    fs.readlink = readlink;
   });
 
   it('parses JavaScript files and extracts module information', async () => {
@@ -154,7 +208,11 @@ describe('worker', () => {
     let error = null;
 
     try {
-      await worker({computeDependencies: true, filePath: '/kiwi.js', rootDir});
+      await worker({
+        computeDependencies: true,
+        filePath: '/kiwi.js',
+        rootDir,
+      });
     } catch (err) {
       error = err;
     }
@@ -169,7 +227,9 @@ describe('worker', () => {
         filePath: '/project/fruits/apple.png',
         rootDir,
       }),
-    ).toEqual({sha1: '4caece539b039b16e16206ea2478f8c5ffb2ca05'});
+    ).toEqual({
+      sha1: '4caece539b039b16e16206ea2478f8c5ffb2ca05',
+    });
 
     expect(
       await getSha1({
@@ -177,7 +237,9 @@ describe('worker', () => {
         filePath: '/project/fruits/Banana.js',
         rootDir,
       }),
-    ).toEqual({sha1: null});
+    ).toEqual({
+      sha1: null,
+    });
 
     expect(
       await getSha1({
@@ -185,7 +247,19 @@ describe('worker', () => {
         filePath: '/project/fruits/Banana.js',
         rootDir,
       }),
-    ).toEqual({sha1: '7772b628e422e8cf59c526be4bb9f44c0898e3d1'});
+    ).toEqual({
+      sha1: '7772b628e422e8cf59c526be4bb9f44c0898e3d1',
+    });
+
+    expect(
+      await getSha1({
+        computeSha1: true,
+        filePath: '/project/fruits/Plantain.js',
+        rootDir,
+      }),
+    ).toEqual({
+      sha1: '5596f2f637a86403a127136c1f4e0b90aeb6dd2f',
+    });
 
     expect(
       await getSha1({
@@ -193,10 +267,16 @@ describe('worker', () => {
         filePath: '/project/fruits/Pear.js',
         rootDir,
       }),
-    ).toEqual({sha1: 'c7a7a68a1c8aaf452669dd2ca52ac4a434d25552'});
+    ).toEqual({
+      sha1: 'c7a7a68a1c8aaf452669dd2ca52ac4a434d25552',
+    });
 
     await expect(
-      getSha1({computeSha1: true, filePath: '/i/dont/exist.js', rootDir}),
+      getSha1({
+        computeSha1: true,
+        filePath: '/i/dont/exist.js',
+        rootDir,
+      }),
     ).rejects.toThrow();
   });
 
@@ -216,7 +296,11 @@ describe('worker', () => {
     });
 
     // Ensure not disk access happened.
+    expect(fs.lstatSync).not.toHaveBeenCalled();
+    expect(fs.lstat).not.toHaveBeenCalled();
     expect(fs.readFileSync).not.toHaveBeenCalled();
     expect(fs.readFile).not.toHaveBeenCalled();
+    expect(fs.readlinkSync).not.toHaveBeenCalled();
+    expect(fs.readlink).not.toHaveBeenCalled();
   });
 });

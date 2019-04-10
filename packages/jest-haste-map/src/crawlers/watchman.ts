@@ -41,7 +41,7 @@ export = async function watchmanCrawl(
   const {data, extensions, ignore, rootDir, roots} = options;
   const defaultWatchExpression = [
     'allof',
-    ['type', 'f'],
+    ['anyof', ['type', 'f'], ['type', 'l']],
     ['anyof', ...extensions.map(extension => ['suffix', extension])],
   ];
   const clocks = data.clocks;

@@ -44,11 +44,9 @@ function find(
           return;
         }
         activeCalls++;
-
         fs.lstat(file, (err, stat) => {
           activeCalls--;
-
-          if (!err && stat && !stat.isSymbolicLink()) {
+          if (!err && stat) {
             if (stat.isDirectory()) {
               search(file);
             } else {

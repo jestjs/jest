@@ -7,7 +7,9 @@
  */
 
 import crypto from 'crypto';
-import {skipSuiteOnWindows} from '@jest/test-utils';
+import {
+  skipSuiteOnWindows
+} from '@jest/test-utils';
 
 function mockHashContents(contents) {
   return crypto
@@ -38,7 +40,13 @@ jest.mock('../crawlers/watchman', () =>
   jest.fn(options => {
     const path = require('path');
 
-    const {data, ignore, rootDir, roots, computeSha1} = options;
+    const {
+      data,
+      ignore,
+      rootDir,
+      roots,
+      computeSha1
+    } = options;
     const list = mockChangedFiles || mockFs;
     const removedFiles = new Map();
 
@@ -85,22 +93,71 @@ jest.mock('../lib/WatchmanWatcher', () => mockWatcherConstructor);
 
 let mockChangedFiles;
 let mockFs;
+let mockSymlinks;
 
 jest.mock('graceful-fs', () => ({
+  lstatSync: jest.fn(path => {
+    const hasPathChanged = mockChangedFiles && path in mockChangedFiles;
+
+    if (!mockFs[path] && !hasPathChanged) {
+      const error = new Error(`Cannot read path '${path}'.`);
+      error.code = 'ENOENT';
+      throw error;
+    }
+
+    if (mockSymlinks.has(path)) {
+      return {
+        isFile: () => false,
+        isSymbolicLink: () => true,
+      };
+    } else {
+      return {
+        isFile: () => true,
+        isSymbolicLink: () => false,
+      };
+    }
+  }),
   readFileSync: jest.fn((path, options) => {
+    const hasPathChanged = mockChangedFiles && path in mockChangedFiles;
+
+    if (!mockFs[path] && !hasPathChanged) {
+      const error = new Error(`Cannot read path '${path}'.`);
+      error.code = 'ENOENT';
+      throw error;
+    }
+
+    if (mockSymlinks.has(path)) {
+      throw new Error(`Path '${path}' is a symlink and can't be read.`);
+    }
+
     // A file change can be triggered by writing into the
     // mockChangedFiles object.
-    if (mockChangedFiles && path in mockChangedFiles) {
+    if (hasPathChanged) {
       return mockChangedFiles[path];
-    }
-
-    if (mockFs[path]) {
+    } else {
       return mockFs[path];
     }
+  }),
+  readlinkSync: jest.fn(path => {
+    const hasPathChanged = mockChangedFiles && path in mockChangedFiles;
 
-    const error = new Error(`Cannot read path '${path}'.`);
-    error.code = 'ENOENT';
-    throw error;
+    if (!mockFs[path] && !hasPathChanged) {
+      const error = new Error(`Cannot read path '${path}'.`);
+      error.code = 'ENOENT';
+      throw error;
+    }
+
+    if (!mockSymlinks.has(path)) {
+      throw new Error(`Path '${path}' isn't a symlink and can't be read.`);
+    }
+
+    // A file change can be triggered by writing into the
+    // mockChangedFiles object.
+    if (hasPathChanged) {
+      return mockChangedFiles[path];
+    } else {
+      return mockFs[path];
+    }
   }),
   writeFileSync: jest.fn((path, data, options) => {
     expect(options).toBe(require('v8').serialize ? undefined : 'utf8');
@@ -162,6 +219,9 @@ describe('HasteMap', () => {
         const Banana = require("Banana");
         const Strawberry = require("Strawberry");
       `,
+      '/project/fruits/Plantain.js': `
+        ./Banana.js
+      `.trim(),
       '/project/fruits/Strawberry.js': `
         // Strawberry!
       `,
@@ -178,6 +238,7 @@ describe('HasteMap', () => {
         0x0c,
       ]).toString(),
     });
+    mockSymlinks = new Set(['/project/fruits/Plantain.js']);
     mockClocks = createMap({
       fruits: 'c:fake-clock:1',
       vegetables: 'c:fake-clock:2',
@@ -234,8 +295,14 @@ describe('HasteMap', () => {
   it('creates different cache file paths for different roots', () => {
     jest.resetModuleRegistry();
     const HasteMap = require('../');
-    const hasteMap1 = new HasteMap({...defaultConfig, rootDir: '/root1'});
-    const hasteMap2 = new HasteMap({...defaultConfig, rootDir: '/root2'});
+    const hasteMap1 = new HasteMap({
+      ...defaultConfig,
+      rootDir: '/root1',
+    });
+    const hasteMap2 = new HasteMap({
+      ...defaultConfig,
+      rootDir: '/root2',
+    });
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
 
@@ -268,16 +335,25 @@ describe('HasteMap', () => {
   it('creates different cache file paths for different projects', () => {
     jest.resetModuleRegistry();
     const HasteMap = require('../');
-    const hasteMap1 = new HasteMap({...defaultConfig, name: '@scoped/package'});
-    const hasteMap2 = new HasteMap({...defaultConfig, name: '-scoped-package'});
+    const hasteMap1 = new HasteMap({
+      ...defaultConfig,
+      name: '@scoped/package',
+    });
+    const hasteMap2 = new HasteMap({
+      ...defaultConfig,
+      name: '-scoped-package',
+    });
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
 
   it('matches files against a pattern', () =>
-    new HasteMap(defaultConfig).build().then(({hasteFS}) => {
+    new HasteMap(defaultConfig).build().then(({
+      hasteFS
+    }) => {
       expect(hasteFS.matchFiles(/project\/fruits/)).toEqual([
         '/project/fruits/Banana.js',
         '/project/fruits/Pear.js',
+        '/project/fruits/Plantain.js',
         '/project/fruits/Strawberry.js',
         '/project/fruits/__mocks__/Pear.js',
       ]);
@@ -288,11 +364,16 @@ describe('HasteMap', () => {
     }));
 
   it('ignores files given a pattern', () => {
-    const config = {...defaultConfig, ignorePattern: /Kiwi/};
+    const config = {
+      ...defaultConfig,
+      ignorePattern: /Kiwi/,
+    };
     mockFs['/project/fruits/Kiwi.js'] = `
       // Kiwi!
     `;
-    return new HasteMap(config).build().then(({hasteFS}) => {
+    return new HasteMap(config).build().then(({
+      hasteFS
+    }) => {
       expect(hasteFS.matchFiles(/Kiwi/)).toEqual([]);
     });
   });
@@ -335,13 +416,16 @@ describe('HasteMap', () => {
       providesModuleNodeModules: ['react', 'fbjs'],
     });
 
-    return hasteMap.build().then(({__hasteMapForTest: data}) => {
+    return hasteMap.build().then(({
+      __hasteMapForTest: data
+    }) => {
       expect(data.clocks).toEqual(mockClocks);
 
       expect(data.files).toEqual(
         createMap({
           'fruits/Banana.js': ['Banana', 32, 42, 1, 'Strawberry', null],
           'fruits/Pear.js': ['Pear', 32, 42, 1, 'Banana\0Strawberry', null],
+          'fruits/Plantain.js': ['Plantain', 32, 42, 1, '', null],
           'fruits/Strawberry.js': ['Strawberry', 32, 42, 1, '', null],
           'fruits/__mocks__/Pear.js': ['', 32, 42, 1, 'Melon', null],
           // node modules
@@ -367,9 +451,18 @@ describe('HasteMap', () => {
 
       expect(data.map).toEqual(
         createMap({
-          Banana: {[H.GENERIC_PLATFORM]: ['fruits/Banana.js', H.MODULE]},
-          Melon: {[H.GENERIC_PLATFORM]: ['vegetables/Melon.js', H.MODULE]},
-          Pear: {[H.GENERIC_PLATFORM]: ['fruits/Pear.js', H.MODULE]},
+          Banana: {
+            [H.GENERIC_PLATFORM]: ['fruits/Banana.js', H.MODULE],
+          },
+          Melon: {
+            [H.GENERIC_PLATFORM]: ['vegetables/Melon.js', H.MODULE],
+          },
+          Pear: {
+            [H.GENERIC_PLATFORM]: ['fruits/Pear.js', H.MODULE],
+          },
+          Plantain: {
+            [H.GENERIC_PLATFORM]: ['fruits/Plantain.js', H.MODULE],
+          },
           React: {
             [H.GENERIC_PLATFORM]: [
               'fruits/node_modules/react/React.js',
@@ -406,12 +499,15 @@ describe('HasteMap', () => {
         const node = require('../crawlers/node');
 
         node.mockImplementation(options => {
-          const {data} = options;
+          const {
+            data
+          } = options;
 
           // The node crawler returns "null" for the SHA-1.
           data.files = createMap({
             'fruits/Banana.js': ['Banana', 32, 42, 0, 'Strawberry', null],
             'fruits/Pear.js': ['Pear', 32, 42, 0, 'Banana\0Strawberry', null],
+            'fruits/Plantain.js': ['Pear', 32, 42, 0, './Banana.js', null],
             'fruits/Strawberry.js': ['Strawberry', 32, 42, 0, '', null],
             'fruits/__mocks__/Pear.js': ['', 32, 42, 0, 'Melon', null],
             'vegetables/Melon.js': ['Melon', 32, 42, 0, '', null],
@@ -449,6 +545,14 @@ describe('HasteMap', () => {
               1,
               'Banana\0Strawberry',
               '89d0c2cc11dcc5e1df50b8af04ab1b597acfba2f',
+            ],
+            'fruits/Plantain.js': [
+              'Plantain',
+              32,
+              42,
+              1,
+              '',
+              '5596f2f637a86403a127136c1f4e0b90aeb6dd2f',
             ],
             'fruits/Strawberry.js': [
               'Strawberry',
@@ -493,7 +597,9 @@ describe('HasteMap', () => {
       roots: [...defaultConfig.roots, '/project/video'],
     });
 
-    const {__hasteMapForTest: data} = await hasteMap.build();
+    const {
+      __hasteMapForTest: data
+    } = await hasteMap.build();
 
     expect(data.map.get('IRequireAVideo')).toBeDefined();
     expect(data.files.get('video/video.mp4')).toBeDefined();
@@ -511,7 +617,9 @@ describe('HasteMap', () => {
       retainAllFiles: true,
     });
 
-    return hasteMap.build().then(({__hasteMapForTest: data}) => {
+    return hasteMap.build().then(({
+      __hasteMapForTest: data
+    }) => {
       // Expect the node module to be part of files but make sure it wasn't
       // read.
       expect(data.files.get('fruits/node_modules/fbjs/fbjs.js')).toEqual([
@@ -542,10 +650,10 @@ describe('HasteMap', () => {
     `;
 
     return new HasteMap({
-      mocksPattern: '__mocks__',
-      throwOnModuleCollision: true,
-      ...defaultConfig,
-    })
+        mocksPattern: '__mocks__',
+        throwOnModuleCollision: true,
+        ...defaultConfig,
+      })
       .build()
       .catch(() => {
         expect(console.error.mock.calls[0][0]).toMatchSnapshot();
@@ -559,7 +667,9 @@ describe('HasteMap', () => {
 
     return new HasteMap(defaultConfig)
       .build()
-      .then(({__hasteMapForTest: data}) => {
+      .then(({
+        __hasteMapForTest: data
+      }) => {
         // Duplicate modules are removed so that it doesn't cause
         // non-determinism later on.
         expect(
@@ -588,7 +698,10 @@ describe('HasteMap', () => {
       const Banana = require("Banana");
     `;
 
-    return new HasteMap({throwOnModuleCollision: true, ...defaultConfig})
+    return new HasteMap({
+        throwOnModuleCollision: true,
+        ...defaultConfig,
+      })
       .build()
       .catch(err => {
         expect(err).toMatchSnapshot();
@@ -611,7 +724,9 @@ describe('HasteMap', () => {
 
     return new HasteMap(defaultConfig)
       .build()
-      .then(({__hasteMapForTest: data}) => {
+      .then(({
+        __hasteMapForTest: data
+      }) => {
         expect(data.files).toEqual(
           createMap({
             'fruits/Strawberry.android.js': [
@@ -648,114 +763,127 @@ describe('HasteMap', () => {
 
   it('does not access the file system on a warm cache with no changes', () =>
     new HasteMap(defaultConfig)
-      .build()
-      .then(({__hasteMapForTest: initialData}) => {
-        // The first run should access the file system once for the (empty)
-        // cache file and five times for the files in the system.
-        expect(fs.readFileSync.mock.calls.length).toBe(6);
+    .build()
+    .then(({
+      __hasteMapForTest: initialData
+    }) => {
+      // The first run should access the file system once for the (empty)
+      // cache file and five times for the files in the system.
+      expect(fs.readFileSync.mock.calls.length).toBe(6);
 
-        fs.readFileSync.mockClear();
+      fs.readFileSync.mockClear();
 
-        // Explicitly mock that no files have changed.
-        mockChangedFiles = Object.create(null);
+      // Explicitly mock that no files have changed.
+      mockChangedFiles = Object.create(null);
 
-        // Watchman would give us different clocks.
-        mockClocks = createMap({
-          fruits: 'c:fake-clock:3',
-          vegetables: 'c:fake-clock:4',
+      // Watchman would give us different clocks.
+      mockClocks = createMap({
+        fruits: 'c:fake-clock:3',
+        vegetables: 'c:fake-clock:4',
+      });
+
+      return new HasteMap(defaultConfig)
+        .build()
+        .then(({
+          __hasteMapForTest: data
+        }) => {
+          expect(fs.readFileSync.mock.calls.length).toBe(1);
+          if (require('v8').deserialize) {
+            expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
+          } else {
+            expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
+          }
+          expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
+          expect(useBuitinsInContext(data.clocks)).toEqual(mockClocks);
+          expect(useBuitinsInContext(data.files)).toEqual(initialData.files);
+          expect(useBuitinsInContext(data.map)).toEqual(initialData.map);
         });
-
-        return new HasteMap(defaultConfig)
-          .build()
-          .then(({__hasteMapForTest: data}) => {
-            expect(fs.readFileSync.mock.calls.length).toBe(1);
-            if (require('v8').deserialize) {
-              expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
-            } else {
-              expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
-            }
-            expect(useBuitinsInContext(data.clocks)).toEqual(mockClocks);
-            expect(useBuitinsInContext(data.files)).toEqual(initialData.files);
-            expect(useBuitinsInContext(data.map)).toEqual(initialData.map);
-          });
-      }));
+    }));
 
   it('only does minimal file system access when files change', () =>
     new HasteMap(defaultConfig)
-      .build()
-      .then(({__hasteMapForTest: initialData}) => {
-        fs.readFileSync.mockClear();
+    .build()
+    .then(({
+      __hasteMapForTest: initialData
+    }) => {
+      fs.readFileSync.mockClear();
 
-        // Let's assume one JS file has changed.
-        mockChangedFiles = object({
-          '/project/fruits/Banana.js': `
+      // Let's assume one JS file has changed.
+      mockChangedFiles = object({
+        '/project/fruits/Banana.js': `
             const Kiwi = require("Kiwi");
           `,
+      });
+
+      // Watchman would give us different clocks for `/project/fruits`.
+      mockClocks = createMap({
+        fruits: 'c:fake-clock:3',
+        vegetables: 'c:fake-clock:2',
+      });
+
+      return new HasteMap(defaultConfig)
+        .build()
+        .then(({
+          __hasteMapForTest: data
+        }) => {
+          expect(fs.readFileSync.mock.calls.length).toBe(2);
+
+          if (require('v8').serialize) {
+            expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
+          } else {
+            expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
+          }
+          expect(fs.readFileSync).toBeCalledWith(
+            '/project/fruits/Banana.js',
+            'utf8',
+          );
+
+          expect(useBuitinsInContext(data.clocks)).toEqual(mockClocks);
+
+          const files = new Map(initialData.files);
+          files.set('fruits/Banana.js', ['Banana', 32, 42, 1, 'Kiwi', null]);
+
+          expect(useBuitinsInContext(data.files)).toEqual(files);
+
+          const map = new Map(initialData.map);
+          expect(useBuitinsInContext(data.map)).toEqual(map);
         });
-
-        // Watchman would give us different clocks for `/project/fruits`.
-        mockClocks = createMap({
-          fruits: 'c:fake-clock:3',
-          vegetables: 'c:fake-clock:2',
-        });
-
-        return new HasteMap(defaultConfig)
-          .build()
-          .then(({__hasteMapForTest: data}) => {
-            expect(fs.readFileSync.mock.calls.length).toBe(2);
-
-            if (require('v8').serialize) {
-              expect(fs.readFileSync).toBeCalledWith(cacheFilePath);
-            } else {
-              expect(fs.readFileSync).toBeCalledWith(cacheFilePath, 'utf8');
-            }
-            expect(fs.readFileSync).toBeCalledWith(
-              '/project/fruits/Banana.js',
-              'utf8',
-            );
-
-            expect(useBuitinsInContext(data.clocks)).toEqual(mockClocks);
-
-            const files = new Map(initialData.files);
-            files.set('fruits/Banana.js', ['Banana', 32, 42, 1, 'Kiwi', null]);
-
-            expect(useBuitinsInContext(data.files)).toEqual(files);
-
-            const map = new Map(initialData.map);
-            expect(useBuitinsInContext(data.map)).toEqual(map);
-          });
-      }));
+    }));
 
   it('correctly handles file deletions', () =>
     new HasteMap(defaultConfig)
-      .build()
-      .then(({__hasteMapForTest: initialData}) => {
-        fs.readFileSync.mockClear();
+    .build()
+    .then(({
+      __hasteMapForTest: initialData
+    }) => {
+      fs.readFileSync.mockClear();
 
-        // Let's assume one JS file was removed.
-        delete mockFs['/project/fruits/Banana.js'];
-        mockChangedFiles = object({
-          '/project/fruits/Banana.js': null,
+      // Let's assume one JS file was removed.
+      delete mockFs['/project/fruits/Banana.js'];
+      mockChangedFiles = object({
+        '/project/fruits/Banana.js': null,
+      });
+
+      // Watchman would give us different clocks for `/project/fruits`.
+      mockClocks = createMap({
+        fruits: 'c:fake-clock:3',
+        vegetables: 'c:fake-clock:2',
+      });
+
+      return new HasteMap(defaultConfig)
+        .build()
+        .then(({
+          __hasteMapForTest: data
+        }) => {
+          const files = new Map(initialData.files);
+          files.delete('fruits/Banana.js');
+          expect(useBuitinsInContext(data.files)).toEqual(files);
+
+          const map = new Map(initialData.map);
+          map.delete('Banana');
+          expect(useBuitinsInContext(data.map)).toEqual(map);
         });
-
-        // Watchman would give us different clocks for `/project/fruits`.
-        mockClocks = createMap({
-          fruits: 'c:fake-clock:3',
-          vegetables: 'c:fake-clock:2',
-        });
-
-        return new HasteMap(defaultConfig)
-          .build()
-          .then(({__hasteMapForTest: data}) => {
-            const files = new Map(initialData.files);
-            files.delete('fruits/Banana.js');
-            expect(useBuitinsInContext(data.files)).toEqual(files);
-
-            const map = new Map(initialData.map);
-            map.delete('Banana');
-            expect(useBuitinsInContext(data.map)).toEqual(map);
-          });
-      }));
+    }));
 
   it('correctly handles platform-specific file additions', async () => {
     mockFs = Object.create(null);
@@ -763,7 +891,9 @@ describe('HasteMap', () => {
       const Banana = require("Banana");
     `;
     let data;
-    ({__hasteMapForTest: data} = await new HasteMap(defaultConfig).build());
+    ({
+      __hasteMapForTest: data
+    } = await new HasteMap(defaultConfig).build());
     expect(data.map.get('Strawberry')).toEqual({
       g: ['fruits/Strawberry.js', 0],
     });
@@ -774,8 +904,12 @@ describe('HasteMap', () => {
         const Raspberry = require("Raspberry");
       `,
     });
-    mockClocks = createMap({fruits: 'c:fake-clock:3'});
-    ({__hasteMapForTest: data} = await new HasteMap(defaultConfig).build());
+    mockClocks = createMap({
+      fruits: 'c:fake-clock:3',
+    });
+    ({
+      __hasteMapForTest: data
+    } = await new HasteMap(defaultConfig).build());
     expect(data.map.get('Strawberry')).toEqual({
       g: ['fruits/Strawberry.js', 0],
       ios: ['fruits/Strawberry.ios.js', 0],
@@ -791,16 +925,24 @@ describe('HasteMap', () => {
       const Raspberry = require("Raspberry");
     `;
     let data;
-    ({__hasteMapForTest: data} = await new HasteMap(defaultConfig).build());
+    ({
+      __hasteMapForTest: data
+    } = await new HasteMap(defaultConfig).build());
     expect(data.map.get('Strawberry')).toEqual({
       g: ['fruits/Strawberry.js', 0],
       ios: ['fruits/Strawberry.ios.js', 0],
     });
 
     delete mockFs['/project/fruits/Strawberry.ios.js'];
-    mockChangedFiles = object({'/project/fruits/Strawberry.ios.js': null});
-    mockClocks = createMap({fruits: 'c:fake-clock:3'});
-    ({__hasteMapForTest: data} = await new HasteMap(defaultConfig).build());
+    mockChangedFiles = object({
+      '/project/fruits/Strawberry.ios.js': null,
+    });
+    mockClocks = createMap({
+      fruits: 'c:fake-clock:3',
+    });
+    ({
+      __hasteMapForTest: data
+    } = await new HasteMap(defaultConfig).build());
     expect(data.map.get('Strawberry')).toEqual({
       g: ['fruits/Strawberry.js', 0],
     });
@@ -812,7 +954,9 @@ describe('HasteMap', () => {
       const Raspberry = require("Raspberry");
     `;
     let data;
-    ({__hasteMapForTest: data} = await new HasteMap(defaultConfig).build());
+    ({
+      __hasteMapForTest: data
+    } = await new HasteMap(defaultConfig).build());
     expect(data.map.get('Strawberry')).toEqual({
       ios: ['fruits/Strawberry.ios.js', 0],
     });
@@ -824,8 +968,12 @@ describe('HasteMap', () => {
         const Banana = require("Banana");
       `,
     });
-    mockClocks = createMap({fruits: 'c:fake-clock:3'});
-    ({__hasteMapForTest: data} = await new HasteMap(defaultConfig).build());
+    mockClocks = createMap({
+      fruits: 'c:fake-clock:3',
+    });
+    ({
+      __hasteMapForTest: data
+    } = await new HasteMap(defaultConfig).build());
     expect(data.map.get('Strawberry')).toEqual({
       g: ['fruits/Strawberry.js', 0],
     });
@@ -837,7 +985,9 @@ describe('HasteMap', () => {
         const Blackberry = require("Blackberry");
       `;
 
-      const {__hasteMapForTest: data} = await new HasteMap(
+      const {
+        __hasteMapForTest: data
+      } = await new HasteMap(
         defaultConfig,
       ).build();
       expect(useBuitinsInContext(data.duplicates)).toEqual(
@@ -863,7 +1013,9 @@ describe('HasteMap', () => {
         vegetables: 'c:fake-clock:2',
       });
 
-      const {__hasteMapForTest: data} = await new HasteMap(
+      const {
+        __hasteMapForTest: data
+      } = await new HasteMap(
         defaultConfig,
       ).build();
       expect(useBuitinsInContext(data.duplicates)).toEqual(new Map());
@@ -881,7 +1033,9 @@ describe('HasteMap', () => {
         {"name": "Strawberry"}
       `;
 
-      const {__hasteMapForTest: data} = await new HasteMap(
+      const {
+        __hasteMapForTest: data
+      } = await new HasteMap(
         defaultConfig,
       ).build();
 
@@ -908,7 +1062,9 @@ describe('HasteMap', () => {
         fruits: 'c:fake-clock:4',
       });
 
-      const {__hasteMapForTest: correctData} = await new HasteMap(
+      const {
+        __hasteMapForTest: correctData
+      } = await new HasteMap(
         defaultConfig,
       ).build();
 
@@ -930,7 +1086,9 @@ describe('HasteMap', () => {
         vegetables: 'c:fake-clock:2',
       });
 
-      const {__hasteMapForTest: data} = await new HasteMap(
+      const {
+        __hasteMapForTest: data
+      } = await new HasteMap(
         defaultConfig,
       ).build();
       expect(useBuitinsInContext(data.duplicates)).toEqual(new Map());
@@ -961,8 +1119,13 @@ describe('HasteMap', () => {
         vegetables: 'c:fake-clock:4',
       });
 
-      const config = {...defaultConfig, ignorePattern: /Kiwi|Pear/};
-      return new HasteMap(config).build().then(({moduleMap}) => {
+      const config = {
+        ...defaultConfig,
+        ignorePattern: /Kiwi|Pear/,
+      };
+      return new HasteMap(config).build().then(({
+        moduleMap
+      }) => {
         expect(moduleMap.getModule('Pear')).toBe(null);
       });
     });
@@ -974,15 +1137,22 @@ describe('HasteMap', () => {
     // Wrap the watchman mock and add an invalid file to the file list.
     watchman.mockImplementation(options =>
       mockImpl(options).then(() => {
-        const {data} = options;
+        const {
+          data
+        } = options;
         data.files.set('fruits/invalid/file.js', ['', 34, 44, 0, []]);
-        return {hasteMap: data, removedFiles: new Map()};
+        return {
+          hasteMap: data,
+          removedFiles: new Map(),
+        };
       }),
     );
     return new HasteMap(defaultConfig)
       .build()
-      .then(({__hasteMapForTest: data}) => {
-        expect(data.files.size).toBe(5);
+      .then(({
+        __hasteMapForTest: data
+      }) => {
+        expect(data.files.size).toBe(6);
 
         // Ensure this file is not part of the file list.
         expect(data.files.get('fruits/invalid/file.js')).toBe(undefined);
@@ -994,68 +1164,68 @@ describe('HasteMap', () => {
     const path = require('path');
     const dependencyExtractor = path.join(__dirname, 'dependencyExtractor.js');
     return new HasteMap({
-      ...defaultConfig,
-      dependencyExtractor,
-      hasteImplModulePath: undefined,
-      maxWorkers: 4,
-    })
+        ...defaultConfig,
+        dependencyExtractor,
+        hasteImplModulePath: undefined,
+        maxWorkers: 4,
+      })
       .build()
-      .then(({__hasteMapForTest: data}) => {
+      .then(({
+        __hasteMapForTest: data
+      }) => {
         expect(jestWorker.mock.calls.length).toBe(1);
 
-        expect(mockWorker.mock.calls.length).toBe(5);
+        expect(mockWorker.mock.calls.length).toBe(6);
 
         expect(mockWorker.mock.calls).toEqual([
-          [
-            {
-              computeDependencies: true,
-              computeSha1: false,
-              dependencyExtractor,
-              filePath: '/project/fruits/Banana.js',
-              hasteImplModulePath: undefined,
-              rootDir: '/project',
-            },
-          ],
-          [
-            {
-              computeDependencies: true,
-              computeSha1: false,
-              dependencyExtractor,
-              filePath: '/project/fruits/Pear.js',
-              hasteImplModulePath: undefined,
-              rootDir: '/project',
-            },
-          ],
-          [
-            {
-              computeDependencies: true,
-              computeSha1: false,
-              dependencyExtractor,
-              filePath: '/project/fruits/Strawberry.js',
-              hasteImplModulePath: undefined,
-              rootDir: '/project',
-            },
-          ],
-          [
-            {
-              computeDependencies: true,
-              computeSha1: false,
-              dependencyExtractor,
-              filePath: '/project/fruits/__mocks__/Pear.js',
-              hasteImplModulePath: undefined,
-              rootDir: '/project',
-            },
-          ],
-          [
-            {
-              computeDependencies: true,
-              computeSha1: false,
-              dependencyExtractor,
-              filePath: '/project/vegetables/Melon.js',
-              hasteImplModulePath: undefined,
-              rootDir: '/project',
-            },
-          ],
+          [{
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: '/project/fruits/Banana.js',
+            hasteImplModulePath: undefined,
+            rootDir: '/project',
+          }, ],
+          [{
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: '/project/fruits/Pear.js',
+            hasteImplModulePath: undefined,
+            rootDir: '/project',
+          }, ],
+          [{
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: '/project/fruits/Plantain.js',
+            hasteImplModulePath: undefined,
+            rootDir: '/project',
+          }, ],
+          [{
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: '/project/fruits/Strawberry.js',
+            hasteImplModulePath: undefined,
+            rootDir: '/project',
+          }, ],
+          [{
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: '/project/fruits/__mocks__/Pear.js',
+            hasteImplModulePath: undefined,
+            rootDir: '/project',
+          }, ],
+          [{
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: '/project/vegetables/Melon.js',
+            hasteImplModulePath: undefined,
+            rootDir: '/project',
+          }, ],
         ]);
 
         expect(mockEnd).toBeCalled();
@@ -1070,7 +1240,9 @@ describe('HasteMap', () => {
       throw new Error('watchman error');
     });
     node.mockImplementation(options => {
-      const {data} = options;
+      const {
+        data
+      } = options;
       data.files = createMap({
         'fruits/Banana.js': ['', 32, 42, 0, '', null],
       });
@@ -1082,7 +1254,9 @@ describe('HasteMap', () => {
 
     return new HasteMap(defaultConfig)
       .build()
-      .then(({__hasteMapForTest: data}) => {
+      .then(({
+        __hasteMapForTest: data
+      }) => {
         expect(watchman).toBeCalled();
         expect(node).toBeCalled();
 
@@ -1104,7 +1278,9 @@ describe('HasteMap', () => {
       Promise.reject(new Error('watchman error')),
     );
     node.mockImplementation(options => {
-      const {data} = options;
+      const {
+        data
+      } = options;
       data.files = createMap({
         'fruits/Banana.js': ['', 32, 42, 0, '', null],
       });
@@ -1116,7 +1292,9 @@ describe('HasteMap', () => {
 
     return new HasteMap(defaultConfig)
       .build()
-      .then(({__hasteMapForTest: data}) => {
+      .then(({
+        __hasteMapForTest: data
+      }) => {
         expect(watchman).toBeCalled();
         expect(node).toBeCalled();
 
@@ -1145,8 +1323,8 @@ describe('HasteMap', () => {
       error => {
         expect(error.message).toEqual(
           'Crawler retry failed:\n' +
-            '  Original error: watchman error\n' +
-            '  Retry error: node error\n',
+          '  Original error: watchman error\n' +
+          '  Retry error: node error\n',
         );
       },
     );
@@ -1170,7 +1348,10 @@ describe('HasteMap', () => {
         if (options.mockFs) {
           mockFs = options.mockFs;
         }
-        const watchConfig = {...defaultConfig, watch: true};
+        const watchConfig = {
+          ...defaultConfig,
+          watch: true,
+        };
         const hm = new HasteMap(watchConfig);
         await hm.build();
         try {
@@ -1188,9 +1369,17 @@ describe('HasteMap', () => {
       expect(initialResult.moduleMap.getModule('Banana')).toBe(filePath);
       mockDeleteFile('/project/fruits', 'Banana.js');
       mockDeleteFile('/project/fruits', 'Banana.js');
-      const {eventsQueue, hasteFS, moduleMap} = await waitForItToChange(hm);
+      const {
+        eventsQueue,
+        hasteFS,
+        moduleMap
+      } = await waitForItToChange(hm);
       expect(eventsQueue).toHaveLength(1);
-      const deletedBanana = {filePath, stat: undefined, type: 'delete'};
+      const deletedBanana = {
+        filePath,
+        stat: undefined,
+        type: 'delete',
+      };
       expect(eventsQueue).toEqual([deletedBanana]);
       // Verify we didn't change the original map.
       expect(initialResult.hasteFS.getModuleName(filePath)).toBeDefined();
@@ -1201,13 +1390,17 @@ describe('HasteMap', () => {
 
     const MOCK_STAT_FILE = {
       isDirectory: () => false,
-      mtime: {getTime: () => 45},
+      mtime: {
+        getTime: () => 45,
+      },
       size: 55,
     };
 
     const MOCK_STAT_FOLDER = {
       isDirectory: () => true,
-      mtime: {getTime: () => 45},
+      mtime: {
+        getTime: () => 45,
+      },
       size: 55,
     };
 
@@ -1221,9 +1414,12 @@ describe('HasteMap', () => {
       const e = mockEmitters['/project/fruits'];
       e.emit('all', 'add', 'Tomato.js', '/project/fruits', MOCK_STAT_FILE);
       e.emit('all', 'change', 'Pear.js', '/project/fruits', MOCK_STAT_FILE);
-      const {eventsQueue, hasteFS, moduleMap} = await waitForItToChange(hm);
-      expect(eventsQueue).toEqual([
-        {
+      const {
+        eventsQueue,
+        hasteFS,
+        moduleMap
+      } = await waitForItToChange(hm);
+      expect(eventsQueue).toEqual([{
           filePath: '/project/fruits/Tomato.js',
           stat: MOCK_STAT_FILE,
           type: 'add',
@@ -1243,7 +1439,9 @@ describe('HasteMap', () => {
       const e = mockEmitters['/project/fruits'];
       e.emit('all', 'change', 'tomato.js', '/project/fruits', MOCK_STAT_FILE);
       e.emit('all', 'change', 'tomato.js', '/project/fruits', MOCK_STAT_FILE);
-      const {eventsQueue} = await waitForItToChange(hm);
+      const {
+        eventsQueue
+      } = await waitForItToChange(hm);
       expect(eventsQueue).toHaveLength(1);
     });
 
@@ -1258,12 +1456,17 @@ describe('HasteMap', () => {
           '/project/fruits/node_modules/',
           MOCK_STAT_FILE,
         );
-        const {eventsQueue, hasteFS} = await waitForItToChange(hm);
+        const {
+          eventsQueue,
+          hasteFS
+        } = await waitForItToChange(hm);
         const filePath = '/project/fruits/node_modules/apple.js';
         expect(eventsQueue).toHaveLength(1);
-        expect(eventsQueue).toEqual([
-          {filePath, stat: MOCK_STAT_FILE, type: 'add'},
-        ]);
+        expect(eventsQueue).toEqual([{
+          filePath,
+          stat: MOCK_STAT_FILE,
+          type: 'add',
+        }, ]);
         expect(hasteFS.getModuleName(filePath)).toBeDefined();
       },
     );
@@ -1271,7 +1474,9 @@ describe('HasteMap', () => {
     hm_it(
       'correctly tracks changes to both platform-specific versions of a single module name',
       async hm => {
-        const {moduleMap: initMM} = await hm.build();
+        const {
+          moduleMap: initMM
+        } = await hm.build();
         expect(initMM.getModule('Orange', 'ios')).toBeTruthy();
         expect(initMM.getModule('Orange', 'android')).toBeTruthy();
         const e = mockEmitters['/project/fruits'];
@@ -1289,10 +1494,13 @@ describe('HasteMap', () => {
           '/project/fruits/',
           MOCK_STAT_FILE,
         );
-        const {eventsQueue, hasteFS, moduleMap} = await waitForItToChange(hm);
+        const {
+          eventsQueue,
+          hasteFS,
+          moduleMap
+        } = await waitForItToChange(hm);
         expect(eventsQueue).toHaveLength(2);
-        expect(eventsQueue).toEqual([
-          {
+        expect(eventsQueue).toEqual([{
             filePath: '/project/fruits/Orange.ios.js',
             stat: MOCK_STAT_FILE,
             type: 'change',
@@ -1313,8 +1521,7 @@ describe('HasteMap', () => {
         expect(iosVariant).toBe('/project/fruits/Orange.ios.js');
         const androidVariant = moduleMap.getModule('Orange', 'android');
         expect(androidVariant).toBe('/project/fruits/Orange.android.js');
-      },
-      {
+      }, {
         mockFs: {
           '/project/fruits/Orange.android.js': `
             // Orange Android!
@@ -1343,7 +1550,10 @@ describe('HasteMap', () => {
           '/project/fruits/another',
           MOCK_STAT_FILE,
         );
-        const {hasteFS, moduleMap} = await waitForItToChange(hm);
+        const {
+          hasteFS,
+          moduleMap
+        } = await waitForItToChange(hm);
         expect(hasteFS.exists('/project/fruits/another/Pear.js')).toBe(true);
         try {
           moduleMap.getModule('Pear');
@@ -1377,7 +1587,9 @@ describe('HasteMap', () => {
           const e = mockEmitters['/project/fruits'];
           e.emit('all', 'delete', 'Pear.js', '/project/fruits', MOCK_STAT_FILE);
           e.emit('all', 'add', 'Pear2.js', '/project/fruits', MOCK_STAT_FILE);
-          const {moduleMap} = await waitForItToChange(hm);
+          const {
+            moduleMap
+          } = await waitForItToChange(hm);
           expect(moduleMap.getModule('Pear')).toBe(
             '/project/fruits/another/Pear.js',
           );
@@ -1406,7 +1618,9 @@ describe('HasteMap', () => {
           '/project/fruits/another',
           MOCK_STAT_FILE,
         );
-        const {moduleMap} = await waitForItToChange(hm);
+        const {
+          moduleMap
+        } = await waitForItToChange(hm);
         expect(moduleMap.getModule('Pear')).toBe('/project/fruits/Pear.js');
         expect(moduleMap.getModule('Pear2')).toBe(
           '/project/fruits/another/Pear2.js',
@@ -1429,7 +1643,9 @@ describe('HasteMap', () => {
           '/project/fruits/tomato.js/index.js',
           MOCK_STAT_FILE,
         );
-        const {eventsQueue} = await waitForItToChange(hm);
+        const {
+          eventsQueue
+        } = await waitForItToChange(hm);
         expect(eventsQueue).toHaveLength(1);
       });
     });
