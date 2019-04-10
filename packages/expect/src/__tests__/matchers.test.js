@@ -355,6 +355,7 @@ describe('.toEqual()', () => {
     [0, -0],
     [0, Number.MIN_VALUE], // issues/7941
     [Number.MIN_VALUE, 0],
+    [{a: 1}, {a: 2}],
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
     [null, undefined],
@@ -441,6 +442,7 @@ describe('.toEqual()', () => {
       b,
     )})`, () => {
       expect(() => jestExpect(a).toEqual(b)).toThrowErrorMatchingSnapshot();
+      jestExpect(a).not.toEqual(b);
     });
   });
 
@@ -567,9 +569,10 @@ describe('.toEqual()', () => {
       },
     ],
   ].forEach(([a, b]) => {
-    test(`{pass: false} expect(${stringify(a)}).not.toEqual(${stringify(
+    test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
     )})`, () => {
+      jestExpect(a).toEqual(b);
       expect(() => jestExpect(a).not.toEqual(b)).toThrowErrorMatchingSnapshot();
     });
   });
@@ -588,16 +591,6 @@ describe('.toEqual()', () => {
         }),
       );
     }
-  });
-
-  test('failure message matches the expected snapshot', () => {
-    expect(() =>
-      jestExpect({a: 1}).toEqual({a: 2}),
-    ).toThrowErrorMatchingSnapshot();
-
-    expect(() =>
-      jestExpect({a: 1}).not.toEqual({a: 1}),
-    ).toThrowErrorMatchingSnapshot();
   });
 
   test('symbol based keys in arrays are processed correctly', () => {
