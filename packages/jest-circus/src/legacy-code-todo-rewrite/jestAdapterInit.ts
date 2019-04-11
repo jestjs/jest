@@ -18,7 +18,7 @@ import throat from 'throat';
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
-import globals from '../globals';
+import * as globals from '../globals';
 import {Event, RunResult, TestEntry} from '../types';
 
 type Process = NodeJS.Process;

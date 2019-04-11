@@ -13,7 +13,7 @@ import crypto from 'crypto';
 import {sync as spawnSync, ExecaReturns} from 'execa';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
-const CIRCUS_PATH = require.resolve('../../build/globals');
+const CIRCUS_PATH = require.resolve('../../build/');
 const CIRCUS_RUN_PATH = require.resolve('../../build/run');
 const CIRCUS_STATE_PATH = require.resolve('../../build/state');
 const TEST_EVENT_HANDLER_PATH = require.resolve('./testEventHandler');
@@ -36,6 +36,7 @@ export const runTest = (source: string) => {
   const content = `
     require('${BABEL_REGISTER_PATH}')({extensions: [".js", ".ts"]});
     const circus = require('${CIRCUS_PATH}');
+    global.it = circus.it;
     global.test = circus.test;
     global.describe = circus.describe;
     global.beforeEach = circus.beforeEach;
@@ -55,35 +56,23 @@ export const runTest = (source: string) => {
   `;
 
   fs.writeFileSync(tmpFilename, content);
-  const result = spawnSync('node', [tmpFilename], {
-    cwd: process.cwd(),
-  }) as Result;
 
-  // For compat with cross-spawn
-  result.status = result.code;
+  // Normalize for compat with cross-spawn
+  let result: Result;
 
-  if (result.status !== 0) {
-    const message = `
-      STDOUT: ${result.stdout && result.stdout.toString()}
-      STDERR: ${result.stderr && result.stderr.toString()}
-      STATUS: ${result.status}
-      ERROR: ${String(result.error)}
-    `;
-    throw new Error(message);
+  try {
+    result = spawnSync('node', [tmpFilename], {
+      cwd: process.cwd(),
+    }) as Result;
+  } catch (err) {
+    result = err;
   }
-
-  result.stdout = String(result.stdout);
-  result.stderr = String(result.stderr);
 
   fs.unlinkSync(tmpFilename);
 
-  if (result.stderr) {
-    throw new Error(
-      `
-      Unexpected stderr:
-      ${result.stderr}
-    `,
-    );
-  }
-  return result;
+  return {
+    status: result.code,
+    stdout: String(result.stdout),
+    stderr: String(result.stderr),
+  };
 };

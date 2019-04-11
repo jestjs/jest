@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`beforeAll is exectued correctly 1`] = `
+exports[`beforeAll is executed correctly 1`] = `
 "start_describe_definition: describe 1
 add_hook: beforeAll
 add_test: test 1

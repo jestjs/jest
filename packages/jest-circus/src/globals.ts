@@ -25,7 +25,7 @@ import {dispatch} from './state';
 type THook = (fn: HookFn, timeout?: number) => void;
 type DescribeFn = (blockName: BlockName, blockFn: BlockFn) => void;
 
-const describe = (() => {
+export const describe = (() => {
   const describe = (blockName: BlockName, blockFn: BlockFn) =>
     _dispatchDescribe(blockFn, blockName, describe);
   const only = (blockName: BlockName, blockFn: BlockFn) =>
@@ -120,16 +120,16 @@ const _addHook = (
 };
 
 // Hooks have to pass themselves to the HOF in order for us to trim stack traces.
-const beforeEach: THook = (fn, timeout) =>
+export const beforeEach: THook = (fn, timeout) =>
   _addHook(fn, 'beforeEach', beforeEach, timeout);
-const beforeAll: THook = (fn, timeout) =>
+export const beforeAll: THook = (fn, timeout) =>
   _addHook(fn, 'beforeAll', beforeAll, timeout);
-const afterEach: THook = (fn, timeout) =>
+export const afterEach: THook = (fn, timeout) =>
   _addHook(fn, 'afterEach', afterEach, timeout);
-const afterAll: THook = (fn, timeout) =>
+export const afterAll: THook = (fn, timeout) =>
   _addHook(fn, 'afterAll', afterAll, timeout);
 
-const test: Global.It = (() => {
+export const test: Global.It = (() => {
   const test = (testName: TestName, fn: TestFn, timeout?: number): void =>
     _addTest(testName, undefined, fn, test, timeout);
   const skip = (testName: TestName, fn?: TestFn, timeout?: number): void =>
@@ -193,14 +193,4 @@ const test: Global.It = (() => {
   return test;
 })();
 
-const it: Global.It = test;
-
-export = {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  it,
-  test,
-};
+export const it: Global.It = test;
