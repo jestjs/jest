@@ -72,7 +72,7 @@ export const runTest = (source: string) => {
 
   return {
     status: result.code,
-    stdout: String(result.stdout),
     stderr: String(result.stderr),
+    stdout: String(result.stdout),
   };
 };
