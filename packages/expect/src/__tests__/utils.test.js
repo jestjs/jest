@@ -241,6 +241,36 @@ describe('iterableEquality', () => {
     ).toBe(false);
   });
 
+  test('returns false when given inequal set within a set', () => {
+    expect(
+      iterableEquality(new Set([new Set([2])]), new Set([new Set([1, 2])])),
+    ).toBe(false);
+    expect(
+      iterableEquality(new Set([new Set([2])]), new Set([new Set([1, 2])])),
+    ).toBe(false);
+  });
+
+  test('returns false when given inequal map within a set', () => {
+    expect(
+      iterableEquality(
+        new Set([new Map([['a', 2]])]),
+        new Set([new Map([['a', 3]])]),
+      ),
+    ).toBe(false);
+    expect(
+      iterableEquality(new Set([new Set([2])]), new Set([new Set([1, 2])])),
+    ).toBe(false);
+  });
+
+  test('returns false when given inequal set within a map', () => {
+    expect(
+      iterableEquality(
+        new Map([['one', new Set([2])]]),
+        new Map([['one', new Set([1, 2])]]),
+      ),
+    ).toBe(false);
+  });
+
   test('returns true when given circular Set shape', () => {
     const a1 = new Set();
     const a2 = new Set();

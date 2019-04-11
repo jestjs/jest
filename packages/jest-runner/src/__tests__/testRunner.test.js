@@ -51,7 +51,6 @@ test('injects the serializable module map into each worker in watch mode', () =>
             context: runContext,
             globalConfig,
             path: './file.test.js',
-            serializableModuleMap,
           },
         ],
         [
@@ -60,46 +59,6 @@ test('injects the serializable module map into each worker in watch mode', () =>
             context: runContext,
             globalConfig,
             path: './file2.test.js',
-            serializableModuleMap,
-          },
-        ],
-      ]);
-    });
-});
-
-test('does not inject the serializable module map in serial mode', () => {
-  const globalConfig = {maxWorkers: 1, watch: false};
-  const config = {rootDir: '/path/'};
-  const context = {config};
-  const runContext = {};
-
-  return new TestRunner(globalConfig, runContext)
-    .runTests(
-      [{context, path: './file.test.js'}, {context, path: './file2.test.js'}],
-      new TestWatcher({isWatchMode: globalConfig.watch}),
-      () => {},
-      () => {},
-      () => {},
-      {serial: false},
-    )
-    .then(() => {
-      expect(mockWorkerFarm.worker.mock.calls).toEqual([
-        [
-          {
-            config,
-            context: runContext,
-            globalConfig,
-            path: './file.test.js',
-            serializableModuleMap: null,
-          },
-        ],
-        [
-          {
-            config,
-            context: runContext,
-            globalConfig,
-            path: './file2.test.js',
-            serializableModuleMap: null,
           },
         ],
       ]);

@@ -17,6 +17,70 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
 <yellow></>"
 `;
 
+exports[`displayName should throw an error when displayName is is an empty object 1`] = `
+"<red><bold><bold>● <bold>Validation Error</>:</>
+<red></>
+<red>  Option \\"<bold>displayName</>\\" must be of type:</>
+<red></>
+<red>  {</>
+<red>    name: string;</>
+<red>    color: string;</>
+<red>  }</>
+<red></>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration.html</>
+<red></>"
+`;
+
+exports[`displayName should throw an error when displayName is missing color 1`] = `
+"<red><bold><bold>● <bold>Validation Error</>:</>
+<red></>
+<red>  Option \\"<bold>displayName</>\\" must be of type:</>
+<red></>
+<red>  {</>
+<red>    name: string;</>
+<red>    color: string;</>
+<red>  }</>
+<red></>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration.html</>
+<red></>"
+`;
+
+exports[`displayName should throw an error when displayName is missing name 1`] = `
+"<red><bold><bold>● <bold>Validation Error</>:</>
+<red></>
+<red>  Option \\"<bold>displayName</>\\" must be of type:</>
+<red></>
+<red>  {</>
+<red>    name: string;</>
+<red>    color: string;</>
+<red>  }</>
+<red></>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration.html</>
+<red></>"
+`;
+
+exports[`displayName should throw an error when displayName is using invalid values 1`] = `
+"<red><bold><bold>● <bold>Validation Error</>:</>
+<red></>
+<red>  Option \\"<bold>displayName</>\\" must be of type:</>
+<red></>
+<red>  {</>
+<red>    name: string;</>
+<red>    color: string;</>
+<red>  }</>
+<red></>
+<red></>
+<red>  <bold>Configuration Documentation:</></>
+<red>  https://jestjs.io/docs/configuration.html</>
+<red></>"
+`;
+
 exports[`preset throws when module was found but no "jest-preset.js" or "jest-preset.json" files 1`] = `
 "<red><bold><bold>● <bold>Validation Error</>:</>
 <red></>

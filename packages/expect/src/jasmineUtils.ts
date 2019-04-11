@@ -50,7 +50,6 @@ function asymmetricMatch(a: any, b: any) {
   }
 
   if (asymmetricA) {
-    // $FlowFixMe – Flow sees `a` as a number
     return a.asymmetricMatch(b);
   }
 
@@ -103,7 +102,6 @@ function eq(
     case '[object String]':
       // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
       // equivalent to `new String("5")`.
-      // $FlowFixMe – Flow sees `a` as a number
       return a == String(b);
     case '[object Number]':
       return Object.is(Number(a), Number(b));
@@ -119,7 +117,6 @@ function eq(
         a.source == b.source &&
         a.global == b.global &&
         a.multiline == b.multiline &&
-        // $FlowFixMe – Flow sees `a` as a number
         a.ignoreCase == b.ignoreCase
       );
   }
@@ -210,7 +207,6 @@ function keys(
     }
     return keys.concat(
       (Object.getOwnPropertySymbols(o) as Array<any>).filter(
-        //$FlowFixMe Jest complains about nullability, but we know for sure that property 'symbol' does exist.
         symbol =>
           (Object.getOwnPropertyDescriptor(o, symbol) as any).enumerable,
       ),

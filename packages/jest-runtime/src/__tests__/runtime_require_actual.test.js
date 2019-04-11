@@ -23,4 +23,17 @@ describe('Runtime requireActual', () => {
       );
       expect(exports.isManualMockModule).toBe(false);
     }));
+
+  test('requireActual with moduleNameMapper', () =>
+    createRuntime(__filename, {
+      moduleNameMapper: {
+        '^testMapped/(.*)': '<rootDir>/mapped_dir/$1',
+      },
+    }).then(runtime => {
+      const exports = runtime.requireActual(
+        runtime.__mockRootPath,
+        'testMapped/moduleInMapped',
+      );
+      expect(exports).toBe('in_mapped');
+    }));
 });

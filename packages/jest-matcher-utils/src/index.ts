@@ -41,7 +41,7 @@ export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
 export const INVERTED_COLOR = chalk.inverse;
 export const BOLD_WEIGHT = chalk.bold;
-const DIM_COLOR = chalk.dim;
+export const DIM_COLOR = chalk.dim;
 
 const NUMBERS = [
   'zero',
@@ -59,10 +59,6 @@ const NUMBERS = [
   'twelve',
   'thirteen',
 ];
-
-export const SUGGEST_TO_EQUAL = chalk.dim(
-  'Note that you are testing for equality with the stricter `toBe` matcher using `Object.is`. For deep equality only, use `toEqual` instead.',
-);
 
 export const SUGGEST_TO_CONTAIN_EQUAL = chalk.dim(
   'Looks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.',

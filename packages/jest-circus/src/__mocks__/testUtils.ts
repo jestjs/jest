@@ -11,7 +11,6 @@ import os from 'os';
 import path from 'path';
 import crypto from 'crypto';
 import {sync as spawnSync, ExecaReturns} from 'execa';
-// @ts-ignore
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
 const CIRCUS_PATH = require.resolve('../../build');

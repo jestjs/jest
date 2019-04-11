@@ -54,7 +54,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         cwd: process.cwd(),
         env: {
           ...process.env,
-          JEST_WORKER_ID: String(this._options.workerId),
+          JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
         } as NodeJS.ProcessEnv,
         // Suppress --debug / --inspect flags while preserving others (like --harmony).
         execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),

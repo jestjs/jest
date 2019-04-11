@@ -11,7 +11,7 @@ import exit from 'exit';
 import throat from 'throat';
 import Worker from 'jest-worker';
 import runTest from './runTest';
-import {worker} from './testWorker';
+import {worker, SerializableResolver} from './testWorker';
 import {
   OnTestFailure,
   OnTestStart,
@@ -103,11 +103,26 @@ class TestRunner {
     onResult: OnTestSuccess,
     onFailure: OnTestFailure,
   ) {
+    const resolvers: Map<string, SerializableResolver> = new Map();
+    for (const test of tests) {
+      if (!resolvers.has(test.context.config.name)) {
+        resolvers.set(test.context.config.name, {
+          config: test.context.config,
+          serializableModuleMap: test.context.moduleMap.toJSON(),
+        });
+      }
+    }
+
     const worker = new Worker(TEST_WORKER_PATH, {
       exposedMethods: ['worker'],
       forkOptions: {stdio: 'pipe'},
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
+      setupArgs: [
+        {
+          serializableResolvers: Array.from(resolvers.values()),
+        },
+      ],
     }) as WorkerInterface;
 
     if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
@@ -135,9 +150,6 @@ class TestRunner {
           },
           globalConfig: this._globalConfig,
           path: test.path,
-          serializableModuleMap: watcher.isWatchMode()
-            ? test.context.moduleMap.toJSON()
-            : null,
         });
       });
 

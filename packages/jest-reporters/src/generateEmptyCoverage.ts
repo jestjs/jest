@@ -5,15 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO: Remove this
-/// <reference path="../istanbul-lib-coverage.d.ts" />
-
 import {Config} from '@jest/types';
 import {readInitialCoverage} from 'istanbul-lib-instrument';
-import {classes} from 'istanbul-lib-coverage';
+import {createFileCoverage} from 'istanbul-lib-coverage';
 import {shouldInstrument, ScriptTransformer} from '@jest/transform';
-
-const FileCoverage = classes.FileCoverage;
 
 export type CoverageWorkerResult = {
   coverage: any;
@@ -43,7 +38,7 @@ export default function(
     // Check extracted initial coverage is not null, this can happen when using /* istanbul ignore file */
     if (extracted) {
       coverageWorkerResult = {
-        coverage: new FileCoverage(extracted.coverageData),
+        coverage: createFileCoverage(extracted.coverageData),
         sourceMapPath: mapCoverage ? sourceMapPath : null,
       };
     }

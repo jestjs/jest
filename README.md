@@ -3,9 +3,12 @@
   <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img align="right" src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>
 </p>
 
-<p align="center"><img src="website/static/img/jest-readme-headline.png" height="289" width="700"/></p>
+<!-- A spacer -->
+<p>&nbsp;</p>
 
-<h1 align="center">🃏 Delightful JavaScript Testing</h1>
+<p align="center"><img src="website/static/img/jest-readme-headline.png" width="80%"/></p>
+
+<h2 align="center">🃏 Delightful JavaScript Testing</h2>
 
 **👩🏻‍💻 Developer Ready**: A comprehensive JavaScript testing solution. Works out of the box for most JavaScript projects.
 

@@ -54,7 +54,6 @@ function deepCyclicCopyObject<T>(
     ? Object.create(Object.getPrototypeOf(object))
     : {};
 
-  // $FlowFixMe: Object.getOwnPropertyDescriptors is polyfilled above.
   const descriptors = Object.getOwnPropertyDescriptors(object);
 
   cycles.set(object, newObject);

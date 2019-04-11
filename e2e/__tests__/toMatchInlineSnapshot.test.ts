@@ -71,6 +71,33 @@ test('basic support', () => {
   }
 });
 
+test('do not indent empty lines', () => {
+  const filename = 'empty-line-indent.test.js';
+  const template = makeTemplate(
+    `test('inline snapshots', () => expect($1).toMatchInlineSnapshot());\n`,
+  );
+
+  {
+    writeFiles(TESTS_DIR, {
+      [filename]: template(['`hello\n\nworld`']),
+    });
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(status).toBe(0);
+    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
+  }
+
+  {
+    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const fileAfter = readFile(filename);
+    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
+    expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
+    expect(status).toBe(0);
+    expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
+  }
+});
+
 test('handles property matchers', () => {
   const filename = 'handle-property-matchers.test.js';
   const template = makeTemplate(`test('handles property matchers', () => {

@@ -135,13 +135,9 @@ async function runTestInternal(
   let testConsole;
 
   if (globalConfig.silent) {
-    testConsole = new NullConsole(consoleOut, process.stderr, consoleFormatter);
+    testConsole = new NullConsole(consoleOut, consoleOut, consoleFormatter);
   } else if (globalConfig.verbose) {
-    testConsole = new CustomConsole(
-      consoleOut,
-      process.stderr,
-      consoleFormatter,
-    );
+    testConsole = new CustomConsole(consoleOut, consoleOut, consoleFormatter);
   } else {
     testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
   }
@@ -253,13 +249,18 @@ async function runTestInternal(
 
     result.perfStats = {end: Date.now(), start};
     result.testFilePath = path;
-    result.coverage = runtime.getAllCoverageInfoCopy();
-    result.sourceMaps = runtime.getSourceMapInfo(
-      new Set(Object.keys(result.coverage || {})),
-    );
     result.console = testConsole.getBuffer();
     result.skipped = testCount === result.numPendingTests;
     result.displayName = config.displayName;
+
+    const coverage = runtime.getAllCoverageInfoCopy();
+    if (coverage) {
+      const coverageKeys = Object.keys(coverage);
+      if (coverageKeys.length) {
+        result.coverage = coverage;
+        result.sourceMaps = runtime.getSourceMapInfo(new Set(coverageKeys));
+      }
+    }
 
     if (globalConfig.logHeapUsage) {
       if (global.gc) {
@@ -275,7 +276,6 @@ async function runTestInternal(
   } finally {
     await environment.teardown();
 
-    // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33351
     sourcemapSupport.resetRetrieveHandlers();
   }
 }

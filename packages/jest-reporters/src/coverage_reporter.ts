@@ -6,7 +6,6 @@
  */
 
 // TODO: Remove this
-/// <reference path="../istanbul-lib-coverage.d.ts" />
 /// <reference path="../istanbul-api.d.ts" />
 
 import path from 'path';
@@ -55,23 +54,24 @@ export default class CoverageReporter extends BaseReporter {
   ) {
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
-      // Remove coverage data to free up some memory.
-      delete testResult.coverage;
+    }
 
-      Object.keys(testResult.sourceMaps).forEach(sourcePath => {
+    const sourceMaps = testResult.sourceMaps;
+    if (sourceMaps) {
+      Object.keys(sourceMaps).forEach(sourcePath => {
         let inputSourceMap: RawSourceMap | undefined;
         try {
           const coverage: FileCoverage = this._coverageMap.fileCoverageFor(
             sourcePath,
           );
-          ({inputSourceMap} = coverage.toJSON() as any);
+          inputSourceMap = (coverage.toJSON() as any).inputSourceMap;
         } finally {
           if (inputSourceMap) {
             this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
           } else {
             this._sourceMapStore.registerURL(
               sourcePath,
-              testResult.sourceMaps[sourcePath],
+              sourceMaps[sourcePath],
             );
           }
         }

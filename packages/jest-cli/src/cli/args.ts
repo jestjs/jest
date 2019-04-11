@@ -229,7 +229,7 @@ export const options = {
     default: false,
     description:
       'Print out remaining open handles preventing Jest from exiting at the ' +
-      'end of a test run.',
+      'end of a test run. Implies `runInBand`.',
     type: 'boolean' as 'boolean',
   },
   env: {
@@ -613,6 +613,13 @@ export const options = {
       'Allows to specify a custom test runner. The default is ' +
       ' `jasmine2`. A path to a custom test runner can be provided: ' +
       '`<rootDir>/path/to/testRunner.js`.',
+    type: 'string' as 'string',
+  },
+  testSequencer: {
+    description:
+      'Allows to specify a custom test sequencer. The default is ' +
+      '`@jest/test-sequencer`. A path to a custom test sequencer can be ' +
+      'provided: `<rootDir>/path/to/testSequencer.js`',
     type: 'string' as 'string',
   },
   testURL: {
