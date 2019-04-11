@@ -12,7 +12,7 @@ import {loadPartialConfig} from '@babel/core';
 import generate from '@babel/generator';
 import {parse, ParserOptions} from '@babel/parser';
 import traverse from '@babel/traverse';
-import {templateElement, templateLiteral, file, Expression, CallExpression} from '@babel/types';
+import {templateElement, templateLiteral, file, Expression, CallExpression, File, Program} from '@babel/types';
 import {Frame} from 'jest-message-util';
 
 import {Config} from '@jest/types';
@@ -28,7 +28,7 @@ type BabelTraverse = typeof traverse;
 export const saveInlineSnapshots = (
   snapshots: Array<InlineSnapshot>,
   prettier: any,
-  babelTraverse: Function,
+  babelTraverse: BabelTraverse,
 ) => {
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
 
@@ -98,7 +98,7 @@ const saveSnapshotsForFile = (
       ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
       : (config && config.parser) || simpleDetectParser(sourceFilePath);
 
-    // Insert snapshots using the custom parser API. After insertion, the code is
+    // Snapshots have now been inserted. Run prettier to make sure that the code is
     // formatted, except snapshot indentation. Snapshots cannot be formatted until
     // after the initial format because we don't know where the call expression
     // will be placed (specifically its indentation).
@@ -108,7 +108,7 @@ const saveSnapshotsForFile = (
     });
 
     if (newSourceFile !== sourceFileWithSnapshots) {
-      // prettier moved things around, we now need to run it again to fix snapshot indentations.
+      // prettier moved things around, run it again to fix snapshot indentations.
       newSourceFile = prettier.format(newSourceFile, {
         ...config,
         filepath: sourceFilePath,
@@ -163,13 +163,9 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
     .join('\n');
 };
 
-const getAst = (
-  parsers: {[key: string]: (text: string) => any},
-  inferredParser: string,
-  text: string,
-) => {
+const resolveAst = (fileOrProgram: any): File => {
   // Flow uses a 'Program' parent node, babel expects a 'File'.
-  let ast = parsers[inferredParser](text);
+  let ast = fileOrProgram
   if (ast.type !== 'File') {
     ast = file(ast, ast.comments, ast.tokens);
     delete ast.program.comments;
@@ -179,14 +175,10 @@ const getAst = (
 
 const traverseAst = (
   snapshots: Array<InlineSnapshot>,
-  ast: any, // todo: type as Program
+  fileOrProgram: File | Program,
   babelTraverse: BabelTraverse,
 ) => {
-  // Flow uses a 'Program' parent node, babel expects a 'File'.
-  if (ast.type !== 'File') {
-    ast = file(ast, ast.comments, ast.tokens);
-    delete ast.program.comments;
-  }
+  const ast = resolveAst(fileOrProgram)
 
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
   const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
@@ -244,7 +236,7 @@ const traverseAst = (
 // This parser formats snapshots to the correct indentation.
 const createFormattingParser = (
   inferredParser: string,
-  babelTraverse: Function,
+  babelTraverse: BabelTraverse,
 ) => (
   text: string,
   parsers: {[key: string]: (text: string) => any},
@@ -253,7 +245,7 @@ const createFormattingParser = (
     // Workaround for https://github.com/prettier/prettier/issues/3150
     options.parser = inferredParser;
 
-    const ast = getAst(parsers, inferredParser, text);
+    const ast = resolveAst(parsers[inferredParser](text));
     babelTraverse(ast, {
       CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
         if (
