@@ -242,7 +242,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
   );
 });
 
-test.each([['babylon'], ['flow'], ['typescript']])(
+test.each([['babel'], ['flow'], ['typescript']])(
   'saveInlineSnapshots() replaces existing template literal - %s parser',
   parser => {
     const filename = path.join(__dirname, 'my.test.js');

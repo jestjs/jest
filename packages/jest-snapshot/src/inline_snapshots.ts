@@ -77,7 +77,7 @@ const saveSnapshotsForFile = (
     }
     return (
       sourceSoFar.slice(0, nextSnapshot.node.start) +
-      generate(nextSnapshot.node, {retainLines: true}).code +
+      generate(nextSnapshot.node, {retainLines: true}).code.trim() +
       sourceSoFar.slice(nextSnapshot.node.end)
     );
   }, sourceFile);
