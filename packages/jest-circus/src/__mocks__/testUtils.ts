@@ -13,7 +13,7 @@ import crypto from 'crypto';
 import {sync as spawnSync, ExecaReturns} from 'execa';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
-const CIRCUS_PATH = require.resolve('../../build');
+const CIRCUS_PATH = require.resolve('../../build/globals');
 const CIRCUS_RUN_PATH = require.resolve('../../build/run');
 const CIRCUS_STATE_PATH = require.resolve('../../build/state');
 const TEST_EVENT_HANDLER_PATH = require.resolve('./testEventHandler');

@@ -220,9 +220,12 @@ export type TestEntry = {
   timeout: number | undefined | null;
 };
 
-export const STATE_SYM = (Symbol(
+export const STATE_SYMBOL = (Symbol.for(
   'JEST_STATE_SYMBOL',
-) as unknown) as 'STATE_SYM_SYMBOL';
+) as unknown) as 'JEST_STATE_SYMBOL';
+export const JEST_EVENT_HANDLERS_SYMBOL = (Symbol.for(
+  'JEST_EVENT_HANDLERS',
+) as unknown) as 'JEST_EVENT_HANDLERS';
 export const RETRY_TIMES = (Symbol.for(
   'RETRY_TIMES',
 ) as unknown) as 'RETRY_TIMES_SYMBOL';
@@ -234,7 +237,8 @@ export const TEST_TIMEOUT_SYMBOL = (Symbol.for(
 declare global {
   module NodeJS {
     interface Global {
-      STATE_SYM_SYMBOL: State;
+      JEST_STATE_SYMBOL: State;
+      JEST_EVENT_HANDLERS: Array<EventHandler>;
       RETRY_TIMES_SYMBOL: string;
       TEST_TIMEOUT_SYMBOL: number;
       expect: typeof expect;

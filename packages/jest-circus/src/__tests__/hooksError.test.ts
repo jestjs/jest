@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import circus from '../';
+import circus from '../globals';
 import {HookType} from '../types';
 
 describe.each(['beforeEach', 'beforeAll', 'afterEach', 'afterAll'])(

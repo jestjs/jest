@@ -14,7 +14,7 @@ let circusTest: Global.It;
 // the two with this alias.
 
 const aliasCircusIt = () => {
-  const {it, test} = require('../');
+  const {it, test} = require('../globals');
   circusIt = it;
   circusTest = test;
 };
