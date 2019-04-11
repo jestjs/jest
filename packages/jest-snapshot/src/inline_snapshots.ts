@@ -6,7 +6,7 @@
  */
 
 import fs from 'fs';
-// import path from 'path';
+import path from 'path';
 import semver from 'semver';
 import {loadPartialConfig} from '@babel/core';
 import generate from '@babel/generator';
@@ -79,13 +79,13 @@ const saveSnapshotsForFile = (
       }
       return (
         sourceSoFar.slice(0, nextSnapshot.node.start) +
-        generate(nextSnapshot.node).code +
+        generate(nextSnapshot.node, {retainLines: true}).code +
         sourceSoFar.slice(nextSnapshot.node.end)
       );
     }, sourceFile);
   }
 
-  if (prettier && false) {
+  if (prettier) {
     // Resolve project configuration.
     // For older versions of Prettier, do not load configuration.
     const config = prettier.resolveConfig
@@ -101,7 +101,7 @@ const saveSnapshotsForFile = (
       : (config && config.parser) || simpleDetectParser(sourceFilePath);
 
     // Format the source code using the custom parser API.
-    newSourceFile = prettier.format(sourceFile, {
+    newSourceFile = prettier.format(newSourceFile, {
       ...config,
       filepath: sourceFilePath,
       parser: createFormattingParser(inferredParser, babelTraverse),
@@ -206,7 +206,10 @@ const traverseAst = (
       const {arguments: args, callee} = node;
       if (
         callee.type !== 'MemberExpression' ||
-        callee.property.type !== 'Identifier'
+        callee.property.type !== 'Identifier' ||
+        callee.property.name !== 'toMatchInlineSnapshot' ||
+        !callee.loc ||
+        callee.computed
       ) {
         return;
       }
