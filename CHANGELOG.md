@@ -3,6 +3,7 @@
 ### Features
 
 - `[expect]` Improve report when matcher fails, part 15 ([#8281](https://github.com/facebook/jest/pull/8281))
+- `[jest-circus]` Allow Circus `addEventHandler` and `getState` to be used externally ([#8307](https://github.com/facebook/jest/pull/8307))
 
 ### Fixes
 
