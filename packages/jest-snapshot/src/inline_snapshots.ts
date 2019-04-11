@@ -6,7 +6,7 @@
  */
 
 import fs from 'fs';
-import path from 'path';
+// import path from 'path';
 import semver from 'semver';
 import {loadPartialConfig} from '@babel/core';
 import generate from '@babel/generator';
@@ -50,36 +50,8 @@ const saveSnapshotsForFile = (
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
-  let newSourceFile;
-  if (prettier) {
-    // Resolve project configuration.
-    // For older versions of Prettier, do not load configuration.
-    const config = prettier.resolveConfig
-      ? prettier.resolveConfig.sync(sourceFilePath, {
-        editorconfig: true,
-      })
-      : null;
-
-    // Detect the parser for the test file.
-    // For older versions of Prettier, fallback to a simple parser detection.
-    const inferredParser = prettier.getFileInfo
-      ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
-      : (config && config.parser) || simpleDetectParser(sourceFilePath);
-
-    // Format the source code using the custom parser API.
-    newSourceFile = prettier.format(sourceFile, {
-      ...config,
-      filepath: sourceFilePath,
-      parser: createInsertionParser(snapshots, inferredParser, babelTraverse),
-    });
-
-    // Format the snapshots using the custom parser API.
-    newSourceFile = prettier.format(newSourceFile, {
-      ...config,
-      filepath: sourceFilePath,
-      parser: createFormattingParser(inferredParser, babelTraverse),
-    });
-  } else {
+  let newSourceFile: string;
+  {
     const {options} = loadPartialConfig({filename: sourceFilePath})!;
     if (!options.plugins) {
       options.plugins = [];
@@ -111,6 +83,10 @@ const saveSnapshotsForFile = (
         sourceSoFar.slice(nextSnapshot.node.end)
       );
     }, sourceFile);
+  }
+
+  if (prettier) {
+    // todo: put formatting back in
   }
 
   if (newSourceFile !== sourceFile) {
@@ -174,7 +150,7 @@ const getAst = (
 };
 
 // This parser inserts snapshots into the AST.
-const createInsertionParser = (
+export const createInsertionParser = (
   snapshots: Array<InlineSnapshot>,
   inferredParser: string,
   babelTraverse: BabelTraverse,
@@ -317,10 +293,10 @@ const createFormattingParser = (
     return ast;
   };
 
-const simpleDetectParser = (filePath: Config.Path) => {
-  const extname = path.extname(filePath);
-  if (/tsx?$/.test(extname)) {
-    return 'typescript';
-  }
-  return 'babylon';
-};
+// const simpleDetectParser = (filePath: Config.Path) => {
+//   const extname = path.extname(filePath);
+//   if (/tsx?$/.test(extname)) {
+//     return 'typescript';
+//   }
+//   return 'babylon';
+// };
