@@ -36,7 +36,7 @@ type BabelTraverse = typeof traverse;
 export const saveInlineSnapshots = (
   snapshots: Array<InlineSnapshot>,
   prettier: any,
-  babelTraverse: BabelTraverse,
+  babelTraverse: Function,
 ) => {
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
 
