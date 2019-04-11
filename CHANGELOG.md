@@ -54,12 +54,9 @@
 - `[@jest/reporter]` Display todo and skip test descriptions when verbose is true ([#8038](https://github.com/facebook/jest/pull/8038))
 - `[jest-runner]` Support default exports for test environments ([#8163](https://github.com/facebook/jest/pull/8163))
 - `[pretty-format]` Support React.Suspense ([#8180](https://github.com/facebook/jest/pull/8180))
-<<<<<<< HEAD
-- `[jest-snapshots]`: Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
-=======
+- `[jest-snapshot]`: Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
 - `[jest-snapshot]` Indent inline snapshots ([#8198](https://github.com/facebook/jest/pull/8198))
 - `[jest-config]` Support colors in `displayName` configuration ([#8025](https://github.com/facebook/jest/pull/8025))
->>>>>>> master
 
 ### Fixes
 
