@@ -266,10 +266,15 @@ export default class SearchSource {
     } else if (globalConfig.runTestsByPath && paths && paths.length) {
       return this.findTestsByPaths(paths);
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
-      return this.findRelatedTestsFromPattern(
+      const relatedTests = this.findRelatedTestsFromPattern(
         paths,
         globalConfig.collectCoverage,
       );
+      return {
+        tests: relatedTests.tests.filter(test =>
+          new RegExp(globalConfig.testPathPattern).test(test.path),
+        ),
+      };
     } else if (globalConfig.testPathPattern != null) {
       return this.findMatchingTests(globalConfig.testPathPattern);
     } else {
