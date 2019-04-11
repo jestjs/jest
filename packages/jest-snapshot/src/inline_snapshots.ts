@@ -85,8 +85,27 @@ const saveSnapshotsForFile = (
     }, sourceFile);
   }
 
-  if (prettier) {
-    // todo: put formatting back in
+  if (prettier && false) {
+    // Resolve project configuration.
+    // For older versions of Prettier, do not load configuration.
+    const config = prettier.resolveConfig
+      ? prettier.resolveConfig.sync(sourceFilePath, {
+        editorconfig: true,
+      })
+      : null;
+
+    // Detect the parser for the test file.
+    // For older versions of Prettier, fallback to a simple parser detection.
+    const inferredParser = prettier.getFileInfo
+      ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
+      : (config && config.parser) || simpleDetectParser(sourceFilePath);
+
+    // Format the source code using the custom parser API.
+    newSourceFile = prettier.format(sourceFile, {
+      ...config,
+      filepath: sourceFilePath,
+      parser: createFormattingParser(inferredParser, babelTraverse),
+    });
   }
 
   if (newSourceFile !== sourceFile) {
@@ -170,7 +189,7 @@ export const createInsertionParser = (
 
 const traverseAst = (
   snapshots: Array<InlineSnapshot>,
-  ast: any,
+  ast: any, // todo: type as Program
   babelTraverse: BabelTraverse,
 ) => {
   // Flow uses a 'Program' parent node, babel expects a 'File'.
@@ -293,10 +312,10 @@ const createFormattingParser = (
     return ast;
   };
 
-// const simpleDetectParser = (filePath: Config.Path) => {
-//   const extname = path.extname(filePath);
-//   if (/tsx?$/.test(extname)) {
-//     return 'typescript';
-//   }
-//   return 'babylon';
-// };
+const simpleDetectParser = (filePath: Config.Path) => {
+  const extname = path.extname(filePath);
+  if (/tsx?$/.test(extname)) {
+    return 'typescript';
+  }
+  return 'babylon';
+};
