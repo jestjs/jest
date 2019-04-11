@@ -405,6 +405,28 @@ export default class ScriptTransformer {
     return result;
   }
 
+  transformJson(
+    filename: Config.Path,
+    options: Options,
+    fileSource: string,
+  ): string {
+    const isInternalModule = options.isInternalModule;
+    const isCoreModule = options.isCoreModule;
+    const willTransform =
+      !isInternalModule && !isCoreModule && this.shouldTransform(filename);
+
+    if (willTransform) {
+      const {code: transformedJsonSource} = this.transformSource(
+        filename,
+        fileSource,
+        false,
+      );
+      return transformedJsonSource;
+    }
+
+    return fileSource;
+  }
+
   /**
    * @deprecated use `this.shouldTransform` instead
    */
