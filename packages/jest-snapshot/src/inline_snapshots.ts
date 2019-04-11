@@ -12,7 +12,15 @@ import {loadPartialConfig} from '@babel/core';
 import generate from '@babel/generator';
 import {parse, ParserOptions} from '@babel/parser';
 import traverse from '@babel/traverse';
-import {templateElement, templateLiteral, file, Expression, CallExpression, File, Program} from '@babel/types';
+import {
+  templateElement,
+  templateLiteral,
+  file,
+  Expression,
+  CallExpression,
+  File,
+  Program,
+} from '@babel/types';
 import {Frame} from 'jest-message-util';
 
 import {Config} from '@jest/types';
@@ -67,29 +75,32 @@ const saveSnapshotsForFile = (
   traverseAst(snapshots, ast, babelTraverse);
 
   // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
-  const sourceFileWithSnapshots = snapshots.reduceRight((sourceSoFar, nextSnapshot) => {
-    if (
-      !nextSnapshot.node ||
-      typeof nextSnapshot.node.start !== 'number' ||
-      typeof nextSnapshot.node.end !== 'number'
-    ) {
-      throw new Error('Jest: no snapshot insert location found');
-    }
-    return (
-      sourceSoFar.slice(0, nextSnapshot.node.start) +
-      generate(nextSnapshot.node, {retainLines: true}).code.trim() +
-      sourceSoFar.slice(nextSnapshot.node.end)
-    );
-  }, sourceFile);
+  const sourceFileWithSnapshots = snapshots.reduceRight(
+    (sourceSoFar, nextSnapshot) => {
+      if (
+        !nextSnapshot.node ||
+        typeof nextSnapshot.node.start !== 'number' ||
+        typeof nextSnapshot.node.end !== 'number'
+      ) {
+        throw new Error('Jest: no snapshot insert location found');
+      }
+      return (
+        sourceSoFar.slice(0, nextSnapshot.node.start) +
+        generate(nextSnapshot.node, {retainLines: true}).code.trim() +
+        sourceSoFar.slice(nextSnapshot.node.end)
+      );
+    },
+    sourceFile,
+  );
 
-  let newSourceFile = sourceFileWithSnapshots
+  let newSourceFile = sourceFileWithSnapshots;
   if (prettier) {
     // Resolve project configuration.
     // For older versions of Prettier, do not load configuration.
     const config = prettier.resolveConfig
       ? prettier.resolveConfig.sync(sourceFilePath, {
-        editorconfig: true,
-      })
+          editorconfig: true,
+        })
       : null;
 
     // Detect the parser for the test file.
@@ -125,13 +136,13 @@ const saveSnapshotsForFile = (
 const groupSnapshotsBy = (
   createKey: (inlineSnapshot: InlineSnapshot) => string,
 ) => (snapshots: Array<InlineSnapshot>) =>
-    snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
-      (object, inlineSnapshot) => {
-        const key = createKey(inlineSnapshot);
-        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
-      },
-      {},
-    );
+  snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
+    (object, inlineSnapshot) => {
+      const key = createKey(inlineSnapshot);
+      return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+    },
+    {},
+  );
 
 const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
   typeof line === 'number' && typeof column === 'number'
@@ -165,7 +176,7 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
 
 const resolveAst = (fileOrProgram: any): File => {
   // Flow uses a 'Program' parent node, babel expects a 'File'.
-  let ast = fileOrProgram
+  let ast = fileOrProgram;
   if (ast.type !== 'File') {
     ast = file(ast, ast.comments, ast.tokens);
     delete ast.program.comments;
@@ -178,7 +189,7 @@ const traverseAst = (
   fileOrProgram: File | Program,
   babelTraverse: BabelTraverse,
 ) => {
-  const ast = resolveAst(fileOrProgram)
+  const ast = resolveAst(fileOrProgram);
 
   const groupedSnapshots = groupSnapshotsByFrame(snapshots);
   const remainingSnapshots = new Set(snapshots.map(({snapshot}) => snapshot));
@@ -241,61 +252,61 @@ const createFormattingParser = (
   text: string,
   parsers: {[key: string]: (text: string) => any},
   options: any,
-  ) => {
-    // Workaround for https://github.com/prettier/prettier/issues/3150
-    options.parser = inferredParser;
+) => {
+  // Workaround for https://github.com/prettier/prettier/issues/3150
+  options.parser = inferredParser;
 
-    const ast = resolveAst(parsers[inferredParser](text));
-    babelTraverse(ast, {
-      CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
-        if (
-          callee.type !== 'MemberExpression' ||
-          callee.property.type !== 'Identifier' ||
-          callee.property.name !== 'toMatchInlineSnapshot' ||
-          !callee.loc ||
-          callee.computed
-        ) {
-          return;
+  const ast = resolveAst(parsers[inferredParser](text));
+  babelTraverse(ast, {
+    CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
+      if (
+        callee.type !== 'MemberExpression' ||
+        callee.property.type !== 'Identifier' ||
+        callee.property.name !== 'toMatchInlineSnapshot' ||
+        !callee.loc ||
+        callee.computed
+      ) {
+        return;
+      }
+
+      let snapshotIndex: number | undefined;
+      let snapshot: string | undefined;
+      for (let i = 0; i < args.length; i++) {
+        const node = args[i];
+        if (node.type === 'TemplateLiteral') {
+          snapshotIndex = i;
+          snapshot = node.quasis[0].value.raw;
         }
+      }
+      if (snapshot === undefined || snapshotIndex === undefined) {
+        return;
+      }
 
-        let snapshotIndex: number | undefined;
-        let snapshot: string | undefined;
-        for (let i = 0; i < args.length; i++) {
-          const node = args[i];
-          if (node.type === 'TemplateLiteral') {
-            snapshotIndex = i;
-            snapshot = node.quasis[0].value.raw;
-          }
-        }
-        if (snapshot === undefined || snapshotIndex === undefined) {
-          return;
-        }
+      const useSpaces = !options.useTabs;
+      snapshot = indent(
+        snapshot,
+        Math.ceil(
+          useSpaces
+            ? callee.loc.start.column / options.tabWidth
+            : callee.loc.start.column / 2, // Each tab is 2 characters.
+        ),
+        useSpaces ? ' '.repeat(options.tabWidth) : '\t',
+      );
 
-        const useSpaces = !options.useTabs;
-        snapshot = indent(
-          snapshot,
-          Math.ceil(
-            useSpaces
-              ? callee.loc.start.column / options.tabWidth
-              : callee.loc.start.column / 2, // Each tab is 2 characters.
-          ),
-          useSpaces ? ' '.repeat(options.tabWidth) : '\t',
-        );
+      const replacementNode = templateLiteral(
+        [
+          templateElement({
+            raw: snapshot,
+          }),
+        ],
+        [],
+      );
+      args[snapshotIndex] = replacementNode;
+    },
+  });
 
-        const replacementNode = templateLiteral(
-          [
-            templateElement({
-              raw: snapshot,
-            }),
-          ],
-          [],
-        );
-        args[snapshotIndex] = replacementNode;
-      },
-    });
-
-    return ast;
-  };
+  return ast;
+};
 
 const simpleDetectParser = (filePath: Config.Path) => {
   const extname = path.extname(filePath);
