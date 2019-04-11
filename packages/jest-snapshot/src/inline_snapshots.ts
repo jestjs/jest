@@ -50,41 +50,39 @@ const saveSnapshotsForFile = (
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
-  let newSourceFile: string;
-  {
-    const {options} = loadPartialConfig({filename: sourceFilePath})!;
-    if (!options.plugins) {
-      options.plugins = [];
-    }
-
-    // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
-    if (/\.tsx?$/.test(sourceFilePath)) {
-      options.plugins.push('typescript');
-    }
-    if (/\.tsx/.test(sourceFilePath)) {
-      options.plugins.push('jsx');
-    }
-
-    const ast = parse(sourceFile, options as ParserOptions);
-    traverseAst(snapshots, ast, babelTraverse);
-
-    // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
-    newSourceFile = snapshots.reduceRight((sourceSoFar, nextSnapshot) => {
-      if (
-        !nextSnapshot.node ||
-        typeof nextSnapshot.node.start !== 'number' ||
-        typeof nextSnapshot.node.end !== 'number'
-      ) {
-        throw new Error('Jest: no snapshot insert location found');
-      }
-      return (
-        sourceSoFar.slice(0, nextSnapshot.node.start) +
-        generate(nextSnapshot.node, {retainLines: true}).code +
-        sourceSoFar.slice(nextSnapshot.node.end)
-      );
-    }, sourceFile);
+  const {options} = loadPartialConfig({filename: sourceFilePath})!;
+  if (!options.plugins) {
+    options.plugins = [];
   }
 
+  // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
+  if (/\.tsx?$/.test(sourceFilePath)) {
+    options.plugins.push('typescript');
+  }
+  if (/\.tsx/.test(sourceFilePath)) {
+    options.plugins.push('jsx');
+  }
+
+  const ast = parse(sourceFile, options as ParserOptions);
+  traverseAst(snapshots, ast, babelTraverse);
+
+  // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
+  const sourceFileWithSnapshots = snapshots.reduceRight((sourceSoFar, nextSnapshot) => {
+    if (
+      !nextSnapshot.node ||
+      typeof nextSnapshot.node.start !== 'number' ||
+      typeof nextSnapshot.node.end !== 'number'
+    ) {
+      throw new Error('Jest: no snapshot insert location found');
+    }
+    return (
+      sourceSoFar.slice(0, nextSnapshot.node.start) +
+      generate(nextSnapshot.node, {retainLines: true}).code +
+      sourceSoFar.slice(nextSnapshot.node.end)
+    );
+  }, sourceFile);
+
+  let newSourceFile = sourceFileWithSnapshots
   if (prettier) {
     // Resolve project configuration.
     // For older versions of Prettier, do not load configuration.
@@ -100,12 +98,23 @@ const saveSnapshotsForFile = (
       ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
       : (config && config.parser) || simpleDetectParser(sourceFilePath);
 
-    // Format the source code using the custom parser API.
+    // Insert snapshots using the custom parser API. After insertion, the code is
+    // formatted, except snapshot indentation. Snapshots cannot be formatted until
+    // after the initial format because we don't know where the call expression
+    // will be placed (specifically its indentation).
     newSourceFile = prettier.format(newSourceFile, {
       ...config,
       filepath: sourceFilePath,
-      parser: createFormattingParser(inferredParser, babelTraverse),
     });
+
+    if (newSourceFile !== sourceFileWithSnapshots) {
+      // prettier moved things around, we now need to run it again to fix snapshot indentations.
+      newSourceFile = prettier.format(newSourceFile, {
+        ...config,
+        filepath: sourceFilePath,
+        parser: createFormattingParser(inferredParser, babelTraverse),
+      });
+    }
   }
 
   if (newSourceFile !== sourceFile) {
@@ -167,25 +176,6 @@ const getAst = (
   }
   return ast;
 };
-
-// This parser inserts snapshots into the AST.
-export const createInsertionParser = (
-  snapshots: Array<InlineSnapshot>,
-  inferredParser: string,
-  babelTraverse: BabelTraverse,
-) => (
-  text: string,
-  parsers: {[key: string]: (text: string) => any},
-  options: any,
-  ) => {
-    // Workaround for https://github.com/prettier/prettier/issues/3150
-    options.parser = inferredParser;
-    const ast = parsers[inferredParser](text);
-
-    traverseAst(snapshots, ast, babelTraverse);
-
-    return ast;
-  };
 
 const traverseAst = (
   snapshots: Array<InlineSnapshot>,
