@@ -861,6 +861,8 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables.
 
+Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration.
+
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
 
 Example:
@@ -870,15 +872,20 @@ Example:
 const NodeEnvironment = require('jest-environment-node');
 
 class CustomEnvironment extends NodeEnvironment {
-  constructor(config, context) {
+  constructor(config, {testPath, docblockPragmas}) {
     super(config, context);
-    this.testPath = context.testPath;
+    this.testPath = testPath;
+    this.docblockPragmas = docblockPragmas;
   }
 
   async setup() {
     await super.setup();
     await someSetupTasks(this.testPath);
     this.global.someGlobalObject = createGlobalObject();
+
+    if (this.docblockPragmas['my-custom-pragma'] !== undefined) {
+      // ...
+    }
   }
 
   async teardown() {

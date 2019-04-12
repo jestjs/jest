@@ -85,8 +85,8 @@ async function runTestInternal(
   context?: TestRunnerContext,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
-  const dockblockPragmas = docblock.parse(docblock.extract(testSource));
-  const customEnvironment = dockblockPragmas['jest-environment'];
+  const docblockPragmas = docblock.parse(docblock.extract(testSource));
+  const customEnvironment = docblockPragmas['jest-environment'];
 
   let testEnvironment = config.testEnvironment;
 
@@ -142,9 +142,10 @@ async function runTestInternal(
     testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
   }
 
+  // console.log('dockblockPragmas', dockblockPragmas);
   const environment = new TestEnvironment(config, {
     console: testConsole,
-    dockblockPragmas,
+    docblockPragmas,
     testPath: path,
   });
   const leakDetector = config.detectLeaks

@@ -18,7 +18,7 @@ type JestMockSpyOn = typeof jestMock.spyOn;
 // passed, or not. The context itself is optional, not properties within it.
 export type EnvironmentContext = Partial<{
   console: Console;
-  dockblockPragmas: {[key: string]: string | Array<string>};
+  docblockPragmas: {[key: string]: string | Array<string>};
   testPath: Config.Path;
 }>;
 
