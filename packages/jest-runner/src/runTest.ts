@@ -142,7 +142,6 @@ async function runTestInternal(
     testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
   }
 
-  // console.log('dockblockPragmas', dockblockPragmas);
   const environment = new TestEnvironment(config, {
     console: testConsole,
     docblockPragmas,
