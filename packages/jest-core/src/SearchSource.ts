@@ -270,13 +270,17 @@ export default class SearchSource {
         paths,
         globalConfig.collectCoverage,
       );
-      if (globalConfig.testPathPattern !== null) {
+      if (
+        globalConfig.testPathPattern
+          .split('|')
+          .every(f => globalConfig.nonFlagArgs.includes(f))
+      ) {
+        return relatedTests;
+      } else {
         return this._filterTestPathsWithStats(
           relatedTests.tests,
           globalConfig.testPathPattern,
         );
-      } else {
-        return relatedTests;
       }
     } else if (globalConfig.testPathPattern != null) {
       return this.findMatchingTests(globalConfig.testPathPattern);
