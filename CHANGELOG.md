@@ -3,6 +3,7 @@
 ### Features
 
 - `[expect]` Improve report when matcher fails, part 15 ([#8281](https://github.com/facebook/jest/pull/8281))
+- `[jest-runner]` Pass docblock pragmas to TestEnvironment constructor ([#8320](https://github.com/facebook/jest/pull/8320))
 
 ### Fixes
 
