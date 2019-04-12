@@ -831,12 +831,6 @@ test(<span class="hljs-string">'la casa tiene las propiedades deseadas'</span>, 
     expect([{<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}, {<span class="hljs-attr">baz</span>: <span class="hljs-number">1</span>}]).toMatchObject([{<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}, {<span class="hljs-attr">baz</span>: <span class="hljs-number">1</span>}]);
   });
 
-  <span class="hljs-comment">// .arrayContaining "matches a received array which contains elements that</span>
-  <span class="hljs-comment">// are *not* in the expected array"</span>
-  test(<span class="hljs-string">'.toMatchObject does not allow extra elements'</span>, () =&gt; {
-    expect([{<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}, {<span class="hljs-attr">baz</span>: <span class="hljs-number">1</span>}]).toMatchObject([{<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}]);
-  });
-
   test(<span class="hljs-string">'.toMatchObject is called for each elements, so extra object properties are okay'</span>, () =&gt; {
     expect([{<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}, {<span class="hljs-attr">baz</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">extra</span>: <span class="hljs-string">'quux'</span>}]).toMatchObject([
       {<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>},
