@@ -33,7 +33,9 @@ describe('insert', () => {
   let db;
 
   beforeAll(async () => {
-    connection = await MongoClient.connect(global.__MONGO_URI__, {useNewUrlParser: true});
+    connection = await MongoClient.connect(global.__MONGO_URI__, {
+      useNewUrlParser: true,
+    });
     db = await connection.db(global.__MONGO_DB_NAME__);
   });
 
@@ -54,6 +56,6 @@ describe('insert', () => {
 });
 ```
 
-There's no need to load any dependencies. 
+There's no need to load any dependencies.
 
 See [documentation](https://github.com/shelfio/jest-mongodb) for details (configuring MongoDB version, etc).
