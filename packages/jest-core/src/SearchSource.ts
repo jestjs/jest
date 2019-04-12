@@ -273,7 +273,7 @@ export default class SearchSource {
       if (globalConfig.testPathPattern !== null) {
         return this._filterTestPathsWithStats(
           relatedTests.tests,
-          globalConfig.testPathPattern.split('|').pop(),
+          globalConfig.testPathPattern,
         );
       } else {
         return relatedTests;
