@@ -861,7 +861,7 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables.
 
-Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration.
+Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with it's value set to an empty string. If the pragma is not present, it will not be present in the object.
 
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
 
@@ -883,7 +883,8 @@ class CustomEnvironment extends NodeEnvironment {
     await someSetupTasks(this.testPath);
     this.global.someGlobalObject = createGlobalObject();
 
-    if (this.docblockPragmas['my-custom-pragma'] !== undefined) {
+    // Will trigger if docblock contains @my-custom-pragma my-pragma-value
+    if (this.docblockPragmas['my-custom-pragma'] === 'my-pragma-value') {
       // ...
     }
   }
