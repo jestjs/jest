@@ -4,10 +4,12 @@
 
 - `[expect]` Improve report when matcher fails, part 15 ([#8281](https://github.com/facebook/jest/pull/8281))
 - `[expect]` Improve report when matcher fails, part 16 ([#8306](https://github.com/facebook/jest/pull/8306))
+- `[jest-runner]` Pass docblock pragmas to TestEnvironment constructor ([#8320](https://github.com/facebook/jest/pull/8320))
 
 ### Fixes
 
 - `[jest-snapshot]` Inline snapshots: do not indent empty lines ([#8277](https://github.com/facebook/jest/pull/8277))
+- `[@jest/runtime, @jest/transform]` Allow custom transforms for JSON dependencies ([#2578](https://github.com/facebook/jest/pull/2578))
 - `[jest-core]` Make `detectOpenHandles` imply `runInBand` ([#8283](https://github.com/facebook/jest/pull/8283))
 - `[jest-haste-map]` Fix the `mapper` option which was incorrectly ignored ([#8299](https://github.com/facebook/jest/pull/8299))
 
