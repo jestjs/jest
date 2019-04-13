@@ -638,21 +638,28 @@ test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
 });
 </code></pre>
 <p>テスト環境のセットアップに使用する独自のモジュールを作成できます。 モジュールは、<code>setup</code>、 <code>teardown</code> および <code>runScript</code> メソッドを持つクラスをエクスポートする必要があります。 You can also pass variables from this module to your test suites by assigning them to <code>this.global</code> object – this will make them available in your test suites as global variables.</p>
+<p>Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with it's value set to an empty string. If the pragma is not present, it will not be present in the object.</p>
 <p><em>Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment.</em></p>
 <p>例:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// my-custom-environment</span>
 <span class="hljs-keyword">const</span> NodeEnvironment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-environment-node'</span>);
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CustomEnvironment</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">NodeEnvironment</span> </span>{
-  <span class="hljs-keyword">constructor</span>(config, context) {
+  <span class="hljs-keyword">constructor</span>(config, {testPath, docblockPragmas}) {
     <span class="hljs-keyword">super</span>(config, context);
-    <span class="hljs-keyword">this</span>.testPath = context.testPath;
+    <span class="hljs-keyword">this</span>.testPath = testPath;
+    <span class="hljs-keyword">this</span>.docblockPragmas = docblockPragmas;
   }
 
   <span class="hljs-keyword">async</span> setup() {
     <span class="hljs-keyword">await</span> <span class="hljs-keyword">super</span>.setup();
     <span class="hljs-keyword">await</span> someSetupTasks(<span class="hljs-keyword">this</span>.testPath);
     <span class="hljs-keyword">this</span>.global.someGlobalObject = createGlobalObject();
+
+    <span class="hljs-comment">// Will trigger if docblock contains @my-custom-pragma my-pragma-value</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.docblockPragmas[<span class="hljs-string">'my-custom-pragma'</span>] === <span class="hljs-string">'my-pragma-value'</span>) {
+      <span class="hljs-comment">// ...</span>
+    }
   }
 
   <span class="hljs-keyword">async</span> teardown() {
