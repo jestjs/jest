@@ -120,11 +120,9 @@ const readResultsAndExit = (
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
       console.error(
-        chalk.red.bold('Force exiting Jest\n\n') +
-          chalk.red(
-            'Have you considered using `--detectOpenHandles` to detect ' +
-              'async operations that kept running after all tests finished?',
-          ),
+        chalk.bold('Force exiting Jest: ') +
+          'Have you considered using `--detectOpenHandles` to detect ' +
+          'async operations that kept running after all tests finished?',
       );
     }
 
