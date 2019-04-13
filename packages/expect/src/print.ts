@@ -114,7 +114,7 @@ export const printDiffOrStringify = (
     : `${expectedLabel}${printExpected(expected)}\n` +
         `${receivedLabel}${
           stringify(expected) === stringify(received)
-            ? 'has same serialization'
+            ? 'serializes to the same string'
             : printReceived(received)
         }`;
 };

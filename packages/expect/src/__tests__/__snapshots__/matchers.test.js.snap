@@ -325,7 +325,7 @@ exports[`.toBe() fails for: [] and [] 1`] = `
 <dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>[]</>
-Received: has same serialization"
+Received: serializes to the same string"
 `;
 
 exports[`.toBe() fails for: [Error: received] and [Error: expected] 1`] = `
@@ -339,7 +339,7 @@ exports[`.toBe() fails for: [Function anonymous] and [Function anonymous] 1`] = 
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>[Function anonymous]</>
-Received: has same serialization"
+Received: serializes to the same string"
 `;
 
 exports[`.toBe() fails for: {"a": [Function a], "b": 2} and {"a": Any<Function>, "b": 2} 1`] = `
@@ -363,7 +363,7 @@ exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
 <dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>{\\"a\\": 1}</>
-Received: has same serialization"
+Received: serializes to the same string"
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
@@ -398,7 +398,7 @@ exports[`.toBe() fails for: {} and {} 1`] = `
 <dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>{}</>
-Received: has same serialization"
+Received: serializes to the same string"
 `;
 
 exports[`.toBe() fails for: -0 and 0 1`] = `
@@ -421,7 +421,7 @@ exports[`.toBe() fails for: 2020-02-20T00:00:00.000Z and 2020-02-20T00:00:00.000
 <dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>2020-02-20T00:00:00.000Z</>
-Received: has same serialization"
+Received: serializes to the same string"
 `;
 
 exports[`.toBe() fails for: 2020-02-21T00:00:00.000Z and 2020-02-20T00:00:00.000Z 1`] = `
