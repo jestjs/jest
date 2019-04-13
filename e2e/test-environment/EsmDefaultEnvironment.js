@@ -14,7 +14,6 @@ class Env extends NodeEnvironment {
   constructor(config, options) {
     super(config, options);
     this.global.property = 'value';
-    this.global.myCustomPragma = options.docblockPragmas['my-custom-pragma'];
   }
 }
 
