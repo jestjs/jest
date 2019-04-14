@@ -27,6 +27,7 @@ import {
 } from 'jest-matcher-utils';
 import {MatchersObject, MatcherState} from './types';
 import {
+  printDiffOrStringify,
   printReceivedArrayContainExpectedItem,
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
@@ -38,9 +39,12 @@ import {
   sparseArrayEquality,
   subsetEquality,
   typeEquality,
-  isOneline,
 } from './utils';
 import {equals} from './jasmineUtils';
+
+// Include colon and one or more spaces, same as returned by getLabelPrinter.
+const EXPECTED_LABEL = 'Expected: ';
+const RECEIVED_LABEL = 'Received: ';
 
 const toStrictEqualTesters = [
   iterableEquality,
@@ -72,7 +76,6 @@ const matchers: MatchersObject = {
           '\n\n' +
           `Expected: not ${printExpected(expected)}`
       : () => {
-          const receivedType = getType(received);
           const expectedType = getType(expected);
 
           let deepEqualityName = null;
@@ -86,20 +89,6 @@ const matchers: MatchersObject = {
             }
           }
 
-          const hasConciseReport =
-            receivedType !== expectedType ||
-            (isPrimitive(expected) &&
-              (expectedType !== 'string' || isOneline(expected, received))) ||
-            expectedType === 'date' ||
-            expectedType === 'function' ||
-            expectedType === 'regexp' ||
-            (received instanceof Error && expected instanceof Error);
-          const hasDifference = stringify(expected) !== stringify(received);
-          const difference =
-            !hasConciseReport && hasDifference
-              ? diff(expected, received, {expand: this.expand}) // string | null
-              : null;
-
           return (
             matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
@@ -108,12 +97,13 @@ const matchers: MatchersObject = {
                   `If it should pass with deep equality, replace "${matcherName}" with "${deepEqualityName}"`,
                 ) + '\n\n'
               : '') +
-            (difference !== null
-              ? difference
-              : `Expected: ${printExpected(expected)}\n` +
-                (hasDifference
-                  ? `Received: ${printReceived(received)}`
-                  : 'Received value has no visual difference'))
+            printDiffOrStringify(
+              expected,
+              received,
+              EXPECTED_LABEL,
+              RECEIVED_LABEL,
+              this.expand,
+            )
           );
         };
 
@@ -569,9 +559,11 @@ const matchers: MatchersObject = {
   },
 
   toEqual(this: MatcherState, received: unknown, expected: unknown) {
-    const matcherName = '.toEqual';
+    const matcherName = 'toEqual';
     const options: MatcherHintOptions = {
+      comment: 'deep equality',
       isNot: this.isNot,
+      promise: this.promise,
     };
 
     const pass = equals(received, expected, [iterableEquality]);
@@ -580,25 +572,25 @@ const matchers: MatchersObject = {
       ? () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          `Expected: ${printExpected(expected)}\n` +
-          `Received: ${printReceived(received)}`
-      : () => {
-          const difference = diff(expected, received, {expand: this.expand});
-
-          return (
-            matcherHint(matcherName, undefined, undefined, options) +
-            '\n\n' +
-            (difference && difference.includes('- Expect')
-              ? `Difference:\n\n${difference}`
-              : `Expected: ${printExpected(expected)}\n` +
-                `Received: ${printReceived(received)}`)
+          `Expected: not ${printExpected(expected)}\n` +
+          (stringify(expected) !== stringify(received)
+            ? `Received:     ${printReceived(received)}`
+            : '')
+      : () =>
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          printDiffOrStringify(
+            expected,
+            received,
+            EXPECTED_LABEL,
+            RECEIVED_LABEL,
+            this.expand,
           );
-        };
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
-    return {actual: received, expected, message, name: 'toEqual', pass};
+    return {actual: received, expected, message, name: matcherName, pass};
   },
 
   toHaveLength(this: MatcherState, received: any, expected: number) {
@@ -884,9 +876,11 @@ const matchers: MatchersObject = {
   },
 
   toStrictEqual(this: MatcherState, received: unknown, expected: unknown) {
-    const matcherName = '.toStrictEqual';
+    const matcherName = 'toStrictEqual';
     const options: MatcherHintOptions = {
+      comment: 'deep equality',
       isNot: this.isNot,
+      promise: this.promise,
     };
 
     const pass = equals(received, expected, toStrictEqualTesters, true);
@@ -895,22 +889,25 @@ const matchers: MatchersObject = {
       ? () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          `Expected: ${printExpected(expected)}\n` +
-          `Received: ${printReceived(received)}`
-      : () => {
-          const difference = diff(expected, received, {
-            expand: this.expand,
-          });
-          return (
-            matcherHint(matcherName, undefined, undefined, options) +
-            (difference ? `\n\nDifference:\n\n${difference}` : '')
+          `Expected: not ${printExpected(expected)}\n` +
+          (stringify(expected) !== stringify(received)
+            ? `Received:     ${printReceived(received)}`
+            : '')
+      : () =>
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          printDiffOrStringify(
+            expected,
+            received,
+            EXPECTED_LABEL,
+            RECEIVED_LABEL,
+            this.expand,
           );
-        };
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
-    return {actual: received, expected, message, name: 'toStrictEqual', pass};
+    return {actual: received, expected, message, name: matcherName, pass};
   },
 };
 
