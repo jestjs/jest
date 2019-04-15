@@ -325,7 +325,7 @@ exports[`.toBe() fails for: [] and [] 1`] = `
 <dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>[]</>
-Received value has no visual difference"
+Received: serializes to the same string"
 `;
 
 exports[`.toBe() fails for: [Error: received] and [Error: expected] 1`] = `
@@ -339,7 +339,7 @@ exports[`.toBe() fails for: [Function anonymous] and [Function anonymous] 1`] = 
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
 Expected: <green>[Function anonymous]</>
-Received value has no visual difference"
+Received: serializes to the same string"
 `;
 
 exports[`.toBe() fails for: {"a": [Function a], "b": 2} and {"a": Any<Function>, "b": 2} 1`] = `
@@ -363,7 +363,7 @@ exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
 <dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>{\\"a\\": 1}</>
-Received value has no visual difference"
+Received: serializes to the same string"
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
@@ -398,7 +398,7 @@ exports[`.toBe() fails for: {} and {} 1`] = `
 <dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>{}</>
-Received value has no visual difference"
+Received: serializes to the same string"
 `;
 
 exports[`.toBe() fails for: -0 and 0 1`] = `
@@ -421,7 +421,7 @@ exports[`.toBe() fails for: 2020-02-20T00:00:00.000Z and 2020-02-20T00:00:00.000
 <dim>If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"</>
 
 Expected: <green>2020-02-20T00:00:00.000Z</>
-Received value has no visual difference"
+Received: serializes to the same string"
 `;
 
 exports[`.toBe() fails for: 2020-02-21T00:00:00.000Z and 2020-02-20T00:00:00.000Z 1`] = `
@@ -1892,42 +1892,35 @@ Received has value: <red>null</>"
 `;
 
 exports[`.toEqual() {pass: false} expect("Eve").toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>{\\"asymmetricMatch\\": [Function asymmetricMatch]}</>
 Received: <red>\\"Eve\\"</>"
 `;
 
 exports[`.toEqual() {pass: false} expect("abd").toEqual(StringContaining "bc") 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>StringContaining \\"bc\\"</>
 Received: <red>\\"abd\\"</>"
 `;
 
 exports[`.toEqual() {pass: false} expect("abd").toEqual(StringMatching /bc/i) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>StringMatching /bc/i</>
 Received: <red>\\"abd\\"</>"
 `;
 
 exports[`.toEqual() {pass: false} expect("banana").toEqual("apple") 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Difference:
-
-<green>- Expected</>
-<red>+ Received</>
-
-<green>- apple</>
-<red>+ banana</>"
+Expected: <green>\\"apple\\"</>
+Received: <red>\\"banana\\"</>"
 `;
 
 exports[`.toEqual() {pass: false} expect([1, 2]).toEqual([2, 1]) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -1940,25 +1933,14 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect([1, 3]).toEqual(ArrayContaining [1, 2]) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Difference:
-
-<green>- Expected</>
-<red>+ Received</>
-
-<green>- ArrayContaining [</>
-<red>+ Array [</>
-<dim>    1,</>
-<green>-   2,</>
-<red>+   3,</>
-<dim>  ]</>"
+Expected: <green>ArrayContaining [1, 2]</>
+Received: <red>[1, 3]</>"
 `;
 
 exports[`.toEqual() {pass: false} expect([1]).toEqual([2]) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -1970,9 +1952,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContaining {"a": 2}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -1986,9 +1966,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 1}).toEqual({"a": 2}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2000,9 +1978,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 5}).toEqual({"b": 6}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2014,9 +1990,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect({"nodeName": "div", "nodeType": 1}).toEqual({"nodeName": "p", "nodeType": 1}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2029,9 +2003,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect({"target": {"nodeType": 1, "value": "a"}}).toEqual({"target": {"nodeType": 1, "value": "b"}}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2046,44 +2018,42 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(0).toEqual(-0) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>-0</>
 Received: <red>0</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(0).toEqual(5e-324) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>5e-324</>
 Received: <red>0</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(1).toEqual(2) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>2</>
 Received: <red>1</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(1).toEqual(ArrayContaining [1, 2]) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>ArrayContaining [1, 2]</>
 Received: <red>1</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(5e-324).toEqual(0) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>0</>
 Received: <red>5e-324</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.List [1, 2]).toEqual(Immutable.List [2, 1]) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2096,9 +2066,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.List [1]).toEqual(Immutable.List [2]) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2110,9 +2078,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}).toEqual(Immutable.Map {"1": Immutable.Map {"2": {"a": 11}}}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2128,9 +2094,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.Map {"a": 0}).toEqual(Immutable.Map {"b": 0}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2142,9 +2106,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.Map {"v": 1}).toEqual(Immutable.Map {"v": 2}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2156,9 +2118,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.OrderedMap {1: "one", 2: "two"}).toEqual(Immutable.OrderedMap {2: "two", 1: "one"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2171,9 +2131,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.OrderedSet [1, 2]).toEqual(Immutable.OrderedSet [2, 1]) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2186,9 +2144,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable.Set []) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2201,9 +2157,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable.Set [1, 2, 3]) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2216,9 +2170,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Map {"a" => 0}).toEqual(Map {"b" => 0}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2230,9 +2182,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Map {"v" => 1}).toEqual(Map {"v" => 2}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2244,9 +2194,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Map {["v"] => 1}).toEqual(Map {["v"] => 2}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2260,9 +2208,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Map {[1] => Map {[1] => "one"}}).toEqual(Map {[1] => Map {[1] => "two"}}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2280,16 +2226,14 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Map {}).toEqual(Set {}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>Set {}</>
 Received: <red>Map {}</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(Map {1 => "one", 2 => "two"}).toEqual(Map {1 => "one"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2301,9 +2245,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {[1], [2]}).toEqual(Set {[1], [2], [2]}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2321,9 +2263,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {[1], [2]}).toEqual(Set {[1], [2], [3]}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2341,9 +2281,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2356,9 +2294,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {1, 2, 3}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2371,9 +2307,7 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(Set {Set {1}, Set {2}}).toEqual(Set {Set {1}, Set {3}}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -2390,374 +2324,374 @@ Difference:
 `;
 
 exports[`.toEqual() {pass: false} expect(false).toEqual(ObjectContaining {"a": 2}) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>ObjectContaining {\\"a\\": 2}</>
 Received: <red>false</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(null).toEqual(undefined) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>undefined</>
 Received: <red>null</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(true).toEqual(false) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>false</>
 Received: <red>true</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(undefined).toEqual(Any<Function>) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>Any<Function></>
 Received: <red>undefined</>"
 `;
 
 exports[`.toEqual() {pass: false} expect(undefined).toEqual(Anything) 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 Expected: <green>Anything</>
 Received: <red>undefined</>"
 `;
 
 exports[`.toEqual() {pass: true} expect("Alice").not.toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>{\\"asymmetricMatch\\": [Function asymmetricMatch]}</>
-Received: <red>\\"Alice\\"</>"
+Expected: not <green>{\\"asymmetricMatch\\": [Function asymmetricMatch]}</>
+Received:     <red>\\"Alice\\"</>"
 `;
 
 exports[`.toEqual() {pass: true} expect("abc").not.toEqual("abc") 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>\\"abc\\"</>
-Received: <red>\\"abc\\"</>"
+Expected: not <green>\\"abc\\"</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect("abc").not.toEqual({"0": "a", "1": "b", "2": "c"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>{\\"0\\": \\"a\\", \\"1\\": \\"b\\", \\"2\\": \\"c\\"}</>
-Received: <red>\\"abc\\"</>"
+Expected: not <green>{\\"0\\": \\"a\\", \\"1\\": \\"b\\", \\"2\\": \\"c\\"}</>
+Received:     <red>\\"abc\\"</>"
 `;
 
 exports[`.toEqual() {pass: true} expect("abcd").not.toEqual(StringContaining "bc") 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>StringContaining \\"bc\\"</>
-Received: <red>\\"abcd\\"</>"
+Expected: not <green>StringContaining \\"bc\\"</>
+Received:     <red>\\"abcd\\"</>"
 `;
 
 exports[`.toEqual() {pass: true} expect("abcd").not.toEqual(StringMatching /bc/) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>StringMatching /bc/</>
-Received: <red>\\"abcd\\"</>"
+Expected: not <green>StringMatching /bc/</>
+Received:     <red>\\"abcd\\"</>"
 `;
 
 exports[`.toEqual() {pass: true} expect([1, 2, 3]).not.toEqual(ArrayContaining [2, 3]) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>ArrayContaining [2, 3]</>
-Received: <red>[1, 2, 3]</>"
+Expected: not <green>ArrayContaining [2, 3]</>
+Received:     <red>[1, 2, 3]</>"
 `;
 
 exports[`.toEqual() {pass: true} expect([1, 2]).not.toEqual([1, 2]) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>[1, 2]</>
-Received: <red>[1, 2]</>"
+Expected: not <green>[1, 2]</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect([1]).not.toEqual([1]) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>[1]</>
-Received: <red>[1]</>"
+Expected: not <green>[1]</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect([Function anonymous]).not.toEqual(Any<Function>) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Any<Function></>
-Received: <red>[Function anonymous]</>"
+Expected: not <green>Any<Function></>
+Received:     <red>[Function anonymous]</>"
 `;
 
 exports[`.toEqual() {pass: true} expect({"0": "a", "1": "b", "2": "c"}).not.toEqual("abc") 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>\\"abc\\"</>
-Received: <red>{\\"0\\": \\"a\\", \\"1\\": \\"b\\", \\"2\\": \\"c\\"}</>"
+Expected: not <green>\\"abc\\"</>
+Received:     <red>{\\"0\\": \\"a\\", \\"1\\": \\"b\\", \\"2\\": \\"c\\"}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": [Function b], "c": true}).not.toEqual({"a": 1, "b": Any<Function>, "c": Anything}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>{\\"a\\": 1, \\"b\\": Any<Function>, \\"c\\": Anything}</>
-Received: <red>{\\"a\\": 1, \\"b\\": [Function b], \\"c\\": true}</>"
+Expected: not <green>{\\"a\\": 1, \\"b\\": Any<Function>, \\"c\\": Anything}</>
+Received:     <red>{\\"a\\": 1, \\"b\\": [Function b], \\"c\\": true}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": 2}).not.toEqual(ObjectContaining {"a": 1}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>ObjectContaining {\\"a\\": 1}</>
-Received: <red>{\\"a\\": 1, \\"b\\": 2}</>"
+Expected: not <green>ObjectContaining {\\"a\\": 1}</>
+Received:     <red>{\\"a\\": 1, \\"b\\": 2}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 99}).not.toEqual({"a": 99}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>{\\"a\\": 99}</>
-Received: <red>{\\"a\\": 99}</>"
+Expected: not <green>{\\"a\\": 99}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect({"nodeName": "div", "nodeType": 1}).not.toEqual({"nodeName": "div", "nodeType": 1}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>{\\"nodeName\\": \\"div\\", \\"nodeType\\": 1}</>
-Received: <red>{\\"nodeName\\": \\"div\\", \\"nodeType\\": 1}</>"
+Expected: not <green>{\\"nodeName\\": \\"div\\", \\"nodeType\\": 1}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect({}).not.toEqual({}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>{}</>
-Received: <red>{}</>"
+Expected: not <green>{}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect({}).not.toEqual(0) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>0</>
-Received: <red>{}</>"
+Expected: not <green>0</>
+Received:     <red>{}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(0).not.toEqual({}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>{}</>
-Received: <red>0</>"
+Expected: not <green>{}</>
+Received:     <red>0</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(1).not.toEqual(1) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>1</>
-Received: <red>1</>"
+Expected: not <green>1</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.List [1, 2]).not.toEqual(Immutable.List [1, 2]) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.List [1, 2]</>
-Received: <red>Immutable.List [1, 2]</>"
+Expected: not <green>Immutable.List [1, 2]</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.List [1]).not.toEqual(Immutable.List [1]) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.List [1]</>
-Received: <red>Immutable.List [1]</>"
+Expected: not <green>Immutable.List [1]</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}).not.toEqual(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 99}}}</>
-Received: <red>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 99}}}</>"
+Expected: not <green>Immutable.Map {\\"1\\": Immutable.Map {\\"2\\": {\\"a\\": 99}}}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Map {}).not.toEqual(Immutable.Map {}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.Map {}</>
-Received: <red>Immutable.Map {}</>"
+Expected: not <green>Immutable.Map {}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Map {1: "one", 2: "two"}).not.toEqual(Immutable.Map {1: "one", 2: "two"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>
-Received: <red>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>"
+Expected: not <green>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Map {1: "one", 2: "two"}).not.toEqual(Immutable.Map {2: "two", 1: "one"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.Map {2: \\"two\\", 1: \\"one\\"}</>
-Received: <red>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>"
+Expected: not <green>Immutable.Map {2: \\"two\\", 1: \\"one\\"}</>
+Received:     <red>Immutable.Map {1: \\"one\\", 2: \\"two\\"}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.OrderedMap {1: "one", 2: "two"}).not.toEqual(Immutable.OrderedMap {1: "one", 2: "two"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.OrderedMap {1: \\"one\\", 2: \\"two\\"}</>
-Received: <red>Immutable.OrderedMap {1: \\"one\\", 2: \\"two\\"}</>"
+Expected: not <green>Immutable.OrderedMap {1: \\"one\\", 2: \\"two\\"}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.OrderedSet []).not.toEqual(Immutable.OrderedSet []) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.OrderedSet []</>
-Received: <red>Immutable.OrderedSet []</>"
+Expected: not <green>Immutable.OrderedSet []</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.OrderedSet [1, 2]).not.toEqual(Immutable.OrderedSet [1, 2]) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.OrderedSet [1, 2]</>
-Received: <red>Immutable.OrderedSet [1, 2]</>"
+Expected: not <green>Immutable.OrderedSet [1, 2]</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Set []).not.toEqual(Immutable.Set []) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.Set []</>
-Received: <red>Immutable.Set []</>"
+Expected: not <green>Immutable.Set []</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Set [1, 2]).not.toEqual(Immutable.Set [1, 2]) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.Set [1, 2]</>
-Received: <red>Immutable.Set [1, 2]</>"
+Expected: not <green>Immutable.Set [1, 2]</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Immutable.Set [1, 2]).not.toEqual(Immutable.Set [2, 1]) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Immutable.Set [2, 1]</>
-Received: <red>Immutable.Set [1, 2]</>"
+Expected: not <green>Immutable.Set [2, 1]</>
+Received:     <red>Immutable.Set [1, 2]</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {[1] => "one", [2] => "two", [3] => "three", [3] => "four"}).not.toEqual(Map {[3] => "three", [3] => "four", [2] => "two", [1] => "one"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Map {[3] => \\"three\\", [3] => \\"four\\", [2] => \\"two\\", [1] => \\"one\\"}</>
-Received: <red>Map {[1] => \\"one\\", [2] => \\"two\\", [3] => \\"three\\", [3] => \\"four\\"}</>"
+Expected: not <green>Map {[3] => \\"three\\", [3] => \\"four\\", [2] => \\"two\\", [1] => \\"one\\"}</>
+Received:     <red>Map {[1] => \\"one\\", [2] => \\"two\\", [3] => \\"three\\", [3] => \\"four\\"}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {[1] => "one", [2] => "two"}).not.toEqual(Map {[2] => "two", [1] => "one"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Map {[2] => \\"two\\", [1] => \\"one\\"}</>
-Received: <red>Map {[1] => \\"one\\", [2] => \\"two\\"}</>"
+Expected: not <green>Map {[2] => \\"two\\", [1] => \\"one\\"}</>
+Received:     <red>Map {[1] => \\"one\\", [2] => \\"two\\"}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {[1] => Map {[1] => "one"}, [2] => Map {[2] => "two"}}).not.toEqual(Map {[2] => Map {[2] => "two"}, [1] => Map {[1] => "one"}}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Map {[2] => Map {[2] => \\"two\\"}, [1] => Map {[1] => \\"one\\"}}</>
-Received: <red>Map {[1] => Map {[1] => \\"one\\"}, [2] => Map {[2] => \\"two\\"}}</>"
+Expected: not <green>Map {[2] => Map {[2] => \\"two\\"}, [1] => Map {[1] => \\"one\\"}}</>
+Received:     <red>Map {[1] => Map {[1] => \\"one\\"}, [2] => Map {[2] => \\"two\\"}}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {{"a": 1} => "one", {"b": 2} => "two"}).not.toEqual(Map {{"b": 2} => "two", {"a": 1} => "one"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Map {{\\"b\\": 2} => \\"two\\", {\\"a\\": 1} => \\"one\\"}</>
-Received: <red>Map {{\\"a\\": 1} => \\"one\\", {\\"b\\": 2} => \\"two\\"}</>"
+Expected: not <green>Map {{\\"b\\": 2} => \\"two\\", {\\"a\\": 1} => \\"one\\"}</>
+Received:     <red>Map {{\\"a\\": 1} => \\"one\\", {\\"b\\": 2} => \\"two\\"}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {}).not.toEqual(Map {}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Map {}</>
-Received: <red>Map {}</>"
+Expected: not <green>Map {}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {1 => "one", 2 => "two"}).not.toEqual(Map {1 => "one", 2 => "two"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Map {1 => \\"one\\", 2 => \\"two\\"}</>
-Received: <red>Map {1 => \\"one\\", 2 => \\"two\\"}</>"
+Expected: not <green>Map {1 => \\"one\\", 2 => \\"two\\"}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {1 => "one", 2 => "two"}).not.toEqual(Map {2 => "two", 1 => "one"}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Map {2 => \\"two\\", 1 => \\"one\\"}</>
-Received: <red>Map {1 => \\"one\\", 2 => \\"two\\"}</>"
+Expected: not <green>Map {2 => \\"two\\", 1 => \\"one\\"}</>
+Received:     <red>Map {1 => \\"one\\", 2 => \\"two\\"}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Map {1 => ["one"], 2 => ["two"]}).not.toEqual(Map {2 => ["two"], 1 => ["one"]}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Map {2 => [\\"two\\"], 1 => [\\"one\\"]}</>
-Received: <red>Map {1 => [\\"one\\"], 2 => [\\"two\\"]}</>"
+Expected: not <green>Map {2 => [\\"two\\"], 1 => [\\"one\\"]}</>
+Received:     <red>Map {1 => [\\"one\\"], 2 => [\\"two\\"]}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(NaN).not.toEqual(NaN) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>NaN</>
-Received: <red>NaN</>"
+Expected: not <green>NaN</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {[1], [2], [3], [3]}).not.toEqual(Set {[3], [3], [2], [1]}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Set {[3], [3], [2], [1]}</>
-Received: <red>Set {[1], [2], [3], [3]}</>"
+Expected: not <green>Set {[3], [3], [2], [1]}</>
+Received:     <red>Set {[1], [2], [3], [3]}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {[1], [2]}).not.toEqual(Set {[2], [1]}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Set {[2], [1]}</>
-Received: <red>Set {[1], [2]}</>"
+Expected: not <green>Set {[2], [1]}</>
+Received:     <red>Set {[1], [2]}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {{"a": 1}, {"b": 2}}).not.toEqual(Set {{"b": 2}, {"a": 1}}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Set {{\\"b\\": 2}, {\\"a\\": 1}}</>
-Received: <red>Set {{\\"a\\": 1}, {\\"b\\": 2}}</>"
+Expected: not <green>Set {{\\"b\\": 2}, {\\"a\\": 1}}</>
+Received:     <red>Set {{\\"a\\": 1}, {\\"b\\": 2}}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {}).not.toEqual(Set {}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Set {}</>
-Received: <red>Set {}</>"
+Expected: not <green>Set {}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {1, 2}).not.toEqual(Set {1, 2}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Set {1, 2}</>
-Received: <red>Set {1, 2}</>"
+Expected: not <green>Set {1, 2}</>
+"
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {1, 2}).not.toEqual(Set {2, 1}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Set {2, 1}</>
-Received: <red>Set {1, 2}</>"
+Expected: not <green>Set {2, 1}</>
+Received:     <red>Set {1, 2}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(Set {Set {[1]}, Set {[2]}}).not.toEqual(Set {Set {[2]}, Set {[1]}}) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Set {Set {[2]}, Set {[1]}}</>
-Received: <red>Set {Set {[1]}, Set {[2]}}</>"
+Expected: not <green>Set {Set {[2]}, Set {[1]}}</>
+Received:     <red>Set {Set {[1]}, Set {[2]}}</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(true).not.toEqual(Anything) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>Anything</>
-Received: <red>true</>"
+Expected: not <green>Anything</>
+Received:     <red>true</>"
 `;
 
 exports[`.toEqual() {pass: true} expect(true).not.toEqual(true) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>true</>
-Received: <red>true</>"
+Expected: not <green>true</>
+"
 `;
 
 exports[`.toHaveLength {pass: false} expect("").toHaveLength(1) 1`] = `
@@ -3659,9 +3593,7 @@ Received string:    <red>\\"bar\\"</>"
 `;
 
 exports[`.toStrictEqual() matches the expected snapshot when it fails 1`] = `
-"<dim>expect(</><red>received</><dim>).toStrictEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toStrictEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -3676,10 +3608,10 @@ Difference:
 `;
 
 exports[`.toStrictEqual() matches the expected snapshot when it fails 2`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toStrictEqual(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toStrictEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-Expected: <green>{\\"test\\": {\\"a\\": 1, \\"b\\": 2}}</>
-Received: <red>{\\"test\\": {\\"a\\": 1, \\"b\\": 2}}</>"
+Expected: not <green>{\\"test\\": {\\"a\\": 1, \\"b\\": 2}}</>
+"
 `;
 
 exports[`toMatchObject() {pass: false} expect([0]).toMatchObject([-0]) 1`] = `
