@@ -6,6 +6,7 @@
 - `[jest-cli]` Update `--forceExit` and "did not exit for one second" message colors ([#8329](https://github.com/facebook/jest/pull/8329))
 - `[expect]` Improve report when matcher fails, part 16 ([#8306](https://github.com/facebook/jest/pull/8306))
 - `[jest-runner]` Pass docblock pragmas to TestEnvironment constructor ([#8320](https://github.com/facebook/jest/pull/8320))
+- `[docs]` Add DynamoDB guide ([#8319](https://github.com/facebook/jest/pull/8319))
 
 ### Fixes
 
