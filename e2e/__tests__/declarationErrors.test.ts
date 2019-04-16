@@ -29,3 +29,11 @@ it('warns if describe returns something', () => {
   expect(result.status).toBe(0);
   expect(normalizeCircusJasmine(result.stdout)).toMatchSnapshot();
 });
+
+it('errors if describe throws', () => {
+  const result = runJest('declaration-errors', ['describeThrow.test.js']);
+
+  expect(result.status).toBe(1);
+  expect(result.stdout).toBe('');
+  expect(result.stderr).toContain('whoops');
+});
