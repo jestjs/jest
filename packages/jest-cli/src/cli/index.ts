@@ -31,6 +31,7 @@ export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
 
     const projects = getProjectListFromCLIArgs(argv, project);
 
+    //@ts-ignore
     const {results, globalConfig} = await runCLI(argv, projects);
     readResultsAndExit(results, globalConfig);
   } catch (error) {

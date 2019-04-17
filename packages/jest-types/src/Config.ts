@@ -141,7 +141,7 @@ export type InitialOptions = {
   expand?: boolean;
   extraGlobals?: Array<string>;
   filter?: Path;
-  findRelatedTests?: boolean;
+  findRelatedTests?: Array<string>;
   forceCoverageMatch?: Array<Glob>;
   forceExit?: boolean;
   json?: boolean;
@@ -311,7 +311,7 @@ export type GlobalConfig = {
   expand: boolean;
   extraGlobals: Array<string>;
   filter: Path | null | undefined;
-  findRelatedTests: boolean;
+  findRelatedTests: Array<string>;
   forceExit: boolean;
   json: boolean;
   globalSetup: string | null | undefined;
@@ -441,7 +441,7 @@ export type Argv = Arguments<
     debug: boolean;
     env: string;
     expand: boolean;
-    findRelatedTests: boolean;
+    findRelatedTests: Array<string>;
     forceExit: boolean;
     globals: string;
     globalSetup: string | null | undefined;
