@@ -562,6 +562,7 @@ const readCacheFile = (cachePath: Config.Path): string | null => {
   return fileData;
 };
 
+/* eslint-disable consistent-return */
 const getScriptCacheKey = (filename: Config.Path, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
   return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
