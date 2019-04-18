@@ -39,8 +39,9 @@ const NATIVE_PLATFORM = 'native';
 // We might be inside a symlink.
 const cwd = process.cwd();
 const resolvedCwd = realpath(cwd) || cwd;
-const nodePaths = process.env.NODE_PATH
-  ? process.env.NODE_PATH.split(path.delimiter)
+const {NODE_PATH} = process.env;
+const nodePaths = NODE_PATH
+  ? NODE_PATH.split(path.delimiter)
       .filter(Boolean)
       // The resolver expects absolute paths.
       .map(p => path.resolve(resolvedCwd, p))
