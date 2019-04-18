@@ -1,6 +1,7 @@
 ---
-id: mongodb
+id: version-23.x-mongodb
 title: Using with MongoDB
+original_id: mongodb
 ---
 
 With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [MongoDB](https://www.mongodb.com/).
