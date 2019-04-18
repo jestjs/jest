@@ -22,12 +22,12 @@ New events, event data, and/or state data will not be considered a breaking chan
 `addEventHandler` can be used to listen for parts of the test lifecycle.
 
 ```js
-import { addEventHandler } from 'jest-circus';
+import {addEventHandler} from 'jest-circus';
 
 addEventHandler((event, state) => {
-    if (event.name === '...') {
-        ...
-    }
+  if (event.name === 'test_start') {
+    // Handle event.
+  }
 });
 ```
 
