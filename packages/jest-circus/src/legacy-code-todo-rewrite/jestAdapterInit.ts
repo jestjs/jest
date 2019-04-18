@@ -19,12 +19,14 @@ import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
 import globals from '..';
-import {Event, RunResult, TestEntry} from '../types';
+import {Event, RunResult, TestEntry, State} from '../types';
+import {JestEnvironment} from '@jest/environment';
 
 type Process = NodeJS.Process;
 
 export const initialize = ({
   config,
+  environment,
   getPrettier,
   getBabelTraverse,
   globalConfig,
@@ -33,6 +35,10 @@ export const initialize = ({
   testPath,
 }: {
   config: Config.ProjectConfig;
+  environment: JestEnvironment & {
+    // Move this into the JestEnvironment type as an optional method when jest-circus is default.
+    handleTestEvent?(event: Event, state: State): void;
+  };
   getPrettier: () => null | any;
   getBabelTraverse: () => Function;
   globalConfig: Config.GlobalConfig;
@@ -82,6 +88,10 @@ export const initialize = ({
   })(global.test);
 
   addEventHandler(eventHandler);
+
+  if (environment.handleTestEvent) {
+    addEventHandler(environment.handleTestEvent.bind(environment));
+  }
 
   dispatch({
     name: 'setup',

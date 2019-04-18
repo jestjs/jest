@@ -195,7 +195,9 @@ const test: Global.It = (() => {
 
 const it: Global.It = test;
 
-export = {
+export {Event, State} from './types';
+export {afterAll, afterEach, beforeAll, beforeEach, describe, it, test};
+export default {
   afterAll,
   afterEach,
   beforeAll,
