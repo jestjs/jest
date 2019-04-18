@@ -260,7 +260,7 @@ FAIL __tests__/testMacro.test.js
 
   ● use some imported macro to make assertion
 
-    expect(received).toEqual(expected)
+    expect(received).toEqual(expected) // deep equality
 
     Expected: 2
     Received: 1
@@ -286,9 +286,7 @@ FAIL __tests__/asyncFailures.test.js
 
   ● resolve, but fail
 
-    expect(received).toEqual(expected)
-
-    Difference:
+    expect(received).resolves.toEqual(expected) // deep equality
 
     - Expected
     + Received
@@ -310,9 +308,7 @@ FAIL __tests__/asyncFailures.test.js
 
   ● reject, but fail
 
-    expect(received).toEqual(expected)
-
-    Difference:
+    expect(received).rejects.toEqual(expected) // deep equality
 
     - Expected
     + Received

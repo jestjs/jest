@@ -416,8 +416,8 @@ export default function(j$: Jasmine) {
         parentSuite.addChild(suite);
         currentDeclarationSuite = suite;
 
-        let declarationError: null | Error = null;
-        let describeReturnValue: null | Error = null;
+        let declarationError: undefined | Error = undefined;
+        let describeReturnValue: undefined | Error = undefined;
         try {
           describeReturnValue = specDefinitions.call(suite);
         } catch (e) {

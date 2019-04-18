@@ -1062,12 +1062,6 @@ describe('toMatchObject applied to arrays', () => {
     expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}, {baz: 1}]);
   });
 
-  // .arrayContaining "matches a received array which contains elements that
-  // are *not* in the expected array"
-  test('.toMatchObject does not allow extra elements', () => {
-    expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}]);
-  });
-
   test('.toMatchObject is called for each elements, so extra object properties are okay', () => {
     expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).toMatchObject([
       {foo: 'bar'},

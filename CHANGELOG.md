@@ -4,12 +4,19 @@
 
 - `[expect]` Improve report when matcher fails, part 15 ([#8281](https://github.com/facebook/jest/pull/8281))
 - `[jest-circus]` Allow Circus `addEventHandler` and `getState` to be used externally ([#8307](https://github.com/facebook/jest/pull/8307))
+- `[jest-cli]` Update `--forceExit` and "did not exit for one second" message colors ([#8329](https://github.com/facebook/jest/pull/8329))
+- `[expect]` Improve report when matcher fails, part 16 ([#8306](https://github.com/facebook/jest/pull/8306))
+- `[jest-runner]` Pass docblock pragmas to TestEnvironment constructor ([#8320](https://github.com/facebook/jest/pull/8320))
+- `[docs]` Add DynamoDB guide ([#8319](https://github.com/facebook/jest/pull/8319))
 
 ### Fixes
 
+- `[jest-each]` Fix bug with placeholder values ([#8289](https://github.com/facebook/jest/pull/8289))
 - `[jest-snapshot]` Inline snapshots: do not indent empty lines ([#8277](https://github.com/facebook/jest/pull/8277))
+- `[@jest/runtime, @jest/transform]` Allow custom transforms for JSON dependencies ([#2578](https://github.com/facebook/jest/pull/2578))
 - `[jest-core]` Make `detectOpenHandles` imply `runInBand` ([#8283](https://github.com/facebook/jest/pull/8283))
 - `[jest-haste-map]` Fix the `mapper` option which was incorrectly ignored ([#8299](https://github.com/facebook/jest/pull/8299))
+- `[jest-jasmine2]` Fix describe return value warning being shown if the describe function throws ([#8335](https://github.com/facebook/jest/pull/8335))
 
 ### Chore & Maintenance
 

@@ -14,17 +14,19 @@ import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
 type JestMockFn = typeof jestMock.fn;
 type JestMockSpyOn = typeof jestMock.spyOn;
 
-export type EnvironmentContext = {
-  console?: Console;
-  testPath?: Config.Path;
-};
+// In Jest 25, remove `Partial` since it's incorrect. The properties are always
+// passed, or not. The context itself is optional, not properties within it.
+export type EnvironmentContext = Partial<{
+  console: Console;
+  docblockPragmas: {[key: string]: string | Array<string>};
+  testPath: Config.Path;
+}>;
 
 // TODO: type this better: https://nodejs.org/api/modules.html#modules_the_module_wrapper
 type ModuleWrapper = (...args: Array<unknown>) => unknown;
 
 export declare class JestEnvironment {
-  constructor(config: Config.ProjectConfig);
-  constructor(config: Config.ProjectConfig, context: EnvironmentContext);
+  constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
   fakeTimers: FakeTimers<unknown> | null;
   moduleMocker: ModuleMocker | null;
