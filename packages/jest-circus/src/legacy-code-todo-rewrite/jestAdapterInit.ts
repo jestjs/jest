@@ -6,6 +6,7 @@
  */
 
 import {Config} from '@jest/types';
+import {JestEnvironment} from '@jest/environment';
 import {AssertionResult, Status, TestResult} from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
@@ -20,7 +21,6 @@ import {getTestID} from '../utils';
 import run from '../run';
 import globals from '..';
 import {Event, RunResult, TestEntry, State} from '../types';
-import {JestEnvironment} from '@jest/environment';
 
 type Process = NodeJS.Process;
 
