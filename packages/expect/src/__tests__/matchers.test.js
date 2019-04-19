@@ -1340,8 +1340,10 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 1],
     [{'a.b.c.d': 1}, ['a.b.c.d'], 1],
     [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], 2],
+    [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], expect.any(Number)],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
+    [{a: {}}, 'a.b', undefined], // delete for breaking change in future major
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
     [new Foo(), 'a', undefined],
@@ -1379,7 +1381,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
-    // [{a: {}}, 'a.b', undefined], // wait until Jest 25
+    // [{a: {}}, 'a.b', undefined], // add for breaking change in future major
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,
