@@ -5,14 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  RunResult,
-  TestEntry,
-  TestContext,
-  Hook,
-  DescribeBlock,
-  RETRY_TIMES,
-} from './types';
+import {Circus} from '@jest/types';
+import {RETRY_TIMES} from './types';
 
 import {getState, dispatch} from './state';
 import {
@@ -24,7 +18,7 @@ import {
   makeRunResult,
 } from './utils';
 
-const run = async (): Promise<RunResult> => {
+const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock} = getState();
   dispatch({name: 'run_start'});
   await _runTestsForDescribeBlock(rootDescribeBlock);
@@ -35,7 +29,9 @@ const run = async (): Promise<RunResult> => {
   );
 };
 
-const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
+const _runTestsForDescribeBlock = async (
+  describeBlock: Circus.DescribeBlock,
+) => {
   dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
@@ -83,7 +79,7 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
   dispatch({describeBlock, name: 'run_describe_finish'});
 };
 
-const _runTest = async (test: TestEntry): Promise<void> => {
+const _runTest = async (test: Circus.TestEntry): Promise<void> => {
   dispatch({name: 'test_start', test});
   const testContext = Object.create(null);
   const {hasFocusedTests, testNamePattern} = getState();
@@ -132,10 +128,10 @@ const _callCircusHook = ({
   describeBlock,
   testContext,
 }: {
-  hook: Hook;
-  describeBlock?: DescribeBlock;
-  test?: TestEntry;
-  testContext?: TestContext;
+  hook: Circus.Hook;
+  describeBlock?: Circus.DescribeBlock;
+  test?: Circus.TestEntry;
+  testContext?: Circus.TestContext;
 }): Promise<unknown> => {
   dispatch({hook, name: 'hook_start'});
   const timeout = hook.timeout || getState().testTimeout;
@@ -147,8 +143,8 @@ const _callCircusHook = ({
 };
 
 const _callCircusTest = (
-  test: TestEntry,
-  testContext: TestContext,
+  test: Circus.TestEntry,
+  testContext: Circus.TestContext,
 ): Promise<void> => {
   dispatch({name: 'test_fn_start', test});
   const timeout = test.timeout || getState().testTimeout;
