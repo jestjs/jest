@@ -713,7 +713,7 @@ const matchers: MatchersObject = {
     const pass = hasValue
       ? equals(result.value, expectedValue, [iterableEquality])
       : Boolean(hasEndProp); // theoretically undefined if empty path
-      // Remove type cast if we rewrite getPath as iterative algorithm.
+    // Remove type cast if we rewrite getPath as iterative algorithm.
 
     // Delete this unique report if future breaking change
     // removes the edge case that expected value undefined
