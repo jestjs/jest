@@ -30,21 +30,6 @@ jobs:
       - store_test_results:
           path: reports/junit
 
-  test-node-6:
-    working_directory: ~/jest
-    docker:
-      - image: circleci/node:6
-    steps:
-      - checkout
-      - restore-cache: *restore-cache
-      - run: yarn --no-progress --frozen-lockfile --ignore-engines
-      - save-cache: *save-cache
-      - run:
-          # react-native does not work with node 6
-          command: rm -rf examples/react-native && yarn test-ci-partial
-      - store_test_results:
-          path: reports/junit
-
   test-node-8:
     working_directory: ~/jest
     docker:
