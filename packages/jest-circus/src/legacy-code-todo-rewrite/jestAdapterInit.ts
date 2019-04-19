@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {Circus, Config} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
 import {AssertionResult, Status, TestResult} from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
@@ -16,7 +16,6 @@ import {
   buildSnapshotResolver,
 } from 'jest-snapshot';
 import throat from 'throat';
-import {Circus} from '@jest/types';
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
