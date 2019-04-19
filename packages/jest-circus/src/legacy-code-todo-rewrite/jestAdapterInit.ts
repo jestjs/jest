@@ -16,11 +16,11 @@ import {
   buildSnapshotResolver,
 } from 'jest-snapshot';
 import throat from 'throat';
+import {Circus} from '@jest/types';
 import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
 import globals from '..';
-import {Event, RunResult, TestEntry, State} from '../types';
 
 type Process = NodeJS.Process;
 
@@ -37,7 +37,7 @@ export const initialize = ({
   config: Config.ProjectConfig;
   environment: JestEnvironment & {
     // Move this into the JestEnvironment type as an optional method when jest-circus is default.
-    handleTestEvent?(event: Event, state: State): void;
+    handleTestEvent?(event: Circus.Event, state: Circus.State): void;
   };
   getPrettier: () => null | any;
   getBabelTraverse: () => Function;
@@ -138,7 +138,7 @@ export const runAndTransformResultsToJestFormat = async ({
   globalConfig: Config.GlobalConfig;
   testPath: string;
 }): Promise<TestResult> => {
-  const runResult: RunResult = await run();
+  const runResult: Circus.RunResult = await run();
 
   let numFailingTests = 0;
   let numPassingTests = 0;
@@ -237,7 +237,7 @@ export const runAndTransformResultsToJestFormat = async ({
   };
 };
 
-const eventHandler = (event: Event) => {
+const eventHandler = (event: Circus.Event) => {
   switch (event.name) {
     case 'test_start': {
       setState({currentTestName: getTestID(event.test)});
@@ -251,7 +251,7 @@ const eventHandler = (event: Event) => {
   }
 };
 
-const _addExpectedAssertionErrors = (test: TestEntry) => {
+const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
   const failures = extractExpectedAssertionsErrors();
   const errors = failures.map(failure => failure.error);
   test.errors = test.errors.concat(errors);
@@ -260,7 +260,7 @@ const _addExpectedAssertionErrors = (test: TestEntry) => {
 // Get suppressed errors from ``jest-matchers`` that weren't throw during
 // test execution and add them to the test result, potentially failing
 // a passing test.
-const _addSuppressedErrors = (test: TestEntry) => {
+const _addSuppressedErrors = (test: Circus.TestEntry) => {
   const {suppressedErrors} = getState();
   setState({suppressedErrors: []});
   if (suppressedErrors.length) {

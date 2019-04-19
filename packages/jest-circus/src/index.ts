@@ -9,28 +9,21 @@ import chalk from 'chalk';
 import {bind as bindEach} from 'jest-each';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
-import {Global} from '@jest/types';
-import {
-  BlockFn,
-  HookFn,
-  HookType,
-  TestFn,
-  BlockMode,
-  BlockName,
-  TestName,
-  TestMode,
-} from './types';
+import {Circus, Global} from '@jest/types';
 import {dispatch} from './state';
 
-type THook = (fn: HookFn, timeout?: number) => void;
-type DescribeFn = (blockName: BlockName, blockFn: BlockFn) => void;
+type THook = (fn: Circus.HookFn, timeout?: number) => void;
+type DescribeFn = (
+  blockName: Circus.BlockName,
+  blockFn: Circus.BlockFn,
+) => void;
 
 const describe = (() => {
-  const describe = (blockName: BlockName, blockFn: BlockFn) =>
+  const describe = (blockName: Circus.BlockName, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, describe);
-  const only = (blockName: BlockName, blockFn: BlockFn) =>
+  const only = (blockName: Circus.BlockName, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, only, 'only');
-  const skip = (blockName: BlockName, blockFn: BlockFn) =>
+  const skip = (blockName: Circus.BlockName, blockFn: Circus.BlockFn) =>
     _dispatchDescribe(blockFn, blockName, skip, 'skip');
 
   describe.each = bindEach(describe, false);
@@ -45,10 +38,10 @@ const describe = (() => {
 })();
 
 const _dispatchDescribe = (
-  blockFn: BlockFn,
-  blockName: BlockName,
+  blockFn: Circus.BlockFn,
+  blockName: Circus.BlockName,
   describeFn: DescribeFn,
-  mode?: BlockMode,
+  mode?: Circus.BlockMode,
 ) => {
   const asyncError = new ErrorWithStack(undefined, describeFn);
   if (blockFn === undefined) {
@@ -102,8 +95,8 @@ const _dispatchDescribe = (
 };
 
 const _addHook = (
-  fn: HookFn,
-  hookType: HookType,
+  fn: Circus.HookFn,
+  hookType: Circus.HookType,
   hookFn: THook,
   timeout?: number,
 ) => {
@@ -130,14 +123,23 @@ const afterAll: THook = (fn, timeout) =>
   _addHook(fn, 'afterAll', afterAll, timeout);
 
 const test: Global.It = (() => {
-  const test = (testName: TestName, fn: TestFn, timeout?: number): void =>
-    _addTest(testName, undefined, fn, test, timeout);
-  const skip = (testName: TestName, fn?: TestFn, timeout?: number): void =>
-    _addTest(testName, 'skip', fn, skip, timeout);
-  const only = (testName: TestName, fn: TestFn, timeout?: number): void =>
-    _addTest(testName, 'only', fn, test.only, timeout);
+  const test = (
+    testName: Circus.TestName,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, undefined, fn, test, timeout);
+  const skip = (
+    testName: Circus.TestName,
+    fn?: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, 'skip', fn, skip, timeout);
+  const only = (
+    testName: Circus.TestName,
+    fn: Circus.TestFn,
+    timeout?: number,
+  ): void => _addTest(testName, 'only', fn, test.only, timeout);
 
-  test.todo = (testName: TestName, ...rest: Array<any>): void => {
+  test.todo = (testName: Circus.TestName, ...rest: Array<any>): void => {
     if (rest.length > 0 || typeof testName !== 'string') {
       throw new ErrorWithStack(
         'Todo must be called with only a description.',
@@ -148,10 +150,14 @@ const test: Global.It = (() => {
   };
 
   const _addTest = (
-    testName: TestName,
-    mode: TestMode,
-    fn: TestFn | undefined,
-    testFn: (testName: TestName, fn: TestFn, timeout?: number) => void,
+    testName: Circus.TestName,
+    mode: Circus.TestMode,
+    fn: Circus.TestFn | undefined,
+    testFn: (
+      testName: Circus.TestName,
+      fn: Circus.TestFn,
+      timeout?: number,
+    ) => void,
     timeout?: number,
   ) => {
     const asyncError = new ErrorWithStack(undefined, testFn);
@@ -195,7 +201,8 @@ const test: Global.It = (() => {
 
 const it: Global.It = test;
 
-export {Event, State} from './types';
+export type Event = Circus.Event;
+export type State = Circus.State;
 export {afterAll, afterEach, beforeAll, beforeEach, describe, it, test};
 export default {
   afterAll,
