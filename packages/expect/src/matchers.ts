@@ -661,7 +661,7 @@ const matchers: MatchersObject = {
     const matcherName = 'toHaveProperty';
     const expectedArgument = 'path';
     const hasValue = arguments.length === 3;
-    const options = {
+    const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
       secondArgument: hasValue ? 'value' : '',
@@ -753,14 +753,14 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, expectedArgument, options) +
           '\n\n' +
           `Expected path: ${printExpected(expectedPath)}\n` +
-          (hasCompletePath // TODO undefined?
+          (hasCompletePath
             ? '\n' +
               printDiffOrStringify(
                 expectedValue,
                 receivedValue,
                 EXPECTED_VALUE_LABEL,
                 RECEIVED_VALUE_LABEL,
-                this.expand, // TODO
+                this.expand,
               )
             : `Received path: ${printReceived(
                 expectedPathType === 'array' || receivedPath.length === 0
