@@ -6,7 +6,7 @@
  */
 
 import {Script} from 'vm';
-import {Config, Global} from '@jest/types';
+import {Circus, Config, Global} from '@jest/types';
 import jestMock, {ModuleMocker} from 'jest-mock';
 import {ScriptTransformer} from '@jest/transform';
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
@@ -35,6 +35,7 @@ export declare class JestEnvironment {
   ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
+  handleTestEvent?(event: Circus.Event, state: Circus.State): void;
 }
 
 export type Module = typeof module;

@@ -35,10 +35,7 @@ export const initialize = ({
   testPath,
 }: {
   config: Config.ProjectConfig;
-  environment: JestEnvironment & {
-    // Move this into the JestEnvironment type as an optional method when jest-circus is default.
-    handleTestEvent?(event: Circus.Event, state: Circus.State): void;
-  };
+  environment: JestEnvironment;
   getPrettier: () => null | any;
   getBabelTraverse: () => Function;
   globalConfig: Config.GlobalConfig;
