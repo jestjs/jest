@@ -15,13 +15,14 @@ import {JSDOM, VirtualConsole} from 'jsdom';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
 // `JSDOMEnvironment` assumes it is there.
-interface Win extends Window {
-  Error: {
-    stackTraceLimit: number;
+type Win = Window &
+  Global.Global & {
+    Error: {
+      stackTraceLimit: number;
+    };
   };
-}
 
-function isWin(globals: Win | Global.Global): globals is Win {
+function isWin(globals: Win): globals is Win {
   return (globals as Win).document !== undefined;
 }
 
@@ -31,8 +32,7 @@ function isWin(globals: Win | Global.Global): globals is Win {
 class JSDOMEnvironment implements JestEnvironment {
   dom: JSDOM | null;
   fakeTimers: FakeTimers<number> | null;
-  // @ts-ignore
-  global: Global.Global | Win | null;
+  global: Win;
   errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
 
@@ -119,6 +119,7 @@ class JSDOMEnvironment implements JestEnvironment {
       }
     }
     this.errorEventListener = null;
+    // @ts-ignore
     this.global = null;
     this.dom = null;
     this.fakeTimers = null;
