@@ -271,6 +271,36 @@ describe('iterableEquality', () => {
     ).toBe(false);
   });
 
+  test('returns false when given iterator within inequal object', () => {
+    const a = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: [1],
+    };
+    const b = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: [],
+    };
+
+    expect(iterableEquality(a, b)).toEqual(false);
+  });
+
+  test('returns false when given iterator within inequal nested object', () => {
+    const a = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: {
+        b: [1],
+      },
+    };
+    const b = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: {
+        b: [],
+      },
+    };
+
+    expect(iterableEquality(a, b)).toEqual(false);
+  });
+
   test('returns true when given circular Set shape', () => {
     const a1 = new Set();
     const a2 = new Set();
