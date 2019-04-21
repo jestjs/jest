@@ -3224,7 +3224,7 @@ Received path: <red>\\"a\\"</>
 Expected value: not <green>undefined</>
 Received value:     <red>{}</>
 
-<dim>Because a positive assertion passes for expected value undefined if the property does not exist, therefore this negative assertion fails unless the property does exist and has a defined value</>"
+<dim>Because a positive assertion passes for expected value undefined if the property does not exist, this negative assertion fails unless the property does exist and has a defined value</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a') 1`] = `
