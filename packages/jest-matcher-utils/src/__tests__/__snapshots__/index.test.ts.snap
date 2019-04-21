@@ -93,9 +93,7 @@ exports[`.stringify() reduces maxDepth if stringifying very large objects 1`] = 
 exports[`.stringify() reduces maxDepth if stringifying very large objects 2`] = `"{\\"a\\": 1, \\"b\\": {\\"0\\": \\"test\\", \\"1\\": \\"test\\", \\"2\\": \\"test\\", \\"3\\": \\"test\\", \\"4\\": \\"test\\", \\"5\\": \\"test\\", \\"6\\": \\"test\\", \\"7\\": \\"test\\", \\"8\\": \\"test\\", \\"9\\": \\"test\\"}}"`;
 
 exports[`.stringify() toJSON errors when comparing two objects 1`] = `
-"<dim>expect(</><red>received</><dim>).toEqual(</><green>expected</><dim>)</>
-
-Difference:
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
 <green>- Expected</>
 <red>+ Received</>

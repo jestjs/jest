@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as Circus from './Circus';
-import * as Config from './Config';
-import * as Global from './Global';
+'use strict';
 
-export {Circus, Config, Global};
+module.exports.process = source => {
+  const json = JSON.parse(source);
+  Object.keys(json).forEach(k => (json[k] = k));
+  return JSON.stringify(json);
+};

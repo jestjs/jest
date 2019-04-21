@@ -256,6 +256,7 @@ class HasteMap extends EventEmitter {
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
+      mapper: options.mapper,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)

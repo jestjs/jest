@@ -3,10 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
  */
 
-import * as Circus from './Circus';
-import * as Config from './Config';
-import * as Global from './Global';
+'use strict';
 
-export {Circus, Config, Global};
+describe('describe throw does not warn', () => {
+  it('t', () => {});
+  throw new Error('whoops');
+});
