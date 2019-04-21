@@ -731,7 +731,7 @@ const matchers: MatchersObject = {
         `Expected value: not ${printExpected(expectedValue)}\n` +
         `Received value:     ${printReceived(receivedValue)}\n\n` +
         DIM_COLOR(
-          'Because a positive assertion passes for expected value undefined if the property does not exist, therefore this negative assertion fails unless the property does exist and has a defined value',
+          'Because a positive assertion passes for expected value undefined if the property does not exist, this negative assertion fails unless the property does exist and has a defined value',
         );
 
       return {message, pass};
