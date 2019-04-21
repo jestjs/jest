@@ -2841,7 +2841,7 @@ Expected has value: <green>-3</>"
 `;
 
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('1') 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> path must be a string or array
 
@@ -2850,7 +2850,7 @@ Expected has value: <green>1</>"
 `;
 
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('null') 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> path must be a string or array
 
@@ -2858,17 +2858,24 @@ Expected has value: <green>null</>"
 `;
 
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('undefined') 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> path must be a string or array
 
 Expected has value: <green>undefined</>"
 `;
 
-exports[`.toHaveProperty() {error} expect({}).toHaveProperty('') 1`] = `"pass must be initialized"`;
+exports[`.toHaveProperty() {error} expect({}).toHaveProperty('') 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> path must not be an empty array
+
+Expected has type:  array
+Expected has value: <green>[]</>"
+`;
 
 exports[`.toHaveProperty() {error} expect(null).toHaveProperty('a.b') 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must not be null nor undefined
 
@@ -2876,7 +2883,7 @@ Received has value: <red>null</>"
 `;
 
 exports[`.toHaveProperty() {error} expect(undefined).toHaveProperty('a') 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must not be null nor undefined
 
@@ -2884,116 +2891,87 @@ Received has value: <red>undefined</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect("").toHaveProperty('key') 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>\\"\\"</>
-To have a nested property:
-  <green>\\"key\\"</>
-"
+Expected path: <green>\\"key\\"</>
+Received path: <red>[]</>
+
+Received value: <red>\\"\\"</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect("abc").toHaveProperty('a.b.c') 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>\\"abc\\"</>
-To have a nested property:
-  <green>\\"a.b.c\\"</>
-"
+Expected path: <green>\\"a.b.c\\"</>
+Received path: <red>[]</>
+
+Received value: <red>\\"abc\\"</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect("abc").toHaveProperty('a.b.c', {"a": 5}) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>\\"abc\\"</>
-To have a nested property:
-  <green>\\"a.b.c\\"</>
-With a value of:
-  <green>{\\"a\\": 5}</>
-"
+Expected path: <green>\\"a.b.c\\"</>
+Received path: <red>[]</>
+
+Expected value: <green>{\\"a\\": 5}</>
+Received value: <red>\\"abc\\"</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a,b,c,d', 2) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
-To have a nested property:
-  <green>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
-With a value of:
-  <green>2</>
-Received:
-  <red>1</>"
+Expected path: <green>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
+
+Expected value: <green>2</>
+Received value: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d', 2) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
-To have a nested property:
-  <green>\\"a.b.c.d\\"</>
-With a value of:
-  <green>2</>
-Received:
-  <red>1</>"
+Expected path: <green>\\"a.b.c.d\\"</>
+
+Expected value: <green>2</>
+Received value: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.ttt.d', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
-To have a nested property:
-  <green>\\"a.b.ttt.d\\"</>
-With a value of:
-  <green>1</>
-Received:
-  <red>object</>.a.b: <red>{\\"c\\": {\\"d\\": 1}}</>"
+Expected path: <green>\\"a.b.ttt.d\\"</>
+Received path: <red>\\"a.b\\"</>
+
+Expected value: <green>1</>
+Received value: <red>{\\"c\\": {\\"d\\": 1}}</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {}}}}).toHaveProperty('a.b.c.d') 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": {}}}}</>
-To have a nested property:
-  <green>\\"a.b.c.d\\"</>
-Received:
-  <red>object</>.a.b.c: <red>{}</>"
+Expected path: <green>\\"a.b.c.d\\"</>
+Received path: <red>\\"a.b.c\\"</>
+
+Received value: <red>{}</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {}}}}).toHaveProperty('a.b.c.d', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": {}}}}</>
-To have a nested property:
-  <green>\\"a.b.c.d\\"</>
-With a value of:
-  <green>1</>
-Received:
-  <red>object</>.a.b.c: <red>{}</>"
+Expected path: <green>\\"a.b.c.d\\"</>
+Received path: <red>\\"a.b.c\\"</>
+
+Expected value: <green>1</>
+Received value: <red>{}</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": 5}}}).toHaveProperty('a.b', {"c": 4}) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": 5}}}</>
-To have a nested property:
-  <green>\\"a.b\\"</>
-With a value of:
-  <green>{\\"c\\": 4}</>
-Received:
-  <red>{\\"c\\": 5}</>
+Expected path: <green>\\"a.b\\"</>
 
-Difference:
-
-<green>- Expected</>
-<red>+ Received</>
+<green>- Expected value</>
+<red>+ Received value</>
 
 <dim>  Object {</>
 <green>-   \\"c\\": 4,</>
@@ -3002,451 +2980,347 @@ Difference:
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": 3}}).toHaveProperty('a.b', undefined) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": 3}}</>
-To have a nested property:
-  <green>\\"a.b\\"</>
-With a value of:
-  <green>undefined</>
-Received:
-  <red>3</>
+Expected path: <green>\\"a.b\\"</>
 
-Difference:
-
-  Comparing two different types of values. Expected <green>undefined</> but received <red>number</>."
+Expected value: <green>undefined</>
+Received value: <red>3</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": 1}).toHaveProperty('a.b.c.d') 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": 1}</>
-To have a nested property:
-  <green>\\"a.b.c.d\\"</>
-Received:
-  <red>object</>.a: <red>1</>"
+Expected path: <green>\\"a.b.c.d\\"</>
+Received path: <red>\\"a\\"</>
+
+Received value: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a": 1}).toHaveProperty('a.b.c.d', 5) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": 1}</>
-To have a nested property:
-  <green>\\"a.b.c.d\\"</>
-With a value of:
-  <green>5</>
-Received:
-  <red>object</>.a: <red>1</>"
+Expected path: <green>\\"a.b.c.d\\"</>
+Received path: <red>\\"a\\"</>
+
+Expected value: <green>5</>
+Received value: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d', 2) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a.b.c.d\\": 1}</>
-To have a nested property:
-  <green>\\"a.b.c.d\\"</>
-With a value of:
-  <green>2</>
-"
+Expected path: <green>\\"a.b.c.d\\"</>
+Received path: <red>[]</>
+
+Expected value: <green>2</>
+Received value: <red>{\\"a.b.c.d\\": 1}</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d', 2) 2`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a.b.c.d\\": 1}</>
-To have a nested property:
-  <green>[\\"a.b.c.d\\"]</>
-With a value of:
-  <green>2</>
-Received:
-  <red>1</>"
+Expected path: <green>[\\"a.b.c.d\\"]</>
+
+Expected value: <green>2</>
+Received value: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({"key": 1}).toHaveProperty('not') 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>{\\"key\\": 1}</>
-To have a nested property:
-  <green>\\"not\\"</>
-"
+Expected path: <green>\\"not\\"</>
+Received path: <red>[]</>
+
+Received value: <red>{\\"key\\": 1}</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('a') 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>{}</>
-To have a nested property:
-  <green>\\"a\\"</>
-"
+Expected path: <green>\\"a\\"</>
+Received path: <red>[]</>
+
+Received value: <red>{}</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('a', "a") 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{}</>
-To have a nested property:
-  <green>\\"a\\"</>
-With a value of:
-  <green>\\"a\\"</>
-Received:
-  <red>undefined</>
+Expected path: <green>\\"a\\"</>
 
-Difference:
-
-  Comparing two different types of values. Expected <green>string</> but received <red>undefined</>."
+Expected value: <green>\\"a\\"</>
+Received value: <red>undefined</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('a', "test") 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{}</>
-To have a nested property:
-  <green>\\"a\\"</>
-With a value of:
-  <green>\\"test\\"</>
-"
+Expected path: <green>\\"a\\"</>
+Received path: <red>[]</>
+
+Expected value: <green>\\"test\\"</>
+Received value: <red>{}</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect({}).toHaveProperty('b', undefined) 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{}</>
-To have a nested property:
-  <green>\\"b\\"</>
-With a value of:
-  <green>undefined</>
-Received:
-  <red>\\"b\\"</>
+Expected path: <green>\\"b\\"</>
 
-Difference:
-
-  Comparing two different types of values. Expected <green>undefined</> but received <red>string</>."
+Expected value: <green>undefined</>
+Received value: <red>\\"b\\"</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect(0).toHaveProperty('key') 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>0</>
-To have a nested property:
-  <green>\\"key\\"</>
-"
+Expected path: <green>\\"key\\"</>
+Received path: <red>[]</>
+
+Received value: <red>0</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect(1).toHaveProperty('a.b.c') 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>1</>
-To have a nested property:
-  <green>\\"a.b.c\\"</>
-"
+Expected path: <green>\\"a.b.c\\"</>
+Received path: <red>[]</>
+
+Received value: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect(1).toHaveProperty('a.b.c', "test") 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>1</>
-To have a nested property:
-  <green>\\"a.b.c\\"</>
-With a value of:
-  <green>\\"test\\"</>
-"
+Expected path: <green>\\"a.b.c\\"</>
+Received path: <red>[]</>
+
+Expected value: <green>\\"test\\"</>
+Received value: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect(Symbol()).toHaveProperty('key') 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>Symbol()</>
-To have a nested property:
-  <green>\\"key\\"</>
-"
+Expected path: <green>\\"key\\"</>
+Received path: <red>[]</>
+
+Received value: <red>Symbol()</>"
 `;
 
 exports[`.toHaveProperty() {pass: false} expect(false).toHaveProperty('key') 1`] = `
-"<dim>expect(</><red>object</><dim>).toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>false</>
-To have a nested property:
-  <green>\\"key\\"</>
-"
+Expected path: <green>\\"key\\"</>
+Received path: <red>[]</>
+
+Received value: <red>false</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect("").toHaveProperty('length', 0) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>\\"\\"</>
-Not to have a nested property:
-  <green>\\"length\\"</>
-With a value of:
-  <green>0</>
-"
+Expected path: <green>\\"length\\"</>
+
+Expected value: not <green>0</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect([Function memoized]).toHaveProperty('memo', []) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>[Function memoized]</>
-Not to have a nested property:
-  <green>\\"memo\\"</>
-With a value of:
-  <green>[]</>
-"
+Expected path: <green>\\"memo\\"</>
+
+Expected value: not <green>[]</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1') 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": [1, 2, 3]}}</>
-Not to have a nested property:
-  <green>[\\"a\\", \\"b\\", 1]</>
-"
+Expected path: not <green>[\\"a\\", \\"b\\", 1]</>
+
+Received value: <red>2</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1', 2) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": [1, 2, 3]}}</>
-Not to have a nested property:
-  <green>[\\"a\\", \\"b\\", 1]</>
-With a value of:
-  <green>2</>
-"
+Expected path: <green>[\\"a\\", \\"b\\", 1]</>
+
+Expected value: not <green>2</>"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {"b": [1, 2, 3]}}).toHaveProperty('a,b,1', Any<Number>) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected path: <green>[\\"a\\", \\"b\\", 1]</>
+
+Expected value: not <green>Any<Number></>
+Received value:     <red>2</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a,b,c,d') 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
-Not to have a nested property:
-  <green>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
-"
+Expected path: not <green>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
+
+Received value: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a,b,c,d', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
-Not to have a nested property:
-  <green>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
-With a value of:
-  <green>1</>
-"
+Expected path: <green>[\\"a\\", \\"b\\", \\"c\\", \\"d\\"]</>
+
+Expected value: not <green>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d') 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
-Not to have a nested property:
-  <green>\\"a.b.c.d\\"</>
-"
+Expected path: not <green>\\"a.b.c.d\\"</>
+
+Received value: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": {"d": 1}}}}).toHaveProperty('a.b.c.d', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": {\\"d\\": 1}}}}</>
-Not to have a nested property:
-  <green>\\"a.b.c.d\\"</>
-With a value of:
-  <green>1</>
-"
+Expected path: <green>\\"a.b.c.d\\"</>
+
+Expected value: not <green>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": {"c": 5}}}).toHaveProperty('a.b', {"c": 5}) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": {\\"c\\": 5}}}</>
-Not to have a nested property:
-  <green>\\"a.b\\"</>
-With a value of:
-  <green>{\\"c\\": 5}</>
-"
+Expected path: <green>\\"a.b\\"</>
+
+Expected value: not <green>{\\"c\\": 5}</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": undefined}}).toHaveProperty('a.b') 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": undefined}}</>
-Not to have a nested property:
-  <green>\\"a.b\\"</>
-"
+Expected path: not <green>\\"a.b\\"</>
+
+Received value: <red>undefined</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": {"b": undefined}}).toHaveProperty('a.b', undefined) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": {\\"b\\": undefined}}</>
-Not to have a nested property:
-  <green>\\"a.b\\"</>
-With a value of:
-  <green>undefined</>
-"
+Expected path: <green>\\"a.b\\"</>
+
+Expected value: not <green>undefined</>"
+`;
+
+exports[`.toHaveProperty() {pass: true} expect({"a": {}}).toHaveProperty('a.b', undefined) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected path: <green>\\"a.b\\"</>
+Received path: <red>\\"a\\"</>
+
+Expected value: not <green>undefined</>
+Received value:     <red>{}</>
+
+<dim>Because a positive assertion passes for expected value undefined if the property does not exist, this negative assertion fails unless the property does exist and has a defined value</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a') 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": 0}</>
-Not to have a nested property:
-  <green>\\"a\\"</>
-"
+Expected path: not <green>\\"a\\"</>
+
+Received value: <red>0</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a": 0}).toHaveProperty('a', 0) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a\\": 0}</>
-Not to have a nested property:
-  <green>\\"a\\"</>
-With a value of:
-  <green>0</>
-"
+Expected path: <green>\\"a\\"</>
+
+Expected value: not <green>0</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d') 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
-Expected the object:
-  <red>{\\"a.b.c.d\\": 1}</>
-Not to have a nested property:
-  <green>[\\"a.b.c.d\\"]</>
-"
+Expected path: not <green>[\\"a.b.c.d\\"]</>
+
+Received value: <red>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"a.b.c.d": 1}).toHaveProperty('a.b.c.d', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"a.b.c.d\\": 1}</>
-Not to have a nested property:
-  <green>[\\"a.b.c.d\\"]</>
-With a value of:
-  <green>1</>
-"
+Expected path: <green>[\\"a.b.c.d\\"]</>
+
+Expected value: not <green>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"nodeName": "DIV"}).toHaveProperty('nodeType', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"nodeName\\": \\"DIV\\"}</>
-Not to have a nested property:
-  <green>\\"nodeType\\"</>
-With a value of:
-  <green>1</>
-"
+Expected path: <green>\\"nodeType\\"</>
+
+Expected value: not <green>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"property": 1}).toHaveProperty('property', 1) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"property\\": 1}</>
-Not to have a nested property:
-  <green>\\"property\\"</>
-With a value of:
-  <green>1</>
-"
+Expected path: <green>\\"property\\"</>
+
+Expected value: not <green>1</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"val": true}).toHaveProperty('a', undefined) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"val\\": true}</>
-Not to have a nested property:
-  <green>\\"a\\"</>
-With a value of:
-  <green>undefined</>
-"
+Expected path: <green>\\"a\\"</>
+
+Expected value: not <green>undefined</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"val": true}).toHaveProperty('c', "c") 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"val\\": true}</>
-Not to have a nested property:
-  <green>\\"c\\"</>
-With a value of:
-  <green>\\"c\\"</>
-"
+Expected path: <green>\\"c\\"</>
+
+Expected value: not <green>\\"c\\"</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({"val": true}).toHaveProperty('val', true) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{\\"val\\": true}</>
-Not to have a nested property:
-  <green>\\"val\\"</>
-With a value of:
-  <green>true</>
-"
+Expected path: <green>\\"val\\"</>
+
+Expected value: not <green>true</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('a', undefined) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{}</>
-Not to have a nested property:
-  <green>\\"a\\"</>
-With a value of:
-  <green>undefined</>
-"
+Expected path: <green>\\"a\\"</>
+
+Expected value: not <green>undefined</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('b', "b") 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{}</>
-Not to have a nested property:
-  <green>\\"b\\"</>
-With a value of:
-  <green>\\"b\\"</>
-"
+Expected path: <green>\\"b\\"</>
+
+Expected value: not <green>\\"b\\"</>"
 `;
 
 exports[`.toHaveProperty() {pass: true} expect({}).toHaveProperty('setter', undefined) 1`] = `
-"<dim>expect(</><red>object</><dim>).</>not<dim>.toHaveProperty(</><green>path</><dim>, </><green>value</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
 
-Expected the object:
-  <red>{}</>
-Not to have a nested property:
-  <green>\\"setter\\"</>
-With a value of:
-  <green>undefined</>
-"
+Expected path: <green>\\"setter\\"</>
+
+Expected value: not <green>undefined</>"
 `;
 
 exports[`.toMatch() {pass: true} expect(Foo bar).toMatch(/^foo/i) 1`] = `

@@ -11,6 +11,7 @@ import {
   INVERTED_COLOR,
   RECEIVED_COLOR,
   diff,
+  getLabelPrinter,
   printExpected,
   printReceived,
   stringify,
@@ -103,18 +104,31 @@ export const printDiffOrStringify = (
   // because stringify (that is, pretty-format with min option)
   // omits constructor name for array or object, too bad so sad :(
   const difference = shouldPrintDiff(expected, received)
-    ? diff(expected, received, {expand}) // string | null
+    ? diff(expected, received, {
+        aAnnotation: expectedLabel,
+        bAnnotation: receivedLabel,
+        expand,
+      }) // string | null
     : null;
 
   // Cannot reuse value of stringify(received) in report string,
   // because printReceived does inverse highlight space at end of line,
   // but RECEIVED_COLOR does not (it refers to a plain chalk method).
-  return typeof difference === 'string' && difference.includes('- Expected')
-    ? difference
-    : `${expectedLabel}${printExpected(expected)}\n` +
-        `${receivedLabel}${
-          stringify(expected) === stringify(received)
-            ? 'serializes to the same string'
-            : printReceived(received)
-        }`;
+  if (
+    typeof difference === 'string' &&
+    difference.includes('- ' + expectedLabel) &&
+    difference.includes('+ ' + receivedLabel)
+  ) {
+    return difference;
+  }
+
+  const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+  return (
+    `${printLabel(expectedLabel)}${printExpected(expected)}\n` +
+    `${printLabel(receivedLabel)}${
+      stringify(expected) === stringify(received)
+        ? 'serializes to the same string'
+        : printReceived(received)
+    }`
+  );
 };
