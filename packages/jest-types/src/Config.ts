@@ -6,6 +6,7 @@
  */
 
 import {Arguments} from 'yargs';
+import {ReportOptions} from 'istanbul-reports';
 
 export type Path = string;
 
@@ -296,7 +297,7 @@ export type GlobalConfig = {
     | undefined;
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
-  coverageReporters: Array<string>;
+  coverageReporters: Array<keyof ReportOptions>;
   coverageThreshold: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;

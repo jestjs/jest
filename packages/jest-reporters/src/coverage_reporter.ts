@@ -98,8 +98,8 @@ export default class CoverageReporter extends BaseReporter {
       }
 
       const tree = istanbulReport.summarizers.pkg(map);
-      coverageReporters.forEach(_reporter => {
-        tree.visit(istanbulReports.create(_reporter, {}), reportContext);
+      coverageReporters.forEach(reporter => {
+        tree.visit(istanbulReports.create(reporter, {}), reportContext);
       });
       aggregatedResults.coverageMap = map;
     } catch (e) {
