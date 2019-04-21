@@ -121,11 +121,11 @@ export default class ScriptTransformer {
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
+    const cacheFilenamePrefix = path
+      .basename(filename, path.extname(filename))
+      .replace(/:/g, '_COLON_');
     const cachePath = slash(
-      path.join(
-        cacheDir,
-        path.basename(filename, path.extname(filename)) + '_' + cacheKey,
-      ),
+      path.join(cacheDir, cacheFilenamePrefix + '_' + cacheKey),
     );
     createDirectory(cacheDir);
 
