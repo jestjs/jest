@@ -94,6 +94,7 @@ export default class ScriptTransformer {
             rootDir: this._config.rootDir,
           }),
         )
+        .update(filename)
         .update(CACHE_VERSION)
         .digest('hex');
     } else {
@@ -102,6 +103,7 @@ export default class ScriptTransformer {
         .update(fileData)
         .update(configString)
         .update(instrument ? 'instrument' : '')
+        .update(filename)
         .update(CACHE_VERSION)
         .digest('hex');
     }
