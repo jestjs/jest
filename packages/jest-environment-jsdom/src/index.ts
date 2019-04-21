@@ -22,7 +22,7 @@ type Win = Window &
     };
   };
 
-function isWin(globals: Win): globals is Win {
+function isWin(globals: Win | Global.Global): globals is Win {
   return (globals as Win).document !== undefined;
 }
 
@@ -119,8 +119,6 @@ class JSDOMEnvironment implements JestEnvironment {
       }
     }
     this.errorEventListener = null;
-    // @ts-ignore
-    this.global = null;
     this.dom = null;
     this.fakeTimers = null;
     return Promise.resolve();
