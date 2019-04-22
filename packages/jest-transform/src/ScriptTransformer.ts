@@ -94,7 +94,6 @@ export default class ScriptTransformer {
             rootDir: this._config.rootDir,
           }),
         )
-        .update(filename)
         .update(CACHE_VERSION)
         .digest('hex');
     } else {
@@ -125,7 +124,7 @@ export default class ScriptTransformer {
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
     const cacheFilenamePrefix = path
       .basename(filename, path.extname(filename))
-      .replace(/:/g, '_COLON_');
+      .replace(/\W/g, '');
     const cachePath = slash(
       path.join(cacheDir, cacheFilenamePrefix + '_' + cacheKey),
     );
