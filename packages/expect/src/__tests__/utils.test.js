@@ -281,7 +281,7 @@ describe('iterableEquality', () => {
       a: [],
     };
 
-    expect(iterableEquality(a, b)).toEqual(true);
+    expect(iterableEquality(a, b)).toBe(true);
   });
 
   test('returns false when given iterator within inequal objects', () => {
@@ -294,7 +294,7 @@ describe('iterableEquality', () => {
       a: [],
     };
 
-    expect(iterableEquality(a, b)).toEqual(false);
+    expect(iterableEquality(a, b)).toBe(false);
   });
 
   test('returns false when given iterator within inequal nested objects', () => {
@@ -311,7 +311,7 @@ describe('iterableEquality', () => {
       },
     };
 
-    expect(iterableEquality(a, b)).toEqual(false);
+    expect(iterableEquality(a, b)).toBe(false);
   });
 
   test('returns true when given circular Set shape', () => {

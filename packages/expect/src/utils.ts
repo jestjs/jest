@@ -251,12 +251,10 @@ export const iterableEquality = (
     return false;
   }
 
-  if (!emptyObject(a) && !emptyObject(b)) {
-    const aEntries = Object.entries(a);
-    const bEntries = Object.entries(b);
-    if (!equals(aEntries, bEntries)) {
-      return false;
-    }
+  const aEntries = Object.entries(a);
+  const bEntries = Object.entries(b);
+  if (!equals(aEntries, bEntries)) {
+    return false;
   }
 
   // Remove the first value from the stack of traversed values.
