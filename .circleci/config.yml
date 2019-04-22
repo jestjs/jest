@@ -14,6 +14,8 @@ aliases:
   - &filter-ignore-gh-pages
     branches:
       ignore: gh-pages
+  - &install
+    node scripts/remove-postinstall && yarn --no-progress --frozen-lockfile --ignore-engines && node scripts/build
 
 version: 2
 jobs:
@@ -37,7 +39,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: node scripts/remove-postinstall && yarn --no-progress --frozen-lockfile --ignore-engines && node scripts/build
+      - run: *install
       - save-cache: *save-cache
       - run:
           # react-native does not work with node 6
@@ -52,7 +54,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: yarn --no-progress --frozen-lockfile
+      - run: *install
       - save-cache: *save-cache
       - run:
           command: yarn test-ci-partial
@@ -66,7 +68,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: yarn --no-progress --frozen-lockfile
+      - run: *install
       - save-cache: *save-cache
       - run:
           command: yarn test-ci
@@ -80,7 +82,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: yarn --no-progress --frozen-lockfile
+      - run: *install
       - save-cache: *save-cache
       - run:
           command: JEST_CIRCUS=1 yarn test-ci-partial
@@ -94,7 +96,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: yarn --no-progress --frozen-lockfile
+      - run: *install
       - save-cache: *save-cache
       - run:
           command: yarn test-ci-partial
@@ -108,7 +110,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: yarn --no-progress --frozen-lockfile
+      - run: *install
       - save-cache: *save-cache
       - run: yarn test-ci-es5-build-in-browser
 
@@ -120,7 +122,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: yarn --no-progress --frozen-lockfile
+      - run: *install
       - save-cache: *save-cache
       - run:
           name: Test or Deploy Jest Website
