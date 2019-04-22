@@ -11,8 +11,8 @@
 const {stringify} = require('jest-matcher-utils');
 const {
   emptyObject,
-  getObjectSubset,
   getObjectEntries,
+  getObjectSubset,
   getPath,
   hasOwnProperty,
   subsetEquality,
