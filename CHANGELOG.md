@@ -10,6 +10,7 @@
 - `[@jest/runtime, @jest/transform]` Allow custom transforms for JSON dependencies ([#2578](https://github.com/facebook/jest/pull/2578))
 - `[jest-core]` Make `detectOpenHandles` imply `runInBand` ([#8283](https://github.com/facebook/jest/pull/8283))
 - `[jest-haste-map]` Fix the `mapper` option which was incorrectly ignored ([#8299](https://github.com/facebook/jest/pull/8299))
+- `[expect]` Fix `iterableEquality` ignores other properties ([#8359](https://github.com/facebook/jest/pull/8359))
 
 ### Chore & Maintenance
 
