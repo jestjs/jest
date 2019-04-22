@@ -251,8 +251,10 @@ export const iterableEquality = (
     return false;
   }
 
-  if (!equals(a, b)) {
-    return false;
+  if (Object.keys(a).length && Object.keys(b).length) {
+    if (!equals(a, b)) {
+      return false;
+    }
   }
 
   // Remove the first value from the stack of traversed values.
