@@ -26,12 +26,15 @@ steps:
     displayName: 'Move source into jest folder'
 
   # Run yarn to install dependencies and build
-  - script: |
-      node scripts/remove-postinstall
-      yarn --no-progress --frozen-lockfile
-      node scripts/build
+  - script: node scripts/remove-postinstall
     workingDirectory: $(JEST_DIR)
-    displayName: 'Install dependencies and build'
+    displayName: 'Remove postinstall script'
+  - script: yarn --no-progress --frozen-lockfile
+    workingDirectory: $(JEST_DIR)
+    displayName: 'Install dependencies'
+  - script: node scripts/build
+    workingDirectory: $(JEST_DIR)
+    displayName: 'Build'
 
   # Run test-ci-partial
   - script: yarn run test-ci-partial
