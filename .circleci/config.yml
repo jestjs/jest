@@ -36,9 +36,17 @@ jobs:
       - image: circleci/node:6
     steps:
       - checkout
-      - restore-cache: *restore-cache
+      - restore-cache:
+      keys:
+        - v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}-node6
+        # Fallback in case checksum fails
+        - v2-dependencies-{{ .Branch }}-node6
       - run: yarn --no-progress --frozen-lockfile --ignore-engines --ignore-scripts && node scripts/build.js
-      - save-cache: *save-cache
+      - save-cache:
+          paths:
+            - node_modules
+            - website/node_modules
+          key: v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}-node6
       - run:
           # react-native does not work with node 6
           command: rm -rf examples/react-native && yarn test-ci-partial
