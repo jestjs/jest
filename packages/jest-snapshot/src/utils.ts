@@ -185,8 +185,6 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   source.forEach((element, index) => {
     if (typeof mergedOutput[index] === 'undefined') {
       mergedOutput[index] = element;
-    } else if (typeof element === 'undefined') {
-      mergedOutput.push(target[index]);
     } else {
       mergedOutput[index] = deepMerge(target[index], element);
     }

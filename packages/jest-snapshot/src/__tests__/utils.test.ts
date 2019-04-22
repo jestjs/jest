@@ -9,8 +9,8 @@ jest.mock('fs');
 
 import fs from 'fs';
 import path from 'path';
-import chalk from 'chalk';
 import assert from 'assert';
+import chalk from 'chalk';
 
 import {
   deepMerge,
@@ -219,6 +219,7 @@ describe('DeepMerge', () => {
             seven: 'seven',
           },
         ],
+        eight: [{nine: 'nine'}],
       },
     };
 
@@ -230,6 +231,11 @@ describe('DeepMerge', () => {
           {
             four: matcher,
           },
+        ],
+        eight: [
+          {nine: matcher},
+          // Include an array element not present in the target
+          {ten: matcher},
         ],
       },
     };
@@ -253,6 +259,7 @@ describe('DeepMerge', () => {
             seven: 'seven',
           },
         ],
+        eight: [{nine: matcher}, {ten: matcher}],
       },
     });
 
@@ -271,6 +278,7 @@ describe('DeepMerge', () => {
             seven: 'seven',
           },
         ],
+        eight: [{nine: 'nine'}],
       },
     });
     /* eslint-enable sort-keys */
