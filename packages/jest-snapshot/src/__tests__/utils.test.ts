@@ -10,6 +10,7 @@ jest.mock('fs');
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
+import assert from 'assert';
 
 import {
   deepMerge,
@@ -220,9 +221,8 @@ describe('DeepMerge', () => {
         ],
       },
     };
-    // Don't use `expect.any(string)` since that will cause a false positive
-    // if deepMerge incorrectly keeps two as 'two' from the target
-    const matcher = '--matcher--';
+
+    const matcher = expect.any(String);
     const propertyMatchers = {
       data: {
         two: matcher,
@@ -235,7 +235,11 @@ describe('DeepMerge', () => {
     };
 
     const mergedOutput = deepMerge(target, propertyMatchers);
-    expect(mergedOutput).toStrictEqual({
+
+    // Use assert.deepStrictEqual() instead of expect().toStrictEqual()
+    // since we want to actually validate that we got the matcher
+    // rather than treat it specially the way that expect() does
+    assert.deepStrictEqual(mergedOutput, {
       data: {
         one: 'one',
         two: matcher,
