@@ -12,7 +12,6 @@ import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
-  diff,
   ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
   ensureNumbers,
@@ -850,65 +849,53 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toMatchObject(
-    this: MatcherState,
-    receivedObject: object,
-    expectedObject: object,
-  ) {
-    const matcherName = '.toMatchObject';
+  toMatchObject(this: MatcherState, received: object, expected: object) {
+    const matcherName = 'toMatchObject';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
+      promise: this.promise,
     };
 
-    if (typeof receivedObject !== 'object' || receivedObject === null) {
+    if (typeof received !== 'object' || received === null) {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a non-null object`,
-          printWithType('Received', receivedObject, printReceived),
+          printWithType('Received', received, printReceived),
         ),
       );
     }
 
-    if (typeof expectedObject !== 'object' || expectedObject === null) {
+    if (typeof expected !== 'object' || expected === null) {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a non-null object`,
-          printWithType('Expected', expectedObject, printExpected),
+          printWithType('Expected', expected, printExpected),
         ),
       );
     }
 
-    const pass = equals(receivedObject, expectedObject, [
-      iterableEquality,
-      subsetEquality,
-    ]);
+    const pass = equals(received, expected, [iterableEquality, subsetEquality]);
 
     const message = pass
       ? () =>
           matcherHint(matcherName, undefined, undefined, options) +
-          `\n\nExpected value not to match object:\n` +
-          `  ${printExpected(expectedObject)}` +
-          `\nReceived:\n` +
-          `  ${printReceived(receivedObject)}`
-      : () => {
-          const difference = diff(
-            expectedObject,
-            getObjectSubset(receivedObject, expectedObject),
-            {
-              expand: this.expand,
-            },
+          '\n\n' +
+          `Expected: not ${printExpected(expected)}` +
+          (stringify(expected) !== stringify(received)
+            ? `\nReceived:     ${printReceived(received)}`
+            : '')
+      : () =>
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          printDiffOrStringify(
+            expected,
+            getObjectSubset(received, expected),
+            EXPECTED_LABEL,
+            RECEIVED_LABEL,
+            this.expand,
           );
-          return (
-            matcherHint(matcherName, undefined, undefined, options) +
-            `\n\nExpected value to match object:\n` +
-            `  ${printExpected(expectedObject)}` +
-            `\nReceived:\n` +
-            `  ${printReceived(receivedObject)}` +
-            (difference ? `\nDifference:\n${difference}` : '')
-          );
-        };
 
     return {message, pass};
   },
