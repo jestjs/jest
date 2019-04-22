@@ -37,7 +37,7 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: node scripts/remove-postinstall && node scripts/build && yarn --no-progress --frozen-lockfile --ignore-engines
+      - run: node scripts/remove-postinstall && yarn --no-progress --frozen-lockfile --ignore-engines && node scripts/build
       - save-cache: *save-cache
       - run:
           # react-native does not work with node 6
