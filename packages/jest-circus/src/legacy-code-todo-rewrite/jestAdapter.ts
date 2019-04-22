@@ -39,6 +39,7 @@ const jestAdapter = async (
 
   const {globals, snapshotState} = initialize({
     config,
+    environment,
     getBabelTraverse,
     getPrettier,
     globalConfig,

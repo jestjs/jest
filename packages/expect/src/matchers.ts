@@ -27,6 +27,7 @@ import {
 } from 'jest-matcher-utils';
 import {MatchersObject, MatcherState} from './types';
 import {
+  printDiffOrStringify,
   printReceivedArrayContainExpectedItem,
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
@@ -38,9 +39,14 @@ import {
   sparseArrayEquality,
   subsetEquality,
   typeEquality,
-  isOneline,
 } from './utils';
 import {equals} from './jasmineUtils';
+
+// Omit colon and one or more spaces, so can call getLabelPrinter.
+const EXPECTED_LABEL = 'Expected';
+const RECEIVED_LABEL = 'Received';
+const EXPECTED_VALUE_LABEL = 'Expected value';
+const RECEIVED_VALUE_LABEL = 'Received value';
 
 const toStrictEqualTesters = [
   iterableEquality,
@@ -72,7 +78,6 @@ const matchers: MatchersObject = {
           '\n\n' +
           `Expected: not ${printExpected(expected)}`
       : () => {
-          const receivedType = getType(received);
           const expectedType = getType(expected);
 
           let deepEqualityName = null;
@@ -86,20 +91,6 @@ const matchers: MatchersObject = {
             }
           }
 
-          const hasConciseReport =
-            receivedType !== expectedType ||
-            (isPrimitive(expected) &&
-              (expectedType !== 'string' || isOneline(expected, received))) ||
-            expectedType === 'date' ||
-            expectedType === 'function' ||
-            expectedType === 'regexp' ||
-            (received instanceof Error && expected instanceof Error);
-          const hasDifference = stringify(expected) !== stringify(received);
-          const difference =
-            !hasConciseReport && hasDifference
-              ? diff(expected, received, {expand: this.expand}) // string | null
-              : null;
-
           return (
             matcherHint(matcherName, undefined, undefined, options) +
             '\n\n' +
@@ -108,12 +99,13 @@ const matchers: MatchersObject = {
                   `If it should pass with deep equality, replace "${matcherName}" with "${deepEqualityName}"`,
                 ) + '\n\n'
               : '') +
-            (difference !== null
-              ? difference
-              : `Expected: ${printExpected(expected)}\n` +
-                (hasDifference
-                  ? `Received: ${printReceived(received)}`
-                  : 'Received value has no visual difference'))
+            printDiffOrStringify(
+              expected,
+              received,
+              EXPECTED_LABEL,
+              RECEIVED_LABEL,
+              this.expand,
+            )
           );
         };
 
@@ -569,9 +561,11 @@ const matchers: MatchersObject = {
   },
 
   toEqual(this: MatcherState, received: unknown, expected: unknown) {
-    const matcherName = '.toEqual';
+    const matcherName = 'toEqual';
     const options: MatcherHintOptions = {
+      comment: 'deep equality',
       isNot: this.isNot,
+      promise: this.promise,
     };
 
     const pass = equals(received, expected, [iterableEquality]);
@@ -580,25 +574,25 @@ const matchers: MatchersObject = {
       ? () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          `Expected: ${printExpected(expected)}\n` +
-          `Received: ${printReceived(received)}`
-      : () => {
-          const difference = diff(expected, received, {expand: this.expand});
-
-          return (
-            matcherHint(matcherName, undefined, undefined, options) +
-            '\n\n' +
-            (difference && difference.includes('- Expect')
-              ? `Difference:\n\n${difference}`
-              : `Expected: ${printExpected(expected)}\n` +
-                `Received: ${printReceived(received)}`)
+          `Expected: not ${printExpected(expected)}\n` +
+          (stringify(expected) !== stringify(received)
+            ? `Received:     ${printReceived(received)}`
+            : '')
+      : () =>
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          printDiffOrStringify(
+            expected,
+            received,
+            EXPECTED_LABEL,
+            RECEIVED_LABEL,
+            this.expand,
           );
-        };
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
-    return {actual: received, expected, message, name: 'toEqual', pass};
+    return {actual: received, expected, message, name: matcherName, pass};
   },
 
   toHaveLength(this: MatcherState, received: any, expected: number) {
@@ -660,87 +654,123 @@ const matchers: MatchersObject = {
 
   toHaveProperty(
     this: MatcherState,
-    object: object,
-    keyPath: string | Array<string>,
-    value?: unknown,
+    received: object,
+    expectedPath: string | Array<string>,
+    expectedValue?: unknown,
   ) {
-    const matcherName = '.toHaveProperty';
-    const valuePassed = arguments.length === 3;
-    const secondArgument = valuePassed ? 'value' : '';
+    const matcherName = 'toHaveProperty';
+    const expectedArgument = 'path';
+    const hasValue = arguments.length === 3;
     const options: MatcherHintOptions = {
       isNot: this.isNot,
-      secondArgument,
+      promise: this.promise,
+      secondArgument: hasValue ? 'value' : '',
     };
 
-    if (object === null || object === undefined) {
+    if (received === null || received === undefined) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint(matcherName, undefined, 'path', options),
+          matcherHint(matcherName, undefined, expectedArgument, options),
           `${RECEIVED_COLOR('received')} value must not be null nor undefined`,
-          printWithType('Received', object, printReceived),
+          printWithType('Received', received, printReceived),
         ),
       );
     }
 
-    const keyPathType = getType(keyPath);
+    const expectedPathType = getType(expectedPath);
 
-    if (keyPathType !== 'string' && keyPathType !== 'array') {
+    if (expectedPathType !== 'string' && expectedPathType !== 'array') {
       throw new Error(
         matcherErrorMessage(
-          matcherHint(matcherName, undefined, 'path', options),
+          matcherHint(matcherName, undefined, expectedArgument, options),
           `${EXPECTED_COLOR('expected')} path must be a string or array`,
-          printWithType('Expected', keyPath, printExpected),
+          printWithType('Expected', expectedPath, printExpected),
         ),
       );
     }
 
-    const result = getPath(object, keyPath);
+    const expectedPathLength =
+      typeof expectedPath === 'string'
+        ? expectedPath.split('.').length
+        : expectedPath.length;
+
+    if (expectedPathType === 'array' && expectedPathLength === 0) {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, expectedArgument, options),
+          `${EXPECTED_COLOR('expected')} path must not be an empty array`,
+          printWithType('Expected', expectedPath, printExpected),
+        ),
+      );
+    }
+
+    const result = getPath(received, expectedPath);
     const {lastTraversedObject, hasEndProp} = result;
+    const receivedPath = result.traversedPath;
+    const hasCompletePath = receivedPath.length === expectedPathLength;
+    const receivedValue = hasCompletePath ? result.value : lastTraversedObject;
 
-    const pass = valuePassed
-      ? equals(result.value, value, [iterableEquality])
-      : hasEndProp;
+    const pass = hasValue
+      ? equals(result.value, expectedValue, [iterableEquality])
+      : Boolean(hasEndProp); // theoretically undefined if empty path
+    // Remove type cast if we rewrite getPath as iterative algorithm.
 
-    const traversedPath = result.traversedPath.join('.');
+    // Delete this unique report if future breaking change
+    // removes the edge case that expected value undefined
+    // also matches absence of a property with the key path.
+    if (pass && !hasCompletePath) {
+      const message = () =>
+        matcherHint(matcherName, undefined, expectedArgument, options) +
+        '\n\n' +
+        `Expected path: ${printExpected(expectedPath)}\n` +
+        `Received path: ${printReceived(
+          expectedPathType === 'array' || receivedPath.length === 0
+            ? receivedPath
+            : receivedPath.join('.'),
+        )}\n\n` +
+        `Expected value: not ${printExpected(expectedValue)}\n` +
+        `Received value:     ${printReceived(receivedValue)}\n\n` +
+        DIM_COLOR(
+          'Because a positive assertion passes for expected value undefined if the property does not exist, this negative assertion fails unless the property does exist and has a defined value',
+        );
+
+      return {message, pass};
+    }
 
     const message = pass
       ? () =>
-          matcherHint(matcherName, 'object', 'path', options) +
+          matcherHint(matcherName, undefined, expectedArgument, options) +
           '\n\n' +
-          `Expected the object:\n` +
-          `  ${printReceived(object)}\n` +
-          `Not to have a nested property:\n` +
-          `  ${printExpected(keyPath)}\n` +
-          (valuePassed ? `With a value of:\n  ${printExpected(value)}\n` : '')
-      : () => {
-          const difference =
-            valuePassed && hasEndProp
-              ? diff(value, result.value, {expand: this.expand})
-              : '';
-          return (
-            matcherHint(matcherName, 'object', 'path', options) +
-            '\n\n' +
-            `Expected the object:\n` +
-            `  ${printReceived(object)}\n` +
-            `To have a nested property:\n` +
-            `  ${printExpected(keyPath)}\n` +
-            (valuePassed
-              ? `With a value of:\n  ${printExpected(value)}\n`
-              : '') +
-            (hasEndProp
-              ? `Received:\n` +
-                `  ${printReceived(result.value)}` +
-                (difference ? `\n\nDifference:\n\n${difference}` : '')
-              : traversedPath
-              ? `Received:\n  ${RECEIVED_COLOR(
-                  'object',
-                )}.${traversedPath}: ${printReceived(lastTraversedObject)}`
-              : '')
-          );
-        };
-    if (pass === undefined) {
-      throw new Error('pass must be initialized');
-    }
+          (hasValue
+            ? `Expected path: ${printExpected(expectedPath)}\n\n` +
+              `Expected value: not ${printExpected(expectedValue)}` +
+              (stringify(expectedValue) !== stringify(receivedValue)
+                ? `\nReceived value:     ${printReceived(receivedValue)}`
+                : '')
+            : `Expected path: not ${printExpected(expectedPath)}\n\n` +
+              `Received value: ${printReceived(receivedValue)}`)
+      : () =>
+          matcherHint(matcherName, undefined, expectedArgument, options) +
+          '\n\n' +
+          `Expected path: ${printExpected(expectedPath)}\n` +
+          (hasCompletePath
+            ? '\n' +
+              printDiffOrStringify(
+                expectedValue,
+                receivedValue,
+                EXPECTED_VALUE_LABEL,
+                RECEIVED_VALUE_LABEL,
+                this.expand,
+              )
+            : `Received path: ${printReceived(
+                expectedPathType === 'array' || receivedPath.length === 0
+                  ? receivedPath
+                  : receivedPath.join('.'),
+              )}\n\n` +
+              (hasValue
+                ? `Expected value: ${printExpected(expectedValue)}\n`
+                : '') +
+              `Received value: ${printReceived(receivedValue)}`);
 
     return {message, pass};
   },
@@ -884,9 +914,11 @@ const matchers: MatchersObject = {
   },
 
   toStrictEqual(this: MatcherState, received: unknown, expected: unknown) {
-    const matcherName = '.toStrictEqual';
+    const matcherName = 'toStrictEqual';
     const options: MatcherHintOptions = {
+      comment: 'deep equality',
       isNot: this.isNot,
+      promise: this.promise,
     };
 
     const pass = equals(received, expected, toStrictEqualTesters, true);
@@ -895,22 +927,25 @@ const matchers: MatchersObject = {
       ? () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          `Expected: ${printExpected(expected)}\n` +
-          `Received: ${printReceived(received)}`
-      : () => {
-          const difference = diff(expected, received, {
-            expand: this.expand,
-          });
-          return (
-            matcherHint(matcherName, undefined, undefined, options) +
-            (difference ? `\n\nDifference:\n\n${difference}` : '')
+          `Expected: not ${printExpected(expected)}\n` +
+          (stringify(expected) !== stringify(received)
+            ? `Received:     ${printReceived(received)}`
+            : '')
+      : () =>
+          matcherHint(matcherName, undefined, undefined, options) +
+          '\n\n' +
+          printDiffOrStringify(
+            expected,
+            received,
+            EXPECTED_LABEL,
+            RECEIVED_LABEL,
+            this.expand,
           );
-        };
 
     // Passing the actual and expected objects so that a custom reporter
     // could access them, for example in order to display a custom visual diff,
     // or create a different error message
-    return {actual: received, expected, message, name: 'toStrictEqual', pass};
+    return {actual: received, expected, message, name: matcherName, pass};
   },
 };
 

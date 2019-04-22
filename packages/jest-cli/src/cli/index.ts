@@ -119,23 +119,21 @@ const readResultsAndExit = (
 
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
-      console.error(
-        chalk.red.bold('Force exiting Jest\n\n') +
-          chalk.red(
-            'Have you considered using `--detectOpenHandles` to detect ' +
-              'async operations that kept running after all tests finished?',
-          ),
+      console.warn(
+        chalk.bold('Force exiting Jest: ') +
+          'Have you considered using `--detectOpenHandles` to detect ' +
+          'async operations that kept running after all tests finished?',
       );
     }
 
     exit(code);
   } else if (!globalConfig.detectOpenHandles) {
     setTimeout(() => {
-      console.error(
-        chalk.red.bold(
+      console.warn(
+        chalk.yellow.bold(
           'Jest did not exit one second after the test run has completed.\n\n',
         ) +
-          chalk.red(
+          chalk.yellow(
             'This usually means that there are asynchronous operations that ' +
               "weren't stopped in your tests. Consider running Jest with " +
               '`--detectOpenHandles` to troubleshoot this issue.',
