@@ -12,6 +12,7 @@ const {stringify} = require('jest-matcher-utils');
 const {
   emptyObject,
   getObjectSubset,
+  getObjectEntries,
   getPath,
   hasOwnProperty,
   subsetEquality,
@@ -165,6 +166,18 @@ describe('getObjectSubset()', () => {
     );
   });
 });
+
+describe('getObjectEntries', () => {
+  test('returns an empty array when called with null', () => {
+    expect(getObjectEntries(null)).toEqual([]);
+  });
+  test('returns an empty array when called with undefined', () => {
+    expect(getObjectEntries(undefined)).toEqual([]);
+  });
+  test('returns object entries', () => {
+    expect(getObjectEntries({ a: 1, b: 2 })).toEqual([['a', 1], ['b', 2]]);
+  });
+})
 
 describe('emptyObject()', () => {
   test('matches an empty object', () => {

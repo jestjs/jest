@@ -133,6 +133,9 @@ export const getObjectSubset = (object: any, subset: any): any => {
   return object;
 };
 
+export const getObjectEntries = (object: any): Array<any> =>
+  object == null ? [] : Object.keys(object).map((key) => [key, object[key]])
+
 const IteratorSymbol = Symbol.iterator;
 
 const hasIterator = (object: any) =>
@@ -251,8 +254,8 @@ export const iterableEquality = (
     return false;
   }
 
-  const aEntries = Object.entries(a);
-  const bEntries = Object.entries(b);
+  const aEntries = getObjectEntries(a);
+  const bEntries = getObjectEntries(b);
   if (!equals(aEntries, bEntries)) {
     return false;
   }
