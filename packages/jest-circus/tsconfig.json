@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": "src"
+  },
+  "references": [
+    {"path": "../jest-each"},
+    {"path": "../jest-environment"},
+    {"path": "../jest-matcher-utils"},
+    {"path": "../jest-message-util"},
+    {"path": "../jest-runtime"},
+    {"path": "../jest-snapshot"},
+    {"path": "../jest-test-result"},
+    {"path": "../jest-types"},
+    {"path": "../jest-util"},
+    {"path": "../pretty-format"},
+    {"path": "../test-utils"}
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@jest/types",
+  "version": "24.7.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-types"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "@types/istanbul-lib-coverage": "^2.0.0",
+    "@types/yargs": "^12.0.9"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "eb0413622542bc0f70c32950d9daeeab9f6802ac"
+}

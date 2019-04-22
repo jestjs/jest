@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 1`] = `
+"
+
+
+ pattern › p
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(12, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 2`] = `
+"
+
+
+ pattern › p.
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(13, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 3`] = `
+"
+
+
+ pattern › p.*
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(14, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 4`] = `
+"
+
+
+ pattern › p.*1
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(15, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 5`] = `
+"
+
+
+ pattern › p.*10
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(16, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 6`] = `
+"
+
+
+ pattern › p.*1
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(15, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 7`] = `
+"
+
+
+ pattern › p.*
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(14, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
+"
+
+
+ pattern › p.*3
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(15, 5)]
+[MOCK - cursorRestorePosition]"
+`;
+
+exports[`Watch mode flows Pressing "P" enters pattern mode 9`] = `
+Object {
+  "onlyChanged": false,
+  "passWithNoTests": true,
+  "testPathPattern": "p.*3",
+  "watch": true,
+  "watchAll": false,
+}
+`;
+
+exports[`Watch mode flows Pressing "c" clears the filters 1`] = `
+"[MOCK - cursorHide]
+[MOCK - clear]
+
+<bold>Pattern Mode Usage</>
+ <dim>› Press</> Esc <dim>to exit pattern mode.</>
+ <dim>› Press</> Enter <dim>to filter by a filenames regex pattern.</>
+
+
+[MOCK - cursorShow]
+
+
+
+ pattern › 
+[MOCK - cursorSavePosition]
+[MOCK - cursorTo(11, 5)]
+[MOCK - cursorRestorePosition]"
+`;

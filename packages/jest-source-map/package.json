@@ -1,0 +1,27 @@
+{
+  "name": "@jest/source-map",
+  "version": "24.3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-source-map"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "callsites": "^3.0.0",
+    "graceful-fs": "^4.1.15",
+    "source-map": "^0.6.0"
+  },
+  "devDependencies": {
+    "@types/graceful-fs": "^4.1.2"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "3a7a4f3a3f5489ac8e07dcddf76bb949c482ec87"
+}

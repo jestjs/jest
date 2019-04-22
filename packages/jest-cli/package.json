@@ -1,45 +1,29 @@
 {
   "name": "jest-cli",
   "description": "Delightful JavaScript Testing.",
-  "version": "23.6.0",
-  "main": "build/jest.js",
+  "version": "24.7.1",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
-    "ansi-escapes": "^3.0.0",
+    "@jest/core": "^24.7.1",
+    "@jest/test-result": "^24.7.1",
+    "@jest/types": "^24.7.0",
     "chalk": "^2.0.1",
     "exit": "^0.1.2",
-    "glob": "^7.1.2",
-    "graceful-fs": "^4.1.11",
     "import-local": "^2.0.0",
-    "is-ci": "^1.0.10",
-    "istanbul-api": "^1.3.1",
-    "istanbul-lib-coverage": "^1.2.0",
-    "istanbul-lib-instrument": "^1.10.1",
-    "istanbul-lib-source-maps": "^1.2.4",
-    "jest-changed-files": "^23.4.2",
-    "jest-config": "^23.6.0",
-    "jest-environment-jsdom": "^23.4.0",
-    "jest-get-type": "^22.1.0",
-    "jest-haste-map": "^23.6.0",
-    "jest-message-util": "^23.4.0",
-    "jest-regex-util": "^23.3.0",
-    "jest-resolve-dependencies": "^23.6.0",
-    "jest-runner": "^23.6.0",
-    "jest-runtime": "^23.6.0",
-    "jest-snapshot": "^23.6.0",
-    "jest-util": "^23.4.0",
-    "jest-validate": "^23.6.0",
-    "jest-watcher": "^23.4.0",
-    "jest-worker": "^23.2.0",
-    "micromatch": "^2.3.11",
-    "node-notifier": "^5.2.1",
-    "prompts": "^1.1.0",
-    "realpath-native": "^1.0.0",
-    "rimraf": "^2.5.4",
-    "slash": "^2.0.0",
-    "string-length": "^2.0.0",
-    "strip-ansi": "^5.0.0",
-    "which": "^1.2.12",
+    "is-ci": "^2.0.0",
+    "jest-config": "^24.7.1",
+    "jest-util": "^24.7.1",
+    "jest-validate": "^24.7.0",
+    "prompts": "^2.0.1",
+    "realpath-native": "^1.1.0",
     "yargs": "^12.0.2"
+  },
+  "devDependencies": {
+    "@types/exit": "^0.1.30",
+    "@types/is-ci": "^1.1.0",
+    "@types/prompts": "^1.2.0",
+    "@types/yargs": "^12.0.2"
   },
   "bin": {
     "jest": "./bin/jest.js"
@@ -49,7 +33,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/jest"
+    "url": "https://github.com/facebook/jest",
+    "directory": "packages/jest-cli"
   },
   "bugs": {
     "url": "https://github.com/facebook/jest/issues"
@@ -81,5 +66,9 @@
     "testing",
     "typescript",
     "watch"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
 }

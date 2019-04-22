@@ -1,0 +1,24 @@
+{
+  "name": "@jest/fake-timers",
+  "version": "24.7.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-fake-timers"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "@jest/types": "^24.7.0",
+    "jest-message-util": "^24.7.1",
+    "jest-mock": "^24.7.0"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+}
