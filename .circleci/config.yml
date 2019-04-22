@@ -37,10 +37,10 @@ jobs:
     steps:
       - checkout
       - restore-cache:
-      keys:
-        - v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}-node6
-        # Fallback in case checksum fails
-        - v2-dependencies-{{ .Branch }}-node6
+        keys:
+          - v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}-node6
+          # Fallback in case checksum fails
+          - v2-dependencies-{{ .Branch }}-node6
       - run: yarn --no-progress --frozen-lockfile --ignore-engines --ignore-scripts && node scripts/build.js
       - save-cache:
           paths:
