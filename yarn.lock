@@ -1764,10 +1764,10 @@
     "@types/istanbul-lib-coverage" "*"
     source-map "^0.6.1"
 
-"@types/istanbul-reports@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@types/istanbul-reports/-/istanbul-reports-1.1.0.tgz#3cb3f3ee82160d735d5c067318a110c4a0a02ac9"
-  integrity sha512-wrJUtE1+HuaRz0Le7fc5l1nMTermRh6wlEvOdQPilseNScyYgQK8MdgDP2cf/X8+6e1dtsX/zP4W4kH/jyHvFw==
+"@types/istanbul-reports@^1.1.0", "@types/istanbul-reports@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@types/istanbul-reports/-/istanbul-reports-1.1.1.tgz#7a8cbf6a406f36c8add871625b278eaf0b0d255a"
+  integrity sha512-UpYjBi8xefVChsCoBpKShdxTllC9pwISirfoZsUa2AAdQg/Jd2KQGtSbw+ya7GPo7x/wAPlH6JBhKhAsXUEZNA==
   dependencies:
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
