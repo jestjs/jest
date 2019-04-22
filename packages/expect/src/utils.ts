@@ -133,8 +133,12 @@ export const getObjectSubset = (object: any, subset: any): any => {
   return object;
 };
 
-export const getObjectEntries = (object: any): Array<any> =>
-  object == null ? [] : Object.keys(object).map((key) => [key, object[key]])
+// NOTE: Should be removed after dropping node@6.x support,
+// and we should use (Object.entries)
+export const getObjectEntries: typeof Object.entries = (
+  object: any,
+): Array<[string, any]> =>
+  object == null ? [] : Object.keys(object).map(key => [key, object[key]]);
 
 const IteratorSymbol = Symbol.iterator;
 

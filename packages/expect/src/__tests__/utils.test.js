@@ -175,9 +175,9 @@ describe('getObjectEntries', () => {
     expect(getObjectEntries(undefined)).toEqual([]);
   });
   test('returns object entries', () => {
-    expect(getObjectEntries({ a: 1, b: 2 })).toEqual([['a', 1], ['b', 2]]);
+    expect(getObjectEntries({a: 1, b: 2})).toEqual([['a', 1], ['b', 2]]);
   });
-})
+});
 
 describe('emptyObject()', () => {
   test('matches an empty object', () => {
