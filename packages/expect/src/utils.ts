@@ -251,8 +251,10 @@ export const iterableEquality = (
     return false;
   }
 
-  if (Object.keys(a).length && Object.keys(b).length) {
-    if (!equals(a, b)) {
+  if (!emptyObject(a) && !emptyObject(b)) {
+    const aEntries = Object.entries(a);
+    const bEntries = Object.entries(b);
+    if (!equals(aEntries, bEntries)) {
       return false;
     }
   }

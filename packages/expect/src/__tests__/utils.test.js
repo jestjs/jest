@@ -271,7 +271,20 @@ describe('iterableEquality', () => {
     ).toBe(false);
   });
 
-  test('returns false when given iterator within inequal object', () => {
+  test('returns true when given iterator within equal objects', () => {
+    const a = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: [],
+    };
+    const b = {
+      [Symbol.iterator]: () => ({next: () => ({done: true})}),
+      a: [],
+    };
+
+    expect(iterableEquality(a, b)).toEqual(true);
+  });
+
+  test('returns false when given iterator within inequal objects', () => {
     const a = {
       [Symbol.iterator]: () => ({next: () => ({done: true})}),
       a: [1],
@@ -284,7 +297,7 @@ describe('iterableEquality', () => {
     expect(iterableEquality(a, b)).toEqual(false);
   });
 
-  test('returns false when given iterator within inequal nested object', () => {
+  test('returns false when given iterator within inequal nested objects', () => {
     const a = {
       [Symbol.iterator]: () => ({next: () => ({done: true})}),
       a: {
