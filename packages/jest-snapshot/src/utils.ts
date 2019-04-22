@@ -178,7 +178,7 @@ export const saveSnapshotFile = (
   );
 };
 
-const deepMergeArray = (target, source) => {
+const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   // Clone target
   const mergedOutput = target.slice();
 
