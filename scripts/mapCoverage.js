@@ -42,11 +42,11 @@ const mapFileCoverage = fileCoverage => {
   return fileCoverage;
 };
 
-Object.keys(coverage).forEach(filename => {
-  map.addFileCoverage(mapFileCoverage(coverage[filename]));
-});
+Object.keys(coverage).forEach(filename =>
+  map.addFileCoverage(mapFileCoverage(coverage[filename]))
+);
 
 const tree = istanbulReport.summarizers.pkg(map);
-['json', 'lcov', 'text'].forEach(_reporter => {
-  tree.visit(istanbulReports.create(_reporter, {}), context);
-});
+['json', 'lcov', 'text'].forEach(reporter =>
+  tree.visit(istanbulReports.create(reporter, {}), context)
+);
