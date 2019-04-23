@@ -127,9 +127,8 @@ function eq(
   }
 
   var aIsDomNode = isDomNode(a);
-  var bIsDomNode = isDomNode(b);
   // Use DOM3 method isEqualNode (IE>=9)
-  if (aIsDomNode && typeof a.isEqualNode === 'function' && bIsDomNode) {
+  if (aIsDomNode && isDomNode(b)) {
     return a.isEqualNode(b);
   }
 
