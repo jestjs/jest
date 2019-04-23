@@ -161,12 +161,8 @@ const printConstructorName = (
   constructor: Function,
   isNot: boolean,
   isExpected: boolean,
-): string => {
-  if (constructor == null) {
-    return '';
-  }
-
-  return typeof constructor.name !== 'string'
+): string =>
+  typeof constructor.name !== 'string'
     ? `${label} name is not a string\n`
     : constructor.name.length === 0
     ? `${label} name is an empty string\n`
@@ -175,4 +171,3 @@ const printConstructorName = (
           ? EXPECTED_COLOR(constructor.name)
           : RECEIVED_COLOR(constructor.name)
       }\n`;
-};
