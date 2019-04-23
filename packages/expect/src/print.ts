@@ -8,6 +8,7 @@
 
 import getType, {isPrimitive} from 'jest-get-type';
 import {
+  EXPECTED_COLOR,
   INVERTED_COLOR,
   RECEIVED_COLOR,
   diff,
@@ -131,4 +132,47 @@ export const printDiffOrStringify = (
         : printReceived(received)
     }`
   );
+};
+
+export const printExpectedConstructorName = (
+  label: string,
+  expected: Function,
+  isNot: boolean,
+) => printConstructorName(label, expected, isNot, true);
+
+export const printReceivedConstructorName = (
+  label: string,
+  received: any, // unknown has TypeScript errors :(
+  isNot: boolean,
+) => {
+  if (received == null) {
+    return '';
+  }
+
+  if (typeof received.constructor === 'function') {
+    return printConstructorName(label, received.constructor, isNot, false);
+  }
+
+  return '';
+};
+
+const printConstructorName = (
+  label: string,
+  constructor: Function,
+  isNot: boolean,
+  isExpected: boolean,
+): string => {
+  if (constructor == null) {
+    return '';
+  }
+
+  return typeof constructor.name !== 'string'
+    ? `${label} name is not a string\n`
+    : constructor.name.length === 0
+    ? `${label} name is an empty string\n`
+    : `${label}: ${!isNot ? '' : isExpected ? 'not ' : '    '}${
+        isExpected
+          ? EXPECTED_COLOR(constructor.name)
+          : RECEIVED_COLOR(constructor.name)
+      }\n`;
 };
