@@ -10,6 +10,7 @@
 - `[docs]` Add DynamoDB guide ([#8319](https://github.com/facebook/jest/pull/8319))
 - `[expect]` Improve report when matcher fails, part 17 ([#8349](https://github.com/facebook/jest/pull/8349))
 - `[expect]` Improve report when matcher fails, part 18 ([#8356](https://github.com/facebook/jest/pull/8356))
+- `[expect]` Improve report when matcher fails, part 19 ([#8367](https://github.com/facebook/jest/pull/8367))
 
 ### Fixes
 
