@@ -21,6 +21,7 @@
 - `[jest-jasmine2]` Fix describe return value warning being shown if the describe function throws ([#8335](https://github.com/facebook/jest/pull/8335))
 - `[jest-environment-jsdom]` Re-declare global prototype of JSDOMEnvironment ([#8352](https://github.com/facebook/jest/pull/8352))
 - `[jest-snapshot]` Handle arrays when merging snapshots ([#7089](https://github.com/facebook/jest/pull/7089))
+- `[expect]` Extract names of async and generator functions ([#8362](https://github.com/facebook/jest/pull/8362))
 
 ### Chore & Maintenance
 
