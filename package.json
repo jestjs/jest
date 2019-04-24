@@ -49,6 +49,7 @@
     "jest-junit": "^6.2.1",
     "jest-silent-reporter": "^0.1.2",
     "jest-snapshot-serializer-raw": "^1.1.0",
+    "jest-watch-typeahead": "^0.3.0",
     "jquery": "^3.2.1",
     "karma": "^4.0.1",
     "karma-chrome-launcher": "^2.1.1",
@@ -135,7 +136,6 @@
     ]
   },
   "dependencies": {
-    "jest-watch-typeahead": "^0.2.2-0",
     "opencollective": "^1.0.3"
   },
   "collective": {
