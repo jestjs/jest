@@ -8,18 +8,23 @@
 
 import {Config} from '@jest/types';
 import {SerializableError, TestResult} from '@jest/test-result';
-import HasteMap, {SerializableModuleMap, ModuleMap} from 'jest-haste-map';
+import HasteMap, {SerializableModuleMap} from 'jest-haste-map';
 import exit from 'exit';
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime from 'jest-runtime';
+import Resolver from 'jest-resolve';
 import {ErrorWithCode, TestRunnerSerializedContext} from './types';
 import runTest from './runTest';
+
+export type SerializableResolver = {
+  config: Config.ProjectConfig;
+  serializableModuleMap: SerializableModuleMap;
+};
 
 type WorkerData = {
   config: Config.ProjectConfig;
   globalConfig: Config.GlobalConfig;
   path: Config.Path;
-  serializableModuleMap: SerializableModuleMap | null;
   context?: TestRunnerSerializedContext;
 };
 
@@ -47,45 +52,40 @@ const formatError = (error: string | ErrorWithCode): SerializableError => {
   };
 };
 
-const resolvers = Object.create(null);
-const getResolver = (
-  config: Config.ProjectConfig,
-  moduleMap: ModuleMap | null,
-) => {
-  // In watch mode, the raw module map with all haste modules is passed from
-  // the test runner to the watch command. This is because jest-haste-map's
-  // watch mode does not persist the haste map on disk after every file change.
-  // To make this fast and consistent, we pass it from the TestRunner.
-  if (moduleMap) {
-    return Runtime.createResolver(config, moduleMap);
-  } else {
-    const name = config.name;
-    if (!resolvers[name]) {
-      resolvers[name] = Runtime.createResolver(
-        config,
-        Runtime.createHasteMap(config).readModuleMap(),
-      );
-    }
-    return resolvers[name];
+const resolvers = new Map<string, Resolver>();
+const getResolver = (config: Config.ProjectConfig) => {
+  const resolver = resolvers.get(config.name);
+  if (!resolver) {
+    throw new Error('Cannot find resolver for: ' + config.name);
   }
+  return resolver;
 };
+
+export function setup(setupData: {
+  serializableResolvers: Array<SerializableResolver>;
+}) {
+  // Module maps that will be needed for the test runs are passed.
+  for (const {
+    config,
+    serializableModuleMap,
+  } of setupData.serializableResolvers) {
+    const moduleMap = HasteMap.ModuleMap.fromJSON(serializableModuleMap);
+    resolvers.set(config.name, Runtime.createResolver(config, moduleMap));
+  }
+}
 
 export async function worker({
   config,
   globalConfig,
   path,
-  serializableModuleMap,
   context,
 }: WorkerData): Promise<TestResult> {
   try {
-    const moduleMap = serializableModuleMap
-      ? HasteMap.ModuleMap.fromJSON(serializableModuleMap)
-      : null;
     return await runTest(
       path,
       globalConfig,
       config,
-      getResolver(config, moduleMap),
+      getResolver(config),
       context && {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),

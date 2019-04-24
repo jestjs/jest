@@ -25,6 +25,7 @@ import {
   ScriptTransformer,
   ShouldInstrumentOptions,
   shouldInstrument,
+  TransformationOptions,
 } from '@jest/transform';
 import fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
@@ -47,7 +48,7 @@ type InternalModuleOptions = {
 
 type InitialModule = Partial<Module> &
   Pick<Module, 'children' | 'exports' | 'filename' | 'id' | 'loaded'>;
-type ModuleRegistry = {[key: string]: InitialModule | Module};
+type ModuleRegistry = Map<string, InitialModule | Module>;
 type ResolveOptions = Parameters<typeof require.resolve>[1];
 
 type BooleanObject = {[key: string]: boolean};
@@ -93,8 +94,8 @@ class Runtime {
   private _mockMetaDataCache: {
     [key: string]: MockFunctionMetadata<unknown, Array<unknown>>;
   };
-  private _mockRegistry: {[key: string]: any};
-  private _isolatedMockRegistry: {[key: string]: any} | null;
+  private _mockRegistry: Map<string, any>;
+  private _isolatedMockRegistry: Map<string, any> | null;
   private _moduleMocker: typeof jestMock;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
@@ -127,15 +128,15 @@ class Runtime {
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._explicitShouldMock = Object.create(null);
-    this._internalModuleRegistry = Object.create(null);
+    this._internalModuleRegistry = new Map();
     this._isCurrentlyExecutingManualMock = null;
     this._mockFactories = Object.create(null);
-    this._mockRegistry = Object.create(null);
+    this._mockRegistry = new Map();
     // during setup, this cannot be null (and it's fine to explode if it is)
     this._moduleMocker = this._environment.moduleMocker!;
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
-    this._moduleRegistry = Object.create(null);
+    this._moduleRegistry = new Map();
     this._needsCoverageMapped = new Set();
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
@@ -291,7 +292,7 @@ class Runtime {
       from,
       moduleName,
     );
-    let modulePath;
+    let modulePath: string | undefined;
 
     // Some old tests rely on this mocking behavior. Ideally we'll change this
     // to be more explicit.
@@ -320,7 +321,10 @@ class Runtime {
     let moduleRegistry;
 
     if (!options || !options.isInternalModule) {
-      if (this._moduleRegistry[modulePath] || !this._isolatedModuleRegistry) {
+      if (
+        this._moduleRegistry.get(modulePath) ||
+        !this._isolatedModuleRegistry
+      ) {
         moduleRegistry = this._moduleRegistry;
       } else {
         moduleRegistry = this._isolatedModuleRegistry;
@@ -329,29 +333,33 @@ class Runtime {
       moduleRegistry = this._internalModuleRegistry;
     }
 
-    if (!moduleRegistry[modulePath]) {
-      // We must register the pre-allocated module object first so that any
-      // circular dependencies that may arise while evaluating the module can
-      // be satisfied.
-      const localModule: InitialModule = {
-        children: [],
-        exports: {},
-        filename: modulePath,
-        id: modulePath,
-        loaded: false,
-      };
-      moduleRegistry[modulePath] = localModule;
-
-      this._loadModule(
-        localModule,
-        from,
-        moduleName,
-        modulePath,
-        options,
-        moduleRegistry,
-      );
+    const module = moduleRegistry.get(modulePath);
+    if (module) {
+      return module.exports;
     }
-    return moduleRegistry[modulePath].exports;
+
+    // We must register the pre-allocated module object first so that any
+    // circular dependencies that may arise while evaluating the module can
+    // be satisfied.
+    const localModule: InitialModule = {
+      children: [],
+      exports: {},
+      filename: modulePath,
+      id: modulePath,
+      loaded: false,
+    };
+    moduleRegistry.set(modulePath, localModule);
+
+    this._loadModule(
+      localModule,
+      from,
+      moduleName,
+      modulePath,
+      options,
+      moduleRegistry,
+    );
+
+    return localModule.exports;
   }
 
   requireInternalModule(from: Config.Path, to?: string) {
@@ -369,16 +377,21 @@ class Runtime {
       moduleName,
     );
 
-    if (this._isolatedMockRegistry && this._isolatedMockRegistry[moduleID]) {
-      return this._isolatedMockRegistry[moduleID];
-    } else if (this._mockRegistry[moduleID]) {
-      return this._mockRegistry[moduleID];
+    if (
+      this._isolatedMockRegistry &&
+      this._isolatedMockRegistry.get(moduleID)
+    ) {
+      return this._isolatedMockRegistry.get(moduleID);
+    } else if (this._mockRegistry.get(moduleID)) {
+      return this._mockRegistry.get(moduleID);
     }
 
     const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
 
     if (moduleID in this._mockFactories) {
-      return (mockRegistry[moduleID] = this._mockFactories[moduleID]());
+      const module = this._mockFactories[moduleID]();
+      mockRegistry.set(moduleID, module);
+      return module;
     }
 
     const manualMockOrStub = this._resolver.getMockModule(from, moduleName);
@@ -435,13 +448,13 @@ class Runtime {
         mockRegistry,
       );
 
-      mockRegistry[moduleID] = localModule.exports;
+      mockRegistry.set(moduleID, localModule.exports);
     } else {
       // Look for a real module to generate an automock from
-      mockRegistry[moduleID] = this._generateMock(from, moduleName);
+      mockRegistry.set(moduleID, this._generateMock(from, moduleName));
     }
 
-    return mockRegistry[moduleID];
+    return mockRegistry.get(moduleID);
   }
 
   private _loadModule(
@@ -453,8 +466,16 @@ class Runtime {
     moduleRegistry: ModuleRegistry,
   ) {
     if (path.extname(modulePath) === '.json') {
+      const text = stripBOM(fs.readFileSync(modulePath, 'utf8'));
+
+      const transformedFile = this._scriptTransformer.transformJson(
+        modulePath,
+        this._getFullTransformationOptions(options),
+        text,
+      );
+
       localModule.exports = this._environment.global.JSON.parse(
-        stripBOM(fs.readFileSync(modulePath, 'utf8')),
+        transformedFile,
       );
     } else if (path.extname(modulePath) === '.node') {
       localModule.exports = require(modulePath);
@@ -464,6 +485,19 @@ class Runtime {
       this._execModule(localModule, options, moduleRegistry, fromPath);
     }
     localModule.loaded = true;
+  }
+
+  private _getFullTransformationOptions(
+    options: InternalModuleOptions | undefined,
+  ): TransformationOptions {
+    return {
+      ...options,
+      changedFiles: this._coverageOptions.changedFiles,
+      collectCoverage: this._coverageOptions.collectCoverage,
+      collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
+      collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
+      extraGlobals: this._config.extraGlobals || [],
+    };
   }
 
   requireModuleOrMock(from: Config.Path, moduleName: string) {
@@ -495,8 +529,8 @@ class Runtime {
         'isolateModules cannot be nested inside another isolateModules.',
       );
     }
-    this._isolatedModuleRegistry = Object.create(null);
-    this._isolatedMockRegistry = Object.create(null);
+    this._isolatedModuleRegistry = new Map();
+    this._isolatedMockRegistry = new Map();
     fn();
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
@@ -505,8 +539,8 @@ class Runtime {
   resetModules() {
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
-    this._mockRegistry = Object.create(null);
-    this._moduleRegistry = Object.create(null);
+    this._mockRegistry.clear();
+    this._moduleRegistry.clear();
 
     if (this._environment) {
       if (this._environment.global) {
@@ -664,7 +698,6 @@ class Runtime {
       return;
     }
 
-    const isInternalModule = !!(options && options.isInternalModule);
     const filename = localModule.filename;
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
     this._currentlyExecutingModulePath = filename;
@@ -678,7 +711,7 @@ class Runtime {
       enumerable: true,
       get() {
         const key = from || '';
-        return moduleRegistry[key] || null;
+        return moduleRegistry.get(key) || null;
       },
     });
 
@@ -689,14 +722,7 @@ class Runtime {
     const extraGlobals = this._config.extraGlobals || [];
     const transformedFile = this._scriptTransformer.transform(
       filename,
-      {
-        changedFiles: this._coverageOptions.changedFiles,
-        collectCoverage: this._coverageOptions.collectCoverage,
-        collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
-        collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
-        extraGlobals,
-        isInternalModule,
-      },
+      this._getFullTransformationOptions(options),
       this._cacheFS[filename],
     );
 
@@ -770,8 +796,8 @@ class Runtime {
       // mocked has calls into side-effectful APIs on another module.
       const origMockRegistry = this._mockRegistry;
       const origModuleRegistry = this._moduleRegistry;
-      this._mockRegistry = Object.create(null);
-      this._moduleRegistry = Object.create(null);
+      this._mockRegistry = new Map();
+      this._moduleRegistry = new Map();
 
       const moduleExports = this.requireModule(from, moduleName);
 

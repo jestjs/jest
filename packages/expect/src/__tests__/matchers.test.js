@@ -203,11 +203,20 @@ describe('.toBe()', () => {
   [
     [1, 2],
     [true, false],
+    [() => {}, () => {}],
     [{}, {}],
     [{a: 1}, {a: 1}],
     [{a: 1}, {a: 5}],
+    [{a: () => {}, b: 2}, {a: expect.any(Function), b: 2}],
+    [{a: undefined, b: 2}, {b: 2}],
+    [new Date('2020-02-20'), new Date('2020-02-20')],
+    [new Date('2020-02-21'), new Date('2020-02-20')],
+    [/received/, /expected/],
+    [Symbol('received'), Symbol('expected')],
+    [new Error('received'), new Error('expected')],
     ['abc', 'cde'],
     ['with \ntrailing space', 'without trailing space'],
+    ['four\n4\nline\nstring', '3\nline\nstring'],
     [[], []],
     [null, undefined],
     [-0, +0],
@@ -346,6 +355,7 @@ describe('.toEqual()', () => {
     [0, -0],
     [0, Number.MIN_VALUE], // issues/7941
     [Number.MIN_VALUE, 0],
+    [{a: 1}, {a: 2}],
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
     [null, undefined],
@@ -432,6 +442,7 @@ describe('.toEqual()', () => {
       b,
     )})`, () => {
       expect(() => jestExpect(a).toEqual(b)).toThrowErrorMatchingSnapshot();
+      jestExpect(a).not.toEqual(b);
     });
   });
 
@@ -558,9 +569,10 @@ describe('.toEqual()', () => {
       },
     ],
   ].forEach(([a, b]) => {
-    test(`{pass: false} expect(${stringify(a)}).not.toEqual(${stringify(
+    test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
     )})`, () => {
+      jestExpect(a).toEqual(b);
       expect(() => jestExpect(a).not.toEqual(b)).toThrowErrorMatchingSnapshot();
     });
   });
@@ -579,16 +591,6 @@ describe('.toEqual()', () => {
         }),
       );
     }
-  });
-
-  test('failure message matches the expected snapshot', () => {
-    expect(() =>
-      jestExpect({a: 1}).toEqual({a: 2}),
-    ).toThrowErrorMatchingSnapshot();
-
-    expect(() =>
-      jestExpect({a: 1}).not.toEqual({a: 1}),
-    ).toThrowErrorMatchingSnapshot();
   });
 
   test('symbol based keys in arrays are processed correctly', () => {
@@ -1338,8 +1340,10 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 1],
     [{'a.b.c.d': 1}, ['a.b.c.d'], 1],
     [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], 2],
+    [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], expect.any(Number)],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
+    [{a: {}}, 'a.b', undefined], // delete for breaking change in future major
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
     [new Foo(), 'a', undefined],
@@ -1377,7 +1381,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
-    // [{a: {}}, 'a.b', undefined], // wait until Jest 25
+    // [{a: {}}, 'a.b', undefined], // add for breaking change in future major
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,

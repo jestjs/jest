@@ -10,11 +10,14 @@ import BufferedConsole from '../BufferedConsole';
 
 describe('CustomConsole', () => {
   let _console: BufferedConsole;
-  const stdout = () =>
-    _console
-      .getBuffer()
-      .map(log => log.message)
-      .join('\n');
+  const stdout = () => {
+    const buffer = _console.getBuffer();
+    if (!buffer) {
+      return '';
+    }
+
+    return buffer.map(log => log.message).join('\n');
+  };
 
   beforeEach(() => {
     _console = new BufferedConsole(() => null);

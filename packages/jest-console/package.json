@@ -1,6 +1,6 @@
 {
   "name": "@jest/console",
-  "version": "24.3.0",
+  "version": "24.7.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -23,5 +23,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "3a7a4f3a3f5489ac8e07dcddf76bb949c482ec87"
+  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
 }

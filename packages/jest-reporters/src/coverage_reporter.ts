@@ -5,15 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO: Remove this
-/// <reference path="../istanbul-lib-coverage.d.ts" />
-/// <reference path="../istanbul-api.d.ts" />
-
 import path from 'path';
 import {Config} from '@jest/types';
 import {AggregatedResult, TestResult} from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
-import {createReporter} from 'istanbul-api';
+import istanbulReport from 'istanbul-lib-report';
+import istanbulReports from 'istanbul-reports';
 import chalk from 'chalk';
 import istanbulCoverage, {
   CoverageMap,
@@ -55,23 +52,24 @@ export default class CoverageReporter extends BaseReporter {
   ) {
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
-      // Remove coverage data to free up some memory.
-      delete testResult.coverage;
+    }
 
-      Object.keys(testResult.sourceMaps).forEach(sourcePath => {
+    const sourceMaps = testResult.sourceMaps;
+    if (sourceMaps) {
+      Object.keys(sourceMaps).forEach(sourcePath => {
         let inputSourceMap: RawSourceMap | undefined;
         try {
           const coverage: FileCoverage = this._coverageMap.fileCoverageFor(
             sourcePath,
           );
-          ({inputSourceMap} = coverage.toJSON() as any);
+          inputSourceMap = (coverage.toJSON() as any).inputSourceMap;
         } finally {
           if (inputSourceMap) {
             this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
           } else {
             this._sourceMapStore.registerURL(
               sourcePath,
-              testResult.sourceMaps[sourcePath],
+              sourceMaps[sourcePath],
             );
           }
         }
@@ -88,20 +86,21 @@ export default class CoverageReporter extends BaseReporter {
       this._coverageMap,
     );
 
-    const reporter = createReporter();
     try {
-      if (this._globalConfig.coverageDirectory) {
-        reporter.dir = this._globalConfig.coverageDirectory;
-      }
-
+      const reportContext = istanbulReport.createContext({
+        dir: this._globalConfig.coverageDirectory,
+        sourceFinder,
+      });
       const coverageReporters = this._globalConfig.coverageReporters || [];
 
       if (!this._globalConfig.useStderr && coverageReporters.length < 1) {
         coverageReporters.push('text-summary');
       }
 
-      reporter.addAll(coverageReporters);
-      reporter.write(map, sourceFinder && {sourceFinder});
+      const tree = istanbulReport.summarizers.pkg(map);
+      coverageReporters.forEach(reporter => {
+        tree.visit(istanbulReports.create(reporter, {}), reportContext);
+      });
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(

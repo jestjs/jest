@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {Circus} from '@jest/types';
 import {dispatch} from './state';
-import {GlobalErrorHandlers} from './types';
 
 const uncaught: NodeJS.UncaughtExceptionListener &
   NodeJS.UnhandledRejectionListener = (error: unknown) => {
@@ -15,7 +15,7 @@ const uncaught: NodeJS.UncaughtExceptionListener &
 
 export const injectGlobalErrorHandlers = (
   parentProcess: NodeJS.Process,
-): GlobalErrorHandlers => {
+): Circus.GlobalErrorHandlers => {
   const uncaughtException = process.listeners('uncaughtException').slice();
   const unhandledRejection = process.listeners('unhandledRejection').slice();
   parentProcess.removeAllListeners('uncaughtException');
@@ -27,7 +27,7 @@ export const injectGlobalErrorHandlers = (
 
 export const restoreGlobalErrorHandlers = (
   parentProcess: NodeJS.Process,
-  originalErrorHandlers: GlobalErrorHandlers,
+  originalErrorHandlers: Circus.GlobalErrorHandlers,
 ) => {
   parentProcess.removeListener('uncaughtException', uncaught);
   parentProcess.removeListener('unhandledRejection', uncaught);

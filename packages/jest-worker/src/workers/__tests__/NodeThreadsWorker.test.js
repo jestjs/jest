@@ -63,7 +63,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
       execPath: 'hello',
     },
     maxRetries: 3,
-    workerId: process.env.JEST_WORKER_ID,
+    workerId: process.env.JEST_WORKER_ID - 1,
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
@@ -91,7 +91,7 @@ it('passes workerId to the child process and assign it to env.JEST_WORKER_ID', (
   });
 
   expect(childProcess.mock.calls[0][1].workerData.env.JEST_WORKER_ID).toEqual(
-    '2',
+    '3',
   );
 });
 

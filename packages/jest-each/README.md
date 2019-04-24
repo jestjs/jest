@@ -169,7 +169,7 @@ each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).test.only(
 Aliases: `.it.skip(name, fn)` or `.xit(name, fn)` or `.xtest(name, fn)`
 
 ```js
-each([[1, 1, 2][(1, 2, 3)], [2, 1, 3]]).test.skip(
+each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).test.skip(
   'returns the result of adding %d to %d',
   (a, b, expected) => {
     expect(a + b).toBe(expected);

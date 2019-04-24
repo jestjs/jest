@@ -1,6 +1,6 @@
 {
   "name": "jest-phabricator",
-  "version": "24.5.0",
+  "version": "24.7.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -8,7 +8,7 @@
   },
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/test-result": "^24.5.0"
+    "@jest/test-result": "^24.7.1"
   },
   "engines": {
     "node": ">= 6"
@@ -18,5 +18,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
+  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
 }
