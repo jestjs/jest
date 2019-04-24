@@ -37,6 +37,8 @@ export function equals(
   return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
 }
 
+const functionToString = Function.prototype.toString;
+
 function isAsymmetric(obj: any) {
   return !!obj && isA('Function', obj.asymmetricMatch);
 }
@@ -258,7 +260,9 @@ export function fnNameFor(func: Function) {
     return func.name;
   }
 
-  const matches = func.toString().match(/^\s*function\s*(\w*)\s*\(/);
+  const matches = functionToString
+    .call(func)
+    .match(/^(?:async)?\s*function\s*\*?\s*([\w$]+)\s*\(/);
   return matches ? matches[1] : '<anonymous>';
 }
 
