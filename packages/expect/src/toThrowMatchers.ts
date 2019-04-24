@@ -19,7 +19,9 @@ import {
 } from 'jest-matcher-utils';
 import {
   printExpectedConstructorName,
+  printExpectedConstructorNameNot,
   printReceivedConstructorName,
+  printReceivedConstructorNameNot,
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
@@ -252,15 +254,15 @@ const toThrowExpectedClass = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        printExpectedConstructorName('Expected constructor', expected, true) +
+        printExpectedConstructorNameNot('Expected constructor', expected) +
         (thrown !== null &&
         thrown.value != null &&
         typeof thrown.value.constructor === 'function' &&
         thrown.value.constructor !== expected
-          ? printReceivedConstructorName(
+          ? printReceivedConstructorNameNot(
               'Received constructor',
               thrown.value.constructor,
-              true,
+              expected,
             )
           : '') +
         '\n' +
@@ -271,7 +273,7 @@ const toThrowExpectedClass = (
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        printExpectedConstructorName('Expected constructor', expected, false) +
+        printExpectedConstructorName('Expected constructor', expected) +
         (thrown === null
           ? '\n' + DID_NOT_THROW
           : (thrown.value != null &&
@@ -279,7 +281,6 @@ const toThrowExpectedClass = (
               ? printReceivedConstructorName(
                   'Received constructor',
                   thrown.value.constructor,
-                  false,
                 )
               : '') +
             '\n' +

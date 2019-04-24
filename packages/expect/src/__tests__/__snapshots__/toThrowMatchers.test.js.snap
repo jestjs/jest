@@ -118,7 +118,18 @@ exports[`toThrow error class threw, but class should not match (error subclass) 
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: not <green>Err</>
-Received constructor:     <red>SubErr</>
+Received constructor:     <red>SubErr</> extends <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow error class threw, but class should not match (error subsubclass) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+Received constructor:     <red>SubSubErr</> extends … extends <green>Err</>
 
 Received message: <red>\\"apple\\"</>
 
@@ -403,7 +414,18 @@ exports[`toThrowError error class threw, but class should not match (error subcl
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: not <green>Err</>
-Received constructor:     <red>SubErr</>
+Received constructor:     <red>SubErr</> extends <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError error class threw, but class should not match (error subsubclass) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+Received constructor:     <red>SubSubErr</> extends … extends <green>Err</>
 
 Received message: <red>\\"apple\\"</>
 

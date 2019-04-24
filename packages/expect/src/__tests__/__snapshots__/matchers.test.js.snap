@@ -1357,7 +1357,15 @@ exports[`.toBeInstanceOf() passing {} and [Function B] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: not <green>B</>
-Received constructor:     <red>C</>
+Received constructor:     <red>C</> extends <green>B</>
+"
+`;
+
+exports[`.toBeInstanceOf() passing {} and [Function B] 2`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>B</>
+Received constructor:     <red>E</> extends … extends <green>B</>
 "
 `;
 

@@ -28,8 +28,10 @@ import {MatchersObject, MatcherState} from './types';
 import {
   printDiffOrStringify,
   printExpectedConstructorName,
+  printExpectedConstructorNameNot,
   printReceivedArrayContainExpectedItem,
   printReceivedConstructorName,
+  printReceivedConstructorNameNot,
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
@@ -273,23 +275,19 @@ const matchers: MatchersObject = {
       ? () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          printExpectedConstructorName('Expected constructor', expected, true) +
+          printExpectedConstructorNameNot('Expected constructor', expected) +
           (typeof received.constructor === 'function' &&
           received.constructor !== expected
-            ? printReceivedConstructorName(
+            ? printReceivedConstructorNameNot(
                 'Received constructor',
                 received.constructor,
-                true,
+                expected,
               )
             : '')
       : () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          printExpectedConstructorName(
-            'Expected constructor',
-            expected,
-            false,
-          ) +
+          printExpectedConstructorName('Expected constructor', expected) +
           (isPrimitive(received) || Object.getPrototypeOf(received) === null
             ? `\nReceived value has no prototype\nReceived value: ${printReceived(
                 received,
@@ -299,7 +297,6 @@ const matchers: MatchersObject = {
             : printReceivedConstructorName(
                 'Received constructor',
                 received.constructor,
-                false,
               ));
 
     return {message, pass};

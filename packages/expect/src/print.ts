@@ -137,14 +137,35 @@ export const printDiffOrStringify = (
 export const printExpectedConstructorName = (
   label: string,
   expected: Function,
-  isNot: boolean,
-) => printConstructorName(label, expected, isNot, true);
+) => printConstructorName(label, expected, false, true) + '\n';
+
+export const printExpectedConstructorNameNot = (
+  label: string,
+  expected: Function,
+) => printConstructorName(label, expected, true, true) + '\n';
 
 export const printReceivedConstructorName = (
   label: string,
   received: Function,
-  isNot: boolean,
-) => printConstructorName(label, received, isNot, false);
+) => printConstructorName(label, received, false, false) + '\n';
+
+export function printReceivedConstructorNameNot(
+  label: string,
+  received: Function,
+  expected: Function,
+) {
+  let printed = printConstructorName(label, received, true, false);
+
+  if (typeof received.name === 'string' && received.name.length !== 0) {
+    printed += ` ${
+      Object.getPrototypeOf(received) === expected
+        ? 'extends'
+        : 'extends … extends'
+    } ${EXPECTED_COLOR(expected.name)}`;
+  }
+
+  return printed + '\n';
+}
 
 const printConstructorName = (
   label: string,
@@ -153,11 +174,11 @@ const printConstructorName = (
   isExpected: boolean,
 ): string =>
   typeof constructor.name !== 'string'
-    ? `${label} name is not a string\n`
+    ? `${label} name is not a string`
     : constructor.name.length === 0
-    ? `${label} name is an empty string\n`
+    ? `${label} name is an empty string`
     : `${label}: ${!isNot ? '' : isExpected ? 'not ' : '    '}${
         isExpected
           ? EXPECTED_COLOR(constructor.name)
           : RECEIVED_COLOR(constructor.name)
-      }\n`;
+      }`;
