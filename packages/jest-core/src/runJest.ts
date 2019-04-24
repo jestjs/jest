@@ -212,7 +212,7 @@ export default (async function runJest({
 
     if (
       globalConfig.passWithNoTests ||
-      globalConfig.findRelatedTests ||
+      globalConfig.findRelatedTests.length ||
       globalConfig.lastCommit ||
       globalConfig.onlyChanged
     ) {

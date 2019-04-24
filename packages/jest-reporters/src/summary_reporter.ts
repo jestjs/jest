@@ -189,7 +189,7 @@ export default class SummaryReporter extends BaseReporter {
     globalConfig: Config.GlobalConfig,
   ) {
     const getMatchingTestsInfo = () => {
-      const prefix = globalConfig.findRelatedTests
+      const prefix = globalConfig.findRelatedTests.length
         ? ' related to files matching '
         : ' matching ';
 
