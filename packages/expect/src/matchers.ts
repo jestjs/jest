@@ -274,11 +274,11 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           printExpectedConstructorName('Expected constructor', expected, true) +
-          (received.constructor != null &&
-          received.constructor.name !== expected.name
+          (typeof received.constructor === 'function' &&
+          received.constructor !== expected
             ? printReceivedConstructorName(
                 'Received constructor',
-                received,
+                received.constructor,
                 true,
               )
             : '')
@@ -298,7 +298,7 @@ const matchers: MatchersObject = {
             ? `\nReceived value: ${printReceived(received)}`
             : printReceivedConstructorName(
                 'Received constructor',
-                received,
+                received.constructor,
                 false,
               ));
 

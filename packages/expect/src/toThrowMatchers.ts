@@ -255,11 +255,11 @@ const toThrowExpectedClass = (
         printExpectedConstructorName('Expected constructor', expected, true) +
         (thrown !== null &&
         thrown.value != null &&
-        thrown.value.constructor != null &&
-        thrown.value.constructor.name !== expected.name
+        typeof thrown.value.constructor === 'function' &&
+        thrown.value.constructor !== expected
           ? printReceivedConstructorName(
               'Received constructor',
-              thrown.value,
+              thrown.value.constructor,
               true,
             )
           : '') +
@@ -274,10 +274,11 @@ const toThrowExpectedClass = (
         printExpectedConstructorName('Expected constructor', expected, false) +
         (thrown === null
           ? '\n' + DID_NOT_THROW
-          : (thrown.value != null
+          : (thrown.value != null &&
+            typeof thrown.value.constructor === 'function'
               ? printReceivedConstructorName(
                   'Received constructor',
-                  thrown.value,
+                  thrown.value.constructor,
                   false,
                 )
               : '') +

@@ -142,19 +142,9 @@ export const printExpectedConstructorName = (
 
 export const printReceivedConstructorName = (
   label: string,
-  received: any, // unknown has TypeScript errors :(
+  received: Function,
   isNot: boolean,
-) => {
-  if (received == null) {
-    return '';
-  }
-
-  if (typeof received.constructor === 'function') {
-    return printConstructorName(label, received.constructor, isNot, false);
-  }
-
-  return '';
-};
+) => printConstructorName(label, received, isNot, false);
 
 const printConstructorName = (
   label: string,
