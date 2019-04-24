@@ -892,7 +892,7 @@ const jestExpect = require('../');
         }).toThrowErrorMatchingSnapshot();
       });
 
-      test(`incomplete recursive calls are handled properly`, () => {
+      test('incomplete recursive calls are handled properly', () => {
         // sums up all integers from 0 -> value, using recursion
         const fn = jest.fn(value => {
           if (value === 0) {
@@ -988,7 +988,7 @@ const jestExpect = require('../');
         }).toThrowErrorMatchingSnapshot();
       });
 
-      test(`incomplete recursive calls are handled properly`, () => {
+      test(`${returnedWith} incomplete recursive calls are handled properly`, () => {
         // sums up all integers from 0 -> value, using recursion
         const fn = jest.fn(value => {
           if (value === 0) {
@@ -1027,43 +1027,45 @@ const jestExpect = require('../');
 
     const lastReturnedWith = ['toHaveLastReturnedWith', 'lastReturnedWith'];
     if (lastReturnedWith.indexOf(returnedWith) >= 0) {
-      test(`works with three calls`, () => {
-        const fn = jest.fn();
-        fn.mockReturnValueOnce('foo1');
-        fn.mockReturnValueOnce('foo2');
-        fn.mockReturnValueOnce('foo3');
-        fn();
-        fn();
-        fn();
+      describe('lastReturnedWith', () => {
+        test('works with three calls', () => {
+          const fn = jest.fn();
+          fn.mockReturnValueOnce('foo1');
+          fn.mockReturnValueOnce('foo2');
+          fn.mockReturnValueOnce('foo3');
+          fn();
+          fn();
+          fn();
 
-        jestExpect(fn)[returnedWith]('foo3');
+          jestExpect(fn)[returnedWith]('foo3');
 
-        expect(() => {
-          jestExpect(fn).not[returnedWith]('foo3');
-        }).toThrowErrorMatchingSnapshot();
-      });
-
-      test(`incomplete recursive calls are handled properly`, () => {
-        // sums up all integers from 0 -> value, using recursion
-        const fn = jest.fn(value => {
-          if (value === 0) {
-            // Before returning from the base case of recursion, none of the
-            // calls have returned yet.
-            jestExpect(fn).not[returnedWith](0);
-            expect(() =>
-              jestExpect(fn)[returnedWith](0),
-            ).toThrowErrorMatchingSnapshot();
-            return 0;
-          } else {
-            return value + fn(value - 1);
-          }
+          expect(() => {
+            jestExpect(fn).not[returnedWith]('foo3');
+          }).toThrowErrorMatchingSnapshot();
         });
 
-        fn(3);
+        test('incomplete recursive calls are handled properly', () => {
+          // sums up all integers from 0 -> value, using recursion
+          const fn = jest.fn(value => {
+            if (value === 0) {
+              // Before returning from the base case of recursion, none of the
+              // calls have returned yet.
+              jestExpect(fn).not[returnedWith](0);
+              expect(() =>
+                jestExpect(fn)[returnedWith](0),
+              ).toThrowErrorMatchingSnapshot();
+              return 0;
+            } else {
+              return value + fn(value - 1);
+            }
+          });
+
+          fn(3);
+        });
       });
     }
 
-    test(`includes the custom mock name in the error message`, () => {
+    test('includes the custom mock name in the error message', () => {
       const fn = jest.fn().mockName('named-mock');
       caller(jestExpect(fn).not[returnedWith], 'foo');
 
