@@ -8,6 +8,7 @@
 
 import getType, {isPrimitive} from 'jest-get-type';
 import {
+  EXPECTED_COLOR,
   INVERTED_COLOR,
   RECEIVED_COLOR,
   diff,
@@ -132,3 +133,52 @@ export const printDiffOrStringify = (
     }`
   );
 };
+
+export const printExpectedConstructorName = (
+  label: string,
+  expected: Function,
+) => printConstructorName(label, expected, false, true) + '\n';
+
+export const printExpectedConstructorNameNot = (
+  label: string,
+  expected: Function,
+) => printConstructorName(label, expected, true, true) + '\n';
+
+export const printReceivedConstructorName = (
+  label: string,
+  received: Function,
+) => printConstructorName(label, received, false, false) + '\n';
+
+export function printReceivedConstructorNameNot(
+  label: string,
+  received: Function,
+  expected: Function,
+) {
+  let printed = printConstructorName(label, received, true, false);
+
+  if (typeof received.name === 'string' && received.name.length !== 0) {
+    printed += ` ${
+      Object.getPrototypeOf(received) === expected
+        ? 'extends'
+        : 'extends … extends'
+    } ${EXPECTED_COLOR(expected.name)}`;
+  }
+
+  return printed + '\n';
+}
+
+const printConstructorName = (
+  label: string,
+  constructor: Function,
+  isNot: boolean,
+  isExpected: boolean,
+): string =>
+  typeof constructor.name !== 'string'
+    ? `${label} name is not a string`
+    : constructor.name.length === 0
+    ? `${label} name is an empty string`
+    : `${label}: ${!isNot ? '' : isExpected ? 'not ' : '    '}${
+        isExpected
+          ? EXPECTED_COLOR(constructor.name)
+          : RECEIVED_COLOR(constructor.name)
+      }`;

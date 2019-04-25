@@ -1265,6 +1265,7 @@ exports[`.toBeInstanceOf() failing "a" and [Function String] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>String</>
+
 Received value has no prototype
 Received value: <red>\\"a\\"</>"
 `;
@@ -1274,13 +1275,14 @@ exports[`.toBeInstanceOf() failing /\\w+/ and [Function anonymous] 1`] = `
 
 Expected constructor name is an empty string
 Received constructor: <red>RegExp</>
-Received value: <red>/\\\\w+/</>"
+"
 `;
 
 exports[`.toBeInstanceOf() failing {} and [Function A] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>A</>
+
 Received value has no prototype
 Received value: <red>{}</>"
 `;
@@ -1290,7 +1292,7 @@ exports[`.toBeInstanceOf() failing {} and [Function B] 1`] = `
 
 Expected constructor: <green>B</>
 Received constructor: <red>A</>
-Received value: <red>{}</>"
+"
 `;
 
 exports[`.toBeInstanceOf() failing {} and [Function RegExp] 1`] = `
@@ -1298,13 +1300,14 @@ exports[`.toBeInstanceOf() failing {} and [Function RegExp] 1`] = `
 
 Expected constructor: <green>RegExp</>
 Received constructor name is an empty string
-Received value: <red>{}</>"
+"
 `;
 
 exports[`.toBeInstanceOf() failing 1 and [Function Number] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>Number</>
+
 Received value has no prototype
 Received value: <red>1</>"
 `;
@@ -1313,6 +1316,7 @@ exports[`.toBeInstanceOf() failing null and [Function String] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>String</>
+
 Received value has no prototype
 Received value: <red>null</>"
 `;
@@ -1321,6 +1325,7 @@ exports[`.toBeInstanceOf() failing true and [Function Boolean] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>Boolean</>
+
 Received value has no prototype
 Received value: <red>true</>"
 `;
@@ -1329,6 +1334,7 @@ exports[`.toBeInstanceOf() failing undefined and [Function String] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: <green>String</>
+
 Received value has no prototype
 Received value: <red>undefined</>"
 `;
@@ -1337,35 +1343,44 @@ exports[`.toBeInstanceOf() passing [] and [Function Array] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: not <green>Array</>
-Received value: <red>[]</>"
+"
 `;
 
 exports[`.toBeInstanceOf() passing {} and [Function A] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: not <green>A</>
-Received value: <red>{}</>"
+"
 `;
 
 exports[`.toBeInstanceOf() passing {} and [Function B] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: not <green>B</>
-Received value: <red>{}</>"
+Received constructor:     <red>C</> extends <green>B</>
+"
+`;
+
+exports[`.toBeInstanceOf() passing {} and [Function B] 2`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>B</>
+Received constructor:     <red>E</> extends … extends <green>B</>
+"
 `;
 
 exports[`.toBeInstanceOf() passing {} and [Function name() {}] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor name is not a string
-Received value: <red>{}</>"
+"
 `;
 
 exports[`.toBeInstanceOf() passing Map {} and [Function Map] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor: not <green>Map</>
-Received value: <red>Map {}</>"
+"
 `;
 
 exports[`.toBeInstanceOf() throws if constructor is not a function 1`] = `
