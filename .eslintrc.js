@@ -26,7 +26,11 @@ module.exports = {
         ],
         'import/order': 'error',
         'no-dupe-class-members': 'off',
+        // ts handles this check for us, also eslint does not include Bigint
+        'no-undef': 'off',
         'no-unused-vars': 'off',
+        // ts handles this check for us, also eslint does not include bigint
+        'valid-typeof': 'off',
       },
     },
     // to make it more suitable for running on code examples in docs/ folder

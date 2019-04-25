@@ -22,4 +22,5 @@ describe('.getType()', () => {
   test('map', () => expect(getType(new Map())).toBe('map'));
   test('set', () => expect(getType(new Set())).toBe('set'));
   test('date', () => expect(getType(new Date())).toBe('date'));
+  test('bigint', () => expect(getType(BigInt(1))).toBe('bigint'));
 });
