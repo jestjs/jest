@@ -28,5 +28,4 @@ describe('.isPrimitive()', () => {
       expect(isPrimitive(value)).toBe(false);
     },
   );
-
 });
