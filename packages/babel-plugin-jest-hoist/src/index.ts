@@ -25,6 +25,7 @@ const WHITELISTED_IDENTIFIERS: Set<string> = new Set([
   'Array',
   'ArrayBuffer',
   'Boolean',
+  'BigInt',
   'DataView',
   'Date',
   'Error',
