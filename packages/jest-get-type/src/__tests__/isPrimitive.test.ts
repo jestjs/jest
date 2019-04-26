@@ -7,6 +7,7 @@
  */
 
 import {isPrimitive} from '..';
+/* global BigInt */
 
 describe('.isPrimitive()', () => {
   test.each([
@@ -16,7 +17,7 @@ describe('.isPrimitive()', () => {
     'hello world',
     true,
     Symbol.for('a'),
-    BigInt(1),
+    typeof BigInt === 'function' ? BigInt(1) : 1,
   ])('returns true when given primitive value of: %s', primitive => {
     expect(isPrimitive(primitive)).toBe(true);
   });
@@ -27,4 +28,5 @@ describe('.isPrimitive()', () => {
       expect(isPrimitive(value)).toBe(false);
     },
   );
+
 });
