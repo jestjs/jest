@@ -15,6 +15,7 @@ import {
   ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
   ensureNumbers,
+  ensureNumbersOrBigInit,
   getLabelPrinter,
   matcherErrorMessage,
   matcherHint,
@@ -208,14 +209,18 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeGreaterThan(this: MatcherState, received: number, expected: number) {
+  toBeGreaterThan(
+    this: MatcherState,
+    received: number | bigint,
+    expected: number | bigint,
+  ) {
     const matcherName = 'toBeGreaterThan';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, matcherName, options);
+    ensureNumbersOrBigInit(received, expected, matcherName, options);
 
     const pass = received > expected;
 
@@ -230,8 +235,8 @@ const matchers: MatchersObject = {
 
   toBeGreaterThanOrEqual(
     this: MatcherState,
-    received: number,
-    expected: number,
+    received: number | bigint,
+    expected: number | bigint,
   ) {
     const matcherName = 'toBeGreaterThanOrEqual';
     const isNot = this.isNot;
@@ -239,7 +244,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, matcherName, options);
+    ensureNumbersOrBigInit(received, expected, matcherName, options);
 
     const pass = received >= expected;
 
@@ -302,14 +307,18 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeLessThan(this: MatcherState, received: number, expected: number) {
+  toBeLessThan(
+    this: MatcherState,
+    received: number | bigint,
+    expected: number | bigint,
+  ) {
     const matcherName = 'toBeLessThan';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, matcherName, options);
+    ensureNumbersOrBigInit(received, expected, matcherName, options);
 
     const pass = received < expected;
 
@@ -322,14 +331,18 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeLessThanOrEqual(this: MatcherState, received: number, expected: number) {
+  toBeLessThanOrEqual(
+    this: MatcherState,
+    received: number | bigint,
+    expected: number | bigint,
+  ) {
     const matcherName = 'toBeLessThanOrEqual';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbers(received, expected, matcherName, options);
+    ensureNumbersOrBigInit(received, expected, matcherName, options);
 
     const pass = received <= expected;
 

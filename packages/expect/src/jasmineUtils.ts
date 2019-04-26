@@ -107,6 +107,8 @@ function eq(
       return a == String(b);
     case '[object Number]':
       return Object.is(Number(a), Number(b));
+    case '[object BigInt]':
+      return Object.is(BigInt(a), BigInt(b));
     case '[object Date]':
     case '[object Boolean]':
       // Coerce dates and booleans to numeric primitive values. Dates are compared by their
