@@ -9,12 +9,17 @@
 import {isPrimitive} from '..';
 
 describe('.isPrimitive()', () => {
-  test.each([null, undefined, 100, 'hello world', true, Symbol.for('a')])(
-    'returns true when given primitive value of: %s',
-    primitive => {
-      expect(isPrimitive(primitive)).toBe(true);
-    },
-  );
+  test.each([
+    null,
+    undefined,
+    100,
+    'hello world',
+    true,
+    Symbol.for('a'),
+    BigInt(1),
+  ])('returns true when given primitive value of: %s', primitive => {
+    expect(isPrimitive(primitive)).toBe(true);
+  });
 
   test.each([{}, [], () => {}, /abc/, new Map(), new Set(), new Date()])(
     'returns false when given non primitive value of: %s',

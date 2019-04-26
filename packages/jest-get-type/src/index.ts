@@ -34,34 +34,37 @@ const PRIMITIVES = new Set<ValueType>([
 // get the type of a value with handling the edge cases like `typeof []`
 // and `typeof null`
 function getType(value: unknown): ValueType {
-  if (value === null) return 'null';
-  switch (typeof value) {
-    case 'undefined':
-    case 'boolean':
-    case 'function':
-    case 'number':
-    case 'string':
-    case 'symbol':
-    case 'bigint': {
-      return typeof value;
-    }
-    case 'object': {
-      const objectType = Object.prototype.toString
-        .call(value)
-        .slice(8, -1)
-        .toLowerCase();
-
-      switch (objectType) {
-        case 'array':
-        case 'object':
-        case 'set':
-        case 'regexp':
-        case 'map':
-        case 'date': {
-          return objectType;
-        }
+  if (value === undefined) {
+    return 'undefined';
+  } else if (value === null) {
+    return 'null';
+  } else if (Array.isArray(value)) {
+    return 'array';
+  } else if (typeof value === 'boolean') {
+    return 'boolean';
+  } else if (typeof value === 'function') {
+    return 'function';
+  } else if (typeof value === 'number') {
+    return 'number';
+  } else if (typeof value === 'string') {
+    return 'string';
+  } else if (typeof value === 'bigint') {
+    return 'bigint';
+  } else if (typeof value === 'object') {
+    if (value != null) {
+      if (value.constructor === RegExp) {
+        return 'regexp';
+      } else if (value.constructor === Map) {
+        return 'map';
+      } else if (value.constructor === Set) {
+        return 'set';
+      } else if (value.constructor === Date) {
+        return 'date';
       }
     }
+    return 'object';
+  } else if (typeof value === 'symbol') {
+    return 'symbol';
   }
 
   throw new Error(`value of unknown type: ${value}`);
