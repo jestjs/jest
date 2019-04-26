@@ -148,12 +148,48 @@ export const ensureActualIsNumber = (
   }
 };
 
+export const ensureActualIsNumberOrBigInit = (
+  actual: unknown,
+  matcherName: string,
+  options?: MatcherHintOptions,
+) => {
+  if (typeof actual !== 'number' && typeof actual !== 'bigint') {
+    // Prepend maybe not only for backward compatibility.
+    const matcherString = (options ? '' : '[.not]') + matcherName;
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherString, undefined, undefined, options),
+        `${RECEIVED_COLOR('received')} value must be a number`,
+        printWithType('Received', actual, printReceived),
+      ),
+    );
+  }
+};
+
 export const ensureExpectedIsNumber = (
   expected: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
 ) => {
   if (typeof expected !== 'number') {
+    // Prepend maybe not only for backward compatibility.
+    const matcherString = (options ? '' : '[.not]') + matcherName;
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherString, undefined, undefined, options),
+        `${EXPECTED_COLOR('expected')} value must be a number`,
+        printWithType('Expected', expected, printExpected),
+      ),
+    );
+  }
+};
+
+export const ensureExpectedIsNumberOrBigInit = (
+  expected: unknown,
+  matcherName: string,
+  options?: MatcherHintOptions,
+) => {
+  if (typeof expected !== 'number' && typeof expected !== 'bigint') {
     // Prepend maybe not only for backward compatibility.
     const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
@@ -174,6 +210,16 @@ export const ensureNumbers = (
 ) => {
   ensureActualIsNumber(actual, matcherName, options);
   ensureExpectedIsNumber(expected, matcherName, options);
+};
+
+export const ensureNumbersOrBigInit = (
+  actual: unknown,
+  expected: unknown,
+  matcherName: string,
+  options?: MatcherHintOptions,
+) => {
+  ensureActualIsNumberOrBigInit(actual, matcherName, options);
+  ensureExpectedIsNumberOrBigInit(expected, matcherName, options);
 };
 
 export const ensureExpectedIsNonNegativeInteger = (
@@ -203,6 +249,9 @@ export const ensureExpectedIsNonNegativeInteger = (
 // In those cases, we do not print a diff to make the output shorter and not redundant.
 const shouldPrintDiff = (actual: unknown, expected: unknown) => {
   if (typeof actual === 'number' && typeof expected === 'number') {
+    return false;
+  }
+  if (typeof actual === 'bigint' && typeof expected === 'bigint') {
     return false;
   }
   if (typeof actual === 'boolean' && typeof expected === 'boolean') {
