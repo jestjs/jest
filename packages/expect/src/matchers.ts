@@ -15,7 +15,7 @@ import {
   ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
   ensureNumbers,
-  ensureNumbersOrBigInit,
+  ensureNumbersOrBigInt,
   getLabelPrinter,
   matcherErrorMessage,
   matcherHint,
@@ -220,7 +220,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbersOrBigInit(received, expected, matcherName, options);
+    ensureNumbersOrBigInt(received, expected, matcherName, options);
 
     const pass = received > expected;
 
@@ -244,7 +244,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbersOrBigInit(received, expected, matcherName, options);
+    ensureNumbersOrBigInt(received, expected, matcherName, options);
 
     const pass = received >= expected;
 
@@ -318,7 +318,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbersOrBigInit(received, expected, matcherName, options);
+    ensureNumbersOrBigInt(received, expected, matcherName, options);
 
     const pass = received < expected;
 
@@ -342,7 +342,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbersOrBigInit(received, expected, matcherName, options);
+    ensureNumbersOrBigInt(received, expected, matcherName, options);
 
     const pass = received <= expected;
 

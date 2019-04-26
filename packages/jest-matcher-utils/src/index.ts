@@ -148,7 +148,7 @@ export const ensureActualIsNumber = (
   }
 };
 
-export const ensureActualIsNumberOrBigInit = (
+export const ensureActualIsNumberOrBigInt = (
   actual: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
@@ -184,7 +184,7 @@ export const ensureExpectedIsNumber = (
   }
 };
 
-export const ensureExpectedIsNumberOrBigInit = (
+export const ensureExpectedIsNumberOrBigInt = (
   expected: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
@@ -212,14 +212,14 @@ export const ensureNumbers = (
   ensureExpectedIsNumber(expected, matcherName, options);
 };
 
-export const ensureNumbersOrBigInit = (
+export const ensureNumbersOrBigInt = (
   actual: unknown,
   expected: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
 ) => {
-  ensureActualIsNumberOrBigInit(actual, matcherName, options);
-  ensureExpectedIsNumberOrBigInit(expected, matcherName, options);
+  ensureActualIsNumberOrBigInt(actual, matcherName, options);
+  ensureExpectedIsNumberOrBigInt(expected, matcherName, options);
 };
 
 export const ensureExpectedIsNonNegativeInteger = (
