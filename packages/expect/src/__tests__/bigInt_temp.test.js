@@ -239,3 +239,30 @@ describe('.toStrictEqual()', () => {
   });
   /* eslint-enable */
 });
+
+describe('Reproduce From #6829', () => {
+  test('It should accept BigInt("x") way', () => {
+    const a = BigInt('123456789012345678901234567890');
+    jestExpect(typeof a).toEqual('bigint');
+  });
+  test('It should allow to do equal comparision', () => {
+    const a = BigInt(2);
+    jestExpect(a).toEqual(BigInt(2));
+  });
+  test('It should allow to do greater than comparision', () => {
+    const a = BigInt(2);
+    jestExpect(a).toBeGreaterThan(1);
+  });
+  test('It should allow to do greater than or equal comparision', () => {
+    const a = BigInt(2);
+    jestExpect(a).toBeGreaterThanOrEqual(2);
+  });
+  test('It should allow to do less than comparision', () => {
+    const a = BigInt(2);
+    jestExpect(a).toBeLessThan(3);
+  });
+  test('It should allow to do less than or equal comparision', () => {
+    const a = BigInt(2);
+    jestExpect(a).toBeLessThanOrEqual(2);
+  });
+});
