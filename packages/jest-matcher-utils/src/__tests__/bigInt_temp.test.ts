@@ -7,6 +7,11 @@
  */
 
 import {diff, ensureNumbersOrBigInt, MatcherHintOptions, stringify} from '../';
+
+test('TEMP HAPPY JEST', () => {
+  expect(1).toBe(1);
+});
+
 /* global BigInt */
 if (typeof BigInt === 'function') {
   describe('.stringify()', () => {
