@@ -142,11 +142,15 @@ function resolveSync(
   }
 }
 
+const checkedFiles = new Map<string, boolean>();
 /*
  * helper functions
  */
 function isFile(file: Config.Path): boolean {
-  let result;
+  let result = checkedFiles.get(file);
+  if (result !== undefined) {
+    return result;
+  }
 
   try {
     const stat = fs.statSync(file);
@@ -158,6 +162,7 @@ function isFile(file: Config.Path): boolean {
     result = false;
   }
 
+  checkedFiles.set(file, result);
   return result;
 }
 
