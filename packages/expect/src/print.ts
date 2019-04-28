@@ -66,6 +66,32 @@ export const printReceivedArrayContainExpectedItem = (
       ']',
   );
 
+export const printCloseTo = (
+  receivedDiff: number,
+  expectedDiff: number,
+  precision: number,
+  isNot: boolean,
+): string => {
+  const receivedDiffString = stringify(receivedDiff);
+  const expectedDiffString = receivedDiffString.includes('e')
+    ? expectedDiff.toExponential(0)
+    : 0 <= precision && precision <= 20
+    ? expectedDiff.toFixed(precision + 1)
+    : stringify(expectedDiff);
+
+  return (
+    `Expected precision:  ${isNot ? '    ' : ''}  ${printExpected(
+      precision,
+    )}\n` +
+    `Expected difference: ${isNot ? 'not ' : ''}< ${EXPECTED_COLOR(
+      expectedDiffString,
+    )}\n` +
+    `Received difference: ${isNot ? '    ' : ''}  ${RECEIVED_COLOR(
+      receivedDiffString,
+    )}`
+  );
+};
+
 const shouldPrintDiff = (expected: unknown, received: unknown): boolean => {
   const expectedType = getType(expected);
   const receivedType = getType(received);

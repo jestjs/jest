@@ -1108,15 +1108,27 @@ describe('.toBeCloseTo()', () => {
     },
   );
 
-  [[0, 0.1, 0], [0, 0.0001, 3], [0, 0.000004, 5]].forEach(([n1, n2, p]) => {
-    it(`accepts an optional precision argument: [${n1}, ${n2}, ${p}]`, () => {
-      jestExpect(n1).toBeCloseTo(n2, p);
+  [[3.141592e-7, 3e-7, 8], [56789, 51234, -4]].forEach(([n1, n2, p]) => {
+    it(`{pass: false} expect(${n1})toBeCloseTo( ${n2}, ${p})`, () => {
+      jestExpect(n1).not.toBeCloseTo(n2, p);
 
       expect(() =>
-        jestExpect(n1).not.toBeCloseTo(n2, p),
+        jestExpect(n1).toBeCloseTo(n2, p),
       ).toThrowErrorMatchingSnapshot();
     });
   });
+
+  [[0, 0.1, 0], [0, 0.0001, 3], [0, 0.000004, 5], [2.0000002, 2, 5]].forEach(
+    ([n1, n2, p]) => {
+      it(`accepts an optional precision argument: [${n1}, ${n2}, ${p}]`, () => {
+        jestExpect(n1).toBeCloseTo(n2, p);
+
+        expect(() =>
+          jestExpect(n1).not.toBeCloseTo(n2, p),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    },
+  );
 
   describe('throws: Matcher error', () => {
     test('promise empty isNot false received', () => {
