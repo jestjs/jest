@@ -142,18 +142,25 @@ function resolveSync(
   }
 }
 
-const checkedFiles = new Map<string, boolean>();
-/*
- * helper functions
- */
-function isFile(file: Config.Path): boolean {
-  let result = checkedFiles.get(file);
+const checkedPaths = new Map<string, fs.Stats>();
+function statSyncCached(path: string): fs.Stats {
+  const result = checkedPaths.get(path);
   if (result !== undefined) {
     return result;
   }
 
+  const stat = fs.statSync(path);
+  checkedPaths.set(path, stat);
+  return stat;
+}
+/*
+ * helper functions
+ */
+function isFile(file: Config.Path): boolean {
+  let result;
+
   try {
-    const stat = fs.statSync(file);
+    const stat = statSyncCached(file);
     result = stat.isFile() || stat.isFIFO();
   } catch (e) {
     if (!(e && e.code === 'ENOENT')) {
@@ -162,7 +169,6 @@ function isFile(file: Config.Path): boolean {
     result = false;
   }
 
-  checkedFiles.set(file, result);
   return result;
 }
 
@@ -170,7 +176,7 @@ function isDirectory(dir: Config.Path): boolean {
   let result;
 
   try {
-    const stat = fs.statSync(dir);
+    const stat = statSyncCached(dir);
     result = stat.isDirectory();
   } catch (e) {
     if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
