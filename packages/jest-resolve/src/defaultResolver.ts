@@ -142,50 +142,48 @@ function resolveSync(
   }
 }
 
-const checkedPaths = new Map<string, fs.Stats>();
-function statSyncCached(path: string): fs.Stats {
+const IS_PATH_FILE = 1;
+const IS_PATH_DIRECTORY = 2;
+const IS_PATH_OTHER = 3;
+const checkedPaths = new Map<string, number>();
+function statSyncCached(path: string): number {
   const result = checkedPaths.get(path);
   if (result !== undefined) {
     return result;
   }
 
-  const stat = fs.statSync(path);
-  checkedPaths.set(path, stat);
-  return stat;
-}
-/*
- * helper functions
- */
-function isFile(file: Config.Path): boolean {
-  let result;
-
+  let stat;
   try {
-    const stat = statSyncCached(file);
-    result = stat.isFile() || stat.isFIFO();
-  } catch (e) {
-    if (!(e && e.code === 'ENOENT')) {
-      throw e;
-    }
-    result = false;
-  }
-
-  return result;
-}
-
-function isDirectory(dir: Config.Path): boolean {
-  let result;
-
-  try {
-    const stat = statSyncCached(dir);
-    result = stat.isDirectory();
+    stat = fs.statSync(path);
   } catch (e) {
     if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
       throw e;
     }
-    result = false;
   }
 
-  return result;
+  if (stat) {
+    if (stat.isFile() || stat.isFIFO()) {
+      checkedPaths.set(path, IS_PATH_FILE);
+      return IS_PATH_FILE;
+    } else if (stat.isDirectory()) {
+      checkedPaths.set(path, IS_PATH_DIRECTORY);
+      return IS_PATH_DIRECTORY;
+    }
+  }
+
+  checkedPaths.set(path, IS_PATH_OTHER);
+  return IS_PATH_OTHER;
+}
+
+/*
+ * helper functions
+ */
+function isFile(file: Config.Path): boolean {
+  return statSyncCached(file) === IS_PATH_FILE;
+}
+
+function isDirectory(dir: Config.Path): boolean {
+  return statSyncCached(dir) === IS_PATH_DIRECTORY;
 }
 
 function isCurrentDirectory(testPath: Config.Path): boolean {
