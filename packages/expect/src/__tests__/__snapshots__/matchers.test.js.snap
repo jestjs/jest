@@ -630,7 +630,7 @@ Received difference:   <red>0.005000099999999952</>"
 exports[`.toBeCloseTo() throws: Matcher error promise empty isNot false received 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a number
+<bold>Matcher error</>: <red>received</> value must be a number or bigint
 
 Received has type:  string
 Received has value: <red>\\"\\"</>"
@@ -639,7 +639,7 @@ Received has value: <red>\\"\\"</>"
 exports[`.toBeCloseTo() throws: Matcher error promise empty isNot true expected 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a number or bigint
 
 Expected has value: <green>undefined</>"
 `;
@@ -647,7 +647,7 @@ Expected has value: <green>undefined</>"
 exports[`.toBeCloseTo() throws: Matcher error promise rejects isNot false expected 1`] = `
 "<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a number or bigint
 
 Expected has type:  string
 Expected has value: <green>\\"0\\"</>"
@@ -656,7 +656,7 @@ Expected has value: <green>\\"0\\"</>"
 exports[`.toBeCloseTo() throws: Matcher error promise rejects isNot true received 1`] = `
 "<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a number
+<bold>Matcher error</>: <red>received</> value must be a number or bigint
 
 Received has type:  symbol
 Received has value: <red>Symbol(0.1)</>"
@@ -665,7 +665,7 @@ Received has value: <red>Symbol(0.1)</>"
 exports[`.toBeCloseTo() throws: Matcher error promise resolves isNot false received 1`] = `
 "<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a number
+<bold>Matcher error</>: <red>received</> value must be a number or bigint
 
 Received has type:  boolean
 Received has value: <red>false</>"
@@ -674,7 +674,7 @@ Received has value: <red>false</>"
 exports[`.toBeCloseTo() throws: Matcher error promise resolves isNot true expected 1`] = `
 "<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a number or bigint
 
 Expected has value: <green>null</>"
 `;
