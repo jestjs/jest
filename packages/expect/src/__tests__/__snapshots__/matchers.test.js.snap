@@ -1369,6 +1369,14 @@ Received constructor:     <red>E</> extends … extends <green>B</>
 "
 `;
 
+exports[`.toBeInstanceOf() passing {} and [Function anonymous] 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
+
+Expected constructor name is an empty string
+Received constructor:     <red>SubHasNameProp</>
+"
+`;
+
 exports[`.toBeInstanceOf() passing {} and [Function name() {}] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 

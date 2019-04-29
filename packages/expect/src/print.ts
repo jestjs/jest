@@ -149,6 +149,7 @@ export const printReceivedConstructorName = (
   received: Function,
 ) => printConstructorName(label, received, false, false) + '\n';
 
+// Do not call function if received is equal to expected.
 export function printReceivedConstructorNameNot(
   label: string,
   received: Function,
@@ -156,7 +157,12 @@ export function printReceivedConstructorNameNot(
 ) {
   let printed = printConstructorName(label, received, true, false);
 
-  if (typeof received.name === 'string' && received.name.length !== 0) {
+  if (
+    typeof expected.name === 'string' &&
+    expected.name.length !== 0 &&
+    typeof received.name === 'string' &&
+    received.name.length !== 0
+  ) {
     printed += ` ${
       Object.getPrototypeOf(received) === expected
         ? 'extends'

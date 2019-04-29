@@ -702,6 +702,7 @@ describe('.toBeInstanceOf()', () => {
     value: '',
     writable: true,
   });
+  class SubHasNameProp extends DefinesNameProp {}
 
   [
     [new Map(), Map],
@@ -709,6 +710,7 @@ describe('.toBeInstanceOf()', () => {
     [new A(), A],
     [new C(), B], // C extends B
     [new E(), B], // E extends … extends B
+    [new SubHasNameProp(), DefinesNameProp], // omit extends
     [new HasStaticNameMethod(), HasStaticNameMethod],
   ].forEach(([a, b]) => {
     test(`passing ${stringify(a)} and ${stringify(b)}`, () => {
