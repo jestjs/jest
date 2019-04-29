@@ -159,7 +159,7 @@ const matchers: MatchersObject = {
             matcherHint(matcherName, undefined, undefined, options),
             `${EXPECTED_COLOR(
               'precision',
-            )} value must a negative number for BigInts`,
+            )} value must be a negative number for BigInts`,
             printWithType('Precision', precision, printExpected),
           ),
         );
