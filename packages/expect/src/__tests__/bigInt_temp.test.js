@@ -30,6 +30,45 @@ describe('BigInt', () => {
 
   /* global BigInt */
   if (typeof BigInt === 'function') {
+    const MAX_SAFE_AS_BIGINT = BigInt(Number.MAX_SAFE_INTEGER);
+    describe('.toBeCloseTo()', () => {
+      [
+        [BigInt(0), BigInt(0)],
+        [MAX_SAFE_AS_BIGINT, MAX_SAFE_AS_BIGINT + BigInt(49)],
+      ].forEach(([n1, n2]) => {
+        it(`{pass: true} expect(${n1})toBeCloseTo( ${n2})`, () => {
+          jestExpect(n1).toBeCloseTo(n2);
+
+          expect(() => jestExpect(n1).not.toBeCloseTo(n2)).toThrow();
+        });
+      });
+
+      test('Throws for default precision', () => {
+        expect(() =>
+          jestExpect(MAX_SAFE_AS_BIGINT).toBeCloseTo(
+            MAX_SAFE_AS_BIGINT + BigInt(50),
+          ),
+        ).toThrow();
+      });
+
+      test('accepts an optional precision argument', () => {
+        jestExpect(MAX_SAFE_AS_BIGINT).toBeCloseTo(
+          MAX_SAFE_AS_BIGINT + BigInt(4),
+          -1,
+        );
+      });
+
+      test('Allows mix of Bigints or numbers', () => {
+        jestExpect(BigInt(0)).toBeCloseTo(49);
+      });
+
+      test('throws when non-negative precision arguments passed with BigInts', () => {
+        expect(() =>
+          jestExpect(MAX_SAFE_AS_BIGINT).toBeCloseTo(MAX_SAFE_AS_BIGINT, 1),
+        ).toThrow();
+      });
+    });
+
     describe('.toBe()', () => {
       it('does not throw', () => {
         jestExpect(BigInt(1)).not.toBe(BigInt(2));

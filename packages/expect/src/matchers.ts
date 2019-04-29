@@ -15,7 +15,6 @@ import {
   ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
   ensureNumbers,
-  ensureNumbersOrBigInt,
   getLabelPrinter,
   matcherErrorMessage,
   matcherHint,
@@ -121,9 +120,9 @@ const matchers: MatchersObject = {
 
   toBeCloseTo(
     this: MatcherState,
-    received: number,
-    expected: number,
-    precision: number = 2,
+    received: number | bigint,
+    expected: number | bigint,
+    precision: number = NaN,
   ) {
     const matcherName = 'toBeCloseTo';
     const secondArgument = arguments.length === 3 ? 'precision' : undefined;
@@ -135,16 +134,41 @@ const matchers: MatchersObject = {
     ensureNumbers(received, expected, matcherName, options);
 
     let pass = false;
-    let expectedDiff = 0;
-    let receivedDiff = 0;
+    let expectedDiff: number | bigint = 0;
+    let receivedDiff: number | bigint = 0;
 
-    if (received === Infinity && expected === Infinity) {
-      pass = true; // Infinity - Infinity is NaN
-    } else if (received === -Infinity && expected === -Infinity) {
-      pass = true; // -Infinity - -Infinity is NaN
+    //If both arent numbers, then one might be bigint
+    if (typeof received === 'number' && typeof expected === 'number') {
+      if (received === Infinity && expected === Infinity) {
+        pass = true; // Infinity - Infinity is NaN
+      } else if (received === -Infinity && expected === -Infinity) {
+        pass = true; // -Infinity - -Infinity is NaN
+      } else {
+        // Set default precision for numbers
+        precision = isNaN(precision) ? 2 : precision;
+        expectedDiff = Math.pow(10, -precision) / 2;
+        receivedDiff = Math.abs(expected - received);
+        pass = receivedDiff < expectedDiff;
+      }
     } else {
-      expectedDiff = Math.pow(10, -precision) / 2;
-      receivedDiff = Math.abs(expected - received);
+      // Set default precision for big integers
+      precision = isNaN(precision) ? -2 : precision;
+      if (precision >= 0) {
+        throw new Error(
+          matcherErrorMessage(
+            matcherHint(matcherName, undefined, undefined, options),
+            `${EXPECTED_COLOR(
+              'precision',
+            )} value must a negative number for BigInts`,
+            printWithType('Precision', precision, printExpected),
+          ),
+        );
+      }
+      expectedDiff = BigInt(Math.pow(10, -precision) / 2);
+      // maintain precision by ensuring both are BigInt
+      receivedDiff = BigInt(expected) - BigInt(received);
+      receivedDiff =
+        receivedDiff >= 0 ? receivedDiff : receivedDiff * BigInt(-1);
       pass = receivedDiff < expectedDiff;
     }
 
@@ -220,7 +244,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbersOrBigInt(received, expected, matcherName, options);
+    ensureNumbers(received, expected, matcherName, options);
 
     const pass = received > expected;
 
@@ -244,7 +268,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbersOrBigInt(received, expected, matcherName, options);
+    ensureNumbers(received, expected, matcherName, options);
 
     const pass = received >= expected;
 
@@ -318,7 +342,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbersOrBigInt(received, expected, matcherName, options);
+    ensureNumbers(received, expected, matcherName, options);
 
     const pass = received < expected;
 
@@ -342,7 +366,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
     };
-    ensureNumbersOrBigInt(received, expected, matcherName, options);
+    ensureNumbers(received, expected, matcherName, options);
 
     const pass = received <= expected;
 
