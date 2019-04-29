@@ -1163,8 +1163,6 @@ describe('the La Croix cans on my desk', () => {
 
 Also under the alias: `.toThrowError(error)`
 
-> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
-
 Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
 
 ```js
@@ -1174,6 +1172,8 @@ test('throws on octopus', () => {
   }).toThrow();
 });
 ```
+
+> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
 
 If you want to test that a specific error gets thrown, you can provide an argument to `toThrow`. The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. For example, let's say that `drinkFlavor` is coded like this:
 

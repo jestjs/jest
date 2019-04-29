@@ -1189,6 +1189,8 @@ test('throws on octopus', () => {
 });
 ```
 
+> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+
 You can provide an optional argument to test that a specific error is thrown:
 
 - regular expression: error message **matches** the pattern
@@ -1227,8 +1229,6 @@ test('throws on octopus', () => {
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
 });
 ```
-
-> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
 
 ### `.toThrowErrorMatchingSnapshot(hint?)`
 
