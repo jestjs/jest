@@ -33,7 +33,10 @@
 - `[expect]` Fix label and add opposite assertion for toEqual tests ([#8288](https://github.com/facebook/jest/pull/8288))
 - `[docs]` Mention Jest MongoDB Preset ([#8318](https://github.com/facebook/jest/pull/8318))
 - `[@jest/reporters]` Migrate away from `istanbul-api` ([#8294](https://github.com/facebook/jest/pull/8294))
+- `[*]` Delete obsolete emails tag from header comment in test files ([#8377](https://github.com/facebook/jest/pull/8377))
+- `[expect]` optimize compare nodes ([#8368](https://github.com/facebook/jest/pull/8368))
 - `[eslintrc]`- Disable valid-typeof, no-undef for ts overrides ([#8382](https://github.com/facebook/jest/pull/8382))
+
 
 ### Performance
 
