@@ -130,25 +130,10 @@ export const ensureNoExpected = (
   }
 };
 
+/**
+ * Ensures that `actual` is of type `number | bigint`
+ */
 export const ensureActualIsNumber = (
-  actual: unknown,
-  matcherName: string,
-  options?: MatcherHintOptions,
-) => {
-  if (typeof actual !== 'number') {
-    // Prepend maybe not only for backward compatibility.
-    const matcherString = (options ? '' : '[.not]') + matcherName;
-    throw new Error(
-      matcherErrorMessage(
-        matcherHint(matcherString, undefined, undefined, options),
-        `${RECEIVED_COLOR('received')} value must be a number`,
-        printWithType('Received', actual, printReceived),
-      ),
-    );
-  }
-};
-
-export const ensureActualIsNumberOrBigInt = (
   actual: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
@@ -159,32 +144,17 @@ export const ensureActualIsNumberOrBigInt = (
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherString, undefined, undefined, options),
-        `${RECEIVED_COLOR('received')} value must be a number`,
+        `${RECEIVED_COLOR('received')} value must be a number or bigint`,
         printWithType('Received', actual, printReceived),
       ),
     );
   }
 };
 
+/**
+ * Ensures that `expected` is of type `number | bigint`
+ */
 export const ensureExpectedIsNumber = (
-  expected: unknown,
-  matcherName: string,
-  options?: MatcherHintOptions,
-) => {
-  if (typeof expected !== 'number') {
-    // Prepend maybe not only for backward compatibility.
-    const matcherString = (options ? '' : '[.not]') + matcherName;
-    throw new Error(
-      matcherErrorMessage(
-        matcherHint(matcherString, undefined, undefined, options),
-        `${EXPECTED_COLOR('expected')} value must be a number`,
-        printWithType('Expected', expected, printExpected),
-      ),
-    );
-  }
-};
-
-export const ensureExpectedIsNumberOrBigInt = (
   expected: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
@@ -195,13 +165,16 @@ export const ensureExpectedIsNumberOrBigInt = (
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherString, undefined, undefined, options),
-        `${EXPECTED_COLOR('expected')} value must be a number`,
+        `${EXPECTED_COLOR('expected')} value must be a number or bigint`,
         printWithType('Expected', expected, printExpected),
       ),
     );
   }
 };
 
+/**
+ * Ensures that `actual` & `expected` are of type `number | bigint`
+ */
 export const ensureNumbers = (
   actual: unknown,
   expected: unknown,
@@ -210,16 +183,6 @@ export const ensureNumbers = (
 ) => {
   ensureActualIsNumber(actual, matcherName, options);
   ensureExpectedIsNumber(expected, matcherName, options);
-};
-
-export const ensureNumbersOrBigInt = (
-  actual: unknown,
-  expected: unknown,
-  matcherName: string,
-  options?: MatcherHintOptions,
-) => {
-  ensureActualIsNumberOrBigInt(actual, matcherName, options);
-  ensureExpectedIsNumberOrBigInt(expected, matcherName, options);
 };
 
 export const ensureExpectedIsNonNegativeInteger = (

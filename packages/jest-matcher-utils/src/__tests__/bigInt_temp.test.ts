@@ -6,7 +6,7 @@
  *
  */
 
-import {diff, ensureNumbersOrBigInt, MatcherHintOptions, stringify} from '../';
+import {diff, ensureNumbers, MatcherHintOptions, stringify} from '../';
 
 describe('BigInt', () => {
   test('TEMP HAPPY JEST', () => {
@@ -23,46 +23,46 @@ describe('BigInt', () => {
       });
     });
 
-    describe('.ensureNumbersOrBigInt()', () => {
+    describe('.ensureNumbers()', () => {
       test('dont throw error when variables are numbers', () => {
         expect(() => {
           // @ts-ignore
-          ensureNumbersOrBigInt(1, 2);
+          ensureNumbers(1, 2);
         }).not.toThrow();
       });
 
       test('dont throw error when variables are bigint', () => {
         expect(() => {
           // @ts-ignore
-          ensureNumbersOrBigInt(BigInt(1), BigInt(2));
+          ensureNumbers(BigInt(1), BigInt(2));
         }).not.toThrow();
       });
 
       test('throws error when expected is not a number (backward compatibility)', () => {
         expect(() => {
           // @ts-ignore
-          ensureNumbersOrBigInt(1, 'not_a_number', '.toBeCloseTo');
+          ensureNumbers(1, 'not_a_number', '.toBeCloseTo');
         }).toThrow();
       });
 
       test('throws error when expected is not a BigInt (backward compatibility)', () => {
         expect(() => {
           // @ts-ignore
-          ensureNumbersOrBigInt(BigInt(1), 'not_a_number', '.toBeCloseTo');
+          ensureNumbers(BigInt(1), 'not_a_number', '.toBeCloseTo');
         }).toThrow();
       });
 
       test('throws error when received is not a BigInt (backward compatibility)', () => {
         expect(() => {
           // @ts-ignore
-          ensureNumbersOrBigInt('not_a_number', BigInt(3), '.toBeCloseTo');
+          ensureNumbers('not_a_number', BigInt(3), '.toBeCloseTo');
         }).toThrow();
       });
 
       test('throws error when received is not a number (backward compatibility)', () => {
         expect(() => {
           // @ts-ignore
-          ensureNumbersOrBigInt('not_a_number', 3, '.toBeCloseTo');
+          ensureNumbers('not_a_number', 3, '.toBeCloseTo');
         }).toThrow();
       });
 
@@ -77,7 +77,7 @@ describe('BigInt', () => {
           };
           expect(() => {
             // @ts-ignore
-            ensureNumbersOrBigInt('', 0, matcherName, options);
+            ensureNumbers('', 0, matcherName, options);
           }).toThrow();
         });
 
@@ -88,7 +88,7 @@ describe('BigInt', () => {
           };
           expect(() => {
             // @ts-ignore
-            ensureNumbersOrBigInt(0.1, undefined, matcherName, options);
+            ensureNumbers(0.1, undefined, matcherName, options);
           }).toThrow();
         });
 
@@ -99,7 +99,7 @@ describe('BigInt', () => {
           };
           expect(() => {
             // @ts-ignore
-            ensureNumbersOrBigInt(0.01, '0', matcherName, options);
+            ensureNumbers(0.01, '0', matcherName, options);
           }).toThrow();
         });
 
@@ -110,7 +110,7 @@ describe('BigInt', () => {
           };
           expect(() => {
             // @ts-ignore
-            ensureNumbersOrBigInt(Symbol('0.1'), 0, matcherName, options);
+            ensureNumbers(Symbol('0.1'), 0, matcherName, options);
           }).toThrow();
         });
 
@@ -121,7 +121,7 @@ describe('BigInt', () => {
           };
           expect(() => {
             // @ts-ignore
-            ensureNumbersOrBigInt(false, 0, matcherName, options);
+            ensureNumbers(false, 0, matcherName, options);
           }).toThrow();
         });
 
@@ -132,7 +132,7 @@ describe('BigInt', () => {
           };
           expect(() => {
             // @ts-ignore
-            ensureNumbersOrBigInt(0.1, null, matcherName, options);
+            ensureNumbers(0.1, null, matcherName, options);
           }).toThrow();
         });
       });
