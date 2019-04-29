@@ -1085,17 +1085,15 @@ describe('toBeCloseTo', () => {
     [Infinity, -Infinity],
     [Infinity, 1.23],
     [-Infinity, -1.23],
-  ].forEach(
-    ([n1, n2]) => {
-      it(`{pass: false} expect(${n1}).toBeCloseTo(${n2})`, () => {
-        jestExpect(n1).not.toBeCloseTo(n2);
+  ].forEach(([n1, n2]) => {
+    it(`{pass: false} expect(${n1}).toBeCloseTo(${n2})`, () => {
+      jestExpect(n1).not.toBeCloseTo(n2);
 
-        expect(() =>
-          jestExpect(n1).toBeCloseTo(n2),
-        ).toThrowErrorMatchingSnapshot();
-      });
-    },
-  );
+      expect(() =>
+        jestExpect(n1).toBeCloseTo(n2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
 
   [[3.141592e-7, 3e-7, 8], [56789, 51234, -4]].forEach(([n1, n2, p]) => {
     it(`{pass: false} expect(${n1}).toBeCloseTo(${n2}, ${p})`, () => {
