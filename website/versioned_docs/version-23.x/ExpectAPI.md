@@ -1163,6 +1163,8 @@ describe('the La Croix cans on my desk', () => {
 
 Also under the alias: `.toThrowError(error)`
 
+> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+
 Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
 
 ```js
@@ -1203,8 +1205,6 @@ test('throws on octopus', () => {
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
 });
 ```
-
-> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
 
 ### `.toThrowErrorMatchingSnapshot()`
 
