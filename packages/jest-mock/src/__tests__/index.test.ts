@@ -994,7 +994,7 @@ describe('moduleMocker', () => {
     });
   });
 
-  it('mockReturnValue does not override mockImplementationOnce', () => {
+  test('mockReturnValue does not override mockImplementationOnce', () => {
     const mockFn = jest
       .fn()
       .mockReturnValue(1)
