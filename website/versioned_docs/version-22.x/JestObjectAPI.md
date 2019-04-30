@@ -373,7 +373,7 @@ Returns the `jest` object for chaining.
 
 ### `jest.restoreAllMocks()`
 
-Restores all mocks back to their original value. Equivalent to calling `.mockRestore` on every mocked function. Beware that `jest.restoreAllMocks()` only works when mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
+Restores all mocks back to their original value. Equivalent to calling `.mockRestore` on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
 
 ### `jest.resetModules()`
 
