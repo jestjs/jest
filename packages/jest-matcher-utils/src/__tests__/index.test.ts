@@ -307,3 +307,22 @@ describe('getLabelPrinter', () => {
     }).toThrow();
   });
 });
+
+if (isBigIntAllowed) {
+  describe('bigint Syntax', () => {
+    test('stringify()', () => {
+      // @ts-ignore
+      expect(stringify(1n)).toBe('1n');
+    });
+
+    test('toEqual()', () => {
+      // @ts-ignore
+      expect(1n).toEqual(BigInt(1));
+    });
+
+    test('diff()', () => {
+      // @ts-ignore
+      expect(diff(1n, 2n)).toBe(null);
+    });
+  });
+}
