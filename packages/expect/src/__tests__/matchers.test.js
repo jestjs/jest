@@ -687,6 +687,8 @@ describe('.toBeInstanceOf()', () => {
   class A {}
   class B {}
   class C extends B {}
+  class D extends C {}
+  class E extends D {}
 
   class HasStaticNameMethod {
     constructor() {}
@@ -705,7 +707,8 @@ describe('.toBeInstanceOf()', () => {
     [new Map(), Map],
     [[], Array],
     [new A(), A],
-    [new C(), B], // subclass
+    [new C(), B], // C extends B
+    [new E(), B], // E extends … extends B
     [new HasStaticNameMethod(), HasStaticNameMethod],
   ].forEach(([a, b]) => {
     test(`passing ${stringify(a)} and ${stringify(b)}`, () => {

@@ -146,6 +146,24 @@ class customError extends Error {
     });
 
     describe('error class', () => {
+      class SubErr extends Err {
+        constructor(...args) {
+          super(...args);
+          // In a carefully written error subclass,
+          // name property is equal to constructor name.
+          this.name = this.constructor.name;
+        }
+      }
+
+      class SubSubErr extends SubErr {
+        constructor(...args) {
+          super(...args);
+          // In a carefully written error subclass,
+          // name property is equal to constructor name.
+          this.name = this.constructor.name;
+        }
+      }
+
       it('passes', () => {
         jestExpect(() => {
           throw new Err();
@@ -186,6 +204,22 @@ class customError extends Error {
         expect(() => {
           jestExpect(() => {
             throw new Err('apple');
+          }).not[toThrow](Err);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('threw, but class should not match (error subclass)', () => {
+        expect(() => {
+          jestExpect(() => {
+            throw new SubErr('apple');
+          }).not[toThrow](Err);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('threw, but class should not match (error subsubclass)', () => {
+        expect(() => {
+          jestExpect(() => {
+            throw new SubSubErr('apple');
           }).not[toThrow](Err);
         }).toThrowErrorMatchingSnapshot();
       });

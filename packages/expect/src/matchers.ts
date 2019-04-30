@@ -27,7 +27,11 @@ import {
 import {MatchersObject, MatcherState} from './types';
 import {
   printDiffOrStringify,
+  printExpectedConstructorName,
+  printExpectedConstructorNameNot,
   printReceivedArrayContainExpectedItem,
+  printReceivedConstructorName,
+  printReceivedConstructorNameNot,
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
@@ -267,45 +271,33 @@ const matchers: MatchersObject = {
 
     const pass = received instanceof expected;
 
-    const NAME_IS_NOT_STRING = ' name is not a string\n';
-    const NAME_IS_EMPTY_STRING = ' name is an empty string\n';
-
     const message = pass
       ? () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          // A truthy test for `expected.name` property has false positive for:
-          // function with a defined name property
-          // class with a static name method
-          (typeof expected.name !== 'string'
-            ? 'Expected constructor' + NAME_IS_NOT_STRING
-            : expected.name.length === 0
-            ? 'Expected constructor' + NAME_IS_EMPTY_STRING
-            : `Expected constructor: not ${EXPECTED_COLOR(expected.name)}\n`) +
-          `Received value: ${printReceived(received)}`
+          printExpectedConstructorNameNot('Expected constructor', expected) +
+          (typeof received.constructor === 'function' &&
+          received.constructor !== expected
+            ? printReceivedConstructorNameNot(
+                'Received constructor',
+                received.constructor,
+                expected,
+              )
+            : '')
       : () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          // A truthy test for `expected.name` property has false positive for:
-          // function with a defined name property
-          // class with a static name method
-          (typeof expected.name !== 'string'
-            ? 'Expected constructor' + NAME_IS_NOT_STRING
-            : expected.name.length === 0
-            ? 'Expected constructor' + NAME_IS_EMPTY_STRING
-            : `Expected constructor: ${EXPECTED_COLOR(expected.name)}\n`) +
+          printExpectedConstructorName('Expected constructor', expected) +
           (isPrimitive(received) || Object.getPrototypeOf(received) === null
-            ? 'Received value has no prototype\n'
+            ? `\nReceived value has no prototype\nReceived value: ${printReceived(
+                received,
+              )}`
             : typeof received.constructor !== 'function'
-            ? ''
-            : typeof received.constructor.name !== 'string'
-            ? 'Received constructor' + NAME_IS_NOT_STRING
-            : received.constructor.name.length === 0
-            ? 'Received constructor' + NAME_IS_EMPTY_STRING
-            : `Received constructor: ${RECEIVED_COLOR(
-                received.constructor.name,
-              )}\n`) +
-          `Received value: ${printReceived(received)}`;
+            ? `\nReceived value: ${printReceived(received)}`
+            : printReceivedConstructorName(
+                'Received constructor',
+                received.constructor,
+              ));
 
     return {message, pass};
   },

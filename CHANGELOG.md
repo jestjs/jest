@@ -10,6 +10,7 @@
 - `[docs]` Add DynamoDB guide ([#8319](https://github.com/facebook/jest/pull/8319))
 - `[expect]` Improve report when matcher fails, part 17 ([#8349](https://github.com/facebook/jest/pull/8349))
 - `[expect]` Improve report when matcher fails, part 18 ([#8356](https://github.com/facebook/jest/pull/8356))
+- `[expect]` Improve report when matcher fails, part 19 ([#8367](https://github.com/facebook/jest/pull/8367))
 
 ### Fixes
 
@@ -22,6 +23,7 @@
 - `[jest-environment-jsdom]` Re-declare global prototype of JSDOMEnvironment ([#8352](https://github.com/facebook/jest/pull/8352))
 - `[jest-snapshot]` Handle arrays when merging snapshots ([#7089](https://github.com/facebook/jest/pull/7089))
 - `[expect]` Extract names of async and generator functions ([#8362](https://github.com/facebook/jest/pull/8362))
+- `[jest-runtime]` Fix virtual mocks not being unmockable after previously being mocked ([#8396](https://github.com/facebook/jest/pull/8396))
 - `[jest-transform]` Replace special characters in transform cache filenames to support Windows ([#8353](https://github.com/facebook/jest/pull/8353))
 
 ### Chore & Maintenance
@@ -29,6 +31,8 @@
 - `[expect]` Fix label and add opposite assertion for toEqual tests ([#8288](https://github.com/facebook/jest/pull/8288))
 - `[docs]` Mention Jest MongoDB Preset ([#8318](https://github.com/facebook/jest/pull/8318))
 - `[@jest/reporters]` Migrate away from `istanbul-api` ([#8294](https://github.com/facebook/jest/pull/8294))
+- `[*]` Delete obsolete emails tag from header comment in test files ([#8377](https://github.com/facebook/jest/pull/8377))
+- `[expect]` optimize compare nodes ([#8368](https://github.com/facebook/jest/pull/8368))
 
 ### Performance
 
