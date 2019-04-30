@@ -820,11 +820,6 @@ class Runtime {
   }
 
   private _shouldMock(from: Config.Path, moduleName: string) {
-    const mockPath = this._resolver.getModulePath(from, moduleName);
-    if (mockPath in this._virtualMocks) {
-      return true;
-    }
-
     const explicitShouldMock = this._explicitShouldMock;
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,

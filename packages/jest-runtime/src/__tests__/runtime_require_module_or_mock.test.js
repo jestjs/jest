@@ -176,6 +176,26 @@ it('unmocks modules in config.unmockedModulePathPatterns for tests with automock
     expect(moduleData.isUnmocked()).toBe(true);
   }));
 
+it('unmocks virtual mocks after they have been mocked previously', () =>
+  createRuntime(__filename).then(runtime => {
+    const root = runtime.requireModule(runtime.__mockRootPath);
+
+    const mockImpl = {foo: 'bar'};
+    root.jest.mock('my-virtual-module', () => mockImpl, {virtual: true});
+
+    expect(
+      runtime.requireModuleOrMock(runtime.__mockRootPath, 'my-virtual-module'),
+    ).toEqual(mockImpl);
+
+    root.jest.unmock('my-virtual-module');
+
+    expect(() => {
+      runtime.requireModuleOrMock(runtime.__mockRootPath, 'my-virtual-module');
+    }).toThrowError(
+      new Error("Cannot find module 'my-virtual-module' from 'root.js'"),
+    );
+  }));
+
 describe('resetModules', () => {
   it('resets all the modules', () =>
     createRuntime(__filename, {
