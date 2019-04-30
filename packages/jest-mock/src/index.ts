@@ -71,8 +71,6 @@ type MockFunctionState<T, Y extends Array<unknown>> = {
 };
 
 type MockFunctionConfig = {
-  isReturnValueLastSet: boolean;
-  defaultReturnValue: unknown;
   mockImpl: Function | undefined;
   mockName: string;
   specificReturnValues: Array<unknown>;
@@ -456,8 +454,6 @@ class ModuleMockerClass {
 
   private _defaultMockConfig(): MockFunctionConfig {
     return {
-      defaultReturnValue: undefined,
-      isReturnValueLastSet: false,
       mockImpl: undefined,
       mockName: 'jest.fn()',
       specificMockImpls: [],
@@ -586,40 +582,22 @@ class ModuleMockerClass {
               return mockImpl && mockImpl.apply(this, arguments);
             }
 
-            const returnValue = mockConfig.defaultReturnValue;
-            // If return value is last set, either specific or default, i.e.
-            // mockReturnValueOnce()/mockReturnValue() is called and no
-            // mockImplementationOnce()/mockImplementation() is called after
-            // that.
-            // use the set return value.
-            if (mockConfig.specificReturnValues.length) {
-              return mockConfig.specificReturnValues.shift();
-            }
-
-            if (mockConfig.isReturnValueLastSet) {
-              return mockConfig.defaultReturnValue;
-            }
-
             // If mockImplementationOnce()/mockImplementation() is last set,
             // or specific return values are used up, use the mock
             // implementation.
-            let specificMockImpl;
-            if (returnValue === undefined) {
-              specificMockImpl = mockConfig.specificMockImpls.shift();
-              if (specificMockImpl === undefined) {
-                specificMockImpl = mockConfig.mockImpl;
-              }
-              if (specificMockImpl) {
-                return specificMockImpl.apply(this, arguments);
-              }
+            let specificMockImpl = mockConfig.specificMockImpls.shift();
+            if (specificMockImpl === undefined) {
+              specificMockImpl = mockConfig.mockImpl;
             }
-
+            if (specificMockImpl) {
+              return specificMockImpl.apply(this, arguments);
+            }
             // Otherwise use prototype implementation
-            if (returnValue === undefined && f._protoImpl) {
+            if (f._protoImpl) {
               return f._protoImpl.apply(this, arguments);
             }
 
-            return returnValue;
+            return undefined;
           })();
         } catch (error) {
           // Store the thrown error so we can record it, then re-throw it.
@@ -675,12 +653,9 @@ class ModuleMockerClass {
         return restore ? restore() : undefined;
       };
 
-      f.mockReturnValueOnce = (value: T) => {
+      f.mockReturnValueOnce = (value: T) =>
         // next function call will return this value or default return value
-        const mockConfig = this._ensureMockConfig(f);
-        mockConfig.specificReturnValues.push(value);
-        return f;
-      };
+        f.mockImplementationOnce(() => value);
 
       f.mockResolvedValueOnce = (value: T) =>
         f.mockImplementationOnce(() => Promise.resolve(value));
@@ -688,13 +663,9 @@ class ModuleMockerClass {
       f.mockRejectedValueOnce = (value: T) =>
         f.mockImplementationOnce(() => Promise.reject(value));
 
-      f.mockReturnValue = (value: T) => {
+      f.mockReturnValue = (value: T) =>
         // next function call will return specified return value or this one
-        const mockConfig = this._ensureMockConfig(f);
-        mockConfig.isReturnValueLastSet = true;
-        mockConfig.defaultReturnValue = value;
-        return f;
-      };
+        f.mockImplementation(() => value);
 
       f.mockResolvedValue = (value: T) =>
         f.mockImplementation(() => Promise.resolve(value));
@@ -708,7 +679,6 @@ class ModuleMockerClass {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
-        mockConfig.isReturnValueLastSet = false;
         mockConfig.specificMockImpls.push(fn);
         return f;
       };
@@ -718,8 +688,6 @@ class ModuleMockerClass {
       ): Mock<T, Y> => {
         // next function call will use mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
-        mockConfig.isReturnValueLastSet = false;
-        mockConfig.defaultReturnValue = undefined;
         mockConfig.mockImpl = fn;
         return f;
       };
