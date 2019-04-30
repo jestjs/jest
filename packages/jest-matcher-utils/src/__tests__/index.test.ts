@@ -309,20 +309,27 @@ describe('getLabelPrinter', () => {
 });
 
 if (isBigIntAllowed) {
+  // See if node 6-8 breaks using a lookup
+  function getBigInt(number: number) {
+    // @ts-ignore
+    const map = [0n, 1n, 2n, 3n];
+    return map[number];
+  }
+
   describe('bigint Syntax', () => {
     test('stringify()', () => {
       // @ts-ignore
-      expect(stringify(1n)).toBe('1n');
+      expect(stringify(getBigInt(1))).toBe('1n');
     });
 
     test('toEqual()', () => {
       // @ts-ignore
-      expect(1n).toEqual(BigInt(1));
+      expect(getBigInt(1)).toEqual(BigInt(1));
     });
 
     test('diff()', () => {
       // @ts-ignore
-      expect(diff(1n, 2n)).toBe(null);
+      expect(diff(getBigInt(1), getBigInt(2))).toBe(null);
     });
   });
 }
