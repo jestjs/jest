@@ -15,6 +15,7 @@
 - `[jest-get-type]`- Add BigInt Support. ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-matcher-utils]`- Add BigInt Support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[babel-plugin-jest-hoist]`- Add BigInt to `WHITELISTED_IDENTIFIERS`([#8382](https://github.com/facebook/jest/pull/8382))
+- `[babel-preset-jest]`- Add @babel/plugin-syntax-bigint`([#8382](https://github.com/facebook/jest/pull/8382))
 
 ### Fixes
 
