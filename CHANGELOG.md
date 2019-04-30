@@ -37,7 +37,6 @@
 - `[expect]` optimize compare nodes ([#8368](https://github.com/facebook/jest/pull/8368))
 - `[eslintrc]`- Disable valid-typeof, no-undef for ts overrides ([#8382](https://github.com/facebook/jest/pull/8382))
 
-
 ### Performance
 
 - `[jest-runtime]` Fix module registry memory leak ([#8282](https://github.com/facebook/jest/pull/8282))
