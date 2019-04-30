@@ -24,6 +24,7 @@
 - `[jest-snapshot]` Handle arrays when merging snapshots ([#7089](https://github.com/facebook/jest/pull/7089))
 - `[expect]` Extract names of async and generator functions ([#8362](https://github.com/facebook/jest/pull/8362))
 - `[jest-runtime]` Fix virtual mocks not being unmockable after previously being mocked ([#8396](https://github.com/facebook/jest/pull/8396))
+- `[jest-transform]` Replace special characters in transform cache filenames to support Windows ([#8353](https://github.com/facebook/jest/pull/8353))
 
 ### Chore & Maintenance
 
