@@ -690,6 +690,13 @@ describe('.toBeInstanceOf()', () => {
   class D extends C {}
   class E extends D {}
 
+  class SubHasStaticNameMethod extends B {
+    constructor() {
+      super();
+    }
+    static name() {}
+  }
+
   class HasStaticNameMethod {
     constructor() {}
     static name() {}
@@ -711,7 +718,8 @@ describe('.toBeInstanceOf()', () => {
     [new C(), B], // C extends B
     [new E(), B], // E extends … extends B
     [new SubHasNameProp(), DefinesNameProp], // omit extends
-    [new HasStaticNameMethod(), HasStaticNameMethod],
+    [new SubHasStaticNameMethod(), B], // Received
+    [new HasStaticNameMethod(), HasStaticNameMethod], // Expected
   ].forEach(([a, b]) => {
     test(`passing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
