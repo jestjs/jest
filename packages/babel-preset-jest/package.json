@@ -10,6 +10,7 @@
   "main": "index.js",
   "dependencies": {
     "@babel/plugin-syntax-object-rest-spread": "^7.0.0",
+    "@babel/plugin-syntax-bigint": "^7.0.0",
     "babel-plugin-jest-hoist": "^24.6.0"
   },
   "peerDependencies": {
