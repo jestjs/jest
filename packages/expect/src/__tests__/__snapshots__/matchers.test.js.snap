@@ -1373,7 +1373,7 @@ exports[`.toBeInstanceOf() passing {} and [Function anonymous] 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeInstanceOf<dim>(</><green>expected</><dim>)</>
 
 Expected constructor name is an empty string
-Received constructor:     <red>SubHasNameProp</>
+Received constructor: <red>SubHasNameProp</>
 "
 `;
 
