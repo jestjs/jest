@@ -21,22 +21,7 @@ afterAll(() => {
 });
 
 /* global BigInt */
-const isBigIntAllowed = typeof BigInt === 'function';
-const asBigInt = (...args) => {
-  if (args.length === 1) {
-    if (isBigIntAllowed) {
-      return BigInt(args[0]);
-    } else {
-      return args[0];
-    }
-  } else {
-    if (isBigIntAllowed) {
-      return args.map(v => BigInt(v));
-    } else {
-      return args;
-    }
-  }
-};
+const isBigIntDefined = typeof BigInt === 'function';
 
 it('should throw if passed two arguments', () => {
   expect(() => jestExpect('foo', 'bar')).toThrow(
@@ -216,8 +201,11 @@ describe('.toBe()', () => {
     jestExpect(null).toBe(null);
     jestExpect(undefined).toBe(undefined);
     jestExpect(NaN).toBe(NaN);
-    jestExpect(asBigInt(1)).not.toBe(2);
-    jestExpect(asBigInt(1)).toBe(asBigInt(1));
+    if (isBigIntDefined) {
+      jestExpect(BigInt(1)).not.toBe(BigInt(2));
+      jestExpect(BigInt(1)).not.toBe(1);
+      jestExpect(BigInt(1)).toBe(BigInt(1));
+    }
   });
 
   [
@@ -246,7 +234,7 @@ describe('.toBe()', () => {
     });
   });
 
-  if (isBigIntAllowed) {
+  if (isBigIntDefined) {
     [[BigInt(1), BigInt(2)], [{a: BigInt(1)}, {a: BigInt(1)}]].forEach(
       ([a, b]) => {
         it(`fails for: ${stringify(a)} and ${stringify(b)}`, () => {
@@ -262,7 +250,7 @@ describe('.toBe()', () => {
     });
   });
 
-  if (isBigIntAllowed) {
+  if (isBigIntDefined) {
     [BigInt(1), BigInt('1')].forEach(v => {
       it(`fails for '${stringify(v)}' with '.not'`, () => {
         expect(() => jestExpect(v).not.toBe(v)).toThrowError('toBe');
@@ -484,8 +472,8 @@ describe('.toEqual()', () => {
     });
   });
 
-  if (isBigIntAllowed) {
-    [[BigInt(1), BigInt(2)], [BigInt(1), 2]].forEach(([a, b]) => {
+  if (isBigIntDefined) {
+    [[BigInt(1), BigInt(2)], [BigInt(1), 1]].forEach(([a, b]) => {
       test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
         b,
       )})`, () => {
@@ -626,7 +614,7 @@ describe('.toEqual()', () => {
     });
   });
 
-  if (isBigIntAllowed) {
+  if (isBigIntDefined) {
     [
       [BigInt(1), BigInt(1)],
       [BigInt(0), BigInt('0')],
@@ -837,7 +825,7 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
     });
   });
 
-  if (isBigIntAllowed) {
+  if (isBigIntDefined) {
     [BigInt(1)].forEach(v => {
       test(`'${stringify(v)}' is truthy`, () => {
         jestExpect(v).toBeTruthy();
@@ -863,7 +851,7 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
     });
   });
 
-  if (isBigIntAllowed) {
+  if (isBigIntDefined) {
     [BigInt(0)].forEach(v => {
       test(`'${stringify(v)}' is falsy`, () => {
         jestExpect(v).toBeFalsy();
@@ -931,7 +919,7 @@ describe('.toBeDefined(), .toBeUndefined()', () => {
     });
   });
 
-  if (isBigIntAllowed) {
+  if (isBigIntDefined) {
     [BigInt(1)].forEach(v => {
       test(`'${stringify(v)}' is defined`, () => {
         jestExpect(v).toBeDefined();
@@ -1042,7 +1030,7 @@ describe(
       });
     });
 
-    if (isBigIntAllowed) {
+    if (isBigIntDefined) {
       test('can compare BigInt to Numbers', () => {
         const a = BigInt(2);
         jestExpect(a).toBeGreaterThan(1);
@@ -1055,7 +1043,7 @@ describe(
       [
         [BigInt(1), BigInt(2)],
         [BigInt(0x11), BigInt(0x22)],
-        [1, BigInt(2)],
+        [-1, BigInt(2)],
       ].forEach(([small, big]) => {
         it(`{pass: true} expect(${stringify(small)}).toBeLessThan(${stringify(
           big,
@@ -1162,7 +1150,7 @@ describe(
       });
     });
 
-    if (isBigIntAllowed) {
+    if (isBigIntDefined) {
       [
         [BigInt(1), BigInt(1)],
         [BigInt(Number.MAX_SAFE_INTEGER), BigInt(Number.MAX_SAFE_INTEGER)],
@@ -1230,7 +1218,7 @@ describe('.toContain(), .toContainEqual()', () => {
     });
   });
 
-  if (isBigIntAllowed) {
+  if (isBigIntDefined) {
     [
       [[BigInt(1), BigInt(2), BigInt(3), BigInt(4)], BigInt(1)],
       [[1, 2, 3, BigInt(3), 4], BigInt(3)],
@@ -1260,7 +1248,7 @@ describe('.toContain(), .toContainEqual()', () => {
     });
   });
 
-  if (isBigIntAllowed) {
+  if (isBigIntDefined) {
     [[[BigInt(1), BigInt(2), BigInt(3)], 3]].forEach(([list, v]) => {
       it(`'${stringify(list)}' does not contain '${stringify(v)}'`, () => {
         jestExpect(list).not.toContain(v);

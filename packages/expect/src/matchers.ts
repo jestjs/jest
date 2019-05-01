@@ -133,11 +133,9 @@ const matchers: MatchersObject = {
     };
 
     if (typeof expected !== 'number') {
-      // Prepend maybe not only for backward compatibility.
-      const matcherString = (options ? '' : '[.not]') + matcherName;
       throw new Error(
         matcherErrorMessage(
-          matcherHint(matcherString, undefined, undefined, options),
+          matcherHint(matcherName, undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a number`,
           printWithType('Expected', expected, printExpected),
         ),
@@ -145,11 +143,9 @@ const matchers: MatchersObject = {
     }
 
     if (typeof received !== 'number') {
-      // Prepend maybe not only for backward compatibility.
-      const matcherString = (options ? '' : '[.not]') + matcherName;
       throw new Error(
         matcherErrorMessage(
-          matcherHint(matcherString, undefined, undefined, options),
+          matcherHint(matcherName, undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a number`,
           printWithType('Received', received, printReceived),
         ),

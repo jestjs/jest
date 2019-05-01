@@ -17,7 +17,7 @@ import {
 } from '../';
 
 /* global BigInt */
-const isBigIntAllowed = typeof BigInt === 'function';
+const isBigIntDefined = typeof BigInt === 'function';
 
 describe('.stringify()', () => {
   [
@@ -34,8 +34,8 @@ describe('.stringify()', () => {
     [Infinity, 'Infinity'],
     [-Infinity, '-Infinity'],
     [/ab\.c/gi, '/ab\\.c/gi'],
-    isBigIntAllowed ? [BigInt(1), '1n'] : [12, '12'],
-    isBigIntAllowed ? [BigInt(0), '0n'] : [123, '123'],
+    isBigIntDefined ? [BigInt(1), '1n'] : [12, '12'],
+    isBigIntDefined ? [BigInt(0), '0n'] : [123, '123'],
   ].forEach(([v, s]) => {
     test(stringify(v), () => {
       expect(stringify(v)).toBe(s);
@@ -102,16 +102,13 @@ describe('.ensureNumbers()', () => {
       // @ts-ignore
       ensureNumbers(1, 2);
     }).not.toThrow();
-  });
-
-  if (isBigIntAllowed) {
-    test('dont throw error when variables are bigints', () => {
+    if (isBigIntDefined) {
       expect(() => {
         // @ts-ignore
-        ensureNumbers(1, 2);
+        ensureNumbers(BigInt(1), BigInt(2));
       }).not.toThrow();
-    });
-  }
+    }
+  });
 
   test('throws error when expected is not a number (backward compatibility)', () => {
     expect(() => {
@@ -231,7 +228,7 @@ describe('diff', () => {
       ['a', 1],
       ['a', true],
       [1, true],
-      [isBigIntAllowed ? BigInt(1) : 1, true],
+      [isBigIntDefined ? BigInt(1) : 1, true],
     ].forEach(([actual, expected]) =>
       expect(diff(actual, expected)).toBe('diff output'),
     );
@@ -245,7 +242,7 @@ describe('diff', () => {
     expect(diff(1, 2)).toBe(null);
   });
 
-  if (isBigIntAllowed) {
+  if (isBigIntDefined) {
     test('two bigints', () => {
       expect(diff(BigInt(1), BigInt(2))).toBe(null);
     });
