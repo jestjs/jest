@@ -8,7 +8,7 @@
 
 import {
   diff,
-  ensureExpectedIsNumber,
+  ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
   EXPECTED_COLOR,
   matcherErrorMessage,
@@ -101,7 +101,7 @@ const createToBeCalledTimesMatcher = (matcherName: string) => (
   received: any,
   expected: number,
 ): SyncExpectationResult => {
-  ensureExpectedIsNumber(expected, matcherName);
+  ensureExpectedIsNonNegativeInteger(expected, matcherName);
   ensureMock(received, matcherName);
 
   const receivedIsSpy = isSpy(received);
@@ -136,7 +136,7 @@ const createToReturnTimesMatcher = (matcherName: string) => (
   received: any,
   expected: number,
 ): SyncExpectationResult => {
-  ensureExpectedIsNumber(expected, matcherName);
+  ensureExpectedIsNonNegativeInteger(expected, matcherName);
   ensureMock(received, matcherName);
 
   const receivedName = received.getMockName();
