@@ -33,11 +33,11 @@
 - `[@jest/reporters]` Migrate away from `istanbul-api` ([#8294](https://github.com/facebook/jest/pull/8294))
 - `[*]` Delete obsolete emails tag from header comment in test files ([#8377](https://github.com/facebook/jest/pull/8377))
 - `[expect]` optimize compare nodes ([#8368](https://github.com/facebook/jest/pull/8368))
-- `[jest-resolve]` optimize resolve module path ([#8388](https://github.com/facebook/jest/pull/8388))
 
 ### Performance
 
 - `[jest-runtime]` Fix module registry memory leak ([#8282](https://github.com/facebook/jest/pull/8282))
+- `[jest-resolve]` optimize resolve module path ([#8388](https://github.com/facebook/jest/pull/8388))
 
 ## 24.7.1
 
