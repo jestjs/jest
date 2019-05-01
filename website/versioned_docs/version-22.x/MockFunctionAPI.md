@@ -164,7 +164,7 @@ Will result in this error:
 
 ### `mockFn.mockReturnThis()`
 
-Just a simple sugar function for:
+Just a syntactic sugar function for:
 
 ```js
 jest.fn(function() {

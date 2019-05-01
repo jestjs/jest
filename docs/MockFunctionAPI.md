@@ -196,7 +196,7 @@ Will result in this error:
 
 ### `mockFn.mockReturnThis()`
 
-Just a simple sugar function for:
+Just a syntactic sugar function for:
 
 ```js
 jest.fn(function() {
@@ -233,7 +233,7 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 ### `mockFn.mockResolvedValue(value)`
 
-Simple sugar function for:
+Syntactic sugar function for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.resolve(value));
@@ -251,7 +251,7 @@ test('async test', async () => {
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
-Simple sugar function for:
+Syntactic sugar function for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.resolve(value));
@@ -276,7 +276,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
-Simple sugar function for:
+Syntactic sugar function for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.reject(value));
@@ -294,7 +294,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
-Simple sugar function for:
+Syntactic sugar function for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.reject(value));
