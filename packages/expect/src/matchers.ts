@@ -120,56 +120,53 @@ const matchers: MatchersObject = {
 
   toBeCloseTo(
     this: MatcherState,
-    received: number | bigint,
-    expected: number | bigint,
-    precision?: number,
+    received: number,
+    expected: number,
+    precision: number = 2,
   ) {
-    const hasPrecision = arguments.length === 3;
     const matcherName = 'toBeCloseTo';
-    const secondArgument = hasPrecision ? 'precision' : undefined;
+    const secondArgument = arguments.length === 3 ? 'precision' : undefined;
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
       secondArgument,
     };
-    ensureNumbers(received, expected, matcherName, options);
+
+    if (typeof expected !== 'number') {
+      // Prepend maybe not only for backward compatibility.
+      const matcherString = (options ? '' : '[.not]') + matcherName;
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherString, undefined, undefined, options),
+          `${EXPECTED_COLOR('expected')} value must be a number`,
+          printWithType('Expected', expected, printExpected),
+        ),
+      );
+    }
+
+    if (typeof received !== 'number') {
+      // Prepend maybe not only for backward compatibility.
+      const matcherString = (options ? '' : '[.not]') + matcherName;
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherString, undefined, undefined, options),
+          `${RECEIVED_COLOR('received')} value must be a number`,
+          printWithType('Received', received, printReceived),
+        ),
+      );
+    }
 
     let pass = false;
-    let expectedDiff: number | bigint = 0;
-    let receivedDiff: number | bigint = 0;
+    let expectedDiff = 0;
+    let receivedDiff = 0;
 
-    //If both arent numbers, then one might be bigint
-    if (typeof received === 'number' && typeof expected === 'number') {
-      if (received === Infinity && expected === Infinity) {
-        pass = true; // Infinity - Infinity is NaN
-      } else if (received === -Infinity && expected === -Infinity) {
-        pass = true; // -Infinity - -Infinity is NaN
-      } else {
-        // Set default precision for numbers
-        precision = hasPrecision ? (precision as number) : 2;
-        expectedDiff = Math.pow(10, -precision) / 2;
-        receivedDiff = Math.abs(expected - received);
-        pass = receivedDiff < expectedDiff;
-      }
+    if (received === Infinity && expected === Infinity) {
+      pass = true; // Infinity - Infinity is NaN
+    } else if (received === -Infinity && expected === -Infinity) {
+      pass = true; // -Infinity - -Infinity is NaN
     } else {
-      // Set default precision for big integers
-      precision = hasPrecision ? (precision as number) : -2;
-      if (precision >= 0) {
-        throw new Error(
-          matcherErrorMessage(
-            matcherHint(matcherName, undefined, undefined, options),
-            `${EXPECTED_COLOR(
-              'precision',
-            )} value must be a negative integer for BigInts`,
-            printWithType('Precision', precision, printExpected),
-          ),
-        );
-      }
-      expectedDiff = BigInt(Math.pow(10, -precision) / 2);
-      // maintain precision by ensuring both are BigInt
-      receivedDiff = BigInt(expected) - BigInt(received);
-      receivedDiff =
-        receivedDiff >= 0 ? receivedDiff : receivedDiff * BigInt(-1);
+      expectedDiff = Math.pow(10, -precision) / 2;
+      receivedDiff = Math.abs(expected - received);
       pass = receivedDiff < expectedDiff;
     }
 

@@ -137,7 +137,7 @@ export interface Matchers<R> {
    * Rounding means that intuitive things fail.
    * The default for numDigits is 2.
    */
-  toBeCloseTo(expected: number | bigint, numDigits?: number): R;
+  toBeCloseTo(expected: number, numDigits?: number): R;
   /**
    * Ensure that a variable is not undefined.
    */

@@ -38,8 +38,6 @@ const asBigInt = (...args) => {
   }
 };
 
-const MAX_SAFE_AS_BIGINT = asBigInt(Number.MAX_SAFE_INTEGER);
-
 it('should throw if passed two arguments', () => {
   expect(() => jestExpect('foo', 'bar')).toThrow(
     new Error('Expect takes at most one argument.'),
@@ -1333,24 +1331,6 @@ describe('.toBeCloseTo()', () => {
     });
   });
 
-  if (isBigIntAllowed) {
-    [
-      asBigInt(0, 0),
-      [MAX_SAFE_AS_BIGINT, MAX_SAFE_AS_BIGINT + BigInt(49)],
-      [BigInt(0), 49],
-    ].forEach(([n1, n2]) => {
-      it(`{pass: true} expect(${stringify(n1)})toBeCloseTo(${stringify(
-        n2,
-      )})`, () => {
-        jestExpect(n1).toBeCloseTo(n2);
-
-        expect(() => jestExpect(n1).not.toBeCloseTo(n2)).toThrowError(
-          'toBeCloseTo',
-        );
-      });
-    });
-  }
-
   [[0, 0.01], [1, 1.23], [1.23, 1.2249999]].forEach(([n1, n2]) => {
     it(`throws: [${n1}, ${n2}]`, () => {
       expect(() =>
@@ -1360,21 +1340,6 @@ describe('.toBeCloseTo()', () => {
       jestExpect(n1).not.toBeCloseTo(n2);
     });
   });
-
-  if (isBigIntAllowed) {
-    [
-      asBigInt(0, 50),
-      [MAX_SAFE_AS_BIGINT, MAX_SAFE_AS_BIGINT + BigInt(50)],
-    ].forEach(([n1, n2]) => {
-      it(`throws: [${stringify(n1)}, ${stringify(n2)}]`, () => {
-        expect(() => jestExpect(n1).toBeCloseTo(n2)).toThrowError(
-          'toBeCloseTo',
-        );
-
-        jestExpect(n1).not.toBeCloseTo(n2);
-      });
-    });
-  }
 
   [[Infinity, Infinity], [-Infinity, -Infinity]].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${n1})toBeCloseTo( ${n2})`, () => {
@@ -1407,32 +1372,6 @@ describe('.toBeCloseTo()', () => {
       ).toThrowErrorMatchingSnapshot();
     });
   });
-
-  if (isBigIntAllowed) {
-    [[MAX_SAFE_AS_BIGINT, MAX_SAFE_AS_BIGINT + BigInt(4), -1]].forEach(
-      ([n1, n2, p]) => {
-        it(`accepts an optional precision argument: [${stringify(
-          n1,
-        )}, ${stringify(n2)}, ${p}]`, () => {
-          jestExpect(n1).toBeCloseTo(n2, p);
-
-          expect(() => jestExpect(n1).not.toBeCloseTo(n2, p)).toThrowError(
-            'toBeCloseTo',
-          );
-        });
-      },
-    );
-
-    test('Allows mix of Bigints or numbers', () => {
-      jestExpect(BigInt(0)).toBeCloseTo(49);
-    });
-
-    test('throws when non-negative precision arguments passed with BigInts', () => {
-      expect(() =>
-        jestExpect(MAX_SAFE_AS_BIGINT).toBeCloseTo(MAX_SAFE_AS_BIGINT, 1),
-      ).toThrowError('toBeCloseTo');
-    });
-  }
 
   describe('throws: Matcher error', () => {
     test('promise empty isNot false received', () => {
