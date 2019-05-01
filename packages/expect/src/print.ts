@@ -126,10 +126,17 @@ export const printDiffOrStringify = (
   const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
   let markerLoc = '';
   if (typeof expected == 'string' || expected instanceof String) {
-    // Padded end is defined from 'Received:  ' length;
-    markerLoc =
-      '\n'.padEnd(expectedLabel.length + 4, ' ') +
-      diffLocation(stringify(expected), stringify(received));
+
+    // Specific first occurrence difference marker
+    // not relevant to char comparisons or snapshots
+    if (expected.length > 2
+      && !(expected.includes('<') && expected.includes('>'))) {
+
+      // Padded end is defined from 'Received:  ' length;
+      markerLoc =
+        '\n'.padEnd(expectedLabel.length + 4, ' ') +
+        diffLocation(stringify(expected), stringify(received));
+    }
   }
   return (
     `${printLabel(expectedLabel)}${printExpected(expected)}\n` +
