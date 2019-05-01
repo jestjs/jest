@@ -142,10 +142,12 @@ function resolveSync(
   }
 }
 
-const IS_PATH_FILE = 1;
-const IS_PATH_DIRECTORY = 2;
-const IS_PATH_OTHER = 3;
-const checkedPaths = new Map<string, number>();
+enum IPathType {
+  FILE = 1,
+  DIRECTORY = 2,
+  OTHER = 3,
+}
+const checkedPaths = new Map<string, IPathType>();
 function statSyncCached(path: string): number {
   const result = checkedPaths.get(path);
   if (result !== undefined) {
@@ -163,27 +165,27 @@ function statSyncCached(path: string): number {
 
   if (stat) {
     if (stat.isFile() || stat.isFIFO()) {
-      checkedPaths.set(path, IS_PATH_FILE);
-      return IS_PATH_FILE;
+      checkedPaths.set(path, IPathType.FILE);
+      return IPathType.FILE;
     } else if (stat.isDirectory()) {
-      checkedPaths.set(path, IS_PATH_DIRECTORY);
-      return IS_PATH_DIRECTORY;
+      checkedPaths.set(path, IPathType.DIRECTORY);
+      return IPathType.DIRECTORY;
     }
   }
 
-  checkedPaths.set(path, IS_PATH_OTHER);
-  return IS_PATH_OTHER;
+  checkedPaths.set(path, IPathType.OTHER);
+  return IPathType.OTHER;
 }
 
 /*
  * helper functions
  */
 function isFile(file: Config.Path): boolean {
-  return statSyncCached(file) === IS_PATH_FILE;
+  return statSyncCached(file) === IPathType.FILE;
 }
 
 function isDirectory(dir: Config.Path): boolean {
-  return statSyncCached(dir) === IS_PATH_DIRECTORY;
+  return statSyncCached(dir) === IPathType.DIRECTORY;
 }
 
 function isCurrentDirectory(testPath: Config.Path): boolean {
