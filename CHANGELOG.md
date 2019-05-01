@@ -11,11 +11,11 @@
 - `[expect]` Improve report when matcher fails, part 17 ([#8349](https://github.com/facebook/jest/pull/8349))
 - `[expect]` Improve report when matcher fails, part 18 ([#8356](https://github.com/facebook/jest/pull/8356))
 - `[expect]` Improve report when matcher fails, part 19 ([#8367](https://github.com/facebook/jest/pull/8367))
-- `[expect]`- Add BigInt Support to `toBeGreaterThan`, `toBeGreaterThanOrEqual`, `toBeLessThan` `toBeLessThanOrEqual` and `toBeCloseTo` ([#8382](https://github.com/facebook/jest/pull/8382))
-- `[jest-get-type]`- Add BigInt Support. ([#8382](https://github.com/facebook/jest/pull/8382))
+- `[expect]` Add BigInt Support to `toBeGreaterThan`, `toBeGreaterThanOrEqual`, `toBeLessThan` and `toBeLessThanOrEqual` ([#8382](https://github.com/facebook/jest/pull/8382))
+- `[jest-get-type]` Add BigInt Support. ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-matcher-utils]`- Add BigInt Support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
-- `[babel-plugin-jest-hoist]`- Add BigInt to `WHITELISTED_IDENTIFIERS`([#8382](https://github.com/facebook/jest/pull/8382))
-- `[babel-preset-jest]`- Add @babel/plugin-syntax-bigint`([#8382](https://github.com/facebook/jest/pull/8382))
+- `[babel-plugin-jest-hoist]` Add BigInt to `WHITELISTED_IDENTIFIERS`([#8382](https://github.com/facebook/jest/pull/8382))
+- `[babel-preset-jest]` Add @babel/plugin-syntax-bigint`([#8382](https://github.com/facebook/jest/pull/8382))
 
 ### Fixes
 
