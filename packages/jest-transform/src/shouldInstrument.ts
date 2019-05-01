@@ -79,11 +79,11 @@ export default function shouldInstrument(
     return false;
   }
 
-  if (config.setupFiles.some(setupFile => setupFile === filename)) {
+  if (config.setupFiles.includes(filename)) {
     return false;
   }
 
-  if (config.setupFilesAfterEnv.some(setupFile => setupFile === filename)) {
+  if (config.setupFilesAfterEnv.includes(filename)) {
     return false;
   }
 
