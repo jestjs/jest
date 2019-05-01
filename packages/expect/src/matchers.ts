@@ -122,10 +122,11 @@ const matchers: MatchersObject = {
     this: MatcherState,
     received: number | bigint,
     expected: number | bigint,
-    precision: number = NaN,
+    precision?: number,
   ) {
+    const hasPrecision = arguments.length === 3;
     const matcherName = 'toBeCloseTo';
-    const secondArgument = arguments.length === 3 ? 'precision' : undefined;
+    const secondArgument = hasPrecision ? 'precision' : undefined;
     const options: MatcherHintOptions = {
       isNot: this.isNot,
       promise: this.promise,
@@ -145,21 +146,21 @@ const matchers: MatchersObject = {
         pass = true; // -Infinity - -Infinity is NaN
       } else {
         // Set default precision for numbers
-        precision = isNaN(precision) ? 2 : precision;
+        precision = hasPrecision ? (precision as number) : 2;
         expectedDiff = Math.pow(10, -precision) / 2;
         receivedDiff = Math.abs(expected - received);
         pass = receivedDiff < expectedDiff;
       }
     } else {
       // Set default precision for big integers
-      precision = isNaN(precision) ? -2 : precision;
+      precision = hasPrecision ? (precision as number) : -2;
       if (precision >= 0) {
         throw new Error(
           matcherErrorMessage(
             matcherHint(matcherName, undefined, undefined, options),
             `${EXPECTED_COLOR(
               'precision',
-            )} value must be a negative number for BigInts`,
+            )} value must be a negative integer for BigInts`,
             printWithType('Precision', precision, printExpected),
           ),
         );
