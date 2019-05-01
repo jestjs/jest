@@ -124,13 +124,20 @@ export const printDiffOrStringify = (
   }
 
   const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+  let markerLoc = '';
+  if (typeof expected == 'string' || expected instanceof String) {
+    // Padded end is defined from 'Received:  ' length;
+    markerLoc =
+      '\n'.padEnd(expectedLabel.length + 4, ' ') +
+      diffLocation(stringify(expected), stringify(received));
+  }
   return (
     `${printLabel(expectedLabel)}${printExpected(expected)}\n` +
     `${printLabel(receivedLabel)}${
       stringify(expected) === stringify(received)
         ? 'serializes to the same string'
         : printReceived(received)
-    }`
+    }${markerLoc}`
   );
 };
 
@@ -182,3 +189,14 @@ const printConstructorName = (
           ? EXPECTED_COLOR(constructor.name)
           : RECEIVED_COLOR(constructor.name)
       }`;
+
+// When comparing strings returns marker at first instance of difference
+function diffLocation(a: string, b: string) {
+  const longerLength = Math.max(a.length, b.length);
+  for (let i = 0; i < longerLength; i++) {
+    // When found match
+    if (a[i] !== b[i]) return '^'.padStart(i, ' ');
+  }
+
+  return '';
+}

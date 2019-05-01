@@ -11,6 +11,8 @@
 - `[expect]` Improve report when matcher fails, part 17 ([#8349](https://github.com/facebook/jest/pull/8349))
 - `[expect]` Improve report when matcher fails, part 18 ([#8356](https://github.com/facebook/jest/pull/8356))
 - `[expect]` Improve report when matcher fails, part 19 ([#8367](https://github.com/facebook/jest/pull/8367))
+- `[expect]` Show marker at first place of string mismatch ([#8400](https://github.com/facebook/jest/pull/8400))
+
 
 ### Fixes
 
