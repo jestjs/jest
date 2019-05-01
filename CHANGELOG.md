@@ -37,6 +37,7 @@
 ### Performance
 
 - `[jest-runtime]` Fix module registry memory leak ([#8282](https://github.com/facebook/jest/pull/8282))
+- `[jest-resolve]` optimize resolve module path ([#8388](https://github.com/facebook/jest/pull/8388))
 
 ## 24.7.1
 
