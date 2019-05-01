@@ -182,11 +182,19 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   // Clone target
   const mergedOutput = target.slice();
 
-  source.forEach((element, index) => {
-    if (typeof mergedOutput[index] === 'undefined') {
-      mergedOutput[index] = element;
+  source.forEach((sourceElement, index) => {
+    const targetElement = mergedOutput[index];
+    const targetElementType = typeof targetElement;
+
+    if (targetElementType === 'undefined' || targetElementType !== 'object') {
+      // Source does not exist in target or target is primitive and cannot be deep merged
+      mergedOutput[index] = sourceElement;
+    } else if (Array.isArray(target[index])) {
+      // Target is an array
+      mergedOutput[index] = deepMergeArray(target[index], sourceElement);
     } else {
-      mergedOutput[index] = deepMerge(target[index], element);
+      // Target is an object - recursively merge
+      mergedOutput[index] = deepMerge(target[index], sourceElement);
     }
   });
 
