@@ -9,6 +9,7 @@ jest.mock('fs');
 
 import fs from 'fs';
 import path from 'path';
+import assert from 'assert';
 import chalk from 'chalk';
 
 import {
@@ -201,14 +202,85 @@ test('serialize handles \\r\\n', () => {
 
 describe('DeepMerge', () => {
   it('Correctly merges objects with property matchers', () => {
-    const target = {data: {bar: 'bar', foo: 'foo'}};
+    /* eslint-disable sort-keys */
+    // to keep keys in numerical order rather than alphabetical
+    const target = {
+      data: {
+        one: 'one',
+        two: 'two',
+        three: [
+          {
+            four: 'four',
+            five: 'five',
+          },
+          // Include an array element not present in the propertyMatchers
+          {
+            six: 'six',
+            seven: 'seven',
+          },
+        ],
+        eight: [{nine: 'nine'}],
+      },
+    };
 
     const matcher = expect.any(String);
-    const propertyMatchers = {data: {foo: matcher}};
+    const propertyMatchers = {
+      data: {
+        two: matcher,
+        three: [
+          {
+            four: matcher,
+          },
+        ],
+        eight: [
+          {nine: matcher},
+          // Include an array element not present in the target
+          {ten: matcher},
+        ],
+      },
+    };
 
     const mergedOutput = deepMerge(target, propertyMatchers);
 
-    expect(mergedOutput).toStrictEqual({data: {bar: 'bar', foo: matcher}});
-    expect(target).toStrictEqual({data: {bar: 'bar', foo: 'foo'}});
+    // Use assert.deepStrictEqual() instead of expect().toStrictEqual()
+    // since we want to actually validate that we got the matcher
+    // rather than treat it specially the way that expect() does
+    assert.deepStrictEqual(mergedOutput, {
+      data: {
+        one: 'one',
+        two: matcher,
+        three: [
+          {
+            four: matcher,
+            five: 'five',
+          },
+          {
+            six: 'six',
+            seven: 'seven',
+          },
+        ],
+        eight: [{nine: matcher}, {ten: matcher}],
+      },
+    });
+
+    // Ensure original target is not modified
+    expect(target).toStrictEqual({
+      data: {
+        one: 'one',
+        two: 'two',
+        three: [
+          {
+            four: 'four',
+            five: 'five',
+          },
+          {
+            six: 'six',
+            seven: 'seven',
+          },
+        ],
+        eight: [{nine: 'nine'}],
+      },
+    });
+    /* eslint-enable sort-keys */
   });
 });
