@@ -293,7 +293,10 @@ export function readConfigs(
     }
   }
 
-  if (projects.length) {
+  if (
+    projects.length > 1 ||
+    (projects.length && typeof projects[0] === 'object')
+  ) {
     const parsedConfigs = projects
       .filter(root => {
         // Ignore globbed files that cannot be `require`d.
