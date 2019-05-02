@@ -18,18 +18,18 @@ export default function getMaxWorkers(
     const maxWorkers = (argv.maxWorkers as unknown) as number | string;
     const parsed = parseInt(maxWorkers as string, 10);
 
+    const cpus = os.cpus().length;
     if (
       typeof maxWorkers === 'string' &&
       maxWorkers.trim().endsWith('%') &&
       parsed > 0 &&
       parsed <= 100
     ) {
-      const cpus = os.cpus().length;
       const workers = Math.floor((parsed / 100) * cpus);
       return workers >= 1 ? workers : 1;
     }
 
-    return parsed > 0 ? parsed : 1;
+    return Math.max(Math.min(cpus, parsed), 1);
   } else {
     // In watch mode, Jest should be unobtrusive and not use all available CPUs.
     const cpus = os.cpus() ? os.cpus().length : 1;
