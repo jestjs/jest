@@ -5,9 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const path = require('path');
-const customImportResolver = path.resolve('./eslintImportResolver');
-
 module.exports = {
   extends: [
     './packages/eslint-config-fb-strict/index.js',
@@ -16,6 +13,22 @@ module.exports = {
     'prettier/flowtype',
   ],
   overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint/eslint-plugin'],
+      rules: {
+        '@typescript-eslint/array-type': ['error', 'generic'],
+        '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          {argsIgnorePattern: '^_'},
+        ],
+        'import/order': 'error',
+        'no-dupe-class-members': 'off',
+        'no-unused-vars': 'off',
+      },
+    },
     // to make it more suitable for running on code examples in docs/ folder
     {
       files: ['*.md'],
@@ -51,51 +64,9 @@ module.exports = {
       },
     },
     {
-      files: 'types/**/*',
+      files: ['packages/jest-types/**/*'],
       rules: {
         'import/no-extraneous-dependencies': 0,
-      },
-    },
-    {
-      excludedFiles: ['e2e/__tests__/**/*', 'website/versioned_docs/**/*.md'],
-      files: [
-        'examples/**/*',
-        'scripts/**/*',
-        'e2e/*/**/*',
-        'website/*.js',
-        'website/*/**/*',
-        'eslintImportResolver.js',
-      ],
-      rules: {
-        'prettier/prettier': [
-          2,
-          {
-            bracketSpacing: false,
-            printWidth: 80,
-            singleQuote: true,
-            trailingComma: 'es5',
-          },
-        ],
-      },
-    },
-    {
-      files: [
-        'e2e/__tests__/**/*',
-        'packages/babel-jest/**/*.test.js',
-        'packages/babel-plugin-jest-hoist/**/*.test.js',
-        'packages/babel-preset-jest/**/*.test.js',
-        'packages/eslint-config-fb-strict/**/*.test.js',
-        'packages/eslint-plugin-jest/**/*.test.js',
-        'packages/jest-changed-files/**/*.test.js',
-        'packages/jest-circus/**/*.test.js',
-        'packages/jest-diff/**/*.test.js',
-        'packages/jest-docblock/**/*.test.js',
-        'packages/jest-editor-support/**/*.test.js',
-        'packages/jest/**/*.test.js',
-        'packages/pretty-format/**/*.test.js',
-      ],
-      rules: {
-        'flowtype/require-valid-file-annotation': [2, 'always'],
       },
     },
     {
@@ -136,23 +107,11 @@ module.exports = {
     'import/order': 0,
     'no-console': 0,
     'no-unused-vars': 2,
-    'prettier/prettier': [
-      2,
-      {
-        bracketSpacing: false,
-        printWidth: 80,
-        singleQuote: true,
-        trailingComma: 'all',
-      },
-    ],
+    'prettier/prettier': 2,
   },
   settings: {
     'import/resolver': {
-      [customImportResolver]: {
-        moduleNameMapper: {
-          '^types/(.*)': './types/$1',
-        },
-      },
+      'eslint-import-resolver-typescript': true,
     },
   },
 };

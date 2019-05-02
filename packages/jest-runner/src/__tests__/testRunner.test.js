@@ -1,15 +1,13 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  */
 
-'use strict';
-
-const TestRunner = require('../index');
-const {TestWatcher} = require('jest-cli');
+import {TestWatcher} from '@jest/core';
+import TestRunner from '../index';
 
 let mockWorkerFarm;
 
@@ -31,6 +29,7 @@ test('injects the serializable module map into each worker in watch mode', () =>
   const globalConfig = {maxWorkers: 2, watch: true};
   const config = {rootDir: '/path/'};
   const serializableModuleMap = jest.fn();
+  const runContext = {};
   const context = {
     config,
     moduleMap: {toJSON: () => serializableModuleMap},
@@ -46,49 +45,20 @@ test('injects the serializable module map into each worker in watch mode', () =>
     )
     .then(() => {
       expect(mockWorkerFarm.worker.mock.calls).toEqual([
-        [{config, globalConfig, path: './file.test.js', serializableModuleMap}],
         [
           {
             config,
-            globalConfig,
-            path: './file2.test.js',
-            serializableModuleMap,
-          },
-        ],
-      ]);
-    });
-});
-
-test('does not inject the serializable module map in serial mode', () => {
-  const globalConfig = {maxWorkers: 1, watch: false};
-  const config = {rootDir: '/path/'};
-  const context = {config};
-
-  return new TestRunner(globalConfig)
-    .runTests(
-      [{context, path: './file.test.js'}, {context, path: './file2.test.js'}],
-      new TestWatcher({isWatchMode: globalConfig.watch}),
-      () => {},
-      () => {},
-      () => {},
-      {serial: false},
-    )
-    .then(() => {
-      expect(mockWorkerFarm.worker.mock.calls).toEqual([
-        [
-          {
-            config,
+            context: runContext,
             globalConfig,
             path: './file.test.js',
-            serializableModuleMap: null,
           },
         ],
         [
           {
             config,
+            context: runContext,
             globalConfig,
             path: './file2.test.js',
-            serializableModuleMap: null,
           },
         ],
       ]);

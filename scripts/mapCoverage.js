@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -25,12 +25,14 @@
  * produce a full coverage report.
  */
 
-const createReporter = require('istanbul-api').createReporter;
+const istanbulReport = require('istanbul-lib-report');
+const istanbulReports = require('istanbul-reports');
 const istanbulCoverage = require('istanbul-lib-coverage');
 const coverage = require('../coverage/coverage-final.json');
 
 const map = istanbulCoverage.createCoverageMap();
-const reporter = createReporter();
+
+const context = istanbulReport.createContext();
 
 const mapFileCoverage = fileCoverage => {
   fileCoverage.path = fileCoverage.path.replace(
@@ -44,5 +46,7 @@ Object.keys(coverage).forEach(filename =>
   map.addFileCoverage(mapFileCoverage(coverage[filename]))
 );
 
-reporter.addAll(['json', 'lcov', 'text']);
-reporter.write(map);
+const tree = istanbulReport.summarizers.pkg(map);
+['json', 'lcov', 'text'].forEach(reporter =>
+  tree.visit(istanbulReports.create(reporter, {}), context)
+);

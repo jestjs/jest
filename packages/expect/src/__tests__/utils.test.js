@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,7 +13,9 @@ const {
   emptyObject,
   getObjectSubset,
   getPath,
+  hasOwnProperty,
   subsetEquality,
+  iterableEquality,
 } = require('../utils');
 
 describe('getPath()', () => {
@@ -75,6 +77,18 @@ describe('getPath()', () => {
     });
   });
 
+  test('property is inherited', () => {
+    class A {}
+    A.prototype.a = 'a';
+
+    expect(getPath(new A(), 'a')).toEqual({
+      hasEndProp: true,
+      lastTraversedObject: new A(),
+      traversedPath: ['a'],
+      value: 'a',
+    });
+  });
+
   test('path breaks', () => {
     expect(getPath({a: {}}, 'a.b.c')).toEqual({
       hasEndProp: false,
@@ -91,6 +105,45 @@ describe('getPath()', () => {
       traversedPath: ['a', 'b', 'c'],
       value: undefined,
     });
+  });
+});
+
+describe('hasOwnProperty', () => {
+  it('does inherit getter from class', () => {
+    class MyClass {
+      get key() {
+        return 'value';
+      }
+    }
+    expect(hasOwnProperty(new MyClass(), 'key')).toBe(true);
+  });
+
+  it('does not inherit setter from class', () => {
+    class MyClass {
+      set key(value) {}
+    }
+    expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
+  });
+
+  it('does not inherit method from class', () => {
+    class MyClass {
+      key() {}
+    }
+    expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
+  });
+
+  it('does not inherit property from constructor prototype', () => {
+    function MyClass() {}
+    MyClass.prototype.key = 'value';
+    expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
+  });
+
+  it('does not inherit __proto__ getter from Object', () => {
+    expect(hasOwnProperty({}, '__proto__')).toBe(false);
+  });
+
+  it('does not inherit toString method from Object', () => {
+    expect(hasOwnProperty({}, 'toString')).toBe(false);
   });
 });
 
@@ -148,5 +201,126 @@ describe('subsetEquality()', () => {
 
   test('undefined does not return errors', () => {
     expect(subsetEquality(undefined, {foo: 'bar'})).not.toBeTruthy();
+  });
+});
+
+describe('iterableEquality', () => {
+  test('returns true when given circular iterators', () => {
+    class Iter {
+      *[Symbol.iterator]() {
+        yield this;
+      }
+    }
+
+    const a = new Iter();
+    const b = new Iter();
+
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns true when given circular Set', () => {
+    const a = new Set();
+    a.add(a);
+    const b = new Set();
+    b.add(b);
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns true when given nested Sets', () => {
+    expect(
+      iterableEquality(
+        new Set([new Set([[1]]), new Set([[2]])]),
+        new Set([new Set([[2]]), new Set([[1]])]),
+      ),
+    ).toBe(true);
+    expect(
+      iterableEquality(
+        new Set([new Set([[1]]), new Set([[2]])]),
+        new Set([new Set([[3]]), new Set([[1]])]),
+      ),
+    ).toBe(false);
+  });
+
+  test('returns false when given inequal set within a set', () => {
+    expect(
+      iterableEquality(new Set([new Set([2])]), new Set([new Set([1, 2])])),
+    ).toBe(false);
+    expect(
+      iterableEquality(new Set([new Set([2])]), new Set([new Set([1, 2])])),
+    ).toBe(false);
+  });
+
+  test('returns false when given inequal map within a set', () => {
+    expect(
+      iterableEquality(
+        new Set([new Map([['a', 2]])]),
+        new Set([new Map([['a', 3]])]),
+      ),
+    ).toBe(false);
+    expect(
+      iterableEquality(new Set([new Set([2])]), new Set([new Set([1, 2])])),
+    ).toBe(false);
+  });
+
+  test('returns false when given inequal set within a map', () => {
+    expect(
+      iterableEquality(
+        new Map([['one', new Set([2])]]),
+        new Map([['one', new Set([1, 2])]]),
+      ),
+    ).toBe(false);
+  });
+
+  test('returns true when given circular Set shape', () => {
+    const a1 = new Set();
+    const a2 = new Set();
+    a1.add(a2);
+    a2.add(a1);
+    const b = new Set();
+    b.add(b);
+
+    expect(iterableEquality(a1, b)).toBe(true);
+  });
+
+  test('returns true when given circular key in Map', () => {
+    const a = new Map();
+    a.set(a, 'a');
+    const b = new Map();
+    b.set(b, 'a');
+
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns true when given nested Maps', () => {
+    expect(
+      iterableEquality(
+        new Map([['hello', new Map([['world', 'foobar']])]]),
+        new Map([['hello', new Map([['world', 'qux']])]]),
+      ),
+    ).toBe(false);
+    expect(
+      iterableEquality(
+        new Map([['hello', new Map([['world', 'foobar']])]]),
+        new Map([['hello', new Map([['world', 'foobar']])]]),
+      ),
+    ).toBe(true);
+  });
+
+  test('returns true when given circular key and value in Map', () => {
+    const a = new Map();
+    a.set(a, a);
+    const b = new Map();
+    b.set(b, b);
+
+    expect(iterableEquality(a, b)).toBe(true);
+  });
+
+  test('returns true when given circular value in Map', () => {
+    const a = new Map();
+    a.set('a', a);
+    const b = new Map();
+    b.set('a', b);
+
+    expect(iterableEquality(a, b)).toBe(true);
   });
 });

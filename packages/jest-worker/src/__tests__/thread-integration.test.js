@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -66,6 +66,7 @@ describe('Jest Worker Process Integration', () => {
 
   it('calls a single method from the worker', async () => {
     const farm = new Farm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });
@@ -79,6 +80,7 @@ describe('Jest Worker Process Integration', () => {
 
   it('distributes sequential calls across child processes', async () => {
     const farm = new Farm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });
@@ -100,6 +102,7 @@ describe('Jest Worker Process Integration', () => {
 
   it('distributes concurrent calls across child processes', async () => {
     const farm = new Farm('/tmp/baz.js', {
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });
@@ -128,6 +131,7 @@ describe('Jest Worker Process Integration', () => {
   it('sticks parallel calls to children', async () => {
     const farm = new Farm('/tmp/baz.js', {
       computeWorkerKey: () => '1234567890abcdef',
+      enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
     });

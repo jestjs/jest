@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -90,5 +90,21 @@ describe('snapshot serializers', () => {
       test: val => val && val.hasOwnProperty('foo'),
     });
     expect(test).toMatchSnapshot();
+  });
+
+  it('works with array of strings in property matcher', () => {
+    expect({
+      arrayOfStrings: ['stream'],
+    }).toMatchSnapshot({
+      arrayOfStrings: ['stream'],
+    });
+  });
+
+  it('works with expect.XXX within array in property matcher', () => {
+    expect({
+      arrayOfStrings: ['stream'],
+    }).toMatchSnapshot({
+      arrayOfStrings: [expect.any(String)],
+    });
   });
 });

@@ -81,6 +81,21 @@ you can use:
 npm test -- -u -t="ColorPicker"
 ```
 
+## Camelcase & dashed args support
+
+Jest supports both camelcase and dashed arg formats. The following examples will have equal result:
+
+```bash
+jest --collect-coverage
+jest --collectCoverage
+```
+
+Arguments can also be mixed:
+
+```bash
+jest --update-snapshot --detectOpenHandles
+```
+
 ## Options
 
 _Note: CLI options take precedence over values from the [Configuration](Configuration.md)._
@@ -111,7 +126,7 @@ Runs tests related to the current changes and the changes made in the last commi
 
 ### `--changedSince`
 
-Runs tests related the changes since the provided branch. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
+Runs tests related to the changes since the provided branch. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
 
 ### `--ci`
 
@@ -143,7 +158,7 @@ Print debugging info about your Jest config.
 
 ### `--detectOpenHandles`
 
-Attempt to collect and print open handles preventing Jest from exiting cleanly. Use this in cases where you need to use `--forceExit` in order for Jest to exit to potentially track down the reason. Implemented using [`async_hooks`](https://nodejs.org/api/async_hooks.html), so it only works in Node 8 and newer.
+Attempt to collect and print open handles preventing Jest from exiting cleanly. Use this in cases where you need to use `--forceExit` in order for Jest to exit to potentially track down the reason. This implies `--runInBand`, making tests run serially. Implemented using [`async_hooks`](https://nodejs.org/api/async_hooks.html), so it only works in Node 8 and newer. This option has a significant performance penalty and should only be used for debugging.
 
 ### `--env=<environment>`
 
@@ -179,7 +194,7 @@ Prints the test results in JSON. This mode will send all other test output and u
 
 ### `--outputFile=<filename>`
 
-Write test results to a file when the `--json` option is also specified.
+Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testResultsProcessor-string).
 
 ### `--lastCommit`
 
@@ -193,9 +208,15 @@ Lists all tests as JSON that Jest will run given the arguments, and exits. This 
 
 Logs the heap usage after every test. Useful to debug memory leaks. Use together with `--runInBand` and `--expose-gc` in node.
 
-### `--maxWorkers=<num>`
+### `--maxConcurrency=<num>`
 
-Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. This defaults to the number of the cores available on your machine. It may be useful to adjust this in resource limited environments like CIs but the default should be adequate for most use-cases.
+Prevents Jest from executing more than the specified amount of tests at the same time. Only affects tests that use `test.concurrent`.
+
+### `--maxWorkers=<num>|<string>`
+
+Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. In single run mode, this defaults to the number of the cores available on your machine minus one for the main thread. In watch mode, this defaults to half of the available cores on your machine to ensure Jest is unobtrusive and does not grind your machine to a halt. It may be useful to adjust this in resource limited environments like CIs but the defaults should be adequate for most use-cases.
+
+For environments with variable CPUs available, you can use percentage based configuration: `--maxWorkers=50%`
 
 ### `--noStackTrace`
 
@@ -275,6 +296,10 @@ An array of regexp pattern strings that is tested against all tests paths before
 ### `--testRunner=<path>`
 
 Lets you specify a custom test runner.
+
+### `--testSequencer=<path>`
+
+Lets you specify a custom test sequencer. Please refer to the documentation of the corresponding configuration property for details.
 
 ### `--updateSnapshot`
 
