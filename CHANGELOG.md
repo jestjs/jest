@@ -34,6 +34,7 @@
 - `[@jest/reporters]` Migrate away from `istanbul-api` ([#8294](https://github.com/facebook/jest/pull/8294))
 - `[*]` Delete obsolete emails tag from header comment in test files ([#8377](https://github.com/facebook/jest/pull/8377))
 - `[expect]` optimize compare nodes ([#8368](https://github.com/facebook/jest/pull/8368))
+- `[docs]` Fix typo in MockFunctionAPI.md ([#8406](https://github.com/facebook/jest/pull/8406))
 
 ### Performance
 
