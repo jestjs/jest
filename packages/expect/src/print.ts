@@ -179,23 +179,24 @@ export const printReceivedConstructorName = (
   received: Function,
 ) => printConstructorName(label, received, false, false) + '\n';
 
-export function printReceivedConstructorNameNot(
+// Do not call function if received is equal to expected.
+export const printReceivedConstructorNameNot = (
   label: string,
   received: Function,
   expected: Function,
-) {
-  let printed = printConstructorName(label, received, true, false);
-
-  if (typeof received.name === 'string' && received.name.length !== 0) {
-    printed += ` ${
-      Object.getPrototypeOf(received) === expected
-        ? 'extends'
-        : 'extends … extends'
-    } ${EXPECTED_COLOR(expected.name)}`;
-  }
-
-  return printed + '\n';
-}
+) =>
+  typeof expected.name === 'string' &&
+  expected.name.length !== 0 &&
+  typeof received.name === 'string' &&
+  received.name.length !== 0
+    ? printConstructorName(label, received, true, false) +
+      ` ${
+        Object.getPrototypeOf(received) === expected
+          ? 'extends'
+          : 'extends … extends'
+      } ${EXPECTED_COLOR(expected.name)}` +
+      '\n'
+    : printConstructorName(label, received, false, false) + '\n';
 
 const printConstructorName = (
   label: string,

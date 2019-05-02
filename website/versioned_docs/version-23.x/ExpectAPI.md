@@ -1173,6 +1173,8 @@ test('throws on octopus', () => {
 });
 ```
 
+> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+
 If you want to test that a specific error gets thrown, you can provide an argument to `toThrow`. The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. For example, let's say that `drinkFlavor` is coded like this:
 
 ```js
@@ -1203,8 +1205,6 @@ test('throws on octopus', () => {
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
 });
 ```
-
-> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
 
 ### `.toThrowErrorMatchingSnapshot()`
 
