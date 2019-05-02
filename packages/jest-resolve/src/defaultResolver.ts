@@ -188,6 +188,7 @@ function isDirectory(dir: Config.Path): boolean {
   return statSyncCached(dir) === IPathType.DIRECTORY;
 }
 
+const CURRENT_DIRECTORY = path.resolve('.');
 function isCurrentDirectory(testPath: Config.Path): boolean {
-  return path.resolve('.') === path.resolve(testPath);
+  return CURRENT_DIRECTORY === path.resolve(testPath);
 }
