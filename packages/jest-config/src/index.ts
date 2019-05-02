@@ -218,6 +218,10 @@ const ensureNoDuplicateConfigs = (
   parsedConfigs: Array<ReadConfig>,
   projects: Config.GlobalConfig['projects'],
 ) => {
+  if (projects.length <= 1) {
+    return;
+  }
+
   const configPathMap = new Map();
 
   for (const config of parsedConfigs) {
@@ -289,7 +293,10 @@ export function readConfigs(
     }
   }
 
-  if (projects.length > 1) {
+  if (
+    projects.length > 1 ||
+    (projects.length && typeof projects[0] === 'object')
+  ) {
     const parsedConfigs = projects
       .filter(root => {
         // Ignore globbed files that cannot be `require`d.
