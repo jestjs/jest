@@ -170,6 +170,42 @@ test('"No tests found" message for projects', () => {
   );
 });
 
+test.each([{projectPath: 'packages/somepackage'}, {projectPath: 'packages/*'}])(
+  'allows a single non-root project',
+  ({projectPath}: {projectPath: string}) => {
+    writeFiles(DIR, {
+      'package.json': `
+        {
+          "jest": {
+            "testMatch": ["<rootDir>/packages/somepackage/test.js"],
+            "projects": [
+              "${projectPath}"
+            ]
+          }
+        }
+      `,
+      'packages/somepackage/package.json': `
+        {
+          "jest": {
+            "displayName": "somepackage"
+          }
+        }
+      `,
+      'packages/somepackage/test.js': `
+        test('1+1', () => {
+          expect(1).toBe(1);
+        });
+      `,
+    });
+
+    const {stdout, stderr, status} = runJest(DIR, ['--no-watchman']);
+    expect(stderr).toContain('PASS packages/somepackage/test.js');
+    expect(stderr).toContain('Test Suites: 1 passed, 1 total');
+    expect(stdout).toEqual('');
+    expect(status).toEqual(0);
+  },
+);
+
 test('projects can be workspaces with non-JS/JSON files', () => {
   writeFiles(DIR, {
     'package.json': JSON.stringify({
@@ -248,42 +284,6 @@ test('allows a single project', () => {
   expect(stdout).toEqual('');
   expect(status).toEqual(0);
 });
-
-test.each([{projectPath: 'packages/somepackage'}, {projectPath: 'packages/*'}])(
-  'allows a single non-root project',
-  ({projectPath}: {projectPath: string}) => {
-    writeFiles(DIR, {
-      'package.json': `
-        {
-          "jest": {
-            "testMatch": [],
-            "projects": [
-              "${projectPath}"
-            ]
-          }
-        }
-      `,
-      'packages/somepackage/package.json': `
-        {
-          "jest": {
-            "displayName": "somepackage"
-          }
-        }
-      `,
-      'packages/somepackage/test.js': `
-        test('1+1', () => {
-          expect(1).toBe(1);
-        });
-      `,
-    });
-
-    const {stdout, stderr, status} = runJest(DIR, ['--no-watchman']);
-    expect(stderr).toContain('PASS somepackage packages/somepackage/test.js');
-    expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-    expect(stdout).toEqual('');
-    expect(status).toEqual(0);
-  },
-);
 
 test('resolves projects and their <rootDir> properly', () => {
   writeFiles(DIR, {
