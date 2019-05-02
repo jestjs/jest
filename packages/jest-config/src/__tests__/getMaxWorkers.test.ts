@@ -25,9 +25,9 @@ describe('getMaxWorkers', () => {
     expect(getMaxWorkers({})).toBe(1);
   });
 
-  it('Returns the lesser of `maxWorkers` and the number of cpus', () => {
+  it('Returns the lesser of `maxWorkers` and (the number of cpus - 1)', () => {
     expect(getMaxWorkers({maxWorkers: 2})).toBe(2);
-    expect(getMaxWorkers({maxWorkers: 50})).toBe(4);
+    expect(getMaxWorkers({maxWorkers: 50})).toBe(3);
   });
 
   it('Returns based on the number of cpus', () => {
