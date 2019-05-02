@@ -73,10 +73,10 @@ jobs:
       - store_test_results:
           path: reports/junit
 
-  test-node-11:
+  test-node-12:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:11
+      - image: circleci/node:12
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -120,8 +120,8 @@ workflows:
       - lint-and-typecheck
       - test-node-8
       - test-node-10
+      - test-node-12 # current
       - test-jest-circus
-      - test-node-11 # current
       - test-browser
       - test-or-deploy-website:
           filters: *filter-ignore-gh-pages
