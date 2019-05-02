@@ -23,13 +23,10 @@
 - `[jest-environment-jsdom]` Re-declare global prototype of JSDOMEnvironment ([#8352](https://github.com/facebook/jest/pull/8352))
 - `[jest-snapshot]` Handle arrays when merging snapshots ([#7089](https://github.com/facebook/jest/pull/7089))
 - `[expect]` Extract names of async and generator functions ([#8362](https://github.com/facebook/jest/pull/8362))
-<<<<<<< HEAD
 - `[expect]` Display expectedDiff more carefully in toBeCloseTo ([#8389](https://github.com/facebook/jest/pull/8389))
-=======
 - `[jest-runtime]` Fix virtual mocks not being unmockable after previously being mocked ([#8396](https://github.com/facebook/jest/pull/8396))
 - `[jest-transform]` Replace special characters in transform cache filenames to support Windows ([#8353](https://github.com/facebook/jest/pull/8353))
 - `[jest-config]` Allow exactly one project ([#7498](https://github.com/facebook/jest/pull/7498))
->>>>>>> master
 
 ### Chore & Maintenance
 
