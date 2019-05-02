@@ -26,7 +26,7 @@
 - `[jest-runtime]` Fix virtual mocks not being unmockable after previously being mocked ([#8396](https://github.com/facebook/jest/pull/8396))
 - `[jest-transform]` Replace special characters in transform cache filenames to support Windows ([#8353](https://github.com/facebook/jest/pull/8353))
 - `[jest-config]` Allow exactly one project ([#7498](https://github.com/facebook/jest/pull/7498))
-- `[jest-config]` Adjust `--maxWorkers` behavior to use the lesser of provided number and number of cores. ([#TODO}(https://github.com/facebook/jest/pull/todo)])
+- `[jest-config]` Adjust `--maxWorkers` behavior to use the lesser of provided number and number of cores. ([#8410](https://github.com/facebook/jest/pull/8410))
 
 ### Chore & Maintenance
 
