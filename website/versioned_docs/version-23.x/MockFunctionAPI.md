@@ -191,7 +191,7 @@ Will result in this error:
 
 ### `mockFn.mockReturnThis()`
 
-Just a syntactic sugar function for:
+Syntactic sugar function for:
 
 ```js
 jest.fn(function() {
