@@ -125,7 +125,7 @@ export const printDiffOrStringify = (
 
   const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
   let markerLoc = '';
-  if (typeof expected == 'string' || expected instanceof String) {
+  if (typeof expected == 'string') {
 
     // Specific first occurrence difference marker
     // not relevant to char comparisons or snapshots
