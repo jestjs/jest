@@ -946,7 +946,7 @@ export default function normalize(
     argv.findRelatedTests &&
     argv.findRelatedTests.length > 0
   ) {
-    let collectCoverageFrom = argv._.map(filename => {
+    let collectCoverageFrom = argv.findRelatedTests.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)
