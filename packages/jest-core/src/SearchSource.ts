@@ -265,7 +265,7 @@ export default class SearchSource {
       );
     } else if (globalConfig.runTestsByPath && paths && paths.length) {
       return this.findTestsByPaths(paths);
-    } else if (globalConfig.findRelatedTests.length) {
+    } else if (globalConfig.findRelatedTests.length > 0) {
       const relatedTests = this.findRelatedTestsFromPattern(
         globalConfig.findRelatedTests,
         globalConfig.collectCoverage,
