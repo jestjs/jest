@@ -944,7 +944,7 @@ export default function normalize(
   if (
     newOptions.collectCoverage &&
     argv.findRelatedTests &&
-    argv.findRelatedTests.length
+    argv.findRelatedTests.length > 0
   ) {
     let collectCoverageFrom = argv._.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
