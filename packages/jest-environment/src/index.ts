@@ -156,7 +156,7 @@ export interface Jest {
    * Restores all mocks back to their original value. Equivalent to calling
    * `.mockRestore` on every mocked function.
    *
-   * Beware that jest.restoreAllMocks() only works when mock was created with
+   * Beware that jest.restoreAllMocks() only works when the mock was created with
    * jest.spyOn; other mocks will require you to manually restore them.
    */
   restoreAllMocks(): Jest;
