@@ -26,6 +26,7 @@
 - `[jest-runtime]` Fix virtual mocks not being unmockable after previously being mocked ([#8396](https://github.com/facebook/jest/pull/8396))
 - `[jest-transform]` Replace special characters in transform cache filenames to support Windows ([#8353](https://github.com/facebook/jest/pull/8353))
 - `[jest-config]` Allow exactly one project ([#7498](https://github.com/facebook/jest/pull/7498))
+- `[jest-environment-jsdom]` `[jest-environment-node]` Fix `testEnvironmentOptions` affected in the test process ([#8420](https://github.com/facebook/jest/pull/8420))
 
 ### Chore & Maintenance
 
