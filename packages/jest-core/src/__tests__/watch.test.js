@@ -108,7 +108,12 @@ describe('Watch mode flows', () => {
     isInteractive = true;
     jest.doMock('jest-util/build/isInteractive', () => isInteractive);
     watch = require('../watch').default;
-    const config = {roots: [], testPathIgnorePatterns: [], testRegex: []};
+    const config = {
+      rootDir: __dirname,
+      roots: [],
+      testPathIgnorePatterns: [],
+      testRegex: [],
+    };
     pipe = {write: jest.fn()};
     globalConfig = {watch: true};
     hasteMapInstances = [{on: () => {}}];
@@ -569,6 +574,31 @@ describe('Watch mode flows', () => {
         },
       ],
     });
+  });
+
+  it('makes watch plugin initialization errors look nice', async () => {
+    const pluginPath = `${__dirname}/__fixtures__/plugin_path_throws`;
+    jest.doMock(
+      pluginPath,
+      () => {
+        throw new Error('initialization failure');
+      },
+      {virtual: true},
+    );
+
+    await expect(
+      watch(
+        {
+          ...globalConfig,
+          rootDir: __dirname,
+          watchPlugins: [{config: {}, path: pluginPath}],
+        },
+        contexts,
+        pipe,
+        hasteMapInstances,
+        stdin,
+      ),
+    ).rejects.toMatchSnapshot();
   });
 
   it.each`

@@ -171,12 +171,25 @@ export default function watch(
     }
 
     for (const pluginWithConfig of globalConfig.watchPlugins) {
-      const ThirdPartyPlugin = require(pluginWithConfig.path);
-      const plugin: WatchPlugin = new ThirdPartyPlugin({
-        config: pluginWithConfig.config,
-        stdin,
-        stdout: outputStream,
-      });
+      let plugin: WatchPlugin;
+      try {
+        const ThirdPartyPlugin = require(pluginWithConfig.path);
+        plugin = new ThirdPartyPlugin({
+          config: pluginWithConfig.config,
+          stdin,
+          stdout: outputStream,
+        });
+      } catch (err) {
+        return Promise.reject(
+          new Error(
+            `Failed to initialize watch plugin '${
+              pluginWithConfig.path
+            }':\n\n${formatExecError(err, contexts[0].config, {
+              noStackTrace: false,
+            })}`,
+          ),
+        );
+      }
       checkForConflicts(watchPluginKeys, plugin, globalConfig);
 
       const hookSubscriber = hooks.getSubscriber();
