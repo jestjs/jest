@@ -35,7 +35,7 @@ class JSDOMEnvironment implements JestEnvironment {
       runScripts: 'dangerously',
       url: config.testURL,
       virtualConsole: new VirtualConsole().sendTo(options.console || console),
-      ...config.testEnvironmentOptions,
+      ...Object.create(config.testEnvironmentOptions),
     });
     const global = (this.global = this.dom.window.document.defaultView as Win);
 
