@@ -30,13 +30,20 @@ class JSDOMEnvironment implements JestEnvironment {
   moduleMocker: ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
-    this.dom = new JSDOM('<!DOCTYPE html>', {
-      pretendToBeVisual: true,
-      runScripts: 'dangerously',
-      url: config.testURL,
-      virtualConsole: new VirtualConsole().sendTo(options.console || console),
-      ...Object.create(config.testEnvironmentOptions),
-    });
+    this.dom = new JSDOM(
+      '<!DOCTYPE html>',
+      Object.assign(
+        {
+          pretendToBeVisual: true,
+          runScripts: 'dangerously',
+          url: config.testURL,
+          virtualConsole: new VirtualConsole().sendTo(
+            options.console || console,
+          ),
+        },
+        Object.create(config.testEnvironmentOptions || null),
+      ),
+    );
     const global = (this.global = this.dom.window.document.defaultView as Win);
 
     if (!global) {

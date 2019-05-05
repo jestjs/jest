@@ -28,7 +28,10 @@ class NodeEnvironment implements JestEnvironment {
     this.context = vm.createContext();
     const global = (this.global = vm.runInContext(
       'this',
-      Object.assign(this.context, Object.create(config.testEnvironmentOptions)),
+      Object.assign(
+        this.context,
+        Object.create(config.testEnvironmentOptions || null),
+      ),
     ));
     global.global = global;
     global.clearInterval = clearInterval;
