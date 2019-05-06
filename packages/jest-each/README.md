@@ -85,7 +85,7 @@ import each from 'jest-each';
 
 ```js
 // es5
-const each = require('jest-each');
+const each = require('jest-each').default;
 ```
 
 ## Array of rows
