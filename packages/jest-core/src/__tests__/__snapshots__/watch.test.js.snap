@@ -51,14 +51,14 @@ Watch Usage
 `;
 
 exports[`Watch mode flows makes watch plugin initialization errors look nice 1`] = `
-[Error: Failed to initialize watch plugin '/Users/timseckinger/proj/jest/packages/jest-core/src/__tests__/__fixtures__/plugin_path_throws':
+"Failed to initialize watch plugin 'PATH_REPLACED':
 
   ● Test suite failed to run
 
     initialization failure
 
-      at Object.jest.doMock [as user:/Users/timseckinger/proj/jest/packages/jest-core/src/__tests__/__fixtures__/plugin_path_throws:] (watch.test.js:584:15)
-]
+      at Object.jest.doMock [as user:PATH_REPLACED:] (watch.test.js:585:15)
+"
 `;
 
 exports[`Watch mode flows shows prompts for WatchPlugins in alphabetical order 1`] = `

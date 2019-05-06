@@ -8,6 +8,7 @@
 
 'use strict';
 
+import path from 'path';
 import chalk from 'chalk';
 import TestWatcher from '../TestWatcher';
 import {JestHook, KEYS} from 'jest-watcher';
@@ -586,8 +587,9 @@ describe('Watch mode flows', () => {
       {virtual: true},
     );
 
-    await expect(
-      watch(
+    expect.assertions(1);
+    try {
+      await watch(
         {
           ...globalConfig,
           rootDir: __dirname,
@@ -597,8 +599,12 @@ describe('Watch mode flows', () => {
         pipe,
         hasteMapInstances,
         stdin,
-      ),
-    ).rejects.toMatchSnapshot();
+      );
+    } catch (err) {
+      expect(
+        err.message.split(path.resolve(pluginPath)).join('PATH_REPLACED'),
+      ).toMatchSnapshot();
+    }
   });
 
   it.each`
