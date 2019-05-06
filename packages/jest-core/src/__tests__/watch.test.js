@@ -8,7 +8,6 @@
 
 'use strict';
 
-import path from 'path';
 import chalk from 'chalk';
 import TestWatcher from '../TestWatcher';
 import {JestHook, KEYS} from 'jest-watcher';
@@ -578,18 +577,10 @@ describe('Watch mode flows', () => {
   });
 
   it('makes watch plugin initialization errors look nice', async () => {
-    const pluginPath = `${__dirname}/__fixtures__/plugin_path_throws`;
-    jest.doMock(
-      pluginPath,
-      () => {
-        throw new Error('initialization failure');
-      },
-      {virtual: true},
-    );
+    const pluginPath = `${__dirname}/__fixtures__/watch_plugin_throws`;
 
-    expect.assertions(1);
-    try {
-      await watch(
+    await expect(
+      watch(
         {
           ...globalConfig,
           rootDir: __dirname,
@@ -599,12 +590,8 @@ describe('Watch mode flows', () => {
         pipe,
         hasteMapInstances,
         stdin,
-      );
-    } catch (err) {
-      expect(
-        err.message.split(path.resolve(pluginPath)).join('PATH_REPLACED'),
-      ).toMatchSnapshot();
-    }
+      ),
+    ).rejects.toMatchSnapshot();
   });
 
   it.each`

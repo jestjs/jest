@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import path from 'path';
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import exit from 'exit';
@@ -179,16 +180,17 @@ export default function watch(
           stdin,
           stdout: outputStream,
         });
-      } catch (err) {
-        return Promise.reject(
-          new Error(
-            `Failed to initialize watch plugin '${
-              pluginWithConfig.path
-            }':\n\n${formatExecError(err, contexts[0].config, {
-              noStackTrace: false,
-            })}`,
-          ),
+      } catch (error) {
+        const errorWithContext = new Error(
+          `Failed to initialize watch plugin '${path.relative(
+            process.cwd(),
+            pluginWithConfig.path,
+          )}':\n\n${formatExecError(error, contexts[0].config, {
+            noStackTrace: false,
+          })}`,
         );
+        delete errorWithContext.stack;
+        return Promise.reject(errorWithContext);
       }
       checkForConflicts(watchPluginKeys, plugin, globalConfig);
 
