@@ -182,10 +182,9 @@ export default function watch(
         });
       } catch (error) {
         const errorWithContext = new Error(
-          `Failed to initialize watch plugin '${path.relative(
-            process.cwd(),
-            pluginWithConfig.path,
-          )}':\n\n${formatExecError(error, contexts[0].config, {
+          `Failed to initialize watch plugin "${chalk.bold(
+            path.posix.relative(process.cwd(), pluginWithConfig.path),
+          )}":\n\n${formatExecError(error, contexts[0].config, {
             noStackTrace: false,
           })}`,
         );
