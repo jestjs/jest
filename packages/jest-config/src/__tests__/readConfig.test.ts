@@ -7,7 +7,7 @@ test('readConfig() throws when an object is passed without a file path', () => {
     readConfig(
       // @ts-ignore
       null /* argv */,
-      {} /* packageRootOrConfig */,
+      <any>{} /* packageRootOrConfig */,
       false /* skipArgvConfigOption */,
       null /* parentConfigPath */,
     );
