@@ -175,12 +175,11 @@ const setupBabelJest = (options: Config.InitialOptions) => {
   }
 };
 
+//Initial Config has collectCoverageOnlyFrom as keyed object but this also handles string Arrays
 const normalizeCollectCoverageOnlyFrom = (
   initialCollectCoverageFrom:
     | RequiredInitialOptions['collectCoverageOnlyFrom']
-    | Array<
-        Extract<keyof RequiredInitialOptions['collectCoverageOnlyFrom'], string>
-      >,
+    | Array<string>,
   rootDir: Config.InitialOptions['rootDir'],
 ): RequiredInitialOptions['collectCoverageOnlyFrom'] => {
   const collectCoverageOnlyFrom: Array<Config.Glob> = Array.isArray(
