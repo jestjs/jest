@@ -14,7 +14,6 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 const initialOptions: Config.InitialOptions = {
   automock: false,
-  // @ts-ignore TODO: type this properly
   bail: multipleValidOptions(false, 0),
   browser: false,
   cache: true,
@@ -39,7 +38,6 @@ const initialOptions: Config.InitialOptions = {
     },
   },
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
-
   displayName: multipleValidOptions('test-config', {
     color: 'blue' as 'blue',
     name: 'test-config',
