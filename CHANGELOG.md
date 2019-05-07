@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[babel-plugin-jest-hoist]` Expand list of whitelisted globals in global mocks ([#8429](https://github.com/facebook/jest/pull/8429)
+
 ### Chore & Maintenance
 
 ### Performance
