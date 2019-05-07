@@ -69,29 +69,46 @@ export const replaceRootDirInPath = (
   );
 };
 
-// TODO: Type as returning same type as input
-const _replaceRootDirInObject = (
+const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
   rootDir: Config.Path,
-  config: any,
-): {[key: string]: unknown} => {
-  if (config !== null) {
-    const newConfig: {[key: string]: unknown} = {};
-    for (const configKey in config) {
-      newConfig[configKey] =
-        configKey === 'rootDir'
-          ? config[configKey]
-          : _replaceRootDirTags(rootDir, config[configKey]);
-    }
-    return newConfig;
+  config: T,
+): T => {
+  const newConfig = {} as T;
+  for (const configKey in config) {
+    newConfig[configKey] =
+      configKey === 'rootDir'
+        ? config[configKey]
+        : _replaceRootDirTags(rootDir, config[configKey]);
   }
-  return config;
+  return newConfig;
 };
 
-// TODO: Type as returning same type as input
-export const _replaceRootDirTags = (rootDir: Config.Path, config: any): any => {
+type ReplaceRootDirConfigObj = {[key: string]: unknown};
+
+type ReplaceRootDirTags = {
+  <T extends ReplaceRootDirConfigObj>(rootDir: Config.Path, config: T): T;
+  <T extends RegExp>(rootDir: Config.Path, config: T): T;
+  <T extends Config.Path>(rootDir: Config.Path, config: T): T;
+  <T extends Array<ReplaceRootDirConfigObj>>(
+    rootDir: Config.Path,
+    config: T,
+  ): T;
+  <T extends Array<string>>(rootDir: Config.Path, config: T): T;
+  // Return any other kind
+  <T>(rootDir: Config.Path, config: T): T;
+};
+
+export const _replaceRootDirTags: ReplaceRootDirTags = (
+  rootDir: Config.Path,
+  config: any,
+): any => {
+  if (config == null) {
+    return config;
+  }
   switch (typeof config) {
     case 'object':
       if (Array.isArray(config)) {
+        /// can be string[] or {}[]
         return config.map(item => _replaceRootDirTags(rootDir, item));
       }
       if (config instanceof RegExp) {
