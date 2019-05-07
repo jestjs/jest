@@ -9,6 +9,7 @@ import path from 'path';
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import exit from 'exit';
+import slash from 'slash';
 import HasteMap, {HasteChangeEvent} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import {isInteractive, preRunMessage, specialChars} from 'jest-util';
@@ -183,7 +184,7 @@ export default function watch(
       } catch (error) {
         const errorWithContext = new Error(
           `Failed to initialize watch plugin "${chalk.bold(
-            path.relative(process.cwd(), pluginWithConfig.path),
+            slash(path.relative(process.cwd(), pluginWithConfig.path)),
           )}":\n\n${formatExecError(error, contexts[0].config, {
             noStackTrace: false,
           })}`,

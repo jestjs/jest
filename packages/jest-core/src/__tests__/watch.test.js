@@ -579,9 +579,8 @@ describe('Watch mode flows', () => {
   it('makes watch plugin initialization errors look nice', async () => {
     const pluginPath = `${__dirname}/__fixtures__/watch_plugin_throws`;
 
-    expect.assertions(1);
-    try {
-      await watch(
+    await expect(
+      watch(
         {
           ...globalConfig,
           rootDir: __dirname,
@@ -591,10 +590,8 @@ describe('Watch mode flows', () => {
         pipe,
         hasteMapInstances,
         stdin,
-      );
-    } catch (error) {
-      expect(error.toString().replace(/\\/, '/')).toMatchSnapshot();
-    }
+      ),
+    ).rejects.toMatchSnapshot();
   });
 
   it.each`
