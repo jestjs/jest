@@ -42,6 +42,12 @@ const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
 
 type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
+type RequiredInitialOptions = Required<Config.InitialOptions>;
+
+/// needed if dependencyExtractor ,globalSetup ,moduleLoader.. stay as optional and null
+type NonNullableInitialOptions = {
+  [P in keyof Config.InitialOptions]-?: NonNullable<Config.InitialOptions[P]>
+};
 
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
@@ -170,33 +176,34 @@ const setupBabelJest = (options: Config.InitialOptions) => {
 };
 
 const normalizeCollectCoverageOnlyFrom = (
-  options: Config.InitialOptions &
-    Required<Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>>,
-  key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
-) => {
-  const initialCollectCoverageFrom = options[key];
+  initialCollectCoverageFrom:
+    | RequiredInitialOptions['collectCoverageOnlyFrom']
+    | Array<
+        Extract<keyof RequiredInitialOptions['collectCoverageOnlyFrom'], string>
+      >,
+  rootDir: Config.InitialOptions['rootDir'],
+): RequiredInitialOptions['collectCoverageOnlyFrom'] => {
   const collectCoverageOnlyFrom: Array<Config.Glob> = Array.isArray(
     initialCollectCoverageFrom,
   )
     ? initialCollectCoverageFrom // passed from argv
     : Object.keys(initialCollectCoverageFrom); // passed from options
   return collectCoverageOnlyFrom.reduce((map, filePath) => {
-    filePath = path.resolve(
-      options.rootDir,
-      replaceRootDirInPath(options.rootDir, filePath),
-    );
+    filePath = path.resolve(rootDir, replaceRootDirInPath(rootDir, filePath));
     map[filePath] = true;
     return map;
   }, Object.create(null));
 };
 
+//collectCoverageFrom doesnt support type string but we have JSON.parse(initialCollectCoverageFrom) block..
 const normalizeCollectCoverageFrom = (
-  options: Config.InitialOptions &
-    Required<Pick<Config.InitialOptions, 'collectCoverageFrom'>>,
-  key: keyof Pick<Config.InitialOptions, 'collectCoverageFrom'>,
+  initialCollectCoverageFrom:
+    | RequiredInitialOptions['collectCoverageFrom']
+    | string,
 ) => {
-  const initialCollectCoverageFrom = options[key];
+  // const initialCollectCoverageFrom = options[key];
   let value: Array<Config.Glob> | undefined;
+
   if (!initialCollectCoverageFrom) {
     value = [];
   }
@@ -206,7 +213,7 @@ const normalizeCollectCoverageFrom = (
       value = JSON.parse(initialCollectCoverageFrom);
     } catch (e) {}
 
-    if (options[key] && !Array.isArray(value)) {
+    if (initialCollectCoverageFrom && !Array.isArray(value)) {
       value = [initialCollectCoverageFrom];
     }
   } else {
@@ -223,16 +230,14 @@ const normalizeCollectCoverageFrom = (
 };
 
 const normalizeUnmockedModulePathPatterns = (
-  options: Config.InitialOptions,
-  key: keyof Pick<
-    Config.InitialOptions,
+  value: RequiredInitialOptions[
     | 'coveragePathIgnorePatterns'
     | 'modulePathIgnorePatterns'
     | 'testPathIgnorePatterns'
     | 'transformIgnorePatterns'
     | 'watchPathIgnorePatterns'
-    | 'unmockedModulePathPatterns'
-  >,
+    | 'unmockedModulePathPatterns'],
+  rootDir: Config.InitialOptions['rootDir'],
 ) =>
   // _replaceRootDirTags is specifically well-suited for substituting
   // <rootDir> in paths (it deals with properly interpreting relative path
@@ -240,8 +245,8 @@ const normalizeUnmockedModulePathPatterns = (
   //
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
-  options[key]!.map(pattern =>
-    replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
+  value.map(pattern =>
+    replacePathSepForRegex(pattern.replace(/<rootDir>/g, rootDir)),
   );
 
 const normalizePreprocessor = (
@@ -498,66 +503,59 @@ export default function normalize(
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
-  optionKeys.reduce((newOptions, key: keyof Config.InitialOptions) => {
-    // The resolver has been resolved separately; skip it
-    if (key === 'resolver') {
-      return newOptions;
-    }
+  // This is cheating, because it claims that all keys of InitialOptions are Required.
+  // We only really know it's Required for oldOptions[key], not for oldOptions.someOtherKey,
+  // so oldOptions[key] is the only way it should be used.
+  const oldOptions = options as NonNullableInitialOptions;
 
-    // This is cheating, because it claims that all keys of InitialOptions are Required.
-    // We only really know it's Required for oldOptions[key], not for oldOptions.someOtherKey,
-    // so oldOptions[key] is the only way it should be used.
-    const oldOptions = options as Config.InitialOptions &
-      Required<Pick<Config.InitialOptions, typeof key>>;
-    let value;
+  for (const key of optionKeys) {
+    // First skip all null & undefined ( this allows casting oldOptions as NonNullableInitialOptions )
+    if (oldOptions[key] == null) break;
+
     switch (key) {
       case 'collectCoverageOnlyFrom':
-        value = normalizeCollectCoverageOnlyFrom(oldOptions, key);
+        newOptions[key] = normalizeCollectCoverageOnlyFrom(
+          oldOptions[key],
+          oldOptions['rootDir'],
+        );
+
         break;
       case 'setupFiles':
       case 'setupFilesAfterEnv':
       case 'snapshotSerializers':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            option.map(filePath =>
-              resolve(newOptions.resolver, {
-                filePath,
-                key,
-                rootDir: options.rootDir,
-              }),
-            );
-        }
+        newOptions[key] = oldOptions[key].map(filePath =>
+          resolve(newOptions.resolver, {
+            filePath,
+            key,
+            rootDir: options.rootDir,
+          }),
+        );
+
         break;
       case 'modulePaths':
       case 'roots':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            option.map(filePath =>
-              path.resolve(
-                options.rootDir,
-                replaceRootDirInPath(options.rootDir, filePath),
-              ),
-            );
-        }
+        newOptions[key] = oldOptions[key].map(filePath =>
+          path.resolve(
+            options.rootDir,
+            replaceRootDirInPath(options.rootDir, filePath),
+          ),
+        );
+
         break;
       case 'collectCoverageFrom':
-        value = normalizeCollectCoverageFrom(oldOptions, key);
+        const result = normalizeCollectCoverageFrom(oldOptions[key]);
+        if (result) {
+          newOptions[key] = result;
+        }
+
         break;
       case 'cacheDirectory':
       case 'coverageDirectory':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            path.resolve(
-              options.rootDir,
-              replaceRootDirInPath(options.rootDir, option),
-            );
-        }
+        newOptions[key] = path.resolve(
+          options.rootDir,
+          replaceRootDirInPath(options.rootDir, oldOptions[key]),
+        );
+
         break;
       case 'dependencyExtractor':
       case 'globalSetup':
@@ -567,27 +565,23 @@ export default function normalize(
       case 'testResultsProcessor':
       case 'testRunner':
       case 'filter':
-        {
-          const option = oldOptions[key];
-          value =
-            option &&
-            resolve(newOptions.resolver, {
-              filePath: option,
-              key,
-              rootDir: options.rootDir,
-            });
-        }
+        newOptions[key] = resolve(newOptions.resolver, {
+          filePath: oldOptions[key],
+          key,
+          rootDir: options.rootDir,
+        });
+
         break;
       case 'runner':
         {
           const option = oldOptions[key];
-          value =
-            option &&
-            getRunner(newOptions.resolver, {
-              filePath: option,
-              rootDir: options.rootDir,
-            });
+
+          newOptions[key] = getRunner(newOptions.resolver, {
+            filePath: option,
+            rootDir: options.rootDir,
+          });
         }
+
         break;
       case 'prettierPath':
         {
@@ -597,30 +591,30 @@ export default function normalize(
 
           const option = oldOptions[key];
 
-          value =
-            option &&
-            resolve(newOptions.resolver, {
-              filePath: option,
-              key,
-              optional: option === DEFAULT_CONFIG[key],
-              rootDir: options.rootDir,
-            });
+          newOptions[key] = resolve(newOptions.resolver, {
+            filePath: option,
+            key,
+            optional: option === DEFAULT_CONFIG[key],
+            rootDir: options.rootDir,
+          });
         }
         break;
       case 'moduleNameMapper':
         const moduleNameMapper = oldOptions[key];
-        value =
-          moduleNameMapper &&
-          Object.keys(moduleNameMapper).map(regex => {
-            const item = moduleNameMapper && moduleNameMapper[regex];
-            return item && [regex, _replaceRootDirTags(options.rootDir, item)];
-          });
+
+        newOptions[key] = Object.keys(moduleNameMapper).map<[string, string]>(
+          regex => {
+            const item = moduleNameMapper[regex];
+            return [regex, _replaceRootDirTags(options.rootDir, item)];
+          },
+        );
+
         break;
       case 'transform':
-        const transform = oldOptions[key];
-        value =
-          transform &&
-          Object.keys(transform).map(regex => [
+        {
+          const transform = oldOptions[key];
+
+          newOptions[key] = Object.keys(transform).map(regex => [
             regex,
             resolve(newOptions.resolver, {
               filePath: transform[regex],
@@ -628,6 +622,7 @@ export default function normalize(
               rootDir: options.rootDir,
             }),
           ]);
+        }
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
@@ -635,60 +630,71 @@ export default function normalize(
       case 'transformIgnorePatterns':
       case 'watchPathIgnorePatterns':
       case 'unmockedModulePathPatterns':
-        value = normalizeUnmockedModulePathPatterns(oldOptions, key);
+        newOptions[key] = normalizeUnmockedModulePathPatterns(
+          oldOptions[key],
+          options.rootDir,
+        );
+
         break;
       case 'haste':
-        value = {...oldOptions[key]};
-        if (value.hasteImplModulePath != null) {
-          const resolvedHasteImpl = resolve(newOptions.resolver, {
-            filePath: replaceRootDirInPath(
-              options.rootDir,
-              value.hasteImplModulePath,
-            ),
-            key: 'haste.hasteImplModulePath',
-            rootDir: options.rootDir,
-          });
+        {
+          const hasteOption = oldOptions[key];
 
-          value.hasteImplModulePath = resolvedHasteImpl || undefined;
+          if (hasteOption.hasteImplModulePath != null) {
+            const resolvedHasteImpl = resolve(newOptions.resolver, {
+              filePath: replaceRootDirInPath(
+                options.rootDir,
+                hasteOption.hasteImplModulePath,
+              ),
+              key: 'haste.hasteImplModulePath',
+              rootDir: options.rootDir,
+            });
+
+            hasteOption.hasteImplModulePath = resolvedHasteImpl || undefined;
+          }
+          newOptions[key] = hasteOption;
         }
         break;
       case 'projects':
-        value = (oldOptions[key] || [])
-          .map(project =>
-            typeof project === 'string'
-              ? _replaceRootDirTags(options.rootDir, project)
-              : project,
-          )
-          .reduce((projects, project) => {
+        newOptions[key] = oldOptions[key].reduce(
+          (projects, project) => {
             // Project can be specified as globs. If a glob matches any files,
             // We expand it to these paths. If not, we keep the original path
             // for the future resolution.
             const globMatches =
-              typeof project === 'string' ? glob.sync(project) : [];
+              typeof project === 'string'
+                ? glob.sync(_replaceRootDirTags(options.rootDir, project))
+                : [];
             return projects.concat(globMatches.length ? globMatches : project);
-          }, []);
+          },
+          <Array<string>>[],
+        );
+
         break;
       case 'moduleDirectories':
       case 'testMatch':
         {
+          const option = oldOptions[key];
+          if (!option) break;
+
           const replacedRootDirTags = _replaceRootDirTags(
             escapeGlobCharacters(options.rootDir),
-            oldOptions[key],
+            option,
           );
 
           if (replacedRootDirTags) {
-            value = Array.isArray(replacedRootDirTags)
+            newOptions[key] = Array.isArray(replacedRootDirTags)
               ? replacedRootDirTags.map(replacePathSepForGlob)
-              : replacePathSepForGlob(replacedRootDirTags);
+              : [replacePathSepForGlob(replacedRootDirTags)];
           } else {
-            value = replacedRootDirTags;
+            newOptions[key] = replacedRootDirTags;
           }
         }
         break;
       case 'testRegex':
         {
           const option = oldOptions[key];
-          value = option
+          newOptions[key] = option
             ? (Array.isArray(option) ? option : [option]).map(
                 replacePathSepForRegex,
               )
@@ -696,7 +702,7 @@ export default function normalize(
         }
         break;
       case 'moduleFileExtensions': {
-        value = oldOptions[key];
+        const value = oldOptions[key];
 
         if (
           Array.isArray(value) && // If it's the wrong type, it can throw at a later time
@@ -722,28 +728,30 @@ export default function normalize(
               "\n  Please change your configuration to include 'js'.",
           );
         }
-
+        if (value) {
+          newOptions[key] = value;
+        }
         break;
       }
       case 'bail': {
         const bail = oldOptions[key];
         if (typeof bail === 'boolean') {
-          value = bail ? 1 : 0;
+          newOptions[key] = bail ? 1 : 0;
         } else if (typeof bail === 'string') {
-          value = 1;
+          newOptions[key] = 1;
           // If Jest is invoked as `jest --bail someTestPattern` then need to
           // move the pattern from the `bail` configuration and into `argv._`
           // to be processed as an extra parameter
           argv._.push(bail);
         } else {
-          value = oldOptions[key];
+          newOptions[key] = bail;
         }
         break;
       }
       case 'displayName': {
-        const displayName = oldOptions[key] as Config.DisplayName;
+        const displayName = oldOptions[key];
         if (typeof displayName === 'string') {
-          value = displayName;
+          newOptions[key] = displayName;
           break;
         }
         /**
@@ -781,7 +789,7 @@ export default function normalize(
             throw createConfigError(errorMessage);
           }
         }
-        value = oldOptions[key];
+        newOptions[key] = oldOptions[key];
         break;
       }
       case 'automock':
@@ -806,7 +814,6 @@ export default function normalize(
       case 'listTests':
       case 'logHeapUsage':
       case 'maxConcurrency':
-      case 'mapCoverage':
       case 'name':
       case 'noStackTrace':
       case 'notify':
@@ -836,10 +843,15 @@ export default function normalize(
       case 'watch':
       case 'watchAll':
       case 'watchman':
-        value = oldOptions[key];
+        newOptions[key] = oldOptions[key];
+
+        break;
+      case 'mapCoverage':
+        // TODO : this is depreaciated, so it breaks the types when setting newOptions[key], originally was in case block above, leaving here as reminder
+
         break;
       case 'watchPlugins':
-        value = (oldOptions[key] || []).map(watchPlugin => {
+        newOptions[key] = oldOptions[key].map(watchPlugin => {
           if (typeof watchPlugin === 'string') {
             return {
               config: {},
@@ -860,10 +872,7 @@ export default function normalize(
         });
         break;
     }
-    // @ts-ignore: automock is missing in GlobalConfig, so what
-    newOptions[key] = value;
-    return newOptions;
-  }, newOptions);
+  }
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
