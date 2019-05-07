@@ -48,8 +48,8 @@ export const resolve = (
          ${chalk.bold('<rootDir>')} is: ${rootDir}`,
     );
   }
-
-  return module;
+  /// can cast as string since nulls will be thrown
+  return module as string;
 };
 
 export const escapeGlobCharacters = (path: Config.Path): Config.Glob =>
