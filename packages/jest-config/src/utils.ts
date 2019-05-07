@@ -49,7 +49,7 @@ export const resolve = (
     );
   }
 
-  return module;
+  return module as string;
 };
 
 export const escapeGlobCharacters = (path: Config.Path): Config.Glob =>
@@ -69,26 +69,35 @@ export const replaceRootDirInPath = (
   );
 };
 
-// TODO: Type as returning same type as input
-const _replaceRootDirInObject = (
-  rootDir: Config.Path,
-  config: any,
-): {[key: string]: unknown} => {
-  if (config !== null) {
-    const newConfig: {[key: string]: unknown} = {};
-    for (const configKey in config) {
-      newConfig[configKey] =
-        configKey === 'rootDir'
-          ? config[configKey]
-          : _replaceRootDirTags(rootDir, config[configKey]);
-    }
-    return newConfig;
-  }
-  return config;
-};
+type ReplaceRootDirTagsObject = {[key: string]: unknown};
 
-// TODO: Type as returning same type as input
-export const _replaceRootDirTags = (rootDir: Config.Path, config: any): any => {
+type ReplaceRootDirTagsValue =
+  | RegExp
+  | ReplaceRootDirTagsObject
+  | Array<ReplaceRootDirTagsObject>
+  | string
+  | null;
+
+interface ReplaceRootDirTags {
+  <T>(rootDir: Config.Path, config: T): T;
+  (
+    rootDir: Config.Path,
+    config: ReplaceRootDirTagsObject,
+  ): ReplaceRootDirTagsObject;
+  (rootDir: Config.Path, config: RegExp): RegExp;
+  (rootDir: Config.Path, config: Array<ReplaceRootDirTagsObject>): Array<
+    ReplaceRootDirTagsObject
+  >;
+  (rootDir: Config.Path, config: string): string;
+}
+
+export const _replaceRootDirTags: ReplaceRootDirTags = (
+  rootDir: Config.Path,
+  config: ReplaceRootDirTagsValue,
+): any => {
+  if (config == null) {
+    return config;
+  }
   switch (typeof config) {
     case 'object':
       if (Array.isArray(config)) {
@@ -97,7 +106,13 @@ export const _replaceRootDirTags = (rootDir: Config.Path, config: any): any => {
       if (config instanceof RegExp) {
         return config;
       }
-      return _replaceRootDirInObject(rootDir, config);
+      if ('rootDir' in config) {
+        return {
+          ...config,
+          ...{rootDir: _replaceRootDirTags(rootDir, config['rootDir'])},
+        };
+      }
+      return config;
     case 'string':
       return replaceRootDirInPath(rootDir, config);
   }
