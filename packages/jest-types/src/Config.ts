@@ -452,7 +452,7 @@ export type Argv = Arguments<
     json: boolean;
     lastCommit: boolean;
     logHeapUsage: boolean;
-    maxWorkers: number;
+    maxWorkers: number | string; // Via getMaxWorkers parses strings such as (50%)
     moduleDirectories: Array<string>;
     moduleFileExtensions: Array<string>;
     moduleNameMapper: string;
