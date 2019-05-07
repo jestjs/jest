@@ -513,6 +513,30 @@ export default function normalize(
     if (oldOptions[key] == null) break;
 
     switch (key) {
+      default:
+        /// Handle depreciated keys and Manual Skips to handle correct types
+        // Check which keys arent in switch
+        // const KeysMissingInSwitchBlock = key;
+        // keys that are in InitialOptions but not AllOptions
+        //type diffKeys=Exclude< keyof Config.InitialOptions,keyof AllOptions>;
+        //"mapCoverage" | "preprocessorIgnorePatterns" | "preset" | "scriptPreprocessor" | "setupTestFrameworkScriptFile" | "testPathDirs"
+
+        ///key should be never, left here to confirm no type errors, but do we want to leave this here?
+        newOptions[key] = oldOptions[key];
+
+        break;
+      /// Use this first block to handle manual skips, to ensure default above has no error TODO: Ask about these keys
+      case 'resolver': // handled above
+      case 'mapCoverage': // Deprecated
+      case 'scriptPreprocessor': // handled above
+      case 'json': // argv handled above
+      case 'preprocessorIgnorePatterns': // handled above
+      case 'preset': // handled above
+      case 'setupTestFrameworkScriptFile': // handled above
+      case 'testPathDirs':
+      case 'testSequencer': // handled above
+      case 'updateSnapshot': /// handled in argv
+        break;
       case 'collectCoverageOnlyFrom':
         newOptions[key] = normalizeCollectCoverageOnlyFrom(
           oldOptions[key],
@@ -846,10 +870,6 @@ export default function normalize(
         newOptions[key] = oldOptions[key];
 
         break;
-      case 'mapCoverage':
-        // TODO : this is depreaciated, so it breaks the types when setting newOptions[key], originally was in case block above, leaving here as reminder
-
-        break;
       case 'watchPlugins':
         newOptions[key] = oldOptions[key].map(watchPlugin => {
           if (typeof watchPlugin === 'string') {
@@ -872,6 +892,7 @@ export default function normalize(
         });
         break;
     }
+    // Nothing should be done here for type sakes
   }
 
   try {
