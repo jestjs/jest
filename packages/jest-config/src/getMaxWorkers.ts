@@ -16,7 +16,7 @@ export default function getMaxWorkers(
   } else if (argv.maxWorkers) {
     // TODO: How to type this properly? Should probably use `coerce` from `yargs`
     const maxWorkers = argv.maxWorkers;
-    const parsed = parseInt(<string>maxWorkers, 10);
+    const parsed = parseInt(maxWorkers as string, 10);
 
     if (
       typeof maxWorkers === 'string' &&
