@@ -9,6 +9,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-leak-detector]` remove code repeat ([#8438](https://github.com/facebook/jest/pull/8438)
+
 ### Performance
 
 ## 24.8.0
