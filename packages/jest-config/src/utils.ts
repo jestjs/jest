@@ -83,25 +83,18 @@ const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
   return newConfig;
 };
 
-type ReplaceRootDirConfigObj = {[key: string]: unknown};
+type ReplaceRootDirConfigObj = {[key: string]: Config.Path};
+type ReplaceRootDirConfigValues =
+  | ReplaceRootDirConfigObj
+  | RegExp
+  | Config.Path
+  | Array<ReplaceRootDirConfigObj>
+  | Array<string>;
 
-type ReplaceRootDirTags = {
-  <T extends ReplaceRootDirConfigObj>(rootDir: Config.Path, config: T): T;
-  <T extends RegExp>(rootDir: Config.Path, config: T): T;
-  <T extends Config.Path>(rootDir: Config.Path, config: T): T;
-  <T extends Array<ReplaceRootDirConfigObj>>(
-    rootDir: Config.Path,
-    config: T,
-  ): T;
-  <T extends Array<string>>(rootDir: Config.Path, config: T): T;
-  // Return any other kind
-  <T>(rootDir: Config.Path, config: T): T;
-};
-
-export const _replaceRootDirTags: ReplaceRootDirTags = (
+export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
   rootDir: Config.Path,
-  config: any,
-): any => {
+  config: T,
+): T => {
   if (config == null) {
     return config;
   }
@@ -109,14 +102,18 @@ export const _replaceRootDirTags: ReplaceRootDirTags = (
     case 'object':
       if (Array.isArray(config)) {
         /// can be string[] or {}[]
-        return config.map(item => _replaceRootDirTags(rootDir, item));
+        return config.map(item => _replaceRootDirTags(rootDir, item)) as T;
       }
       if (config instanceof RegExp) {
         return config;
       }
-      return _replaceRootDirInObject(rootDir, config);
+
+      return _replaceRootDirInObject(
+        rootDir,
+        config as ReplaceRootDirConfigObj,
+      ) as T;
     case 'string':
-      return replaceRootDirInPath(rootDir, config);
+      return replaceRootDirInPath(rootDir, config) as T;
   }
   return config;
 };
