@@ -22,8 +22,17 @@ export type EnvironmentContext = Partial<{
   testPath: Config.Path;
 }>;
 
-// TODO: type this better: https://nodejs.org/api/modules.html#modules_the_module_wrapper
-type ModuleWrapper = (...args: Array<unknown>) => unknown;
+// Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
+export type ModuleWrapper = (
+  module: Module,
+  exports: Module['exports'],
+  require: Module['require'],
+  __dirname: string,
+  __filename: Module['filename'],
+  global: Global.Global,
+  jest: Jest,
+  ...extraGlobals: Array<Global.Global[keyof Global.Global]>
+) => unknown;
 
 export declare class JestEnvironment {
   constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
@@ -38,7 +47,7 @@ export declare class JestEnvironment {
   handleTestEvent?(event: Circus.Event, state: Circus.State): void;
 }
 
-export type Module = typeof module;
+export type Module = NodeModule;
 
 export interface LocalModuleRequire extends NodeRequire {
   requireActual(moduleName: string): unknown;

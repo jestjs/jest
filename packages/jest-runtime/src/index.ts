@@ -743,11 +743,12 @@ class Runtime {
       return;
     }
 
-    const wrapper = runScript[ScriptTransformer.EVAL_RESULT_VARIABLE];
-    const moduleArguments = new Set([
-      localModule, // module object
+    //Wrapper
+    runScript[ScriptTransformer.EVAL_RESULT_VARIABLE].call(
+      localModule.exports,
+      localModule as NodeModule, // module object
       localModule.exports, // module exports
-      localModule.require, // require implementation
+      localModule.require as NodeRequireFunction, // require implementation
       dirname, // __dirname
       filename, // __filename
       this._environment.global, // global object
@@ -764,8 +765,7 @@ class Runtime {
           `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
         );
       }),
-    ]);
-    wrapper.call(localModule.exports, ...Array.from(moduleArguments));
+    );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
