@@ -77,7 +77,7 @@
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">timerGame</span>(<span class="hljs-params">callback</span>) </span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Ready....go!'</span>);
   setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Times up -- stop!'</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Time's up -- stop!"</span>);
     callback &amp;&amp; callback();
   }, <span class="hljs-number">1000</span>);
 }
@@ -126,7 +126,7 @@ test(<span class="hljs-string">'waits 1 second before ending the game'</span>, (
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Ready....go!'</span>);
 
   setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Times up! 10 seconds before the next game starts...'</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Time's up! 10 seconds before the next game starts..."</span>);
     callback &amp;&amp; callback();
 
     <span class="hljs-comment">// Schedule the next game in 10 seconds</span>
@@ -177,7 +177,7 @@ describe(<span class="hljs-string">'infiniteTimerGame'</span>, () =&gt; {
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">timerGame</span>(<span class="hljs-params">callback</span>) </span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Ready....go!'</span>);
   setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Times up -- stop!'</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Time's up -- stop!"</span>);
     callback &amp;&amp; callback();
   }, <span class="hljs-number">1000</span>);
 }
