@@ -14,7 +14,6 @@ import path from 'path';
 import sane from 'sane';
 import invariant from 'invariant';
 import {Config} from '@jest/types';
-import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
 import {getSha1, worker} from './worker';
 import getMockName from './getMockName';
@@ -46,6 +45,7 @@ import {
   CrawlerOptions,
   FileData,
 } from './types';
+import persistence from './persistence';
 
 type HType = typeof H;
 
@@ -331,7 +331,11 @@ class HasteMap extends EventEmitter {
     const hash = crypto.createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
-      name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
+      [
+        name.replace(/\W/g, '-'),
+        hash.digest('hex'),
+        persistence.getType(),
+      ].join('-'),
     );
   }
 
@@ -353,7 +357,9 @@ class HasteMap extends EventEmitter {
           data.removedFiles.size > 0
         ) {
           hasteMap = await this._buildHasteMap(data);
-          this._persist(hasteMap);
+          const s = Date.now();
+          this._persist(hasteMap, data.removedFiles, data.changedFiles);
+          console.log('Written in', Date.now() - s);
         } else {
           hasteMap = data.hasteMap;
         }
@@ -389,7 +395,9 @@ class HasteMap extends EventEmitter {
     let hasteMap: InternalHasteMap;
 
     try {
-      hasteMap = serializer.readFileSync(this._cachePath);
+      const s = Date.now();
+      hasteMap = persistence.read(this._cachePath);
+      console.log('Read in', Date.now() - s);
     } catch (err) {
       hasteMap = this._createEmptyMap();
     }
@@ -653,29 +661,32 @@ class HasteMap extends EventEmitter {
     // every file looking for changes. Otherwise, process only changed files.
     let map: ModuleMapData;
     let mocks: MockData;
-    let filesToProcess: FileData;
-    if (changedFiles === undefined || removedFiles.size) {
+    let filesToHash: Array<string>;
+    if (changedFiles === undefined) {
       map = new Map();
       mocks = new Map();
-      filesToProcess = hasteMap.files;
+      filesToHash = Array.from(hasteMap.files.keys());
     } else {
       map = hasteMap.map;
       mocks = hasteMap.mocks;
-      filesToProcess = changedFiles;
+      filesToHash = Array.from(changedFiles.keys());
     }
 
+    // Update the duplicates map.
     for (const [relativeFilePath, fileMetadata] of removedFiles) {
       this._recoverDuplicates(hasteMap, relativeFilePath, fileMetadata[H.ID]);
     }
 
+    // Update SHA hashes for changed files.
     const promises = [];
-    for (const relativeFilePath of filesToProcess.keys()) {
+    for (const relativeFilePath of filesToHash) {
       if (
         this._options.skipPackageJson &&
         relativeFilePath.endsWith(PACKAGE_JSON)
       ) {
         continue;
       }
+
       // SHA-1, if requested, should already be present thanks to the crawler.
       const filePath = fastPath.resolve(
         this._options.rootDir,
@@ -714,8 +725,12 @@ class HasteMap extends EventEmitter {
   /**
    * 4. serialize the new `HasteMap` in a cache file.
    */
-  private _persist(hasteMap: InternalHasteMap) {
-    serializer.writeFileSync(this._cachePath, hasteMap);
+  private _persist(
+    hasteMap: InternalHasteMap,
+    removedFiles: FileData,
+    changedFiles?: FileData,
+  ) {
+    persistence.write(this._cachePath, hasteMap, removedFiles, changedFiles);
   }
 
   /**

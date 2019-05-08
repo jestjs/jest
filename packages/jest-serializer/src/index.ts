@@ -113,7 +113,7 @@ function jsonParse(content: string) {
 
 // In memory functions.
 
-export function deserialize(buffer: Buffer): any {
+export function deserialize<T = any>(buffer: Buffer): T {
   return v8.deserialize
     ? v8.deserialize(buffer)
     : jsonParse(buffer.toString('utf8'));
@@ -127,16 +127,12 @@ export function serialize(content: unknown): Buffer {
 
 // Synchronous filesystem functions.
 
-export function readFileSync(filePath: Path): any {
-  return v8.deserialize
-    ? v8.deserialize(fs.readFileSync(filePath))
-    : jsonParse(fs.readFileSync(filePath, 'utf8'));
+export function readFileSync<T = any>(filePath: Path): T {
+  return deserialize(fs.readFileSync(filePath));
 }
 
-export function writeFileSync(filePath: Path, content: any) {
-  return v8.serialize
-    ? fs.writeFileSync(filePath, v8.serialize(content))
-    : fs.writeFileSync(filePath, jsonStringify(content), 'utf8');
+export function writeFileSync(filePath: Path, content: unknown): void {
+  fs.writeFileSync(filePath, serialize(content));
 }
 
 export default {

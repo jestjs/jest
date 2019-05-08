@@ -1631,6 +1631,13 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/better-sqlite3@^5.2.3":
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/@types/better-sqlite3/-/better-sqlite3-5.2.3.tgz#12671da93acbe030f0c78f662d7733c3df3dc6ff"
+  integrity sha512-EX6+xIhy96cAkL5qS9nAsKGH46nuhbuO3oOykYuwFvTSQpDBMHhqCUc7/f4OrEj2VOH35qKhVumVxVSX0fmyOw==
+  dependencies:
+    "@types/integer" "*"
+
 "@types/braces@*":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@types/braces/-/braces-2.3.0.tgz#d00ec0a76562b2acb6f29330be33a093e33ed25c"
@@ -1724,6 +1731,11 @@
   integrity sha512-AiHRaEB50LQg0pZmm659vNBb9f4SJ0qrAnteuzhSeAUcJKxoYgEnprg/83kppCnc2zvtCKbdZry1a5pVY3lOTQ==
   dependencies:
     "@types/node" "*"
+
+"@types/integer@*":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/integer/-/integer-1.0.0.tgz#f5b313876012fad0afeb5318f03cb871064eb33e"
+  integrity sha512-3viiRKLoSP2Qr78nMoQjkDc0fan4BgmpOyV1+1gKjE8wWXo3QQ78WItO6f9WuBf3qe3ymDYhM65oqHTOZ0rFxw==
 
 "@types/invariant@^2.2.29":
   version "2.2.29"
@@ -2888,6 +2900,14 @@ better-assert@~1.0.0:
   integrity sha1-QIZrnhueC1W0gYlDEeaPr/rrxSI=
   dependencies:
     callsite "1.0.0"
+
+better-sqlite3@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-5.4.0.tgz#88c4894f6c0484dc0a89a9ba12268976cd26b1da"
+  integrity sha512-Uj1ZYOcq1GtFyFgJgqMVDoDLTy1B1pM9+bULnlX8szRX4cPjE/7JbKxCzQGhYlZlLkHQvtXXhCZ3skqsQ2byMA==
+  dependencies:
+    integer "^2.1.0"
+    tar "^4.4.6"
 
 big-integer@^1.6.7:
   version "1.6.42"
@@ -7042,6 +7062,11 @@ inquirer@^6.2.0, inquirer@^6.2.2:
     string-width "^2.1.0"
     strip-ansi "^5.0.0"
     through "^2.3.6"
+
+integer@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/integer/-/integer-2.1.0.tgz#29134ea2f7ba3362ed4dbe6bcca992b1f18ff276"
+  integrity sha512-vBtiSgrEiNocWvvZX1RVfeOKa2mCHLZQ2p9nkQkQZ/BvEiY+6CcUz0eyjvIiewjJoeNidzg2I+tpPJvpyspL1w==
 
 interpret@^1.0.0:
   version "1.2.0"
@@ -12455,7 +12480,7 @@ tar@^2.0.0:
     fstream "^1.0.2"
     inherits "2"
 
-tar@^4, tar@^4.4.8:
+tar@^4, tar@^4.4.6, tar@^4.4.8:
   version "4.4.8"
   resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.8.tgz#b19eec3fde2a96e64666df9fdb40c5ca1bc3747d"
   integrity sha512-LzHF64s5chPQQS0IYBn9IN5h3i98c12bo4NCO7e0sGM2llXQ3p2FGC5sdENN4cTW48O915Sh+x+EXx7XW96xYQ==

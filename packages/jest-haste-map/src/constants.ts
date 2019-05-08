@@ -40,6 +40,8 @@ const constants: HType = {
   /* platforms */
   GENERIC_PLATFORM: 'g',
   NATIVE_PLATFORM: 'native',
+  IOS_PLATFORM: 'ios',
+  ANDROID_PLATFORM: 'android',
 };
 
 export default constants;
