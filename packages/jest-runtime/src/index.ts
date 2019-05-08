@@ -743,16 +743,14 @@ class Runtime {
       return;
     }
 
-    const wrapper = runScript[ScriptTransformer.EVAL_RESULT_VARIABLE];
-    wrapper.call(
+    //Wrapper
+    runScript[ScriptTransformer.EVAL_RESULT_VARIABLE].call(
       localModule.exports,
       localModule as NodeModule, // module object
       localModule.exports, // module exports
       localModule.require as NodeRequireFunction, // require implementation
       dirname, // __dirname
-
       filename, // __filename
-
       this._environment.global, // global object
       this._createJestObjectFor(
         filename,
