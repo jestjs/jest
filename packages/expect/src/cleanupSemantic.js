@@ -413,6 +413,7 @@ var diff_cleanupSemanticLossless = function(diffs) {
   }
 };
 
+
 // Define some regex patterns for matching boundaries.
 var nonAlphaNumericRegex_ = /[^a-zA-Z0-9]/;
 var whitespaceRegex_ = /\s/;
@@ -547,6 +548,7 @@ var diff_cleanupMerge = function(diffs) {
     diff_cleanupMerge(diffs);
   }
 };
+
 
 export {
   Diff,
