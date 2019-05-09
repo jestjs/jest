@@ -3,7 +3,7 @@
   "files.exclude": {
     "**/.git": true,
     "**/node_modules": true,
-    "**/build": false
+    "**/build": true
   },
   "editor.formatOnSave": true,
   "flow.useNPMPackagedFlow": true,
