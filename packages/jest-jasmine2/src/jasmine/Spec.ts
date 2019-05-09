@@ -236,10 +236,9 @@ export default class Spec {
         passed: false,
         expected: '',
         actual: '',
-        error:
-          this.isAssertionError(error)
-            ? assertionErrorMessage(error, {expand: this.expand})
-            : error,
+        error: this.isAssertionError(error)
+          ? assertionErrorMessage(error, {expand: this.expand})
+          : error,
       },
       true,
     );
@@ -294,7 +293,9 @@ export default class Spec {
   }
 
   isAssertionError(error: Error) {
-    return error.name === AssertionError.name || error instanceof AssertionError;
+    return (
+      error instanceof AssertionError || error.name === AssertionError.name
+    );
   }
 }
 
