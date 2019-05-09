@@ -1,3 +1,4 @@
 fixtures/failing-jsons/
+packages/expect/src/cleanupSemantic.js
 packages/jest-config/src/__tests__/jest-preset.json
 packages/pretty-format/perf/world.geo.json

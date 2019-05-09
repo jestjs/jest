@@ -303,6 +303,13 @@ string" 1`] = `
 <dim>  string</>"
 `;
 
+exports[`.toBe() fails for: "painless JavaScript testing" and "delightful JavaScript testing" 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+Expected: <green>\\"<inverse>delightful</> JavaScript testing\\"</>
+Received: <red>\\"<inverse>painless</> JavaScript testing\\"</>"
+`;
+
 exports[`.toBe() fails for: "with 
 trailing space" and "without trailing space" 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
@@ -1922,6 +1929,13 @@ exports[`.toContain(), .toContainEqual() error cases for toContainEqual 1`] = `
 Received has value: <red>null</>"
 `;
 
+exports[`.toEqual() {pass: false} expect("1 234,57 $").toEqual("1 234,57 $") 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
+
+Expected: <green>\\"1<inverse> </>234,57<inverse> </>$\\"</>
+Received: <red>\\"1<inverse> </>234,57<inverse> </>$\\"</>"
+`;
+
 exports[`.toEqual() {pass: false} expect("Eve").toEqual({"asymmetricMatch": [Function asymmetricMatch]}) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
@@ -3057,6 +3071,15 @@ Expected value: <green>2</>
 Received value: <red>1</>"
 `;
 
+exports[`.toHaveProperty() {pass: false} expect({"children": ["\\"That cartoon\\""], "props": null, "type": "p"}).toHaveProperty('children,0', "\\"That cat cartoon\\"") 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected path: <green>[\\"children\\", 0]</>
+
+Expected value: <green>\\"\\\\\\"That <inverse>cat </>cartoon\\\\\\"\\"</>
+Received value: <red>\\"\\\\\\"That cartoon\\\\\\"\\"</>"
+`;
+
 exports[`.toHaveProperty() {pass: false} expect({"key": 1}).toHaveProperty('not') 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
@@ -3495,6 +3518,13 @@ exports[`.toMatch() throws: [bar, foo] 1`] = `
 
 Expected substring: <green>\\"foo\\"</>
 Received string:    <red>\\"bar\\"</>"
+`;
+
+exports[`.toStrictEqual() displays substring diff 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toStrictEqual<dim>(</><green>expected</><dim>) // deep equality</>
+
+Expected: <green>\\"<inverse>Another caveat is that</> Jest will not typecheck your tests.\\"</>
+Received: <red>\\"<inverse>Because TypeScript support in Babel is just transpilation,</> Jest will not type<inverse>-</>check your tests<inverse> as they run</>.\\"</>"
 `;
 
 exports[`.toStrictEqual() matches the expected snapshot when it fails 1`] = `

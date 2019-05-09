@@ -17,6 +17,14 @@ import {
   printReceived,
   stringify,
 } from 'jest-matcher-utils';
+import diffSequences from 'diff-sequences';
+import {
+  cleanupSemantic,
+  Diff,
+  DIFF_COMMON,
+  DIFF_DELETE,
+  DIFF_INSERT,
+} from './cleanupSemantic.js';
 import {isOneline} from './utils';
 
 // Format substring but do not enclose in double quote marks.
@@ -94,11 +102,71 @@ const shouldPrintDiff = (expected: unknown, received: unknown): boolean => {
   return true;
 };
 
+const diffStrings = (a: string, b: string): Array<Diff> | null => {
+  const isCommon = (aIndex: number, bIndex: number) => a[aIndex] === b[bIndex];
+
+  let aIndex = 0;
+  let bIndex = 0;
+  const diffs = [];
+  const foundSubsequence = (
+    nCommon: number,
+    aCommon: number,
+    bCommon: number,
+  ) => {
+    if (aIndex !== aCommon) {
+      diffs.push(new Diff(DIFF_DELETE, a.slice(aIndex, aCommon)));
+    }
+    if (bIndex !== bCommon) {
+      diffs.push(new Diff(DIFF_INSERT, b.slice(bIndex, bCommon)));
+    }
+
+    aIndex = aCommon + nCommon; // number of characters compared in a
+    bIndex = bCommon + nCommon; // number of characters compared in b
+    diffs.push(new Diff(DIFF_COMMON, a.slice(aCommon, aIndex)));
+  };
+
+  diffSequences(a.length, b.length, isCommon, foundSubsequence);
+
+  // After the last common subsequence, push remaining change items.
+  if (aIndex !== a.length) {
+    diffs.push(new Diff(DIFF_DELETE, a.slice(aIndex)));
+  }
+  if (bIndex !== b.length) {
+    diffs.push(new Diff(DIFF_INSERT, b.slice(bIndex)));
+  }
+
+  cleanupSemantic(diffs);
+
+  return diffs.length === 2 &&
+    diffs[0][0] === DIFF_DELETE &&
+    diffs[1][0] === DIFF_INSERT
+    ? null
+    : diffs;
+};
+
+const MULTILINE_REGEXP = /[\r\n]/;
+
+const expectedInverter = (reduced: string, diff: Diff): string =>
+  reduced +
+  (diff[0] === DIFF_COMMON
+    ? printSubstring(diff[1])
+    : diff[0] === DIFF_DELETE
+    ? INVERTED_COLOR(printSubstring(diff[1]))
+    : '');
+
+const receivedInverter = (reduced: string, diff: Diff): string =>
+  reduced +
+  (diff[0] === DIFF_COMMON
+    ? printSubstring(diff[1])
+    : diff[0] === DIFF_INSERT
+    ? INVERTED_COLOR(printSubstring(diff[1]))
+    : '');
+
 export const printDiffOrStringify = (
   expected: unknown,
   received: unknown,
-  expectedLabel: string, // include colon and one or more spaces,
-  receivedLabel: string, // same as returned by getLabelPrinter
+  expectedLabel: string,
+  receivedLabel: string,
   expand?: boolean, // diff option: true if `--expand` CLI option
 ): string => {
   // Cannot use same serialization as shortcut to avoid diff,
@@ -124,6 +192,27 @@ export const printDiffOrStringify = (
   }
 
   const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+
+  if (
+    typeof expected === 'string' &&
+    typeof received === 'string' &&
+    !MULTILINE_REGEXP.test(expected) &&
+    !MULTILINE_REGEXP.test(received)
+  ) {
+    const diffs = diffStrings(expected, received);
+
+    if (Array.isArray(diffs)) {
+      return (
+        `${printLabel(expectedLabel)}${EXPECTED_COLOR(
+          diffs.reduce(expectedInverter, '"') + '"',
+        )}\n` +
+        `${printLabel(receivedLabel)}${RECEIVED_COLOR(
+          diffs.reduce(receivedInverter, '"') + '"',
+        )}`
+      );
+    }
+  }
+
   return (
     `${printLabel(expectedLabel)}${printExpected(expected)}\n` +
     `${printLabel(receivedLabel)}${
