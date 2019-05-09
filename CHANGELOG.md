@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect]` Improve report when matcher fails, part 20 ([#8448](https://github.com/facebook/jest/pull/8448))
+
 ### Fixes
 
 - `[babel-plugin-jest-hoist]` Expand list of whitelisted globals in global mocks ([#8429](https://github.com/facebook/jest/pull/8429)
