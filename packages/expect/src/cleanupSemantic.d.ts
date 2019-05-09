@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 export declare const DIFF_COMMON = 0;
 export declare const DIFF_DELETE = -1;
 export declare const DIFF_INSERT = 1;
