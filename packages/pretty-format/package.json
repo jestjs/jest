@@ -30,7 +30,7 @@
     "react-test-renderer": "*"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

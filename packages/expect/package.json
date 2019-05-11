@@ -23,7 +23,7 @@
     "immutable": "^4.0.0-rc.12"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"
