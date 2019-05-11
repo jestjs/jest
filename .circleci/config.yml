@@ -118,7 +118,6 @@ workflows:
   build-and-deploy:
     jobs:
       - lint-and-typecheck
-      - test-node-6
       - test-node-8
       - test-node-10
       - test-jest-circus
