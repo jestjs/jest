@@ -83,13 +83,12 @@ const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
   return newConfig;
 };
 
+type OrArray<T> = T | Array<T>;
 type ReplaceRootDirConfigObj = {[key: string]: Config.Path};
 type ReplaceRootDirConfigValues =
-  | ReplaceRootDirConfigObj
-  | RegExp
-  | Config.Path
-  | Array<ReplaceRootDirConfigObj>
-  | Array<string>;
+  | OrArray<ReplaceRootDirConfigObj>
+  | OrArray<RegExp>
+  | OrArray<Config.Path>;
 
 export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
   rootDir: Config.Path,
