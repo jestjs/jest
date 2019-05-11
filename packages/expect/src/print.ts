@@ -24,7 +24,7 @@ import {
   DIFF_COMMON,
   DIFF_DELETE,
   DIFF_INSERT,
-} from './cleanupSemantic.js';
+} from './cleanupSemantic';
 import {isOneline} from './utils';
 
 // Format substring but do not enclose in double quote marks.

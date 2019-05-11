@@ -23,11 +23,13 @@
  */
 
 /**
- * CHANGES by pedrottimark to diff_match_patch_uncompressed.js file:
+ * CHANGES by pedrottimark to diff_match_patch_uncompressed.ts file:
  *
  * 1. Delete anything not needed to use diff_cleanupSemantic method
  * 2. Convert from prototype properties to var declarations
- * 3. Add exports
+ * 3. Convert Diff to class from constructor and prototype
+ * 4. Add type annotations for arguments and return values
+ * 5. Add exports
  */
 
 /**
@@ -39,27 +41,32 @@ var DIFF_DELETE = -1;
 var DIFF_INSERT = 1;
 var DIFF_EQUAL = 0;
 
-/**
- * Class representing one diff tuple.
- * Attempts to look like a two-element array (which is what this used to be).
- * @param {number} op Operation, one of: DIFF_DELETE, DIFF_INSERT, DIFF_EQUAL.
- * @param {string} text Text to be deleted, inserted, or retained.
- * @constructor
- */
-var Diff = function(op, text) {
-  this[0] = op;
-  this[1] = text;
-};
+class Diff {
+  0: number;
+  1: string;
 
-Diff.prototype.length = 2;
+  /**
+   * Class representing one diff tuple.
+   * Attempts to look like a two-element array (which is what this used to be).
+   * @param {number} op Operation, one of: DIFF_DELETE, DIFF_INSERT, DIFF_EQUAL.
+   * @param {string} text Text to be deleted, inserted, or retained.
+   * @constructor
+   */
+  constructor(op: number, text: string) {
+    this[0] = op;
+    this[1] = text;
+  }
 
-/**
- * Emulate the output of a two-element array.
- * @return {string} Diff operation as a string.
- */
-Diff.prototype.toString = function() {
-  return this[0] + ',' + this[1];
-};
+  // Diff.prototype.length = 2; // not possible in TypeScript
+
+  /**
+   * Emulate the output of a two-element array.
+   * @return {string} Diff operation as a string.
+   */
+  toString(): string {
+    return this[0] + ',' + this[1];
+  }
+}
 
 
 /**
@@ -69,7 +76,7 @@ Diff.prototype.toString = function() {
  * @return {number} The number of characters common to the start of each
  *     string.
  */
-var diff_commonPrefix = function(text1, text2) {
+var diff_commonPrefix = function(text1: string, text2: string): number {
   // Quick check for common null cases.
   if (!text1 || !text2 || text1.charAt(0) != text2.charAt(0)) {
     return 0;
@@ -100,7 +107,7 @@ var diff_commonPrefix = function(text1, text2) {
  * @param {string} text2 Second string.
  * @return {number} The number of characters common to the end of each string.
  */
-var diff_commonSuffix = function(text1, text2) {
+var diff_commonSuffix = function(text1: string, text2: string): number {
   // Quick check for common null cases.
   if (!text1 || !text2 ||
       text1.charAt(text1.length - 1) != text2.charAt(text2.length - 1)) {
@@ -134,7 +141,7 @@ var diff_commonSuffix = function(text1, text2) {
  *     string and the start of the second string.
  * @private
  */
-var diff_commonOverlap_ = function(text1, text2) {
+var diff_commonOverlap_ = function(text1: string, text2: string): number {
   // Cache the text lengths to prevent multiple calls.
   var text1_length = text1.length;
   var text2_length = text2.length;
@@ -179,7 +186,7 @@ var diff_commonOverlap_ = function(text1, text2) {
  * Reduce the number of edits by eliminating semantically trivial equalities.
  * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
  */
- var diff_cleanupSemantic = function(diffs) {
+ var diff_cleanupSemantic = function(diffs: Array<Diff>) {
   var changes = false;
   var equalities = [];  // Stack of indices where equalities are found.
   var equalitiesLength = 0;  // Keeping our own length var is faster in JS.
@@ -294,7 +301,7 @@ var diff_commonOverlap_ = function(text1, text2) {
  * e.g: The c<ins>at c</ins>ame. -> The <ins>cat </ins>came.
  * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
  */
-var diff_cleanupSemanticLossless = function(diffs) {
+var diff_cleanupSemanticLossless = function(diffs: Array<Diff>) {
   /**
    * Given two strings, compute a score representing whether the internal
    * boundary falls on logical boundaries.
@@ -305,7 +312,7 @@ var diff_cleanupSemanticLossless = function(diffs) {
    * @return {number} The score.
    * @private
    */
-  function diff_cleanupSemanticScore_(one, two) {
+  function diff_cleanupSemanticScore_(one: string, two: string): number {
     if (!one || !two) {
       // Edges are the best.
       return 6;
@@ -427,7 +434,7 @@ var blanklineStartRegex_ = /^\r?\n\r?\n/;
  * Any edit section can move as long as it doesn't cross an equality.
  * @param {!Array.<!diff_match_patch.Diff>} diffs Array of diff tuples.
  */
-var diff_cleanupMerge = function(diffs) {
+var diff_cleanupMerge = function(diffs: Array<Diff>) {
   // Add a dummy entry at the end.
   diffs.push(new Diff(DIFF_EQUAL, ''));
   var pointer = 0;
