@@ -51,6 +51,7 @@ FAIL __tests__/chai_assertion.js
     + hello world
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       18 |     const stringExpected = 'hello world';
       19 |     const actualExpected = 'hello sunshine';
     > 20 |     stringExpected.should.to.equal(actualExpected);
@@ -71,6 +72,17 @@ FAIL __tests__/chai_assertion.js
 
       at Object.equal (__tests__/chai_assertion.js:13:30)
 >>>>>>> added tests
+=======
+      18 |     const stringExpected = 'hello world';
+      19 |     const actualExpected = 'hello sunshine';
+    > 20 |     stringExpected.should.to.equal(actualExpected);
+         |                              ^
+      21 |   });
+      22 |
+      23 |   it('assert', () => {
+
+      at Object.equal (__tests__/chai_assertion.js:20:30)
+>>>>>>> update the snapshot
 
   ● chai.js assertion library test › assert
 
@@ -92,6 +104,7 @@ FAIL __tests__/chai_assertion.js
     + hello world
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       22 |
       23 |   it('assert', () => {
     > 24 |     chai.assert.strictEqual('hello world', 'hello sunshine');
@@ -112,4 +125,15 @@ FAIL __tests__/chai_assertion.js
 
       at Object.strictEqual (__tests__/chai_assertion.js:17:17)
 >>>>>>> added tests
+=======
+      22 |
+      23 |   it('assert', () => {
+    > 24 |     chai.assert.strictEqual('hello world', 'hello sunshine');
+         |                 ^
+      25 |   });
+      26 | });
+      27 |
+
+      at Object.strictEqual (__tests__/chai_assertion.js:24:17)
+>>>>>>> update the snapshot
 `;
