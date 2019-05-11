@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[expect]` Improve report when matcher fails, part 20 ([#8448](https://github.com/facebook/jest/pull/8448))
+- `[expect]` Highlight substring differences when matcher fails, part 1 ([#8448](https://github.com/facebook/jest/pull/8448))
 
 ### Fixes
 
