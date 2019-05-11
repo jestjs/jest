@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`chai assertion errors should display properly 1`] = `
+FAIL __tests__/chai_assertion.js
+  ● chai.js assertion library test › expect
+
+    assert.(received, expected)
+
+    Expected value   "hello sunshine"
+    Received:
+      "hello world"
+
+    Message:
+      expected 'hello world' to equal 'hello sunshine'
+
+    Difference:
+
+    - Expected
+    + Received
+
+    - hello sunshine
+    + hello world
+
+      4 | describe('chai.js assertion library test', () => {
+      5 |   it('expect', () => {
+    > 6 |     chai.expect('hello world').to.equal('hello sunshine');
+        |                                   ^
+      7 |   });
+      8 | 
+      9 |   it('should', () => {
+
+      at Object.equal (__tests__/chai_assertion.js:6:35)
+
+  ● chai.js assertion library test › should
+
+    assert.(received, expected)
+
+    Expected value   "hello sunshine"
+    Received:
+      "hello world"
+
+    Message:
+      expected 'hello world' to equal 'hello sunshine'
+
+    Difference:
+
+    - Expected
+    + Received
+
+    - hello sunshine
+    + hello world
+
+      11 |     const stringExpected = 'hello world';
+      12 |     const actualExpected = 'hello sunshine';
+    > 13 |     stringExpected.should.to.equal(actualExpected);
+         |                              ^
+      14 |   });
+      15 | 
+      16 |   it('assert', () => {
+
+      at Object.equal (__tests__/chai_assertion.js:13:30)
+
+  ● chai.js assertion library test › assert
+
+    assert.(received, expected)
+
+    Expected value   "hello sunshine"
+    Received:
+      "hello world"
+
+    Message:
+      expected 'hello world' to equal 'hello sunshine'
+
+    Difference:
+
+    - Expected
+    + Received
+
+    - hello sunshine
+    + hello world
+
+      15 | 
+      16 |   it('assert', () => {
+    > 17 |     chai.assert.strictEqual('hello world', 'hello sunshine');
+         |                 ^
+      18 |   });
+      19 | });
+      20 | 
+
+      at Object.strictEqual (__tests__/chai_assertion.js:17:17)
+`;
