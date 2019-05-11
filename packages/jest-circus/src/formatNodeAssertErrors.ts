@@ -60,7 +60,7 @@ const formatNodeAssertErrors = (event: Circus.Event, state: Circus.State) => {
         } else {
           error = errors;
         }
-        return error.code === 'ERR_ASSERTION'
+        return isAssertionError(error)
           ? {message: assertionErrorMessage(error, {expand: state.expand})}
           : errors;
       });
@@ -165,6 +165,14 @@ function assertionErrorMessage(
     chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
     (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
     trimmedStack
+  );
+}
+
+function isAssertionError(error: Circus.TestError) {
+  return (
+    error instanceof AssertionError ||
+    error.name === AssertionError.name ||
+    error.code === 'ERR_ASSERTION'
   );
 }
 

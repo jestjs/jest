@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`chai assertion errors should display properly 1`] = `
+FAIL __tests__/chai_assertion.js
+  ● chai.js assertion library test › expect
+
+    assert.(received, expected)
+
+    Expected value   "hello sunshine"
+    Received:
+      "hello world"
+
+    Message:
+      expected 'hello world' to equal 'hello sunshine'
+
+    Difference:
+
+    - Expected
+    + Received
+
+    - hello sunshine
+    + hello world
+
+      11 | describe('chai.js assertion library test', () => {
+      12 |   it('expect', () => {
+    > 13 |     chai.expect('hello world').to.equal('hello sunshine');
+         |                                   ^
+      14 |   });
+      15 | 
+      16 |   it('should', () => {
+
+      at Object.equal (__tests__/chai_assertion.js:13:35)
+
+  ● chai.js assertion library test › should
+
+    assert.(received, expected)
+
+    Expected value   "hello sunshine"
+    Received:
+      "hello world"
+
+    Message:
+      expected 'hello world' to equal 'hello sunshine'
+
+    Difference:
+
+    - Expected
+    + Received
+
+    - hello sunshine
+    + hello world
+
+      18 |     const stringExpected = 'hello world';
+      19 |     const actualExpected = 'hello sunshine';
+    > 20 |     stringExpected.should.to.equal(actualExpected);
+         |                              ^
+      21 |   });
+      22 | 
+      23 |   it('assert', () => {
+
+      at Object.equal (__tests__/chai_assertion.js:20:30)
+
+  ● chai.js assertion library test › assert
+
+    assert.(received, expected)
+
+    Expected value   "hello sunshine"
+    Received:
+      "hello world"
+
+    Message:
+      expected 'hello world' to equal 'hello sunshine'
+
+    Difference:
+
+    - Expected
+    + Received
+
+    - hello sunshine
+    + hello world
+
+      22 | 
+      23 |   it('assert', () => {
+    > 24 |     chai.assert.strictEqual('hello world', 'hello sunshine');
+         |                 ^
+      25 |   });
+      26 | });
+      27 | 
+
+      at Object.strictEqual (__tests__/chai_assertion.js:24:17)
+`;
