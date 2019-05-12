@@ -5,6 +5,7 @@
     "outDir": "build"
   },
   "references": [
+    {"path": "../diff-sequences"},
     {"path": "../jest-get-type"},
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
