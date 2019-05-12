@@ -168,7 +168,9 @@ function assertionErrorMessage(
   );
 }
 
-function isAssertionError(error: Circus.TestError): error is AssertionError {
+function isAssertionError(
+  error: Circus.TestError,
+): error is AssertionErrorWithStack {
   return (
     error &&
     (error instanceof AssertionError ||
