@@ -168,11 +168,12 @@ function assertionErrorMessage(
   );
 }
 
-function isAssertionError(error: Circus.TestError) {
+function isAssertionError(error: Circus.TestError): error is AssertionError {
   return (
-    error instanceof AssertionError ||
-    (error &&
-      (error.name === AssertionError.name || error.code === 'ERR_ASSERTION'))
+    error &&
+    (error instanceof AssertionError ||
+      error.name === AssertionError.name ||
+      error.code === 'ERR_ASSERTION')
   );
 }
 
