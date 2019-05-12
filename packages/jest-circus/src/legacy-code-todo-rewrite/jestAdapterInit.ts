@@ -16,7 +16,12 @@ import {
   buildSnapshotResolver,
 } from 'jest-snapshot';
 import throat from 'throat';
-import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
+import {
+  addEventHandler,
+  dispatch,
+  getState as getRunnerState,
+  ROOT_DESCRIBE_BLOCK_NAME,
+} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
 import globals from '..';
@@ -42,6 +47,8 @@ export const initialize = ({
   testPath: Config.Path;
   parentProcess: Process;
 }) => {
+  if (globalConfig.timeout) getRunnerState().testTimeout = globalConfig.timeout;
+
   const mutex = throat(globalConfig.maxConcurrency);
 
   Object.assign(global, globals);
