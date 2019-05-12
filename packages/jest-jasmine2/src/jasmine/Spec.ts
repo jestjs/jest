@@ -294,7 +294,8 @@ export default class Spec {
 
   isAssertionError(error: Error) {
     return (
-      error instanceof AssertionError || error.name === AssertionError.name
+      error instanceof AssertionError ||
+      (error && error.name === AssertionError.name)
     );
   }
 }

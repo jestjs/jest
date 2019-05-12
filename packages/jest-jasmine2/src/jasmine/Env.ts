@@ -665,7 +665,7 @@ export default function(j$: Jasmine) {
 
         if (
           error instanceof AssertionError ||
-          error.name === AssertionError.name
+          (error && error.name === AssertionError.name)
         ) {
           checkIsError = false;
           // @ts-ignore TODO Possible error: j$.Spec does not have expand property

@@ -171,8 +171,8 @@ function assertionErrorMessage(
 function isAssertionError(error: Circus.TestError) {
   return (
     error instanceof AssertionError ||
-    error.name === AssertionError.name ||
-    error.code === 'ERR_ASSERTION'
+    (error &&
+      (error.name === AssertionError.name || error.code === 'ERR_ASSERTION'))
   );
 }
 
