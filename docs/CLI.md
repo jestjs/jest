@@ -301,6 +301,10 @@ Lets you specify a custom test runner.
 
 Lets you specify a custom test sequencer. Please refer to the documentation of the corresponding configuration property for details.
 
+### `--timeout=<number>`
+
+Default timeout of the test case. If the value is 0 then the timeout is 1 193 days.
+
 ### `--updateSnapshot`
 
 Alias: `-u`. Use this flag to re-record every snapshot that fails during this test run. Can be used together with a test suite pattern or with `--testNamePattern` to re-record snapshots.

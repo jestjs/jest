@@ -40,6 +40,7 @@ import VALID_CONFIG from './ValidConfig';
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
+const MAX_32_BIT_SIGNED_INTEGER = Math.pow(2, 31) - 1;
 
 type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
@@ -787,6 +788,11 @@ export default function normalize(
           }
         }
         value = oldOptions[key];
+        break;
+      }
+      case 'timeout': {
+        value =
+          oldOptions[key] === 0 ? MAX_32_BIT_SIGNED_INTEGER : oldOptions[key];
         break;
       }
       case 'automock':

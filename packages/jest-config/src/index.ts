@@ -149,6 +149,7 @@ const groupOptions = (
     testPathPattern: options.testPathPattern,
     testResultsProcessor: options.testResultsProcessor,
     testSequencer: options.testSequencer,
+    timeout: options.timeout,
     updateSnapshot: options.updateSnapshot,
     useStderr: options.useStderr,
     verbose: options.verbose,

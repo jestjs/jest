@@ -55,6 +55,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   testNamePattern: '',
   testPathPattern: '',
   testResultsProcessor: null,
+  timeout: 5000,
   updateSnapshot: 'none',
   useStderr: false,
   verbose: false,

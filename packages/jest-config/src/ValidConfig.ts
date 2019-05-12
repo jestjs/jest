@@ -114,6 +114,7 @@ const initialOptions: Config.InitialOptions = {
   testRunner: 'jasmine2',
   testSequencer: '@jest/test-sequencer',
   testURL: 'http://localhost',
+  timeout: 5000,
   timers: 'real',
   transform: {
     '^.+\\.js$': '<rootDir>/preprocessor.js',
