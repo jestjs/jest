@@ -41,30 +41,20 @@ var DIFF_DELETE = -1;
 var DIFF_INSERT = 1;
 var DIFF_EQUAL = 0;
 
+/**
+ * Class representing one diff tuple.
+ * Attempts to look like a two-element array (which is what this used to be).
+ * @param {number} op Operation, one of: DIFF_DELETE, DIFF_INSERT, DIFF_EQUAL.
+ * @param {string} text Text to be deleted, inserted, or retained.
+ * @constructor
+ */
 class Diff {
   0: number;
   1: string;
 
-  /**
-   * Class representing one diff tuple.
-   * Attempts to look like a two-element array (which is what this used to be).
-   * @param {number} op Operation, one of: DIFF_DELETE, DIFF_INSERT, DIFF_EQUAL.
-   * @param {string} text Text to be deleted, inserted, or retained.
-   * @constructor
-   */
   constructor(op: number, text: string) {
     this[0] = op;
     this[1] = text;
-  }
-
-  // Diff.prototype.length = 2; // not possible in TypeScript
-
-  /**
-   * Emulate the output of a two-element array.
-   * @return {string} Diff operation as a string.
-   */
-  toString(): string {
-    return this[0] + ',' + this[1];
   }
 }
 
