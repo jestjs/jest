@@ -10,7 +10,6 @@
 import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
-import v8 from 'v8';
 import prettyFormat from 'pretty-format';
 
 import serializer from '..';
