@@ -1,10 +1,21 @@
 ## master
 
 ### Features
+- `[expect]` Add BigInt Support to `toBeGreaterThan`, `toBeGreaterThanOrEqual`, `toBeLessThan` and `toBeLessThanOrEqual` ([#8382](https://github.com/facebook/jest/pull/8382))
+- `[jest-get-type]` Add BigInt Support. ([#8382](https://github.com/facebook/jest/pull/8382))
+- `[jest-matcher-utils]` Add BigInt Support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
+- `[babel-plugin-jest-hoist]` Add BigInt to `WHITELISTED_IDENTIFIERS`([#8382](https://github.com/facebook/jest/pull/8382))
+- `[babel-preset-jest]` Add @babel/plugin-syntax-bigint`([#8382](https://github.com/facebook/jest/pull/8382))
 
 ### Fixes
 
+- `[babel-plugin-jest-hoist]` Expand list of whitelisted globals in global mocks ([#8429](https://github.com/facebook/jest/pull/8429)
+- `[jest-core]` Make watch plugin initialization errors look nice ([#8422](https://github.com/facebook/jest/pull/8422))
+
 ### Chore & Maintenance
+
+- `[jest-leak-detector]` remove code repeat ([#8438](https://github.com/facebook/jest/pull/8438)
+- `[eslintrc]` Disable valid-typeof, no-undef for ts overrides ([#8382](https://github.com/facebook/jest/pull/8382))
 
 ### Performance
 
@@ -21,11 +32,6 @@
 - `[expect]` Improve report when matcher fails, part 17 ([#8349](https://github.com/facebook/jest/pull/8349))
 - `[expect]` Improve report when matcher fails, part 18 ([#8356](https://github.com/facebook/jest/pull/8356))
 - `[expect]` Improve report when matcher fails, part 19 ([#8367](https://github.com/facebook/jest/pull/8367))
-- `[expect]` Add BigInt Support to `toBeGreaterThan`, `toBeGreaterThanOrEqual`, `toBeLessThan` and `toBeLessThanOrEqual` ([#8382](https://github.com/facebook/jest/pull/8382))
-- `[jest-get-type]` Add BigInt Support. ([#8382](https://github.com/facebook/jest/pull/8382))
-- `[jest-matcher-utils]` Add BigInt Support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
-- `[babel-plugin-jest-hoist]` Add BigInt to `WHITELISTED_IDENTIFIERS`([#8382](https://github.com/facebook/jest/pull/8382))
-- `[babel-preset-jest]` Add @babel/plugin-syntax-bigint`([#8382](https://github.com/facebook/jest/pull/8382))
 
 ### Fixes
 
@@ -50,7 +56,7 @@
 - `[*]` Delete obsolete emails tag from header comment in test files ([#8377](https://github.com/facebook/jest/pull/8377))
 - `[expect]` optimize compare nodes ([#8368](https://github.com/facebook/jest/pull/8368))
 - `[docs]` Fix typo in MockFunctionAPI.md ([#8406](https://github.com/facebook/jest/pull/8406))
-- `[eslintrc]` Disable valid-typeof, no-undef for ts overrides ([#8382](https://github.com/facebook/jest/pull/8382))
+- `[LICENSE]` Follow copyright header guidelines and delete For Jest software ([#8428](https://github.com/facebook/jest/pull/8428))
 
 ### Performance
 

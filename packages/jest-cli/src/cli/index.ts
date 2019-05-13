@@ -36,7 +36,12 @@ export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);
-    console.error(chalk.red(error.stack));
+    if (error.stack) {
+      console.error(chalk.red(error.stack));
+    } else {
+      console.error(chalk.red(error));
+    }
+
     exit(1);
     throw error;
   }

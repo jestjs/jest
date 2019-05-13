@@ -8,12 +8,13 @@
 import v8 from 'v8';
 import vm from 'vm';
 import prettyFormat from 'pretty-format';
+import {isPrimitive} from 'jest-get-type';
 
 export default class {
   private _isReferenceBeingHeld: boolean;
 
   constructor(value: unknown) {
-    if (this._isPrimitive(value)) {
+    if (isPrimitive(value)) {
       throw new TypeError(
         [
           'Primitives cannot leak memory.',
@@ -62,9 +63,5 @@ export default class {
     if (isGarbageCollectorHidden) {
       v8.setFlagsFromString('--no-expose-gc');
     }
-  }
-
-  private _isPrimitive(value: unknown): boolean {
-    return value !== Object(value);
   }
 }
