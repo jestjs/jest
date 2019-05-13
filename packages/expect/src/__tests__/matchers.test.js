@@ -216,6 +216,7 @@ describe('.toBe()', () => {
     [new Error('received'), new Error('expected')],
     ['abc', 'cde'],
     ['painless JavaScript testing', 'delightful JavaScript testing'],
+    ['', 'compare one-line string to empty string'],
     ['with \ntrailing space', 'without trailing space'],
     ['four\n4\nline\nstring', '3\nline\nstring'],
     [[], []],

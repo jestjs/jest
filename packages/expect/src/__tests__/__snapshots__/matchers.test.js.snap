@@ -278,6 +278,13 @@ exports[`.toBe() fails for 'undefined' with '.not' 1`] = `
 Expected: not <green>undefined</>"
 `;
 
+exports[`.toBe() fails for: "" and "compare one-line string to empty string" 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
+
+Expected: <green>\\"compare one-line string to empty string\\"</>
+Received: <red>\\"\\"</>"
+`;
+
 exports[`.toBe() fails for: "abc" and "cde" 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 

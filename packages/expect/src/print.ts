@@ -137,9 +137,10 @@ const diffStrings = (a: string, b: string): Array<Diff> | null => {
 
   cleanupSemantic(diffs);
 
-  return diffs.length === 2 &&
-    diffs[0][0] === DIFF_DELETE &&
-    diffs[1][0] === DIFF_INSERT
+  return diffs.length === 1 ||
+    (diffs.length === 2 &&
+      diffs[0][0] === DIFF_DELETE &&
+      diffs[1][0] === DIFF_INSERT)
     ? null
     : diffs;
 };
