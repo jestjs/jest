@@ -21,7 +21,7 @@ export type HasteConfig = {
   throwOnModuleCollision?: boolean;
 };
 
-export type ReporterConfig = [string, {[key: string]: unknown}];
+export type ReporterConfig = [string, Record<string, unknown>];
 
 export type ConfigGlobals = Record<string, any>;
 

@@ -299,7 +299,7 @@ const makeThrowingMatcher = (
 
     const handlError = (error: Error) => {
       if (
-        (matcher as any)[INTERNAL_MATCHER_FLAG] === true &&
+        matcher[INTERNAL_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
         error.name !== 'PrettyFormatPluginError' &&
         // Guard for some environments (browsers) that do not support this feature.
@@ -314,10 +314,7 @@ const makeThrowingMatcher = (
     let potentialResult: ExpectationResult;
 
     try {
-      potentialResult = matcher.apply(
-        matcherContext,
-        ([actual] as any).concat(args),
-      );
+      potentialResult = matcher.call(matcherContext, actual, ...args);
 
       if (isPromise(potentialResult)) {
         const asyncResult = potentialResult as AsyncExpectationResult;
@@ -340,7 +337,7 @@ const makeThrowingMatcher = (
   };
 
 expect.extend = (matchers: MatchersObject): void =>
-  setMatchers(matchers, false, expect as any);
+  setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;

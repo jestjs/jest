@@ -51,7 +51,7 @@ type InitialModule = Partial<Module> &
 type ModuleRegistry = Map<string, InitialModule | Module>;
 type ResolveOptions = Parameters<typeof require.resolve>[1];
 
-type BooleanObject = {[key: string]: boolean};
+type BooleanObject = Record<string, boolean>;
 type CacheFS = {[path: string]: string};
 
 namespace Runtime {
@@ -90,7 +90,7 @@ class Runtime {
   private _explicitShouldMock: BooleanObject;
   private _internalModuleRegistry: ModuleRegistry;
   private _isCurrentlyExecutingManualMock: string | null;
-  private _mockFactories: {[key: string]: () => unknown};
+  private _mockFactories:Record<string, () => unknown> ;
   private _mockMetaDataCache: {
     [key: string]: MockFunctionMetadata<unknown, Array<unknown>>;
   };
@@ -786,9 +786,9 @@ class Runtime {
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
-      this._mockMetaDataCache[modulePath] = this._moduleMocker.getMetadata(
-        {},
-      ) as any;
+
+      this._mockMetaDataCache[modulePath] =
+        this._moduleMocker.getMetadata({}) || {};
 
       // In order to avoid it being possible for automocking to potentially
       // cause side-effects within the module environment, we need to execute

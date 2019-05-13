@@ -19,7 +19,7 @@ const getKeysOfEnumerableProperties = (object: Record<string, any>) => {
     });
   }
 
-  return keys;
+  return keys as Array<string>;
 };
 
 /**
@@ -176,7 +176,7 @@ export function printObjectProperties(
   printer: Printer,
 ): string {
   let result = '';
-  const keys = getKeysOfEnumerableProperties(val);
+  const keys = getKeysOfEnumerableProperties(val) as Array<string>;
 
   if (keys.length) {
     result += config.spacingOuter;
@@ -186,13 +186,7 @@ export function printObjectProperties(
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
       const name = printer(key, config, indentationNext, depth, refs);
-      const value = printer(
-        (val as any)[key],
-        config,
-        indentationNext,
-        depth,
-        refs,
-      );
+      const value = printer(val[key], config, indentationNext, depth, refs);
 
       result += indentationNext + name + ': ' + value;
 

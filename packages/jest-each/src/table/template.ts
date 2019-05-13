@@ -11,7 +11,7 @@ import {isPrimitive} from 'jest-get-type';
 import {Global} from '@jest/types';
 import {EachTests} from '../bind';
 
-type Template = {[key: string]: unknown};
+type Template = Record<string, unknown>;
 type Templates = Array<Template>;
 type Headings = Array<string>;
 
@@ -70,11 +70,8 @@ const replaceKeyPathWithValue = (template: Template) => (
   return title.replace(match, pretty(value, {maxDepth: 1, min: true}));
 };
 
-const getPath = (
-  template: Template | any,
-  [head, ...tail]: Array<string>,
-): any => {
+const getPath = (template: Template, [head, ...tail]: Array<string>): any => {
   if (!head || !template.hasOwnProperty || !template.hasOwnProperty(head))
     return template;
-  return getPath(template[head], tail);
+  return getPath(template[head] as Template, tail);
 };

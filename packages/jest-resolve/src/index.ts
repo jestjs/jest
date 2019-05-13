@@ -25,7 +25,7 @@ type FindNodeModuleConfig = {
   rootDir?: Config.Path;
 };
 
-type BooleanObject = {[key: string]: boolean};
+type BooleanObject = Record<string, boolean>;
 
 namespace Resolver {
   export type ResolveModuleConfig = {
