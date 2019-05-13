@@ -21,7 +21,7 @@ import diffSequences from 'diff-sequences';
 import {
   cleanupSemantic,
   Diff,
-  DIFF_COMMON,
+  DIFF_EQUAL,
   DIFF_DELETE,
   DIFF_INSERT,
 } from './cleanupSemantic';
@@ -122,7 +122,7 @@ const diffStrings = (a: string, b: string): Array<Diff> | null => {
 
     aIndex = aCommon + nCommon; // number of characters compared in a
     bIndex = bCommon + nCommon; // number of characters compared in b
-    diffs.push(new Diff(DIFF_COMMON, a.slice(aCommon, aIndex)));
+    diffs.push(new Diff(DIFF_EQUAL, a.slice(aCommon, aIndex)));
   };
 
   diffSequences(a.length, b.length, isCommon, foundSubsequence);
@@ -149,7 +149,7 @@ const MULTILINE_REGEXP = /[\r\n]/;
 
 const expectedInverter = (reduced: string, diff: Diff): string =>
   reduced +
-  (diff[0] === DIFF_COMMON
+  (diff[0] === DIFF_EQUAL
     ? printSubstring(diff[1])
     : diff[0] === DIFF_DELETE
     ? INVERTED_COLOR(printSubstring(diff[1]))
@@ -157,7 +157,7 @@ const expectedInverter = (reduced: string, diff: Diff): string =>
 
 const receivedInverter = (reduced: string, diff: Diff): string =>
   reduced +
-  (diff[0] === DIFF_COMMON
+  (diff[0] === DIFF_EQUAL
     ? printSubstring(diff[1])
     : diff[0] === DIFF_INSERT
     ? INVERTED_COLOR(printSubstring(diff[1]))

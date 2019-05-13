@@ -549,7 +549,7 @@ var diff_cleanupMerge = function(diffs: Array<Diff>) {
 
 export {
   Diff,
-  DIFF_EQUAL as DIFF_COMMON,
+  DIFF_EQUAL,
   DIFF_DELETE,
   DIFF_INSERT,
   diff_cleanupSemantic as cleanupSemantic,
