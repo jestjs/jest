@@ -176,7 +176,7 @@ export function printObjectProperties(
   printer: Printer,
 ): string {
   let result = '';
-  const keys = getKeysOfEnumerableProperties(val) as Array<string>;
+  const keys = getKeysOfEnumerableProperties(val);
 
   if (keys.length) {
     result += config.spacingOuter;
