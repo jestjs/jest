@@ -90,7 +90,7 @@ class Runtime {
   private _explicitShouldMock: BooleanObject;
   private _internalModuleRegistry: ModuleRegistry;
   private _isCurrentlyExecutingManualMock: string | null;
-  private _mockFactories:Record<string, () => unknown> ;
+  private _mockFactories: Record<string, () => unknown>;
   private _mockMetaDataCache: {
     [key: string]: MockFunctionMetadata<unknown, Array<unknown>>;
   };
