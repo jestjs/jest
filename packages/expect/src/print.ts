@@ -137,12 +137,8 @@ const diffStrings = (a: string, b: string): Array<Diff> | null => {
 
   cleanupSemantic(diffs);
 
-  return diffs.length === 1 ||
-    (diffs.length === 2 &&
-      diffs[0][0] === DIFF_DELETE &&
-      diffs[1][0] === DIFF_INSERT)
-    ? null
-    : diffs;
+  // Assume there is delete or insert, but is there anything common?
+  return diffs.some(diff => diff[0] === DIFF_EQUAL) ? diffs : null;
 };
 
 const MULTILINE_REGEXP = /[\r\n]/;
