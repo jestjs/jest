@@ -102,12 +102,47 @@ const shouldPrintDiff = (expected: unknown, received: unknown): boolean => {
   return true;
 };
 
-const diffStrings = (a: string, b: string): Array<Diff> | null => {
+// Encapsulate diff array with toJSON method
+// so pretty-format can serialize it without a plugin.
+class DiffArray extends Array<Diff> {
+  opInvert: number;
+
+  constructor() {
+    super();
+
+    // Initial value displays common substrings which is not very useful,
+    // so you need to assign it before toJSON is called:
+    //
+    // To display expected string: diffs.opInvert = DIFF_DELETE
+    // To display received string: diffs.opInvert = DIFF_INSERT
+    this.opInvert = DIFF_EQUAL;
+  }
+
+  toJSON(): string {
+    const opInvert = this.opInvert;
+
+    // pretty-format prints the returned string:
+    // enclosed in double quote marks
+    // with escape sequences if needed
+    return this.reduce(
+      (reduced: string, diff: Diff): string =>
+        reduced +
+        (diff[0] === DIFF_EQUAL
+          ? diff[1]
+          : diff[0] === opInvert
+          ? INVERTED_COLOR(diff[1])
+          : ''),
+      '',
+    );
+  }
+}
+
+const diffStrings = (a: string, b: string): DiffArray | null => {
   const isCommon = (aIndex: number, bIndex: number) => a[aIndex] === b[bIndex];
 
   let aIndex = 0;
   let bIndex = 0;
-  const diffs = [];
+  const diffs = new DiffArray();
   const foundSubsequence = (
     nCommon: number,
     aCommon: number,
@@ -142,22 +177,6 @@ const diffStrings = (a: string, b: string): Array<Diff> | null => {
 };
 
 const MULTILINE_REGEXP = /[\r\n]/;
-
-const expectedInverter = (reduced: string, diff: Diff): string =>
-  reduced +
-  (diff[0] === DIFF_EQUAL
-    ? printSubstring(diff[1])
-    : diff[0] === DIFF_DELETE
-    ? INVERTED_COLOR(printSubstring(diff[1]))
-    : '');
-
-const receivedInverter = (reduced: string, diff: Diff): string =>
-  reduced +
-  (diff[0] === DIFF_EQUAL
-    ? printSubstring(diff[1])
-    : diff[0] === DIFF_INSERT
-    ? INVERTED_COLOR(printSubstring(diff[1]))
-    : '');
 
 export const printDiffOrStringify = (
   expected: unknown,
@@ -199,14 +218,12 @@ export const printDiffOrStringify = (
     const diffs = diffStrings(expected, received);
 
     if (Array.isArray(diffs)) {
-      return (
-        `${printLabel(expectedLabel)}${EXPECTED_COLOR(
-          diffs.reduce(expectedInverter, '"') + '"',
-        )}\n` +
-        `${printLabel(receivedLabel)}${RECEIVED_COLOR(
-          diffs.reduce(receivedInverter, '"') + '"',
-        )}`
-      );
+      diffs.opInvert = DIFF_DELETE;
+      const expectedLine = printLabel(expectedLabel) + printExpected(diffs);
+      diffs.opInvert = DIFF_INSERT;
+      const receivedLine = printLabel(receivedLabel) + printReceived(diffs);
+
+      return expectedLine + '\n' + receivedLine;
     }
   }
 
