@@ -18,8 +18,8 @@ const shouldSkipValidationForPath = (
 ) => (blacklist ? blacklist.includes([...path, key].join('.')) : false);
 
 const _validate = (
-  config: {[key: string]: any},
-  exampleConfig: {[key: string]: any},
+  config: Record<string, any>,
+  exampleConfig: Record<string, any>,
   options: ValidationOptions,
   path: Array<string> = [],
 ): {hasDeprecationWarnings: boolean} => {
@@ -76,7 +76,7 @@ const _validate = (
   return {hasDeprecationWarnings};
 };
 
-const validate = (config: {[key: string]: any}, options: ValidationOptions) => {
+const validate = (config: Record<string, any>, options: ValidationOptions) => {
   hasDeprecationWarnings = false;
 
   // Preserve default blacklist entries even with user-supplied blacklist

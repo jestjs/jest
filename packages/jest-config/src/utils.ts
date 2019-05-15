@@ -84,7 +84,7 @@ const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
 };
 
 type OrArray<T> = T | Array<T>;
-type ReplaceRootDirConfigObj = {[key: string]: Config.Path};
+type ReplaceRootDirConfigObj = Record<string, Config.Path>;
 type ReplaceRootDirConfigValues =
   | OrArray<ReplaceRootDirConfigObj>
   | OrArray<RegExp>

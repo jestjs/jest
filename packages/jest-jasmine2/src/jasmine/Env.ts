@@ -66,7 +66,7 @@ export default function(j$: Jasmine) {
     ) => Promise<void>;
     fdescribe: (description: string, specDefinitions: Function) => Suite;
     spyOn: (
-      obj: {[key: string]: any},
+      obj: Record<string, any>,
       methodName: string,
       accessType?: keyof PropertyDescriptor,
     ) => Spy;
@@ -94,7 +94,7 @@ export default function(j$: Jasmine) {
       const realSetTimeout = global.setTimeout;
       const realClearTimeout = global.clearTimeout;
 
-      const runnableResources: {[key: string]: {spies: Array<Spy>}} = {};
+      const runnableResources: Record<string, {spies: Array<Spy>}> = {};
       const currentlyExecutingSuites: Array<Suite> = [];
       let currentSpec: Spec | null = null;
       let throwOnExpectationFailure = false;

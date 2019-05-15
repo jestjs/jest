@@ -17,7 +17,7 @@ const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;
 let Runtime;
 let config: Config.ProjectConfig;
-const cases: {[key: string]: jest.Mock} = {
+const cases: Record<string, jest.Mock> = {
   fancyCondition: jest.fn(path => path.length > 10),
   testRegex: jest.fn(path => /.test.js$/.test(path)),
 };
