@@ -35,30 +35,30 @@ FAIL __tests__/chai_assertion.js
 
     assert.(received, expected)
 
-    Expected value   "hello sunshine"
+    Expected value   "hello world"
     Received:
-      "hello world"
+      "hello sunshine"
 
     Message:
-      expected 'hello world' to equal 'hello sunshine'
+      expected 'hello sunshine' to equal 'hello world'
 
     Difference:
 
     - Expected
     + Received
 
-    - hello sunshine
-    + hello world
+    - hello world
+    + hello sunshine
 
-      18 |     const stringExpected = 'hello world';
-      19 |     const actualExpected = 'hello sunshine';
-    > 20 |     stringExpected.should.to.equal(actualExpected);
-         |                              ^
+      18 |     const expectedString = 'hello world';
+      19 |     const actualString = 'hello sunshine';
+    > 20 |     actualString.should.equal(expectedString);
+         |                         ^
       21 |   });
       22 | 
       23 |   it('assert', () => {
 
-      at Object.equal (__tests__/chai_assertion.js:20:30)
+      at Object.equal (__tests__/chai_assertion.js:20:25)
 
   ● chai.js assertion library test › assert
 

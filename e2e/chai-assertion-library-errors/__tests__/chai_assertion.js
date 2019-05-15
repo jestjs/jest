@@ -15,9 +15,9 @@ describe('chai.js assertion library test', () => {
 
   it('should', () => {
     chai.should();
-    const stringExpected = 'hello world';
-    const actualExpected = 'hello sunshine';
-    stringExpected.should.to.equal(actualExpected);
+    const expectedString = 'hello world';
+    const actualString = 'hello sunshine';
+    actualString.should.equal(expectedString);
   });
 
   it('assert', () => {
