@@ -11,8 +11,8 @@ exports.__esModule = true;
 const NodeEnvironment = require('jest-environment-node');
 
 class Env extends NodeEnvironment {
-  constructor(...args) {
-    super(...args);
+  constructor(config, options) {
+    super(config, options);
     this.global.property = 'value';
   }
 }

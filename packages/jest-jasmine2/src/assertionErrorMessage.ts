@@ -14,14 +14,14 @@ import {
 import chalk from 'chalk';
 import {AssertionErrorWithStack} from './types';
 
-const assertOperatorsMap: {[key: string]: string} = {
+const assertOperatorsMap: Record<string, string> = {
   '!=': 'notEqual',
   '!==': 'notStrictEqual',
   '==': 'equal',
   '===': 'strictEqual',
 };
 
-const humanReadableOperators: {[key: string]: string} = {
+const humanReadableOperators: Record<string, string> = {
   deepEqual: 'to deeply equal',
   deepStrictEqual: 'to deeply and strictly equal',
   equal: 'to be equal',

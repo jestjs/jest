@@ -37,6 +37,8 @@ export function equals(
   return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
 }
 
+const functionToString = Function.prototype.toString;
+
 function isAsymmetric(obj: any) {
   return !!obj && isA('Function', obj.asymmetricMatch);
 }
@@ -124,10 +126,8 @@ function eq(
     return false;
   }
 
-  var aIsDomNode = isDomNode(a);
-  var bIsDomNode = isDomNode(b);
   // Use DOM3 method isEqualNode (IE>=9)
-  if (aIsDomNode && typeof a.isEqualNode === 'function' && bIsDomNode) {
+  if (isDomNode(a) && isDomNode(b)) {
     return a.isEqualNode(b);
   }
 
@@ -208,7 +208,8 @@ function keys(
     return keys.concat(
       (Object.getOwnPropertySymbols(o) as Array<any>).filter(
         symbol =>
-          (Object.getOwnPropertyDescriptor(o, symbol) as any).enumerable,
+          (Object.getOwnPropertyDescriptor(o, symbol) as PropertyDescriptor)
+            .enumerable,
       ),
     );
   })(obj);
@@ -258,7 +259,9 @@ export function fnNameFor(func: Function) {
     return func.name;
   }
 
-  const matches = func.toString().match(/^\s*function\s*(\w*)\s*\(/);
+  const matches = functionToString
+    .call(func)
+    .match(/^(?:async)?\s*function\s*\*?\s*([\w$]+)\s*\(/);
   return matches ? matches[1] : '<anonymous>';
 }
 

@@ -18,6 +18,10 @@ import {
   MatcherHintOptions,
 } from 'jest-matcher-utils';
 import {
+  printExpectedConstructorName,
+  printExpectedConstructorNameNot,
+  printReceivedConstructorName,
+  printReceivedConstructorNameNot,
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
@@ -250,8 +254,17 @@ const toThrowExpectedClass = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected name: ', expected.name) +
-        formatReceived('Received name: ', thrown, 'name') +
+        printExpectedConstructorNameNot('Expected constructor', expected) +
+        (thrown !== null &&
+        thrown.value != null &&
+        typeof thrown.value.constructor === 'function' &&
+        thrown.value.constructor !== expected
+          ? printReceivedConstructorNameNot(
+              'Received constructor',
+              thrown.value.constructor,
+              expected,
+            )
+          : '') +
         '\n' +
         (thrown !== null && thrown.hasMessage
           ? formatReceived('Received message: ', thrown, 'message') +
@@ -260,15 +273,21 @@ const toThrowExpectedClass = (
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected name: ', expected.name) +
+        printExpectedConstructorName('Expected constructor', expected) +
         (thrown === null
           ? '\n' + DID_NOT_THROW
-          : thrown.hasMessage
-          ? formatReceived('Received name: ', thrown, 'name') +
+          : (thrown.value != null &&
+            typeof thrown.value.constructor === 'function'
+              ? printReceivedConstructorName(
+                  'Received constructor',
+                  thrown.value.constructor,
+                )
+              : '') +
             '\n' +
-            formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown)
-          : '\n' + formatReceived('Received value: ', thrown, 'value'));
+            (thrown.hasMessage
+              ? formatReceived('Received message: ', thrown, 'message') +
+                formatStack(thrown)
+              : formatReceived('Received value: ', thrown, 'value')));
 
   return {message, pass};
 };

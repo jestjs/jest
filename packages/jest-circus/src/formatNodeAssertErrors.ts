@@ -6,6 +6,7 @@
  */
 
 import {AssertionError} from 'assert';
+import {Circus} from '@jest/types';
 import {
   diff,
   printExpected,
@@ -14,20 +15,19 @@ import {
 } from 'jest-matcher-utils';
 import chalk from 'chalk';
 import prettyFormat from 'pretty-format';
-import {Event, State, TestError} from './types';
 
 interface AssertionErrorWithStack extends AssertionError {
   stack: string;
 }
 
-const assertOperatorsMap: {[key: string]: string} = {
+const assertOperatorsMap: Record<string, string> = {
   '!=': 'notEqual',
   '!==': 'notStrictEqual',
   '==': 'equal',
   '===': 'strictEqual',
 };
 
-const humanReadableOperators: {[key: string]: string} = {
+const humanReadableOperators: Record<string, string> = {
   deepEqual: 'to deeply equal',
   deepStrictEqual: 'to deeply and strictly equal',
   equal: 'to be equal',
@@ -38,10 +38,10 @@ const humanReadableOperators: {[key: string]: string} = {
   strictEqual: 'to strictly be equal',
 };
 
-const formatNodeAssertErrors = (event: Event, state: State) => {
+const formatNodeAssertErrors = (event: Circus.Event, state: Circus.State) => {
   switch (event.name) {
     case 'test_done': {
-      event.test.errors = event.test.errors.map((errors: TestError) => {
+      event.test.errors = event.test.errors.map((errors: Circus.TestError) => {
         let error;
         if (Array.isArray(errors)) {
           const [originalError, asyncError] = errors;

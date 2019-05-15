@@ -102,6 +102,7 @@ export default class ScriptTransformer {
         .update(fileData)
         .update(configString)
         .update(instrument ? 'instrument' : '')
+        .update(filename)
         .update(CACHE_VERSION)
         .digest('hex');
     }
@@ -121,11 +122,11 @@ export default class ScriptTransformer {
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
+    const cacheFilenamePrefix = path
+      .basename(filename, path.extname(filename))
+      .replace(/\W/g, '');
     const cachePath = slash(
-      path.join(
-        cacheDir,
-        path.basename(filename, path.extname(filename)) + '_' + cacheKey,
-      ),
+      path.join(cacheDir, cacheFilenamePrefix + '_' + cacheKey),
     );
     createDirectory(cacheDir);
 
@@ -572,7 +573,7 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
     !config.transformIgnorePatterns ||
     config.transformIgnorePatterns.length === 0
   ) {
-    return;
+    return undefined;
   }
 
   return new RegExp(config.transformIgnorePatterns.join('|'));
@@ -580,7 +581,7 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
 
 const calcTransformRegExp = (config: Config.ProjectConfig) => {
   if (!config.transform.length) {
-    return;
+    return undefined;
   }
 
   const transformRegexp: Array<[RegExp, string]> = [];

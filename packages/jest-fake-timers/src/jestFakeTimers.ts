@@ -53,8 +53,8 @@ const setGlobal = (
 };
 
 export default class FakeTimers<TimerRef> {
-  private _cancelledImmediates!: {[key: string]: boolean};
-  private _cancelledTicks!: {[key: string]: boolean};
+  private _cancelledImmediates!: Record<string, boolean>;
+  private _cancelledTicks!: Record<string, boolean>;
   private _config: StackTraceConfig;
   private _disposed?: boolean;
   private _fakeTimerAPIs!: TimerAPI;

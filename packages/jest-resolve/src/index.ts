@@ -25,7 +25,7 @@ type FindNodeModuleConfig = {
   rootDir?: Config.Path;
 };
 
-type BooleanObject = {[key: string]: boolean};
+type BooleanObject = Record<string, boolean>;
 
 namespace Resolver {
   export type ResolveModuleConfig = {
@@ -39,12 +39,13 @@ const NATIVE_PLATFORM = 'native';
 // We might be inside a symlink.
 const cwd = process.cwd();
 const resolvedCwd = realpath(cwd) || cwd;
-const nodePaths = process.env.NODE_PATH
-  ? process.env.NODE_PATH.split(path.delimiter)
+const {NODE_PATH} = process.env;
+const nodePaths = NODE_PATH
+  ? NODE_PATH.split(path.delimiter)
       .filter(Boolean)
       // The resolver expects absolute paths.
       .map(p => path.resolve(resolvedCwd, p))
-  : null;
+  : undefined;
 
 /* eslint-disable-next-line no-redeclare */
 class Resolver {
@@ -82,7 +83,7 @@ class Resolver {
     path: Config.Path,
     options: FindNodeModuleConfig,
   ): Config.Path | null {
-    const resolver = options.resolver
+    const resolver: typeof defaultResolver = options.resolver
       ? require(options.resolver)
       : defaultResolver;
     const paths = options.paths;
