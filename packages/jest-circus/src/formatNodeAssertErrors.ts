@@ -102,13 +102,17 @@ const assertMatcherHint = (
   operator: string | undefined | null,
   operatorName: string,
 ) => {
-  let message =
-    chalk.dim('assert') +
-    chalk.dim('.' + operatorName + '(') +
-    chalk.red('received') +
-    chalk.dim(', ') +
-    chalk.green('expected') +
-    chalk.dim(')');
+  let message = '';
+
+  if (operatorName) {
+    message =
+      chalk.dim('assert') +
+      chalk.dim('.' + operatorName + '(') +
+      chalk.red('received') +
+      chalk.dim(', ') +
+      chalk.green('expected') +
+      chalk.dim(')');
+  }
 
   if (operator === '==') {
     message +=
