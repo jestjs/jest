@@ -140,8 +140,7 @@ function assertionErrorMessage(
 
   if (operatorName === 'doesNotThrow') {
     return (
-      assertThrowingMatcherHint(operatorName) +
-      '\n\n' +
+      buildHintString(assertThrowingMatcherHint(operatorName)) +
       chalk.reset(`Expected the function not to throw an error.\n`) +
       chalk.reset(`Instead, it threw:\n`) +
       `  ${printReceived(actual)}` +
@@ -152,8 +151,7 @@ function assertionErrorMessage(
 
   if (operatorName === 'throws') {
     return (
-      assertThrowingMatcherHint(operatorName) +
-      '\n\n' +
+      buildHintString(assertThrowingMatcherHint(operatorName)) +
       chalk.reset(`Expected the function to throw an error.\n`) +
       chalk.reset(`But it didn't throw anything.`) +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
@@ -162,8 +160,7 @@ function assertionErrorMessage(
   }
 
   return (
-    assertMatcherHint(operator, operatorName) +
-    '\n\n' +
+    buildHintString(assertMatcherHint(operator, operatorName)) +
     chalk.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
     chalk.reset(`Received:\n`) +
@@ -183,6 +180,10 @@ function isAssertionError(
       error.name === AssertionError.name ||
       error.code === 'ERR_ASSERTION')
   );
+}
+
+function buildHintString(hint: string) {
+  return hint ? hint + '\n\n' : '';
 }
 
 export default formatNodeAssertErrors;
