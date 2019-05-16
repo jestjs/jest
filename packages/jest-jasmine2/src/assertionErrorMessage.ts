@@ -61,6 +61,10 @@ const assertThrowingMatcherHint = (operatorName: string) =>
   chalk.dim(')');
 
 const assertMatcherHint = (operator: string | null, operatorName: string) => {
+  if (!operatorName) {
+    return '';
+  }
+
   let message =
     chalk.dim('assert') +
     chalk.dim('.' + operatorName + '(') +

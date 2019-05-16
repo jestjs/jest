@@ -4,7 +4,7 @@ exports[`chai assertion errors should display properly 1`] = `
 FAIL __tests__/chai_assertion.js
   ● chai.js assertion library test › expect
 
-    assert.(received, expected)
+
 
     Expected value   "hello sunshine"
     Received:
@@ -33,7 +33,7 @@ FAIL __tests__/chai_assertion.js
 
   ● chai.js assertion library test › should
 
-    assert.(received, expected)
+
 
     Expected value   "hello world"
     Received:
@@ -62,7 +62,7 @@ FAIL __tests__/chai_assertion.js
 
   ● chai.js assertion library test › assert
 
-    assert.(received, expected)
+
 
     Expected value   "hello sunshine"
     Received:
