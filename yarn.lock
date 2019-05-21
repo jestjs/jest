@@ -4468,7 +4468,7 @@ deepmerge@3.2.0:
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-3.2.0.tgz#58ef463a57c08d376547f8869fdc5bcee957f44e"
   integrity sha512-6+LuZGU7QCNUnAJyX8cIrlzoEgggTM6B7mm+znKOX4t5ltluT9KLjN6g61ECMS0LTsLW7yDpNoxhix5FZcrIow==
 
-deepmerge@^2.0.1, deepmerge@^2.1.1:
+deepmerge@^2.0.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-2.2.1.tgz#5d3ff22a01c00f645405a2fbc17d0778a1801170"
   integrity sha512-R9hc1Xa/NOBi9WRVUWg19rl1UB7Tt4kuPd+thNJgFZoxXsTz7ncaPaeIm+40oSGuP33DfMb4sZt1QIGiJzC4EA==
@@ -4652,10 +4652,10 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-docusaurus@^1.7.1:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/docusaurus/-/docusaurus-1.7.2.tgz#2de7323a8b27da3a4e54cab90fc397c786326a9a"
-  integrity sha512-bPuEvejWaDNrsivt3G9aLX+byhfEjwu3j23c0E3Cn5KRUDkEouHwDvrWXtiWqAl05le321opkhOWGidbe0eG9Q==
+docusaurus@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/docusaurus/-/docusaurus-1.10.0.tgz#f32f8a3a7f2c3da38e48ccbc7a0fb148311e413d"
+  integrity sha512-59MHcOu+GCLAzjml9E5UYRVsQDqEheilTRuyYPzpMIo1mb8rJLy3ulsF8HfWPYOjo3Luc8OHqCoGVarFO0VEAg==
   dependencies:
     "@babel/core" "^7.0.0"
     "@babel/plugin-proposal-class-properties" "^7.0.0"
@@ -4675,7 +4675,6 @@ docusaurus@^1.7.1:
     cross-spawn "^6.0.5"
     crowdin-cli "^0.3.0"
     cssnano "^3.10.0"
-    deepmerge "^2.1.1"
     escape-string-regexp "^1.0.5"
     express "^4.15.3"
     feed "^1.1.0"
@@ -4699,7 +4698,7 @@ docusaurus@^1.7.1:
     react-dom "^16.5.0"
     remarkable "^1.7.1"
     request "^2.87.0"
-    shelljs "^0.7.8"
+    shelljs "^0.8.3"
     sitemap "^1.13.0"
     tcp-port-used "^0.1.2"
     tiny-lr "^1.1.1"
@@ -11772,10 +11771,10 @@ shell-quote@1.6.1, shell-quote@^1.6.1:
     array-reduce "~0.0.0"
     jsonify "~0.0.0"
 
-shelljs@^0.7.8:
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.7.8.tgz#decbcf874b0d1e5fb72e14b164a9683048e9acb3"
-  integrity sha1-3svPh0sNHl+3LhSxZKloMEjprLM=
+shelljs@^0.8.3:
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.8.3.tgz#a7f3319520ebf09ee81275b2368adb286659b097"
+  integrity sha512-fc0BKlAWiLpwZljmOvAOTE/gXawtCoNrP5oaY7KIaQbbyHeQVg01pSEuEGvGh3HEdBU4baCD7wQBwADmM/7f7A==
   dependencies:
     glob "^7.0.0"
     interpret "^1.0.0"
