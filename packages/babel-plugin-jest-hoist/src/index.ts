@@ -88,9 +88,10 @@ const IDVisitor = {
   blacklist: ['TypeAnnotation', 'TSTypeAnnotation', 'TSTypeReference'],
 };
 
-const FUNCTIONS: {
-  [key: string]: (args: Array<NodePath>) => boolean;
-} = Object.create(null);
+const FUNCTIONS: Record<
+  string,
+  (args: Array<NodePath>) => boolean
+> = Object.create(null);
 
 FUNCTIONS.mock = (args: Array<NodePath>) => {
   if (args.length === 1) {

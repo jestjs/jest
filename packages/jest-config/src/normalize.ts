@@ -659,14 +659,19 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce((projects, project) => {
-            // Project can be specified as globs. If a glob matches any files,
-            // We expand it to these paths. If not, we keep the original path
-            // for the future resolution.
-            const globMatches =
-              typeof project === 'string' ? glob.sync(project) : [];
-            return projects.concat(globMatches.length ? globMatches : project);
-          }, []);
+          .reduce(
+            (projects, project) => {
+              // Project can be specified as globs. If a glob matches any files,
+              // We expand it to these paths. If not, we keep the original path
+              // for the future resolution.
+              const globMatches =
+                typeof project === 'string' ? glob.sync(project) : [];
+              return projects.concat(
+                globMatches.length ? globMatches : project,
+              );
+            },
+            [] as Array<string>,
+          );
         break;
       case 'moduleDirectories':
       case 'testMatch':

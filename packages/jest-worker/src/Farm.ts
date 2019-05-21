@@ -18,7 +18,7 @@ import {
 
 export default class Farm {
   private _computeWorkerKey: FarmOptions['computeWorkerKey'];
-  private _cacheKeys: {[key: string]: WorkerInterface};
+  private _cacheKeys: Record<string, WorkerInterface>;
   private _callback: Function;
   private _last: Array<QueueItem>;
   private _locks: Array<boolean>;

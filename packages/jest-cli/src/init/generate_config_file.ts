@@ -31,7 +31,7 @@ const stringifyOption = (
   );
 };
 
-const generateConfigFile = (results: {[key: string]: unknown}): string => {
+const generateConfigFile = (results: Record<string, unknown>): string => {
   const {coverage, clearMocks, environment} = results;
 
   const overrides: Record<string, any> = {};
