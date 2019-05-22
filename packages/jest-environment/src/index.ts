@@ -139,6 +139,7 @@ export interface Jest {
    * whether the module should receive a mock implementation or not.
    *
    * @example
+   ```
     jest.mock('../myModule', () => {
     // Require the original module to not be mocked...
     const originalModule = jest.requireActual(moduleName);
@@ -152,6 +153,7 @@ export interface Jest {
     const getRandom = require('../myModule').getRandom;
 
     getRandom(); // Always returns 10
+    ```
    */
   requireActual: (moduleName: string) => unknown;
   /**
