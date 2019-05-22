@@ -12,6 +12,7 @@
 ### Chore & Maintenance
 
 - `[jest-leak-detector]` remove code repeat ([#8438](https://github.com/facebook/jest/pull/8438)
+- `[docs]` Add example to `jest.requireActual` ([#8482](https://github.com/facebook/jest/pull/8482)
 
 ### Performance
 
