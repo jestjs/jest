@@ -321,6 +321,25 @@ _Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-optio
 
 Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
 
+Example:
+
+```js
+jest.mock('../myModule', () => {
+  // Require the original module to not be mocked...
+  const originalModule = jest.requireActual(moduleName);
+
+  return {
+    __esModule: true, // Use it when dealing with esModules
+    ...originalModule,
+    getRandom: jest.fn().mockReturnValue(10),
+  };
+});
+
+const getRandom = require('../myModule').getRandom;
+
+getRandom(); // Always returns 10
+```
+
 ### `jest.requireMock(moduleName)`
 
 Returns a mock module instead of the actual module, bypassing all checks on whether the module should be required normally or not.
