@@ -647,13 +647,11 @@ class Runtime {
           return module;
         }
       }
-      const moduleError: Error & {code?: string} = new Error(
+      throw Resolver.createModuleNotFoundError(
         `Cannot resolve module '${moduleName}' from paths ['${paths.join(
           "', '",
         )}'] from ${from}`,
       );
-      moduleError.code = 'MODULE_NOT_FOUND';
-      throw moduleError;
     }
     try {
       return this._resolveModule(from, moduleName);

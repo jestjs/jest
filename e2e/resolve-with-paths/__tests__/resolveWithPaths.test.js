@@ -30,8 +30,9 @@ test('finds a native node module when paths are given', () => {
   expect(require.resolve('fs', {paths: ['../dir']})).toEqual('fs');
 });
 
-test('throws an error if the module cannot be found from given paths', () => {
-  expect(() => require.resolve('./mod.js', {paths: ['..']})).toThrowError(
-    "Cannot resolve module './mod.js' from paths ['..'] from "
-  );
+test('throws a module not found error if the module cannot be found from given paths', () => {
+  expect(() => require.resolve('./mod.js', {paths: ['..']})).toThrowError({
+    code: 'MODULE_NOT_FOUND',
+    message: "Cannot resolve module './mod.js' from paths ['..'] from ",
+  });
 });
