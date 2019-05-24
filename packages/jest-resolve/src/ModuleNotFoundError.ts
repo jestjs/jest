@@ -5,6 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export default class ModuleNotFound extends Error {
+export default class ModuleNotFoundError extends Error {
   code: string = 'MODULE_NOT_FOUND';
 }

@@ -14,7 +14,7 @@ import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver from './defaultResolver';
 import {ResolverConfig} from './types';
-import ModuleNotFound from './ModuleNotFound';
+import ModuleNotFoundError from './ModuleNotFoundError';
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -104,7 +104,7 @@ class Resolver {
   }
 
   static createModuleNotFoundError(message?: string) {
-    return new ModuleNotFound(message);
+    return new ModuleNotFoundError(message);
   }
 
   resolveModuleFromDirIfExists(
@@ -211,7 +211,7 @@ class Resolver {
     // module name available.
     const relativePath = path.relative(dirname, from);
 
-    throw new ModuleNotFound(
+    throw new ModuleNotFoundError(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
     );
   }
