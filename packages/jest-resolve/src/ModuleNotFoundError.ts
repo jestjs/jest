@@ -6,5 +6,5 @@
  */
 
 export default class ModuleNotFoundError extends Error {
-  code: string = 'MODULE_NOT_FOUND';
+  code = 'MODULE_NOT_FOUND';
 }

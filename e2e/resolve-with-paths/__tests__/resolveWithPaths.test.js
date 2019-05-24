@@ -37,10 +37,7 @@ test('throws an error if the module cannot be found from given paths', () => {
 });
 
 test('throws module not found error if the module cannot be found from given paths', () => {
-  try {
-    require.resolve('./mod.js', {paths: ['..']});
-  } catch (err) {
-    expect(err.code).toBe('MODULE_NOT_FOUND');
-  }
-  expect.hasAssertions();
+  expect(() =>
+    require.resolve('./mod.js', {paths: ['..']})
+  ).rejects.toMatchObject({code: 'MODULE_NOT_FOUND'});
 });
