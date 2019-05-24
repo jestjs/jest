@@ -8,6 +8,7 @@
 
 - `[babel-plugin-jest-hoist]` Expand list of whitelisted globals in global mocks ([#8429](https://github.com/facebook/jest/pull/8429)
 - `[jest-core]` Make watch plugin initialization errors look nice ([#8422](https://github.com/facebook/jest/pull/8422))
+- `[jest-resolve]`: Set MODULE_NOT_FOUND as error code when module is not resolved from paths ([#8487](https://github.com/facebook/jest/pull/8487))
 
 ### Chore & Maintenance
 
