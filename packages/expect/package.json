@@ -13,7 +13,6 @@
   "dependencies": {
     "@jest/types": "^24.8.0",
     "ansi-styles": "^3.2.0",
-    "diff-sequences": "^24.3.0",
     "jest-get-type": "^24.8.0",
     "jest-matcher-utils": "^24.8.0",
     "jest-message-util": "^24.8.0",

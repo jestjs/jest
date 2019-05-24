@@ -14,6 +14,7 @@
   "main": "build/index.js",
   "dependencies": {
     "chalk": "^2.0.1",
+    "diff-sequences": "^24.3.0",
     "jest-diff": "^24.8.0",
     "jest-get-type": "^24.8.0",
     "pretty-format": "^24.8.0"

@@ -2006,15 +2006,8 @@ exports[`.toEqual() {pass: false} expect([1]).toEqual([2]) 1`] = `
 exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContaining {"a": 2}) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
-<green>- Expected</>
-<red>+ Received</>
-
-<green>- ObjectContaining {</>
-<green>-   \\"a\\": 2,</>
-<red>+ Object {</>
-<red>+   \\"a\\": 1,</>
-<red>+   \\"b\\": 2,</>
-<dim>  }</>"
+Expected: <green>ObjectContaining {\\"a\\": 2}</>
+Received: <red>{\\"a\\": 1, \\"b\\": 2}</>"
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 1}).toEqual({"a": 2}) 1`] = `

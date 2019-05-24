@@ -5,6 +5,7 @@
     "outDir": "build"
   },
   "references": [
+    {"path": "../diff-sequences"},
     {"path": "../jest-diff"},
     {"path": "../jest-get-type"},
     {"path": "../pretty-format"}
