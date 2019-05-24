@@ -81,9 +81,10 @@ function resolveSync(
     return target;
   }
 
-  throw new ModuleNotFoundError(
+  const err = new ModuleNotFoundError(
     "Cannot find module '" + target + "' from '" + basedir + "'",
   );
+  throw err;
 
   /*
    * contextual helper functions
