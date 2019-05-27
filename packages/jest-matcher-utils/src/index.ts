@@ -7,8 +7,16 @@
 
 import chalk from 'chalk';
 import jestDiff, {DiffOptions} from 'jest-diff';
-import getType from 'jest-get-type';
+import getType, {isPrimitive} from 'jest-get-type';
 import prettyFormat from 'pretty-format';
+
+import diffStrings from './diffStrings';
+import {
+  MULTILINE_REGEXP,
+  getExpectedString,
+  getReceivedString,
+} from './printDiff';
+
 const {
   AsymmetricMatcher,
   DOMCollection,
@@ -196,6 +204,112 @@ export const ensureExpectedIsNonNegativeInteger = (
       ),
     );
   }
+};
+
+const isDiffable = (expected: unknown, received: unknown): boolean => {
+  const expectedType = getType(expected);
+  const receivedType = getType(received);
+
+  if (expectedType !== receivedType) {
+    return false;
+  }
+
+  if (isPrimitive(expected)) {
+    // Print diff only if both strings have more than one line.
+    return (
+      typeof expected === 'string' &&
+      typeof received === 'string' &&
+      MULTILINE_REGEXP.test(expected) &&
+      MULTILINE_REGEXP.test(received)
+    );
+  }
+
+  if (
+    expectedType === 'date' ||
+    expectedType === 'function' ||
+    expectedType === 'regexp'
+  ) {
+    return false;
+  }
+
+  if (expected instanceof Error && received instanceof Error) {
+    return false;
+  }
+
+  if (
+    expectedType === 'object' &&
+    typeof (expected as any).asymmetricMatch === 'function'
+  ) {
+    return false;
+  }
+
+  if (
+    receivedType === 'object' &&
+    typeof (received as any).asymmetricMatch === 'function'
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+export const printDiffOrStringify = (
+  expected: unknown,
+  received: unknown,
+  expectedLabel: string,
+  receivedLabel: string,
+  expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+): string => {
+  const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+
+  if (
+    typeof expected === 'string' &&
+    typeof received === 'string' &&
+    expected.length !== 0 &&
+    received.length !== 0 &&
+    !MULTILINE_REGEXP.test(expected) &&
+    !MULTILINE_REGEXP.test(received)
+  ) {
+    const diffs = diffStrings(expected, received);
+
+    if (Array.isArray(diffs)) {
+      const expectedLine =
+        printLabel(expectedLabel) + printExpected(getExpectedString(diffs));
+      const receivedLine =
+        printLabel(receivedLabel) + printReceived(getReceivedString(diffs));
+
+      return expectedLine + '\n' + receivedLine;
+    }
+  } else if (isDiffable(expected, received)) {
+    // Cannot use same serialization as shortcut to avoid diff,
+    // because stringify (that is, pretty-format with min option)
+    // omits constructor name for array or object, too bad so sad :(
+    const difference = jestDiff(expected, received, {
+      aAnnotation: expectedLabel,
+      bAnnotation: receivedLabel,
+      expand,
+    });
+
+    if (
+      typeof difference === 'string' &&
+      difference.includes('- ' + expectedLabel) &&
+      difference.includes('+ ' + receivedLabel)
+    ) {
+      return difference;
+    }
+  }
+
+  // Cannot reuse value of stringify(received) in report string,
+  // because printReceived does inverse highlight space at end of line,
+  // but RECEIVED_COLOR does not (it refers to a plain chalk method).
+  return (
+    `${printLabel(expectedLabel)}${printExpected(expected)}\n` +
+    `${printLabel(receivedLabel)}${
+      stringify(expected) === stringify(received)
+        ? 'serializes to the same string'
+        : printReceived(received)
+    }`
+  );
 };
 
 // Sometimes, e.g. when comparing two numbers, the output from jest-diff
