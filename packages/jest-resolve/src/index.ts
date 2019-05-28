@@ -103,10 +103,6 @@ class Resolver {
     return null;
   }
 
-  static createModuleNotFoundError(message?: string) {
-    return new ModuleNotFoundError(message);
-  }
-
   resolveModuleFromDirIfExists(
     dirname: Config.Path,
     moduleName: string,
@@ -438,4 +434,5 @@ Please check your configuration for these entries:
   return error;
 };
 
-export = Resolver;
+export {ModuleNotFoundError};
+export default Resolver;

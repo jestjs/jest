@@ -17,7 +17,7 @@ import {SourceMapRegistry} from '@jest/source-map';
 import jestMock, {MockFunctionMetadata} from 'jest-mock';
 import HasteMap, {ModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import Resolver from 'jest-resolve';
+import Resolver, {ModuleNotFoundError} from 'jest-resolve';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
 import Snapshot from 'jest-snapshot';
@@ -647,7 +647,7 @@ class Runtime {
           return module;
         }
       }
-      const err = Resolver.createModuleNotFoundError(
+      const err = new ModuleNotFoundError(
         `Cannot resolve module '${moduleName}' from paths ['${paths.join(
           "', '",
         )}'] from ${from}`,
