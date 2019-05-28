@@ -80,6 +80,8 @@ class Resolver {
     this._modulePathCache = new Map();
   }
 
+  static ModuleNotFoundError = ModuleNotFoundError;
+
   static findNodeModule(
     path: Config.Path,
     options: FindNodeModuleConfig,
@@ -434,5 +436,4 @@ Please check your configuration for these entries:
   return error;
 };
 
-export {ModuleNotFoundError};
-export default Resolver;
+export = Resolver;
