@@ -647,12 +647,12 @@ class Runtime {
           return module;
         }
       }
-      const err = new Resolver.ModuleNotFoundError(
+
+      throw new Resolver.ModuleNotFoundError(
         `Cannot resolve module '${moduleName}' from paths ['${paths.join(
           "', '",
         )}'] from ${from}`,
       );
-      throw err;
     }
     try {
       return this._resolveModule(from, moduleName);
