@@ -46,10 +46,10 @@ jobs:
       displayName: 'GitHub release (create)'
       inputs:
         gitHubConnection: 'github-zenithworks'
-        title: Jest - Javascript Testing Framework Release 
+        title: Jest Release- $(Build.SourceBranchName)
         releaseNotesSource: input
-        releaseNotes: | 
-          \## Jest Release- $(Build.SourceBranchName) 
+        releaseNotes: |            
+          Jest - Javascript Testing Framework 
           [Release notes](https://github.com/facebook/jest/blob/master/CHANGELOG.md)   |   [Documentation](https://jestjs.io/docs/en/getting-started.html)  |   [Jest Website](https://jestjs.io/en/)     
                     
 variables:
@@ -57,4 +57,4 @@ variables:
   FORCE_COLOR: 1
 
   # Ensures the handful of tests that should be skipped during CI are
-CI: true
+  CI: true
