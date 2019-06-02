@@ -61,7 +61,7 @@ test('does not exceed the timeout', () => {
   expect(status).toBe(0);
 });
 
-test('exceeds the command line timeout', () => {
+test('exceeds the command line testTimeout', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
 
@@ -77,7 +77,7 @@ test('exceeds the command line timeout', () => {
   const {stderr, status} = runJest(DIR, [
     '-w=1',
     '--ci=false',
-    '--timeout=200',
+    '--testTimeout=200',
   ]);
   const {rest, summary} = extractSummary(stderr);
   expect(rest).toMatch(
@@ -87,7 +87,7 @@ test('exceeds the command line timeout', () => {
   expect(status).toBe(1);
 });
 
-test('does not exceed the command line timeout', () => {
+test('does not exceed the command line testTimeout', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
 
@@ -103,7 +103,7 @@ test('does not exceed the command line timeout', () => {
   const {stderr, status} = runJest(DIR, [
     '-w=1',
     '--ci=false',
-    '--timeout=1000',
+    '--testTimeout=1000',
   ]);
   const {rest, summary} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
@@ -111,7 +111,7 @@ test('does not exceed the command line timeout', () => {
   expect(status).toBe(0);
 });
 
-test('if command line timeout=0 its mean no timeout', () => {
+test('if command line timeout=0 its mean no testTimeout', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
 
@@ -124,7 +124,11 @@ test('if command line timeout=0 its mean no timeout', () => {
     'package.json': '{}',
   });
 
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', '--timeout=0']);
+  const {stderr, status} = runJest(DIR, [
+    '-w=1',
+    '--ci=false',
+    '--testTimeout=0',
+  ]);
   const {rest, summary} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();

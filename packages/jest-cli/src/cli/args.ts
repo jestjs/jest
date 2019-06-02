@@ -622,15 +622,15 @@ export const options = {
       'provided: `<rootDir>/path/to/testSequencer.js`',
     type: 'string' as 'string',
   },
-  testURL: {
-    description: 'This option sets the URL for the jsdom environment.',
-    type: 'string' as 'string',
-  },
-  timeout: {
+  testTimeout: {
     description:
       'This option sets the default timeouts of test cases.' +
       "If you don't want timeout set it to 0",
     type: 'number' as 'number',
+  },
+  testURL: {
+    description: 'This option sets the URL for the jsdom environment.',
+    type: 'string' as 'string',
   },
   timers: {
     description:

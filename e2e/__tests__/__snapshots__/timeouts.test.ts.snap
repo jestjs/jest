@@ -21,7 +21,7 @@ Time:        <<REPLACED>>
 Ran all test suites.
 `;
 
-exports[`exceeds the command line timeout 1`] = `
+exports[`exceeds the command line testTimeout 1`] = `
 Test Suites: 1 failed, 1 total
 Tests:       1 failed, 1 total
 Snapshots:   0 total
@@ -29,12 +29,12 @@ Time:        <<REPLACED>>
 Ran all test suites.
 `;
 
-exports[`does not exceed the command line timeout 1`] = `
+exports[`does not exceed the command line testTimeout 1`] = `
 PASS __tests__/a-banana.js
   ✓ banana
 `;
 
-exports[`does not exceed the command line timeout 2`] = `
+exports[`does not exceed the command line testTimeout 2`] = `
 Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
@@ -42,12 +42,12 @@ Time:        <<REPLACED>>
 Ran all test suites.
 `;
 
-exports[`if command line timeout=0 its mean no timeout 1`] = `
+exports[`if command line timeout=0 its mean no testTimeout 1`] = `
 PASS __tests__/a-banana.js
   ✓ banana
 `;
 
-exports[`if command line timeout=0 its mean no timeout 2`] = `
+exports[`if command line timeout=0 its mean no testTimeout 2`] = `
 Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total

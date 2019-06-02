@@ -1563,18 +1563,18 @@ describe('displayName', () => {
   );
 });
 
-describe('timeout', () => {
+describe('testTimeout', () => {
   it('should return timeout value if defined', () => {
     console.warn.mockImplementation(() => {});
-    const {options} = normalize({rootDir: '/root/', timeout: 1000}, {});
+    const {options} = normalize({rootDir: '/root/', testTimeout: 1000}, {});
 
-    expect(options.timeout).toBe(1000);
+    expect(options.testTimeout).toBe(1000);
     expect(console.warn).not.toHaveBeenCalled();
   });
 
   it('should return with 2^32 -1 if timeout=0', () => {
-    const {options} = normalize({rootDir: '/root/', timeout: 0}, {});
+    const {options} = normalize({rootDir: '/root/', testTimeout: 0}, {});
 
-    expect(options.timeout).toBe(Math.pow(2, 31) - 1);
+    expect(options.testTimeout).toBe(Math.pow(2, 31) - 1);
   });
 });

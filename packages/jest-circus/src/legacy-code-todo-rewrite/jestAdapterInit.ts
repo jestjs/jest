@@ -47,7 +47,8 @@ export const initialize = ({
   testPath: Config.Path;
   parentProcess: Process;
 }) => {
-  if (globalConfig.timeout) getRunnerState().testTimeout = globalConfig.timeout;
+  if (globalConfig.testTimeout)
+    getRunnerState().testTimeout = globalConfig.testTimeout;
 
   const mutex = throat(globalConfig.maxConcurrency);
 

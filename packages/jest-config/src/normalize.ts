@@ -790,7 +790,7 @@ export default function normalize(
         value = oldOptions[key];
         break;
       }
-      case 'timeout': {
+      case 'testTimeout': {
         value =
           oldOptions[key] === 0 ? MAX_32_BIT_SIGNED_INTEGER : oldOptions[key];
         break;
