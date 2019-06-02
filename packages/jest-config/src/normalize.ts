@@ -935,6 +935,14 @@ export default function normalize(
     );
   }
 
+  if (newOptions.findRelatedTests && newOptions.findRelatedTests.length > 0) {
+    newOptions.findRelatedTests = newOptions.findRelatedTests.filter(Boolean);
+  }
+
+  if (argv.findRelatedTests && argv.findRelatedTests.length > 0) {
+    argv.findRelatedTests = argv.findRelatedTests.filter(Boolean);
+  }
+
   // If collectCoverage is enabled while using --findRelatedTests we need to
   // avoid having false negatives in the generated coverage report.
   // The following: `--findRelatedTests '/rootDir/file1.js' --coverage`
@@ -969,10 +977,6 @@ export default function normalize(
     }
 
     newOptions.collectCoverageFrom = collectCoverageFrom;
-  }
-
-  if (newOptions.findRelatedTests && newOptions.findRelatedTests.length) {
-    newOptions.findRelatedTests = newOptions.findRelatedTests.filter(Boolean);
   }
 
   return {
