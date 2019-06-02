@@ -17,7 +17,7 @@ const deprecationMessage = (message: string, options: ValidationOptions) => {
 };
 
 export const deprecationWarning = (
-  config: {[key: string]: any},
+  config: Record<string, any>,
   option: string,
   deprecatedOptions: DeprecatedOptions,
   options: ValidationOptions,

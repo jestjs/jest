@@ -17,7 +17,7 @@ const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 // Jest may override the stack trace of Errors thrown by internal matchers.
 export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
 
-if (!(global as any)[JEST_MATCHERS_OBJECT]) {
+if (!global.hasOwnProperty(JEST_MATCHERS_OBJECT)) {
   Object.defineProperty(global, JEST_MATCHERS_OBJECT, {
     value: {
       matchers: Object.create(null),

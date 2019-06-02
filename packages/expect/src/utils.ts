@@ -49,7 +49,7 @@ export const hasOwnProperty = (object: object, key: string) =>
   hasGetterFromConstructor(object, key);
 
 export const getPath = (
-  object: object,
+  object: Record<string, any>,
   propertyPath: string | Array<string>,
 ): GetPath => {
   if (!Array.isArray(propertyPath)) {
@@ -59,7 +59,7 @@ export const getPath = (
   if (propertyPath.length) {
     const lastProp = propertyPath.length === 1;
     const prop = propertyPath[0];
-    const newObject = (object as any)[prop];
+    const newObject = object[prop];
 
     if (!lastProp && (newObject === null || newObject === undefined)) {
       // This is not the last prop in the chain. If we keep recursing it will

@@ -1,6 +1,6 @@
 {
   "name": "@jest/types",
-  "version": "24.7.0",
+  "version": "24.8.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -14,10 +14,11 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@types/istanbul-lib-coverage": "^2.0.0",
+    "@types/istanbul-reports": "^1.1.1",
     "@types/yargs": "^12.0.9"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "eb0413622542bc0f70c32950d9daeeab9f6802ac"
+  "gitHead": "845728f24b3ef41e450595c384e9b5c9fdf248a4"
 }

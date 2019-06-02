@@ -103,7 +103,7 @@ const saveSnapshotsForFile = (
 const groupSnapshotsBy = (
   createKey: (inlineSnapshot: InlineSnapshot) => string,
 ) => (snapshots: Array<InlineSnapshot>) =>
-  snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
+  snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
     (object, inlineSnapshot) => {
       const key = createKey(inlineSnapshot);
       return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
@@ -142,7 +142,7 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
 };
 
 const getAst = (
-  parsers: {[key: string]: (text: string) => any},
+  parsers: Record<string, (text: string) => any>,
   inferredParser: string,
   text: string,
 ) => {
@@ -162,7 +162,7 @@ const createInsertionParser = (
   babelTraverse: Function,
 ) => (
   text: string,
-  parsers: {[key: string]: (text: string) => any},
+  parsers: Record<string, (text: string) => any>,
   options: any,
 ) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
@@ -224,7 +224,7 @@ const createFormattingParser = (
   babelTraverse: Function,
 ) => (
   text: string,
-  parsers: {[key: string]: (text: string) => any},
+  parsers: Record<string, (text: string) => any>,
   options: any,
 ) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150

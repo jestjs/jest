@@ -25,7 +25,7 @@ namespace JestMock {
     Type = MockFunctionMetadataType
   > = {
     ref?: number;
-    members?: {[key: string]: MockFunctionMetadata<T, Y>};
+    members?: Record<string, MockFunctionMetadata<T, Y>>;
     mockImpl?: (...args: Y) => T;
     name?: string;
     refID?: number;
@@ -541,8 +541,8 @@ class ModuleMockerClass {
         // calling rather than waiting for the mock to return. This avoids
         // issues caused by recursion where results can be recorded in the
         // wrong order.
-        const mockResult = {
-          type: ('incomplete' as unknown) as MockFunctionResultType,
+        const mockResult: MockFunctionResult = {
+          type: 'incomplete',
           value: undefined,
         };
         mockState.results.push(mockResult);

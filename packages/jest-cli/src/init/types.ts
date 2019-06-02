@@ -9,5 +9,5 @@ import {Config} from '@jest/types';
 
 export type ProjectPackageJson = {
   jest?: Partial<Config.InitialOptions>;
-  scripts?: {[key: string]: string};
+  scripts?: Record<string, string>;
 };

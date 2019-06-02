@@ -385,6 +385,29 @@ describe('jest-each', () => {
           undefined,
         );
       });
+
+      test('calls global with title with placeholder values correctly interpolated', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          ['hello', '%d', 10, '%s', {foo: 'bar'}],
+          ['world', '%i', 1991, '%p', {foo: 'bar'}],
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected string: %s %s %d %s %p', () => {});
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected string: hello %d 10 %s {"foo": "bar"}',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected string: world %i 1991 %p {"foo": "bar"}',
+          expectFunction,
+          undefined,
+        );
+      });
     });
   });
 });

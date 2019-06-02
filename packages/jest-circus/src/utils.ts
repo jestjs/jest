@@ -5,38 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {Circus} from '@jest/types';
 import {convertDescriptorToString} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
-
 import StackUtils from 'stack-utils';
-
 import prettyFormat from 'pretty-format';
-
 import {getState} from './state';
-import {
-  AsyncFn,
-  BlockMode,
-  BlockName,
-  DescribeBlock,
-  Exception,
-  Hook,
-  RunResult,
-  TestEntry,
-  TestContext,
-  TestFn,
-  TestMode,
-  TestName,
-  TestResults,
-} from './types';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
 export const makeDescribe = (
-  name: BlockName,
-  parent?: DescribeBlock,
-  mode?: BlockMode,
-): DescribeBlock => {
+  name: Circus.BlockName,
+  parent?: Circus.DescribeBlock,
+  mode?: Circus.BlockMode,
+): Circus.DescribeBlock => {
   let _mode = mode;
   if (parent && !mode) {
     // If not set explicitly, inherit from the parent describe.
@@ -54,13 +37,13 @@ export const makeDescribe = (
 };
 
 export const makeTest = (
-  fn: TestFn | undefined,
-  mode: TestMode,
-  name: TestName,
-  parent: DescribeBlock,
+  fn: Circus.TestFn | undefined,
+  mode: Circus.TestMode,
+  name: Circus.TestName,
+  parent: Circus.DescribeBlock,
   timeout: number | undefined,
-  asyncError: Exception,
-): TestEntry => ({
+  asyncError: Circus.Exception,
+): Circus.TestEntry => ({
   asyncError,
   duration: null,
   errors: [],
@@ -76,7 +59,7 @@ export const makeTest = (
 
 // Traverse the tree of describe blocks and return true if at least one describe
 // block has an enabled test.
-const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
+const hasEnabledTest = (describeBlock: Circus.DescribeBlock): boolean => {
   const {hasFocusedTests, testNamePattern} = getState();
   const hasOwnEnabledTests = describeBlock.tests.some(
     test =>
@@ -90,10 +73,10 @@ const hasEnabledTest = (describeBlock: DescribeBlock): boolean => {
   return hasOwnEnabledTests || describeBlock.children.some(hasEnabledTest);
 };
 
-export const getAllHooksForDescribe = (describe: DescribeBlock) => {
+export const getAllHooksForDescribe = (describe: Circus.DescribeBlock) => {
   const result: {
-    beforeAll: Array<Hook>;
-    afterAll: Array<Hook>;
+    beforeAll: Array<Circus.Hook>;
+    afterAll: Array<Circus.Hook>;
   } = {
     afterAll: [],
     beforeAll: [],
@@ -115,12 +98,12 @@ export const getAllHooksForDescribe = (describe: DescribeBlock) => {
   return result;
 };
 
-export const getEachHooksForTest = (test: TestEntry) => {
+export const getEachHooksForTest = (test: Circus.TestEntry) => {
   const result: {
-    beforeEach: Array<Hook>;
-    afterEach: Array<Hook>;
+    beforeEach: Array<Circus.Hook>;
+    afterEach: Array<Circus.Hook>;
   } = {afterEach: [], beforeEach: []};
-  let block: DescribeBlock | undefined | null = test.parent;
+  let block: Circus.DescribeBlock | undefined | null = test.parent;
 
   do {
     const beforeEachForCurrentBlock = [];
@@ -141,7 +124,9 @@ export const getEachHooksForTest = (test: TestEntry) => {
   return result;
 };
 
-export const describeBlockHasTests = (describe: DescribeBlock): boolean =>
+export const describeBlockHasTests = (
+  describe: Circus.DescribeBlock,
+): boolean =>
   describe.tests.length > 0 || describe.children.some(describeBlockHasTests);
 
 const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
@@ -158,8 +143,8 @@ function checkIsError(error: any): error is Error {
 }
 
 export const callAsyncCircusFn = (
-  fn: AsyncFn,
-  testContext: TestContext | undefined,
+  fn: Circus.AsyncFn,
+  testContext: Circus.TestContext | undefined,
   {isHook, timeout}: {isHook?: boolean | null; timeout: number},
 ): Promise<any> => {
   let timeoutID: NodeJS.Timeout;
@@ -245,25 +230,27 @@ export const callAsyncCircusFn = (
     });
 };
 
-export const getTestDuration = (test: TestEntry): number | null => {
+export const getTestDuration = (test: Circus.TestEntry): number | null => {
   const {startedAt} = test;
   return typeof startedAt === 'number' ? Date.now() - startedAt : null;
 };
 
 export const makeRunResult = (
-  describeBlock: DescribeBlock,
+  describeBlock: Circus.DescribeBlock,
   unhandledErrors: Array<Error>,
-): RunResult => ({
+): Circus.RunResult => ({
   testResults: makeTestResults(describeBlock),
   unhandledErrors: unhandledErrors.map(_formatError),
 });
 
-const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
+const makeTestResults = (
+  describeBlock: Circus.DescribeBlock,
+): Circus.TestResults => {
   const {includeTestLocationInResult} = getState();
-  let testResults: TestResults = [];
+  let testResults: Circus.TestResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
-    let parent: TestEntry | DescribeBlock = test;
+    let parent: Circus.TestEntry | Circus.DescribeBlock = test;
     do {
       testPath.unshift(parent.name);
     } while ((parent = parent.parent));
@@ -309,9 +296,9 @@ const makeTestResults = (describeBlock: DescribeBlock): TestResults => {
 
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
-export const getTestID = (test: TestEntry) => {
+export const getTestID = (test: Circus.TestEntry) => {
   const titles = [];
-  let parent: TestEntry | DescribeBlock = test;
+  let parent: Circus.TestEntry | Circus.DescribeBlock = test;
   do {
     titles.unshift(parent.name);
   } while ((parent = parent.parent));
@@ -321,7 +308,7 @@ export const getTestID = (test: TestEntry) => {
 };
 
 const _formatError = (
-  errors?: Exception | [Exception | undefined, Exception],
+  errors?: Circus.Exception | [Circus.Exception | undefined, Circus.Exception],
 ): string => {
   let error;
   let asyncError;
@@ -349,9 +336,9 @@ const _formatError = (
 };
 
 export const addErrorToEachTestUnderDescribe = (
-  describeBlock: DescribeBlock,
-  error: Exception,
-  asyncError: Exception,
+  describeBlock: Circus.DescribeBlock,
+  error: Circus.Exception,
+  asyncError: Circus.Exception,
 ) => {
   for (const test of describeBlock.tests) {
     test.errors.push([error, asyncError]);

@@ -215,6 +215,8 @@ describe('.toBe()', () => {
     [Symbol('received'), Symbol('expected')],
     [new Error('received'), new Error('expected')],
     ['abc', 'cde'],
+    ['painless JavaScript testing', 'delightful JavaScript testing'],
+    ['', 'compare one-line string to empty string'],
     ['with \ntrailing space', 'without trailing space'],
     ['four\n4\nline\nstring', '3\nline\nstring'],
     [[], []],
@@ -318,6 +320,16 @@ describe('.toStrictEqual()', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  it('displays substring diff', () => {
+    const expected =
+      'Another caveat is that Jest will not typecheck your tests.';
+    const received =
+      'Because TypeScript support in Babel is just transpilation, Jest will not type-check your tests as they run.';
+    expect(() =>
+      jestExpect(received).toStrictEqual(expected),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   it('does not pass for different types', () => {
     expect({
       test: new TestClassA(1, 2),
@@ -358,6 +370,7 @@ describe('.toEqual()', () => {
     [{a: 1}, {a: 2}],
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
+    ['1\u{00A0}234,57\u{00A0}$', '1 234,57 $'], // issues/6881
     [null, undefined],
     [[1], [2]],
     [[1, 2], [2, 1]],
@@ -687,6 +700,15 @@ describe('.toBeInstanceOf()', () => {
   class A {}
   class B {}
   class C extends B {}
+  class D extends C {}
+  class E extends D {}
+
+  class SubHasStaticNameMethod extends B {
+    constructor() {
+      super();
+    }
+    static name() {}
+  }
 
   class HasStaticNameMethod {
     constructor() {}
@@ -700,13 +722,17 @@ describe('.toBeInstanceOf()', () => {
     value: '',
     writable: true,
   });
+  class SubHasNameProp extends DefinesNameProp {}
 
   [
     [new Map(), Map],
     [[], Array],
     [new A(), A],
-    [new C(), B], // subclass
-    [new HasStaticNameMethod(), HasStaticNameMethod],
+    [new C(), B], // C extends B
+    [new E(), B], // E extends … extends B
+    [new SubHasNameProp(), DefinesNameProp], // omit extends
+    [new SubHasStaticNameMethod(), B], // Received
+    [new HasStaticNameMethod(), HasStaticNameMethod], // Expected
   ].forEach(([a, b]) => {
     test(`passing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
@@ -1335,13 +1361,23 @@ describe('.toHaveProperty()', () => {
   const memoized = function() {};
   memoized.memo = [];
 
+  const receivedDiff = {
+    children: ['"That cartoon"'],
+    props: null,
+    type: 'p',
+  };
+  const pathDiff = ['children', 0];
+  const valueDiff = '"That cat cartoon"';
+
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 1],
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 1],
     [{'a.b.c.d': 1}, ['a.b.c.d'], 1],
     [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], 2],
+    [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], expect.any(Number)],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
+    [{a: {}}, 'a.b', undefined], // delete for breaking change in future major
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
     [new Foo(), 'a', undefined],
@@ -1369,6 +1405,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 2],
     [{'a.b.c.d': 1}, 'a.b.c.d', 2],
     [{'a.b.c.d': 1}, ['a.b.c.d'], 2],
+    [receivedDiff, pathDiff, valueDiff],
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 2],
     [{a: {b: {c: {}}}}, 'a.b.c.d', 1],
     [{a: 1}, 'a.b.c.d', 5],
@@ -1379,7 +1416,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
-    // [{a: {}}, 'a.b', undefined], // wait until Jest 25
+    // [{a: {}}, 'a.b', undefined], // add for breaking change in future major
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,

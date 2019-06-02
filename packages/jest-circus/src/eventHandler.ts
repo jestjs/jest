@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventHandler, TEST_TIMEOUT_SYMBOL} from './types';
+import {Circus} from '@jest/types';
+import {TEST_TIMEOUT_SYMBOL} from './types';
 
 import {
   addErrorToEachTestUnderDescribe,
@@ -20,7 +21,7 @@ import {
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
 
-const eventHandler: EventHandler = (event, state): void => {
+const eventHandler: Circus.EventHandler = (event, state): void => {
   switch (event.name) {
     case 'include_test_location_in_result': {
       state.includeTestLocationInResult = true;

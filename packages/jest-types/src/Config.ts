@@ -6,6 +6,7 @@
  */
 
 import {Arguments} from 'yargs';
+import {ReportOptions} from 'istanbul-reports';
 
 export type Path = string;
 
@@ -20,7 +21,7 @@ export type HasteConfig = {
   throwOnModuleCollision?: boolean;
 };
 
-export type ReporterConfig = [string, {[key: string]: unknown}];
+export type ReporterConfig = [string, Record<string, unknown>];
 
 export type ConfigGlobals = Record<string, any>;
 
@@ -296,7 +297,7 @@ export type GlobalConfig = {
     | undefined;
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
-  coverageReporters: Array<string>;
+  coverageReporters: Array<keyof ReportOptions>;
   coverageThreshold: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
@@ -451,7 +452,7 @@ export type Argv = Arguments<
     json: boolean;
     lastCommit: boolean;
     logHeapUsage: boolean;
-    maxWorkers: number;
+    maxWorkers: number | string;
     moduleDirectories: Array<string>;
     moduleFileExtensions: Array<string>;
     moduleNameMapper: string;

@@ -31,7 +31,7 @@ const getPropKeys = (object: ReactTestObject) => {
 
   return props
     ? Object.keys(props)
-        .filter(key => (props as any)[key] !== undefined)
+        .filter(key => props[key] !== undefined)
         .sort()
     : [];
 };

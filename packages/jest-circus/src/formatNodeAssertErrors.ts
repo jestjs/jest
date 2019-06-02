@@ -6,6 +6,7 @@
  */
 
 import {AssertionError} from 'assert';
+import {Circus} from '@jest/types';
 import {
   diff,
   printExpected,
@@ -14,20 +15,19 @@ import {
 } from 'jest-matcher-utils';
 import chalk from 'chalk';
 import prettyFormat from 'pretty-format';
-import {Event, State, TestError} from './types';
 
 interface AssertionErrorWithStack extends AssertionError {
   stack: string;
 }
 
-const assertOperatorsMap: {[key: string]: string} = {
+const assertOperatorsMap: Record<string, string> = {
   '!=': 'notEqual',
   '!==': 'notStrictEqual',
   '==': 'equal',
   '===': 'strictEqual',
 };
 
-const humanReadableOperators: {[key: string]: string} = {
+const humanReadableOperators: Record<string, string> = {
   deepEqual: 'to deeply equal',
   deepStrictEqual: 'to deeply and strictly equal',
   equal: 'to be equal',
@@ -38,10 +38,10 @@ const humanReadableOperators: {[key: string]: string} = {
   strictEqual: 'to strictly be equal',
 };
 
-const formatNodeAssertErrors = (event: Event, state: State) => {
+const formatNodeAssertErrors = (event: Circus.Event, state: Circus.State) => {
   switch (event.name) {
     case 'test_done': {
-      event.test.errors = event.test.errors.map((errors: TestError) => {
+      event.test.errors = event.test.errors.map((errors: Circus.TestError) => {
         let error;
         if (Array.isArray(errors)) {
           const [originalError, asyncError] = errors;
@@ -60,7 +60,7 @@ const formatNodeAssertErrors = (event: Event, state: State) => {
         } else {
           error = errors;
         }
-        return error.code === 'ERR_ASSERTION'
+        return isAssertionError(error)
           ? {message: assertionErrorMessage(error, {expand: state.expand})}
           : errors;
       });
@@ -91,22 +91,28 @@ const operatorMessage = (operator: string | undefined) => {
 };
 
 const assertThrowingMatcherHint = (operatorName: string) =>
-  chalk.dim('assert') +
-  chalk.dim('.' + operatorName + '(') +
-  chalk.red('function') +
-  chalk.dim(')');
+  operatorName
+    ? chalk.dim('assert') +
+      chalk.dim('.' + operatorName + '(') +
+      chalk.red('function') +
+      chalk.dim(')')
+    : '';
 
 const assertMatcherHint = (
   operator: string | undefined | null,
   operatorName: string,
 ) => {
-  let message =
-    chalk.dim('assert') +
-    chalk.dim('.' + operatorName + '(') +
-    chalk.red('received') +
-    chalk.dim(', ') +
-    chalk.green('expected') +
-    chalk.dim(')');
+  let message = '';
+
+  if (operatorName) {
+    message =
+      chalk.dim('assert') +
+      chalk.dim('.' + operatorName + '(') +
+      chalk.red('received') +
+      chalk.dim(', ') +
+      chalk.green('expected') +
+      chalk.dim(')');
+  }
 
   if (operator === '==') {
     message +=
@@ -134,8 +140,7 @@ function assertionErrorMessage(
 
   if (operatorName === 'doesNotThrow') {
     return (
-      assertThrowingMatcherHint(operatorName) +
-      '\n\n' +
+      buildHintString(assertThrowingMatcherHint(operatorName)) +
       chalk.reset(`Expected the function not to throw an error.\n`) +
       chalk.reset(`Instead, it threw:\n`) +
       `  ${printReceived(actual)}` +
@@ -146,8 +151,7 @@ function assertionErrorMessage(
 
   if (operatorName === 'throws') {
     return (
-      assertThrowingMatcherHint(operatorName) +
-      '\n\n' +
+      buildHintString(assertThrowingMatcherHint(operatorName)) +
       chalk.reset(`Expected the function to throw an error.\n`) +
       chalk.reset(`But it didn't throw anything.`) +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
@@ -156,8 +160,7 @@ function assertionErrorMessage(
   }
 
   return (
-    assertMatcherHint(operator, operatorName) +
-    '\n\n' +
+    buildHintString(assertMatcherHint(operator, operatorName)) +
     chalk.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
     chalk.reset(`Received:\n`) +
@@ -166,6 +169,21 @@ function assertionErrorMessage(
     (diffString ? `\n\nDifference:\n\n${diffString}` : '') +
     trimmedStack
   );
+}
+
+function isAssertionError(
+  error: Circus.TestError,
+): error is AssertionErrorWithStack {
+  return (
+    error &&
+    (error instanceof AssertionError ||
+      error.name === AssertionError.name ||
+      error.code === 'ERR_ASSERTION')
+  );
+}
+
+function buildHintString(hint: string) {
+  return hint ? hint + '\n\n' : '';
 }
 
 export default formatNodeAssertErrors;
