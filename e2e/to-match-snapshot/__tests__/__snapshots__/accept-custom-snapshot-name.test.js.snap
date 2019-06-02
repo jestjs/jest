@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`accepts custom snapshot name: custom-name 1`] = `true`;
