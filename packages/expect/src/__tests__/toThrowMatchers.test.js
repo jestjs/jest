@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 'use strict';
@@ -264,6 +263,19 @@ class customError extends Error {
             jestExpect(() => {
               throw new ErrorMessage(message);
             }).not[toThrow]({message}),
+          ).toThrowErrorMatchingSnapshot();
+        });
+
+        test('multiline diff highlight incorrect expected space', () => {
+          // jest/issues/2673
+          const a =
+            "There is no route defined for key Settings. \nMust be one of: 'Home'";
+          const b =
+            "There is no route defined for key Settings.\nMust be one of: 'Home'";
+          expect(() =>
+            jestExpect(() => {
+              throw new ErrorMessage(b);
+            })[toThrow]({message: a}),
           ).toThrowErrorMatchingSnapshot();
         });
       });

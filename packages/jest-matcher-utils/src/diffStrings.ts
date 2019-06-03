@@ -7,15 +7,9 @@
 
 import diffSequences from 'diff-sequences';
 
-import {
-  cleanupSemantic,
-  Diff,
-  DIFF_EQUAL,
-  DIFF_DELETE,
-  DIFF_INSERT,
-} from './cleanupSemantic';
+import {Diff, DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT} from './cleanupSemantic';
 
-const diffStrings = (a: string, b: string): Array<Diff> | null => {
+const diffStrings = (a: string, b: string): Array<Diff> => {
   const isCommon = (aIndex: number, bIndex: number) => a[aIndex] === b[bIndex];
 
   let aIndex = 0;
@@ -49,10 +43,7 @@ const diffStrings = (a: string, b: string): Array<Diff> | null => {
     diffs.push(new Diff(DIFF_INSERT, b.slice(bIndex)));
   }
 
-  cleanupSemantic(diffs);
-
-  // Assume it has a change string, but does it have a common string?
-  return diffs.some(diff => diff[0] === DIFF_EQUAL) ? diffs : null;
+  return diffs;
 };
 
 export default diffStrings;
