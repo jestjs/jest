@@ -214,6 +214,7 @@ describe('--findRelatedTests flag', () => {
       }),
     });
 
+    /* eslint-disable prefer-const */
     let stdout;
     let stderr;
     ({stdout, stderr} = runJest(
