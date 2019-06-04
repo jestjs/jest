@@ -266,14 +266,6 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
 
 const MAX_DIFF_STRING_LENGTH = 20000;
 
-const isStringDiffable = (expected: string, received: string): boolean =>
-  typeof expected === 'string' &&
-  typeof received === 'string' &&
-  expected.length !== 0 &&
-  received.length !== 0 &&
-  expected.length <= MAX_DIFF_STRING_LENGTH &&
-  received.length <= MAX_DIFF_STRING_LENGTH;
-
 export const printDiffOrStringify = (
   expected: unknown,
   received: unknown,
@@ -281,7 +273,14 @@ export const printDiffOrStringify = (
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
 ): string => {
-  if (isStringDiffable(expected, received)) {
+  if (
+    typeof expected === 'string' &&
+    typeof received === 'string' &&
+    expected.length !== 0 &&
+    received.length !== 0 &&
+    expected.length <= MAX_DIFF_STRING_LENGTH &&
+    received.length <= MAX_DIFF_STRING_LENGTH
+  ) {
     // Print specific substring diff for strings only:
     // * if neither string is empty
     // * if neither string is too long
