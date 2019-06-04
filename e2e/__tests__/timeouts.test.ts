@@ -110,27 +110,3 @@ test('does not exceed the command line testTimeout', () => {
   expect(wrap(summary)).toMatchSnapshot();
   expect(status).toBe(0);
 });
-
-test('if command line timeout=0 its mean no testTimeout', () => {
-  writeFiles(DIR, {
-    '__tests__/a-banana.js': `
-
-      test('banana', () => {
-        return new Promise(resolve => {
-          setTimeout(resolve, 6000);
-        });
-      });
-    `,
-    'package.json': '{}',
-  });
-
-  const {stderr, status} = runJest(DIR, [
-    '-w=1',
-    '--ci=false',
-    '--testTimeout=0',
-  ]);
-  const {rest, summary} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
-  expect(status).toBe(0);
-});
