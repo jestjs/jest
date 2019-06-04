@@ -1572,9 +1572,9 @@ describe('testTimeout', () => {
     expect(console.warn).not.toHaveBeenCalled();
   });
 
-  it('should return with 2^32 -1 if timeout=0', () => {
-    const {options} = normalize({rootDir: '/root/', testTimeout: 0}, {});
-
-    expect(options.testTimeout).toBe(Math.pow(2, 31) - 1);
+  it('should throw an error if timeout is a negative number', () => {
+    expect(() =>
+      normalize({rootDir: '/root/', testTimeout: -1}, {}),
+    ).toThrowErrorMatchingSnapshot();
   });
 });

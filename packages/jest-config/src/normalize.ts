@@ -40,7 +40,6 @@ import VALID_CONFIG from './ValidConfig';
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
-const MAX_32_BIT_SIGNED_INTEGER = Math.pow(2, 31) - 1;
 
 type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
@@ -791,8 +790,13 @@ export default function normalize(
         break;
       }
       case 'testTimeout': {
-        value =
-          oldOptions[key] === 0 ? MAX_32_BIT_SIGNED_INTEGER : oldOptions[key];
+        if (oldOptions[key] < 0) {
+          throw createConfigError(
+            `  Option "${chalk.bold('testTimeout')}" must be a natural number.`,
+          );
+        }
+
+        value = oldOptions[key];
         break;
       }
       case 'automock':
