@@ -13,7 +13,7 @@ import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
 import micromatch from 'micromatch';
-import {sync as realpath} from 'realpath-native';
+import {realpathSync as realpath} from 'graceful-fs';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import getType from 'jest-get-type';

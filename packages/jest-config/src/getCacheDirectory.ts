@@ -7,7 +7,7 @@
 
 import path from 'path';
 import os from 'os';
-import {sync as realpath} from 'realpath-native';
+import {realpathSync as realpath} from 'graceful-fs';
 
 const getCacheDirectory = () => {
   const {getuid} = process;
