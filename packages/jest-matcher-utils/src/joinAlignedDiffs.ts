@@ -10,6 +10,8 @@ import chalk from 'chalk';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {printCommonLine, printDeleteLine, printInsertLine} from './printDiffs';
 
+const DIFF_CONTEXT_DEFAULT = 5; // same as jest-diff
+
 const PATCH_COLOR = chalk.yellow;
 
 // Copied from jest-diff
@@ -30,7 +32,7 @@ const createPatchMark = (
 // return joined lines with diff formatting (and patch marks, if needed).
 export const joinAlignedDiffsNoExpand = (
   diffs: Array<Diff>,
-  nContextLines: number = 5,
+  nContextLines: number = DIFF_CONTEXT_DEFAULT,
 ): string => {
   const iLength = diffs.length;
   const nContextLines2 = nContextLines + nContextLines;
