@@ -214,7 +214,7 @@ export const ensureExpectedIsNonNegativeInteger = (
   }
 };
 
-const isDiffable = (expected: unknown, received: unknown): boolean => {
+const isLineDiffable = (expected: unknown, received: unknown): boolean => {
   const expectedType = getType(expected);
   const receivedType = getType(received);
 
@@ -266,6 +266,14 @@ const isDiffable = (expected: unknown, received: unknown): boolean => {
 
 const MAX_DIFF_STRING_LENGTH = 20000;
 
+const isStringDiffable = (expected: string, received: string): boolean =>
+  typeof expected === 'string' &&
+  typeof received === 'string' &&
+  expected.length !== 0 &&
+  received.length !== 0 &&
+  expected.length <= MAX_DIFF_STRING_LENGTH &&
+  received.length <= MAX_DIFF_STRING_LENGTH;
+
 export const printDiffOrStringify = (
   expected: unknown,
   received: unknown,
@@ -273,14 +281,7 @@ export const printDiffOrStringify = (
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
 ): string => {
-  if (
-    typeof expected === 'string' &&
-    typeof received === 'string' &&
-    expected.length !== 0 &&
-    received.length !== 0 &&
-    expected.length <= MAX_DIFF_STRING_LENGTH &&
-    received.length <= MAX_DIFF_STRING_LENGTH
-  ) {
+  if (isStringDiffable(expected, received)) {
     // Print specific substring diff for strings only:
     // * if neither string is empty
     // * if neither string is too long
@@ -318,7 +319,7 @@ export const printDiffOrStringify = (
     // therefore fall through to generic line diff below
   }
 
-  if (isDiffable(expected, received)) {
+  if (isLineDiffable(expected, received)) {
     const difference = jestDiff(expected, received, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,
