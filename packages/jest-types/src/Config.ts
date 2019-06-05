@@ -207,6 +207,7 @@ export type InitialOptions = {
   testRunner?: string;
   testSequencer?: string;
   testURL?: string;
+  testTimeout?: number;
   timers?: 'real' | 'fake';
   transform?: {
     [key: string]: string;
@@ -344,6 +345,7 @@ export type GlobalConfig = {
   testPathPattern: string;
   testResultsProcessor: string | null | undefined;
   testSequencer: string;
+  testTimeout: number;
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose: boolean | null | undefined;
@@ -489,6 +491,7 @@ export type Argv = Arguments<
     testRunner: string;
     testSequencer: string;
     testURL: string;
+    testTimeout: number | null | undefined;
     timers: string;
     transform: string;
     transformIgnorePatterns: Array<string>;
