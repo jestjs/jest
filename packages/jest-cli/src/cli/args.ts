@@ -623,9 +623,7 @@ export const options = {
     type: 'string' as 'string',
   },
   testTimeout: {
-    description:
-      'This option sets the default timeouts of test cases.' +
-      "If you don't want timeout set it to 0",
+    description: 'This option sets the default timeouts of test cases.',
     type: 'number' as 'number',
   },
   testURL: {

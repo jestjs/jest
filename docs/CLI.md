@@ -303,7 +303,7 @@ Lets you specify a custom test sequencer. Please refer to the documentation of t
 
 ### `--testTimeout=<number>`
 
-Default timeout of a test in milliseconds.
+Default timeout of a test in milliseconds. Default value: 5000.
 
 ### `--updateSnapshot`
 

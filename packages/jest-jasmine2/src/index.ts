@@ -32,9 +32,9 @@ async function jasmine2(
   const reporter = new JasmineReporter(globalConfig, config, testPath);
   const jasmineFactory = runtime.requireInternalModule(JASMINE);
   const jasmine = jasmineFactory.create({
-    globalConfig,
     process,
     testPath,
+    testTimeout: globalConfig.testTimeout,
   });
 
   const env = jasmine.getEnv();
