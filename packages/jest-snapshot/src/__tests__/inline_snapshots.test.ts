@@ -236,6 +236,56 @@ test('saveInlineSnapshots() indents multi-line snapshots with spaces', () => {
   );
 });
 
+test('saveInlineSnapshots() does not re-indent already indented snapshots', () => {
+  const filename = path.join(__dirname, 'my.test.js');
+  (fs.readFileSync as jest.Mock).mockImplementation(
+    () =>
+      "it('is a test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot();\n" +
+      '});\n' +
+      "it('is a another test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+      '    Object {\n' +
+      "      b: 'b'\n" +
+      '    }\n' +
+      '  `);\n' +
+      '});\n',
+  );
+  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+    bracketSpacing: false,
+    singleQuote: true,
+  });
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 20, file: filename, line: 2} as Frame,
+        snapshot: `\nObject {\n  a: 'a'\n}\n`,
+      },
+    ],
+    prettier,
+    babelTraverse,
+  );
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    "it('is a test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+      '    Object {\n' +
+      "      a: 'a'\n" +
+      '    }\n' +
+      '  `);\n' +
+      '});\n' +
+      "it('is a another test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+      '    Object {\n' +
+      "      b: 'b'\n" +
+      '    }\n' +
+      '  `);\n' +
+      '});\n',
+  );
+});
+
 test('saveInlineSnapshots() indents multi-line snapshots with tabs', () => {
   const filename = path.join(__dirname, 'my.test.js');
   (fs.readFileSync as jest.Mock).mockImplementation(
