@@ -252,22 +252,6 @@ describe('Runtime requireModule', () => {
       expect(hastePackage.isHastePackage).toBe(true);
     }));
 
-  it('resolves node modules properly when crawling node_modules', () =>
-    // While we are crawling a node module, we shouldn't put package.json
-    // files of node modules to resolve to `package.json` but rather resolve
-    // to whatever the package.json's `main` field says.
-    createRuntime(__filename, {
-      haste: {
-        providesModuleNodeModules: ['not-a-haste-package'],
-      },
-    }).then(runtime => {
-      const hastePackage = runtime.requireModule(
-        runtime.__mockRootPath,
-        'not-a-haste-package',
-      );
-      expect(hastePackage.isNodeModule).toBe(true);
-    }));
-
   it('resolves platform extensions based on the default platform', () =>
     Promise.all([
       createRuntime(__filename).then(runtime => {

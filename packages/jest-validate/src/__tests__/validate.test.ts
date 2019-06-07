@@ -73,20 +73,6 @@ test('omits null and undefined config values', () => {
   });
 });
 
-test('recursively omits null and undefined config values', () => {
-  const config = {
-    haste: {
-      providesModuleNodeModules: null,
-    },
-  };
-  expect(
-    validate(config, {exampleConfig: validConfig, recursive: true}),
-  ).toEqual({
-    hasDeprecationWarnings: false,
-    isValid: true,
-  });
-});
-
 test.each([
   [function () {}, function () {}],
   [async function () {}, function () {}],

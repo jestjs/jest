@@ -82,9 +82,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   globalSetup: null,
   globalTeardown: null,
   globals: {},
-  haste: {
-    providesModuleNodeModules: [],
-  },
+  haste: {},
   moduleDirectories: [],
   moduleFileExtensions: ['js'],
   moduleLoader: '/test_module_loader_path',

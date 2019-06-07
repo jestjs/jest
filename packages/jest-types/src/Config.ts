@@ -20,7 +20,6 @@ export type HasteConfig = {
   defaultPlatform?: string | null;
   hasteImplModulePath?: string;
   platforms?: Array<string>;
-  providesModuleNodeModules: Array<string>;
   throwOnModuleCollision?: boolean;
 };
 

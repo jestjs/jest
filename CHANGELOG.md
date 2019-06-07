@@ -323,6 +323,7 @@
 - `[jest-validate]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-types]` Mark `InitialOptions` as `Partial` ([#8848](https://github.com/facebook/jest/pull/8848))
 - `[jest-config]` Refactor `normalize` to be more type safe ([#8848](https://github.com/facebook/jest/pull/8848))
+- `[jest-haste-map]` [**BREAKING**] removed `providesModuleNodeModules` ([#8535](https://github.com/facebook/jest/pull/8535))
 
 ## 24.9.0
 
