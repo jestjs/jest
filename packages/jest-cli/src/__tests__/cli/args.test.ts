@@ -64,7 +64,6 @@ describe('check', () => {
 describe('buildArgv', () => {
   it('should return only camelcased args ', () => {
     const mockProcessArgv = jest
-      // @ts-ignore
       .spyOn(process.argv, 'slice')
       .mockImplementation(() => ['--clear-mocks']);
     const actual = buildArgv(null);
