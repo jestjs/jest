@@ -789,6 +789,16 @@ export default function normalize(
         value = oldOptions[key];
         break;
       }
+      case 'testTimeout': {
+        if (oldOptions[key] < 0) {
+          throw createConfigError(
+            `  Option "${chalk.bold('testTimeout')}" must be a natural number.`,
+          );
+        }
+
+        value = oldOptions[key];
+        break;
+      }
       case 'automock':
       case 'browser':
       case 'cache':

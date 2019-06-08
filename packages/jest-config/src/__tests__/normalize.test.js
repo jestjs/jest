@@ -1561,3 +1561,19 @@ describe('displayName', () => {
     },
   );
 });
+
+describe('testTimeout', () => {
+  it('should return timeout value if defined', () => {
+    console.warn.mockImplementation(() => {});
+    const {options} = normalize({rootDir: '/root/', testTimeout: 1000}, {});
+
+    expect(options.testTimeout).toBe(1000);
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
+  it('should throw an error if timeout is a negative number', () => {
+    expect(() =>
+      normalize({rootDir: '/root/', testTimeout: -1}, {}),
+    ).toThrowErrorMatchingSnapshot();
+  });
+});
