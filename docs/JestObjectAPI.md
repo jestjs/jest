@@ -240,6 +240,23 @@ const moduleName = require('../moduleName');
 moduleName(); // Will return '42';
 ```
 
+When using the `factory` parameter for an ES6 module with a default export, the `__esModule: true` property needs to be specified:
+
+```js
+import moduleName, {foo} from '../moduleName';
+
+jest.mock('../moduleName', () => {
+  return {
+    __esModule: true,
+    default: jest.fn(() => 42),
+    foo: jest.fn(() => 43),
+  };
+});
+
+moduleName(); // Will return 42
+foo(); // Will return 43
+```
+
 The third argument can be used to create virtual mocks – mocks of modules that don't exist anywhere in the system:
 
 ```js
