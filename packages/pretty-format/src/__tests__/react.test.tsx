@@ -732,6 +732,16 @@ test('supports memo with a child', () => {
   ).toEqual('<Memo(Dog)>\n  cat\n</Memo(Dog)>');
 });
 
+test('supports memo with displayName', () => {
+  const Foo = () => React.createElement('div');
+  const MemoFoo = React.memo(Foo);
+  MemoFoo.displayName = 'MyDisplayName(Foo)';
+
+  expect(formatElement(React.createElement(MemoFoo, null, 'cat'))).toEqual(
+    '<Memo(MyDisplayName(Foo))>\n  cat\n</Memo(MyDisplayName(Foo))>',
+  );
+});
+
 test('supports context Provider with a child', () => {
   const {Provider} = React.createContext('test');
 
