@@ -14,9 +14,11 @@ describe('dependencyExtractor', () => {
   it('should not extract dependencies inside comments', () => {
     const code = `
       // import a from 'ignore-line-comment';
+      // import 'ignore-line-comment';
       // require('ignore-line-comment');
       /*
        * import a from 'ignore-block-comment';
+       * import 'ignore-block-comment';
        * require('ignore-block-comment');
        */
     `;
