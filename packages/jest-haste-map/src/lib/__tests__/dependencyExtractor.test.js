@@ -67,7 +67,9 @@ describe('dependencyExtractor', () => {
       ${COMMENT_NO_NEG_LB} foo . import ('inv1');
       ${COMMENT_NO_NEG_LB} foo . export ('inv2');
     `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4', 'dep5']));
+    expect(extract(code)).toEqual(
+      new Set(['dep1', 'dep2', 'dep3', 'dep4', 'dep5']),
+    );
   });
 
   it('should not extract dependencies from `import type/typeof` statements', () => {

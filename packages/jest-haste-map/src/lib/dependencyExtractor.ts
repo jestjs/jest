@@ -61,10 +61,7 @@ const IMPORT_OR_EXPORT_FROM_RE = createRegExp(
 );
 
 const IMPORT_RE = createRegExp(
-  [
-    '\\b(?:import)\\s+',
-    CAPTURE_STRING_LITERAL(1),
-  ],
+  ['\\b(?:import)\\s+', CAPTURE_STRING_LITERAL(1)],
   'g',
 );
 
