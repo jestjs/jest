@@ -184,12 +184,11 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
 
   source.forEach((sourceElement, index) => {
     const targetElement = mergedOutput[index];
-    const targetElementType = typeof targetElement;
 
     if (Array.isArray(target[index])) {
       // Target is an array
       mergedOutput[index] = deepMergeArray(target[index], sourceElement);
-    } else if (targetElementType === 'object') {
+    } else if (isObject(targetElement)) {
       // Target is a (non-array) object - recursively merge
       mergedOutput[index] = deepMerge(target[index], sourceElement);
     } else {
