@@ -98,7 +98,6 @@ Alternatively, you can use `async` and `await` in your tests. To write an async 
 
 ```js
 test('the data is peanut butter', async () => {
-  expect.assertions(1);
   const data = await fetchData();
   expect(data).toBe('peanut butter');
 });

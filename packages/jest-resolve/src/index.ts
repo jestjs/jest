@@ -25,7 +25,7 @@ type FindNodeModuleConfig = {
   rootDir?: Config.Path;
 };
 
-type BooleanObject = {[key: string]: boolean};
+type BooleanObject = Record<string, boolean>;
 
 namespace Resolver {
   export type ResolveModuleConfig = {
@@ -45,7 +45,7 @@ const nodePaths = NODE_PATH
       .filter(Boolean)
       // The resolver expects absolute paths.
       .map(p => path.resolve(resolvedCwd, p))
-  : null;
+  : undefined;
 
 /* eslint-disable-next-line no-redeclare */
 class Resolver {
@@ -83,7 +83,7 @@ class Resolver {
     path: Config.Path,
     options: FindNodeModuleConfig,
   ): Config.Path | null {
-    const resolver = options.resolver
+    const resolver: typeof defaultResolver = options.resolver
       ? require(options.resolver)
       : defaultResolver;
     const paths = options.paths;

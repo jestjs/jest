@@ -157,7 +157,7 @@ export const ensureDirectoryExists = (filePath: Config.Path) => {
 const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
-  snapshotData: {[key: string]: string},
+  snapshotData: SnapshotData,
   snapshotPath: Config.Path,
 ) => {
   const snapshots = Object.keys(snapshotData)

@@ -17,7 +17,7 @@ export default function getNoTestFoundVerbose(
         if (key === 'roots' && config.roots.length === 1) {
           return null;
         }
-        const value = (config as {[key: string]: unknown})[key];
+        const value = (config as Record<string, unknown>)[key];
         if (value) {
           const valueAsString = Array.isArray(value)
             ? value.join(', ')

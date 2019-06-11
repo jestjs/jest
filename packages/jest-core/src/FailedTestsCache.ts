@@ -9,7 +9,7 @@ import {Test} from 'jest-runner';
 import {Config} from '@jest/types';
 import {TestResult} from '@jest/test-result';
 
-type TestMap = {[key: string]: {[key: string]: boolean}};
+type TestMap = Record<string, Record<string, boolean>>;
 
 export default class FailedTestsCache {
   private _enabledTestsMap?: TestMap;

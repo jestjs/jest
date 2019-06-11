@@ -61,7 +61,8 @@ const getType = (element: any) => {
     }
 
     if (ReactIs.isMemo(type)) {
-      const functionName = type.type.displayName || type.type.name || '';
+      const functionName =
+        type.displayName || type.type.displayName || type.type.name || '';
 
       return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
     }

@@ -21,7 +21,7 @@ export type HasteConfig = {
   throwOnModuleCollision?: boolean;
 };
 
-export type ReporterConfig = [string, {[key: string]: unknown}];
+export type ReporterConfig = [string, Record<string, unknown>];
 
 export type ConfigGlobals = Record<string, any>;
 
@@ -207,6 +207,7 @@ export type InitialOptions = {
   testRunner?: string;
   testSequencer?: string;
   testURL?: string;
+  testTimeout?: number;
   timers?: 'real' | 'fake';
   transform?: {
     [key: string]: string;
@@ -344,6 +345,7 @@ export type GlobalConfig = {
   testPathPattern: string;
   testResultsProcessor: string | null | undefined;
   testSequencer: string;
+  testTimeout: number;
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose: boolean | null | undefined;
@@ -452,7 +454,7 @@ export type Argv = Arguments<
     json: boolean;
     lastCommit: boolean;
     logHeapUsage: boolean;
-    maxWorkers: number;
+    maxWorkers: number | string;
     moduleDirectories: Array<string>;
     moduleFileExtensions: Array<string>;
     moduleNameMapper: string;
@@ -489,6 +491,7 @@ export type Argv = Arguments<
     testRunner: string;
     testSequencer: string;
     testURL: string;
+    testTimeout: number | null | undefined;
     timers: string;
     transform: string;
     transformIgnorePatterns: Array<string>;
