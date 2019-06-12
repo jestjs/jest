@@ -27,12 +27,3 @@ exports[`printDiffOrStringify expected is multi line and received is empty 1`] =
 <green>line\\"</>
 Received: <red>\\"\\"</>"
 `;
-
-exports[`trailing spaces printExpected ordinary space precedes quote mark 1`] = `"<green>\\"only \\"</>"`;
-
-exports[`trailing spaces printReceived middle dots at end of open lines 1`] = `
-"<red>\\"1 yes·</>
-<red>2 no</>
-<red>3 yes···</>
-<red>4 no \\"</>"
-`;

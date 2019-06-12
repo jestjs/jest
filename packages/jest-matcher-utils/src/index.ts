@@ -6,19 +6,9 @@
  */
 
 import chalk from 'chalk';
-import jestDiff, {DiffOptions} from 'jest-diff';
+import jestDiff, {DiffOptions, getStringDiff} from 'jest-diff';
 import getType, {isPrimitive} from 'jest-get-type';
 import prettyFormat from 'pretty-format';
-
-import {DIFF_EQUAL} from './cleanupSemantic';
-import {
-  MULTILINE_REGEXP,
-  SPACE_SYMBOL,
-  computeStringDiffs,
-  getExpectedString,
-  getReceivedString,
-  printMultilineStringDiffs,
-} from './printDiffs';
 
 const {
   AsymmetricMatcher,
@@ -53,6 +43,9 @@ export const RECEIVED_COLOR = chalk.red;
 export const INVERTED_COLOR = chalk.inverse;
 export const BOLD_WEIGHT = chalk.bold;
 export const DIM_COLOR = chalk.dim;
+
+const MULTILINE_REGEXP = /\n/;
+const SPACE_SYMBOL = '\u{00B7}'; // middle dot
 
 const NUMBERS = [
   'zero',
@@ -264,8 +257,6 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
   return true;
 };
 
-const MAX_DIFF_STRING_LENGTH = 20000;
-
 export const printDiffOrStringify = (
   expected: unknown,
   received: unknown,
@@ -273,49 +264,24 @@ export const printDiffOrStringify = (
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
 ): string => {
-  if (
-    typeof expected === 'string' &&
-    typeof received === 'string' &&
-    expected.length !== 0 &&
-    received.length !== 0 &&
-    expected.length <= MAX_DIFF_STRING_LENGTH &&
-    received.length <= MAX_DIFF_STRING_LENGTH
-  ) {
-    // Print specific substring diff for strings only:
-    // * if neither string is empty
-    // * if neither string is too long
-    const {diffs, isMultiline} = computeStringDiffs(expected, received);
+  if (typeof expected === 'string' && typeof received === 'string') {
+    const result = getStringDiff(expected, received, {
+      aAnnotation: expectedLabel,
+      bAnnotation: receivedLabel,
+      expand,
+    });
 
-    // Assume it has a change string, but does it have a common string?
-    // Important: Ignore common newline that was appended to multiline strings!
-    const iLast = diffs.length - 1;
-    if (
-      diffs.some(
-        (diff, i) =>
-          diff[0] === DIFF_EQUAL &&
-          (!isMultiline || i !== iLast || diff[1] !== '\n'),
-      )
-    ) {
-      if (isMultiline) {
-        return (
-          EXPECTED_COLOR('- ' + expectedLabel) +
-          '\n' +
-          RECEIVED_COLOR('+ ' + receivedLabel) +
-          '\n\n' +
-          printMultilineStringDiffs(diffs, expand)
-        );
+    if (result !== null) {
+      if (result.isMultiline) {
+        return result.annotatedDiff;
       }
 
       const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
-      const expectedLine =
-        printLabel(expectedLabel) + printExpected(getExpectedString(diffs));
-      const receivedLine =
-        printLabel(receivedLabel) + printReceived(getReceivedString(diffs));
+      const expectedLine = printLabel(expectedLabel) + printExpected(result.a);
+      const receivedLine = printLabel(receivedLabel) + printReceived(result.b);
 
       return expectedLine + '\n' + receivedLine;
     }
-    // else the semantic cleanup removed all common strings,
-    // therefore fall through to generic line diff below
   }
 
   if (isLineDiffable(expected, received)) {
@@ -357,7 +323,8 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
   }
   return true;
 };
-export const diff: typeof jestDiff = (a, b, options) =>
+
+export const diff = (a: any, b: any, options?: DiffOptions): string | null =>
   shouldPrintDiff(a, b) ? jestDiff(a, b, options) : null;
 
 export const pluralize = (word: string, count: number) =>

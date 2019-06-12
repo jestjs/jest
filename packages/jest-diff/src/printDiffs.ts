@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import chalk from 'chalk';
+
 import {
   cleanupSemantic,
   DIFF_EQUAL,
@@ -18,18 +20,18 @@ import {
   joinAlignedDiffsExpand,
   joinAlignedDiffsNoExpand,
 } from './joinAlignedDiffs';
-import {
-  DIM_COLOR,
-  EXPECTED_COLOR,
-  INVERTED_COLOR,
-  RECEIVED_COLOR,
-} from './index';
+import {DiffOptions} from './types';
+
+export const DIM_COLOR = chalk.dim;
+export const EXPECTED_COLOR = chalk.green;
+export const INVERTED_COLOR = chalk.inverse;
+export const RECEIVED_COLOR = chalk.red;
 
 // Given change op and array of diffs, return concatenated string:
 // * include common strings
 // * include change strings which have argument op (inverse highlight)
 // * exclude change strings which have opposite op
-export const getDiffString = (op: number, diffs: Array<Diff>): string =>
+export const getHighlightedString = (op: number, diffs: Array<Diff>): string =>
   diffs.reduce(
     (reduced: string, diff: Diff): string =>
       reduced +
@@ -42,15 +44,15 @@ export const getDiffString = (op: number, diffs: Array<Diff>): string =>
   );
 
 export const getExpectedString = (diffs: Array<Diff>): string =>
-  getDiffString(DIFF_DELETE, diffs);
+  getHighlightedString(DIFF_DELETE, diffs);
 
 export const getReceivedString = (diffs: Array<Diff>): string =>
-  getDiffString(DIFF_INSERT, diffs);
+  getHighlightedString(DIFF_INSERT, diffs);
 
 export const MULTILINE_REGEXP = /\n/;
 
 const NEWLINE_SYMBOL = '\u{21B5}'; // downwards arrow with corner leftwards
-export const SPACE_SYMBOL = '\u{00B7}'; // middle dot
+const SPACE_SYMBOL = '\u{00B7}'; // middle dot
 
 // Instead of inverse highlight which now implies a change,
 // replace common spaces with middle dot at the end of the line.
@@ -87,6 +89,24 @@ export const computeStringDiffs = (expected: string, received: string) => {
   return {diffs, isMultiline};
 };
 
+export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
+  if (isMultiline) {
+    // Important: Ignore common newline that was appended to multiline strings!
+    const iLast = diffs.length - 1;
+    return diffs.some(
+      (diff, i) => diff[0] === DIFF_EQUAL && (i !== iLast || diff[1] !== '\n'),
+    );
+  }
+
+  return diffs.some(diff => diff[0] === DIFF_EQUAL);
+};
+
+export const printAnnotation = (options?: DiffOptions): string =>
+  EXPECTED_COLOR('- ' + ((options && options.aAnnotation) || 'Expected')) +
+  '\n' +
+  RECEIVED_COLOR('+ ' + ((options && options.bAnnotation) || 'Received')) +
+  '\n\n';
+
 // Return formatted diff lines without labels.
 export const printMultilineStringDiffs = (
   diffs: Array<Diff>,
@@ -96,4 +116,54 @@ export const printMultilineStringDiffs = (
   return expand
     ? joinAlignedDiffsExpand(lines)
     : joinAlignedDiffsNoExpand(lines);
+};
+
+const MAX_DIFF_STRING_LENGTH = 20000;
+
+type StringDiffResult =
+  | {isMultiline: true; annotatedDiff: string}
+  | {isMultiline: false; a: string; b: string}
+  | null;
+
+// Print specific substring diff for strings only:
+// * if strings are not equal
+// * if neither string is empty
+// * if neither string is too long
+// * if there is a common string after semantic cleanup
+export const getStringDiff = (
+  expected: string,
+  received: string,
+  options?: DiffOptions,
+): StringDiffResult => {
+  if (
+    expected === received ||
+    expected.length === 0 ||
+    received.length === 0 ||
+    expected.length > MAX_DIFF_STRING_LENGTH ||
+    received.length > MAX_DIFF_STRING_LENGTH
+  ) {
+    return null;
+  }
+
+  const {diffs, isMultiline} = computeStringDiffs(expected, received);
+
+  if (!hasCommonDiff(diffs, isMultiline)) {
+    return null;
+  }
+
+  return isMultiline
+    ? {
+        annotatedDiff:
+          printAnnotation(options) +
+          printMultilineStringDiffs(
+            diffs,
+            options === undefined || options.expand !== false,
+          ),
+        isMultiline,
+      }
+    : {
+        a: getExpectedString(diffs),
+        b: getReceivedString(diffs),
+        isMultiline,
+      };
 };

@@ -6,7 +6,7 @@
  */
 
 import {Diff, DIFF_DELETE, DIFF_INSERT} from './cleanupSemantic';
-import {MULTILINE_REGEXP, getDiffString} from './printDiffs';
+import {MULTILINE_REGEXP, getHighlightedString} from './printDiffs';
 
 // Encapsulate change lines until either a common newline or the end.
 class ChangeBuffer {
@@ -27,7 +27,9 @@ class ChangeBuffer {
   private pushLine(): void {
     // Assume call only if line has at least one diff,
     // therefore an empty line must have a diff which has an empty string.
-    this.lines.push(new Diff(this.op, getDiffString(this.op, this.line)));
+    this.lines.push(
+      new Diff(this.op, getHighlightedString(this.op, this.line)),
+    );
     this.line.length = 0;
   }
 

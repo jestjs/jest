@@ -6,7 +6,7 @@
  */
 
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from '../cleanupSemantic';
-import {INVERTED_COLOR} from '../index';
+import {INVERTED_COLOR} from '../printDiffs';
 import {
   joinAlignedDiffsExpand,
   joinAlignedDiffsNoExpand,

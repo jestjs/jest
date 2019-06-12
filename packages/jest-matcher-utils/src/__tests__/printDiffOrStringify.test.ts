@@ -5,13 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  EXPECTED_COLOR,
-  INVERTED_COLOR,
-  printDiffOrStringify,
-  printExpected,
-  printReceived,
-} from '../index';
+import {EXPECTED_COLOR, INVERTED_COLOR, printDiffOrStringify} from '../index';
 
 describe('printDiffOrStringify', () => {
   const testDiffOrStringify = (expected: string, received: string): string =>
@@ -52,15 +46,5 @@ describe('printDiffOrStringify', () => {
 
     // It is not a specific substring diff
     expect(test).not.toContain(EXPECTED_COLOR('- ' + INVERTED_COLOR('line')));
-  });
-});
-
-describe('trailing spaces', () => {
-  test('printExpected ordinary space precedes quote mark', () => {
-    expect(printExpected('only ')).toMatchSnapshot();
-  });
-
-  test('printReceived middle dots at end of open lines', () => {
-    expect(printReceived('1 yes \n2 no\n3 yes   \n4 no ')).toMatchSnapshot();
   });
 });
