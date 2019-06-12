@@ -741,15 +741,15 @@ class HasteMap extends EventEmitter {
   private _crawl(hasteMap: InternalHasteMap) {
     const options = this._options;
     const ignore = this._ignore.bind(this);
-    const crawl =
-      canUseWatchman && this._options.useWatchman ? watchmanCrawl : nodeCrawl;
+    const useWatchman = canUseWatchman && this._options.useWatchman;
+    const crawl = useWatchman ? watchmanCrawl : nodeCrawl;
     const crawlerOptions: CrawlerOptions = {
       computeSha1: options.computeSha1,
       data: hasteMap,
       extensions: options.extensions,
       forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
       ignore,
-      mapper: options.mapper,
+      mapper: useWatchman ? options.mapper : undefined,
       rootDir: options.rootDir,
       roots: options.roots,
     };

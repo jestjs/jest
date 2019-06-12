@@ -408,6 +408,9 @@ describe('HasteMap', () => {
         node.mockImplementation(options => {
           const {data} = options;
 
+          // `mapper` is not supported in Node crawl
+          expect(options.mapper).toBeUndefined();
+
           // The node crawler returns "null" for the SHA-1.
           data.files = createMap({
             'fruits/Banana.js': ['Banana', 32, 42, 0, 'Strawberry', null],
@@ -426,6 +429,7 @@ describe('HasteMap', () => {
         const hasteMap = new HasteMap({
           ...defaultConfig,
           computeSha1: true,
+          mapper: file => [file],
           maxWorkers: 1,
           useWatchman,
         });
