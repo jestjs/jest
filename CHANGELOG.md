@@ -12,6 +12,7 @@
 - `[babel-plugin-jest-hoist]` Expand list of whitelisted globals in global mocks ([#8429](https://github.com/facebook/jest/pull/8429)
 - `[jest-core]` Make watch plugin initialization errors look nice ([#8422](https://github.com/facebook/jest/pull/8422))
 - `[jest-snapshot]` Prevent inline snapshots from drifting when inline snapshots are updated ([#8492](https://github.com/facebook/jest/pull/8492))
+- `[jest-haste-map]` Don't pass mapper to Node crawler snapshots are updated ([#8558](https://github.com/facebook/jest/pull/8558))
 
 ### Chore & Maintenance
 
