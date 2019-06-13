@@ -5,26 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
-
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
-import {printCommonLine, printDeleteLine, printInsertLine} from './printDiffs';
+import {
+  createPatchMark,
+  printCommonLine,
+  printDeleteLine,
+  printInsertLine,
+} from './printDiffs';
 
-const DIFF_CONTEXT_DEFAULT = 5; // same as jest-diff
-
-const PATCH_COLOR = chalk.yellow;
-
-// Copied from jest-diff
-// In GNU diff format, indexes are one-based instead of zero-based.
-const createPatchMark = (
-  aStart: number,
-  aEnd: number,
-  bStart: number,
-  bEnd: number,
-): string =>
-  PATCH_COLOR(
-    `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
-  );
+const DIFF_CONTEXT_DEFAULT = 5; // same as diffLines
 
 // jest --no-expand
 //

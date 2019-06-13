@@ -26,6 +26,7 @@ export const DIM_COLOR = chalk.dim;
 export const EXPECTED_COLOR = chalk.green;
 export const INVERTED_COLOR = chalk.inverse;
 export const RECEIVED_COLOR = chalk.red;
+const PATCH_COLOR = chalk.yellow;
 
 // Given change op and array of diffs, return concatenated string:
 // * include common strings
@@ -106,6 +107,17 @@ export const printAnnotation = (options?: DiffOptions): string =>
   '\n' +
   RECEIVED_COLOR('+ ' + ((options && options.bAnnotation) || 'Received')) +
   '\n\n';
+
+// In GNU diff format, indexes are one-based instead of zero-based.
+export const createPatchMark = (
+  aStart: number,
+  aEnd: number,
+  bStart: number,
+  bEnd: number,
+): string =>
+  PATCH_COLOR(
+    `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
+  );
 
 // Return formatted diff lines without labels.
 export const printMultilineStringDiffs = (

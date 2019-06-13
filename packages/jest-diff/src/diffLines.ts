@@ -8,7 +8,7 @@
 import chalk, {Chalk} from 'chalk';
 import diff, {Callbacks} from 'diff-sequences';
 import {NO_DIFF_MESSAGE} from './constants';
-import {printAnnotation} from './printDiffs';
+import {createPatchMark, printAnnotation} from './printDiffs';
 import {DiffOptions} from './types';
 
 const DIFF_CONTEXT_DEFAULT = 5;
@@ -18,7 +18,6 @@ type Original = {
   b: string;
 };
 
-const fgPatchMark = chalk.yellow;
 const fgDelete = chalk.green;
 const fgInsert = chalk.red;
 const fgCommon = chalk.dim; // common lines (even indentation same)
@@ -154,17 +153,6 @@ const diffExpand = (
 
   return array.join('\n');
 };
-
-// In GNU diff format, indexes are one-based instead of zero-based.
-const createPatchMark = (
-  aStart: number,
-  aEnd: number,
-  bStart: number,
-  bEnd: number,
-): string =>
-  fgPatchMark(
-    `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
-  );
 
 const getContextLines = (options?: DiffOptions): number =>
   options &&
