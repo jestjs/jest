@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 const {stringify} = require('jest-matcher-utils');
@@ -330,6 +329,32 @@ describe('.toStrictEqual()', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  it('displays substring diff for multiple lines', () => {
+    const expected = [
+      '    69 | ',
+      "    70 | test('assert.doesNotThrow', () => {",
+      '  > 71 |   assert.doesNotThrow(() => {',
+      '       |          ^',
+      "    72 |     throw Error('err!');",
+      '    73 |   });',
+      '    74 | });',
+      '    at Object.doesNotThrow (__tests__/assertionError.test.js:71:10)',
+    ].join('\n');
+    const received = [
+      '    68 | ',
+      "    69 | test('assert.doesNotThrow', () => {",
+      '  > 70 |   assert.doesNotThrow(() => {',
+      '       |          ^',
+      "    71 |     throw Error('err!');",
+      '    72 |   });',
+      '    73 | });',
+      '    at Object.doesNotThrow (__tests__/assertionError.test.js:70:10)',
+    ].join('\n');
+    expect(() =>
+      jestExpect(received).toStrictEqual(expected),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   it('does not pass for different types', () => {
     expect({
       test: new TestClassA(1, 2),
@@ -371,6 +396,10 @@ describe('.toEqual()', () => {
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
     ['1\u{00A0}234,57\u{00A0}$', '1 234,57 $'], // issues/6881
+    [
+      'type TypeName<T> = T extends Function ? "function" : "object";',
+      'type TypeName<T> = T extends Function\n? "function"\n: "object";',
+    ],
     [null, undefined],
     [[1], [2]],
     [[1, 2], [2, 1]],
@@ -1361,13 +1390,24 @@ describe('.toHaveProperty()', () => {
   const memoized = function() {};
   memoized.memo = [];
 
-  const receivedDiff = {
+  const pathDiff = ['children', 0];
+
+  const receivedDiffSingle = {
     children: ['"That cartoon"'],
     props: null,
     type: 'p',
   };
-  const pathDiff = ['children', 0];
-  const valueDiff = '"That cat cartoon"';
+  const valueDiffSingle = '"That cat cartoon"';
+
+  const receivedDiffMultiple = {
+    children: [
+      'Roses are red.\nViolets are blue.\nTesting with Jest is good for you.',
+    ],
+    props: null,
+    type: 'pre',
+  };
+  const valueDiffMultiple =
+    'Roses are red, violets are blue.\nTesting with Jest\nIs good for you.';
 
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 1],
@@ -1405,7 +1445,8 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 2],
     [{'a.b.c.d': 1}, 'a.b.c.d', 2],
     [{'a.b.c.d': 1}, ['a.b.c.d'], 2],
-    [receivedDiff, pathDiff, valueDiff],
+    [receivedDiffSingle, pathDiff, valueDiffSingle],
+    [receivedDiffMultiple, pathDiff, valueDiffMultiple],
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 2],
     [{a: {b: {c: {}}}}, 'a.b.c.d', 1],
     [{a: 1}, 'a.b.c.d', 5],

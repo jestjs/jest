@@ -8,7 +8,8 @@
 import prettyFormat from 'pretty-format';
 import chalk from 'chalk';
 import getType from 'jest-get-type';
-import diffStrings from './diffStrings';
+import diffLines from './diffLines';
+import {getStringDiff} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 import {DiffOptions as JestDiffOptions} from './types';
 
@@ -79,7 +80,7 @@ function diff(a: any, b: any, options?: JestDiffOptions): string | null {
 
   switch (aType) {
     case 'string':
-      return diffStrings(a, b, options);
+      return diffLines(a, b, options);
     case 'boolean':
     case 'number':
       return comparePrimitive(a, b, options);
@@ -97,7 +98,7 @@ function comparePrimitive(
   b: number | boolean,
   options?: JestDiffOptions,
 ) {
-  return diffStrings(
+  return diffLines(
     prettyFormat(a, FORMAT_OPTIONS),
     prettyFormat(b, FORMAT_OPTIONS),
     options,
@@ -121,7 +122,7 @@ function compareObjects(
   let hasThrown = false;
 
   try {
-    diffMessage = diffStrings(
+    diffMessage = diffLines(
       prettyFormat(a, FORMAT_OPTIONS_0),
       prettyFormat(b, FORMAT_OPTIONS_0),
       options,
@@ -137,7 +138,7 @@ function compareObjects(
   // If the comparison yields no results, compare again but this time
   // without calling `toJSON`. It's also possible that toJSON might throw.
   if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
-    diffMessage = diffStrings(
+    diffMessage = diffLines(
       prettyFormat(a, FALLBACK_FORMAT_OPTIONS_0),
       prettyFormat(b, FALLBACK_FORMAT_OPTIONS_0),
       options,
@@ -158,5 +159,7 @@ function compareObjects(
 namespace diff {
   export type DiffOptions = JestDiffOptions;
 }
+
+diff.getStringDiff = getStringDiff;
 
 export = diff;

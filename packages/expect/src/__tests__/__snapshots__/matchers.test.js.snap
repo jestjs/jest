@@ -303,9 +303,9 @@ string" 1`] = `
 <green>- Expected</>
 <red>+ Received</>
 
-<green>- 3</>
-<red>+ four</>
-<red>+ 4</>
+<green>- <inverse>3</></>
+<red>+ <inverse>four</></>
+<red>+ <inverse>4</></>
 <dim>  line</>
 <dim>  string</>"
 `;
@@ -321,9 +321,12 @@ exports[`.toBe() fails for: "with
 trailing space" and "without trailing space" 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBe<dim>(</><green>expected</><dim>) // Object.is equality</>
 
-Expected: <green>\\"without trailing space\\"</>
-Received: <red>\\"with<inverse> </></>
-<red>trailing space\\"</>"
+<green>- Expected</>
+<red>+ Received</>
+
+<green>- with<inverse>out</> trailing space</>
+<red>+ with·</>
+<red>+ trailing space</>"
 `;
 
 exports[`.toBe() fails for: /received/ and /expected/ 1`] = `
@@ -1971,6 +1974,20 @@ Expected: <green>\\"apple\\"</>
 Received: <red>\\"banana\\"</>"
 `;
 
+exports[`.toEqual() {pass: false} expect("type TypeName<T> = T extends Function ? \\"function\\" : \\"object\\";").toEqual("type TypeName<T> = T extends Function
+? \\"function\\"
+: \\"object\\";") 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<green>- type TypeName<T> = T extends Function</>
+<green>- ? \\"function\\"</>
+<green>- : \\"object\\";</>
+<red>+ type TypeName<T> = T extends Function<inverse> </>? \\"function\\"<inverse> </>: \\"object\\";</>"
+`;
+
 exports[`.toEqual() {pass: false} expect([1, 2]).toEqual([2, 1]) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
 
@@ -3080,6 +3097,26 @@ Expected value: <green>\\"\\\\\\"That <inverse>cat </>cartoon\\\\\\"\\"</>
 Received value: <red>\\"\\\\\\"That cartoon\\\\\\"\\"</>"
 `;
 
+exports[`.toHaveProperty() {pass: false} expect({"children": ["Roses are red.
+Violets are blue.
+Testing with Jest is good for you."], "props": null, "type": "pre"}).toHaveProperty('children,0', "Roses are red, violets are blue.
+Testing with Jest
+Is good for you.") 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>, </><green>value</><dim>)</>
+
+Expected path: <green>[\\"children\\", 0]</>
+
+<green>- Expected value</>
+<red>+ Received value</>
+
+<green>- Roses are red<inverse>, v</>iolets are blue.</>
+<red>+ Roses are red<inverse>.</></>
+<red>+ <inverse>V</>iolets are blue.</>
+<green>- Testing with Jest</>
+<green>- <inverse>I</>s good for you.</>
+<red>+ Testing with Jest<inverse> i</>s good for you.</>"
+`;
+
 exports[`.toHaveProperty() {pass: false} expect({"key": 1}).toHaveProperty('not') 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveProperty<dim>(</><green>path</><dim>)</>
 
@@ -3525,6 +3562,29 @@ exports[`.toStrictEqual() displays substring diff 1`] = `
 
 Expected: <green>\\"<inverse>Another caveat is that</> Jest will not typecheck your tests.\\"</>
 Received: <red>\\"<inverse>Because TypeScript support in Babel is just transpilation,</> Jest will not type<inverse>-</>check your tests<inverse> as they run</>.\\"</>"
+`;
+
+exports[`.toStrictEqual() displays substring diff for multiple lines 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toStrictEqual<dim>(</><green>expected</><dim>) // deep equality</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<green>-     6<inverse>9</> |·</>
+<red>+     6<inverse>8</> |·</>
+<green>-     <inverse>70</> | test('assert.doesNotThrow', () => {</>
+<red>+     <inverse>69</> | test('assert.doesNotThrow', () => {</>
+<green>-   > 7<inverse>1</> |   assert.doesNotThrow(() => {</>
+<red>+   > 7<inverse>0</> |   assert.doesNotThrow(() => {</>
+<dim>         |          ^</>
+<green>-     7<inverse>2</> |     throw Error('err!');</>
+<red>+     7<inverse>1</> |     throw Error('err!');</>
+<green>-     7<inverse>3</> |   });</>
+<red>+     7<inverse>2</> |   });</>
+<green>-     7<inverse>4</> | });</>
+<red>+     7<inverse>3</> | });</>
+<green>-     at Object.doesNotThrow (__tests__/assertionError.test.js:7<inverse>1</>:10)</>
+<red>+     at Object.doesNotThrow (__tests__/assertionError.test.js:7<inverse>0</>:10)</>"
 `;
 
 exports[`.toStrictEqual() matches the expected snapshot when it fails 1`] = `

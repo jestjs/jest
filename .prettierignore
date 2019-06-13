@@ -1,4 +1,4 @@
 fixtures/failing-jsons/
-packages/jest-matcher-utils/src/cleanupSemantic.ts
+packages/jest-diff/src/cleanupSemantic.ts
 packages/jest-config/src/__tests__/jest-preset.json
 packages/pretty-format/perf/world.geo.json

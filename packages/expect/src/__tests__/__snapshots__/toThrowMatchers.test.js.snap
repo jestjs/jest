@@ -161,6 +161,18 @@ Expected message: not <green>\\"Invalid array length\\"</>
 "
 `;
 
+exports[`toThrow error-message fail multiline diff highlight incorrect expected space 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected message</>
+<red>+ Received message</>
+
+<green>- There is no route defined for key Settings.<inverse> </></>
+<red>+ There is no route defined for key Settings.</>
+<dim>  Must be one of: 'Home'</>
+"
+`;
+
 exports[`toThrow expected is undefined threw, but should not have (non-error falsey) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>()</>
 
@@ -454,6 +466,18 @@ exports[`toThrowError error-message fail isNot true 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
 
 Expected message: not <green>\\"Invalid array length\\"</>
+"
+`;
+
+exports[`toThrowError error-message fail multiline diff highlight incorrect expected space 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected message</>
+<red>+ Received message</>
+
+<green>- There is no route defined for key Settings.<inverse> </></>
+<red>+ There is no route defined for key Settings.</>
+<dim>  Must be one of: 'Home'</>
 "
 `;
 

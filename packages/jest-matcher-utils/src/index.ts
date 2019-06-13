@@ -6,16 +6,9 @@
  */
 
 import chalk from 'chalk';
-import jestDiff, {DiffOptions} from 'jest-diff';
+import jestDiff, {DiffOptions, getStringDiff} from 'jest-diff';
 import getType, {isPrimitive} from 'jest-get-type';
 import prettyFormat from 'pretty-format';
-
-import diffStrings from './diffStrings';
-import {
-  MULTILINE_REGEXP,
-  getExpectedString,
-  getReceivedString,
-} from './printDiff';
 
 const {
   AsymmetricMatcher,
@@ -50,6 +43,9 @@ export const RECEIVED_COLOR = chalk.red;
 export const INVERTED_COLOR = chalk.inverse;
 export const BOLD_WEIGHT = chalk.bold;
 export const DIM_COLOR = chalk.dim;
+
+const MULTILINE_REGEXP = /\n/;
+const SPACE_SYMBOL = '\u{00B7}'; // middle dot
 
 const NUMBERS = [
   'zero',
@@ -99,10 +95,15 @@ export const stringify = (object: unknown, maxDepth: number = 10): string => {
 export const highlightTrailingWhitespace = (text: string): string =>
   text.replace(/\s+$/gm, chalk.inverse('$&'));
 
+// Instead of inverse highlight which now implies a change,
+// replace common spaces with middle dot at the end of any line.
+const replaceTrailingSpaces = (text: string): string =>
+  text.replace(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
+
 export const printReceived = (object: unknown) =>
-  RECEIVED_COLOR(highlightTrailingWhitespace(stringify(object)));
+  RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
 export const printExpected = (value: unknown) =>
-  EXPECTED_COLOR(highlightTrailingWhitespace(stringify(value)));
+  EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
 
 export const printWithType = (
   name: string, // 'Expected' or 'Received'
@@ -206,7 +207,7 @@ export const ensureExpectedIsNonNegativeInteger = (
   }
 };
 
-const isDiffable = (expected: unknown, received: unknown): boolean => {
+const isLineDiffable = (expected: unknown, received: unknown): boolean => {
   const expectedType = getType(expected);
   const receivedType = getType(received);
 
@@ -215,12 +216,15 @@ const isDiffable = (expected: unknown, received: unknown): boolean => {
   }
 
   if (isPrimitive(expected)) {
-    // Print diff only if both strings have more than one line.
+    // Print generic line diff for strings only:
+    // * if neither string is empty
+    // * if either string has more than one line
     return (
       typeof expected === 'string' &&
       typeof received === 'string' &&
-      MULTILINE_REGEXP.test(expected) &&
-      MULTILINE_REGEXP.test(received)
+      expected.length !== 0 &&
+      received.length !== 0 &&
+      (MULTILINE_REGEXP.test(expected) || MULTILINE_REGEXP.test(received))
     );
   }
 
@@ -260,30 +264,27 @@ export const printDiffOrStringify = (
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
 ): string => {
-  const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+  if (typeof expected === 'string' && typeof received === 'string') {
+    const result = getStringDiff(expected, received, {
+      aAnnotation: expectedLabel,
+      bAnnotation: receivedLabel,
+      expand,
+    });
 
-  if (
-    typeof expected === 'string' &&
-    typeof received === 'string' &&
-    expected.length !== 0 &&
-    received.length !== 0 &&
-    !MULTILINE_REGEXP.test(expected) &&
-    !MULTILINE_REGEXP.test(received)
-  ) {
-    const diffs = diffStrings(expected, received);
+    if (result !== null) {
+      if (result.isMultiline) {
+        return result.annotatedDiff;
+      }
 
-    if (Array.isArray(diffs)) {
-      const expectedLine =
-        printLabel(expectedLabel) + printExpected(getExpectedString(diffs));
-      const receivedLine =
-        printLabel(receivedLabel) + printReceived(getReceivedString(diffs));
+      const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+      const expectedLine = printLabel(expectedLabel) + printExpected(result.a);
+      const receivedLine = printLabel(receivedLabel) + printReceived(result.b);
 
       return expectedLine + '\n' + receivedLine;
     }
-  } else if (isDiffable(expected, received)) {
-    // Cannot use same serialization as shortcut to avoid diff,
-    // because stringify (that is, pretty-format with min option)
-    // omits constructor name for array or object, too bad so sad :(
+  }
+
+  if (isLineDiffable(expected, received)) {
     const difference = jestDiff(expected, received, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,
@@ -299,17 +300,15 @@ export const printDiffOrStringify = (
     }
   }
 
-  // Cannot reuse value of stringify(received) in report string,
-  // because printReceived does inverse highlight space at end of line,
-  // but RECEIVED_COLOR does not (it refers to a plain chalk method).
-  return (
-    `${printLabel(expectedLabel)}${printExpected(expected)}\n` +
-    `${printLabel(receivedLabel)}${
-      stringify(expected) === stringify(received)
-        ? 'serializes to the same string'
-        : printReceived(received)
-    }`
-  );
+  const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+  const expectedLine = printLabel(expectedLabel) + printExpected(expected);
+  const receivedLine =
+    printLabel(receivedLabel) +
+    (stringify(expected) === stringify(received)
+      ? 'serializes to the same string'
+      : printReceived(received));
+
+  return expectedLine + '\n' + receivedLine;
 };
 
 // Sometimes, e.g. when comparing two numbers, the output from jest-diff
@@ -324,7 +323,8 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
   }
   return true;
 };
-export const diff: typeof jestDiff = (a, b, options) =>
+
+export const diff = (a: any, b: any, options?: DiffOptions): string | null =>
   shouldPrintDiff(a, b) ? jestDiff(a, b, options) : null;
 
 export const pluralize = (word: string, count: number) =>

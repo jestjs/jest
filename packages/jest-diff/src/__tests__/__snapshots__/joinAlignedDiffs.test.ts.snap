@@ -1,0 +1,160 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`joinAlignedDiffsExpand first line is empty common 1`] = `
+"<dim>  ↵</>
+<dim>  common 2 preceding A</>
+<dim>  common 1 preceding A</>
+<green>- delete line</>
+<green>- change <inverse>expect</>ed A</>
+<red>+ change <inverse>receiv</>ed A</>
+<dim>  common 1 following A</>
+<dim>  common 2 following A</>
+<dim>  common 3 following A</>
+<dim>  common 4 following A</>
+<dim>  common 4 preceding B</>
+<dim>  common 3 preceding B</>
+<dim>  common 2 preceding B</>
+<dim>  common 1 preceding B</>
+<green>- change <inverse>expect</>ed B</>
+<red>+ change <inverse>receiv</>ed B</>
+<red>+ insert line</>
+<dim>  common 1 following B</>
+<dim>  common 2 following B</>
+<dim>  common 3 between B and C</>
+<dim>  common 2 preceding C</>
+<dim>  common 1 preceding C</>
+<green>- change <inverse>expect</>ed C</>
+<red>+ change <inverse>receiv</>ed C</>
+<dim>  common 1 following C</>
+<dim>  common 2 following C</>
+<dim>  common 3 following C</>
+
+<dim>  common 5 following C</>"
+`;
+
+exports[`joinAlignedDiffsNoExpand patch 0 with context 1 and change at start and end 1`] = `
+"<green>- delete</>
+<dim>  common following delete</>
+<dim>  common preceding insert</>
+<red>+ insert</>"
+`;
+
+exports[`joinAlignedDiffsNoExpand patch 0 with context 5 and first line is empty common 1`] = `
+"<dim>  ↵</>
+<dim>  common 2 preceding A</>
+<dim>  common 1 preceding A</>
+<green>- delete line</>
+<green>- change <inverse>expect</>ed A</>
+<red>+ change <inverse>receiv</>ed A</>
+<dim>  common 1 following A</>
+<dim>  common 2 following A</>
+<dim>  common 3 following A</>
+<dim>  common 4 following A</>
+<dim>  common 4 preceding B</>
+<dim>  common 3 preceding B</>
+<dim>  common 2 preceding B</>
+<dim>  common 1 preceding B</>
+<green>- change <inverse>expect</>ed B</>
+<red>+ change <inverse>receiv</>ed B</>
+<red>+ insert line</>
+<dim>  common 1 following B</>
+<dim>  common 2 following B</>
+<dim>  common 3 between B and C</>
+<dim>  common 2 preceding C</>
+<dim>  common 1 preceding C</>
+<green>- change <inverse>expect</>ed C</>
+<red>+ change <inverse>receiv</>ed C</>
+<dim>  common 1 following C</>
+<dim>  common 2 following C</>
+<dim>  common 3 following C</>
+
+<dim>  common 5 following C</>"
+`;
+
+exports[`joinAlignedDiffsNoExpand patch 1 with context 4 and last line is empty common 1`] = `
+"<yellow>@@ -1,24 +1,24 @@</>
+
+<dim>  common 2 preceding A</>
+<dim>  common 1 preceding A</>
+<green>- delete line</>
+<green>- change <inverse>expect</>ed A</>
+<red>+ change <inverse>receiv</>ed A</>
+<dim>  common 1 following A</>
+<dim>  common 2 following A</>
+<dim>  common 3 following A</>
+<dim>  common 4 following A</>
+<dim>  common 4 preceding B</>
+<dim>  common 3 preceding B</>
+<dim>  common 2 preceding B</>
+<dim>  common 1 preceding B</>
+<green>- change <inverse>expect</>ed B</>
+<red>+ change <inverse>receiv</>ed B</>
+<red>+ insert line</>
+<dim>  common 1 following B</>
+<dim>  common 2 following B</>
+<dim>  common 3 between B and C</>
+<dim>  common 2 preceding C</>
+<dim>  common 1 preceding C</>
+<green>- change <inverse>expect</>ed C</>
+<red>+ change <inverse>receiv</>ed C</>
+<dim>  common 1 following C</>
+<dim>  common 2 following C</>
+<dim>  common 3 following C</>
+<dim>  ↵</>"
+`;
+
+exports[`joinAlignedDiffsNoExpand patch 2 with context 3 1`] = `
+"<yellow>@@ -1,8 +1,7 @@</>
+
+<dim>  common 2 preceding A</>
+<dim>  common 1 preceding A</>
+<green>- delete line</>
+<green>- change <inverse>expect</>ed A</>
+<red>+ change <inverse>receiv</>ed A</>
+<dim>  common 1 following A</>
+<dim>  common 2 following A</>
+<dim>  common 3 following A</>
+<yellow>@@ -11,13 +10,14 @@</>
+<dim>  common 3 preceding B</>
+<dim>  common 2 preceding B</>
+<dim>  common 1 preceding B</>
+<green>- change <inverse>expect</>ed B</>
+<red>+ change <inverse>receiv</>ed B</>
+<red>+ insert line</>
+<dim>  common 1 following B</>
+<dim>  common 2 following B</>
+<dim>  common 3 between B and C</>
+<dim>  common 2 preceding C</>
+<dim>  common 1 preceding C</>
+<green>- change <inverse>expect</>ed C</>
+<red>+ change <inverse>receiv</>ed C</>
+<dim>  common 1 following C</>
+<dim>  common 2 following C</>
+<dim>  common 3 following C</>"
+`;
+
+exports[`joinAlignedDiffsNoExpand patch 3 with context 2 and omit excess common at start 1`] = `
+"<yellow>@@ -2,6 +2,5 @@</>
+<dim>  common 2 preceding A</>
+<dim>  common 1 preceding A</>
+<green>- delete line</>
+<green>- change <inverse>expect</>ed A</>
+<red>+ change <inverse>receiv</>ed A</>
+<dim>  common 1 following A</>
+<dim>  common 2 following A</>
+<yellow>@@ -12,5 +11,6 @@</>
+<dim>  common 2 preceding B</>
+<dim>  common 1 preceding B</>
+<green>- change <inverse>expect</>ed B</>
+<red>+ change <inverse>receiv</>ed B</>
+<red>+ insert line</>
+<dim>  common 1 following B</>
+<dim>  common 2 following B</>
+<yellow>@@ -18,5 +18,5 @@</>
+<dim>  common 2 preceding C</>
+<dim>  common 1 preceding C</>
+<green>- change <inverse>expect</>ed C</>
+<red>+ change <inverse>receiv</>ed C</>
+<dim>  common 1 following C</>
+<dim>  common 2 following C</>"
+`;
