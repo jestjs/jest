@@ -179,17 +179,14 @@ export const saveSnapshotFile = (
 };
 
 const deepMergeArray = (target: Array<any>, source: Array<any>) => {
-  // Clone target
-  const mergedOutput = target.slice();
+  const mergedOutput = Array.from(target);
 
   source.forEach((sourceElement, index) => {
     const targetElement = mergedOutput[index];
 
     if (Array.isArray(target[index])) {
-      // Target is an array
       mergedOutput[index] = deepMergeArray(target[index], sourceElement);
     } else if (isObject(targetElement)) {
-      // Target is a (non-array) object - recursively merge
       mergedOutput[index] = deepMerge(target[index], sourceElement);
     } else {
       // Source does not exist in target or target is primitive and cannot be deep merged
