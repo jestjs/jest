@@ -344,7 +344,14 @@ const _toMatchSnapshot = ({
     const reported =
       `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` +
       printDiffOrStringify(
-        expected.trim().slice(1, -1),
+        // 1. Remove leading and trailing newline if multiple line string.
+        // 2. Remove enclosing double quote marks.
+        // 3. Remove backslash escape preceding backslash here,
+        //    because unescape replaced it only preceding double quote mark.
+        expected
+          .trim()
+          .slice(1, -1)
+          .replace(/\\\\/g, '\\'),
         received,
         SNAPSHOT_LABEL,
         RECEIVED_LABEL,
