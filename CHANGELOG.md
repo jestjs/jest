@@ -10,7 +10,7 @@
 
 ### Fixes
 
-- `[jest-cli]` fix --maxWorkers work again with % input ([#8559](https://github.com/facebook/jest/pull/8559))
+- `[jest-cli]` fix --maxWorkers work again with % input ([#8559](https://github.com/facebook/jest/pull/8565))
 - `[babel-plugin-jest-hoist]` Expand list of whitelisted globals in global mocks ([#8429](https://github.com/facebook/jest/pull/8429)
 - `[jest-core]` Make watch plugin initialization errors look nice ([#8422](https://github.com/facebook/jest/pull/8422))
 - `[jest-snapshot]` Prevent inline snapshots from drifting when inline snapshots are updated ([#8492](https://github.com/facebook/jest/pull/8492))
