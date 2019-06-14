@@ -18,6 +18,7 @@ import {
   getLabelPrinter,
   matcherErrorMessage,
   matcherHint,
+  printDiffOrStringify,
   printReceived,
   printExpected,
   printWithType,
@@ -26,7 +27,6 @@ import {
 } from 'jest-matcher-utils';
 import {MatchersObject, MatcherState} from './types';
 import {
-  printDiffOrStringify,
   printExpectedConstructorName,
   printExpectedConstructorNameNot,
   printReceivedArrayContainExpectedItem,
@@ -50,6 +50,9 @@ const EXPECTED_LABEL = 'Expected';
 const RECEIVED_LABEL = 'Received';
 const EXPECTED_VALUE_LABEL = 'Expected value';
 const RECEIVED_VALUE_LABEL = 'Received value';
+
+// The optional property of matcher context is true if undefined.
+const isExpand = (expand?: boolean): boolean => expand !== false;
 
 const toStrictEqualTesters = [
   iterableEquality,
@@ -107,7 +110,7 @@ const matchers: MatchersObject = {
               received,
               EXPECTED_LABEL,
               RECEIVED_LABEL,
-              this.expand,
+              isExpand(this.expand),
             )
           );
         };
@@ -608,7 +611,7 @@ const matchers: MatchersObject = {
             received,
             EXPECTED_LABEL,
             RECEIVED_LABEL,
-            this.expand,
+            isExpand(this.expand),
           );
 
     // Passing the actual and expected objects so that a custom reporter
@@ -782,7 +785,7 @@ const matchers: MatchersObject = {
                 receivedValue,
                 EXPECTED_VALUE_LABEL,
                 RECEIVED_VALUE_LABEL,
-                this.expand,
+                isExpand(this.expand),
               )
             : `Received path: ${printReceived(
                 expectedPathType === 'array' || receivedPath.length === 0
@@ -917,7 +920,7 @@ const matchers: MatchersObject = {
             getObjectSubset(received, expected),
             EXPECTED_LABEL,
             RECEIVED_LABEL,
-            this.expand,
+            isExpand(this.expand),
           );
 
     return {message, pass};
@@ -949,7 +952,7 @@ const matchers: MatchersObject = {
             received,
             EXPECTED_LABEL,
             RECEIVED_LABEL,
-            this.expand,
+            isExpand(this.expand),
           );
 
     // Passing the actual and expected objects so that a custom reporter

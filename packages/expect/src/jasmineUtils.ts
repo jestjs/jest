@@ -208,7 +208,8 @@ function keys(
     return keys.concat(
       (Object.getOwnPropertySymbols(o) as Array<any>).filter(
         symbol =>
-          (Object.getOwnPropertyDescriptor(o, symbol) as any).enumerable,
+          (Object.getOwnPropertyDescriptor(o, symbol) as PropertyDescriptor)
+            .enumerable,
       ),
     );
   })(obj);

@@ -7,6 +7,7 @@
  */
 import {Config} from '@jest/types';
 import * as jestMatcherUtils from 'jest-matcher-utils';
+import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
 export type SyncExpectationResult = {
   pass: boolean;
@@ -17,11 +18,10 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
-export type RawMatcherFn = (
-  received: any,
-  expected: any,
-  options?: any,
-) => ExpectationResult;
+export type RawMatcherFn = {
+  (received: any, expected: any, options?: any): ExpectationResult;
+  [INTERNAL_MATCHER_FLAG]?: boolean;
+};
 
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;

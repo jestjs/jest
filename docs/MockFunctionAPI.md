@@ -188,10 +188,10 @@ expect(mockFn).toHaveBeenCalled();
 
 Will result in this error:
 
-```bash
-    expect(mockedFunction).toHaveBeenCalled()
+```
+expect(mockedFunction).toHaveBeenCalled()
 
-    Expected mock function to have been called.
+Expected mock function "mockedFunction" to have been called, but it was not called.
 ```
 
 ### `mockFn.mockReturnThis()`

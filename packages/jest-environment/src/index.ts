@@ -18,7 +18,7 @@ type JestMockSpyOn = typeof jestMock.spyOn;
 // passed, or not. The context itself is optional, not properties within it.
 export type EnvironmentContext = Partial<{
   console: Console;
-  docblockPragmas: {[key: string]: string | Array<string>};
+  docblockPragmas: Record<string, string | Array<string>>;
   testPath: Config.Path;
 }>;
 
@@ -137,6 +137,23 @@ export interface Jest {
   /**
    * Returns the actual module instead of a mock, bypassing all checks on
    * whether the module should receive a mock implementation or not.
+   *
+   * @example
+   ```
+    jest.mock('../myModule', () => {
+    // Require the original module to not be mocked...
+    const originalModule = jest.requireActual(moduleName);
+      return {
+        __esModule: true, // Use it when dealing with esModules
+        ...originalModule,
+        getRandom: jest.fn().mockReturnValue(10),
+      };
+    });
+
+    const getRandom = require('../myModule').getRandom;
+
+    getRandom(); // Always returns 10
+    ```
    */
   requireActual: (moduleName: string) => unknown;
   /**
