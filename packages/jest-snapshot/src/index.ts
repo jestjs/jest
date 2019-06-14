@@ -16,6 +16,7 @@ import {
   EXPECTED_COLOR,
   matcherHint,
   MatcherHintOptions,
+  printDiffOrStringify,
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
 import {
@@ -47,6 +48,12 @@ const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
 const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
   'not',
 )} cannot be used with snapshot matchers`;
+
+const SNAPSHOT_LABEL = 'Snapshot';
+const RECEIVED_LABEL = 'Received';
+
+// The optional property of matcher context is true if undefined.
+const isExpand = (expand?: boolean): boolean => expand !== false;
 
 const HINT_ARG = BOLD_WEIGHT('hint');
 const INLINE_SNAPSHOT_ARG = 'snapshot';
@@ -324,12 +331,33 @@ const _toMatchSnapshot = ({
       `(CI) environment in which snapshots are not written by default.\n\n` +
       `${RECEIVED_COLOR('Received value')} ` +
       `${actual}`;
+  } else if (
+    typeof received === 'string' &&
+    typeof expected === 'string' &&
+    // Does expected snapshot look like a stringified string:
+    expected.length >= 2 &&
+    ((expected.startsWith('"') && expected.endsWith('"')) || // single line
+      (expected.startsWith('\n"') && expected.endsWith('"\n'))) // // multi line
+  ) {
+    // Assign to local variable because of declaration let expected:
+    // TypeScript thinks it could change before report function is called.
+    const reported =
+      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` +
+      printDiffOrStringify(
+        expected.trim().slice(1, -1),
+        received,
+        SNAPSHOT_LABEL,
+        RECEIVED_LABEL,
+        isExpand(snapshotState.expand),
+      );
+
+    report = () => reported;
   } else {
     expected = (expected || '').trim();
     actual = (actual || '').trim();
     const diffMessage = diff(expected, actual, {
-      aAnnotation: 'Snapshot',
-      bAnnotation: 'Received',
+      aAnnotation: SNAPSHOT_LABEL,
+      bAnnotation: RECEIVED_LABEL,
       expand: snapshotState.expand,
     });
 
