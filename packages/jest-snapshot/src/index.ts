@@ -337,7 +337,7 @@ const _toMatchSnapshot = ({
     // Does expected snapshot look like a stringified string:
     expected.length >= 2 &&
     ((expected.startsWith('"') && expected.endsWith('"')) || // single line
-      (expected.startsWith('\n"') && expected.endsWith('"\n'))) // // multi line
+      (expected.startsWith('\n"') && expected.endsWith('"\n'))) // multi line
   ) {
     // Assign to local variable because of declaration let expected:
     // TypeScript thinks it could change before report function is called.
