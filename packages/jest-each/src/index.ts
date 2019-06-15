@@ -9,8 +9,7 @@
 import {Global} from '@jest/types';
 import bind from './bind';
 
-type Global = NodeJS.Global;
-
+type Global = Global.Global;
 const install = (
   g: Global,
   table: Global.EachTable,
