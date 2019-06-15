@@ -23,9 +23,9 @@ import {
 import {DiffOptions} from './types';
 
 export const DIM_COLOR = chalk.dim;
-export const EXPECTED_COLOR = chalk.green;
+export const EXPECTED_COLOR = chalk.red;
 export const INVERTED_COLOR = chalk.inverse;
-export const RECEIVED_COLOR = chalk.red;
+export const RECEIVED_COLOR = chalk.yellowBright;
 const PATCH_COLOR = chalk.yellow;
 
 // Given change op and array of diffs, return concatenated string:

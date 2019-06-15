@@ -18,8 +18,8 @@ type Original = {
   b: string;
 };
 
-const fgDelete = chalk.green;
-const fgInsert = chalk.red;
+const fgDelete = chalk.red;
+const fgInsert = chalk.yellowBright;
 const fgCommon = chalk.dim; // common lines (even indentation same)
 const fgIndent = chalk.cyan; // common lines (only indentation different)
 const bgCommon = chalk.bgYellow; // edge spaces in common line (even indentation same)

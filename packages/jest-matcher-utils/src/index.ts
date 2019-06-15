@@ -39,7 +39,7 @@ export type MatcherHintOptions = {
 export {DiffOptions};
 
 export const EXPECTED_COLOR = chalk.green;
-export const RECEIVED_COLOR = chalk.red;
+export const RECEIVED_COLOR = chalk.yellowBright;
 export const INVERTED_COLOR = chalk.inverse;
 export const BOLD_WEIGHT = chalk.bold;
 export const DIM_COLOR = chalk.dim;
