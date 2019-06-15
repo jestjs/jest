@@ -43,7 +43,7 @@ const install = (
 };
 
 const each = (table: Global.EachTable, ...data: Global.TemplateData) =>
-  install(global, table, ...data);
+  install(global as Global, table, ...data);
 
 each.withGlobal = (g: Global) => (
   table: Global.EachTable,
