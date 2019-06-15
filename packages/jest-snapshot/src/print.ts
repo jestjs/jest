@@ -18,7 +18,7 @@ const isLineDiffable = (received: any): boolean => {
   const receivedType = getType(received);
 
   if (isPrimitive(received)) {
-    return false;
+    return typeof received === 'string' && received.includes('\n');
   }
 
   if (
@@ -71,7 +71,11 @@ export const printDiffOrStringified = (
     );
   }
 
-  if (isLineDiffable(received)) {
+  if (
+    expectedSerializedTrimmed.includes('\n') &&
+    receivedSerializedTrimmed.includes('\n') &&
+    isLineDiffable(received)
+  ) {
     return diff(expectedSerializedTrimmed, receivedSerializedTrimmed, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,

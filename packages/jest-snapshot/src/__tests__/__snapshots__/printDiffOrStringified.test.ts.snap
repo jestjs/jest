@@ -144,6 +144,11 @@ exports[`isLineDiffable true object 1`] = `
 <d>  }</>
 `;
 
+exports[`isLineDiffable true single line expected and received 1`] = `
+Snapshot: <g>Array []</>
+Received: <r>Object {}</>
+`;
+
 exports[`multi line small change in one line and other is unchanged 1`] = `
 <g>- Snapshot</>
 <r>+ Received</>

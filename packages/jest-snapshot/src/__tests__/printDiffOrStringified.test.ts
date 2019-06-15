@@ -264,6 +264,15 @@ describe('isLineDiffable', () => {
         testDiffOrStringified(expected, received, false),
       ).toMatchSnapshot();
     });
+
+    test('single line expected and received', () => {
+      const expected = [];
+      const received = {};
+
+      expect(
+        testDiffOrStringified(expected, received, false),
+      ).toMatchSnapshot();
+    });
   });
 });
 
