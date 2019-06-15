@@ -83,4 +83,3 @@ export interface Global extends NodeJS.Global {
   spyOn: () => void;
   spyOnProperty: () => void;
 }
-
