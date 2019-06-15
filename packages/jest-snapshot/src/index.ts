@@ -52,9 +52,6 @@ const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
 const SNAPSHOT_LABEL = 'Snapshot';
 const RECEIVED_LABEL = 'Received';
 
-// The optional property of matcher context is true if undefined.
-const isExpand = (expand?: boolean): boolean => expand !== false;
-
 const HINT_ARG = BOLD_WEIGHT('hint');
 const INLINE_SNAPSHOT_ARG = 'snapshot';
 const PROPERTY_MATCHERS_ARG = 'properties';
@@ -355,7 +352,7 @@ const _toMatchSnapshot = ({
         received,
         SNAPSHOT_LABEL,
         RECEIVED_LABEL,
-        isExpand(snapshotState.expand),
+        snapshotState.expand,
       );
 
     report = () => reported;
