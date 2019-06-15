@@ -10,13 +10,10 @@ import {Config} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 import {MatcherState} from 'expect';
 
-import diff from 'jest-diff';
 import {
   BOLD_WEIGHT,
-  EXPECTED_COLOR,
   matcherHint,
   MatcherHintOptions,
-  printDiffOrStringify,
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
 import {
@@ -27,6 +24,7 @@ import {
 } from './snapshot_resolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
+import {printDiffOrStringified} from './print';
 import * as utils from './utils';
 
 type Context = MatcherState & {
@@ -48,9 +46,6 @@ const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
 const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
   'not',
 )} cannot be used with snapshot matchers`;
-
-const SNAPSHOT_LABEL = 'Snapshot';
-const RECEIVED_LABEL = 'Received';
 
 const HINT_ARG = BOLD_WEIGHT('hint');
 const INLINE_SNAPSHOT_ARG = 'snapshot';
@@ -328,50 +323,25 @@ const _toMatchSnapshot = ({
       `(CI) environment in which snapshots are not written by default.\n\n` +
       `${RECEIVED_COLOR('Received value')} ` +
       `${actual}`;
-  } else if (
-    typeof received === 'string' &&
-    typeof expected === 'string' &&
-    // Does expected snapshot look like a stringified string:
-    expected.length >= 2 &&
-    ((expected.startsWith('"') && expected.endsWith('"')) || // single line
-      (expected.startsWith('\n"') && expected.endsWith('"\n'))) // multi line
-  ) {
-    // Assign to local variable because of declaration let expected:
-    // TypeScript thinks it could change before report function is called.
-    const reported =
-      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` +
-      printDiffOrStringify(
-        // 1. Remove leading and trailing newline if multiple line string.
-        // 2. Remove enclosing double quote marks.
-        // 3. Remove backslash escape preceding backslash here,
-        //    because unescape replaced it only preceding double quote mark.
-        expected
-          .trim()
-          .slice(1, -1)
-          .replace(/\\\\/g, '\\'),
-        received,
-        SNAPSHOT_LABEL,
-        RECEIVED_LABEL,
-        snapshotState.expand,
-      );
-
-    report = () => reported;
   } else {
     expected = (expected || '').trim();
     actual = (actual || '').trim();
-    const diffMessage = diff(expected, actual, {
-      aAnnotation: SNAPSHOT_LABEL,
-      bAnnotation: RECEIVED_LABEL,
-      expand: snapshotState.expand,
-    });
+
+    // Assign to local variable because of declaration let expected:
+    // TypeScript thinks it could change before report function is called.
+    const printed = printDiffOrStringified(
+      expected,
+      actual,
+      received,
+      'Snapshot',
+      'Received',
+      snapshotState.expand,
+    );
 
     report = () =>
-      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` +
-      (diffMessage ||
-        EXPECTED_COLOR('- ' + (expected || '')) +
-          '\n' +
-          RECEIVED_COLOR('+ ' + actual));
+      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` + printed;
   }
+
   // Passing the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
   // or create a different error message
