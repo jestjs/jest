@@ -84,18 +84,3 @@ export interface Global extends NodeJS.Global {
   spyOnProperty: () => void;
 }
 
-declare global {
-  module NodeJS {
-    interface Global {
-      it: It;
-      test: ItConcurrent;
-      fit: ItBase;
-      xit: ItBase;
-      xtest: ItBase;
-      describe: Describe;
-      xdescribe: DescribeBase;
-      fdescribe: DescribeBase;
-      jasmine: Jasmine;
-    }
-  }
-}
