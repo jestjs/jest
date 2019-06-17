@@ -61,7 +61,7 @@ export const printDiffOrStringified = (
       receivedSerializedTrimmed === unescape(prettyFormat(received))
     ) {
       // The expected snapshot looks like a stringified string.
-      // The received string has default serialization.
+      // The received serialization is default stringified string.
 
       // Undo default serialization of expected snapshot:
       // Remove enclosing double quote marks.
