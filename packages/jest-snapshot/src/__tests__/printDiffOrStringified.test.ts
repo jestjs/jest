@@ -17,41 +17,45 @@ import {serialize, unescape} from '../utils';
 // * to align lines, return <d> <g> <r> <y> tags which have same width
 // * to see inline markup, return matching <i> and </i> tags
 // * to see unexpected escape codes, do not return empty string as default
+
+const convertStyles = (val: string): string =>
+  val.replace(ansiRegex(), match => {
+    switch (match) {
+      case style.inverse.open:
+        return '<i>';
+      case style.inverse.close:
+        return '</i>';
+
+      case style.dim.open:
+        return '<d>';
+      case style.green.open:
+        return '<g>';
+      case style.red.open:
+        return '<r>';
+      case style.yellow.open:
+        return '<y>';
+
+      case style.dim.close:
+      case style.green.close:
+      case style.red.close:
+      case style.yellow.close:
+        return '</>';
+
+      default:
+        return match;
+    }
+  });
+
 expect.addSnapshotSerializer({
-  serialize(val: string) {
-    return val.replace(ansiRegex(), match => {
-      switch (match) {
-        case style.inverse.open:
-          return '<i>';
-        case style.inverse.close:
-          return '</i>';
-
-        case style.dim.open:
-          return '<d>';
-        case style.green.open:
-          return '<g>';
-        case style.red.open:
-          return '<r>';
-        case style.yellow.open:
-          return '<y>';
-
-        case style.dim.close:
-        case style.green.close:
-        case style.red.close:
-        case style.yellow.close:
-          return '</>';
-
-        default:
-          return match;
-      }
-    });
+  serialize(val: string): string {
+    return val;
   },
-  test(val: any) {
-    return typeof val === 'string' && !!val.match(ansiRegex());
+  test(val: any): val is string {
+    return typeof val === 'string';
   },
 });
 
-const testDiffOrStringified = (
+const testWithSerialize = (
   expected: any,
   received: any,
   expand: boolean,
@@ -62,29 +66,47 @@ const testDiffOrStringified = (
   const expectedSerializedTrimmed = unescape(serialize(expected)).trim();
   const receivedSerializedTrimmed = unescape(serialize(received)).trim();
 
-  return printDiffOrStringified(
-    expectedSerializedTrimmed,
-    receivedSerializedTrimmed,
-    received,
-    'Snapshot',
-    'Received',
-    expand,
+  return convertStyles(
+    printDiffOrStringified(
+      expectedSerializedTrimmed,
+      receivedSerializedTrimmed,
+      received,
+      'Snapshot',
+      'Received',
+      expand,
+    ),
   );
 };
+
+const testWithoutSerialize = (
+  expected: string,
+  received: string,
+  expand: boolean,
+): string =>
+  convertStyles(
+    printDiffOrStringified(
+      expected,
+      received,
+      received,
+      'Snapshot',
+      'Received',
+      expand,
+    ),
+  );
 
 describe('empty string', () => {
   test('expected and received single line', () => {
     const expected = '';
     const received = 'single line string';
 
-    expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+    expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
   });
 
   test('received and expected multi line', () => {
     const expected = 'multi\nline\nstring';
     const received = '';
 
-    expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+    expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
   });
 });
 
@@ -93,32 +115,33 @@ describe('escape', () => {
     const expected = 'What does "oobleck" mean?';
     const received = 'What does "ewbleck" mean?';
 
-    expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+    expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
   });
 
   test('backslash in multi line string', () => {
     const expected = 'Forward / slash and back \\ slash';
     const received = 'Forward / slash\nBack \\ slash';
 
-    expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+    expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
   });
 
   test('backslash in single line string', () => {
     const expected = 'forward / slash and back \\ slash';
     const received = 'Forward / slash and back \\ slash';
 
-    expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+    expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
   });
 
   test('regexp', () => {
     const expected = /\\(")/g;
     const received = /\\(")/;
 
-    expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+    expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
   });
 });
 
 describe('expand', () => {
+  // prettier/pull/5272
   const expected = [
     'type TypeName<T> =',
     'T extends string ? "string" :',
@@ -163,11 +186,11 @@ describe('expand', () => {
   ].join('\n');
 
   test('false', () => {
-    expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+    expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
   });
 
   test('true', () => {
-    expect(testDiffOrStringified(expected, received, true)).toMatchSnapshot();
+    expect(testWithSerialize(expected, received, true)).toMatchSnapshot();
   });
 });
 
@@ -196,7 +219,7 @@ test('fallback to line diff', () => {
     '================================================================================',
   ].join('\n');
 
-  expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+  expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
 });
 
 describe('isLineDiffable', () => {
@@ -205,18 +228,14 @@ describe('isLineDiffable', () => {
       const expected = true;
       const received = false;
 
-      expect(
-        testDiffOrStringified(expected, received, false),
-      ).toMatchSnapshot();
+      expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
     });
 
     test('number', () => {
       const expected = -0;
       const received = NaN;
 
-      expect(
-        testDiffOrStringified(expected, received, false),
-      ).toMatchSnapshot();
+      expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
     });
   });
 
@@ -237,9 +256,7 @@ describe('isLineDiffable', () => {
         {_id: '7fc63ff01769c4fa7d9279e97e307829', ...expected1},
       ];
 
-      expect(
-        testDiffOrStringified(expected, received, false),
-      ).toMatchSnapshot();
+      expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
     });
 
     test('object', () => {
@@ -260,18 +277,14 @@ describe('isLineDiffable', () => {
         type,
       };
 
-      expect(
-        testDiffOrStringified(expected, received, false),
-      ).toMatchSnapshot();
+      expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
     });
 
     test('single line expected and received', () => {
       const expected = [];
       const received = {};
 
-      expect(
-        testDiffOrStringified(expected, received, false),
-      ).toMatchSnapshot();
+      expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
     });
   });
 });
@@ -282,7 +295,7 @@ test('multi line small change in one line and other is unchanged', () => {
   const received =
     "There is no route defined for key Settings.\nMust be one of: 'Home'";
 
-  expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+  expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
 });
 
 test('multi line small changes', () => {
@@ -307,12 +320,45 @@ test('multi line small changes', () => {
     '    at Object.doesNotThrow (__tests__/assertionError.test.js:70:10)',
   ].join('\n');
 
-  expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+  expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
 });
 
 test('single line large changes', () => {
   const expected = 'Array length must be a finite positive integer';
   const received = 'Invalid array length';
 
-  expect(testDiffOrStringified(expected, received, false)).toMatchSnapshot();
+  expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
+});
+
+describe('without serialize', () => {
+  test('prettier/pull/5590', () => {
+    const expected = [
+      '====================================options=====================================',
+      'parsers: ["html"]',
+      'printWidth: 80',
+      '                                                                                | printWidth',
+      '=====================================input======================================',
+      `<img src="test.png" alt='John "ShotGun" Nelson'>`,
+      '',
+      '=====================================output=====================================',
+      '<img src="test.png" alt="John &quot;ShotGun&quot; Nelson" />',
+      '',
+      '================================================================================',
+    ].join('\n');
+    const received = [
+      '====================================options=====================================',
+      'parsers: ["html"]',
+      'printWidth: 80',
+      '                                                                                | printWidth',
+      '=====================================input======================================',
+      `<img src="test.png" alt='John "ShotGun" Nelson'>`,
+      '',
+      '=====================================output=====================================',
+      `<img src="test.png" alt='John "ShotGun" Nelson' />`,
+      '',
+      '================================================================================',
+    ].join('\n');
+
+    expect(testWithoutSerialize(expected, received, false)).toMatchSnapshot();
+  });
 });

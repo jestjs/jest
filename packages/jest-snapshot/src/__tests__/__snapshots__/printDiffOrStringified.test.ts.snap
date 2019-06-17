@@ -183,3 +183,19 @@ exports[`single line large changes 1`] = `
 Snapshot: <g>"<i>A</i>rray length<i> must be a finite positive integer</i>"</>
 Received: <r>"<i>Invalid a</i>rray length"</>
 `;
+
+exports[`without serialize prettier/pull/5590 1`] = `
+<g>- Snapshot</>
+<r>+ Received</>
+
+<y>@@ -4,8 +4,8 @@</>
+<d>                                                                                  | printWidth</>
+<d>  =====================================input======================================</>
+<d>  <img src="test.png" alt='John "ShotGun" Nelson'></>
+
+<d>  =====================================output=====================================</>
+<g>- <img src="test.png" alt=<i>"</i>John <i>&quot;</i>ShotGun<i>&quot;</i> Nelson<i>"</i> /></>
+<r>+ <img src="test.png" alt=<i>'</i>John <i>"</i>ShotGun<i>"</i> Nelson<i>'</i> /></>
+
+<d>  ================================================================================</>
+`;
