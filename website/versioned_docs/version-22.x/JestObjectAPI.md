@@ -371,7 +371,7 @@ test('moduleName 2', () => {
 Using `jest.doMock()` with ES6 modules requires additional steps:
 
 - We have to specify the `__esModule: true` property (see the [`jest.mock()`](#jestmockmodulename-factory-options) API for more information).
-- Static ES6 module imports can only appear at the top of the file, so instead we have to import them dynamically using `import()`.
+- Static ES6 module imports are hoisted to the top of the file, so instead we have to import them dynamically using `import()`.
 - Finally, we need an environment which supports dynamic importing. Please see [Using Babel](GettingStarted.md#using-babel) for the initial setup. Then add the plugin [babel-plugin-dynamic-import-node](https://www.npmjs.com/package/babel-plugin-dynamic-import-node), or an equivalent, to your Babel config to enable dynamic importing in Node.
 
 ```js
