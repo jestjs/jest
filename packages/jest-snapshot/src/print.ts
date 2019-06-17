@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff from 'jest-diff';
+import diff, {getStringDiff} from 'jest-diff';
 import getType, {isPrimitive} from 'jest-get-type';
 import {
   EXPECTED_COLOR,
@@ -76,14 +76,33 @@ export const printDiffOrStringified = (
       );
     }
 
-    // Also display diff if strings have application-specific serialization:
-    return printDiffOrStringify(
+    // Display substring highlight even when strings have custom serialization.
+    const result = getStringDiff(
       expectedSerializedTrimmed,
       receivedSerializedTrimmed,
-      expectedLabel,
-      receivedLabel,
-      expand,
+      {
+        aAnnotation: expectedLabel,
+        bAnnotation: receivedLabel,
+        expand,
+      },
     );
+
+    if (result !== null) {
+      if (result.isMultiline) {
+        return result.annotatedDiff;
+      }
+
+      // Because not default stringify, call EXPECTED_COLOR and RECEIVED_COLOR
+      // This is reason to call getStringDiff instead of printDiffOrStringify
+      const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+      return (
+        printLabel(expectedLabel) +
+        EXPECTED_COLOR(result.a) +
+        '\n' +
+        printLabel(receivedLabel) +
+        RECEIVED_COLOR(result.b)
+      );
+    }
   }
 
   if (
