@@ -13,6 +13,8 @@ import {
   getLabelPrinter,
   printDiffOrStringify,
 } from 'jest-matcher-utils';
+import prettyFormat from 'pretty-format';
+import {unescape} from './utils';
 
 const isLineDiffable = (received: any): boolean => {
   const receivedType = getType(received);
@@ -51,20 +53,33 @@ export const printDiffOrStringified = (
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
 ): string => {
-  if (
-    typeof received === 'string' &&
-    // Does expected snapshot look like a stringified string:
-    expectedSerializedTrimmed.length >= 2 &&
-    expectedSerializedTrimmed.startsWith('"') &&
-    expectedSerializedTrimmed.endsWith('"')
-  ) {
-    // 0. Assume leading and trailing newline has been trimmed.
-    // 1. Remove enclosing double quote marks.
-    // 2. Remove backslash escape preceding backslash here,
-    //    because unescape replaced it only preceding double quote mark.
+  if (typeof received === 'string') {
+    if (
+      expectedSerializedTrimmed.length >= 2 &&
+      expectedSerializedTrimmed.startsWith('"') &&
+      expectedSerializedTrimmed.endsWith('"') &&
+      receivedSerializedTrimmed === unescape(prettyFormat(received))
+    ) {
+      // The expected snapshot looks like a stringified string.
+      // The received string has default serialization.
+
+      // Undo default serialization of expected snapshot:
+      // Remove enclosing double quote marks.
+      // Remove backslash escape preceding backslash here,
+      // because unescape replaced it only preceding double quote mark.
+      return printDiffOrStringify(
+        expectedSerializedTrimmed.slice(1, -1).replace(/\\\\/g, '\\'),
+        received,
+        expectedLabel,
+        receivedLabel,
+        expand,
+      );
+    }
+
+    // Also display diff if strings have application-specific serialization:
     return printDiffOrStringify(
-      expectedSerializedTrimmed.slice(1, -1).replace(/\\\\/g, '\\'),
-      received,
+      expectedSerializedTrimmed,
+      receivedSerializedTrimmed,
       expectedLabel,
       receivedLabel,
       expand,
