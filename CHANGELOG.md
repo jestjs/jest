@@ -20,6 +20,7 @@
 - `[jest-leak-detector]` remove code repeat ([#8438](https://github.com/facebook/jest/pull/8438)
 - `[docs]` Add example to `jest.requireActual` ([#8482](https://github.com/facebook/jest/pull/8482)
 - `[docs]` Add example to `jest.mock` for mocking ES6 modules with the `factory` parameter ([#8550](https://github.com/facebook/jest/pull/8550))
+- `[docs]` Add information about using `jest.doMock` with ES6 modules ([#8573](https://github.com/facebook/jest/pull/8573))
 
 ### Performance
 
