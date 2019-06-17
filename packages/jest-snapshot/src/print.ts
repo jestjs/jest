@@ -72,8 +72,8 @@ export const printDiffOrStringified = (
   }
 
   if (
-    expectedSerializedTrimmed.includes('\n') &&
-    receivedSerializedTrimmed.includes('\n') &&
+    (expectedSerializedTrimmed.includes('\n') ||
+      receivedSerializedTrimmed.includes('\n')) &&
     isLineDiffable(received)
   ) {
     return diff(expectedSerializedTrimmed, receivedSerializedTrimmed, {
