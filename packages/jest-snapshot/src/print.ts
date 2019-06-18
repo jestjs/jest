@@ -94,6 +94,8 @@ export const printDiffOrStringified = (
 
       // Because not default stringify, call EXPECTED_COLOR and RECEIVED_COLOR
       // This is reason to call getStringDiff instead of printDiffOrStringify
+      // Because there is no closing double quote mark at end of single lines,
+      // future improvement is to call replaceSpacesAtEnd if it becomes public.
       const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
       return (
         printLabel(expectedLabel) +
