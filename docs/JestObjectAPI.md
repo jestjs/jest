@@ -333,7 +333,7 @@ test('moduleName 1', () => {
       foo: 'foo1',
     };
   });
-  import('../moduleName').then(moduleName => {
+  return import('../moduleName').then(moduleName => {
     expect(moduleName.default).toEqual('default1');
     expect(moduleName.foo).toEqual('foo1');
   });
@@ -347,7 +347,7 @@ test('moduleName 2', () => {
       foo: 'foo2',
     };
   });
-  import('../moduleName').then(moduleName => {
+  return import('../moduleName').then(moduleName => {
     expect(moduleName.default).toEqual('default2');
     expect(moduleName.foo).toEqual('foo2');
   });
