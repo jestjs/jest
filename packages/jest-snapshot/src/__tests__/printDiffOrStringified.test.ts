@@ -94,6 +94,15 @@ const testWithoutSerialize = (
     ),
   );
 
+describe('backtick', () => {
+  test('single line expected and received', () => {
+    const expected = 'var foo = `backtick`;';
+    const received = 'var foo = tag`backtick`;';
+
+    expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
+  });
+});
+
 describe('empty string', () => {
   test('expected and received single line', () => {
     const expected = '';
@@ -286,6 +295,13 @@ describe('isLineDiffable', () => {
 
       expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
     });
+
+    test('single line expected and multi line received', () => {
+      const expected = [];
+      const received = [0];
+
+      expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
+    });
   });
 });
 
@@ -331,6 +347,20 @@ test('single line large changes', () => {
 });
 
 describe('without serialize', () => {
+  test('backtick single line expected and received', () => {
+    const expected = 'var foo = `backtick`;';
+    const received = 'var foo = `back${x}tick`;';
+
+    expect(testWithoutSerialize(expected, received, false)).toMatchSnapshot();
+  });
+
+  test('backtick single line expected and multi line received', () => {
+    const expected = 'var foo = `backtick`;';
+    const received = 'var foo = `back\ntick`;';
+
+    expect(testWithoutSerialize(expected, received, false)).toMatchSnapshot();
+  });
+
   test('prettier/pull/5590', () => {
     const expected = [
       '====================================options=====================================',

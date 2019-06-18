@@ -1,5 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`backtick single line expected and received 1`] = `
+Snapshot: <g>"var foo = \`backtick\`;"</>
+Received: <r>"var foo = <i>tag</i>\`backtick\`;"</>
+`;
+
 exports[`empty string expected and received single line 1`] = `
 Snapshot: <g>""</>
 Received: <r>"single line string"</>
@@ -144,6 +149,16 @@ exports[`isLineDiffable true object 1`] = `
 <d>  }</>
 `;
 
+exports[`isLineDiffable true single line expected and multi line received 1`] = `
+<g>- Snapshot</>
+<r>+ Received</>
+
+<g>- Array []</>
+<r>+ Array [</>
+<r>+   0,</>
+<r>+ ]</>
+`;
+
 exports[`isLineDiffable true single line expected and received 1`] = `
 Snapshot: <g>Array []</>
 Received: <r>Object {}</>
@@ -182,6 +197,20 @@ exports[`multi line small changes 1`] = `
 exports[`single line large changes 1`] = `
 Snapshot: <g>"<i>A</i>rray length<i> must be a finite positive integer</i>"</>
 Received: <r>"<i>Invalid a</i>rray length"</>
+`;
+
+exports[`without serialize backtick single line expected and multi line received 1`] = `
+<g>- Snapshot</>
+<r>+ Received</>
+
+<g>- var foo = \`backtick\`;</>
+<r>+ var foo = \`back</>
+<r>+ tick\`;</>
+`;
+
+exports[`without serialize backtick single line expected and received 1`] = `
+Snapshot: <g>var foo = \`backtick\`;</>
+Received: <r>var foo = \`back<i>\${x}</i>tick\`;</>
 `;
 
 exports[`without serialize prettier/pull/5590 1`] = `
