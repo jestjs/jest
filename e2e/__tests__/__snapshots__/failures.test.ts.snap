@@ -790,11 +790,8 @@ FAIL __tests__/snapshot.test.js
 
     Snapshot name: \`failing snapshot 1\`
 
-    - Snapshot
-    + Received
-
-    - "bar"
-    + "foo"
+    Snapshot: "bar"
+    Received: "foo"
 
        9 | 
       10 | test('failing snapshot', () => {
@@ -819,11 +816,8 @@ FAIL __tests__/snapshotWithHint.test.js
 
     Snapshot name: \`failing snapshot with hint: descriptive hint 1\`
 
-    - Snapshot
-    + Received
-
-    - "bar"
-    + "foo"
+    Snapshot: "bar"
+    Received: "foo"
 
        9 | 
       10 | test('failing snapshot with hint', () => {
