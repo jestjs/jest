@@ -314,7 +314,7 @@ test('moduleName 2', () => {
 });
 ```
 
-Using `jest.doMock()` with ES6 modules requires additional steps:
+Using `jest.doMock()` with ES6 imports requires additional steps. Follow these if you don't want to use `require` in your tests:
 
 - We have to specify the `__esModule: true` property (see the [`jest.mock()`](#jestmockmodulename-factory-options) API for more information).
 - Static ES6 module imports are hoisted to the top of the file, so instead we have to import them dynamically using `import()`.
