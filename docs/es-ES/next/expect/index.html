@@ -260,13 +260,13 @@ expect.extend({
           <span class="hljs-string">`Expected: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
           <span class="hljs-string">`Received: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>
       : <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-          <span class="hljs-keyword">const</span> difference = diff(expected, received, {
+          <span class="hljs-keyword">const</span> diffString = diff(expected, received, {
             <span class="hljs-attr">expand</span>: <span class="hljs-keyword">this</span>.expand,
           });
           <span class="hljs-keyword">return</span> (
             <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'toBe'</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, options) +
             <span class="hljs-string">'\n\n'</span> +
-            (difference &amp;&amp; difference.includes(<span class="hljs-string">'- Expect'</span>)
+            (diffString &amp;&amp; diffString.includes(<span class="hljs-string">'- Expect'</span>)
               ? <span class="hljs-string">`Difference:\n\n<span class="hljs-subst">${diffString}</span>`</span>
               : <span class="hljs-string">`Expected: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
                 <span class="hljs-string">`Received: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>)
