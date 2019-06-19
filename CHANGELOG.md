@@ -383,6 +383,7 @@
 - `[docs]` Add example to `jest.mock` for mocking ES6 modules with the `factory` parameter ([#8550](https://github.com/facebook/jest/pull/8550))
 - `[docs]` Add information about using `jest.doMock` with ES6 imports ([#8573](https://github.com/facebook/jest/pull/8573))
 - `[docs]` Fix variable name in custom-matcher-api code example ([#8582](https://github.com/facebook/jest/pull/8582))
+<<<<<<< HEAD
 - `[docs]` Fix example used in custom environment docs ([#8617](https://github.com/facebook/jest/pull/8617))
 - `[docs]` Updated react tutorial to refer to new package of react-testing-library (@testing-library/react) ([#8753](https://github.com/facebook/jest/pull/8753))
 - `[docs]` Updated imports of react-testing-library to @testing-library/react in website ([#8757](https://github.com/facebook/jest/pull/8757))
@@ -394,6 +395,9 @@
 - `[*]` Enforce LF line endings ([#8809](https://github.com/facebook/jest/pull/8809))
 - `[pretty-format]` Delete obsolete link and simplify structure in README ([#8824](https://github.com/facebook/jest/pull/8824))
 - `[docs]` Fix broken transform link on webpack page ([#9155](https://github.com/facebook/jest/pull/9155))
+=======
+- `[docs]` Added default compiler to tranform ([#8583](https://github.com/facebook/jest/pull/8583))
+>>>>>>> Updated change log for #8583
 
 ### Performance
 
