@@ -172,13 +172,13 @@ expect.extend({
           `Expected: ${this.utils.printExpected(expected)}\n` +
           `Received: ${this.utils.printReceived(received)}`
       : () => {
-          const difference = diff(expected, received, {
+          const diffString = diff(expected, received, {
             expand: this.expand,
           });
           return (
             this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
-            (difference && difference.includes('- Expect')
+            (diffString && diffString.includes('- Expect')
               ? `Difference:\n\n${diffString}`
               : `Expected: ${this.utils.printExpected(expected)}\n` +
                 `Received: ${this.utils.printReceived(received)}`)

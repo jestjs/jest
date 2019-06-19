@@ -22,6 +22,7 @@
 - `[docs]` Add example to `jest.requireActual` ([#8482](https://github.com/facebook/jest/pull/8482)
 - `[docs]` Add example to `jest.mock` for mocking ES6 modules with the `factory` parameter ([#8550](https://github.com/facebook/jest/pull/8550))
 - `[docs]` Add information about using `jest.doMock` with ES6 imports ([#8573](https://github.com/facebook/jest/pull/8573))
+- `[docs]` Fix variable name in custom-matcher-api code example ([#8582](https://github.com/facebook/jest/pull/8582))
 
 ### Performance
 
