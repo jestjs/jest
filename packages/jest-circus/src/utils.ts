@@ -250,7 +250,11 @@ const makeTestResults = (
   let testResults: Circus.TestResults = [];
   for (const test of describeBlock.tests) {
     const testPath = [];
-    let parent: Circus.TestEntry | Circus.DescribeBlock = test;
+    let parent:
+      | Circus.TestEntry
+      | Circus.DescribeBlock
+      | undefined
+      | null = test;
     do {
       testPath.unshift(parent.name);
     } while ((parent = parent.parent));
@@ -298,7 +302,7 @@ const makeTestResults = (
 // names + test title)
 export const getTestID = (test: Circus.TestEntry) => {
   const titles = [];
-  let parent: Circus.TestEntry | Circus.DescribeBlock = test;
+  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined | null = test;
   do {
     titles.unshift(parent.name);
   } while ((parent = parent.parent));
