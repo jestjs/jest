@@ -36,6 +36,48 @@ Button.defaultProps = {
   target: '_self',
 };
 
+const Sponsor = ({
+  fromAccount: {name, slug, website, imageUrl},
+  totalDonations,
+}) => (
+  <a
+    key={slug}
+    className="sponsor-item"
+    title={`$${totalDonations.value} by ${name || slug}`}
+    target="_blank"
+    href={website || `https://opencollective.com/${slug}`}
+  >
+    {
+      <img
+        className="sponsor-avatar"
+        src={imageUrl}
+        alt={name || slug ? `${name || slug}'s avatar` : 'avatar'}
+      />
+    }
+  </a>
+);
+
+const Backer = ({
+  fromAccount: {name, slug, website, imageUrl},
+  totalDonations,
+}) => (
+  <a
+    key={slug}
+    className="backer-item"
+    title={`$${totalDonations.value} by ${name || slug}`}
+    target="_blank"
+    href={website || `https://opencollective.com/${slug}`}
+  >
+    {
+      <img
+        className="backer-avatar"
+        src={imageUrl}
+        alt={name || slug ? `${name || slug}'s avatar` : 'avatar'}
+      />
+    }
+  </a>
+);
+
 class Contributors extends React.Component {
   render() {
     return (
@@ -50,28 +92,8 @@ class Contributors extends React.Component {
         </p>
         <div>
           {backers
-            .filter(b => b.tier === 'sponsor')
-            .map(b => (
-              <a
-                key={b.id}
-                className="sponsor-item"
-                title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
-                target="_blank"
-                href={b.website || `https://opencollective.com/${b.slug}`}
-              >
-                {
-                  <img
-                    className="sponsor-avatar"
-                    src={b.avatar + '&width=96'}
-                    alt={
-                      b.name || b.slug
-                        ? `${b.name || b.slug}'s avatar`
-                        : 'avatar'
-                    }
-                  />
-                }
-              </a>
-            ))}
+            .filter(b => b.tier && b.tier.slug === 'sponsor')
+            .map(Sponsor)}
         </div>
         <h3>
           <translate>Backers</translate>
@@ -83,28 +105,13 @@ class Contributors extends React.Component {
         </p>
         <div>
           {backers
-            .filter(b => b.tier === 'backer' && !b.slug.includes('adult'))
-            .map(b => (
-              <a
-                key={b.id}
-                className="backer-item"
-                title={`$${b.totalDonations / 100} by ${b.name || b.slug}`}
-                target="_blank"
-                href={b.website || `https://opencollective.com/${b.slug}`}
-              >
-                {
-                  <img
-                    className="backer-avatar"
-                    src={b.avatar + '&width=96'}
-                    alt={
-                      b.name || b.slug
-                        ? `${b.name || b.slug}'s avatar`
-                        : 'avatar'
-                    }
-                  />
-                }
-              </a>
-            ))}
+            .filter(
+              b =>
+                b.tier &&
+                b.tier.slug === 'backer' &&
+                !b.fromAccount.slug.includes('adult')
+            )
+            .map(Backer)}
         </div>
       </div>
     );
