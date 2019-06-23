@@ -39,6 +39,7 @@ const defaultOptions: Config.DefaultOptions = {
     providesModuleNodeModules: [],
     throwOnModuleCollision: false,
   },
+  maxWorkers: '50%',
   maxConcurrency: 5,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],

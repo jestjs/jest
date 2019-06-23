@@ -6,8 +6,8 @@
  */
 
 import {ValidationOptions} from './types';
-
 import defaultConfig from './defaultConfig';
+import {ValidationError} from './utils';
 
 let hasDeprecationWarnings = false;
 
@@ -46,6 +46,21 @@ const _validate = (
       );
 
       hasDeprecationWarnings = hasDeprecationWarnings || isDeprecatedKey;
+    } else if (allowsMultipleTypes(key)) {
+      const value = config[key];
+
+      if (
+        typeof options.condition === 'function' &&
+        typeof options.error === 'function'
+      ) {
+        if (key === 'maxWorkers' && !isOfTypeStringOrNumber(value)) {
+          throw new ValidationError(
+            'Validation Error',
+            `${key} has to be of type string or number`,
+            `maxWorkers=50% or\nmaxWorkers=3`,
+          );
+        }
+      }
     } else if (Object.hasOwnProperty.call(exampleConfig, key)) {
       if (
         typeof options.condition === 'function' &&
@@ -75,6 +90,10 @@ const _validate = (
 
   return {hasDeprecationWarnings};
 };
+
+const allowsMultipleTypes = (key: string): boolean => key === 'maxWorkers';
+const isOfTypeStringOrNumber = (value: any): boolean =>
+  typeof value === 'number' || typeof value === 'string';
 
 const validate = (config: Record<string, any>, options: ValidationOptions) => {
   hasDeprecationWarnings = false;

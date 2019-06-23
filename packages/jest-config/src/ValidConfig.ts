@@ -63,6 +63,7 @@ const initialOptions: Config.InitialOptions = {
   lastCommit: false,
   logHeapUsage: true,
   maxConcurrency: 5,
+  maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleLoader: '<rootDir>',

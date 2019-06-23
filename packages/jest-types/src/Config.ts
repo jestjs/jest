@@ -55,6 +55,7 @@ export type DefaultOptions = {
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
+  maxWorkers: number | string;
   maxConcurrency: number;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
@@ -156,6 +157,7 @@ export type InitialOptions = {
   listTests?: boolean;
   mapCoverage?: boolean;
   maxConcurrency?: number;
+  maxWorkers: number | string;
   moduleDirectories?: Array<string>;
   moduleFileExtensions?: Array<string>;
   moduleLoader?: Path;

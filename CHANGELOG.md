@@ -7,6 +7,7 @@
 - `[jest-cli]` Improve chai support (with detailed output, to match jest exceptions) ([#8454](https://github.com/facebook/jest/pull/8454))
 - `[*]` Manage the global timeout with `--testTimeout` command line argument. ([#8456](https://github.com/facebook/jest/pull/8456))
 - `[pretty-format]` Render custom displayName of memoized components
+- `[jest-validate]` Allow `maxWorkers` as part of the `jest.config.js` ([#8565](https://github.com/facebook/jest/pull/8565))
 
 ### Fixes
 
