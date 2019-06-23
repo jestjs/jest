@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+
 import getNoTestsFoundMessage from '../getNoTestsFoundMessage';
 
 describe('getNoTestsFoundMessage', () => {
