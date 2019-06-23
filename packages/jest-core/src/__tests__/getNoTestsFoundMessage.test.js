@@ -28,4 +28,9 @@ describe('getNoTestsFoundMessage', () => {
     const config = createGlobalConfig();
     expect(getNoTestsFoundMessage([], config)).toMatchSnapshot();
   });
+
+  test('returns correct message with passWithNoTests', () => {
+    const config = createGlobalConfig({passWithNoTests: true});
+    expect(getNoTestsFoundMessage([], config)).toMatchSnapshot();
+  });
 });

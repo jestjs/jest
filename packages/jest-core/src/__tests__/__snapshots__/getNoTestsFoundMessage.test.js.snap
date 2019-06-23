@@ -7,6 +7,8 @@ exports[`getNoTestsFoundMessage returns correct message when monitoring only fai
 <bold></><dim>Press \`f\` to quit \\"only failed tests\\" mode.</>"
 `;
 
+exports[`getNoTestsFoundMessage returns correct message with passWithNoTests 1`] = `"<bold>No tests found, exiting with code 0</>"`;
+
 exports[`getNoTestsFoundMessage returns correct message with verbose option 1`] = `
 "<bold>No tests found, exiting with code 1</>
 Run with \`--passWithNoTests\` to exit with code 0
