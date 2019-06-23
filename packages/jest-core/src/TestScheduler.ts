@@ -73,7 +73,7 @@ export default class TestScheduler {
   async scheduleTests(tests: Array<Test>, watcher: TestWatcher) {
     const onStart = this._dispatcher.onTestStart.bind(this._dispatcher);
     const timings: Array<number> = [];
-    const contexts = new Set();
+    const contexts = new Set<Context>();
     tests.forEach(test => {
       contexts.add(test.context);
       if (test.duration) {

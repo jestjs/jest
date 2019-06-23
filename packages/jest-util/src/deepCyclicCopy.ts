@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const EMPTY = new Set();
+const EMPTY = new Set<string>();
 
 export type DeepCyclicCopyOptions = {
   blacklist?: Set<string>;
