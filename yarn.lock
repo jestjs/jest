@@ -1944,7 +1944,7 @@
   dependencies:
     "@types/ci-info" "*"
 
-"@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
+"@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.1.tgz#42995b446db9a48a11a07ec083499a860e9138ff"
   integrity sha512-hRJD2ahnnpLgsj6KWMYSrmXkM3rm2Dl1qkx6IOFD5FnuNPXJIG5L0dhgKXCYTRMGzU4n0wImQ/xfmRc4POUFlg==
@@ -4340,7 +4340,7 @@ conventional-recommended-bump@^5.0.0:
     meow "^4.0.0"
     q "^1.5.1"
 
-convert-source-map@^1.4.0, convert-source-map@^1.7.0:
+convert-source-map@^1.4.0, convert-source-map@^1.6.0, convert-source-map@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.7.0.tgz#17a2cb882d7f77d3490585e2ce6c524424a3a442"
   integrity sha512-4FJkXzKXEDB1snCFZlLP4gpC3JILicCpGbzG9f9G7tGqGCzETQ2hWPrcinA9oU4wtf2biUaEH5065UnMeR33oA==
@@ -8212,10 +8212,10 @@ istanbul-lib-source-maps@^4.0.0-alpha.4:
     istanbul-lib-coverage "^3.0.0-alpha.1"
     source-map "^0.6.1"
 
-istanbul-reports@^3.0.0-alpha.4:
-  version "3.0.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/istanbul-reports/-/istanbul-reports-3.0.0-alpha.4.tgz#f703c04cc76b27e89b88c4fa74efec7865582e73"
-  integrity sha512-TPIUdttWC1oUvTL163ZtS0FqTlYaaAQBQdlVpF9Enu+w6oPOUR0p//WRdRyT/hbDG83PoQoSyatYzV6FrICDKg==
+istanbul-reports@^3.0.0-alpha.5:
+  version "3.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/istanbul-reports/-/istanbul-reports-3.0.0-alpha.5.tgz#e8eb61c0bfdc46cbac5857482c6fa40481c5068b"
+  integrity sha512-m70NY8mnytN+e3C/UN8xVZ3OXcWBT+yVtupNdYy7X/nCiSHV7O4ImojikbQ+EgqvKO6JaG+Qowk9lBq9j2pjbA==
   dependencies:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0-alpha.1"
@@ -14139,6 +14139,15 @@ v8-compile-cache@^2.0.3:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.1.0.tgz#e14de37b31a6d194f5690d67efc4e7f6fc6ab30e"
   integrity sha512-usZBT3PW+LOjM25wbqIlZwPeJV+3OSz3M1k1Ws8snlW39dZyYL9lOGC5FgPVHfk0jKmjiDV8Z0mIbVQPiwFs7g==
+
+v8-to-istanbul@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/v8-to-istanbul/-/v8-to-istanbul-4.0.0.tgz#6d420f519e82a5f9a74f2b7275ba9263e19ab80e"
+  integrity sha512-UqOveasq5AAXnhBo7Wg+PQUkNvCEOoocECuR6DA9CxfHEcCz24vnjH0lgeFGLVpGk12XEy8xup/MFBjxT6POrQ==
+  dependencies:
+    "@types/istanbul-lib-coverage" "^2.0.1"
+    convert-source-map "^1.6.0"
+    source-map "^0.7.3"
 
 validate-npm-package-license@^3.0.1, validate-npm-package-license@^3.0.3:
   version "3.0.4"

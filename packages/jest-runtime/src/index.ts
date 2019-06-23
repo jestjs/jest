@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {Script} from 'vm';
+import {fileURLToPath} from 'url';
 import {Config} from '@jest/types';
 import {
   Jest,
@@ -26,16 +27,28 @@ import Snapshot = require('jest-snapshot');
 import {
   ScriptTransformer,
   ShouldInstrumentOptions,
+  TransformResult,
   TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
+import {CoverageInstrumenter, V8Coverage} from '@jest/coverage';
 import * as fs from 'graceful-fs';
 import stripBOM = require('strip-bom');
+import libCoverage = require('istanbul-lib-coverage');
+import v8toIstanbul = require('v8-to-istanbul');
+import {RawSourceMap} from 'source-map';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
 import {Context as JestContext} from './types';
+
+// This is fixed in a newer version, but that depends on Node 8 which is a
+// breaking change (engine warning when installing)
+interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
+  version: number;
+  file: string;
+}
 
 type HasteMapOptions = {
   console?: Console;
@@ -111,6 +124,9 @@ class Runtime {
   private _shouldUnmockTransitiveDependenciesCache: BooleanObject;
   private _sourceMapRegistry: SourceMapRegistry;
   private _scriptTransformer: ScriptTransformer;
+  private _fileTransforms: Map<string, TransformResult>;
+  private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
+  private _v8CoverageResult: V8Coverage | undefined;
   private _transitiveShouldMock: BooleanObject;
   private _unmockList: RegExp | undefined;
   private _virtualMocks: BooleanObject;
@@ -129,6 +145,7 @@ class Runtime {
       collectCoverage: false,
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: undefined,
+      v8Coverage: false,
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
@@ -147,6 +164,7 @@ class Runtime {
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = Object.create(null);
+    this._fileTransforms = new Map();
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
@@ -494,6 +512,7 @@ class Runtime {
       collectCoverage: this._coverageOptions.collectCoverage,
       collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
       collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
+      v8Coverage: this._coverageOptions.v8Coverage,
     };
   }
 
@@ -560,8 +579,79 @@ class Runtime {
     }
   }
 
-  getAllCoverageInfoCopy() {
+  async collectV8Coverage() {
+    this._v8CoverageInstrumenter = new CoverageInstrumenter();
+
+    await this._v8CoverageInstrumenter.startInstrumenting();
+  }
+
+  async stopCollectingV8Coverage() {
+    if (!this._v8CoverageInstrumenter) {
+      throw new Error('You need to call `collectV8Coverage` first.');
+    }
+    this._v8CoverageResult = await this._v8CoverageInstrumenter.stopInstrumenting();
+  }
+
+  async getAllCoverageInfoCopy() {
+    if (this._v8CoverageResult) {
+      return this._mapV8CoverageToIstanbul();
+    }
     return deepCyclicCopy(this._environment.global.__coverage__);
+  }
+
+  private async _mapV8CoverageToIstanbul() {
+    if (!this._v8CoverageResult) {
+      throw new Error('You need to `stopCollectingV8Coverage` first');
+    }
+    const filtered = this._v8CoverageResult
+      .filter(res => res.url.startsWith('file://'))
+      .map(res => ({...res, url: fileURLToPath(res.url)}))
+      .filter(res => this._fileTransforms.has(res.url))
+      .filter(res =>
+        shouldInstrument(res.url, this._coverageOptions, this._config),
+      );
+
+    const result = await Promise.all(
+      filtered.map(async res => {
+        // this is safe since we filter out those missing this above
+        const istanbulStuff = this._fileTransforms.get(res.url)!;
+
+        let sourcemapContent: FixedRawSourceMap | undefined = undefined;
+
+        if (
+          istanbulStuff.sourceMapPath &&
+          fs.existsSync(istanbulStuff.sourceMapPath)
+        ) {
+          sourcemapContent = JSON.parse(
+            fs.readFileSync(istanbulStuff.sourceMapPath, 'utf8'),
+          );
+        }
+
+        const converter = v8toIstanbul(
+          res.url,
+          istanbulStuff.scriptWrapperLength,
+          sourcemapContent
+            ? {
+                originalSource: istanbulStuff.rawContent,
+                source: istanbulStuff.scriptContent,
+                sourceMap: {sourcemap: sourcemapContent},
+              }
+            : {source: istanbulStuff.scriptContent},
+        );
+
+        await converter.load();
+
+        converter.applyCoverage(res.functions);
+
+        return converter.toIstanbul();
+      }),
+    );
+
+    const map = libCoverage.createCoverageMap({});
+
+    result.forEach(res => map.merge(res));
+
+    return map.toJSON();
   }
 
   getSourceMapInfo(coveredFiles: Set<string>) {
@@ -722,6 +812,8 @@ class Runtime {
       this._getFullTransformationOptions(options),
       this._cacheFS[filename],
     );
+
+    this._fileTransforms.set(filename, transformedFile);
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;

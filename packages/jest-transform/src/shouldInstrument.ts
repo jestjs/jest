@@ -21,7 +21,7 @@ export default function shouldInstrument(
   options: ShouldInstrumentOptions,
   config: Config.ProjectConfig,
 ): boolean {
-  if (!options.collectCoverage) {
+  if (!options.collectCoverage && !options.v8Coverage) {
     return false;
   }
 

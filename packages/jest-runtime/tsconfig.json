@@ -7,6 +7,7 @@
   "references": [
     {"path": "../jest-config"},
     {"path": "../jest-console"},
+    {"path": "../jest-coverage"},
     {"path": "../jest-environment"},
     {"path": "../jest-environment-node"},
     {"path": "../jest-haste-map"},

@@ -157,6 +157,7 @@ async function runTestInternal(
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+    v8Coverage: globalConfig.v8Coverage,
   });
 
   const start = Date.now();
@@ -224,6 +225,9 @@ async function runTestInternal(
     let result: TestResult;
 
     try {
+      if (globalConfig.v8Coverage) {
+        await runtime.collectV8Coverage();
+      }
       result = await testFramework(
         globalConfig,
         config,
@@ -231,6 +235,10 @@ async function runTestInternal(
         runtime,
         path,
       );
+
+      if (globalConfig.v8Coverage) {
+        await runtime.stopCollectingV8Coverage();
+      }
     } catch (err) {
       // Access stack before uninstalling sourcemaps
       err.stack;
@@ -252,7 +260,7 @@ async function runTestInternal(
     result.skipped = testCount === result.numPendingTests;
     result.displayName = config.displayName;
 
-    const coverage = runtime.getAllCoverageInfoCopy();
+    const coverage = await runtime.getAllCoverageInfoCopy();
     if (coverage) {
       const coverageKeys = Object.keys(coverage);
       if (coverageKeys.length) {

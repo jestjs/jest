@@ -373,6 +373,7 @@ export default class ScriptTransformer {
 
       return {
         code,
+        rawCode: content,
         mapCoverage,
         sourceMapPath,
       };
@@ -390,7 +391,9 @@ export default class ScriptTransformer {
     let instrument = false;
 
     if (!options.isCoreModule) {
-      instrument = shouldInstrument(filename, options, this._config);
+      instrument =
+        shouldInstrument(filename, options, this._config) &&
+        !options.v8Coverage;
       scriptCacheKey = getScriptCacheKey(filename, instrument);
       const result = this._cache.transformedFiles.get(scriptCacheKey);
       if (result) {

@@ -58,6 +58,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   testTimeout: 5000,
   updateSnapshot: 'none',
   useStderr: false,
+  v8Coverage: false,
   verbose: false,
   watch: false,
   watchAll: false,

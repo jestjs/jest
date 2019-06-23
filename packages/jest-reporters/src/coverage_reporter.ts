@@ -40,13 +40,13 @@ export default class CoverageReporter extends BaseReporter {
     this._options = options || {};
   }
 
-  onTestResult(
-    _test: Test,
-    testResult: TestResult,
-    _aggregatedResults: AggregatedResult,
-  ) {
+  onTestResult(_test: Test, testResult: TestResult) {
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
+    }
+
+    if (this._globalConfig.v8Coverage) {
+      return;
     }
 
     const sourceMaps = testResult.sourceMaps;
@@ -76,7 +76,7 @@ export default class CoverageReporter extends BaseReporter {
     contexts: Set<Context>,
     aggregatedResults: AggregatedResult,
   ) {
-    await this._addUntestedFiles(this._globalConfig, contexts);
+    await this._addUntestedFiles(contexts);
     const map = await this._sourceMapStore.transformCoverage(this._coverageMap);
 
     try {
@@ -92,7 +92,6 @@ export default class CoverageReporter extends BaseReporter {
       if (!this._globalConfig.useStderr && coverageReporters.length < 1) {
         coverageReporters.push('text-summary');
       }
-
       coverageReporters.forEach(reporter => {
         istanbulReports
           .create(reporter, {maxCols: process.stdout.columns || Infinity})
@@ -115,20 +114,20 @@ export default class CoverageReporter extends BaseReporter {
     this._checkThreshold(map);
   }
 
-  private async _addUntestedFiles(
-    globalConfig: Config.GlobalConfig,
-    contexts: Set<Context>,
-  ): Promise<void> {
+  private async _addUntestedFiles(contexts: Set<Context>): Promise<void> {
     const files: Array<{config: Config.ProjectConfig; path: string}> = [];
 
     contexts.forEach(context => {
       const config = context.config;
       if (
-        globalConfig.collectCoverageFrom &&
-        globalConfig.collectCoverageFrom.length
+        this._globalConfig.collectCoverageFrom &&
+        this._globalConfig.collectCoverageFrom.length
       ) {
         context.hasteFS
-          .matchFilesWithGlob(globalConfig.collectCoverageFrom, config.rootDir)
+          .matchFilesWithGlob(
+            this._globalConfig.collectCoverageFrom,
+            config.rootDir,
+          )
           .forEach(filePath =>
             files.push({
               config,
@@ -168,7 +167,7 @@ export default class CoverageReporter extends BaseReporter {
         try {
           const result = await worker.worker({
             config,
-            globalConfig,
+            globalConfig: this._globalConfig,
             options: {
               ...this._options,
               changedFiles:

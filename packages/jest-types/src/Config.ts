@@ -76,6 +76,7 @@ export type DefaultOptions = {
   timers: 'real' | 'fake';
   transformIgnorePatterns: Array<Glob>;
   useStderr: boolean;
+  v8Coverage: boolean;
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
@@ -192,6 +193,7 @@ export type InitialOptions = Partial<{
     [regex: string]: Path | TransformerConfig;
   };
   transformIgnorePatterns: Array<Glob>;
+  v8Coverage?: boolean;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns: Array<string>;
   updateSnapshot: boolean;
@@ -283,6 +285,7 @@ export type GlobalConfig = {
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose?: boolean;
+  v8Coverage: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -431,6 +434,7 @@ export type Argv = Arguments<
     useStderr: boolean;
     verbose: boolean;
     version: boolean;
+    v8Coverage: boolean;
     watch: boolean;
     watchAll: boolean;
     watchman: boolean;

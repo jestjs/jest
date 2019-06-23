@@ -124,6 +124,7 @@ const initialOptions: Config.InitialOptions = {
   unmockedModulePathPatterns: ['mock'],
   updateSnapshot: true,
   useStderr: false,
+  v8Coverage: false,
   verbose: false,
   watch: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],

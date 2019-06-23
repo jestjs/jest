@@ -27,6 +27,7 @@ export default function(
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+    v8Coverage: globalConfig.v8Coverage,
   };
   let coverageWorkerResult: CoverageWorkerResult | null = null;
   if (shouldInstrument(filename, coverageOptions, config)) {

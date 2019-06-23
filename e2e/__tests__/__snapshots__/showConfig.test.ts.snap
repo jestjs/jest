@@ -118,6 +118,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
     "updateSnapshot": "all",
     "useStderr": false,
+    "v8Coverage": false,
     "watch": false,
     "watchAll": false,
     "watchman": true

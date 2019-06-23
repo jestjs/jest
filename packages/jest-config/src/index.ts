@@ -152,6 +152,7 @@ const groupOptions = (
     testTimeout: options.testTimeout,
     updateSnapshot: options.updateSnapshot,
     useStderr: options.useStderr,
+    v8Coverage: options.v8Coverage,
     verbose: options.verbose,
     watch: options.watch,
     watchAll: options.watchAll,

@@ -65,6 +65,7 @@ const defaultOptions: Config.DefaultOptions = {
   timers: 'real',
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   useStderr: false,
+  v8Coverage: false,
   watch: false,
   watchPathIgnorePatterns: [],
   watchman: true,

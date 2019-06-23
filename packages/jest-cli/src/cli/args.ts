@@ -17,6 +17,13 @@ export const check = (argv: Config.Argv) => {
     );
   }
 
+  if (argv.collectCoverage && argv.v8Coverage) {
+    throw new Error(
+      'Both --coverage and --v8Coverage were specified, but these two ' +
+        'options do not make sense together. Which is it?',
+    );
+  }
+
   for (const key of [
     'onlyChanged',
     'lastCommit',
@@ -674,6 +681,11 @@ export const options = {
     default: undefined,
     description: 'Divert all output to stderr.',
     type: 'boolean',
+  },
+  v8Coverage: {
+    default: false,
+    description: 'Collect coverage using V8 instrumentation',
+    type: 'boolean' as 'boolean',
   },
   verbose: {
     default: undefined,
