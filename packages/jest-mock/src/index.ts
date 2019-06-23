@@ -1079,9 +1079,9 @@ class ModuleMockerClass {
         );
       }
 
-      // @ts-ignore
+      // @ts-ignore: mock is assignable
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
-        // @ts-ignore
+        // @ts-ignore: mock is assignable
         descriptor![accessType] = original;
         Object.defineProperty(obj, propertyName, descriptor!);
       });
