@@ -15,8 +15,8 @@
     "@types/babel__template": "^7.0.0",
     "@types/jest": "24.0.2",
     "@types/node": "*",
-    "@typescript-eslint/eslint-plugin": "^1.6.0",
-    "@typescript-eslint/parser": "^1.6.0",
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.2",
     "ansi-regex": "^4.0.0",
     "ansi-styles": "^3.2.0",
     "babel-eslint": "^9.0.0",
@@ -49,6 +49,7 @@
     "jest-junit": "^6.2.1",
     "jest-silent-reporter": "^0.1.2",
     "jest-snapshot-serializer-raw": "^1.1.0",
+    "jest-watch-typeahead": "^0.2.2-0",
     "jquery": "^3.2.1",
     "karma": "^4.0.1",
     "karma-chrome-launcher": "^2.1.1",
@@ -60,6 +61,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^6.0.2",
     "mock-fs": "^4.4.1",
+    "opencollective": "^1.0.3",
     "prettier": "^1.16.1",
     "prettylint": "^1.0.0",
     "progress": "^2.0.0",
@@ -71,7 +73,7 @@
     "slash": "^2.0.0",
     "string-length": "^2.0.0",
     "strip-ansi": "^5.0.0",
-    "typescript": "^3.4.1",
+    "typescript": "^3.5.2",
     "webpack": "^4.28.4"
   },
   "scripts": {
@@ -133,10 +135,6 @@
         }
       }
     ]
-  },
-  "dependencies": {
-    "jest-watch-typeahead": "^0.2.2-0",
-    "opencollective": "^1.0.3"
   },
   "collective": {
     "type": "opencollective",

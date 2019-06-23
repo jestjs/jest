@@ -75,7 +75,7 @@ const JEST_EXTENSIONS_RE = createRegExp(
 );
 
 export function extract(code: string): Set<string> {
-  const dependencies = new Set();
+  const dependencies = new Set<string>();
 
   const addDependency = (match: string, _: string, dep: string) => {
     dependencies.add(dep);

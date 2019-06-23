@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`printDiffOrStringify expected and received are multi line with trailing spaces 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- <inverse>delete</>·</>
+<red>+ <inverse>insert</>·</>
+<green>- common <inverse>expect</>ed common</>
+<red>+ common <inverse>receiv</>ed common</>
+<green>- <inverse>prev</>·</>
+<red>+ <inverse>next</>·</>"
+`;
+
+exports[`printDiffOrStringify expected and received are single line with multiple changes 1`] = `
+"Expected: <green>\\"<inverse>delete</> common <inverse>expect</>ed common <inverse>prev</>\\"</>
+Received: <red>\\"<inverse>insert</> common <inverse>receiv</>ed common <inverse>next</>\\"</>"
+`;
+
+exports[`printDiffOrStringify expected is empty and received is single line 1`] = `
+"Expected: <green>\\"\\"</>
+Received: <red>\\"single line\\"</>"
+`;
+
+exports[`printDiffOrStringify expected is multi line and received is empty 1`] = `
+"Expected: <green>\\"multi</>
+<green>line\\"</>
+Received: <red>\\"\\"</>"
+`;

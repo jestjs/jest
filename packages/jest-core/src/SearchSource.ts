@@ -180,7 +180,7 @@ export default class SearchSource {
 
     const allPathsAbsolute = Array.from(allPaths).map(p => path.resolve(p));
 
-    const collectCoverageFrom = new Set();
+    const collectCoverageFrom = new Set<string>();
 
     testModulesMap.forEach(testModule => {
       if (!testModule.dependencies) {

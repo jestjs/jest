@@ -12,6 +12,7 @@ import {
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
+  printDiffOrStringify,
   printExpected,
   printReceived,
   printWithType,
@@ -231,13 +232,22 @@ const toThrowExpectedObject = (
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected message: ', expected.message) +
         (thrown === null
-          ? '\n' + DID_NOT_THROW
+          ? formatExpected('Expected message: ', expected.message) +
+            '\n' +
+            DID_NOT_THROW
           : thrown.hasMessage
-          ? formatReceived('Received message: ', thrown, 'message') +
+          ? printDiffOrStringify(
+              expected.message,
+              thrown.message,
+              'Expected message',
+              'Received message',
+              true,
+            ) +
+            '\n' +
             formatStack(thrown)
-          : formatReceived('Received value:   ', thrown, 'value'));
+          : formatExpected('Expected message: ', expected.message) +
+            formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };

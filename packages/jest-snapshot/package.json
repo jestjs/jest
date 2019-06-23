@@ -19,6 +19,7 @@
     "chalk": "^2.0.1",
     "expect": "^24.8.0",
     "jest-diff": "^24.8.0",
+    "jest-get-type": "^24.8.0",
     "jest-matcher-utils": "^24.8.0",
     "jest-message-util": "^24.8.0",
     "jest-resolve": "^24.8.0",

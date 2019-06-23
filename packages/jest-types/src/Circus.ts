@@ -69,15 +69,15 @@ export type Event =
     }
   | {
       name: 'hook_success';
-      describeBlock: DescribeBlock | undefined | null;
-      test: TestEntry | undefined | null;
+      describeBlock?: DescribeBlock;
+      test?: TestEntry;
       hook: Hook;
     }
   | {
       name: 'hook_failure';
       error: string | Exception;
-      describeBlock: DescribeBlock | undefined | null;
-      test: TestEntry | undefined | null;
+      describeBlock?: DescribeBlock;
+      test?: TestEntry;
       hook: Hook;
     }
   | {
@@ -153,11 +153,11 @@ export type Event =
 
 export type TestStatus = 'skip' | 'done' | 'todo';
 export type TestResult = {
-  duration: number | null | undefined;
+  duration?: number | null;
   errors: Array<FormattedError>;
   invocations: number;
   status: TestStatus;
-  location: {column: number; line: number} | null | undefined;
+  location?: {column: number; line: number} | null;
   testPath: Array<TestName | BlockName>;
 };
 
@@ -177,7 +177,7 @@ export type GlobalErrorHandlers = {
 
 export type State = {
   currentDescribeBlock: DescribeBlock;
-  currentlyRunningTest: TestEntry | undefined | null; // including when hooks are being executed
+  currentlyRunningTest?: TestEntry | null; // including when hooks are being executed
   expand?: boolean; // expand error messages
   hasFocusedTests: boolean; // that are defined using test.only
   // Store process error handlers. During the run we inject our own
@@ -186,7 +186,7 @@ export type State = {
   originalGlobalErrorHandlers?: GlobalErrorHandlers;
   parentProcess: Process | null; // process object from the outer scope
   rootDescribeBlock: DescribeBlock;
-  testNamePattern: RegExp | undefined | null;
+  testNamePattern?: RegExp | null;
   testTimeout: number;
   unhandledErrors: Array<Exception>;
   includeTestLocationInResult: boolean;
@@ -197,7 +197,7 @@ export type DescribeBlock = {
   hooks: Array<Hook>;
   mode: BlockMode;
   name: BlockName;
-  parent: DescribeBlock | undefined | null;
+  parent?: DescribeBlock;
   tests: Array<TestEntry>;
 };
 
@@ -206,13 +206,13 @@ export type TestError = Exception | Array<[Exception | undefined, Exception]>; /
 export type TestEntry = {
   asyncError: Exception; // Used if the test failure contains no usable stack trace
   errors: TestError;
-  fn: TestFn | undefined | null;
+  fn?: TestFn;
   invocations: number;
   mode: TestMode;
   name: TestName;
   parent: DescribeBlock;
-  startedAt: number | undefined | null;
-  duration: number | undefined | null;
-  status: TestStatus | undefined | null; // whether the test has been skipped or run already
-  timeout: number | undefined | null;
+  startedAt?: number | null;
+  duration?: number | null;
+  status?: TestStatus | null; // whether the test has been skipped or run already
+  timeout?: number;
 };
