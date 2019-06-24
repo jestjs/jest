@@ -928,7 +928,7 @@ export default function normalize(
     (newOptions.maxConcurrency as unknown) as string,
     10,
   );
-  newOptions.maxWorkers = getMaxWorkers(argv);
+  newOptions.maxWorkers = getMaxWorkers(argv, options);
 
   if (newOptions.testRegex!.length && options.testMatch) {
     throw createConfigError(
