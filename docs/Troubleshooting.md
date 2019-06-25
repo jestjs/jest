@@ -1,6 +1,6 @@
 ---
-id: troubleshooting
-title: Troubleshooting
+id:  Debugging your tests
+title: Debugging your tests
 ---
 
 Uh oh, something went wrong? Use this guide to resolve issues with Jest.
