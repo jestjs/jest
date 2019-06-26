@@ -403,6 +403,12 @@ _Note: A global teardown module configured in a project (using multi-project run
 
 _Node: The same caveat concerning transformation of `node_modules_ as for `globalSetup` applies to `globalTeardown`.
 
+### `maxConcurrency` [number]
+
+Default: `5`
+
+A number limiting the number of tests that are allowed to run at the same time when using `test.concurrent`. Any test above this limit will be queued and executed once a slot is released.
+
 ### `moduleDirectories` [array<string>]
 
 Default: `["node_modules"]`
@@ -724,7 +730,7 @@ _Note: `setupTestFrameworkScriptFile` is deprecated in favor of `setupFilesAfter
 
 Default: `undefined`
 
-The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores that snapshot files on disk.
+The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
 
 Example snapshot resolver module:
 
@@ -740,7 +746,7 @@ module.exports = {
       .replace('__snapshots__', '__tests__')
       .slice(0, -snapshotExtension.length),
 
-  // Example test path, used for preflight concistency check of the implementation above
+  // Example test path, used for preflight consistency check of the implementation above
   testPathForConsistencyCheck: 'some/__tests__/example.test.js',
 };
 ```

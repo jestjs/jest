@@ -10,7 +10,7 @@
 import type {EnvironmentClass} from 'types/Environment';
 import type {GlobalConfig, Path, ProjectConfig} from 'types/Config';
 import type {Resolver} from 'types/Resolve';
-import type {TestFramework} from 'types/TestRunner';
+import type {TestFramework, TestRunnerContext} from 'types/TestRunner';
 import type {TestResult} from 'types/TestResult';
 import type RuntimeClass from 'jest-runtime';
 
@@ -28,11 +28,40 @@ import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
 import sourcemapSupport from 'source-map-support';
+import chalk from 'chalk';
 
 type RunTestInternalResult = {
   leakDetector: ?LeakDetector,
   result: TestResult,
 };
+
+function freezeConsole(
+  testConsole: BufferedConsole | Console | NullConsole,
+  config: ProjectConfig,
+) {
+  testConsole._log = function fakeConsolePush(_type, message) {
+    const error = new ErrorWithStack(
+      `${chalk.red(
+        `${chalk.bold(
+          'Cannot log after tests are done.',
+        )} Did you forget to wait for something async in your test?`,
+      )}\nAttempted to log "${message}".`,
+      fakeConsolePush,
+    );
+
+    const formattedError = formatExecError(
+      error,
+      config,
+      {noStackTrace: false},
+      undefined,
+      true,
+    );
+
+    process.stderr.write('\n' + formattedError + '\n');
+    // TODO: set exit code in Jest 25
+    // process.exitCode = 1;
+  };
+}
 
 // Keeping the core of "runTest" as a separate function (as "runTestInternal")
 // is key to be able to detect memory leaks. Since all variables are local to
@@ -48,6 +77,7 @@ async function runTestInternal(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   resolver: Resolver,
+  context: ?TestRunnerContext,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const parsedDocblock = docblock.parse(docblock.extract(testSource));
@@ -58,7 +88,6 @@ async function runTestInternal(
   if (customEnvironment) {
     testEnvironment = getTestEnvironment({
       ...config,
-      // $FlowFixMe
       testEnvironment: customEnvironment,
     });
   }
@@ -113,6 +142,7 @@ async function runTestInternal(
   setGlobal(environment.global, 'console', testConsole);
 
   runtime = new Runtime(config, environment, resolver, cacheFS, {
+    changedFiles: context && context.changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
@@ -197,6 +227,8 @@ async function runTestInternal(
       throw err;
     }
 
+    freezeConsole(testConsole, config);
+
     const testCount =
       result.numPassingTests +
       result.numFailingTests +
@@ -236,12 +268,14 @@ export default async function runTest(
   globalConfig: GlobalConfig,
   config: ProjectConfig,
   resolver: Resolver,
+  context: ?TestRunnerContext,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
     globalConfig,
     config,
     resolver,
+    context,
   );
 
   if (leakDetector) {

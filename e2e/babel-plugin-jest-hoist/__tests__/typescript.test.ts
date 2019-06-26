@@ -7,10 +7,10 @@
  * @emails oncall+jsinfra
  */
 
-/* eslint-disable import/no-unresolved */
-
 import {Color} from '../types';
 import {color} from '../entry';
+
+jest.mock('some-module', () => ({} as Partial<{}>), {virtual: true});
 
 jest.mock('../entry', () => {
   const color: Color = 'blue';

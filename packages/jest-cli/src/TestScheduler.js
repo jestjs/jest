@@ -8,7 +8,7 @@
  */
 
 import type {AggregatedResult, TestResult} from 'types/TestResult';
-import type {GlobalConfig, ReporterConfig} from 'types/Config';
+import type {GlobalConfig, ReporterConfig, Path} from 'types/Config';
 import type {Context} from 'types/Context';
 import type {Reporter, Test} from 'types/TestRunner';
 
@@ -19,16 +19,18 @@ import {
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
 } from './testResultHelpers';
-import CoverageReporter from './reporters/coverage_reporter';
-import DefaultReporter from './reporters/default_reporter';
+import {
+  CoverageReporter,
+  DefaultReporter,
+  NotifyReporter,
+  SummaryReporter,
+  VerboseReporter,
+} from '@jest/reporters';
 import exit from 'exit';
-import NotifyReporter from './reporters/notify_reporter';
 import ReporterDispatcher from './ReporterDispatcher';
 import snapshot from 'jest-snapshot';
-import SummaryReporter from './reporters/summary_reporter';
 import TestRunner from 'jest-runner';
 import TestWatcher from './TestWatcher';
-import VerboseReporter from './reporters/verbose_reporter';
 import {shouldRunInBand} from './testSchedulerHelper';
 
 // The default jest-runner is required because it is the default test runner
@@ -41,6 +43,7 @@ export type TestSchedulerOptions = {|
 export type TestSchedulerContext = {|
   firstRun: boolean,
   previousSuccess: boolean,
+  changedFiles?: Set<Path>,
 |};
 export default class TestScheduler {
   _dispatcher: ReporterDispatcher;
@@ -173,6 +176,7 @@ export default class TestScheduler {
         // $FlowFixMe
         testRunners[config.runner] = new (require(config.runner): TestRunner)(
           this._globalConfig,
+          {changedFiles: this._context && this._context.changedFiles},
         );
       }
     });
@@ -262,7 +266,11 @@ export default class TestScheduler {
     }
 
     if (!isDefault && collectCoverage) {
-      this.addReporter(new CoverageReporter(this._globalConfig));
+      this.addReporter(
+        new CoverageReporter(this._globalConfig, {
+          changedFiles: this._context && this._context.changedFiles,
+        }),
+      );
     }
 
     if (notify) {
@@ -288,7 +296,11 @@ export default class TestScheduler {
     );
 
     if (collectCoverage) {
-      this.addReporter(new CoverageReporter(this._globalConfig));
+      this.addReporter(
+        new CoverageReporter(this._globalConfig, {
+          changedFiles: this._context && this._context.changedFiles,
+        }),
+      );
     }
 
     this.addReporter(new SummaryReporter(this._globalConfig));

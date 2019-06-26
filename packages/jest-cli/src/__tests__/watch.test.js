@@ -91,13 +91,13 @@ const regularUpdateGlobalConfig = require('../lib/update_global_config')
 const updateGlobalConfig = jest.fn(regularUpdateGlobalConfig);
 jest.doMock('../lib/update_global_config', () => updateGlobalConfig);
 
-const watch = require('../watch').default;
-
 const nextTick = () => new Promise(res => process.nextTick(res));
 
 afterEach(runJestMock.mockReset);
 
 describe('Watch mode flows', () => {
+  let watch;
+  let isInteractive;
   let pipe;
   let hasteMapInstances;
   let globalConfig;
@@ -105,6 +105,9 @@ describe('Watch mode flows', () => {
   let stdin;
 
   beforeEach(() => {
+    isInteractive = true;
+    jest.doMock('jest-util/build/isInteractive', () => isInteractive);
+    watch = require('../watch').default;
     const config = {roots: [], testPathIgnorePatterns: [], testRegex: []};
     pipe = {write: jest.fn()};
     globalConfig = {watch: true};
@@ -112,6 +115,10 @@ describe('Watch mode flows', () => {
     contexts = [{config}];
     stdin = new MockStdin();
     results = {snapshot: {}};
+  });
+
+  afterEach(() => {
+    jest.resetModules();
   });
 
   it('Correctly passing test path pattern', () => {
@@ -143,12 +150,7 @@ describe('Watch mode flows', () => {
   });
 
   it('Runs Jest once by default and shows usage', () => {
-    jest.unmock('jest-util');
-    const util = require('jest-util');
-    util.isInteractive = true;
-
-    const ci_watch = require('../watch').default;
-    ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     expect(runJestMock.mock.calls[0][0]).toMatchObject({
       contexts,
       globalConfig,
@@ -160,12 +162,11 @@ describe('Watch mode flows', () => {
   });
 
   it('Runs Jest in a non-interactive environment not showing usage', () => {
-    jest.unmock('jest-util');
-    const util = require('jest-util');
-    util.isInteractive = false;
+    jest.resetModules();
+    isInteractive = false;
 
-    const ci_watch = require('../watch').default;
-    ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch = require('../watch').default;
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
     expect(runJestMock.mock.calls[0][0]).toMatchObject({
       contexts,
       globalConfig,
@@ -193,12 +194,7 @@ describe('Watch mode flows', () => {
   });
 
   it('shows prompts for WatchPlugins in alphabetical order', async () => {
-    jest.unmock('jest-util');
-    const util = require('jest-util');
-    util.isInteractive = true;
-
-    const ci_watch = require('../watch').default;
-    ci_watch(
+    watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -223,13 +219,9 @@ describe('Watch mode flows', () => {
   });
 
   it('shows update snapshot prompt (without interactive)', async () => {
-    jest.unmock('jest-util');
-    const util = require('jest-util');
-    util.isInteractive = true;
     results = {snapshot: {failure: true}};
 
-    const ci_watch = require('../watch').default;
-    ci_watch(
+    watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -251,9 +243,6 @@ describe('Watch mode flows', () => {
   });
 
   it('shows update snapshot prompt (with interactive)', async () => {
-    jest.unmock('jest-util');
-    const util = require('jest-util');
-    util.isInteractive = true;
     results = {
       numFailedTests: 1,
       snapshot: {
@@ -275,8 +264,7 @@ describe('Watch mode flows', () => {
       ],
     };
 
-    const ci_watch = require('../watch').default;
-    ci_watch(
+    watch(
       {
         ...globalConfig,
         rootDir: __dirname,
@@ -938,11 +926,7 @@ describe('Watch mode flows', () => {
   });
 
   it('shows the correct usage for the f key in "only failed tests" mode', () => {
-    jest.unmock('jest-util');
-    const util = require('jest-util');
-    util.isInteractive = true;
-    const ci_watch = require('../watch').default;
-    ci_watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
+    watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
 
     stdin.emit('f');
     stdin.emit('w');
