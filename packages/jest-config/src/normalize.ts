@@ -619,20 +619,20 @@ export default function normalize(
         const transform = oldOptions[key];
         value =
           transform &&
-          Object.keys(transform).map(regex =>
-            [
+          Object.keys(transform).map(regex => {
+            const transformElement = transform[regex];
+            return [
               regex,
               resolve(newOptions.resolver, {
-                filePath: Array.isArray(transform[regex])
-                  ? transform[regex][0]
-                  : transform[regex],
+                filePath: Array.isArray(transformElement)
+                  ? transformElement[0]
+                  : transformElement,
                 key,
                 rootDir: options.rootDir,
               }),
-            ].concat(
-              Array.isArray(transform[regex]) ? [transform[regex][1]] : [],
-            ),
-          );
+              ...(Array.isArray(transformElement) ? [transformElement[1]] : []),
+            ];
+          });
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
