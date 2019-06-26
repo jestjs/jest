@@ -18,6 +18,7 @@ export type HasteConfig = {
 };
 
 export type ReporterConfig = [string, Object];
+export type TransformerConfig = [string, Object];
 
 export type ConfigGlobals = Object;
 
@@ -90,7 +91,7 @@ export type DefaultOptions = {
   timers: 'real' | 'fake';
   transform:
     | {
-        [key: string]: string;
+        [regex: string]: Path | TransformerConfig;
       }
     | null
     | undefined;
@@ -197,7 +198,7 @@ export type InitialOptions = {
   testURL?: string;
   timers?: 'real' | 'fake';
   transform?: {
-    [key: string]: string;
+    [regex: string]: Path | TransformerConfig;
   };
   transformIgnorePatterns?: Array<Glob>;
   watchPathIgnorePatterns?: Array<string>;
@@ -350,7 +351,7 @@ export type ProjectConfig = {
   testRunner: string;
   testURL: string;
   timers: 'real' | 'fake';
-  transform: Array<[string, Path]>;
+  transform: Array<[string, Path, Object]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns: Array<string> | null | undefined;

@@ -5,6 +5,7 @@
 module.exports = {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
+    '**/packages/*/**/*.ts',
     '!**/bin/**',
     '!**/cli/**',
     '!**/perf/**',
@@ -39,9 +40,9 @@ module.exports = {
     '/packages/.*/build',
     '/packages/.*/build-es5',
     '/packages/.*/src/__tests__/setPrettyPrint.ts',
-    '/packages/jest-cli/src/__tests__/test_root',
-    '/packages/jest-cli/src/__tests__/__fixtures__/',
-    '/packages/jest-cli/src/lib/__tests__/fixtures/',
+    '/packages/jest-core/src/__tests__/test_root',
+    '/packages/jest-core/src/__tests__/__fixtures__/',
+    '/packages/jest-cli/src/init/__tests__/fixtures/',
     '/packages/jest-haste-map/src/__tests__/haste_impl.js',
     '/packages/jest-haste-map/src/__tests__/dependencyExtractor.js',
     '/packages/jest-resolve-dependencies/src/__tests__/__fixtures__/',

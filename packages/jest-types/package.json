@@ -11,8 +11,5 @@
   },
   "license": "MIT",
   "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "dependencies": {
-    "source-map": "^0.6.1"
-  }
+  "types": "build/index.d.ts"
 }

@@ -1,0 +1,2344 @@
+{
+  "program": {
+    "fileInfos": {
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es5.d.ts": {
+        "version": "c8665e66018917580e71792b91022bcaf53fb946fab4aaf8dfb0738ed564db88",
+        "signature": "c8665e66018917580e71792b91022bcaf53fb946fab4aaf8dfb0738ed564db88"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.d.ts": {
+        "version": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96",
+        "signature": "7994d44005046d1413ea31d046577cdda33b8b2470f30281fd9c8b3c99fe2d96"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2016.d.ts": {
+        "version": "5f217838d25704474d9ef93774f04164889169ca31475fe423a9de6758f058d1",
+        "signature": "5f217838d25704474d9ef93774f04164889169ca31475fe423a9de6758f058d1"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.d.ts": {
+        "version": "459097c7bdd88fc5731367e56591e4f465f2c9de81a35427a7bd473165c34743",
+        "signature": "459097c7bdd88fc5731367e56591e4f465f2c9de81a35427a7bd473165c34743"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.d.ts": {
+        "version": "2edd3ddf436ef8e12df876dcae4ecd6a8748577944c477bf4b20d5596e0c9843",
+        "signature": "2edd3ddf436ef8e12df876dcae4ecd6a8748577944c477bf4b20d5596e0c9843"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.dom.d.ts": {
+        "version": "6994c583b66862deca24d7bbf77297d95b9d3da8160dbd9beef6b847cf7c1376",
+        "signature": "6994c583b66862deca24d7bbf77297d95b9d3da8160dbd9beef6b847cf7c1376"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.core.d.ts": {
+        "version": "384f66a3422d80014c51de2682159bb26f1e35854029880ccd5f6d1f00e6a36d",
+        "signature": "384f66a3422d80014c51de2682159bb26f1e35854029880ccd5f6d1f00e6a36d"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.collection.d.ts": {
+        "version": "dd94d8ef48c562389eb58af8df3a3a34d11367f7c818192aa5f16470d469e3f0",
+        "signature": "dd94d8ef48c562389eb58af8df3a3a34d11367f7c818192aa5f16470d469e3f0"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.generator.d.ts": {
+        "version": "828413486bdcaa342558e8e4570b1b287b776cb61b4b70b0214bd10c5d9a94c3",
+        "signature": "828413486bdcaa342558e8e4570b1b287b776cb61b4b70b0214bd10c5d9a94c3"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.iterable.d.ts": {
+        "version": "4d1f39313a169b8599b8817688f504b56ba8204c2ebafd03f66ff77ddb1899a4",
+        "signature": "4d1f39313a169b8599b8817688f504b56ba8204c2ebafd03f66ff77ddb1899a4"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.promise.d.ts": {
+        "version": "7c07d934680d0e33275a44d22fb11a4ff31d46c8c26a8d056828a478753f1efe",
+        "signature": "7c07d934680d0e33275a44d22fb11a4ff31d46c8c26a8d056828a478753f1efe"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.proxy.d.ts": {
+        "version": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe",
+        "signature": "5e72f949a89717db444e3bd9433468890068bb21a5638d8ab15a1359e05e54fe"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.reflect.d.ts": {
+        "version": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976",
+        "signature": "f5b242136ae9bfb1cc99a5971cccc44e99947ae6b5ef6fd8aa54b5ade553b976"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.symbol.d.ts": {
+        "version": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230",
+        "signature": "9ae2860252d6b5f16e2026d8a2c2069db7b2a3295e98b6031d01337b96437230"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": {
+        "version": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303",
+        "signature": "3e0a459888f32b42138d5a39f706ff2d55d500ab1031e0988b5568b0f67c2303"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2016.array.include.d.ts": {
+        "version": "3f96f1e570aedbd97bf818c246727151e873125d0512e4ae904330286c721bc0",
+        "signature": "3f96f1e570aedbd97bf818c246727151e873125d0512e4ae904330286c721bc0"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.object.d.ts": {
+        "version": "ff8ad203e83338289b0f5defc1a5b5c253fb7d251b464db497383f915a0df3f4",
+        "signature": "ff8ad203e83338289b0f5defc1a5b5c253fb7d251b464db497383f915a0df3f4"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": {
+        "version": "b8667586a618c5cf64523d4e500ae39e781428abfb28f3de441fc66b56144b6f",
+        "signature": "b8667586a618c5cf64523d4e500ae39e781428abfb28f3de441fc66b56144b6f"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.string.d.ts": {
+        "version": "21df2e0059f14dcb4c3a0e125859f6b6ff01332ee24b0065a741d121250bc71c",
+        "signature": "21df2e0059f14dcb4c3a0e125859f6b6ff01332ee24b0065a741d121250bc71c"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.intl.d.ts": {
+        "version": "c1759cb171c7619af0d2234f2f8fb2a871ee88e956e2ed91bb61778e41f272c6",
+        "signature": "c1759cb171c7619af0d2234f2f8fb2a871ee88e956e2ed91bb61778e41f272c6"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": {
+        "version": "28569d59e07d4378cb3d54979c4c60f9f06305c9bb6999ffe6cab758957adc46",
+        "signature": "28569d59e07d4378cb3d54979c4c60f9f06305c9bb6999ffe6cab758957adc46"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts": {
+        "version": "42102aaeb1bfec213be1e9777466a6d551eeba8567fed18c0cdbca8c35e3c6e4",
+        "signature": "42102aaeb1bfec213be1e9777466a6d551eeba8567fed18c0cdbca8c35e3c6e4"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.intl.d.ts": {
+        "version": "1b820b57379c726f94af50cd60053674af53ff9d079c1563cc70071e8b757dd0",
+        "signature": "1b820b57379c726f94af50cd60053674af53ff9d079c1563cc70071e8b757dd0"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.promise.d.ts": {
+        "version": "efe049114bad1035b0aa9a4a0359f50ab776e3897c411521e51d3013079cbd62",
+        "signature": "efe049114bad1035b0aa9a4a0359f50ab776e3897c411521e51d3013079cbd62"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.regexp.d.ts": {
+        "version": "e7780d04cd4120ee554c665829db2bbdd6b947cbaa3c150b7d9ea74df3beb2e8",
+        "signature": "e7780d04cd4120ee554c665829db2bbdd6b947cbaa3c150b7d9ea74df3beb2e8"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.esnext.intl.d.ts": {
+        "version": "f6e0c89daaf72eac38dfb1d5ef0972183f7f26a68da15bfe5bcb7cfccf0c7db8",
+        "signature": "f6e0c89daaf72eac38dfb1d5ef0972183f7f26a68da15bfe5bcb7cfccf0c7db8"
+      },
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.esnext.bigint.d.ts": {
+        "version": "63b66918290d794f73832a6d0325be5026236674fe8c0cb0b68d162000d7bbe8",
+        "signature": "63b66918290d794f73832a6d0325be5026236674fe8c0cb0b68d162000d7bbe8"
+      },
+      "/users/simen/repos/jest/packages/jest-types/build/config.d.ts": {
+        "version": "775c95900f163ee18bfaf06798e0b514ade70da87e5698b7280ffc14deb08be5",
+        "signature": "775c95900f163ee18bfaf06798e0b514ade70da87e5698b7280ffc14deb08be5"
+      },
+      "/users/simen/repos/jest/packages/jest-types/build/console.d.ts": {
+        "version": "5f26765e06deed4fd245765340aee334d505ed2632b9eb509b8653946ff9f2b7",
+        "signature": "5f26765e06deed4fd245765340aee334d505ed2632b9eb509b8653946ff9f2b7"
+      },
+      "/users/simen/repos/jest/packages/jest-types/build/sourcemaps.d.ts": {
+        "version": "13b0b3511ee7a866b5066421f15f5ce14b647f502a4da76c2db909731d9f494c",
+        "signature": "13b0b3511ee7a866b5066421f15f5ce14b647f502a4da76c2db909731d9f494c"
+      },
+      "/users/simen/repos/jest/packages/jest-types/build/testresult.d.ts": {
+        "version": "ffba543862e22c3473fa4c8f3559e1836ed2c6591581c057d047222df7ee913c",
+        "signature": "ffba543862e22c3473fa4c8f3559e1836ed2c6591581c057d047222df7ee913c"
+      },
+      "/users/simen/repos/jest/packages/jest-types/build/mocks.d.ts": {
+        "version": "6ebd677be25b254a9659ac38c739d7d628411381547c0df246586ff894390399",
+        "signature": "6ebd677be25b254a9659ac38c739d7d628411381547c0df246586ff894390399"
+      },
+      "/users/simen/repos/jest/packages/jest-types/build/prettyformat.d.ts": {
+        "version": "d9a9fc645370d38bc122c43320c53f1e4dd321cf4ed58e0ee171a00361d98577",
+        "signature": "d9a9fc645370d38bc122c43320c53f1e4dd321cf4ed58e0ee171a00361d98577"
+      },
+      "/users/simen/repos/jest/packages/jest-types/build/matchers.d.ts": {
+        "version": "75f2f86fd48491e7e82a6db9fd8b2c97d16c0585e7f872cfd1b5d0af67bd5ae4",
+        "signature": "75f2f86fd48491e7e82a6db9fd8b2c97d16c0585e7f872cfd1b5d0af67bd5ae4"
+      },
+      "/users/simen/repos/jest/packages/jest-types/build/index.d.ts": {
+        "version": "317e0c78c06883c758ec36d7084c8ccc63e8d512fe3faaf06018b973dc4b9300",
+        "signature": "317e0c78c06883c758ec36d7084c8ccc63e8d512fe3faaf06018b973dc4b9300"
+      },
+      "/users/simen/repos/jest/packages/jest-mock/src/index.ts": {
+        "version": "a41de7a7e9cc021a591a720ed2c89f6edea88107095c598a6779dd744d90ebfc",
+        "signature": "f759de601d1e52d7d24b721323d0e4060103d511398cb377331b830cb3ba1695"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/globals.d.ts": {
+        "version": "9ae4bfd042044be3249b63bbb453a392283dc690d65842194d80bbff90ae0c81",
+        "signature": "9ae4bfd042044be3249b63bbb453a392283dc690d65842194d80bbff90ae0c81"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/assert.d.ts": {
+        "version": "e37e4814461321ef67cbb2f4c9def6be18ff85670e6c665131b320e052905b75",
+        "signature": "e37e4814461321ef67cbb2f4c9def6be18ff85670e6c665131b320e052905b75"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/async_hooks.d.ts": {
+        "version": "138476cfdccbb9e2c7e06602bc216af843a56c4f3469a79106bc660ba94bd66a",
+        "signature": "138476cfdccbb9e2c7e06602bc216af843a56c4f3469a79106bc660ba94bd66a"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/buffer.d.ts": {
+        "version": "fe892fea1e75a442fffb4a604d7eeb451e858787a9f2f01c4e83bf12a3b5048d",
+        "signature": "fe892fea1e75a442fffb4a604d7eeb451e858787a9f2f01c4e83bf12a3b5048d"
+      },
+      "/users/simen/repos/jest/node_modules/@types/events/index.d.ts": {
+        "version": "400db42c3a46984118bff14260d60cec580057dc1ab4c2d7310beb643e4f5935",
+        "signature": "400db42c3a46984118bff14260d60cec580057dc1ab4c2d7310beb643e4f5935"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/child_process.d.ts": {
+        "version": "3363172f268d44c0480dd1b65dbfdc5ee3e832c0215d41f2d9c0962c5e84b83f",
+        "signature": "3363172f268d44c0480dd1b65dbfdc5ee3e832c0215d41f2d9c0962c5e84b83f"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/cluster.d.ts": {
+        "version": "fcd718b2feb2820a9844536a1a2fbc77a3da90820e02894d40f879a789f46560",
+        "signature": "fcd718b2feb2820a9844536a1a2fbc77a3da90820e02894d40f879a789f46560"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/console.d.ts": {
+        "version": "525c8fc510d9632d2a0a9de2d41c3ac1cdd79ff44d3b45c6d81cacabb683528d",
+        "signature": "525c8fc510d9632d2a0a9de2d41c3ac1cdd79ff44d3b45c6d81cacabb683528d"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/constants.d.ts": {
+        "version": "b952021e804dcd9cb5e5552e1ec8bf9f479b61e20da5641e2a542fe77db9a598",
+        "signature": "b952021e804dcd9cb5e5552e1ec8bf9f479b61e20da5641e2a542fe77db9a598"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/crypto.d.ts": {
+        "version": "d0ccd62cf75c3360a3004744b5fc683548b30b1b13afc7d5684afb7305c5c0fe",
+        "signature": "d0ccd62cf75c3360a3004744b5fc683548b30b1b13afc7d5684afb7305c5c0fe"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/dgram.d.ts": {
+        "version": "3589211ff9b1ab96e22090e32be753ad1eb677da58b735b8d655af850b3777dc",
+        "signature": "3589211ff9b1ab96e22090e32be753ad1eb677da58b735b8d655af850b3777dc"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts": {
+        "version": "92bd533d635f967b198fde9bc789996370f0db3322306646d961f64e67ed5b7a",
+        "signature": "92bd533d635f967b198fde9bc789996370f0db3322306646d961f64e67ed5b7a"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/domain.d.ts": {
+        "version": "ae3487bdb9b50c1d8bbeb6b55c8b2b9aa79bbc46d7afbc3483169ad8750c4304",
+        "signature": "ae3487bdb9b50c1d8bbeb6b55c8b2b9aa79bbc46d7afbc3483169ad8750c4304"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/events.d.ts": {
+        "version": "4a419878f025046ff6748d073123b0451849f83b7dbca907037a53e3eaa9bbbb",
+        "signature": "4a419878f025046ff6748d073123b0451849f83b7dbca907037a53e3eaa9bbbb"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts": {
+        "version": "dbe39c84ad40acd4b4259bc035aa5870ab08bcab899d2f7089c7922a434cf02d",
+        "signature": "dbe39c84ad40acd4b4259bc035aa5870ab08bcab899d2f7089c7922a434cf02d"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/http.d.ts": {
+        "version": "c0c453e432ac54127057c192e553e5e2d489c65cf3516ef561242b46c88c930d",
+        "signature": "c0c453e432ac54127057c192e553e5e2d489c65cf3516ef561242b46c88c930d"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/http2.d.ts": {
+        "version": "c741b6deb30ce2d6a359260f5fa3ebd9f9cb02eb9cf035f794ef3631887d87d3",
+        "signature": "c741b6deb30ce2d6a359260f5fa3ebd9f9cb02eb9cf035f794ef3631887d87d3"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/https.d.ts": {
+        "version": "2fc95fdc500d9f3b2b947376290eeb71cdc623d375515378b9048e41b440727e",
+        "signature": "2fc95fdc500d9f3b2b947376290eeb71cdc623d375515378b9048e41b440727e"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/inspector.d.ts": {
+        "version": "0d668f73487c0d16fd6c1051c61b76d3b590cd986fadea91da08dff459dbec45",
+        "signature": "0d668f73487c0d16fd6c1051c61b76d3b590cd986fadea91da08dff459dbec45"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/module.d.ts": {
+        "version": "03394bf8deb8781b490ae9266a843fbdf00647947d79e25fcbf1d89a9e9c8a66",
+        "signature": "03394bf8deb8781b490ae9266a843fbdf00647947d79e25fcbf1d89a9e9c8a66"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/net.d.ts": {
+        "version": "cf9ccf09c342506bbb2936db366657cee933b448fc9cefd42f6407ac66463536",
+        "signature": "cf9ccf09c342506bbb2936db366657cee933b448fc9cefd42f6407ac66463536"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/os.d.ts": {
+        "version": "0ab49f803fa1d0f26682096e87ae239be05fee89ac538d30c59ab5a15bd38e6a",
+        "signature": "0ab49f803fa1d0f26682096e87ae239be05fee89ac538d30c59ab5a15bd38e6a"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/path.d.ts": {
+        "version": "61c84c3b0eb6e60196d15ae5e21793a1d4241c547f0bdd0529ffae838d1a073c",
+        "signature": "61c84c3b0eb6e60196d15ae5e21793a1d4241c547f0bdd0529ffae838d1a073c"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/perf_hooks.d.ts": {
+        "version": "27ef4001526ee9d8afa57687a60bb3b59c52b32d29db0a2260094ab64726164f",
+        "signature": "27ef4001526ee9d8afa57687a60bb3b59c52b32d29db0a2260094ab64726164f"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/process.d.ts": {
+        "version": "3a8848a9c307429b861402cc69bc472ffe0c05b86474fc158723169161e16389",
+        "signature": "3a8848a9c307429b861402cc69bc472ffe0c05b86474fc158723169161e16389"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/punycode.d.ts": {
+        "version": "eeb0d1ad28e70773ac57ae9fe939c3bad6af2525a463c28f9ec31b5953de6735",
+        "signature": "eeb0d1ad28e70773ac57ae9fe939c3bad6af2525a463c28f9ec31b5953de6735"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/querystring.d.ts": {
+        "version": "8969e0b4d22ca77ad011c8fc4a25ec5d515bdfae4ecbd22608ed0d5c38829c1e",
+        "signature": "8969e0b4d22ca77ad011c8fc4a25ec5d515bdfae4ecbd22608ed0d5c38829c1e"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/readline.d.ts": {
+        "version": "563876884b355abe0e06d4dea41f25ae2324f6375e80acfd1402f076c97cb270",
+        "signature": "563876884b355abe0e06d4dea41f25ae2324f6375e80acfd1402f076c97cb270"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/repl.d.ts": {
+        "version": "65dbe15ed8a8ed5d4707a63868178dc38111cfc06de28a2e50713ca017a9c157",
+        "signature": "65dbe15ed8a8ed5d4707a63868178dc38111cfc06de28a2e50713ca017a9c157"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts": {
+        "version": "34a0eed289f6ea789fc064588950af07c94f7b02cb025a178bbd3b36cdfa0f7b",
+        "signature": "34a0eed289f6ea789fc064588950af07c94f7b02cb025a178bbd3b36cdfa0f7b"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/string_decoder.d.ts": {
+        "version": "17e157df6125098a1a34eb4d201ee4ac03bbe97e471ab5627bb2c40fce555948",
+        "signature": "17e157df6125098a1a34eb4d201ee4ac03bbe97e471ab5627bb2c40fce555948"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/timers.d.ts": {
+        "version": "b40652bf8ce4a18133b31349086523b219724dca8df3448c1a0742528e7ad5b9",
+        "signature": "b40652bf8ce4a18133b31349086523b219724dca8df3448c1a0742528e7ad5b9"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/tls.d.ts": {
+        "version": "9a2867e54ae9a87627a586dd5ef17658a8b96567720142a2365653fbe5a9c85c",
+        "signature": "9a2867e54ae9a87627a586dd5ef17658a8b96567720142a2365653fbe5a9c85c"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/trace_events.d.ts": {
+        "version": "978aecd2e6bc2ac094e9a35eda98ff8586713857b3655e7c98ca5ed8f7d50662",
+        "signature": "978aecd2e6bc2ac094e9a35eda98ff8586713857b3655e7c98ca5ed8f7d50662"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/tty.d.ts": {
+        "version": "b8553c42868db5dd58a51b0a7f02afb4c99e3b0bd98ea4d2da8140cf978dc46c",
+        "signature": "b8553c42868db5dd58a51b0a7f02afb4c99e3b0bd98ea4d2da8140cf978dc46c"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/url.d.ts": {
+        "version": "431151f55411c3f27cf539b987a7d1de453188ed58e54bc946183d280d3444a2",
+        "signature": "431151f55411c3f27cf539b987a7d1de453188ed58e54bc946183d280d3444a2"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/util.d.ts": {
+        "version": "5993a47cb055293271bba9bf0efaf682e76680759398f210d9afe905f4731203",
+        "signature": "5993a47cb055293271bba9bf0efaf682e76680759398f210d9afe905f4731203"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/v8.d.ts": {
+        "version": "e880a08fbb0d9ee2f733f9183f4d1bdb75bc9e0e64060a8a1fc30540791fcded",
+        "signature": "e880a08fbb0d9ee2f733f9183f4d1bdb75bc9e0e64060a8a1fc30540791fcded"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/vm.d.ts": {
+        "version": "f98df5ec124f441b465332271d0b083aeec815cd3c92d9249b9739e6318477a9",
+        "signature": "f98df5ec124f441b465332271d0b083aeec815cd3c92d9249b9739e6318477a9"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/worker_threads.d.ts": {
+        "version": "8a87dd992a5e61de7b93186c6e351f967f51f2cf75c35e83bed6e6c102f08c85",
+        "signature": "8a87dd992a5e61de7b93186c6e351f967f51f2cf75c35e83bed6e6c102f08c85"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/zlib.d.ts": {
+        "version": "f91189e04264b0e41ee96ff96661c3871e739b90156df2f2288da7a81019dcd9",
+        "signature": "f91189e04264b0e41ee96ff96661c3871e739b90156df2f2288da7a81019dcd9"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/base.d.ts": {
+        "version": "6622f76993bdfeaacb947ba7c4cf26f2e5c5194194d02d792c3cba4174cd8fce",
+        "signature": "6622f76993bdfeaacb947ba7c4cf26f2e5c5194194d02d792c3cba4174cd8fce"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts": {
+        "version": "a06a47025b1ea25370d5d04ceea844d0d5eed4036b404456804a4d11900867ad",
+        "signature": "a06a47025b1ea25370d5d04ceea844d0d5eed4036b404456804a4d11900867ad"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/globals.d.ts": {
+        "version": "ce6b191c382ee19f23678b8c364484627bcf424e8f408357a2f5530fb8d52a45",
+        "signature": "ce6b191c382ee19f23678b8c364484627bcf424e8f408357a2f5530fb8d52a45"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts": {
+        "version": "765fc34423b93c2ab763670d8d11d99e5f47387c13c161d6f1640dd6d91b7d1c",
+        "signature": "765fc34423b93c2ab763670d8d11d99e5f47387c13c161d6f1640dd6d91b7d1c"
+      },
+      "/users/simen/repos/jest/node_modules/@types/ansi-escapes/index.d.ts": {
+        "version": "b6cd144b0763561da92ff34c2489e6f8276a0b69d930855e360263f1fd7ad37a",
+        "signature": "b6cd144b0763561da92ff34c2489e6f8276a0b69d930855e360263f1fd7ad37a"
+      },
+      "/users/simen/repos/jest/node_modules/@types/ansi-regex/index.d.ts": {
+        "version": "0fd4a8440ebdb0f3b4989c147743d7a6c7a274cb7afd6a7278052829837f408e",
+        "signature": "0fd4a8440ebdb0f3b4989c147743d7a6c7a274cb7afd6a7278052829837f408e"
+      },
+      "/users/simen/repos/jest/node_modules/@types/color-name/index.d.ts": {
+        "version": "f0cb4b3ab88193e3e51e9e2622e4c375955003f1f81239d72c5b7a95415dad3e",
+        "signature": "f0cb4b3ab88193e3e51e9e2622e4c375955003f1f81239d72c5b7a95415dad3e"
+      },
+      "/users/simen/repos/jest/node_modules/@types/ansi-styles/escape-code.d.ts": {
+        "version": "f0b7a7f02e8f526f6c620031b7b220dcbbeaeb5de23674fa5c7945444d0e95fd",
+        "signature": "f0b7a7f02e8f526f6c620031b7b220dcbbeaeb5de23674fa5c7945444d0e95fd"
+      },
+      "/users/simen/repos/jest/node_modules/@types/ansi-styles/index.d.ts": {
+        "version": "df59b9f6ed0e7d596bccd6965229468d13d3c76a4993830cf97ec3d93e21d892",
+        "signature": "df59b9f6ed0e7d596bccd6965229468d13d3c76a4993830cf97ec3d93e21d892"
+      },
+      "/users/simen/repos/jest/node_modules/@types/anymatch/index.d.ts": {
+        "version": "48b52264fa193879a074197839dbb4796fa07e86350ff888e5361e06aa46df76",
+        "signature": "48b52264fa193879a074197839dbb4796fa07e86350ff888e5361e06aa46df76"
+      },
+      "/users/simen/repos/jest/node_modules/@types/babel-types/index.d.ts": {
+        "version": "b0c2aff536491fee5489bf06cbb6f976638e4de27ff8c798e27659d6f786c338",
+        "signature": "b0c2aff536491fee5489bf06cbb6f976638e4de27ff8c798e27659d6f786c338"
+      },
+      "/users/simen/repos/jest/node_modules/@types/babel__code-frame/index.d.ts": {
+        "version": "94fd3f3e6a69a594a15a1b1d1f200688105ef344661d2dca799872c43443be90",
+        "signature": "94fd3f3e6a69a594a15a1b1d1f200688105ef344661d2dca799872c43443be90"
+      },
+      "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts": {
+        "version": "dfbcc61eedeb125ba4f12231aaf50c7d30f36f82901b92cbd85530b44de15b68",
+        "signature": "dfbcc61eedeb125ba4f12231aaf50c7d30f36f82901b92cbd85530b44de15b68"
+      },
+      "/users/simen/repos/jest/node_modules/@types/babel__generator/index.d.ts": {
+        "version": "19fb2161edf60fbe73ee3650c1cee889df0525ed852eff2d5fa6e5480c132ae3",
+        "signature": "19fb2161edf60fbe73ee3650c1cee889df0525ed852eff2d5fa6e5480c132ae3"
+      },
+      "/users/simen/repos/jest/node_modules/@types/babel__traverse/index.d.ts": {
+        "version": "30b805fe6d4272d147fea35fd859bc5f3e13b7c9d762bd35948fe842919452a5",
+        "signature": "30b805fe6d4272d147fea35fd859bc5f3e13b7c9d762bd35948fe842919452a5"
+      },
+      "/users/simen/repos/jest/node_modules/@babel/parser/typings/babel-parser.d.ts": {
+        "version": "ad5052782ad2d8a9d5db8e2a24216dac0ae66eb50f884851306777a47e23de9f",
+        "signature": "ad5052782ad2d8a9d5db8e2a24216dac0ae66eb50f884851306777a47e23de9f"
+      },
+      "/users/simen/repos/jest/node_modules/@types/babel__template/index.d.ts": {
+        "version": "3e0a34f7207431d967dc32d593d1cda0c23975e9484bc8895b39d96ffca4a0d8",
+        "signature": "3e0a34f7207431d967dc32d593d1cda0c23975e9484bc8895b39d96ffca4a0d8"
+      },
+      "/users/simen/repos/jest/node_modules/@types/babel__core/index.d.ts": {
+        "version": "9cf8e9d6b55ca6db5442191b1a107c613a59987692cfd59dc62e7be40ecbb326",
+        "signature": "9cf8e9d6b55ca6db5442191b1a107c613a59987692cfd59dc62e7be40ecbb326"
+      },
+      "/users/simen/repos/jest/node_modules/@types/braces/index.d.ts": {
+        "version": "90b8546eff85ca8f4358d2bb3b01bdf53f8411a5ffa1099639bb3162acd87dc2",
+        "signature": "90b8546eff85ca8f4358d2bb3b01bdf53f8411a5ffa1099639bb3162acd87dc2"
+      },
+      "/users/simen/repos/jest/node_modules/@types/resolve/index.d.ts": {
+        "version": "2880728492d6a6baa55411d14cc42fa55714a24b1d1d27ff9a8a610abd47c761",
+        "signature": "2880728492d6a6baa55411d14cc42fa55714a24b1d1d27ff9a8a610abd47c761"
+      },
+      "/users/simen/repos/jest/node_modules/@types/browser-resolve/index.d.ts": {
+        "version": "19484461b0cb456476817ad08e2257ffee11322e948056306728d1f295d0215b",
+        "signature": "19484461b0cb456476817ad08e2257ffee11322e948056306728d1f295d0215b"
+      },
+      "/users/simen/repos/jest/node_modules/@types/camelcase/index.d.ts": {
+        "version": "29daf223c4be92a1589d1713399c10da1e8a753775f4f91a43ef3eac8939d7e0",
+        "signature": "29daf223c4be92a1589d1713399c10da1e8a753775f4f91a43ef3eac8939d7e0"
+      },
+      "/users/simen/repos/jest/node_modules/@types/cheerio/index.d.ts": {
+        "version": "120802644b63470a550558123f881a75e4abc51582bed2ff09bd9ba3aedfab0f",
+        "signature": "120802644b63470a550558123f881a75e4abc51582bed2ff09bd9ba3aedfab0f"
+      },
+      "/users/simen/repos/jest/node_modules/@types/co/index.d.ts": {
+        "version": "4f9e95850d3bfb7d3b8d00f472844c99212c774131929ee7e6abdfb3b2b58913",
+        "signature": "4f9e95850d3bfb7d3b8d00f472844c99212c774131929ee7e6abdfb3b2b58913"
+      },
+      "/users/simen/repos/jest/node_modules/@types/convert-source-map/index.d.ts": {
+        "version": "bfce9da63dcb9b5b76e9f987c7d08669b42a96fce1ab5131f9e13aa6580d6303",
+        "signature": "bfce9da63dcb9b5b76e9f987c7d08669b42a96fce1ab5131f9e13aa6580d6303"
+      },
+      "/users/simen/repos/jest/node_modules/@types/detect-newline/index.d.ts": {
+        "version": "36d80b05b646328dc505e314013ef291cc74bb3236c5914b6d1edcb141ae0d49",
+        "signature": "36d80b05b646328dc505e314013ef291cc74bb3236c5914b6d1edcb141ae0d49"
+      },
+      "/users/simen/repos/jest/node_modules/@types/execa/index.d.ts": {
+        "version": "fc8a811b5942987b94c52771bf3249b89b9ecfc502e035b09fae113912d395cd",
+        "signature": "fc8a811b5942987b94c52771bf3249b89b9ecfc502e035b09fae113912d395cd"
+      },
+      "/users/simen/repos/jest/node_modules/@types/exit/index.d.ts": {
+        "version": "4599c83a128a78ace6a6259794faaef0a0afec0c32c7e6be91a6e8c076a8b27b",
+        "signature": "4599c83a128a78ace6a6259794faaef0a0afec0c32c7e6be91a6e8c076a8b27b"
+      },
+      "/users/simen/repos/jest/node_modules/@types/fast-json-stable-stringify/index.d.ts": {
+        "version": "74934468bdfc94d16d85221e66aafd556356457d4ce49660724a9fddde23e38b",
+        "signature": "74934468bdfc94d16d85221e66aafd556356457d4ce49660724a9fddde23e38b"
+      },
+      "/users/simen/repos/jest/node_modules/@types/fb-watchman/index.d.ts": {
+        "version": "cf8e3bdf8eb511293cfdab3619047e0227a48fd6cc368ed8789e74d1129210b7",
+        "signature": "cf8e3bdf8eb511293cfdab3619047e0227a48fd6cc368ed8789e74d1129210b7"
+      },
+      "/users/simen/repos/jest/node_modules/@types/fsevents/index.d.ts": {
+        "version": "2863336c8f4ffa12c0054211243c7e379c4f9f1043237896f5938fbe9c703423",
+        "signature": "2863336c8f4ffa12c0054211243c7e379c4f9f1043237896f5938fbe9c703423"
+      },
+      "/users/simen/repos/jest/node_modules/@types/minimatch/index.d.ts": {
+        "version": "1d1e6bd176eee5970968423d7e215bfd66828b6db8d54d17afec05a831322633",
+        "signature": "1d1e6bd176eee5970968423d7e215bfd66828b6db8d54d17afec05a831322633"
+      },
+      "/users/simen/repos/jest/node_modules/@types/glob/index.d.ts": {
+        "version": "d852d6282c8dc8156d26d6bda83ab4bde51fee05ba2fe0ecdc165ddda009d3ee",
+        "signature": "d852d6282c8dc8156d26d6bda83ab4bde51fee05ba2fe0ecdc165ddda009d3ee"
+      },
+      "/users/simen/repos/jest/node_modules/@types/graceful-fs/index.d.ts": {
+        "version": "2c7dca525f4e2e5f2b357dacb58ab6c8777995e6d505ef652bcbbf9789ac558f",
+        "signature": "2c7dca525f4e2e5f2b357dacb58ab6c8777995e6d505ef652bcbbf9789ac558f"
+      },
+      "/users/simen/repos/jest/node_modules/@types/invariant/index.d.ts": {
+        "version": "5c18eb0265371105233c17b93f023e4e67587e1122c2359292f642d504ff6ed6",
+        "signature": "5c18eb0265371105233c17b93f023e4e67587e1122c2359292f642d504ff6ed6"
+      },
+      "/users/simen/repos/jest/node_modules/@types/is-ci/index.d.ts": {
+        "version": "70254ce29ddb02cc3c7924ed91908516514d6cf1f0b026723d434911f7b8eb15",
+        "signature": "70254ce29ddb02cc3c7924ed91908516514d6cf1f0b026723d434911f7b8eb15"
+      },
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts": {
+        "version": "2e91ae1a0304062735f5d6f2e0b90d5f5bc11d73291d0a3783c79fd5ad9ac4c7",
+        "signature": "2e91ae1a0304062735f5d6f2e0b90d5f5bc11d73291d0a3783c79fd5ad9ac4c7"
+      },
+      "/users/simen/repos/jest/node_modules/source-map/source-map.d.ts": {
+        "version": "2887592574fcdfd087647c539dcb0fbe5af2521270dad4a37f9d17c16190d579",
+        "signature": "2887592574fcdfd087647c539dcb0fbe5af2521270dad4a37f9d17c16190d579"
+      },
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-instrument/index.d.ts": {
+        "version": "9694ef1030afd65e893cb17a079c3c4656e5a49d808aaf79dc21847644cd84ae",
+        "signature": "9694ef1030afd65e893cb17a079c3c4656e5a49d808aaf79dc21847644cd84ae"
+      },
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-report/index.d.ts": {
+        "version": "2f09595b02761370e89674ab34ac157620af1009a2359bbac1cb63597e090897",
+        "signature": "2f09595b02761370e89674ab34ac157620af1009a2359bbac1cb63597e090897"
+      },
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-source-maps/index.d.ts": {
+        "version": "a69c1315f7185ceb66e30b15f3bd82719ad9bead4ca005a814ed4525ec3d2b9c",
+        "signature": "a69c1315f7185ceb66e30b15f3bd82719ad9bead4ca005a814ed4525ec3d2b9c"
+      },
+      "/users/simen/repos/jest/node_modules/@types/istanbul-reports/index.d.ts": {
+        "version": "93b59bc67329d5add033e3198583c39aa939cef891e6a2b763e0bea2b514ea9b",
+        "signature": "93b59bc67329d5add033e3198583c39aa939cef891e6a2b763e0bea2b514ea9b"
+      },
+      "/users/simen/repos/jest/node_modules/@types/jest/index.d.ts": {
+        "version": "cdba72f1dde58c305154f27b7b283861dea0e234d08de66d0727c401055b5f45",
+        "signature": "cdba72f1dde58c305154f27b7b283861dea0e234d08de66d0727c401055b5f45"
+      },
+      "/users/simen/repos/jest/node_modules/parse5/lib/index.d.ts": {
+        "version": "a4dabe31affaddfb38db79a34eef46f94735452b9709cfedb02cb57aedd4041e",
+        "signature": "a4dabe31affaddfb38db79a34eef46f94735452b9709cfedb02cb57aedd4041e"
+      },
+      "/users/simen/repos/jest/node_modules/@types/tough-cookie/index.d.ts": {
+        "version": "8437256e19bbeda3c9e062d18971002545c486b1f40e3cfa10199c89808264b7",
+        "signature": "8437256e19bbeda3c9e062d18971002545c486b1f40e3cfa10199c89808264b7"
+      },
+      "/users/simen/repos/jest/node_modules/@types/jsdom/index.d.ts": {
+        "version": "1c7c01a246b7bbff6509272e0571f88ee92de55a0cde6fcf070cbefce12ecb42",
+        "signature": "1c7c01a246b7bbff6509272e0571f88ee92de55a0cde6fcf070cbefce12ecb42"
+      },
+      "/users/simen/repos/jest/node_modules/@types/json5/index.d.ts": {
+        "version": "96d14f21b7652903852eef49379d04dbda28c16ed36468f8c9fa08f7c14c9538",
+        "signature": "96d14f21b7652903852eef49379d04dbda28c16ed36468f8c9fa08f7c14c9538"
+      },
+      "/users/simen/repos/jest/node_modules/@types/leven/index.d.ts": {
+        "version": "04c35dcd565e453933736f0e60f8c00abb4ca1725088297726bccb39a7e73d77",
+        "signature": "04c35dcd565e453933736f0e60f8c00abb4ca1725088297726bccb39a7e73d77"
+      },
+      "/users/simen/repos/jest/node_modules/@types/merge-stream/index.d.ts": {
+        "version": "4454ca76bf9c8af7ae01f939f13c1de7ad9e44ddd9b8d4ce67c7b8d99a966005",
+        "signature": "4454ca76bf9c8af7ae01f939f13c1de7ad9e44ddd9b8d4ce67c7b8d99a966005"
+      },
+      "/users/simen/repos/jest/node_modules/@types/micromatch/index.d.ts": {
+        "version": "af1ce94e5c3d99a5bd4d91d53555d2e58c1a60adc5a8a719d1f8fe25d3dad91b",
+        "signature": "af1ce94e5c3d99a5bd4d91d53555d2e58c1a60adc5a8a719d1f8fe25d3dad91b"
+      },
+      "/users/simen/repos/jest/node_modules/@types/mkdirp/index.d.ts": {
+        "version": "6396a7a06f3ef0fc31a7c89330e015146b78a2256b030c698b6d404594c37b8f",
+        "signature": "6396a7a06f3ef0fc31a7c89330e015146b78a2256b030c698b6d404594c37b8f"
+      },
+      "/users/simen/repos/jest/node_modules/@types/natural-compare/index.d.ts": {
+        "version": "0b43ef177fe0603000534333c8033484a404f210fbfb3bb72b64dd5f81123c45",
+        "signature": "0b43ef177fe0603000534333c8033484a404f210fbfb3bb72b64dd5f81123c45"
+      },
+      "/users/simen/repos/jest/node_modules/@types/node-notifier/index.d.ts": {
+        "version": "32cbb3027f5dbc78e276cf5a6ec8e0cbd1344784fbe3a4462fa1f76fed29acee",
+        "signature": "32cbb3027f5dbc78e276cf5a6ec8e0cbd1344784fbe3a4462fa1f76fed29acee"
+      },
+      "/users/simen/repos/jest/node_modules/@types/p-each-series/index.d.ts": {
+        "version": "a2c7d0070cce682da0e263e41ffeb99eef4ab9107fd21e7e6a8903aaf002c04e",
+        "signature": "a2c7d0070cce682da0e263e41ffeb99eef4ab9107fd21e7e6a8903aaf002c04e"
+      },
+      "/users/simen/repos/jest/node_modules/@types/prettier/index.d.ts": {
+        "version": "f116b298d1e7de26e143c247286b9e9af97b91989db433925a8de131ef53f8bf",
+        "signature": "f116b298d1e7de26e143c247286b9e9af97b91989db433925a8de131ef53f8bf"
+      },
+      "/users/simen/repos/jest/node_modules/@types/prompts/index.d.ts": {
+        "version": "2015e875eca74f2a9ba867c0704b90d0f5fb1f388dc489d823ec9916500e6efe",
+        "signature": "2015e875eca74f2a9ba867c0704b90d0f5fb1f388dc489d823ec9916500e6efe"
+      },
+      "/users/simen/repos/jest/node_modules/@types/prop-types/index.d.ts": {
+        "version": "84af1dcde6fe6d8f4b235efd6b95630bb383b0c8a34e0a80e4aa4813111302b6",
+        "signature": "84af1dcde6fe6d8f4b235efd6b95630bb383b0c8a34e0a80e4aa4813111302b6"
+      },
+      "/users/simen/repos/jest/node_modules/@types/q/index.d.ts": {
+        "version": "02439065a1cba43475b9eca281050cd8f1fe1ebaeaed98e79fcb48b19aeedd98",
+        "signature": "02439065a1cba43475b9eca281050cd8f1fe1ebaeaed98e79fcb48b19aeedd98"
+      },
+      "/users/simen/repos/jest/node_modules/@types/react/global.d.ts": {
+        "version": "9712934d887c9608d984ef998637694e385c6e33786801ed80532648df155b9f",
+        "signature": "9712934d887c9608d984ef998637694e385c6e33786801ed80532648df155b9f"
+      },
+      "/users/simen/repos/jest/node_modules/csstype/index.d.ts": {
+        "version": "63d356e2fcd3bfa7e59b205cabe2a71b683422ddfa3ab2cf520c0b8eaa15004f",
+        "signature": "63d356e2fcd3bfa7e59b205cabe2a71b683422ddfa3ab2cf520c0b8eaa15004f"
+      },
+      "/users/simen/repos/jest/node_modules/@types/react/index.d.ts": {
+        "version": "6cd59b5c56310325999aba12752002b85605b3a866b5851ca800dfe539f68afa",
+        "signature": "6cd59b5c56310325999aba12752002b85605b3a866b5851ca800dfe539f68afa"
+      },
+      "/users/simen/repos/jest/node_modules/@types/react-is/index.d.ts": {
+        "version": "52d72d2f44c2207d9517d8a9f2f5ed95334c507b40b4859844ec46ef6fbd47ba",
+        "signature": "52d72d2f44c2207d9517d8a9f2f5ed95334c507b40b4859844ec46ef6fbd47ba"
+      },
+      "/users/simen/repos/jest/node_modules/@types/react-test-renderer/index.d.ts": {
+        "version": "a36e8ad7ff470f0159243e07bf24b849887fdea8401ee6722d2884f109f92e05",
+        "signature": "a36e8ad7ff470f0159243e07bf24b849887fdea8401ee6722d2884f109f92e05"
+      },
+      "/users/simen/repos/jest/node_modules/@types/rimraf/index.d.ts": {
+        "version": "020902fda20b7d8937c30699f217e198054a0d0d5c1c309dab7d588adadfcade",
+        "signature": "020902fda20b7d8937c30699f217e198054a0d0d5c1c309dab7d588adadfcade"
+      },
+      "/users/simen/repos/jest/node_modules/@types/sane/index.d.ts": {
+        "version": "7ffbbe2be93d54a1ca8161dd1578b57f313f1af7a6e777c81bd1e7f0c03a035c",
+        "signature": "7ffbbe2be93d54a1ca8161dd1578b57f313f1af7a6e777c81bd1e7f0c03a035c"
+      },
+      "/users/simen/repos/jest/node_modules/@types/semver/index.d.ts": {
+        "version": "bb95470284971cf0cce66a339224fa5db412729bf3e22c2c02a1c343fd4444ab",
+        "signature": "bb95470284971cf0cce66a339224fa5db412729bf3e22c2c02a1c343fd4444ab"
+      },
+      "/users/simen/repos/jest/node_modules/@types/slash/index.d.ts": {
+        "version": "fc8d3ba0ae8c245550744fd55c86598a80bbb18895380d6c81bc72e2b0f3c8b3",
+        "signature": "fc8d3ba0ae8c245550744fd55c86598a80bbb18895380d6c81bc72e2b0f3c8b3"
+      },
+      "/users/simen/repos/jest/node_modules/@types/source-map-support/index.d.ts": {
+        "version": "d29d1f3e137177ba52a66af71323d485a59fc3a37d488e7963be8317c4575330",
+        "signature": "d29d1f3e137177ba52a66af71323d485a59fc3a37d488e7963be8317c4575330"
+      },
+      "/users/simen/repos/jest/node_modules/@types/stack-utils/index.d.ts": {
+        "version": "41422586881bcd739b4e62d9b91cd29909f8572aa3e3cdf316b7c50f14708d49",
+        "signature": "41422586881bcd739b4e62d9b91cd29909f8572aa3e3cdf316b7c50f14708d49"
+      },
+      "/users/simen/repos/jest/node_modules/@types/string-length/index.d.ts": {
+        "version": "2d27ccc48faede8617547595ecc083e9f88f4e46d9c42558dcc45b62aed4566c",
+        "signature": "2d27ccc48faede8617547595ecc083e9f88f4e46d9c42558dcc45b62aed4566c"
+      },
+      "/users/simen/repos/jest/node_modules/@types/strip-ansi/index.d.ts": {
+        "version": "7e66707d2c950d1c30cd829599baddbbe50b698936ae0e7e992dcc31ddc16b8e",
+        "signature": "7e66707d2c950d1c30cd829599baddbbe50b698936ae0e7e992dcc31ddc16b8e"
+      },
+      "/users/simen/repos/jest/node_modules/@types/strip-bom/index.d.ts": {
+        "version": "4006c872e38a2c4e09c593bc0cdd32b7b4f5c4843910bea0def631c483fff6c5",
+        "signature": "4006c872e38a2c4e09c593bc0cdd32b7b4f5c4843910bea0def631c483fff6c5"
+      },
+      "/users/simen/repos/jest/node_modules/@types/supports-color/index.d.ts": {
+        "version": "6408b7a9bb4010843671c518cef09c3e42e39a344be5053a80afbfb425192478",
+        "signature": "6408b7a9bb4010843671c518cef09c3e42e39a344be5053a80afbfb425192478"
+      },
+      "/users/simen/repos/jest/node_modules/@types/weak/index.d.ts": {
+        "version": "05eeb39f6b7953fcc17a6b114308361d905ee1b2ca5451428c856c23f3872bda",
+        "signature": "05eeb39f6b7953fcc17a6b114308361d905ee1b2ca5451428c856c23f3872bda"
+      },
+      "/users/simen/repos/jest/node_modules/@types/write-file-atomic/index.d.ts": {
+        "version": "cd82e1d2d0a3d996ddc60a3ff716bb45266fb8652fa0e81d2b3870c2675be05b",
+        "signature": "cd82e1d2d0a3d996ddc60a3ff716bb45266fb8652fa0e81d2b3870c2675be05b"
+      },
+      "/users/simen/repos/jest/node_modules/@types/yargs/index.d.ts": {
+        "version": "6ec50ffd51852bd5fbbd5739bdfbae45bbeab3e4eb9fcc1f463de0e42930f23a",
+        "signature": "6ec50ffd51852bd5fbbd5739bdfbae45bbeab3e4eb9fcc1f463de0e42930f23a"
+      }
+    },
+    "options": {
+      "target": 4,
+      "module": 1,
+      "lib": [
+        "lib.dom.d.ts",
+        "lib.es2017.d.ts"
+      ],
+      "declaration": true,
+      "declarationMap": true,
+      "composite": true,
+      "emitDeclarationOnly": true,
+      "strict": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "moduleResolution": 2,
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "rootDir": "/Users/simen/repos/jest/packages/jest-mock/src",
+      "outDir": "/Users/simen/repos/jest/packages/jest-mock/build",
+      "watch": true,
+      "configFilePath": "/Users/simen/repos/jest/packages/jest-mock/tsconfig.json"
+    },
+    "referencedMap": {
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es5.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2016.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.dom.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.core.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.collection.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.generator.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.iterable.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.promise.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.proxy.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.reflect.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.symbol.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2016.array.include.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.object.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.string.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.intl.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.intl.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.promise.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.regexp.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.esnext.intl.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.esnext.bigint.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/config.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/console.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/sourcemaps.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/testresult.d.ts": [
+        "/users/simen/repos/jest/packages/jest-types/build/console.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/mocks.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/prettyformat.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/matchers.d.ts": [
+        "/users/simen/repos/jest/packages/jest-types/build/config.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/index.d.ts": [
+        "/users/simen/repos/jest/packages/jest-types/build/config.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/console.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/sourcemaps.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/testresult.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/mocks.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/prettyformat.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/matchers.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-mock/src/index.ts": [
+        "/users/simen/repos/jest/packages/jest-types/build/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/globals.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/assert.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/async_hooks.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/buffer.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/events/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/child_process.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/cluster.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/child_process.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/console.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/constants.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/crypto.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/dgram.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/domain.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/events.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/http.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/http2.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/tls.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/http.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/https.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/tls.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/http.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/inspector.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/module.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/net.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/os.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/path.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/perf_hooks.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/async_hooks.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/process.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/punycode.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/querystring.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/readline.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/repl.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/readline.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/vm.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/string_decoder.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/timers.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/tls.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/crypto.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/trace_events.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/tty.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/url.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/querystring.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/util.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/v8.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/vm.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/worker_threads.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/zlib.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/base.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/globals.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/assert.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/async_hooks.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/buffer.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/child_process.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/cluster.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/console.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/constants.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/crypto.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/dgram.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/domain.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/http.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/http2.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/https.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/inspector.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/module.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/os.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/path.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/perf_hooks.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/process.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/punycode.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/querystring.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/readline.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/repl.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/string_decoder.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/timers.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/tls.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/trace_events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/tty.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/v8.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/vm.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/worker_threads.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/zlib.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/globals.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/globals.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/base.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/globals.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/ansi-escapes/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/ansi-regex/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/color-name/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/ansi-styles/escape-code.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/color-name/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/ansi-styles/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/ansi-styles/escape-code.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/anymatch/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel-types/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel__code-frame/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel__generator/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel__traverse/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@babel/parser/typings/babel-parser.d.ts": [
+        "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel__template/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@babel/parser/typings/babel-parser.d.ts",
+        "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel__core/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/babel__generator/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/babel__traverse/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/babel__template/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@babel/parser/typings/babel-parser.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/braces/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/resolve/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/browser-resolve/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/resolve/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/camelcase/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/cheerio/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/co/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/convert-source-map/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/detect-newline/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/execa/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/child_process.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/exit/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/fast-json-stable-stringify/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/fb-watchman/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/fsevents/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/minimatch/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/glob/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/minimatch/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/graceful-fs/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/invariant/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/is-ci/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/source-map/source-map.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-instrument/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts",
+        "/users/simen/repos/jest/node_modules/source-map/source-map.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/babel-types/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-report/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-source-maps/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts",
+        "/users/simen/repos/jest/node_modules/source-map/source-map.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/istanbul-reports/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/istanbul-lib-report/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/jest/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/parse5/lib/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/tough-cookie/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/jsdom/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/parse5/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/tough-cookie/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/vm.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/json5/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/leven/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/merge-stream/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/micromatch/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/braces/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/mkdirp/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/natural-compare/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node-notifier/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node-notifier/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/p-each-series/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/prettier/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/prompts/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/prop-types/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/q/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/react/global.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/csstype/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/react/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/csstype/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/prop-types/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/react/global.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/react-is/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/react/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/react-test-renderer/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/react/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/rimraf/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/glob/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/sane/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/semver/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/slash/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/source-map-support/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/stack-utils/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/string-length/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/strip-ansi/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/strip-bom/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/supports-color/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/weak/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/write-file-atomic/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/yargs/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ]
+    },
+    "exportedModulesMap": {
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es5.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2016.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.dom.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.core.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.collection.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.generator.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.iterable.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.promise.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.proxy.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.reflect.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.symbol.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2016.array.include.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.object.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.string.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.intl.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.intl.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.promise.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.regexp.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.esnext.intl.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.esnext.bigint.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/config.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/index.d.ts": [
+        "/users/simen/repos/jest/packages/jest-types/build/config.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/console.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/sourcemaps.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/testresult.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/mocks.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/prettyformat.d.ts",
+        "/users/simen/repos/jest/packages/jest-types/build/matchers.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-mock/src/index.ts": [
+        "/users/simen/repos/jest/packages/jest-types/build/index.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/matchers.d.ts": [
+        "/users/simen/repos/jest/packages/jest-types/build/config.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/console.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/testresult.d.ts": [
+        "/users/simen/repos/jest/packages/jest-types/build/console.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/sourcemaps.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/mocks.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/packages/jest-types/build/prettyformat.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/globals.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/assert.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/base.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/globals.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/assert.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/async_hooks.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/buffer.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/child_process.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/cluster.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/console.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/constants.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/crypto.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/dgram.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/domain.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/http.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/http2.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/https.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/inspector.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/module.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/os.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/path.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/perf_hooks.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/process.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/punycode.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/querystring.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/readline.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/repl.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/string_decoder.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/timers.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/tls.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/trace_events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/tty.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/v8.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/vm.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/worker_threads.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/zlib.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/base.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/globals.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/write-file-atomic/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/weak/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/source-map-support/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/sane/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/rimraf/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/glob/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node-notifier/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node-notifier/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/mkdirp/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/merge-stream/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/jsdom/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/parse5/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/tough-cookie/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/vm.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/parse5/lib/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/graceful-fs/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/glob/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/minimatch/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/fsevents/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/execa/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/child_process.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/resolve/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/browser-resolve/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/resolve/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/ansi-escapes/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/async_hooks.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/perf_hooks.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/async_hooks.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/buffer.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/events/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/child_process.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/cluster.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/child_process.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/console.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/constants.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/crypto.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/tls.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/crypto.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/https.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/tls.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/http.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/http2.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/tls.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/http.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/dgram.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/net.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/tty.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/http.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/domain.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/events.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/fb-watchman/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/worker_threads.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/zlib.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/readline.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/repl.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/readline.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/vm.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/inspector.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/module.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/os.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/path.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/process.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/punycode.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/querystring.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/url.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/querystring.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/string_decoder.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/timers.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/trace_events.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/util.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/yargs/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/supports-color/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/strip-bom/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/strip-ansi/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/string-length/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/stack-utils/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/slash/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/semver/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/react-test-renderer/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/react/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/react-is/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/react/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/react/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/csstype/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/prop-types/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/react/global.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/csstype/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/react/global.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/q/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/prop-types/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/prompts/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/prettier/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/p-each-series/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/natural-compare/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/micromatch/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/braces/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/leven/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/json5/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/tough-cookie/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/jest/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/istanbul-reports/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/istanbul-lib-report/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-source-maps/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts",
+        "/users/simen/repos/jest/node_modules/source-map/source-map.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-report/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-instrument/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts",
+        "/users/simen/repos/jest/node_modules/source-map/source-map.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/babel-types/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/source-map/source-map.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/is-ci/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/invariant/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/minimatch/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/fast-json-stable-stringify/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/exit/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/detect-newline/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/convert-source-map/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/co/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/cheerio/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/camelcase/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/braces/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel__core/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/babel__generator/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/babel__traverse/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/babel__template/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@babel/parser/typings/babel-parser.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel__template/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@babel/parser/typings/babel-parser.d.ts",
+        "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@babel/parser/typings/babel-parser.d.ts": [
+        "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel__traverse/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel__generator/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel__code-frame/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/babel-types/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/anymatch/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/ansi-styles/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/ansi-styles/escape-code.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/ansi-styles/escape-code.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/color-name/index.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/color-name/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/ansi-regex/index.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/globals.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/globals.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/vm.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "/users/simen/repos/jest/node_modules/@types/node/v8.d.ts": [
+        "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+        "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts"
+      ]
+    },
+    "semanticDiagnosticsPerFile": [
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es5.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2016.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.dom.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.core.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.collection.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.generator.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.iterable.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.promise.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.proxy.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.reflect.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.symbol.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2016.array.include.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.object.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.string.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.intl.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.intl.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.promise.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.es2018.regexp.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.esnext.intl.d.ts",
+      "/users/simen/repos/jest/node_modules/typescript/lib/lib.esnext.bigint.d.ts",
+      "/users/simen/repos/jest/packages/jest-types/build/config.d.ts",
+      "/users/simen/repos/jest/packages/jest-types/build/console.d.ts",
+      "/users/simen/repos/jest/packages/jest-types/build/sourcemaps.d.ts",
+      "/users/simen/repos/jest/packages/jest-types/build/testresult.d.ts",
+      "/users/simen/repos/jest/packages/jest-types/build/mocks.d.ts",
+      "/users/simen/repos/jest/packages/jest-types/build/prettyformat.d.ts",
+      "/users/simen/repos/jest/packages/jest-types/build/matchers.d.ts",
+      "/users/simen/repos/jest/packages/jest-types/build/index.d.ts",
+      "/users/simen/repos/jest/packages/jest-mock/src/index.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/globals.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/assert.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/async_hooks.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/buffer.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/events/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/child_process.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/cluster.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/console.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/constants.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/crypto.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/dgram.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/dns.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/domain.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/events.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/fs.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/http.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/http2.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/https.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/inspector.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/module.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/net.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/os.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/path.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/perf_hooks.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/process.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/punycode.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/querystring.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/readline.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/repl.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/stream.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/string_decoder.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/timers.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/tls.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/trace_events.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/tty.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/url.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/util.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/v8.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/vm.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/worker_threads.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/zlib.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/base.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/util.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/globals.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node/ts3.2/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/ansi-escapes/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/ansi-regex/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/color-name/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/ansi-styles/escape-code.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/ansi-styles/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/anymatch/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/babel-types/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/babel__code-frame/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@babel/types/lib/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/babel__generator/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/babel__traverse/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@babel/parser/typings/babel-parser.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/babel__template/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/babel__core/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/braces/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/resolve/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/browser-resolve/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/camelcase/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/cheerio/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/co/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/convert-source-map/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/detect-newline/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/execa/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/exit/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/fast-json-stable-stringify/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/fb-watchman/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/fsevents/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/minimatch/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/glob/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/graceful-fs/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/invariant/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/is-ci/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-coverage/index.d.ts",
+      "/users/simen/repos/jest/node_modules/source-map/source-map.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-instrument/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-report/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/istanbul-lib-source-maps/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/istanbul-reports/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/jest/index.d.ts",
+      "/users/simen/repos/jest/node_modules/parse5/lib/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/tough-cookie/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/jsdom/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/json5/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/leven/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/merge-stream/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/micromatch/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/mkdirp/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/natural-compare/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/node-notifier/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/p-each-series/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/prettier/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/prompts/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/prop-types/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/q/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/react/global.d.ts",
+      "/users/simen/repos/jest/node_modules/csstype/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/react/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/react-is/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/react-test-renderer/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/rimraf/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/sane/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/semver/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/slash/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/source-map-support/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/stack-utils/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/string-length/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/strip-ansi/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/strip-bom/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/supports-color/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/weak/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/write-file-atomic/index.d.ts",
+      "/users/simen/repos/jest/node_modules/@types/yargs/index.d.ts"
+    ]
+  },
+  "version": "3.4.1"
+}

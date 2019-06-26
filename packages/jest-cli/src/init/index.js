@@ -14,7 +14,7 @@ import prompts from 'prompts';
 import {sync as realpath} from 'realpath-native';
 import defaultQuestions, {testScriptQuestion} from './questions';
 import {NotFoundPackageJsonError, MalformedPackageJsonError} from './errors';
-import {PACKAGE_JSON, JEST_CONFIG} from '../../constants';
+import {PACKAGE_JSON, JEST_CONFIG} from './constants';
 import generateConfigFile from './generate_config_file';
 import modifyPackageJson from './modify_package_json';
 

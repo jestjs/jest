@@ -7,7 +7,19 @@
 
 import {Script} from 'vm';
 import {RawSourceMap} from 'source-map';
-import {Path, ProjectConfig} from './Config';
+import {Config} from '@jest/types';
+
+export type Options = Pick<
+  Config.GlobalConfig,
+  | 'collectCoverage'
+  | 'collectCoverageFrom'
+  | 'collectCoverageOnlyFrom'
+  | 'extraGlobals'
+> & {
+  changedFiles: Set<Config.Path> | undefined;
+  isCoreModule?: boolean;
+  isInternalModule?: boolean;
+};
 
 // https://stackoverflow.com/a/48216010/1850276
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -26,7 +38,7 @@ export type TransformedSource = {
 export type TransformResult = {
   script: Script;
   mapCoverage: boolean;
-  sourceMapPath?: string;
+  sourceMapPath: string | null;
 };
 
 export type TransformOptions = {
@@ -34,26 +46,26 @@ export type TransformOptions = {
 };
 
 export type CacheKeyOptions = {
-  config: ProjectConfig;
+  config: Config.ProjectConfig;
   instrument: boolean;
   rootDir: string;
 };
 
-export type Transformer = {
+export interface Transformer {
   canInstrument?: boolean;
-  createTransformer?: (options: any) => Transformer;
+  createTransformer?: (options?: any) => Transformer;
 
   getCacheKey: (
     fileData: string,
-    filePath: Path,
+    filePath: Config.Path,
     configStr: string,
     options: CacheKeyOptions,
   ) => string;
 
   process: (
     sourceText: string,
-    sourcePath: Path,
-    config: ProjectConfig,
+    sourcePath: Config.Path,
+    config: Config.ProjectConfig,
     options?: TransformOptions,
   ) => string | TransformedSource;
-};
+}

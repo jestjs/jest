@@ -11,7 +11,7 @@
 import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
-import init from '../init';
+import init from '../';
 
 jest.mock('prompts');
 jest.mock('../../../../jest-config/build/getCacheDirectory', () => () =>
