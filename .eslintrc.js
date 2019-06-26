@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const customImportResolver = require.resolve('./eslintImportResolver');
-
 module.exports = {
   extends: [
     './packages/eslint-config-fb-strict/index.js',
@@ -20,6 +18,8 @@ module.exports = {
       parser: '@typescript-eslint/parser',
       plugins: ['@typescript-eslint/eslint-plugin'],
       rules: {
+        '@typescript-eslint/array-type': ['error', 'generic'],
+        '@typescript-eslint/ban-types': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
           {argsIgnorePattern: '^_'},
@@ -64,29 +64,9 @@ module.exports = {
       },
     },
     {
-      files: 'types/**/*',
+      files: ['packages/jest-types/**/*'],
       rules: {
         'import/no-extraneous-dependencies': 0,
-      },
-    },
-    {
-      files: [
-        'e2e/__tests__/**/*',
-        'packages/babel-jest/**/*.test.js',
-        'packages/babel-plugin-jest-hoist/**/*.test.js',
-        'packages/babel-preset-jest/**/*.test.js',
-        'packages/eslint-config-fb-strict/**/*.test.js',
-        'packages/eslint-plugin-jest/**/*.test.js',
-        'packages/jest-changed-files/**/*.test.js',
-        'packages/jest-circus/**/*.test.js',
-        'packages/jest-diff/**/*.test.js',
-        'packages/jest-docblock/**/*.test.js',
-        'packages/jest-editor-support/**/*.test.js',
-        'packages/jest/**/*.test.js',
-        'packages/pretty-format/**/*.test.js',
-      ],
-      rules: {
-        'flowtype/require-valid-file-annotation': [2, 'always'],
       },
     },
     {
@@ -131,11 +111,6 @@ module.exports = {
   },
   settings: {
     'import/resolver': {
-      [customImportResolver]: {
-        moduleNameMapper: {
-          '^types/(.*)': './types/$1',
-        },
-      },
       'eslint-import-resolver-typescript': true,
     },
   },

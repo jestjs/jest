@@ -6,8 +6,7 @@
  *
  */
 
-import getType from 'jest-get-type';
-import {escapeStrForRegex} from 'jest-regex-util';
+import getType, {isPrimitive} from 'jest-get-type';
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -26,6 +25,11 @@ import {
   MatcherHintOptions,
 } from 'jest-matcher-utils';
 import {MatchersObject, MatcherState} from './types';
+import {
+  printReceivedArrayContainExpectedItem,
+  printReceivedStringContainExpectedResult,
+  printReceivedStringContainExpectedSubstring,
+} from './print';
 import {
   getObjectSubset,
   getPath,
@@ -216,45 +220,62 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeInstanceOf(this: MatcherState, received: any, constructor: Function) {
-    const constType = getType(constructor);
+  toBeInstanceOf(this: MatcherState, received: any, expected: Function) {
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
 
-    if (constType !== 'function') {
+    if (typeof expected !== 'function') {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('.toBeInstanceOf', undefined, undefined, {
-            isNot: this.isNot,
-          }),
+          matcherHint('toBeInstanceOf', undefined, undefined, options),
           `${EXPECTED_COLOR('expected')} value must be a function`,
-          printWithType('Expected', constructor, printExpected),
+          printWithType('Expected', expected, printExpected),
         ),
       );
     }
-    const pass = received instanceof constructor;
+
+    const pass = received instanceof expected;
+
+    const NAME_IS_NOT_STRING = ' name is not a string\n';
+    const NAME_IS_EMPTY_STRING = ' name is an empty string\n';
 
     const message = pass
       ? () =>
-          matcherHint('.toBeInstanceOf', 'value', 'constructor', {
-            isNot: this.isNot,
-          }) +
+          matcherHint('toBeInstanceOf', undefined, undefined, options) +
           '\n\n' +
-          `Expected constructor: ${EXPECTED_COLOR(
-            constructor.name || String(constructor),
-          )}\n` +
+          // A truthy test for `expected.name` property has false positive for:
+          // function with a defined name property
+          // class with a static name method
+          (typeof expected.name !== 'string'
+            ? 'Expected constructor' + NAME_IS_NOT_STRING
+            : expected.name.length === 0
+            ? 'Expected constructor' + NAME_IS_EMPTY_STRING
+            : `Expected constructor: not ${EXPECTED_COLOR(expected.name)}\n`) +
           `Received value: ${printReceived(received)}`
       : () =>
-          matcherHint('.toBeInstanceOf', 'value', 'constructor', {
-            isNot: this.isNot,
-          }) +
+          matcherHint('toBeInstanceOf', undefined, undefined, options) +
           '\n\n' +
-          `Expected constructor: ${EXPECTED_COLOR(
-            constructor.name || String(constructor),
-          )}\n` +
-          `Received constructor: ${RECEIVED_COLOR(
-            received != null
-              ? received.constructor && received.constructor.name
-              : '',
-          )}\n` +
+          // A truthy test for `expected.name` property has false positive for:
+          // function with a defined name property
+          // class with a static name method
+          (typeof expected.name !== 'string'
+            ? 'Expected constructor' + NAME_IS_NOT_STRING
+            : expected.name.length === 0
+            ? 'Expected constructor' + NAME_IS_EMPTY_STRING
+            : `Expected constructor: ${EXPECTED_COLOR(expected.name)}\n`) +
+          (isPrimitive(received) || Object.getPrototypeOf(received) === null
+            ? 'Received value has no prototype\n'
+            : typeof received.constructor !== 'function'
+            ? ''
+            : typeof received.constructor.name !== 'string'
+            ? 'Received constructor' + NAME_IS_NOT_STRING
+            : received.constructor.name.length === 0
+            ? 'Received constructor' + NAME_IS_EMPTY_STRING
+            : `Received constructor: ${RECEIVED_COLOR(
+                received.constructor.name,
+              )}\n`) +
           `Received value: ${printReceived(received)}`;
 
     return {message, pass};
@@ -368,57 +389,84 @@ const matchers: MatchersObject = {
 
   toContain(
     this: MatcherState,
-    collection: ContainIterable | string,
-    value: unknown,
+    received: ContainIterable | string,
+    expected: unknown,
   ) {
-    const collectionType = getType(collection);
+    const isNot = this.isNot;
+    const options: MatcherHintOptions = {
+      comment: 'indexOf',
+      isNot,
+      promise: this.promise,
+    };
 
-    let converted: any = null;
-    if (Array.isArray(collection) || typeof collection === 'string') {
-      // strings have `indexOf` so we don't need to convert
-      // arrays have `indexOf` and we don't want to make a copy
-      converted = collection;
-    } else {
-      try {
-        converted = Array.from(collection);
-      } catch (e) {
-        throw new Error(
-          matcherErrorMessage(
-            matcherHint('.toContain', undefined, undefined, {
-              isNot: this.isNot,
-            }),
-            `${RECEIVED_COLOR(
-              'received',
-            )} value must not be null nor undefined`,
-            printWithType('Received', collection, printReceived),
-          ),
-        );
-      }
+    if (received == null) {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint('toContain', undefined, undefined, options),
+          `${RECEIVED_COLOR('received')} value must not be null nor undefined`,
+          printWithType('Received', received, printReceived),
+        ),
+      );
     }
-    // At this point, we're either a string or an Array,
-    // which was converted from an array-like structure.
-    const pass = converted.indexOf(value) != -1;
+
+    if (typeof received === 'string') {
+      const index = received.indexOf(String(expected));
+      const pass = index !== -1;
+
+      const message = () => {
+        const labelExpected = `Expected ${
+          typeof expected === 'string' ? 'substring' : 'value'
+        }`;
+        const labelReceived = 'Received string';
+        const printLabel = getLabelPrinter(labelExpected, labelReceived);
+
+        return (
+          matcherHint('toContain', undefined, undefined, options) +
+          '\n\n' +
+          `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
+            expected,
+          )}\n` +
+          `${printLabel(labelReceived)}${isNot ? '    ' : ''}${
+            isNot
+              ? printReceivedStringContainExpectedSubstring(
+                  received,
+                  index,
+                  String(expected).length,
+                )
+              : printReceived(received)
+          }`
+        );
+      };
+
+      return {message, pass};
+    }
+
+    const indexable = Array.from(received);
+    const index = indexable.indexOf(expected);
+    const pass = index !== -1;
+
     const message = () => {
-      const stringExpected = 'Expected value';
-      const stringReceived = `Received ${collectionType}`;
-      const printLabel = getLabelPrinter(stringExpected, stringReceived);
-      const suggestToContainEqual =
-        !pass &&
-        converted !== null &&
-        typeof converted !== 'string' &&
-        converted instanceof Array &&
-        converted.findIndex(item => equals(item, value, [iterableEquality])) !==
-          -1;
+      const labelExpected = 'Expected value';
+      const labelReceived = `Received ${getType(received)}`;
+      const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
       return (
-        matcherHint('.toContain', collectionType, 'value', {
-          comment: 'indexOf',
-          isNot: this.isNot,
-        }) +
+        matcherHint('toContain', undefined, undefined, options) +
         '\n\n' +
-        `${printLabel(stringExpected)}${printExpected(value)}\n` +
-        `${printLabel(stringReceived)}${printReceived(collection)}` +
-        (suggestToContainEqual ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}` : '')
+        `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
+          expected,
+        )}\n` +
+        `${printLabel(labelReceived)}${isNot ? '    ' : ''}${
+          isNot && Array.isArray(received)
+            ? printReceivedArrayContainExpectedItem(received, index)
+            : printReceived(received)
+        }` +
+        (!isNot &&
+        indexable.findIndex(item =>
+          equals(item, expected, [iterableEquality]),
+        ) !== -1
+          ? `\n\n${SUGGEST_TO_CONTAIN_EQUAL}`
+          : '')
       );
     };
 
@@ -427,47 +475,47 @@ const matchers: MatchersObject = {
 
   toContainEqual(
     this: MatcherState,
-    collection: ContainIterable,
-    value: unknown,
+    received: ContainIterable,
+    expected: unknown,
   ) {
-    const collectionType = getType(collection);
-    let converted = null;
-    if (Array.isArray(collection)) {
-      converted = collection;
-    } else {
-      try {
-        converted = Array.from(collection);
-      } catch (e) {
-        throw new Error(
-          matcherErrorMessage(
-            matcherHint('.toContainEqual', undefined, undefined, {
-              isNot: this.isNot,
-            }),
-            `${RECEIVED_COLOR(
-              'received',
-            )} value must not be null nor undefined`,
-            printWithType('Received', collection, printReceived),
-          ),
-        );
-      }
+    const isNot = this.isNot;
+    const options: MatcherHintOptions = {
+      comment: 'deep equality',
+      isNot,
+      promise: this.promise,
+    };
+
+    if (received == null) {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint('toContainEqual', undefined, undefined, options),
+          `${RECEIVED_COLOR('received')} value must not be null nor undefined`,
+          printWithType('Received', received, printReceived),
+        ),
+      );
     }
 
-    const pass =
-      converted.findIndex(item => equals(item, value, [iterableEquality])) !==
-      -1;
+    const index = Array.from(received).findIndex(item =>
+      equals(item, expected, [iterableEquality]),
+    );
+    const pass = index !== -1;
+
     const message = () => {
-      const stringExpected = 'Expected value';
-      const stringReceived = `Received ${collectionType}`;
-      const printLabel = getLabelPrinter(stringExpected, stringReceived);
+      const labelExpected = 'Expected value';
+      const labelReceived = `Received ${getType(received)}`;
+      const printLabel = getLabelPrinter(labelExpected, labelReceived);
 
       return (
-        matcherHint('.toContainEqual', collectionType, 'value', {
-          comment: 'deep equality',
-          isNot: this.isNot,
-        }) +
+        matcherHint('toContainEqual', undefined, undefined, options) +
         '\n\n' +
-        `${printLabel(stringExpected)}${printExpected(value)}\n` +
-        `${printLabel(stringReceived)}${printReceived(collection)}`
+        `${printLabel(labelExpected)}${isNot ? 'not ' : ''}${printExpected(
+          expected,
+        )}\n` +
+        `${printLabel(labelReceived)}${isNot ? '    ' : ''}${
+          isNot && Array.isArray(received)
+            ? printReceivedArrayContainExpectedItem(received, index)
+            : printReceived(received)
+        }`
       );
     };
 
@@ -655,12 +703,15 @@ const matchers: MatchersObject = {
   },
 
   toMatch(this: MatcherState, received: string, expected: string | RegExp) {
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+
     if (typeof received !== 'string') {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('.toMatch', undefined, undefined, {
-            isNot: this.isNot,
-          }),
+          matcherHint('toMatch', undefined, undefined, options),
           `${RECEIVED_COLOR('received')} value must be a string`,
           printWithType('Received', received, printReceived),
         ),
@@ -673,9 +724,7 @@ const matchers: MatchersObject = {
     ) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint('.toMatch', undefined, undefined, {
-            isNot: this.isNot,
-          }),
+          matcherHint('toMatch', undefined, undefined, options),
           `${EXPECTED_COLOR(
             'expected',
           )} value must be a string or regular expression`,
@@ -684,22 +733,45 @@ const matchers: MatchersObject = {
       );
     }
 
-    const pass = new RegExp(
-      typeof expected === 'string' ? escapeStrForRegex(expected) : expected,
-    ).test(received);
+    const pass =
+      typeof expected === 'string'
+        ? received.includes(expected)
+        : expected.test(received);
+
     const message = pass
       ? () =>
-          matcherHint('.not.toMatch') +
-          `\n\nExpected value not to match:\n` +
-          `  ${printExpected(expected)}` +
-          `\nReceived:\n` +
-          `  ${printReceived(received)}`
-      : () =>
-          matcherHint('.toMatch') +
-          `\n\nExpected value to match:\n` +
-          `  ${printExpected(expected)}` +
-          `\nReceived:\n` +
-          `  ${printReceived(received)}`;
+          typeof expected === 'string'
+            ? matcherHint('toMatch', undefined, undefined, options) +
+              '\n\n' +
+              `Expected substring: not ${printExpected(expected)}\n` +
+              `Received string:        ${printReceivedStringContainExpectedSubstring(
+                received,
+                received.indexOf(expected),
+                expected.length,
+              )}`
+            : matcherHint('toMatch', undefined, undefined, options) +
+              '\n\n' +
+              `Expected pattern: not ${printExpected(expected)}\n` +
+              `Received string:      ${printReceivedStringContainExpectedResult(
+                received,
+                typeof expected.exec === 'function'
+                  ? expected.exec(received)
+                  : null,
+              )}`
+      : () => {
+          const labelExpected = `Expected ${
+            typeof expected === 'string' ? 'substring' : 'pattern'
+          }`;
+          const labelReceived = 'Received string';
+          const printLabel = getLabelPrinter(labelExpected, labelReceived);
+
+          return (
+            matcherHint('toMatch', undefined, undefined, options) +
+            '\n\n' +
+            `${printLabel(labelExpected)}${printExpected(expected)}\n` +
+            `${printLabel(labelReceived)}${printReceived(received)}`
+          );
+        };
 
     return {message, pass};
   },

@@ -95,6 +95,8 @@ test('if utils mocked automatically', () => {
 });
 ```
 
+_Note: Node modules are automatically mocked when you have a manual mock in place (e.g.: `__mocks__/lodash.js`). More info [here](manual-mocks.html#mocking-node-modules)._
+
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`._
 
 _Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
@@ -941,6 +943,7 @@ This option allows the use of a custom results processor. This processor must be
   "numPassedTests": number,
   "numFailedTests": number,
   "numPendingTests": number,
+  "numTodoTests": number,
   "openHandles": Array<Error>,
   "testResults": [{
     "numFailingTests": number,

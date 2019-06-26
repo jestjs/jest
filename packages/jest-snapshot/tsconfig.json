@@ -5,6 +5,7 @@
     "outDir": "build"
   },
   "references": [
+    {"path": "../expect"},
     {"path": "../jest-diff"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-matcher-utils"},

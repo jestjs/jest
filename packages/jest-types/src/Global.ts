@@ -5,14 +5,32 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {CoverageMapData} from 'istanbul-lib-coverage';
+
 export type DoneFn = (reason?: string | Error) => void;
 export type TestName = string;
 export type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
 export type BlockFn = () => void;
 export type BlockName = string;
 
-// TODO Replace with actual type when `jest-each` is ready
-type Each = () => void;
+export type Col = unknown;
+export type Row = Array<Col>;
+export type Table = Array<Row>;
+export type ArrayTable = Table | Row;
+export type TemplateTable = TemplateStringsArray;
+export type TemplateData = Array<unknown>;
+export type EachTable = ArrayTable | TemplateTable;
+export type EachTestFn = (
+  ...args: Array<any>
+) => Promise<any> | void | undefined;
+
+// TODO: Get rid of this at some point
+type Jasmine = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
+
+type Each = (
+  table: EachTable,
+  ...taggedTemplateData: Array<unknown>
+) => (title: string, test: EachTestFn, timeout?: number) => void;
 
 export interface ItBase {
   (testName: TestName, fn: TestFn, timeout?: number): void;
@@ -44,19 +62,26 @@ export interface DescribeBase {
 }
 
 export interface Describe extends DescribeBase {
-  only: ItBase;
-  skip: ItBase;
+  only: DescribeBase;
+  skip: DescribeBase;
 }
 
-export interface Global {
-  it: It;
+// TODO: Maybe add `| Window` in the future?
+export interface Global extends NodeJS.Global {
+  it: ItConcurrent;
   test: ItConcurrent;
-  fit: ItBase;
+  fit: ItBase & {concurrent?: ItConcurrentBase};
   xit: ItBase;
   xtest: ItBase;
   describe: Describe;
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
+  __coverage__: CoverageMapData;
+  jasmine: Jasmine;
+  fail: () => void;
+  pending: () => void;
+  spyOn: () => void;
+  spyOnProperty: () => void;
 }
 
 declare global {
@@ -70,6 +95,7 @@ declare global {
       describe: Describe;
       xdescribe: DescribeBase;
       fdescribe: DescribeBase;
+      jasmine: Jasmine;
     }
   }
 }

@@ -7,10 +7,19 @@
  */
 
 import throat from 'throat';
+import {Config} from '@jest/types';
 
-import {Path, ChangedFilesPromise, Options, Repos} from './types';
+import {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
 import git from './git';
 import hg from './hg';
+
+type RootPromise = ReturnType<SCMAdapter['getRoot']>;
+
+export {ChangedFiles, ChangedFilesPromise} from './types';
+
+function notEmpty<T>(value: T | null | undefined): value is T {
+  return value != null;
+}
 
 // This is an arbitrary number. The main goal is to prevent projects with
 // many roots (50+) from spawning too many processes at once.
@@ -20,7 +29,7 @@ const findGitRoot = (dir: string) => mutex(() => git.getRoot(dir));
 const findHgRoot = (dir: string) => mutex(() => hg.getRoot(dir));
 
 export const getChangedFilesForRoots = async (
-  roots: Path[],
+  roots: Array<Config.Path>,
   options: Options,
 ): ChangedFilesPromise => {
   const repos = await findRepos(roots);
@@ -48,22 +57,22 @@ export const getChangedFilesForRoots = async (
   return {changedFiles, repos};
 };
 
-export const findRepos = async (roots: Path[]): Promise<Repos> => {
+export const findRepos = async (roots: Array<Config.Path>): Promise<Repos> => {
   const gitRepos = await Promise.all(
-    roots.reduce<Promise<string | null | undefined>[]>(
+    roots.reduce<Array<RootPromise>>(
       (promises, root) => promises.concat(findGitRoot(root)),
       [],
     ),
   );
   const hgRepos = await Promise.all(
-    roots.reduce<Promise<string | null | undefined>[]>(
+    roots.reduce<Array<RootPromise>>(
       (promises, root) => promises.concat(findHgRoot(root)),
       [],
     ),
   );
 
   return {
-    git: new Set(gitRepos.filter(Boolean) as string[]),
-    hg: new Set(hgRepos.filter(Boolean) as string[]),
+    git: new Set(gitRepos.filter(notEmpty)),
+    hg: new Set(hgRepos.filter(notEmpty)),
   };
 };

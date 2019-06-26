@@ -24,4 +24,9 @@ class MockStdinWatchPlugin {
     });
   }
 }
+
+/**
+ * Watch plugins are not transpiled hence why we're leaving
+ * this file out of typescript migration
+ */
 module.exports = MockStdinWatchPlugin;

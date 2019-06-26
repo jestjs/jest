@@ -1,0 +1,24 @@
+{
+  "name": "@jest/test-result",
+  "version": "24.5.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-test-result"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "@jest/console": "^24.3.0",
+    "@jest/types": "^24.5.0",
+    "@types/istanbul-lib-coverage": "^1.1.0"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
+}

@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {PrettyFormat} from '@jest/types';
+import {NewPlugin} from 'pretty-format';
 
-export const serialize: PrettyFormat.NewPlugin['serialize'] = (
+export const serialize: NewPlugin['serialize'] = (
   val,
   config,
   indentation,
@@ -42,9 +42,8 @@ export const serialize: PrettyFormat.NewPlugin['serialize'] = (
   return '[MockFunction' + nameString + ']' + callsString;
 };
 
-export const test: PrettyFormat.NewPlugin['test'] = val =>
-  val && !!val._isMockFunction;
+export const test: NewPlugin['test'] = val => val && !!val._isMockFunction;
 
-const plugin: PrettyFormat.NewPlugin = {serialize, test};
+const plugin: NewPlugin = {serialize, test};
 
 export default plugin;

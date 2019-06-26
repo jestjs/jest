@@ -195,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // JS. Let's call it progressive enhancement, sure.
   function makeScreenshotsClickable() {
     document.querySelectorAll('.blockImage img').forEach(img => {
-      console.log('-');
       img.style.cursor = 'pointer';
       img.onclick = () => {
         document.location = img.src;

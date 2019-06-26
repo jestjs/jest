@@ -6,6 +6,8 @@
 /examples/*/node_modules/
 
 /e2e/*/node_modules
+/e2e/*/.pnp
+/e2e/*/.pnp.js
 !/e2e/presets/json/node_modules
 !/e2e/presets/js/node_modules
 /e2e/transform/*/coverage
@@ -34,3 +36,5 @@ npm-debug.log
 npm-debug.log*
 yarn-error.log*
 junit.xml
+
+*.tsbuildinfo

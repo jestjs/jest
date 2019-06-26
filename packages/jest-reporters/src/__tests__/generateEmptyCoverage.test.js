@@ -3,8 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
 import istanbulCoverage from 'istanbul-lib-coverage';
@@ -13,7 +11,6 @@ import generateEmptyCoverage from '../generateEmptyCoverage';
 
 import path from 'path';
 import os from 'os';
-//$FlowFixMe: Converted to TS
 import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
 jest.mock('@jest/transform', () => ({
@@ -64,6 +61,5 @@ it('generates an empty coverage object for a file without running it', () => {
     coverage = sourceMapStore.transformCoverage(coverageMap).map;
   }
 
-  // $FlowFixMe: IDK...
   expect(coverage.data).toMatchSnapshot({path: expect.any(String)});
 });

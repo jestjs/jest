@@ -9,5 +9,15 @@ export {default as BaseWatchPlugin} from './BaseWatchPlugin';
 export {default as JestHook} from './JestHooks';
 export {default as PatternPrompt} from './PatternPrompt';
 export * from './constants';
+export {
+  AllowedConfigOptions,
+  JestHookEmitter,
+  JestHookSubscriber,
+  ScrollOptions,
+  UpdateConfigCallback,
+  UsageData,
+  WatchPlugin,
+  WatchPluginClass,
+} from './types';
 export {default as Prompt} from './lib/Prompt';
 export * from './lib/patternModeHelpers';

@@ -6,20 +6,22 @@
  */
 
 import path from 'path';
-import {Config, TestResult, Environment} from '@jest/types';
-// @ts-ignore TODO Remove ignore when jest-runtime is migrated to ts
-import Runtime from 'jest-runtime'; // eslint-disable-line import/no-extraneous-dependencies
-import {SnapshotState} from 'jest-snapshot';
+import {Config} from '@jest/types';
+import {JestEnvironment} from '@jest/environment';
+import {TestResult} from '@jest/test-result';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Runtime from 'jest-runtime';
+import {SnapshotStateType} from 'jest-snapshot';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  environment: Environment.$JestEnvironment,
+  environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
-): Promise<TestResult.TestResult> => {
+): Promise<TestResult> => {
   const {
     initialize,
     runAndTransformResultsToJestFormat,
@@ -46,7 +48,8 @@ const jestAdapter = async (
   });
 
   if (config.timers === 'fake') {
-    environment.fakeTimers.useFakeTimers();
+    // during setup, this cannot be null (and it's fine to explode if it is)
+    environment.fakeTimers!.useFakeTimers();
   }
 
   globals.beforeEach(() => {
@@ -62,7 +65,8 @@ const jestAdapter = async (
       runtime.resetAllMocks();
 
       if (config.timers === 'fake') {
-        environment.fakeTimers.useFakeTimers();
+        // during setup, this cannot be null (and it's fine to explode if it is)
+        environment.fakeTimers!.useFakeTimers();
       }
     }
 
@@ -83,9 +87,8 @@ const jestAdapter = async (
 };
 
 const _addSnapshotData = (
-  results: TestResult.TestResult,
-  // TODO: make just snapshotState: SnapshotState when `jest-snapshot` is ESM
-  snapshotState: typeof SnapshotState.prototype,
+  results: TestResult,
+  snapshotState: SnapshotStateType,
 ) => {
   results.testResults.forEach(({fullName, status}) => {
     if (status === 'pending' || status === 'failed') {

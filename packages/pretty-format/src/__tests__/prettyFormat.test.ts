@@ -30,7 +30,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an empty array', () => {
-    const val: never[] = [];
+    const val: Array<never> = [];
     expect(prettyFormat(val)).toEqual('Array []');
   });
 
@@ -223,6 +223,29 @@ describe('prettyFormat()', () => {
     const val = -0;
     expect(prettyFormat(val)).toEqual('-0');
   });
+
+  /* global BigInt */
+  if (typeof BigInt === 'function') {
+    it('prints a positive bigint', () => {
+      const val = BigInt(123);
+      expect(prettyFormat(val)).toEqual('123n');
+    });
+
+    it('prints a negative bigint', () => {
+      const val = BigInt(-123);
+      expect(prettyFormat(val)).toEqual('-123n');
+    });
+
+    it('prints zero bigint', () => {
+      const val = BigInt(0);
+      expect(prettyFormat(val)).toEqual('0n');
+    });
+
+    it('prints negative zero bigint', () => {
+      const val = BigInt(-0);
+      expect(prettyFormat(val)).toEqual('0n');
+    });
+  }
 
   it('prints a date', () => {
     const val = new Date(10e11);

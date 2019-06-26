@@ -5,19 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import BufferedConsole from './BufferedConsole';
+// TODO: Remove these exports in the next major
+import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+import {getCallsite} from '@jest/source-map';
+import {
+  BufferedConsole,
+  CustomConsole,
+  NullConsole,
+  getConsoleOutput,
+} from '@jest/console';
+import {formatTestResults} from '@jest/test-result';
 import clearLine from './clearLine';
-import CustomConsole from './CustomConsole';
 import createDirectory from './createDirectory';
 import ErrorWithStack from './ErrorWithStack';
-import FakeTimers from './FakeTimers';
-import formatTestResults from './formatTestResults';
 import getFailedSnapshotTests from './getFailedSnapshotTests';
-import getConsoleOutput from './getConsoleOutput';
 import installCommonGlobals from './installCommonGlobals';
-import NullConsole from './NullConsole';
+import interopRequireDefault from './interopRequireDefault';
 import isInteractive from './isInteractive';
-import getCallsite from './getCallsite';
+import isPromise from './isPromise';
 import setGlobal from './setGlobal';
 import deepCyclicCopy from './deepCyclicCopy';
 import convertDescriptorToString from './convertDescriptorToString';
@@ -42,7 +47,9 @@ export = {
   getConsoleOutput,
   getFailedSnapshotTests,
   installCommonGlobals,
+  interopRequireDefault,
   isInteractive,
+  isPromise,
   pluralize,
   preRunMessage,
   replacePathSepForGlob,

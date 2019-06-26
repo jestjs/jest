@@ -344,6 +344,8 @@ describe('.toEqual()', () => {
     [true, false],
     [1, 2],
     [0, -0],
+    [0, Number.MIN_VALUE], // issues/7941
+    [Number.MIN_VALUE, 0],
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
     [null, undefined],
@@ -415,6 +417,16 @@ describe('.toEqual()', () => {
         },
       },
     ],
+    [
+      {
+        nodeName: 'div',
+        nodeType: 1,
+      },
+      {
+        nodeName: 'p',
+        nodeType: 1,
+      },
+    ],
   ].forEach(([a, b]) => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
@@ -426,7 +438,16 @@ describe('.toEqual()', () => {
   [
     [true, true],
     [1, 1],
+    [NaN, NaN],
+    // eslint-disable-next-line no-new-wrappers
+    [0, new Number(0)],
+    // eslint-disable-next-line no-new-wrappers
+    [new Number(0), 0],
     ['abc', 'abc'],
+    // eslint-disable-next-line no-new-wrappers
+    [new String('abc'), 'abc'],
+    // eslint-disable-next-line no-new-wrappers
+    ['abc', new String('abc')],
     [[1], [1]],
     [[1, 2], [1, 2]],
     [Immutable.List([1]), Immutable.List([1])],
@@ -526,6 +547,16 @@ describe('.toEqual()', () => {
         },
       },
     ],
+    [
+      {
+        nodeName: 'div',
+        nodeType: 1,
+      },
+      {
+        nodeName: 'div',
+        nodeType: 1,
+      },
+    ],
   ].forEach(([a, b]) => {
     test(`{pass: false} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
@@ -595,13 +626,86 @@ describe('.toEqual()', () => {
     });
     expect(actual).toEqual({x: 3});
   });
+
+  describe('cyclic object equality', () => {
+    test('properties with the same circularity are equal', () => {
+      const a = {};
+      a.x = a;
+      const b = {};
+      b.x = b;
+      expect(a).toEqual(b);
+      expect(b).toEqual(a);
+
+      const c = {};
+      c.x = a;
+      const d = {};
+      d.x = b;
+      expect(c).toEqual(d);
+      expect(d).toEqual(c);
+    });
+
+    test('properties with different circularity are not equal', () => {
+      const a = {};
+      a.x = {y: a};
+      const b = {};
+      const bx = {};
+      b.x = bx;
+      bx.y = bx;
+      expect(a).not.toEqual(b);
+      expect(b).not.toEqual(a);
+
+      const c = {};
+      c.x = a;
+      const d = {};
+      d.x = b;
+      expect(c).not.toEqual(d);
+      expect(d).not.toEqual(c);
+    });
+
+    test('are not equal if circularity is not on the same property', () => {
+      const a = {};
+      const b = {};
+      a.a = a;
+      b.a = {};
+      b.a.a = a;
+      expect(a).not.toEqual(b);
+      expect(b).not.toEqual(a);
+
+      const c = {};
+      c.x = {x: c};
+      const d = {};
+      d.x = d;
+      expect(c).not.toEqual(d);
+      expect(d).not.toEqual(c);
+    });
+  });
 });
 
 describe('.toBeInstanceOf()', () => {
   class A {}
   class B {}
+  class C extends B {}
 
-  [[new Map(), Map], [[], Array], [new A(), A]].forEach(([a, b]) => {
+  class HasStaticNameMethod {
+    constructor() {}
+    static name() {}
+  }
+
+  function DefinesNameProp() {}
+  Object.defineProperty(DefinesNameProp, 'name', {
+    configurable: true,
+    enumerable: false,
+    value: '',
+    writable: true,
+  });
+
+  [
+    [new Map(), Map],
+    [[], Array],
+    [new A(), A],
+    [new C(), B], // subclass
+    [new HasStaticNameMethod(), HasStaticNameMethod],
+  ].forEach(([a, b]) => {
     test(`passing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
         jestExpect(a).not.toBeInstanceOf(b),
@@ -619,6 +723,8 @@ describe('.toBeInstanceOf()', () => {
     [Object.create(null), A],
     [undefined, String],
     [null, String],
+    [/\w+/, function() {}],
+    [new DefinesNameProp(), RegExp],
   ].forEach(([a, b]) => {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
@@ -1206,7 +1312,26 @@ describe('.toHaveProperty()', () => {
     get b() {
       return 'b';
     }
+    set setter(val) {
+      this.val = val;
+    }
   }
+
+  class Foo2 extends Foo {
+    get c() {
+      return 'c';
+    }
+  }
+  const foo2 = new Foo2();
+  foo2.setter = true;
+
+  function E(nodeName) {
+    this.nodeName = nodeName.toUpperCase();
+  }
+  E.prototype.nodeType = 1;
+
+  const memoized = function() {};
+  memoized.memo = [];
 
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 1],
@@ -1219,6 +1344,13 @@ describe('.toHaveProperty()', () => {
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
     [new Foo(), 'a', undefined],
     [new Foo(), 'b', 'b'],
+    [new Foo(), 'setter', undefined],
+    [foo2, 'a', undefined],
+    [foo2, 'c', 'c'],
+    [foo2, 'val', true],
+    [new E('div'), 'nodeType', 1],
+    ['', 'length', 0],
+    [memoized, 'memo', []],
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: true} expect(${stringify(
       obj,
@@ -1245,6 +1377,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
+    // [{a: {}}, 'a.b', undefined], // wait until Jest 25
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,
@@ -1280,6 +1413,11 @@ describe('.toHaveProperty()', () => {
     [{}, 'a'],
     [1, 'a.b.c'],
     ['abc', 'a.b.c'],
+    [false, 'key'],
+    [0, 'key'],
+    ['', 'key'],
+    [Symbol(), 'key'],
+    [Object.assign(Object.create(null), {key: 1}), 'not'],
   ].forEach(([obj, keyPath]) => {
     test(`{pass: false} expect(${stringify(
       obj,
@@ -1297,6 +1435,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {}}}, undefined],
     [{a: {b: {}}}, null],
     [{a: {b: {}}}, 1],
+    [{}, []], // Residue: pass must be initialized
   ].forEach(([obj, keyPath]) => {
     test(`{error} expect(${stringify(
       obj,

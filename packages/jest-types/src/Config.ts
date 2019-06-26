@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {Arguments} from 'yargs';
+
 export type Path = string;
 
 export type Glob = string;
@@ -15,12 +17,13 @@ export type HasteConfig = {
   hasteImplModulePath?: string;
   platforms?: Array<string>;
   providesModuleNodeModules: Array<string>;
+  throwOnModuleCollision?: boolean;
 };
 
-export type ReporterConfig = [string, Object];
-export type TransformerConfig = [string, Object];
+export type ReporterConfig = [string, {[key: string]: unknown}];
+export type TransformerConfig = [string, {[key: string]: unknown}];
 
-export type ConfigGlobals = Object;
+export type ConfigGlobals = Record<string, any>;
 
 export type DefaultOptions = {
   automock: boolean;
@@ -79,7 +82,7 @@ export type DefaultOptions = {
   skipFilter: boolean;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
-  testEnvironmentOptions: Object;
+  testEnvironmentOptions: Record<string, any>;
   testFailureExitCode: string | number;
   testLocationInResults: boolean;
   testMatch: Array<Glob>;
@@ -185,7 +188,7 @@ export type InitialOptions = {
   snapshotSerializers?: Array<Path>;
   errorOnDeprecated?: boolean;
   testEnvironment?: string;
-  testEnvironmentOptions?: Object;
+  testEnvironmentOptions?: Record<string, any>;
   testFailureExitCode?: string | number;
   testLocationInResults?: boolean;
   testMatch?: Array<Glob>;
@@ -209,7 +212,7 @@ export type InitialOptions = {
   watch?: boolean;
   watchAll?: boolean;
   watchman?: boolean;
-  watchPlugins?: Array<string | [string, Object]>;
+  watchPlugins?: Array<string | [string, Record<string, any>]>;
 };
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -221,6 +224,15 @@ type NotifyMode =
   | 'change'
   | 'success-change'
   | 'failure-change';
+
+type CoverageThreshold = {
+  [path: string]: {
+    [key: string]: number;
+  };
+  global: {
+    [key: string]: number;
+  };
+};
 
 export type GlobalConfig = {
   bail: number;
@@ -237,11 +249,7 @@ export type GlobalConfig = {
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageReporters: Array<string>;
-  coverageThreshold: {
-    global: {
-      [key: string]: number;
-    };
-  };
+  coverageThreshold: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
   enabledTestsMap:
@@ -295,7 +303,7 @@ export type GlobalConfig = {
   watchPlugins:
     | Array<{
         path: string;
-        config: Object;
+        config: Record<string, any>;
       }>
     | null
     | undefined;
@@ -314,7 +322,7 @@ export type ProjectConfig = {
   detectOpenHandles: boolean;
   displayName: string | null | undefined;
   errorOnDeprecated: boolean;
-  extraGlobals: Array<string>;
+  extraGlobals: Array<keyof NodeJS.Global>;
   filter: Path | null | undefined;
   forceCoverageMatch: Array<Glob>;
   globalSetup: string | null | undefined;
@@ -343,7 +351,7 @@ export type ProjectConfig = {
   snapshotResolver: Path | null | undefined;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
-  testEnvironmentOptions: Object;
+  testEnvironmentOptions: Record<string, any>;
   testMatch: Array<Glob>;
   testLocationInResults: boolean;
   testPathIgnorePatterns: Array<string>;
@@ -356,3 +364,91 @@ export type ProjectConfig = {
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns: Array<string> | null | undefined;
 };
+
+export type Argv = Arguments<
+  Partial<{
+    all: boolean;
+    automock: boolean;
+    bail: boolean | number;
+    browser: boolean;
+    cache: boolean;
+    cacheDirectory: string;
+    changedFilesWithAncestor: boolean;
+    changedSince: string;
+    ci: boolean;
+    clearCache: boolean;
+    clearMocks: boolean;
+    collectCoverage: boolean;
+    collectCoverageFrom: string;
+    collectCoverageOnlyFrom: Array<string>;
+    color: boolean;
+    colors: boolean;
+    config: string;
+    coverage: boolean;
+    coverageDirectory: string;
+    coveragePathIgnorePatterns: Array<string>;
+    coverageReporters: Array<string>;
+    coverageThreshold: string;
+    debug: boolean;
+    env: string;
+    expand: boolean;
+    findRelatedTests: boolean;
+    forceExit: boolean;
+    globals: string;
+    globalSetup: string | null | undefined;
+    globalTeardown: string | null | undefined;
+    haste: string;
+    init: boolean;
+    json: boolean;
+    lastCommit: boolean;
+    logHeapUsage: boolean;
+    maxWorkers: number;
+    moduleDirectories: Array<string>;
+    moduleFileExtensions: Array<string>;
+    moduleNameMapper: string;
+    modulePathIgnorePatterns: Array<string>;
+    modulePaths: Array<string>;
+    noStackTrace: boolean;
+    notify: boolean;
+    notifyMode: string;
+    onlyChanged: boolean;
+    outputFile: string;
+    preset: string | null | undefined;
+    projects: Array<string>;
+    prettierPath: string | null | undefined;
+    resetMocks: boolean;
+    resetModules: boolean;
+    resolver: string | null | undefined;
+    restoreMocks: boolean;
+    rootDir: string;
+    roots: Array<string>;
+    runInBand: boolean;
+    setupFiles: Array<string>;
+    setupFilesAfterEnv: Array<string>;
+    showConfig: boolean;
+    silent: boolean;
+    snapshotSerializers: Array<string>;
+    testEnvironment: string;
+    testFailureExitCode: string | null | undefined;
+    testMatch: Array<string>;
+    testNamePattern: string;
+    testPathIgnorePatterns: Array<string>;
+    testPathPattern: Array<string>;
+    testRegex: string | Array<string>;
+    testResultsProcessor: string | null | undefined;
+    testRunner: string;
+    testURL: string;
+    timers: string;
+    transform: string;
+    transformIgnorePatterns: Array<string>;
+    unmockedModulePathPatterns: Array<string> | null | undefined;
+    updateSnapshot: boolean;
+    useStderr: boolean;
+    verbose: boolean | null | undefined;
+    version: boolean;
+    watch: boolean;
+    watchAll: boolean;
+    watchman: boolean;
+    watchPathIgnorePatterns: Array<string>;
+  }>
+>;

@@ -6,17 +6,7 @@
  */
 
 import style from 'ansi-styles';
-import {
-  Colors,
-  Config,
-  Options,
-  OptionsReceived,
-  NewPlugin,
-  Plugin,
-  Plugins,
-  Refs,
-  Theme,
-} from './types';
+import * as PrettyFormat from './types';
 
 import {
   printIteratorEntries,
@@ -43,7 +33,7 @@ const symbolToString = Symbol.prototype.toString;
  * Explicitly comparing typeof constructor to function avoids undefined as name
  * when mock identity-obj-proxy returns the key as the value for any key.
  */
-const getConstructorName = (val: new (...args: any[]) => any) =>
+const getConstructorName = (val: new (...args: Array<any>) => any) =>
   (typeof val.constructor === 'function' && val.constructor.name) || 'Object';
 
 /* global window */
@@ -80,6 +70,10 @@ function isToStringedArrayType(toStringed: string): boolean {
 
 function printNumber(val: number): string {
   return Object.is(val, -0) ? '-0' : String(val);
+}
+
+function printBigInt(val: bigint): string {
+  return String(`${val}n`);
 }
 
 function printFunction(val: Function, printFunctionName: boolean): string {
@@ -121,6 +115,9 @@ function printBasicValue(
 
   if (typeOf === 'number') {
     return printNumber(val);
+  }
+  if (typeOf === 'bigint') {
+    return printBigInt(val);
   }
   if (typeOf === 'string') {
     if (escapeString) {
@@ -179,10 +176,10 @@ function printBasicValue(
  */
 function printComplexValue(
   val: any,
-  config: Config,
+  config: PrettyFormat.Config,
   indentation: string,
   depth: number,
-  refs: Refs,
+  refs: PrettyFormat.Refs,
   hasCalledToJSON?: boolean,
 ): string {
   if (refs.indexOf(val) !== -1) {
@@ -261,17 +258,19 @@ function printComplexValue(
         '}';
 }
 
-function isNewPlugin(plugin: Plugin): plugin is NewPlugin {
-  return (plugin as NewPlugin).serialize != null;
+function isNewPlugin(
+  plugin: PrettyFormat.Plugin,
+): plugin is PrettyFormat.NewPlugin {
+  return (plugin as PrettyFormat.NewPlugin).serialize != null;
 }
 
 function printPlugin(
-  plugin: Plugin,
+  plugin: PrettyFormat.Plugin,
   val: any,
-  config: Config,
+  config: PrettyFormat.Config,
   indentation: string,
   depth: number,
-  refs: Refs,
+  refs: PrettyFormat.Refs,
 ): string {
   let printed;
 
@@ -306,7 +305,7 @@ function printPlugin(
   return printed;
 }
 
-function findPlugin(plugins: Plugins, val: any) {
+function findPlugin(plugins: PrettyFormat.Plugins, val: any) {
   for (let p = 0; p < plugins.length; p++) {
     try {
       if (plugins[p].test(val)) {
@@ -322,10 +321,10 @@ function findPlugin(plugins: Plugins, val: any) {
 
 function printer(
   val: any,
-  config: Config,
+  config: PrettyFormat.Config,
   indentation: string,
   depth: number,
-  refs: Refs,
+  refs: PrettyFormat.Refs,
   hasCalledToJSON?: boolean,
 ): string {
   const plugin = findPlugin(config.plugins, val);
@@ -353,7 +352,7 @@ function printer(
   );
 }
 
-const DEFAULT_THEME: Theme = {
+const DEFAULT_THEME: PrettyFormat.Theme = {
   comment: 'gray',
   content: 'reset',
   prop: 'yellow',
@@ -363,7 +362,7 @@ const DEFAULT_THEME: Theme = {
 
 const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME);
 
-const DEFAULT_OPTIONS: Options = {
+const DEFAULT_OPTIONS: PrettyFormat.Options = {
   callToJSON: true,
   escapeRegex: false,
   escapeString: true,
@@ -376,7 +375,7 @@ const DEFAULT_OPTIONS: Options = {
   theme: DEFAULT_THEME,
 };
 
-function validateOptions(options: OptionsReceived) {
+function validateOptions(options: PrettyFormat.OptionsReceived) {
   Object.keys(options).forEach(key => {
     if (!DEFAULT_OPTIONS.hasOwnProperty(key)) {
       throw new Error(`pretty-format: Unknown option "${key}".`);
@@ -402,7 +401,9 @@ function validateOptions(options: OptionsReceived) {
   }
 }
 
-const getColorsHighlight = (options: OptionsReceived): Colors =>
+const getColorsHighlight = (
+  options: PrettyFormat.OptionsReceived,
+): PrettyFormat.Colors =>
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
     const value =
       options.theme && (options.theme as any)[key] !== undefined
@@ -423,28 +424,30 @@ const getColorsHighlight = (options: OptionsReceived): Colors =>
     return colors;
   }, Object.create(null));
 
-const getColorsEmpty = (): Colors =>
+const getColorsEmpty = (): PrettyFormat.Colors =>
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
     colors[key] = {close: '', open: ''};
     return colors;
   }, Object.create(null));
 
-const getPrintFunctionName = (options?: OptionsReceived) =>
+const getPrintFunctionName = (options?: PrettyFormat.OptionsReceived) =>
   options && options.printFunctionName !== undefined
     ? options.printFunctionName
     : DEFAULT_OPTIONS.printFunctionName;
 
-const getEscapeRegex = (options?: OptionsReceived) =>
+const getEscapeRegex = (options?: PrettyFormat.OptionsReceived) =>
   options && options.escapeRegex !== undefined
     ? options.escapeRegex
     : DEFAULT_OPTIONS.escapeRegex;
 
-const getEscapeString = (options?: OptionsReceived) =>
+const getEscapeString = (options?: PrettyFormat.OptionsReceived) =>
   options && options.escapeString !== undefined
     ? options.escapeString
     : DEFAULT_OPTIONS.escapeString;
 
-const getConfig = (options?: OptionsReceived): Config => ({
+const getConfig = (
+  options?: PrettyFormat.OptionsReceived,
+): PrettyFormat.Config => ({
   callToJSON:
     options && options.callToJSON !== undefined
       ? options.callToJSON
@@ -486,7 +489,10 @@ function createIndent(indent: number): string {
  * @param val any potential JavaScript object
  * @param options Custom settings
  */
-function prettyFormat(val: any, options?: OptionsReceived): string {
+function prettyFormat(
+  val: any,
+  options?: PrettyFormat.OptionsReceived,
+): string {
   if (options) {
     validateOptions(options);
     if (options.plugins) {
@@ -519,5 +525,18 @@ prettyFormat.plugins = {
   ReactElement,
   ReactTestComponent,
 };
+
+/* eslint-disable-next-line no-redeclare */
+namespace prettyFormat {
+  export type Colors = PrettyFormat.Colors;
+  export type Config = PrettyFormat.Config;
+  export type Options = PrettyFormat.Options;
+  export type OptionsReceived = PrettyFormat.OptionsReceived;
+  export type NewPlugin = PrettyFormat.NewPlugin;
+  export type Plugin = PrettyFormat.Plugin;
+  export type Plugins = PrettyFormat.Plugins;
+  export type Refs = PrettyFormat.Refs;
+  export type Theme = PrettyFormat.Theme;
+}
 
 export = prettyFormat;
