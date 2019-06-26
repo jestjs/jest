@@ -99,8 +99,6 @@ _Note: Node modules are automatically mocked when you have a manual mock in plac
 
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`._
 
-_Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
-
 ### `bail` [number | boolean]
 
 Default: `0`
@@ -287,6 +285,31 @@ module.exports = {
 The `extract` function should return an iterable (`Array`, `Set`, etc.) with the dependencies found in the code.
 
 That module can also contain a `getCacheKey` function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.
+
+### `displayName` [string, object]
+
+default: `undefined`
+
+Allows for a label to be printed along side a test while it is running. This becomes more useful in multiproject repositories where there can be many jest configuration files. This visually tells which project a test belongs to. Here are sample valid values.
+
+```js
+module.exports = {
+  displayName: 'CLIENT',
+};
+```
+
+or
+
+```js
+module.exports = {
+  displayName: {
+    name: 'CLIENT',
+    color: 'blue',
+  },
+};
+```
+
+As a secondary option, an object with the properties `name` and `color` can be passed. This allows for a custom configuration of the background color of the displayName. `displayName` defaults to white when its value is a string. Jest uses [chalk](https://github.com/chalk/chalk) to provide the color. As such, all of the valid options for colors supported by chalk are also supported by jest.
 
 ### `errorOnDeprecated` [boolean]
 
@@ -619,7 +642,7 @@ class MyCustomReporter {
 }
 ```
 
-For the full list of methods and argument types see `Reporter` type in [types/TestRunner.js](https://github.com/facebook/jest/blob/master/types/TestRunner.js)
+For the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/master/packages/jest-reporters/src/types.ts)
 
 ### `resetMocks` [boolean]
 
@@ -643,6 +666,7 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 {
   "basedir": string,
   "browser": bool,
+  "defaultResolver": "function(request, options)",
   "extensions": [string],
   "moduleDirectory": [string],
   "paths": [string],
@@ -651,6 +675,8 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```
 
 The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
+
+Note: the defaultResolver passed as options is the jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. (request, options).
 
 ### `restoreMocks` [boolean]
 
@@ -836,6 +862,10 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables.
 
+The class may optionally expose a `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/master/packages/jest-circus).
+
+Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with it's value set to an empty string. If the pragma is not present, it will not be present in the object.
+
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
 
 Example:
@@ -845,15 +875,21 @@ Example:
 const NodeEnvironment = require('jest-environment-node');
 
 class CustomEnvironment extends NodeEnvironment {
-  constructor(config, context) {
+  constructor(config, {testPath, docblockPragmas}) {
     super(config, context);
-    this.testPath = context.testPath;
+    this.testPath = testPath;
+    this.docblockPragmas = docblockPragmas;
   }
 
   async setup() {
     await super.setup();
     await someSetupTasks(this.testPath);
     this.global.someGlobalObject = createGlobalObject();
+
+    // Will trigger if docblock contains @my-custom-pragma my-pragma-value
+    if (this.docblockPragmas['my-custom-pragma'] === 'my-pragma-value') {
+      // ...
+    }
   }
 
   async teardown() {
@@ -864,6 +900,12 @@ class CustomEnvironment extends NodeEnvironment {
 
   runScript(script) {
     return super.runScript(script);
+  }
+
+  handleTestEvent(event, state) {
+    if (event.name === 'test_start') {
+      // ...
+    }
   }
 }
 
@@ -991,7 +1033,32 @@ function testRunner(
 ): Promise<TestResult>;
 ```
 
-An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js).
+An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.ts).
+
+### `testSequencer` [string]
+
+Default: `@jest/test-sequencer`
+
+This option allows you to use a custom sequencer instead of Jest's default.
+
+Example:
+
+Sort test path alphabetically
+
+```js
+const Sequencer = require('@jest/test-sequencer').default;
+
+class CustomSequencer extends Sequencer {
+  sort(tests) {
+    // Test structure information
+    // https://github.com/facebook/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21
+    const copyTests = Array.from(tests);
+    return copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1));
+  }
+}
+
+module.exports = CustomSequencer;
+```
 
 ### `testURL` [string]
 

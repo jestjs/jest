@@ -17,10 +17,12 @@ export default function getNoTestFoundVerbose(
         if (key === 'roots' && config.roots.length === 1) {
           return null;
         }
-        const value = config[key];
+        const value = (config as Record<string, unknown>)[key];
         if (value) {
-          const valueAsString = Array.isArray(value) ? value.join(', ') : value;
-          const matches = pluralize('match', stats[key], 'es');
+          const valueAsString = Array.isArray(value)
+            ? value.join(', ')
+            : String(value);
+          const matches = pluralize('match', stats[key] || 0, 'es');
           return `  ${key}: ${chalk.yellow(valueAsString)} - ${matches}`;
         }
         return null;

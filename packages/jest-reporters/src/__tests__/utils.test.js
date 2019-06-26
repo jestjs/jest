@@ -8,7 +8,7 @@
 import path from 'path';
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
-import {trimAndFormatPath, wrapAnsiString} from '../utils';
+import {trimAndFormatPath, wrapAnsiString, printDisplayName} from '../utils';
 
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {
@@ -109,5 +109,37 @@ describe('trimAndFormatPath()', () => {
 
     expect(result).toMatchSnapshot();
     expect(stripAnsi(result).length).toBe(columns - pad);
+  });
+});
+
+describe('printDisplayName', () => {
+  it('should default displayName color to white when displayName is a string', () => {
+    const config = {
+      displayName: 'hello',
+    };
+
+    expect(printDisplayName(config)).toMatchSnapshot();
+  });
+
+  it('should default displayName color to white when color is not a valid value', () => {
+    const config = {
+      displayName: {
+        color: 'rubbish',
+        name: 'hello',
+      },
+    };
+
+    expect(printDisplayName(config)).toMatchSnapshot();
+  });
+
+  it('should correctly print the displayName when color and name are valid values', () => {
+    const config = {
+      displayName: {
+        color: 'green',
+        name: 'hello',
+      },
+    };
+
+    expect(printDisplayName(config)).toMatchSnapshot();
   });
 });

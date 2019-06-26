@@ -42,8 +42,9 @@ export const check = (argv: Config.Argv) => {
 
   if (argv.hasOwnProperty('maxWorkers') && argv.maxWorkers === undefined) {
     throw new Error(
-      'The --maxWorkers (-w) option requires a number to be specified.\n' +
+      'The --maxWorkers (-w) option requires a number or string to be specified.\n' +
         'Example usage: jest --maxWorkers 2\n' +
+        'Example usage: jest --maxWorkers 50%\n' +
         'Or did you mean --watch?',
     );
   }
@@ -229,7 +230,7 @@ export const options = {
     default: false,
     description:
       'Print out remaining open handles preventing Jest from exiting at the ' +
-      'end of a test run.',
+      'end of a test run. Implies `runInBand`.',
     type: 'boolean' as 'boolean',
   },
   env: {
@@ -349,7 +350,7 @@ export const options = {
       'will spawn for running tests. This defaults to the number of the ' +
       'cores available on your machine. (its usually best not to override ' +
       'this default)',
-    type: 'number' as 'number',
+    type: 'string' as 'string',
   },
   moduleDirectories: {
     description:
@@ -614,6 +615,17 @@ export const options = {
       ' `jasmine2`. A path to a custom test runner can be provided: ' +
       '`<rootDir>/path/to/testRunner.js`.',
     type: 'string' as 'string',
+  },
+  testSequencer: {
+    description:
+      'Allows to specify a custom test sequencer. The default is ' +
+      '`@jest/test-sequencer`. A path to a custom test sequencer can be ' +
+      'provided: `<rootDir>/path/to/testSequencer.js`',
+    type: 'string' as 'string',
+  },
+  testTimeout: {
+    description: 'This option sets the default timeouts of test cases.',
+    type: 'number' as 'number',
   },
   testURL: {
     description: 'This option sets the URL for the jsdom environment.',

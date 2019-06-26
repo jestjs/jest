@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 const {stringify} = require('jest-matcher-utils');
@@ -203,11 +202,22 @@ describe('.toBe()', () => {
   [
     [1, 2],
     [true, false],
+    [() => {}, () => {}],
     [{}, {}],
     [{a: 1}, {a: 1}],
     [{a: 1}, {a: 5}],
+    [{a: () => {}, b: 2}, {a: expect.any(Function), b: 2}],
+    [{a: undefined, b: 2}, {b: 2}],
+    [new Date('2020-02-20'), new Date('2020-02-20')],
+    [new Date('2020-02-21'), new Date('2020-02-20')],
+    [/received/, /expected/],
+    [Symbol('received'), Symbol('expected')],
+    [new Error('received'), new Error('expected')],
     ['abc', 'cde'],
+    ['painless JavaScript testing', 'delightful JavaScript testing'],
+    ['', 'compare one-line string to empty string'],
     ['with \ntrailing space', 'without trailing space'],
+    ['four\n4\nline\nstring', '3\nline\nstring'],
     [[], []],
     [null, undefined],
     [-0, +0],
@@ -309,6 +319,42 @@ describe('.toStrictEqual()', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  it('displays substring diff', () => {
+    const expected =
+      'Another caveat is that Jest will not typecheck your tests.';
+    const received =
+      'Because TypeScript support in Babel is just transpilation, Jest will not type-check your tests as they run.';
+    expect(() =>
+      jestExpect(received).toStrictEqual(expected),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('displays substring diff for multiple lines', () => {
+    const expected = [
+      '    69 | ',
+      "    70 | test('assert.doesNotThrow', () => {",
+      '  > 71 |   assert.doesNotThrow(() => {',
+      '       |          ^',
+      "    72 |     throw Error('err!');",
+      '    73 |   });',
+      '    74 | });',
+      '    at Object.doesNotThrow (__tests__/assertionError.test.js:71:10)',
+    ].join('\n');
+    const received = [
+      '    68 | ',
+      "    69 | test('assert.doesNotThrow', () => {",
+      '  > 70 |   assert.doesNotThrow(() => {',
+      '       |          ^',
+      "    71 |     throw Error('err!');",
+      '    72 |   });',
+      '    73 | });',
+      '    at Object.doesNotThrow (__tests__/assertionError.test.js:70:10)',
+    ].join('\n');
+    expect(() =>
+      jestExpect(received).toStrictEqual(expected),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   it('does not pass for different types', () => {
     expect({
       test: new TestClassA(1, 2),
@@ -346,8 +392,14 @@ describe('.toEqual()', () => {
     [0, -0],
     [0, Number.MIN_VALUE], // issues/7941
     [Number.MIN_VALUE, 0],
+    [{a: 1}, {a: 2}],
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
+    ['1\u{00A0}234,57\u{00A0}$', '1 234,57 $'], // issues/6881
+    [
+      'type TypeName<T> = T extends Function ? "function" : "object";',
+      'type TypeName<T> = T extends Function\n? "function"\n: "object";',
+    ],
     [null, undefined],
     [[1], [2]],
     [[1, 2], [2, 1]],
@@ -432,6 +484,7 @@ describe('.toEqual()', () => {
       b,
     )})`, () => {
       expect(() => jestExpect(a).toEqual(b)).toThrowErrorMatchingSnapshot();
+      jestExpect(a).not.toEqual(b);
     });
   });
 
@@ -558,9 +611,10 @@ describe('.toEqual()', () => {
       },
     ],
   ].forEach(([a, b]) => {
-    test(`{pass: false} expect(${stringify(a)}).not.toEqual(${stringify(
+    test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
       b,
     )})`, () => {
+      jestExpect(a).toEqual(b);
       expect(() => jestExpect(a).not.toEqual(b)).toThrowErrorMatchingSnapshot();
     });
   });
@@ -579,16 +633,6 @@ describe('.toEqual()', () => {
         }),
       );
     }
-  });
-
-  test('failure message matches the expected snapshot', () => {
-    expect(() =>
-      jestExpect({a: 1}).toEqual({a: 2}),
-    ).toThrowErrorMatchingSnapshot();
-
-    expect(() =>
-      jestExpect({a: 1}).not.toEqual({a: 1}),
-    ).toThrowErrorMatchingSnapshot();
   });
 
   test('symbol based keys in arrays are processed correctly', () => {
@@ -685,6 +729,15 @@ describe('.toBeInstanceOf()', () => {
   class A {}
   class B {}
   class C extends B {}
+  class D extends C {}
+  class E extends D {}
+
+  class SubHasStaticNameMethod extends B {
+    constructor() {
+      super();
+    }
+    static name() {}
+  }
 
   class HasStaticNameMethod {
     constructor() {}
@@ -698,13 +751,17 @@ describe('.toBeInstanceOf()', () => {
     value: '',
     writable: true,
   });
+  class SubHasNameProp extends DefinesNameProp {}
 
   [
     [new Map(), Map],
     [[], Array],
     [new A(), A],
-    [new C(), B], // subclass
-    [new HasStaticNameMethod(), HasStaticNameMethod],
+    [new C(), B], // C extends B
+    [new E(), B], // E extends … extends B
+    [new SubHasNameProp(), DefinesNameProp], // omit extends
+    [new SubHasStaticNameMethod(), B], // Received
+    [new HasStaticNameMethod(), HasStaticNameMethod], // Expected
   ].forEach(([a, b]) => {
     test(`passing ${stringify(a)} and ${stringify(b)}`, () => {
       expect(() =>
@@ -1333,13 +1390,34 @@ describe('.toHaveProperty()', () => {
   const memoized = function() {};
   memoized.memo = [];
 
+  const pathDiff = ['children', 0];
+
+  const receivedDiffSingle = {
+    children: ['"That cartoon"'],
+    props: null,
+    type: 'p',
+  };
+  const valueDiffSingle = '"That cat cartoon"';
+
+  const receivedDiffMultiple = {
+    children: [
+      'Roses are red.\nViolets are blue.\nTesting with Jest is good for you.',
+    ],
+    props: null,
+    type: 'pre',
+  };
+  const valueDiffMultiple =
+    'Roses are red, violets are blue.\nTesting with Jest\nIs good for you.';
+
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 1],
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 1],
     [{'a.b.c.d': 1}, ['a.b.c.d'], 1],
     [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], 2],
+    [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], expect.any(Number)],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
+    [{a: {}}, 'a.b', undefined], // delete for breaking change in future major
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
     [new Foo(), 'a', undefined],
@@ -1367,6 +1445,8 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 2],
     [{'a.b.c.d': 1}, 'a.b.c.d', 2],
     [{'a.b.c.d': 1}, ['a.b.c.d'], 2],
+    [receivedDiffSingle, pathDiff, valueDiffSingle],
+    [receivedDiffMultiple, pathDiff, valueDiffMultiple],
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 2],
     [{a: {b: {c: {}}}}, 'a.b.c.d', 1],
     [{a: 1}, 'a.b.c.d', 5],
@@ -1377,7 +1457,7 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: 5}}}, 'a.b', {c: 4}],
     [new Foo(), 'a', 'a'],
     [new Foo(), 'b', undefined],
-    // [{a: {}}, 'a.b', undefined], // wait until Jest 25
+    // [{a: {}}, 'a.b', undefined], // add for breaking change in future major
   ].forEach(([obj, keyPath, value]) => {
     test(`{pass: false} expect(${stringify(
       obj,

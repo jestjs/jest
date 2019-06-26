@@ -42,6 +42,47 @@ test('Any.toAsymmetricMatcher()', () => {
   jestExpect(any(Number).toAsymmetricMatcher()).toBe('Any<Number>');
 });
 
+test('Any.toAsymmetricMatcher() with function name', () => {
+  [
+    ['someFunc', function someFunc() {}],
+    ['$someFunc', function $someFunc() {}],
+    [
+      '$someFunc2',
+      (function() {
+        function $someFunc2() {}
+        Object.defineProperty($someFunc2, 'name', {value: ''});
+        return $someFunc2;
+      })(),
+    ],
+    [
+      '$someAsyncFunc',
+      (function() {
+        async function $someAsyncFunc() {}
+        Object.defineProperty($someAsyncFunc, 'name', {value: ''});
+        return $someAsyncFunc;
+      })(),
+    ],
+    [
+      '$someGeneratorFunc',
+      (function() {
+        function* $someGeneratorFunc() {}
+        Object.defineProperty($someGeneratorFunc, 'name', {value: ''});
+        return $someGeneratorFunc;
+      })(),
+    ],
+    [
+      '$someFuncWithFakeToString',
+      (function() {
+        function $someFuncWithFakeToString() {}
+        $someFuncWithFakeToString.toString = () => 'Fake to string';
+        return $someFuncWithFakeToString;
+      })(),
+    ],
+  ].forEach(([name, fn]: [string, any]) => {
+    jestExpect(any(fn).toAsymmetricMatcher()).toBe(`Any<${name}>`);
+  });
+});
+
 test('Any throws when called with empty constructor', () => {
   jestExpect(() => any()).toThrow();
 });

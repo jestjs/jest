@@ -132,7 +132,7 @@ describe('Runtime requireModule', () => {
   });
   it('provides `require.main` to modules', () =>
     createRuntime(__filename).then(runtime => {
-      runtime._moduleRegistry[__filename] = module;
+      runtime._moduleRegistry.set(__filename, module);
       [
         './test_root/modules_with_main/export_main.js',
         './test_root/modules_with_main/re_export_main.js',

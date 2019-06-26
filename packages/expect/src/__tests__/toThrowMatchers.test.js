@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 'use strict';
@@ -146,6 +145,24 @@ class customError extends Error {
     });
 
     describe('error class', () => {
+      class SubErr extends Err {
+        constructor(...args) {
+          super(...args);
+          // In a carefully written error subclass,
+          // name property is equal to constructor name.
+          this.name = this.constructor.name;
+        }
+      }
+
+      class SubSubErr extends SubErr {
+        constructor(...args) {
+          super(...args);
+          // In a carefully written error subclass,
+          // name property is equal to constructor name.
+          this.name = this.constructor.name;
+        }
+      }
+
       it('passes', () => {
         jestExpect(() => {
           throw new Err();
@@ -186,6 +203,22 @@ class customError extends Error {
         expect(() => {
           jestExpect(() => {
             throw new Err('apple');
+          }).not[toThrow](Err);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('threw, but class should not match (error subclass)', () => {
+        expect(() => {
+          jestExpect(() => {
+            throw new SubErr('apple');
+          }).not[toThrow](Err);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('threw, but class should not match (error subsubclass)', () => {
+        expect(() => {
+          jestExpect(() => {
+            throw new SubSubErr('apple');
           }).not[toThrow](Err);
         }).toThrowErrorMatchingSnapshot();
       });
@@ -230,6 +263,19 @@ class customError extends Error {
             jestExpect(() => {
               throw new ErrorMessage(message);
             }).not[toThrow]({message}),
+          ).toThrowErrorMatchingSnapshot();
+        });
+
+        test('multiline diff highlight incorrect expected space', () => {
+          // jest/issues/2673
+          const a =
+            "There is no route defined for key Settings. \nMust be one of: 'Home'";
+          const b =
+            "There is no route defined for key Settings.\nMust be one of: 'Home'";
+          expect(() =>
+            jestExpect(() => {
+              throw new ErrorMessage(b);
+            })[toThrow]({message: a}),
           ).toThrowErrorMatchingSnapshot();
         });
       });

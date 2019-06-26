@@ -9,7 +9,7 @@ import path from 'path';
 import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
-import {formatTestResults} from 'jest-util';
+import {formatTestResults, interopRequireDefault} from 'jest-util';
 import exit from 'exit';
 import fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
@@ -20,12 +20,13 @@ import {
   AggregatedResult,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import TestSequencer from '@jest/test-sequencer';
 import {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
 import TestScheduler, {TestSchedulerContext} from './TestScheduler';
-import TestSequencer from './TestSequencer';
 import FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
 import TestWatcher from './TestWatcher';
@@ -143,7 +144,10 @@ export default (async function runJest({
   failedTestsCache?: FailedTestsCache;
   filter?: Filter;
 }) {
-  const sequencer = new TestSequencer();
+  const Sequencer: typeof TestSequencer = interopRequireDefault(
+    require(globalConfig.testSequencer),
+  ).default;
+  const sequencer = new Sequencer();
   let allTests: Array<Test> = [];
 
   if (changedFilesPromise && globalConfig.watch) {

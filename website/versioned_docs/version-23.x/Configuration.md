@@ -100,8 +100,6 @@ _Note: Node modules are automatically mocked when you have a manual mock in plac
 
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`._
 
-_Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
-
 ### `bail` [boolean]
 
 Default: `false`
@@ -259,6 +257,12 @@ Jest will fail if:
 - One of the files matching the `./src/reducers/**/*.js` glob has less than 90% statement coverage.
 - The `./src/api/very-important-module.js` file has less than 100% coverage.
 - Every remaining file combined has less than 50% coverage (`global`).
+
+### `displayName` [string]
+
+default: `undefined`
+
+Allows for a label to be printed along side a test while it is running. This becomes more useful in multiproject repositories where there can be many jest configuration files. This visually tells which project a test belongs to.
 
 ### `errorOnDeprecated` [boolean]
 
@@ -881,7 +885,7 @@ function testRunner(
 ): Promise<TestResult>;
 ```
 
-An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.js).
+An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.ts).
 
 ### `testURL` [string]
 

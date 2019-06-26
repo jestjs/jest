@@ -6,7 +6,7 @@
  */
 'use strict';
 
-import TestSequencer from '../TestSequencer';
+import TestSequencer from '../index';
 
 jest.mock('fs');
 

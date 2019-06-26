@@ -17,14 +17,20 @@ const PROGRESS_BAR_WIDTH = 40;
 
 export const printDisplayName = (config: Config.ProjectConfig) => {
   const {displayName} = config;
-
-  if (displayName) {
-    return chalk.supportsColor
-      ? chalk.reset.inverse.white(` ${displayName} `)
-      : displayName;
+  const white = chalk.reset.inverse.white;
+  if (!displayName) {
+    return '';
   }
 
-  return '';
+  if (typeof displayName === 'string') {
+    return chalk.supportsColor ? white(` ${displayName} `) : displayName;
+  }
+
+  const {name, color} = displayName;
+  const chosenColor = chalk.reset.inverse[color]
+    ? chalk.reset.inverse[color]
+    : white;
+  return chalk.supportsColor ? chosenColor(` ${name} `) : name;
 };
 
 export const trimAndFormatPath = (

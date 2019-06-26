@@ -157,7 +157,7 @@ export const ensureDirectoryExists = (filePath: Config.Path) => {
 const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
-  snapshotData: {[key: string]: string},
+  snapshotData: SnapshotData,
   snapshotPath: Config.Path,
 ) => {
   const snapshots = Object.keys(snapshotData)
@@ -178,6 +178,25 @@ export const saveSnapshotFile = (
   );
 };
 
+const deepMergeArray = (target: Array<any>, source: Array<any>) => {
+  const mergedOutput = Array.from(target);
+
+  source.forEach((sourceElement, index) => {
+    const targetElement = mergedOutput[index];
+
+    if (Array.isArray(target[index])) {
+      mergedOutput[index] = deepMergeArray(target[index], sourceElement);
+    } else if (isObject(targetElement)) {
+      mergedOutput[index] = deepMerge(target[index], sourceElement);
+    } else {
+      // Source does not exist in target or target is primitive and cannot be deep merged
+      mergedOutput[index] = sourceElement;
+    }
+  });
+
+  return mergedOutput;
+};
+
 export const deepMerge = (target: any, source: any) => {
   const mergedOutput = {...target};
   if (isObject(target) && isObject(source)) {
@@ -185,6 +204,8 @@ export const deepMerge = (target: any, source: any) => {
       if (isObject(source[key]) && !source[key].$$typeof) {
         if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
         else mergedOutput[key] = deepMerge(target[key], source[key]);
+      } else if (Array.isArray(source[key])) {
+        mergedOutput[key] = deepMergeArray(target[key], source[key]);
       } else {
         Object.assign(mergedOutput, {[key]: source[key]});
       }

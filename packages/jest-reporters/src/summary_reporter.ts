@@ -44,6 +44,12 @@ const NPM_EVENTS = new Set([
   'postrestart',
 ]);
 
+const {
+  npm_config_user_agent,
+  npm_lifecycle_event,
+  npm_lifecycle_script,
+} = process.env;
+
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
   private _globalConfig: Config.GlobalConfig;
@@ -123,15 +129,15 @@ export default class SummaryReporter extends BaseReporter {
       snapshots.updated
     ) {
       let updateCommand;
-      const event = process.env.npm_lifecycle_event || '';
+      const event = npm_lifecycle_event || '';
       const prefix = NPM_EVENTS.has(event) ? '' : 'run ';
       const isYarn =
-        typeof process.env.npm_config_user_agent === 'string' &&
-        process.env.npm_config_user_agent.match('yarn') !== null;
+        typeof npm_config_user_agent === 'string' &&
+        npm_config_user_agent.includes('yarn');
       const client = isYarn ? 'yarn' : 'npm';
       const scriptUsesJest =
-        typeof process.env.npm_lifecycle_script === 'string' &&
-        process.env.npm_lifecycle_script.indexOf('jest') !== -1;
+        typeof npm_lifecycle_script === 'string' &&
+        npm_lifecycle_script.includes('jest');
 
       if (globalConfig.watch || globalConfig.watchAll) {
         updateCommand = 'press `u`';

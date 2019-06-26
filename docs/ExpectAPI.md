@@ -172,13 +172,13 @@ expect.extend({
           `Expected: ${this.utils.printExpected(expected)}\n` +
           `Received: ${this.utils.printReceived(received)}`
       : () => {
-          const difference = diff(expected, received, {
+          const diffString = diff(expected, received, {
             expand: this.expand,
           });
           return (
             this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
-            (difference && difference.includes('- Expect')
+            (diffString && diffString.includes('- Expect')
               ? `Difference:\n\n${diffString}`
               : `Expected: ${this.utils.printExpected(expected)}\n` +
                 `Received: ${this.utils.printReceived(received)}`)
@@ -575,17 +575,23 @@ Also under the alias: `.toBeCalled()`
 
 Use `.toHaveBeenCalled` to ensure that a mock function got called.
 
-For example, let's say you have a `drinkAll(drink, flavor)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavor is really weird and why would anything be octopus-flavored? You can do that with this test suite:
+For example, let's say you have a `drinkAll(drink, flavour)` function that takes a `drink` function and applies it to all available beverages. You might want to check that `drink` gets called for `'lemon'`, but not for `'octopus'`, because `'octopus'` flavour is really weird and why would anything be octopus-flavoured? You can do that with this test suite:
 
 ```js
+function drinkAll(callback, flavour) {
+  if (flavour !== 'octopus') {
+    callback(flavour);
+  }
+}
+
 describe('drinkAll', () => {
-  test('drinks something lemon-flavored', () => {
+  test('drinks something lemon-flavoured', () => {
     const drink = jest.fn();
     drinkAll(drink, 'lemon');
     expect(drink).toHaveBeenCalled();
   });
 
-  test('does not drink something octopus-flavored', () => {
+  test('does not drink something octopus-flavoured', () => {
     const drink = jest.fn();
     drinkAll(drink, 'octopus');
     expect(drink).not.toHaveBeenCalled();
@@ -756,6 +762,72 @@ test('drink returns expected nth calls', () => {
 ```
 
 Note: the nth argument must be positive integer starting from 1.
+
+### `.toHaveLength(number)`
+
+Use `.toHaveLength` to check that an object has a `.length` property and it is set to a certain numeric value.
+
+This is especially useful for checking arrays or strings size.
+
+```js
+expect([1, 2, 3]).toHaveLength(3);
+expect('abc').toHaveLength(3);
+expect('').not.toHaveLength(5);
+```
+
+### `.toHaveProperty(keyPath, value?)`
+
+Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object. For checking deeply nested properties in an object you may use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) or an array containing the keyPath for deep references.
+
+You can provide an optional `value` argument to compare the received property value (recursively for all properties of object instances, also known as deep equality, like the `toEqual` matcher).
+
+The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty` to check for the existence and values of various properties in the object.
+
+```js
+// Object containing house features to be tested
+const houseForSale = {
+  bath: true,
+  bedrooms: 4,
+  kitchen: {
+    amenities: ['oven', 'stove', 'washer'],
+    area: 20,
+    wallColor: 'white',
+    'nice.oven': true,
+  },
+  'ceiling.height': 2,
+};
+
+test('this house has my desired features', () => {
+  // Simple Referencing
+  expect(houseForSale).toHaveProperty('bath');
+  expect(houseForSale).toHaveProperty('bedrooms', 4);
+
+  expect(houseForSale).not.toHaveProperty('pool');
+
+  // Deep referencing using dot notation
+  expect(houseForSale).toHaveProperty('kitchen.area', 20);
+  expect(houseForSale).toHaveProperty('kitchen.amenities', [
+    'oven',
+    'stove',
+    'washer',
+  ]);
+
+  expect(houseForSale).not.toHaveProperty('kitchen.open');
+
+  // Deep referencing using an array containing the keyPath
+  expect(houseForSale).toHaveProperty(['kitchen', 'area'], 20);
+  expect(houseForSale).toHaveProperty(
+    ['kitchen', 'amenities'],
+    ['oven', 'stove', 'washer'],
+  );
+  expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
+  expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
+  expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
+
+  // Referencing keys with dot in the key itself
+  expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
+});
+```
 
 ### `.toBeCloseTo(number, numDigits?)`
 
@@ -982,18 +1054,6 @@ If differences between properties do not help you to understand why a test fails
 - rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
 - rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
 
-### `.toHaveLength(number)`
-
-Use `.toHaveLength` to check that an object has a `.length` property and it is set to a certain numeric value.
-
-This is especially useful for checking arrays or strings size.
-
-```js
-expect([1, 2, 3]).toHaveLength(3);
-expect('abc').toHaveLength(3);
-expect('').not.toHaveLength(5);
-```
-
 ### `.toMatch(regexpOrString)`
 
 Use `.toMatch` to check that a string matches a regular expression.
@@ -1056,72 +1116,12 @@ describe('toMatchObject applied to arrays', () => {
     expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}, {baz: 1}]);
   });
 
-  // .arrayContaining "matches a received array which contains elements that
-  // are *not* in the expected array"
-  test('.toMatchObject does not allow extra elements', () => {
-    expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}]);
-  });
-
   test('.toMatchObject is called for each elements, so extra object properties are okay', () => {
     expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).toMatchObject([
       {foo: 'bar'},
       {baz: 1},
     ]);
   });
-});
-```
-
-### `.toHaveProperty(keyPath, value?)`
-
-Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object. For checking deeply nested properties in an object you may use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) or an array containing the keyPath for deep references.
-
-You can provide an optional `value` argument to compare the received property value (recursively for all properties of object instances, also known as deep equality, like the `toEqual` matcher).
-
-The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty` to check for the existence and values of various properties in the object.
-
-```js
-// Object containing house features to be tested
-const houseForSale = {
-  bath: true,
-  bedrooms: 4,
-  kitchen: {
-    amenities: ['oven', 'stove', 'washer'],
-    area: 20,
-    wallColor: 'white',
-    'nice.oven': true,
-  },
-  'ceiling.height': 2,
-};
-
-test('this house has my desired features', () => {
-  // Simple Referencing
-  expect(houseForSale).toHaveProperty('bath');
-  expect(houseForSale).toHaveProperty('bedrooms', 4);
-
-  expect(houseForSale).not.toHaveProperty('pool');
-
-  // Deep referencing using dot notation
-  expect(houseForSale).toHaveProperty('kitchen.area', 20);
-  expect(houseForSale).toHaveProperty('kitchen.amenities', [
-    'oven',
-    'stove',
-    'washer',
-  ]);
-
-  expect(houseForSale).not.toHaveProperty('kitchen.open');
-
-  // Deep referencing using an array containing the keyPath
-  expect(houseForSale).toHaveProperty(['kitchen', 'area'], 20);
-  expect(houseForSale).toHaveProperty(
-    ['kitchen', 'amenities'],
-    ['oven', 'stove', 'washer'],
-  );
-  expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
-  expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
-  expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
-
-  // Referencing keys with dot in the key itself
-  expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
 });
 ```
 
@@ -1182,6 +1182,8 @@ test('throws on octopus', () => {
 });
 ```
 
+> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
+
 You can provide an optional argument to test that a specific error is thrown:
 
 - regular expression: error message **matches** the pattern
@@ -1220,8 +1222,6 @@ test('throws on octopus', () => {
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
 });
 ```
-
-> Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
 
 ### `.toThrowErrorMatchingSnapshot(hint?)`
 

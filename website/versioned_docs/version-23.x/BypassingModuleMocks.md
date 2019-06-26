@@ -4,7 +4,7 @@ title: Bypassing module mocks
 original_id: bypassing-module-mocks
 ---
 
-Jest allows you to mock out whole modules in your tests, which can be useful for testing your code is calling functions from that module correctly. However, sometimes you may want to use parts of a mocked module in your _test file_, in which case you want to access the original implementation, rather than a mocked version.
+Jest allows you to mock out whole modules in your tests, which can be useful for testing if your code is calling functions from that module correctly. However, sometimes you may want to use parts of a mocked module in your _test file_, in which case you want to access the original implementation, rather than a mocked version.
 
 Consider writing a test case for this `createUser` function:
 

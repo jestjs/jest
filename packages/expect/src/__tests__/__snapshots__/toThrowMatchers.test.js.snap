@@ -89,7 +89,7 @@ Received message: <red>\\"apple\\"</>
 exports[`toThrow error class did not throw at all 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err\\"</>
+Expected constructor: <green>Err</>
 
 Received function did not throw"
 `;
@@ -97,8 +97,8 @@ Received function did not throw"
 exports[`toThrow error class threw, but class did not match (error) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err2\\"</>
-Received name: <red>\\"Error\\"</>
+Expected constructor: <green>Err2</>
+Received constructor: <red>Err</>
 
 Received message: <red>\\"apple\\"</>
 
@@ -108,17 +108,38 @@ Received message: <red>\\"apple\\"</>
 exports[`toThrow error class threw, but class did not match (non-error falsey) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err2\\"</>
+Expected constructor: <green>Err2</>
 
 Received value: <red>undefined</>
 "
 `;
 
+exports[`toThrow error class threw, but class should not match (error subclass) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+Received constructor:     <red>SubErr</> extends <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow error class threw, but class should not match (error subsubclass) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+Received constructor:     <red>SubSubErr</> extends … extends <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
 exports[`toThrow error class threw, but class should not match (error) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err\\"</>
-Received name: <red>\\"Error\\"</>
+Expected constructor: not <green>Err</>
 
 Received message: <red>\\"apple\\"</>
 
@@ -137,6 +158,18 @@ exports[`toThrow error-message fail isNot true 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
 
 Expected message: not <green>\\"Invalid array length\\"</>
+"
+`;
+
+exports[`toThrow error-message fail multiline diff highlight incorrect expected space 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected message</>
+<red>+ Received message</>
+
+<green>- There is no route defined for key Settings.<inverse> </></>
+<red>+ There is no route defined for key Settings.</>
+<dim>  Must be one of: 'Home'</>
 "
 `;
 
@@ -174,8 +207,8 @@ Received function did not throw"
 exports[`toThrow promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
 "<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err2\\"</>
-Received name: <red>\\"Error\\"</>
+Expected constructor: <green>Err2</>
+Received constructor: <red>Err</>
 
 Received message: <red>\\"async apple\\"</>
 
@@ -364,7 +397,7 @@ Received message: <red>\\"apple\\"</>
 exports[`toThrowError error class did not throw at all 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err\\"</>
+Expected constructor: <green>Err</>
 
 Received function did not throw"
 `;
@@ -372,8 +405,8 @@ Received function did not throw"
 exports[`toThrowError error class threw, but class did not match (error) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err2\\"</>
-Received name: <red>\\"Error\\"</>
+Expected constructor: <green>Err2</>
+Received constructor: <red>Err</>
 
 Received message: <red>\\"apple\\"</>
 
@@ -383,17 +416,38 @@ Received message: <red>\\"apple\\"</>
 exports[`toThrowError error class threw, but class did not match (non-error falsey) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err2\\"</>
+Expected constructor: <green>Err2</>
 
 Received value: <red>undefined</>
 "
 `;
 
+exports[`toThrowError error class threw, but class should not match (error subclass) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+Received constructor:     <red>SubErr</> extends <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError error class threw, but class should not match (error subsubclass) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+Received constructor:     <red>SubSubErr</> extends … extends <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
 exports[`toThrowError error class threw, but class should not match (error) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err\\"</>
-Received name: <red>\\"Error\\"</>
+Expected constructor: not <green>Err</>
 
 Received message: <red>\\"apple\\"</>
 
@@ -412,6 +466,18 @@ exports[`toThrowError error-message fail isNot true 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
 
 Expected message: not <green>\\"Invalid array length\\"</>
+"
+`;
+
+exports[`toThrowError error-message fail multiline diff highlight incorrect expected space 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected message</>
+<red>+ Received message</>
+
+<green>- There is no route defined for key Settings.<inverse> </></>
+<red>+ There is no route defined for key Settings.</>
+<dim>  Must be one of: 'Home'</>
 "
 `;
 
@@ -449,8 +515,8 @@ Received function did not throw"
 exports[`toThrowError promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
 "<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
 
-Expected name: <green>\\"Err2\\"</>
-Received name: <red>\\"Error\\"</>
+Expected constructor: <green>Err2</>
+Received constructor: <red>Err</>
 
 Received message: <red>\\"async apple\\"</>
 

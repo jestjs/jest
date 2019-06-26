@@ -29,6 +29,7 @@ import normalizePathSep from './lib/normalizePathSep';
 import watchmanCrawl from './crawlers/watchman';
 // @ts-ignore: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
 import WatchmanWatcher from './lib/WatchmanWatcher';
+import FSEventsWatcher from './lib/FSEventsWatcher';
 import * as fastPath from './lib/fast_path';
 import {
   ChangeEvent,
@@ -255,6 +256,7 @@ class HasteMap extends EventEmitter {
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
+      mapper: options.mapper,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)
@@ -522,7 +524,9 @@ class HasteMap extends EventEmitter {
         setModule(metadataId, metadataModule);
       }
 
-      fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+      fileMetadata[H.DEPENDENCIES] = metadata.dependencies
+        ? metadata.dependencies.join(H.DEPENDENCY_DELIM)
+        : '';
 
       if (computeSha1) {
         fileMetadata[H.SHA1] = metadata.sha1;
@@ -793,10 +797,14 @@ class HasteMap extends EventEmitter {
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
 
+    // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
     const Watcher: sane.Watcher =
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
+        : FSEventsWatcher.isSupported()
+        ? FSEventsWatcher
         : sane.NodeWatcher;
+
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     const rootDir = this._options.rootDir;
@@ -944,7 +952,7 @@ class HasteMap extends EventEmitter {
               stat ? stat.mtime.getTime() : -1,
               stat ? stat.size : 0,
               0,
-              [],
+              '',
               null,
             ];
             hasteMap.files.set(relativeFilePath, fileMetadata);

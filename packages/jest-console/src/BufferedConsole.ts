@@ -159,7 +159,7 @@ export default class BufferedConsole extends Console {
     this._log('warn', format(firstArg, ...rest));
   }
 
-  getBuffer(): ConsoleBuffer {
-    return this._buffer;
+  getBuffer() {
+    return this._buffer.length ? this._buffer : undefined;
   }
 }

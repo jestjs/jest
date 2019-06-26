@@ -37,6 +37,8 @@ export function equals(
   return eq(a, b, [], [], customTesters, strictCheck ? hasKey : hasDefinedKey);
 }
 
+const functionToString = Function.prototype.toString;
+
 function isAsymmetric(obj: any) {
   return !!obj && isA('Function', obj.asymmetricMatch);
 }
@@ -50,7 +52,6 @@ function asymmetricMatch(a: any, b: any) {
   }
 
   if (asymmetricA) {
-    // $FlowFixMe – Flow sees `a` as a number
     return a.asymmetricMatch(b);
   }
 
@@ -103,7 +104,6 @@ function eq(
     case '[object String]':
       // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
       // equivalent to `new String("5")`.
-      // $FlowFixMe – Flow sees `a` as a number
       return a == String(b);
     case '[object Number]':
       return Object.is(Number(a), Number(b));
@@ -119,7 +119,6 @@ function eq(
         a.source == b.source &&
         a.global == b.global &&
         a.multiline == b.multiline &&
-        // $FlowFixMe – Flow sees `a` as a number
         a.ignoreCase == b.ignoreCase
       );
   }
@@ -127,10 +126,8 @@ function eq(
     return false;
   }
 
-  var aIsDomNode = isDomNode(a);
-  var bIsDomNode = isDomNode(b);
   // Use DOM3 method isEqualNode (IE>=9)
-  if (aIsDomNode && typeof a.isEqualNode === 'function' && bIsDomNode) {
+  if (isDomNode(a) && isDomNode(b)) {
     return a.isEqualNode(b);
   }
 
@@ -210,9 +207,9 @@ function keys(
     }
     return keys.concat(
       (Object.getOwnPropertySymbols(o) as Array<any>).filter(
-        //$FlowFixMe Jest complains about nullability, but we know for sure that property 'symbol' does exist.
         symbol =>
-          (Object.getOwnPropertyDescriptor(o, symbol) as any).enumerable,
+          (Object.getOwnPropertyDescriptor(o, symbol) as PropertyDescriptor)
+            .enumerable,
       ),
     );
   })(obj);
@@ -262,7 +259,9 @@ export function fnNameFor(func: Function) {
     return func.name;
   }
 
-  const matches = func.toString().match(/^\s*function\s*(\w*)\s*\(/);
+  const matches = functionToString
+    .call(func)
+    .match(/^(?:async)?\s*function\s*\*?\s*([\w$]+)\s*\(/);
   return matches ? matches[1] : '<anonymous>';
 }
 

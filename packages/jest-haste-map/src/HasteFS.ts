@@ -33,7 +33,14 @@ export default class HasteFS {
 
   getDependencies(file: Config.Path): Array<string> | null {
     const fileMetadata = this._getFileData(file);
-    return (fileMetadata && fileMetadata[H.DEPENDENCIES]) || null;
+
+    if (fileMetadata) {
+      return fileMetadata[H.DEPENDENCIES]
+        ? fileMetadata[H.DEPENDENCIES].split(H.DEPENDENCY_DELIM)
+        : [];
+    } else {
+      return null;
+    }
   }
 
   getSha1(file: Config.Path): string | null {
@@ -76,7 +83,7 @@ export default class HasteFS {
     globs: Array<Config.Glob>,
     root: Config.Path | null,
   ): Set<Config.Path> {
-    const files = new Set();
+    const files = new Set<string>();
     for (const file of this.getAbsoluteFileIterator()) {
       const filePath = root ? fastPath.relative(root, file) : file;
       if (micromatch.some(replacePathSepForGlob(filePath), globs)) {

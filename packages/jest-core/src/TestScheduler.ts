@@ -73,7 +73,7 @@ export default class TestScheduler {
   async scheduleTests(tests: Array<Test>, watcher: TestWatcher) {
     const onStart = this._dispatcher.onTestStart.bind(this._dispatcher);
     const timings: Array<number> = [];
-    const contexts = new Set();
+    const contexts = new Set<Context>();
     tests.forEach(test => {
       contexts.add(test.context);
       if (test.duration) {
@@ -86,12 +86,7 @@ export default class TestScheduler {
       getEstimatedTime(timings, this._globalConfig.maxWorkers) / 1000,
     );
 
-    const runInBand = shouldRunInBand(
-      tests,
-      this._globalConfig.watch || this._globalConfig.watchAll,
-      this._globalConfig.maxWorkers,
-      timings,
-    );
+    const runInBand = shouldRunInBand(tests, timings, this._globalConfig);
 
     const onResult = async (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
@@ -222,7 +217,7 @@ export default class TestScheduler {
   }
 
   private _partitionTests(
-    testRunners: {[key: string]: TestRunner},
+    testRunners: Record<string, TestRunner>,
     tests: Array<Test>,
   ) {
     if (Object.keys(testRunners).length > 1) {
@@ -332,7 +327,7 @@ export default class TestScheduler {
    */
   private _getReporterProps(
     reporter: string | Config.ReporterConfig,
-  ): {path: string; options: {[key: string]: unknown}} {
+  ): {path: string; options: Record<string, unknown>} {
     if (typeof reporter === 'string') {
       return {options: this._options, path: reporter};
     } else if (Array.isArray(reporter)) {

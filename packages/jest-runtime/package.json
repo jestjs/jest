@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "24.5.0",
+  "version": "24.8.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,25 +10,25 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/console": "^24.3.0",
-    "@jest/environment": "^24.5.0",
+    "@jest/console": "^24.7.1",
+    "@jest/environment": "^24.8.0",
     "@jest/source-map": "^24.3.0",
-    "@jest/transform": "^24.5.0",
-    "@jest/types": "^24.5.0",
+    "@jest/transform": "^24.8.0",
+    "@jest/types": "^24.8.0",
     "@types/yargs": "^12.0.2",
     "chalk": "^2.0.1",
     "exit": "^0.1.2",
     "glob": "^7.1.3",
     "graceful-fs": "^4.1.15",
-    "jest-config": "^24.5.0",
-    "jest-haste-map": "^24.5.0",
-    "jest-message-util": "^24.5.0",
-    "jest-mock": "^24.5.0",
+    "jest-config": "^24.8.0",
+    "jest-haste-map": "^24.8.0",
+    "jest-message-util": "^24.8.0",
+    "jest-mock": "^24.8.0",
     "jest-regex-util": "^24.3.0",
-    "jest-resolve": "^24.5.0",
-    "jest-snapshot": "^24.5.0",
-    "jest-util": "^24.5.0",
-    "jest-validate": "^24.5.0",
+    "jest-resolve": "^24.8.0",
+    "jest-snapshot": "^24.8.0",
+    "jest-util": "^24.8.0",
+    "jest-validate": "^24.8.0",
     "realpath-native": "^1.1.0",
     "slash": "^2.0.0",
     "strip-bom": "^3.0.0",
@@ -40,7 +40,7 @@
     "@types/graceful-fs": "^4.1.2",
     "@types/slash": "^2.0.0",
     "@types/strip-bom": "^3.0.0",
-    "jest-environment-node": "^24.5.0"
+    "jest-environment-node": "^24.8.0"
   },
   "bin": {
     "jest-runtime": "./bin/jest-runtime.js"
@@ -51,5 +51,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
+  "gitHead": "845728f24b3ef41e450595c384e9b5c9fdf248a4"
 }

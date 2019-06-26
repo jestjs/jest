@@ -11,6 +11,7 @@ import getNoTestFound from './getNoTestFound';
 import getNoTestFoundRelatedToChangedFiles from './getNoTestFoundRelatedToChangedFiles';
 import getNoTestFoundVerbose from './getNoTestFoundVerbose';
 import getNoTestFoundFailed from './getNoTestFoundFailed';
+import getNoTestFoundPassWithNoTests from './getNoTestFoundPassWithNoTests';
 
 export default function getNoTestsFoundMessage(
   testRunData: TestRunData,
@@ -21,6 +22,9 @@ export default function getNoTestsFoundMessage(
   }
   if (globalConfig.onlyChanged) {
     return getNoTestFoundRelatedToChangedFiles(globalConfig);
+  }
+  if (globalConfig.passWithNoTests) {
+    return getNoTestFoundPassWithNoTests();
   }
   return testRunData.length === 1 || globalConfig.verbose
     ? getNoTestFoundVerbose(testRunData, globalConfig)

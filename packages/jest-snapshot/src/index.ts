@@ -7,13 +7,11 @@
 
 import fs from 'fs';
 import {Config} from '@jest/types';
-import {FS as HasteFS} from 'jest-haste-map';
+import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 import {MatcherState} from 'expect';
 
-import diff from 'jest-diff';
 import {
   BOLD_WEIGHT,
-  EXPECTED_COLOR,
   matcherHint,
   MatcherHintOptions,
   RECEIVED_COLOR,
@@ -26,6 +24,7 @@ import {
 } from './snapshot_resolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
+import {printDiffOrStringified} from './print';
 import * as utils from './utils';
 
 type Context = MatcherState & {
@@ -51,6 +50,7 @@ const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
 const HINT_ARG = BOLD_WEIGHT('hint');
 const INLINE_SNAPSHOT_ARG = 'snapshot';
 const PROPERTY_MATCHERS_ARG = 'properties';
+const INDENTATION_REGEX = /^([^\S\n]*)\S/m;
 
 // Display name in report when matcher fails same as in snapshot file,
 // but with optional hint argument in bold weight.
@@ -72,6 +72,48 @@ const printName = (
     '`'
   );
 };
+
+function stripAddedIndentation(inlineSnapshot: string) {
+  // Find indentation if exists.
+  const match = inlineSnapshot.match(INDENTATION_REGEX);
+  if (!match || !match[1]) {
+    // No indentation.
+    return inlineSnapshot;
+  }
+
+  const indentation = match[1];
+  const lines = inlineSnapshot.split('\n');
+  if (lines.length <= 2) {
+    // Must be at least 3 lines.
+    return inlineSnapshot;
+  }
+
+  if (lines[0].trim() !== '' || lines[lines.length - 1].trim() !== '') {
+    // If not blank first and last lines, abort.
+    return inlineSnapshot;
+  }
+
+  for (let i = 1; i < lines.length - 1; i++) {
+    if (lines[i] !== '') {
+      if (lines[i].indexOf(indentation) !== 0) {
+        // All lines except first and last should either be blank or have the same
+        // indent as the first line (or more). If this isn't the case we don't
+        // want to touch the snapshot at all.
+        return inlineSnapshot;
+      }
+
+      lines[i] = lines[i].substr(indentation.length);
+    }
+  }
+
+  // Last line is a special case because it won't have the same indent as others
+  // but may still have been given some indent to line up.
+  lines[lines.length - 1] = '';
+
+  // Return inline snapshot, now at indent 0.
+  inlineSnapshot = lines.join('\n');
+  return inlineSnapshot;
+}
 
 const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
@@ -182,7 +224,7 @@ const toMatchInlineSnapshot = function(
   return _toMatchSnapshot({
     context: this,
     expectedArgument,
-    inlineSnapshot: inlineSnapshot || '',
+    inlineSnapshot: stripAddedIndentation(inlineSnapshot || ''),
     matcherName,
     options,
     propertyMatchers,
@@ -284,19 +326,22 @@ const _toMatchSnapshot = ({
   } else {
     expected = (expected || '').trim();
     actual = (actual || '').trim();
-    const diffMessage = diff(expected, actual, {
-      aAnnotation: 'Snapshot',
-      bAnnotation: 'Received',
-      expand: snapshotState.expand,
-    });
+
+    // Assign to local variable because of declaration let expected:
+    // TypeScript thinks it could change before report function is called.
+    const printed = printDiffOrStringified(
+      expected,
+      actual,
+      received,
+      'Snapshot',
+      'Received',
+      snapshotState.expand,
+    );
 
     report = () =>
-      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` +
-      (diffMessage ||
-        EXPECTED_COLOR('- ' + (expected || '')) +
-          '\n' +
-          RECEIVED_COLOR('+ ' + actual));
+      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` + printed;
   }
+
   // Passing the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
   // or create a different error message

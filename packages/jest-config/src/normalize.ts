@@ -16,6 +16,7 @@ import micromatch from 'micromatch';
 import {sync as realpath} from 'realpath-native';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
+import getType from 'jest-get-type';
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
@@ -28,6 +29,7 @@ import {
   getRunner,
   getWatchPlugin,
   resolve,
+  getSequencer,
 } from './utils';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import {validateReporters} from './ReporterValidationErrors';
@@ -485,13 +487,6 @@ export default function normalize(
     ...DEFAULT_CONFIG,
   } as unknown) as AllOptions;
 
-  try {
-    // try to resolve windows short paths, ignoring errors (permission errors, mostly)
-    newOptions.cwd = realpath(newOptions.cwd);
-  } catch (e) {
-    // ignored
-  }
-
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
       filePath: options.resolver,
@@ -669,14 +664,19 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce((projects, project) => {
-            // Project can be specified as globs. If a glob matches any files,
-            // We expand it to these paths. If not, we keep the original path
-            // for the future resolution.
-            const globMatches =
-              typeof project === 'string' ? glob.sync(project) : [];
-            return projects.concat(globMatches.length ? globMatches : project);
-          }, []);
+          .reduce(
+            (projects, project) => {
+              // Project can be specified as globs. If a glob matches any files,
+              // We expand it to these paths. If not, we keep the original path
+              // for the future resolution.
+              const globMatches =
+                typeof project === 'string' ? glob.sync(project) : [];
+              return projects.concat(
+                globMatches.length ? globMatches : project,
+              );
+            },
+            [] as Array<string>,
+          );
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -750,6 +750,60 @@ export default function normalize(
         }
         break;
       }
+      case 'displayName': {
+        const displayName = oldOptions[key] as Config.DisplayName;
+        if (typeof displayName === 'string') {
+          value = displayName;
+          break;
+        }
+        /**
+         * Ensuring that displayName shape is correct here so that the
+         * reporters can trust the shape of the data
+         * TODO: Normalize "displayName" such that given a config option
+         * {
+         *  "displayName": "Test"
+         * }
+         * becomes
+         * {
+         *   displayName: {
+         *     name: "Test",
+         *     color: "white"
+         *   }
+         * }
+         *
+         * This can't be done now since this will be a breaking change
+         * for custom reporters
+         */
+        if (getType(displayName) === 'object') {
+          const errorMessage =
+            `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
+            '  {\n' +
+            '    name: string;\n' +
+            '    color: string;\n' +
+            '  }\n';
+          const {name, color} = displayName;
+          if (
+            !name ||
+            !color ||
+            typeof name !== 'string' ||
+            typeof color !== 'string'
+          ) {
+            throw createConfigError(errorMessage);
+          }
+        }
+        value = oldOptions[key];
+        break;
+      }
+      case 'testTimeout': {
+        if (oldOptions[key] < 0) {
+          throw createConfigError(
+            `  Option "${chalk.bold('testTimeout')}" must be a natural number.`,
+          );
+        }
+
+        value = oldOptions[key];
+        break;
+      }
       case 'automock':
       case 'browser':
       case 'cache':
@@ -761,7 +815,6 @@ export default function normalize(
       case 'coverageThreshold':
       case 'detectLeaks':
       case 'detectOpenHandles':
-      case 'displayName':
       case 'errorOnDeprecated':
       case 'expand':
       case 'extraGlobals':
@@ -832,6 +885,18 @@ export default function normalize(
     return newOptions;
   }, newOptions);
 
+  try {
+    // try to resolve windows short paths, ignoring errors (permission errors, mostly)
+    newOptions.cwd = realpath(process.cwd());
+  } catch (e) {
+    // ignored
+  }
+
+  newOptions.testSequencer = getSequencer(newOptions.resolver, {
+    filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
+    rootDir: options.rootDir,
+  });
+
   newOptions.nonFlagArgs = argv._;
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = !!argv.json;
@@ -868,7 +933,7 @@ export default function normalize(
     (newOptions.maxConcurrency as unknown) as string,
     10,
   );
-  newOptions.maxWorkers = getMaxWorkers(argv);
+  newOptions.maxWorkers = getMaxWorkers(argv, options);
 
   if (newOptions.testRegex!.length && options.testMatch) {
     throw createConfigError(

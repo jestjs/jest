@@ -5,9 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO: Remove this
-/// <reference path="../node-notifier.d.ts" />
-
 import path from 'path';
 import util from 'util';
 import exit from 'exit';

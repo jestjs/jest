@@ -139,10 +139,6 @@ export = function nodeCrawl(
   removedFiles: FileData;
   hasteMap: InternalHasteMap;
 }> {
-  if (options.mapper) {
-    throw new Error(`Option 'mapper' isn't supported by the Node crawler`);
-  }
-
   const {
     data,
     extensions,
@@ -164,7 +160,7 @@ export = function nodeCrawl(
           files.set(relativeFilePath, existingFile);
         } else {
           // See ../constants.js; SHA-1 will always be null and fulfilled later.
-          files.set(relativeFilePath, ['', mtime, size, 0, [], null]);
+          files.set(relativeFilePath, ['', mtime, size, 0, '', null]);
         }
         removedFiles.delete(relativeFilePath);
       });

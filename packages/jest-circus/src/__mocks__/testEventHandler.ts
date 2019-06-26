@@ -6,9 +6,9 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import {EventHandler} from '../types';
+import {Circus} from '@jest/types';
 
-const testEventHandler: EventHandler = (event, state) => {
+const testEventHandler: Circus.EventHandler = (event, state) => {
   switch (event.name) {
     case 'start_describe_definition':
     case 'finish_describe_definition': {

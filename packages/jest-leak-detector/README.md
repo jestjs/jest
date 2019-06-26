@@ -12,11 +12,11 @@ let reference = {};
 const detector = new LeakDetector(reference);
 
 // Reference is held in memory.
-console.log(detector.isLeaked()); // true
+console.log(detector.isLeaking()); // true
 
 // We destroy the only reference to the object.
 reference = null;
 
 // Reference is gone.
-console.log(detector.isLeaked()); // false
+console.log(detector.isLeaking()); // false
 ```

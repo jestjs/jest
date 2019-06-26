@@ -1530,10 +1530,69 @@ describe('moduleFileExtensions', () => {
   });
 });
 
+describe('cwd', () => {
+  it('is set to process.cwd', () => {
+    const {options} = normalize({rootDir: '/root/'}, {});
+    expect(options.cwd).toBe(process.cwd());
+  });
+
+  it('is not lost if the config has its own cwd property', () => {
+    console.warn.mockImplementation(() => {});
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        cwd: '/tmp/config-sets-cwd-itself',
+      },
+      {},
+    );
+    expect(options.cwd).toBe(process.cwd());
+    expect(console.warn).toHaveBeenCalled();
+  });
+});
+
 describe('Defaults', () => {
   it('should be accepted by normalize', () => {
     normalize({...Defaults, rootDir: '/root'}, {});
 
     expect(console.warn).not.toHaveBeenCalled();
+  });
+});
+
+describe('displayName', () => {
+  test.each`
+    displayName             | description
+    ${{}}                   | ${'is an empty object'}
+    ${{name: 'hello'}}      | ${'missing color'}
+    ${{color: 'green'}}     | ${'missing name'}
+    ${{color: 2, name: []}} | ${'using invalid values'}
+  `(
+    'should throw an error when displayName is $description',
+    ({displayName}) => {
+      expect(() => {
+        normalize(
+          {
+            rootDir: '/root/',
+            displayName,
+          },
+          {},
+        );
+      }).toThrowErrorMatchingSnapshot();
+    },
+  );
+});
+
+describe('testTimeout', () => {
+  it('should return timeout value if defined', () => {
+    console.warn.mockImplementation(() => {});
+    const {options} = normalize({rootDir: '/root/', testTimeout: 1000}, {});
+
+    expect(options.testTimeout).toBe(1000);
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
+  it('should throw an error if timeout is a negative number', () => {
+    expect(() =>
+      normalize({rootDir: '/root/', testTimeout: -1}, {}),
+    ).toThrowErrorMatchingSnapshot();
   });
 });

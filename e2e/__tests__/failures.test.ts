@@ -55,15 +55,15 @@ test('works with node assert', () => {
 `);
 
     expect(summary).toContain(`
-      69 | 
-      70 | test('assert.doesNotThrow', () => {
-    > 71 |   assert.doesNotThrow(() => {
+      68 | 
+      69 | test('assert.doesNotThrow', () => {
+    > 70 |   assert.doesNotThrow(() => {
          |          ^
-      72 |     throw Error('err!');
-      73 |   });
-      74 | });
+      71 |     throw Error('err!');
+      72 |   });
+      73 | });
 
-      at Object.doesNotThrow (__tests__/assertionError.test.js:71:10)
+      at Object.doesNotThrow (__tests__/assertionError.test.js:70:10)
 `);
 
     const commonErrorMessage = `Message:
@@ -105,15 +105,15 @@ test('works with node assert', () => {
 
       Comparing two different types of values. Expected null but received number.
 
-      65 | 
-      66 | test('assert.ifError', () => {
-    > 67 |   assert.ifError(1);
+      64 | 
+      65 | test('assert.ifError', () => {
+    > 66 |   assert.ifError(1);
          |          ^
-      68 | });
-      69 | 
-      70 | test('assert.doesNotThrow', () => {
+      67 | });
+      68 | 
+      69 | test('assert.doesNotThrow', () => {
 
-      at Object.ifError (__tests__/assertionError.test.js:67:10)
+      at Object.ifError (__tests__/assertionError.test.js:66:10)
 `;
 
     expect(summary).toContain(ifErrorMessage);
@@ -122,15 +122,15 @@ test('works with node assert', () => {
     const ifErrorMessage = `
     thrown: 1
 
-      64 | });
-      65 | 
-    > 66 | test('assert.ifError', () => {
+      63 | });
+      64 | 
+    > 65 | test('assert.ifError', () => {
          | ^
-      67 |   assert.ifError(1);
-      68 | });
-      69 | 
+      66 |   assert.ifError(1);
+      67 | });
+      68 | 
 
-      at Object.test (__tests__/assertionError.test.js:66:1)
+      at Object.test (__tests__/assertionError.test.js:65:1)
 `;
 
     expect(summary).toContain(ifErrorMessage);

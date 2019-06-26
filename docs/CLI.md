@@ -158,7 +158,7 @@ Print debugging info about your Jest config.
 
 ### `--detectOpenHandles`
 
-Attempt to collect and print open handles preventing Jest from exiting cleanly. Use this in cases where you need to use `--forceExit` in order for Jest to exit to potentially track down the reason. Implemented using [`async_hooks`](https://nodejs.org/api/async_hooks.html), so it only works in Node 8 and newer.
+Attempt to collect and print open handles preventing Jest from exiting cleanly. Use this in cases where you need to use `--forceExit` in order for Jest to exit to potentially track down the reason. This implies `--runInBand`, making tests run serially. Implemented using [`async_hooks`](https://nodejs.org/api/async_hooks.html), so it only works in Node 8 and newer. This option has a significant performance penalty and should only be used for debugging.
 
 ### `--env=<environment>`
 
@@ -214,7 +214,7 @@ Prevents Jest from executing more than the specified amount of tests at the same
 
 ### `--maxWorkers=<num>|<string>`
 
-Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. This defaults to the number of the cores available on your machine. It may be useful to adjust this in resource limited environments like CIs but the default should be adequate for most use-cases.
+Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. In single run mode, this defaults to the number of the cores available on your machine minus one for the main thread. In watch mode, this defaults to half of the available cores on your machine to ensure Jest is unobtrusive and does not grind your machine to a halt. It may be useful to adjust this in resource limited environments like CIs but the defaults should be adequate for most use-cases.
 
 For environments with variable CPUs available, you can use percentage based configuration: `--maxWorkers=50%`
 
@@ -296,6 +296,14 @@ An array of regexp pattern strings that is tested against all tests paths before
 ### `--testRunner=<path>`
 
 Lets you specify a custom test runner.
+
+### `--testSequencer=<path>`
+
+Lets you specify a custom test sequencer. Please refer to the documentation of the corresponding configuration property for details.
+
+### `--testTimeout=<number>`
+
+Default timeout of a test in milliseconds. Default value: 5000.
 
 ### `--updateSnapshot`
 

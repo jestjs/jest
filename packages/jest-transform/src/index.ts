@@ -7,4 +7,8 @@
 
 export {default as ScriptTransformer} from './ScriptTransformer';
 export {default as shouldInstrument} from './shouldInstrument';
-export {Transformer, ShouldInstrumentOptions} from './types';
+export {
+  Transformer,
+  ShouldInstrumentOptions,
+  Options as TransformationOptions,
+} from './types';

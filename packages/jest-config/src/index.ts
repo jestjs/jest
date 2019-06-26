@@ -148,6 +148,8 @@ const groupOptions = (
     testNamePattern: options.testNamePattern,
     testPathPattern: options.testPathPattern,
     testResultsProcessor: options.testResultsProcessor,
+    testSequencer: options.testSequencer,
+    testTimeout: options.testTimeout,
     updateSnapshot: options.updateSnapshot,
     useStderr: options.useStderr,
     verbose: options.verbose,
@@ -217,6 +219,10 @@ const ensureNoDuplicateConfigs = (
   parsedConfigs: Array<ReadConfig>,
   projects: Config.GlobalConfig['projects'],
 ) => {
+  if (projects.length <= 1) {
+    return;
+  }
+
   const configPathMap = new Map();
 
   for (const config of parsedConfigs) {
@@ -288,7 +294,10 @@ export function readConfigs(
     }
   }
 
-  if (projects.length > 1) {
+  if (
+    projects.length > 1 ||
+    (projects.length && typeof projects[0] === 'object')
+  ) {
     const parsedConfigs = projects
       .filter(root => {
         // Ignore globbed files that cannot be `require`d.

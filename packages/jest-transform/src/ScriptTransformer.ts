@@ -31,7 +31,8 @@ import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
 
 type ProjectCache = {
   configString: string;
-  ignorePatternsRegExp: RegExp | null;
+  ignorePatternsRegExp?: RegExp;
+  transformRegExp?: Array<[RegExp, string, Record<string, unknown>]>;
   transformedFiles: Map<string, TransformResult>;
 };
 
@@ -54,7 +55,7 @@ export default class ScriptTransformer {
   private _cache: ProjectCache;
   private _config: Config.ProjectConfig;
   private _transformCache: Map<Config.Path, Transformer>;
-  private _transformConfigCache: Map<Config.Path, Object>;
+  private _transformConfigCache: Map<Config.Path, unknown>;
 
   constructor(config: Config.ProjectConfig) {
     this._config = config;
@@ -66,7 +67,8 @@ export default class ScriptTransformer {
     if (!projectCache) {
       projectCache = {
         configString: stableStringify(this._config),
-        ignorePatternsRegExp: calcIgnorePatternRegexp(this._config),
+        ignorePatternsRegExp: calcIgnorePatternRegExp(this._config),
+        transformRegExp: calcTransformRegExp(this._config),
         transformedFiles: new Map(),
       };
 
@@ -102,6 +104,7 @@ export default class ScriptTransformer {
         .update(fileData)
         .update(configString)
         .update(instrument ? 'instrument' : '')
+        .update(filename)
         .update(CACHE_VERSION)
         .digest('hex');
     }
@@ -121,11 +124,11 @@ export default class ScriptTransformer {
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
+    const cacheFilenamePrefix = path
+      .basename(filename, path.extname(filename))
+      .replace(/\W/g, '');
     const cachePath = slash(
-      path.join(
-        cacheDir,
-        path.basename(filename, path.extname(filename)) + '_' + cacheKey,
-      ),
+      path.join(cacheDir, cacheFilenamePrefix + '_' + cacheKey),
     );
     createDirectory(cacheDir);
 
@@ -133,18 +136,21 @@ export default class ScriptTransformer {
   }
 
   private _getTransformPath(filename: Config.Path) {
-    for (let i = 0; i < this._config.transform.length; i++) {
-      if (new RegExp(this._config.transform[i][0]).test(filename)) {
-        const transformPath = this._config.transform[i][1];
-        this._transformConfigCache.set(
-          transformPath,
-          this._config.transform[i][2],
-        );
+    const transformRegExp = this._cache.transformRegExp;
+    if (!transformRegExp) {
+      return undefined;
+    }
+
+    for (let i = 0; i < transformRegExp.length; i++) {
+      if (transformRegExp[i][0].test(filename)) {
+        const transformPath = transformRegExp[i][1];
+        this._transformConfigCache.set(transformPath, transformRegExp[i][2]);
 
         return transformPath;
       }
     }
-    return null;
+
+    return undefined;
   }
 
   private _getTransformer(filename: Config.Path) {
@@ -380,21 +386,19 @@ export default class ScriptTransformer {
     options: Options,
     fileSource?: string,
   ): TransformResult {
-    let scriptCacheKey = null;
+    let scriptCacheKey = undefined;
     let instrument = false;
-    let result: TransformResult | undefined;
 
     if (!options.isCoreModule) {
       instrument = shouldInstrument(filename, options, this._config);
       scriptCacheKey = getScriptCacheKey(filename, instrument);
-      result = this._cache.transformedFiles.get(scriptCacheKey);
+      const result = this._cache.transformedFiles.get(scriptCacheKey);
+      if (result) {
+        return result;
+      }
     }
 
-    if (result) {
-      return result;
-    }
-
-    result = this._transformAndBuildScript(
+    const result = this._transformAndBuildScript(
       filename,
       options,
       instrument,
@@ -406,6 +410,28 @@ export default class ScriptTransformer {
     }
 
     return result;
+  }
+
+  transformJson(
+    filename: Config.Path,
+    options: Options,
+    fileSource: string,
+  ): string {
+    const isInternalModule = options.isInternalModule;
+    const isCoreModule = options.isCoreModule;
+    const willTransform =
+      !isInternalModule && !isCoreModule && this.shouldTransform(filename);
+
+    if (willTransform) {
+      const {code: transformedJsonSource} = this.transformSource(
+        filename,
+        fileSource,
+        false,
+      );
+      return transformedJsonSource;
+    }
+
+    return fileSource;
   }
 
   /**
@@ -548,17 +574,32 @@ const getScriptCacheKey = (filename: Config.Path, instrument: boolean) => {
   return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };
 
-const calcIgnorePatternRegexp = (
-  config: Config.ProjectConfig,
-): RegExp | null => {
+const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
   if (
     !config.transformIgnorePatterns ||
     config.transformIgnorePatterns.length === 0
   ) {
-    return null;
+    return undefined;
   }
 
   return new RegExp(config.transformIgnorePatterns.join('|'));
+};
+
+const calcTransformRegExp = (config: Config.ProjectConfig) => {
+  if (!config.transform.length) {
+    return undefined;
+  }
+
+  const transformRegexp: Array<[RegExp, string, Record<string, unknown>]> = [];
+  for (let i = 0; i < config.transform.length; i++) {
+    transformRegexp.push([
+      new RegExp(config.transform[i][0]),
+      config.transform[i][1],
+      config.transform[i][2],
+    ]);
+  }
+
+  return transformRegexp;
 };
 
 const wrap = (content: string, ...extras: Array<string>) => {

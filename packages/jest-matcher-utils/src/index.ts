@@ -6,9 +6,10 @@
  */
 
 import chalk from 'chalk';
-import jestDiff, {DiffOptions} from 'jest-diff';
-import getType from 'jest-get-type';
+import jestDiff, {DiffOptions, getStringDiff} from 'jest-diff';
+import getType, {isPrimitive} from 'jest-get-type';
 import prettyFormat from 'pretty-format';
+
 const {
   AsymmetricMatcher,
   DOMCollection,
@@ -41,7 +42,10 @@ export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
 export const INVERTED_COLOR = chalk.inverse;
 export const BOLD_WEIGHT = chalk.bold;
-const DIM_COLOR = chalk.dim;
+export const DIM_COLOR = chalk.dim;
+
+const MULTILINE_REGEXP = /\n/;
+const SPACE_SYMBOL = '\u{00B7}'; // middle dot
 
 const NUMBERS = [
   'zero',
@@ -59,10 +63,6 @@ const NUMBERS = [
   'twelve',
   'thirteen',
 ];
-
-export const SUGGEST_TO_EQUAL = chalk.dim(
-  'Note that you are testing for equality with the stricter `toBe` matcher using `Object.is`. For deep equality only, use `toEqual` instead.',
-);
 
 export const SUGGEST_TO_CONTAIN_EQUAL = chalk.dim(
   'Looks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.',
@@ -95,10 +95,15 @@ export const stringify = (object: unknown, maxDepth: number = 10): string => {
 export const highlightTrailingWhitespace = (text: string): string =>
   text.replace(/\s+$/gm, chalk.inverse('$&'));
 
+// Instead of inverse highlight which now implies a change,
+// replace common spaces with middle dot at the end of any line.
+const replaceTrailingSpaces = (text: string): string =>
+  text.replace(/\s+$/gm, spaces => SPACE_SYMBOL.repeat(spaces.length));
+
 export const printReceived = (object: unknown) =>
-  RECEIVED_COLOR(highlightTrailingWhitespace(stringify(object)));
+  RECEIVED_COLOR(replaceTrailingSpaces(stringify(object)));
 export const printExpected = (value: unknown) =>
-  EXPECTED_COLOR(highlightTrailingWhitespace(stringify(value)));
+  EXPECTED_COLOR(replaceTrailingSpaces(stringify(value)));
 
 export const printWithType = (
   name: string, // 'Expected' or 'Received'
@@ -202,6 +207,110 @@ export const ensureExpectedIsNonNegativeInteger = (
   }
 };
 
+const isLineDiffable = (expected: unknown, received: unknown): boolean => {
+  const expectedType = getType(expected);
+  const receivedType = getType(received);
+
+  if (expectedType !== receivedType) {
+    return false;
+  }
+
+  if (isPrimitive(expected)) {
+    // Print generic line diff for strings only:
+    // * if neither string is empty
+    // * if either string has more than one line
+    return (
+      typeof expected === 'string' &&
+      typeof received === 'string' &&
+      expected.length !== 0 &&
+      received.length !== 0 &&
+      (MULTILINE_REGEXP.test(expected) || MULTILINE_REGEXP.test(received))
+    );
+  }
+
+  if (
+    expectedType === 'date' ||
+    expectedType === 'function' ||
+    expectedType === 'regexp'
+  ) {
+    return false;
+  }
+
+  if (expected instanceof Error && received instanceof Error) {
+    return false;
+  }
+
+  if (
+    expectedType === 'object' &&
+    typeof (expected as any).asymmetricMatch === 'function'
+  ) {
+    return false;
+  }
+
+  if (
+    receivedType === 'object' &&
+    typeof (received as any).asymmetricMatch === 'function'
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+export const printDiffOrStringify = (
+  expected: unknown,
+  received: unknown,
+  expectedLabel: string,
+  receivedLabel: string,
+  expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+): string => {
+  if (typeof expected === 'string' && typeof received === 'string') {
+    const result = getStringDiff(expected, received, {
+      aAnnotation: expectedLabel,
+      bAnnotation: receivedLabel,
+      expand,
+    });
+
+    if (result !== null) {
+      if (result.isMultiline) {
+        return result.annotatedDiff;
+      }
+
+      const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+      const expectedLine = printLabel(expectedLabel) + printExpected(result.a);
+      const receivedLine = printLabel(receivedLabel) + printReceived(result.b);
+
+      return expectedLine + '\n' + receivedLine;
+    }
+  }
+
+  if (isLineDiffable(expected, received)) {
+    const difference = jestDiff(expected, received, {
+      aAnnotation: expectedLabel,
+      bAnnotation: receivedLabel,
+      expand,
+    });
+
+    if (
+      typeof difference === 'string' &&
+      difference.includes('- ' + expectedLabel) &&
+      difference.includes('+ ' + receivedLabel)
+    ) {
+      return difference;
+    }
+  }
+
+  const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+  const expectedLine = printLabel(expectedLabel) + printExpected(expected);
+  const receivedLine =
+    printLabel(receivedLabel) +
+    (stringify(expected) === stringify(received)
+      ? 'serializes to the same string'
+      : printReceived(received));
+
+  return expectedLine + '\n' + receivedLine;
+};
+
 // Sometimes, e.g. when comparing two numbers, the output from jest-diff
 // does not contain more information than the `Expected:` / `Received:` already gives.
 // In those cases, we do not print a diff to make the output shorter and not redundant.
@@ -214,7 +323,8 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
   }
   return true;
 };
-export const diff: typeof jestDiff = (a, b, options) =>
+
+export const diff = (a: any, b: any, options?: DiffOptions): string | null =>
   shouldPrintDiff(a, b) ? jestDiff(a, b, options) : null;
 
 export const pluralize = (word: string, count: number) =>

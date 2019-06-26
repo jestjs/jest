@@ -16,41 +16,41 @@ import {
   TestResult,
 } from './types';
 
-const formatResult = (
+const formatTestResult = (
   testResult: TestResult,
-  codeCoverageFormatter: CodeCoverageFormatter,
-  reporter: CodeCoverageReporter,
+  codeCoverageFormatter?: CodeCoverageFormatter,
+  reporter?: CodeCoverageReporter,
 ): FormattedTestResult => {
-  const now = Date.now();
-  const output: FormattedTestResult = {
-    assertionResults: [],
-    coverage: {},
-    endTime: now,
-    message: '',
-    name: testResult.testFilePath,
-    startTime: now,
-    status: 'failed',
-    summary: '',
-  };
-
+  const assertionResults = testResult.testResults.map(formatTestAssertion);
   if (testResult.testExecError) {
-    output.message = testResult.testExecError.message;
-    output.coverage = {};
+    const now = Date.now();
+    return {
+      assertionResults,
+      coverage: {},
+      endTime: now,
+      message: testResult.failureMessage
+        ? testResult.failureMessage
+        : testResult.testExecError.message,
+      name: testResult.testFilePath,
+      startTime: now,
+      status: 'failed',
+      summary: '',
+    };
   } else {
     const allTestsPassed = testResult.numFailingTests === 0;
-    output.status = allTestsPassed ? 'passed' : 'failed';
-    output.startTime = testResult.perfStats.start;
-    output.endTime = testResult.perfStats.end;
-    output.coverage = codeCoverageFormatter(testResult.coverage, reporter);
+    return {
+      assertionResults,
+      coverage: codeCoverageFormatter
+        ? codeCoverageFormatter(testResult.coverage, reporter)
+        : testResult.coverage,
+      endTime: testResult.perfStats.end,
+      message: testResult.failureMessage || '',
+      name: testResult.testFilePath,
+      startTime: testResult.perfStats.start,
+      status: allTestsPassed ? 'passed' : 'failed',
+      summary: '',
+    };
   }
-
-  output.assertionResults = testResult.testResults.map(formatTestAssertion);
-
-  if (testResult.failureMessage) {
-    output.message = testResult.failureMessage;
-  }
-
-  return output;
 };
 
 function formatTestAssertion(
@@ -72,13 +72,11 @@ function formatTestAssertion(
 
 export default function formatTestResults(
   results: AggregatedResult,
-  codeCoverageFormatter?: CodeCoverageFormatter | null,
+  codeCoverageFormatter?: CodeCoverageFormatter,
   reporter?: CodeCoverageReporter,
 ): FormattedTestResults {
-  const formatter = codeCoverageFormatter || (coverage => coverage);
-
   const testResults = results.testResults.map(testResult =>
-    formatResult(testResult, formatter, reporter),
+    formatTestResult(testResult, codeCoverageFormatter, reporter),
   );
 
   return {...results, testResults};

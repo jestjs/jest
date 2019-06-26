@@ -32,9 +32,5 @@ variables:
   # Used by chalk. Ensures output from Jest includes ANSI escape characters that are needed to match test snapshots.
   FORCE_COLOR: 1
 
-  # By default, Azure Pipelines clones to an "s" directory, which causes tests to fail due to assumption of Jest being run from a "jest" directory.
-  # See packages/jest-message-util/src/index.js PATH_JEST_PACKAGES for more details.
-  JEST_DIR: $(Agent.BuildDirectory)/jest
-
   # Ensures the handful of tests that should be skipped during CI are
   CI: true

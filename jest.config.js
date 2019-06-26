@@ -31,6 +31,7 @@ module.exports = {
   ],
   testEnvironment: './packages/jest-environment-node',
   testPathIgnorePatterns: [
+    '/__arbitraries__/',
     '/node_modules/',
     '/examples/',
     '/e2e/.*/__tests__',

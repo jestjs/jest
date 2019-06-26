@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "24.5.0",
+  "version": "24.8.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,20 +11,20 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/traverse": "^7.1.0",
-    "@jest/environment": "^24.5.0",
-    "@jest/test-result": "^24.5.0",
-    "@jest/types": "^24.5.0",
+    "@jest/environment": "^24.8.0",
+    "@jest/test-result": "^24.8.0",
+    "@jest/types": "^24.8.0",
     "chalk": "^2.0.1",
     "co": "^4.6.0",
-    "expect": "^24.5.0",
+    "expect": "^24.8.0",
     "is-generator-fn": "^2.0.0",
-    "jest-each": "^24.5.0",
-    "jest-matcher-utils": "^24.5.0",
-    "jest-message-util": "^24.5.0",
-    "jest-runtime": "^24.5.0",
-    "jest-snapshot": "^24.5.0",
-    "jest-util": "^24.5.0",
-    "pretty-format": "^24.5.0",
+    "jest-each": "^24.8.0",
+    "jest-matcher-utils": "^24.8.0",
+    "jest-message-util": "^24.8.0",
+    "jest-runtime": "^24.8.0",
+    "jest-snapshot": "^24.8.0",
+    "jest-util": "^24.8.0",
+    "pretty-format": "^24.8.0",
     "throat": "^4.0.0"
   },
   "devDependencies": {
@@ -36,5 +36,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "800533020f5b2f153615c821ed7cb12fd868fa6f"
+  "gitHead": "845728f24b3ef41e450595c384e9b5c9fdf248a4"
 }
