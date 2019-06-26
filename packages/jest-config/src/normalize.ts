@@ -46,19 +46,29 @@ type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
-const mergeOptionWithPreset = (
+// TS 3.5 forces us to split these into 2
+const mergeModuleNameMapperWithPreset = (
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
-  optionName: keyof Pick<
-    Config.InitialOptions,
-    'moduleNameMapper' | 'transform'
-  >,
 ) => {
-  if (options[optionName] && preset[optionName]) {
-    options[optionName] = {
-      ...options[optionName],
-      ...preset[optionName],
-      ...options[optionName],
+  if (options['moduleNameMapper'] && preset['moduleNameMapper']) {
+    options['moduleNameMapper'] = {
+      ...options['moduleNameMapper'],
+      ...preset['moduleNameMapper'],
+      ...options['moduleNameMapper'],
+    };
+  }
+};
+
+const mergeTransformWithPreset = (
+  options: Config.InitialOptions,
+  preset: Config.InitialOptions,
+) => {
+  if (options['transform'] && preset['transform']) {
+    options['transform'] = {
+      ...options['transform'],
+      ...preset['transform'],
+      ...options['transform'],
     };
   }
 };
@@ -121,8 +131,8 @@ const setupPreset = (
       options.modulePathIgnorePatterns,
     );
   }
-  mergeOptionWithPreset(options, preset, 'moduleNameMapper');
-  mergeOptionWithPreset(options, preset, 'transform');
+  mergeModuleNameMapperWithPreset(options, preset);
+  mergeTransformWithPreset(options, preset);
 
   return {...preset, ...options};
 };
