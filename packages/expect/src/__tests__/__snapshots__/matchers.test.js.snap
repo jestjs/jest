@@ -563,6 +563,58 @@ Expected difference: < <green>0.005</>
 Received difference:   <red>0.005000099999999952</>"
 `;
 
+exports[`.toBeCloseTo() throws: Matcher error promise empty isNot false received 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
+
+<bold>Matcher error</>: <red>received</> value must be a number
+
+Received has type:  string
+Received has value: <red>\\"\\"</>"
+`;
+
+exports[`.toBeCloseTo() throws: Matcher error promise empty isNot true expected 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has value: <green>undefined</>"
+`;
+
+exports[`.toBeCloseTo() throws: Matcher error promise rejects isNot false expected 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has type:  string
+Expected has value: <green>\\"0\\"</>"
+`;
+
+exports[`.toBeCloseTo() throws: Matcher error promise rejects isNot true received 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <red>received</> value must be a number
+
+Received has type:  symbol
+Received has value: <red>Symbol(0.1)</>"
+`;
+
+exports[`.toBeCloseTo() throws: Matcher error promise resolves isNot false received 1`] = `
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
+
+<bold>Matcher error</>: <red>received</> value must be a number
+
+Received has type:  boolean
+Received has value: <red>false</>"
+`;
+
+exports[`.toBeCloseTo() throws: Matcher error promise resolves isNot true expected 1`] = `
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a number
+
+Expected has value: <green>null</>"
+`;
+
 exports[`.toBeDefined(), .toBeUndefined() '"a"' is defined 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
 
@@ -2551,7 +2603,7 @@ Received: <red>{\\"a\\": 1}</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect("").toHaveLength(1) 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
 Expected length: <green>1</>
 Received length: <red>0</>
@@ -2559,7 +2611,7 @@ Received string: <red>\\"\\"</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect("abc").toHaveLength(66) 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
 Expected length: <green>66</>
 Received length: <red>3</>
@@ -2567,7 +2619,7 @@ Received string: <red>\\"abc\\"</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect(["a", "b"]).toHaveLength(99) 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
 Expected length: <green>99</>
 Received length: <red>2</>
@@ -2575,7 +2627,7 @@ Received array:  <red>[\\"a\\", \\"b\\"]</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect([]).toHaveLength(1) 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
 Expected length: <green>1</>
 Received length: <red>0</>
@@ -2583,7 +2635,7 @@ Received array:  <red>[]</>"
 `;
 
 exports[`.toHaveLength {pass: false} expect([1, 2]).toHaveLength(3) 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
 Expected length: <green>3</>
 Received length: <red>2</>
@@ -2591,47 +2643,42 @@ Received array:  <red>[1, 2]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect("").toHaveLength(0) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
-Expected length: <green>0</>
-Received length: <red>0</>
-Received string: <red>\\"\\"</>"
+Expected length: not <green>0</>
+Received string:     <red>\\"\\"</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect("abc").toHaveLength(3) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
-Expected length: <green>3</>
-Received length: <red>3</>
-Received string: <red>\\"abc\\"</>"
+Expected length: not <green>3</>
+Received string:     <red>\\"abc\\"</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect(["a", "b"]).toHaveLength(2) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
-Expected length: <green>2</>
-Received length: <red>2</>
-Received array:  <red>[\\"a\\", \\"b\\"]</>"
+Expected length: not <green>2</>
+Received array:      <red>[\\"a\\", \\"b\\"]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect([]).toHaveLength(0) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
-Expected length: <green>0</>
-Received length: <red>0</>
-Received array:  <red>[]</>"
+Expected length: not <green>0</>
+Received array:      <red>[]</>"
 `;
 
 exports[`.toHaveLength {pass: true} expect([1, 2]).toHaveLength(2) 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.toHaveLength(</><green>length</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
-Expected length: <green>2</>
-Received length: <red>2</>
-Received array:  <red>[1, 2]</>"
+Expected length: not <green>2</>
+Received array:      <red>[1, 2]</>"
 `;
 
 exports[`.toHaveLength error cases 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must have a length property whose value must be a number
 
@@ -2640,7 +2687,7 @@ Received has value: <red>{\\"a\\": 9}</>"
 `;
 
 exports[`.toHaveLength error cases 2`] = `
-"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must have a length property whose value must be a number
 
@@ -2649,20 +2696,56 @@ Received has value: <red>0</>"
 `;
 
 exports[`.toHaveLength error cases 3`] = `
-"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must have a length property whose value must be a number
 
 Received has value: <red>undefined</>"
 `;
 
-exports[`.toHaveLength matcher error expected length 1`] = `
-"<dim>expect(</><red>received</><dim>).toHaveLength(</><green>expected</><dim>)</>
+exports[`.toHaveLength matcher error expected length not number 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  string
 Expected has value: <green>\\"3\\"</>"
+`;
+
+exports[`.toHaveLength matcher error expected length number Infinity 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
+
+Expected has type:  number
+Expected has value: <green>Infinity</>"
+`;
+
+exports[`.toHaveLength matcher error expected length number NaN 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
+
+Expected has type:  number
+Expected has value: <green>NaN</>"
+`;
+
+exports[`.toHaveLength matcher error expected length number float 1`] = `
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
+
+Expected has type:  number
+Expected has value: <green>0.5</>"
+`;
+
+exports[`.toHaveLength matcher error expected length number negative integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toHaveLength<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
+
+Expected has type:  number
+Expected has value: <green>-3</>"
 `;
 
 exports[`.toHaveProperty() {error} expect({"a": {"b": {}}}).toHaveProperty('1') 1`] = `

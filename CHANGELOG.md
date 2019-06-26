@@ -4,7 +4,10 @@
 
 - `[expect]`: Improve report when matcher fails, part 7 ([#7866](https://github.com/facebook/jest/pull/7866))
 - `[expect]`: Improve report when matcher fails, part 8 ([#7876](https://github.com/facebook/jest/pull/7876))
+- `[expect]`: Improve report when matcher fails, part 9 ([#7940](https://github.com/facebook/jest/pull/7940))
+- `[expect]`: Improve report when matcher fails, part 10 ([#7960](https://github.com/facebook/jest/pull/7960))
 - `[pretty-format]` Support `React.memo` ([#7891](https://github.com/facebook/jest/pull/7891))
+- `[jest-config]` Print error information on preset normalization error ([#7935](https://github.com/facebook/jest/pull/7935))
 - `[jest-runtime]` Allow passing configuration objects to transformers ([#7288](https://github.com/facebook/jest/pull/7288))
 
 ### Fixes
@@ -12,13 +15,17 @@
 - `[jest-cli]` Fix prototype pollution vulnerability in dependency ([#7904](https://github.com/facebook/jest/pull/7904))
 - `[jest-cli]` Refactor `-o` and `--coverage` combined ([#7611](https://github.com/facebook/jest/pull/7611))
 - `[expect]` Fix custom async matcher stack trace ([#7652](https://github.com/facebook/jest/pull/7652))
+- `[expect]` Fix `toStrictEqual` not considering arrays with objects having undefined values correctly ([#7938](https://github.com/facebook/jest/pull/7938))
 - `[jest-changed-files]` Improve default file selection for Mercurial repos ([#7880](https://github.com/facebook/jest/pull/7880))
 - `[jest-validate]` Fix validating async functions ([#7894](https://github.com/facebook/jest/issues/7894))
 - `[jest-circus]` Fix bug with test.only ([#7888](https://github.com/facebook/jest/pull/7888))
+- `[jest-transform]` Normalize config and remove unecessary checks, convert `TestUtils.js` to TypeScript ([#7801](https://github.com/facebook/jest/pull/7801))
+- `[jest-worker]` Fix `jest-worker` when using pre-allocated jobs ([#7934](https://github.com/facebook/jest/pull/7934))
+- `[jest-changed-files]` Fix `getChangedFilesFromRoots` to not return parts of the commit messages as if they were files, when the commit messages contained multiple paragraphs ([#7961](https://github.com/facebook/jest/pull/7961))
 
 ### Chore & Maintenance
 
-- `[*]`: Setup building, linting and testing of TypeScript ([#7808](https://github.com/facebook/jest/pull/7808), [#7855](https://github.com/facebook/jest/pull/7855))
+- `[*]`: Setup building, linting and testing of TypeScript ([#7808](https://github.com/facebook/jest/pull/7808), [#7855](https://github.com/facebook/jest/pull/7855), [#7951](https://github.com/facebook/jest/pull/7951))
 - `[pretty-format]`: Migrate to TypeScript ([#7809](https://github.com/facebook/jest/pull/7809))
 - `[diff-sequences]`: Migrate to Typescript ([#7820](https://github.com/facebook/jest/pull/7820))
 - `[jest-get-type]`: Migrate to TypeScript ([#7818](https://github.com/facebook/jest/pull/7818))
@@ -35,7 +42,7 @@
 - `[jest-watcher]`: Migrate to TypeScript ([#7843](https://github.com/facebook/jest/pull/7843))
 - `[jest-mock]`: Migrate to TypeScript ([#7847](https://github.com/facebook/jest/pull/7847), [#7850](https://github.com/facebook/jest/pull/7850))
 - `[jest-worker]`: Migrate to TypeScript ([#7853](https://github.com/facebook/jest/pull/7853))
-- `[jest-haste-map]`: Migrate to TypeScript ([#7854](https://github.com/facebook/jest/pull/7854))
+- `[jest-haste-map]`: Migrate to TypeScript ([#7854](https://github.com/facebook/jest/pull/7854), [#7951](https://github.com/facebook/jest/pull/7951))
 - `[docs]`: Fix image paths in SnapshotTesting.md for current and version 24 ([#7872](https://github.com/facebook/jest/pull/7872))
 - `[babel-jest]`: Migrate to TypeScript ([#7862](https://github.com/facebook/jest/pull/7862))
 - `[jest-resolve]`: Migrate to TypeScript ([#7871](https://github.com/facebook/jest/pull/7871))
@@ -44,7 +51,11 @@
 - `[@jest/transform]`: New package extracted from `jest-runtime` ([#7915](https://github.com/facebook/jest/pull/7915))
 - `[babel-plugin-jest-hoist]`: Migrate to TypeScript ([#7898](https://github.com/facebook/jest/pull/7898))
 - `[@jest/core]` Create new package, which is `jest-cli` minus `yargs` and `prompts` ([#7696](https://github.com/facebook/jest/pull/7696))
-- `[@jest/transform]`: Migrate to TypeScript ([#7918](https://github.com/facebook/jest/pull/7918))
+- `[@jest/transform]`: Migrate to TypeScript ([#7918](https://github.com/facebook/jest/pull/7918), [#7945](https://github.com/facebook/jest/pull/7945))
+- `[docs]` Add missing import to docs ([#7928](https://github.com/facebook/jest/pull/7928))
+- `[jest-resolve-dependencies]`: Migrate to TypeScript ([#7922](https://github.com/facebook/jest/pull/7922))
+- `[expect]`: Migrate to TypeScript ([#7919](https://github.com/facebook/jest/pull/7919))
+- `[jest-circus]`: Migrate to TypeScript ([#7916](https://github.com/facebook/jest/pull/7916))
 
 ### Performance
 

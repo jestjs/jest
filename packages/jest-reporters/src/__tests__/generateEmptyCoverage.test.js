@@ -13,6 +13,7 @@ import generateEmptyCoverage from '../generateEmptyCoverage';
 
 import path from 'path';
 import os from 'os';
+//$FlowFixMe: Converted to TS
 import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
 jest.mock('@jest/transform', () => ({

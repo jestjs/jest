@@ -57,6 +57,21 @@ describe('babel-jest ignored', () => {
   });
 });
 
+describe('babel-jest with manual transformer', () => {
+  const dir = path.resolve(__dirname, '..', 'transform/babel-jest-manual');
+
+  beforeEach(() => {
+    run('yarn', dir);
+  });
+
+  it('runs transpiled code', () => {
+    // --no-cache because babel can cache stuff and result in false green
+    const {json} = runWithJson(dir, ['--no-cache']);
+    expect(json.success).toBe(true);
+    expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
+  });
+});
+
 // babel-jest is automatically linked at the root because it is a workspace now
 // a way to test this in isolation is to move the test suite into a temp folder
 describe('no babel-jest', () => {

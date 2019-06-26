@@ -130,12 +130,17 @@ export const ensureNoExpected = (
   }
 };
 
-export const ensureActualIsNumber = (actual: unknown, matcherName: string) => {
-  matcherName || (matcherName = 'This matcher');
+export const ensureActualIsNumber = (
+  actual: unknown,
+  matcherName: string,
+  options?: MatcherHintOptions,
+) => {
   if (typeof actual !== 'number') {
+    // Prepend maybe not only for backward compatibility.
+    const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
       matcherErrorMessage(
-        matcherHint('[.not]' + matcherName),
+        matcherHint(matcherString, undefined, undefined, options),
         `${RECEIVED_COLOR('received')} value must be a number`,
         printWithType('Received', actual, printReceived),
       ),
@@ -146,12 +151,14 @@ export const ensureActualIsNumber = (actual: unknown, matcherName: string) => {
 export const ensureExpectedIsNumber = (
   expected: unknown,
   matcherName: string,
+  options?: MatcherHintOptions,
 ) => {
-  matcherName || (matcherName = 'This matcher');
   if (typeof expected !== 'number') {
+    // Prepend maybe not only for backward compatibility.
+    const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
       matcherErrorMessage(
-        matcherHint('[.not]' + matcherName),
+        matcherHint(matcherString, undefined, undefined, options),
         `${EXPECTED_COLOR('expected')} value must be a number`,
         printWithType('Expected', expected, printExpected),
       ),
@@ -163,9 +170,32 @@ export const ensureNumbers = (
   actual: unknown,
   expected: unknown,
   matcherName: string,
+  options?: MatcherHintOptions,
 ) => {
-  ensureActualIsNumber(actual, matcherName);
-  ensureExpectedIsNumber(expected, matcherName);
+  ensureActualIsNumber(actual, matcherName, options);
+  ensureExpectedIsNumber(expected, matcherName, options);
+};
+
+export const ensureExpectedIsNonNegativeInteger = (
+  expected: unknown,
+  matcherName: string,
+  options?: MatcherHintOptions,
+) => {
+  if (
+    typeof expected !== 'number' ||
+    !Number.isSafeInteger(expected) ||
+    expected < 0
+  ) {
+    // Prepend maybe not only for backward compatibility.
+    const matcherString = (options ? '' : '[.not]') + matcherName;
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherString, undefined, undefined, options),
+        `${EXPECTED_COLOR('expected')} value must be a non-negative integer`,
+        printWithType('Expected', expected, printExpected),
+      ),
+    );
+  }
 };
 
 // Sometimes, e.g. when comparing two numbers, the output from jest-diff

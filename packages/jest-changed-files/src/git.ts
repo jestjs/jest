@@ -35,7 +35,9 @@ const adapter: SCMAdapter = {
 
     if (options && options.lastCommit) {
       return findChangedFilesUsingCommand(
-        ['show', '--name-only', '--pretty=%b', 'HEAD'].concat(includePaths),
+        ['show', '--name-only', '--pretty=format:', 'HEAD'].concat(
+          includePaths,
+        ),
         cwd,
       );
     } else if (changedSince) {
@@ -43,7 +45,7 @@ const adapter: SCMAdapter = {
         [
           'log',
           '--name-only',
-          '--pretty=%b',
+          '--pretty=format:',
           'HEAD',
           `^${changedSince}`,
         ].concat(includePaths),

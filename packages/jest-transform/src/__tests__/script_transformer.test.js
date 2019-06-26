@@ -8,6 +8,8 @@
 
 'use strict';
 
+import {makeProjectConfig} from '../../../../TestUtils';
+
 jest
   .mock('fs', () =>
     // Node 10.5.x compatibility
@@ -195,13 +197,13 @@ describe('ScriptTransformer', () => {
 
     writeFileAtomic = require('write-file-atomic');
 
-    config = {
+    config = makeProjectConfig({
       cache: true,
       cacheDirectory: '/cache/',
       name: 'test',
       rootDir: '/',
       transformIgnorePatterns: ['/node_modules/'],
-    };
+    });
 
     ScriptTransformer = require('../ScriptTransformer').default;
   };

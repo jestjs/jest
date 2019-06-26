@@ -112,7 +112,6 @@ export default class ScriptTransformer {
     content: string,
     instrument: boolean,
   ): Config.Path {
-    // @ts-ignore: not properly exported (needs ESM)
     const baseCacheDir = HasteMap.getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,
@@ -180,7 +179,6 @@ export default class ScriptTransformer {
     const result = babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
-      // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/33118
       caller: {
         name: '@jest/transform',
         supportsStaticESM: false,
