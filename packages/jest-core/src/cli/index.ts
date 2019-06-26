@@ -19,6 +19,7 @@ import exit = require('exit');
 import type {Filter} from '../types';
 import createContext from '../lib/create_context';
 import getChangedFilesPromise from '../getChangedFilesPromise';
+import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
 import {formatHandleErrors} from '../collectHandles';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import runJest from '../runJest';
@@ -68,9 +69,11 @@ export async function runCLI(
     exit(0);
   }
 
+  const configsOfProjectsToRun = getConfigsOfProjectsToRun(argv, configs);
+
   await _run(
     globalConfig,
-    configs,
+    configsOfProjectsToRun,
     hasDeprecationWarnings,
     outputStream,
     r => (results = r),

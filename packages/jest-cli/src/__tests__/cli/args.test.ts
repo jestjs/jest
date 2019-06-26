@@ -72,6 +72,13 @@ describe('check', () => {
     },
   );
 
+  it('raises an exception if runProjects is not provided any project names', () => {
+    const argv: Config.Argv = {runProjects: []} as Config.Argv;
+    expect(() => check(argv)).toThrow(
+      'The --runProjects option requires the name of at least one project to be specified.\n',
+    );
+  });
+
   it('raises an exception if config is not a valid JSON string', () => {
     const argv = {config: 'x:1'} as Config.Argv;
     expect(() => check(argv)).toThrow(

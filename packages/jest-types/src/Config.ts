@@ -408,6 +408,7 @@ export type Argv = Arguments<
     rootDir: string;
     roots: Array<string>;
     runInBand: boolean;
+    runProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;
     showConfig: boolean;

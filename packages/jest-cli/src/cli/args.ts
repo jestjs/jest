@@ -49,6 +49,13 @@ export function check(argv: Config.Argv): true {
     );
   }
 
+  if (argv.runProjects && argv.runProjects.length === 0) {
+    throw new Error(
+      'The --runProjects option requires the name of at least one project to be specified.\n' +
+        'Example usage: jest --runProjects my-first-project my-second-project',
+    );
+  }
+
   if (
     argv.config &&
     !isJSONString(argv.config) &&
@@ -514,6 +521,13 @@ export const options = {
       'is sometimes useful for debugging, but such use cases are pretty ' +
       'rare.',
     type: 'boolean',
+  },
+  runProjects: {
+    description:
+      'Run only the tests of the specified projects.' +
+      'Jest uses the attribute `name` in the configuration to identify each project.',
+    string: true,
+    type: 'array',
   },
   runTestsByPath: {
     default: false,

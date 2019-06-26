@@ -1,0 +1,20 @@
+{
+  "jest": {
+    "projects": [
+      {
+        "name": "first-project",
+        "testMatch": [
+          "<rootDir>/__tests__/first-project.test.js"
+        ],
+        "testEnvironment": "node"
+      },
+      {
+        "name": "second-project",
+        "testMatch": [
+          "<rootDir>/__tests__/second-project.test.js"
+        ],
+        "testEnvironment": "node"
+      }
+    ]
+  }
+}
