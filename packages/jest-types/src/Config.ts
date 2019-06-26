@@ -414,7 +414,7 @@ export type ProjectConfig = {
   testRunner: string;
   testURL: string;
   timers: 'real' | 'fake';
-  transform: Array<[string, Path, Object]>;
+  transform: Array<[string, Path, Record<string, unknown>]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns: Array<string> | null | undefined;
