@@ -875,10 +875,10 @@ Example:
 const NodeEnvironment = require('jest-environment-node');
 
 class CustomEnvironment extends NodeEnvironment {
-  constructor(config, {testPath, docblockPragmas}) {
+  constructor(config, context) {
     super(config, context);
-    this.testPath = testPath;
-    this.docblockPragmas = docblockPragmas;
+    this.testPath = context.testPath;
+    this.docblockPragmas = context.docblockPragmas;
   }
 
   async setup() {
