@@ -53,9 +53,9 @@ _Before_ submitting a pull request, please make sure the following is done…
     ```sh
     yarn --version
     ```
-    
+
     On Windows `yarn install` may fail with `gyp ERR! build error`. One of possible solutions:
-    
+
     ```sh
      yarn global add windows-build-tools
     ```
