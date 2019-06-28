@@ -715,10 +715,10 @@ test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
 <span class="hljs-keyword">const</span> NodeEnvironment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-environment-node'</span>);
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CustomEnvironment</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">NodeEnvironment</span> </span>{
-  <span class="hljs-keyword">constructor</span>(config, {testPath, docblockPragmas}) {
+  <span class="hljs-keyword">constructor</span>(config, context) {
     <span class="hljs-keyword">super</span>(config, context);
-    <span class="hljs-keyword">this</span>.testPath = testPath;
-    <span class="hljs-keyword">this</span>.docblockPragmas = docblockPragmas;
+    <span class="hljs-keyword">this</span>.testPath = context.testPath;
+    <span class="hljs-keyword">this</span>.docblockPragmas = context.docblockPragmas;
   }
 
   <span class="hljs-keyword">async</span> setup() {
