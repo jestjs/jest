@@ -54,6 +54,12 @@ _Before_ submitting a pull request, please make sure the following is done…
     yarn --version
     ```
 
+    On Windows `yarn install` may fail with `gyp ERR! build error`. One of possible solutions:
+
+    ```sh
+     yarn global add windows-build-tools
+    ```
+
 1.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
 
     ```sh
