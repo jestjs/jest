@@ -44,6 +44,7 @@ export type MatcherState = {
   isExpectingAssertions?: boolean;
   isNot: boolean;
   promise: string;
+  snapshotState: any;
   suppressedErrors: Array<Error>;
   testPath?: Config.Path;
   utils: typeof jestMatcherUtils & {
