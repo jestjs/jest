@@ -427,7 +427,7 @@ This option allows the use of a custom global teardown module which exports an a
 
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
-_Node: The same caveat concerning transformation of `node_modules_ as for `globalSetup` applies to `globalTeardown`.
+_Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
 
 ### `maxConcurrency` [number]
 
