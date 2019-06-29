@@ -64,7 +64,10 @@ const saveSnapshotsForFile = (
   }
 
   // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
-  if (/\.tsx?$/.test(sourceFilePath) && options.plugins.indexOf('typescript') === -1) {
+  if (
+    /\.tsx?$/.test(sourceFilePath) &&
+    options.plugins.indexOf('typescript') === -1
+  ) {
     options.plugins.push('typescript');
   }
   if (/\.tsx/.test(sourceFilePath) && options.plugins.indexOf('jsx') === -1) {
