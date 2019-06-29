@@ -10,7 +10,6 @@
 - `[pretty-format]` Render custom displayName of memoized components
 - `[jest-snapshot]`: Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
 
-
 ### Fixes
 
 - `[babel-plugin-jest-hoist]` Expand list of whitelisted globals in global mocks ([#8429](https://github.com/facebook/jest/pull/8429)
