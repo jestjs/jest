@@ -20,6 +20,6 @@ To explicitly define `babel-jest` as a transformer for your JavaScript code, map
 
 ```json
 "transform": {
-  "^.+\\.jsx?$": "babel-jest"
+  "^.+\\.(t|j)sx?$": "babel-jest"
 },
 ```
