@@ -1009,9 +1009,15 @@ class ModuleMockerClass {
         );
       }
 
+      const isMethodOwner = object.hasOwnProperty(methodName);
+
       // @ts-ignore overriding original method with a Mock
       object[methodName] = this._makeComponent({type: 'function'}, () => {
-        object[methodName] = original;
+        if (isMethodOwner) {
+          object[methodName] = original;
+        } else {
+          delete object[methodName];
+        }
       });
 
       // @ts-ignore original method is now a Mock
