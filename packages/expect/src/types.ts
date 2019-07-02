@@ -6,6 +6,7 @@
  *
  */
 import {Config} from '@jest/types';
+import {SnapshotStateType} from 'jest-snapshot';
 import * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
@@ -44,7 +45,7 @@ export type MatcherState = {
   isExpectingAssertions?: boolean;
   isNot: boolean;
   promise: string;
-  snapshotState: any;
+  snapshotState: SnapshotStateType;
   suppressedErrors: Array<Error>;
   testPath?: Config.Path;
   utils: typeof jestMatcherUtils & {
