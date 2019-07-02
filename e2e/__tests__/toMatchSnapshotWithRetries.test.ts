@@ -69,14 +69,14 @@ test('works when multiple tests have snapshots but only one of them failed multi
   const filename = 'basic-support.test.js';
   const template = makeTemplate(`
     test('passing snapshots', () => expect('foo').toMatchSnapshot());
-      describe('with retries', () => {
-        let index = 0;
-        afterEach(() => {
-          index += 1;
-        });
-        jest.retryTimes($2);
-        test('snapshots', () => expect($1).toMatchSnapshot());
+    describe('with retries', () => {
+      let index = 0;
+      afterEach(() => {
+        index += 1;
       });
+      jest.retryTimes($2);
+      test('snapshots', () => expect($1).toMatchSnapshot());
+    });
   `);
 
   {

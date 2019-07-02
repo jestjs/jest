@@ -65,7 +65,7 @@ test('works with a single snapshot', () => {
   }
 });
 
-test('works a different assertion is failing', () => {
+test('works when a different assertion is failing', () => {
   const filename = 'basic-support.test.js';
   const template = makeTemplate(`
     jest.retryTimes($1);
@@ -90,14 +90,14 @@ test('works when multiple tests have snapshots but only one of them failed multi
   const filename = 'basic-support.test.js';
   const template = makeTemplate(`
     test('passing snapshots', () => expect(1).toMatchInlineSnapshot(\`1\`));
-      describe('with retries', () => {
-        let index = 0;
-        afterEach(() => {
-          index += 1;
-        });
-        jest.retryTimes($2);
-        test('snapshots', () => expect($1).toMatchInlineSnapshot(\`3\`));
+    describe('with retries', () => {
+      let index = 0;
+      afterEach(() => {
+        index += 1;
       });
+      jest.retryTimes($2);
+      test('snapshots', () => expect($1).toMatchInlineSnapshot(\`3\`));
+    });
   `);
 
   {
