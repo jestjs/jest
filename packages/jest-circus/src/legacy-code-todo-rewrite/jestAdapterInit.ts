@@ -12,6 +12,7 @@ import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
   SnapshotState,
+  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
@@ -131,6 +132,8 @@ export const initialize = ({
   });
   setState({snapshotState, testPath});
 
+  addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
+
   // Return it back to the outer scope (test runner outside the VM).
   return {globals, snapshotState};
 };
@@ -241,6 +244,17 @@ export const runAndTransformResultsToJestFormat = async ({
     testFilePath: testPath,
     testResults: assertionResults,
   };
+};
+
+const handleSnapshotStateAfterRetry = (snapshotState: SnapshotStateType) => (
+  event: Circus.Event,
+) => {
+  switch (event.name) {
+    case 'test_retry': {
+      // Clear any snapshot data that occurred in previous test run
+      snapshotState.clear();
+    }
+  }
 };
 
 const eventHandler = (event: Circus.Event) => {

@@ -43,7 +43,6 @@ import {
   INTERNAL_MATCHER_FLAG,
   getState,
   setState,
-  clearState,
   getMatchers,
   setMatchers,
 } from './jestMatchersObject';
@@ -403,7 +402,6 @@ expect.assertions = assertions;
 expect.hasAssertions = hasAssertions;
 expect.getState = getState;
 expect.setState = setState;
-expect.clearState = clearState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
 const expectExport = expect as Expect;

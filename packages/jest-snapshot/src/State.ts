@@ -42,12 +42,12 @@ export default class SnapshotState {
   private _index: number;
   private _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
+  private _initialData: SnapshotData;
   private _snapshotPath: Config.Path;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
   private _getBabelTraverse: () => Function;
   private _getPrettier: () => null | any;
-  private _reinitializeData: () => void;
 
   added: number;
   expand: boolean;
@@ -61,7 +61,7 @@ export default class SnapshotState {
       this._snapshotPath,
       options.updateSnapshot,
     );
-
+    this._initialData = data;
     this._snapshotData = data;
     this._dirty = dirty;
     this._getBabelTraverse = options.getBabelTraverse;
@@ -76,17 +76,6 @@ export default class SnapshotState {
     this.unmatched = 0;
     this._updateSnapshot = options.updateSnapshot;
     this.updated = 0;
-
-    this._reinitializeData = () => {
-      this._snapshotData = data;
-      this._inlineSnapshots = [];
-      this._counters = new Map();
-      this._index = 0;
-      this.added = 0;
-      this.matched = 0;
-      this.unmatched = 0;
-      this.updated = 0;
-    };
   }
 
   markSnapshotsAsCheckedForTest(testName: string) {
@@ -122,7 +111,14 @@ export default class SnapshotState {
   }
 
   clear() {
-    this._reinitializeData();
+    this._snapshotData = this._initialData;
+    this._inlineSnapshots = [];
+    this._counters = new Map();
+    this._index = 0;
+    this.added = 0;
+    this.matched = 0;
+    this.unmatched = 0;
+    this.updated = 0;
   }
 
   save() {

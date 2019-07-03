@@ -148,11 +148,7 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
       break;
     }
     case 'test_retry': {
-      // Clear errors so tests can be retried (and not immediately fail)
       event.test.errors = [];
-      // Clear any snapshot data that occurred in previous test run
-      global.expect.clearState();
-
       break;
     }
     case 'run_start': {

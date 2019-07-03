@@ -37,10 +37,6 @@ export const setState = (state: object) => {
   Object.assign((global as any)[JEST_MATCHERS_OBJECT].state, state);
 };
 
-export const clearState = () => {
-  getState().snapshotState.clear();
-};
-
 export const getMatchers = () => (global as any)[JEST_MATCHERS_OBJECT].matchers;
 
 export const setMatchers = (
