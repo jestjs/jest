@@ -183,7 +183,7 @@ export default (async function runJest({
     }),
   );
 
-  allTests = sequencer.sort(allTests);
+  allTests = await sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
     const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
