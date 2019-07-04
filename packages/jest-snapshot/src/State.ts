@@ -42,6 +42,7 @@ export default class SnapshotState {
   private _index: number;
   private _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
+  private _initialData: SnapshotData;
   private _snapshotPath: Config.Path;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
@@ -60,6 +61,7 @@ export default class SnapshotState {
       this._snapshotPath,
       options.updateSnapshot,
     );
+    this._initialData = data;
     this._snapshotData = data;
     this._dirty = dirty;
     this._getBabelTraverse = options.getBabelTraverse;
@@ -106,6 +108,17 @@ export default class SnapshotState {
     } else {
       this._snapshotData[key] = receivedSerialized;
     }
+  }
+
+  clear() {
+    this._snapshotData = this._initialData;
+    this._inlineSnapshots = [];
+    this._counters = new Map();
+    this._index = 0;
+    this.added = 0;
+    this.matched = 0;
+    this.unmatched = 0;
+    this.updated = 0;
   }
 
   save() {
