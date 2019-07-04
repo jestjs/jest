@@ -1039,11 +1039,11 @@ An example of such function can be found in our default [jasmine2 test runner pa
 
 Default: `@jest/test-sequencer`
 
-This option allows you to use a custom sequencer instead of Jest's default.
+This option allows you to use a custom sequencer instead of Jest's default. `sort` may optionally return a Promise.
 
 Example:
 
-Sort test path alphabetically
+Sort test path alphabetically.
 
 ```js
 const Sequencer = require('@jest/test-sequencer').default;
