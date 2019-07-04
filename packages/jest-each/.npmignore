@@ -2,3 +2,5 @@
 **/__mocks__/**
 src
 assets
+tsconfig.json
+tsconfig.tsbuildinfo

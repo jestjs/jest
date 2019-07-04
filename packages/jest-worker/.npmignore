@@ -2,3 +2,5 @@
 **/__tests__/**
 **/__performance_tests__/**
 src
+tsconfig.json
+tsconfig.tsbuildinfo
