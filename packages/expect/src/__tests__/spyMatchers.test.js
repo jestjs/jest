@@ -58,11 +58,11 @@ const jestExpect = require('../');
 
 ['toBeCalledTimes', 'toHaveBeenCalledTimes'].forEach(calledTimes => {
   describe(`${calledTimes}`, () => {
-    test('works only on spies or jest.fn', () => {
+    test('.not works only on spies or jest.fn', () => {
       const fn = function fn() {};
 
       expect(() =>
-        jestExpect(fn)[calledTimes](2),
+        jestExpect(fn).not[calledTimes](2),
       ).toThrowErrorMatchingSnapshot();
     });
 
@@ -373,10 +373,12 @@ const jestExpect = require('../');
 
 ['toReturn', 'toHaveReturned'].forEach(returned => {
   describe(`${returned}`, () => {
-    test(`works only on spies or jest.fn`, () => {
+    test(`.not works only on jest.fn`, () => {
       const fn = function fn() {};
 
-      expect(() => jestExpect(fn)[returned]()).toThrowErrorMatchingSnapshot();
+      expect(() =>
+        jestExpect(fn).not[returned](),
+      ).toThrowErrorMatchingSnapshot();
     });
 
     test(`passes when returned`, () => {
