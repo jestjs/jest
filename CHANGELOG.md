@@ -19,6 +19,7 @@
 - `[jest-snapshot]` Prevent inline snapshots from drifting when inline snapshots are updated ([#8492](https://github.com/facebook/jest/pull/8492))
 - `[jest-haste-map]` Don't throw on missing mapper in Node crawler ([#8558](https://github.com/facebook/jest/pull/8558))
 - `[jest-core]` Fix incorrect `passWithNoTests` warning ([#8595](https://github.com/facebook/jest/pull/8595))
+- `[jest-jasmine2]` Make test suite exit early if a `beforeEach` hook fails ([#8654](https://github.com/facebook/jest/pull/8654))
 
 ### Chore & Maintenance
 

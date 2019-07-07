@@ -39,7 +39,10 @@ import expectationResultFactory, {
   Options as ExpectationResultFactoryOptions,
 } from '../expectationResultFactory';
 import assertionErrorMessage from '../assertionErrorMessage';
-import queueRunner, {QueueableFn} from '../queueRunner';
+import queueRunner, {
+  QueueableFn,
+  Options as QueueRunnerOptions,
+} from '../queueRunner';
 import {AssertionErrorWithStack} from '../types';
 
 export type Attributes = {
@@ -187,21 +190,35 @@ export default class Spec {
     }
 
     const fns = this.beforeAndAfterFns();
-    const allFns = fns.befores.concat(this.queueableFn).concat(fns.afters);
+    let hasFailedBeforeHook = false;
 
-    this.currentRun = this.queueRunnerFactory({
-      queueableFns: allFns,
-      onException() {
-        // @ts-ignore
-        self.onException.apply(self, arguments);
-      },
-      userContext: this.userContext(),
-      setTimeout,
-      clearTimeout,
-      fail: () => {},
-    });
+    const createQueueRun = (
+      queueableFns: QueueRunnerOptions['queueableFns'],
+      isBeforeHook: boolean = false,
+    ) =>
+      this.queueRunnerFactory({
+        queueableFns,
+        onException() {
+          if (isBeforeHook) hasFailedBeforeHook = true;
 
-    this.currentRun.then(() => complete(true));
+          // @ts-ignore
+          self.onException.apply(self, arguments);
+        },
+        userContext: this.userContext(),
+        setTimeout,
+        clearTimeout,
+        fail: () => {},
+      });
+
+    this.currentRun = createQueueRun(fns.befores, true);
+
+    this.currentRun
+      .then(() =>
+        hasFailedBeforeHook
+          ? createQueueRun(fns.afters)
+          : createQueueRun([this.queueableFn].concat(fns.afters)),
+      )
+      .then(() => complete(true));
 
     function complete(enabledAgain: boolean) {
       self.result.status = self.status(enabledAgain);
