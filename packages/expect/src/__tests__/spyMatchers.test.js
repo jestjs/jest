@@ -617,10 +617,10 @@ const jestExpect = require('../');
 
       fn(false);
 
-      jestExpect(fn)[returnedTimes](2);
+      jestExpect(fn).not[returnedTimes](3);
 
       expect(() =>
-        jestExpect(fn).not[returnedTimes](2),
+        jestExpect(fn)[returnedTimes](3),
       ).toThrowErrorMatchingSnapshot();
     });
 

@@ -1867,14 +1867,16 @@ exports[`toHaveReturned .not passes when a call throws undefined 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturned<dim>()</>
 
 Expected number of returns: >= <green>1</>
-Received number of returns:    <red>0</>"
+Received number of returns:    <red>0</>
+Received number of calls:      <red>1</>"
 `;
 
 exports[`toHaveReturned .not passes when all calls throw 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturned<dim>()</>
 
 Expected number of returns: >= <green>1</>
-Received number of returns:    <red>0</>"
+Received number of returns:    <red>0</>
+Received number of calls:      <red>2</>"
 `;
 
 exports[`toHaveReturned .not passes when not returned 1`] = `
@@ -1915,7 +1917,8 @@ exports[`toHaveReturned incomplete recursive calls are handled properly 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturned<dim>()</>
 
 Expected number of returns: >= <green>1</>
-Received number of returns:    <red>0</>"
+Received number of returns:    <red>0</>
+Received number of calls:      <red>4</>"
 `;
 
 exports[`toHaveReturned passes when at least one call does not throw 1`] = `
@@ -1925,7 +1928,9 @@ Expected number of returns: <green>0</>
 Received number of returns: <red>2</>
 
 1: <red>42</>
-3: <red>42</>"
+3: <red>42</>
+
+Received number of calls:   <red>3</>"
 `;
 
 exports[`toHaveReturned passes when returned 1`] = `
@@ -2021,15 +2026,19 @@ Expected number of returns: not <green>2</>"
 `;
 
 exports[`toHaveReturnedTimes calls that throw are not counted 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected number of returns: not <green>2</>"
+Expected number of returns: <green>3</>
+Received number of returns: <red>2</>
+Received number of calls:   <red>3</>"
 `;
 
 exports[`toHaveReturnedTimes calls that throw undefined are not counted 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected number of returns: not <green>2</>"
+Expected number of returns: not <green>2</>
+
+Received number of calls:       <red>3</>"
 `;
 
 exports[`toHaveReturnedTimes includes the custom mock name in the error message 1`] = `
@@ -2042,7 +2051,9 @@ Received number of returns: <red>2</>"
 exports[`toHaveReturnedTimes incomplete recursive calls are handled properly 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected number of returns: not <green>2</>"
+Expected number of returns: not <green>2</>
+
+Received number of calls:       <red>4</>"
 `;
 
 exports[`toHaveReturnedTimes only accepts a number argument 1`] = `
@@ -2276,14 +2287,16 @@ exports[`toReturn .not passes when a call throws undefined 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toReturn<dim>()</>
 
 Expected number of returns: >= <green>1</>
-Received number of returns:    <red>0</>"
+Received number of returns:    <red>0</>
+Received number of calls:      <red>1</>"
 `;
 
 exports[`toReturn .not passes when all calls throw 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toReturn<dim>()</>
 
 Expected number of returns: >= <green>1</>
-Received number of returns:    <red>0</>"
+Received number of returns:    <red>0</>
+Received number of calls:      <red>2</>"
 `;
 
 exports[`toReturn .not passes when not returned 1`] = `
@@ -2324,7 +2337,8 @@ exports[`toReturn incomplete recursive calls are handled properly 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toReturn<dim>()</>
 
 Expected number of returns: >= <green>1</>
-Received number of returns:    <red>0</>"
+Received number of returns:    <red>0</>
+Received number of calls:      <red>4</>"
 `;
 
 exports[`toReturn passes when at least one call does not throw 1`] = `
@@ -2334,7 +2348,9 @@ Expected number of returns: <green>0</>
 Received number of returns: <red>2</>
 
 1: <red>42</>
-3: <red>42</>"
+3: <red>42</>
+
+Received number of calls:   <red>3</>"
 `;
 
 exports[`toReturn passes when returned 1`] = `
@@ -2430,15 +2446,19 @@ Expected number of returns: not <green>2</>"
 `;
 
 exports[`toReturnTimes calls that throw are not counted 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected number of returns: not <green>2</>"
+Expected number of returns: <green>3</>
+Received number of returns: <red>2</>
+Received number of calls:   <red>3</>"
 `;
 
 exports[`toReturnTimes calls that throw undefined are not counted 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected number of returns: not <green>2</>"
+Expected number of returns: not <green>2</>
+
+Received number of calls:       <red>3</>"
 `;
 
 exports[`toReturnTimes includes the custom mock name in the error message 1`] = `
@@ -2451,7 +2471,9 @@ Received number of returns: <red>2</>"
 exports[`toReturnTimes incomplete recursive calls are handled properly 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected number of returns: not <green>2</>"
+Expected number of returns: not <green>2</>
+
+Received number of calls:       <red>4</>"
 `;
 
 exports[`toReturnTimes only accepts a number argument 1`] = `

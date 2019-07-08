@@ -112,12 +112,22 @@ const createToReturnMatcher = (matcherName: string) =>
 
               return lines;
             }, [])
-            .join('\n')
+            .join('\n') +
+          (received.mock.calls.length !== count
+            ? `\n\nReceived number of calls:   ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '')
       : () =>
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of returns: >= ${printExpected(1)}\n` +
-          `Received number of returns:    ${printReceived(count)}`;
+          `Received number of returns:    ${printReceived(count)}` +
+          (received.mock.calls.length !== count
+            ? `\nReceived number of calls:      ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '');
 
     return {message, pass};
   };
@@ -186,12 +196,22 @@ const createToReturnTimesMatcher = (matcherName: string) =>
       ? () =>
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           `\n\n` +
-          `Expected number of returns: not ${printExpected(expected)}`
+          `Expected number of returns: not ${printExpected(expected)}` +
+          (received.mock.calls.length !== count
+            ? `\n\nReceived number of calls:       ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '')
       : () =>
           matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
           `Expected number of returns: ${printExpected(expected)}\n` +
-          `Received number of returns: ${printReceived(count)}`;
+          `Received number of returns: ${printReceived(count)}` +
+          (received.mock.calls.length !== count
+            ? `\nReceived number of calls:   ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '');
 
     return {message, pass};
   };
