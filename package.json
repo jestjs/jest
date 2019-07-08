@@ -115,12 +115,6 @@
     "trailingComma": "all",
     "overrides": [
       {
-        "files": "**/*.md",
-        "options": {
-          "printWidth": 500
-        }
-      },
-      {
         "excludeFiles": [
           "e2e/__tests__/**/*",
           "website/versioned_docs/**/*.md"
