@@ -52,7 +52,7 @@ export type FileMetaData = [
   /* size */ number,
   /* visited */ 0 | 1,
   /* dependencies */ string,
-  /* sha1 */ string | null | undefined
+  /* sha1 */ string | null | undefined,
 ];
 
 export type MockData = Map<string, Config.Path>;

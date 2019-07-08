@@ -109,9 +109,7 @@ function verifyConsistentTransformations(custom: SnapshotResolver) {
   if (resolvedTestPath !== custom.testPathForConsistencyCheck) {
     throw new Error(
       chalk.bold(
-        `Custom snapshot resolver functions must transform paths consistently, i.e. expects resolveTestPath(resolveSnapshotPath('${
-          custom.testPathForConsistencyCheck
-        }')) === ${resolvedTestPath}`,
+        `Custom snapshot resolver functions must transform paths consistently, i.e. expects resolveTestPath(resolveSnapshotPath('${custom.testPathForConsistencyCheck}')) === ${resolvedTestPath}`,
       ),
     );
   }

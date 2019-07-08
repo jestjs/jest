@@ -189,20 +189,18 @@ export const joinAlignedDiffsNoExpand = (
 // return joined lines with diff formatting.
 export const joinAlignedDiffsExpand = (diffs: Array<Diff>) =>
   diffs
-    .map(
-      (diff: Diff, i: number, diffs: Array<Diff>): string => {
-        const line = diff[1];
+    .map((diff: Diff, i: number, diffs: Array<Diff>): string => {
+      const line = diff[1];
 
-        switch (diff[0]) {
-          case DIFF_DELETE:
-            return printDeleteLine(line);
+      switch (diff[0]) {
+        case DIFF_DELETE:
+          return printDeleteLine(line);
 
-          case DIFF_INSERT:
-            return printInsertLine(line);
+        case DIFF_INSERT:
+          return printInsertLine(line);
 
-          default:
-            return printCommonLine(line, i === 0 || i === diffs.length - 1);
-        }
-      },
-    )
+        default:
+          return printCommonLine(line, i === 0 || i === diffs.length - 1);
+      }
+    })
     .join('\n');

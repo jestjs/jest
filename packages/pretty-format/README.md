@@ -252,9 +252,7 @@ function serializeItems(items, config, indentation, depth, refs, printer) {
     config.spacingOuter +
     items
       .map(
-        item =>
-          indentationItems +
-          printer(item, config, indentationItems, depth, refs), // callback
+        item => indentationItems + printer(item, config, indentationItems, depth, refs), // callback
       )
       .join(SEPARATOR + config.spacingInner) +
     (config.min ? '' : SEPARATOR) + // following the last item
@@ -269,12 +267,7 @@ const plugin = {
   },
   serialize(array, config, indentation, depth, refs, printer) {
     const name = array.constructor.name;
-    return ++depth > config.maxDepth
-      ? '[' + name + ']'
-      : (config.min ? '' : name + ' ') +
-          '[' +
-          serializeItems(array, config, indentation, depth, refs, printer) +
-          ']';
+    return ++depth > config.maxDepth ? '[' + name + ']' : (config.min ? '' : name + ' ') + '[' + serializeItems(array, config, indentation, depth, refs, printer) + ']';
   },
 };
 ```

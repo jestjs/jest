@@ -81,11 +81,11 @@ type MockFunctionConfig = {
 
 // see https://github.com/Microsoft/TypeScript/issues/25215
 type NonFunctionPropertyNames<T> = {
-  [K in keyof T]: T[K] extends (...args: Array<any>) => any ? never : K
+  [K in keyof T]: T[K] extends (...args: Array<any>) => any ? never : K;
 }[keyof T] &
   string;
 type FunctionPropertyNames<T> = {
-  [K in keyof T]: T[K] extends (...args: Array<any>) => any ? K : never
+  [K in keyof T]: T[K] extends (...args: Array<any>) => any ? K : never;
 }[keyof T] &
   string;
 

@@ -44,9 +44,7 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
 
       if (!describeBlockHasTests(currentDescribeBlock)) {
         currentDescribeBlock.hooks.forEach(hook => {
-          hook.asyncError.message = `Invalid: ${
-            hook.type
-          }() may not be used in a describe block containing no tests.`;
+          hook.asyncError.message = `Invalid: ${hook.type}() may not be used in a describe block containing no tests.`;
           state.unhandledErrors.push(hook.asyncError);
         });
       }
