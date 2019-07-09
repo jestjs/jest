@@ -27,6 +27,7 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
     filesAdded: 0,
     // combines individual test results + removed files after the full run
     filesRemoved: 0,
+    filesRemovedList: [],
     filesUnmatched: 0,
     filesUpdated: 0,
     matched: 0,

@@ -122,22 +122,35 @@ const cleanup = (
   hasteFS: HasteFS,
   update: Config.SnapshotUpdateState,
   snapshotResolver: JestSnapshotResolver,
-) => {
+): {
+  filesRemoved: number;
+  filesRemovedList: Array<string>;
+} => {
   const pattern = '\\.' + EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
-  const filesRemoved = files.reduce((acc, snapshotFile) => {
-    if (!fileExists(snapshotResolver.resolveTestPath(snapshotFile), hasteFS)) {
-      if (update === 'all') {
-        fs.unlinkSync(snapshotFile);
+  const {count, list} = files.reduce(
+    (acc: {count: number; list: Array<string>}, snapshotFile) => {
+      if (
+        !fileExists(snapshotResolver.resolveTestPath(snapshotFile), hasteFS)
+      ) {
+        if (update === 'all') {
+          fs.unlinkSync(snapshotFile);
+        }
+        return {
+          ...acc,
+          count: acc.count + 1,
+          list: [...acc.list, snapshotFile],
+        };
       }
-      return acc + 1;
-    }
 
-    return acc;
-  }, 0);
+      return acc;
+    },
+    {count: 0, list: []},
+  );
 
   return {
-    filesRemoved,
+    filesRemoved: count,
+    filesRemovedList: list,
   };
 };
 
