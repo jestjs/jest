@@ -84,7 +84,7 @@ export default (
       );
     }
   }
-  if (snapshots.filesRemovedList.length) {
+  if (snapshots.filesRemovedList && snapshots.filesRemovedList.length) {
     const [head, ...tail] = snapshots.filesRemovedList;
     summary.push(`  ${DOWN_ARROW} ${DOT}${formatTestPath(globalConfig, head)}`);
 
