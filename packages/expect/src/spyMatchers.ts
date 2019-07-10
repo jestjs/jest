@@ -28,7 +28,7 @@ const LAST_CALL_PRINT_LIMIT = 1;
 
 const printReceivedArgs = (args: Array<unknown>): string =>
   args.length === 0
-    ? 'no args'
+    ? 'called with no arguments'
     : args.map(arg => printReceived(arg)).join(', ');
 
 const createToBeCalledMatcher = (matcherName: string) =>

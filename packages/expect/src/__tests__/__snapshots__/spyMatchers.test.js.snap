@@ -628,7 +628,7 @@ exports[`toBeCalled includes the custom mock name in the error message 1`] = `
 Expected number of calls: <green>0</>
 Received number of calls: <red>1</>
 
-1: no args"
+1: called with no arguments"
 `;
 
 exports[`toBeCalled passes when called 1`] = `
@@ -958,7 +958,7 @@ exports[`toHaveBeenCalled includes the custom mock name in the error message 1`]
 Expected number of calls: <green>0</>
 Received number of calls: <red>1</>
 
-1: no args"
+1: called with no arguments"
 `;
 
 exports[`toHaveBeenCalled passes when called 1`] = `
