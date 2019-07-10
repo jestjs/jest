@@ -128,13 +128,13 @@ export const getSnapshotData = (
 const addExtraLineBreaks = (string: string): string =>
   string.includes('\n') ? `\n${string}\n` : string;
 
-export const serialize = (data: string): string =>
+export const serialize = (data: string, printFunctionName: boolean): string =>
   addExtraLineBreaks(
     normalizeNewlines(
       prettyFormat(data, {
         escapeRegex: true,
         plugins: getSerializers(),
-        printFunctionName: false,
+        printFunctionName,
       }),
     ),
   );

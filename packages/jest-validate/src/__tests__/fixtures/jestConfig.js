@@ -42,6 +42,7 @@ const defaultConfig = {
   notifyMode: 'failure-change',
   preset: null,
   prettierPath: 'prettier',
+  printFunctionName: false,
   resetMocks: false,
   resetModules: false,
   restoreMocks: false,

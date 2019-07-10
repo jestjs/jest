@@ -122,12 +122,14 @@ export const initialize = ({
     });
 
   const {expand, updateSnapshot} = globalConfig;
+  const {printFunctionName} = config;
   const snapshotResolver = buildSnapshotResolver(config);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
     getBabelTraverse,
     getPrettier,
+    printFunctionName,
     updateSnapshot,
   });
   setState({snapshotState, testPath});

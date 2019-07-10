@@ -392,6 +392,7 @@ export type ProjectConfig = {
   modulePaths: Array<string>;
   name: string;
   prettierPath: string;
+  printFunctionName: boolean;
   resetMocks: boolean;
   resetModules: boolean;
   resolver: Path | null | undefined;
