@@ -277,7 +277,7 @@ export default function watch(
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
     // Clear cache for required modules
-    Resolver.clearCache();
+    Resolver.clearDefaultResolverCache();
 
     return runJest({
       changedFilesPromise,

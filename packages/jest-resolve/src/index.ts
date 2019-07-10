@@ -12,7 +12,7 @@ import {sync as realpath} from 'realpath-native';
 import chalk from 'chalk';
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
-import defaultResolver, {clearResolverCache} from './defaultResolver';
+import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
 import {ResolverConfig} from './types';
 
 type FindNodeModuleConfig = {
@@ -79,8 +79,8 @@ class Resolver {
     this._modulePathCache = new Map();
   }
 
-  static clearCache() {
-    clearResolverCache();
+  static clearDefaultResolverCache() {
+    clearDefaultResolverCache();
   }
 
   static findNodeModule(

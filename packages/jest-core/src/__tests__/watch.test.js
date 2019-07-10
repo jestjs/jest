@@ -11,8 +11,6 @@
 import chalk from 'chalk';
 import TestWatcher from '../TestWatcher';
 import {JestHook, KEYS} from 'jest-watcher';
-import HasteMap from 'jest-haste-map';
-import fs from 'fs';
 
 const runJestMock = jest.fn();
 const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
@@ -111,10 +109,6 @@ describe('Watch mode flows', () => {
     jest.doMock('jest-util/build/isInteractive', () => isInteractive);
     watch = require('../watch').default;
     const config = {
-      haste: {
-        defaultPlatform: 'android',
-      },
-      moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
       rootDir: __dirname,
       roots: [],
       testPathIgnorePatterns: [],
@@ -579,64 +573,6 @@ describe('Watch mode flows', () => {
           testPaths: ['./path/to/file1-test.js', './path/to/file2-test.js'],
         },
       ],
-    });
-  });
-
-  describe('check clear cache modules', () => {
-    const fileTargetPath = `${__dirname}/__fixtures__/hey.test.js`;
-    let hasteMapInstance;
-    let Resolver;
-    let originalClearCache;
-
-    beforeEach(() => {
-      Resolver = require('jest-resolve');
-      originalClearCache = Resolver.clearCache;
-    });
-
-    afterEach(() => {
-      Resolver.clearCache = originalClearCache;
-      hasteMapInstance.end();
-      try {
-        fs.unlinkSync(fileTargetPath);
-      } catch (e) {}
-    });
-
-    it('should correct require new files without legacy cache', async () => {
-      hasteMapInstance = new HasteMap({
-        computeSha1: false,
-        extensions: ['js'],
-        forceNodeFilesystemAPI: false,
-        maxWorkers: 2,
-        name: 'tmp_' + Date.now(),
-        platforms: [],
-        retainAllFiles: true,
-        rootDir: __dirname,
-        roots: [__dirname],
-        throwOnModuleCollision: true,
-        useWatchman: true,
-        watch: true,
-      });
-
-      await hasteMapInstance.build();
-
-      await watch(
-        {
-          ...globalConfig,
-          rootDir: __dirname,
-          watchPlugins: [],
-        },
-        contexts,
-        pipe,
-        [hasteMapInstance],
-        stdin,
-      );
-
-      Resolver.clearCache = jest.fn();
-
-      fs.writeFileSync(fileTargetPath, '', {encoding: 'utf-8'});
-
-      await new Promise(resolve => setTimeout(resolve, 100));
-      expect(Resolver.clearCache).toHaveBeenCalledTimes(1);
     });
   });
 

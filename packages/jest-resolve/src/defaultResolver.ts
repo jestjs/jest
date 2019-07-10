@@ -44,7 +44,7 @@ export default function defaultResolver(
   });
 }
 
-export const clearResolverCache = () => {
+export const clearDefaultResolverCache = () => {
   checkedPaths.clear();
 };
 
