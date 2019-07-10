@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 const Immutable = require('immutable');
@@ -19,7 +18,7 @@ const jestExpect = require('../');
 
     test(`passes when called`, () => {
       const fn = jest.fn();
-      fn();
+      fn('arg0', 'arg1', 'arg2');
       jestExpect(fn)[called]();
       expect(() => jestExpect(fn).not[called]()).toThrowErrorMatchingSnapshot();
     });

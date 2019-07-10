@@ -3,11 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 import {
   diff,
+  DIM_COLOR,
   ensureExpectedIsNumber,
   ensureNoExpected,
   matcherErrorMessage,
@@ -26,6 +26,13 @@ const PRINT_LIMIT = 3;
 const CALL_PRINT_LIMIT = 3;
 const RETURN_PRINT_LIMIT = 5;
 const LAST_CALL_PRINT_LIMIT = 1;
+
+const printReceivedArgs = (args: Array<unknown>): string =>
+  args.length === 0
+    ? DIM_COLOR('()')
+    : DIM_COLOR('(') +
+      args.map(arg => printReceived(arg)).join(DIM_COLOR(', ')) +
+      DIM_COLOR(')');
 
 const createToBeCalledMatcher = (matcherName: string) =>
   function(
@@ -59,7 +66,7 @@ const createToBeCalledMatcher = (matcherName: string) =>
           calls
             .reduce((lines: Array<string>, args: any, i: number) => {
               if (lines.length < PRINT_LIMIT) {
-                lines.push(`${i + 1}: ${printReceived(args)}`);
+                lines.push(`${i + 1}: ${printReceivedArgs(args)}`);
               }
 
               return lines;
