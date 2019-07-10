@@ -7,7 +7,6 @@
 
 import {
   diff,
-  DIM_COLOR,
   ensureExpectedIsNumber,
   ensureNoExpected,
   matcherErrorMessage,
@@ -29,10 +28,8 @@ const LAST_CALL_PRINT_LIMIT = 1;
 
 const printReceivedArgs = (args: Array<unknown>): string =>
   args.length === 0
-    ? DIM_COLOR('()')
-    : DIM_COLOR('(') +
-      args.map(arg => printReceived(arg)).join(DIM_COLOR(', ')) +
-      DIM_COLOR(')');
+    ? 'no args'
+    : args.map(arg => printReceived(arg)).join(', ');
 
 const createToBeCalledMatcher = (matcherName: string) =>
   function(

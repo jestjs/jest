@@ -628,7 +628,7 @@ exports[`toBeCalled includes the custom mock name in the error message 1`] = `
 Expected number of calls: <green>0</>
 Received number of calls: <red>1</>
 
-1: <dim>()</>"
+1: no args"
 `;
 
 exports[`toBeCalled passes when called 1`] = `
@@ -637,7 +637,7 @@ exports[`toBeCalled passes when called 1`] = `
 Expected number of calls: <green>0</>
 Received number of calls: <red>1</>
 
-1: <dim>(</><red>\\"arg0\\"</><dim>, </><red>\\"arg1\\"</><dim>, </><red>\\"arg2\\"</><dim>)</>"
+1: <red>\\"arg0\\"</>, <red>\\"arg1\\"</>, <red>\\"arg2\\"</>"
 `;
 
 exports[`toBeCalled works only on spies or jest.fn 1`] = `
@@ -958,7 +958,7 @@ exports[`toHaveBeenCalled includes the custom mock name in the error message 1`]
 Expected number of calls: <green>0</>
 Received number of calls: <red>1</>
 
-1: <dim>()</>"
+1: no args"
 `;
 
 exports[`toHaveBeenCalled passes when called 1`] = `
@@ -967,7 +967,7 @@ exports[`toHaveBeenCalled passes when called 1`] = `
 Expected number of calls: <green>0</>
 Received number of calls: <red>1</>
 
-1: <dim>(</><red>\\"arg0\\"</><dim>, </><red>\\"arg1\\"</><dim>, </><red>\\"arg2\\"</><dim>)</>"
+1: <red>\\"arg0\\"</>, <red>\\"arg1\\"</>, <red>\\"arg2\\"</>"
 `;
 
 exports[`toHaveBeenCalled works only on spies or jest.fn 1`] = `
