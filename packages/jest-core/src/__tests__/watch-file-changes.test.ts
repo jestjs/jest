@@ -25,7 +25,7 @@ describe('Watch mode flows with changed files', () => {
   let hasteMapInstance: HasteMap;
   const deleteFolderRecursive = pathname => {
     if (fs.existsSync(pathname)) {
-      fs.readdirSync(pathname).forEach((file, index) => {
+      fs.readdirSync(pathname).forEach(file => {
         const curPath = path.resolve(pathname, file);
         if (fs.lstatSync(curPath).isDirectory()) {
           // recurse
@@ -88,7 +88,6 @@ describe('Watch mode flows with changed files', () => {
         reporters: [],
         rootDir: __dirname,
         roots: [__dirname],
-        testPathIgnorePatterns: ['/node_modules/'],
         testRegex: ['watch-test\\.test\\.js$'],
         watch: false,
         watchman: false,
@@ -100,7 +99,7 @@ describe('Watch mode flows with changed files', () => {
       maxWorkers: 1,
       resetCache: true,
       watch: true,
-      watchman: true,
+      watchman: false,
     });
 
     const realContext = await hasteMapInstance.build().then(
@@ -128,7 +127,10 @@ describe('Watch mode flows with changed files', () => {
       hook,
     );
 
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => {
+      hook.getSubscriber().onTestRunComplete(resolve);
+    });
+
     // Create lost file
     fs.writeFileSync(
       fileTargetPath,
