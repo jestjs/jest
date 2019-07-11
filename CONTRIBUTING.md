@@ -42,7 +42,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     python --version
     ```
 
-1. Make sure you have a compatible version of `node` installed (As of July 10th 2019, `v10.x` is recommended since there is a known issues with `v12.x` [#8490](https://github.com/facebook/jest/issues/8490)).
+1.  Make sure you have a compatible version of `node` installed (As of July 10th 2019, `v10.x` is recommended since there is a known issues with `v12.x` [#8490](https://github.com/facebook/jest/issues/8490)).
 
     ```sh
     node -v
