@@ -18,8 +18,8 @@ describe('Watch mode flows with changed files', () => {
   let watch;
   let pipe;
   let stdin;
-  const fileTargetPath = `${__dirname}/__fixtures__/hey.js`;
-  const fileTargetPath2 = `${__dirname}/__fixtures__/heyhey.test.js`;
+  const fileTargetPath = `${__dirname}/__fixtures__/lost-file.js`;
+  const fileTargetPath2 = `${__dirname}/__fixtures__/watch-test.test.js`;
   const cacheDirectory = `${__dirname}/tmp${Math.random()}`;
   let hasteMapInstance;
   const deleteFolderRecursive = pathname => {
@@ -88,7 +88,7 @@ describe('Watch mode flows with changed files', () => {
         rootDir: __dirname,
         roots: [__dirname],
         testPathIgnorePatterns: ['/node_modules/'],
-        testRegex: ['hey\\.test\\.js$'],
+        testRegex: ['watch-test\\.test\\.js$'],
         watch: false,
         watchman: false,
       },
@@ -129,7 +129,7 @@ describe('Watch mode flows with changed files', () => {
     );
 
     await new Promise(resolve => setTimeout(resolve, 300));
-
+    // Create lost file
     fs.writeFileSync(
       fileTargetPath,
       `
@@ -142,18 +142,31 @@ describe('Watch mode flows with changed files', () => {
       {encoding: 'utf-8'},
     );
 
-    const resultReport = await new Promise(resolve => {
-      hook.getSubscriber().onTestRunComplete(result => {
-        resolve({
-          numFailedTests: result.numFailedTests,
-          numPassedTests: result.numPassedTests,
-        });
-      });
+    const resultSuccessReport = await new Promise(resolve => {
+      hook.getSubscriber().onTestRunComplete(resolve);
     });
 
-    expect(resultReport).toEqual({
+    expect(resultSuccessReport).toMatchObject({
+      numFailedTestSuites: 0,
       numFailedTests: 0,
       numPassedTests: 4,
+      numRuntimeErrorTestSuites: 0,
+      wasInterrupted: false,
+    });
+
+    // Remove again to ensure about no legacy cache
+    fs.unlinkSync(fileTargetPath);
+
+    const resultErrorReport = await new Promise(resolve => {
+      hook.getSubscriber().onTestRunComplete(resolve);
+    });
+
+    // After remove file we have to fail tests
+    expect(resultErrorReport).toMatchObject({
+      numFailedTestSuites: 1,
+      numPassedTests: 0,
+      numRuntimeErrorTestSuites: 1,
+      wasInterrupted: false,
     });
   });
 });
