@@ -19,9 +19,17 @@ describe('Watch mode flows with changed files', () => {
   let watch: any;
   let pipe: NodeJS.ReadStream;
   let stdin: MockStdin;
-  const fileTargetPath = `${__dirname}/__fixtures__/lost-file.js`;
-  const fileTargetPath2 = `${__dirname}/__fixtures__/watch-test.test.js`;
-  const cacheDirectory = `${__dirname}/tmp${Math.random()}`;
+  const fileTargetPath = path.resolve(
+    __dirname,
+    '__fixtures__',
+    'lost-file.js',
+  );
+  const fileTargetPath2 = path.resolve(
+    __dirname,
+    '__fixtures__',
+    'watch-test.test.js',
+  );
+  const cacheDirectory = path.resolve(__dirname, `tmp${Math.random()}`);
   let hasteMapInstance: HasteMap;
   const deleteFolderRecursive = pathname => {
     if (fs.existsSync(pathname)) {
