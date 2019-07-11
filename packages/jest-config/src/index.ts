@@ -186,7 +186,7 @@ const groupOptions = (
     modulePaths: options.modulePaths,
     name: options.name,
     prettierPath: options.prettierPath,
-    printFunctionName: options.printFunctionName,
+    prettyFormatSnapshotConfig: options.prettyFormatSnapshotConfig,
     resetMocks: options.resetMocks,
     resetModules: options.resetModules,
     resolver: options.resolver,
