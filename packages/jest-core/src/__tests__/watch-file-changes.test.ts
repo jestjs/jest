@@ -8,20 +8,21 @@
 
 'use strict';
 
+import path from 'path';
+import fs from 'fs';
 import {JestHook} from 'jest-watcher';
 import Runtime from 'jest-runtime';
 import {normalize} from 'jest-config';
-import path from 'path';
-import fs from 'fs';
+import HasteMap from 'jest-haste-map';
 
 describe('Watch mode flows with changed files', () => {
-  let watch;
-  let pipe;
-  let stdin;
+  let watch: any;
+  let pipe: NodeJS.ReadStream;
+  let stdin: MockStdin;
   const fileTargetPath = `${__dirname}/__fixtures__/lost-file.js`;
   const fileTargetPath2 = `${__dirname}/__fixtures__/watch-test.test.js`;
   const cacheDirectory = `${__dirname}/tmp${Math.random()}`;
-  let hasteMapInstance;
+  let hasteMapInstance: HasteMap;
   const deleteFolderRecursive = pathname => {
     if (fs.existsSync(pathname)) {
       fs.readdirSync(pathname).forEach((file, index) => {
@@ -40,7 +41,7 @@ describe('Watch mode flows with changed files', () => {
 
   beforeEach(() => {
     watch = require('../watch').default;
-    pipe = {write: jest.fn()};
+    pipe = {write: jest.fn()} as any;
     stdin = new MockStdin();
   });
 
@@ -92,13 +93,12 @@ describe('Watch mode flows with changed files', () => {
         watch: false,
         watchman: false,
       },
-      [],
+      {} as any,
     ).options;
 
     hasteMapInstance = await Runtime.createHasteMap(config, {
       maxWorkers: 1,
       resetCache: true,
-      retainAllFiles: true,
       watch: true,
       watchman: true,
     });
@@ -172,6 +172,8 @@ describe('Watch mode flows with changed files', () => {
 });
 
 class MockStdin {
+  private _callbacks: Array<any>;
+
   constructor() {
     this._callbacks = [];
   }
@@ -182,11 +184,11 @@ class MockStdin {
 
   setEncoding() {}
 
-  on(evt, callback) {
+  on(_: any, callback: any) {
     this._callbacks.push(callback);
   }
 
-  emit(key) {
+  emit(key: string) {
     this._callbacks.forEach(cb => cb(key));
   }
 }
