@@ -19,6 +19,8 @@ import rimraf from 'rimraf';
 import {AggregatedResult} from '@jest/test-result';
 
 describe('Watch mode flows with changed files', () => {
+  jest.resetModules();
+
   let watch: any;
   let pipe: NodeJS.ReadStream;
   let stdin: MockStdin;
@@ -77,7 +79,6 @@ describe('Watch mode flows with changed files', () => {
         onlyChanged: false,
         reporters: [],
         rootDir: testDirectory,
-        roots: [testDirectory],
         silent: true,
         testRegex: ['watch-test-fake\\.test\\.js$'],
         watch: false,
@@ -93,17 +94,12 @@ describe('Watch mode flows with changed files', () => {
       watchman: false,
     });
 
-    const realContext = await hasteMapInstance.build().then(
-      hasteMap => ({
-        config,
-        hasteFS: hasteMap.hasteFS,
-        moduleMap: hasteMap.moduleMap,
-        resolver: Runtime.createResolver(config, hasteMap.moduleMap),
-      }),
-      error => {
-        throw error;
-      },
-    );
+    const realContext = await hasteMapInstance.build().then(hasteMap => ({
+      config,
+      hasteFS: hasteMap.hasteFS,
+      moduleMap: hasteMap.moduleMap,
+      resolver: Runtime.createResolver(config, hasteMap.moduleMap),
+    }));
 
     const hook = new JestHook();
     const firstErrorPromise = new Promise(resolve => {
