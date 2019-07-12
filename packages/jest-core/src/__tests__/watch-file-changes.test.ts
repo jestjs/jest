@@ -10,6 +10,7 @@
 
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import {JestHook} from 'jest-watcher';
 import Runtime from 'jest-runtime';
 import {normalize} from 'jest-config';
@@ -23,7 +24,7 @@ describe('Watch mode flows with changed files', () => {
   let stdin: MockStdin;
   const fileTargetPath = path.resolve(__dirname, 'lost-file.js');
   const fileTargetPath2 = path.resolve(__dirname, 'watch-test-fake.test.js');
-  const cacheDirectory = path.resolve(__dirname, `tmp${Math.random()}`);
+  const cacheDirectory = path.resolve(os.tmpdir(), `tmp${Math.random()}`);
   let hasteMapInstance: HasteMap;
 
   beforeEach(() => {
