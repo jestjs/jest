@@ -14,44 +14,23 @@ import {JestHook} from 'jest-watcher';
 import Runtime from 'jest-runtime';
 import {normalize} from 'jest-config';
 import HasteMap from 'jest-haste-map';
+import rimraf from 'rimraf';
 import {AggregatedResult} from '@jest/test-result';
 
 describe('Watch mode flows with changed files', () => {
   let watch: any;
   let pipe: NodeJS.ReadStream;
   let stdin: MockStdin;
-  const fileTargetPath = path.resolve(
-    __dirname,
-    '__fixtures__',
-    'lost-file.js',
-  );
-  const fileTargetPath2 = path.resolve(
-    __dirname,
-    '__fixtures__',
-    'watch-test.test.js',
-  );
+  const fileTargetPath = path.resolve(__dirname, 'lost-file.js');
+  const fileTargetPath2 = path.resolve(__dirname, 'watch-test-fake.test.js');
   const cacheDirectory = path.resolve(__dirname, `tmp${Math.random()}`);
   let hasteMapInstance: HasteMap;
-  const deleteFolderRecursive = pathname => {
-    if (fs.existsSync(pathname)) {
-      fs.readdirSync(pathname).forEach(file => {
-        const curPath = path.resolve(pathname, file);
-        if (fs.lstatSync(curPath).isDirectory()) {
-          // recurse
-          deleteFolderRecursive(curPath);
-        } else {
-          // delete file
-          fs.unlinkSync(curPath);
-        }
-      });
-      fs.rmdirSync(pathname);
-    }
-  };
 
   beforeEach(() => {
     watch = require('../watch').default;
     pipe = {write: jest.fn()} as any;
     stdin = new MockStdin();
+    fs.mkdirSync(cacheDirectory);
   });
 
   afterEach(() => {
@@ -62,14 +41,14 @@ describe('Watch mode flows with changed files', () => {
         fs.unlinkSync(file);
       } catch (e) {}
     });
-    deleteFolderRecursive(cacheDirectory);
+    rimraf.sync(cacheDirectory);
   });
 
   it('should correct require new files without legacy cache', async () => {
     fs.writeFileSync(
       fileTargetPath2,
       `
-        require('${fileTargetPath}');
+        require('./lost-file.js');
         describe('Fake test', () => {
             it('Hey', () => {  
             
@@ -81,24 +60,20 @@ describe('Watch mode flows with changed files', () => {
       },
     );
 
-    fs.mkdirSync(cacheDirectory);
     const config = normalize(
       {
-        automock: false,
         cache: false,
         cacheDirectory,
         coverageReporters: [],
         maxConcurrency: 1,
         maxWorkers: 1,
         moduleDirectories: ['node_modules'],
-        moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
-        modulePathIgnorePatterns: [],
         onlyChanged: false,
         reporters: [],
         rootDir: __dirname,
         roots: [__dirname],
         silent: true,
-        testRegex: ['watch-test\\.test\\.js$'],
+        testRegex: ['watch-test-fake\\.test\\.js$'],
         watch: false,
         watchman: false,
       },
