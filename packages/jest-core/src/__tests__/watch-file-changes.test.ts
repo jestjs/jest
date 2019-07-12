@@ -35,6 +35,8 @@ describe('Watch mode flows with changed files', () => {
     watch = require('../watch').default;
     pipe = {write: jest.fn()} as any;
     stdin = new MockStdin();
+    rimraf.sync(cacheDirectory);
+    rimraf.sync(testDirectory);
     fs.mkdirSync(testDirectory);
     fs.mkdirSync(cacheDirectory);
   });
@@ -44,11 +46,6 @@ describe('Watch mode flows with changed files', () => {
     if (hasteMapInstance) {
       hasteMapInstance.end();
     }
-    [fileTargetPath2, fileTargetPath].forEach(file => {
-      try {
-        fs.unlinkSync(file);
-      } catch (e) {}
-    });
     rimraf.sync(cacheDirectory);
     rimraf.sync(testDirectory);
   });
@@ -109,6 +106,9 @@ describe('Watch mode flows with changed files', () => {
     );
 
     const hook = new JestHook();
+    const firstErrorPromise = new Promise(resolve => {
+      hook.getSubscriber().onTestRunComplete(resolve);
+    });
     await watch(
       {
         ...config,
@@ -121,7 +121,9 @@ describe('Watch mode flows with changed files', () => {
       hook,
     );
 
-    await new Promise(resolve => {
+    await firstErrorPromise;
+
+    const successPromise: Promise<AggregatedResult> = new Promise(resolve => {
       hook.getSubscriber().onTestRunComplete(resolve);
     });
 
@@ -138,9 +140,7 @@ describe('Watch mode flows with changed files', () => {
       {encoding: 'utf-8'},
     );
 
-    const resultSuccessReport: AggregatedResult = await new Promise(resolve => {
-      hook.getSubscriber().onTestRunComplete(resolve);
-    });
+    const resultSuccessReport: AggregatedResult = await successPromise;
 
     expect(resultSuccessReport).toMatchObject({
       numFailedTestSuites: 0,
@@ -154,12 +154,14 @@ describe('Watch mode flows with changed files', () => {
       failureMessage: null,
     });
 
+    const errorPromise: Promise<AggregatedResult> = new Promise(resolve => {
+      hook.getSubscriber().onTestRunComplete(resolve);
+    });
+
     // Remove again to ensure about no legacy cache
     fs.unlinkSync(fileTargetPath);
 
-    const resultErrorReport: AggregatedResult = await new Promise(resolve => {
-      hook.getSubscriber().onTestRunComplete(resolve);
-    });
+    const resultErrorReport: AggregatedResult = await errorPromise;
 
     // After remove file we have to fail tests
     expect(resultErrorReport).toMatchObject({
