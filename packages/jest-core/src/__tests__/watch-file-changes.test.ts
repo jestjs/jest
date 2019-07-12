@@ -14,6 +14,7 @@ import {JestHook} from 'jest-watcher';
 import Runtime from 'jest-runtime';
 import {normalize} from 'jest-config';
 import HasteMap from 'jest-haste-map';
+import {AggregatedResult} from '@jest/test-result';
 
 describe('Watch mode flows with changed files', () => {
   let watch: any;
@@ -96,6 +97,7 @@ describe('Watch mode flows with changed files', () => {
         reporters: [],
         rootDir: __dirname,
         roots: [__dirname],
+        silent: true,
         testRegex: ['watch-test\\.test\\.js$'],
         watch: false,
         watchman: false,
@@ -152,7 +154,7 @@ describe('Watch mode flows with changed files', () => {
       {encoding: 'utf-8'},
     );
 
-    const resultSuccessReport = await new Promise(resolve => {
+    const resultSuccessReport: AggregatedResult = await new Promise(resolve => {
       hook.getSubscriber().onTestRunComplete(resolve);
     });
 
@@ -161,13 +163,17 @@ describe('Watch mode flows with changed files', () => {
       numFailedTests: 0,
       numPassedTests: 4,
       numRuntimeErrorTestSuites: 0,
+      success: true,
       wasInterrupted: false,
+    });
+    expect(resultSuccessReport.testResults[0]).toMatchObject({
+      failureMessage: null,
     });
 
     // Remove again to ensure about no legacy cache
     fs.unlinkSync(fileTargetPath);
 
-    const resultErrorReport = await new Promise(resolve => {
+    const resultErrorReport: AggregatedResult = await new Promise(resolve => {
       hook.getSubscriber().onTestRunComplete(resolve);
     });
 
@@ -176,6 +182,7 @@ describe('Watch mode flows with changed files', () => {
       numFailedTestSuites: 1,
       numPassedTests: 0,
       numRuntimeErrorTestSuites: 1,
+      success: false,
       wasInterrupted: false,
     });
   });
@@ -187,8 +194,6 @@ class MockStdin {
   constructor() {
     this._callbacks = [];
   }
-
-  setRawMode() {}
 
   resume() {}
 
