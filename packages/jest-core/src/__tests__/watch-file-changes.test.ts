@@ -22,8 +22,12 @@ describe('Watch mode flows with changed files', () => {
   let watch: any;
   let pipe: NodeJS.ReadStream;
   let stdin: MockStdin;
-  const fileTargetPath = path.resolve(__dirname, 'lost-file.js');
-  const fileTargetPath2 = path.resolve(__dirname, 'watch-test-fake.test.js');
+  const testDirectory = path.resolve(os.tmpdir(), 'jest-tmp');
+  const fileTargetPath = path.resolve(testDirectory, 'lost-file.js');
+  const fileTargetPath2 = path.resolve(
+    testDirectory,
+    'watch-test-fake.test.js',
+  );
   const cacheDirectory = path.resolve(os.tmpdir(), `tmp${Math.random()}`);
   let hasteMapInstance: HasteMap;
 
@@ -31,18 +35,22 @@ describe('Watch mode flows with changed files', () => {
     watch = require('../watch').default;
     pipe = {write: jest.fn()} as any;
     stdin = new MockStdin();
+    fs.mkdirSync(testDirectory);
     fs.mkdirSync(cacheDirectory);
   });
 
   afterEach(() => {
     jest.resetModules();
-    hasteMapInstance.end();
+    if (hasteMapInstance) {
+      hasteMapInstance.end();
+    }
     [fileTargetPath2, fileTargetPath].forEach(file => {
       try {
         fs.unlinkSync(file);
       } catch (e) {}
     });
     rimraf.sync(cacheDirectory);
+    rimraf.sync(testDirectory);
   });
 
   it('should correct require new files without legacy cache', async () => {
@@ -71,8 +79,8 @@ describe('Watch mode flows with changed files', () => {
         moduleDirectories: ['node_modules'],
         onlyChanged: false,
         reporters: [],
-        rootDir: __dirname,
-        roots: [__dirname],
+        rootDir: testDirectory,
+        roots: [testDirectory],
         silent: true,
         testRegex: ['watch-test-fake\\.test\\.js$'],
         watch: false,
