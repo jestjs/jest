@@ -1537,7 +1537,91 @@ describe('toMatchObject()', () => {
     }
   }
 
-  [
+  const testNotToMatchSnapshots = tuples => {
+    tuples.forEach(([n1, n2]) => {
+      it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
+        n2,
+      )})`, () => {
+        jestExpect(n1).toMatchObject(n2);
+        expect(() =>
+          jestExpect(n1).not.toMatchObject(n2),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    });
+  };
+
+  const testToMatchSnapshots = tuples => {
+    tuples.forEach(([n1, n2]) => {
+      it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
+        n2,
+      )})`, () => {
+        jestExpect(n1).not.toMatchObject(n2);
+        expect(() =>
+          jestExpect(n1).toMatchObject(n2),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    });
+  };
+
+  describe('circular references', () => {
+    describe('simple circular references', () => {
+      const circularObjA1 = {a: 'hello'};
+      circularObjA1.ref = circularObjA1;
+
+      const circularObjB = {a: 'world'};
+      circularObjB.ref = circularObjB;
+
+      const circularObjA2 = {a: 'hello'};
+      circularObjA2.ref = circularObjA2;
+
+      const primitiveInsteadOfRef = {};
+      primitiveInsteadOfRef.ref = 'not a ref';
+
+      testNotToMatchSnapshots([
+        [circularObjA1, {}],
+        [circularObjA2, circularObjA1],
+      ]);
+
+      testToMatchSnapshots([
+        [{}, circularObjA1],
+        [circularObjA1, circularObjB],
+        [primitiveInsteadOfRef, circularObjA1],
+      ]);
+    });
+
+    describe('transitive circular references', () => {
+      const transitiveCircularObjA1 = {a: 'hello'};
+      transitiveCircularObjA1.nestedObj = {parentObj: transitiveCircularObjA1};
+
+      const transitiveCircularObjA2 = {a: 'hello'};
+      transitiveCircularObjA2.nestedObj = {
+        parentObj: transitiveCircularObjA2,
+      };
+
+      const transitiveCircularObjB = {a: 'world'};
+      transitiveCircularObjB.nestedObj = {
+        parentObj: transitiveCircularObjB,
+      };
+
+      const primitiveInsteadOfRef = {};
+      primitiveInsteadOfRef.nestedObj = {
+        parentObj: 'not the parent ref',
+      };
+
+      testNotToMatchSnapshots([
+        [transitiveCircularObjA1, {}],
+        [transitiveCircularObjA2, transitiveCircularObjA1],
+      ]);
+
+      testToMatchSnapshots([
+        [{}, transitiveCircularObjA1],
+        [transitiveCircularObjB, transitiveCircularObjA1],
+        [primitiveInsteadOfRef, transitiveCircularObjA1],
+      ]);
+    });
+  });
+
+  testNotToMatchSnapshots([
     [{a: 'b', c: 'd'}, {a: 'b'}],
     [{a: 'b', c: 'd'}, {a: 'b', c: 'd'}],
     [{a: 'b', t: {x: {r: 'r'}, z: 'z'}}, {a: 'b', t: {z: 'z'}}],
@@ -1560,18 +1644,9 @@ describe('toMatchObject()', () => {
     [new Error('bar'), {message: 'bar'}],
     [new Foo(), {a: undefined, b: 'b'}],
     [Object.assign(Object.create(null), {a: 'b'}), {a: 'b'}],
-  ].forEach(([n1, n2]) => {
-    it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
-      n2,
-    )})`, () => {
-      jestExpect(n1).toMatchObject(n2);
-      expect(() =>
-        jestExpect(n1).not.toMatchObject(n2),
-      ).toThrowErrorMatchingSnapshot();
-    });
-  });
+  ]);
 
-  [
+  testToMatchSnapshots([
     [{a: 'b', c: 'd'}, {e: 'b'}],
     [{a: 'b', c: 'd'}, {a: 'b!', c: 'd'}],
     [{a: 'a', c: 'd'}, {a: jestExpect.any(Number)}],
@@ -1597,16 +1672,7 @@ describe('toMatchObject()', () => {
     [[1, 2, 3], [1, 2, 2]],
     [new Error('foo'), new Error('bar')],
     [Object.assign(Object.create(null), {a: 'b'}), {c: 'd'}],
-  ].forEach(([n1, n2]) => {
-    it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
-      n2,
-    )})`, () => {
-      jestExpect(n1).not.toMatchObject(n2);
-      expect(() =>
-        jestExpect(n1).toMatchObject(n2),
-      ).toThrowErrorMatchingSnapshot();
-    });
-  });
+  ]);
 
   [
     [null, {}],
@@ -1627,5 +1693,21 @@ describe('toMatchObject()', () => {
         jestExpect(n1).toMatchObject(n2),
       ).toThrowErrorMatchingSnapshot();
     });
+  });
+
+  it('does not match properties up in the prototype chain', () => {
+    const a = {};
+    a.ref = a;
+
+    const b = Object.create(a);
+    b.other = 'child';
+
+    const matcher = {other: 'child'};
+    matcher.ref = matcher;
+
+    jestExpect(b).not.toMatchObject(matcher);
+    expect(() =>
+      jestExpect(b).toMatchObject(matcher),
+    ).toThrowErrorMatchingSnapshot();
   });
 });

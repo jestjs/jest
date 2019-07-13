@@ -268,16 +268,36 @@ export const subsetEquality = (
   object: any,
   subset: any,
 ): undefined | boolean => {
-  if (!isObjectWithKeys(subset)) {
-    return undefined;
-  }
+  // subsetEquality needs to keep track of the references
+  // it has already visited to avoid infinite loops in case
+  // there are circular references in the subset passed to it.
+  const subsetEqualityWithContext = (
+    seenReferences: WeakMap<object, boolean> = new WeakMap(),
+  ) => (object: any, subset: any): undefined | boolean => {
+    if (!isObjectWithKeys(subset)) {
+      return undefined;
+    }
 
-  return Object.keys(subset).every(
-    key =>
-      object != null &&
-      hasOwnProperty(object, key) &&
-      equals(object[key], subset[key], [iterableEquality, subsetEquality]),
-  );
+    return Object.keys(subset).every(key => {
+      if (isObjectWithKeys(subset[key])) {
+        if (seenReferences.get(subset[key])) {
+          return equals(object[key], subset[key], [iterableEquality]);
+        }
+        seenReferences.set(subset[key], true);
+      }
+
+      return (
+        object != null &&
+        hasOwnProperty(object, key) &&
+        equals(object[key], subset[key], [
+          iterableEquality,
+          subsetEqualityWithContext(seenReferences),
+        ])
+      );
+    });
+  };
+
+  return subsetEqualityWithContext()(object, subset);
 };
 
 export const typeEquality = (a: any, b: any) => {

@@ -202,6 +202,60 @@ describe('subsetEquality()', () => {
   test('undefined does not return errors', () => {
     expect(subsetEquality(undefined, {foo: 'bar'})).not.toBeTruthy();
   });
+
+  describe('matching subsets with circular references', () => {
+    test('simple circular references', () => {
+      const circularObjA1 = {a: 'hello'};
+      circularObjA1.ref = circularObjA1;
+
+      const circularObjA2 = {a: 'hello'};
+      circularObjA2.ref = circularObjA2;
+
+      const circularObjB = {a: 'world'};
+      circularObjB.ref = circularObjB;
+
+      const primitiveInsteadOfRef = {};
+      primitiveInsteadOfRef.ref = 'not a ref';
+
+      expect(subsetEquality(circularObjA1, {})).toBe(true);
+      expect(subsetEquality({}, circularObjA1)).toBe(false);
+      expect(subsetEquality(circularObjA2, circularObjA1)).toBe(true);
+      expect(subsetEquality(circularObjB, circularObjA1)).toBe(false);
+      expect(subsetEquality(primitiveInsteadOfRef, circularObjA1)).toBe(false);
+    });
+
+    test('transitive circular references', () => {
+      const transitiveCircularObjA1 = {a: 'hello'};
+      transitiveCircularObjA1.nestedObj = {parentObj: transitiveCircularObjA1};
+
+      const transitiveCircularObjA2 = {a: 'hello'};
+      transitiveCircularObjA2.nestedObj = {
+        parentObj: transitiveCircularObjA2,
+      };
+
+      const transitiveCircularObjB = {a: 'world'};
+      transitiveCircularObjB.nestedObj = {
+        parentObj: transitiveCircularObjB,
+      };
+
+      const primitiveInsteadOfRef = {};
+      primitiveInsteadOfRef.nestedObj = {
+        parentObj: 'not the parent ref',
+      };
+
+      expect(subsetEquality(transitiveCircularObjA1, {})).toBe(true);
+      expect(subsetEquality({}, transitiveCircularObjA1)).toBe(false);
+      expect(
+        subsetEquality(transitiveCircularObjA2, transitiveCircularObjA1),
+      ).toBe(true);
+      expect(
+        subsetEquality(transitiveCircularObjB, transitiveCircularObjA1),
+      ).toBe(false);
+      expect(
+        subsetEquality(primitiveInsteadOfRef, transitiveCircularObjA1),
+      ).toBe(false);
+    });
+  });
 });
 
 describe('iterableEquality', () => {

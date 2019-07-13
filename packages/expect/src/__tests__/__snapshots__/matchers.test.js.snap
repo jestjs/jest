@@ -4092,6 +4092,104 @@ Expected: not <green>Set {2, 1}</>
 Received:     <red>Set {1, 2}</>"
 `;
 
+exports[`toMatchObject() circular references simple circular references {pass: false} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "world", "ref": [Circular]}) 1`] = `"Maximum call stack size exceeded"`;
+
+exports[`toMatchObject() circular references simple circular references {pass: false} expect({"ref": "not a ref"}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"a\\": \\"hello\\",</>
+<green>-   \\"ref\\": [Circular],</>
+<red>+   \\"ref\\": \\"not a ref\\",</>
+<dim>  }</>"
+`;
+
+exports[`toMatchObject() circular references simple circular references {pass: false} expect({}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<green>- Object {</>
+<green>-   \\"a\\": \\"hello\\",</>
+<green>-   \\"ref\\": [Circular],</>
+<green>- }</>
+<red>+ Object {}</>"
+`;
+
+exports[`toMatchObject() circular references simple circular references {pass: true} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+Expected: not <green>{\\"a\\": \\"hello\\", \\"ref\\": [Circular]}</>"
+`;
+
+exports[`toMatchObject() circular references simple circular references {pass: true} expect({"a": "hello", "ref": [Circular]}).toMatchObject({}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+Expected: not <green>{}</>
+Received:     <red>{\\"a\\": \\"hello\\", \\"ref\\": [Circular]}</>"
+`;
+
+exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"a": "world", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `"Maximum call stack size exceeded"`;
+
+exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"nestedObj": {"parentObj": "not the parent ref"}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"a\\": \\"hello\\",</>
+<dim>    \\"nestedObj\\": Object {</>
+<green>-     \\"parentObj\\": [Circular],</>
+<red>+     \\"parentObj\\": \\"not the parent ref\\",</>
+<dim>    },</>
+<dim>  }</>"
+`;
+
+exports[`toMatchObject() circular references transitive circular references {pass: false} expect({}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<green>- Object {</>
+<green>-   \\"a\\": \\"hello\\",</>
+<green>-   \\"nestedObj\\": Object {</>
+<green>-     \\"parentObj\\": [Circular],</>
+<green>-   },</>
+<green>- }</>
+<red>+ Object {}</>"
+`;
+
+exports[`toMatchObject() circular references transitive circular references {pass: true} expect({"a": "hello", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+Expected: not <green>{\\"a\\": \\"hello\\", \\"nestedObj\\": {\\"parentObj\\": [Circular]}}</>"
+`;
+
+exports[`toMatchObject() circular references transitive circular references {pass: true} expect({"a": "hello", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+Expected: not <green>{}</>
+Received:     <red>{\\"a\\": \\"hello\\", \\"nestedObj\\": {\\"parentObj\\": [Circular]}}</>"
+`;
+
+exports[`toMatchObject() does not match properties up in the prototype chain 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<dim>    \\"other\\": \\"child\\",</>
+<green>-   \\"ref\\": [Circular],</>
+<dim>  }</>"
+`;
+
 exports[`toMatchObject() throws expect("44").toMatchObject({}) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
 
