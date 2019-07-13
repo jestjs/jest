@@ -27,14 +27,14 @@ export default class {
 
     try {
       // eslint-disable-next-line import/no-extraneous-dependencies
-      weak = require('weak');
+      weak = require('weak-napi');
     } catch (err) {
       if (!err || err.code !== 'MODULE_NOT_FOUND') {
         throw err;
       }
 
       throw new Error(
-        'The leaking detection mechanism requires the "weak" package to be installed and work. ' +
+        'The leaking detection mechanism requires the "weak-api" package to be installed and work. ' +
           'Please install it as a dependency on your main project',
       );
     }
@@ -46,10 +46,12 @@ export default class {
     value = null;
   }
 
-  isLeaking(): boolean {
+  isLeaking(): Promise<boolean> {
     this._runGarbageCollector();
 
-    return this._isReferenceBeingHeld;
+    return new Promise(resolve =>
+      setImmediate(() => resolve(this._isReferenceBeingHeld)),
+    );
   }
 
   private _runGarbageCollector() {
