@@ -116,7 +116,7 @@ describe('Watch mode flows with changed files', () => {
 
     await firstErrorPromise;
 
-    const successPromise: Promise<AggregatedResult> = new Promise(resolve => {
+    const successPromise = new Promise<AggregatedResult>(resolve => {
       hook.getSubscriber().onTestRunComplete(resolve);
     });
 
@@ -146,7 +146,7 @@ describe('Watch mode flows with changed files', () => {
       failureMessage: null,
     });
 
-    const errorPromise: Promise<AggregatedResult> = new Promise(resolve => {
+    const errorPromise = new Promise<AggregatedResult>(resolve => {
       hook.getSubscriber().onTestRunComplete(resolve);
     });
 
