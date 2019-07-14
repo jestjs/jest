@@ -63,9 +63,6 @@ describe('Watch mode flows with changed files', () => {
             });
         });
       `,
-      {
-        encoding: 'utf-8',
-      },
     );
 
     const config = normalize(
@@ -133,10 +130,9 @@ describe('Watch mode flows with changed files', () => {
             it('Fake 3', () => {});
         });
       `,
-      {encoding: 'utf-8'},
     );
 
-    const resultSuccessReport: AggregatedResult = await successPromise;
+    const resultSuccessReport = await successPromise;
 
     expect(resultSuccessReport).toMatchObject({
       numFailedTestSuites: 0,
@@ -157,7 +153,7 @@ describe('Watch mode flows with changed files', () => {
     // Remove again to ensure about no legacy cache
     fs.unlinkSync(fileTargetPath);
 
-    const resultErrorReport: AggregatedResult = await errorPromise;
+    const resultErrorReport = await errorPromise;
 
     // After remove file we have to fail tests
     expect(resultErrorReport).toMatchObject({
