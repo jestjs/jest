@@ -15,6 +15,7 @@ import {formatExecError} from 'jest-message-util';
 import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {Context} from 'jest-runtime';
+import Resolver from 'jest-resolve';
 import {Config} from '@jest/types';
 import {
   AllowedConfigOptions,
@@ -275,6 +276,9 @@ export default function watch(
     isRunning = true;
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
+    // Clear cache for required modules
+    Resolver.clearDefaultResolverCache();
+
     return runJest({
       changedFilesPromise,
       contexts,
