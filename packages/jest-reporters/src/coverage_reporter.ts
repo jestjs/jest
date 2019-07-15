@@ -141,9 +141,14 @@ export default class CoverageReporter extends BaseReporter {
     }
 
     if (isInteractive) {
-      process.stderr.write(
-        RUNNING_TEST_COLOR('Running coverage on untested files...'),
+      const message = RUNNING_TEST_COLOR(
+        'Running coverage on untested files...',
       );
+      if (this._globalConfig.useStderr) {
+        process.stderr.write(message);
+      } else {
+        process.stdout.write(message);
+      }
     }
 
     let worker: CoverageWorker | Worker;
