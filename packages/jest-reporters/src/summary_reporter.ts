@@ -67,7 +67,12 @@ export default class SummaryReporter extends BaseReporter {
   // when hundreds of tests are failing.
   private _write(string: string) {
     for (let i = 0; i < string.length; i++) {
-      process.stderr.write(string.charAt(i));
+      const char = string.charAt(i);
+      if (this._globalConfig.useStderr) {
+        process.stderr.write(char);
+      } else {
+        process.stdout.write(char);
+      }
     }
   }
 
