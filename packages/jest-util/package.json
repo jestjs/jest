@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
-    "@types/is-ci": "^1.0.10",
+    "@types/is-ci": "^2.0.0",
     "@types/mkdirp": "^0.5.2",
     "@types/slash": "^2.0.0"
   },
