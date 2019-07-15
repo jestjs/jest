@@ -32,7 +32,7 @@
     "realpath-native": "^1.1.0",
     "slash": "^2.0.0",
     "strip-bom": "^3.0.0",
-    "yargs": "^13.2.4"
+    "yargs": "^13.3.0"
   },
   "devDependencies": {
     "@types/exit": "^0.1.30",

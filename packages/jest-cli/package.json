@@ -17,7 +17,7 @@
     "jest-validate": "^24.8.0",
     "prompts": "^2.0.1",
     "realpath-native": "^1.1.0",
-    "yargs": "^13.2.4"
+    "yargs": "^13.3.0"
   },
   "devDependencies": {
     "@types/exit": "^0.1.30",
