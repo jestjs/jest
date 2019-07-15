@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "merge-stream": "^1.0.1",
+    "merge-stream": "^2.0.0",
     "supports-color": "^6.1.0"
   },
   "devDependencies": {

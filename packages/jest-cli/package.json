@@ -17,13 +17,13 @@
     "jest-validate": "^24.8.0",
     "prompts": "^2.0.1",
     "realpath-native": "^1.1.0",
-    "yargs": "^12.0.2"
+    "yargs": "^12.0.5"
   },
   "devDependencies": {
     "@types/exit": "^0.1.30",
-    "@types/is-ci": "^1.1.0",
-    "@types/prompts": "^1.2.0",
-    "@types/yargs": "^12.0.2"
+    "@types/is-ci": "^2.0.0",
+    "@types/prompts": "^2.0.1",
+    "@types/yargs": "^12.0.12"
   },
   "bin": {
     "jest": "./bin/jest.js"

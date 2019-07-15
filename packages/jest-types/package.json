@@ -15,7 +15,7 @@
   "dependencies": {
     "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/istanbul-reports": "^1.1.1",
-    "@types/yargs": "^12.0.9"
+    "@types/yargs": "^12.0.12"
   },
   "publishConfig": {
     "access": "public"
