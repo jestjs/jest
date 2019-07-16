@@ -16,7 +16,7 @@
     "jest-runtime": "^24.8.0",
     "jest-validate": "^24.8.0",
     "repl": "^0.1.3",
-    "yargs": "^13.2.4"
+    "yargs": "^13.3.0"
   },
   "devDependencies": {
     "@types/yargs": "^13.0.0"

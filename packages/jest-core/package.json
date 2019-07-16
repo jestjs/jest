@@ -41,7 +41,7 @@
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^3.1.0",
-    "@types/p-each-series": "^1.0.0",
+    "@types/p-each-series": "1.0.0",
     "@types/rimraf": "^2.0.2",
     "@types/slash": "^2.0.0",
     "@types/strip-ansi": "^3.0.0"

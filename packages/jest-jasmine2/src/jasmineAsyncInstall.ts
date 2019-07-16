@@ -58,7 +58,7 @@ function promisifyLifeCycleFunction(
     // didn't return a promise.
     const asyncJestLifecycle = function(done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
-      const returnValue = wrappedFn.call({}) as Promise<any>;
+      const returnValue = wrappedFn.call({});
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), (error: Error) => {
