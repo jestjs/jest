@@ -9,6 +9,7 @@ import {
   diff,
   ensureExpectedIsNumber,
   ensureNoExpected,
+  EXPECTED_COLOR,
   matcherErrorMessage,
   matcherHint,
   MatcherHintOptions,
@@ -422,18 +423,23 @@ const createNthCalledWithMatcher = (matcherName: string) =>
     };
     ensureMock(received, matcherName.slice(1), expectedArgument, options);
 
+    if (!Number.isSafeInteger(nth) || nth < 1) {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(
+            matcherName.slice(1),
+            undefined,
+            expectedArgument,
+            options,
+          ),
+          `${EXPECTED_COLOR(expectedArgument)} must be a positive integer`,
+          printWithType(expectedArgument, nth, printExpected),
+        ),
+      );
+    }
+
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
-
-    // @ts-ignore
-    if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
-      const message = () =>
-        `nth value ${printReceived(
-          nth,
-        )} must be a positive integer greater than ${printExpected(0)}`;
-      const pass = false;
-      return {message, pass};
-    }
 
     const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
     const identifier =
@@ -483,14 +489,19 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
     };
     ensureMock(received, matcherName.slice(1), expectedArgument, options);
 
-    //@ts-ignore
-    if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
-      const message = () =>
-        `nth value ${printReceived(
-          nth,
-        )} must be a positive integer greater than ${printExpected(0)}`;
-      const pass = false;
-      return {message, pass};
+    if (!Number.isSafeInteger(nth) || nth < 1) {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(
+            matcherName.slice(1),
+            undefined,
+            expectedArgument,
+            options,
+          ),
+          `${EXPECTED_COLOR(expectedArgument)} must be a positive integer`,
+          printWithType(expectedArgument, nth, printExpected),
+        ),
+      );
     }
 
     const receivedName = received.getMockName();

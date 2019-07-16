@@ -272,9 +272,32 @@ Expected mock function \\"named-mock\\" first call to not have been called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
-exports[`nthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+exports[`nthCalledWith negative throw matcher error for n that is not integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
 
-exports[`nthCalledWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has type:  number
+n has value: <green>Infinity</>"
+`;
+
+exports[`nthCalledWith positive throw matcher error for n that is not integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has type:  number
+n has value: <green>0.1</>"
+`;
+
+exports[`nthCalledWith positive throw matcher error for n that is not positive integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has type:  number
+n has value: <green>0</>"
+`;
 
 exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
@@ -460,7 +483,31 @@ But the 4th call returned exactly:
   <red>0</>"
 `;
 
-exports[`nthReturnedWith nthReturnedWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+exports[`nthReturnedWith nthReturnedWith negative throw matcher error for n that is not number 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has value: <green>undefined</>"
+`;
+
+exports[`nthReturnedWith nthReturnedWith positive throw matcher error for n that is not integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has type:  number
+n has value: <green>0.1</>"
+`;
+
+exports[`nthReturnedWith nthReturnedWith positive throw matcher error for n that is not positive integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has type:  number
+n has value: <green>0</>"
+`;
 
 exports[`nthReturnedWith nthReturnedWith should reject nth value greater than number of calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
@@ -469,8 +516,6 @@ Expected mock function 4th call to have returned with:
   <green>\\"foo\\"</>
 But it was only called <red>3</> times"
 `;
-
-exports[`nthReturnedWith nthReturnedWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
 
 exports[`nthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).nthReturnedWith(</><green>expected</><dim>)</>
@@ -1390,9 +1435,32 @@ Expected mock function \\"named-mock\\" first call to not have been called with:
   <green>[\\"foo\\", \\"bar\\"]</>"
 `;
 
-exports[`toHaveBeenNthCalledWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+exports[`toHaveBeenNthCalledWith negative throw matcher error for n that is not integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
 
-exports[`toHaveBeenNthCalledWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has type:  number
+n has value: <green>Infinity</>"
+`;
+
+exports[`toHaveBeenNthCalledWith positive throw matcher error for n that is not integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has type:  number
+n has value: <green>0.1</>"
+`;
+
+exports[`toHaveBeenNthCalledWith positive throw matcher error for n that is not positive integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has type:  number
+n has value: <green>0</>"
+`;
 
 exports[`toHaveBeenNthCalledWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
@@ -1717,7 +1785,31 @@ But the 4th call returned exactly:
   <red>0</>"
 `;
 
-exports[`toHaveNthReturnedWith nthReturnedWith should reject non integer nth value 1`] = `"nth value <red>0.1</> must be a positive integer greater than <green>0</>"`;
+exports[`toHaveNthReturnedWith nthReturnedWith negative throw matcher error for n that is not number 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has value: <green>undefined</>"
+`;
+
+exports[`toHaveNthReturnedWith nthReturnedWith positive throw matcher error for n that is not integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has type:  number
+n has value: <green>0.1</>"
+`;
+
+exports[`toHaveNthReturnedWith nthReturnedWith positive throw matcher error for n that is not positive integer 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>n</> must be a positive integer
+
+n has type:  number
+n has value: <green>0</>"
+`;
 
 exports[`toHaveNthReturnedWith nthReturnedWith should reject nth value greater than number of calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
@@ -1726,8 +1818,6 @@ Expected mock function 4th call to have returned with:
   <green>\\"foo\\"</>
 But it was only called <red>3</> times"
 `;
-
-exports[`toHaveNthReturnedWith nthReturnedWith should reject nth value smaller than 1 1`] = `"nth value <red>0</> must be a positive integer greater than <green>0</>"`;
 
 exports[`toHaveNthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).toHaveNthReturnedWith(</><green>expected</><dim>)</>
