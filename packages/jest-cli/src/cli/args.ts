@@ -74,6 +74,7 @@ export const options = {
       'The opposite of `onlyChanged`. If `onlyChanged` is set by ' +
       'default, running jest with `--all` will force Jest to run all tests ' +
       'instead of running only tests related to changed files.',
+    type: 'boolean' as 'boolean',
   },
   automock: {
     default: undefined,
@@ -85,6 +86,7 @@ export const options = {
     default: undefined,
     description:
       'Exit the test suite immediately after `n` number of failing tests.',
+    type: 'boolean' as 'boolean',
   },
   browser: {
     default: undefined,
