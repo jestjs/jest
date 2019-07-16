@@ -37,11 +37,6 @@ FAIL __tests__/test.js
         |                  ^
       9 | 
 
-<<<<<<< HEAD
-      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:297:11)
+      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:303:11)
       at Object.require (index.js:8:18)
-=======
-      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:265:17)
-      at Object.require (index.js:3:18)
->>>>>>> updated jest-resolve related snapshots
 `;
