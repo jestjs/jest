@@ -338,7 +338,7 @@ const jestExpect = require('../');
         }).toThrowErrorMatchingSnapshot();
       });
 
-      test('should reject nth value smaller than 1', async () => {
+      test('positive throw matcher error for n that is not positive integer', async () => {
         const fn = jest.fn();
         fn('foo1', 'bar');
 
@@ -347,12 +347,21 @@ const jestExpect = require('../');
         }).toThrowErrorMatchingSnapshot();
       });
 
-      test('should reject non integer nth value', async () => {
+      test('positive throw matcher error for n that is not integer', async () => {
         const fn = jest.fn();
         fn('foo1', 'bar');
 
         expect(() => {
           jestExpect(fn)[calledWith](0.1, 'foo1', 'bar');
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('negative throw matcher error for n that is not integer', async () => {
+        const fn = jest.fn();
+        fn('foo1', 'bar');
+
+        expect(() => {
+          jestExpect(fn).not[calledWith](Infinity, 'foo1', 'bar');
         }).toThrowErrorMatchingSnapshot();
       });
     }
@@ -963,7 +972,7 @@ const jestExpect = require('../');
           }).toThrowErrorMatchingSnapshot();
         });
 
-        test('should reject nth value smaller than 1', async () => {
+        test('positive throw matcher error for n that is not positive integer', async () => {
           const fn = jest.fn(() => 'foo');
           fn();
 
@@ -983,12 +992,21 @@ const jestExpect = require('../');
           }).toThrowErrorMatchingSnapshot();
         });
 
-        test('should reject non integer nth value', async () => {
+        test('positive throw matcher error for n that is not integer', async () => {
           const fn = jest.fn(() => 'foo');
           fn('foo');
 
           expect(() => {
             jestExpect(fn)[returnedWith](0.1, 'foo');
+          }).toThrowErrorMatchingSnapshot();
+        });
+
+        test('negative throw matcher error for n that is not number', async () => {
+          const fn = jest.fn(() => 'foo');
+          fn('foo');
+
+          expect(() => {
+            jestExpect(fn).not[returnedWith]();
           }).toThrowErrorMatchingSnapshot();
         });
 
