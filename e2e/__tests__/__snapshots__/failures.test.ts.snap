@@ -211,7 +211,7 @@ FAIL __tests__/duringTests.test.js
       35 | 
       36 | test('done(non-error)', done => {
 
-      at Object.<anonymous> (__tests__/duringTests.test.js:33:8)
+      at Object.<anonymous>.done (__tests__/duringTests.test.js:33:8)
 
   ● done(non-error)
 
