@@ -333,13 +333,15 @@ export const formatResultsErrors = (
     .join('\n');
 };
 
+const errorRegexp = /^Error:?\s*$/;
+
 const removeBlankErrorLine = (str: string) =>
   str
     .split('\n')
     // Lines saying just `Error:` are useless
-    .filter(line => !/^Error:?\s*/.test(line))
+    .filter(line => !errorRegexp.test(line))
     .join('\n')
-    .trim();
+    .trimRight();
 
 // jasmine and worker farm sometimes don't give us access to the actual
 // Error object, so we have to regexp out the message from the stack string
