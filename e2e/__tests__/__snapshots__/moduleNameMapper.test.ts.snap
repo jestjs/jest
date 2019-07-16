@@ -65,6 +65,10 @@ FAIL __tests__/index.js
       12 | module.exports = () => 'test';
       13 | 
 
+<<<<<<< HEAD
       at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:542:17)
+=======
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:507:17)
+>>>>>>> updated jest-resolve related snapshots
       at Object.require (index.js:10:1)
 `;
