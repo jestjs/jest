@@ -148,7 +148,7 @@ export const until = async function(
 ) {
   const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
 
-  jestPromise.stderr.pipe(
+  jestPromise.stderr!.pipe(
     new Writable({
       write(chunk, _encoding, callback) {
         const output = chunk.toString('utf8');

@@ -15,6 +15,7 @@
     "@types/babel__template": "^7.0.0",
     "@types/jest": "24.0.2",
     "@types/node": "*",
+    "@types/readable-stream": "^2.3.2",
     "@typescript-eslint/eslint-plugin": "^1.10.2",
     "@typescript-eslint/parser": "^1.10.2",
     "ansi-regex": "^4.0.0",
