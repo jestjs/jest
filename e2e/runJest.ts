@@ -8,8 +8,8 @@
 
 import path from 'path';
 import fs from 'fs';
+import {Writable} from 'stream';
 import execa, {ExecaChildProcess, ExecaReturns} from 'execa';
-import {Writable} from 'readable-stream';
 import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
 
