@@ -8,8 +8,8 @@
 
 import path from 'path';
 import fs from 'fs';
+import {Writable} from 'stream';
 import execa, {ExecaChildProcess, ExecaReturns} from 'execa';
-import {Writable} from 'readable-stream';
 import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
 
@@ -148,7 +148,7 @@ export const until = async function(
 ) {
   const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
 
-  jestPromise.stderr.pipe(
+  jestPromise.stderr!.pipe(
     new Writable({
       write(chunk, _encoding, callback) {
         const output = chunk.toString('utf8');
