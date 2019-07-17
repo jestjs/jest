@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[jest-core]` Capture execError during `TestScheduler.scheduleTests` and dispatch to reporters ([#13203](https://github.com/facebook/jest/pull/13203))
+- `[jest-resolve]` Improve error on module not found deep in the `require` stack ([#8704](https://github.com/facebook/jest/pull/8704)
 
 ### Chore & Maintenance
 
