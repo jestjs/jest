@@ -7,6 +7,7 @@
 
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
+import weak from 'weak-napi';
 import prettyFormat from 'pretty-format';
 import {isPrimitive} from 'jest-get-type';
 
@@ -23,23 +24,7 @@ export default class {
       );
     }
 
-    let weak;
-
-    try {
-      // eslint-disable-next-line import/no-extraneous-dependencies
-      weak = require('weak-napi');
-    } catch (err) {
-      if (!err || err.code !== 'MODULE_NOT_FOUND') {
-        throw err;
-      }
-
-      throw new Error(
-        'The leaking detection mechanism requires the "weak-api" package to be installed and work. ' +
-          'Please install it as a dependency on your main project',
-      );
-    }
-
-    weak(value, () => (this._isReferenceBeingHeld = false));
+    weak(value as object, () => (this._isReferenceBeingHeld = false));
     this._isReferenceBeingHeld = true;
 
     // Ensure value is not leaked by the closure created by the "weak" callback.
