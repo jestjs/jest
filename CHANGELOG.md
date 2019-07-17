@@ -35,6 +35,7 @@
 - `[docs]` Add information about using `jest.doMock` with ES6 imports ([#8573](https://github.com/facebook/jest/pull/8573))
 - `[docs]` Fix variable name in custom-matcher-api code example ([#8582](https://github.com/facebook/jest/pull/8582))
 - `[docs]` Fix example used in custom environment docs ([#8617](https://github.com/facebook/jest/pull/8617))
+- `[jest-core]` Add `getVersion` (moved from `jest-cli`) ([#8706](https://github.com/facebook/jest/pull/8706))
 
 ### Performance
 
