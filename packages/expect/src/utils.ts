@@ -104,7 +104,11 @@ export const getPath = (
 
 // Strip properties from object that are not present in the subset. Useful for
 // printing the diff for toMatchObject() without adding unrelated noise.
-export const getObjectSubset = (object: any, subset: any): any => {
+export const getObjectSubset = (
+  object: any,
+  subset: any,
+  seenReferences: WeakMap<object, boolean> = new WeakMap(),
+): any => {
   if (Array.isArray(object)) {
     if (Array.isArray(subset) && subset.length === object.length) {
       return subset.map((sub: any, i: number) =>
@@ -113,18 +117,17 @@ export const getObjectSubset = (object: any, subset: any): any => {
     }
   } else if (object instanceof Date) {
     return object;
-  } else if (
-    typeof object === 'object' &&
-    object !== null &&
-    typeof subset === 'object' &&
-    subset !== null
-  ) {
+  } else if (isObject(object) && isObject(subset)) {
     const trimmed: any = {};
-    Object.keys(subset)
-      .filter(key => hasOwnProperty(object, key))
-      .forEach(
-        key => (trimmed[key] = getObjectSubset(object[key], subset[key])),
-      );
+    seenReferences.set(object, trimmed);
+
+    Object.keys(object)
+      .filter(key => hasOwnProperty(subset, key))
+      .forEach(key => {
+        trimmed[key] = seenReferences.has(object[key])
+          ? seenReferences.get(object[key])
+          : getObjectSubset(object[key], subset[key], seenReferences);
+      });
 
     if (Object.keys(trimmed).length > 0) {
       return trimmed;
@@ -257,9 +260,10 @@ export const iterableEquality = (
   return true;
 };
 
+const isObject = (a: any) => a !== null && typeof a === 'object';
+
 const isObjectWithKeys = (a: any) =>
-  a !== null &&
-  typeof a === 'object' &&
+  isObject(a) &&
   !(a instanceof Error) &&
   !(a instanceof Array) &&
   !(a instanceof Date);

@@ -4092,7 +4092,18 @@ Expected: not <green>Set {2, 1}</>
 Received:     <red>Set {1, 2}</>"
 `;
 
-exports[`toMatchObject() circular references simple circular references {pass: false} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "world", "ref": [Circular]}) 1`] = `"Maximum call stack size exceeded"`;
+exports[`toMatchObject() circular references simple circular references {pass: false} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "world", "ref": [Circular]}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"a\\": \\"world\\",</>
+<red>+   \\"a\\": \\"hello\\",</>
+<dim>    \\"ref\\": [Circular],</>
+<dim>  }</>"
+`;
 
 exports[`toMatchObject() circular references simple circular references {pass: false} expect({"ref": "not a ref"}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
@@ -4133,7 +4144,20 @@ Expected: not <green>{}</>
 Received:     <red>{\\"a\\": \\"hello\\", \\"ref\\": [Circular]}</>"
 `;
 
-exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"a": "world", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `"Maximum call stack size exceeded"`;
+exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"a": "world", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"a\\": \\"hello\\",</>
+<red>+   \\"a\\": \\"world\\",</>
+<dim>    \\"nestedObj\\": Object {</>
+<dim>      \\"parentObj\\": [Circular],</>
+<dim>    },</>
+<dim>  }</>"
+`;
 
 exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"nestedObj": {"parentObj": "not the parent ref"}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
