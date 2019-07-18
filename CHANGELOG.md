@@ -28,7 +28,6 @@
 - `[jest-mock]` Fix incorrect assignments when restoring mocks in instances where they originally didn't exist ([#8631](https://github.com/facebook/jest/pull/8631))
 - `[jest-mock]` Fix for mockReturnValue overriding mockImplementationOnce ([#8398](https://github.com/facebook/jest/pull/8398))
 
-
 ### Chore & Maintenance
 
 - `[jest-leak-detector]` remove code repeat ([#8438](https://github.com/facebook/jest/pull/8438)
