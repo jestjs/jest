@@ -624,35 +624,6 @@ describe('FakeTimers', () => {
 
       timers.advanceTimersByTime(100);
     });
-
-    it('setTimeout inside setTimeout', () => {
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      const runOrder: Array<string> = [];
-      const mock1 = jest.fn(() => runOrder.push('mock1'));
-      const mock2 = jest.fn(() => runOrder.push('mock2'));
-      const mock3 = jest.fn(() => runOrder.push('mock3'));
-      const mock4 = jest.fn(() => runOrder.push('mock4'));
-
-      global.setTimeout(mock1, 0);
-      global.setTimeout(() => {
-        mock2();
-        global.setTimeout(mock3, 50);
-      }, 25);
-      global.setTimeout(mock4, 100);
-
-      // Move forward to t=75
-      timers.advanceTimersToNextTimer(3);
-      expect(runOrder).toEqual(['mock1', 'mock2', 'mock3']);
-    });
-
     it('throws before allowing infinite recursion', () => {
       const global = ({process} as unknown) as NodeJS.Global;
       const timers = new FakeTimers({
@@ -757,6 +728,34 @@ describe('FakeTimers', () => {
         'mock4',
         'mock4',
       ]);
+    });
+
+    it('setTimeout inside setTimeout', () => {
+      const global = ({process} as unknown) as NodeJS.Global;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      timers.useFakeTimers();
+
+      const runOrder: Array<string> = [];
+      const mock1 = jest.fn(() => runOrder.push('mock1'));
+      const mock2 = jest.fn(() => runOrder.push('mock2'));
+      const mock3 = jest.fn(() => runOrder.push('mock3'));
+      const mock4 = jest.fn(() => runOrder.push('mock4'));
+
+      global.setTimeout(mock1, 0);
+      global.setTimeout(() => {
+        mock2();
+        global.setTimeout(mock3, 50);
+      }, 25);
+      global.setTimeout(mock4, 100);
+
+      // Move forward to t=75
+      timers.advanceTimersToNextTimer(3);
+      expect(runOrder).toEqual(['mock1', 'mock2', 'mock3']);
     });
 
     it('does nothing when no timers have been scheduled', () => {
