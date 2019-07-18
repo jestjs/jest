@@ -583,8 +583,7 @@ class ModuleMockerClass {
             }
 
             // If mockImplementationOnce()/mockImplementation() is last set,
-            // or specific return values are used up, use the mock
-            // implementation.
+            // implementation use the mock
             let specificMockImpl = mockConfig.specificMockImpls.shift();
             if (specificMockImpl === undefined) {
               specificMockImpl = mockConfig.mockImpl;

@@ -70,7 +70,6 @@
 - `[jest-transform]` Replace special characters in transform cache filenames to support Windows ([#8353](https://github.com/facebook/jest/pull/8353))
 - `[jest-config]` Allow exactly one project ([#7498](https://github.com/facebook/jest/pull/7498))
 
-
 ### Chore & Maintenance
 
 - `[expect]` Fix label and add opposite assertion for toEqual tests ([#8288](https://github.com/facebook/jest/pull/8288))
