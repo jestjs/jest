@@ -57,14 +57,63 @@ const buildArrayTests = (title: string, table: Global.EachTable): EachTests => {
   return convertArrayTable(title, table as Global.ArrayTable);
 };
 
+function filterTemplate(table: Global.EachTable, data: Global.TemplateData) {
+  let sectionCount: number;
+
+  const result = table
+    .join('')
+    .trimLeft()
+    .split('\n')
+    .reduce(
+      (
+        acc: {headings: Array<string>; data: Global.TemplateData},
+        line: string,
+        index: number,
+      ) => {
+        if (index === 0) {
+          // remove /**/ comments
+          line = line.replace(/\/\*(.*?)\*\//g, '');
+          // remove // comments
+          line = line.split('//')[0].trim();
+
+          const headings = getHeadingKeys(line);
+
+          sectionCount = headings.length;
+
+          return {...acc, headings};
+        }
+
+        line = line.trim();
+
+        const isComment = line.startsWith('//') || line.startsWith('/*');
+
+        if (isComment === true) {
+          return acc;
+        }
+
+        const lastIndex = index * sectionCount;
+        const firstIndex = lastIndex - (sectionCount - 1);
+        const matchedData = data.slice(firstIndex - 1, lastIndex);
+
+        return {
+          ...acc,
+          data: [...acc.data, ...matchedData],
+        };
+      },
+      {data: [], headings: []},
+    );
+
+  return result;
+}
+
 const buildTemplateTests = (
   title: string,
   table: Global.EachTable,
   taggedTemplateData: Global.TemplateData,
 ): EachTests => {
-  const headings = getHeadingKeys(table[0] as string);
-  validateTemplateTableHeadings(headings, taggedTemplateData);
-  return convertTemplateTable(title, headings, taggedTemplateData);
+  const {data, headings} = filterTemplate(table, taggedTemplateData);
+  validateTemplateTableHeadings(headings, data);
+  return convertTemplateTable(title, headings, data);
 };
 
 const getHeadingKeys = (headings: string): Array<string> =>

@@ -30,4 +30,77 @@ describe('template', () => {
       expect(a + b).toBe(expected);
     });
   });
+
+  describe('comments', () => {
+    describe('removes commented out tests', () => {
+      let testCount = 0;
+      const expectedTestCount = 2;
+
+      each`
+      a    | b    | expected
+      // ${1} | ${1} | ${0}
+      ${1} | ${1} | ${2}
+      /* ${1} | ${1} | ${5} */
+      ${1} | ${1} | ${2}
+    `.test('returns $expected when given $a and $b', ({a, b, expected}) => {
+        testCount += 1;
+        expect(a + b).toBe(expected);
+      });
+
+      test('test runs', () => {
+        expect(testCount).toEqual(expectedTestCount);
+      });
+    });
+
+    describe('removes trailing comments', () => {
+      let testCount = 0;
+      const expectedTestCount = 2;
+
+      each`
+      a    | b    | expected
+      ${0} | ${0} | ${0} // ignores trailing comment
+      ${1} | ${1} | ${2} /* ignores second comment */
+    `.test('returns $expected when given $a and $b', ({a, b, expected}) => {
+        testCount += 1;
+        expect(a + b).toBe(expected);
+      });
+
+      test('test runs', () => {
+        expect(testCount).toEqual(expectedTestCount);
+      });
+    });
+
+    describe('removes trailing comments in title', () => {
+      let testCount = 0;
+      const expectedTestCount = 1;
+
+      each`
+      a    | b    | expected // should be removed
+      ${0} | ${0} | ${0}
+    `.test('returns $expected when given $a and $b', ({a, b, expected}) => {
+        testCount += 1;
+        expect(a + b).toBe(expected);
+      });
+
+      test('test runs', () => {
+        expect(testCount).toEqual(expectedTestCount);
+      });
+    });
+
+    describe('removes /**/ comments title', () => {
+      let testCount = 0;
+      const expectedTestCount = 1;
+      each`
+      a    | b   /* inside */ | expected /* should be removed */
+      ${0} | ${0} | ${0}
+    `.test('returns $expected when given $a and $b', ({a, b, expected}) => {
+        testCount += 1;
+        expect(a + b).toBe(expected);
+      });
+
+      test('test runs', () => {
+        expect(testCount).toEqual(expectedTestCount);
+      });
+    });
+  });
 });
