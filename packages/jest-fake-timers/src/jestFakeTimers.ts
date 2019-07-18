@@ -237,6 +237,20 @@ export default class FakeTimers<TimerRef> {
       .forEach(([timerHandle]) => this._runTimerHandle(timerHandle));
   }
 
+  advanceTimersToNextTimer(steps: number = 1): void {
+    const nextExpiry = Array.from(this._timers.values()).reduce(
+      (minExpiry: number | null, timer: Timer): number => {
+        if (minExpiry === null || timer.expiry < minExpiry) return timer.expiry;
+        return minExpiry;
+      },
+      null,
+    );
+    if (nextExpiry !== null && steps > 0) {
+      this.advanceTimersByTime(nextExpiry - this._now);
+      this.advanceTimersToNextTimer(steps - 1);
+    }
+  }
+
   advanceTimersByTime(msToRun: number) {
     this._checkFakeTimers();
     // Only run a generous number of timers and then bail.
