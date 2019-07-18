@@ -3,13 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-const os = require('os');
-const path = require('path');
-const chalk = require('chalk');
+import os from 'os';
+import path from 'path';
+import chalk from 'chalk';
+
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {

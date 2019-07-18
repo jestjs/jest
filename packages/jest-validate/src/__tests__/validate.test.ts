@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import validate from '../validate';
 import {multipleValidOptions} from '../condition';
 import jestValidateExampleConfig from '../exampleConfig';
@@ -294,7 +292,7 @@ test('Comments in config JSON using "//" key are not warned', () => {
 
   validate(config, {
     exampleConfig: validConfig,
-    recursiveBlacklist: [('myCustomKey': "don't validate this")],
+    recursiveBlacklist: ['myCustomKey' as "don't validate this"],
   });
   expect(console.warn).not.toBeCalled();
 
