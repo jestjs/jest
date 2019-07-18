@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`does not exceed the command line testTimeout 1`] = `
+PASS __tests__/a-banana.js
+  ✓ banana
+`;
+
+exports[`does not exceed the command line testTimeout 2`] = `
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
 exports[`does not exceed the timeout 1`] = `
 PASS __tests__/a-banana.js
   ✓ banana
@@ -8,6 +21,14 @@ PASS __tests__/a-banana.js
 exports[`does not exceed the timeout 2`] = `
 Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`exceeds the command line testTimeout 1`] = `
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.

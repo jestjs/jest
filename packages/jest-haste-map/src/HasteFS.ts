@@ -83,7 +83,7 @@ export default class HasteFS {
     globs: Array<Config.Glob>,
     root: Config.Path | null,
   ): Set<Config.Path> {
-    const files = new Set();
+    const files = new Set<string>();
     for (const file of this.getAbsoluteFileIterator()) {
       const filePath = root ? fastPath.relative(root, file) : file;
       if (micromatch.some(replacePathSepForGlob(filePath), globs)) {

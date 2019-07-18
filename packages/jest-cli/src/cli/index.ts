@@ -11,13 +11,12 @@ import {AggregatedResult} from '@jest/test-result';
 import {clearLine} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
-import {runCLI} from '@jest/core';
+import {getVersion, runCLI} from '@jest/core';
 import chalk from 'chalk';
 import exit from 'exit';
 import yargs from 'yargs';
 import {sync as realpath} from 'realpath-native';
 import init from '../init';
-import getVersion from '../version';
 import * as args from './args';
 
 export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
@@ -36,7 +35,12 @@ export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);
-    console.error(chalk.red(error.stack));
+    if (error.stack) {
+      console.error(chalk.red(error.stack));
+    } else {
+      console.error(chalk.red(error));
+    }
+
     exit(1);
     throw error;
   }

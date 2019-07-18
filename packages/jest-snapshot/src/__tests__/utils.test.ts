@@ -200,87 +200,137 @@ test('serialize handles \\r\\n', () => {
   expect(serializedData).toBe('\n"<div>\n</div>"\n');
 });
 
-describe('DeepMerge', () => {
-  it('Correctly merges objects with property matchers', () => {
-    /* eslint-disable sort-keys */
-    // to keep keys in numerical order rather than alphabetical
-    const target = {
-      data: {
-        one: 'one',
-        two: 'two',
-        three: [
-          {
-            four: 'four',
-            five: 'five',
-          },
-          // Include an array element not present in the propertyMatchers
-          {
-            six: 'six',
-            seven: 'seven',
-          },
-        ],
-        eight: [{nine: 'nine'}],
-      },
-    };
+describe('DeepMerge with property matchers', () => {
+  const matcher = expect.any(String);
 
-    const matcher = expect.any(String);
-    const propertyMatchers = {
-      data: {
-        two: matcher,
-        three: [
-          {
-            four: matcher,
-          },
-        ],
-        eight: [
-          {nine: matcher},
-          // Include an array element not present in the target
-          {ten: matcher},
-        ],
+  /* eslint-disable sort-keys */
+  // to keep keys in numerical order rather than alphabetical
+  const cases = [
+    [
+      'a nested object',
+      // Target
+      {
+        data: {
+          one: 'one',
+          two: 'two',
+        },
       },
-    };
-
-    const mergedOutput = deepMerge(target, propertyMatchers);
-
-    // Use assert.deepStrictEqual() instead of expect().toStrictEqual()
-    // since we want to actually validate that we got the matcher
-    // rather than treat it specially the way that expect() does
-    assert.deepStrictEqual(mergedOutput, {
-      data: {
-        one: 'one',
-        two: matcher,
-        three: [
-          {
-            four: matcher,
-            five: 'five',
-          },
-          {
-            six: 'six',
-            seven: 'seven',
-          },
-        ],
-        eight: [{nine: matcher}, {ten: matcher}],
+      // Matchers
+      {
+        data: {
+          two: matcher,
+        },
       },
-    });
-
-    // Ensure original target is not modified
-    expect(target).toStrictEqual({
-      data: {
-        one: 'one',
-        two: 'two',
-        three: [
-          {
-            four: 'four',
-            five: 'five',
-          },
-          {
-            six: 'six',
-            seven: 'seven',
-          },
-        ],
-        eight: [{nine: 'nine'}],
+      // Expected
+      {
+        data: {
+          one: 'one',
+          two: matcher,
+        },
       },
-    });
-    /* eslint-enable sort-keys */
-  });
+    ],
+
+    [
+      'an object with an array of objects',
+      // Target
+      {
+        data: {
+          one: [
+            {
+              two: 'two',
+              three: 'three',
+            },
+            // Include an array element not present in the propertyMatchers
+            {
+              four: 'four',
+              five: 'five',
+            },
+          ],
+          six: [{seven: 'seven'}],
+          nine: [[{ten: 'ten'}]],
+        },
+      },
+      // Matchers
+      {
+        data: {
+          one: [
+            {
+              two: matcher,
+            },
+          ],
+          six: [
+            {seven: matcher},
+            // Include an array element not present in the target
+            {eight: matcher},
+          ],
+          nine: [[{ten: matcher}]],
+        },
+      },
+      // Expected
+      {
+        data: {
+          one: [
+            {
+              two: matcher,
+              three: 'three',
+            },
+            {
+              four: 'four',
+              five: 'five',
+            },
+          ],
+          six: [{seven: matcher}, {eight: matcher}],
+          nine: [[{ten: matcher}]],
+        },
+      },
+    ],
+
+    [
+      'an object with an array of strings',
+      // Target
+      {
+        data: {
+          one: ['one'],
+          two: ['two'],
+          three: ['three', 'four'],
+          five: ['five'],
+        },
+      },
+      // Matchers
+      {
+        data: {
+          one: [matcher],
+          two: ['two'],
+          three: [matcher],
+          five: 'five',
+        },
+      },
+      // Expected
+      {
+        data: {
+          one: [matcher],
+          two: ['two'],
+          three: [matcher, 'four'],
+          five: 'five',
+        },
+      },
+    ],
+  ];
+  /* eslint-enable sort-keys */
+
+  it.each(cases)(
+    'Correctly merges %s',
+    (_case, target, propertyMatchers, expected) => {
+      const originalTarget = JSON.parse(JSON.stringify(target));
+      const mergedOutput = deepMerge(target, propertyMatchers);
+
+      // Use assert.deepStrictEqual() instead of expect().toStrictEqual()
+      // since we want to actually validate that we got the matcher
+      // rather than treat it specially the way that expect() does
+      assert.deepStrictEqual(mergedOutput, expected);
+
+      // Ensure original target is not modified
+      expect(target).toStrictEqual(originalTarget);
+    },
+  );
 });

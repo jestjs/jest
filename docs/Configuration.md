@@ -99,8 +99,6 @@ _Note: Node modules are automatically mocked when you have a manual mock in plac
 
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`._
 
-_Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
-
 ### `bail` [number | boolean]
 
 Default: `0`
@@ -428,7 +426,7 @@ This option allows the use of a custom global teardown module which exports an a
 
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
-_Node: The same caveat concerning transformation of `node_modules_ as for `globalSetup` applies to `globalTeardown`.
+_Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
 
 ### `maxConcurrency` [number]
 
@@ -668,6 +666,7 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 {
   "basedir": string,
   "browser": bool,
+  "defaultResolver": "function(request, options)",
   "extensions": [string],
   "moduleDirectory": [string],
   "paths": [string],
@@ -676,6 +675,8 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```
 
 The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
+
+Note: the defaultResolver passed as options is the jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. (request, options).
 
 ### `restoreMocks` [boolean]
 
@@ -874,10 +875,10 @@ Example:
 const NodeEnvironment = require('jest-environment-node');
 
 class CustomEnvironment extends NodeEnvironment {
-  constructor(config, {testPath, docblockPragmas}) {
+  constructor(config, context) {
     super(config, context);
-    this.testPath = testPath;
-    this.docblockPragmas = docblockPragmas;
+    this.testPath = context.testPath;
+    this.docblockPragmas = context.docblockPragmas;
   }
 
   async setup() {
@@ -1038,11 +1039,11 @@ An example of such function can be found in our default [jasmine2 test runner pa
 
 Default: `@jest/test-sequencer`
 
-This option allows you to use a custom sequencer instead of Jest's default.
+This option allows you to use a custom sequencer instead of Jest's default. `sort` may optionally return a Promise.
 
 Example:
 
-Sort test path alphabetically
+Sort test path alphabetically.
 
 ```js
 const Sequencer = require('@jest/test-sequencer').default;
@@ -1071,13 +1072,15 @@ Default: `real`
 
 Setting this value to `fake` allows the use of fake timers for functions such as `setTimeout`. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test.
 
-### `transform` [object<string, string>]
+### `transform` [object<string, pathToTransformer | [pathToTransformer, object]>]
 
 Default: `undefined`
 
 A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](https://github.com/facebook/jest/blob/master/examples/typescript/package.json#L16) example or the [webpack tutorial](Webpack.md).
 
 Examples of such compilers include [Babel](https://babeljs.io/), [TypeScript](http://www.typescriptlang.org/) and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
+
+You can pass configuration to a transformer like `{filePattern: ['path-to-transformer', {options}]}` For example, to configure babel-jest for non-default behavior, `{"\\.js$": ['babel-jest', {rootMode: "upward"}]}`
 
 _Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
 

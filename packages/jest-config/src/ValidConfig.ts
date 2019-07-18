@@ -14,7 +14,6 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 const initialOptions: Config.InitialOptions = {
   automock: false,
-  // @ts-ignore TODO: type this properly
   bail: multipleValidOptions(false, 0),
   browser: false,
   cache: true,
@@ -39,9 +38,8 @@ const initialOptions: Config.InitialOptions = {
     },
   },
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
-  // @ts-ignore TODO: type this properly
   displayName: multipleValidOptions('test-config', {
-    color: 'blue',
+    color: 'blue' as 'blue',
     name: 'test-config',
   }),
   errorOnDeprecated: false,
@@ -65,6 +63,7 @@ const initialOptions: Config.InitialOptions = {
   lastCommit: false,
   logHeapUsage: true,
   maxConcurrency: 5,
+  maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleLoader: '<rootDir>',
@@ -115,6 +114,7 @@ const initialOptions: Config.InitialOptions = {
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
   testSequencer: '@jest/test-sequencer',
+  testTimeout: 5000,
   testURL: 'http://localhost',
   timers: 'real',
   transform: {

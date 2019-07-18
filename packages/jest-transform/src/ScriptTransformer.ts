@@ -32,7 +32,7 @@ import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
 type ProjectCache = {
   configString: string;
   ignorePatternsRegExp?: RegExp;
-  transformRegExp?: Array<[RegExp, string]>;
+  transformRegExp?: Array<[RegExp, string, Record<string, unknown>]>;
   transformedFiles: Map<string, TransformResult>;
 };
 
@@ -55,10 +55,12 @@ export default class ScriptTransformer {
   private _cache: ProjectCache;
   private _config: Config.ProjectConfig;
   private _transformCache: Map<Config.Path, Transformer>;
+  private _transformConfigCache: Map<Config.Path, unknown>;
 
   constructor(config: Config.ProjectConfig) {
     this._config = config;
     this._transformCache = new Map();
+    this._transformConfigCache = new Map();
 
     let projectCache = projectCaches.get(config);
 
@@ -141,7 +143,10 @@ export default class ScriptTransformer {
 
     for (let i = 0; i < transformRegExp.length; i++) {
       if (transformRegExp[i][0].test(filename)) {
-        return transformRegExp[i][1];
+        const transformPath = transformRegExp[i][1];
+        this._transformConfigCache.set(transformPath, transformRegExp[i][2]);
+
+        return transformPath;
       }
     }
 
@@ -162,8 +167,9 @@ export default class ScriptTransformer {
       }
 
       transform = require(transformPath) as Transformer;
+      const transformerConfig = this._transformConfigCache.get(transformPath);
       if (typeof transform.createTransformer === 'function') {
-        transform = transform.createTransformer();
+        transform = transform.createTransformer(transformerConfig);
       }
       if (typeof transform.process !== 'function') {
         throw new TypeError(
@@ -573,7 +579,7 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
     !config.transformIgnorePatterns ||
     config.transformIgnorePatterns.length === 0
   ) {
-    return;
+    return undefined;
   }
 
   return new RegExp(config.transformIgnorePatterns.join('|'));
@@ -581,14 +587,15 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
 
 const calcTransformRegExp = (config: Config.ProjectConfig) => {
   if (!config.transform.length) {
-    return;
+    return undefined;
   }
 
-  const transformRegexp: Array<[RegExp, string]> = [];
+  const transformRegexp: Array<[RegExp, string, Record<string, unknown>]> = [];
   for (let i = 0; i < config.transform.length; i++) {
     transformRegexp.push([
       new RegExp(config.transform[i][0]),
       config.transform[i][1],
+      config.transform[i][2],
     ]);
   }
 

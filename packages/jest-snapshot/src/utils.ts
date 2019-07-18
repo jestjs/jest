@@ -157,7 +157,7 @@ export const ensureDirectoryExists = (filePath: Config.Path) => {
 const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
-  snapshotData: {[key: string]: string},
+  snapshotData: SnapshotData,
   snapshotPath: Config.Path,
 ) => {
   const snapshots = Object.keys(snapshotData)
@@ -179,14 +179,18 @@ export const saveSnapshotFile = (
 };
 
 const deepMergeArray = (target: Array<any>, source: Array<any>) => {
-  // Clone target
-  const mergedOutput = target.slice();
+  const mergedOutput = Array.from(target);
 
-  source.forEach((element, index) => {
-    if (typeof mergedOutput[index] === 'undefined') {
-      mergedOutput[index] = element;
+  source.forEach((sourceElement, index) => {
+    const targetElement = mergedOutput[index];
+
+    if (Array.isArray(target[index])) {
+      mergedOutput[index] = deepMergeArray(target[index], sourceElement);
+    } else if (isObject(targetElement)) {
+      mergedOutput[index] = deepMerge(target[index], sourceElement);
     } else {
-      mergedOutput[index] = deepMerge(target[index], element);
+      // Source does not exist in target or target is primitive and cannot be deep merged
+      mergedOutput[index] = sourceElement;
     }
   });
 

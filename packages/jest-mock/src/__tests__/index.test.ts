@@ -542,6 +542,32 @@ describe('moduleMocker', () => {
       });
     });
 
+    it('mocks the method in the passed object itself', () => {
+      const parent = {func: () => 'abcd'};
+      const child = Object.create(parent);
+
+      moduleMocker.spyOn(child, 'func').mockReturnValue('efgh');
+
+      expect(child.hasOwnProperty('func')).toBe(true);
+      expect(child.func()).toEqual('efgh');
+      expect(parent.func()).toEqual('abcd');
+    });
+
+    it('should delete previously inexistent methods when restoring', () => {
+      const parent = {func: () => 'abcd'};
+      const child = Object.create(parent);
+
+      moduleMocker.spyOn(child, 'func').mockReturnValue('efgh');
+
+      moduleMocker.restoreAllMocks();
+      expect(child.func()).toEqual('abcd');
+
+      moduleMocker.spyOn(parent, 'func').mockReturnValue('jklm');
+
+      expect(child.hasOwnProperty('func')).toBe(false);
+      expect(child.func()).toEqual('jklm');
+    });
+
     it('supports mock value returning undefined', () => {
       const obj = {
         func: () => 'some text',

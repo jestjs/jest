@@ -34,9 +34,7 @@ class Versions extends React.Component {
                   <th>{latestVersion}</th>
                   <td>
                     <a
-                      href={`${
-                        siteConfig.baseUrl
-                      }docs/${language}/getting-started.html`}
+                      href={`${siteConfig.baseUrl}docs/${language}/getting-started.html`}
                     >
                       Documentation
                     </a>
@@ -59,9 +57,7 @@ class Versions extends React.Component {
                   <th>master</th>
                   <td>
                     <a
-                      href={`${
-                        siteConfig.baseUrl
-                      }docs/${language}/next/getting-started.html`}
+                      href={`${siteConfig.baseUrl}docs/${language}/next/getting-started.html`}
                     >
                       Documentation
                     </a>
@@ -85,9 +81,7 @@ class Versions extends React.Component {
                         <th>{version}</th>
                         <td>
                           <a
-                            href={`${
-                              siteConfig.baseUrl
-                            }docs/${language}/${version}/getting-started.html`}
+                            href={`${siteConfig.baseUrl}docs/${language}/${version}/getting-started.html`}
                           >
                             Documentation
                           </a>

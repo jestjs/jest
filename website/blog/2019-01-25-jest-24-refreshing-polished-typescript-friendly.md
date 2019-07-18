@@ -85,7 +85,7 @@ While all breaking changes are listed in the [changelog](https://github.com/face
 - We've upgraded to Micromatch 3. While this might not affect every user, it is stricter in its parsing of globs than version 2, which is used in Jest 23. Please read through [this](https://github.com/micromatch/micromatch/issues/133#issuecomment-404211484) and linked issues for examples of invalid globs in case you have problems.
 - We've removed code remnants that was needed for Node 4. It was previously technically possible to run Jest 23 on Node 4 - that is no longer possible without polyfilling and transpiling.
 - Some changes to serialization of mock functions in snapshots - make sure to double check your updated snapshots after upgrading. Related [PR](https://github.com/facebook/jest/pull/6381).
-- Jest no longer automatically injects `regenerator-runtime` - if you get errors concering it, make sure to configure Babel to properly transpile `async` functions, using e.g. `@babel/preset-env`. Related [PR](https://github.com/facebook/jest/pull/7595).
+- Jest no longer automatically injects `regenerator-runtime` - if you get errors concerning it, make sure to configure Babel to properly transpile `async` functions, using e.g. `@babel/preset-env`. Related [PR](https://github.com/facebook/jest/pull/7595).
 
 ## The future
 

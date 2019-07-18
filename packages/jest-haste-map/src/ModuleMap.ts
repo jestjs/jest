@@ -18,7 +18,7 @@ import {
 import * as fastPath from './lib/fast_path';
 import H from './constants';
 
-const EMPTY_OBJ = {} as {[key: string]: any};
+const EMPTY_OBJ = {} as Record<string, any>;
 const EMPTY_MAP = new Map();
 
 type ValueType<T> = T extends Map<string, infer V> ? V : never;

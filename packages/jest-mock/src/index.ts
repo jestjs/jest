@@ -25,7 +25,7 @@ namespace JestMock {
     Type = MockFunctionMetadataType
   > = {
     ref?: number;
-    members?: {[key: string]: MockFunctionMetadata<T, Y>};
+    members?: Record<string, MockFunctionMetadata<T, Y>>;
     mockImpl?: (...args: Y) => T;
     name?: string;
     refID?: number;
@@ -79,11 +79,11 @@ type MockFunctionConfig = {
 
 // see https://github.com/Microsoft/TypeScript/issues/25215
 type NonFunctionPropertyNames<T> = {
-  [K in keyof T]: T[K] extends (...args: Array<any>) => any ? never : K
+  [K in keyof T]: T[K] extends (...args: Array<any>) => any ? never : K;
 }[keyof T] &
   string;
 type FunctionPropertyNames<T> = {
-  [K in keyof T]: T[K] extends (...args: Array<any>) => any ? K : never
+  [K in keyof T]: T[K] extends (...args: Array<any>) => any ? K : never;
 }[keyof T] &
   string;
 
@@ -388,7 +388,7 @@ class ModuleMockerClass {
       return [];
     }
 
-    const slots = new Set();
+    const slots = new Set<string>();
     const EnvObjectProto = this._environmentGlobal.Object.prototype;
     const EnvFunctionProto = this._environmentGlobal.Function.prototype;
     const EnvRegExpProto = this._environmentGlobal.RegExp.prototype;
@@ -537,8 +537,8 @@ class ModuleMockerClass {
         // calling rather than waiting for the mock to return. This avoids
         // issues caused by recursion where results can be recorded in the
         // wrong order.
-        const mockResult = {
-          type: ('incomplete' as unknown) as MockFunctionResultType,
+        const mockResult: MockFunctionResult = {
+          type: 'incomplete',
           value: undefined,
         };
         mockState.results.push(mockResult);
@@ -977,9 +977,15 @@ class ModuleMockerClass {
         );
       }
 
+      const isMethodOwner = object.hasOwnProperty(methodName);
+
       // @ts-ignore overriding original method with a Mock
       object[methodName] = this._makeComponent({type: 'function'}, () => {
-        object[methodName] = original;
+        if (isMethodOwner) {
+          object[methodName] = original;
+        } else {
+          delete object[methodName];
+        }
       });
 
       // @ts-ignore original method is now a Mock
@@ -1047,7 +1053,9 @@ class ModuleMockerClass {
         );
       }
 
+      // @ts-ignore: mock is assignable
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
+        // @ts-ignore: mock is assignable
         descriptor![accessType] = original;
         Object.defineProperty(obj, propertyName, descriptor!);
       });

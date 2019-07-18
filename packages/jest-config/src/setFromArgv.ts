@@ -16,7 +16,7 @@ export default function setFromArgv(
 ): Config.InitialOptions {
   const argvToOptions = Object.keys(argv)
     .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
-    .reduce((options: {[key: string]: unknown}, key) => {
+    .reduce((options: Record<string, unknown>, key) => {
       switch (key) {
         case 'coverage':
           options.collectCoverage = argv[key];

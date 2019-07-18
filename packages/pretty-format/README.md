@@ -74,6 +74,7 @@ console.log(prettyFormat(onClick, options));
 */
 ```
 
+<!-- prettier-ignore -->
 | key                 | type      | default    | description                                             |
 | :------------------ | :-------- | :--------- | :------------------------------------------------------ |
 | `callToJSON`        | `boolean` | `true`     | call `toJSON` method (if it exists) on objects          |
@@ -211,6 +212,7 @@ Write `serialize` to return a string, given the arguments:
 
 ### config
 
+<!-- prettier-ignore -->
 | key                 | type      | description                                             |
 | :------------------ | :-------- | :------------------------------------------------------ |
 | `callToJSON`        | `boolean` | call `toJSON` method (if it exists) on objects          |

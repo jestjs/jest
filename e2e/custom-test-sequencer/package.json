@@ -1,6 +1,5 @@
 {
   "jest": {
-    "testEnvironment": "node",
-    "testSequencer": "<rootDir>/testSequencer.js"
+    "testEnvironment": "node"
   }
 }

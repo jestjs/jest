@@ -54,7 +54,7 @@ const REQUIRE_OR_DYNAMIC_IMPORT_RE = createRegExp(
 
 const IMPORT_OR_EXPORT_RE = createRegExp(
   [
-    '\\b(?:import|export)\\s+(?!type(?:of)?\\s+)[^\'"]+\\s+from\\s+',
+    '\\b(?:import|export)\\s+(?!type(?:of)?\\s+)(?:[^\'"]+\\s+from\\s+)?',
     CAPTURE_STRING_LITERAL(1),
   ],
   'g',
@@ -75,7 +75,7 @@ const JEST_EXTENSIONS_RE = createRegExp(
 );
 
 export function extract(code: string): Set<string> {
-  const dependencies = new Set();
+  const dependencies = new Set<string>();
 
   const addDependency = (match: string, _: string, dep: string) => {
     dependencies.add(dep);

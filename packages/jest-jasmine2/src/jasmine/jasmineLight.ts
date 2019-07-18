@@ -43,7 +43,7 @@ import Timer from './Timer';
 const create = function(createOptions: Record<string, any>): Jasmine {
   const j$ = {...createOptions} as Jasmine;
 
-  j$._DEFAULT_TIMEOUT_INTERVAL = 5000;
+  j$._DEFAULT_TIMEOUT_INTERVAL = createOptions.testTimeout || 5000;
 
   j$.getEnv = function(options?: object) {
     const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));

@@ -42,8 +42,9 @@ export const check = (argv: Config.Argv) => {
 
   if (argv.hasOwnProperty('maxWorkers') && argv.maxWorkers === undefined) {
     throw new Error(
-      'The --maxWorkers (-w) option requires a number to be specified.\n' +
+      'The --maxWorkers (-w) option requires a number or string to be specified.\n' +
         'Example usage: jest --maxWorkers 2\n' +
+        'Example usage: jest --maxWorkers 50%\n' +
         'Or did you mean --watch?',
     );
   }
@@ -73,6 +74,7 @@ export const options = {
       'The opposite of `onlyChanged`. If `onlyChanged` is set by ' +
       'default, running jest with `--all` will force Jest to run all tests ' +
       'instead of running only tests related to changed files.',
+    type: 'boolean' as 'boolean',
   },
   automock: {
     default: undefined,
@@ -84,6 +86,7 @@ export const options = {
     default: undefined,
     description:
       'Exit the test suite immediately after `n` number of failing tests.',
+    type: 'boolean' as 'boolean',
   },
   browser: {
     default: undefined,
@@ -349,7 +352,7 @@ export const options = {
       'will spawn for running tests. This defaults to the number of the ' +
       'cores available on your machine. (its usually best not to override ' +
       'this default)',
-    type: 'number' as 'number',
+    type: 'string' as 'string',
   },
   moduleDirectories: {
     description:
@@ -621,6 +624,10 @@ export const options = {
       '`@jest/test-sequencer`. A path to a custom test sequencer can be ' +
       'provided: `<rootDir>/path/to/testSequencer.js`',
     type: 'string' as 'string',
+  },
+  testTimeout: {
+    description: 'This option sets the default timeouts of test cases.',
+    type: 'number' as 'number',
   },
   testURL: {
     description: 'This option sets the URL for the jsdom environment.',
