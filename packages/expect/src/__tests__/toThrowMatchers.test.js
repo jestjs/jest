@@ -94,13 +94,13 @@ class customError extends Error {
 
     describe('regexp', () => {
       it('passes', () => {
-        expect(() => {
+        jestExpect(() => {
           throw new customError('apple');
         })[toThrow](/apple/);
-        expect(() => {
+        jestExpect(() => {
           throw new customError('banana');
         }).not[toThrow](/apple/);
-        expect(() => {}).not[toThrow](/apple/);
+        jestExpect(() => {}).not[toThrow](/apple/);
       });
 
       test('did not throw at all', () => {
