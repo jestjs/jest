@@ -63,12 +63,12 @@ export interface Jest {
    */
   addMatchers(matchers: Record<string, any>): void;
   /**
-   * Disables automatic mocking in the module loader.
+   * Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
+   * Optionally, you can provide steps, so it will run steps amount of next timeouts/intervals.
    */
   advanceTimersToNextTimer(steps?: number): void;
   /**
-   * Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
-   * Optionally, you can provide steps, so it will run steps amount of next timeouts/intervals.
+   * Disables automatic mocking in the module loader.
    */
   autoMockOff(): Jest;
   /**

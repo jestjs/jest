@@ -237,7 +237,10 @@ export default class FakeTimers<TimerRef> {
       .forEach(([timerHandle]) => this._runTimerHandle(timerHandle));
   }
 
-  advanceTimersToNextTimer(steps: number = 1): void {
+  advanceTimersToNextTimer(steps = 1) {
+    if (steps < 1) {
+      return;
+    }
     const nextExpiry = Array.from(this._timers.values()).reduce(
       (minExpiry: number | null, timer: Timer): number => {
         if (minExpiry === null || timer.expiry < minExpiry) return timer.expiry;
@@ -245,7 +248,7 @@ export default class FakeTimers<TimerRef> {
       },
       null,
     );
-    if (nextExpiry !== null && steps > 0) {
+    if (nextExpiry !== null) {
       this.advanceTimersByTime(nextExpiry - this._now);
       this.advanceTimersToNextTimer(steps - 1);
     }
