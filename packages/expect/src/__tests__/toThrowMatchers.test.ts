@@ -94,13 +94,13 @@ matchers.forEach(toThrow => {
 
     describe('regexp', () => {
       it('passes', () => {
-        expect(() => {
+        jestExpect(() => {
           throw new CustomError('apple');
         })[toThrow](/apple/);
-        expect(() => {
+        jestExpect(() => {
           throw new CustomError('banana');
         }).not[toThrow](/apple/);
-        expect(() => {}).not[toThrow](/apple/);
+        jestExpect(() => {}).not[toThrow](/apple/);
       });
 
       test('did not throw at all', () => {
