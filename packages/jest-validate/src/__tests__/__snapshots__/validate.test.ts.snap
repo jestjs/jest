@@ -94,7 +94,7 @@ exports[`pretty prints valid config for Function 1`] = `
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"fn\\"</>: <bold>(config, option, deprecatedOptions) => true</></>
+<red>    <bold>\\"fn\\"</>: <bold>(_config, _option, _deprecatedOptions) => true</></>
 <red>  }</>
 <red></>"
 `;
