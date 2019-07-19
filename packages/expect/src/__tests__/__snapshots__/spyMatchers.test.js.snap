@@ -130,8 +130,7 @@ exports[`lastReturnedWith a call that throws is not considered to have returned 
 "<dim>expect(</><red>jest.fn()</><dim>).</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -141,8 +140,7 @@ exports[`lastReturnedWith a call that throws undefined is not considered to have
 "<dim>expect(</><red>jest.fn()</><dim>).</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -160,9 +158,9 @@ exports[`lastReturnedWith lastReturnedWith incomplete recursive calls are handle
 "<dim>expect(</><red>jest.fn()</><dim>).</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>0</>
-Received value:
+Received value
              3: has not returned yet
-             4: has not returned yet
+->           4: has not returned yet
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>4</>"
@@ -172,9 +170,9 @@ exports[`lastReturnedWith lastReturnedWith works with three calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>\\"foo3\\"</>
-Received value:
+Received value
              2:     <red>\\"foo2\\"</>
-             3:     <red>\\"foo3\\"</>
+->           3:     <red>\\"foo3\\"</>
 
 Received number of returns: <red>3</>"
 `;
@@ -200,8 +198,6 @@ exports[`lastReturnedWith works with Immutable.js objects directly created 1`] =
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -210,8 +206,6 @@ exports[`lastReturnedWith works with Immutable.js objects indirectly created 1`]
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -220,8 +214,6 @@ exports[`lastReturnedWith works with Map 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Map {1 => 2, 2 => 1}</>
-Received value:
-             1:     <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -230,8 +222,7 @@ exports[`lastReturnedWith works with Map 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-Received value:
-             1: <red>Map {1 => 2, 2 => 1}</>
+Received value: <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -240,8 +231,6 @@ exports[`lastReturnedWith works with Set 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Set {1, 2}</>
-Received value:
-             1:     <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -250,8 +239,7 @@ exports[`lastReturnedWith works with Set 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>Set {3, 4}</>
-Received value:
-             1: <red>Set {1, 2}</>
+Received value: <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -260,8 +248,6 @@ exports[`lastReturnedWith works with argument that does match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>\\"foo\\"</>
-Received value:
-             1:     <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -270,8 +256,7 @@ exports[`lastReturnedWith works with argument that does not match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>\\"bar\\"</>
-Received value:
-             1: <red>\\"foo\\"</>
+Received value: <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -280,8 +265,6 @@ exports[`lastReturnedWith works with undefined 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>undefined</>
-Received value:
-             1:     <red>undefined</>
 
 Received number of returns: <red>1</>"
 `;
@@ -449,10 +432,9 @@ Expected mock function first call to have been called with:
 exports[`nthReturnedWith a call that throws is not considered to have returned 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -461,10 +443,9 @@ Received number of calls:   <red>1</>"
 exports[`nthReturnedWith a call that throws undefined is not considered to have returned 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -473,7 +454,7 @@ Received number of calls:   <red>1</>"
 exports[`nthReturnedWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>\\"foo\\"</>
 
 Received number of returns: <red>0</>"
@@ -482,10 +463,10 @@ Received number of returns: <red>0</>"
 exports[`nthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>6</>
-Received value:
-             1: has not returned yet
+Received value
+->           1: has not returned yet
              2: has not returned yet
 
 Received number of returns: <red>2</>
@@ -495,11 +476,11 @@ Received number of calls:   <red>4</>"
 exports[`nthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      2
+n: 2
 Expected value: <green>3</>
-Received value:
+Received value
              1: has not returned yet
-             2: has not returned yet
+->           2: has not returned yet
              3: <red>1</>
 
 Received number of returns: <red>2</>
@@ -509,11 +490,11 @@ Received number of calls:   <red>4</>"
 exports[`nthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 3`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      3
+n: 3
 Expected value: not <green>1</>
-Received value:
+Received value
              2:     has not returned yet
-             3:     <red>1</>
+->           3:     <red>1</>
              4:     <red>0</>
 
 Received number of returns: <red>2</>
@@ -523,11 +504,11 @@ Received number of calls:   <red>4</>"
 exports[`nthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 4`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      4
+n: 4
 Expected value: not <green>0</>
-Received value:
+Received value
              3:     <red>1</>
-             4:     <red>0</>
+->           4:     <red>0</>
 
 Received number of returns: <red>2</>
 Received number of calls:   <red>4</>"
@@ -562,9 +543,9 @@ n has value: <green>0</>"
 exports[`nthReturnedWith nthReturnedWith should reject nth value greater than number of calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      4
+n: 4
 Expected value: <green>\\"foo\\"</>
-Received value:
+Received value
              3: <red>\\"foo\\"</>
 
 Received number of returns: <red>3</>"
@@ -573,10 +554,10 @@ Received number of returns: <red>3</>"
 exports[`nthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>\\"bar1\\"</>
-Received value:
-             1: <red>\\"foo1\\"</>
+Received value
+->           1: <red>\\"foo1\\"</>
              2: <red>\\"foo2\\"</>
 
 Received number of returns: <red>3</>"
@@ -585,10 +566,10 @@ Received number of returns: <red>3</>"
 exports[`nthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>\\"foo1\\"</>
-Received value:
-             1:     <red>\\"foo1\\"</>
+Received value
+->           1:     <red>\\"foo1\\"</>
              2:     <red>\\"foo2\\"</>
 
 Received number of returns: <red>3</>"
@@ -597,10 +578,10 @@ Received number of returns: <red>3</>"
 exports[`nthReturnedWith nthReturnedWith works with three calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>\\"foo1\\"</>
-Received value:
-             1:     <red>\\"foo1\\"</>
+Received value
+->           1:     <red>\\"foo1\\"</>
              2:     <red>\\"foo2\\"</>
 
 Received number of returns: <red>3</>"
@@ -618,7 +599,7 @@ Received has value: <red>[Function fn]</>"
 exports[`nthReturnedWith works when not called 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>\\"foo\\"</>
 
 Received number of returns: <red>0</>"
@@ -627,10 +608,8 @@ Received number of returns: <red>0</>"
 exports[`nthReturnedWith works with Immutable.js objects directly created 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -638,10 +617,8 @@ Received number of returns: <red>1</>"
 exports[`nthReturnedWith works with Immutable.js objects indirectly created 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -649,10 +626,8 @@ Received number of returns: <red>1</>"
 exports[`nthReturnedWith works with Map 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>Map {1 => 2, 2 => 1}</>
-Received value:
-             1:     <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -660,10 +635,9 @@ Received number of returns: <red>1</>"
 exports[`nthReturnedWith works with Map 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-Received value:
-             1: <red>Map {1 => 2, 2 => 1}</>
+Received value: <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -671,10 +645,8 @@ Received number of returns: <red>1</>"
 exports[`nthReturnedWith works with Set 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>Set {1, 2}</>
-Received value:
-             1:     <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -682,10 +654,9 @@ Received number of returns: <red>1</>"
 exports[`nthReturnedWith works with Set 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>Set {3, 4}</>
-Received value:
-             1: <red>Set {1, 2}</>
+Received value: <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -693,10 +664,8 @@ Received number of returns: <red>1</>"
 exports[`nthReturnedWith works with argument that does match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>\\"foo\\"</>
-Received value:
-             1:     <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -704,10 +673,9 @@ Received number of returns: <red>1</>"
 exports[`nthReturnedWith works with argument that does not match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>\\"bar\\"</>
-Received value:
-             1: <red>\\"foo\\"</>
+Received value: <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -715,10 +683,8 @@ Received number of returns: <red>1</>"
 exports[`nthReturnedWith works with undefined 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>undefined</>
-Received value:
-             1:     <red>undefined</>
 
 Received number of returns: <red>1</>"
 `;
@@ -1673,8 +1639,7 @@ exports[`toHaveLastReturnedWith a call that throws is not considered to have ret
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -1684,8 +1649,7 @@ exports[`toHaveLastReturnedWith a call that throws undefined is not considered t
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -1703,9 +1667,9 @@ exports[`toHaveLastReturnedWith lastReturnedWith incomplete recursive calls are 
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>0</>
-Received value:
+Received value
              3: has not returned yet
-             4: has not returned yet
+->           4: has not returned yet
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>4</>"
@@ -1715,9 +1679,9 @@ exports[`toHaveLastReturnedWith lastReturnedWith works with three calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>\\"foo3\\"</>
-Received value:
+Received value
              2:     <red>\\"foo2\\"</>
-             3:     <red>\\"foo3\\"</>
+->           3:     <red>\\"foo3\\"</>
 
 Received number of returns: <red>3</>"
 `;
@@ -1743,8 +1707,6 @@ exports[`toHaveLastReturnedWith works with Immutable.js objects directly created
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -1753,8 +1715,6 @@ exports[`toHaveLastReturnedWith works with Immutable.js objects indirectly creat
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -1763,8 +1723,6 @@ exports[`toHaveLastReturnedWith works with Map 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Map {1 => 2, 2 => 1}</>
-Received value:
-             1:     <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -1773,8 +1731,7 @@ exports[`toHaveLastReturnedWith works with Map 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-Received value:
-             1: <red>Map {1 => 2, 2 => 1}</>
+Received value: <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -1783,8 +1740,6 @@ exports[`toHaveLastReturnedWith works with Set 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Set {1, 2}</>
-Received value:
-             1:     <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -1793,8 +1748,7 @@ exports[`toHaveLastReturnedWith works with Set 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>Set {3, 4}</>
-Received value:
-             1: <red>Set {1, 2}</>
+Received value: <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -1803,8 +1757,6 @@ exports[`toHaveLastReturnedWith works with argument that does match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>\\"foo\\"</>
-Received value:
-             1:     <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -1813,8 +1765,7 @@ exports[`toHaveLastReturnedWith works with argument that does not match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>\\"bar\\"</>
-Received value:
-             1: <red>\\"foo\\"</>
+Received value: <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -1823,8 +1774,6 @@ exports[`toHaveLastReturnedWith works with undefined 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>undefined</>
-Received value:
-             1:     <red>undefined</>
 
 Received number of returns: <red>1</>"
 `;
@@ -1832,10 +1781,9 @@ Received number of returns: <red>1</>"
 exports[`toHaveNthReturnedWith a call that throws is not considered to have returned 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -1844,10 +1792,9 @@ Received number of calls:   <red>1</>"
 exports[`toHaveNthReturnedWith a call that throws undefined is not considered to have returned 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -1856,7 +1803,7 @@ Received number of calls:   <red>1</>"
 exports[`toHaveNthReturnedWith includes the custom mock name in the error message 1`] = `
 "<dim>expect(</><red>named-mock</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>\\"foo\\"</>
 
 Received number of returns: <red>0</>"
@@ -1865,10 +1812,10 @@ Received number of returns: <red>0</>"
 exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>6</>
-Received value:
-             1: has not returned yet
+Received value
+->           1: has not returned yet
              2: has not returned yet
 
 Received number of returns: <red>2</>
@@ -1878,11 +1825,11 @@ Received number of calls:   <red>4</>"
 exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      2
+n: 2
 Expected value: <green>3</>
-Received value:
+Received value
              1: has not returned yet
-             2: has not returned yet
+->           2: has not returned yet
              3: <red>1</>
 
 Received number of returns: <red>2</>
@@ -1892,11 +1839,11 @@ Received number of calls:   <red>4</>"
 exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 3`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      3
+n: 3
 Expected value: not <green>1</>
-Received value:
+Received value
              2:     has not returned yet
-             3:     <red>1</>
+->           3:     <red>1</>
              4:     <red>0</>
 
 Received number of returns: <red>2</>
@@ -1906,11 +1853,11 @@ Received number of calls:   <red>4</>"
 exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 4`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      4
+n: 4
 Expected value: not <green>0</>
-Received value:
+Received value
              3:     <red>1</>
-             4:     <red>0</>
+->           4:     <red>0</>
 
 Received number of returns: <red>2</>
 Received number of calls:   <red>4</>"
@@ -1945,9 +1892,9 @@ n has value: <green>0</>"
 exports[`toHaveNthReturnedWith nthReturnedWith should reject nth value greater than number of calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      4
+n: 4
 Expected value: <green>\\"foo\\"</>
-Received value:
+Received value
              3: <red>\\"foo\\"</>
 
 Received number of returns: <red>3</>"
@@ -1956,10 +1903,10 @@ Received number of returns: <red>3</>"
 exports[`toHaveNthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>\\"bar1\\"</>
-Received value:
-             1: <red>\\"foo1\\"</>
+Received value
+->           1: <red>\\"foo1\\"</>
              2: <red>\\"foo2\\"</>
 
 Received number of returns: <red>3</>"
@@ -1968,10 +1915,10 @@ Received number of returns: <red>3</>"
 exports[`toHaveNthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>\\"foo1\\"</>
-Received value:
-             1:     <red>\\"foo1\\"</>
+Received value
+->           1:     <red>\\"foo1\\"</>
              2:     <red>\\"foo2\\"</>
 
 Received number of returns: <red>3</>"
@@ -1980,10 +1927,10 @@ Received number of returns: <red>3</>"
 exports[`toHaveNthReturnedWith nthReturnedWith works with three calls 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>\\"foo1\\"</>
-Received value:
-             1:     <red>\\"foo1\\"</>
+Received value
+->           1:     <red>\\"foo1\\"</>
              2:     <red>\\"foo2\\"</>
 
 Received number of returns: <red>3</>"
@@ -2001,7 +1948,7 @@ Received has value: <red>[Function fn]</>"
 exports[`toHaveNthReturnedWith works when not called 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>\\"foo\\"</>
 
 Received number of returns: <red>0</>"
@@ -2010,10 +1957,8 @@ Received number of returns: <red>0</>"
 exports[`toHaveNthReturnedWith works with Immutable.js objects directly created 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2021,10 +1966,8 @@ Received number of returns: <red>1</>"
 exports[`toHaveNthReturnedWith works with Immutable.js objects indirectly created 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2032,10 +1975,8 @@ Received number of returns: <red>1</>"
 exports[`toHaveNthReturnedWith works with Map 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>Map {1 => 2, 2 => 1}</>
-Received value:
-             1:     <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2043,10 +1984,9 @@ Received number of returns: <red>1</>"
 exports[`toHaveNthReturnedWith works with Map 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-Received value:
-             1: <red>Map {1 => 2, 2 => 1}</>
+Received value: <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2054,10 +1994,8 @@ Received number of returns: <red>1</>"
 exports[`toHaveNthReturnedWith works with Set 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>Set {1, 2}</>
-Received value:
-             1:     <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2065,10 +2003,9 @@ Received number of returns: <red>1</>"
 exports[`toHaveNthReturnedWith works with Set 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>Set {3, 4}</>
-Received value:
-             1: <red>Set {1, 2}</>
+Received value: <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2076,10 +2013,8 @@ Received number of returns: <red>1</>"
 exports[`toHaveNthReturnedWith works with argument that does match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>\\"foo\\"</>
-Received value:
-             1:     <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2087,10 +2022,9 @@ Received number of returns: <red>1</>"
 exports[`toHaveNthReturnedWith works with argument that does not match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: <green>\\"bar\\"</>
-Received value:
-             1: <red>\\"foo\\"</>
+Received value: <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2098,10 +2032,8 @@ Received number of returns: <red>1</>"
 exports[`toHaveNthReturnedWith works with undefined 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-Call n:      1
+n: 1
 Expected value: not <green>undefined</>
-Received value:
-             1:     <red>undefined</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2381,8 +2313,7 @@ exports[`toHaveReturnedWith a call that throws is not considered to have returne
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -2392,8 +2323,7 @@ exports[`toHaveReturnedWith a call that throws undefined is not considered to ha
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -2411,7 +2341,7 @@ exports[`toHaveReturnedWith returnedWith incomplete recursive calls are handled 
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>undefined</>
-Received value:
+Received value
              1: has not returned yet
              2: has not returned yet
              3: has not returned yet
@@ -2424,7 +2354,7 @@ exports[`toHaveReturnedWith returnedWith works with more calls than the limit 1`
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>\\"bar\\"</>
-Received value:
+Received value
              1: <red>\\"foo1\\"</>
              2: <red>\\"foo2\\"</>
              3: <red>\\"foo3\\"</>
@@ -2453,8 +2383,6 @@ exports[`toHaveReturnedWith works with Immutable.js objects directly created 1`]
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2463,8 +2391,6 @@ exports[`toHaveReturnedWith works with Immutable.js objects indirectly created 1
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2473,8 +2399,6 @@ exports[`toHaveReturnedWith works with Map 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Map {1 => 2, 2 => 1}</>
-Received value:
-             1:     <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2483,8 +2407,7 @@ exports[`toHaveReturnedWith works with Map 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-Received value:
-             1: <red>Map {1 => 2, 2 => 1}</>
+Received value: <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2493,8 +2416,6 @@ exports[`toHaveReturnedWith works with Set 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Set {1, 2}</>
-Received value:
-             1:     <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2503,8 +2424,7 @@ exports[`toHaveReturnedWith works with Set 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>Set {3, 4}</>
-Received value:
-             1: <red>Set {1, 2}</>
+Received value: <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2513,8 +2433,6 @@ exports[`toHaveReturnedWith works with argument that does match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>\\"foo\\"</>
-Received value:
-             1:     <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2523,8 +2441,7 @@ exports[`toHaveReturnedWith works with argument that does not match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>\\"bar\\"</>
-Received value:
-             1: <red>\\"foo\\"</>
+Received value: <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2533,8 +2450,6 @@ exports[`toHaveReturnedWith works with undefined 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>undefined</>
-Received value:
-             1:     <red>undefined</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2814,8 +2729,7 @@ exports[`toReturnWith a call that throws is not considered to have returned 1`] 
 "<dim>expect(</><red>jest.fn()</><dim>).</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -2825,8 +2739,7 @@ exports[`toReturnWith a call that throws undefined is not considered to have ret
 "<dim>expect(</><red>jest.fn()</><dim>).</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>undefined</>
-Received value:
-             1: threw an error
+Received value: threw an error
 
 Received number of returns: <red>0</>
 Received number of calls:   <red>1</>"
@@ -2844,7 +2757,7 @@ exports[`toReturnWith returnedWith incomplete recursive calls are handled proper
 "<dim>expect(</><red>jest.fn()</><dim>).</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>undefined</>
-Received value:
+Received value
              1: has not returned yet
              2: has not returned yet
              3: has not returned yet
@@ -2857,7 +2770,7 @@ exports[`toReturnWith returnedWith works with more calls than the limit 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>\\"bar\\"</>
-Received value:
+Received value
              1: <red>\\"foo1\\"</>
              2: <red>\\"foo2\\"</>
              3: <red>\\"foo3\\"</>
@@ -2886,8 +2799,6 @@ exports[`toReturnWith works with Immutable.js objects directly created 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2896,8 +2807,6 @@ exports[`toReturnWith works with Immutable.js objects indirectly created 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
-Received value:
-             1:     <red>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2906,8 +2815,6 @@ exports[`toReturnWith works with Map 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Map {1 => 2, 2 => 1}</>
-Received value:
-             1:     <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2916,8 +2823,7 @@ exports[`toReturnWith works with Map 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-Received value:
-             1: <red>Map {1 => 2, 2 => 1}</>
+Received value: <red>Map {1 => 2, 2 => 1}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2926,8 +2832,6 @@ exports[`toReturnWith works with Set 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>Set {1, 2}</>
-Received value:
-             1:     <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2936,8 +2840,7 @@ exports[`toReturnWith works with Set 2`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>Set {3, 4}</>
-Received value:
-             1: <red>Set {1, 2}</>
+Received value: <red>Set {1, 2}</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2946,8 +2849,6 @@ exports[`toReturnWith works with argument that does match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>\\"foo\\"</>
-Received value:
-             1:     <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2956,8 +2857,7 @@ exports[`toReturnWith works with argument that does not match 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: <green>\\"bar\\"</>
-Received value:
-             1: <red>\\"foo\\"</>
+Received value: <red>\\"foo\\"</>
 
 Received number of returns: <red>1</>"
 `;
@@ -2966,8 +2866,6 @@ exports[`toReturnWith works with undefined 1`] = `
 "<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
 Expected value: not <green>undefined</>
-Received value:
-             1:     <red>undefined</>
 
 Received number of returns: <red>1</>"
 `;
