@@ -5,15 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-const jestExpect = require('../');
+import jestExpect from '../';
 
 // Custom Error class because node versions have different stack trace strings.
-class customError extends Error {
-  constructor(message) {
-    super();
-    this.message = message;
+class CustomError extends Error {
+  constructor(message?: string) {
+    super(message);
     this.name = 'Error';
     this.stack =
       'Error\n' +
@@ -22,14 +19,17 @@ class customError extends Error {
   }
 }
 
-['toThrowError', 'toThrow'].forEach(toThrow => {
+// `as const` needs newer babel which explodes on node 6
+const matchers: ['toThrowError', 'toThrow'] = ['toThrowError', 'toThrow'];
+
+matchers.forEach(toThrow => {
   describe(toThrow, () => {
-    class Err extends customError {}
-    class Err2 extends customError {}
+    class Err extends CustomError {}
+    class Err2 extends CustomError {}
 
     test('to throw or not to throw', () => {
       jestExpect(() => {
-        throw new customError('apple');
+        throw new CustomError('apple');
       })[toThrow]();
       jestExpect(() => {}).not[toThrow]();
     });
@@ -37,10 +37,10 @@ class customError extends Error {
     describe('substring', () => {
       it('passes', () => {
         jestExpect(() => {
-          throw new customError('apple');
+          throw new CustomError('apple');
         })[toThrow]('apple');
         jestExpect(() => {
-          throw new customError('banana');
+          throw new CustomError('banana');
         }).not[toThrow]('apple');
         jestExpect(() => {}).not[toThrow]('apple');
       });
@@ -54,7 +54,7 @@ class customError extends Error {
       test('threw, but message did not match (error)', () => {
         expect(() => {
           jestExpect(() => {
-            throw new customError('apple');
+            throw new CustomError('apple');
           })[toThrow]('banana');
         }).toThrowErrorMatchingSnapshot();
       });
@@ -77,7 +77,7 @@ class customError extends Error {
       test('threw, but message should not match (error)', () => {
         expect(() => {
           jestExpect(() => {
-            throw new customError('Invalid array length');
+            throw new CustomError('Invalid array length');
           }).not[toThrow]('array');
         }).toThrowErrorMatchingSnapshot();
       });
@@ -95,10 +95,10 @@ class customError extends Error {
     describe('regexp', () => {
       it('passes', () => {
         jestExpect(() => {
-          throw new customError('apple');
+          throw new CustomError('apple');
         })[toThrow](/apple/);
         jestExpect(() => {
-          throw new customError('banana');
+          throw new CustomError('banana');
         }).not[toThrow](/apple/);
         jestExpect(() => {}).not[toThrow](/apple/);
       });
@@ -112,7 +112,7 @@ class customError extends Error {
       test('threw, but message did not match (error)', () => {
         expect(() => {
           jestExpect(() => {
-            throw new customError('apple');
+            throw new CustomError('apple');
           })[toThrow](/banana/);
         }).toThrowErrorMatchingSnapshot();
       });
@@ -129,7 +129,7 @@ class customError extends Error {
       test('threw, but message should not match (error)', () => {
         expect(() => {
           jestExpect(() => {
-            throw new customError('Invalid array length');
+            throw new CustomError('Invalid array length');
           }).not[toThrow](/ array /);
         }).toThrowErrorMatchingSnapshot();
       });
@@ -146,8 +146,8 @@ class customError extends Error {
 
     describe('error class', () => {
       class SubErr extends Err {
-        constructor(...args) {
-          super(...args);
+        constructor(message?: string) {
+          super(message);
           // In a carefully written error subclass,
           // name property is equal to constructor name.
           this.name = this.constructor.name;
@@ -155,8 +155,8 @@ class customError extends Error {
       }
 
       class SubSubErr extends SubErr {
-        constructor(...args) {
-          super(...args);
+        constructor(message?: string) {
+          super(message);
           // In a carefully written error subclass,
           // name property is equal to constructor name.
           this.name = this.constructor.name;
@@ -169,7 +169,7 @@ class customError extends Error {
         })[toThrow](Err);
         jestExpect(() => {
           throw new Err();
-        })[toThrow](customError);
+        })[toThrow](CustomError);
         jestExpect(() => {
           throw new Err();
         }).not[toThrow](Err2);
@@ -320,7 +320,7 @@ class customError extends Error {
         describe('pass', () => {
           test('isNot false', () => {
             jestExpect(() => {
-              throw new customError('apple');
+              throw new CustomError('apple');
             })[toThrow](expect.anything());
           });
 
@@ -346,7 +346,7 @@ class customError extends Error {
           test('isNot true', () => {
             expect(() =>
               jestExpect(() => {
-                throw new customError('apple');
+                throw new CustomError('apple');
               }).not[toThrow](expect.anything()),
             ).toThrowErrorMatchingSnapshot();
           });
@@ -357,7 +357,7 @@ class customError extends Error {
         // Test serialization of asymmetric matcher which has no property:
         // this.$$typeof = Symbol.for('jest.asymmetricMatcher')
         const matchError = {
-          asymmetricMatch(received) {
+          asymmetricMatch(received: Error | null | undefined) {
             return (
               received !== null &&
               received !== undefined &&
@@ -366,7 +366,7 @@ class customError extends Error {
           },
         };
         const matchNotError = {
-          asymmetricMatch(received) {
+          asymmetricMatch(received: Error | null | undefined) {
             return (
               received !== null &&
               received !== undefined &&
@@ -378,13 +378,13 @@ class customError extends Error {
         describe('pass', () => {
           test('isNot false', () => {
             jestExpect(() => {
-              throw new customError('apple');
+              throw new CustomError('apple');
             })[toThrow](matchError);
           });
 
           test('isNot true', () => {
             jestExpect(() => {
-              throw new customError('apple');
+              throw new CustomError('apple');
             }).not[toThrow](matchNotError);
           });
         });
@@ -393,7 +393,7 @@ class customError extends Error {
           test('isNot false', () => {
             expect(() =>
               jestExpect(() => {
-                throw new customError('apple');
+                throw new CustomError('apple');
               })[toThrow](matchNotError),
             ).toThrowErrorMatchingSnapshot();
           });
@@ -401,7 +401,7 @@ class customError extends Error {
           test('isNot true', () => {
             expect(() =>
               jestExpect(() => {
-                throw new customError('apple');
+                throw new CustomError('apple');
               }).not[toThrow](matchError),
             ).toThrowErrorMatchingSnapshot();
           });
@@ -419,13 +419,13 @@ class customError extends Error {
         describe('pass', () => {
           test('isNot false', () => {
             jestExpect(() => {
-              throw new customError('apple');
+              throw new CustomError('apple');
             })[toThrow](matchError);
           });
 
           test('isNot true', () => {
             jestExpect(() => {
-              throw new customError('apple');
+              throw new CustomError('apple');
             }).not[toThrow](matchNotError);
           });
         });
@@ -434,7 +434,7 @@ class customError extends Error {
           test('isNot false', () => {
             expect(() =>
               jestExpect(() => {
-                throw new customError('apple');
+                throw new CustomError('apple');
               })[toThrow](matchNotError),
             ).toThrowErrorMatchingSnapshot();
           });
@@ -442,7 +442,7 @@ class customError extends Error {
           test('isNot true', () => {
             expect(() =>
               jestExpect(() => {
-                throw new customError('apple');
+                throw new CustomError('apple');
               }).not[toThrow](matchError),
             ).toThrowErrorMatchingSnapshot();
           });
