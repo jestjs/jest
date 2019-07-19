@@ -109,6 +109,9 @@ export default class FakeTimers<TimerRef> {
       this._fakeClearImmediate(immediate.uuid),
     );
     this._timers.clear();
+
+    const sortedTimers = Array.from(this._timers.values()).sort((lhs, rhs) => lhs.expiry - rhs.expiry);
+
   }
 
   dispose() {

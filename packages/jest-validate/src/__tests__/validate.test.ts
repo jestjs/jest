@@ -54,7 +54,7 @@ test.each([
 
 test(`pretty prints valid config for Function`, () => {
   const config = {fn: 'test'};
-  const validConfig = {fn: (config, option, deprecatedOptions) => true};
+  const validConfig = {fn: (_config, _option, _deprecatedOptions) => true};
   expect(() =>
     validate(config, {
       exampleConfig: validConfig,

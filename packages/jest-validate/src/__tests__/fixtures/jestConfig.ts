@@ -133,7 +133,7 @@ const validConfig = {
 const format = (value: string) => require('pretty-format')(value, {min: true});
 
 const deprecatedConfig = {
-  preprocessorIgnorePatterns: (config: Object) =>
+  preprocessorIgnorePatterns: (config: Record<string, any>) =>
     `  Option ${chalk.bold(
       'preprocessorIgnorePatterns',
     )} was replaced by ${chalk.bold(
@@ -149,7 +149,7 @@ const deprecatedConfig = {
 
   Please update your configuration.`,
 
-  scriptPreprocessor: (config: Object) =>
+  scriptPreprocessor: (config: Record<string, any>) =>
     `  Option ${chalk.bold('scriptPreprocessor')} was replaced by ${chalk.bold(
       'transform',
     )}, which support multiple preprocessors.
