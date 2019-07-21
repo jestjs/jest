@@ -714,7 +714,7 @@ describe('FakeTimers', () => {
         mock4();
       }, 200);
 
-      // Move forward to t=200
+      // Move forward to t=100
       timers.advanceTimersToNextTimer(2);
       expect(runOrder).toEqual(['mock2', 'mock3', 'mock1']);
 
