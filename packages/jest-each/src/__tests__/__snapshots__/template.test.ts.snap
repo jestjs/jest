@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`jest-each .describe comments throws error when headings are commented out 1`] = `"Headings are required"`;
+
 exports[`jest-each .describe throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
@@ -40,6 +42,8 @@ exports[`jest-each .describe throws error when there are no arguments for given 
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
+
+exports[`jest-each .describe.only comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .describe.only throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
@@ -82,6 +86,8 @@ exports[`jest-each .describe.only throws error when there are no arguments for g
 "
 `;
 
+exports[`jest-each .fdescribe comments throws error when headings are commented out 1`] = `"Headings are required"`;
+
 exports[`jest-each .fdescribe throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
@@ -122,6 +128,8 @@ exports[`jest-each .fdescribe throws error when there are no arguments for given
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
+
+exports[`jest-each .fit comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .fit throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
@@ -164,6 +172,8 @@ exports[`jest-each .fit throws error when there are no arguments for given headi
 "
 `;
 
+exports[`jest-each .it comments throws error when headings are commented out 1`] = `"Headings are required"`;
+
 exports[`jest-each .it throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
@@ -204,6 +214,8 @@ exports[`jest-each .it throws error when there are no arguments for given headin
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
+
+exports[`jest-each .it.only comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .it.only throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
@@ -246,6 +258,8 @@ exports[`jest-each .it.only throws error when there are no arguments for given h
 "
 `;
 
+exports[`jest-each .test comments throws error when headings are commented out 1`] = `"Headings are required"`;
+
 exports[`jest-each .test throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
 "
@@ -286,6 +300,8 @@ exports[`jest-each .test throws error when there are no arguments for given head
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
+
+exports[`jest-each .test.only comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .test.only throws an error when called with an empty string 1`] = `
 "Error: \`.each\` called with an empty Tagged Template Literal of table data.
