@@ -46,9 +46,9 @@ const printNumberOfReturns = (
   countReturns: number,
   countCalls: number,
 ): string =>
-  `\nReceived number of returns: ${printReceived(countReturns)}` +
+  `\nNumber of returns: ${printReceived(countReturns)}` +
   (countCalls !== countReturns
-    ? `\nReceived number of calls:   ${printReceived(countCalls)}`
+    ? `\nNumber of calls:   ${printReceived(countCalls)}`
     : '');
 
 type PrintLabel = (string: string, isExpectedCall: boolean) => string;
