@@ -118,7 +118,10 @@ const buildTemplateTests = (
 };
 
 const getHeadingKeys = (headings: string): Array<string> =>
-  headings.replace(/\s/g, '').split('|');
+  headings
+    .replace(/\s/g, '')
+    .split('|')
+    .filter(heading => !!heading);
 
 const applyArguments = (
   supportsDone: boolean,

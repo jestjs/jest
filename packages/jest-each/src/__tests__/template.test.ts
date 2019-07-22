@@ -100,6 +100,23 @@ describe('jest-each', () => {
         expect(testCallBack).not.toHaveBeenCalled();
       });
 
+      test('throws error when headings are missing', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          ${0} | ${1} | ${1}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('this will blow up :(', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+        expect(testCallBack).not.toHaveBeenCalled();
+      });
+
       test('throws an error when called with an empty string', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`   `;

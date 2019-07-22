@@ -131,7 +131,7 @@ describe('template', () => {
       each`
       a    | b    | expected
       /* ${1} | ${1} | ${3} // this line will be the only line ignored
-      ${1} | ${1} | ${2} 
+      ${1} | ${1} | ${2}
       ${2} | ${2} | ${4} */
       ${3} | ${3} | ${6}
     `.test('returns $expected when given $a and $b', ({a, b, expected}) => {
