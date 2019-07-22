@@ -376,13 +376,13 @@ const createToReturnWithMatcher = (matcherName: string) =>
           return (
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
-            `Expected value: not ${printExpected(expected)}\n` +
+            `Expected: not ${printExpected(expected)}\n` +
             (results.length === 1 &&
             results[0].type === 'return' &&
             stringify(results[0].value) === stringify(expected)
               ? ''
               : printReceivedResults(
-                  'Received value:     ',
+                  'Received:     ',
                   indexedResults,
                   results.length === 1,
                 )) +
@@ -401,9 +401,9 @@ const createToReturnWithMatcher = (matcherName: string) =>
           return (
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
-            `Expected value: ${printExpected(expected)}\n` +
+            `Expected: ${printExpected(expected)}\n` +
             printReceivedResults(
-              'Received value: ',
+              'Received: ',
               indexedResults,
               results.length === 1,
             ) +
@@ -486,13 +486,13 @@ const createLastReturnedMatcher = (matcherName: string) =>
           return (
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
-            `Expected value: not ${printExpected(expected)}\n` +
+            `Expected: not ${printExpected(expected)}\n` +
             (results.length === 1 &&
             results[0].type === 'return' &&
             stringify(results[0].value) === stringify(expected)
               ? ''
               : printReceivedResults(
-                  'Received value:     ',
+                  'Received:     ',
                   indexedResults,
                   results.length === 1,
                   iLast,
@@ -522,9 +522,9 @@ const createLastReturnedMatcher = (matcherName: string) =>
           return (
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
-            `Expected value: ${printExpected(expected)}\n` +
+            `Expected: ${printExpected(expected)}\n` +
             printReceivedResults(
-              'Received value: ',
+              'Received: ',
               indexedResults,
               results.length === 1,
               iLast,
@@ -651,13 +651,13 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `n: ${nth}\n` +
-            `Expected value: not ${printExpected(expected)}\n` +
+            `Expected: not ${printExpected(expected)}\n` +
             (results.length === 1 &&
             results[0].type === 'return' &&
             stringify(results[0].value) === stringify(expected)
               ? ''
               : printReceivedResults(
-                  'Received value:     ',
+                  'Received:     ',
                   indexedResults,
                   results.length === 1,
                   iNth,
@@ -715,9 +715,9 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
             matcherHint(matcherName, receivedName, expectedArgument, options) +
             '\n\n' +
             `n: ${nth}\n` +
-            `Expected value: ${printExpected(expected)}\n` +
+            `Expected: ${printExpected(expected)}\n` +
             printReceivedResults(
-              'Received value: ',
+              'Received: ',
               indexedResults,
               results.length === 1,
               iNth,
