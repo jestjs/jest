@@ -59,6 +59,7 @@ const buildArrayTests = (title: string, table: Global.EachTable): EachTests => {
 
 function filterTemplate(table: Global.EachTable, data: Global.TemplateData) {
   let sectionCount: number;
+  let sectionIndex: number;
 
   const result = table
     .join('')
@@ -70,7 +71,14 @@ function filterTemplate(table: Global.EachTable, data: Global.TemplateData) {
         line: string,
         index: number,
       ) => {
-        if (index === 0) {
+        line = line.trim();
+
+        const isComment = line.startsWith('//') || line.startsWith('/*');
+        if (isComment === true) {
+          return acc;
+        }
+
+        if (sectionCount === undefined) {
           // remove /**/ comments
           line = line.replace(/\/\*(.*?)\*\//g, '');
           // remove // comments
@@ -79,19 +87,12 @@ function filterTemplate(table: Global.EachTable, data: Global.TemplateData) {
           const headings = getHeadingKeys(line);
 
           sectionCount = headings.length;
+          sectionIndex = index;
 
           return {...acc, headings};
         }
 
-        line = line.trim();
-
-        const isComment = line.startsWith('//') || line.startsWith('/*');
-
-        if (isComment === true) {
-          return acc;
-        }
-
-        const lastIndex = index * sectionCount;
+        const lastIndex = (index - sectionIndex) * sectionCount;
         const firstIndex = lastIndex - (sectionCount - 1);
         const matchedData = data.slice(firstIndex - 1, lastIndex);
 

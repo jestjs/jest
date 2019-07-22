@@ -102,5 +102,24 @@ describe('template', () => {
         expect(testCount).toEqual(expectedTestCount);
       });
     });
+
+    describe('support comments above headings', () => {
+      let testCount = 0;
+      const expectedTestCount = 1;
+
+      each`
+      // title should still work
+      /* more comments */
+      a    | b    | expected
+      ${0} | ${0} | ${0}
+    `.test('returns $expected when given $a and $b', ({a, b, expected}) => {
+        testCount += 1;
+        expect(a + b).toBe(expected);
+      });
+
+      test('test runs', () => {
+        expect(testCount).toEqual(expectedTestCount);
+      });
+    });
   });
 });
