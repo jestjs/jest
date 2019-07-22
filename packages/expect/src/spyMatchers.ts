@@ -70,9 +70,9 @@ const getRightAlignedPrinter = (label: string): PrintLabel => {
 
 const printResult = (result: any) =>
   result.type === 'throw'
-    ? 'threw an error'
+    ? 'function call threw an error'
     : result.type === 'incomplete'
-    ? 'has not returned yet'
+    ? 'function call has not returned yet'
     : printReceived(result.value);
 
 type IndexedResult = [number, any];
