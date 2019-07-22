@@ -54,12 +54,14 @@ describe('template', () => {
 
     describe('removes trailing comments', () => {
       let testCount = 0;
-      const expectedTestCount = 2;
+      const expectedTestCount = 3;
 
       each`
       a    | b    | expected
       ${0} | ${0} | ${0} // ignores trailing comment
       ${1} | ${1} | ${2} /* ignores second comment */
+      /* ${1} | ${1} | ${3} /* ignores second comment */ */
+      ${2} | ${2} | ${4}
     `.test('returns $expected when given $a and $b', ({a, b, expected}) => {
         testCount += 1;
         expect(a + b).toBe(expected);
