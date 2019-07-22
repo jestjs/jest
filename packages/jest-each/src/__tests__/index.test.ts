@@ -123,5 +123,25 @@ describe('template', () => {
         expect(testCount).toEqual(expectedTestCount);
       });
     });
+
+    describe('multiline comments are not currently supported', () => {
+      let testCount = 0;
+      const expectedTestCount = 3;
+
+      each`
+      a    | b    | expected
+      /* ${1} | ${1} | ${3} // this line will be the only line ignored
+      ${1} | ${1} | ${2} 
+      ${2} | ${2} | ${4} */
+      ${3} | ${3} | ${6}
+    `.test('returns $expected when given $a and $b', ({a, b, expected}) => {
+        testCount += 1;
+        expect(a + b).toBe(expected);
+      });
+
+      test('test runs', () => {
+        expect(testCount).toEqual(expectedTestCount);
+      });
+    });
   });
 });
