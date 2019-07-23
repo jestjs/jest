@@ -31,7 +31,7 @@ export default (cb: GlobalCallback, supportsDone: boolean = true) => (
     timeout?: number,
   ): void {
     try {
-      const tests = isArrayTable(taggedTemplateData)
+      const tests = isArrayTable(taggedTemplateData, table)
         ? buildArrayTests(title, table)
         : buildTemplateTests(title, table, taggedTemplateData);
 
@@ -50,66 +50,117 @@ export default (cb: GlobalCallback, supportsDone: boolean = true) => (
     }
   };
 
-const isArrayTable = (data: Global.TemplateData) => data.length === 0;
+const isArrayTable = (
+  data: Global.TemplateData,
+  _table: Global.EachTable,
+): _table is Global.ArrayTable => data.length === 0;
 
 const buildArrayTests = (title: string, table: Global.EachTable): EachTests => {
   validateArrayTable(table);
   return convertArrayTable(title, table as Global.ArrayTable);
 };
 
-function filterTemplate(table: Global.EachTable, data: Global.TemplateData) {
+function filterTemplate(
+  table: Global.TemplateTable,
+  data: Global.TemplateData,
+) {
+  let insideSection: boolean = false;
+  let currentData: number = 0;
   let sectionCount: number;
-  let sectionIndex: number;
 
-  const result = table
-    .join('')
-    .trimLeft()
-    .split('\n')
-    .reduce(
-      (
-        acc: {headings: Array<string>; data: Global.TemplateData},
-        line: string,
-        index: number,
-      ) => {
-        line = line.trim();
+  // @ts-ignore
+  const result = table.reduce(
+    (
+      acc: {headings: Array<string>; data: Global.TemplateData},
+      line,
+      index,
+      array,
+    ) => {
+      line = line.replace(/ /g, '');
 
-        const isComment = line.startsWith('//') || line.startsWith('/*');
-        if (isComment === true) {
+      if (index === 0) {
+        // get actual header
+        const header = line.split('\n').find((subLine: string) => {
+          if (!subLine) {
+            return false;
+          }
+
+          const isComment =
+            subLine.startsWith('//') || subLine.startsWith('/*');
+
+          return isComment === false;
+        });
+
+        // header not found
+        if (!header) {
           return acc;
         }
 
-        if (sectionCount === undefined) {
+        // replace end comments
+        line = header
           // remove /**/ comments
-          line = line.replace(/\/\*(.*?)\*\//g, '');
+          .replace(/\/\*(.*?)\*\//g, '')
           // remove // comments
-          line = line.split('//')[0].trim();
+          .split('//')[0];
 
-          const headings = getHeadingKeys(line);
+        const headings = getHeadingKeys(line);
+        sectionCount = headings.length;
 
-          sectionCount = headings.length;
-          sectionIndex = index;
+        return {...acc, headings};
+      }
 
-          return {...acc, headings};
-        }
+      if (acc.headings.length === 0) {
+        return acc;
+      }
 
-        const lastIndex = (index - sectionIndex) * sectionCount;
-        const firstIndex = lastIndex - (sectionCount - 1);
-        const matchedData = data.slice(firstIndex - 1, lastIndex);
+      const previousLine = array[index - 1].replace(/ /g, '');
+      const previouslyInside = sectionCount === 1 ? false : insideSection;
+      insideSection =
+        line === '|' ||
+        // handle single heading
+        sectionCount === 1;
 
-        return {
-          ...acc,
-          data: [...acc.data, ...matchedData],
-        };
-      },
-      {data: [], headings: []},
-    );
+      if (
+        insideSection === false ||
+        // already added data from current section
+        (previouslyInside === true && insideSection === true)
+      ) {
+        return acc;
+      }
+
+      const previousLineSplit = previousLine.split('\n');
+      const lastNewLine = previousLineSplit[
+        previousLineSplit.length - 1
+      ].replace(/\/\*(.*?)\*\//g, '');
+
+      const isComment =
+        lastNewLine.startsWith('//') || lastNewLine.startsWith('/*');
+
+      if (isComment === true) {
+        currentData += sectionCount;
+        return acc;
+      }
+
+      const firstIndex = currentData;
+      const lastIndex = firstIndex + sectionCount;
+      const matchedData = data.slice(firstIndex, lastIndex) || [];
+
+      currentData += sectionCount;
+
+      return {
+        ...acc,
+        data: [...acc.data, ...matchedData],
+      };
+    },
+    {data: [], headings: []},
+  );
 
   return result;
 }
 
 const buildTemplateTests = (
   title: string,
-  table: Global.EachTable,
+  table: Global.TemplateTable,
   taggedTemplateData: Global.TemplateData,
 ): EachTests => {
   const {data, headings} = filterTemplate(table, taggedTemplateData);

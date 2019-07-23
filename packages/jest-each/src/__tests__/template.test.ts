@@ -150,6 +150,25 @@ describe('jest-each', () => {
         );
       });
 
+      test('calls multiple with single heading', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a
+          ${0}
+          ${1}
+          ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        testFunction('expected: a=$a', noop);
+
+        const globalMock = get(globalTestMocks, keyPath);
+        expect(globalMock.mock.calls).toEqual([
+          ['expected: a=0', expectFunction, undefined],
+          ['expected: a=1', expectFunction, undefined],
+          ['expected: a=2', expectFunction, undefined],
+        ]);
+      });
+
       test('calls global with given title when multiple tests cases exist', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`
@@ -340,17 +359,104 @@ describe('jest-each', () => {
           testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
 
           const globalMock = get(globalTestMocks, keyPath);
-          expect(globalMock).toHaveBeenCalledTimes(2);
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=1, b=1, expected=2',
-            expectFunction,
-            undefined,
-          );
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=2, b=2, expected=4',
-            expectFunction,
-            undefined,
-          );
+          expect(globalMock.mock.calls).toEqual([
+            [
+              'expected string: a=1, b=1, expected=2',
+              expect.any(Function),
+              undefined,
+            ],
+            [
+              'expected string: a=2, b=2, expected=4',
+              expect.any(Function),
+              undefined,
+            ],
+          ]);
+        });
+
+        test('removes commented out tests and allow spaces between', () => {
+          const globalTestMocks = getGlobalTestMocks();
+          const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | expected
+
+          /* first section */
+          /* ${1} | ${1} | ${0} */
+          ${1} | ${1} | ${2}
+
+          // second section
+          // ${1} | ${1} | ${5}
+          ${2} | ${2} | ${4}
+        `;
+          const testFunction = get(eachObject, keyPath);
+          testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
+
+          const globalMock = get(globalTestMocks, keyPath);
+          expect(globalMock.mock.calls).toEqual([
+            [
+              'expected string: a=1, b=1, expected=2',
+              expect.any(Function),
+              undefined,
+            ],
+            [
+              'expected string: a=2, b=2, expected=4',
+              expect.any(Function),
+              undefined,
+            ],
+          ]);
+        });
+
+        test('comments with single header', () => {
+          const globalTestMocks = getGlobalTestMocks();
+          const eachObject = each.withGlobal(globalTestMocks)`
+          a
+
+          /* first section */
+          /* ${0} */
+          
+          ${1}
+          // second section
+          // ${2}
+          ${3}
+        `;
+          const testFunction = get(eachObject, keyPath);
+          testFunction('expected: a=$a', noop);
+
+          const globalMock = get(globalTestMocks, keyPath);
+          expect(globalMock.mock.calls).toEqual([
+            ['expected: a=1', expect.any(Function), undefined],
+            ['expected: a=3', expect.any(Function), undefined],
+          ]);
+        });
+
+        test('standalone comments can have |', () => {
+          const globalTestMocks = getGlobalTestMocks();
+          const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | expected
+
+          // first section ||/ *
+          // || ${0} | ${0} | ${1}
+          /* ${1} | ${1} | ${0} */
+          ${1} | ${1} | ${2}
+
+          /* second || section */
+          // ${1} | ${1} | ${5}
+          ${2} | ${2} | ${4}
+        `;
+          const testFunction = get(eachObject, keyPath);
+          testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
+
+          const globalMock = get(globalTestMocks, keyPath);
+          expect(globalMock.mock.calls).toEqual([
+            [
+              'expected string: a=1, b=1, expected=2',
+              expect.any(Function),
+              undefined,
+            ],
+            [
+              'expected string: a=2, b=2, expected=4',
+              expect.any(Function),
+              undefined,
+            ],
+          ]);
         });
 
         test('removes trailing comments', () => {
@@ -359,29 +465,30 @@ describe('jest-each', () => {
           a    | b    | expected
           ${0} | ${0} | ${0} // ignores trailing comment
           ${1} | ${1} | ${2} /* ignores second comment */
-          /* ${1} | ${1} | ${3} /* ignores second comment */ */
+          /* ${1} | ${1} | ${3} /* ignores third comment */ */
           ${2} | ${2} | ${4}
         `;
           const testFunction = get(eachObject, keyPath);
           testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
 
           const globalMock = get(globalTestMocks, keyPath);
-          expect(globalMock).toHaveBeenCalledTimes(3);
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=0, b=0, expected=0',
-            expectFunction,
-            undefined,
-          );
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=1, b=1, expected=2',
-            expectFunction,
-            undefined,
-          );
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=2, b=2, expected=4',
-            expectFunction,
-            undefined,
-          );
+          expect(globalMock.mock.calls).toEqual([
+            [
+              'expected string: a=0, b=0, expected=0',
+              expect.any(Function),
+              undefined,
+            ],
+            [
+              'expected string: a=1, b=1, expected=2',
+              expect.any(Function),
+              undefined,
+            ],
+            [
+              'expected string: a=2, b=2, expected=4',
+              expect.any(Function),
+              undefined,
+            ],
+          ]);
         });
 
         test('removes trailing comments in title', () => {
@@ -394,50 +501,87 @@ describe('jest-each', () => {
           testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
 
           const globalMock = get(globalTestMocks, keyPath);
-          expect(globalMock).toHaveBeenCalledTimes(1);
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=0, b=0, expected=0',
-            expectFunction,
-            undefined,
-          );
+          expect(globalMock.mock.calls).toEqual([
+            [
+              'expected string: a=0, b=0, expected=0',
+              expect.any(Function),
+              undefined,
+            ],
+          ]);
         });
 
-        test('removes /**/ comments title', () => {
+        test('removes /**/ comments title and data', () => {
           const globalTestMocks = getGlobalTestMocks();
           const eachObject = each.withGlobal(globalTestMocks)`
           a    | b   /* inside */ | expected /* should be removed */
-          ${0} | ${0} | ${0}
+          ${0} | ${0} /* inside data */ | ${0}
         `;
           const testFunction = get(eachObject, keyPath);
           testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
 
           const globalMock = get(globalTestMocks, keyPath);
-          expect(globalMock).toHaveBeenCalledTimes(1);
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=0, b=0, expected=0',
-            expectFunction,
-            undefined,
-          );
+          expect(globalMock.mock.calls).toEqual([
+            [
+              'expected string: a=0, b=0, expected=0',
+              expect.any(Function),
+              undefined,
+            ],
+          ]);
         });
 
-        test('support comments above headings', () => {
+        test('support comments and spaces above headings', () => {
           const globalTestMocks = getGlobalTestMocks();
           const eachObject = each.withGlobal(globalTestMocks)`
           // title should still work
+          
           /* more comments */
           a    | b    | expected
+          // after header
+          
           ${0} | ${0} | ${0}
         `;
           const testFunction = get(eachObject, keyPath);
           testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
 
           const globalMock = get(globalTestMocks, keyPath);
-          expect(globalMock).toHaveBeenCalledTimes(1);
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=0, b=0, expected=0',
-            expectFunction,
-            undefined,
-          );
+          expect(globalMock.mock.calls).toEqual([
+            [
+              'expected string: a=0, b=0, expected=0',
+              expect.any(Function),
+              undefined,
+            ],
+          ]);
+        });
+
+        test('can multi line in front of data', () => {
+          const globalTestMocks = getGlobalTestMocks();
+          const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b   /* inside */ | expected /* should be removed */
+          /**/${0} | ${0} | ${0}
+          ${1} | ${1} | ${2}
+          /**/${2} | ${2} | ${4}
+        `;
+          const testFunction = get(eachObject, keyPath);
+          testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
+
+          const globalMock = get(globalTestMocks, keyPath);
+          expect(globalMock.mock.calls).toEqual([
+            [
+              'expected string: a=0, b=0, expected=0',
+              expect.any(Function),
+              undefined,
+            ],
+            [
+              'expected string: a=1, b=1, expected=2',
+              expect.any(Function),
+              undefined,
+            ],
+            [
+              'expected string: a=2, b=2, expected=4',
+              expect.any(Function),
+              undefined,
+            ],
+          ]);
         });
 
         test('multiline comments are not currently supported', () => {
@@ -453,29 +597,30 @@ describe('jest-each', () => {
           testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
 
           const globalMock = get(globalTestMocks, keyPath);
-          expect(globalMock).toHaveBeenCalledTimes(3);
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=1, b=1, expected=2',
-            expectFunction,
-            undefined,
-          );
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=2, b=2, expected=4',
-            expectFunction,
-            undefined,
-          );
-          expect(globalMock).toHaveBeenCalledWith(
-            'expected string: a=3, b=3, expected=6',
-            expectFunction,
-            undefined,
-          );
+          expect(globalMock.mock.calls).toEqual([
+            [
+              'expected string: a=1, b=1, expected=2',
+              expect.any(Function),
+              undefined,
+            ],
+            [
+              'expected string: a=2, b=2, expected=4',
+              expect.any(Function),
+              undefined,
+            ],
+            [
+              'expected string: a=3, b=3, expected=6',
+              expect.any(Function),
+              undefined,
+            ],
+          ]);
         });
 
         test('throws error when headings are commented out', () => {
           const globalTestMocks = getGlobalTestMocks();
           const eachObject = each.withGlobal(globalTestMocks)`
-          // a | b | expected
-          /* a | b | expected */
+          // a    | b  | expected
+          /* a    | b  | expected */
           ${0} | ${1} | ${1}
         `;
           const testFunction = get(eachObject, keyPath);
