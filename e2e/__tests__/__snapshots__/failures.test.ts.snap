@@ -774,10 +774,6 @@ FAIL __tests__/assertionError.test.js
       82 | 
 
       at Object.equal (__tests__/assertionError.test.js:80:10)
-      at asyncGeneratorStep (__tests__/assertionError.test.js:10:103)
-      at _next (__tests__/assertionError.test.js:12:194)
-      at __tests__/assertionError.test.js:12:364
-      at Object.<anonymous> (__tests__/assertionError.test.js:12:97)
 `;
 
 exports[`works with snapshot failures 1`] = `
