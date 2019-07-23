@@ -78,7 +78,7 @@ export default class Jasmine2Reporter implements Reporter {
     });
 
     const testResult = {
-      console: null,
+      console: undefined,
       failureMessage: formatResultsErrors(
         testResults,
         this._config,
