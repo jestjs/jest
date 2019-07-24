@@ -78,6 +78,11 @@ const users = [
     image: '/img/logos/instagram.png',
     infoLink: 'https://www.instagram.com/',
   },
+  {
+    caption: 'MinuteMedia',
+    image: '/img/logos/minutemedia.svg',
+    infoLink: 'https://www.minutemedia.com',
+  },
 ];
 
 const repoUrl = 'https://github.com/facebook/jest';
@@ -95,13 +100,13 @@ const siteConfig = {
   videoTypes,
   editUrl: repoUrl + '/edit/master/docs/',
   headerLinks: [
-    {doc: 'getting-started', label: 'Docs'},
-    {doc: 'api', label: 'API'},
-    {page: 'help', label: 'Help'},
-    {blog: true, label: 'Blog'},
-    {languages: true},
-    {search: true},
-    {href: repoUrl, label: 'GitHub'},
+    { doc: 'getting-started', label: 'Docs' },
+    { doc: 'api', label: 'API' },
+    { page: 'help', label: 'Help' },
+    { blog: true, label: 'Blog' },
+    { languages: true },
+    { search: true },
+    { href: repoUrl, label: 'GitHub' },
   ],
   headerIcon: 'img/jest.svg',
   footerIcon: 'img/jest-outline.svg',
