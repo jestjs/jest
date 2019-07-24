@@ -64,96 +64,125 @@ function filterTemplate(
   table: Global.TemplateTable,
   data: Global.TemplateData,
 ) {
-  let insideSection: boolean = false;
-  let currentData: number = 0;
-  let sectionCount: number;
+  let multipleLineCommentCount: number = 0;
+  let isSingleLineComment: boolean = false;
+  let skipNext: boolean = false;
 
-  // @ts-ignore
-  const result = table.reduce(
-    (
-      acc: {headings: Array<string>; data: Global.TemplateData},
-      line,
-      index,
-      array,
-    ) => {
-      line = line.replace(/ /g, '');
+  function removeCommentsFromLine(line: string): string {
+    const result = line
+      .split('')
+      .reduce((acc: Array<string>, character, index, array) => {
+        const next = array[index + 1];
 
-      if (index === 0) {
-        // get actual header
-        const header = line.split('\n').find((subLine: string) => {
-          if (!subLine) {
-            return false;
-          }
-
-          const isComment =
-            subLine.startsWith('//') || subLine.startsWith('/*');
-
-          return isComment === false;
-        });
-
-        // header not found
-        if (!header) {
+        if (skipNext === true) {
+          skipNext = false;
           return acc;
         }
 
-        // replace end comments
-        line = header
-          // remove /**/ comments
-          .replace(/\/\*(.*?)\*\//g, '')
-          // remove // comments
-          .split('//')[0];
+        if (isSingleLineComment === true) {
+          if (character === '\n') {
+            isSingleLineComment = false;
+          }
 
-        const headings = getHeadingKeys(line);
-        sectionCount = headings.length;
+          return acc;
+        }
 
-        return {...acc, headings};
-      }
+        if (character === '/') {
+          // open /*
+          if (next === '*') {
+            multipleLineCommentCount += 1;
+            skipNext = true;
+            return acc;
+          }
 
-      if (acc.headings.length === 0) {
+          // single line //
+          if (multipleLineCommentCount === 0 && next === '/') {
+            isSingleLineComment = true;
+            skipNext = true;
+            return acc;
+          }
+        }
+
+        // close */
+        if (character === '*') {
+          if (next === '/') {
+            if (multipleLineCommentCount === 0) {
+              throw new SyntaxError('Unexpected token */');
+            }
+
+            multipleLineCommentCount -= 1;
+            skipNext = true;
+            return acc;
+          }
+        }
+
+        if (multipleLineCommentCount !== 0) {
+          return acc;
+        }
+
+        if (acc[acc.length - 1] === undefined || character === '\n') {
+          acc.push('');
+        }
+
+        acc[acc.length - 1] += character;
+
         return acc;
-      }
+      }, [])
+      .join('');
 
-      const previousLine = array[index - 1].replace(/ /g, '');
-      const previouslyInside = sectionCount === 1 ? false : insideSection;
-      insideSection =
-        line === '|' ||
-        // handle single heading
-        sectionCount === 1;
+    return result;
+  }
 
-      if (
-        insideSection === false ||
-        // already added data from current section
-        (previouslyInside === true && insideSection === true)
-      ) {
+  const result = table
+    // remove excess space from all lines
+    .map(line =>
+      line
+        .split('\n')
+        .map(subLine => subLine.trim())
+        .join('\n'),
+    )
+    .reduce(
+      (
+        acc: {headings: Array<string>; data: Global.TemplateData},
+        line,
+        index,
+        array,
+      ) => {
+        line = removeCommentsFromLine(line);
+
+        const isLastLine = index === array.length - 1;
+        if (isLastLine === true && multipleLineCommentCount !== 0) {
+          throw new SyntaxError('Unexpected trailing token /*');
+        }
+
+        // index 0 will always be the header
+        if (index === 0) {
+          const headings = getHeadingKeys(line);
+          acc.headings = headings;
+        }
+
+        // will throw error if headings are missing
+        if (acc.headings.length === 0) {
+          return acc;
+        }
+
+        const isDone = index === data.length;
+        if (isDone === true) {
+          return acc;
+        }
+
+        if (multipleLineCommentCount !== 0 || isSingleLineComment === true) {
+          return acc;
+        }
+
+        const matchedData = data[index];
+
+        acc.data.push(matchedData);
+
         return acc;
-      }
-
-      const previousLineSplit = previousLine.split('\n');
-      const lastNewLine = previousLineSplit[
-        previousLineSplit.length - 1
-      ].replace(/\/\*(.*?)\*\//g, '');
-
-      const isComment =
-        lastNewLine.startsWith('//') || lastNewLine.startsWith('/*');
-
-      if (isComment === true) {
-        currentData += sectionCount;
-        return acc;
-      }
-
-      const firstIndex = currentData;
-      const lastIndex = firstIndex + sectionCount;
-      const matchedData = data.slice(firstIndex, lastIndex) || [];
-
-      currentData += sectionCount;
-
-      return {
-        ...acc,
-        data: [...acc.data, ...matchedData],
-      };
-    },
-    {data: [], headings: []},
-  );
+      },
+      {data: [], headings: []},
+    );
 
   return result;
 }
