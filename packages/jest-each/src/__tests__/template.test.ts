@@ -541,7 +541,9 @@ describe('jest-each', () => {
               /*
                 ignore
               */
+              / *
               /
+              * /
             */
             a 
             // first section ||/* end
@@ -575,7 +577,9 @@ describe('jest-each', () => {
               /*
                 ignore
               */
+              / *
               /
+              * /
             */
             a | b | expected
             // first section ||/* end

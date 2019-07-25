@@ -64,19 +64,19 @@ function filterTemplate(
   table: Global.TemplateTable,
   data: Global.TemplateData,
 ) {
-  let multipleLineCommentCount: number = 0;
+  let multiLineCommentOpenCount: number = 0;
   let isSingleLineComment: boolean = false;
 
   function removeCommentsFromLine(line: string): string {
-    let skipNext: boolean = false;
+    let skipNextCharacter: boolean = false;
 
     const result = line
       .split('')
       .reduce((acc: Array<string>, character, index, array) => {
-        const next = array[index + 1];
+        const nextCharacter = array[index + 1];
 
-        if (skipNext === true) {
-          skipNext = false;
+        if (skipNextCharacter === true) {
+          skipNextCharacter = false;
           return acc;
         }
 
@@ -89,43 +89,44 @@ function filterTemplate(
         }
 
         if (character === '/') {
-          // open /*
-          if (next === '*') {
-            multipleLineCommentCount += 1;
-            skipNext = true;
+          // open multi line comment /*
+          if (nextCharacter === '*') {
+            multiLineCommentOpenCount += 1;
+            skipNextCharacter = true;
             return acc;
           }
 
           // single line //
-          if (multipleLineCommentCount === 0 && next === '/') {
+          if (multiLineCommentOpenCount === 0 && nextCharacter === '/') {
             isSingleLineComment = true;
-            skipNext = true;
+            skipNextCharacter = true;
             return acc;
           }
         }
 
-        // close */
         if (character === '*') {
-          if (next === '/') {
-            if (multipleLineCommentCount === 0) {
+          // close multi line comment */
+          if (nextCharacter === '/') {
+            if (multiLineCommentOpenCount === 0) {
               throw new SyntaxError('Unexpected token */');
             }
 
-            multipleLineCommentCount -= 1;
-            skipNext = true;
+            multiLineCommentOpenCount -= 1;
+            skipNextCharacter = true;
             return acc;
           }
         }
 
-        if (multipleLineCommentCount !== 0) {
+        if (multiLineCommentOpenCount !== 0) {
           return acc;
         }
 
-        if (acc[acc.length - 1] === undefined || character === '\n') {
+        const previousUncommentedIndex = acc.length - 1;
+        if (acc[previousUncommentedIndex] === undefined || character === '\n') {
           acc.push('');
         }
 
-        acc[acc.length - 1] += character;
+        acc[previousUncommentedIndex] += character;
 
         return acc;
       }, [])
@@ -153,7 +154,7 @@ function filterTemplate(
         line = removeCommentsFromLine(line);
 
         const isLastLine = index === array.length - 1;
-        if (isLastLine === true && multipleLineCommentCount !== 0) {
+        if (isLastLine === true && multiLineCommentOpenCount !== 0) {
           throw new SyntaxError('Unexpected trailing token /*');
         }
 
@@ -168,12 +169,13 @@ function filterTemplate(
           return acc;
         }
 
+        // ignore trailing spaces
         const isDone = index === data.length;
         if (isDone === true) {
           return acc;
         }
 
-        if (multipleLineCommentCount !== 0 || isSingleLineComment === true) {
+        if (multiLineCommentOpenCount !== 0 || isSingleLineComment === true) {
           return acc;
         }
 
