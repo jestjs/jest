@@ -5,4 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = {only: ['blablabla', /jest-environment-node/]};
+it('should add two numbers', () => {
+  // eslint-disable-next-line no-undef
+  expect(one + 1).toBe(2);
+});

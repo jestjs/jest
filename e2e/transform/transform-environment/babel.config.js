@@ -5,4 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = {only: ['blablabla', /jest-environment-node/]};
+module.exports = {
+  presets: [
+    ['@babel/preset-typescript'],
+    [
+      '@babel/preset-env',
+      {
+        targets: {node: 8},
+      },
+    ],
+  ],
+};
