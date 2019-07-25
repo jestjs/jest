@@ -8,7 +8,7 @@
 
               ga('create', 'UA-44373548-17', 'auto');
               ga('send', 'pageview');
-            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/pt-BR"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/pt-BR/versions"><h3>next</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/pt-BR/next/getting-started" target="_self">Documentação</a></li><li class="siteNavGroupActive"><a href="/docs/pt-BR/next/api" target="_self">API</a></li><li class=""><a href="/pt-BR/help" target="_self">Ajuda</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Português (Brasil)</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/next/dynamodb">English</a></li><li><a href="/docs/ja/next/dynamodb">日本語</a></li><li><a href="/docs/es-ES/next/dynamodb">Español</a></li><li><a href="/docs/ro/next/dynamodb">Română</a></li><li><a href="/docs/ru/next/dynamodb">Русский</a></li><li><a href="/docs/uk/next/dynamodb">Українська</a></li><li><a href="/docs/zh-Hans/next/dynamodb">简体中文</a></li></ul></div></li><script>
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/pt-BR"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/pt-BR/versions"><h3>next</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/pt-BR/next/getting-started" target="_self">Documentação</a></li><li class="siteNavGroupActive"><a href="/docs/pt-BR/next/api" target="_self">API</a></li><li class=""><a href="/pt-BR/help" target="_self">Ajuda</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Português (Brasil)</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/next/dynamodb">English</a></li><li><a href="/docs/ja/next/dynamodb">日本語</a></li><li><a href="/docs/es-ES/next/dynamodb">Español</a></li><li><a href="/docs/ro/next/dynamodb">Română</a></li><li><a href="/docs/ru/next/dynamodb">Русский</a></li><li><a href="/docs/uk/next/dynamodb">Українська</a></li><li><a href="/docs/zh-Hans/next/dynamodb">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(event) {
@@ -80,7 +80,7 @@
 <h2><a class="anchor" aria-hidden="true" id="use-jest-dynamodb-preset"></a><a href="#use-jest-dynamodb-preset" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Use jest-dynamodb Preset</h2>
 <p><a href="https://github.com/shelfio/jest-dynamodb">Jest DynamoDB</a> provides all required configuration to run your tests using DynamoDB.</p>
 <ol>
-<li><p>First install <code>@shelf/jest-dynamodb</code></p>
+<li><p>Primeiro instale <code>@shelf/jest-dynamodb</code></p>
 <p>yarn add @shelf/jest-dynamodb --dev</p></li>
 </ol>
 <ol start="2">
@@ -93,7 +93,7 @@
 <ol start="3">
 <li>Create <code>jest-dynamodb-config.js</code> and define DynamoDB tables</li>
 </ol>
-<p>See <a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#createTable-property">Create Table API</a></p>
+<p>Veja <a href="https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#createTable-property">API Criar Tabela</a></p>
 <pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-attr">tables</span>: [
     {
@@ -124,7 +124,7 @@
 <span class="hljs-keyword">const</span> ddb = <span class="hljs-keyword">new</span> DocumentClient(config);
 </code></pre>
 <ol start="5">
-<li>Write tests</li>
+<li>Escreva os testes</li>
 </ol>
 <pre><code class="hljs css language-js">it(<span class="hljs-string">'should insert item into table'</span>, <span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">await</span> ddb
@@ -140,7 +140,7 @@
 });
 </code></pre>
 <p>There's no need to load any dependencies.</p>
-<p>See <a href="https://github.com/shelfio/jest-dynamodb">documentation</a> for details.</p>
+<p>Acesse a <a href="https://github.com/shelfio/jest-dynamodb">documentação</a> para mais detalhes.</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/pt-BR/next/mongodb"><span class="arrow-prev">← </span><span class="function-name-prevnext">Using with MongoDB</span></a><a class="docs-next button" href="/docs/pt-BR/next/tutorial-jquery"><span>DOM Manipulation</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#use-jest-dynamodb-preset">Use jest-dynamodb Preset</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/pt-BR/getting-started.html">Getting Started</a><a href="/docs/pt-BR/snapshot-testing.html">Guides</a><a href="/docs/pt-BR/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
