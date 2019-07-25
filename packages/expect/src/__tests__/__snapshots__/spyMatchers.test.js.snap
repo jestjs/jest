@@ -180,7 +180,7 @@ Number of returns: <red>3</>"
 exports[`lastReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>received</><dim>).</>lastReturnedWith<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+<bold>Matcher error</>: <red>received</> value must be a mock function
 
 Received has type:  function
 Received has value: <red>[Function fn]</>"
@@ -590,7 +590,7 @@ Number of returns: <red>3</>"
 exports[`nthReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>received</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+<bold>Matcher error</>: <red>received</> value must be a mock function
 
 Received has type:  function
 Received has value: <red>[Function fn]</>"
@@ -699,7 +699,7 @@ Expected has value: <green>555</>"
 `;
 
 exports[`toBeCalled .not passes when called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toBeCalled<dim>()</>
+"<dim>expect(</><red>spy</><dim>).</>toBeCalled<dim>()</>
 
 Expected number of calls: >= <green>1</>
 Received number of calls:    <red>0</>"
@@ -880,7 +880,7 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`toBeCalledTimes passes if function called equal to expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
+"<dim>expect(</><red>spy</><dim>).</>not<dim>.</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
 Expected number of calls: not <green>2</>"
 `;
@@ -1029,7 +1029,7 @@ Expected has value: <green>555</>"
 `;
 
 exports[`toHaveBeenCalled .not passes when called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenCalled<dim>()</>
+"<dim>expect(</><red>spy</><dim>).</>toHaveBeenCalled<dim>()</>
 
 Expected number of calls: >= <green>1</>
 Received number of calls:    <red>0</>"
@@ -1210,7 +1210,7 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`toHaveBeenCalledTimes passes if function called equal to expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
+"<dim>expect(</><red>spy</><dim>).</>not<dim>.</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
 Expected number of calls: not <green>2</>"
 `;
@@ -1689,7 +1689,7 @@ Number of returns: <red>3</>"
 exports[`toHaveLastReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveLastReturnedWith<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+<bold>Matcher error</>: <red>received</> value must be a mock function
 
 Received has type:  function
 Received has value: <red>[Function fn]</>"
@@ -1939,7 +1939,7 @@ Number of returns: <red>3</>"
 exports[`toHaveNthReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+<bold>Matcher error</>: <red>received</> value must be a mock function
 
 Received has type:  function
 Received has value: <red>[Function fn]</>"
@@ -2073,7 +2073,7 @@ Received number of returns:    <red>0</>"
 exports[`toHaveReturned .not works only on jest.fn 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveReturned<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+<bold>Matcher error</>: <red>received</> value must be a mock function
 
 Received has type:  function
 Received has value: <red>[Function fn]</>"
@@ -2133,6 +2133,15 @@ Expected number of returns: <green>0</>
 Received number of returns: <red>1</>
 
 1: <red>undefined</>"
+`;
+
+exports[`toHaveReturned throw matcher error if received is spy 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toHaveReturned<dim>()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock function
+
+Received has type:  function
+Received has value: <red>[Function spy]</>"
 `;
 
 exports[`toHaveReturnedTimes .not only accepts a number argument 1`] = `
@@ -2300,13 +2309,13 @@ exports[`toHaveReturnedTimes passes if function returned equal to expected times
 Expected number of returns: not <green>2</>"
 `;
 
-exports[`toHaveReturnedTimes works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
+exports[`toHaveReturnedTimes throw matcher error if received is spy 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+<bold>Matcher error</>: <red>received</> value must be a mock function
 
 Received has type:  function
-Received has value: <red>[Function fn]</>"
+Received has value: <red>[Function spy]</>"
 `;
 
 exports[`toHaveReturnedWith a call that throws is not considered to have returned 1`] = `
@@ -2365,7 +2374,7 @@ Number of returns: <red>6</>"
 exports[`toHaveReturnedWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveReturnedWith<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+<bold>Matcher error</>: <red>received</> value must be a mock function
 
 Received has type:  function
 Received has value: <red>[Function fn]</>"
@@ -2489,7 +2498,7 @@ Received number of returns:    <red>0</>"
 exports[`toReturn .not works only on jest.fn 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toReturn<dim>()</>
 
-<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+<bold>Matcher error</>: <red>received</> value must be a mock function
 
 Received has type:  function
 Received has value: <red>[Function fn]</>"
@@ -2549,6 +2558,15 @@ Expected number of returns: <green>0</>
 Received number of returns: <red>1</>
 
 1: <red>undefined</>"
+`;
+
+exports[`toReturn throw matcher error if received is spy 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toReturn<dim>()</>
+
+<bold>Matcher error</>: <red>received</> value must be a mock function
+
+Received has type:  function
+Received has value: <red>[Function spy]</>"
 `;
 
 exports[`toReturnTimes .not only accepts a number argument 1`] = `
@@ -2716,13 +2734,13 @@ exports[`toReturnTimes passes if function returned equal to expected times 1`] =
 Expected number of returns: not <green>2</>"
 `;
 
-exports[`toReturnTimes works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
+exports[`toReturnTimes throw matcher error if received is spy 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+<bold>Matcher error</>: <red>received</> value must be a mock function
 
 Received has type:  function
-Received has value: <red>[Function fn]</>"
+Received has value: <red>[Function spy]</>"
 `;
 
 exports[`toReturnWith a call that throws is not considered to have returned 1`] = `
@@ -2781,7 +2799,7 @@ Number of returns: <red>6</>"
 exports[`toReturnWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toReturnWith<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a mock or spy function
+<bold>Matcher error</>: <red>received</> value must be a mock function
 
 Received has type:  function
 Received has value: <red>[Function fn]</>"

@@ -121,7 +121,7 @@ const createToBeCalledMatcher = (matcherName: string) =>
       promise: this.promise,
     };
     ensureNoExpected(expected, matcherName, options);
-    ensureMock(received, matcherName, expectedArgument, options);
+    ensureMockOrSpy(received, matcherName, expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
     const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
@@ -226,7 +226,7 @@ const createToBeCalledTimesMatcher = (matcherName: string) =>
       promise: this.promise,
     };
     ensureExpectedIsNumber(expected, matcherName, options);
-    ensureMock(received, matcherName, expectedArgument, options);
+    ensureMockOrSpy(received, matcherName, expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
     const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
@@ -309,7 +309,7 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureMockOrSpy(received, matcherName.slice(1), expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
@@ -425,7 +425,7 @@ const createLastCalledWithMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureMockOrSpy(received, matcherName.slice(1), expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
@@ -549,7 +549,7 @@ const createNthCalledWithMatcher = (matcherName: string) =>
       promise: this.promise,
       secondArgument: '...expected',
     };
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureMockOrSpy(received, matcherName.slice(1), expectedArgument, options);
 
     if (!Number.isSafeInteger(nth) || nth < 1) {
       throw new Error(
@@ -756,7 +756,31 @@ const spyMatchers: MatchersObject = {
   toReturnWith: createToReturnWithMatcher('toReturnWith'),
 };
 
-const isSpy = (spy: any) => spy.calls && typeof spy.calls.count === 'function';
+const isMock = (received: any) =>
+  received != null && received._isMockFunction === true;
+
+const isSpy = (received: any) =>
+  received != null &&
+  received.calls != null &&
+  typeof received.calls.all === 'function' &&
+  typeof received.calls.count === 'function';
+
+const ensureMockOrSpy = (
+  received: any,
+  matcherName: string,
+  expectedArgument: string,
+  options: MatcherHintOptions,
+) => {
+  if (!isMock(received) && !isSpy(received)) {
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherName, undefined, expectedArgument, options),
+        `${RECEIVED_COLOR('received')} value must be a mock or spy function`,
+        printWithType('Received', received, printReceived),
+      ),
+    );
+  }
+};
 
 const ensureMock = (
   received: any,
@@ -764,15 +788,11 @@ const ensureMock = (
   expectedArgument: string,
   options: MatcherHintOptions,
 ) => {
-  if (
-    !received ||
-    ((received.calls === undefined || received.calls.all === undefined) &&
-      received._isMockFunction !== true)
-  ) {
+  if (!isMock(received)) {
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherName, undefined, expectedArgument, options),
-        `${RECEIVED_COLOR('received')} value must be a mock or spy function`,
+        `${RECEIVED_COLOR('received')} value must be a mock function`,
         printWithType('Received', received, printReceived),
       ),
     );
