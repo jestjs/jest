@@ -66,9 +66,10 @@ function filterTemplate(
 ) {
   let multipleLineCommentCount: number = 0;
   let isSingleLineComment: boolean = false;
-  let skipNext: boolean = false;
 
   function removeCommentsFromLine(line: string): string {
+    let skipNext: boolean = false;
+
     const result = line
       .split('')
       .reduce((acc: Array<string>, character, index, array) => {
@@ -137,7 +138,8 @@ function filterTemplate(
     // remove excess space from all lines
     .map(line =>
       line
-        .split('\n')
+        // https://stackoverflow.com/a/52947649
+        .split(/\r\n|\r|\n/)
         .map(subLine => subLine.trim())
         .join('\n'),
     )

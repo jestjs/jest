@@ -411,6 +411,29 @@ describe('jest-each', () => {
           ]);
         });
 
+        test('removes comments with windows new line characters "\\r\\n"', () => {
+          const globalTestMocks = getGlobalTestMocks();
+          const eachObject = each.withGlobal(
+            globalTestMocks,
+          )`\r\na    | b    | expected\r\n// ${1} | ${1} | ${0}\r\n${1} | ${1} | ${2}\r\n/* ${1} | ${1} | ${5} */\r\n${2} | ${2} | ${4}\r\n`;
+          const testFunction = get(eachObject, keyPath);
+          testFunction('expected string: a=$a, b=$b, expected=$expected', noop);
+
+          const globalMock = get(globalTestMocks, keyPath);
+          expect(globalMock.mock.calls).toEqual([
+            [
+              'expected string: a=1, b=1, expected=2',
+              expect.any(Function),
+              undefined,
+            ],
+            [
+              'expected string: a=2, b=2, expected=4',
+              expect.any(Function),
+              undefined,
+            ],
+          ]);
+        });
+
         test('removes commented out tests and allow spaces between', () => {
           const globalTestMocks = getGlobalTestMocks();
           const eachObject = each.withGlobal(globalTestMocks)`
