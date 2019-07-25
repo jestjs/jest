@@ -938,7 +938,7 @@ The glob patterns Jest uses to detect test files. By default it looks for `.js`,
 
 See the [micromatch](https://github.com/jonschlinkert/micromatch) package for details of the patterns you can specify.
 
-See also [`testRegex` [string | Array<string>]](#testregex-string), but note that you cannot specify both options.
+See also [`testRegex` [string | Array<string>]](#testregex-string-array-string), but note that you cannot specify both options.
 
 ### `testPathIgnorePatterns` [array<string>]
 
