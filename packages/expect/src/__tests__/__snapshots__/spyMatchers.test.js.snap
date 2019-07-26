@@ -114,7 +114,7 @@ exports[`lastCalledWith works with many arguments 1`] = `
 Expected: not <green>\\"foo\\"</>, <green>\\"bar\\"</>
 Received
        2:     <red>\\"foo\\"</>, <red>\\"bar1\\"</>
-       3:     <red>\\"foo\\"</>, <red>\\"bar\\"</>
+->     3:     <red>\\"foo\\"</>, <red>\\"bar\\"</>
 
 Number of calls: <red>3</>"
 `;
@@ -1508,7 +1508,7 @@ exports[`toHaveBeenLastCalledWith works with many arguments 1`] = `
 Expected: not <green>\\"foo\\"</>, <green>\\"bar\\"</>
 Received
        2:     <red>\\"foo\\"</>, <red>\\"bar1\\"</>
-       3:     <red>\\"foo\\"</>, <red>\\"bar\\"</>
+->     3:     <red>\\"foo\\"</>, <red>\\"bar\\"</>
 
 Number of calls: <red>3</>"
 `;

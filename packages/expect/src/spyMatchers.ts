@@ -523,6 +523,7 @@ const createLastCalledWithMatcher = (matcherName: string) =>
                   'Received:     ',
                   indexedCalls,
                   calls.length === 1,
+                  iLast,
                 )) +
             `\nNumber of calls: ${printReceived(calls.length)}`
           );
