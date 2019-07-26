@@ -27,10 +27,20 @@ const PRINT_LIMIT = 3;
 const CALL_PRINT_LIMIT = 3;
 const LAST_CALL_PRINT_LIMIT = 1;
 
+const NO_ARGUMENTS = 'called with 0 arguments';
+
+const printExpectedArgs = (args: Array<unknown>): string =>
+  args.length === 0
+    ? NO_ARGUMENTS
+    : args.map(arg => printExpected(arg)).join(', ');
+
 const printReceivedArgs = (args: Array<unknown>): string =>
   args.length === 0
-    ? 'called with no arguments'
+    ? NO_ARGUMENTS
     : args.map(arg => printReceived(arg)).join(', ');
+
+const isEqualCall = (expected: unknown, args: any): boolean =>
+  equals(expected, args, [iterableEquality]);
 
 const isEqualReturn = (expected: unknown, result: any): boolean =>
   result.type === 'return' &&
@@ -66,6 +76,40 @@ const getRightAlignedPrinter = (label: string): PrintLabel => {
       : ' '.repeat(Math.max(index - string.length))) +
     string +
     suffix;
+};
+
+type IndexedCall = [number, Array<unknown>];
+
+// Return either empty string or one line per indexed result,
+// so additional empty line can separate from `Number of returns` which follows.
+const printReceivedCalls = (
+  label: string,
+  indexedCalls: Array<IndexedCall>,
+  isOnlyCall: boolean,
+  iExpectedCall?: number,
+) => {
+  if (indexedCalls.length === 0) {
+    return '';
+  }
+
+  if (isOnlyCall) {
+    return label + printReceivedArgs(indexedCalls[0]) + '\n';
+  }
+
+  const printAligned = getRightAlignedPrinter(label);
+
+  return (
+    label.replace(':', '').trim() +
+    '\n' +
+    indexedCalls.reduce(
+      (printed: string, [i, args]: IndexedCall) =>
+        printed +
+        printAligned(String(i + 1), i === iExpectedCall) +
+        printReceivedArgs(args) +
+        '\n',
+      '',
+    )
+  );
 };
 
 const printResult = (result: any) =>
@@ -309,7 +353,7 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureMockOrSpy(received, matcherName.slice(1), expectedArgument, options);
+    ensureMockOrSpy(received, matcherName, expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
@@ -323,19 +367,37 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
       ? received.calls.all().map((x: any) => x.args)
       : received.mock.calls;
 
-    const [match, fail] = partition(calls, call =>
-      equals(call, expected, [iterableEquality]),
-    );
+    const [match, fail] = partition(calls, call => isEqualCall(expected, call));
     const pass = match.length > 0;
 
     const message = pass
-      ? () =>
-          matcherHint('.not' + matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} not to have been called with:\n` +
-          `  ${printExpected(expected)}`
+      ? () => {
+          // Some examples of calls that are equal to expected value.
+          const indexedCalls: Array<IndexedCall> = [];
+          let i = 0;
+          while (i < calls.length && indexedCalls.length < PRINT_LIMIT) {
+            if (isEqualCall(expected, calls[i])) {
+              indexedCalls.push([i, calls[i]]);
+            }
+            i += 1;
+          }
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: not ${printExpectedArgs(expected)}\n` +
+            (calls.length === 1 && stringify(calls[0]) === stringify(expected)
+              ? ''
+              : printReceivedCalls(
+                  'Received:     ',
+                  indexedCalls,
+                  calls.length === 1,
+                )) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
+          );
+        }
       : () =>
-          matcherHint(matcherName, receivedName) +
+          matcherHint('.' + matcherName, receivedName) +
           '\n\n' +
           `Expected ${identifier} to have been called with:\n` +
           formatMismatchedCalls(fail, expected, CALL_PRINT_LIMIT);
@@ -425,7 +487,7 @@ const createLastCalledWithMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureMockOrSpy(received, matcherName.slice(1), expectedArgument, options);
+    ensureMockOrSpy(received, matcherName, expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
@@ -434,19 +496,39 @@ const createLastCalledWithMatcher = (matcherName: string) =>
       receivedIsSpy || receivedName === 'jest.fn()'
         ? type
         : `${type} "${receivedName}"`;
+
     const calls = receivedIsSpy
       ? received.calls.all().map((x: any) => x.args)
       : received.mock.calls;
-    const pass = equals(calls[calls.length - 1], expected, [iterableEquality]);
+    const iLast = calls.length - 1;
+
+    const pass = iLast >= 0 && isEqualCall(expected, calls[iLast]);
 
     const message = pass
-      ? () =>
-          matcherHint('.not' + matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} to not have been last called with:\n` +
-          `  ${printExpected(expected)}`
+      ? () => {
+          const indexedCalls: Array<IndexedCall> = [];
+          if (iLast > 0) {
+            // Display preceding call as context.
+            indexedCalls.push([iLast - 1, calls[iLast - 1]]);
+          }
+          indexedCalls.push([iLast, calls[iLast]]);
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: not ${printExpectedArgs(expected)}\n` +
+            (calls.length === 1 && stringify(calls[0]) === stringify(expected)
+              ? ''
+              : printReceivedCalls(
+                  'Received:     ',
+                  indexedCalls,
+                  calls.length === 1,
+                )) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
+          );
+        }
       : () =>
-          matcherHint(matcherName, receivedName) +
+          matcherHint('.' + matcherName, receivedName) +
           '\n\n' +
           `Expected ${identifier} to have been last called with:\n` +
           formatMismatchedCalls(calls, expected, LAST_CALL_PRINT_LIMIT);
@@ -549,17 +631,12 @@ const createNthCalledWithMatcher = (matcherName: string) =>
       promise: this.promise,
       secondArgument: '...expected',
     };
-    ensureMockOrSpy(received, matcherName.slice(1), expectedArgument, options);
+    ensureMockOrSpy(received, matcherName, expectedArgument, options);
 
     if (!Number.isSafeInteger(nth) || nth < 1) {
       throw new Error(
         matcherErrorMessage(
-          matcherHint(
-            matcherName.slice(1),
-            undefined,
-            expectedArgument,
-            options,
-          ),
+          matcherHint(matcherName, undefined, expectedArgument, options),
           `${EXPECTED_COLOR(expectedArgument)} must be a positive integer`,
           printWithType(expectedArgument, nth, printExpected),
         ),
@@ -574,21 +651,46 @@ const createNthCalledWithMatcher = (matcherName: string) =>
       receivedIsSpy || receivedName === 'jest.fn()'
         ? type
         : `${type} "${receivedName}"`;
+
     const calls = receivedIsSpy
       ? received.calls.all().map((x: any) => x.args)
       : received.mock.calls;
-    const pass = equals(calls[nth - 1], expected, [iterableEquality]);
+    const length = calls.length;
+    const iNth = nth - 1;
+
+    const pass = iNth < length && isEqualCall(expected, calls[iNth]);
 
     const message = pass
-      ? () =>
-          matcherHint('.not' + matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} ${nthToString(
-            nth,
-          )} call to not have been called with:\n` +
-          `  ${printExpected(expected)}`
+      ? () => {
+          // Display preceding and following calls,
+          // in case assertions fails because index is off by one.
+          const indexedCalls: Array<IndexedCall> = [];
+          if (iNth - 1 >= 0) {
+            indexedCalls.push([iNth - 1, calls[iNth - 1]]);
+          }
+          indexedCalls.push([iNth, calls[iNth]]);
+          if (iNth + 1 < length) {
+            indexedCalls.push([iNth + 1, calls[iNth + 1]]);
+          }
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `n: ${nth}\n` +
+            `Expected: not ${printExpectedArgs(expected)}\n` +
+            (calls.length === 1 && stringify(calls[0]) === stringify(expected)
+              ? ''
+              : printReceivedCalls(
+                  'Received:     ',
+                  indexedCalls,
+                  calls.length === 1,
+                  iNth,
+                )) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
+          );
+        }
       : () =>
-          matcherHint(matcherName, receivedName) +
+          matcherHint('.' + matcherName, receivedName) +
           '\n\n' +
           `Expected ${identifier} ${nthToString(
             nth,
@@ -730,21 +832,21 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
   };
 
 const spyMatchers: MatchersObject = {
-  lastCalledWith: createLastCalledWithMatcher('.lastCalledWith'),
+  lastCalledWith: createLastCalledWithMatcher('lastCalledWith'),
   lastReturnedWith: createLastReturnedMatcher('lastReturnedWith'),
-  nthCalledWith: createNthCalledWithMatcher('.nthCalledWith'),
+  nthCalledWith: createNthCalledWithMatcher('nthCalledWith'),
   nthReturnedWith: createNthReturnedWithMatcher('nthReturnedWith'),
   toBeCalled: createToBeCalledMatcher('toBeCalled'),
   toBeCalledTimes: createToBeCalledTimesMatcher('toBeCalledTimes'),
-  toBeCalledWith: createToBeCalledWithMatcher('.toBeCalledWith'),
+  toBeCalledWith: createToBeCalledWithMatcher('toBeCalledWith'),
   toHaveBeenCalled: createToBeCalledMatcher('toHaveBeenCalled'),
   toHaveBeenCalledTimes: createToBeCalledTimesMatcher('toHaveBeenCalledTimes'),
-  toHaveBeenCalledWith: createToBeCalledWithMatcher('.toHaveBeenCalledWith'),
+  toHaveBeenCalledWith: createToBeCalledWithMatcher('toHaveBeenCalledWith'),
   toHaveBeenLastCalledWith: createLastCalledWithMatcher(
-    '.toHaveBeenLastCalledWith',
+    'toHaveBeenLastCalledWith',
   ),
   toHaveBeenNthCalledWith: createNthCalledWithMatcher(
-    '.toHaveBeenNthCalledWith',
+    'toHaveBeenNthCalledWith',
   ),
   toHaveLastReturnedWith: createLastReturnedMatcher('toHaveLastReturnedWith'),
   toHaveNthReturnedWith: createNthReturnedWithMatcher('toHaveNthReturnedWith'),
