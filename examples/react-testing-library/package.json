@@ -13,7 +13,7 @@
     "@babel/preset-react": "*",
     "babel-jest": "*",
     "jest": "*",
-    "react-testing-library": "*"
+    "@testing-library/react": "*"
   },
   "scripts": {
     "test": "jest"
