@@ -149,9 +149,9 @@ export default class TestScheduler {
         );
 
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
-        aggregatedResults.snapshot.filesRemovedList = [
-          ...(aggregatedResults.snapshot.filesRemovedList || []),
-        ].concat(status.filesRemovedList);
+        aggregatedResults.snapshot.filesRemovedList = (
+          aggregatedResults.snapshot.filesRemovedList || []
+        ).concat(status.filesRemovedList);
       });
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
