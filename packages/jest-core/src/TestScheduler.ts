@@ -145,6 +145,7 @@ export default class TestScheduler {
           context.hasteFS,
           this._globalConfig.updateSnapshot,
           snapshot.buildSnapshotResolver(context.config),
+          context.config.testPathIgnorePatterns,
         );
 
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;

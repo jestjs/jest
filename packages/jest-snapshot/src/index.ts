@@ -122,14 +122,27 @@ const cleanup = (
   hasteFS: HasteFS,
   update: Config.SnapshotUpdateState,
   snapshotResolver: JestSnapshotResolver,
+  testPathIgnorePatterns?: Config.ProjectConfig['testPathIgnorePatterns'],
 ): {
   filesRemoved: number;
   filesRemovedList: Array<string>;
 } => {
   const pattern = '\\.' + EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
+  let testIgnorePatternsRegex: RegExp | null = null;
+  if (testPathIgnorePatterns && testPathIgnorePatterns.length > 0) {
+    testIgnorePatternsRegex = new RegExp(testPathIgnorePatterns.join('|'));
+  }
+
   const list = files.filter(snapshotFile => {
-    if (!fileExists(snapshotResolver.resolveTestPath(snapshotFile), hasteFS)) {
+    const testPath = snapshotResolver.resolveTestPath(snapshotFile);
+
+    // ignore snapshots of ignored tests
+    if (testIgnorePatternsRegex && testIgnorePatternsRegex.test(testPath)) {
+      return false;
+    }
+
+    if (!fileExists(testPath, hasteFS)) {
       if (update === 'all') {
         fs.unlinkSync(snapshotFile);
       }
