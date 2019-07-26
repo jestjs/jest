@@ -1,0 +1,617 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`toThrow asymmetric any-Class fail isNot false 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: <green>Any<Err2></>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow asymmetric any-Class fail isNot true 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: not <green>Any<Err></>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow asymmetric anything fail isNot false 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: <green>Anything</>
+
+Thrown value: <red>null</>
+"
+`;
+
+exports[`toThrow asymmetric anything fail isNot true 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: not <green>Anything</>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow asymmetric no-symbol fail isNot false 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: <green>{\\"asymmetricMatch\\": [Function asymmetricMatch]}</>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow asymmetric no-symbol fail isNot true 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: not <green>{\\"asymmetricMatch\\": [Function asymmetricMatch]}</>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow asymmetric objectContaining fail isNot false 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: <green>ObjectContaining {\\"name\\": \\"NotError\\"}</>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow asymmetric objectContaining fail isNot true 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: not <green>ObjectContaining {\\"name\\": \\"Error\\"}</>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow error class did not throw at all 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: <green>Err</>
+
+Received function did not throw"
+`;
+
+exports[`toThrow error class threw, but class did not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: <green>Err2</>
+Received constructor: <red>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow error class threw, but class did not match (non-error falsey) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: <green>Err2</>
+
+Received value: <red>undefined</>
+"
+`;
+
+exports[`toThrow error class threw, but class should not match (error subclass) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+Received constructor:     <red>SubErr</> extends <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow error class threw, but class should not match (error subsubclass) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+Received constructor:     <red>SubSubErr</> extends … extends <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow error class threw, but class should not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow error-message fail isNot false 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected message: <green>\\"apple\\"</>
+Received message: <red>\\"banana\\"</>
+"
+`;
+
+exports[`toThrow error-message fail isNot true 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected message: not <green>\\"Invalid array length\\"</>
+"
+`;
+
+exports[`toThrow error-message fail multiline diff highlight incorrect expected space 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected message</>
+<red>+ Received message</>
+
+<green>- There is no route defined for key Settings.<inverse> </></>
+<red>+ There is no route defined for key Settings.</>
+<dim>  Must be one of: 'Home'</>
+"
+`;
+
+exports[`toThrow expected is undefined threw, but should not have (non-error falsey) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>()</>
+
+Thrown value: <red>null</>
+"
+`;
+
+exports[`toThrow invalid actual 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>()</>
+
+<bold>Matcher error</>: <red>received</> value must be a function
+
+Received has type:  string
+Received has value: <red>\\"a string\\"</>"
+`;
+
+exports[`toThrow invalid arguments 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a string or regular expression or class or error
+
+Expected has type:  number
+Expected has value: <green>111</>"
+`;
+
+exports[`toThrow promise/async throws if Error-like object is returned did not throw at all 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrow<dim>()</>
+
+Received function did not throw"
+`;
+
+exports[`toThrow promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: <green>Err2</>
+Received constructor: <red>Err</>
+
+Received message: <red>\\"async apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow promise/async throws if Error-like object is returned threw, but should not have 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toThrow<dim>()</>
+
+Error name:    <red>\\"Error\\"</>
+Error message: <red>\\"async apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow regexp did not throw at all 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected pattern: <green>/apple/</>
+
+Received function did not throw"
+`;
+
+exports[`toThrow regexp threw, but message did not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected pattern: <green>/banana/</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow regexp threw, but message did not match (non-error falsey) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected pattern: <green>/^[123456789]\\\\d*/</>
+Received value:   <red>0</>
+"
+`;
+
+exports[`toThrow regexp threw, but message should not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected pattern: not <green>/ array /</>
+Received message:     <red>\\"Invalid<inverse> array </>length\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow regexp threw, but message should not match (non-error truthy) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected pattern: not <green>/^[123456789]\\\\d*/</>
+Received value:       <red>404</>
+"
+`;
+
+exports[`toThrow substring did not throw at all 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected substring: <green>\\"apple\\"</>
+
+Received function did not throw"
+`;
+
+exports[`toThrow substring threw, but message did not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected substring: <green>\\"banana\\"</>
+Received message:   <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow substring threw, but message did not match (non-error falsey) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected substring: <green>\\"Server Error\\"</>
+Received value:     <red>\\"\\"</>
+"
+`;
+
+exports[`toThrow substring threw, but message should not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected substring: not <green>\\"array\\"</>
+Received message:       <red>\\"Invalid <inverse>array</> length\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrow substring threw, but message should not match (non-error truthy) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrow<dim>(</><green>expected</><dim>)</>
+
+Expected substring: not <green>\\"Server Error\\"</>
+Received value:         <red>\\"Internal Server Error\\"</>
+"
+`;
+
+exports[`toThrowError asymmetric any-Class fail isNot false 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: <green>Any<Err2></>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError asymmetric any-Class fail isNot true 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: not <green>Any<Err></>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError asymmetric anything fail isNot false 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: <green>Anything</>
+
+Thrown value: <red>null</>
+"
+`;
+
+exports[`toThrowError asymmetric anything fail isNot true 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: not <green>Anything</>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError asymmetric no-symbol fail isNot false 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: <green>{\\"asymmetricMatch\\": [Function asymmetricMatch]}</>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError asymmetric no-symbol fail isNot true 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: not <green>{\\"asymmetricMatch\\": [Function asymmetricMatch]}</>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError asymmetric objectContaining fail isNot false 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: <green>ObjectContaining {\\"name\\": \\"NotError\\"}</>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError asymmetric objectContaining fail isNot true 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected asymmetric matcher: not <green>ObjectContaining {\\"name\\": \\"Error\\"}</>
+
+Received name:    <red>\\"Error\\"</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError error class did not throw at all 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: <green>Err</>
+
+Received function did not throw"
+`;
+
+exports[`toThrowError error class threw, but class did not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: <green>Err2</>
+Received constructor: <red>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError error class threw, but class did not match (non-error falsey) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: <green>Err2</>
+
+Received value: <red>undefined</>
+"
+`;
+
+exports[`toThrowError error class threw, but class should not match (error subclass) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+Received constructor:     <red>SubErr</> extends <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError error class threw, but class should not match (error subsubclass) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+Received constructor:     <red>SubSubErr</> extends … extends <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError error class threw, but class should not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: not <green>Err</>
+
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError error-message fail isNot false 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected message: <green>\\"apple\\"</>
+Received message: <red>\\"banana\\"</>
+"
+`;
+
+exports[`toThrowError error-message fail isNot true 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected message: not <green>\\"Invalid array length\\"</>
+"
+`;
+
+exports[`toThrowError error-message fail multiline diff highlight incorrect expected space 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected message</>
+<red>+ Received message</>
+
+<green>- There is no route defined for key Settings.<inverse> </></>
+<red>+ There is no route defined for key Settings.</>
+<dim>  Must be one of: 'Home'</>
+"
+`;
+
+exports[`toThrowError expected is undefined threw, but should not have (non-error falsey) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>()</>
+
+Thrown value: <red>null</>
+"
+`;
+
+exports[`toThrowError invalid actual 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>()</>
+
+<bold>Matcher error</>: <red>received</> value must be a function
+
+Received has type:  string
+Received has value: <red>\\"a string\\"</>"
+`;
+
+exports[`toThrowError invalid arguments 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+<bold>Matcher error</>: <green>expected</> value must be a string or regular expression or class or error
+
+Expected has type:  number
+Expected has value: <green>111</>"
+`;
+
+exports[`toThrowError promise/async throws if Error-like object is returned did not throw at all 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrowError<dim>()</>
+
+Received function did not throw"
+`;
+
+exports[`toThrowError promise/async throws if Error-like object is returned threw, but class did not match 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected constructor: <green>Err2</>
+Received constructor: <red>Err</>
+
+Received message: <red>\\"async apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError promise/async throws if Error-like object is returned threw, but should not have 1`] = `
+"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toThrowError<dim>()</>
+
+Error name:    <red>\\"Error\\"</>
+Error message: <red>\\"async apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError regexp did not throw at all 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected pattern: <green>/apple/</>
+
+Received function did not throw"
+`;
+
+exports[`toThrowError regexp threw, but message did not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected pattern: <green>/banana/</>
+Received message: <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError regexp threw, but message did not match (non-error falsey) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected pattern: <green>/^[123456789]\\\\d*/</>
+Received value:   <red>0</>
+"
+`;
+
+exports[`toThrowError regexp threw, but message should not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected pattern: not <green>/ array /</>
+Received message:     <red>\\"Invalid<inverse> array </>length\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError regexp threw, but message should not match (non-error truthy) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected pattern: not <green>/^[123456789]\\\\d*/</>
+Received value:       <red>404</>
+"
+`;
+
+exports[`toThrowError substring did not throw at all 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected substring: <green>\\"apple\\"</>
+
+Received function did not throw"
+`;
+
+exports[`toThrowError substring threw, but message did not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected substring: <green>\\"banana\\"</>
+Received message:   <red>\\"apple\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError substring threw, but message did not match (non-error falsey) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected substring: <green>\\"Server Error\\"</>
+Received value:     <red>\\"\\"</>
+"
+`;
+
+exports[`toThrowError substring threw, but message should not match (error) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected substring: not <green>\\"array\\"</>
+Received message:       <red>\\"Invalid <inverse>array</> length\\"</>
+
+      <dim>at jestExpect (</>packages/expect/src/__tests__/toThrowMatchers-test.js<dim>:24:74)</>"
+`;
+
+exports[`toThrowError substring threw, but message should not match (non-error truthy) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toThrowError<dim>(</><green>expected</><dim>)</>
+
+Expected substring: not <green>\\"Server Error\\"</>
+Received value:         <red>\\"Internal Server Error\\"</>
+"
+`;

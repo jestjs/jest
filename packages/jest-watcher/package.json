@@ -6,7 +6,7 @@
   "dependencies": {
     "@jest/test-result": "^24.8.0",
     "@jest/types": "^24.8.0",
-    "@types/yargs": "^12.0.9",
+    "@types/yargs": "^13.0.0",
     "ansi-escapes": "^3.0.0",
     "chalk": "^2.0.1",
     "jest-util": "^24.8.0",

@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 import {
@@ -14,19 +13,101 @@ import {
   matcherErrorMessage,
   matcherHint,
   MatcherHintOptions,
-  pluralize,
   printExpected,
   printReceived,
   printWithType,
   RECEIVED_COLOR,
+  stringify,
 } from 'jest-matcher-utils';
 import {MatchersObject, MatcherState, SyncExpectationResult} from './types';
 import {equals} from './jasmineUtils';
 import {iterableEquality, partition, isOneline} from './utils';
 
+const PRINT_LIMIT = 3;
 const CALL_PRINT_LIMIT = 3;
-const RETURN_PRINT_LIMIT = 5;
 const LAST_CALL_PRINT_LIMIT = 1;
+
+const printReceivedArgs = (args: Array<unknown>): string =>
+  args.length === 0
+    ? 'called with no arguments'
+    : args.map(arg => printReceived(arg)).join(', ');
+
+const isEqualReturn = (expected: unknown, result: any): boolean =>
+  result.type === 'return' &&
+  equals(expected, result.value, [iterableEquality]);
+
+const countReturns = (results: Array<any>): number =>
+  results.reduce(
+    (n: number, result: any) => (result.type === 'return' ? n + 1 : n),
+    0,
+  );
+
+const printNumberOfReturns = (
+  countReturns: number,
+  countCalls: number,
+): string =>
+  `\nNumber of returns: ${printReceived(countReturns)}` +
+  (countCalls !== countReturns
+    ? `\nNumber of calls:   ${printReceived(countCalls)}`
+    : '');
+
+type PrintLabel = (string: string, isExpectedCall: boolean) => string;
+
+// Given a label, return a function which given a string,
+// right-aligns it preceding the colon in the label.
+const getRightAlignedPrinter = (label: string): PrintLabel => {
+  // Assume that the label contains a colon.
+  const index = label.indexOf(':');
+  const suffix = label.slice(index);
+
+  return (string: string, isExpectedCall: boolean) =>
+    (isExpectedCall
+      ? '->' + ' '.repeat(Math.max(0, index - 2 - string.length))
+      : ' '.repeat(Math.max(index - string.length))) +
+    string +
+    suffix;
+};
+
+const printResult = (result: any) =>
+  result.type === 'throw'
+    ? 'function call threw an error'
+    : result.type === 'incomplete'
+    ? 'function call has not returned yet'
+    : printReceived(result.value);
+
+type IndexedResult = [number, any];
+
+// Return either empty string or one line per indexed result,
+// so additional empty line can separate from `Number of returns` which follows.
+const printReceivedResults = (
+  label: string,
+  indexedResults: Array<IndexedResult>,
+  isOnlyCall: boolean,
+  iExpectedCall?: number,
+) => {
+  if (indexedResults.length === 0) {
+    return '';
+  }
+
+  if (isOnlyCall) {
+    return label + printResult(indexedResults[0][1]) + '\n';
+  }
+
+  const printAligned = getRightAlignedPrinter(label);
+
+  return (
+    label.replace(':', '').trim() +
+    '\n' +
+    indexedResults.reduce(
+      (printed: string, [i, result]: IndexedResult) =>
+        printed +
+        printAligned(String(i + 1), i === iExpectedCall) +
+        printResult(result) +
+        '\n',
+      '',
+    )
+  );
+};
 
 const createToBeCalledMatcher = (matcherName: string) =>
   function(
@@ -39,16 +120,11 @@ const createToBeCalledMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureNoExpected(expected, matcherName.slice(1), options);
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureNoExpected(expected, matcherName, options);
+    ensureMockOrSpy(received, matcherName, expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
-    const type = receivedIsSpy ? 'spy' : 'mock function';
     const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-    const identifier =
-      receivedIsSpy || receivedName === 'jest.fn()'
-        ? type
-        : `${type} "${receivedName}"`;
     const count = receivedIsSpy
       ? received.calls.count()
       : received.mock.calls.length;
@@ -58,14 +134,24 @@ const createToBeCalledMatcher = (matcherName: string) =>
     const pass = count > 0;
     const message = pass
       ? () =>
-          matcherHint('.not' + matcherName, receivedName, '') +
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
-          `Expected ${identifier} not to be called ` +
-          formatReceivedCalls(calls, CALL_PRINT_LIMIT, {sameSentence: true})
+          `Expected number of calls: ${printExpected(0)}\n` +
+          `Received number of calls: ${printReceived(count)}\n\n` +
+          calls
+            .reduce((lines: Array<string>, args: any, i: number) => {
+              if (lines.length < PRINT_LIMIT) {
+                lines.push(`${i + 1}: ${printReceivedArgs(args)}`);
+              }
+
+              return lines;
+            }, [])
+            .join('\n')
       : () =>
-          matcherHint(matcherName, receivedName, '') +
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
-          `Expected ${identifier} to have been called, but it was not called.`;
+          `Expected number of calls: >= ${printExpected(1)}\n` +
+          `Received number of calls:    ${printReceived(count)}`;
 
     return {message, pass};
   };
@@ -81,33 +167,49 @@ const createToReturnMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureNoExpected(expected, matcherName.slice(1), options);
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureNoExpected(expected, matcherName, options);
+    ensureMock(received, matcherName, expectedArgument, options);
 
     const receivedName = received.getMockName();
-    const identifier =
-      receivedName === 'jest.fn()'
-        ? 'mock function'
-        : `mock function "${receivedName}"`;
 
-    // List of return values that correspond only to calls that returned
-    const returnValues = received.mock.results
-      .filter((result: any) => result.type === 'return')
-      .map((result: any) => result.value);
+    // Count return values that correspond only to calls that returned
+    const count = received.mock.results.reduce(
+      (n: number, result: any) => (result.type === 'return' ? n + 1 : n),
+      0,
+    );
 
-    const count = returnValues.length;
     const pass = count > 0;
 
     const message = pass
       ? () =>
-          matcherHint('.not' + matcherName, receivedName, '') +
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
-          `Expected ${identifier} not to have returned, but it returned:\n` +
-          `  ${getPrintedReturnValues(returnValues, RETURN_PRINT_LIMIT)}`
+          `Expected number of returns: ${printExpected(0)}\n` +
+          `Received number of returns: ${printReceived(count)}\n\n` +
+          received.mock.results
+            .reduce((lines: Array<string>, result: any, i: number) => {
+              if (result.type === 'return' && lines.length < PRINT_LIMIT) {
+                lines.push(`${i + 1}: ${printReceived(result.value)}`);
+              }
+
+              return lines;
+            }, [])
+            .join('\n') +
+          (received.mock.calls.length !== count
+            ? `\n\nReceived number of calls:   ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '')
       : () =>
-          matcherHint(matcherName, receivedName, '') +
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
-          `Expected ${identifier} to have returned.`;
+          `Expected number of returns: >= ${printExpected(1)}\n` +
+          `Received number of returns:    ${printReceived(count)}` +
+          (received.mock.calls.length !== count
+            ? `\nReceived number of calls:      ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '');
 
     return {message, pass};
   };
@@ -123,33 +225,27 @@ const createToBeCalledTimesMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureExpectedIsNumber(expected, matcherName.slice(1), options);
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureExpectedIsNumber(expected, matcherName, options);
+    ensureMockOrSpy(received, matcherName, expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
-    const type = receivedIsSpy ? 'spy' : 'mock function';
     const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-    const identifier =
-      receivedIsSpy || receivedName === 'jest.fn()'
-        ? type
-        : `${type} "${receivedName}"`;
     const count = receivedIsSpy
       ? received.calls.count()
       : received.mock.calls.length;
+
     const pass = count === expected;
+
     const message = pass
       ? () =>
-          matcherHint('.not' + matcherName, receivedName, String(expected)) +
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
           `\n\n` +
-          `Expected ${identifier} not to be called ` +
-          `${EXPECTED_COLOR(pluralize('time', expected))}, but it was` +
-          ` called exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
+          `Expected number of calls: not ${printExpected(expected)}`
       : () =>
-          matcherHint(matcherName, receivedName, String(expected)) +
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
-          `Expected ${identifier} to have been called ` +
-          `${EXPECTED_COLOR(pluralize('time', expected))},` +
-          ` but it was called ${RECEIVED_COLOR(pluralize('time', count))}.`;
+          `Expected number of calls: ${printExpected(expected)}\n` +
+          `Received number of calls: ${printReceived(count)}`;
 
     return {message, pass};
   };
@@ -165,36 +261,39 @@ const createToReturnTimesMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureExpectedIsNumber(expected, matcherName.slice(1), options);
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureExpectedIsNumber(expected, matcherName, options);
+    ensureMock(received, matcherName, expectedArgument, options);
 
     const receivedName = received.getMockName();
-    const identifier =
-      receivedName === 'jest.fn()'
-        ? 'mock function'
-        : `mock function "${receivedName}"`;
 
-    // List of return results that correspond only to calls that returned
-    const returnResults = received.mock.results.filter(
-      (result: any) => result.type === 'return',
+    // Count return values that correspond only to calls that returned
+    const count = received.mock.results.reduce(
+      (n: number, result: any) => (result.type === 'return' ? n + 1 : n),
+      0,
     );
 
-    const count = returnResults.length;
     const pass = count === expected;
 
     const message = pass
       ? () =>
-          matcherHint('.not' + matcherName, receivedName, String(expected)) +
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
           `\n\n` +
-          `Expected ${identifier} not to have returned ` +
-          `${EXPECTED_COLOR(pluralize('time', expected))}, but it` +
-          ` returned exactly ${RECEIVED_COLOR(pluralize('time', count))}.`
+          `Expected number of returns: not ${printExpected(expected)}` +
+          (received.mock.calls.length !== count
+            ? `\n\nReceived number of calls:       ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '')
       : () =>
-          matcherHint(matcherName, receivedName, String(expected)) +
+          matcherHint(matcherName, receivedName, expectedArgument, options) +
           '\n\n' +
-          `Expected ${identifier} to have returned ` +
-          `${EXPECTED_COLOR(pluralize('time', expected))},` +
-          ` but it returned ${RECEIVED_COLOR(pluralize('time', count))}.`;
+          `Expected number of returns: ${printExpected(expected)}\n` +
+          `Received number of returns: ${printReceived(count)}` +
+          (received.mock.calls.length !== count
+            ? `\nReceived number of calls:   ${printReceived(
+                received.mock.calls.length,
+              )}`
+            : '');
 
     return {message, pass};
   };
@@ -210,7 +309,7 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureMockOrSpy(received, matcherName.slice(1), expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
@@ -255,41 +354,62 @@ const createToReturnWithMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureMock(received, matcherName, expectedArgument, options);
 
     const receivedName = received.getMockName();
-    const identifier =
-      receivedName === 'jest.fn()'
-        ? 'mock function'
-        : `mock function "${receivedName}"`;
+    const {calls, results} = received.mock;
 
-    // List of return values that correspond only to calls that returned
-    const returnValues = received.mock.results
-      .filter((result: any) => result.type === 'return')
-      .map((result: any) => result.value);
-
-    const [match] = partition(returnValues, value =>
-      equals(expected, value, [iterableEquality]),
-    );
-    const pass = match.length > 0;
+    const pass = results.some((result: any) => isEqualReturn(expected, result));
 
     const message = pass
-      ? () =>
-          matcherHint('.not' + matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} not to have returned:\n` +
-          `  ${printExpected(expected)}\n` +
-          `But it returned exactly:\n` +
-          `  ${printReceived(expected)}`
-      : () =>
-          matcherHint(matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} to have returned:\n` +
-          formatMismatchedReturnValues(
-            returnValues,
-            expected,
-            RETURN_PRINT_LIMIT,
+      ? () => {
+          // Some examples of results that are equal to expected value.
+          const indexedResults: Array<IndexedResult> = [];
+          let i = 0;
+          while (i < results.length && indexedResults.length < PRINT_LIMIT) {
+            if (isEqualReturn(expected, results[i])) {
+              indexedResults.push([i, results[i]]);
+            }
+            i += 1;
+          }
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: not ${printExpected(expected)}\n` +
+            (results.length === 1 &&
+            results[0].type === 'return' &&
+            stringify(results[0].value) === stringify(expected)
+              ? ''
+              : printReceivedResults(
+                  'Received:     ',
+                  indexedResults,
+                  results.length === 1,
+                )) +
+            printNumberOfReturns(countReturns(results), calls.length)
           );
+        }
+      : () => {
+          // Some examples of results that are not equal to expected value.
+          const indexedResults: Array<IndexedResult> = [];
+          let i = 0;
+          while (i < results.length && indexedResults.length < PRINT_LIMIT) {
+            indexedResults.push([i, results[i]]);
+            i += 1;
+          }
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: ${printExpected(expected)}\n` +
+            printReceivedResults(
+              'Received: ',
+              indexedResults,
+              results.length === 1,
+            ) +
+            printNumberOfReturns(countReturns(results), calls.length)
+          );
+        };
 
     return {message, pass};
   };
@@ -305,7 +425,7 @@ const createLastCalledWithMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureMockOrSpy(received, matcherName.slice(1), expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
@@ -345,43 +465,73 @@ const createLastReturnedMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureMock(received, matcherName, expectedArgument, options);
 
     const receivedName = received.getMockName();
-    const identifier =
-      receivedName === 'jest.fn()'
-        ? 'mock function'
-        : `mock function "${receivedName}"`;
 
-    const results = received.mock.results;
-    const lastResult = results[results.length - 1];
-    const pass =
-      !!lastResult &&
-      lastResult.type === 'return' &&
-      equals(lastResult.value, expected, [iterableEquality]);
+    const {calls, results} = received.mock;
+    const iLast = results.length - 1;
+
+    const pass = iLast >= 0 && isEqualReturn(expected, results[iLast]);
 
     const message = pass
-      ? () =>
-          matcherHint('.not' + matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} to not have last returned:\n` +
-          `  ${printExpected(expected)}\n` +
-          `But it last returned exactly:\n` +
-          `  ${printReceived(lastResult.value)}`
-      : () =>
-          matcherHint(matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} to have last returned:\n` +
-          `  ${printExpected(expected)}\n` +
-          (!lastResult
-            ? `But it was ${RECEIVED_COLOR('not called')}`
-            : lastResult.type === 'incomplete'
-            ? `But the last call ${RECEIVED_COLOR('has not returned yet')}`
-            : lastResult.type === 'throw'
-            ? `But the last call ${RECEIVED_COLOR('threw an error')}`
-            : `But the last call returned:\n  ${printReceived(
-                lastResult.value,
-              )}`);
+      ? () => {
+          const indexedResults: Array<IndexedResult> = [];
+          if (iLast > 0) {
+            // Display preceding result as context.
+            indexedResults.push([iLast - 1, results[iLast - 1]]);
+          }
+          indexedResults.push([iLast, results[iLast]]);
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: not ${printExpected(expected)}\n` +
+            (results.length === 1 &&
+            results[0].type === 'return' &&
+            stringify(results[0].value) === stringify(expected)
+              ? ''
+              : printReceivedResults(
+                  'Received:     ',
+                  indexedResults,
+                  results.length === 1,
+                  iLast,
+                )) +
+            printNumberOfReturns(countReturns(results), calls.length)
+          );
+        }
+      : () => {
+          const indexedResults: Array<IndexedResult> = [];
+          if (iLast >= 0) {
+            if (iLast > 0) {
+              let i = iLast - 1;
+              // Is there a preceding result that is equal to expected value?
+              while (i >= 0 && !isEqualReturn(expected, results[i])) {
+                i -= 1;
+              }
+              if (i < 0) {
+                i = iLast - 1; // otherwise, preceding result
+              }
+
+              indexedResults.push([i, results[i]]);
+            }
+
+            indexedResults.push([iLast, results[iLast]]);
+          }
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `Expected: ${printExpected(expected)}\n` +
+            printReceivedResults(
+              'Received: ',
+              indexedResults,
+              results.length === 1,
+              iLast,
+            ) +
+            printNumberOfReturns(countReturns(results), calls.length)
+          );
+        };
 
     return {message, pass};
   };
@@ -399,20 +549,25 @@ const createNthCalledWithMatcher = (matcherName: string) =>
       promise: this.promise,
       secondArgument: '...expected',
     };
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureMockOrSpy(received, matcherName.slice(1), expectedArgument, options);
+
+    if (!Number.isSafeInteger(nth) || nth < 1) {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(
+            matcherName.slice(1),
+            undefined,
+            expectedArgument,
+            options,
+          ),
+          `${EXPECTED_COLOR(expectedArgument)} must be a positive integer`,
+          printWithType(expectedArgument, nth, printExpected),
+        ),
+      );
+    }
 
     const receivedIsSpy = isSpy(received);
     const type = receivedIsSpy ? 'spy' : 'mock function';
-
-    // @ts-ignore
-    if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
-      const message = () =>
-        `nth value ${printReceived(
-          nth,
-        )} must be a positive integer greater than ${printExpected(0)}`;
-      const pass = false;
-      return {message, pass};
-    }
 
     const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
     const identifier =
@@ -460,71 +615,130 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
       promise: this.promise,
       secondArgument: 'expected',
     };
-    ensureMock(received, matcherName.slice(1), expectedArgument, options);
+    ensureMock(received, matcherName, expectedArgument, options);
 
-    //@ts-ignore
-    if (typeof nth !== 'number' || parseInt(nth, 10) !== nth || nth < 1) {
-      const message = () =>
-        `nth value ${printReceived(
-          nth,
-        )} must be a positive integer greater than ${printExpected(0)}`;
-      const pass = false;
-      return {message, pass};
+    if (!Number.isSafeInteger(nth) || nth < 1) {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, expectedArgument, options),
+          `${EXPECTED_COLOR(expectedArgument)} must be a positive integer`,
+          printWithType(expectedArgument, nth, printExpected),
+        ),
+      );
     }
 
     const receivedName = received.getMockName();
-    const identifier =
-      receivedName === 'jest.fn()'
-        ? 'mock function'
-        : `mock function "${receivedName}"`;
+    const {calls, results} = received.mock;
+    const length = results.length;
+    const iNth = nth - 1;
 
-    const results = received.mock.results;
-    const nthResult = results[nth - 1];
-    const pass =
-      !!nthResult &&
-      nthResult.type === 'return' &&
-      equals(nthResult.value, expected, [iterableEquality]);
-    const nthString = nthToString(nth);
+    const pass = iNth < length && isEqualReturn(expected, results[iNth]);
+
     const message = pass
-      ? () =>
-          matcherHint('.not' + matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} ${nthString} call to not have returned with:\n` +
-          `  ${printExpected(expected)}\n` +
-          `But the ${nthString} call returned exactly:\n` +
-          `  ${printReceived(nthResult.value)}`
-      : () =>
-          matcherHint(matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} ${nthString} call to have returned with:\n` +
-          `  ${printExpected(expected)}\n` +
-          (results.length === 0
-            ? `But it was ${RECEIVED_COLOR('not called')}`
-            : nth > results.length
-            ? `But it was only called ${printReceived(results.length)} times`
-            : nthResult.type === 'incomplete'
-            ? `But the ${nthString} call ${RECEIVED_COLOR(
-                'has not returned yet',
-              )}`
-            : nthResult.type === 'throw'
-            ? `But the ${nthString} call ${RECEIVED_COLOR('threw an error')}`
-            : `But the ${nthString} call returned with:\n  ${printReceived(
-                nthResult.value,
-              )}`);
+      ? () => {
+          // Display preceding and following results,
+          // in case assertions fails because index is off by one.
+          const indexedResults: Array<IndexedResult> = [];
+          if (iNth - 1 >= 0) {
+            indexedResults.push([iNth - 1, results[iNth - 1]]);
+          }
+          indexedResults.push([iNth, results[iNth]]);
+          if (iNth + 1 < length) {
+            indexedResults.push([iNth + 1, results[iNth + 1]]);
+          }
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `n: ${nth}\n` +
+            `Expected: not ${printExpected(expected)}\n` +
+            (results.length === 1 &&
+            results[0].type === 'return' &&
+            stringify(results[0].value) === stringify(expected)
+              ? ''
+              : printReceivedResults(
+                  'Received:     ',
+                  indexedResults,
+                  results.length === 1,
+                  iNth,
+                )) +
+            printNumberOfReturns(countReturns(results), calls.length)
+          );
+        }
+      : () => {
+          // Display preceding and following results:
+          // * nearest result that is equal to expected value
+          // * otherwise, adjacent result
+          // in case assertions fails because of index, especially off by one.
+          const indexedResults: Array<IndexedResult> = [];
+          if (iNth < length) {
+            if (iNth - 1 >= 0) {
+              let i = iNth - 1;
+              // Is there a preceding result that is equal to expected value?
+              while (i >= 0 && !isEqualReturn(expected, results[i])) {
+                i -= 1;
+              }
+              if (i < 0) {
+                i = iNth - 1; // otherwise, adjacent result
+              }
+
+              indexedResults.push([i, results[i]]);
+            }
+            indexedResults.push([iNth, results[iNth]]);
+            if (iNth + 1 < length) {
+              let i = iNth + 1;
+              // Is there a following result that is equal to expected value?
+              while (i < length && !isEqualReturn(expected, results[i])) {
+                i += 1;
+              }
+              if (i >= length) {
+                i = iNth + 1; // otherwise, adjacent result
+              }
+
+              indexedResults.push([i, results[i]]);
+            }
+          } else if (length > 0) {
+            // The number of received calls is fewer than the expected number.
+            let i = length - 1;
+            // Is there a result that is equal to expected value?
+            while (i >= 0 && !isEqualReturn(expected, results[i])) {
+              i -= 1;
+            }
+            if (i < 0) {
+              i = length - 1; // otherwise, last result
+            }
+
+            indexedResults.push([i, results[i]]);
+          }
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `n: ${nth}\n` +
+            `Expected: ${printExpected(expected)}\n` +
+            printReceivedResults(
+              'Received: ',
+              indexedResults,
+              results.length === 1,
+              iNth,
+            ) +
+            printNumberOfReturns(countReturns(results), calls.length)
+          );
+        };
 
     return {message, pass};
   };
 
 const spyMatchers: MatchersObject = {
   lastCalledWith: createLastCalledWithMatcher('.lastCalledWith'),
-  lastReturnedWith: createLastReturnedMatcher('.lastReturnedWith'),
+  lastReturnedWith: createLastReturnedMatcher('lastReturnedWith'),
   nthCalledWith: createNthCalledWithMatcher('.nthCalledWith'),
-  nthReturnedWith: createNthReturnedWithMatcher('.nthReturnedWith'),
-  toBeCalled: createToBeCalledMatcher('.toBeCalled'),
-  toBeCalledTimes: createToBeCalledTimesMatcher('.toBeCalledTimes'),
+  nthReturnedWith: createNthReturnedWithMatcher('nthReturnedWith'),
+  toBeCalled: createToBeCalledMatcher('toBeCalled'),
+  toBeCalledTimes: createToBeCalledTimesMatcher('toBeCalledTimes'),
   toBeCalledWith: createToBeCalledWithMatcher('.toBeCalledWith'),
-  toHaveBeenCalled: createToBeCalledMatcher('.toHaveBeenCalled'),
-  toHaveBeenCalledTimes: createToBeCalledTimesMatcher('.toHaveBeenCalledTimes'),
+  toHaveBeenCalled: createToBeCalledMatcher('toHaveBeenCalled'),
+  toHaveBeenCalledTimes: createToBeCalledTimesMatcher('toHaveBeenCalledTimes'),
   toHaveBeenCalledWith: createToBeCalledWithMatcher('.toHaveBeenCalledWith'),
   toHaveBeenLastCalledWith: createLastCalledWithMatcher(
     '.toHaveBeenLastCalledWith',
@@ -532,17 +746,41 @@ const spyMatchers: MatchersObject = {
   toHaveBeenNthCalledWith: createNthCalledWithMatcher(
     '.toHaveBeenNthCalledWith',
   ),
-  toHaveLastReturnedWith: createLastReturnedMatcher('.toHaveLastReturnedWith'),
-  toHaveNthReturnedWith: createNthReturnedWithMatcher('.toHaveNthReturnedWith'),
-  toHaveReturned: createToReturnMatcher('.toHaveReturned'),
-  toHaveReturnedTimes: createToReturnTimesMatcher('.toHaveReturnedTimes'),
-  toHaveReturnedWith: createToReturnWithMatcher('.toHaveReturnedWith'),
-  toReturn: createToReturnMatcher('.toReturn'),
-  toReturnTimes: createToReturnTimesMatcher('.toReturnTimes'),
-  toReturnWith: createToReturnWithMatcher('.toReturnWith'),
+  toHaveLastReturnedWith: createLastReturnedMatcher('toHaveLastReturnedWith'),
+  toHaveNthReturnedWith: createNthReturnedWithMatcher('toHaveNthReturnedWith'),
+  toHaveReturned: createToReturnMatcher('toHaveReturned'),
+  toHaveReturnedTimes: createToReturnTimesMatcher('toHaveReturnedTimes'),
+  toHaveReturnedWith: createToReturnWithMatcher('toHaveReturnedWith'),
+  toReturn: createToReturnMatcher('toReturn'),
+  toReturnTimes: createToReturnTimesMatcher('toReturnTimes'),
+  toReturnWith: createToReturnWithMatcher('toReturnWith'),
 };
 
-const isSpy = (spy: any) => spy.calls && typeof spy.calls.count === 'function';
+const isMock = (received: any) =>
+  received != null && received._isMockFunction === true;
+
+const isSpy = (received: any) =>
+  received != null &&
+  received.calls != null &&
+  typeof received.calls.all === 'function' &&
+  typeof received.calls.count === 'function';
+
+const ensureMockOrSpy = (
+  received: any,
+  matcherName: string,
+  expectedArgument: string,
+  options: MatcherHintOptions,
+) => {
+  if (!isMock(received) && !isSpy(received)) {
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherName, undefined, expectedArgument, options),
+        `${RECEIVED_COLOR('received')} value must be a mock or spy function`,
+        printWithType('Received', received, printReceived),
+      ),
+    );
+  }
+};
 
 const ensureMock = (
   received: any,
@@ -550,15 +788,11 @@ const ensureMock = (
   expectedArgument: string,
   options: MatcherHintOptions,
 ) => {
-  if (
-    !received ||
-    ((received.calls === undefined || received.calls.all === undefined) &&
-      received._isMockFunction !== true)
-  ) {
+  if (!isMock(received)) {
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherName, undefined, expectedArgument, options),
-        `${RECEIVED_COLOR('received')} value must be a mock or spy function`,
+        `${RECEIVED_COLOR('received')} value must be a mock function`,
         printWithType('Received', received, printReceived),
       ),
     );
@@ -581,42 +815,6 @@ const getPrintedCalls = (
   return result.join(sep);
 };
 
-const getPrintedReturnValues = (calls: Array<any>, limit: number): string => {
-  const result = [];
-
-  for (let i = 0; i < calls.length && i < limit; i += 1) {
-    result.push(printReceived(calls[i]));
-  }
-
-  if (calls.length > limit) {
-    result.push(`...and ${printReceived(calls.length - limit)} more`);
-  }
-
-  return result.join('\n\n  ');
-};
-
-const formatReceivedCalls = (
-  calls: Array<any>,
-  limit: number,
-  options: any,
-) => {
-  if (calls.length) {
-    const but = options && options.sameSentence ? 'but' : 'But';
-    const count = calls.length - limit;
-    const printedCalls = getPrintedCalls(calls, limit, ', ', printReceived);
-    return (
-      `${but} it was called ` +
-      `with:\n  ` +
-      printedCalls +
-      (count > 0
-        ? '\nand ' + RECEIVED_COLOR(pluralize('more call', count)) + '.'
-        : '')
-    );
-  } else {
-    return `But it was ${RECEIVED_COLOR('not called')}.`;
-  }
-};
-
 const formatMismatchedCalls = (
   calls: Array<any>,
   expected: any,
@@ -633,25 +831,6 @@ const formatMismatchedCalls = (
     return (
       `  ${printExpected(expected)}\n` +
       `But it was ${RECEIVED_COLOR('not called')}.`
-    );
-  }
-};
-
-const formatMismatchedReturnValues = (
-  returnValues: Array<any>,
-  expected: any,
-  limit: number,
-): string => {
-  if (returnValues.length) {
-    return (
-      `  ${printExpected(expected)}\n` +
-      `But it returned:\n` +
-      `  ${getPrintedReturnValues(returnValues, limit)}`
-    );
-  } else {
-    return (
-      `  ${printExpected(expected)}\n` +
-      `But it did ${RECEIVED_COLOR('not return')}.`
     );
   }
 };

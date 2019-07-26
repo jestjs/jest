@@ -55,6 +55,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   testNamePattern: '',
   testPathPattern: '',
   testResultsProcessor: null,
+  testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,
   updateSnapshot: 'none',
   useStderr: false,
