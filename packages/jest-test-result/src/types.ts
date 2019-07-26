@@ -181,6 +181,7 @@ export type SnapshotSummary = {
   failure: boolean;
   filesAdded: number;
   filesRemoved: number;
+  filesRemovedList: Array<string>;
   filesUnmatched: number;
   filesUpdated: number;
   matched: number;

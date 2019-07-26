@@ -70,6 +70,7 @@ test('snapshots needs update with yarn test', () => {
     numTotalTestSuites: 1,
     numTotalTests: 1,
     snapshot: {
+      filesRemovedList: [],
       filesUnmatched: 1,
       total: 2,
       uncheckedKeysByFile: [],
@@ -98,6 +99,7 @@ test('snapshots all have results (no update)', () => {
       didUpdate: false,
       filesAdded: 1,
       filesRemoved: 1,
+      filesRemovedList: [],
       filesUnmatched: 1,
       filesUpdated: 1,
       matched: 2,
@@ -134,6 +136,7 @@ test('snapshots all have results (after update)', () => {
       didUpdate: true,
       filesAdded: 1,
       filesRemoved: 1,
+      filesRemovedList: [],
       filesUnmatched: 1,
       filesUpdated: 1,
       matched: 2,
