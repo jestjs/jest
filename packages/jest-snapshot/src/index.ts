@@ -128,16 +128,16 @@ const cleanup = (
 } => {
   const pattern = '\\.' + EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
-  const list = files.reduce<Array<string>>((acc, snapshotFile) => {
+  const list = files.filter(snapshotFile => {
     if (!fileExists(snapshotResolver.resolveTestPath(snapshotFile), hasteFS)) {
       if (update === 'all') {
         fs.unlinkSync(snapshotFile);
       }
-      return [...acc, snapshotFile];
+      return true;
     }
 
-    return acc;
-  }, []);
+    return false;
+  });
 
   return {
     filesRemoved: list.length,
