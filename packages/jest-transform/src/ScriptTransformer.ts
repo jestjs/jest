@@ -437,7 +437,7 @@ export default class ScriptTransformer {
 
   async requireAndTranspileModule(
     moduleName: string,
-    callback?: (module: any) => Promise<void>,
+    callback?: (module: any) => void | Promise<void>,
   ): Promise<any> {
     // Load the transformer to avoid a cycle where we need to load a
     // transformer in order to transform it in the require hooks
@@ -466,10 +466,15 @@ export default class ScriptTransformer {
       },
     );
     const module = require(moduleName);
-    if (callback) {
-      await callback(module);
+
+    try {
+      if (callback) {
+        await callback(module);
+      }
+    } finally {
+      revertHook();
     }
-    revertHook();
+
     return module;
   }
 

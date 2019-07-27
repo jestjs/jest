@@ -45,17 +45,17 @@ export default async ({
 
       const transformer = new ScriptTransformer(projectConfig);
 
-      const globalModule = interopRequireDefault(
-        await transformer.requireAndTranspileModule(modulePath),
-      ).default;
+      await transformer.requireAndTranspileModule(modulePath, async m => {
+        const globalModule = interopRequireDefault(m).default;
 
-      if (typeof globalModule !== 'function') {
-        throw new TypeError(
-          `${moduleName} file must export a function at ${modulePath}`,
-        );
-      }
+        if (typeof globalModule !== 'function') {
+          throw new TypeError(
+            `${moduleName} file must export a function at ${modulePath}`,
+          );
+        }
 
-      await globalModule(globalConfig);
+        await globalModule(globalConfig);
+      });
     });
   }
 
