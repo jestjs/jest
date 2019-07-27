@@ -20,6 +20,7 @@ import stableStringify from 'fast-json-stable-stringify';
 import slash from 'slash';
 import writeFileAtomic from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
+import {addHook} from 'pirates';
 import {
   Options,
   Transformer,
@@ -432,6 +433,38 @@ export default class ScriptTransformer {
     }
 
     return fileSource;
+  }
+
+  requireAndTranspileModule(moduleName: string): any {
+    // Load the transformer to avoid a cycle where we need to load a
+    // transformer in order to transform it in the require hooks
+    this.preloadTransformer(moduleName);
+
+    let transforming = false;
+    const revertHook = addHook(
+      (code, filename) => {
+        try {
+          transforming = true;
+          return this.transformSource(filename, code, false).code || code;
+        } finally {
+          transforming = false;
+        }
+      },
+      {
+        exts: [path.extname(moduleName)],
+        ignoreNodeModules: false,
+        matcher: (...args) => {
+          if (transforming) {
+            // Don't transform any dependency required by the transformer itself
+            return false;
+          }
+          return this.shouldTransform(...args);
+        },
+      },
+    );
+    const module = require(moduleName);
+    revertHook();
+    return module;
   }
 
   /**
