@@ -20,6 +20,7 @@
     "jest-regex-util": "^24.3.0",
     "jest-util": "^24.8.0",
     "micromatch": "^3.1.10",
+    "pirates": "^4.0.1",
     "realpath-native": "^1.1.0",
     "slash": "^2.0.0",
     "source-map": "^0.6.1",
