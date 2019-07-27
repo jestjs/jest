@@ -435,7 +435,10 @@ export default class ScriptTransformer {
     return fileSource;
   }
 
-  requireAndTranspileModule(moduleName: string): any {
+  async requireAndTranspileModule(
+    moduleName: string,
+    callback?: (module: any) => Promise<void>,
+  ): Promise<any> {
     // Load the transformer to avoid a cycle where we need to load a
     // transformer in order to transform it in the require hooks
     this.preloadTransformer(moduleName);
@@ -453,16 +456,19 @@ export default class ScriptTransformer {
       {
         exts: [path.extname(moduleName)],
         ignoreNodeModules: false,
-        matcher: (...args) => {
+        matcher: filename => {
           if (transforming) {
             // Don't transform any dependency required by the transformer itself
             return false;
           }
-          return this.shouldTransform(...args);
+          return this.shouldTransform(filename);
         },
       },
     );
     const module = require(moduleName);
+    if (callback) {
+      await callback(module);
+    }
     revertHook();
     return module;
   }

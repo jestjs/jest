@@ -46,7 +46,7 @@ export default async ({
       const transformer = new ScriptTransformer(projectConfig);
 
       const globalModule = interopRequireDefault(
-        transformer.requireAndTranspileModule(modulePath),
+        await transformer.requireAndTranspileModule(modulePath),
       ).default;
 
       if (typeof globalModule !== 'function') {
