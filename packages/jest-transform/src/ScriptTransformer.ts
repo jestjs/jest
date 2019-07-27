@@ -435,10 +435,10 @@ export default class ScriptTransformer {
     return fileSource;
   }
 
-  async requireAndTranspileModule(
+  async requireAndTranspileModule<ModuleType = any>(
     moduleName: string,
-    callback?: (module: any) => void | Promise<void>,
-  ): Promise<any> {
+    callback?: (module: ModuleType) => void | Promise<void>,
+  ): Promise<ModuleType> {
     // Load the transformer to avoid a cycle where we need to load a
     // transformer in order to transform it in the require hooks
     this.preloadTransformer(moduleName);
