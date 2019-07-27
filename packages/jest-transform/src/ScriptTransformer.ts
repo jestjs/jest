@@ -435,7 +435,7 @@ export default class ScriptTransformer {
     return fileSource;
   }
 
-  async requireAndTranspileModule<ModuleType = any>(
+  async requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => void | Promise<void>,
   ): Promise<ModuleType> {
@@ -465,7 +465,7 @@ export default class ScriptTransformer {
         },
       },
     );
-    const module = require(moduleName);
+    const module: ModuleType = require(moduleName);
 
     try {
       if (callback) {
