@@ -7,7 +7,10 @@
 - `[expect]` Improve report when mock-spy matcher fails, part 1 ([#8640](https://github.com/facebook/jest/pull/8640))
 - `[expect]` Improve report when mock-spy matcher fails, part 2 ([#8649](https://github.com/facebook/jest/pull/8649))
 - `[expect]` Improve report when mock-spy matcher fails, part 3 ([#8697](https://github.com/facebook/jest/pull/8697))
+- `[expect]` Improve report when mock-spy matcher fails, part 4 ([#8710](https://github.com/facebook/jest/pull/8710))
+- `[expect]` Throw matcher error when received cannot be jasmine spy ([#8747](https://github.com/facebook/jest/pull/8747))
 - `[jest-snapshot]` Highlight substring differences when matcher fails, part 3 ([#8569](https://github.com/facebook/jest/pull/8569))
+- `[jest-core]` Improve report when snapshots are obsolete ([#8448](https://github.com/facebook/jest/pull/8665))
 - `[jest-cli]` Improve chai support (with detailed output, to match jest exceptions) ([#8454](https://github.com/facebook/jest/pull/8454))
 - `[*]` Manage the global timeout with `--testTimeout` command line argument. ([#8456](https://github.com/facebook/jest/pull/8456))
 - `[pretty-format]` Render custom displayName of memoized components
@@ -15,6 +18,7 @@
 - `[jest-runtime]` Allow passing configuration objects to transformers ([#7288](https://github.com/facebook/jest/pull/7288))
 - `[@jest/core, @jest/test-sequencer]` Support async sort in custom `testSequencer` ([#8642](https://github.com/facebook/jest/pull/8642))
 - `[jest-runtime, @jest/fake-timers]` Add `jest.advanceTimersToNextTimer` ([#8713](https://github.com/facebook/jest/pull/8713))
+- `[@jest-transform]` Extract transforming require logic within `jest-core` into `@jest-transform` ([#8756](https://github.com/facebook/jest/pull/8756))
 
 ### Fixes
 
@@ -36,6 +40,8 @@
 - `[docs]` Add information about using `jest.doMock` with ES6 imports ([#8573](https://github.com/facebook/jest/pull/8573))
 - `[docs]` Fix variable name in custom-matcher-api code example ([#8582](https://github.com/facebook/jest/pull/8582))
 - `[docs]` Fix example used in custom environment docs ([#8617](https://github.com/facebook/jest/pull/8617))
+- `[docs]` Updated react tutorial to refer to new package of react-testing-library (@testing-library/react) ([#8753](https://github.com/facebook/jest/pull/8753))
+- `[docs]` Updated imports of react-testing-library to @testing-library/react in website ([#8757](https://github.com/facebook/jest/pull/8757))
 - `[jest-core]` Add `getVersion` (moved from `jest-cli`) ([#8706](https://github.com/facebook/jest/pull/8706))
 
 ### Performance

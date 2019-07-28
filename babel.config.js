@@ -4,10 +4,6 @@ module.exports = {
   babelrcRoots: ['examples/*'],
   overrides: [
     {
-      presets: ['@babel/preset-flow'],
-      test: '**/*.js',
-    },
-    {
       plugins: [
         'babel-plugin-typescript-strip-namespaces',
         require.resolve(

@@ -6,10 +6,9 @@
  *
  */
 
-'use strict';
+import jestExpect from '../';
 
-const jestExpect = require('../');
-const {
+import {
   any,
   anything,
   arrayContaining,
@@ -17,13 +16,13 @@ const {
   objectContaining,
   objectNotContaining,
   stringContaining,
-  stringNotContaining,
   stringMatching,
+  stringNotContaining,
   stringNotMatching,
-} = require('../asymmetricMatchers');
+} from '../asymmetricMatchers';
 
 test('Any.asymmetricMatch()', () => {
-  const Thing = function() {};
+  class Thing {}
 
   [
     any(String).asymmetricMatch('jest'),
@@ -78,7 +77,7 @@ test('Any.toAsymmetricMatcher() with function name', () => {
         return $someFuncWithFakeToString;
       })(),
     ],
-  ].forEach(([name, fn]: [string, any]) => {
+  ].forEach(([name, fn]) => {
     jestExpect(any(fn).toAsymmetricMatcher()).toBe(`Any<${name}>`);
   });
 });
