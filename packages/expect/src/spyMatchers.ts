@@ -82,8 +82,7 @@ type IndexedCall = [number, Array<unknown>];
 
 // Return either empty string or one line per indexed result,
 // so additional empty line can separate from `Number of returns` which follows.
-const printReceivedCalls = (
-  label: string,
+const printReceivedCallsNegative = (
   indexedCalls: Array<IndexedCall>,
   isOnlyCall: boolean,
   iExpectedCall?: number,
@@ -92,6 +91,7 @@ const printReceivedCalls = (
     return '';
   }
 
+  const label = 'Received:     ';
   if (isOnlyCall) {
     return label + printReceivedArgs(indexedCalls[0]) + '\n';
   }
@@ -99,8 +99,7 @@ const printReceivedCalls = (
   const printAligned = getRightAlignedPrinter(label);
 
   return (
-    label.replace(':', '').trim() +
-    '\n' +
+    'Received\n' +
     indexedCalls.reduce(
       (printed: string, [i, args]: IndexedCall) =>
         printed +
@@ -388,11 +387,7 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
             `Expected: not ${printExpectedArgs(expected)}\n` +
             (calls.length === 1 && stringify(calls[0]) === stringify(expected)
               ? ''
-              : printReceivedCalls(
-                  'Received:     ',
-                  indexedCalls,
-                  calls.length === 1,
-                )) +
+              : printReceivedCallsNegative(indexedCalls, calls.length === 1)) +
             `\nNumber of calls: ${printReceived(calls.length)}`
           );
         }
@@ -519,8 +514,7 @@ const createLastCalledWithMatcher = (matcherName: string) =>
             `Expected: not ${printExpectedArgs(expected)}\n` +
             (calls.length === 1 && stringify(calls[0]) === stringify(expected)
               ? ''
-              : printReceivedCalls(
-                  'Received:     ',
+              : printReceivedCallsNegative(
                   indexedCalls,
                   calls.length === 1,
                   iLast,
@@ -681,8 +675,7 @@ const createNthCalledWithMatcher = (matcherName: string) =>
             `Expected: not ${printExpectedArgs(expected)}\n` +
             (calls.length === 1 && stringify(calls[0]) === stringify(expected)
               ? ''
-              : printReceivedCalls(
-                  'Received:     ',
+              : printReceivedCallsNegative(
                   indexedCalls,
                   calls.length === 1,
                   iNth,
