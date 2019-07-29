@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`jest-each .describe comments throws error part of data is commented out - multiline 1`] = `
+exports[`jest-each .describe comments throws error part of data is commented out 1`] = `
 "Not enough arguments supplied for given headings:
 <green>a | b | expected</>
 
@@ -11,20 +11,6 @@ Received:
 
 Missing <red>1</> argument"
 `;
-
-exports[`jest-each .describe comments throws error part of data is commented out - single line 1`] = `
-"Not enough arguments supplied for given headings:
-<green>a | b | expected</>
-
-Received:
-<red>Array [</>
-<red>  0,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .describe comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .describe comments throws syntax error when closing multiline comment was never closed 1`] = `"Unexpected trailing token /*"`;
 
@@ -66,40 +52,12 @@ Received:
 Missing <red>2</> arguments"
 `;
 
-exports[`jest-each .describe throws error when there are fewer arguments than headings when given one row with trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .describe throws error when there are fewer arguments than headings when given one row without trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
 exports[`jest-each .describe throws error when there are no arguments for given headings 1`] = `
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
 
-exports[`jest-each .describe.only comments throws error part of data is commented out - multiline 1`] = `
+exports[`jest-each .describe.only comments throws error part of data is commented out 1`] = `
 "Not enough arguments supplied for given headings:
 <green>a | b | expected</>
 
@@ -110,20 +68,6 @@ Received:
 
 Missing <red>1</> argument"
 `;
-
-exports[`jest-each .describe.only comments throws error part of data is commented out - single line 1`] = `
-"Not enough arguments supplied for given headings:
-<green>a | b | expected</>
-
-Received:
-<red>Array [</>
-<red>  0,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .describe.only comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .describe.only comments throws syntax error when closing multiline comment was never closed 1`] = `"Unexpected trailing token /*"`;
 
@@ -165,40 +109,12 @@ Received:
 Missing <red>2</> arguments"
 `;
 
-exports[`jest-each .describe.only throws error when there are fewer arguments than headings when given one row with trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .describe.only throws error when there are fewer arguments than headings when given one row without trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
 exports[`jest-each .describe.only throws error when there are no arguments for given headings 1`] = `
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
 
-exports[`jest-each .fdescribe comments throws error part of data is commented out - multiline 1`] = `
+exports[`jest-each .fdescribe comments throws error part of data is commented out 1`] = `
 "Not enough arguments supplied for given headings:
 <green>a | b | expected</>
 
@@ -209,20 +125,6 @@ Received:
 
 Missing <red>1</> argument"
 `;
-
-exports[`jest-each .fdescribe comments throws error part of data is commented out - single line 1`] = `
-"Not enough arguments supplied for given headings:
-<green>a | b | expected</>
-
-Received:
-<red>Array [</>
-<red>  0,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .fdescribe comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .fdescribe comments throws syntax error when closing multiline comment was never closed 1`] = `"Unexpected trailing token /*"`;
 
@@ -264,40 +166,12 @@ Received:
 Missing <red>2</> arguments"
 `;
 
-exports[`jest-each .fdescribe throws error when there are fewer arguments than headings when given one row with trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .fdescribe throws error when there are fewer arguments than headings when given one row without trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
 exports[`jest-each .fdescribe throws error when there are no arguments for given headings 1`] = `
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
 
-exports[`jest-each .fit comments throws error part of data is commented out - multiline 1`] = `
+exports[`jest-each .fit comments throws error part of data is commented out 1`] = `
 "Not enough arguments supplied for given headings:
 <green>a | b | expected</>
 
@@ -308,20 +182,6 @@ Received:
 
 Missing <red>1</> argument"
 `;
-
-exports[`jest-each .fit comments throws error part of data is commented out - single line 1`] = `
-"Not enough arguments supplied for given headings:
-<green>a | b | expected</>
-
-Received:
-<red>Array [</>
-<red>  0,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .fit comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .fit comments throws syntax error when closing multiline comment was never closed 1`] = `"Unexpected trailing token /*"`;
 
@@ -363,40 +223,12 @@ Received:
 Missing <red>2</> arguments"
 `;
 
-exports[`jest-each .fit throws error when there are fewer arguments than headings when given one row with trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .fit throws error when there are fewer arguments than headings when given one row without trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
 exports[`jest-each .fit throws error when there are no arguments for given headings 1`] = `
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
 
-exports[`jest-each .it comments throws error part of data is commented out - multiline 1`] = `
+exports[`jest-each .it comments throws error part of data is commented out 1`] = `
 "Not enough arguments supplied for given headings:
 <green>a | b | expected</>
 
@@ -407,20 +239,6 @@ Received:
 
 Missing <red>1</> argument"
 `;
-
-exports[`jest-each .it comments throws error part of data is commented out - single line 1`] = `
-"Not enough arguments supplied for given headings:
-<green>a | b | expected</>
-
-Received:
-<red>Array [</>
-<red>  0,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .it comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .it comments throws syntax error when closing multiline comment was never closed 1`] = `"Unexpected trailing token /*"`;
 
@@ -462,40 +280,12 @@ Received:
 Missing <red>2</> arguments"
 `;
 
-exports[`jest-each .it throws error when there are fewer arguments than headings when given one row with trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .it throws error when there are fewer arguments than headings when given one row without trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
 exports[`jest-each .it throws error when there are no arguments for given headings 1`] = `
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
 
-exports[`jest-each .it.only comments throws error part of data is commented out - multiline 1`] = `
+exports[`jest-each .it.only comments throws error part of data is commented out 1`] = `
 "Not enough arguments supplied for given headings:
 <green>a | b | expected</>
 
@@ -506,20 +296,6 @@ Received:
 
 Missing <red>1</> argument"
 `;
-
-exports[`jest-each .it.only comments throws error part of data is commented out - single line 1`] = `
-"Not enough arguments supplied for given headings:
-<green>a | b | expected</>
-
-Received:
-<red>Array [</>
-<red>  0,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .it.only comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .it.only comments throws syntax error when closing multiline comment was never closed 1`] = `"Unexpected trailing token /*"`;
 
@@ -561,40 +337,12 @@ Received:
 Missing <red>2</> arguments"
 `;
 
-exports[`jest-each .it.only throws error when there are fewer arguments than headings when given one row with trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .it.only throws error when there are fewer arguments than headings when given one row without trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
 exports[`jest-each .it.only throws error when there are no arguments for given headings 1`] = `
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
 
-exports[`jest-each .test comments throws error part of data is commented out - multiline 1`] = `
+exports[`jest-each .test comments throws error part of data is commented out 1`] = `
 "Not enough arguments supplied for given headings:
 <green>a | b | expected</>
 
@@ -605,20 +353,6 @@ Received:
 
 Missing <red>1</> argument"
 `;
-
-exports[`jest-each .test comments throws error part of data is commented out - single line 1`] = `
-"Not enough arguments supplied for given headings:
-<green>a | b | expected</>
-
-Received:
-<red>Array [</>
-<red>  0,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .test comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .test comments throws syntax error when closing multiline comment was never closed 1`] = `"Unexpected trailing token /*"`;
 
@@ -660,40 +394,12 @@ Received:
 Missing <red>2</> arguments"
 `;
 
-exports[`jest-each .test throws error when there are fewer arguments than headings when given one row with trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .test throws error when there are fewer arguments than headings when given one row without trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
 exports[`jest-each .test throws error when there are no arguments for given headings 1`] = `
 "Error: \`.each\` called with a Tagged Template Literal with no data, remember to interpolate with \${expression} syntax.
 "
 `;
 
-exports[`jest-each .test.only comments throws error part of data is commented out - multiline 1`] = `
+exports[`jest-each .test.only comments throws error part of data is commented out 1`] = `
 "Not enough arguments supplied for given headings:
 <green>a | b | expected</>
 
@@ -704,20 +410,6 @@ Received:
 
 Missing <red>1</> argument"
 `;
-
-exports[`jest-each .test.only comments throws error part of data is commented out - single line 1`] = `
-"Not enough arguments supplied for given headings:
-<green>a | b | expected</>
-
-Received:
-<red>Array [</>
-<red>  0,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .test.only comments throws error when headings are commented out 1`] = `"Headings are required"`;
 
 exports[`jest-each .test.only comments throws syntax error when closing multiline comment was never closed 1`] = `"Unexpected trailing token /*"`;
 
@@ -757,34 +449,6 @@ Received:
 <red>]</>
 
 Missing <red>2</> arguments"
-`;
-
-exports[`jest-each .test.only throws error when there are fewer arguments than headings when given one row with trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
-`;
-
-exports[`jest-each .test.only throws error when there are fewer arguments than headings when given one row without trailing | 1`] = `
-"Not enough arguments supplied for given headings:
-<green>left | right</>
-
-Received:
-<red>Array [</>
-<red>  true,</>
-<red>  true,</>
-<red>  true,</>
-<red>]</>
-
-Missing <red>1</> argument"
 `;
 
 exports[`jest-each .test.only throws error when there are no arguments for given headings 1`] = `
