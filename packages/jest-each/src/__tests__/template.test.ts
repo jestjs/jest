@@ -46,6 +46,102 @@ describe('jest-each', () => {
     ['describe', 'only'],
   ].forEach(keyPath => {
     describe(`.${keyPath.join('.')}`, () => {
+      test('throws error when there are additional words in first column heading', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a is the left | b    | expected
+          ${1}          | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('this will blow up :(', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+        expect(testCallBack).not.toHaveBeenCalled();
+      });
+
+      test('throws error when there are additional words in second column heading', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b is the right | expected
+          ${1}          | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('this will blow up :(', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+        expect(testCallBack).not.toHaveBeenCalled();
+      });
+
+      test('throws error when there are additional words in last column heading', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | expected value
+          ${1}          | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('this will blow up :(', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() =>
+          globalMock.mock.calls[0][1](),
+        ).toThrowErrorMatchingSnapshot();
+        expect(testCallBack).not.toHaveBeenCalled();
+      });
+
+      test('does not throw error when there is additional words in template after heading row', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | expected
+          foo
+          bar
+          ${1} | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('test title', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'test title',
+          expectFunction,
+          undefined,
+        );
+      });
+
+      test('does not throw error when there is only one column', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a
+          ${1}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('test title', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'test title',
+          expectFunction,
+          undefined,
+        );
+      });
+
       test('throws error when there are no arguments for given headings', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`

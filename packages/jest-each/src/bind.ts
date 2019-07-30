@@ -11,7 +11,11 @@ import {ErrorWithStack} from 'jest-util';
 
 import convertArrayTable from './table/array';
 import convertTemplateTable from './table/template';
-import {validateArrayTable, validateTemplateTableArguments} from './validation';
+import {
+  extractValidTemplateHeadings,
+  validateArrayTable,
+  validateTemplateTableArguments,
+} from './validation';
 
 export type EachTests = Array<{
   title: string;
@@ -63,12 +67,14 @@ const buildTemplateTests = (
   taggedTemplateData: Global.TemplateData,
 ): EachTests => {
   const headings = getHeadingKeys(table[0] as string);
-  validateTemplateTableHeadings(headings, taggedTemplateData);
+  validateTemplateTableArguments(headings, taggedTemplateData);
   return convertTemplateTable(title, headings, taggedTemplateData);
 };
 
 const getHeadingKeys = (headings: string): Array<string> =>
-  headings.replace(/\s/g, '').split('|');
+  extractValidTemplateHeadings(headings)
+    .replace(/\s/g, '')
+    .split('|');
 
 const applyArguments = (
   supportsDone: boolean,
