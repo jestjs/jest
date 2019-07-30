@@ -11,7 +11,7 @@ import {ErrorWithStack} from 'jest-util';
 
 import convertArrayTable from './table/array';
 import convertTemplateTable from './table/template';
-import {validateArrayTable, validateTemplateTableHeadings} from './validation';
+import {validateArrayTable, validateTemplateTableArguments} from './validation';
 
 export type EachTests = Array<{
   title: string;

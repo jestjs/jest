@@ -50,7 +50,7 @@ const isEmptyTable = (table: Array<any>) => table.length === 0;
 const isEmptyString = (str: string | unknown) =>
   typeof str === 'string' && str.trim() === '';
 
-export const validateTemplateTableHeadings = (
+export const validateTemplateTableArguments = (
   headings: Array<string>,
   data: TemplateData,
 ): void => {
