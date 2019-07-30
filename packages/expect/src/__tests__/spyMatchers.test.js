@@ -347,27 +347,6 @@ const createSpy = fn => {
 
         expect(() => {
           jestExpect(fn).not[calledWith](1, 'foo1', 'bar');
-          jestExpect(fn).not[calledWith](2, 'foo', 'bar1');
-          jestExpect(fn).not[calledWith](3, 'foo', 'bar');
-        }).toThrowErrorMatchingSnapshot();
-      });
-
-      test('should replace 1st, 2nd, 3rd with first, second, third', async () => {
-        const fn = jest.fn();
-        fn('foo1', 'bar');
-        fn('foo', 'bar1');
-        fn('foo', 'bar');
-
-        expect(() => {
-          jestExpect(fn)[calledWith](1, 'foo', 'bar');
-          jestExpect(fn)[calledWith](2, 'foo', 'bar');
-          jestExpect(fn)[calledWith](3, 'foo1', 'bar');
-        }).toThrowErrorMatchingSnapshot();
-
-        expect(() => {
-          jestExpect(fn).not[calledWith](1, 'foo1', 'bar');
-          jestExpect(fn).not[calledWith](2, 'foo', 'bar1');
-          jestExpect(fn).not[calledWith](3, 'foo', 'bar');
         }).toThrowErrorMatchingSnapshot();
       });
 
