@@ -355,7 +355,11 @@ export default class FakeTimers<TimerRef> {
   getTimerCount() {
     this._checkFakeTimers();
 
-    return this._timers.size + this._immediates.length + this._ticks.length;
+    const immediatesCount = this._immediates.filter(
+      immediate => !this._cancelledImmediates[immediate.uuid],
+    ).length;
+
+    return this._timers.size + immediatesCount + this._ticks.length;
   }
 
   private _checkFakeTimers() {
