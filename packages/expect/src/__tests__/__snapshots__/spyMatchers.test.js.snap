@@ -113,8 +113,8 @@ exports[`lastCalledWith works with many arguments 1`] = `
 
 Expected: not <green>\\"foo\\"</>, <green>\\"bar\\"</>
 Received
-       2:     <red>\\"foo\\"</>, <red>\\"bar1\\"</>
-->     3:     <red>\\"foo\\"</>, <red>\\"bar\\"</>
+       2:     <dim>\\"foo\\"</>, <red>\\"bar1\\"</>
+->     3:     <dim>\\"foo\\"</>, <dim>\\"bar\\"</>
 
 Number of calls: <red>3</>"
 `;
@@ -314,27 +314,6 @@ n has type:  number
 n has value: <green>0</>"
 `;
 
-exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to have been called with:
-  <green>\\"foo\\"</>
-as argument 1, but it was called with
-  <red>\\"foo1\\"</>."
-`;
-
-exports[`nthCalledWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
-
-n: 1
-Expected: not <green>\\"foo1\\"</>, <green>\\"bar\\"</>
-Received
-->     1:     <red>\\"foo1\\"</>, <red>\\"bar\\"</>
-       2:     <red>\\"foo\\"</>, <red>\\"bar1\\"</>
-
-Number of calls: <red>3</>"
-`;
-
 exports[`nthCalledWith works only on spies or jest.fn 1`] = `
 "<dim>expect(</><red>received</><dim>).</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
 
@@ -445,7 +424,7 @@ exports[`nthCalledWith works with three calls 1`] = `
 n: 1
 Expected: not <green>\\"foo1\\"</>, <green>\\"bar\\"</>
 Received
-->     1:     <red>\\"foo1\\"</>, <red>\\"bar\\"</>
+->     1:     <dim>\\"foo1\\"</>, <dim>\\"bar\\"</>
        2:     <red>\\"foo\\"</>, <red>\\"bar1\\"</>
 
 Number of calls: <red>3</>"
@@ -1027,7 +1006,7 @@ exports[`toBeCalledWith works with many arguments 1`] = `
 
 Expected: not <green>\\"foo\\"</>, <green>\\"bar\\"</>
 Received
-       3:     <red>\\"foo\\"</>, <red>\\"bar\\"</>
+       3:     <dim>\\"foo\\"</>, <dim>\\"bar\\"</>
 
 Number of calls: <red>3</>"
 `;
@@ -1365,7 +1344,7 @@ exports[`toHaveBeenCalledWith works with many arguments 1`] = `
 
 Expected: not <green>\\"foo\\"</>, <green>\\"bar\\"</>
 Received
-       3:     <red>\\"foo\\"</>, <red>\\"bar\\"</>
+       3:     <dim>\\"foo\\"</>, <dim>\\"bar\\"</>
 
 Number of calls: <red>3</>"
 `;
@@ -1507,8 +1486,8 @@ exports[`toHaveBeenLastCalledWith works with many arguments 1`] = `
 
 Expected: not <green>\\"foo\\"</>, <green>\\"bar\\"</>
 Received
-       2:     <red>\\"foo\\"</>, <red>\\"bar1\\"</>
-->     3:     <red>\\"foo\\"</>, <red>\\"bar\\"</>
+       2:     <dim>\\"foo\\"</>, <red>\\"bar1\\"</>
+->     3:     <dim>\\"foo\\"</>, <dim>\\"bar\\"</>
 
 Number of calls: <red>3</>"
 `;
@@ -1563,27 +1542,6 @@ exports[`toHaveBeenNthCalledWith positive throw matcher error for n that is not 
 
 n has type:  number
 n has value: <green>0</>"
-`;
-
-exports[`toHaveBeenNthCalledWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function first call to have been called with:
-  <green>\\"foo\\"</>
-as argument 1, but it was called with
-  <red>\\"foo1\\"</>."
-`;
-
-exports[`toHaveBeenNthCalledWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
-
-n: 1
-Expected: not <green>\\"foo1\\"</>, <green>\\"bar\\"</>
-Received
-->     1:     <red>\\"foo1\\"</>, <red>\\"bar\\"</>
-       2:     <red>\\"foo\\"</>, <red>\\"bar1\\"</>
-
-Number of calls: <red>3</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works only on spies or jest.fn 1`] = `
@@ -1696,7 +1654,7 @@ exports[`toHaveBeenNthCalledWith works with three calls 1`] = `
 n: 1
 Expected: not <green>\\"foo1\\"</>, <green>\\"bar\\"</>
 Received
-->     1:     <red>\\"foo1\\"</>, <red>\\"bar\\"</>
+->     1:     <dim>\\"foo1\\"</>, <dim>\\"bar\\"</>
        2:     <red>\\"foo\\"</>, <red>\\"bar1\\"</>
 
 Number of calls: <red>3</>"
