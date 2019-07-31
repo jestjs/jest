@@ -272,24 +272,24 @@ expect(mockFunc).lastCalledWith(arg1, arg2);
 expect(mockFunc).toMatchSnapshot();
 </code></pre>
 <p>These matchers are really just sugar for common forms of inspecting the <code>.mock</code> property. You can always do this manually yourself if that's more to your taste or if you need to do something more specific:</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// 这个 mock 函数至少被调用一次</span>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// The mock function was called at least once</span>
 expect(mockFunc.mock.calls.length).toBeGreaterThan(<span class="hljs-number">0</span>);
 
-<span class="hljs-comment">// 这个 mock 函数至少被调用一次，而且传入了特定参数</span>
-expect(mockFunc.mock.calls).toContain([arg1, arg2]);
+<span class="hljs-comment">// The mock function was called at least once with the specified args</span>
+expect(mockFunc.mock.calls).toContainEqual([arg1, arg2]);
 
-<span class="hljs-comment">// 这个 mock 函数的最后一次调用传入了特定参数</span>
+<span class="hljs-comment">// The last call to the mock function was called with the specified args</span>
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - <span class="hljs-number">1</span>]).toEqual([
   arg1,
   arg2,
 ]);
 
-<span class="hljs-comment">//  这个 mock 函数的最后一次调用的第一个参数是`42`</span>
-<span class="hljs-comment">// （注意这个断言的规范是没有语法糖的）</span>
+<span class="hljs-comment">// The first arg of the last call to the mock function was `42`</span>
+<span class="hljs-comment">// (note that there is no sugar helper for this specific of an assertion)</span>
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - <span class="hljs-number">1</span>][<span class="hljs-number">0</span>]).toBe(<span class="hljs-number">42</span>);
 
-<span class="hljs-comment">// 快照会检查 mock 函数被调用了同样的次数，</span>
-<span class="hljs-comment">// 同样的顺序，和同样的参数 它还会在名称上断言。</span>
+<span class="hljs-comment">// A snapshot will check that a mock was invoked the same number of times,</span>
+<span class="hljs-comment">// in the same order, with the same arguments. 它还会在名称上断言。</span>
 expect(mockFunc.mock.calls).toEqual([[arg1, arg2]]);
 expect(mockFunc.getMockName()).toBe(<span class="hljs-string">'a mock name'</span>);
 </code></pre>

@@ -276,7 +276,7 @@ expect(mockFunc).toMatchSnapshot();
 expect(mockFunc.mock.calls.length).toBeGreaterThan(<span class="hljs-number">0</span>);
 
 <span class="hljs-comment">// The mock function was called at least once with the specified args</span>
-expect(mockFunc.mock.calls).toContain([arg1, arg2]);
+expect(mockFunc.mock.calls).toContainEqual([arg1, arg2]);
 
 <span class="hljs-comment">// The last call to the mock function was called with the specified args</span>
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - <span class="hljs-number">1</span>]).toEqual([
