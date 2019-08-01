@@ -53,7 +53,6 @@ const setGlobal = (
 };
 
 export default class FakeTimers<TimerRef> {
-  private _cancelledImmediates!: Record<string, boolean>;
   private _cancelledTicks!: Record<string, boolean>;
   private _config: StackTraceConfig;
   private _disposed?: boolean;
@@ -105,9 +104,7 @@ export default class FakeTimers<TimerRef> {
   }
 
   clearAllTimers() {
-    this._immediates.forEach(immediate =>
-      this._fakeClearImmediate(immediate.uuid),
-    );
+    this._immediates = [];
     this._timers.clear();
   }
 
@@ -118,7 +115,6 @@ export default class FakeTimers<TimerRef> {
 
   reset() {
     this._cancelledTicks = {};
-    this._cancelledImmediates = {};
     this._now = 0;
     this._ticks = [];
     this._immediates = [];
@@ -177,11 +173,8 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _runImmediate(immediate: Tick) {
-    if (!this._cancelledImmediates.hasOwnProperty(immediate.uuid)) {
-      // Callback may throw, so update the map prior calling.
-      this._cancelledImmediates[immediate.uuid] = true;
-      immediate.callback();
-    }
+    immediate.callback();
+    this._fakeClearImmediate(immediate.uuid);
   }
 
   runAllTimers() {
@@ -355,11 +348,7 @@ export default class FakeTimers<TimerRef> {
   getTimerCount() {
     this._checkFakeTimers();
 
-    const immediatesCount = this._immediates.filter(
-      immediate => !this._cancelledImmediates[immediate.uuid],
-    ).length;
-
-    return this._timers.size + immediatesCount + this._ticks.length;
+    return this._timers.size + this._immediates.length + this._ticks.length;
   }
 
   private _checkFakeTimers() {
@@ -406,7 +395,9 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _fakeClearImmediate(uuid: TimerID) {
-    this._cancelledImmediates[uuid] = true;
+    this._immediates = this._immediates.filter(
+      immediate => immediate.uuid !== uuid,
+    );
   }
 
   private _fakeNextTick(callback: Callback, ...args: Array<any>) {
@@ -443,13 +434,11 @@ export default class FakeTimers<TimerRef> {
       uuid: String(uuid),
     });
 
-    const cancelledImmediates = this._cancelledImmediates;
+    const immediates = this._immediates;
     this._timerAPIs.setImmediate(() => {
-      if (!cancelledImmediates.hasOwnProperty(uuid)) {
-        // Callback may throw, so update the map prior calling.
-        cancelledImmediates[String(uuid)] = true;
+      this._fakeClearImmediate(String(uuid));
+      immediates.find(x => x.uuid === String(uuid)) &&
         callback.apply(null, args);
-      }
     });
 
     return uuid;
