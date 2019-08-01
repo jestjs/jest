@@ -146,9 +146,8 @@ const printExpectedReceivedCallsPositive = (
   const label = 'Received: ';
   if (isOnlyCall && (iExpectedCall === 0 || iExpectedCall === undefined)) {
     const received = indexedCalls[0][1];
-    const isOnlyCallLineDiffable = isLineDiffableCall(expected, received);
 
-    if (isOnlyCallLineDiffable) {
+    if (isLineDiffableCall(expected, received)) {
       // Display diff without indentation.
       const lines = [
         EXPECTED_COLOR('- Expected'),
