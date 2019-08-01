@@ -10,6 +10,7 @@
 - `[expect]` Improve report when mock-spy matcher fails, part 4 ([#8710](https://github.com/facebook/jest/pull/8710))
 - `[expect]` Throw matcher error when received cannot be jasmine spy ([#8747](https://github.com/facebook/jest/pull/8747))
 - `[expect]` Improve report when negative CalledWith assertion fails ([#8755](https://github.com/facebook/jest/pull/8755))
+- `[expect]` Improve report when positive CalledWith assertion fails ([#8771](https://github.com/facebook/jest/pull/8771))
 - `[jest-snapshot]` Highlight substring differences when matcher fails, part 3 ([#8569](https://github.com/facebook/jest/pull/8569))
 - `[jest-core]` Improve report when snapshots are obsolete ([#8448](https://github.com/facebook/jest/pull/8665))
 - `[jest-cli]` Improve chai support (with detailed output, to match jest exceptions) ([#8454](https://github.com/facebook/jest/pull/8454))
