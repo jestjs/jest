@@ -142,6 +142,27 @@ describe('jest-each', () => {
         );
       });
 
+      test('does not throw error when there is only one column with additional words in template after heading', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a
+          hello world
+          ${1}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('test title $a', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(globalMock).toHaveBeenCalledTimes(1);
+        expect(globalMock).toHaveBeenCalledWith(
+          'test title 1',
+          expectFunction,
+          undefined,
+        );
+      });
+
       test('throws error when there are no arguments for given headings', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`
