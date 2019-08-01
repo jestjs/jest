@@ -205,7 +205,7 @@ const printExpectedReceivedCallsPositive = (
       const aligned = printAligned(String(i + 1), i === iExpectedCall);
       return (
         printed +
-        ((iExpectedCall === undefined || i === iExpectedCall) &&
+        ((i === iExpectedCall || iExpectedCall === undefined) &&
         isLineDiffableCall(expected, received)
           ? aligned.replace(': ', '\n') +
             printDiffCall(expected, received, expand)
