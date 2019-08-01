@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import getType, {isPrimitive} from 'jest-get-type';
 import {
   diff,
   ensureExpectedIsNumber,
@@ -22,11 +23,12 @@ import {
 } from 'jest-matcher-utils';
 import {MatchersObject, MatcherState, SyncExpectationResult} from './types';
 import {equals} from './jasmineUtils';
-import {iterableEquality, partition, isOneline} from './utils';
+import {iterableEquality} from './utils';
+
+// The optional property of matcher context is true if undefined.
+const isExpand = (expand?: boolean): boolean => expand !== false;
 
 const PRINT_LIMIT = 3;
-const CALL_PRINT_LIMIT = 3;
-const LAST_CALL_PRINT_LIMIT = 1;
 
 const NO_ARGUMENTS = 'called with 0 arguments';
 
@@ -99,8 +101,6 @@ const getRightAlignedPrinter = (label: string): PrintLabel => {
 
 type IndexedCall = [number, Array<unknown>];
 
-// Return either empty string or one line per indexed result,
-// so additional empty line can separate from `Number of returns` which follows.
 const printReceivedCallsNegative = (
   expected: Array<unknown>,
   indexedCalls: Array<IndexedCall>,
@@ -131,6 +131,189 @@ const printReceivedCallsNegative = (
   );
 };
 
+const printExpectedReceivedCallsPositive = (
+  expected: Array<unknown>,
+  indexedCalls: Array<IndexedCall>,
+  expand: boolean,
+  isOnlyCall: boolean,
+  iExpectedCall?: number,
+) => {
+  const expectedLine = `Expected: ${printExpectedArgs(expected)}\n`;
+  if (indexedCalls.length === 0) {
+    return expectedLine;
+  }
+
+  const label = 'Received: ';
+  if (isOnlyCall && (iExpectedCall === 0 || iExpectedCall === undefined)) {
+    const received = indexedCalls[0][1];
+    const isOnlyCallLineDiffable = isLineDiffableCall(expected, received);
+
+    if (isOnlyCallLineDiffable) {
+      // Display diff without indentation.
+      const lines = [
+        EXPECTED_COLOR('- Expected'),
+        RECEIVED_COLOR('+ Received'),
+        '',
+      ];
+
+      const length = Math.max(expected.length, received.length);
+      for (let i = 0; i < length; i += 1) {
+        if (i < expected.length && i < received.length) {
+          if (isEqualValue(expected[i], received[i])) {
+            lines.push(`  ${printCommon(received[i])},`);
+            continue;
+          }
+
+          if (isLineDiffableArg(expected[i], received[i])) {
+            const difference = diff(expected[i], received[i], {expand});
+            if (
+              typeof difference === 'string' &&
+              difference.includes('- Expected') &&
+              difference.includes('+ Received')
+            ) {
+              // Omit annotation in case multiple args have diff.
+              lines.push(
+                difference
+                  .split('\n')
+                  .slice(3)
+                  .join('\n') + ',',
+              );
+              continue;
+            }
+          }
+        }
+
+        if (i < expected.length) {
+          lines.push(EXPECTED_COLOR('- ' + stringify(expected[i])) + ',');
+        }
+        if (i < received.length) {
+          lines.push(RECEIVED_COLOR('+ ' + stringify(received[i])) + ',');
+        }
+      }
+
+      return lines.join('\n') + '\n';
+    }
+
+    return expectedLine + label + printReceivedArgs(received, expected) + '\n';
+  }
+
+  const printAligned = getRightAlignedPrinter(label);
+
+  return (
+    expectedLine +
+    'Received\n' +
+    indexedCalls.reduce((printed: string, [i, received]: IndexedCall) => {
+      const aligned = printAligned(String(i + 1), i === iExpectedCall);
+      return (
+        printed +
+        ((iExpectedCall === undefined || i === iExpectedCall) &&
+        isLineDiffableCall(expected, received)
+          ? aligned.replace(': ', '\n') +
+            printDiffCall(expected, received, expand)
+          : aligned + printReceivedArgs(received, expected)) +
+        '\n'
+      );
+    }, '')
+  );
+};
+
+const indentation = 'Received'.replace(/\w/g, ' ');
+
+const printDiffCall = (
+  expected: Array<unknown>,
+  received: Array<unknown>,
+  expand: boolean,
+) =>
+  received
+    .map((arg, i) => {
+      if (i < expected.length) {
+        if (isEqualValue(expected[i], arg)) {
+          return indentation + '  ' + printCommon(arg) + ',';
+        }
+
+        if (isLineDiffableArg(expected[i], arg)) {
+          const difference = diff(expected[i], arg, {expand});
+
+          if (
+            typeof difference === 'string' &&
+            difference.includes('- Expected') &&
+            difference.includes('+ Received')
+          ) {
+            // Display diff with indentation.
+            // Omit annotation in case multiple args have diff.
+            return (
+              difference
+                .split('\n')
+                .slice(3)
+                .map(line => indentation + line)
+                .join('\n') + ','
+            );
+          }
+        }
+      }
+
+      // Display + only if received arg has no corresponding expected arg.
+      return (
+        indentation +
+        (i < expected.length
+          ? '  ' + printReceived(arg)
+          : RECEIVED_COLOR('+ ' + stringify(arg))) +
+        ','
+      );
+    })
+    .join('\n');
+
+const isLineDiffableCall = (
+  expected: Array<unknown>,
+  received: Array<unknown>,
+): boolean =>
+  expected.some(
+    (arg, i) => i < received.length && isLineDiffableArg(arg, received[i]),
+  );
+
+// Almost redundant with function in jest-matcher-utils,
+// except no line diff for any strings.
+const isLineDiffableArg = (expected: unknown, received: unknown): boolean => {
+  const expectedType = getType(expected);
+  const receivedType = getType(received);
+
+  if (expectedType !== receivedType) {
+    return false;
+  }
+
+  if (isPrimitive(expected)) {
+    return false;
+  }
+
+  if (
+    expectedType === 'date' ||
+    expectedType === 'function' ||
+    expectedType === 'regexp'
+  ) {
+    return false;
+  }
+
+  if (expected instanceof Error && received instanceof Error) {
+    return false;
+  }
+
+  if (
+    expectedType === 'object' &&
+    typeof (expected as any).asymmetricMatch === 'function'
+  ) {
+    return false;
+  }
+
+  if (
+    receivedType === 'object' &&
+    typeof (received as any).asymmetricMatch === 'function'
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
 const printResult = (result: any) =>
   result.type === 'throw'
     ? 'function call threw an error'
@@ -152,7 +335,7 @@ const printReceivedResults = (
     return '';
   }
 
-  if (isOnlyCall) {
+  if (isOnlyCall && (iExpectedCall === 0 || iExpectedCall === undefined)) {
     return label + printResult(indexedResults[0][1]) + '\n';
   }
 
@@ -375,21 +558,13 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
     ensureMockOrSpy(received, matcherName, expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
-    const type = receivedIsSpy ? 'spy' : 'mock function';
     const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-    const identifier =
-      receivedIsSpy || receivedName === 'jest.fn()'
-        ? type
-        : `${type} "${receivedName}"`;
 
     const calls = receivedIsSpy
       ? received.calls.all().map((x: any) => x.args)
       : received.mock.calls;
 
-    const [match, fail] = partition(calls, call =>
-      isEqualCall(expected, call as Array<unknown>),
-    );
-    const pass = match.length > 0;
+    const pass = calls.some((call: any) => isEqualCall(expected, call));
 
     const message = pass
       ? () => {
@@ -417,11 +592,27 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
             `\nNumber of calls: ${printReceived(calls.length)}`
           );
         }
-      : () =>
-          matcherHint('.' + matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} to have been called with:\n` +
-          formatMismatchedCalls(fail, expected, CALL_PRINT_LIMIT);
+      : () => {
+          // Some examples of calls that are not equal to expected value.
+          const indexedCalls: Array<IndexedCall> = [];
+          let i = 0;
+          while (i < calls.length && indexedCalls.length < PRINT_LIMIT) {
+            indexedCalls.push([i, calls[i]]);
+            i += 1;
+          }
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            printExpectedReceivedCallsPositive(
+              expected,
+              indexedCalls,
+              isExpand(this.expand),
+              calls.length === 1,
+            ) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
+          );
+        };
 
     return {message, pass};
   };
@@ -511,12 +702,7 @@ const createLastCalledWithMatcher = (matcherName: string) =>
     ensureMockOrSpy(received, matcherName, expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
-    const type = receivedIsSpy ? 'spy' : 'mock function';
     const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-    const identifier =
-      receivedIsSpy || receivedName === 'jest.fn()'
-        ? type
-        : `${type} "${receivedName}"`;
 
     const calls = receivedIsSpy
       ? received.calls.all().map((x: any) => x.args)
@@ -549,11 +735,38 @@ const createLastCalledWithMatcher = (matcherName: string) =>
             `\nNumber of calls: ${printReceived(calls.length)}`
           );
         }
-      : () =>
-          matcherHint('.' + matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} to have been last called with:\n` +
-          formatMismatchedCalls(calls, expected, LAST_CALL_PRINT_LIMIT);
+      : () => {
+          const indexedCalls: Array<IndexedCall> = [];
+          if (iLast >= 0) {
+            if (iLast > 0) {
+              let i = iLast - 1;
+              // Is there a preceding call that is equal to expected args?
+              while (i >= 0 && !isEqualCall(expected, calls[i])) {
+                i -= 1;
+              }
+              if (i < 0) {
+                i = iLast - 1; // otherwise, preceding call
+              }
+
+              indexedCalls.push([i, calls[i]]);
+            }
+
+            indexedCalls.push([iLast, calls[iLast]]);
+          }
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            printExpectedReceivedCallsPositive(
+              expected,
+              indexedCalls,
+              isExpand(this.expand),
+              calls.length === 1,
+              iLast,
+            ) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
+          );
+        };
 
     return {message, pass};
   };
@@ -666,13 +879,7 @@ const createNthCalledWithMatcher = (matcherName: string) =>
     }
 
     const receivedIsSpy = isSpy(received);
-    const type = receivedIsSpy ? 'spy' : 'mock function';
-
     const receivedName = receivedIsSpy ? 'spy' : received.getMockName();
-    const identifier =
-      receivedIsSpy || receivedName === 'jest.fn()'
-        ? type
-        : `${type} "${receivedName}"`;
 
     const calls = receivedIsSpy
       ? received.calls.all().map((x: any) => x.args)
@@ -711,17 +918,66 @@ const createNthCalledWithMatcher = (matcherName: string) =>
             `\nNumber of calls: ${printReceived(calls.length)}`
           );
         }
-      : () =>
-          matcherHint('.' + matcherName, receivedName) +
-          '\n\n' +
-          `Expected ${identifier} ${nthToString(
-            nth,
-          )} call to have been called with:\n` +
-          formatMismatchedCalls(
-            calls[nth - 1] ? [calls[nth - 1]] : [],
-            expected,
-            LAST_CALL_PRINT_LIMIT,
+      : () => {
+          // Display preceding and following calls:
+          // * nearest call that is equal to expected args
+          // * otherwise, adjacent call
+          // in case assertions fails because of index, especially off by one.
+          const indexedCalls: Array<IndexedCall> = [];
+          if (iNth < length) {
+            if (iNth - 1 >= 0) {
+              let i = iNth - 1;
+              // Is there a preceding call that is equal to expected args?
+              while (i >= 0 && !isEqualCall(expected, calls[i])) {
+                i -= 1;
+              }
+              if (i < 0) {
+                i = iNth - 1; // otherwise, adjacent call
+              }
+
+              indexedCalls.push([i, calls[i]]);
+            }
+            indexedCalls.push([iNth, calls[iNth]]);
+            if (iNth + 1 < length) {
+              let i = iNth + 1;
+              // Is there a following call that is equal to expected args?
+              while (i < length && !isEqualCall(expected, calls[i])) {
+                i += 1;
+              }
+              if (i >= length) {
+                i = iNth + 1; // otherwise, adjacent call
+              }
+
+              indexedCalls.push([i, calls[i]]);
+            }
+          } else if (length > 0) {
+            // The number of received calls is fewer than the expected number.
+            let i = length - 1;
+            // Is there a call that is equal to expected args?
+            while (i >= 0 && !isEqualCall(expected, calls[i])) {
+              i -= 1;
+            }
+            if (i < 0) {
+              i = length - 1; // otherwise, last call
+            }
+
+            indexedCalls.push([i, calls[i]]);
+          }
+
+          return (
+            matcherHint(matcherName, receivedName, expectedArgument, options) +
+            '\n\n' +
+            `n: ${nth}\n` +
+            printExpectedReceivedCallsPositive(
+              expected,
+              indexedCalls,
+              isExpand(this.expand),
+              calls.length === 1,
+              iNth,
+            ) +
+            `\nNumber of calls: ${printReceived(calls.length)}`
           );
+        };
 
     return {message, pass};
   };
@@ -921,79 +1177,6 @@ const ensureMock = (
       ),
     );
   }
-};
-
-const getPrintedCalls = (
-  calls: Array<any>,
-  limit: number,
-  sep: string,
-  fn: Function,
-): string => {
-  const result = [];
-  let i = calls.length;
-
-  while (--i >= 0 && --limit >= 0) {
-    result.push(fn(calls[i]));
-  }
-
-  return result.join(sep);
-};
-
-const formatMismatchedCalls = (
-  calls: Array<any>,
-  expected: any,
-  limit: number,
-): string => {
-  if (calls.length) {
-    return getPrintedCalls(
-      calls,
-      limit,
-      '\n\n',
-      formatMismatchedArgs.bind(null, expected),
-    );
-  } else {
-    return (
-      `  ${printExpected(expected)}\n` +
-      `But it was ${RECEIVED_COLOR('not called')}.`
-    );
-  }
-};
-
-const formatMismatchedArgs = (expected: any, received: any): string => {
-  const length = Math.max(expected.length, received.length);
-
-  const printedArgs = [];
-  for (let i = 0; i < length; i++) {
-    if (!equals(expected[i], received[i], [iterableEquality])) {
-      const oneline = isOneline(expected[i], received[i]);
-      const diffString = diff(expected[i], received[i]);
-      printedArgs.push(
-        `  ${printExpected(expected[i])}\n` +
-          `as argument ${i + 1}, but it was called with\n` +
-          `  ${printReceived(received[i])}.` +
-          (diffString && !oneline ? `\n\nDifference:\n\n${diffString}` : ''),
-      );
-    } else if (i >= expected.length) {
-      printedArgs.push(
-        `  Did not expect argument ${i + 1} ` +
-          `but it was called with ${printReceived(received[i])}.`,
-      );
-    }
-  }
-
-  return printedArgs.join('\n');
-};
-
-const nthToString = (nth: number): string => {
-  switch (nth) {
-    case 1:
-      return 'first';
-    case 2:
-      return 'second';
-    case 3:
-      return 'third';
-  }
-  return `${nth}th`;
 };
 
 export default spyMatchers;
