@@ -49,6 +49,8 @@
 
 ### Performance
 
+- `[jest-watcher]` Minor optimization for JestHook ([#8746](https://github.com/facebook/jest/pull/8746)
+
 ## 24.8.0
 
 ### Features
