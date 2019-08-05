@@ -9,6 +9,8 @@
 - `[expect]` Improve report when mock-spy matcher fails, part 3 ([#8697](https://github.com/facebook/jest/pull/8697))
 - `[expect]` Improve report when mock-spy matcher fails, part 4 ([#8710](https://github.com/facebook/jest/pull/8710))
 - `[expect]` Throw matcher error when received cannot be jasmine spy ([#8747](https://github.com/facebook/jest/pull/8747))
+- `[expect]` Improve report when negative CalledWith assertion fails ([#8755](https://github.com/facebook/jest/pull/8755))
+- `[expect]` Improve report when positive CalledWith assertion fails ([#8771](https://github.com/facebook/jest/pull/8771))
 - `[jest-snapshot]` Highlight substring differences when matcher fails, part 3 ([#8569](https://github.com/facebook/jest/pull/8569))
 - `[jest-core]` Improve report when snapshots are obsolete ([#8448](https://github.com/facebook/jest/pull/8665))
 - `[jest-cli]` Improve chai support (with detailed output, to match jest exceptions) ([#8454](https://github.com/facebook/jest/pull/8454))
@@ -47,6 +49,8 @@
 - `[docs]` Fix MockFunctions example that was using toContain instead of toContainEqual ([#8765](https://github.com/facebook/jest/pull/8765))
 
 ### Performance
+
+- `[jest-watcher]` Minor optimization for JestHook ([#8746](https://github.com/facebook/jest/pull/8746)
 
 ## 24.8.0
 
