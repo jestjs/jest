@@ -27,12 +27,12 @@ FAIL __tests__/test.js
 
     See https://jestjs.io/docs/en/configuration#modulefileextensions-array-string
 
-      1 | // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-      2 | 
-    > 3 | module.exports = require('./some-json-file');
+      6 |  */
+      7 | 
+    > 8 | module.exports = require('./some-json-file');
         |                  ^
-      4 | 
+      9 | 
 
       at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:259:17)
-      at Object.require (index.js:3:18)
+      at Object.require (index.js:8:18)
 `;
