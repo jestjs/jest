@@ -687,16 +687,18 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    try {
-      await Promise.all(promises);
-      this._cleanup();
-      hasteMap.map = map;
-      hasteMap.mocks = mocks;
-      return hasteMap;
-    } catch (error) {
-      this._cleanup();
-      throw error;
-    }
+    return Promise.all(promises).then(
+      () => {
+        this._cleanup();
+        hasteMap.map = map;
+        hasteMap.mocks = mocks;
+        return hasteMap;
+      },
+      error => {
+        this._cleanup();
+        throw error;
+      },
+    );
   }
 
   private _cleanup() {
