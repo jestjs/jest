@@ -642,7 +642,7 @@ class HasteMap extends EventEmitter {
       .then(workerReply, workerError);
   }
 
-  private async _buildHasteMap(data: {
+  private _buildHasteMap(data: {
     removedFiles: FileData;
     changedFiles?: FileData;
     hasteMap: InternalHasteMap;
