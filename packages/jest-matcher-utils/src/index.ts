@@ -28,17 +28,17 @@ const PLUGINS = [
   AsymmetricMatcher,
 ];
 
-type Color = (arg: string) => string; // relevant subset of Chalk type
+type MatcherHintColor = (arg: string) => string; // subset of Chalk type
 
 export type MatcherHintOptions = {
   comment?: string;
-  expectedColor?: Color;
+  expectedColor?: MatcherHintColor;
   isDirectExpectCall?: boolean;
   isNot?: boolean;
   promise?: string;
-  receivedColor?: Color;
+  receivedColor?: MatcherHintColor;
   secondArgument?: string;
-  secondArgumentColor?: Color;
+  secondArgumentColor?: MatcherHintColor;
 };
 
 export {DiffOptions};
