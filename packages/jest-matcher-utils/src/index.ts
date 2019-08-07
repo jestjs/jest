@@ -28,7 +28,7 @@ const PLUGINS = [
   AsymmetricMatcher,
 ];
 
-type Color = (arg: string) => string;
+type Color = (arg: string) => string; // relevant subset of Chalk type
 
 export type MatcherHintOptions = {
   comment?: string;
