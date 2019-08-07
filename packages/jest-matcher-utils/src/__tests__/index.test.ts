@@ -327,7 +327,7 @@ describe('matcherHint', () => {
       secondArgumentColor,
     });
 
-    const substringNegative = chalk.green(secondArgumentColor(secondArgument));
+    const substringNegative = chalk.green(secondArgument);
     const substringPositive = secondArgumentColor(secondArgument);
 
     expect(received).not.toMatch(substringNegative);
