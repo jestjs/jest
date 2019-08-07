@@ -399,7 +399,7 @@ FAIL __tests__/assertionError.test.js
 
   ● assert
 
-    assert.equal(received, expected) or assert(received) 
+    assert(received)
 
     Expected value to be equal to:
       true
@@ -418,7 +418,7 @@ FAIL __tests__/assertionError.test.js
 
   ● assert with a message
 
-    assert.equal(received, expected) or assert(received) 
+    assert(received)
 
     Expected value to be equal to:
       true
@@ -440,7 +440,7 @@ FAIL __tests__/assertionError.test.js
 
   ● assert.ok
 
-    assert.equal(received, expected) or assert(received) 
+    assert(received)
 
     Expected value to be equal to:
       true
@@ -459,7 +459,7 @@ FAIL __tests__/assertionError.test.js
 
   ● assert.ok with a message
 
-    assert.equal(received, expected) or assert(received) 
+    assert(received)
 
     Expected value to be equal to:
       true
@@ -481,7 +481,7 @@ FAIL __tests__/assertionError.test.js
 
   ● assert.equal
 
-    assert.equal(received, expected) or assert(received) 
+    assert.equal(received, expected)
 
     Expected value to be equal to:
       2
@@ -747,7 +747,7 @@ FAIL __tests__/assertionError.test.js
 
   ● async
 
-    assert.equal(received, expected) or assert(received) 
+    assert.equal(received, expected)
 
     Expected value to be equal to:
       "hello"
