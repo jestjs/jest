@@ -410,18 +410,12 @@ class HasteMap extends EventEmitter {
   /**
    * 2. crawl the file system.
    */
-  private async _buildFileMap(): Promise<{
+  private _buildFileMap(): Promise<{
     removedFiles: FileData;
     changedFiles?: FileData;
     hasteMap: InternalHasteMap;
   }> {
-    let hasteMap: InternalHasteMap;
-    try {
-      const read = this._options.resetCache ? createEmptyMap : this.read;
-      hasteMap = await read.call(this);
-    } catch {
-      hasteMap = createEmptyMap();
-    }
+    const hasteMap = this._options.resetCache ? createEmptyMap() : this.read();
     return this._crawl(hasteMap);
   }
 
