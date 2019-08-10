@@ -636,7 +636,7 @@ class HasteMap extends EventEmitter {
       .then(workerReply, workerError);
   }
 
-  private async _buildHasteMap(data: {
+  private _buildHasteMap(data: {
     removedFiles: FileData;
     changedFiles?: FileData;
     hasteMap: InternalHasteMap;
@@ -681,16 +681,17 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    try {
-      await Promise.all(promises);
-      this._cleanup();
-      hasteMap.map = map;
-      hasteMap.mocks = mocks;
-      return hasteMap;
-    } catch (error) {
-      this._cleanup();
-      throw error;
-    }
+    return Promise.all(promises)
+      .then(() => {
+        this._cleanup();
+        hasteMap.map = map;
+        hasteMap.mocks = mocks;
+        return hasteMap;
+      })
+      .catch(error => {
+        this._cleanup();
+        throw error;
+      });
   }
 
   private _cleanup() {
