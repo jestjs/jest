@@ -391,7 +391,7 @@ class HasteMap extends EventEmitter {
     try {
       hasteMap = serializer.readFileSync(this._cachePath);
     } catch (err) {
-      hasteMap = this._createEmptyMap();
+      hasteMap = createEmptyMap();
     }
 
     return hasteMap;
@@ -417,10 +417,10 @@ class HasteMap extends EventEmitter {
   }> {
     let hasteMap: InternalHasteMap;
     try {
-      const read = this._options.resetCache ? this._createEmptyMap : this.read;
+      const read = this._options.resetCache ? createEmptyMap : this.read;
       hasteMap = await read.call(this);
     } catch {
-      hasteMap = this._createEmptyMap();
+      hasteMap = createEmptyMap();
     }
     return this._crawl(hasteMap);
   }
@@ -1102,16 +1102,6 @@ class HasteMap extends EventEmitter {
     return true;
   }
 
-  private _createEmptyMap(): InternalHasteMap {
-    return {
-      clocks: new Map(),
-      duplicates: new Map(),
-      files: new Map(),
-      map: new Map(),
-      mocks: new Map(),
-    };
-  }
-
   static H: HType;
   static DuplicateError: typeof DuplicateError;
   static ModuleMap: typeof HasteModuleMap;
@@ -1127,6 +1117,16 @@ class DuplicateError extends Error {
     this.mockPath1 = mockPath1;
     this.mockPath2 = mockPath2;
   }
+}
+
+function createEmptyMap(): InternalHasteMap {
+  return {
+    clocks: new Map(),
+    duplicates: new Map(),
+    files: new Map(),
+    map: new Map(),
+    mocks: new Map(),
+  };
 }
 
 function copy<T extends Record<string, any>>(object: T): T {
