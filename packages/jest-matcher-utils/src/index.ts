@@ -28,12 +28,17 @@ const PLUGINS = [
   AsymmetricMatcher,
 ];
 
+type MatcherHintColor = (arg: string) => string; // subset of Chalk type
+
 export type MatcherHintOptions = {
   comment?: string;
+  expectedColor?: MatcherHintColor;
   isDirectExpectCall?: boolean;
   isNot?: boolean;
   promise?: string;
+  receivedColor?: MatcherHintColor;
   secondArgument?: string;
+  secondArgumentColor?: MatcherHintColor;
 };
 
 export {DiffOptions};
@@ -362,16 +367,19 @@ export const matcherHint = (
 ) => {
   const {
     comment = '',
+    expectedColor = EXPECTED_COLOR,
     isDirectExpectCall = false, // seems redundant with received === ''
     isNot = false,
     promise = '',
+    receivedColor = RECEIVED_COLOR,
     secondArgument = '',
+    secondArgumentColor = EXPECTED_COLOR,
   } = options;
   let hint = '';
   let dimString = 'expect'; // concatenate adjacent dim substrings
 
   if (!isDirectExpectCall && received !== '') {
-    hint += DIM_COLOR(dimString + '(') + RECEIVED_COLOR(received);
+    hint += DIM_COLOR(dimString + '(') + receivedColor(received);
     dimString = ')';
   }
 
@@ -398,9 +406,9 @@ export const matcherHint = (
   if (expected === '') {
     dimString += '()';
   } else {
-    hint += DIM_COLOR(dimString + '(') + EXPECTED_COLOR(expected);
+    hint += DIM_COLOR(dimString + '(') + expectedColor(expected);
     if (secondArgument) {
-      hint += DIM_COLOR(', ') + EXPECTED_COLOR(secondArgument);
+      hint += DIM_COLOR(', ') + secondArgumentColor(secondArgument);
     }
     dimString = ')';
   }

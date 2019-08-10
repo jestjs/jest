@@ -11,9 +11,7 @@ module.exports = {
     {
       plugins: [
         'babel-plugin-typescript-strip-namespaces',
-        require.resolve(
-          './scripts/babel-plugin-jest-replace-ts-export-assignment.js'
-        ),
+        'babel-plugin-replace-ts-export-assignment',
       ],
       presets: ['@babel/preset-typescript'],
       test: /\.tsx?$/,
