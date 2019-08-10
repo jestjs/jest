@@ -341,43 +341,7 @@ class HasteMap extends EventEmitter {
 
   build(): Promise<InternalHasteMapObject> {
     if (!this._buildPromise) {
-      this._buildPromise = (async () => {
-        const data = await this._buildFileMap();
-
-        // Persist when we don't know if files changed (changedFiles undefined)
-        // or when we know a file was changed or deleted.
-        let hasteMap: InternalHasteMap;
-        if (
-          data.changedFiles === undefined ||
-          data.changedFiles.size > 0 ||
-          data.removedFiles.size > 0
-        ) {
-          hasteMap = await this._buildHasteMap(data);
-          this._persist(hasteMap);
-        } else {
-          hasteMap = data.hasteMap;
-        }
-
-        const rootDir = this._options.rootDir;
-        const hasteFS = new HasteFS({
-          files: hasteMap.files,
-          rootDir,
-        });
-        const moduleMap = new HasteModuleMap({
-          duplicates: hasteMap.duplicates,
-          map: hasteMap.map,
-          mocks: hasteMap.mocks,
-          rootDir,
-        });
-        const __hasteMapForTest =
-          (process.env.NODE_ENV === 'test' && hasteMap) || null;
-        await this._watch(hasteMap);
-        return {
-          __hasteMapForTest,
-          hasteFS,
-          moduleMap,
-        };
-      })();
+      this._buildPromise = this._runBuild();
     }
     return this._buildPromise;
   }
@@ -636,6 +600,48 @@ class HasteMap extends EventEmitter {
       .then(workerReply, workerError);
   }
 
+  private _runBuild(): Promise<InternalHasteMapObject> {
+    let hasteMap: InternalHasteMap;
+    return this._buildFileMap()
+      .then(data => {
+        // Persist when we don't know if files changed (changedFiles undefined)
+        // or when we know a file was changed or deleted.
+        if (
+          data.changedFiles === undefined ||
+          data.changedFiles.size > 0 ||
+          data.removedFiles.size > 0
+        ) {
+          return this._buildHasteMap(data);
+        } else {
+          return data.hasteMap;
+        }
+      })
+      .then(map => {
+        hasteMap = map;
+        return this._watch(hasteMap);
+      })
+      .then(() => {
+        const rootDir = this._options.rootDir;
+        const hasteFS = new HasteFS({
+          files: hasteMap.files,
+          rootDir,
+        });
+        const moduleMap = new HasteModuleMap({
+          duplicates: hasteMap.duplicates,
+          map: hasteMap.map,
+          mocks: hasteMap.mocks,
+          rootDir,
+        });
+        const __hasteMapForTest =
+          (process.env.NODE_ENV === 'test' && hasteMap) || null;
+        return {
+          __hasteMapForTest,
+          hasteFS,
+          moduleMap,
+        };
+      });
+  }
+
   private _buildHasteMap(data: {
     removedFiles: FileData;
     changedFiles?: FileData;
@@ -686,6 +692,7 @@ class HasteMap extends EventEmitter {
         this._cleanup();
         hasteMap.map = map;
         hasteMap.mocks = mocks;
+        this._persist(hasteMap);
         return hasteMap;
       })
       .catch(error => {
