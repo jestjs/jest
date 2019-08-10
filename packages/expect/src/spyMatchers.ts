@@ -61,11 +61,10 @@ const isEqualValue = (expected: unknown, received: unknown): boolean =>
 const isEqualCall = (
   expected: Array<unknown>,
   received: Array<unknown>,
-): boolean => equals(expected, received, [iterableEquality]);
+): boolean => isEqualValue(expected, received);
 
 const isEqualReturn = (expected: unknown, result: any): boolean =>
-  result.type === 'return' &&
-  equals(expected, result.value, [iterableEquality]);
+  result.type === 'return' && isEqualValue(expected, result.value);
 
 const countReturns = (results: Array<any>): number =>
   results.reduce(
@@ -313,11 +312,13 @@ const isLineDiffableArg = (expected: unknown, received: unknown): boolean => {
   return true;
 };
 
-const printResult = (result: any) =>
+const printResult = (result: any, expected: unknown) =>
   result.type === 'throw'
     ? 'function call threw an error'
     : result.type === 'incomplete'
     ? 'function call has not returned yet'
+    : isEqualValue(expected, result.value)
+    ? printCommon(result.value)
     : printReceived(result.value);
 
 type IndexedResult = [number, any];
@@ -326,6 +327,7 @@ type IndexedResult = [number, any];
 // so additional empty line can separate from `Number of returns` which follows.
 const printReceivedResults = (
   label: string,
+  expected: unknown,
   indexedResults: Array<IndexedResult>,
   isOnlyCall: boolean,
   iExpectedCall?: number,
@@ -335,7 +337,7 @@ const printReceivedResults = (
   }
 
   if (isOnlyCall && (iExpectedCall === 0 || iExpectedCall === undefined)) {
-    return label + printResult(indexedResults[0][1]) + '\n';
+    return label + printResult(indexedResults[0][1], expected) + '\n';
   }
 
   const printAligned = getRightAlignedPrinter(label);
@@ -347,7 +349,7 @@ const printReceivedResults = (
       (printed: string, [i, result]: IndexedResult) =>
         printed +
         printAligned(String(i + 1), i === iExpectedCall) +
-        printResult(result) +
+        printResult(result, expected) +
         '\n',
       '',
     )
@@ -656,6 +658,7 @@ const createToReturnWithMatcher = (matcherName: string) =>
               ? ''
               : printReceivedResults(
                   'Received:     ',
+                  expected,
                   indexedResults,
                   results.length === 1,
                 )) +
@@ -677,6 +680,7 @@ const createToReturnWithMatcher = (matcherName: string) =>
             `Expected: ${printExpected(expected)}\n` +
             printReceivedResults(
               'Received: ',
+              expected,
               indexedResults,
               results.length === 1,
             ) +
@@ -809,6 +813,7 @@ const createLastReturnedMatcher = (matcherName: string) =>
               ? ''
               : printReceivedResults(
                   'Received:     ',
+                  expected,
                   indexedResults,
                   results.length === 1,
                   iLast,
@@ -841,6 +846,7 @@ const createLastReturnedMatcher = (matcherName: string) =>
             `Expected: ${printExpected(expected)}\n` +
             printReceivedResults(
               'Received: ',
+              expected,
               indexedResults,
               results.length === 1,
               iLast,
@@ -1037,6 +1043,7 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
               ? ''
               : printReceivedResults(
                   'Received:     ',
+                  expected,
                   indexedResults,
                   results.length === 1,
                   iNth,
@@ -1097,6 +1104,7 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
             `Expected: ${printExpected(expected)}\n` +
             printReceivedResults(
               'Received: ',
+              expected,
               indexedResults,
               results.length === 1,
               iNth,
