@@ -11,6 +11,7 @@
 - `[expect]` Throw matcher error when received cannot be jasmine spy ([#8747](https://github.com/facebook/jest/pull/8747))
 - `[expect]` Improve report when negative CalledWith assertion fails ([#8755](https://github.com/facebook/jest/pull/8755))
 - `[expect]` Improve report when positive CalledWith assertion fails ([#8771](https://github.com/facebook/jest/pull/8771))
+- `[expect]` Display equal values for ReturnedWith similar to CalledWith ([#8791](https://github.com/facebook/jest/pull/8791))
 - `[jest-snapshot]` Highlight substring differences when matcher fails, part 3 ([#8569](https://github.com/facebook/jest/pull/8569))
 - `[jest-core]` Improve report when snapshots are obsolete ([#8448](https://github.com/facebook/jest/pull/8665))
 - `[jest-cli]` Improve chai support (with detailed output, to match jest exceptions) ([#8454](https://github.com/facebook/jest/pull/8454))
@@ -21,6 +22,8 @@
 - `[@jest/core, @jest/test-sequencer]` Support async sort in custom `testSequencer` ([#8642](https://github.com/facebook/jest/pull/8642))
 - `[jest-runtime, @jest/fake-timers]` Add `jest.advanceTimersToNextTimer` ([#8713](https://github.com/facebook/jest/pull/8713))
 - `[@jest-transform]` Extract transforming require logic within `jest-core` into `@jest-transform` ([#8756](https://github.com/facebook/jest/pull/8756))
+- `[jest-matcher-utils]` Add color options to `matcherHint` ([#8795](https://github.com/facebook/jest/pull/8795))
+- `[jest-circus/jest-jasmine2]` Give clearer output for Node assert errors ([#8792](https://github.com/facebook/jest/pull/8792))
 
 ### Fixes
 
@@ -47,6 +50,7 @@
 - `[docs]` Updated imports of react-testing-library to @testing-library/react in website ([#8757](https://github.com/facebook/jest/pull/8757))
 - `[jest-core]` Add `getVersion` (moved from `jest-cli`) ([#8706](https://github.com/facebook/jest/pull/8706))
 - `[docs]` Fix MockFunctions example that was using toContain instead of toContainEqual ([#8765](https://github.com/facebook/jest/pull/8765))
+- `[*]` Make sure copyright header comment includes license ([#8783](https://github.com/facebook/jest/pull/8783))
 - `[docs]` Fix WatchPlugins `jestHooks.shouldRunTestSuite` example that receives an object ([#8784](https://github.com/facebook/jest/pull/8784))
 
 ### Performance
