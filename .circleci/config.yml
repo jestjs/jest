@@ -27,7 +27,7 @@ jobs:
       - restore-cache: *restore-cache
       - run: yarn --no-progress --frozen-lockfile
       - save-cache: *save-cache
-      - run: yarn lint --format junit -o reports/junit/js-lint-results.xml && yarn lint-es5-build --format junit -o reports/junit/js-es5-lint-results.xml  && yarn lint:md:ci && yarn check-copyright-headers
+      - run: yarn lint --format junit -o reports/junit/js-lint-results.xml && yarn lint-es5-build --format junit -o reports/junit/js-es5-lint-results.xml  && yarn lint:prettier:ci && yarn check-copyright-headers
       - store_test_results:
           path: reports/junit
 
