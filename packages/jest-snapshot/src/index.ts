@@ -47,7 +47,8 @@ const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
   'not',
 )} cannot be used with snapshot matchers`;
 
-const HINT_ARG = BOLD_WEIGHT('hint');
+const HINT_ARG = 'hint';
+const HINT_COLOR = BOLD_WEIGHT;
 const INLINE_SNAPSHOT_ARG = 'snapshot';
 const PROPERTY_MATCHERS_ARG = 'properties';
 const INDENTATION_REGEX = /^([^\S\n]*)\S/m;
@@ -185,6 +186,13 @@ const toMatchSnapshot = function(
     promise: this.promise,
     secondArgument,
   };
+
+  if (expectedArgument === HINT_ARG) {
+    options.expectedColor = HINT_COLOR;
+  }
+  if (secondArgument === HINT_ARG) {
+    options.secondArgumentColor = HINT_COLOR;
+  }
 
   if (arguments.length === 3 && !propertyMatchers) {
     throw new Error(
@@ -385,6 +393,7 @@ const toThrowErrorMatchingSnapshot = function(
   const expectedArgument =
     typeof hint === 'string' && hint.length !== 0 ? HINT_ARG : '';
   const options = {
+    expectedColor: HINT_COLOR,
     isNot: this.isNot,
     promise: this.promise,
     secondArgument: '',

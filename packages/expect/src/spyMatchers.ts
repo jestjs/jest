@@ -867,6 +867,7 @@ const createNthCalledWithMatcher = (matcherName: string) =>
   ): SyncExpectationResult {
     const expectedArgument = 'n';
     const options: MatcherHintOptions = {
+      expectedColor: (arg: string) => arg,
       isNot: this.isNot,
       promise: this.promise,
       secondArgument: '...expected',
@@ -877,8 +878,8 @@ const createNthCalledWithMatcher = (matcherName: string) =>
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, expectedArgument, options),
-          `${EXPECTED_COLOR(expectedArgument)} must be a positive integer`,
-          printWithType(expectedArgument, nth, printExpected),
+          `${expectedArgument} must be a positive integer`,
+          printWithType(expectedArgument, nth, stringify),
         ),
       );
     }
@@ -996,6 +997,7 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
   ): SyncExpectationResult {
     const expectedArgument = 'n';
     const options: MatcherHintOptions = {
+      expectedColor: (arg: string) => arg,
       isNot: this.isNot,
       promise: this.promise,
       secondArgument: 'expected',
@@ -1006,8 +1008,8 @@ const createNthReturnedWithMatcher = (matcherName: string) =>
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, expectedArgument, options),
-          `${EXPECTED_COLOR(expectedArgument)} must be a positive integer`,
-          printWithType(expectedArgument, nth, printExpected),
+          `${expectedArgument} must be a positive integer`,
+          printWithType(expectedArgument, nth, stringify),
         ),
       );
     }
