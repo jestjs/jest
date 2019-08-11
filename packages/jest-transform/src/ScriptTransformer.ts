@@ -9,7 +9,7 @@ import crypto from 'crypto';
 import path from 'path';
 import vm from 'vm';
 import {Config} from '@jest/types';
-import {createDirectory} from 'jest-util';
+import {createDirectory, isPromise} from 'jest-util';
 import fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-ignore: should just be `require.resolve`, but the tests mess that up
@@ -435,10 +435,18 @@ export default class ScriptTransformer {
     return fileSource;
   }
 
-  async requireAndTranspileModule<ModuleType = unknown>(
+  requireAndTranspileModule<ModuleType = unknown>(
+    moduleName: string,
+    callback?: (module: ModuleType) => void,
+  ): ModuleType;
+  requireAndTranspileModule<ModuleType = unknown>(
+    moduleName: string,
+    callback?: (module: ModuleType) => Promise<void>,
+  ): Promise<ModuleType>;
+  requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => void | Promise<void>,
-  ): Promise<ModuleType> {
+  ): ModuleType | Promise<ModuleType> {
     // Load the transformer to avoid a cycle where we need to load a
     // transformer in order to transform it in the require hooks
     this.preloadTransformer(moduleName);
@@ -467,9 +475,28 @@ export default class ScriptTransformer {
     );
     const module: ModuleType = require(moduleName);
 
+    if (!callback) {
+      revertHook();
+
+      return module;
+    }
+
     try {
-      if (callback) {
-        await callback(module);
+      const cbResult = callback(module);
+
+      if (isPromise(cbResult)) {
+        return cbResult.then(
+          () => {
+            revertHook();
+
+            return module;
+          },
+          error => {
+            revertHook();
+
+            return Promise.reject(error);
+          },
+        );
       }
     } finally {
       revertHook();
