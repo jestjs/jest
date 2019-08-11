@@ -51,6 +51,17 @@ const projectCaches: WeakMap<
 // To reset the cache for specific changesets (rather than package version).
 const CACHE_VERSION = '1';
 
+async function waitForPromiseWithCleanup(
+  promise: Promise<any>,
+  cleanup: () => void,
+) {
+  try {
+    await promise;
+  } finally {
+    cleanup();
+  }
+}
+
 export default class ScriptTransformer {
   static EVAL_RESULT_VARIABLE: 'Object.<anonymous>';
   private _cache: ProjectCache;
@@ -485,17 +496,8 @@ export default class ScriptTransformer {
       const cbResult = callback(module);
 
       if (isPromise(cbResult)) {
-        return cbResult.then(
-          () => {
-            revertHook();
-
-            return module;
-          },
-          error => {
-            revertHook();
-
-            return Promise.reject(error);
-          },
+        return waitForPromiseWithCleanup(cbResult, revertHook).then(
+          () => module,
         );
       }
     } finally {
