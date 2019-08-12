@@ -115,11 +115,12 @@ const INCLUDED_PATTERNS = [
   /\.[^/]+$/,
 ];
 
-const COPYRIGHT_HEADER =
-  'Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.';
-const LICENSE1 =
-  'This source code is licensed under the MIT license found in the';
-const LICENSE2 = 'LICENSE file in the root directory of this source tree.';
+const COPYRIGHT_LICENSE = [
+  ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.',
+  ' *',
+  ' * This source code is licensed under the MIT license found in the',
+  ' * LICENSE file in the root directory of this source tree.',
+].join('\n');
 
 function needsCopyrightHeader(file) {
   const contents = getFileContents(file);
@@ -127,12 +128,7 @@ function needsCopyrightHeader(file) {
   // Match lines individually to avoid false positive for:
   // comment block versus lines
   // line ending LF versus CRLF
-  return (
-    contents.trim().length > 0 &&
-    (!contents.includes(COPYRIGHT_HEADER) ||
-      !contents.includes(LICENSE1) ||
-      !contents.includes(LICENSE2))
-  );
+  return contents.trim().length > 0 && !contents.includes(COPYRIGHT_LICENSE);
 }
 
 function check() {
