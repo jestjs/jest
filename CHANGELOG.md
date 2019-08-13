@@ -52,6 +52,7 @@
 - `[jest-core]` Add `getVersion` (moved from `jest-cli`) ([#8706](https://github.com/facebook/jest/pull/8706))
 - `[docs]` Fix MockFunctions example that was using toContain instead of toContainEqual ([#8765](https://github.com/facebook/jest/pull/8765))
 - `[*]` Make sure copyright header comment includes license ([#8783](https://github.com/facebook/jest/pull/8783))
+- `[*]` Check copyright and license as one joined substring ([#8815](https://github.com/facebook/jest/pull/8815))
 - `[docs]` Fix WatchPlugins `jestHooks.shouldRunTestSuite` example that receives an object ([#8784](https://github.com/facebook/jest/pull/8784))
 - `[*]` Enforce LF line endings ([#8809](https://github.com/facebook/jest/pull/8809))
 
