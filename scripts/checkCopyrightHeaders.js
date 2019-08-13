@@ -124,10 +124,6 @@ const COPYRIGHT_LICENSE = [
 
 function needsCopyrightHeader(file) {
   const contents = getFileContents(file);
-
-  // Match lines individually to avoid false positive for:
-  // comment block versus lines
-  // line ending LF versus CRLF
   return contents.trim().length > 0 && !contents.includes(COPYRIGHT_LICENSE);
 }
 
