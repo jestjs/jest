@@ -1164,7 +1164,7 @@ const ensureMockOrSpy = (
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherName, undefined, expectedArgument, options),
-        `${RECEIVED_COLOR('received')} value must be a mock or spy function`,
+        `${RECEIVED_COLOR('received')} value must be a mock or spy function. Do you have spy set up?`,
         printWithType('Received', received, printReceived),
       ),
     );
