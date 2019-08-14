@@ -55,6 +55,7 @@
 - `[*]` Check copyright and license as one joined substring ([#8815](https://github.com/facebook/jest/pull/8815))
 - `[docs]` Fix WatchPlugins `jestHooks.shouldRunTestSuite` example that receives an object ([#8784](https://github.com/facebook/jest/pull/8784))
 - `[*]` Enforce LF line endings ([#8809](https://github.com/facebook/jest/pull/8809))
+- `[pretty-format]` Delete obsolete link and simplify structure in README ([#8824](https://github.com/facebook/jest/pull/8824))
 
 ### Performance
 
