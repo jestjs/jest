@@ -552,6 +552,7 @@
 - `[@jest/test-result]` Create method to create empty `TestResult` ([#8867](https://github.com/facebook/jest/pull/8867))
 - `[jest-worker]` [**BREAKING**] Return a promise from `end()`, resolving with the information whether workers exited gracefully ([#8206](https://github.com/facebook/jest/pull/8206))
 - `[jest-reporters]` Transform file paths into hyperlinks ([#8980](https://github.com/facebook/jest/pull/8980))
+- `[jest-runner]` [**BREAKING**] Run transforms over `testRunnner` ([#8823](https://github.com/facebook/jest/pull/8823))
 
 ### Fixes
 

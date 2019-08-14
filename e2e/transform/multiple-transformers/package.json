@@ -7,8 +7,7 @@
     },
     "testEnvironment": "node",
     "transformIgnorePatterns": [
-      "/jest-environment-node/"
-    ]
+      "/jest-environment-node/", "jest-jasmine2", "jest-circus"]
   },
   "dependencies": {
     "@babel/core": "^7.0.0",

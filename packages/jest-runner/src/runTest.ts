@@ -108,10 +108,11 @@ async function runTestInternal(
     transformer.requireAndTranspileModule(testEnvironment),
   ).default;
   const testFramework: TestFramework = interopRequireDefault(
-    process.env.JEST_CIRCUS === '1'
-      ? // eslint-disable-next-line import/no-extraneous-dependencies
-        require('jest-circus/runner')
-      : require(config.testRunner),
+    transformer.requireAndTranspileModule(
+      process.env.JEST_CIRCUS === '1'
+        ? 'jest-circus/runner'
+        : config.testRunner,
+    ),
   ).default;
   const Runtime: typeof RuntimeClass = interopRequireDefault(
     config.moduleLoader

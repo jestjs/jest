@@ -6,11 +6,13 @@
  */
 
 module.exports = {
-  only: [
-    'blablabla',
-    /jest-environment-node/,
-    /jest-jasmine2/,
-    /jest-circus/,
-    /jest-each/,
+  presets: [
+    ['@babel/preset-typescript'],
+    [
+      '@babel/preset-env',
+      {
+        targets: {node: 6},
+      },
+    ],
   ],
 };
