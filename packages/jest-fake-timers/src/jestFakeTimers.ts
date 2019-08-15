@@ -173,8 +173,11 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _runImmediate(immediate: Tick) {
-    immediate.callback();
-    this._fakeClearImmediate(immediate.uuid);
+    try {
+      immediate.callback();
+    } finally {
+      this._fakeClearImmediate(immediate.uuid);
+    }
   }
 
   runAllTimers() {
