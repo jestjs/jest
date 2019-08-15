@@ -251,7 +251,7 @@ export default (async function runJest({
     testSchedulerContext,
   ).scheduleTests(allTests, testWatcher);
 
-  sequencer.cacheResults(allTests, results);
+  await sequencer.cacheResults(allTests, results);
 
   if (hasTests) {
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
