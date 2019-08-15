@@ -207,6 +207,21 @@ describe('transformer caching', () => {
   });
 });
 
+describe('transform-snapshotResolver', () => {
+  const dir = path.resolve(
+    __dirname,
+    '..',
+    'transform/transform-snapshotResolver',
+  );
+
+  it('should transform the snapshotResolver', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
 describe('transform-environment', () => {
   const dir = path.resolve(__dirname, '../transform/transform-environment');
 
