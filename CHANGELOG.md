@@ -61,6 +61,7 @@
 ### Performance
 
 - `[jest-watcher]` Minor optimization for JestHook ([#8746](https://github.com/facebook/jest/pull/8746)
+- `[@jest/reporters]` Prevent runaway CPU useage with `--notify` on macOS ([#8830](https://github.com/facebook/jest/issues/8830))
 
 ## 24.8.0
 

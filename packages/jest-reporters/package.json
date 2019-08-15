@@ -22,7 +22,7 @@
     "jest-runtime": "^24.8.0",
     "jest-util": "^24.8.0",
     "jest-worker": "^24.6.0",
-    "node-notifier": "^5.2.1",
+    "node-notifier": "^5.4.2",
     "slash": "^2.0.0",
     "source-map": "^0.6.0",
     "string-length": "^2.0.0"
