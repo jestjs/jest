@@ -173,8 +173,8 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _runImmediate(immediate: Tick) {
-    this._fakeClearImmediate(immediate.uuid);
     immediate.callback();
+    this._fakeClearImmediate(immediate.uuid);
   }
 
   runAllTimers() {
@@ -436,8 +436,14 @@ export default class FakeTimers<TimerRef> {
 
     const immediates = this._immediates;
     this._timerAPIs.setImmediate(() => {
-      this._fakeClearImmediate(uuid);
-      immediates.find(x => x.uuid === uuid) && callback.apply(null, args);
+      if (immediates.find(x => x.uuid === uuid)) {
+        try {
+          callback.apply(null, args);
+        } catch (error) {
+        } finally {
+          this._fakeClearImmediate(uuid);
+        }
+      }
     });
 
     return uuid;
