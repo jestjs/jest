@@ -439,7 +439,6 @@ export default class FakeTimers<TimerRef> {
       if (immediates.find(x => x.uuid === uuid)) {
         try {
           callback.apply(null, args);
-        } catch (error) {
         } finally {
           this._fakeClearImmediate(uuid);
         }
