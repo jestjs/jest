@@ -1,6 +1,6 @@
 {
   "name": "jest-haste-map",
-  "version": "24.8.0",
+  "version": "24.9.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,14 +10,14 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^24.8.0",
+    "@jest/types": "^24.9.0",
     "anymatch": "^2.0.0",
     "fb-watchman": "^2.0.0",
     "graceful-fs": "^4.1.15",
     "invariant": "^2.2.4",
-    "jest-serializer": "^24.4.0",
-    "jest-util": "^24.8.0",
-    "jest-worker": "^24.6.0",
+    "jest-serializer": "^24.9.0",
+    "jest-util": "^24.9.0",
+    "jest-worker": "^24.9.0",
     "micromatch": "^3.1.10",
     "sane": "^4.0.3",
     "walker": "^1.0.7"
@@ -40,5 +40,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "845728f24b3ef41e450595c384e9b5c9fdf248a4"
+  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
 }
