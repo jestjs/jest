@@ -158,7 +158,6 @@ For other applications, you can provide an options object as a third argument:
 
 ### Properties of options object
 
-<!-- prettier-ignore -->
 | name           | default       |
 | :------------- | :------------ |
 | `aAnnotation`  | `'Expected'`  |
