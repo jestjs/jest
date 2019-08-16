@@ -1,0 +1,34 @@
+import chalk from 'chalk';
+
+import {DiffOptions, DiffOptionsNormalized} from './types';
+
+const DIFF_CONTEXT_DEFAULT = 5;
+
+const OPTIONS_DEFAULT: DiffOptionsNormalized = {
+  aAnnotation: 'Expected',
+  aColor: chalk.green,
+  aSymbol: '-',
+  bAnnotation: 'Received',
+  bColor: chalk.red,
+  bSymbol: '+',
+  commonColor: chalk.dim,
+  commonSymbol: ' ',
+  contextLines: DIFF_CONTEXT_DEFAULT,
+  expand: true,
+};
+
+const getContextLines = (contextLines?: number): number =>
+  typeof contextLines === 'number' &&
+  Number.isSafeInteger(contextLines) &&
+  contextLines >= 0
+    ? contextLines
+    : DIFF_CONTEXT_DEFAULT;
+
+// Pure function returns options with all properties.
+export const normalizeDiffOptions = (
+  options: DiffOptions = {},
+): DiffOptionsNormalized => ({
+  ...OPTIONS_DEFAULT,
+  ...options,
+  contextLines: getContextLines(options.contextLines),
+});

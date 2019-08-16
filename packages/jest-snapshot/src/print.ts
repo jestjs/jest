@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff, {getStringDiff} from 'jest-diff';
+import diff, {diffStringsAligned, diffStringsUnaligned} from 'jest-diff';
 import getType, {isPrimitive} from 'jest-get-type';
 import {
   EXPECTED_COLOR,
@@ -45,6 +45,8 @@ const isLineDiffable = (received: any): boolean => {
   return true;
 };
 
+const MAX_DIFF_STRING_LENGTH = 20000;
+
 export const printDiffOrStringified = (
   expectedSerializedTrimmed: string,
   receivedSerializedTrimmed: string,
@@ -77,33 +79,45 @@ export const printDiffOrStringified = (
     }
 
     // Display substring highlight even when strings have custom serialization.
-    const result = getStringDiff(
-      expectedSerializedTrimmed,
-      receivedSerializedTrimmed,
-      {
-        aAnnotation: expectedLabel,
-        bAnnotation: receivedLabel,
-        expand,
-      },
-    );
-
-    if (result !== null) {
-      if (result.isMultiline) {
-        return result.annotatedDiff;
+    if (
+      expectedSerializedTrimmed.length !== 0 &&
+      receivedSerializedTrimmed.length !== 0 &&
+      expectedSerializedTrimmed.length <= MAX_DIFF_STRING_LENGTH &&
+      receivedSerializedTrimmed.length <= MAX_DIFF_STRING_LENGTH &&
+      expectedSerializedTrimmed !== receivedSerializedTrimmed
+    ) {
+      if (
+        expectedSerializedTrimmed.includes('\n') ||
+        receivedSerializedTrimmed.includes('\n')
+      ) {
+        return diffStringsAligned(
+          expectedSerializedTrimmed,
+          receivedSerializedTrimmed,
+          {
+            aAnnotation: expectedLabel,
+            bAnnotation: receivedLabel,
+            expand,
+          },
+        );
       }
 
+      // Format the changed substrings using inverse from the chalk package.
+      const [expected2, received2] = diffStringsUnaligned(
+        expectedSerializedTrimmed,
+        receivedSerializedTrimmed,
+      );
+
       // Because not default stringify, call EXPECTED_COLOR and RECEIVED_COLOR
-      // This is reason to call getStringDiff instead of printDiffOrStringify
+      // This is reason to call diffStrings2 instead of printDiffOrStringify
       // Because there is no closing double quote mark at end of single lines,
       // future improvement is to call replaceSpacesAtEnd if it becomes public.
       const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
-      return (
-        printLabel(expectedLabel) +
-        EXPECTED_COLOR(result.a) +
-        '\n' +
-        printLabel(receivedLabel) +
-        RECEIVED_COLOR(result.b)
-      );
+      const expectedLine =
+        printLabel(expectedLabel) + EXPECTED_COLOR(expected2);
+      const receivedLine =
+        printLabel(receivedLabel) + RECEIVED_COLOR(received2);
+
+      return expectedLine + '\n' + receivedLine;
     }
   }
 

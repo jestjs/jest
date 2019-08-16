@@ -6,7 +6,11 @@
  */
 
 import chalk from 'chalk';
-import jestDiff, {DiffOptions, getStringDiff} from 'jest-diff';
+import jestDiff, {
+  DiffOptions,
+  diffStringsAligned,
+  diffStringsUnaligned,
+} from 'jest-diff';
 import getType, {isPrimitive} from 'jest-get-type';
 import prettyFormat from 'pretty-format';
 
@@ -262,6 +266,8 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
   return true;
 };
 
+const MAX_DIFF_STRING_LENGTH = 20000;
+
 export const printDiffOrStringify = (
   expected: unknown,
   received: unknown,
@@ -269,24 +275,31 @@ export const printDiffOrStringify = (
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
 ): string => {
-  if (typeof expected === 'string' && typeof received === 'string') {
-    const result = getStringDiff(expected, received, {
-      aAnnotation: expectedLabel,
-      bAnnotation: receivedLabel,
-      expand,
-    });
-
-    if (result !== null) {
-      if (result.isMultiline) {
-        return result.annotatedDiff;
-      }
-
-      const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
-      const expectedLine = printLabel(expectedLabel) + printExpected(result.a);
-      const receivedLine = printLabel(receivedLabel) + printReceived(result.b);
-
-      return expectedLine + '\n' + receivedLine;
+  if (
+    typeof expected === 'string' &&
+    typeof received === 'string' &&
+    expected.length !== 0 &&
+    received.length !== 0 &&
+    expected.length <= MAX_DIFF_STRING_LENGTH &&
+    received.length <= MAX_DIFF_STRING_LENGTH &&
+    expected !== received
+  ) {
+    if (expected.includes('\n') || received.includes('\n')) {
+      return diffStringsAligned(expected, received, {
+        aAnnotation: expectedLabel,
+        bAnnotation: receivedLabel,
+        expand,
+      });
     }
+
+    // Format the changed substrings using inverse from the chalk package.
+    const [expected2, received2] = diffStringsUnaligned(expected, received);
+
+    const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+    const expectedLine = printLabel(expectedLabel) + printExpected(expected2);
+    const receivedLine = printLabel(receivedLabel) + printReceived(received2);
+
+    return expectedLine + '\n' + receivedLine;
   }
 
   if (isLineDiffable(expected, received)) {

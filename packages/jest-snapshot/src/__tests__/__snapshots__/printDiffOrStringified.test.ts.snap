@@ -105,6 +105,23 @@ exports[`fallback to line diff 1`] = `
 <r>+ ================================================================================</>
 `;
 
+exports[`has no common after clean up chaff array 1`] = `
+<g>- Snapshot</>
+<r>+ Received</>
+
+<d>  Array [</>
+<g>-   "delete",</>
+<g>-   "two",</>
+<r>+   "insert",</>
+<r>+   "2",</>
+<d>  ]</>
+`;
+
+exports[`has no common after clean up chaff string single line 1`] = `
+Snapshot: <g>"delete"</>
+Received: <r>"insert"</>
+`;
+
 exports[`isLineDiffable false boolean 1`] = `
 Snapshot: <g>true</>
 Received: <r>false</>
@@ -211,6 +228,21 @@ exports[`without serialize backtick single line expected and multi line received
 exports[`without serialize backtick single line expected and received 1`] = `
 Snapshot: <g>var foo = \`backtick\`;</>
 Received: <r>var foo = \`back<i>\${x}</i>tick\`;</>
+`;
+
+exports[`without serialize has no common after clean up chaff multi line 1`] = `
+<g>- Snapshot</>
+<r>+ Received</>
+
+<g>- delete</>
+<g>- two</>
+<r>+ insert</>
+<r>+ 2</>
+`;
+
+exports[`without serialize has no common after clean up chaff single line 1`] = `
+Snapshot: <g>delete</>
+Received: <r>insert</>
 `;
 
 exports[`without serialize prettier/pull/5590 1`] = `
