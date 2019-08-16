@@ -39,6 +39,7 @@
 - `[jest-snapshots]` Fix test retries that contain snapshots ([#8629](https://github.com/facebook/jest/pull/8629))
 - `[jest-mock]` Fix incorrect assignments when restoring mocks in instances where they originally didn't exist ([#8631](https://github.com/facebook/jest/pull/8631))
 - `[expect]` Fix stack overflow when matching objects with circular references ([#8687](https://github.com/facebook/jest/pull/8687))
+- `[jest-haste-map]` Workaround a node >=12.5.0 bug that causes the process not to exit after tests have completed and cancerous memory growth  ([#8787](https://github.com/facebook/jest/pull/8787))
 
 ### Chore & Maintenance
 
