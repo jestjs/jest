@@ -193,8 +193,11 @@ describe(<span class="hljs-string">'listFilesInDirectorySync'</span>, () =&gt; {
     <span class="hljs-attr">matches</span>: <span class="hljs-literal">false</span>,
     <span class="hljs-attr">media</span>: query,
     <span class="hljs-attr">onchange</span>: <span class="hljs-literal">null</span>,
-    <span class="hljs-attr">addListener</span>: jest.fn(),
-    <span class="hljs-attr">removeListener</span>: jest.fn(),
+    <span class="hljs-attr">addListener</span>: jest.fn(), <span class="hljs-comment">// deprecated</span>
+    removeListener: jest.fn(), <span class="hljs-comment">// deprecated</span>
+    addEventListener: jest.fn(),
+    <span class="hljs-attr">removeEventListener</span>: jest.fn(),
+    <span class="hljs-attr">dispatchEvent</span>: jest.fn(),
   };
 });
 </code></pre>
