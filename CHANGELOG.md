@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-diff]` Add options for colors and symbols ([#8841](https://github.com/facebook/jest/pull/8841))
+
 ### Fixes
 
 ### Chore & Maintenance
