@@ -25,6 +25,7 @@ Steps to reproduce the behavior:
 Issues without a reproduction link are likely to stall.
 
 <!-- Run npx envinfo --preset jest -->
+
 ## envinfo
 
 <!-- Paste the results here: -->
