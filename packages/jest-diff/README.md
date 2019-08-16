@@ -61,7 +61,7 @@ The returned **string** consists of:
 
 Here are edge cases for the return value:
 
-- `'  Comparing two different types of values. …'` if the arguments have **different types** according to the `jest-get-type` package (instances of different classes have the same `'object'` type)
+- `' Comparing two different types of values. …'` if the arguments have **different types** according to the `jest-get-type` package (instances of different classes have the same `'object'` type)
 - `'Compared values have no visual difference.'` if the arguments have either **referential identity** according to `Object.is` method or **same serialization** according to the `pretty-format` package
 - `null` if either argument is a so-called **asymmetric matcher** in Jasmine or Jest
 
@@ -236,4 +236,4 @@ const options = {
 };
 ```
 
-A patch mark like  `@@ -12,7 +12,9 @@` accounts for omitted common lines.
+A patch mark like `@@ -12,7 +12,9 @@` accounts for omitted common lines.
