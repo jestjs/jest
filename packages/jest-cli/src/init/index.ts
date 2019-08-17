@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
+import fs from 'fs';
 import * as path from 'path';
 import chalk from 'chalk';
 import prompts from 'prompts';
