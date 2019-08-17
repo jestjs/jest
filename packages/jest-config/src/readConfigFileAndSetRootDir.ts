@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import fs from 'fs';
+import * as path from 'path';
+import * as fs from 'fs';
 import {Config} from '@jest/types';
 // @ts-ignore: vendored
 import jsonlint from './vendor/jsonlint';

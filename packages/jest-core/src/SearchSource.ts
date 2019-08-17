@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import micromatch from 'micromatch';
+import * as path from 'path';
+import {some as micromatchSome} from 'micromatch';
 import {Context} from 'jest-runtime';
 import {Config} from '@jest/types';
 import {Test} from 'jest-runner';
@@ -37,7 +37,7 @@ export type TestSelectionConfig = {
 };
 
 const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
-  micromatch.some(replacePathSepForGlob(path), globs, {dot: true});
+  micromatchSome(replacePathSepForGlob(path), globs, {dot: true});
 
 const regexToMatcher = (testRegex: Array<string>) => (path: Config.Path) =>
   testRegex.some(testRegex => new RegExp(testRegex).test(path));

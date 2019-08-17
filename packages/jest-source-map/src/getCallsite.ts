@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'graceful-fs';
+import {readFileSync} from 'graceful-fs';
 import callsites, {CallSite} from 'callsites';
 import {SourceMapConsumer} from 'source-map';
 import {SourceMapRegistry} from './types';
@@ -53,7 +53,7 @@ export default (level: number, sourceMaps?: SourceMapRegistry | null) => {
 
   if (sourceMapFileName) {
     try {
-      const sourceMap = fs.readFileSync(sourceMapFileName, 'utf8');
+      const sourceMap = readFileSync(sourceMapFileName, 'utf8');
       // @ts-ignore: Not allowed to pass string
       addSourceMapConsumer(stack, new SourceMapConsumer(sourceMap));
     } catch (e) {

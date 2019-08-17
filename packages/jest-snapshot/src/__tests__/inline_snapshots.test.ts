@@ -8,8 +8,8 @@
 jest.mock('fs');
 jest.mock('prettier');
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import prettier from 'prettier';
 import babelTraverse from '@babel/traverse';
 import {Frame} from 'jest-message-util';

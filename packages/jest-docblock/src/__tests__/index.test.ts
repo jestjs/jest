@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
+import {tmpdir} from 'os';
 import * as docblock from '..';
 
 describe('docblock', () => {

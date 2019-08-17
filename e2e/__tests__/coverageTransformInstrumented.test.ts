@@ -6,7 +6,7 @@
  */
 
 import {readFileSync} from 'fs';
-import path from 'path';
+import * as path from 'path';
 import {cleanup, run} from '../Utils';
 import runJest from '../runJest';
 

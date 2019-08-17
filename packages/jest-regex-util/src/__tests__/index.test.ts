@@ -7,7 +7,7 @@
 
 jest.mock('path');
 
-import path from 'path';
+import * as path from 'path';
 import {replacePathSepForRegex} from '../index';
 
 describe('replacePathSepForRegex()', () => {

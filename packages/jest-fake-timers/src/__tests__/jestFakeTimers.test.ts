@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import vm from 'vm';
+import {runInNewContext} from 'vm';
 import mock from 'jest-mock';
 import FakeTimers from '../jestFakeTimers';
 
@@ -23,7 +23,7 @@ describe('FakeTimers', () => {
   let moduleMocker: mock.ModuleMocker;
 
   beforeEach(() => {
-    const global = vm.runInNewContext('this');
+    const global = runInNewContext('this');
     moduleMocker = new mock.ModuleMocker(global);
   });
 

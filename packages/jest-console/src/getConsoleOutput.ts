@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import chalk from 'chalk';
 import slash from 'slash';
 import {ConsoleBuffer} from './types';

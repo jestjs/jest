@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import HasteMap from 'jest-haste-map';
 import {sync as realpath} from 'realpath-native';
 import {cleanup, writeFiles} from '../Utils';

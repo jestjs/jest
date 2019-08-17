@@ -8,9 +8,9 @@
 declare const jestGlobalConfig: Config.GlobalConfig;
 declare const jestProjectConfig: Config.ProjectConfig;
 
-import path from 'path';
-import repl from 'repl';
-import vm from 'vm';
+import * as path from 'path';
+import * as repl from 'repl';
+import {runInThisContext} from 'vm';
 import {Transformer} from '@jest/transform';
 import {Config} from '@jest/types';
 
@@ -35,7 +35,7 @@ const evalCommand: repl.REPLEval = (
           ? transformResult
           : transformResult.code;
     }
-    result = vm.runInThisContext(cmd);
+    result = runInThisContext(cmd);
   } catch (e) {
     return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }

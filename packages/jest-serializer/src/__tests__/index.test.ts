@@ -7,9 +7,9 @@
 
 'use strict';
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+import * as fs from 'fs';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import v8 from 'v8';
 import prettyFormat from 'pretty-format';
 
@@ -38,7 +38,7 @@ const objs = [
   {buf: Buffer.from([0, 255, 127])},
 ];
 
-const file = path.join(os.tmpdir(), '__jest-serialize-test__');
+const file = path.join(tmpdir(), '__jest-serialize-test__');
 
 afterEach(() => {
   try {

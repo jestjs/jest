@@ -7,7 +7,7 @@
 
 'use strict';
 
-import path from 'path';
+import * as path from 'path';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../empty-suite-error');

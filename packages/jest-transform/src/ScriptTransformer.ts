@@ -5,20 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import crypto from 'crypto';
-import path from 'path';
-import vm from 'vm';
+import {createHash} from 'crypto';
+import * as path from 'path';
+import {Script} from 'vm';
 import {Config} from '@jest/types';
 import {createDirectory, isPromise} from 'jest-util';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-ignore: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
-import convertSourceMap from 'convert-source-map';
+import {fromSource as sourcemapFromSource} from 'convert-source-map';
 import HasteMap from 'jest-haste-map';
 import stableStringify from 'fast-json-stable-stringify';
 import slash from 'slash';
-import writeFileAtomic from 'write-file-atomic';
+import {sync as writeFileAtomic} from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
 import {addHook} from 'pirates';
 import {
@@ -99,8 +99,7 @@ export default class ScriptTransformer {
     const transformer = this._getTransformer(filename);
 
     if (transformer && typeof transformer.getCacheKey === 'function') {
-      return crypto
-        .createHash('md5')
+      return createHash('md5')
         .update(
           transformer.getCacheKey(fileData, filename, configString, {
             config: this._config,
@@ -111,8 +110,7 @@ export default class ScriptTransformer {
         .update(CACHE_VERSION)
         .digest('hex');
     } else {
-      return crypto
-        .createHash('md5')
+      return createHash('md5')
         .update(fileData)
         .update(configString)
         .update(instrument ? 'instrument' : '')
@@ -298,7 +296,7 @@ export default class ScriptTransformer {
     if (!transformed.map) {
       //Could be a potential freeze here.
       //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
-      const inlineSourceMap = convertSourceMap.fromSource(transformed.code);
+      const inlineSourceMap = sourcemapFromSource(transformed.code);
 
       if (inlineSourceMap) {
         transformed.map = inlineSourceMap.toJSON();
@@ -370,7 +368,7 @@ export default class ScriptTransformer {
 
       return {
         mapCoverage,
-        script: new vm.Script(wrappedCode, {
+        script: new Script(wrappedCode, {
           displayErrors: true,
           filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
         }),
@@ -549,8 +547,7 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: Config.Path, code: string) {
-  const checksum = crypto
-    .createHash('md5')
+  const checksum = createHash('md5')
     .update(code)
     .digest('hex');
   writeCacheFile(cachePath, checksum + '\n' + code);
@@ -568,8 +565,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
     return null;
   }
   const code = content.substr(33);
-  const checksum = crypto
-    .createHash('md5')
+  const checksum = createHash('md5')
     .update(code)
     .digest('hex');
   if (checksum === content.substr(0, 32)) {
@@ -586,7 +582,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
  */
 const writeCacheFile = (cachePath: Config.Path, fileData: string) => {
   try {
-    writeFileAtomic.sync(cachePath, fileData, {encoding: 'utf8'});
+    writeFileAtomic(cachePath, fileData, {encoding: 'utf8'});
   } catch (e) {
     if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
       return;

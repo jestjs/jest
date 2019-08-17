@@ -6,7 +6,7 @@
  */
 
 import {tmpdir} from 'os';
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {makeProjectConfig} from '../../../../TestUtils';

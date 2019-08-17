@@ -6,7 +6,7 @@
  *
  */
 
-import path from 'path';
+import * as path from 'path';
 
 export const escapePathForRegex = (dir: string) => {
   if (path.sep === '\\') {
