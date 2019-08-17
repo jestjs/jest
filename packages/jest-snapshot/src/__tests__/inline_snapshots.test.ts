@@ -5,7 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs');
+jest.mock('fs', () => ({
+  ...jest.genMockFromModule('fs'),
+  existsSync: jest.fn().mockReturnValue(true),
+  readdirSync: jest.fn().mockReturnValue([]),
+  statSync: jest.fn(filePath => ({
+    isDirectory: () => !filePath.endsWith('.js'),
+  })),
+}));
 jest.mock('prettier');
 
 import * as fs from 'fs';
@@ -15,29 +22,8 @@ import babelTraverse from '@babel/traverse';
 import {Frame} from 'jest-message-util';
 
 import {saveInlineSnapshots} from '../inline_snapshots';
-
-const writeFileSync = fs.writeFileSync;
-const readFileSync = fs.readFileSync;
-const existsSync = fs.existsSync;
-const statSync = fs.statSync;
-const readdirSync = fs.readdirSync;
 beforeEach(() => {
-  fs.writeFileSync = jest.fn();
-  fs.readFileSync = jest.fn();
-  fs.existsSync = jest.fn(() => true);
-  (fs.statSync as jest.Mock).mockImplementation(filePath => ({
-    isDirectory: () => !filePath.endsWith('.js'),
-  }));
-  fs.readdirSync = jest.fn(() => []);
-
   (prettier.resolveConfig.sync as jest.Mock).mockReset();
-});
-afterEach(() => {
-  fs.writeFileSync = writeFileSync;
-  fs.readFileSync = readFileSync;
-  fs.existsSync = existsSync;
-  fs.statSync = statSync;
-  fs.readdirSync = readdirSync;
 });
 
 test('saveInlineSnapshots() replaces empty function call with a template literal', () => {
