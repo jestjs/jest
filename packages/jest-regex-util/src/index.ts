@@ -6,10 +6,10 @@
  *
  */
 
-import * as path from 'path';
+import {sep} from 'path';
 
 export const escapePathForRegex = (dir: string) => {
-  if (path.sep === '\\') {
+  if (sep === '\\') {
     // Replace "\" with "/" so it's not escaped by escapeStrForRegex.
     // replacePathSepForRegex will convert it back.
     dir = dir.replace(/\\/g, '/');
@@ -21,7 +21,7 @@ export const escapeStrForRegex = (string: string) =>
   string.replace(/[[\]{}()*+?.\\^$|]/g, '\\$&');
 
 export const replacePathSepForRegex = (string: string) => {
-  if (path.sep === '\\') {
+  if (sep === '\\') {
     return string.replace(
       /(\/|(.)?\\(?![[\]{}()*+?.^$|\\]))/g,
       (_match, _, p2) => (p2 && p2 !== '\\' ? p2 + '\\\\' : '\\\\'),
