@@ -50,7 +50,7 @@ const toTests = paths =>
   }));
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  jest.clearAllMocks();
   sequencer = new TestSequencer();
 });
 
