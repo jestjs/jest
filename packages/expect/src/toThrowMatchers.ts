@@ -9,6 +9,7 @@
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   EXPECTED_COLOR,
+  MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
@@ -16,7 +17,6 @@ import {
   printExpected,
   printReceived,
   printWithType,
-  MatcherHintOptions,
 } from 'jest-matcher-utils';
 import {
   printExpectedConstructorName,
@@ -27,8 +27,8 @@ import {
   printReceivedStringContainExpectedSubstring,
 } from './print';
 import {
-  MatchersObject,
   MatcherState,
+  MatchersObject,
   RawMatcherFn,
   SyncExpectationResult,
 } from './types';

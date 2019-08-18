@@ -9,9 +9,9 @@ import {Config, Global} from '@jest/types';
 import {Plugin} from 'pretty-format';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
-  buildSnapshotResolver,
   SnapshotState,
   addSerializer,
+  buildSnapshotResolver,
 } from 'jest-snapshot';
 import JasmineSpec, {Attributes, SpecResult} from './jasmine/Spec';
 import {Jasmine} from './types';

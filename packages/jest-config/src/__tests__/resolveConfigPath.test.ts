@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import resolveConfigPath from '../resolveConfigPath';
 
 const {cleanup, writeFiles} = require('../../../../e2e/Utils');
 
-const DIR = path.resolve(os.tmpdir(), 'resolve_config_path_test');
+const DIR = path.resolve(tmpdir(), 'resolve_config_path_test');
 const ERROR_PATTERN = /Could not find a config file based on provided values/;
 const NO_ROOT_DIR_ERROR_PATTERN = /Can\'t find a root directory/;
 

@@ -11,15 +11,15 @@ import {TestResult} from '@jest/test-result';
 import {
   BufferedConsole,
   CustomConsole,
-  NullConsole,
-  LogType,
   LogMessage,
+  LogType,
+  NullConsole,
   getConsoleOutput,
 } from '@jest/console';
 import {JestEnvironment} from '@jest/environment';
 import RuntimeClass from 'jest-runtime';
-import fs from 'graceful-fs';
-import {ErrorWithStack, setGlobal, interopRequireDefault} from 'jest-util';
+import * as fs from 'graceful-fs';
+import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
 import Resolver from 'jest-resolve';
 import {getTestEnvironment} from 'jest-config';

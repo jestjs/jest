@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import mergeStream from 'merge-stream';
 
 import {
   CHILD_MESSAGE_END,
-  WorkerPoolOptions,
-  WorkerOptions,
   WorkerInterface,
+  WorkerOptions,
+  WorkerPoolOptions,
 } from '../types';
 
 /* istanbul ignore next */

@@ -10,7 +10,7 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-import {Global, Config} from '@jest/types';
+import {Config, Global} from '@jest/types';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';

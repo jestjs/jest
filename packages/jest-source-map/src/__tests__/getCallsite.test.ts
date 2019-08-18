@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
+import * as fs from 'fs';
 import SourceMap from 'source-map';
 import getCallsite from '../getCallsite';
 

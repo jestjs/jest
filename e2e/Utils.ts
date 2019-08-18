@@ -6,11 +6,11 @@
  *
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {Config} from '@jest/types';
 
-import {sync as spawnSync, ExecaReturns} from 'execa';
+import {ExecaReturns, sync as spawnSync} from 'execa';
 import {createDirectory} from 'jest-util';
 import rimraf from 'rimraf';
 

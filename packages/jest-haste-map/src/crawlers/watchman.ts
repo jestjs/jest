@@ -5,17 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import watchman from 'fb-watchman';
 import {Config} from '@jest/types';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
 import H from '../constants';
 import {
-  InternalHasteMap,
   CrawlerOptions,
-  FileMetaData,
   FileData,
+  FileMetaData,
+  InternalHasteMap,
 } from '../types';
 
 type WatchmanRoots = Map<string, Array<string>>;

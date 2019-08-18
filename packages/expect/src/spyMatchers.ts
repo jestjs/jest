@@ -7,21 +7,21 @@
 
 import getType, {isPrimitive} from 'jest-get-type';
 import {
+  DIM_COLOR,
+  EXPECTED_COLOR,
+  MatcherHintOptions,
+  RECEIVED_COLOR,
   diff,
   ensureExpectedIsNumber,
   ensureNoExpected,
-  DIM_COLOR,
-  EXPECTED_COLOR,
   matcherErrorMessage,
   matcherHint,
-  MatcherHintOptions,
   printExpected,
   printReceived,
   printWithType,
-  RECEIVED_COLOR,
   stringify,
 } from 'jest-matcher-utils';
-import {MatchersObject, MatcherState, SyncExpectationResult} from './types';
+import {MatcherState, MatchersObject, SyncExpectationResult} from './types';
 import {equals} from './jasmineUtils';
 import {iterableEquality} from './utils';
 

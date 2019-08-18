@@ -5,22 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import childProcess, {ChildProcess} from 'child_process';
+import {ChildProcess, fork} from 'child_process';
 import {PassThrough} from 'stream';
 import mergeStream from 'merge-stream';
-import supportsColor from 'supports-color';
+import {stdout as stdoutSupportsColor} from 'supports-color';
 
 import {
   CHILD_MESSAGE_INITIALIZE,
-  PARENT_MESSAGE_CLIENT_ERROR,
-  PARENT_MESSAGE_SETUP_ERROR,
-  PARENT_MESSAGE_OK,
-  WorkerInterface,
   ChildMessage,
   OnEnd,
   OnStart,
-  WorkerOptions,
+  PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_OK,
+  PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
+  WorkerInterface,
+  WorkerOptions,
 } from '../types';
 
 /**
@@ -62,8 +62,8 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   initialize() {
-    const forceColor = supportsColor.stdout ? {FORCE_COLOR: '1'} : {};
-    const child = childProcess.fork(require.resolve('./processChild'), [], {
+    const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
+    const child = fork(require.resolve('./processChild'), [], {
       cwd: process.cwd(),
       env: {
         ...process.env,

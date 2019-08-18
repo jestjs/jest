@@ -12,9 +12,9 @@ import stringLength from 'string-length';
 import {ReporterOnStartOptions} from './types';
 import {
   getSummary,
+  printDisplayName,
   trimAndFormatPath,
   wrapAnsiString,
-  printDisplayName,
 } from './utils';
 
 const RUNNING_TEXT = ' RUNS ';

@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replacePathSepForGlob} from 'jest-util';
-import micromatch from 'micromatch';
+import {any as micromatchAny, some as micromatchSome} from 'micromatch';
 import {ShouldInstrumentOptions} from './types';
 
 const MOCKS_PATTERN = new RegExp(
@@ -27,7 +27,7 @@ export default function shouldInstrument(
 
   if (
     config.forceCoverageMatch.length &&
-    micromatch.any(filename, config.forceCoverageMatch)
+    micromatchAny(filename, config.forceCoverageMatch)
   ) {
     return true;
   }
@@ -39,7 +39,7 @@ export default function shouldInstrument(
       return false;
     }
 
-    if (micromatch.some(replacePathSepForGlob(filename), config.testMatch)) {
+    if (micromatchSome(replacePathSepForGlob(filename), config.testMatch)) {
       return false;
     }
   }
@@ -57,7 +57,7 @@ export default function shouldInstrument(
     // still cover if `only` is specified
     !options.collectCoverageOnlyFrom &&
     options.collectCoverageFrom &&
-    !micromatch.some(
+    !micromatchSome(
       replacePathSepForGlob(path.relative(config.rootDir, filename)),
       options.collectCoverageFrom,
     )

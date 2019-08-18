@@ -8,11 +8,11 @@
 import chalk from 'chalk';
 
 import {
-  cleanupSemantic,
-  DIFF_EQUAL,
   DIFF_DELETE,
+  DIFF_EQUAL,
   DIFF_INSERT,
   Diff,
+  cleanupSemantic,
 } from './cleanupSemantic';
 import diffLines from './diffLines';
 import diffStrings from './diffStrings';

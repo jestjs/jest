@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 
 export const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 export const DEFAULT_JS_PATTERN = '^.+\\.[jt]sx?$';

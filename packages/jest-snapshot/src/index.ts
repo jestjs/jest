@@ -5,22 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
+import * as fs from 'fs';
 import {Config} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 import {MatcherState} from 'expect';
 
 import {
   BOLD_WEIGHT,
-  matcherHint,
   MatcherHintOptions,
   RECEIVED_COLOR,
+  matcherHint,
 } from 'jest-matcher-utils';
 import {
+  EXTENSION,
+  SnapshotResolver as JestSnapshotResolver,
   buildSnapshotResolver,
   isSnapshotPath,
-  SnapshotResolver as JestSnapshotResolver,
-  EXTENSION,
 } from './snapshot_resolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';

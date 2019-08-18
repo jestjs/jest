@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import crypto from 'crypto';
-import path from 'path';
-import fs from 'graceful-fs';
+import {createHash} from 'crypto';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 import blacklist from './blacklist';
 import H from './constants';
@@ -19,8 +19,7 @@ let hasteImpl: HasteImpl | null = null;
 let hasteImplModulePath: string | null = null;
 
 function sha1hex(content: string | Buffer): string {
-  return crypto
-    .createHash('sha1')
+  return createHash('sha1')
     .update(content)
     .digest('hex');
 }

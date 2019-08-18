@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
+import {cpus} from 'os';
 import WorkerPool from './WorkerPool';
 import Farm from './Farm';
-import {WorkerPoolInterface, WorkerPoolOptions, FarmOptions} from './types';
+import {FarmOptions, WorkerPoolInterface, WorkerPoolOptions} from './types';
 
 function getExposedMethods(
   workerPath: string,
@@ -72,7 +72,7 @@ export default class JestWorker {
       enableWorkerThreads: this._options.enableWorkerThreads || false,
       forkOptions: this._options.forkOptions || {},
       maxRetries: this._options.maxRetries || 3,
-      numWorkers: this._options.numWorkers || Math.max(os.cpus().length - 1, 1),
+      numWorkers: this._options.numWorkers || Math.max(cpus().length - 1, 1),
       setupArgs: this._options.setupArgs || [],
     };
 

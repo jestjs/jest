@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
+import * as path from 'path';
+import {tmpdir} from 'os';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {
   cleanup,
@@ -75,7 +75,7 @@ describe('babel-jest with manual transformer', () => {
 describe('no babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/no-babel-jest');
   // doing test in a temp directory because we don't want jest node_modules affect it
-  const tempDir = path.resolve(os.tmpdir(), 'transform-no-babel-jest');
+  const tempDir = path.resolve(tmpdir(), 'transform-no-babel-jest');
 
   beforeEach(() => {
     cleanup(tempDir);

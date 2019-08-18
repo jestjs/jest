@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 
-import {buildSnapshotResolver, SnapshotResolver} from '../snapshot_resolver';
+import {SnapshotResolver, buildSnapshotResolver} from '../snapshot_resolver';
 
 describe('defaults', () => {
   let snapshotResolver: SnapshotResolver;

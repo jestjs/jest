@@ -10,11 +10,11 @@ import {TEST_TIMEOUT_SYMBOL} from './types';
 
 import {
   addErrorToEachTestUnderDescribe,
-  makeDescribe,
+  describeBlockHasTests,
   getTestDuration,
   invariant,
+  makeDescribe,
   makeTest,
-  describeBlockHasTests,
 } from './utils';
 import {
   injectGlobalErrorHandlers,

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
 import exit from 'exit';
@@ -19,8 +19,8 @@ import Resolver from 'jest-resolve';
 import {Config} from '@jest/types';
 import {
   AllowedConfigOptions,
-  KEYS,
   JestHook,
+  KEYS,
   WatchPlugin,
   WatchPluginClass,
 } from 'jest-watcher';
@@ -38,8 +38,8 @@ import UpdateSnapshotsPlugin from './plugins/update_snapshots';
 import UpdateSnapshotsInteractivePlugin from './plugins/update_snapshots_interactive';
 import QuitPlugin from './plugins/quit';
 import {
-  getSortedUsageRows,
   filterInteractivePlugins,
+  getSortedUsageRows,
 } from './lib/watch_plugins_helpers';
 import activeFilters from './lib/active_filters_message';
 import {Filter} from './types';
