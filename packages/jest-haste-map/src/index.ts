@@ -33,18 +33,18 @@ import FSEventsWatcher from './lib/FSEventsWatcher';
 import * as fastPath from './lib/fast_path';
 import {
   ChangeEvent,
+  CrawlerOptions,
   EventsQueue,
+  FileData,
   FileMetaData,
-  HasteMap as InternalHasteMapObject,
   HasteRegExp,
   InternalHasteMap,
+  HasteMap as InternalHasteMapObject,
   Mapper,
   MockData,
   ModuleMapData,
   ModuleMetaData,
   WorkerMetadata,
-  CrawlerOptions,
-  FileData,
 } from './types';
 
 type HType = typeof H;

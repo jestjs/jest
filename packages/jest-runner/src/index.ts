@@ -11,7 +11,7 @@ import exit from 'exit';
 import throat from 'throat';
 import Worker from 'jest-worker';
 import runTest from './runTest';
-import {worker, SerializableResolver} from './testWorker';
+import {SerializableResolver, worker} from './testWorker';
 import {
   OnTestFailure as JestOnTestFailure,
   OnTestStart as JestOnTestStart,

@@ -6,9 +6,9 @@
  */
 
 import {
-  JestHookSubscriber,
-  JestHookEmitter,
   FileChange,
+  JestHookEmitter,
+  JestHookSubscriber,
   ShouldRunTestSuite,
   TestRunComplete,
 } from './types';

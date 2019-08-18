@@ -6,7 +6,7 @@
  */
 
 import {ModuleMocker} from 'jest-mock';
-import {formatStackTrace, StackTraceConfig} from 'jest-message-util';
+import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
 
 type Callback = (...args: Array<unknown>) => void;
 

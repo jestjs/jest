@@ -15,7 +15,7 @@ import {JestEnvironment} from '@jest/environment';
 import {CustomConsole} from '@jest/console';
 import {setGlobal} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
-import {readConfig, deprecationEntries} from 'jest-config';
+import {deprecationEntries, readConfig} from 'jest-config';
 import {VERSION} from '../version';
 import {Context} from '../types';
 import * as args from './args';

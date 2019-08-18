@@ -11,10 +11,10 @@ import * as path from 'path';
 import {Transformer} from '@jest/transform';
 import {Config} from '@jest/types';
 import {
-  loadPartialConfig,
   PartialConfig,
   TransformOptions,
   transformSync as babelTransform,
+  loadPartialConfig,
 } from '@babel/core';
 import chalk from 'chalk';
 import slash from 'slash';

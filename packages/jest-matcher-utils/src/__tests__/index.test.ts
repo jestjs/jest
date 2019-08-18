@@ -8,14 +8,14 @@
 
 import chalk from 'chalk';
 import {
+  MatcherHintOptions,
   diff,
-  ensureNumbers,
   ensureNoExpected,
+  ensureNumbers,
   getLabelPrinter,
   matcherHint,
   pluralize,
   stringify,
-  MatcherHintOptions,
 } from '../';
 
 describe('.stringify()', () => {

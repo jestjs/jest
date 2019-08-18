@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import vm, {Script, Context} from 'vm';
-import {Global, Config} from '@jest/types';
+import vm, {Context, Script} from 'vm';
+import {Config, Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';

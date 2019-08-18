@@ -12,10 +12,10 @@ import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
 import H from '../constants';
 import {
-  InternalHasteMap,
   CrawlerOptions,
-  FileMetaData,
   FileData,
+  FileMetaData,
+  InternalHasteMap,
 } from '../types';
 
 type WatchmanRoots = Map<string, Array<string>>;

@@ -41,7 +41,7 @@ import queueRunner, {
 import treeProcessor, {TreeNode} from '../treeProcessor';
 import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
-import {Jasmine, AssertionErrorWithStack, Reporter, Spy} from '../types';
+import {AssertionErrorWithStack, Jasmine, Reporter, Spy} from '../types';
 import Spec, {SpecResult} from './Spec';
 import Suite from './Suite';
 

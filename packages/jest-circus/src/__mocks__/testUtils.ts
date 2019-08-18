@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {createHash} from 'crypto';
-import {sync as spawnSync, ExecaReturns} from 'execa';
+import {ExecaReturns, sync as spawnSync} from 'execa';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
 const CIRCUS_PATH = require.resolve('../../build');

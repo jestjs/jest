@@ -30,7 +30,7 @@ import TestScheduler, {TestSchedulerContext} from './TestScheduler';
 import FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
 import TestWatcher from './TestWatcher';
-import {TestRunData, Filter} from './types';
+import {Filter, TestRunData} from './types';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,

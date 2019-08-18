@@ -9,10 +9,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import semver from 'semver';
 import {
+  CallExpression,
+  file,
   templateElement,
   templateLiteral,
-  file,
-  CallExpression,
 } from '@babel/types';
 import {Frame} from 'jest-message-util';
 

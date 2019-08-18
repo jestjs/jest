@@ -8,7 +8,7 @@
 import {cpus} from 'os';
 import WorkerPool from './WorkerPool';
 import Farm from './Farm';
-import {WorkerPoolInterface, WorkerPoolOptions, FarmOptions} from './types';
+import {FarmOptions, WorkerPoolInterface, WorkerPoolOptions} from './types';
 
 function getExposedMethods(
   workerPath: string,

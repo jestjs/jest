@@ -9,12 +9,12 @@ import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
+  ChildMessageCall,
+  ChildMessageInitialize,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
-  PARENT_MESSAGE_SETUP_ERROR,
   PARENT_MESSAGE_OK,
-  ChildMessageInitialize,
-  ChildMessageCall,
+  PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
 
 let file: string | null = null;

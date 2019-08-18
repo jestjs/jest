@@ -15,18 +15,18 @@ import {
   CoverageReporter,
   DefaultReporter,
   NotifyReporter,
+  Reporter,
   SummaryReporter,
   VerboseReporter,
-  Reporter,
 } from '@jest/reporters';
 import exit from 'exit';
 import {
-  addResult,
   AggregatedResult,
-  buildFailureTestResult,
-  makeEmptyAggregatedTestResult,
   SerializableError,
   TestResult,
+  addResult,
+  buildFailureTestResult,
+  makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
 import ReporterDispatcher from './ReporterDispatcher';
 import TestWatcher from './TestWatcher';

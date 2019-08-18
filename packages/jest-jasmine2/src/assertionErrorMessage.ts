@@ -6,10 +6,10 @@
  */
 
 import {
-  diff,
-  printReceived,
-  printExpected,
   DiffOptions,
+  diff,
+  printExpected,
+  printReceived,
 } from 'jest-matcher-utils';
 import chalk from 'chalk';
 import {AssertionErrorWithStack} from './types';

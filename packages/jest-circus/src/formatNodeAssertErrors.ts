@@ -8,10 +8,10 @@
 import {AssertionError} from 'assert';
 import {Circus} from '@jest/types';
 import {
+  DiffOptions,
   diff,
   printExpected,
   printReceived,
-  DiffOptions,
 } from 'jest-matcher-utils';
 import chalk from 'chalk';
 import prettyFormat from 'pretty-format';

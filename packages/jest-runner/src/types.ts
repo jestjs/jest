@@ -9,7 +9,7 @@ import {EventEmitter} from 'events';
 import {Config} from '@jest/types';
 import {SerializableError, TestResult} from '@jest/test-result';
 import {JestEnvironment} from '@jest/environment';
-import {ModuleMap, FS as HasteFS} from 'jest-haste-map';
+import {FS as HasteFS, ModuleMap} from 'jest-haste-map';
 import HasteResolver from 'jest-resolve';
 import Runtime from 'jest-runtime';
 

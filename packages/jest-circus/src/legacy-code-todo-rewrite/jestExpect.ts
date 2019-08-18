@@ -9,10 +9,10 @@ import expect from 'expect';
 
 import {
   addSerializer,
-  toMatchSnapshot,
   toMatchInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
+  toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
 
 export default (config: {expand: boolean}) => {
