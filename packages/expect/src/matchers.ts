@@ -10,6 +10,7 @@ import getType, {isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
+  MatcherHintOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
   ensureExpectedIsNonNegativeInteger,
@@ -19,13 +20,12 @@ import {
   matcherErrorMessage,
   matcherHint,
   printDiffOrStringify,
-  printReceived,
   printExpected,
+  printReceived,
   printWithType,
   stringify,
-  MatcherHintOptions,
 } from 'jest-matcher-utils';
-import {MatchersObject, MatcherState} from './types';
+import {MatcherState, MatchersObject} from './types';
 import {
   printExpectedConstructorName,
   printExpectedConstructorNameNot,

@@ -9,12 +9,12 @@ import expect, {MatcherState} from 'expect';
 import {Global} from '@jest/types';
 import {
   addSerializer,
-  toMatchSnapshot,
   toMatchInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
+  toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-import {RawMatcherFn, Jasmine} from './types';
+import {Jasmine, RawMatcherFn} from './types';
 
 declare const global: Global.Global;
 

@@ -8,16 +8,16 @@
 import * as fs from 'fs';
 import {Config} from '@jest/types';
 
-import {getTopFrame, getStackTraceLines} from 'jest-message-util';
+import {getStackTraceLines, getTopFrame} from 'jest-message-util';
 import {
-  saveSnapshotFile,
   getSnapshotData,
   keyToTestName,
+  saveSnapshotFile,
   serialize,
   testNameToKey,
   unescape,
 } from './utils';
-import {saveInlineSnapshots, InlineSnapshot} from './inline_snapshots';
+import {InlineSnapshot, saveInlineSnapshots} from './inline_snapshots';
 import {SnapshotData} from './types';
 
 export type SnapshotStateOptions = {

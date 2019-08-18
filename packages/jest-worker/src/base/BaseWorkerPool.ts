@@ -10,9 +10,9 @@ import mergeStream from 'merge-stream';
 
 import {
   CHILD_MESSAGE_END,
-  WorkerPoolOptions,
-  WorkerOptions,
   WorkerInterface,
+  WorkerOptions,
+  WorkerPoolOptions,
 } from '../types';
 
 /* istanbul ignore next */

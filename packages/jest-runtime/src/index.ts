@@ -24,8 +24,8 @@ import Snapshot from 'jest-snapshot';
 import {
   ScriptTransformer,
   ShouldInstrumentOptions,
-  shouldInstrument,
   TransformationOptions,
+  shouldInstrument,
 } from '@jest/transform';
 import * as fs from 'graceful-fs';
 import stripBOM from 'strip-bom';

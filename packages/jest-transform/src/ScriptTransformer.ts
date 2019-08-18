@@ -23,9 +23,9 @@ import {sync as realpath} from 'realpath-native';
 import {addHook} from 'pirates';
 import {
   Options,
-  Transformer,
-  TransformedSource,
   TransformResult,
+  TransformedSource,
+  Transformer,
 } from './types';
 import shouldInstrument from './shouldInstrument';
 import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';

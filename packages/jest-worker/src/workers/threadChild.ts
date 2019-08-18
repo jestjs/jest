@@ -7,18 +7,18 @@
 
 // ESLint doesn't know about this experimental module
 // eslint-disable-next-line import/no-unresolved
-import {parentPort, isMainThread} from 'worker_threads';
+import {isMainThread, parentPort} from 'worker_threads';
 
 import {
-  ChildMessageInitialize,
-  ChildMessageCall,
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
+  ChildMessageCall,
+  ChildMessageInitialize,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
-  PARENT_MESSAGE_SETUP_ERROR,
   PARENT_MESSAGE_OK,
+  PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
 
 let file: string | null = null;

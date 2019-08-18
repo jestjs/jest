@@ -22,14 +22,14 @@ import getMaxWorkers from './getMaxWorkers';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
-  replaceRootDirInPath,
   _replaceRootDirTags,
   escapeGlobCharacters,
-  getTestEnvironment,
   getRunner,
-  getWatchPlugin,
-  resolve,
   getSequencer,
+  getTestEnvironment,
+  getWatchPlugin,
+  replaceRootDirInPath,
+  resolve,
 } from './utils';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import {validateReporters} from './ReporterValidationErrors';

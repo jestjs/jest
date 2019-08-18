@@ -11,7 +11,7 @@ import exit from 'exit';
 import {Config} from '@jest/types';
 import {AggregatedResult} from '@jest/test-result';
 import {notify} from 'node-notifier';
-import {TestSchedulerContext, Context} from './types';
+import {Context, TestSchedulerContext} from './types';
 import BaseReporter from './base_reporter';
 
 const isDarwin = process.platform === 'darwin';

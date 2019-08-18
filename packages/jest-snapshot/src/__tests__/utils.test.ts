@@ -16,15 +16,15 @@ import assert from 'assert';
 import chalk from 'chalk';
 
 import {
+  SNAPSHOT_GUIDE_LINK,
+  SNAPSHOT_VERSION,
+  SNAPSHOT_VERSION_WARNING,
   deepMerge,
   getSnapshotData,
   keyToTestName,
   saveSnapshotFile,
   serialize,
   testNameToKey,
-  SNAPSHOT_GUIDE_LINK,
-  SNAPSHOT_VERSION,
-  SNAPSHOT_VERSION_WARNING,
 } from '../utils';
 
 test('keyToTestName()', () => {

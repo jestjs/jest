@@ -9,7 +9,7 @@ import assert from 'assert';
 import {Console} from 'console';
 import {format} from 'util';
 import chalk from 'chalk';
-import {getCallsite, SourceMapRegistry} from '@jest/source-map';
+import {SourceMapRegistry, getCallsite} from '@jest/source-map';
 import {
   ConsoleBuffer,
   LogCounters,

@@ -16,7 +16,7 @@ import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {replacePathSepForGlob, testPathPatternToRegExp} from 'jest-util';
-import {TestPathCases, Filter, Stats} from './types';
+import {Filter, Stats, TestPathCases} from './types';
 
 export type SearchResult = {
   noSCM?: boolean;

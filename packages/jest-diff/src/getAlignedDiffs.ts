@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Diff, DIFF_DELETE, DIFF_INSERT} from './cleanupSemantic';
+import {DIFF_DELETE, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {MULTILINE_REGEXP, getHighlightedString} from './printDiffs';
 
 // Encapsulate change lines until either a common newline or the end.
