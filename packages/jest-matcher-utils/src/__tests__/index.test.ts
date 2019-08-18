@@ -6,11 +6,13 @@
  *
  */
 
+import chalk from 'chalk';
 import {
   diff,
   ensureNumbers,
   ensureNoExpected,
   getLabelPrinter,
+  matcherHint,
   pluralize,
   stringify,
   MatcherHintOptions,
@@ -284,5 +286,51 @@ describe('getLabelPrinter', () => {
     expect(() => {
       printLabel(stringInconsistentLonger);
     }).toThrow();
+  });
+});
+
+describe('matcherHint', () => {
+  test('expectedColor', () => {
+    const expectedColor = (arg: string): string => arg; // default (black) color
+    const expectedArgument = 'n';
+    const received = matcherHint(
+      'toHaveBeenNthCalledWith',
+      'jest.fn()',
+      expectedArgument,
+      {expectedColor, secondArgument: '...expected'},
+    );
+
+    const substringNegative = chalk.green(expectedArgument);
+
+    expect(received).not.toMatch(substringNegative);
+  });
+
+  test('receivedColor', () => {
+    const receivedColor = chalk.cyan.bgAnsi256(158);
+    const receivedArgument = 'received';
+    const received = matcherHint('toMatchSnapshot', receivedArgument, '', {
+      receivedColor,
+    });
+
+    const substringNegative = chalk.red(receivedArgument);
+    const substringPositive = receivedColor(receivedArgument);
+
+    expect(received).not.toMatch(substringNegative);
+    expect(received).toMatch(substringPositive);
+  });
+
+  test('secondArgumentColor', () => {
+    const secondArgumentColor = chalk.bold;
+    const secondArgument = 'hint';
+    const received = matcherHint('toMatchSnapshot', undefined, 'properties', {
+      secondArgument,
+      secondArgumentColor,
+    });
+
+    const substringNegative = chalk.green(secondArgument);
+    const substringPositive = secondArgumentColor(secondArgument);
+
+    expect(received).not.toMatch(substringNegative);
+    expect(received).toMatch(substringPositive);
   });
 });

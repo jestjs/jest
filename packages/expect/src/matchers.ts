@@ -133,6 +133,7 @@ const matchers: MatchersObject = {
       isNot: this.isNot,
       promise: this.promise,
       secondArgument,
+      secondArgumentColor: (arg: string) => arg,
     };
     ensureNumbers(received, expected, matcherName, options);
 
@@ -159,7 +160,7 @@ const matchers: MatchersObject = {
             ? ''
             : `Received:     ${printReceived(received)}\n` +
               '\n' +
-              `Expected precision:        ${printExpected(precision)}\n` +
+              `Expected precision:        ${stringify(precision)}\n` +
               `Expected difference: not < ${printExpected(expectedDiff)}\n` +
               `Received difference:       ${printReceived(receivedDiff)}`)
       : () =>
@@ -168,7 +169,7 @@ const matchers: MatchersObject = {
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}\n` +
           '\n' +
-          `Expected precision:    ${printExpected(precision)}\n` +
+          `Expected precision:    ${stringify(precision)}\n` +
           `Expected difference: < ${printExpected(expectedDiff)}\n` +
           `Received difference:   ${printReceived(receivedDiff)}`;
 

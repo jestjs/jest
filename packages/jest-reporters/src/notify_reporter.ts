@@ -118,6 +118,7 @@ export default class NotifyReporter extends BaseReporter {
             closeLabel: 'Close',
             icon,
             message,
+            timeout: 10,
             title,
           },
           (err, _, metadata) => {
