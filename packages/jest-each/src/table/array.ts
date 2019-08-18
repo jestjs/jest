@@ -6,7 +6,7 @@
  *
  */
 
-import util from 'util';
+import * as util from 'util';
 import pretty from 'pretty-format';
 
 import {Global} from '@jest/types';

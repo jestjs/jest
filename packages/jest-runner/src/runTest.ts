@@ -18,7 +18,7 @@ import {
 } from '@jest/console';
 import {JestEnvironment} from '@jest/environment';
 import RuntimeClass from 'jest-runtime';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import {ErrorWithStack, setGlobal, interopRequireDefault} from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
 import Resolver from 'jest-resolve';

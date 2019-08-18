@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {cpus} from 'os';
+import * as path from 'path';
 import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
 import yargs from 'yargs';
@@ -78,7 +78,7 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   const Runtime: any = require('..');
 
   (Runtime.createContext(config, {
-    maxWorkers: Math.max(os.cpus().length - 1, 1),
+    maxWorkers: Math.max(cpus().length - 1, 1),
     watchman: globalConfig.watchman,
   }) as Promise<Context>)
     .then(hasteMap => {

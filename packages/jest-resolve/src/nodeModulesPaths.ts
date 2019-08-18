@@ -7,7 +7,7 @@
  * Adapted from: https://github.com/substack/node-resolve
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {sync as realpath} from 'realpath-native';
 

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import slash from 'slash';
 import glob from 'glob';
 import {Config} from '@jest/types';

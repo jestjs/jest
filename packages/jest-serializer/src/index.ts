@@ -7,7 +7,7 @@
 // TODO: Remove this
 /// <reference path="../v8.d.ts" />
 
-import fs from 'fs';
+import * as fs from 'fs';
 import v8 from 'v8';
 
 type Path = string;

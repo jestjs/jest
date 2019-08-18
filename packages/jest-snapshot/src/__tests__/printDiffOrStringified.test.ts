@@ -6,7 +6,7 @@
  */
 
 import ansiRegex from 'ansi-regex';
-import style from 'ansi-styles';
+import * as style from 'ansi-styles';
 import {printDiffOrStringified} from '../print';
 import {serialize, unescape} from '../utils';
 

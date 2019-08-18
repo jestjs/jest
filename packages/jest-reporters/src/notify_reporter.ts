@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import util from 'util';
+import * as path from 'path';
+import * as util from 'util';
 import exit from 'exit';
 import {Config} from '@jest/types';
 import {AggregatedResult} from '@jest/test-result';
-import notifier from 'node-notifier';
+import {notify} from 'node-notifier';
 import {TestSchedulerContext, Context} from './types';
 import BaseReporter from './base_reporter';
 
@@ -78,7 +78,7 @@ export default class NotifyReporter extends BaseReporter {
         result.numPassedTests,
       );
 
-      notifier.notify({icon, message, title});
+      notify({icon, message, title});
     } else if (
       testsHaveRun &&
       !success &&
@@ -106,13 +106,9 @@ export default class NotifyReporter extends BaseReporter {
       const quitAnswer = 'Exit tests';
 
       if (!watchMode) {
-        notifier.notify({
-          icon,
-          message,
-          title,
-        });
+        notify({icon, message, title});
       } else {
-        notifier.notify(
+        notify(
           {
             actions: [restartAnswer, quitAnswer],
             closeLabel: 'Close',

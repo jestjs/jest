@@ -6,20 +6,20 @@
  */
 'use strict';
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+import * as fs from 'fs';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import runJest, {json as runWithJson} from '../runJest';
 import {cleanup, run} from '../Utils';
 
-const DIR = path.join(os.tmpdir(), 'jest-global-setup');
-const project1DIR = path.join(os.tmpdir(), 'jest-global-setup-project-1');
-const project2DIR = path.join(os.tmpdir(), 'jest-global-setup-project-2');
+const DIR = path.join(tmpdir(), 'jest-global-setup');
+const project1DIR = path.join(tmpdir(), 'jest-global-setup-project-1');
+const project2DIR = path.join(tmpdir(), 'jest-global-setup-project-2');
 const customTransformDIR = path.join(
-  os.tmpdir(),
+  tmpdir(),
   'jest-global-setup-custom-transform',
 );
-const nodeModulesDIR = path.join(os.tmpdir(), 'jest-global-setup-node-modules');
+const nodeModulesDIR = path.join(tmpdir(), 'jest-global-setup-node-modules');
 const e2eDir = path.resolve(__dirname, '../global-setup');
 
 beforeAll(() => {

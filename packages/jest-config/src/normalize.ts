@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import crypto from 'crypto';
-import path from 'path';
-import glob from 'glob';
+import {createHash} from 'crypto';
+import * as path from 'path';
+import {sync as glob} from 'glob';
 import {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
-import micromatch from 'micromatch';
+import {some as micromatchSome} from 'micromatch';
 import {sync as realpath} from 'realpath-native';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
@@ -297,8 +297,7 @@ const normalizeMissingOptions = (
   projectIndex: number,
 ): Config.InitialOptions => {
   if (!options.name) {
-    options.name = crypto
-      .createHash('md5')
+    options.name = createHash('md5')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
@@ -680,7 +679,7 @@ export default function normalize(
               // We expand it to these paths. If not, we keep the original path
               // for the future resolution.
               const globMatches =
-                typeof project === 'string' ? glob.sync(project) : [];
+                typeof project === 'string' ? glob(project) : [];
               return projects.concat(
                 globMatches.length ? globMatches : project,
               );
@@ -983,7 +982,7 @@ export default function normalize(
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          !micromatch.some(
+          !micromatchSome(
             replacePathSepForGlob(path.relative(options.rootDir, filename)),
             newOptions.collectCoverageFrom!,
           )

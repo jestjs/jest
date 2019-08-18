@@ -6,12 +6,12 @@
  */
 
 import {execSync} from 'child_process';
-import crypto from 'crypto';
-import EventEmitter from 'events';
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import sane from 'sane';
+import {createHash} from 'crypto';
+import {EventEmitter} from 'events';
+import * as fs from 'fs';
+import {tmpdir} from 'os';
+import * as path from 'path';
+import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import invariant from 'invariant';
 import {Config} from '@jest/types';
 import serializer from 'jest-serializer';
@@ -245,7 +245,7 @@ class HasteMap extends EventEmitter {
   constructor(options: Options) {
     super();
     this._options = {
-      cacheDirectory: options.cacheDirectory || os.tmpdir(),
+      cacheDirectory: options.cacheDirectory || tmpdir(),
       computeDependencies:
         options.computeDependencies === undefined
           ? true
@@ -280,8 +280,7 @@ class HasteMap extends EventEmitter {
       );
     }
 
-    const rootDirHash = crypto
-      .createHash('md5')
+    const rootDirHash = createHash('md5')
       .update(options.rootDir)
       .digest('hex');
     let hasteImplHash = '';
@@ -328,7 +327,7 @@ class HasteMap extends EventEmitter {
     name: string,
     ...extra: Array<string>
   ): string {
-    const hash = crypto.createHash('md5').update(extra.join(''));
+    const hash = createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
@@ -800,12 +799,12 @@ class HasteMap extends EventEmitter {
     this._options.retainAllFiles = true;
 
     // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
-    const Watcher: sane.Watcher =
+    const Watcher: SaneWatcher =
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
         : FSEventsWatcher.isSupported()
         ? FSEventsWatcher
-        : sane.NodeWatcher;
+        : NodeWatcher;
 
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'find-related-tests-test');
+const DIR = path.resolve(tmpdir(), 'find-related-tests-test');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

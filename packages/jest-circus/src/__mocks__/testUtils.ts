@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import crypto from 'crypto';
+import * as fs from 'fs';
+import {tmpdir} from 'os';
+import * as path from 'path';
+import {createHash} from 'crypto';
 import {sync as spawnSync, ExecaReturns} from 'execa';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
@@ -26,11 +26,10 @@ interface Result extends ExecaReturns {
 }
 
 export const runTest = (source: string) => {
-  const filename = crypto
-    .createHash('md5')
+  const filename = createHash('md5')
     .update(source)
     .digest('hex');
-  const tmpFilename = path.join(os.tmpdir(), filename);
+  const tmpFilename = path.join(tmpdir(), filename);
 
   const content = `
     require('${BABEL_REGISTER_PATH}')({extensions: [".js", ".ts"]});

@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
-import mkdirp from 'mkdirp';
+import * as fs from 'fs';
+import * as path from 'path';
+import {sync as mkdirp} from 'mkdirp';
 import naturalCompare from 'natural-compare';
 import chalk from 'chalk';
 import {Config} from '@jest/types';
@@ -150,7 +150,7 @@ const printBacktickString = (str: string): string =>
 
 export const ensureDirectoryExists = (filePath: Config.Path) => {
   try {
-    mkdirp.sync(path.join(path.dirname(filePath)), '777');
+    mkdirp(path.join(path.dirname(filePath)), '777');
   } catch (e) {}
 };
 

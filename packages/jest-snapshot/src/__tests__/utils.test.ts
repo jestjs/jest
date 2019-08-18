@@ -5,10 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs');
+jest.mock('fs', () => ({
+  ...jest.genMockFromModule('fs'),
+  existsSync: jest.fn().mockReturnValue(true),
+}));
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import assert from 'assert';
 import chalk from 'chalk';
 
@@ -23,20 +26,6 @@ import {
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
 } from '../utils';
-
-const writeFileSync = fs.writeFileSync;
-const readFileSync = fs.readFileSync;
-const existsSync = fs.existsSync;
-beforeEach(() => {
-  fs.writeFileSync = jest.fn();
-  fs.readFileSync = jest.fn();
-  fs.existsSync = jest.fn(() => true);
-});
-afterEach(() => {
-  fs.writeFileSync = writeFileSync;
-  fs.readFileSync = readFileSync;
-  fs.existsSync = existsSync;
-});
 
 test('keyToTestName()', () => {
   expect(keyToTestName('abc cde 12')).toBe('abc cde');
@@ -177,8 +166,11 @@ test('getSnapshotData() marks valid snapshot not dirty when updating', () => {
 test('escaping', () => {
   const filename = path.join(__dirname, 'escaping.snap');
   const data = '"\'\\';
+  const writeFileSync = fs.writeFileSync as jest.Mock;
+
+  writeFileSync.mockReset();
   saveSnapshotFile({key: data}, filename);
-  const writtenData = (fs.writeFileSync as jest.Mock).mock.calls[0][1];
+  const writtenData = writeFileSync.mock.calls[0][1];
   expect(writtenData).toBe(
     `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
       'exports[`key`] = `"\'\\\\`;\n',

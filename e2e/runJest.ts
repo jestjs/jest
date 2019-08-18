@@ -6,8 +6,8 @@
  *
  */
 
-import path from 'path';
-import fs from 'fs';
+import * as path from 'path';
+import * as fs from 'fs';
 import {Writable} from 'stream';
 import execa, {ExecaChildProcess, ExecaReturns} from 'execa';
 import stripAnsi from 'strip-ansi';
