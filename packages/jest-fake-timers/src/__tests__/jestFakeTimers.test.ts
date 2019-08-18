@@ -1303,5 +1303,22 @@ describe('FakeTimers', () => {
 
       expect(timers.getTimerCount()).toEqual(3);
     });
+
+    it('not includes cancelled immediates', () => {
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+
+      timers.useFakeTimers();
+
+      global.setImmediate(() => {});
+      expect(timers.getTimerCount()).toEqual(1);
+      timers.clearAllTimers();
+
+      expect(timers.getTimerCount()).toEqual(0);
+    });
   });
 });

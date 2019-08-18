@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-fake-timers]` `getTimerCount` will not include cancelled immediates ([#8764](https://github.com/facebook/jest/pull/8764))
+
 ### Chore & Maintenance
 
 ### Performance
