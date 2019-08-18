@@ -24,7 +24,7 @@ Given values and optional options, `diffLines(a, b, options?)` does the followin
 - **compare** the strings line-by-line using the `diff-sequences` package
 - **format** the changed or common lines using the `chalk` package
 
-To use `diffLines` as the function name, write either of the following:
+To use this function, write either of the following:
 
 - `const diffLines = require('jest-diff');` in a CommonJS module
 - `import diffLines from 'jest-diff';` in an ECMAScript module
