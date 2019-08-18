@@ -437,9 +437,8 @@ export default class FakeTimers<TimerRef> {
       uuid,
     });
 
-    const immediates = this._immediates;
     this._timerAPIs.setImmediate(() => {
-      if (immediates.find(x => x.uuid === uuid)) {
+      if (this._immediates.find(x => x.uuid === uuid)) {
         try {
           callback.apply(null, args);
         } finally {
