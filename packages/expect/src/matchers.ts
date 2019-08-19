@@ -27,6 +27,7 @@ import {
 } from 'jest-matcher-utils';
 import {MatcherState, MatchersObject} from './types';
 import {
+  printCloseTo,
   printExpectedConstructorName,
   printExpectedConstructorNameNot,
   printReceivedArrayContainExpectedItem,
@@ -129,8 +130,9 @@ const matchers: MatchersObject = {
   ) {
     const matcherName = 'toBeCloseTo';
     const secondArgument = arguments.length === 3 ? 'precision' : undefined;
+    const isNot = this.isNot;
     const options: MatcherHintOptions = {
-      isNot: this.isNot,
+      isNot,
       promise: this.promise,
       secondArgument,
       secondArgumentColor: (arg: string) => arg,
@@ -160,18 +162,14 @@ const matchers: MatchersObject = {
             ? ''
             : `Received:     ${printReceived(received)}\n` +
               '\n' +
-              `Expected precision:        ${stringify(precision)}\n` +
-              `Expected difference: not < ${printExpected(expectedDiff)}\n` +
-              `Received difference:       ${printReceived(receivedDiff)}`)
+              printCloseTo(receivedDiff, expectedDiff, precision, isNot))
       : () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}\n` +
           '\n' +
-          `Expected precision:    ${stringify(precision)}\n` +
-          `Expected difference: < ${printExpected(expectedDiff)}\n` +
-          `Received difference:   ${printReceived(receivedDiff)}`;
+          printCloseTo(receivedDiff, expectedDiff, precision, isNot);
 
     return {message, pass};
   },
