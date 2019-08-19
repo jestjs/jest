@@ -982,10 +982,10 @@ export default function normalize(
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          !micromatch(
+          micromatch(
             [replacePathSepForGlob(path.relative(options.rootDir, filename))],
             newOptions.collectCoverageFrom!,
-          ).length
+          ).length === 0
         ) {
           return patterns;
         }
