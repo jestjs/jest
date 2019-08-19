@@ -130,13 +130,13 @@ Write one of the following:
 
 - `const {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diffStringsRaw} = require('jest-diff');` in a CommonJS module
 - `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diffStringsRaw} from 'jest-diff';` in an ECMAScript module
-- `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} from 'jest-diff';` in an TypeScript module
+- `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} from 'jest-diff';` in a TypeScript module
 
 The returned **array** describes substrings as instances of the `Diff` class (which calling code can access like array tuples).
 
 | value | named export  | description           |
 | ----: | :------------ | :-------------------- |
-|   `0` | `DIFF_EQUAL`  | in `a` and `b`        |
+|   `0` | `DIFF_EQUAL`  | in `a` and in `b`     |
 |  `-1` | `DIFF_DELETE` | in `a` but not in `b` |
 |   `1` | `DIFF_INSERT` | in `b` but not in `a` |
 
@@ -188,18 +188,19 @@ For other applications, you can provide an options object as a third argument:
 
 ### Properties of options object
 
-| name           | default       |
-| :------------- | :------------ |
-| `aAnnotation`  | `'Expected'`  |
-| `aColor`       | `chalk.green` |
-| `aSymbol`      | `'-'`         |
-| `bAnnotation`  | `'Received'`  |
-| `bColor`       | `chalk.red`   |
-| `bSymbol`      | `'+'`         |
-| `commonColor`  | `chalk.dim`   |
-| `commonSymbol` | `' '`         |
-| `contextLines` | `5`           |
-| `expand`       | `true`        |
+| name                  | default       |
+| :-------------------- | :------------ |
+| `aAnnotation`         | `'Expected'`  |
+| `aColor`              | `chalk.green` |
+| `aSymbol`             | `'-'`         |
+| `bAnnotation`         | `'Received'`  |
+| `bColor`              | `chalk.red`   |
+| `bSymbol`             | `'+'`         |
+| `commonColor`         | `chalk.dim`   |
+| `commonSymbol`        | `' '`         |
+| `contextLines`        | `5`           |
+| `expand`              | `true`        |
+| `omitAnnotationLines` | `false`       |
 
 ### Example of options for labels
 

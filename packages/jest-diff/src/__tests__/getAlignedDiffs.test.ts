@@ -7,12 +7,8 @@
 
 import {diffStringsUnified} from '../printDiffs';
 
-// Slice annotation lines and blank line until there is an option to omit them.
 const testAlignedDiffs = (a: string, b: string): string =>
-  diffStringsUnified(a, b)
-    .split('\n')
-    .slice(3)
-    .join('\n');
+  diffStringsUnified(a, b, {omitAnnotationLines: true});
 
 describe('getAlignedDiffs', () => {
   describe('lines', () => {

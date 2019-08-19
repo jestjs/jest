@@ -347,3 +347,15 @@ exports[`options common diff 1`] = `
 =   \\"common\\",
 = ]"
 `;
+
+exports[`options omitAnnotationLines diff 1`] = `
+"<dim>  Array [</>
+<green>-   \\"delete\\",</>
+<green>-   \\"change from\\",</>
+<red>+   \\"change to\\",</>
+<red>+   \\"insert\\",</>
+<dim>    \\"common\\",</>
+<dim>  ]</>"
+`;
+
+exports[`options omitAnnotationLines diffStringsUnified empty strings 1`] = `""`;

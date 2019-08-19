@@ -954,4 +954,18 @@ describe('options', () => {
       expect(diff(a, b, options)).toMatchSnapshot();
     });
   });
+
+  describe('omitAnnotationLines', () => {
+    const options = {
+      omitAnnotationLines: true,
+    };
+
+    test('diff', () => {
+      expect(diff(a, b, options)).toMatchSnapshot();
+    });
+
+    test('diffStringsUnified empty strings', () => {
+      expect(diffStringsUnified('', '', options)).toMatchSnapshot();
+    });
+  });
 });

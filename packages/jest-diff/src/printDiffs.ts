@@ -95,11 +95,14 @@ export const printAnnotation = ({
   bAnnotation,
   bColor,
   bSymbol,
+  omitAnnotationLines,
 }: DiffOptionsNormalized): string =>
-  aColor(aSymbol + ' ' + aAnnotation) +
-  '\n' +
-  bColor(bSymbol + ' ' + bAnnotation) +
-  '\n\n';
+  omitAnnotationLines
+    ? ''
+    : aColor(aSymbol + ' ' + aAnnotation) +
+      '\n' +
+      bColor(bSymbol + ' ' + bAnnotation) +
+      '\n\n';
 
 // In GNU diff format, indexes are one-based instead of zero-based.
 export const createPatchMark = (
