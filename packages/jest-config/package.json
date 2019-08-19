@@ -24,7 +24,7 @@
     "jest-resolve": "^24.9.0",
     "jest-util": "^24.9.0",
     "jest-validate": "^24.9.0",
-    "micromatch": "^3.1.10",
+    "micromatch": "^4.0.2",
     "pretty-format": "^24.9.0",
     "realpath-native": "^1.1.0"
   },
