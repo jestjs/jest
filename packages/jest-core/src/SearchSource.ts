@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {some as micromatchSome} from 'micromatch';
+import micromatch from 'micromatch';
 import {Context} from 'jest-runtime';
 import {Config} from '@jest/types';
 import {Test} from 'jest-runner';
@@ -37,7 +37,7 @@ export type TestSelectionConfig = {
 };
 
 const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
-  micromatchSome(replacePathSepForGlob(path), globs, {dot: true});
+  !!micromatch([replacePathSepForGlob(path)], globs, {dot: true}).length;
 
 const regexToMatcher = (testRegex: Array<string>) => (path: Config.Path) =>
   testRegex.some(testRegex => new RegExp(testRegex).test(path));

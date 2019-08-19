@@ -10,7 +10,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {EventEmitter} from 'events';
 import anymatch, {Matcher} from 'anymatch';
-import {some as micromatchSome} from 'micromatch';
+import micromatch from 'micromatch';
 // eslint-disable-next-line
 import {Watcher} from 'fsevents';
 // @ts-ignore no types
@@ -139,8 +139,8 @@ class FSEventsWatcher extends EventEmitter {
       return false;
     }
     return this.glob.length
-      ? micromatchSome(relativePath, this.glob, {dot: this.dot})
-      : this.dot || micromatchSome(relativePath, '**/*');
+      ? !!micromatch([relativePath], this.glob, {dot: this.dot}).length
+      : !!this.dot || micromatch([relativePath], '**/*').length;
   }
 
   private handleEvent(filepath: string) {

@@ -9,7 +9,7 @@ import * as path from 'path';
 import {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replacePathSepForGlob} from 'jest-util';
-import {any as micromatchAny, some as micromatchSome} from 'micromatch';
+import micromatch, {any as micromatchAny} from 'micromatch';
 import {ShouldInstrumentOptions} from './types';
 
 const MOCKS_PATTERN = new RegExp(
@@ -39,7 +39,9 @@ export default function shouldInstrument(
       return false;
     }
 
-    if (micromatchSome(replacePathSepForGlob(filename), config.testMatch)) {
+    if (
+      micromatch([replacePathSepForGlob(filename)], config.testMatch).length
+    ) {
       return false;
     }
   }
@@ -57,10 +59,10 @@ export default function shouldInstrument(
     // still cover if `only` is specified
     !options.collectCoverageOnlyFrom &&
     options.collectCoverageFrom &&
-    !micromatchSome(
-      replacePathSepForGlob(path.relative(config.rootDir, filename)),
+    !micromatch(
+      [replacePathSepForGlob(path.relative(config.rootDir, filename))],
       options.collectCoverageFrom,
-    )
+    ).length
   ) {
     return false;
   }
