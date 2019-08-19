@@ -15,7 +15,7 @@
     "@types/detect-newline": "^2.1.0"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

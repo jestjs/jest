@@ -35,7 +35,7 @@
     "@types/write-file-atomic": "^2.1.1"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

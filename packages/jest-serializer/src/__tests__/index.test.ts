@@ -10,21 +10,9 @@
 import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
-import v8 from 'v8';
 import prettyFormat from 'pretty-format';
 
 import serializer from '..';
-
-const v8s = [
-  {
-    deserialize: v8.deserialize,
-    serialize: v8.serialize,
-  },
-  {
-    deserialize: undefined,
-    serialize: undefined,
-  },
-];
 
 const objs = [
   3,
@@ -48,45 +36,35 @@ afterEach(() => {
   }
 });
 
-// We execute the same suite of tests over multiple objects ("objs") and over
-// multiple mocks of the V8 object ("v8s") so that we verify that all possible
-// encodings and cases work.
-v8s.forEach((mockV8, i) => {
-  describe('Using V8 implementation ' + i, () => {
-    beforeEach(() => {
-      v8.serialize = mockV8.serialize;
-      v8.deserialize = mockV8.deserialize;
-    });
+describe('Using V8 implementation', () => {
+  it('throws the error with an invalid serialization', () => {
+    // No chance this is a valid serialization, neither in JSON nor V8.
+    const invalidBuffer = Buffer.from([0, 85, 170, 255]);
 
-    it('throws the error with an invalid serialization', () => {
-      // No chance this is a valid serialization, neither in JSON nor V8.
-      const invalidBuffer = Buffer.from([0, 85, 170, 255]);
+    fs.writeFileSync(file, invalidBuffer);
 
-      fs.writeFileSync(file, invalidBuffer);
+    expect(() => serializer.deserialize(invalidBuffer)).toThrow();
+    expect(() => serializer.readFileSync(file)).toThrow();
+  });
 
-      expect(() => serializer.deserialize(invalidBuffer)).toThrow();
-      expect(() => serializer.readFileSync(file)).toThrow();
-    });
+  objs.forEach((obj, i) => {
+    describe('Object ' + i, () => {
+      it('serializes/deserializes in memory', () => {
+        const buf = serializer.serialize(obj);
 
-    objs.forEach((obj, i) => {
-      describe('Object ' + i, () => {
-        it('serializes/deserializes in memory', () => {
-          const buf = serializer.serialize(obj);
+        expect(buf).toBeInstanceOf(Buffer);
 
-          expect(buf).toBeInstanceOf(Buffer);
+        expect(prettyFormat(serializer.deserialize(buf))).toEqual(
+          prettyFormat(obj),
+        );
+      });
 
-          expect(prettyFormat(serializer.deserialize(buf))).toEqual(
-            prettyFormat(obj),
-          );
-        });
+      it('serializes/deserializes in disk', () => {
+        serializer.writeFileSync(file, obj);
 
-        it('serializes/deserializes in disk', () => {
-          serializer.writeFileSync(file, obj);
-
-          expect(prettyFormat(serializer.readFileSync(file))).toEqual(
-            prettyFormat(obj),
-          );
-        });
+        expect(prettyFormat(serializer.readFileSync(file))).toEqual(
+          prettyFormat(obj),
+        );
       });
     });
   });
