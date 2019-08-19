@@ -9,7 +9,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {EventEmitter} from 'events';
-import anymatch from 'anymatch';
+import anymatch, {Matcher} from 'anymatch';
 import {some as micromatchSome} from 'micromatch';
 // eslint-disable-next-line
 import {Watcher} from 'fsevents';
@@ -40,7 +40,7 @@ type FsEventsWatcherEvent =
  */
 class FSEventsWatcher extends EventEmitter {
   public readonly root: string;
-  public readonly ignored?: anymatch.Matcher;
+  public readonly ignored?: Matcher;
   public readonly glob: Array<string>;
   public readonly dot: boolean;
   public readonly hasIgnore: boolean;
@@ -65,7 +65,7 @@ class FSEventsWatcher extends EventEmitter {
     fileCallback: (normalizedPath: string, stats: fs.Stats) => void,
     endCallback: Function,
     errorCallback: Function,
-    ignored?: anymatch.Matcher,
+    ignored?: Matcher,
   ) {
     walker(dir)
       .filterDir(
@@ -83,7 +83,7 @@ class FSEventsWatcher extends EventEmitter {
     dir: string,
     opts: {
       root: string;
-      ignored?: anymatch.Matcher;
+      ignored?: Matcher;
       glob: string | Array<string>;
       dot: boolean;
     },
