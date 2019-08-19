@@ -22,9 +22,9 @@
     "micromatch": "^4.0.2",
     "pirates": "^4.0.1",
     "realpath-native": "^1.1.0",
-    "slash": "^2.0.0",
+    "slash": "^3.0.0",
     "source-map": "^0.6.1",
-    "write-file-atomic": "2.4.1"
+    "write-file-atomic": "^3.0.0"
   },
   "devDependencies": {
     "@types/babel__core": "^7.1.0",
