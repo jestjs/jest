@@ -12,7 +12,7 @@
   },
   "peerDependencies": {
     "babel-eslint": "^9.0.0 || ^10.0.0",
-    "eslint": "^4.2.0 || ^5.0.0",
+    "eslint": "^4.2.0 || ^5.0.0 || ^6.0.0",
     "eslint-plugin-babel": "^5.0.0",
     "eslint-plugin-flowtype": "^2.35.0 || ^3.0.0",
     "eslint-plugin-jest": "^21.0.0 || ^22.0.0",
