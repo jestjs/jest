@@ -9,8 +9,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {EventEmitter} from 'events';
-import anymatch = require('anymatch');
-import {some as micromatchSome} from 'micromatch';
+import anymatch, {Matcher} from 'anymatch';
+import micromatch = require('micromatch');
 // eslint-disable-next-line
 import {Watcher} from 'fsevents';
 // @ts-ignore no types
@@ -40,7 +40,7 @@ type FsEventsWatcherEvent =
  */
 class FSEventsWatcher extends EventEmitter {
   public readonly root: string;
-  public readonly ignored?: anymatch.Matcher;
+  public readonly ignored?: Matcher;
   public readonly glob: Array<string>;
   public readonly dot: boolean;
   public readonly hasIgnore: boolean;
@@ -65,7 +65,7 @@ class FSEventsWatcher extends EventEmitter {
     fileCallback: (normalizedPath: string, stats: fs.Stats) => void,
     endCallback: Function,
     errorCallback: Function,
-    ignored?: anymatch.Matcher,
+    ignored?: Matcher,
   ) {
     walker(dir)
       .filterDir(
@@ -83,7 +83,7 @@ class FSEventsWatcher extends EventEmitter {
     dir: string,
     opts: {
       root: string;
-      ignored?: anymatch.Matcher;
+      ignored?: Matcher;
       glob: string | Array<string>;
       dot: boolean;
     },
@@ -139,8 +139,8 @@ class FSEventsWatcher extends EventEmitter {
       return false;
     }
     return this.glob.length
-      ? micromatchSome(relativePath, this.glob, {dot: this.dot})
-      : this.dot || micromatchSome(relativePath, '**/*');
+      ? micromatch([relativePath], this.glob, {dot: this.dot}).length > 0
+      : this.dot || micromatch([relativePath], '**/*').length > 0;
   }
 
   private handleEvent(filepath: string) {
