@@ -55,7 +55,7 @@
     "karma-webpack": "4.0.0-rc.5",
     "left-pad": "^1.1.1",
     "lerna": "3.15.0",
-    "micromatch": "^3.1.10",
+    "micromatch": "^4.0.2",
     "mkdirp": "^0.5.1",
     "mocha": "^6.0.2",
     "mock-fs": "^4.4.1",

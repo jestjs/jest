@@ -12,7 +12,7 @@ import {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
-import {some as micromatchSome} from 'micromatch';
+import micromatch from 'micromatch';
 import {sync as realpath} from 'realpath-native';
 import Resolver from 'jest-resolve';
 import {replacePathSepForRegex} from 'jest-regex-util';
@@ -982,10 +982,10 @@ export default function normalize(
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          !micromatchSome(
-            replacePathSepForGlob(path.relative(options.rootDir, filename)),
+          micromatch(
+            [replacePathSepForGlob(path.relative(options.rootDir, filename))],
             newOptions.collectCoverageFrom!,
-          )
+          ).length === 0
         ) {
           return patterns;
         }

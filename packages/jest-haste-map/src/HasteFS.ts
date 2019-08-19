@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {some as micromatchSome} from 'micromatch';
+import micromatch from 'micromatch';
 import {replacePathSepForGlob} from 'jest-util';
 import {Config} from '@jest/types';
 import {FileData} from './types';
@@ -86,7 +86,7 @@ export default class HasteFS {
     const files = new Set<string>();
     for (const file of this.getAbsoluteFileIterator()) {
       const filePath = root ? fastPath.relative(root, file) : file;
-      if (micromatchSome(replacePathSepForGlob(filePath), globs)) {
+      if (micromatch([replacePathSepForGlob(filePath)], globs).length > 0) {
         files.add(file);
       }
     }

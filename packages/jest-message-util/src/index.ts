@@ -10,7 +10,7 @@ import * as path from 'path';
 import {Config} from '@jest/types';
 import {AssertionResult, SerializableError} from '@jest/test-result';
 import chalk from 'chalk';
-import {some as micromatchSome} from 'micromatch';
+import micromatch from 'micromatch';
 import slash from 'slash';
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils from 'stack-utils';
@@ -216,7 +216,7 @@ const formatPaths = (
   if (
     (config.testMatch &&
       config.testMatch.length &&
-      micromatchSome(filePath, config.testMatch)) ||
+      micromatch([filePath], config.testMatch).length > 0) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);
