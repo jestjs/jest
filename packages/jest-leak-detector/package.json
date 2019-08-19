@@ -11,11 +11,11 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "jest-get-type": "^24.9.0",
-    "pretty-format": "^24.9.0"
+    "pretty-format": "^24.9.0",
+    "weak-napi": "^1.0.3"
   },
   "devDependencies": {
-    "@types/weak": "^1.0.0",
-    "weak": "^1.0.1"
+    "@types/weak-napi": "^1.0.0"
   },
   "engines": {
     "node": ">= 8"
