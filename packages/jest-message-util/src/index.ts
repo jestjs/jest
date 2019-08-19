@@ -216,7 +216,7 @@ const formatPaths = (
   if (
     (config.testMatch &&
       config.testMatch.length &&
-      micromatch([filePath], config.testMatch).length) ||
+      micromatch([filePath], config.testMatch).length > 0) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);

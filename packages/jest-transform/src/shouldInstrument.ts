@@ -59,10 +59,10 @@ export default function shouldInstrument(
     // still cover if `only` is specified
     !options.collectCoverageOnlyFrom &&
     options.collectCoverageFrom &&
-    !micromatch(
+    micromatch(
       [replacePathSepForGlob(path.relative(config.rootDir, filename))],
       options.collectCoverageFrom,
-    ).length
+    ).length === 0
   ) {
     return false;
   }

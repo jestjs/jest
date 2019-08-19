@@ -139,8 +139,8 @@ class FSEventsWatcher extends EventEmitter {
       return false;
     }
     return this.glob.length
-      ? !!micromatch([relativePath], this.glob, {dot: this.dot}).length
-      : !!this.dot || micromatch([relativePath], '**/*').length;
+      ? micromatch([relativePath], this.glob, {dot: this.dot}).length > 0
+      : this.dot || micromatch([relativePath], '**/*').length > 0;
   }
 
   private handleEvent(filepath: string) {
