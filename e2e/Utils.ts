@@ -24,7 +24,7 @@ export const run = (cmd: string, cwd?: Config.Path): RunResult => {
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
 
   // For compat with cross-spawn
-  result.status = result.code;
+  result.status = result.exitCode;
 
   if (result.status !== 0) {
     const message = `

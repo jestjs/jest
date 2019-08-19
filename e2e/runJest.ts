@@ -9,7 +9,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import {Writable} from 'stream';
-import execa, {ExecaChildProcess, ExecaReturns} from 'execa';
+import execa, {ExecaChildProcess, ExecaReturnValue} from 'execa';
 import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
 
@@ -53,7 +53,7 @@ function spawnJest(
   args?: Array<string>,
   options: RunJestOptions = {},
   spawnAsync: boolean = false,
-): ExecaReturns | ExecaChildProcess {
+): ExecaReturnValue | ExecaChildProcess {
   const isRelative = !path.isAbsolute(dir);
 
   if (isRelative) {
@@ -103,7 +103,7 @@ type RunJestResult = ExecaReturns & {
 
 function normalizeResult(result: RunJestResult, options: RunJestOptions) {
   // For compat with cross-spawn
-  result.status = result.code;
+  result.status = result.exitCode;
 
   result.stdout = normalizeIcons(result.stdout);
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
