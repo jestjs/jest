@@ -7,7 +7,7 @@ The default export serializes JavaScript **values** and compares them line-by-li
 Two named exports compare **strings** character-by-character:
 
 - `diffStringsUnified` returns a string which includes comparison lines.
-- `diffStringsUnaligned` returns an array of 2 strings.
+- `diffStringsRaw` returns an array of `Diff` objects.
 
 ## Installation
 
@@ -70,7 +70,7 @@ Here are edge cases for the return value:
 Given strings and optional options, `diffStringsUnified(a, b, options?)` does the following:
 
 - **compare** the strings character-by-character using the `diff-sequences` package
-- **clean up** small (often coincidental) common substrings, known as “chaff”
+- **clean up** small (often coincidental) common substrings, also known as chaff
 - **format** the changed or common lines using the `chalk` package
 
 Although the function is mainly for **multiline** strings, it compares any strings.
@@ -119,33 +119,63 @@ To get the benefit of **changed substrings** within the comparison lines, a char
 
 If the input strings can have **arbitrary length**, we recommend that the calling code set a limit, beyond which it calls the default export instead. For example, Jest falls back to line-by-line comparison if either string has length greater than 20K characters.
 
-## Usage of diffStringsUnaligned
+## Usage of diffStringsRaw
 
-Given strings, `diffStringsUnaligned(a, b)` does the following:
+Given strings, `diffStringsRaw(a, b, cleanup)` does the following:
 
 - **compare** the strings character-by-character using the `diff-sequences` package
-- **clean up** small (often coincidental) common substrings, known as “chaff”
-- **format** the changed substrings using `inverse` from the `chalk` package
+- optionally **clean up** small (often coincidental) common substrings, also known as chaff
 
-Although the function is mainly for **one-line** strings, it compares any strings.
+Write one of the following:
 
-Write either of the following:
+- `const {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diffStringsRaw} = require('jest-diff');` in a CommonJS module
+- `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diffStringsRaw} from 'jest-diff';` in an ECMAScript module
+- `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} from 'jest-diff';` in an TypeScript module
 
-- `const {diffStringsUnaligned} = require('jest-diff');` in a CommonJS module
-- `import {diffStringsUnaligned} from 'jest-diff';` in an ECMAScript module
+The returned **array** describes substrings as instances of the `Diff` class (which calling code can access like array tuples).
 
-### Example of diffStringsUnaligned
+| value | named export  | description           |
+| ----: | :------------ | :-------------------- |
+|   `0` | `DIFF_EQUAL`  | in `a` and `b`        |
+|  `-1` | `DIFF_DELETE` | in `a` but not in `b` |
+|   `1` | `DIFF_INSERT` | in `b` but not in `a` |
+
+### Example of diffStringsRaw with cleanup
 
 ```js
-const [a, b] = diffStringsUnaligned('change from', 'change to');
+const diffs = diffStringsRaw('change from', 'change to', true);
 
-// a === 'change ' + chalk.inverse('from')
-// b === 'change ' + chalk.inverse('to')
+// diffs[0][0] === DIFF_EQUAL
+// diffs[0][1] === 'change '
+
+// diffs[1][0] === DIFF_DELETE
+// diffs[1][1] === 'from'
+
+// diffs[2][0] === DIFF_INSERT
+// diffs[2][1] === 'to'
 ```
 
-The returned **array** of **two strings** corresponds to the two arguments.
+### Example of diffStringsRaw without cleanup
 
-Because the caller is responsible to format the returned strings, there are no options.
+```js
+const diffs = diffStringsRaw('change from', 'change to', false);
+
+// diffs[0][0] === DIFF_EQUAL
+// diffs[0][1] === 'change '
+
+// diffs[1][0] === DIFF_DELETE
+// diffs[1][1] === 'fr'
+
+// diffs[2][0] === DIFF_INSERT
+// diffs[2][1] === 't'
+
+// Here is a small coincidental common substring:
+// diffs[3][0] === DIFF_EQUAL
+// diffs[3][1] === 'o'
+
+// diffs[4][0] === DIFF_DELETE
+// diffs[4][1] === 'm'
+```
 
 ## Options
 

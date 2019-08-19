@@ -9,7 +9,7 @@ import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 
 import diff from '../';
-import {diffStringsUnified, diffStringsUnaligned} from '../printDiffs';
+import {diffStringsUnified} from '../printDiffs';
 import {DiffOptions} from '../types';
 
 const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
@@ -904,80 +904,6 @@ describe('diffStringsUnified edge cases', () => {
     const b = 'insert';
 
     expect(diffStringsUnified(a, b)).toMatchSnapshot();
-  });
-});
-
-describe('diffStringsUnaligned edge cases', () => {
-  test('empty both a and b', () => {
-    const a = '';
-    const b = '';
-
-    expect(diffStringsUnaligned(a, b)).toMatchSnapshot();
-  });
-
-  test('empty only a', () => {
-    const a = '';
-    const b = 'one-line string';
-
-    expect(diffStringsUnaligned(a, b)).toMatchSnapshot();
-  });
-
-  test('empty only b', () => {
-    const a = 'one-line string';
-    const b = '';
-
-    expect(diffStringsUnaligned(a, b)).toMatchSnapshot();
-  });
-
-  test('equal both non-empty', () => {
-    const a = 'one-line string';
-    const b = 'one-line string';
-
-    expect(diffStringsUnaligned(a, b)).toMatchSnapshot();
-  });
-
-  test('multiline has changes', () => {
-    const a = ['change from', 'common'].join('\n');
-    const b = ['change to', 'common'].join('\n');
-
-    expect(diffStringsUnaligned(a, b)).toMatchSnapshot();
-  });
-
-  test('multiline has no common after clean up chaff', () => {
-    const a = 'delete\ntwo';
-    const b = 'insert\n2';
-
-    expect(diffStringsUnaligned(a, b)).toMatchSnapshot();
-  });
-
-  test('one-line has no common after clean up chaff', () => {
-    const a = 'delete';
-    const b = 'insert';
-
-    expect(diffStringsUnaligned(a, b)).toMatchSnapshot();
-  });
-});
-
-describe('diffStringsUnaligned normal cases', () => {
-  test('change', () => {
-    const a = 'change from';
-    const b = 'change to';
-
-    expect(diffStringsUnaligned(a, b)).toMatchSnapshot();
-  });
-
-  test('delete', () => {
-    const a = 'delete common';
-    const b = 'common';
-
-    expect(diffStringsUnaligned(a, b)).toMatchSnapshot();
-  });
-
-  test('insert', () => {
-    const a = 'common';
-    const b = 'insert common';
-
-    expect(diffStringsUnaligned(a, b)).toMatchSnapshot();
   });
 });
 

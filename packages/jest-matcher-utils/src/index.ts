@@ -7,9 +7,13 @@
 
 import chalk from 'chalk';
 import jestDiff, {
+  DIFF_DELETE,
+  DIFF_EQUAL,
+  DIFF_INSERT,
+  Diff,
   DiffOptions,
+  diffStringsRaw,
   diffStringsUnified,
-  diffStringsUnaligned,
 } from 'jest-diff';
 import getType, {isPrimitive} from 'jest-get-type';
 import prettyFormat from 'pretty-format';
@@ -216,6 +220,29 @@ export const ensureExpectedIsNonNegativeInteger = (
   }
 };
 
+// Given array of diffs, return concatenated string:
+// * include common substrings
+// * exclude change substrings which have opposite op
+// * include change substrings which have argument op
+//   with inverse highlight only if there is a common substring
+const getCommonAndChangedSubstrings = (
+  diffs: Array<Diff>,
+  op: number,
+  hasCommonDiff: boolean,
+): string =>
+  diffs.reduce(
+    (reduced: string, diff: Diff): string =>
+      reduced +
+      (diff[0] === DIFF_EQUAL
+        ? diff[1]
+        : diff[0] !== op
+        ? ''
+        : hasCommonDiff
+        ? INVERTED_COLOR(diff[1])
+        : diff[1]),
+    '',
+  );
+
 const isLineDiffable = (expected: unknown, received: unknown): boolean => {
   const expectedType = getType(expected);
   const receivedType = getType(received);
@@ -292,12 +319,20 @@ export const printDiffOrStringify = (
       });
     }
 
-    // Format the changed substrings using inverse from the chalk package.
-    const [expected2, received2] = diffStringsUnaligned(expected, received);
+    const diffs = diffStringsRaw(expected, received, true);
+    const hasCommonDiff = diffs.some(diff => diff[0] === DIFF_EQUAL);
 
     const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
-    const expectedLine = printLabel(expectedLabel) + printExpected(expected2);
-    const receivedLine = printLabel(receivedLabel) + printReceived(received2);
+    const expectedLine =
+      printLabel(expectedLabel) +
+      printExpected(
+        getCommonAndChangedSubstrings(diffs, DIFF_DELETE, hasCommonDiff),
+      );
+    const receivedLine =
+      printLabel(receivedLabel) +
+      printReceived(
+        getCommonAndChangedSubstrings(diffs, DIFF_INSERT, hasCommonDiff),
+      );
 
     return expectedLine + '\n' + receivedLine;
   }

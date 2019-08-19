@@ -7,13 +7,7 @@
 
 import chalk from 'chalk';
 
-import {
-  DIFF_DELETE,
-  DIFF_EQUAL,
-  DIFF_INSERT,
-  Diff,
-  cleanupSemantic,
-} from './cleanupSemantic';
+import {DIFF_EQUAL, Diff, cleanupSemantic} from './cleanupSemantic';
 import diffLines from './diffLines';
 import diffStrings from './diffStrings';
 import getAlignedDiffs from './getAlignedDiffs';
@@ -45,12 +39,6 @@ export const invertChangedSubstrings = (
         : ''),
     '',
   );
-
-const getExpectedString = (diffs: Array<Diff>): string =>
-  invertChangedSubstrings(DIFF_DELETE, diffs);
-
-const getReceivedString = (diffs: Array<Diff>): string =>
-  invertChangedSubstrings(DIFF_INSERT, diffs);
 
 const NEWLINE_SYMBOL = '\u{21B5}'; // downwards arrow with corner leftwards
 const SPACE_SYMBOL = '\u{00B7}'; // middle dot
@@ -194,18 +182,18 @@ export const diffStringsUnified = (
 };
 
 // Given two string arguments, compare them character-by-character.
-// Format the changed substrings using inverse from the chalk package.
-// Return an array of two strings which correspond to the two arguments.
-export const diffStringsUnaligned = (
+// Optionally clean up small common substrings, also known as chaff.
+// Return an array of diff objects.
+export const diffStringsRaw = (
   a: string,
   b: string,
-): [string, string] => {
+  cleanup: boolean,
+): Array<Diff> => {
   const diffs = diffStrings(a, b);
-  cleanupSemantic(diffs); // impure function
 
-  if (hasCommonDiff(diffs, false)) {
-    return [getExpectedString(diffs), getReceivedString(diffs)];
+  if (cleanup) {
+    cleanupSemantic(diffs); // impure function
   }
 
-  return [a, b];
+  return diffs;
 };
