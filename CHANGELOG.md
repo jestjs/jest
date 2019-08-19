@@ -8,7 +8,7 @@
 
 ### Chore & Maintenance
 
-- `[*]` Drop support for Node 6 ([#8455](https://github.com/facebook/jest/pull/8455))
+- `[*]` [**BREAKING**] Drop support for Node 6 ([#8455](https://github.com/facebook/jest/pull/8455))
 - `[docs]` Fix broken link pointing to legacy JS file in "Snapshot Testing".
 
 ### Performance
