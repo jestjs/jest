@@ -1,24 +1,32 @@
 #!/usr/bin/env node
 
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 const fs = require('fs');
 const request = require('request');
 const path = require('path');
 
-const REQUIRED_KEYS = ['id'];
+const REQUIRED_KEYS = ['fromAccount', 'tier', 'totalDonations'];
 
 request(
-  'https://opencollective.com/api/groups/jest/backers',
+  'https://rest.opencollective.com/v2/jest/orders/incoming/active?limit=1000',
   (err, response, body) => {
     if (err) console.error('Failed to fetch backers: ', err);
 
     // Basic validation
-    const content = JSON.parse(body);
+    const result = JSON.parse(body);
+    if (!result || !Array.isArray(result.nodes)) {
+      throw new Error('backer info is not an array');
+    }
 
-    if (!Array.isArray(content)) throw new Error('backer info is not an array');
+    const backers = result.nodes;
 
-    for (const item of content) {
+    for (const item of backers) {
       for (const key of REQUIRED_KEYS) {
         if (!item || typeof item !== 'object')
           throw new Error(
@@ -31,10 +39,14 @@ request(
       }
     }
 
-    fs.writeFile(path.resolve(__dirname, 'backers.json'), body, err => {
-      if (err) {
-        console.error('Failed to write backers file: ', err);
-      } else console.log('Fetched 1 file: backers.json');
-    });
+    fs.writeFile(
+      path.resolve(__dirname, 'backers.json'),
+      JSON.stringify(backers),
+      err => {
+        if (err) {
+          console.error('Failed to write backers file: ', err);
+        } else console.log('Fetched 1 file: backers.json');
+      }
+    );
   }
 );

@@ -58,11 +58,10 @@ export type Reporter = {
 };
 
 export interface Spy extends Record<string, any> {
-  (this: {[key: string]: any}, ...args: Array<any>): unknown;
+  (this: Record<string, unknown>, ...args: Array<any>): unknown;
   and: SpyStrategy;
   calls: CallTracker;
   restoreObjectToOriginalState?: () => void;
-  [key: string]: any;
 }
 
 export type Jasmine = {

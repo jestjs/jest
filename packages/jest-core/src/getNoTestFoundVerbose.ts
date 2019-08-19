@@ -1,4 +1,9 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 import chalk from 'chalk';
 import {Config} from '@jest/types';
@@ -17,7 +22,7 @@ export default function getNoTestFoundVerbose(
         if (key === 'roots' && config.roots.length === 1) {
           return null;
         }
-        const value = (config as {[key: string]: unknown})[key];
+        const value = (config as Record<string, unknown>)[key];
         if (value) {
           const valueAsString = Array.isArray(value)
             ? value.join(', ')

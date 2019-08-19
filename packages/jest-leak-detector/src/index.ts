@@ -5,15 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import v8 from 'v8';
-import vm from 'vm';
+import {setFlagsFromString} from 'v8';
+import {runInNewContext} from 'vm';
 import prettyFormat from 'pretty-format';
+import {isPrimitive} from 'jest-get-type';
 
 export default class {
   private _isReferenceBeingHeld: boolean;
 
   constructor(value: unknown) {
-    if (this._isPrimitive(value)) {
+    if (isPrimitive(value)) {
       throw new TypeError(
         [
           'Primitives cannot leak memory.',
@@ -55,16 +56,12 @@ export default class {
     const isGarbageCollectorHidden = !global.gc;
 
     // GC is usually hidden, so we have to expose it before running.
-    v8.setFlagsFromString('--expose-gc');
-    vm.runInNewContext('gc')();
+    setFlagsFromString('--expose-gc');
+    runInNewContext('gc')();
 
     // The GC was not initially exposed, so let's hide it again.
     if (isGarbageCollectorHidden) {
-      v8.setFlagsFromString('--no-expose-gc');
+      setFlagsFromString('--no-expose-gc');
     }
-  }
-
-  private _isPrimitive(value: unknown): boolean {
-    return value !== Object(value);
   }
 }

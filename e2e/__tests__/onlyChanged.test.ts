@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import runJest from '../runJest';
 import {cleanup, run, writeFiles} from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'jest_only_changed');
+const DIR = path.resolve(tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
 

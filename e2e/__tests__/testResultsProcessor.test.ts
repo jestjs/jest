@@ -6,7 +6,7 @@
  */
 'use strict';
 
-import path from 'path';
+import * as path from 'path';
 import {json as runWithJson} from '../runJest';
 
 test('testNamePattern', () => {

@@ -1,16 +1,15 @@
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import crypto from 'crypto';
-import {sync as spawnSync, ExecaReturns} from 'execa';
+import * as fs from 'fs';
+import {tmpdir} from 'os';
+import * as path from 'path';
+import {createHash} from 'crypto';
+import {ExecaReturns, sync as spawnSync} from 'execa';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
 const CIRCUS_PATH = require.resolve('../../build');
@@ -27,11 +26,10 @@ interface Result extends ExecaReturns {
 }
 
 export const runTest = (source: string) => {
-  const filename = crypto
-    .createHash('md5')
+  const filename = createHash('md5')
     .update(source)
     .digest('hex');
-  const tmpFilename = path.join(os.tmpdir(), filename);
+  const tmpFilename = path.join(tmpdir(), filename);
 
   const content = `
     require('${BABEL_REGISTER_PATH}')({extensions: [".js", ".ts"]});

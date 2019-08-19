@@ -1,6 +1,6 @@
 {
   "name": "jest-changed-files",
-  "version": "24.7.0",
+  "version": "24.9.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^24.7.0",
+    "@jest/types": "^24.9.0",
     "execa": "^1.0.0",
     "throat": "^4.0.0"
   },
@@ -23,5 +23,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "eb0413622542bc0f70c32950d9daeeab9f6802ac"
+  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
 }

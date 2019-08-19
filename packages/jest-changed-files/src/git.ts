@@ -6,7 +6,7 @@
  *
  */
 
-import path from 'path';
+import * as path from 'path';
 import execa from 'execa';
 import {Config} from '@jest/types';
 

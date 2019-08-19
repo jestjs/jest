@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 const {stringify} = require('jest-matcher-utils');
@@ -215,6 +214,8 @@ describe('.toBe()', () => {
     [Symbol('received'), Symbol('expected')],
     [new Error('received'), new Error('expected')],
     ['abc', 'cde'],
+    ['painless JavaScript testing', 'delightful JavaScript testing'],
+    ['', 'compare one-line string to empty string'],
     ['with \ntrailing space', 'without trailing space'],
     ['four\n4\nline\nstring', '3\nline\nstring'],
     [[], []],
@@ -318,6 +319,42 @@ describe('.toStrictEqual()', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 
+  it('displays substring diff', () => {
+    const expected =
+      'Another caveat is that Jest will not typecheck your tests.';
+    const received =
+      'Because TypeScript support in Babel is just transpilation, Jest will not type-check your tests as they run.';
+    expect(() =>
+      jestExpect(received).toStrictEqual(expected),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
+  it('displays substring diff for multiple lines', () => {
+    const expected = [
+      '    69 | ',
+      "    70 | test('assert.doesNotThrow', () => {",
+      '  > 71 |   assert.doesNotThrow(() => {',
+      '       |          ^',
+      "    72 |     throw Error('err!');",
+      '    73 |   });',
+      '    74 | });',
+      '    at Object.doesNotThrow (__tests__/assertionError.test.js:71:10)',
+    ].join('\n');
+    const received = [
+      '    68 | ',
+      "    69 | test('assert.doesNotThrow', () => {",
+      '  > 70 |   assert.doesNotThrow(() => {',
+      '       |          ^',
+      "    71 |     throw Error('err!');",
+      '    72 |   });',
+      '    73 | });',
+      '    at Object.doesNotThrow (__tests__/assertionError.test.js:70:10)',
+    ].join('\n');
+    expect(() =>
+      jestExpect(received).toStrictEqual(expected),
+    ).toThrowErrorMatchingSnapshot();
+  });
+
   it('does not pass for different types', () => {
     expect({
       test: new TestClassA(1, 2),
@@ -358,6 +395,11 @@ describe('.toEqual()', () => {
     [{a: 1}, {a: 2}],
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
+    ['1\u{00A0}234,57\u{00A0}$', '1 234,57 $'], // issues/6881
+    [
+      'type TypeName<T> = T extends Function ? "function" : "object";',
+      'type TypeName<T> = T extends Function\n? "function"\n: "object";',
+    ],
     [null, undefined],
     [[1], [2]],
     [[1, 2], [2, 1]],
@@ -1068,7 +1110,7 @@ describe('.toContain(), .toContainEqual()', () => {
   });
 });
 
-describe('toBeCloseTo', () => {
+describe('.toBeCloseTo', () => {
   [
     [0, 0],
     [0, 0.001],
@@ -1174,7 +1216,7 @@ describe('toBeCloseTo', () => {
       const precision = 3;
       const expected = null;
       const received = Promise.resolve(0.1);
-      expect(
+      return expect(
         jestExpect(received).resolves.not.toBeCloseTo(expected, precision),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
@@ -1347,6 +1389,25 @@ describe('.toHaveProperty()', () => {
   const memoized = function() {};
   memoized.memo = [];
 
+  const pathDiff = ['children', 0];
+
+  const receivedDiffSingle = {
+    children: ['"That cartoon"'],
+    props: null,
+    type: 'p',
+  };
+  const valueDiffSingle = '"That cat cartoon"';
+
+  const receivedDiffMultiple = {
+    children: [
+      'Roses are red.\nViolets are blue.\nTesting with Jest is good for you.',
+    ],
+    props: null,
+    type: 'pre',
+  };
+  const valueDiffMultiple =
+    'Roses are red, violets are blue.\nTesting with Jest\nIs good for you.';
+
   [
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 1],
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 1],
@@ -1383,6 +1444,8 @@ describe('.toHaveProperty()', () => {
     [{a: {b: {c: {d: 1}}}}, 'a.b.c.d', 2],
     [{'a.b.c.d': 1}, 'a.b.c.d', 2],
     [{'a.b.c.d': 1}, ['a.b.c.d'], 2],
+    [receivedDiffSingle, pathDiff, valueDiffSingle],
+    [receivedDiffMultiple, pathDiff, valueDiffMultiple],
     [{a: {b: {c: {d: 1}}}}, ['a', 'b', 'c', 'd'], 2],
     [{a: {b: {c: {}}}}, 'a.b.c.d', 1],
     [{a: 1}, 'a.b.c.d', 5],
@@ -1473,7 +1536,91 @@ describe('toMatchObject()', () => {
     }
   }
 
-  [
+  const testNotToMatchSnapshots = tuples => {
+    tuples.forEach(([n1, n2]) => {
+      it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
+        n2,
+      )})`, () => {
+        jestExpect(n1).toMatchObject(n2);
+        expect(() =>
+          jestExpect(n1).not.toMatchObject(n2),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    });
+  };
+
+  const testToMatchSnapshots = tuples => {
+    tuples.forEach(([n1, n2]) => {
+      it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
+        n2,
+      )})`, () => {
+        jestExpect(n1).not.toMatchObject(n2);
+        expect(() =>
+          jestExpect(n1).toMatchObject(n2),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    });
+  };
+
+  describe('circular references', () => {
+    describe('simple circular references', () => {
+      const circularObjA1 = {a: 'hello'};
+      circularObjA1.ref = circularObjA1;
+
+      const circularObjB = {a: 'world'};
+      circularObjB.ref = circularObjB;
+
+      const circularObjA2 = {a: 'hello'};
+      circularObjA2.ref = circularObjA2;
+
+      const primitiveInsteadOfRef = {};
+      primitiveInsteadOfRef.ref = 'not a ref';
+
+      testNotToMatchSnapshots([
+        [circularObjA1, {}],
+        [circularObjA2, circularObjA1],
+      ]);
+
+      testToMatchSnapshots([
+        [{}, circularObjA1],
+        [circularObjA1, circularObjB],
+        [primitiveInsteadOfRef, circularObjA1],
+      ]);
+    });
+
+    describe('transitive circular references', () => {
+      const transitiveCircularObjA1 = {a: 'hello'};
+      transitiveCircularObjA1.nestedObj = {parentObj: transitiveCircularObjA1};
+
+      const transitiveCircularObjA2 = {a: 'hello'};
+      transitiveCircularObjA2.nestedObj = {
+        parentObj: transitiveCircularObjA2,
+      };
+
+      const transitiveCircularObjB = {a: 'world'};
+      transitiveCircularObjB.nestedObj = {
+        parentObj: transitiveCircularObjB,
+      };
+
+      const primitiveInsteadOfRef = {};
+      primitiveInsteadOfRef.nestedObj = {
+        parentObj: 'not the parent ref',
+      };
+
+      testNotToMatchSnapshots([
+        [transitiveCircularObjA1, {}],
+        [transitiveCircularObjA2, transitiveCircularObjA1],
+      ]);
+
+      testToMatchSnapshots([
+        [{}, transitiveCircularObjA1],
+        [transitiveCircularObjB, transitiveCircularObjA1],
+        [primitiveInsteadOfRef, transitiveCircularObjA1],
+      ]);
+    });
+  });
+
+  testNotToMatchSnapshots([
     [{a: 'b', c: 'd'}, {a: 'b'}],
     [{a: 'b', c: 'd'}, {a: 'b', c: 'd'}],
     [{a: 'b', t: {x: {r: 'r'}, z: 'z'}}, {a: 'b', t: {z: 'z'}}],
@@ -1496,18 +1643,9 @@ describe('toMatchObject()', () => {
     [new Error('bar'), {message: 'bar'}],
     [new Foo(), {a: undefined, b: 'b'}],
     [Object.assign(Object.create(null), {a: 'b'}), {a: 'b'}],
-  ].forEach(([n1, n2]) => {
-    it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
-      n2,
-    )})`, () => {
-      jestExpect(n1).toMatchObject(n2);
-      expect(() =>
-        jestExpect(n1).not.toMatchObject(n2),
-      ).toThrowErrorMatchingSnapshot();
-    });
-  });
+  ]);
 
-  [
+  testToMatchSnapshots([
     [{a: 'b', c: 'd'}, {e: 'b'}],
     [{a: 'b', c: 'd'}, {a: 'b!', c: 'd'}],
     [{a: 'a', c: 'd'}, {a: jestExpect.any(Number)}],
@@ -1533,16 +1671,7 @@ describe('toMatchObject()', () => {
     [[1, 2, 3], [1, 2, 2]],
     [new Error('foo'), new Error('bar')],
     [Object.assign(Object.create(null), {a: 'b'}), {c: 'd'}],
-  ].forEach(([n1, n2]) => {
-    it(`{pass: false} expect(${stringify(n1)}).toMatchObject(${stringify(
-      n2,
-    )})`, () => {
-      jestExpect(n1).not.toMatchObject(n2);
-      expect(() =>
-        jestExpect(n1).toMatchObject(n2),
-      ).toThrowErrorMatchingSnapshot();
-    });
-  });
+  ]);
 
   [
     [null, {}],
@@ -1563,5 +1692,21 @@ describe('toMatchObject()', () => {
         jestExpect(n1).toMatchObject(n2),
       ).toThrowErrorMatchingSnapshot();
     });
+  });
+
+  it('does not match properties up in the prototype chain', () => {
+    const a = {};
+    a.ref = a;
+
+    const b = Object.create(a);
+    b.other = 'child';
+
+    const matcher = {other: 'child'};
+    matcher.ref = matcher;
+
+    jestExpect(b).not.toMatchObject(matcher);
+    expect(() =>
+      jestExpect(b).toMatchObject(matcher),
+    ).toThrowErrorMatchingSnapshot();
   });
 });

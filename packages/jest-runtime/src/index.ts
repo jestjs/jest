@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {
   Jest,
@@ -24,10 +24,10 @@ import Snapshot from 'jest-snapshot';
 import {
   ScriptTransformer,
   ShouldInstrumentOptions,
-  shouldInstrument,
   TransformationOptions,
+  shouldInstrument,
 } from '@jest/transform';
-import fs from 'graceful-fs';
+import * as fs from 'graceful-fs';
 import stripBOM from 'strip-bom';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
@@ -51,7 +51,7 @@ type InitialModule = Partial<Module> &
 type ModuleRegistry = Map<string, InitialModule | Module>;
 type ResolveOptions = Parameters<typeof require.resolve>[1];
 
-type BooleanObject = {[key: string]: boolean};
+type BooleanObject = Record<string, boolean>;
 type CacheFS = {[path: string]: string};
 
 namespace Runtime {
@@ -90,7 +90,7 @@ class Runtime {
   private _explicitShouldMock: BooleanObject;
   private _internalModuleRegistry: ModuleRegistry;
   private _isCurrentlyExecutingManualMock: string | null;
-  private _mockFactories: {[key: string]: () => unknown};
+  private _mockFactories: Record<string, () => unknown>;
   private _mockMetaDataCache: {
     [key: string]: MockFunctionMetadata<unknown, Array<unknown>>;
   };
@@ -743,11 +743,12 @@ class Runtime {
       return;
     }
 
-    const wrapper = runScript[ScriptTransformer.EVAL_RESULT_VARIABLE];
-    const moduleArguments = new Set([
-      localModule, // module object
+    //Wrapper
+    runScript[ScriptTransformer.EVAL_RESULT_VARIABLE].call(
+      localModule.exports,
+      localModule as NodeModule, // module object
       localModule.exports, // module exports
-      localModule.require, // require implementation
+      localModule.require as NodeRequireFunction, // require implementation
       dirname, // __dirname
       filename, // __filename
       this._environment.global, // global object
@@ -764,8 +765,7 @@ class Runtime {
           `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
         );
       }),
-    ]);
-    wrapper.call(localModule.exports, ...Array.from(moduleArguments));
+    );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
@@ -786,9 +786,9 @@ class Runtime {
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
       // automock
-      this._mockMetaDataCache[modulePath] = this._moduleMocker.getMetadata(
-        {},
-      ) as any;
+
+      this._mockMetaDataCache[modulePath] =
+        this._moduleMocker.getMetadata({}) || {};
 
       // In order to avoid it being possible for automocking to potentially
       // cause side-effects within the module environment, we need to execute
@@ -1037,6 +1037,8 @@ class Runtime {
         this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
+      advanceTimersToNextTimer: (steps?: number) =>
+        _getFakeTimers().advanceTimersToNextTimer(steps),
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,

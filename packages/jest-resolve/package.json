@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "24.7.1",
+  "version": "24.9.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^24.7.0",
+    "@jest/types": "^24.9.0",
     "browser-resolve": "^1.11.3",
     "chalk": "^2.0.1",
     "jest-pnp-resolver": "^1.2.1",
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@types/browser-resolve": "^0.0.5",
-    "jest-haste-map": "^24.7.1"
+    "jest-haste-map": "^24.9.0"
   },
   "engines": {
     "node": ">= 6"
@@ -26,5 +26,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
 }

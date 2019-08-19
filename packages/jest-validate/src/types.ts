@@ -17,7 +17,7 @@ export type ValidationOptions = {
   comment?: string;
   condition?: (option: any, validOption: any) => boolean;
   deprecate?: (
-    config: {[key: string]: any},
+    config: Record<string, any>,
     option: string,
     deprecatedOptions: DeprecatedOptions,
     options: ValidationOptions,
@@ -30,13 +30,13 @@ export type ValidationOptions = {
     options: ValidationOptions,
     path?: Array<string>,
   ) => void;
-  exampleConfig: {[key: string]: any};
+  exampleConfig: Record<string, any>;
   recursive?: boolean;
   recursiveBlacklist?: Array<string>;
   title?: Title;
   unknown?: (
-    config: {[key: string]: any},
-    exampleConfig: {[key: string]: any},
+    config: Record<string, any>,
+    exampleConfig: Record<string, any>,
     option: string,
     options: ValidationOptions,
     path?: Array<string>,

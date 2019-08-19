@@ -2,9 +2,9 @@
 # Steps for building and testing Jest. See jobs defined in .azure-pipelines.yml
 #
 
-# Clones the repo
 steps:
   - checkout: self
+    path: jest
 
   # Ensure Node.js 10 is active
   - task: NodeTool@0
@@ -18,34 +18,24 @@ steps:
       versionSpec: '2.7'
     displayName: 'Use Python 2.7'
 
-  # Workaround to move source files under a "jest" folder (see .azure-pipelines.yml for details)
-  - script: |
-      cd /
-      mv $(Build.Repository.LocalPath) $(JEST_DIR)
-      mkdir $(Build.Repository.LocalPath)
-    displayName: 'Move source into jest folder'
-
   # Run yarn to install dependencies and build
   - script: node scripts/remove-postinstall
-    workingDirectory: $(JEST_DIR)
     displayName: 'Remove postinstall script'
+
   - script: yarn --no-progress --frozen-lockfile
-    workingDirectory: $(JEST_DIR)
     displayName: 'Install dependencies'
+
   - script: node scripts/build
-    workingDirectory: $(JEST_DIR)
     displayName: 'Build'
 
   # Run test-ci-partial
   - script: yarn run test-ci-partial
-    workingDirectory: $(JEST_DIR)
     displayName: 'Run tests'
 
   # Publish CI test results
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: '**/reports/junit/*.xml'
-      searchFolder: $(JEST_DIR)
       testRunTitle: 'CI Tests $(Agent.OS)'
     displayName: 'Publish test results'
     condition: succeededOrFailed()

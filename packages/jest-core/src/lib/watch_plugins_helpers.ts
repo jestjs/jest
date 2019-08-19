@@ -6,7 +6,7 @@
  */
 
 import {Config} from '@jest/types';
-import {WatchPlugin, UsageData} from 'jest-watcher';
+import {UsageData, WatchPlugin} from 'jest-watcher';
 
 export const filterInteractivePlugins = (
   watchPlugins: Array<WatchPlugin>,

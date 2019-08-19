@@ -21,7 +21,8 @@ export type HasteConfig = {
   throwOnModuleCollision?: boolean;
 };
 
-export type ReporterConfig = [string, {[key: string]: unknown}];
+export type ReporterConfig = [string, Record<string, unknown>];
+export type TransformerConfig = [string, Record<string, unknown>];
 
 export type ConfigGlobals = Record<string, any>;
 
@@ -55,6 +56,7 @@ export type DefaultOptions = {
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
+  maxWorkers: number | string;
   maxConcurrency: number;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
@@ -94,7 +96,7 @@ export type DefaultOptions = {
   timers: 'real' | 'fake';
   transform:
     | {
-        [key: string]: string;
+        [regex: string]: Path | TransformerConfig;
       }
     | null
     | undefined;
@@ -156,6 +158,7 @@ export type InitialOptions = {
   listTests?: boolean;
   mapCoverage?: boolean;
   maxConcurrency?: number;
+  maxWorkers: number | string;
   moduleDirectories?: Array<string>;
   moduleFileExtensions?: Array<string>;
   moduleLoader?: Path;
@@ -207,9 +210,10 @@ export type InitialOptions = {
   testRunner?: string;
   testSequencer?: string;
   testURL?: string;
+  testTimeout?: number;
   timers?: 'real' | 'fake';
   transform?: {
-    [key: string]: string;
+    [regex: string]: Path | TransformerConfig;
   };
   transformIgnorePatterns?: Array<Glob>;
   watchPathIgnorePatterns?: Array<string>;
@@ -344,6 +348,7 @@ export type GlobalConfig = {
   testPathPattern: string;
   testResultsProcessor: string | null | undefined;
   testSequencer: string;
+  testTimeout: number;
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose: boolean | null | undefined;
@@ -409,7 +414,7 @@ export type ProjectConfig = {
   testRunner: string;
   testURL: string;
   timers: 'real' | 'fake';
-  transform: Array<[string, Path]>;
+  transform: Array<[string, Path, Record<string, unknown>]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns: Array<string> | null | undefined;
@@ -452,7 +457,7 @@ export type Argv = Arguments<
     json: boolean;
     lastCommit: boolean;
     logHeapUsage: boolean;
-    maxWorkers: number;
+    maxWorkers: number | string;
     moduleDirectories: Array<string>;
     moduleFileExtensions: Array<string>;
     moduleNameMapper: string;
@@ -489,6 +494,7 @@ export type Argv = Arguments<
     testRunner: string;
     testSequencer: string;
     testURL: string;
+    testTimeout: number | null | undefined;
     timers: string;
     transform: string;
     transformIgnorePatterns: Array<string>;

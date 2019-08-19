@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config, Global} from '@jest/types';
 import {AssertionResult, TestResult} from '@jest/test-result';
 import {JestEnvironment} from '@jest/environment';
@@ -34,6 +34,7 @@ async function jasmine2(
   const jasmine = jasmineFactory.create({
     process,
     testPath,
+    testTimeout: globalConfig.testTimeout,
   });
 
   const env = jasmine.getEnv();

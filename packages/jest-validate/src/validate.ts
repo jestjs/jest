@@ -6,8 +6,8 @@
  */
 
 import {ValidationOptions} from './types';
-
 import defaultConfig from './defaultConfig';
+import {ValidationError} from './utils';
 
 let hasDeprecationWarnings = false;
 
@@ -18,8 +18,8 @@ const shouldSkipValidationForPath = (
 ) => (blacklist ? blacklist.includes([...path, key].join('.')) : false);
 
 const _validate = (
-  config: {[key: string]: any},
-  exampleConfig: {[key: string]: any},
+  config: Record<string, any>,
+  exampleConfig: Record<string, any>,
   options: ValidationOptions,
   path: Array<string> = [],
 ): {hasDeprecationWarnings: boolean} => {
@@ -46,6 +46,21 @@ const _validate = (
       );
 
       hasDeprecationWarnings = hasDeprecationWarnings || isDeprecatedKey;
+    } else if (allowsMultipleTypes(key)) {
+      const value = config[key];
+
+      if (
+        typeof options.condition === 'function' &&
+        typeof options.error === 'function'
+      ) {
+        if (key === 'maxWorkers' && !isOfTypeStringOrNumber(value)) {
+          throw new ValidationError(
+            'Validation Error',
+            `${key} has to be of type string or number`,
+            `maxWorkers=50% or\nmaxWorkers=3`,
+          );
+        }
+      }
     } else if (Object.hasOwnProperty.call(exampleConfig, key)) {
       if (
         typeof options.condition === 'function' &&
@@ -76,7 +91,11 @@ const _validate = (
   return {hasDeprecationWarnings};
 };
 
-const validate = (config: {[key: string]: any}, options: ValidationOptions) => {
+const allowsMultipleTypes = (key: string): boolean => key === 'maxWorkers';
+const isOfTypeStringOrNumber = (value: any): boolean =>
+  typeof value === 'number' || typeof value === 'string';
+
+const validate = (config: Record<string, any>, options: ValidationOptions) => {
   hasDeprecationWarnings = false;
 
   // Preserve default blacklist entries even with user-supplied blacklist

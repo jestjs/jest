@@ -6,8 +6,8 @@
  */
 
 import ansiRegex from 'ansi-regex';
-import style from 'ansi-styles';
-import {Config, Printer, NewPlugin, Refs} from '../types';
+import * as style from 'ansi-styles';
+import {Config, NewPlugin, Printer, Refs} from '../types';
 
 const toHumanReadableAnsi = (text: string) =>
   text.replace(ansiRegex(), match => {

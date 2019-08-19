@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+import * as fs from 'fs';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import runJest from '../runJest';
 
-const CACHE = path.resolve(os.tmpdir(), 'clear-cache-directory');
+const CACHE = path.resolve(tmpdir(), 'clear-cache-directory');
 
 describe('jest --clearCache', () => {
   test('normal run results in cache directory being written', () => {

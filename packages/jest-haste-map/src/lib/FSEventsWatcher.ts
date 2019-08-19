@@ -6,11 +6,11 @@
  *
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {EventEmitter} from 'events';
 import anymatch from 'anymatch';
-import micromatch from 'micromatch';
+import {some as micromatchSome} from 'micromatch';
 // eslint-disable-next-line
 import {Watcher} from 'fsevents';
 // @ts-ignore no types
@@ -139,8 +139,8 @@ class FSEventsWatcher extends EventEmitter {
       return false;
     }
     return this.glob.length
-      ? micromatch.some(relativePath, this.glob, {dot: this.dot})
-      : this.dot || micromatch.some(relativePath, '**/*');
+      ? micromatchSome(relativePath, this.glob, {dot: this.dot})
+      : this.dot || micromatchSome(relativePath, '**/*');
   }
 
   private handleEvent(filepath: string) {

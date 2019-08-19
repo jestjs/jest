@@ -5,13 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary} from '../Utils';
+import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../coverage-report');
+
+beforeAll(() => {
+  run('yarn', DIR);
+});
 
 test('outputs coverage report', () => {
   const {stdout, status} = runJest(DIR, ['--no-cache', '--coverage'], {

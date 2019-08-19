@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {skipSuiteOnWindows} from '@jest/test-utils';
@@ -15,7 +15,7 @@ import runJest from '../runJest';
 
 skipSuiteOnWindows();
 
-const DIR = path.resolve(os.tmpdir(), 'jest-changed-files-test-dir');
+const DIR = path.resolve(tmpdir(), 'jest-changed-files-test-dir');
 
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';

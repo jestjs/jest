@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {AggregatedResult, TestResult} from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
@@ -14,16 +14,16 @@ import istanbulReports from 'istanbul-reports';
 import chalk from 'chalk';
 import istanbulCoverage, {
   CoverageMap,
-  FileCoverage,
   CoverageSummary,
   CoverageSummaryData,
+  FileCoverage,
 } from 'istanbul-lib-coverage';
 import libSourceMaps, {MapStore} from 'istanbul-lib-source-maps';
 import Worker from 'jest-worker';
 import glob from 'glob';
 import {RawSourceMap} from 'source-map';
 import BaseReporter from './base_reporter';
-import {Context, Test, CoverageWorker, CoverageReporterOptions} from './types';
+import {Context, CoverageReporterOptions, CoverageWorker, Test} from './types';
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;

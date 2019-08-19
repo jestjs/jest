@@ -15,18 +15,18 @@ import {
   CoverageReporter,
   DefaultReporter,
   NotifyReporter,
+  Reporter,
   SummaryReporter,
   VerboseReporter,
-  Reporter,
 } from '@jest/reporters';
 import exit from 'exit';
 import {
-  addResult,
   AggregatedResult,
-  buildFailureTestResult,
-  makeEmptyAggregatedTestResult,
   SerializableError,
   TestResult,
+  addResult,
+  buildFailureTestResult,
+  makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
 import ReporterDispatcher from './ReporterDispatcher';
 import TestWatcher from './TestWatcher';
@@ -73,7 +73,7 @@ export default class TestScheduler {
   async scheduleTests(tests: Array<Test>, watcher: TestWatcher) {
     const onStart = this._dispatcher.onTestStart.bind(this._dispatcher);
     const timings: Array<number> = [];
-    const contexts = new Set();
+    const contexts = new Set<Context>();
     tests.forEach(test => {
       contexts.add(test.context);
       if (test.duration) {
@@ -145,9 +145,13 @@ export default class TestScheduler {
           context.hasteFS,
           this._globalConfig.updateSnapshot,
           snapshot.buildSnapshotResolver(context.config),
+          context.config.testPathIgnorePatterns,
         );
 
         aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
+        aggregatedResults.snapshot.filesRemovedList = (
+          aggregatedResults.snapshot.filesRemovedList || []
+        ).concat(status.filesRemovedList);
       });
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
@@ -217,7 +221,7 @@ export default class TestScheduler {
   }
 
   private _partitionTests(
-    testRunners: {[key: string]: TestRunner},
+    testRunners: Record<string, TestRunner>,
     tests: Array<Test>,
   ) {
     if (Object.keys(testRunners).length > 1) {
@@ -327,7 +331,7 @@ export default class TestScheduler {
    */
   private _getReporterProps(
     reporter: string | Config.ReporterConfig,
-  ): {path: string; options: {[key: string]: unknown}} {
+  ): {path: string; options: Record<string, unknown>} {
     if (typeof reporter === 'string') {
       return {options: this._options, path: reporter};
     } else if (Array.isArray(reporter)) {

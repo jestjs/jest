@@ -5,27 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
+import * as fs from 'fs';
 import {Config} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 import {MatcherState} from 'expect';
 
-import diff from 'jest-diff';
 import {
   BOLD_WEIGHT,
-  EXPECTED_COLOR,
-  matcherHint,
   MatcherHintOptions,
   RECEIVED_COLOR,
+  matcherHint,
 } from 'jest-matcher-utils';
 import {
+  EXTENSION,
+  SnapshotResolver as JestSnapshotResolver,
   buildSnapshotResolver,
   isSnapshotPath,
-  SnapshotResolver as JestSnapshotResolver,
-  EXTENSION,
 } from './snapshot_resolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
+import {printDiffOrStringified} from './print';
 import * as utils from './utils';
 
 type Context = MatcherState & {
@@ -48,7 +47,8 @@ const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
   'not',
 )} cannot be used with snapshot matchers`;
 
-const HINT_ARG = BOLD_WEIGHT('hint');
+const HINT_ARG = 'hint';
+const HINT_COLOR = BOLD_WEIGHT;
 const INLINE_SNAPSHOT_ARG = 'snapshot';
 const PROPERTY_MATCHERS_ARG = 'properties';
 const INDENTATION_REGEX = /^([^\S\n]*)\S/m;
@@ -123,22 +123,39 @@ const cleanup = (
   hasteFS: HasteFS,
   update: Config.SnapshotUpdateState,
   snapshotResolver: JestSnapshotResolver,
-) => {
+  testPathIgnorePatterns?: Config.ProjectConfig['testPathIgnorePatterns'],
+): {
+  filesRemoved: number;
+  filesRemovedList: Array<string>;
+} => {
   const pattern = '\\.' + EXTENSION + '$';
   const files = hasteFS.matchFiles(pattern);
-  const filesRemoved = files.reduce((acc, snapshotFile) => {
-    if (!fileExists(snapshotResolver.resolveTestPath(snapshotFile), hasteFS)) {
+  let testIgnorePatternsRegex: RegExp | null = null;
+  if (testPathIgnorePatterns && testPathIgnorePatterns.length > 0) {
+    testIgnorePatternsRegex = new RegExp(testPathIgnorePatterns.join('|'));
+  }
+
+  const list = files.filter(snapshotFile => {
+    const testPath = snapshotResolver.resolveTestPath(snapshotFile);
+
+    // ignore snapshots of ignored tests
+    if (testIgnorePatternsRegex && testIgnorePatternsRegex.test(testPath)) {
+      return false;
+    }
+
+    if (!fileExists(testPath, hasteFS)) {
       if (update === 'all') {
         fs.unlinkSync(snapshotFile);
       }
-      return acc + 1;
+      return true;
     }
 
-    return acc;
-  }, 0);
+    return false;
+  });
 
   return {
-    filesRemoved,
+    filesRemoved: list.length,
+    filesRemovedList: list,
   };
 };
 
@@ -169,6 +186,13 @@ const toMatchSnapshot = function(
     promise: this.promise,
     secondArgument,
   };
+
+  if (expectedArgument === HINT_ARG) {
+    options.expectedColor = HINT_COLOR;
+  }
+  if (secondArgument === HINT_ARG) {
+    options.secondArgumentColor = HINT_COLOR;
+  }
 
   if (arguments.length === 3 && !propertyMatchers) {
     throw new Error(
@@ -327,19 +351,22 @@ const _toMatchSnapshot = ({
   } else {
     expected = (expected || '').trim();
     actual = (actual || '').trim();
-    const diffMessage = diff(expected, actual, {
-      aAnnotation: 'Snapshot',
-      bAnnotation: 'Received',
-      expand: snapshotState.expand,
-    });
+
+    // Assign to local variable because of declaration let expected:
+    // TypeScript thinks it could change before report function is called.
+    const printed = printDiffOrStringified(
+      expected,
+      actual,
+      received,
+      'Snapshot',
+      'Received',
+      snapshotState.expand,
+    );
 
     report = () =>
-      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` +
-      (diffMessage ||
-        EXPECTED_COLOR('- ' + (expected || '')) +
-          '\n' +
-          RECEIVED_COLOR('+ ' + actual));
+      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` + printed;
   }
+
   // Passing the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
   // or create a different error message
@@ -366,6 +393,7 @@ const toThrowErrorMatchingSnapshot = function(
   const expectedArgument =
     typeof hint === 'string' && hint.length !== 0 ? HINT_ARG : '';
   const options = {
+    expectedColor: HINT_COLOR,
     isNot: this.isNot,
     promise: this.promise,
     secondArgument: '',

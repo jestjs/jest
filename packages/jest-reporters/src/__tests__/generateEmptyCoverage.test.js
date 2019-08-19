@@ -66,7 +66,10 @@ describe('generateEmptyCoverage', () => {
       coverage = sourceMapStore.transformCoverage(coverageMap).map;
     }
 
-    expect(coverage.data).toMatchSnapshot({path: expect.any(String)});
+    expect(coverage.data).toMatchSnapshot({
+      hash: expect.any(String),
+      path: expect.any(String),
+    });
   });
 
   it('generates a null coverage result when using /* istanbul ignore file */', () => {

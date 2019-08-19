@@ -10,6 +10,7 @@ import getType, {isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
+  MatcherHintOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
   ensureExpectedIsNonNegativeInteger,
@@ -18,16 +19,15 @@ import {
   getLabelPrinter,
   matcherErrorMessage,
   matcherHint,
-  printReceived,
+  printDiffOrStringify,
   printExpected,
+  printReceived,
   printWithType,
   stringify,
-  MatcherHintOptions,
 } from 'jest-matcher-utils';
-import {MatchersObject, MatcherState} from './types';
+import {MatcherState, MatchersObject} from './types';
 import {
   printCloseTo,
-  printDiffOrStringify,
   printExpectedConstructorName,
   printExpectedConstructorNameNot,
   printReceivedArrayContainExpectedItem,
@@ -51,6 +51,9 @@ const EXPECTED_LABEL = 'Expected';
 const RECEIVED_LABEL = 'Received';
 const EXPECTED_VALUE_LABEL = 'Expected value';
 const RECEIVED_VALUE_LABEL = 'Received value';
+
+// The optional property of matcher context is true if undefined.
+const isExpand = (expand?: boolean): boolean => expand !== false;
 
 const toStrictEqualTesters = [
   iterableEquality,
@@ -108,7 +111,7 @@ const matchers: MatchersObject = {
               received,
               EXPECTED_LABEL,
               RECEIVED_LABEL,
-              this.expand,
+              isExpand(this.expand),
             )
           );
         };
@@ -132,6 +135,7 @@ const matchers: MatchersObject = {
       isNot,
       promise: this.promise,
       secondArgument,
+      secondArgumentColor: (arg: string) => arg,
     };
     ensureNumbers(received, expected, matcherName, options);
 
@@ -575,7 +579,7 @@ const matchers: MatchersObject = {
             received,
             EXPECTED_LABEL,
             RECEIVED_LABEL,
-            this.expand,
+            isExpand(this.expand),
           );
 
     // Passing the actual and expected objects so that a custom reporter
@@ -749,7 +753,7 @@ const matchers: MatchersObject = {
                 receivedValue,
                 EXPECTED_VALUE_LABEL,
                 RECEIVED_VALUE_LABEL,
-                this.expand,
+                isExpand(this.expand),
               )
             : `Received path: ${printReceived(
                 expectedPathType === 'array' || receivedPath.length === 0
@@ -884,7 +888,7 @@ const matchers: MatchersObject = {
             getObjectSubset(received, expected),
             EXPECTED_LABEL,
             RECEIVED_LABEL,
-            this.expand,
+            isExpand(this.expand),
           );
 
     return {message, pass};
@@ -916,7 +920,7 @@ const matchers: MatchersObject = {
             received,
             EXPECTED_LABEL,
             RECEIVED_LABEL,
-            this.expand,
+            isExpand(this.expand),
           );
 
     // Passing the actual and expected objects so that a custom reporter

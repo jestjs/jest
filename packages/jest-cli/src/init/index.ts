@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import chalk from 'chalk';
 import prompts from 'prompts';
 import {sync as realpath} from 'realpath-native';
 import defaultQuestions, {testScriptQuestion} from './questions';
-import {NotFoundPackageJsonError, MalformedPackageJsonError} from './errors';
-import {PACKAGE_JSON, JEST_CONFIG} from './constants';
+import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
+import {JEST_CONFIG, PACKAGE_JSON} from './constants';
 import generateConfigFile from './generate_config_file';
 import modifyPackageJson from './modify_package_json';
 import {ProjectPackageJson} from './types';

@@ -101,19 +101,19 @@ export type ChildMessageInitialize = [
   boolean, // processed
   string, // file
   Array<unknown> | undefined, // setupArgs
-  MessagePort | undefined // MessagePort
+  MessagePort | undefined, // MessagePort
 ];
 
 export type ChildMessageCall = [
   typeof CHILD_MESSAGE_CALL, // type
   boolean, // processed
   string, // method
-  Array<unknown> // args
+  Array<unknown>, // args
 ];
 
 export type ChildMessageEnd = [
   typeof CHILD_MESSAGE_END, // type
-  boolean // processed
+  boolean, // processed
 ];
 
 export type ChildMessage =
@@ -125,7 +125,7 @@ export type ChildMessage =
 
 export type ParentMessageOk = [
   typeof PARENT_MESSAGE_OK, // type
-  unknown // result
+  unknown, // result
 ];
 
 export type ParentMessageError = [
@@ -133,7 +133,7 @@ export type ParentMessageError = [
   string, // constructor
   string, // message
   string, // stack
-  unknown // extra
+  unknown, // extra
 ];
 
 export type ParentMessage = ParentMessageOk | ParentMessageError;

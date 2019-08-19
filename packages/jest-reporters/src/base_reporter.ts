@@ -7,7 +7,7 @@
 
 import {AggregatedResult, TestResult} from '@jest/test-result';
 import {preRunMessage} from 'jest-util';
-import {ReporterOnStartOptions, Context, Test, Reporter} from './types';
+import {Context, Reporter, ReporterOnStartOptions, Test} from './types';
 
 const {remove: preRunMessageRemove} = preRunMessage;
 

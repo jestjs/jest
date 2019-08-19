@@ -6,7 +6,7 @@
  *
  */
 
-import path from 'path';
+import * as path from 'path';
 import Runtime from 'jest-runtime';
 import {normalize} from 'jest-config';
 import {Test} from 'jest-runner';

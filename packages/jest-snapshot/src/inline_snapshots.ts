@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import semver from 'semver';
 import {
+  CallExpression,
+  file,
   templateElement,
   templateLiteral,
-  file,
-  CallExpression,
 } from '@babel/types';
 import {Frame} from 'jest-message-util';
 
@@ -103,7 +103,7 @@ const saveSnapshotsForFile = (
 const groupSnapshotsBy = (
   createKey: (inlineSnapshot: InlineSnapshot) => string,
 ) => (snapshots: Array<InlineSnapshot>) =>
-  snapshots.reduce<{[key: string]: Array<InlineSnapshot>}>(
+  snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
     (object, inlineSnapshot) => {
       const key = createKey(inlineSnapshot);
       return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
@@ -120,6 +120,14 @@ const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
 const indent = (snapshot: string, numIndents: number, indentation: string) => {
   const lines = snapshot.split('\n');
+  // Prevent re-identation of inline snapshots.
+  if (
+    lines.length >= 2 &&
+    lines[1].startsWith(indentation.repeat(numIndents + 1))
+  ) {
+    return snapshot;
+  }
+
   return lines
     .map((line, index) => {
       if (index === 0) {
@@ -142,7 +150,7 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
 };
 
 const getAst = (
-  parsers: {[key: string]: (text: string) => any},
+  parsers: Record<string, (text: string) => any>,
   inferredParser: string,
   text: string,
 ) => {
@@ -162,7 +170,7 @@ const createInsertionParser = (
   babelTraverse: Function,
 ) => (
   text: string,
-  parsers: {[key: string]: (text: string) => any},
+  parsers: Record<string, (text: string) => any>,
   options: any,
 ) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
@@ -224,7 +232,7 @@ const createFormattingParser = (
   babelTraverse: Function,
 ) => (
   text: string,
-  parsers: {[key: string]: (text: string) => any},
+  parsers: Record<string, (text: string) => any>,
   options: any,
 ) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150

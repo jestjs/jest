@@ -34,9 +34,8 @@ import {Spy} from '../types';
 import CallTracker, {Context} from './CallTracker';
 import SpyStrategy from './SpyStrategy';
 
-interface Fn {
+interface Fn extends Record<string, any> {
   (): any;
-  [key: string]: any;
 }
 
 function createSpy(name: string, originalFn: Fn): Spy {

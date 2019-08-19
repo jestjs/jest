@@ -5,39 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs');
+jest.mock('fs', () => ({
+  ...jest.genMockFromModule('fs'),
+  existsSync: jest.fn().mockReturnValue(true),
+  readdirSync: jest.fn().mockReturnValue([]),
+  statSync: jest.fn(filePath => ({
+    isDirectory: () => !filePath.endsWith('.js'),
+  })),
+}));
 jest.mock('prettier');
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import prettier from 'prettier';
 import babelTraverse from '@babel/traverse';
 import {Frame} from 'jest-message-util';
 
 import {saveInlineSnapshots} from '../inline_snapshots';
-
-const writeFileSync = fs.writeFileSync;
-const readFileSync = fs.readFileSync;
-const existsSync = fs.existsSync;
-const statSync = fs.statSync;
-const readdirSync = fs.readdirSync;
 beforeEach(() => {
-  fs.writeFileSync = jest.fn();
-  fs.readFileSync = jest.fn();
-  fs.existsSync = jest.fn(() => true);
-  (fs.statSync as jest.Mock).mockImplementation(filePath => ({
-    isDirectory: () => !filePath.endsWith('.js'),
-  }));
-  fs.readdirSync = jest.fn(() => []);
-
   (prettier.resolveConfig.sync as jest.Mock).mockReset();
-});
-afterEach(() => {
-  fs.writeFileSync = writeFileSync;
-  fs.readFileSync = readFileSync;
-  fs.existsSync = existsSync;
-  fs.statSync = statSync;
-  fs.readdirSync = readdirSync;
 });
 
 test('saveInlineSnapshots() replaces empty function call with a template literal', () => {
@@ -230,6 +216,56 @@ test('saveInlineSnapshots() indents multi-line snapshots with spaces', () => {
       "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
       '    Object {\n' +
       "      a: 'a'\n" +
+      '    }\n' +
+      '  `);\n' +
+      '});\n',
+  );
+});
+
+test('saveInlineSnapshots() does not re-indent already indented snapshots', () => {
+  const filename = path.join(__dirname, 'my.test.js');
+  (fs.readFileSync as jest.Mock).mockImplementation(
+    () =>
+      "it('is a test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot();\n" +
+      '});\n' +
+      "it('is a another test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+      '    Object {\n' +
+      "      b: 'b'\n" +
+      '    }\n' +
+      '  `);\n' +
+      '});\n',
+  );
+  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+    bracketSpacing: false,
+    singleQuote: true,
+  });
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 20, file: filename, line: 2} as Frame,
+        snapshot: `\nObject {\n  a: 'a'\n}\n`,
+      },
+    ],
+    prettier,
+    babelTraverse,
+  );
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    "it('is a test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+      '    Object {\n' +
+      "      a: 'a'\n" +
+      '    }\n' +
+      '  `);\n' +
+      '});\n' +
+      "it('is a another test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+      '    Object {\n' +
+      "      b: 'b'\n" +
       '    }\n' +
       '  `);\n' +
       '});\n',

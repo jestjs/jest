@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -108,7 +108,7 @@ test('first snapshot fails, second passes', () => {
     writeFiles(TESTS_DIR, {[filename]: template([`'kiwi'`, `'banana'`])});
     const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshot name: `snapshots 1`');
-    expect(stderr).toMatch('- "apple"\n    + "kiwi"');
+    expect(stderr).toMatch('Snapshot: "apple"\n    Received: "kiwi"');
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(status).toBe(1);
   }

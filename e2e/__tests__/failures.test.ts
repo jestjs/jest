@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary} from '../Utils';
+import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
@@ -20,6 +20,10 @@ function cleanStderr(stderr: string) {
     .replace(/.*(jest-jasmine2|jest-circus).*\n/g, '')
     .replace(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
 }
+
+beforeAll(() => {
+  run('yarn', dir);
+});
 
 test('not throwing Error objects', () => {
   let stderr;

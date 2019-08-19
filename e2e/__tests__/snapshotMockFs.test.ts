@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import rimraf from 'rimraf';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';

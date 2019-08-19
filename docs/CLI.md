@@ -301,6 +301,10 @@ Lets you specify a custom test runner.
 
 Lets you specify a custom test sequencer. Please refer to the documentation of the corresponding configuration property for details.
 
+### `--testTimeout=<number>`
+
+Default timeout of a test in milliseconds. Default value: 5000.
+
 ### `--updateSnapshot`
 
 Alias: `-u`. Use this flag to re-record every snapshot that fails during this test run. Can be used together with a test suite pattern or with `--testNamePattern` to re-record snapshots.

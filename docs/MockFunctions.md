@@ -150,7 +150,7 @@ test('should fetch users', () => {
   // or you could use the following depending on your use case:
   // axios.get.mockImplementation(() => Promise.resolve(resp))
 
-  return Users.all().then(resp => expect(resp.data).toEqual(users));
+  return Users.all().then(data => expect(data).toEqual(users));
 });
 ```
 
@@ -263,7 +263,7 @@ These matchers are really just sugar for common forms of inspecting the `.mock` 
 expect(mockFunc.mock.calls.length).toBeGreaterThan(0);
 
 // The mock function was called at least once with the specified args
-expect(mockFunc.mock.calls).toContain([arg1, arg2]);
+expect(mockFunc.mock.calls).toContainEqual([arg1, arg2]);
 
 // The last call to the mock function was called with the specified args
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1]).toEqual([

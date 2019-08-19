@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import micromatch from 'micromatch';
+import * as path from 'path';
+import {some as micromatchSome} from 'micromatch';
 import {Context} from 'jest-runtime';
 import {Config} from '@jest/types';
 import {Test} from 'jest-runner';
@@ -16,7 +16,7 @@ import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {replacePathSepForGlob, testPathPatternToRegExp} from 'jest-util';
-import {TestPathCases, Filter, Stats} from './types';
+import {Filter, Stats, TestPathCases} from './types';
 
 export type SearchResult = {
   noSCM?: boolean;
@@ -37,7 +37,7 @@ export type TestSelectionConfig = {
 };
 
 const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
-  micromatch.some(replacePathSepForGlob(path), globs, {dot: true});
+  micromatchSome(replacePathSepForGlob(path), globs, {dot: true});
 
 const regexToMatcher = (testRegex: Array<string>) => (path: Config.Path) =>
   testRegex.some(testRegex => new RegExp(testRegex).test(path));
@@ -180,7 +180,7 @@ export default class SearchSource {
 
     const allPathsAbsolute = Array.from(allPaths).map(p => path.resolve(p));
 
-    const collectCoverageFrom = new Set();
+    const collectCoverageFrom = new Set<string>();
 
     testModulesMap.forEach(testModule => {
       if (!testModule.dependencies) {
