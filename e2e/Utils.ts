@@ -10,14 +10,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {Config} from '@jest/types';
 
-import {ExecaReturns, sync as spawnSync} from 'execa';
+// eslint-disable-next-line import/named
+import {ExecaReturnValue, sync as spawnSync} from 'execa';
 import {createDirectory} from 'jest-util';
 import rimraf from 'rimraf';
 
-export type RunResult = ExecaReturns & {
+interface RunResult extends ExecaReturnValue {
   status: number;
   error: Error;
-};
+}
 export const run = (cmd: string, cwd?: Config.Path): RunResult => {
   const args = cmd.split(/\s/).slice(1);
   const spawnOptions = {cwd, preferLocal: false, reject: false};

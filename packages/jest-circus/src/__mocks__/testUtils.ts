@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {createHash} from 'crypto';
+// eslint-disable-next-line import/named
 import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
