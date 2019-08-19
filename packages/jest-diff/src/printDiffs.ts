@@ -126,7 +126,7 @@ export const createPatchMark = (
 
 // Given two string arguments, compare them character-by-character.
 // Format as comparison lines in which changed substrings have inverse colors.
-export const diffStringsAligned = (
+export const diffStringsUnified = (
   a: string,
   b: string,
   options?: DiffOptions,

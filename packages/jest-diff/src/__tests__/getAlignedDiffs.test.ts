@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {diffStringsAligned} from '../printDiffs';
+import {diffStringsUnified} from '../printDiffs';
 
 // Slice annotation lines and blank line until there is an option to omit them.
 const testAlignedDiffs = (a: string, b: string): string =>
-  diffStringsAligned(a, b)
+  diffStringsUnified(a, b)
     .split('\n')
     .slice(3)
     .join('\n');

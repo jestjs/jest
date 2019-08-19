@@ -8,7 +8,7 @@
 import chalk from 'chalk';
 import jestDiff, {
   DiffOptions,
-  diffStringsAligned,
+  diffStringsUnified,
   diffStringsUnaligned,
 } from 'jest-diff';
 import getType, {isPrimitive} from 'jest-get-type';
@@ -285,7 +285,7 @@ export const printDiffOrStringify = (
     expected !== received
   ) {
     if (expected.includes('\n') || received.includes('\n')) {
-      return diffStringsAligned(expected, received, {
+      return diffStringsUnified(expected, received, {
         aAnnotation: expectedLabel,
         bAnnotation: receivedLabel,
         expand,

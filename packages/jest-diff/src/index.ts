@@ -10,7 +10,7 @@ import chalk from 'chalk';
 import getType from 'jest-get-type';
 import diffLines from './diffLines';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
-import {diffStringsAligned, diffStringsUnaligned} from './printDiffs';
+import {diffStringsUnified, diffStringsUnaligned} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 import {DiffOptionsNormalized, DiffOptions as JestDiffOptions} from './types';
 
@@ -162,7 +162,7 @@ namespace diff {
   export type DiffOptions = JestDiffOptions;
 }
 
-diff.diffStringsAligned = diffStringsAligned;
+diff.diffStringsUnified = diffStringsUnified;
 diff.diffStringsUnaligned = diffStringsUnaligned;
 
 export = diff;

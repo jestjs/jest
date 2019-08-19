@@ -6,7 +6,7 @@ The default export serializes JavaScript **values** and compares them line-by-li
 
 Two named exports compare **strings** character-by-character:
 
-- `diffStringsAligned` returns a string which includes comparison lines.
+- `diffStringsUnified` returns a string which includes comparison lines.
 - `diffStringsUnaligned` returns an array of 2 strings.
 
 ## Installation
@@ -18,7 +18,7 @@ To add this package as a dependency of a project, run either of the following co
 
 ## Usage of default export
 
-Given values and optional options, `diffLines(a, b, options?)` does the following:
+Given values and optional options, `diffLinesUnified(a, b, options?)` does the following:
 
 - **serialize** the values as strings using the `pretty-format` package
 - **compare** the strings line-by-line using the `diff-sequences` package
@@ -26,8 +26,8 @@ Given values and optional options, `diffLines(a, b, options?)` does the followin
 
 To use this function, write either of the following:
 
-- `const diffLines = require('jest-diff');` in a CommonJS module
-- `import diffLines from 'jest-diff';` in an ECMAScript module
+- `const diffLinesUnified = require('jest-diff');` in a CommonJS module
+- `import diffLinesUnified from 'jest-diff';` in an ECMAScript module
 
 ### Example of default export
 
@@ -35,14 +35,14 @@ To use this function, write either of the following:
 const a = ['delete', 'change from', 'common'];
 const b = ['change to', 'insert', 'common'];
 
-const difference = diffLines(a, b);
+const difference = diffLinesUnified(a, b);
 ```
 
 The returned **string** consists of:
 
 - annotation lines which describe the change symbols with labels
 - blank line
-- comparison lines in which `Expected` lines are green, `Received` lines are red, and common lines are dim
+- comparison lines: similar to “unified” view on GitHub, but `Expected` lines are green, `Received` lines are red, and common lines are dim (by default, see Options)
 
 ```diff
 - Expected
@@ -65,9 +65,9 @@ Here are edge cases for the return value:
 - `'Compared values have no visual difference.'` if the arguments have either **referential identity** according to `Object.is` method or **same serialization** according to the `pretty-format` package
 - `null` if either argument is a so-called **asymmetric matcher** in Jasmine or Jest
 
-## Usage of diffStringsAligned
+## Usage of diffStringsUnified
 
-Given strings and optional options, `diffStringsAligned(a, b, options?)` does the following:
+Given strings and optional options, `diffStringsUnified(a, b, options?)` does the following:
 
 - **compare** the strings character-by-character using the `diff-sequences` package
 - **clean up** small (often coincidental) common substrings, known as “chaff”
@@ -77,23 +77,23 @@ Although the function is mainly for **multiline** strings, it compares any strin
 
 Write either of the following:
 
-- `const {diffStringsAligned} = require('jest-diff');` in a CommonJS module
-- `import {diffStringsAligned} from 'jest-diff';` in an ECMAScript module
+- `const {diffStringsUnified} = require('jest-diff');` in a CommonJS module
+- `import {diffStringsUnified} from 'jest-diff';` in an ECMAScript module
 
-### Example of diffStringsAligned
+### Example of diffStringsUnified
 
 ```js
 const a = 'change from\ncommon';
 const b = 'change to\ncommon';
 
-const difference = diffStringsAligned(a, b);
+const difference = diffStringsUnified(a, b);
 ```
 
 The returned **string** consists of:
 
 - annotation lines which describe the change symbols with labels
 - blank line
-- comparison lines in which **changed substrings** have **inverted** foreground and background colors (for example, `from` is white-on-green and `to` is white-on-red)
+- comparison lines: similar to “unified” view on GitHub, and **changed substrings** have **inverted** foreground and background colors
 
 ```diff
 - Expected
@@ -104,7 +104,7 @@ The returned **string** consists of:
   common
 ```
 
-### Edge cases of diffStringsAligned
+### Edge cases of diffStringsUnified
 
 Here are edge cases for the return value:
 
@@ -113,7 +113,7 @@ Here are edge cases for the return value:
 - only `b` is empty string: all comparison lines have `aColor` and `aSymbol` (see Options)
 - `a` and `b` are equal non-empty strings: all comparison lines have `commonColor` and `commonSymbol` (see Options)
 
-### Performance of diffStringsAligned
+### Performance of diffStringsUnified
 
 To get the benefit of **changed substrings** within the comparison lines, a character-by-character comparison has a higher computational cost (in time and space) than a line-by-line comparison.
 
@@ -153,8 +153,8 @@ The default options are for the report when an assertion fails from the `expect`
 
 For other applications, you can provide an options object as a third argument:
 
-- `diffLines(a, b, options)`
-- `diffStringsAligned(a, b, options)`
+- `diffLinesUnified(a, b, options)`
+- `diffStringsUnified(a, b, options)`
 
 ### Properties of options object
 

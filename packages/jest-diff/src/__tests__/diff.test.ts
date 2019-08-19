@@ -9,7 +9,7 @@ import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 
 import diff from '../';
-import {diffStringsAligned, diffStringsUnaligned} from '../printDiffs';
+import {diffStringsUnified, diffStringsUnaligned} from '../printDiffs';
 import {DiffOptions} from '../types';
 
 const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
@@ -863,47 +863,47 @@ describe('context', () => {
   testDiffContextLines(); // (5 default)
 });
 
-describe('diffStringsAligned edge cases', () => {
+describe('diffStringsUnified edge cases', () => {
   test('empty both a and b', () => {
     const a = '';
     const b = '';
 
-    expect(diffStringsAligned(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
   });
 
   test('empty only a', () => {
     const a = '';
     const b = 'one-line string';
 
-    expect(diffStringsAligned(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
   });
 
   test('empty only b', () => {
     const a = 'one-line string';
     const b = '';
 
-    expect(diffStringsAligned(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
   });
 
   test('equal both non-empty', () => {
     const a = 'one-line string';
     const b = 'one-line string';
 
-    expect(diffStringsAligned(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
   });
 
   test('multiline has no common after clean up chaff', () => {
     const a = 'delete\ntwo';
     const b = 'insert\n2';
 
-    expect(diffStringsAligned(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
   });
 
   test('one-line has no common after clean up chaff', () => {
     const a = 'delete';
     const b = 'insert';
 
-    expect(diffStringsAligned(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
   });
 });
 
@@ -998,8 +998,8 @@ describe('options 7980', () => {
     expect(diff(a, b, options)).toMatchSnapshot();
   });
 
-  test('diffStringsAligned', () => {
-    expect(diffStringsAligned(a, b, options)).toMatchSnapshot();
+  test('diffStringsUnified', () => {
+    expect(diffStringsUnified(a, b, options)).toMatchSnapshot();
   });
 });
 

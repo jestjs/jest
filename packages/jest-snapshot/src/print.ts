@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff, {diffStringsAligned, diffStringsUnaligned} from 'jest-diff';
+import diff, {diffStringsUnified, diffStringsUnaligned} from 'jest-diff';
 import getType, {isPrimitive} from 'jest-get-type';
 import {
   EXPECTED_COLOR,
@@ -90,7 +90,7 @@ export const printDiffOrStringified = (
         expectedSerializedTrimmed.includes('\n') ||
         receivedSerializedTrimmed.includes('\n')
       ) {
-        return diffStringsAligned(
+        return diffStringsUnified(
           expectedSerializedTrimmed,
           receivedSerializedTrimmed,
           {

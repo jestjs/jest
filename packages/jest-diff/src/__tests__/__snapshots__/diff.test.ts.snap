@@ -186,52 +186,6 @@ exports[`context number of lines: undefined (5 default) 1`] = `
 <dim>  }</>"
 `;
 
-exports[`diffStringsAligned edge cases empty both a and b 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-"
-`;
-
-exports[`diffStringsAligned edge cases empty only a 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<red>+ one-line string</>"
-`;
-
-exports[`diffStringsAligned edge cases empty only b 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<green>- one-line string</>"
-`;
-
-exports[`diffStringsAligned edge cases equal both non-empty 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<dim>  one-line string</>"
-`;
-
-exports[`diffStringsAligned edge cases multiline has no common after clean up chaff 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<green>- delete</>
-<green>- two</>
-<red>+ insert</>
-<red>+ 2</>"
-`;
-
-exports[`diffStringsAligned edge cases one-line has no common after clean up chaff 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<green>- delete</>
-<red>+ insert</>"
-`;
-
 exports[`diffStringsUnaligned edge cases empty both a and b 1`] = `
 Array [
   "",
@@ -304,6 +258,52 @@ Array [
   "common",
   "<inverse>insert </>common",
 ]
+`;
+
+exports[`diffStringsUnified edge cases empty both a and b 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+"
+`;
+
+exports[`diffStringsUnified edge cases empty only a 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<red>+ one-line string</>"
+`;
+
+exports[`diffStringsUnified edge cases empty only b 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- one-line string</>"
+`;
+
+exports[`diffStringsUnified edge cases equal both non-empty 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim>  one-line string</>"
+`;
+
+exports[`diffStringsUnified edge cases multiline has no common after clean up chaff 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- delete</>
+<green>- two</>
+<red>+ insert</>
+<red>+ 2</>"
+`;
+
+exports[`diffStringsUnified edge cases one-line has no common after clean up chaff 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- delete</>
+<red>+ insert</>"
 `;
 
 exports[`falls back to not call toJSON if it throws and then objects have differences 1`] = `
@@ -388,7 +388,7 @@ exports[`options 7980 diff 1`] = `
 <green>+ \`\${Ti.App.getName()} \${Ti.App.getVersion()} \${Ti.Platform.getName()} \${Ti.Platform.getVersion()}\`</>"
 `;
 
-exports[`options 7980 diffStringsAligned 1`] = `
+exports[`options 7980 diffStringsUnified 1`] = `
 "<red>- Original</>
 <green>+ Modified</>
 
