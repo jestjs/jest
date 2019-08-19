@@ -2539,10 +2539,10 @@
   resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-2.3.5.tgz#9da44ed75571999b65c37b60c9b2b88db54c585d"
   integrity sha512-SCcK7mvGi3+ZNz833RRjFIxrn4gI1PPR3NtuIS+6vMkvmsGjosqTJwRt5bAEFLRz+wtJMWv8+uOnZf2hi2QXTg==
 
-"@types/weak@^1.0.0":
+"@types/weak-napi@^1.0.0":
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@types/weak/-/weak-1.0.0.tgz#7b3bf891c4b53e2b8a144b7e41f4b0f6e78c2ba8"
-  integrity sha512-6WXZpeAac3vj5+OfQvlqYEtc88oOgvkcxbrnmBw53Da6gA+MGztL+Hns3BpnyUevgz+4DxsJblgAew1A/tkcng==
+  resolved "https://registry.yarnpkg.com/@types/weak-napi/-/weak-napi-1.0.0.tgz#b0977c0737cb62d028c4eda76f4e295bb3ae3c49"
+  integrity sha512-viW/kPA1gpeoNdUge025WqmThQ2lnnHzZWZJM5KlH8w9E5YehOh3GnDjW5w/sAEC91VOlePEiFSQmbnX7VVyLw==
   dependencies:
     "@types/node" "*"
 
@@ -3616,7 +3616,7 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.0.0.tgz#23c0df14f6a88077f5f986c0d167ec03c3d5537c"
   integrity sha512-Phlt0plgpIIBOGTT/ehfFnbNlfsDEiqmzE2KRXoX1bLIlir4X/MR+zSyBEkL05ffWgnRSf/DXv+WrUAVr93/ow==
 
-bindings@^1.2.1:
+bindings@^1.3.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.5.0.tgz#10353c9e945334bc0511a6d90b38fbc7c9c504df"
   integrity sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==
@@ -6924,6 +6924,18 @@ get-stream@^4.0.0, get-stream@^4.1.0:
   dependencies:
     pump "^3.0.0"
 
+get-symbol-from-current-process-h@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/get-symbol-from-current-process-h/-/get-symbol-from-current-process-h-1.0.1.tgz#7e4809087e7d2f3a78a785b36f787e2183ba4c5d"
+  integrity sha512-QvP1+tCDjgTiu+akjdEYd8eK8MFYy6nRCRNjfiCeQB9RJEHQZpN+WE+CVqPRNqjIVMwSqd0WiD008B+b7iIdaA==
+
+get-uv-event-loop-napi-h@^1.0.2:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/get-uv-event-loop-napi-h/-/get-uv-event-loop-napi-h-1.0.5.tgz#1904a1dc1fa6df7487c9e8eaf87302bcc9e33e47"
+  integrity sha512-uWDHId313vRTyqeLhlLWJS0CJOP8QXY5en/9Pv14dnPvAlRfKBfD6h2EDtoy7jxxOIWB9QgzYK16VCN3pCZOBg==
+  dependencies:
+    get-symbol-from-current-process-h "^1.0.1"
+
 get-value@^2.0.3, get-value@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
@@ -9850,7 +9862,7 @@ mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-nan@^2.0.5, nan@^2.12.1:
+nan@^2.12.1:
   version "2.14.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
   integrity sha512-INOFj37C7k3AfaNTtX8RhsTw7qRy7eLET14cROi9+5HAVbbHuIWUHEauBv5qT4Av2tWasiTY1Jw6puUNqRJXQg==
@@ -9911,6 +9923,11 @@ nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
+
+node-addon-api@^1.1.0:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-1.6.3.tgz#3998d4593e2dca2ea82114670a4eb003386a9fe1"
+  integrity sha512-FXWH6mqjWgU8ewuahp4spec8LkroFZK2NicOv6bNwZC3kcwZUI8LeZdG80UzTSLLhK4T7MsgNwlYDVRlDdfTDg==
 
 node-environment-flags@1.0.5:
   version "1.0.5"
@@ -12531,6 +12548,13 @@ set-value@^2.0.0, set-value@^2.0.1:
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 
+setimmediate-napi@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/setimmediate-napi/-/setimmediate-napi-1.0.3.tgz#f5ef99da0d9b7a1036dd375b35a687cfb483c172"
+  integrity sha512-ah02BktAAJJ1eHANtD93ZdvKZrCXJwSHXww5arS1YcihOlpJlwsVkns4BXh6sRJNAyWTLl6TkjVx8CjKV9qwcQ==
+  dependencies:
+    get-uv-event-loop-napi-h "^1.0.2"
+
 setimmediate@^1.0.4, setimmediate@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
@@ -14046,13 +14070,14 @@ wcwidth@^1.0.0:
   dependencies:
     defaults "^1.0.3"
 
-weak@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/weak/-/weak-1.0.1.tgz#ab99aab30706959aa0200cb8cf545bb9cb33b99e"
-  integrity sha1-q5mqswcGlZqgIAy4z1RbucszuZ4=
+weak-napi@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/weak-napi/-/weak-napi-1.0.3.tgz#ff4dfa818db1c509ba4166530b42414ef74cbba6"
+  integrity sha512-cyqeMaYA5qI7RoZKAKvIHwEROEKDNxK7jXj3u56nF2rGBh+HFyhYmBb1/wAN4RqzRmkYKVVKQyqHpBoJjqtGUA==
   dependencies:
-    bindings "^1.2.1"
-    nan "^2.0.5"
+    bindings "^1.3.0"
+    node-addon-api "^1.1.0"
+    setimmediate-napi "^1.0.3"
 
 webidl-conversions@^4.0.2:
   version "4.0.2"
