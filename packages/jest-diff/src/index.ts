@@ -12,7 +12,7 @@ import diffLines from './diffLines';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {diffStringsAligned, diffStringsUnaligned} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
-import {DiffOptions as JestDiffOptions, DiffOptionsNormalized} from './types';
+import {DiffOptionsNormalized, DiffOptions as JestDiffOptions} from './types';
 
 const {
   AsymmetricMatcher,
