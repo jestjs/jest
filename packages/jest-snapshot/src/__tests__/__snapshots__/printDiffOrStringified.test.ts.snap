@@ -226,8 +226,11 @@ exports[`without serialize backtick single line expected and multi line received
 `;
 
 exports[`without serialize backtick single line expected and received 1`] = `
-Snapshot: <g>var foo = \`backtick\`;</>
-Received: <r>var foo = \`back<i>\${x}</i>tick\`;</>
+<g>- Snapshot</>
+<r>+ Received</>
+
+<g>- var foo = \`backtick\`;</>
+<r>+ var foo = \`back<i>\${x}</i>tick\`;</>
 `;
 
 exports[`without serialize has no common after clean up chaff multi line 1`] = `
@@ -241,8 +244,11 @@ exports[`without serialize has no common after clean up chaff multi line 1`] = `
 `;
 
 exports[`without serialize has no common after clean up chaff single line 1`] = `
-Snapshot: <g>delete</>
-Received: <r>insert</>
+<g>- Snapshot</>
+<r>+ Received</>
+
+<g>- delete</>
+<r>+ insert</>
 `;
 
 exports[`without serialize prettier/pull/5590 1`] = `

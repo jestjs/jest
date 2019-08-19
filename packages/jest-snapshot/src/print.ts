@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff, {diffStringsUnified, diffStringsUnaligned} from 'jest-diff';
+import diff, {diffStringsUnified} from 'jest-diff';
 import getType, {isPrimitive} from 'jest-get-type';
 import {
   EXPECTED_COLOR,
@@ -86,38 +86,15 @@ export const printDiffOrStringified = (
       receivedSerializedTrimmed.length <= MAX_DIFF_STRING_LENGTH &&
       expectedSerializedTrimmed !== receivedSerializedTrimmed
     ) {
-      if (
-        expectedSerializedTrimmed.includes('\n') ||
-        receivedSerializedTrimmed.includes('\n')
-      ) {
-        return diffStringsUnified(
-          expectedSerializedTrimmed,
-          receivedSerializedTrimmed,
-          {
-            aAnnotation: expectedLabel,
-            bAnnotation: receivedLabel,
-            expand,
-          },
-        );
-      }
-
-      // Format the changed substrings using inverse from the chalk package.
-      const [expected2, received2] = diffStringsUnaligned(
+      return diffStringsUnified(
         expectedSerializedTrimmed,
         receivedSerializedTrimmed,
+        {
+          aAnnotation: expectedLabel,
+          bAnnotation: receivedLabel,
+          expand,
+        },
       );
-
-      // Because not default stringify, call EXPECTED_COLOR and RECEIVED_COLOR
-      // This is reason to call diffStringsUnaligned instead of printDiffOrStringify
-      // Because there is no closing double quote mark at end of single lines,
-      // future improvement is to call replaceSpacesAtEnd if it becomes public.
-      const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
-      const expectedLine =
-        printLabel(expectedLabel) + EXPECTED_COLOR(expected2);
-      const receivedLine =
-        printLabel(receivedLabel) + RECEIVED_COLOR(received2);
-
-      return expectedLine + '\n' + receivedLine;
     }
   }
 
