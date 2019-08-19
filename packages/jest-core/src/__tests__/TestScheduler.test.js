@@ -89,7 +89,8 @@ test('schedule tests run in parallel per default', async () => {
     context: {
       config: makeProjectConfig({
         runner: 'jest-runner-parallel',
-      }),
+        transform: [],
+      },
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -110,7 +111,8 @@ test('schedule tests run in serial if the runner flags them', async () => {
     context: {
       config: makeProjectConfig({
         runner: 'jest-runner-serial',
-      }),
+        transform: [],
+      },
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -132,7 +134,8 @@ test('should bail after `n` failures', async () => {
       config: makeProjectConfig({
         rootDir: './',
         runner: 'jest-runner-serial',
-      }),
+        transform: [],
+      },
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -162,7 +165,8 @@ test('should not bail if less than `n` failures', async () => {
       config: makeProjectConfig({
         rootDir: './',
         runner: 'jest-runner-serial',
-      }),
+        transform: [],
+      },
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -191,7 +195,8 @@ test('should set runInBand to run in serial', async () => {
     context: {
       config: makeProjectConfig({
         runner: 'jest-runner-parallel',
-      }),
+        transform: [],
+      },
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -215,7 +220,8 @@ test('should set runInBand to not run in serial', async () => {
     context: {
       config: makeProjectConfig({
         runner: 'jest-runner-parallel',
-      }),
+        transform: [],
+      },
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },

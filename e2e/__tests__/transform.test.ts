@@ -216,3 +216,14 @@ describe('transform-environment', () => {
     expect(json.numPassedTests).toBe(1);
   });
 });
+
+describe('transform-runner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-runner');
+
+  it('should transform runner', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});

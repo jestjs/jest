@@ -25,6 +25,7 @@ import {
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
+import {ScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import TestRunner = require('jest-runner');
@@ -193,7 +194,10 @@ export default class TestScheduler {
     contexts.forEach(context => {
       const {config} = context;
       if (!testRunners[config.runner]) {
-        const Runner: typeof TestRunner = require(config.runner);
+        const transformer = new ScriptTransformer(config);
+        const Runner: typeof TestRunner = interopRequireDefault(
+          transformer.requireAndTranspileModule(config.runner)
+        ).default;
         const runner = new Runner(this._globalConfig, {
           changedFiles: this._context?.changedFiles,
           sourcesRelatedToTestsInChangedFiles: this._context
