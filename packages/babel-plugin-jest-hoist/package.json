@@ -7,7 +7,7 @@
     "directory": "packages/babel-plugin-jest-hoist"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "license": "MIT",
   "main": "build/index.js",

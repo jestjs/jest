@@ -31,7 +31,7 @@
     "@types/babel__traverse": "^7.0.4"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

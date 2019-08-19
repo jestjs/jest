@@ -46,7 +46,7 @@
     "@types/strip-ansi": "^3.0.0"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "repository": {
     "type": "git",

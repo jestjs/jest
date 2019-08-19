@@ -18,7 +18,7 @@
     "pretty-format": "^24.9.0"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"
