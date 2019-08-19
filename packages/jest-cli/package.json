@@ -29,7 +29,7 @@
     "jest": "./bin/jest.js"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "repository": {
     "type": "git",
