@@ -34,7 +34,7 @@
     "prettier": "^1.13.4"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

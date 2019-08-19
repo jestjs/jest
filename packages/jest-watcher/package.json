@@ -25,7 +25,7 @@
     "url": "https://github.com/facebook/jest/issues"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",

@@ -18,7 +18,7 @@
     "@types/graceful-fs": "^4.1.2"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"
