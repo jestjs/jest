@@ -13,6 +13,7 @@
 
 - `[*]` [**BREAKING**] Drop support for Node 6 ([#8455](https://github.com/facebook/jest/pull/8455))
 - `[docs]` Fix broken link pointing to legacy JS file in "Snapshot Testing".
+- `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM from v11 to v15 ([#8851](https://github.com/facebook/jest/pull/8851))
 
 ### Performance
 
