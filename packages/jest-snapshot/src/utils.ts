@@ -127,7 +127,7 @@ export const getSnapshotData = (
 // to make the content of the snapshot easier to read
 export const addExtraLineBreaks = (string: string): string =>
   string.includes('\n') ? `\n${string}\n` : string;
-//
+
 // Remove extra line breaks at beginning and end of multiline snapshot.
 // Instead of trim, which can remove additional newlines or spaces
 // at beginning or end of the content from a custom serializer.
