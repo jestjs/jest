@@ -55,15 +55,8 @@ module.exports = {
     {
       files: ['examples/**/*'],
       rules: {
-        'babel/func-params-comma-dangle': 0,
         'import/no-unresolved': [2, {ignore: ['^react-native$']}],
         'import/order': 0,
-      },
-    },
-    {
-      files: ['scripts/**/*', 'e2e/**/*'],
-      rules: {
-        'babel/func-params-comma-dangle': 0,
       },
     },
     {
@@ -84,7 +77,7 @@ module.exports = {
       },
     },
   ],
-  parser: 'babel-eslint',
+  parser: 'espree',
   plugins: ['markdown', 'import', 'prettier'],
   rules: {
     'arrow-body-style': 2,
