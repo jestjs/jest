@@ -97,7 +97,6 @@ function spawnJest(
 
 interface RunJestResult extends ExecaReturnValue {
   status?: number;
-  code?: number;
   json?: (
     dir: string,
     args: Array<string> | undefined,
