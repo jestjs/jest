@@ -79,7 +79,7 @@ module.exports = {
   ],
   parser: 'espree',
   parserOptions: {
-    ecmaVersion: 8,
+    ecmaVersion: 10,
   },
   plugins: ['markdown', 'import', 'prettier'],
   rules: {
