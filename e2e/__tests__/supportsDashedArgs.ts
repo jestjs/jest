@@ -45,15 +45,14 @@ test('throws error for unknown dashed & camelcase args', () => {
     '--useStderr',
   ]);
   expect(result.stderr).toMatchInlineSnapshot(`
-● Unrecognized CLI Parameters:
+    ● Unrecognized CLI Parameters:
 
-  Following options were not recognized:
-  ["doesNotExist", "also-does-not-exist"]
+      Following options were not recognized:
+      ["doesNotExist", "also-does-not-exist"]
 
-  CLI Options Documentation:
-  https://jestjs.io/docs/en/cli.html
+      CLI Options Documentation:
+      https://jestjs.io/docs/en/cli.html
 
-
-`);
+  `);
   expect(result.status).toBe(1);
 });
