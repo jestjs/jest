@@ -267,3 +267,23 @@ const options = {
 ```
 
 A patch mark like `@@ -12,7 +12,9 @@` accounts for omitted common lines.
+
+### Example of option to omit annotation lines
+
+To display only the comparison lines:
+
+```js
+const a = 'change from\ncommon';
+const b = 'change to\ncommon';
+const options = {
+  omitAnnotationLines: true,
+};
+
+const difference = diffStringsUnified(a, b, options);
+```
+
+```diff
+- change from
++ change to
+  common
+```
