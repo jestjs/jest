@@ -19,9 +19,11 @@ import {
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
+  addExtraLineBreaks,
   deepMerge,
   getSnapshotData,
   keyToTestName,
+  removeExtraLineBreaks,
   saveSnapshotFile,
   serialize,
   testNameToKey,
@@ -190,6 +192,78 @@ test('serialize handles \\r\\n', () => {
   const serializedData = serialize(data);
 
   expect(serializedData).toBe('\n"<div>\n</div>"\n');
+});
+
+describe('ExtraLineBreaks', () => {
+  test('0 empty string', () => {
+    const expected = '';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe(expected);
+    expect(removed).toBe(expected);
+  });
+
+  test('1 line has double quote marks at edges', () => {
+    const expected = '" one line "';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe(expected);
+    expect(removed).toBe(expected);
+  });
+
+  test('1 line has spaces at edges', () => {
+    const expected = ' one line ';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe(expected);
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines both are blank', () => {
+    const expected = '\n';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines have double quote marks at edges', () => {
+    const expected = '"\n"';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines first is blank', () => {
+    const expected = ['', 'second line '].join('\n');
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines last is blank', () => {
+    const expected = [' first line', ''].join('\n');
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
 });
 
 describe('DeepMerge with property matchers', () => {
