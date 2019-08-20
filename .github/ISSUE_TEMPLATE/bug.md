@@ -20,15 +20,17 @@ Steps to reproduce the behavior:
 
 ## Link to repl or repo (highly encouraged)
 
-<!-- Please provide either a [repl.it demo](https://repl.it/languages/jest) or a minimal repository on GitHub. -->
-
-<!-- Issues without a reproduction link are likely to stall. -->
+<!--
+Please provide either a [repl.it demo](https://repl.it/languages/jest) or a minimal repository on GitHub.
+Issues without a reproduction link are likely to stall.
+-->
 
 ## envinfo
 
-<!-- Run npx envinfo --preset jest -->
-
-<!-- Paste the results here: -->
+<!-- 
+Run npx envinfo --preset jest
+Paste the results here:
+-->
 
 ```bash
 
