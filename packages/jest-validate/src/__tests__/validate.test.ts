@@ -73,6 +73,20 @@ test('omits null and undefined config values', () => {
   });
 });
 
+test('recursively omits null and undefined config values', () => {
+  const config = {
+    coverageThreshold: {
+      global: null,
+    },
+  };
+  expect(
+    validate(config, {exampleConfig: validConfig, recursive: true}),
+  ).toEqual({
+    hasDeprecationWarnings: false,
+    isValid: true,
+  });
+});
+
 test.each([
   [function () {}, function () {}],
   [async function () {}, function () {}],
