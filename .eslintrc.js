@@ -78,6 +78,9 @@ module.exports = {
     },
   ],
   parser: 'espree',
+  parserOptions: {
+    ecmaVersion: 8,
+  },
   plugins: ['markdown', 'import', 'prettier'],
   rules: {
     'arrow-body-style': 2,
