@@ -27,7 +27,7 @@ Issues without a reproduction link are likely to stall.
 
 ## envinfo
 
-<!-- 
+<!--
 Run npx envinfo --preset jest
 Paste the results here:
 -->
