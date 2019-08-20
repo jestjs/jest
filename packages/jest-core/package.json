@@ -10,7 +10,7 @@
     "@jest/test-result": "^24.9.0",
     "@jest/transform": "^24.9.0",
     "@jest/types": "^24.9.0",
-    "ansi-escapes": "^3.0.0",
+    "ansi-escapes": "^4.2.1",
     "chalk": "^2.0.1",
     "exit": "^0.1.2",
     "graceful-fs": "^4.1.15",
@@ -36,7 +36,6 @@
   },
   "devDependencies": {
     "@jest/test-sequencer": "^24.9.0",
-    "@types/ansi-escapes": "^3.0.1",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^3.1.0",

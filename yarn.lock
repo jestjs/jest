@@ -2143,13 +2143,6 @@
     "@babel/runtime" "^7.5.4"
     "@testing-library/dom" "^5.5.4"
 
-"@types/ansi-escapes@^3.0.0", "@types/ansi-escapes@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@types/ansi-escapes/-/ansi-escapes-3.0.1.tgz#328e46c6ac3177ca4cf2efdeed326cf77da01ef7"
-  integrity sha512-GD/QLUGxSvy3yGQb+m12qsRtP4p/dewNePDb5F8qV19CXuO+gtbsmMjjsClpG/Nu84y8SF1zPKrTnQZHDiPUgg==
-  dependencies:
-    "@types/node" "*"
-
 "@types/ansi-regex@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/ansi-regex/-/ansi-regex-4.0.0.tgz#cb20bb66da7700ea9b26f16971f03f0e092eddad"
