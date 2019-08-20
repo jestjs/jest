@@ -12,7 +12,7 @@
   "browser": "build-es5/index.js",
   "dependencies": {
     "@jest/types": "^24.9.0",
-    "ansi-styles": "^3.2.0",
+    "ansi-styles": "^4.0.0",
     "jest-get-type": "^24.9.0",
     "jest-matcher-utils": "^24.9.0",
     "jest-message-util": "^24.9.0",

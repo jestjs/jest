@@ -16,7 +16,16 @@ const findChangedFilesUsingCommand = async (
   args: Array<string>,
   cwd: Config.Path,
 ): Promise<Array<Config.Path>> => {
-  const result = await execa('git', args, {cwd});
+  let result: execa.ExecaReturnValue;
+
+  try {
+    result = await execa('git', args, {cwd});
+  } catch (e) {
+    // TODO: Should we keep the original `message`?
+    e.message = e.stderr;
+
+    throw e;
+  }
 
   return result.stdout
     .split('\n')

@@ -9,6 +9,7 @@
 'use strict';
 
 import path from 'path';
+// eslint-disable-next-line import/default
 import slash from 'slash';
 
 let createRuntime;

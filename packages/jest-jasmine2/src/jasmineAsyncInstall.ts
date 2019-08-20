@@ -13,7 +13,7 @@
 import {Config, Global} from '@jest/types';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
-import throat = require('throat');
+import throat from 'throat';
 import isError from './isError';
 import {Jasmine} from './types';
 import Spec from './jasmine/Spec';

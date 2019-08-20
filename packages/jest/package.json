@@ -5,7 +5,7 @@
   "main": "build/jest.js",
   "types": "build/jest.d.ts",
   "dependencies": {
-    "import-local": "^2.0.0",
+    "import-local": "^3.0.2",
     "jest-cli": "^24.9.0"
   },
   "bin": {

@@ -9,10 +9,7 @@
   "license": "MIT",
   "main": "build/index.js",
   "dependencies": {
-    "detect-newline": "^2.1.0"
-  },
-  "devDependencies": {
-    "@types/detect-newline": "^2.1.0"
+    "detect-newline": "^3.0.0"
   },
   "engines": {
     "node": ">= 8"

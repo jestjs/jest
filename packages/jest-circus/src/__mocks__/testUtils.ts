@@ -9,7 +9,8 @@ import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {createHash} from 'crypto';
-import {ExecaReturns, sync as spawnSync} from 'execa';
+// eslint-disable-next-line import/named
+import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
 const CIRCUS_PATH = require.resolve('../../build');
@@ -20,7 +21,7 @@ const BABEL_REGISTER_PATH = require.resolve('@babel/register');
 
 skipSuiteOnWindows();
 
-interface Result extends ExecaReturns {
+interface Result extends ExecaSyncReturnValue {
   status: number;
   error: string;
 }
@@ -58,7 +59,7 @@ export const runTest = (source: string) => {
   }) as Result;
 
   // For compat with cross-spawn
-  result.status = result.code;
+  result.status = result.exitCode;
 
   if (result.status !== 0) {
     const message = `

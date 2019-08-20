@@ -29,7 +29,16 @@ const adapter: SCMAdapter = {
     }
     args.push(...includePaths);
 
-    const result = await execa('hg', args, {cwd, env});
+    let result: execa.ExecaReturnValue;
+
+    try {
+      result = await execa('hg', args, {cwd, env});
+    } catch (e) {
+      // TODO: Should we keep the original `message`?
+      e.message = e.stderr;
+
+      throw e;
+    }
 
     return result.stdout
       .split('\n')
