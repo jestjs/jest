@@ -25,7 +25,7 @@
     "jest-snapshot": "^24.9.0",
     "jest-util": "^24.9.0",
     "pretty-format": "^24.9.0",
-    "throat": "^4.0.0"
+    "throat": "^5.0.0"
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.0.4"

@@ -12,5 +12,4 @@ exports[`prints stack trace pointing to process.exit call 1`] = `
       11 |   expect(true).toBe(true);
 
       at Object.exit (__tests__/test.js:8:9)
-
 `;

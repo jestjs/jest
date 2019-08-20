@@ -6,7 +6,7 @@
  *
  */
 
-import throat = require('throat');
+import throat from 'throat';
 import {Config} from '@jest/types';
 
 import {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';

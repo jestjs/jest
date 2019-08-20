@@ -16,7 +16,7 @@ import {
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
-import throat = require('throat');
+import throat from 'throat';
 import {
   ROOT_DESCRIBE_BLOCK_NAME,
   addEventHandler,

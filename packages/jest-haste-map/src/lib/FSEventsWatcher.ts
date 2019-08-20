@@ -16,7 +16,7 @@ import {Watcher} from 'fsevents';
 // @ts-ignore no types
 import walker from 'walker';
 
-let fsevents: (path: string) => Watcher;
+let fsevents: typeof import('fsevents') | null = null;
 try {
   fsevents = require('fsevents');
 } catch (e) {
@@ -49,7 +49,7 @@ class FSEventsWatcher extends EventEmitter {
   private _tracked: Set<string>;
 
   static isSupported() {
-    return fsevents !== undefined;
+    return fsevents !== null;
   }
 
   private static normalizeProxy(
