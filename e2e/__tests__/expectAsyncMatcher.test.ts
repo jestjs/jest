@@ -12,10 +12,6 @@ import {extractSummary, run} from '../Utils';
 
 const dir = path.resolve(__dirname, '../expect-async-matcher');
 
-beforeAll(() => {
-  run('yarn', dir);
-});
-
 test('works with passing tests', () => {
   const result = runJest(dir, ['success.test.js']);
   expect(result.status).toBe(0);

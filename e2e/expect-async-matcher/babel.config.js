@@ -5,8 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const baseConfig = require('../../babel.config');
-
-module.exports = Object.assign({}, baseConfig, {
-  presets: baseConfig.presets.concat('@babel/preset-flow'),
-});
+module.exports = require('../../babel.config');
