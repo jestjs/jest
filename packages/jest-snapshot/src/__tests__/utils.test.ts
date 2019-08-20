@@ -246,7 +246,7 @@ describe('ExtraLineBreaks', () => {
   });
 
   test('2 lines first is blank', () => {
-    const expected = ['', 'second line '].join('\n');
+    const expected = '\nsecond line ';
 
     const added = addExtraLineBreaks(expected);
     const removed = removeExtraLineBreaks(added);
@@ -256,7 +256,7 @@ describe('ExtraLineBreaks', () => {
   });
 
   test('2 lines last is blank', () => {
-    const expected = [' first line', ''].join('\n');
+    const expected = ' first line\n';
 
     const added = addExtraLineBreaks(expected);
     const removed = removeExtraLineBreaks(added);
