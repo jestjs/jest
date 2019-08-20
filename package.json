@@ -26,7 +26,7 @@
     "chalk": "^2.0.1",
     "codecov": "^3.0.0",
     "debug": "^4.0.1",
-    "eslint": "^6.2.0",
+    "eslint": "~6.1.0",
     "eslint-config-prettier": "^6.1.0",
     "eslint-plugin-babel": "^5.1.0",
     "eslint-plugin-flowtype": "^2.35.0",
