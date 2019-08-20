@@ -38,7 +38,6 @@ class NodeEnvironment implements JestEnvironment {
     global.ArrayBuffer = ArrayBuffer;
     // URL and URLSearchParams are global in Node >= 10
     if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
-      /* global URL, URLSearchParams */
       global.URL = URL;
       global.URLSearchParams = URLSearchParams;
     }
@@ -47,7 +46,6 @@ class NodeEnvironment implements JestEnvironment {
       typeof TextEncoder !== 'undefined' &&
       typeof TextDecoder !== 'undefined'
     ) {
-      /* global TextEncoder, TextDecoder */
       global.TextEncoder = TextEncoder;
       global.TextDecoder = TextDecoder;
     }
