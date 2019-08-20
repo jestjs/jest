@@ -79,6 +79,9 @@ module.exports = {
   ],
   parser: 'espree',
   parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
     ecmaVersion: 10,
   },
   plugins: ['markdown', 'import', 'prettier'],
