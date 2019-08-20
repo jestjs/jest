@@ -349,8 +349,8 @@ const _toMatchSnapshot = ({
       `${RECEIVED_COLOR('Received value')} ` +
       `${actual}`;
   } else {
-    expected = (expected || '').trim();
-    actual = (actual || '').trim();
+    expected = utils.removeExtraLineBreaks(expected || '');
+    actual = utils.removeExtraLineBreaks(actual || '');
 
     // Assign to local variable because of declaration let expected:
     // TypeScript thinks it could change before report function is called.
