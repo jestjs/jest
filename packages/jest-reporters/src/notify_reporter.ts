@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import * as util from 'util';
-import exit from 'exit';
+import exit = require('exit');
 import {Config} from '@jest/types';
 import {AggregatedResult} from '@jest/test-result';
 import {notify} from 'node-notifier';

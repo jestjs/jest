@@ -8,8 +8,8 @@
 import chalk from 'chalk';
 import {formatExecError} from 'jest-message-util';
 import {Config} from '@jest/types';
-import snapshot from 'jest-snapshot';
-import TestRunner, {Test} from 'jest-runner';
+import snapshot = require('jest-snapshot');
+import TestRunner = require('jest-runner');
 import {Context} from 'jest-runtime';
 import {
   CoverageReporter,
@@ -19,7 +19,7 @@ import {
   SummaryReporter,
   VerboseReporter,
 } from '@jest/reporters';
-import exit from 'exit';
+import exit = require('exit');
 import {
   AggregatedResult,
   SerializableError,
@@ -70,7 +70,7 @@ export default class TestScheduler {
     this._dispatcher.unregister(ReporterClass);
   }
 
-  async scheduleTests(tests: Array<Test>, watcher: TestWatcher) {
+  async scheduleTests(tests: Array<TestRunner.Test>, watcher: TestWatcher) {
     const onStart = this._dispatcher.onTestStart.bind(this._dispatcher);
     const timings: Array<number> = [];
     const contexts = new Set<Context>();
@@ -88,7 +88,7 @@ export default class TestScheduler {
 
     const runInBand = shouldRunInBand(tests, timings, this._globalConfig);
 
-    const onResult = async (test: Test, testResult: TestResult) => {
+    const onResult = async (test: TestRunner.Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
         return Promise.resolve();
       }
@@ -124,7 +124,10 @@ export default class TestScheduler {
       return this._bailIfNeeded(contexts, aggregatedResults, watcher);
     };
 
-    const onFailure = async (test: Test, error: SerializableError) => {
+    const onFailure = async (
+      test: TestRunner.Test,
+      error: SerializableError,
+    ) => {
       if (watcher.isInterrupted()) {
         return;
       }
@@ -222,7 +225,7 @@ export default class TestScheduler {
 
   private _partitionTests(
     testRunners: Record<string, TestRunner>,
-    tests: Array<Test>,
+    tests: Array<TestRunner.Test>,
   ) {
     if (Object.keys(testRunners).length > 1) {
       return tests.reduce((testRuns, test) => {

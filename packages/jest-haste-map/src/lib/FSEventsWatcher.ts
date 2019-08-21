@@ -9,7 +9,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {EventEmitter} from 'events';
-import anymatch from 'anymatch';
+import anymatch = require('anymatch');
 import {some as micromatchSome} from 'micromatch';
 // eslint-disable-next-line
 import {Watcher} from 'fsevents';

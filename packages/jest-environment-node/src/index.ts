@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import vm, {Context, Script} from 'vm';
+import {Context, Script, createContext, runInContext} from 'vm';
 import {Config, Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
@@ -25,8 +25,8 @@ class NodeEnvironment implements JestEnvironment {
   moduleMocker: ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig) {
-    this.context = vm.createContext();
-    const global = (this.global = vm.runInContext(
+    this.context = createContext();
+    const global = (this.global = runInContext(
       'this',
       Object.assign(this.context, config.testEnvironmentOptions),
     ));

@@ -9,18 +9,13 @@ import * as path from 'path';
 import {Config} from '@jest/types';
 import {AggregatedResult, TestResult} from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
-import istanbulReport from 'istanbul-lib-report';
-import istanbulReports from 'istanbul-reports';
+import istanbulReport = require('istanbul-lib-report');
+import istanbulReports = require('istanbul-reports');
 import chalk from 'chalk';
-import istanbulCoverage, {
-  CoverageMap,
-  CoverageSummary,
-  CoverageSummaryData,
-  FileCoverage,
-} from 'istanbul-lib-coverage';
-import libSourceMaps, {MapStore} from 'istanbul-lib-source-maps';
+import istanbulCoverage = require('istanbul-lib-coverage');
+import libSourceMaps = require('istanbul-lib-source-maps');
 import Worker from 'jest-worker';
-import glob from 'glob';
+import glob = require('glob');
 import {RawSourceMap} from 'source-map';
 import BaseReporter from './base_reporter';
 import {Context, CoverageReporterOptions, CoverageWorker, Test} from './types';
@@ -29,9 +24,9 @@ const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 export default class CoverageReporter extends BaseReporter {
-  private _coverageMap: CoverageMap;
+  private _coverageMap: istanbulCoverage.CoverageMap;
   private _globalConfig: Config.GlobalConfig;
-  private _sourceMapStore: MapStore;
+  private _sourceMapStore: libSourceMaps.MapStore;
   private _options: CoverageReporterOptions;
 
   constructor(
@@ -59,7 +54,7 @@ export default class CoverageReporter extends BaseReporter {
       Object.keys(sourceMaps).forEach(sourcePath => {
         let inputSourceMap: RawSourceMap | undefined;
         try {
-          const coverage: FileCoverage = this._coverageMap.fileCoverageFor(
+          const coverage: istanbulCoverage.FileCoverage = this._coverageMap.fileCoverageFor(
             sourcePath,
           );
           inputSourceMap = (coverage.toJSON() as any).inputSourceMap;
@@ -214,15 +209,18 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
-  private _checkThreshold(globalConfig: Config.GlobalConfig, map: CoverageMap) {
+  private _checkThreshold(
+    globalConfig: Config.GlobalConfig,
+    map: istanbulCoverage.CoverageMap,
+  ) {
     if (globalConfig.coverageThreshold) {
       function check(
         name: string,
         thresholds: {[index: string]: number},
-        actuals: CoverageSummaryData,
+        actuals: istanbulCoverage.CoverageSummaryData,
       ) {
         return (['statements', 'branches', 'lines', 'functions'] as Array<
-          keyof CoverageSummaryData
+          keyof istanbulCoverage.CoverageSummaryData
         >).reduce<Array<string>>((errors, key) => {
           const actual = actuals[key].pct;
           const actualUncovered = actuals[key].total - actuals[key].covered;
@@ -317,8 +315,11 @@ export default class CoverageReporter extends BaseReporter {
           .map(filePath => map.fileCoverageFor(filePath))
           .reduce(
             (
-              combinedCoverage: CoverageSummary | null | undefined,
-              nextFileCoverage: FileCoverage,
+              combinedCoverage:
+                | istanbulCoverage.CoverageSummary
+                | null
+                | undefined,
+              nextFileCoverage: istanbulCoverage.FileCoverage,
             ) => {
               if (combinedCoverage === undefined || combinedCoverage === null) {
                 return nextFileCoverage.toSummary();
@@ -401,7 +402,7 @@ export default class CoverageReporter extends BaseReporter {
   }
 
   // Only exposed for the internal runner. Should not be used
-  getCoverageMap(): CoverageMap {
+  getCoverageMap(): istanbulCoverage.CoverageMap {
     return this._coverageMap;
   }
 }

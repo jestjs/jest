@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import ansiEscapes from 'ansi-escapes';
+import ansiEscapes = require('ansi-escapes');
 import {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {KEYS} from 'jest-watcher';
 import {pluralize, specialChars} from 'jest-util';

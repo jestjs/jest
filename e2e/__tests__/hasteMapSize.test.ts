@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import HasteMap from 'jest-haste-map';
+import HasteMap = require('jest-haste-map');
 import {sync as realpath} from 'realpath-native';
 import {cleanup, writeFiles} from '../Utils';
 

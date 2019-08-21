@@ -17,7 +17,7 @@ import {
   loadPartialConfig,
 } from '@babel/core';
 import chalk from 'chalk';
-import slash from 'slash';
+import slash = require('slash');
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');

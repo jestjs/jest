@@ -14,7 +14,7 @@ import {
   printReceived,
 } from 'jest-matcher-utils';
 import chalk from 'chalk';
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 
 interface AssertionErrorWithStack extends AssertionError {
   stack: string;

@@ -7,8 +7,8 @@
 
 import {Config} from '@jest/types';
 import {SerializableError} from '@jest/test-result';
-import exit from 'exit';
-import throat from 'throat';
+import exit = require('exit');
+import throat = require('throat');
 import Worker from 'jest-worker';
 import runTest from './runTest';
 import {SerializableResolver, worker} from './testWorker';

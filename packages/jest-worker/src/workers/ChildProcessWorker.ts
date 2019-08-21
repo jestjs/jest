@@ -7,7 +7,7 @@
 
 import {ChildProcess, fork} from 'child_process';
 import {PassThrough} from 'stream';
-import mergeStream from 'merge-stream';
+import mergeStream = require('merge-stream');
 import {stdout as stdoutSupportsColor} from 'supports-color';
 
 import {

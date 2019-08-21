@@ -7,7 +7,7 @@
 
 import * as fs from 'fs';
 import {Config} from '@jest/types';
-import exit from 'exit';
+import exit = require('exit');
 import {CoverageReporterSerializedOptions} from './types';
 
 import generateEmptyCoverage, {

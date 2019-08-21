@@ -10,7 +10,7 @@ import {Config} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
 import {TestResult} from '@jest/test-result';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import Runtime from 'jest-runtime';
+import Runtime = require('jest-runtime');
 import {SnapshotStateType} from 'jest-snapshot';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');

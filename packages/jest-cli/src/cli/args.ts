@@ -7,7 +7,7 @@
 
 import {Config} from '@jest/types';
 import {isJSONString} from 'jest-config';
-import isCI from 'is-ci';
+import isCI = require('is-ci');
 
 export const check = (argv: Config.Argv) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
