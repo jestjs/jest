@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import getType from 'jest-get-type';
+import getType = require('jest-get-type');
 import {ERROR, ValidationError, formatPrettyObject} from './utils';
 import {getValues} from './condition';
 import {ValidationOptions} from './types';

@@ -7,7 +7,7 @@
 
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 import {isPrimitive} from 'jest-get-type';
 
 export default class {

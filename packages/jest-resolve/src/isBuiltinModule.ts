@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import module from 'module';
+import module = require('module');
 
 // @ts-ignore: "private" api
 declare const process: {

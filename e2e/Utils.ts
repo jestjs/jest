@@ -12,7 +12,7 @@ import {Config} from '@jest/types';
 
 import {ExecaReturns, sync as spawnSync} from 'execa';
 import {createDirectory} from 'jest-util';
-import rimraf from 'rimraf';
+import rimraf = require('rimraf');
 
 export type RunResult = ExecaReturns & {
   status: number;

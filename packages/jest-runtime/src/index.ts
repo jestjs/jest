@@ -14,13 +14,13 @@ import {
   Module,
 } from '@jest/environment';
 import {SourceMapRegistry} from '@jest/source-map';
-import jestMock, {MockFunctionMetadata} from 'jest-mock';
-import HasteMap, {ModuleMap} from 'jest-haste-map';
+import jestMock = require('jest-mock');
+import HasteMap = require('jest-haste-map');
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import Resolver from 'jest-resolve';
+import Resolver = require('jest-resolve');
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
-import Snapshot from 'jest-snapshot';
+import Snapshot = require('jest-snapshot');
 import {
   ScriptTransformer,
   ShouldInstrumentOptions,
@@ -28,7 +28,7 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import * as fs from 'graceful-fs';
-import stripBOM from 'strip-bom';
+import stripBOM = require('strip-bom');
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
@@ -92,7 +92,7 @@ class Runtime {
   private _isCurrentlyExecutingManualMock: string | null;
   private _mockFactories: Record<string, () => unknown>;
   private _mockMetaDataCache: {
-    [key: string]: MockFunctionMetadata<unknown, Array<unknown>>;
+    [key: string]: jestMock.MockFunctionMetadata<unknown, Array<unknown>>;
   };
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
@@ -257,7 +257,7 @@ class Runtime {
 
   static createResolver(
     config: Config.ProjectConfig,
-    moduleMap: ModuleMap,
+    moduleMap: HasteMap.ModuleMap,
   ): Resolver {
     return new Resolver(moduleMap, {
       browser: config.browser,

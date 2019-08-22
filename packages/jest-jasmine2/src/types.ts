@@ -8,7 +8,7 @@
 import {AssertionError} from 'assert';
 import {Config} from '@jest/types';
 
-import expect from 'expect';
+import expect = require('expect');
 import Spec, {SpecResult} from './jasmine/Spec';
 import JsApiReporter from './jasmine/JsApiReporter';
 import Timer from './jasmine/Timer';

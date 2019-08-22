@@ -12,7 +12,7 @@ import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
-import invariant from 'invariant';
+import invariant = require('invariant');
 import {Config} from '@jest/types';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
@@ -24,12 +24,12 @@ import HasteFS from './HasteFS';
 import HasteModuleMap, {
   SerializableModuleMap as HasteSerializableModuleMap,
 } from './ModuleMap';
-import nodeCrawl from './crawlers/node';
+import nodeCrawl = require('./crawlers/node');
 import normalizePathSep from './lib/normalizePathSep';
-import watchmanCrawl from './crawlers/watchman';
+import watchmanCrawl = require('./crawlers/watchman');
 // @ts-ignore: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
 import WatchmanWatcher from './lib/WatchmanWatcher';
-import FSEventsWatcher from './lib/FSEventsWatcher';
+import FSEventsWatcher = require('./lib/FSEventsWatcher');
 import * as fastPath from './lib/fast_path';
 import {
   ChangeEvent,

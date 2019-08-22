@@ -9,7 +9,7 @@ import {cpus} from 'os';
 import * as path from 'path';
 import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
-import yargs from 'yargs';
+import yargs = require('yargs');
 import {Config} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
 import {CustomConsole} from '@jest/console';

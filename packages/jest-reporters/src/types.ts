@@ -13,8 +13,8 @@ import {
 } from '@jest/test-result';
 import {JestEnvironment as Environment} from '@jest/environment';
 import {FS as HasteFS, ModuleMap} from 'jest-haste-map';
-import HasteResolver from 'jest-resolve';
-import Runtime from 'jest-runtime';
+import HasteResolver = require('jest-resolve');
+import Runtime = require('jest-runtime');
 import {worker} from './coverage_worker';
 
 export type ReporterOnStartOptions = {

@@ -11,7 +11,7 @@ import {Context} from 'jest-runtime';
 import {Config} from '@jest/types';
 import {Test} from 'jest-runner';
 import {ChangedFiles} from 'jest-changed-files';
-import DependencyResolver from 'jest-resolve-dependencies';
+import DependencyResolver = require('jest-resolve-dependencies');
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';

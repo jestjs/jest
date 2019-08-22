@@ -8,7 +8,7 @@
 /// <reference path="../v8.d.ts" />
 
 import * as fs from 'fs';
-import v8 from 'v8';
+import {deserialize as v8Deserialize, serialize as v8Serialize} from 'v8';
 
 type Path = string;
 
@@ -114,28 +114,28 @@ function jsonParse(content: string) {
 // In memory functions.
 
 export function deserialize(buffer: Buffer): any {
-  return v8.deserialize
-    ? v8.deserialize(buffer)
+  return v8Deserialize
+    ? v8Deserialize(buffer)
     : jsonParse(buffer.toString('utf8'));
 }
 
 export function serialize(content: unknown): Buffer {
-  return v8.serialize
-    ? v8.serialize(content)
+  return v8Serialize
+    ? v8Serialize(content)
     : Buffer.from(jsonStringify(content));
 }
 
 // Synchronous filesystem functions.
 
 export function readFileSync(filePath: Path): any {
-  return v8.deserialize
-    ? v8.deserialize(fs.readFileSync(filePath))
+  return v8Deserialize
+    ? v8Deserialize(fs.readFileSync(filePath))
     : jsonParse(fs.readFileSync(filePath, 'utf8'));
 }
 
 export function writeFileSync(filePath: Path, content: any) {
-  return v8.serialize
-    ? fs.writeFileSync(filePath, v8.serialize(content))
+  return v8Serialize
+    ? fs.writeFileSync(filePath, v8Serialize(content))
     : fs.writeFileSync(filePath, jsonStringify(content), 'utf8');
 }
 

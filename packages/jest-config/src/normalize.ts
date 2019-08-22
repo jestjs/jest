@@ -14,9 +14,9 @@ import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
 import {some as micromatchSome} from 'micromatch';
 import {sync as realpath} from 'realpath-native';
-import Resolver from 'jest-resolve';
+import Resolver = require('jest-resolve');
 import {replacePathSepForRegex} from 'jest-regex-util';
-import getType from 'jest-get-type';
+import getType = require('jest-get-type');
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {

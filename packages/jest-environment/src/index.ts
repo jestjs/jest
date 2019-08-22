@@ -7,7 +7,7 @@
 
 import {Script} from 'vm';
 import {Circus, Config, Global} from '@jest/types';
-import jestMock, {ModuleMocker} from 'jest-mock';
+import jestMock = require('jest-mock');
 import {ScriptTransformer} from '@jest/transform';
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
 
@@ -38,7 +38,7 @@ export declare class JestEnvironment {
   constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
   fakeTimers: FakeTimers<unknown> | null;
-  moduleMocker: ModuleMocker | null;
+  moduleMocker: jestMock.ModuleMocker | null;
   runScript(
     script: Script,
   ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null;

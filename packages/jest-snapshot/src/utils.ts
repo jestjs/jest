@@ -8,10 +8,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {sync as mkdirp} from 'mkdirp';
-import naturalCompare from 'natural-compare';
+import naturalCompare = require('natural-compare');
 import chalk from 'chalk';
 import {Config} from '@jest/types';
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 import {getSerializers} from './plugins';
 import {SnapshotData} from './types';
 

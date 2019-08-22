@@ -7,7 +7,7 @@
  */
 
 import * as path from 'path';
-import execa from 'execa';
+import execa = require('execa');
 import {Config} from '@jest/types';
 
 import {SCMAdapter} from './types';

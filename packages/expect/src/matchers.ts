@@ -6,7 +6,7 @@
  *
  */
 
-import getType, {isPrimitive} from 'jest-get-type';
+import getType = require('jest-get-type');
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
@@ -290,7 +290,8 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           printExpectedConstructorName('Expected constructor', expected) +
-          (isPrimitive(received) || Object.getPrototypeOf(received) === null
+          (getType.isPrimitive(received) ||
+          Object.getPrototypeOf(received) === null
             ? `\nReceived value has no prototype\nReceived value: ${printReceived(
                 received,
               )}`

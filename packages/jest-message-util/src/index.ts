@@ -11,9 +11,9 @@ import {Config} from '@jest/types';
 import {AssertionResult, SerializableError} from '@jest/test-result';
 import chalk from 'chalk';
 import {some as micromatchSome} from 'micromatch';
-import slash from 'slash';
+import slash = require('slash');
 import {codeFrameColumns} from '@babel/code-frame';
-import StackUtils from 'stack-utils';
+import StackUtils = require('stack-utils');
 import {Frame} from './types';
 
 export {Frame} from './types';

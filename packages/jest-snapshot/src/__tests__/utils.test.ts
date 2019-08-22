@@ -12,7 +12,7 @@ jest.mock('fs', () => ({
 
 import * as fs from 'fs';
 import * as path from 'path';
-import assert from 'assert';
+import assert = require('assert');
 import chalk from 'chalk';
 
 import {
