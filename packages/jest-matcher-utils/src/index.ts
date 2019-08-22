@@ -14,8 +14,6 @@ const {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
-  Diff,
-  DiffOptions,
   diffStringsRaw,
   diffStringsUnified,
 } = jestDiff;
@@ -228,12 +226,12 @@ export const ensureExpectedIsNonNegativeInteger = (
 // * include change substrings which have argument op
 //   with inverse highlight only if there is a common substring
 const getCommonAndChangedSubstrings = (
-  diffs: Array<Diff>,
+  diffs: Array<jestDiff.Diff>,
   op: number,
   hasCommonDiff: boolean,
 ): string =>
   diffs.reduce(
-    (reduced: string, diff: Diff): string =>
+    (reduced: string, diff: jestDiff.Diff): string =>
       reduced +
       (diff[0] === DIFF_EQUAL
         ? diff[1]
