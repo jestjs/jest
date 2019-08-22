@@ -16,7 +16,6 @@ import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
 import {replacePathSepForRegex} from 'jest-regex-util';
-import getType = require('jest-get-type');
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
@@ -37,6 +36,7 @@ import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import setFromArgv from './setFromArgv';
 import VALID_CONFIG from './ValidConfig';
+import {getDisplayNameColor} from './color';
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
@@ -761,35 +761,11 @@ export default function normalize(
       }
       case 'displayName': {
         const displayName = oldOptions[key] as Config.DisplayName;
-        if (typeof displayName === 'string') {
-          value = displayName;
-          break;
-        }
         /**
          * Ensuring that displayName shape is correct here so that the
          * reporters can trust the shape of the data
-         * TODO: Normalize "displayName" such that given a config option
-         * {
-         *  "displayName": "Test"
-         * }
-         * becomes
-         * {
-         *   displayName: {
-         *     name: "Test",
-         *     color: "white"
-         *   }
-         * }
-         *
-         * This can't be done now since this will be a breaking change
-         * for custom reporters
          */
-        if (getType(displayName) === 'object') {
-          const errorMessage =
-            `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
-            '  {\n' +
-            '    name: string;\n' +
-            '    color: string;\n' +
-            '  }\n';
+        if (typeof displayName === 'object') {
           const {name, color} = displayName;
           if (
             !name ||
@@ -797,10 +773,21 @@ export default function normalize(
             typeof name !== 'string' ||
             typeof color !== 'string'
           ) {
+            const errorMessage =
+              `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
+              '  {\n' +
+              '    name: string;\n' +
+              '    color: string;\n' +
+              '  }\n';
             throw createConfigError(errorMessage);
           }
+          value = oldOptions[key];
+        } else {
+          value = {
+            color: getDisplayNameColor(options.runner),
+            name: displayName,
+          };
         }
-        value = oldOptions[key];
         break;
       }
       case 'testTimeout': {

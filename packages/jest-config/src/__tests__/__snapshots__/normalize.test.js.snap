@@ -17,6 +17,16 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
 <yellow></>"
 `;
 
+exports[`displayName generates a default color for the runner jest-runner 1`] = `"yellow"`;
+
+exports[`displayName generates a default color for the runner jest-runner-eslint 1`] = `"magenta"`;
+
+exports[`displayName generates a default color for the runner jest-runner-tsc 1`] = `"red"`;
+
+exports[`displayName generates a default color for the runner jest-runner-tslint 1`] = `"green"`;
+
+exports[`displayName generates a default color for the runner undefined 1`] = `"white"`;
+
 exports[`displayName should throw an error when displayName is is an empty object 1`] = `
 "<red><bold><bold>● <bold>Validation Error</>:</>
 <red></>

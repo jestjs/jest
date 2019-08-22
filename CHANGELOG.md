@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` [**BREAKING**] Set default display name color based on runner ([#8689](https://github.com/facebook/jest/pull/8689))
+
 ### Fixes
 
 - `[expect]` Display expectedDiff more carefully in toBeCloseTo ([#8389](https://github.com/facebook/jest/pull/8389))
