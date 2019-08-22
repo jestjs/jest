@@ -9,18 +9,13 @@ import chalk, {Chalk} from 'chalk';
 import diff, {Callbacks} from 'diff-sequences';
 import {NO_DIFF_MESSAGE} from './constants';
 import {createPatchMark, printAnnotation} from './printDiffs';
-import {DiffOptions} from './types';
-
-const DIFF_CONTEXT_DEFAULT = 5;
+import {DiffOptionsNormalized} from './types';
 
 type Original = {
   a: string;
   b: string;
 };
 
-const fgDelete = chalk.green;
-const fgInsert = chalk.red;
-const fgCommon = chalk.dim; // common lines (even indentation same)
 const fgIndent = chalk.cyan; // common lines (only indentation different)
 const bgCommon = chalk.bgYellow; // edge spaces in common line (even indentation same)
 const bgInverse = chalk.inverse; // edge spaces in any other lines
@@ -51,6 +46,7 @@ const formatDelete = (
   aEnd: number,
   aLinesUn: Array<string>,
   aLinesIn: Array<string>,
+  {aColor, aSymbol}: DiffOptionsNormalized,
   put: Put,
 ) => {
   const highlightSpaces = getHighlightSpaces(aLinesUn !== aLinesIn);
@@ -59,7 +55,9 @@ const formatDelete = (
     const aLineIn = aLinesIn[aIndex];
     const indentation = aLineIn.slice(0, aLineIn.length - aLineUn.length);
 
-    put(fgDelete('- ' + indentation + highlightSpaces(aLineUn, bgInverse)));
+    put(
+      aColor(aSymbol + ' ' + indentation + highlightSpaces(aLineUn, bgInverse)),
+    );
   }
 };
 
@@ -69,6 +67,7 @@ const formatInsert = (
   bEnd: number,
   bLinesUn: Array<string>,
   bLinesIn: Array<string>,
+  {bColor, bSymbol}: DiffOptionsNormalized,
   put: Put,
 ) => {
   const highlightSpaces = getHighlightSpaces(bLinesUn !== bLinesIn);
@@ -77,7 +76,9 @@ const formatInsert = (
     const bLineIn = bLinesIn[bIndex];
     const indentation = bLineIn.slice(0, bLineIn.length - bLineUn.length);
 
-    put(fgInsert('+ ' + indentation + highlightSpaces(bLineUn, bgInverse)));
+    put(
+      bColor(bSymbol + ' ' + indentation + highlightSpaces(bLineUn, bgInverse)),
+    );
   }
 };
 
@@ -91,6 +92,7 @@ const formatCommon = (
   aLinesIn: Array<string>,
   bLinesUn: Array<string>,
   bLinesIn: Array<string>,
+  {commonColor, commonSymbol}: DiffOptionsNormalized,
   put: Put,
 ) => {
   const highlightSpaces = getHighlightSpaces(bLinesUn !== bLinesIn);
@@ -104,10 +106,10 @@ const formatCommon = (
 
     // Color shows whether expected and received line has same indentation.
     const hasSameIndentation = aLinesIn[aCommon].length === bLineInLength;
-    const fg = hasSameIndentation ? fgCommon : fgIndent;
+    const fg = hasSameIndentation ? commonColor : fgIndent;
     const bg = hasSameIndentation ? bgCommon : bgInverse;
 
-    put(fg('  ' + indentation + highlightSpaces(bLineUn, bg)));
+    put(fg(commonSymbol + ' ' + indentation + highlightSpaces(bLineUn, bg)));
   }
 };
 
@@ -118,6 +120,7 @@ const diffExpand = (
   bLinesUn: Array<string>,
   aLinesIn: Array<string>,
   bLinesIn: Array<string>,
+  options: DiffOptionsNormalized,
 ): string => {
   const isCommon: Callbacks['isCommon'] = (aIndex, bIndex) =>
     aLinesUn[aIndex] === bLinesUn[bIndex];
@@ -135,9 +138,18 @@ const diffExpand = (
     aCommon,
     bCommon,
   ) => {
-    formatDelete(aStart, aCommon, aLinesUn, aLinesIn, put);
-    formatInsert(bStart, bCommon, bLinesUn, bLinesIn, put);
-    formatCommon(nCommon, aCommon, bCommon, aLinesIn, bLinesUn, bLinesIn, put);
+    formatDelete(aStart, aCommon, aLinesUn, aLinesIn, options, put);
+    formatInsert(bStart, bCommon, bLinesUn, bLinesIn, options, put);
+    formatCommon(
+      nCommon,
+      aCommon,
+      bCommon,
+      aLinesIn,
+      bLinesUn,
+      bLinesIn,
+      options,
+      put,
+    );
     aStart = aCommon + nCommon;
     bStart = bCommon + nCommon;
   };
@@ -148,18 +160,11 @@ const diffExpand = (
   diff(aLength, bLength, isCommon, foundSubsequence);
 
   // After the last common subsequence, format remaining change lines.
-  formatDelete(aStart, aLength, aLinesUn, aLinesIn, put);
-  formatInsert(bStart, bLength, bLinesUn, bLinesIn, put);
+  formatDelete(aStart, aLength, aLinesUn, aLinesIn, options, put);
+  formatInsert(bStart, bLength, bLinesUn, bLinesIn, options, put);
 
   return array.join('\n');
 };
-
-const getContextLines = (options?: DiffOptions): number =>
-  options &&
-  typeof options.contextLines === 'number' &&
-  options.contextLines >= 0
-    ? options.contextLines
-    : DIFF_CONTEXT_DEFAULT;
 
 // jest --no-expand
 // Return joined string of formatted diff for all change lines,
@@ -170,7 +175,7 @@ const diffNoExpand = (
   bLinesUn: Array<string>,
   aLinesIn: Array<string>,
   bLinesIn: Array<string>,
-  nContextLines: number,
+  options: DiffOptionsNormalized,
 ): string => {
   const isCommon: Callbacks['isCommon'] = (aIndex, bIndex) =>
     aLinesUn[aIndex] === bLinesUn[bIndex];
@@ -184,6 +189,7 @@ const diffNoExpand = (
   let isAtEnd = false;
   const aLength = aLinesUn.length;
   const bLength = bLinesUn.length;
+  const nContextLines = options.contextLines;
   const nContextLines2 = nContextLines + nContextLines;
 
   // Initialize the first patch for changes at the start,
@@ -210,15 +216,24 @@ const diffNoExpand = (
       aStart = aEndCommon - nLines;
       bStart = bEndCommon - nLines;
 
-      formatCommon(nLines, aStart, bStart, aLinesIn, bLinesUn, bLinesIn, put);
+      formatCommon(
+        nLines,
+        aStart,
+        bStart,
+        aLinesIn,
+        bLinesUn,
+        bLinesIn,
+        options,
+        put,
+      );
       aEnd = aEndCommon;
       bEnd = bEndCommon;
       return;
     }
 
     // Format preceding change lines.
-    formatDelete(aEnd, aStartCommon, aLinesUn, aLinesIn, put);
-    formatInsert(bEnd, bStartCommon, bLinesUn, bLinesIn, put);
+    formatDelete(aEnd, aStartCommon, aLinesUn, aLinesIn, options, put);
+    formatInsert(bEnd, bStartCommon, bLinesUn, bLinesIn, options, put);
     aEnd = aStartCommon;
     bEnd = bStartCommon;
 
@@ -228,14 +243,32 @@ const diffNoExpand = (
 
     if (nCommon <= maxContextLines) {
       // The patch includes all lines in the common subsequence.
-      formatCommon(nCommon, aEnd, bEnd, aLinesIn, bLinesUn, bLinesIn, put);
+      formatCommon(
+        nCommon,
+        aEnd,
+        bEnd,
+        aLinesIn,
+        bLinesUn,
+        bLinesIn,
+        options,
+        put,
+      );
       aEnd += nCommon;
       bEnd += nCommon;
       return;
     }
 
     // The patch ends because context is less than number of common lines.
-    formatCommon(nContextLines, aEnd, bEnd, aLinesIn, bLinesUn, bLinesIn, put);
+    formatCommon(
+      nContextLines,
+      aEnd,
+      bEnd,
+      aLinesIn,
+      bLinesUn,
+      bLinesIn,
+      options,
+      put,
+    );
     aEnd += nContextLines;
     bEnd += nContextLines;
 
@@ -250,7 +283,16 @@ const diffNoExpand = (
       aStart = aEndCommon - nLines;
       bStart = bEndCommon - nLines;
 
-      formatCommon(nLines, aStart, bStart, aLinesIn, bLinesUn, bLinesIn, put);
+      formatCommon(
+        nLines,
+        aStart,
+        bStart,
+        aLinesIn,
+        bLinesUn,
+        bLinesIn,
+        options,
+        put,
+      );
       aEnd = aEndCommon;
       bEnd = bEndCommon;
     }
@@ -260,8 +302,8 @@ const diffNoExpand = (
 
   // If no common subsequence or last was not at end, format remaining change lines.
   if (!isAtEnd) {
-    formatDelete(aEnd, aLength, aLinesUn, aLinesIn, put);
-    formatInsert(bEnd, bLength, bLinesUn, bLinesIn, put);
+    formatDelete(aEnd, aLength, aLinesUn, aLinesIn, options, put);
+    formatInsert(bEnd, bLength, bLinesUn, bLinesIn, options, put);
     aEnd = aLength;
     bEnd = bLength;
   }
@@ -278,7 +320,7 @@ const diffNoExpand = (
 export default (
   a: string,
   b: string,
-  options?: DiffOptions,
+  options: DiffOptionsNormalized,
   original?: Original,
 ): string => {
   if (a === b) {
@@ -310,14 +352,8 @@ export default (
 
   return (
     printAnnotation(options) +
-    (options && options.expand === false
-      ? diffNoExpand(
-          aLinesUn,
-          bLinesUn,
-          aLinesIn,
-          bLinesIn,
-          getContextLines(options),
-        )
-      : diffExpand(aLinesUn, bLinesUn, aLinesIn, bLinesIn))
+    (options.expand
+      ? diffExpand(aLinesUn, bLinesUn, aLinesIn, bLinesIn, options)
+      : diffNoExpand(aLinesUn, bLinesUn, aLinesIn, bLinesIn, options))
   );
 };

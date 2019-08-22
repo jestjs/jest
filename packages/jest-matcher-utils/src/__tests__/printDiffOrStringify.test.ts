@@ -35,6 +35,18 @@ describe('printDiffOrStringify', () => {
     expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
   });
 
+  test('has no common after clean up chaff multiline', () => {
+    const expected = 'delete\ntwo';
+    const received = 'insert\n2';
+    expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+  });
+
+  test('has no common after clean up chaff one-line', () => {
+    const expected = 'delete';
+    const received = 'insert';
+    expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+  });
+
   test('received is multiline longer than max', () => {
     const expected = 'multi\nline';
     const received = 'multi' + '\n123456789'.repeat(2000); // 5 + 20K chars
