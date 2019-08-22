@@ -17,17 +17,15 @@ import {
   getConsoleOutput,
 } from '@jest/console';
 import {JestEnvironment} from '@jest/environment';
-import RuntimeClass from 'jest-runtime';
+import RuntimeClass = require('jest-runtime');
 import * as fs from 'graceful-fs';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
-import Resolver from 'jest-resolve';
+import Resolver = require('jest-resolve');
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
-import sourcemapSupport, {
-  Options as SourceMapOptions,
-} from 'source-map-support';
+import sourcemapSupport = require('source-map-support');
 import chalk from 'chalk';
 import {TestFramework, TestRunnerContext} from './types';
 
@@ -163,7 +161,7 @@ async function runTestInternal(
 
   const start = Date.now();
 
-  const sourcemapOptions: SourceMapOptions = {
+  const sourcemapOptions: sourcemapSupport.Options = {
     environment: 'node',
     handleUncaughtExceptions: false,
     retrieveSourceMap: source => {
@@ -297,11 +295,8 @@ export default async function runTest(
   );
 
   if (leakDetector) {
-    // We wanna allow a tiny but time to pass to allow last-minute cleanup
-    await new Promise(resolve => setTimeout(resolve, 100));
-
     // Resolve leak detector, outside the "runTestInternal" closure.
-    result.leaks = leakDetector.isLeaking();
+    result.leaks = await leakDetector.isLeaking();
   } else {
     result.leaks = false;
   }

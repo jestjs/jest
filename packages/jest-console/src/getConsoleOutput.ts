@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import chalk from 'chalk';
-import slash from 'slash';
+import slash = require('slash');
 import {ConsoleBuffer} from './types';
 
 export default (root: string, verbose: boolean, buffer: ConsoleBuffer) => {

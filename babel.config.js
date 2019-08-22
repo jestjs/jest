@@ -12,6 +12,9 @@ module.exports = {
       plugins: [
         'babel-plugin-typescript-strip-namespaces',
         'babel-plugin-replace-ts-export-assignment',
+        require.resolve(
+          './scripts/babel-plugin-jest-replace-ts-require-assignment.js'
+        ),
       ],
       presets: ['@babel/preset-typescript'],
       test: /\.tsx?$/,
@@ -27,7 +30,7 @@ module.exports = {
       '@babel/preset-env',
       {
         shippedProposals: true,
-        targets: {node: 6},
+        targets: {node: 8},
       },
     ],
   ],

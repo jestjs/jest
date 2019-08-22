@@ -12,16 +12,18 @@ jest.mock('fs', () => ({
 
 import * as fs from 'fs';
 import * as path from 'path';
-import assert from 'assert';
+import assert = require('assert');
 import chalk from 'chalk';
 
 import {
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
+  addExtraLineBreaks,
   deepMerge,
   getSnapshotData,
   keyToTestName,
+  removeExtraLineBreaks,
   saveSnapshotFile,
   serialize,
   testNameToKey,
@@ -190,6 +192,78 @@ test('serialize handles \\r\\n', () => {
   const serializedData = serialize(data);
 
   expect(serializedData).toBe('\n"<div>\n</div>"\n');
+});
+
+describe('ExtraLineBreaks', () => {
+  test('0 empty string', () => {
+    const expected = '';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe(expected);
+    expect(removed).toBe(expected);
+  });
+
+  test('1 line has double quote marks at edges', () => {
+    const expected = '" one line "';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe(expected);
+    expect(removed).toBe(expected);
+  });
+
+  test('1 line has spaces at edges', () => {
+    const expected = ' one line ';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe(expected);
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines both are blank', () => {
+    const expected = '\n';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines have double quote marks at edges', () => {
+    const expected = '"\n"';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines first is blank', () => {
+    const expected = '\nsecond line ';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines last is blank', () => {
+    const expected = ' first line\n';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
 });
 
 describe('DeepMerge with property matchers', () => {

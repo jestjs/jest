@@ -19,12 +19,12 @@
     "jest-haste-map": "^24.9.0",
     "jest-regex-util": "^24.9.0",
     "jest-util": "^24.9.0",
-    "micromatch": "^3.1.10",
+    "micromatch": "^4.0.2",
     "pirates": "^4.0.1",
     "realpath-native": "^1.1.0",
-    "slash": "^2.0.0",
+    "slash": "^3.0.0",
     "source-map": "^0.6.1",
-    "write-file-atomic": "2.4.1"
+    "write-file-atomic": "^3.0.0"
   },
   "devDependencies": {
     "@types/babel__core": "^7.1.0",
@@ -35,7 +35,7 @@
     "@types/write-file-atomic": "^2.1.1"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

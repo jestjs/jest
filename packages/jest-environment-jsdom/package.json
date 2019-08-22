@@ -15,13 +15,13 @@
     "@jest/types": "^24.9.0",
     "jest-mock": "^24.9.0",
     "jest-util": "^24.9.0",
-    "jsdom": "^11.5.1"
+    "jsdom": "^15.1.1"
   },
   "devDependencies": {
-    "@types/jsdom": "^11.12.0"
+    "@types/jsdom": "^12.2.4"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

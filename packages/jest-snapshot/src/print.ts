@@ -5,21 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff, {diffStringsUnified} from 'jest-diff';
-import getType, {isPrimitive} from 'jest-get-type';
+import diff = require('jest-diff');
+import getType = require('jest-get-type');
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   getLabelPrinter,
   printDiffOrStringify,
 } from 'jest-matcher-utils';
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 import {unescape} from './utils';
 
 const isLineDiffable = (received: any): boolean => {
   const receivedType = getType(received);
 
-  if (isPrimitive(received)) {
+  if (getType.isPrimitive(received)) {
     return typeof received === 'string' && received.includes('\n');
   }
 
@@ -86,7 +86,7 @@ export const printDiffOrStringified = (
       receivedSerializedTrimmed.length <= MAX_DIFF_STRING_LENGTH &&
       expectedSerializedTrimmed !== receivedSerializedTrimmed
     ) {
-      return diffStringsUnified(
+      return diff.diffStringsUnified(
         expectedSerializedTrimmed,
         receivedSerializedTrimmed,
         {

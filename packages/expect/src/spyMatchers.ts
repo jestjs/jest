@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import getType, {isPrimitive} from 'jest-get-type';
+import getType = require('jest-get-type');
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
@@ -279,7 +279,7 @@ const isLineDiffableArg = (expected: unknown, received: unknown): boolean => {
     return false;
   }
 
-  if (isPrimitive(expected)) {
+  if (getType.isPrimitive(expected)) {
     return false;
   }
 

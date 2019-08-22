@@ -15,9 +15,9 @@ import {transformSync as babelTransform} from '@babel/core';
 // @ts-ignore: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import {fromSource as sourcemapFromSource} from 'convert-source-map';
-import HasteMap from 'jest-haste-map';
-import stableStringify from 'fast-json-stable-stringify';
-import slash from 'slash';
+import HasteMap = require('jest-haste-map');
+import stableStringify = require('fast-json-stable-stringify');
+import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
 import {addHook} from 'pirates';

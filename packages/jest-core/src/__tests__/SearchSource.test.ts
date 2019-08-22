@@ -7,7 +7,7 @@
  */
 
 import * as path from 'path';
-import Runtime from 'jest-runtime';
+import Runtime = require('jest-runtime');
 import {normalize} from 'jest-config';
 import {Test} from 'jest-runner';
 import {Config} from '@jest/types';

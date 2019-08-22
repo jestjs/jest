@@ -7,14 +7,10 @@
     "@jest/test-result": "^24.9.0",
     "@jest/types": "^24.9.0",
     "@types/yargs": "^13.0.0",
-    "ansi-escapes": "^3.0.0",
+    "ansi-escapes": "^4.2.1",
     "chalk": "^2.0.1",
     "jest-util": "^24.9.0",
-    "string-length": "^2.0.0"
-  },
-  "devDependencies": {
-    "@types/ansi-escapes": "^3.0.0",
-    "@types/string-length": "^2.0.0"
+    "string-length": "^3.1.0"
   },
   "repository": {
     "type": "git",
@@ -25,7 +21,7 @@
     "url": "https://github.com/facebook/jest/issues"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",

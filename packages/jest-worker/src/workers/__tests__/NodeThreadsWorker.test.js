@@ -9,6 +9,7 @@
 
 /* eslint-disable no-new */
 
+// eslint-disable-next-line import/default
 import getStream from 'get-stream';
 
 import {

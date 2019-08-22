@@ -16,11 +16,10 @@
     "pretty-format": "^24.9.0"
   },
   "devDependencies": {
-    "@types/strip-ansi": "^3.0.0",
     "strip-ansi": "^5.0.0"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

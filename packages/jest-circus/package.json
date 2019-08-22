@@ -25,18 +25,18 @@
     "jest-util": "^24.9.0",
     "pretty-format": "^24.9.0",
     "stack-utils": "^1.0.1",
-    "throat": "^4.0.0"
+    "throat": "^5.0.0"
   },
   "devDependencies": {
     "@jest/test-utils": "^24.4.0",
     "@types/babel__traverse": "^7.0.4",
     "@types/co": "^4.6.0",
     "@types/stack-utils": "^1.0.1",
-    "execa": "^1.0.0",
+    "execa": "^2.0.4",
     "jest-runtime": "^24.9.0"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

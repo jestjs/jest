@@ -15,7 +15,7 @@
   "dependencies": {
     "@jest/types": "^24.9.0",
     "ansi-regex": "^4.0.0",
-    "ansi-styles": "^3.2.0",
+    "ansi-styles": "^4.0.0",
     "react-is": "^16.8.4"
   },
   "devDependencies": {
@@ -30,7 +30,7 @@
     "react-test-renderer": "*"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

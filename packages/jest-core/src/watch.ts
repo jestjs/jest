@@ -6,16 +6,16 @@
  */
 
 import * as path from 'path';
-import ansiEscapes from 'ansi-escapes';
+import ansiEscapes = require('ansi-escapes');
 import chalk from 'chalk';
-import exit from 'exit';
-import slash from 'slash';
-import HasteMap, {HasteChangeEvent} from 'jest-haste-map';
+import exit = require('exit');
+import slash = require('slash');
+import HasteMap = require('jest-haste-map');
 import {formatExecError} from 'jest-message-util';
 import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {Context} from 'jest-runtime';
-import Resolver from 'jest-resolve';
+import Resolver = require('jest-resolve');
 import {Config} from '@jest/types';
 import {
   AllowedConfigOptions,
@@ -228,7 +228,7 @@ export default function watch(
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on(
       'change',
-      ({eventsQueue, hasteFS, moduleMap}: HasteChangeEvent) => {
+      ({eventsQueue, hasteFS, moduleMap}: HasteMap.HasteChangeEvent) => {
         const validPaths = eventsQueue.filter(({filePath}) =>
           isValidPath(globalConfig, filePath),
         );

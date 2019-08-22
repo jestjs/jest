@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import ansiEscapes from 'ansi-escapes';
+import ansiEscapes = require('ansi-escapes');
 import {specialChars} from 'jest-util';
 import Prompt from './lib/Prompt';
 import {ScrollOptions} from './types';

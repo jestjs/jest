@@ -5,14 +5,14 @@
   "main": "build/jest.js",
   "types": "build/jest.d.ts",
   "dependencies": {
-    "import-local": "^2.0.0",
+    "import-local": "^3.0.2",
     "jest-cli": "^24.9.0"
   },
   "bin": {
     "jest": "./bin/jest.js"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "repository": {
     "type": "git",

@@ -11,14 +11,11 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/types": "^24.9.0",
-    "execa": "^1.0.0",
-    "throat": "^4.0.0"
-  },
-  "devDependencies": {
-    "@types/execa": "^0.9.0"
+    "execa": "^2.0.4",
+    "throat": "^5.0.0"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

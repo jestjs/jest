@@ -11,14 +11,14 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/types": "^24.9.0",
-    "anymatch": "^2.0.0",
+    "anymatch": "^3.0.3",
     "fb-watchman": "^2.0.0",
     "graceful-fs": "^4.1.15",
     "invariant": "^2.2.4",
     "jest-serializer": "^24.9.0",
     "jest-util": "^24.9.0",
     "jest-worker": "^24.9.0",
-    "micromatch": "^3.1.10",
+    "micromatch": "^4.0.2",
     "sane": "^4.0.3",
     "walker": "^1.0.7"
   },
@@ -32,10 +32,10 @@
     "@types/sane": "^2.0.0"
   },
   "optionalDependencies": {
-    "fsevents": "^1.2.7"
+    "fsevents": "^1.2.9"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

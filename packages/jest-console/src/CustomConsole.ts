@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert from 'assert';
+import assert = require('assert');
 import {format} from 'util';
 import {Console} from 'console';
 import chalk from 'chalk';

@@ -20,17 +20,16 @@
     "graceful-fs": "^4.1.15",
     "is-ci": "^2.0.0",
     "mkdirp": "^0.5.1",
-    "slash": "^2.0.0",
+    "slash": "^3.0.0",
     "source-map": "^0.6.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
     "@types/is-ci": "^2.0.0",
-    "@types/mkdirp": "^0.5.2",
-    "@types/slash": "^2.0.0"
+    "@types/mkdirp": "^0.5.2"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"

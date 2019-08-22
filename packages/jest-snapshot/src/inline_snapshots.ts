@@ -7,7 +7,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import semver from 'semver';
+import semver = require('semver');
 import {
   CallExpression,
   file,

@@ -10,7 +10,7 @@
     "@jest/test-result": "^24.9.0",
     "@jest/transform": "^24.9.0",
     "@jest/types": "^24.9.0",
-    "ansi-escapes": "^3.0.0",
+    "ansi-escapes": "^4.2.1",
     "chalk": "^2.0.1",
     "exit": "^0.1.2",
     "graceful-fs": "^4.1.15",
@@ -27,26 +27,22 @@
     "jest-util": "^24.9.0",
     "jest-validate": "^24.9.0",
     "jest-watcher": "^24.9.0",
-    "micromatch": "^3.1.10",
-    "p-each-series": "^1.0.0",
+    "micromatch": "^4.0.2",
+    "p-each-series": "^2.1.0",
     "realpath-native": "^1.1.0",
-    "rimraf": "^2.5.4",
-    "slash": "^2.0.0",
+    "rimraf": "^3.0.0",
+    "slash": "^3.0.0",
     "strip-ansi": "^5.0.0"
   },
   "devDependencies": {
     "@jest/test-sequencer": "^24.9.0",
-    "@types/ansi-escapes": "^3.0.1",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^3.1.0",
-    "@types/p-each-series": "1.0.0",
-    "@types/rimraf": "^2.0.2",
-    "@types/slash": "^2.0.0",
-    "@types/strip-ansi": "^3.0.0"
+    "@types/rimraf": "^2.0.2"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "repository": {
     "type": "git",

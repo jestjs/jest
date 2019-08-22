@@ -6,12 +6,12 @@
  */
 
 import * as path from 'path';
-import {some as micromatchSome} from 'micromatch';
+import micromatch = require('micromatch');
 import {Context} from 'jest-runtime';
 import {Config} from '@jest/types';
 import {Test} from 'jest-runner';
 import {ChangedFiles} from 'jest-changed-files';
-import DependencyResolver from 'jest-resolve-dependencies';
+import DependencyResolver = require('jest-resolve-dependencies');
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
@@ -37,7 +37,7 @@ export type TestSelectionConfig = {
 };
 
 const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
-  micromatchSome(replacePathSepForGlob(path), globs, {dot: true});
+  micromatch([replacePathSepForGlob(path)], globs, {dot: true}).length > 0;
 
 const regexToMatcher = (testRegex: Array<string>) => (path: Config.Path) =>
   testRegex.some(testRegex => new RegExp(testRegex).test(path));

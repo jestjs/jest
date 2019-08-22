@@ -6,7 +6,11 @@
  */
 
 import chalk from 'chalk';
-import jestDiff, {
+import jestDiff = require('jest-diff');
+import getType = require('jest-get-type');
+import prettyFormat = require('pretty-format');
+
+const {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
@@ -14,9 +18,7 @@ import jestDiff, {
   DiffOptions,
   diffStringsRaw,
   diffStringsUnified,
-} from 'jest-diff';
-import getType, {isPrimitive} from 'jest-get-type';
-import prettyFormat from 'pretty-format';
+} = jestDiff;
 
 const {
   AsymmetricMatcher,
@@ -49,7 +51,7 @@ export type MatcherHintOptions = {
   secondArgumentColor?: MatcherHintColor;
 };
 
-export {DiffOptions};
+export type DiffOptions = jestDiff.DiffOptions;
 
 export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
@@ -251,7 +253,7 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
     return false;
   }
 
-  if (isPrimitive(expected)) {
+  if (getType.isPrimitive(expected)) {
     // Print generic line diff for strings only:
     // * if neither string is empty
     // * if either string has more than one line

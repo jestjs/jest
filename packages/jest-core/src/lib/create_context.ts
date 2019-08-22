@@ -6,13 +6,13 @@
  */
 
 import {Config} from '@jest/types';
-import Runtime, {Context} from 'jest-runtime';
+import Runtime = require('jest-runtime');
 import {HasteMapObject} from 'jest-haste-map';
 
 export default (
   config: Config.ProjectConfig,
   {hasteFS, moduleMap}: HasteMapObject,
-): Context => ({
+): Runtime.Context => ({
   config,
   hasteFS,
   moduleMap,

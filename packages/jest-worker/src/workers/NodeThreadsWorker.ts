@@ -10,7 +10,7 @@ import {PassThrough} from 'stream';
 // ESLint doesn't know about this experimental module
 // eslint-disable-next-line import/no-unresolved
 import {Worker} from 'worker_threads';
-import mergeStream from 'merge-stream';
+import mergeStream = require('merge-stream');
 
 import {
   CHILD_MESSAGE_INITIALIZE,

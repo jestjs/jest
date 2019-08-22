@@ -10,12 +10,12 @@ import {AggregatedResult} from '@jest/test-result';
 import {CustomConsole} from '@jest/console';
 import {createDirectory, preRunMessage} from 'jest-util';
 import {readConfigs} from 'jest-config';
-import Runtime, {Context} from 'jest-runtime';
+import Runtime = require('jest-runtime');
 import {ChangedFilesPromise} from 'jest-changed-files';
-import HasteMap from 'jest-haste-map';
+import HasteMap = require('jest-haste-map');
 import chalk from 'chalk';
-import rimraf from 'rimraf';
-import exit from 'exit';
+import rimraf = require('rimraf');
+import exit = require('exit');
 import {Filter} from '../types';
 import createContext from '../lib/create_context';
 import getChangedFilesPromise from '../getChangedFilesPromise';
@@ -203,7 +203,7 @@ const _run = async (
 };
 
 const runWatch = async (
-  contexts: Array<Context>,
+  contexts: Array<Runtime.Context>,
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
@@ -241,7 +241,7 @@ const runWatch = async (
 
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
-  contexts: Array<Context>,
+  contexts: Array<Runtime.Context>,
   outputStream: NodeJS.WritableStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,

@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import watchman from 'fb-watchman';
+import watchman = require('fb-watchman');
 import {Config} from '@jest/types';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';

@@ -6,13 +6,13 @@
  */
 
 import {readFileSync} from 'graceful-fs';
-import callsites, {CallSite} from 'callsites';
+import callsites = require('callsites');
 import {SourceMapConsumer} from 'source-map';
 import {SourceMapRegistry} from './types';
 
 // Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
 const addSourceMapConsumer = (
-  callsite: CallSite,
+  callsite: callsites.CallSite,
   consumer: SourceMapConsumer,
 ) => {
   const getLineNumber = callsite.getLineNumber;
