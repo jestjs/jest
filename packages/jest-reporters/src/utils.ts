@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {AggregatedResult} from '@jest/test-result';
 import chalk from 'chalk';
-import slash from 'slash';
+import slash = require('slash');
 import {pluralize} from 'jest-util';
 import {SummaryOptions} from './types';
 

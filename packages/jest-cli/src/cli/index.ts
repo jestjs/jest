@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {AggregatedResult} from '@jest/test-result';
 import {clearLine} from 'jest-util';
@@ -13,8 +13,8 @@ import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
 import {getVersion, runCLI} from '@jest/core';
 import chalk from 'chalk';
-import exit from 'exit';
-import yargs from 'yargs';
+import exit = require('exit');
+import yargs = require('yargs');
 import {sync as realpath} from 'realpath-native';
 import init from '../init';
 import * as args from './args';

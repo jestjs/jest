@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert from 'assert';
+import assert = require('assert');
 import {Console} from 'console';
 import {format} from 'util';
 import chalk from 'chalk';
-import {getCallsite, SourceMapRegistry} from '@jest/source-map';
+import {SourceMapRegistry, getCallsite} from '@jest/source-map';
 import {
   ConsoleBuffer,
   LogCounters,

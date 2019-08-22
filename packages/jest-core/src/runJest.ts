@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
 import {formatTestResults, interopRequireDefault} from 'jest-util';
-import exit from 'exit';
-import fs from 'graceful-fs';
+import exit = require('exit');
+import * as fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
@@ -30,7 +30,7 @@ import TestScheduler, {TestSchedulerContext} from './TestScheduler';
 import FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
 import TestWatcher from './TestWatcher';
-import {TestRunData, Filter} from './types';
+import {Filter, TestRunData} from './types';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,

@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 import chalk from 'chalk';
-import getType from 'jest-get-type';
+import getType = require('jest-get-type');
 import diffLines from './diffLines';
 import {getStringDiff} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';

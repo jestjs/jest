@@ -8,13 +8,13 @@
 import {AssertionError} from 'assert';
 import {Circus} from '@jest/types';
 import {
+  DiffOptions,
   diff,
   printExpected,
   printReceived,
-  DiffOptions,
 } from 'jest-matcher-utils';
 import chalk from 'chalk';
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 
 interface AssertionErrorWithStack extends AssertionError {
   stack: string;
@@ -101,10 +101,17 @@ const assertThrowingMatcherHint = (operatorName: string) =>
 const assertMatcherHint = (
   operator: string | undefined | null,
   operatorName: string,
+  expected: unknown,
 ) => {
   let message = '';
 
-  if (operatorName) {
+  if (operator === '==' && expected === true) {
+    message =
+      chalk.dim('assert') +
+      chalk.dim('(') +
+      chalk.red('received') +
+      chalk.dim(')');
+  } else if (operatorName) {
     message =
       chalk.dim('assert') +
       chalk.dim('.' + operatorName + '(') +
@@ -112,15 +119,6 @@ const assertMatcherHint = (
       chalk.dim(', ') +
       chalk.green('expected') +
       chalk.dim(')');
-  }
-
-  if (operator === '==') {
-    message +=
-      ' or ' +
-      chalk.dim('assert') +
-      chalk.dim('(') +
-      chalk.red('received') +
-      chalk.dim(') ');
   }
 
   return message;
@@ -160,7 +158,7 @@ function assertionErrorMessage(
   }
 
   return (
-    buildHintString(assertMatcherHint(operator, operatorName)) +
+    buildHintString(assertMatcherHint(operator, operatorName, expected)) +
     chalk.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
     chalk.reset(`Received:\n`) +

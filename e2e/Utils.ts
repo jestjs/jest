@@ -6,25 +6,26 @@
  *
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {Config} from '@jest/types';
 
-import {sync as spawnSync, ExecaReturns} from 'execa';
+// eslint-disable-next-line import/named
+import {ExecaReturnValue, sync as spawnSync} from 'execa';
 import {createDirectory} from 'jest-util';
-import rimraf from 'rimraf';
+import rimraf = require('rimraf');
 
-export type RunResult = ExecaReturns & {
+interface RunResult extends ExecaReturnValue {
   status: number;
   error: Error;
-};
+}
 export const run = (cmd: string, cwd?: Config.Path): RunResult => {
   const args = cmd.split(/\s/).slice(1);
   const spawnOptions = {cwd, preferLocal: false, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
 
   // For compat with cross-spawn
-  result.status = result.code;
+  result.status = result.exitCode;
 
   if (result.status !== 0) {
     const message = `

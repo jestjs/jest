@@ -8,6 +8,22 @@
 const Immutable = require('immutable');
 const jestExpect = require('../');
 
+// Given a Jest mock function, return a minimal mock of a Jasmine spy.
+const createSpy = fn => {
+  const spy = function() {};
+
+  spy.calls = {
+    all() {
+      return fn.mock.calls.map(args => ({args}));
+    },
+    count() {
+      return fn.mock.calls.length;
+    },
+  };
+
+  return spy;
+};
+
 ['toBeCalled', 'toHaveBeenCalled'].forEach(called => {
   describe(`${called}`, () => {
     test(`works only on spies or jest.fn`, () => {
@@ -19,15 +35,18 @@ const jestExpect = require('../');
     test(`passes when called`, () => {
       const fn = jest.fn();
       fn('arg0', 'arg1', 'arg2');
+      jestExpect(createSpy(fn))[called]();
       jestExpect(fn)[called]();
       expect(() => jestExpect(fn).not[called]()).toThrowErrorMatchingSnapshot();
     });
 
     test(`.not passes when called`, () => {
       const fn = jest.fn();
+      const spy = createSpy(fn);
 
+      jestExpect(spy).not[called]();
       jestExpect(fn).not[called]();
-      expect(() => jestExpect(fn)[called]()).toThrowErrorMatchingSnapshot();
+      expect(() => jestExpect(spy)[called]()).toThrowErrorMatchingSnapshot();
     });
 
     test(`fails with any argument passed`, () => {
@@ -93,10 +112,12 @@ const jestExpect = require('../');
       fn();
       fn();
 
+      const spy = createSpy(fn);
+      jestExpect(spy)[calledTimes](2);
       jestExpect(fn)[calledTimes](2);
 
       expect(() =>
-        jestExpect(fn).not[calledTimes](2),
+        jestExpect(spy).not[calledTimes](2),
       ).toThrowErrorMatchingSnapshot();
     });
 
@@ -105,6 +126,10 @@ const jestExpect = require('../');
       fn();
       fn();
       fn();
+
+      const spy = createSpy(fn);
+      jestExpect(spy)[calledTimes](3);
+      jestExpect(spy).not[calledTimes](2);
 
       jestExpect(fn)[calledTimes](3);
       jestExpect(fn).not[calledTimes](2);
@@ -117,6 +142,10 @@ const jestExpect = require('../');
     test('.not passes if function called less than expected times', () => {
       const fn = jest.fn();
       fn();
+
+      const spy = createSpy(fn);
+      jestExpect(spy)[calledTimes](1);
+      jestExpect(spy).not[calledTimes](2);
 
       jestExpect(fn)[calledTimes](1);
       jestExpect(fn).not[calledTimes](2);
@@ -164,6 +193,7 @@ const jestExpect = require('../');
 
     test(`works when not called`, () => {
       const fn = jest.fn();
+      caller(jestExpect(createSpy(fn)).not[calledWith], 'foo', 'bar');
       caller(jestExpect(fn).not[calledWith], 'foo', 'bar');
 
       expect(() =>
@@ -174,6 +204,7 @@ const jestExpect = require('../');
     test(`works with no arguments`, () => {
       const fn = jest.fn();
       fn();
+      caller(jestExpect(createSpy(fn))[calledWith]);
       caller(jestExpect(fn)[calledWith]);
     });
 
@@ -181,6 +212,7 @@ const jestExpect = require('../');
       const fn = jest.fn();
       fn('foo', 'bar1');
 
+      caller(jestExpect(createSpy(fn)).not[calledWith], 'foo', 'bar');
       caller(jestExpect(fn).not[calledWith], 'foo', 'bar');
 
       expect(() =>
@@ -192,6 +224,7 @@ const jestExpect = require('../');
       const fn = jest.fn();
       fn('foo', 'bar');
 
+      caller(jestExpect(createSpy(fn))[calledWith], 'foo', 'bar');
       caller(jestExpect(fn)[calledWith], 'foo', 'bar');
 
       expect(() =>
@@ -314,27 +347,6 @@ const jestExpect = require('../');
 
         expect(() => {
           jestExpect(fn).not[calledWith](1, 'foo1', 'bar');
-          jestExpect(fn).not[calledWith](2, 'foo', 'bar1');
-          jestExpect(fn).not[calledWith](3, 'foo', 'bar');
-        }).toThrowErrorMatchingSnapshot();
-      });
-
-      test('should replace 1st, 2nd, 3rd with first, second, third', async () => {
-        const fn = jest.fn();
-        fn('foo1', 'bar');
-        fn('foo', 'bar1');
-        fn('foo', 'bar');
-
-        expect(() => {
-          jestExpect(fn)[calledWith](1, 'foo', 'bar');
-          jestExpect(fn)[calledWith](2, 'foo', 'bar');
-          jestExpect(fn)[calledWith](3, 'foo1', 'bar');
-        }).toThrowErrorMatchingSnapshot();
-
-        expect(() => {
-          jestExpect(fn).not[calledWith](1, 'foo1', 'bar');
-          jestExpect(fn).not[calledWith](2, 'foo', 'bar1');
-          jestExpect(fn).not[calledWith](3, 'foo', 'bar');
         }).toThrowErrorMatchingSnapshot();
       });
 
@@ -387,6 +399,12 @@ const jestExpect = require('../');
       expect(() =>
         jestExpect(fn).not[returned](),
       ).toThrowErrorMatchingSnapshot();
+    });
+
+    test(`throw matcher error if received is spy`, () => {
+      const spy = createSpy(jest.fn());
+
+      expect(() => jestExpect(spy)[returned]()).toThrowErrorMatchingSnapshot();
     });
 
     test(`passes when returned`, () => {
@@ -525,11 +543,11 @@ const jestExpect = require('../');
 
 ['toReturnTimes', 'toHaveReturnedTimes'].forEach(returnedTimes => {
   describe(`${returnedTimes}`, () => {
-    test('works only on spies or jest.fn', () => {
-      const fn = function fn() {};
+    test('throw matcher error if received is spy', () => {
+      const spy = createSpy(jest.fn());
 
       expect(() =>
-        jestExpect(fn)[returnedTimes](2),
+        jestExpect(spy).not[returnedTimes](2),
       ).toThrowErrorMatchingSnapshot();
     });
 

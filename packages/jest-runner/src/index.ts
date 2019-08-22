@@ -7,19 +7,19 @@
 
 import {Config} from '@jest/types';
 import {SerializableError} from '@jest/test-result';
-import exit from 'exit';
+import exit = require('exit');
 import throat from 'throat';
 import Worker from 'jest-worker';
 import runTest from './runTest';
-import {worker, SerializableResolver} from './testWorker';
+import {SerializableResolver, worker} from './testWorker';
 import {
-  OnTestFailure,
-  OnTestStart,
-  OnTestSuccess,
+  OnTestFailure as JestOnTestFailure,
+  OnTestStart as JestOnTestStart,
+  OnTestSuccess as JestOnTestSuccess,
   Test as JestTest,
-  TestRunnerContext,
-  TestRunnerOptions,
-  TestWatcher,
+  TestRunnerContext as JestTestRunnerContext,
+  TestRunnerOptions as JestTestRunnerOptions,
+  TestWatcher as JestTestWatcher,
   WatcherState,
 } from './types';
 
@@ -31,25 +31,34 @@ interface WorkerInterface extends Worker {
 
 namespace TestRunner {
   export type Test = JestTest;
+  export type OnTestFailure = JestOnTestFailure;
+  export type OnTestStart = JestOnTestStart;
+  export type OnTestSuccess = JestOnTestSuccess;
+  export type TestWatcher = JestTestWatcher;
+  export type TestRunnerContext = JestTestRunnerContext;
+  export type TestRunnerOptions = JestTestRunnerOptions;
 }
 
 /* eslint-disable-next-line no-redeclare */
 class TestRunner {
   private _globalConfig: Config.GlobalConfig;
-  private _context: TestRunnerContext;
+  private _context: JestTestRunnerContext;
 
-  constructor(globalConfig: Config.GlobalConfig, context?: TestRunnerContext) {
+  constructor(
+    globalConfig: Config.GlobalConfig,
+    context?: JestTestRunnerContext,
+  ) {
     this._globalConfig = globalConfig;
     this._context = context || {};
   }
 
   async runTests(
     tests: Array<JestTest>,
-    watcher: TestWatcher,
-    onStart: OnTestStart,
-    onResult: OnTestSuccess,
-    onFailure: OnTestFailure,
-    options: TestRunnerOptions,
+    watcher: JestTestWatcher,
+    onStart: JestOnTestStart,
+    onResult: JestOnTestSuccess,
+    onFailure: JestOnTestFailure,
+    options: JestTestRunnerOptions,
   ): Promise<void> {
     return await (options.serial
       ? this._createInBandTestRun(tests, watcher, onStart, onResult, onFailure)
@@ -64,10 +73,10 @@ class TestRunner {
 
   private async _createInBandTestRun(
     tests: Array<JestTest>,
-    watcher: TestWatcher,
-    onStart: OnTestStart,
-    onResult: OnTestSuccess,
-    onFailure: OnTestFailure,
+    watcher: JestTestWatcher,
+    onStart: JestOnTestStart,
+    onResult: JestOnTestSuccess,
+    onFailure: JestOnTestFailure,
   ) {
     process.env.JEST_WORKER_ID = '1';
     const mutex = throat(1);
@@ -98,10 +107,10 @@ class TestRunner {
 
   private async _createParallelTestRun(
     tests: Array<JestTest>,
-    watcher: TestWatcher,
-    onStart: OnTestStart,
-    onResult: OnTestSuccess,
-    onFailure: OnTestFailure,
+    watcher: JestTestWatcher,
+    onStart: JestOnTestStart,
+    onResult: JestOnTestSuccess,
+    onFailure: JestOnTestFailure,
   ) {
     const resolvers: Map<string, SerializableResolver> = new Map();
     for (const test of tests) {

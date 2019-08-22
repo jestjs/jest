@@ -6,16 +6,14 @@
  *
  */
 
-'use strict';
-
-import path from 'path';
-import fs from 'fs';
-import os from 'os';
+import * as path from 'path';
+import * as fs from 'fs';
+import {tmpdir} from 'os';
 import {JestHook} from 'jest-watcher';
-import Runtime from 'jest-runtime';
+import Runtime = require('jest-runtime');
 import {normalize} from 'jest-config';
-import HasteMap from 'jest-haste-map';
-import rimraf from 'rimraf';
+import HasteMap = require('jest-haste-map');
+import rimraf = require('rimraf');
 import {AggregatedResult} from '@jest/test-result';
 
 describe('Watch mode flows with changed files', () => {
@@ -24,13 +22,13 @@ describe('Watch mode flows with changed files', () => {
   let watch: any;
   let pipe: NodeJS.ReadStream;
   let stdin: MockStdin;
-  const testDirectory = path.resolve(os.tmpdir(), 'jest-tmp');
+  const testDirectory = path.resolve(tmpdir(), 'jest-tmp');
   const fileTargetPath = path.resolve(testDirectory, 'lost-file.js');
   const fileTargetPath2 = path.resolve(
     testDirectory,
     'watch-test-fake.test.js',
   );
-  const cacheDirectory = path.resolve(os.tmpdir(), `tmp${Math.random()}`);
+  const cacheDirectory = path.resolve(tmpdir(), `tmp${Math.random()}`);
   let hasteMapInstance: HasteMap;
 
   beforeEach(() => {

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import style from 'ansi-styles';
+import * as style from 'ansi-styles';
 import * as PrettyFormat from './types';
 
 import {

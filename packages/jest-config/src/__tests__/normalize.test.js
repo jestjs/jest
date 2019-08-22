@@ -24,8 +24,10 @@ let expectedPathFooQux;
 let expectedPathAbs;
 let expectedPathAbsAnother;
 
+let virtualModuleRegexes;
+beforeEach(() => (virtualModuleRegexes = [/jest-jasmine2/, /babel-jest/]));
 const findNodeModule = jest.fn(name => {
-  if (name.match(/jest-jasmine2|babel-jest/)) {
+  if (virtualModuleRegexes.some(regex => regex.test(name))) {
     return name;
   }
   return null;
@@ -1579,6 +1581,28 @@ describe('displayName', () => {
       }).toThrowErrorMatchingSnapshot();
     },
   );
+
+  it.each([
+    undefined,
+    'jest-runner',
+    'jest-runner-eslint',
+    'jest-runner-tslint',
+    'jest-runner-tsc',
+  ])('generates a default color for the runner %s', runner => {
+    virtualModuleRegexes.push(/jest-runner-.+/);
+    const {
+      options: {displayName},
+    } = normalize(
+      {
+        rootDir: '/root/',
+        displayName: 'project',
+        runner,
+      },
+      {},
+    );
+    expect(displayName.name).toBe('project');
+    expect(displayName.color).toMatchSnapshot();
+  });
 });
 
 describe('testTimeout', () => {

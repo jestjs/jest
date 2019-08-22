@@ -5,19 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import crypto from 'crypto';
-import fs from 'fs';
-import path from 'path';
+import {createHash} from 'crypto';
+import * as fs from 'fs';
+import * as path from 'path';
 import {Transformer} from '@jest/transform';
 import {Config} from '@jest/types';
 import {
-  loadPartialConfig,
   PartialConfig,
   TransformOptions,
   transformSync as babelTransform,
+  loadPartialConfig,
 } from '@babel/core';
 import chalk from 'chalk';
-import slash from 'slash';
+import slash = require('slash');
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
@@ -77,8 +77,7 @@ const createTransformer = (
         babelOptions.babelrc || '',
       ];
 
-      return crypto
-        .createHash('md5')
+      return createHash('md5')
         .update(THIS_FILE)
         .update('\0', 'utf8')
         .update(JSON.stringify(babelOptions.options))

@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config, Global} from '@jest/types';
 import {AssertionResult, TestResult} from '@jest/test-result';
 import {JestEnvironment} from '@jest/environment';
 import {SnapshotStateType} from 'jest-snapshot';
-import Runtime from 'jest-runtime';
+import Runtime = require('jest-runtime');
 
 import {getCallsite} from 'jest-util';
 import installEach from './each';

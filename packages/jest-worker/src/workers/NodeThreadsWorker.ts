@@ -5,24 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {PassThrough} from 'stream';
 // ESLint doesn't know about this experimental module
 // eslint-disable-next-line import/no-unresolved
 import {Worker} from 'worker_threads';
-import mergeStream from 'merge-stream';
+import mergeStream = require('merge-stream');
 
 import {
   CHILD_MESSAGE_INITIALIZE,
-  PARENT_MESSAGE_OK,
-  PARENT_MESSAGE_CLIENT_ERROR,
-  PARENT_MESSAGE_SETUP_ERROR,
   ChildMessage,
   OnEnd,
   OnStart,
-  WorkerOptions,
-  WorkerInterface,
+  PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_OK,
+  PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
+  WorkerInterface,
+  WorkerOptions,
 } from '../types';
 
 export default class ExperimentalWorker implements WorkerInterface {

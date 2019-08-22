@@ -6,16 +6,21 @@
  */
 'use strict';
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+import * as fs from 'fs';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {createDirectory} from 'jest-util';
 import runJest, {json as runWithJson} from '../runJest';
-import {cleanup} from '../Utils';
+import {cleanup, run} from '../Utils';
 
-const DIR = path.join(os.tmpdir(), 'jest-global-teardown');
-const project1DIR = path.join(os.tmpdir(), 'jest-global-teardown-project-1');
-const project2DIR = path.join(os.tmpdir(), 'jest-global-teardown-project-2');
+const DIR = path.join(tmpdir(), 'jest-global-teardown');
+const project1DIR = path.join(tmpdir(), 'jest-global-teardown-project-1');
+const project2DIR = path.join(tmpdir(), 'jest-global-teardown-project-2');
+const e2eDir = path.resolve(__dirname, '../global-teardown');
+
+beforeAll(() => {
+  run('yarn', e2eDir);
+});
 
 beforeEach(() => {
   cleanup(DIR);
@@ -30,10 +35,7 @@ afterAll(() => {
 
 test('globalTeardown is triggered once after all test suites', () => {
   createDirectory(DIR);
-  const teardownPath = path.resolve(
-    __dirname,
-    '../global-teardown/teardown.js',
-  );
+  const teardownPath = path.resolve(e2eDir, 'teardown.js');
   const result = runWithJson('global-teardown', [
     `--globalTeardown=${teardownPath}`,
     `--testPathPattern=__tests__`,
@@ -47,11 +49,8 @@ test('globalTeardown is triggered once after all test suites', () => {
 });
 
 test('jest throws an error when globalTeardown does not export a function', () => {
-  const teardownPath = path.resolve(
-    __dirname,
-    '../global-teardown/invalidTeardown.js',
-  );
-  const {status, stderr} = runJest('global-teardown', [
+  const teardownPath = path.resolve(e2eDir, 'invalidTeardown.js');
+  const {status, stderr} = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
     `--testPathPattern=__tests__`,
   ]);
@@ -63,14 +62,11 @@ test('jest throws an error when globalTeardown does not export a function', () =
 });
 
 test('globalTeardown function gets jest config object as a parameter', () => {
-  const teardownPath = path.resolve(
-    __dirname,
-    '../global-teardown/teardownWithConfig.js',
-  );
+  const teardownPath = path.resolve(e2eDir, 'teardownWithConfig.js');
 
   const testPathPattern = 'pass';
 
-  const result = runJest('global-teardown', [
+  const result = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
     `--testPathPattern=${testPathPattern}`,
   ]);
@@ -79,10 +75,7 @@ test('globalTeardown function gets jest config object as a parameter', () => {
 });
 
 test('should call globalTeardown function of multiple projects', () => {
-  const configPath = path.resolve(
-    __dirname,
-    '../global-teardown/projects.jest.config.js',
-  );
+  const configPath = path.resolve(e2eDir, 'projects.jest.config.js');
 
   const result = runWithJson('global-teardown', [`--config=${configPath}`]);
 
@@ -94,10 +87,7 @@ test('should call globalTeardown function of multiple projects', () => {
 });
 
 test('should not call a globalTeardown of a project if there are no tests to run from this project', () => {
-  const configPath = path.resolve(
-    __dirname,
-    '../global-teardown/projects.jest.config.js',
-  );
+  const configPath = path.resolve(e2eDir, 'projects.jest.config.js');
 
   const result = runWithJson('global-teardown', [
     `--config=${configPath}`,
@@ -112,14 +102,11 @@ test('should not call a globalTeardown of a project if there are no tests to run
 });
 
 test('globalTeardown works with default export', () => {
-  const teardownPath = path.resolve(
-    __dirname,
-    '../global-teardown/teardownWithDefaultExport.js',
-  );
+  const teardownPath = path.resolve(e2eDir, 'teardownWithDefaultExport.js');
 
   const testPathPattern = 'pass';
 
-  const result = runJest('global-teardown', [
+  const result = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
     `--testPathPattern=${testPathPattern}`,
   ]);
@@ -129,11 +116,11 @@ test('globalTeardown works with default export', () => {
 
 test('globalTeardown throws with named export', () => {
   const teardownPath = path.resolve(
-    __dirname,
-    '../global-teardown/invalidTeardownWithNamedExport.js',
+    e2eDir,
+    'invalidTeardownWithNamedExport.js',
   );
 
-  const {status, stderr} = runJest('global-teardown', [
+  const {status, stderr} = runJest(e2eDir, [
     `--globalTeardown=${teardownPath}`,
     `--testPathPattern=__tests__`,
   ]);

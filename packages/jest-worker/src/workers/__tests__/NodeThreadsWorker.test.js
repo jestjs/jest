@@ -9,13 +9,14 @@
 
 /* eslint-disable no-new */
 
+// eslint-disable-next-line import/default
 import getStream from 'get-stream';
 
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
-  PARENT_MESSAGE_OK,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_OK,
 } from '../../types';
 
 let Worker;

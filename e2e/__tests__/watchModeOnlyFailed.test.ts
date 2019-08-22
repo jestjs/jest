@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
+import * as path from 'path';
+import {tmpdir} from 'os';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'watch-mode-only-failed');
+const DIR = path.resolve(tmpdir(), 'watch-mode-only-failed');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));

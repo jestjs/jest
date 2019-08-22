@@ -8,13 +8,13 @@
 import {Config} from '@jest/types';
 import {AggregatedResult, TestResult} from '@jest/test-result';
 import chalk from 'chalk';
-import stringLength from 'string-length';
+import stringLength = require('string-length');
 import {ReporterOnStartOptions} from './types';
 import {
   getSummary,
+  printDisplayName,
   trimAndFormatPath,
   wrapAnsiString,
-  printDisplayName,
 } from './utils';
 
 const RUNNING_TEXT = ' RUNS ';

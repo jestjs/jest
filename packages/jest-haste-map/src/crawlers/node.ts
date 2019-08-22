@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {spawn} from 'child_process';
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import {
-  IgnoreMatcher,
-  InternalHasteMap,
   CrawlerOptions,
   FileData,
+  IgnoreMatcher,
+  InternalHasteMap,
 } from '../types';
 
 type Result = Array<[/* id */ string, /* mtime */ number, /* size */ number]>;

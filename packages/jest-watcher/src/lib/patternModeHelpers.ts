@@ -6,8 +6,8 @@
  */
 
 import chalk from 'chalk';
-import ansiEscapes from 'ansi-escapes';
-import stringLength from 'string-length';
+import ansiEscapes = require('ansi-escapes');
+import stringLength = require('string-length');
 
 export const printPatternCaret = (
   pattern: string,

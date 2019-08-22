@@ -5,26 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import crypto from 'crypto';
-import path from 'path';
-import vm from 'vm';
+import {createHash} from 'crypto';
+import * as path from 'path';
+import {Script} from 'vm';
 import {Config} from '@jest/types';
-import {createDirectory} from 'jest-util';
-import fs from 'graceful-fs';
+import {createDirectory, isPromise} from 'jest-util';
+import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-ignore: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
-import convertSourceMap from 'convert-source-map';
-import HasteMap from 'jest-haste-map';
-import stableStringify from 'fast-json-stable-stringify';
-import slash from 'slash';
-import writeFileAtomic from 'write-file-atomic';
+import {fromSource as sourcemapFromSource} from 'convert-source-map';
+import HasteMap = require('jest-haste-map');
+import stableStringify = require('fast-json-stable-stringify');
+import slash = require('slash');
+import {sync as writeFileAtomic} from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
+import {addHook} from 'pirates';
 import {
   Options,
-  Transformer,
-  TransformedSource,
   TransformResult,
+  TransformedSource,
+  Transformer,
 } from './types';
 import shouldInstrument from './shouldInstrument';
 import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
@@ -49,6 +50,17 @@ const projectCaches: WeakMap<
 
 // To reset the cache for specific changesets (rather than package version).
 const CACHE_VERSION = '1';
+
+async function waitForPromiseWithCleanup(
+  promise: Promise<any>,
+  cleanup: () => void,
+) {
+  try {
+    await promise;
+  } finally {
+    cleanup();
+  }
+}
 
 export default class ScriptTransformer {
   static EVAL_RESULT_VARIABLE: 'Object.<anonymous>';
@@ -87,8 +99,7 @@ export default class ScriptTransformer {
     const transformer = this._getTransformer(filename);
 
     if (transformer && typeof transformer.getCacheKey === 'function') {
-      return crypto
-        .createHash('md5')
+      return createHash('md5')
         .update(
           transformer.getCacheKey(fileData, filename, configString, {
             config: this._config,
@@ -99,8 +110,7 @@ export default class ScriptTransformer {
         .update(CACHE_VERSION)
         .digest('hex');
     } else {
-      return crypto
-        .createHash('md5')
+      return createHash('md5')
         .update(fileData)
         .update(configString)
         .update(instrument ? 'instrument' : '')
@@ -286,7 +296,7 @@ export default class ScriptTransformer {
     if (!transformed.map) {
       //Could be a potential freeze here.
       //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
-      const inlineSourceMap = convertSourceMap.fromSource(transformed.code);
+      const inlineSourceMap = sourcemapFromSource(transformed.code);
 
       if (inlineSourceMap) {
         transformed.map = inlineSourceMap.toJSON();
@@ -358,7 +368,7 @@ export default class ScriptTransformer {
 
       return {
         mapCoverage,
-        script: new vm.Script(wrappedCode, {
+        script: new Script(wrappedCode, {
           displayErrors: true,
           filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
         }),
@@ -434,6 +444,67 @@ export default class ScriptTransformer {
     return fileSource;
   }
 
+  requireAndTranspileModule<ModuleType = unknown>(
+    moduleName: string,
+    callback?: (module: ModuleType) => void,
+  ): ModuleType;
+  requireAndTranspileModule<ModuleType = unknown>(
+    moduleName: string,
+    callback?: (module: ModuleType) => Promise<void>,
+  ): Promise<ModuleType>;
+  requireAndTranspileModule<ModuleType = unknown>(
+    moduleName: string,
+    callback?: (module: ModuleType) => void | Promise<void>,
+  ): ModuleType | Promise<ModuleType> {
+    // Load the transformer to avoid a cycle where we need to load a
+    // transformer in order to transform it in the require hooks
+    this.preloadTransformer(moduleName);
+
+    let transforming = false;
+    const revertHook = addHook(
+      (code, filename) => {
+        try {
+          transforming = true;
+          return this.transformSource(filename, code, false).code || code;
+        } finally {
+          transforming = false;
+        }
+      },
+      {
+        exts: [path.extname(moduleName)],
+        ignoreNodeModules: false,
+        matcher: filename => {
+          if (transforming) {
+            // Don't transform any dependency required by the transformer itself
+            return false;
+          }
+          return this.shouldTransform(filename);
+        },
+      },
+    );
+    const module: ModuleType = require(moduleName);
+
+    if (!callback) {
+      revertHook();
+
+      return module;
+    }
+
+    try {
+      const cbResult = callback(module);
+
+      if (isPromise(cbResult)) {
+        return waitForPromiseWithCleanup(cbResult, revertHook).then(
+          () => module,
+        );
+      }
+    } finally {
+      revertHook();
+    }
+
+    return module;
+  }
+
   /**
    * @deprecated use `this.shouldTransform` instead
    */
@@ -476,8 +547,7 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: Config.Path, code: string) {
-  const checksum = crypto
-    .createHash('md5')
+  const checksum = createHash('md5')
     .update(code)
     .digest('hex');
   writeCacheFile(cachePath, checksum + '\n' + code);
@@ -495,8 +565,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
     return null;
   }
   const code = content.substr(33);
-  const checksum = crypto
-    .createHash('md5')
+  const checksum = createHash('md5')
     .update(code)
     .digest('hex');
   if (checksum === content.substr(0, 32)) {
@@ -513,7 +582,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
  */
 const writeCacheFile = (cachePath: Config.Path, fileData: string) => {
   try {
-    writeFileAtomic.sync(cachePath, fileData, {encoding: 'utf8'});
+    writeFileAtomic(cachePath, fileData, {encoding: 'utf8'});
   } catch (e) {
     if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
       return;

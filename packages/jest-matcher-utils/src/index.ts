@@ -6,9 +6,9 @@
  */
 
 import chalk from 'chalk';
-import jestDiff, {DiffOptions, getStringDiff} from 'jest-diff';
-import getType, {isPrimitive} from 'jest-get-type';
-import prettyFormat from 'pretty-format';
+import jestDiff = require('jest-diff');
+import getType = require('jest-get-type');
+import prettyFormat = require('pretty-format');
 
 const {
   AsymmetricMatcher,
@@ -28,15 +28,20 @@ const PLUGINS = [
   AsymmetricMatcher,
 ];
 
+type MatcherHintColor = (arg: string) => string; // subset of Chalk type
+
 export type MatcherHintOptions = {
   comment?: string;
+  expectedColor?: MatcherHintColor;
   isDirectExpectCall?: boolean;
   isNot?: boolean;
   promise?: string;
+  receivedColor?: MatcherHintColor;
   secondArgument?: string;
+  secondArgumentColor?: MatcherHintColor;
 };
 
-export {DiffOptions};
+export type DiffOptions = jestDiff.DiffOptions;
 
 export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
@@ -215,7 +220,7 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
     return false;
   }
 
-  if (isPrimitive(expected)) {
+  if (getType.isPrimitive(expected)) {
     // Print generic line diff for strings only:
     // * if neither string is empty
     // * if either string has more than one line
@@ -265,7 +270,7 @@ export const printDiffOrStringify = (
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
 ): string => {
   if (typeof expected === 'string' && typeof received === 'string') {
-    const result = getStringDiff(expected, received, {
+    const result = jestDiff.getStringDiff(expected, received, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,
       expand,
@@ -362,16 +367,19 @@ export const matcherHint = (
 ) => {
   const {
     comment = '',
+    expectedColor = EXPECTED_COLOR,
     isDirectExpectCall = false, // seems redundant with received === ''
     isNot = false,
     promise = '',
+    receivedColor = RECEIVED_COLOR,
     secondArgument = '',
+    secondArgumentColor = EXPECTED_COLOR,
   } = options;
   let hint = '';
   let dimString = 'expect'; // concatenate adjacent dim substrings
 
   if (!isDirectExpectCall && received !== '') {
-    hint += DIM_COLOR(dimString + '(') + RECEIVED_COLOR(received);
+    hint += DIM_COLOR(dimString + '(') + receivedColor(received);
     dimString = ')';
   }
 
@@ -398,9 +406,9 @@ export const matcherHint = (
   if (expected === '') {
     dimString += '()';
   } else {
-    hint += DIM_COLOR(dimString + '(') + EXPECTED_COLOR(expected);
+    hint += DIM_COLOR(dimString + '(') + expectedColor(expected);
     if (secondArgument) {
-      hint += DIM_COLOR(', ') + EXPECTED_COLOR(secondArgument);
+      hint += DIM_COLOR(', ') + secondArgumentColor(secondArgument);
     }
     dimString = ')';
   }

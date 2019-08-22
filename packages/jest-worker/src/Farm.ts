@@ -6,14 +6,14 @@
  */
 
 import {
+  CHILD_MESSAGE_CALL,
   ChildMessage,
   FarmOptions,
+  OnEnd,
+  OnStart,
   QueueChildMessage,
   QueueItem,
   WorkerInterface,
-  OnStart,
-  OnEnd,
-  CHILD_MESSAGE_CALL,
 } from './types';
 
 export default class Farm {

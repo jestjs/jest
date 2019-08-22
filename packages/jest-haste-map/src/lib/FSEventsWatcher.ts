@@ -6,17 +6,17 @@
  *
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {EventEmitter} from 'events';
-import anymatch from 'anymatch';
-import micromatch from 'micromatch';
+import anymatch, {Matcher} from 'anymatch';
+import micromatch = require('micromatch');
 // eslint-disable-next-line
 import {Watcher} from 'fsevents';
 // @ts-ignore no types
 import walker from 'walker';
 
-let fsevents: (path: string) => Watcher;
+let fsevents: typeof import('fsevents') | null = null;
 try {
   fsevents = require('fsevents');
 } catch (e) {
@@ -40,7 +40,7 @@ type FsEventsWatcherEvent =
  */
 class FSEventsWatcher extends EventEmitter {
   public readonly root: string;
-  public readonly ignored?: anymatch.Matcher;
+  public readonly ignored?: Matcher;
   public readonly glob: Array<string>;
   public readonly dot: boolean;
   public readonly hasIgnore: boolean;
@@ -49,7 +49,7 @@ class FSEventsWatcher extends EventEmitter {
   private _tracked: Set<string>;
 
   static isSupported() {
-    return fsevents !== undefined;
+    return fsevents !== null;
   }
 
   private static normalizeProxy(
@@ -65,7 +65,7 @@ class FSEventsWatcher extends EventEmitter {
     fileCallback: (normalizedPath: string, stats: fs.Stats) => void,
     endCallback: Function,
     errorCallback: Function,
-    ignored?: anymatch.Matcher,
+    ignored?: Matcher,
   ) {
     walker(dir)
       .filterDir(
@@ -83,7 +83,7 @@ class FSEventsWatcher extends EventEmitter {
     dir: string,
     opts: {
       root: string;
-      ignored?: anymatch.Matcher;
+      ignored?: Matcher;
       glob: string | Array<string>;
       dot: boolean;
     },
@@ -139,8 +139,8 @@ class FSEventsWatcher extends EventEmitter {
       return false;
     }
     return this.glob.length
-      ? micromatch.some(relativePath, this.glob, {dot: this.dot})
-      : this.dot || micromatch.some(relativePath, '**/*');
+      ? micromatch([relativePath], this.glob, {dot: this.dot}).length > 0
+      : this.dot || micromatch([relativePath], '**/*').length > 0;
   }
 
   private handleEvent(filepath: string) {

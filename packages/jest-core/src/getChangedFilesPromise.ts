@@ -6,7 +6,7 @@
  */
 
 import {Config} from '@jest/types';
-import {getChangedFilesForRoots, ChangedFilesPromise} from 'jest-changed-files';
+import {ChangedFilesPromise, getChangedFilesForRoots} from 'jest-changed-files';
 import {formatExecError} from 'jest-message-util';
 import chalk from 'chalk';
 

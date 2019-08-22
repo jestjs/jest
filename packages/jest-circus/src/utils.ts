@@ -9,8 +9,8 @@ import {Circus} from '@jest/types';
 import {convertDescriptorToString} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
-import StackUtils from 'stack-utils';
-import prettyFormat from 'pretty-format';
+import StackUtils = require('stack-utils');
+import prettyFormat = require('pretty-format');
 import {getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});

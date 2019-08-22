@@ -18,10 +18,10 @@ import {
 } from 'jest-snapshot';
 import throat from 'throat';
 import {
+  ROOT_DESCRIBE_BLOCK_NAME,
   addEventHandler,
   dispatch,
   getState as getRunnerState,
-  ROOT_DESCRIBE_BLOCK_NAME,
 } from '../state';
 import {getTestID} from '../utils';
 import run from '../run';

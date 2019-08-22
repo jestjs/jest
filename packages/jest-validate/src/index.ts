@@ -6,10 +6,10 @@
  */
 
 import {
+  ValidationError,
   createDidYouMeanMessage,
   format,
   logValidationWarning,
-  ValidationError,
 } from './utils';
 import validate from './validate';
 import validateCLIOptions from './validateCLIOptions';

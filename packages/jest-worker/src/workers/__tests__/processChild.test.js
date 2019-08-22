@@ -15,11 +15,11 @@ const uninitializedParam = {};
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 import {
-  CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
-  PARENT_MESSAGE_OK,
+  CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_OK,
 } from '../../types';
 
 let ended;
