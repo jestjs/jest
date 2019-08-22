@@ -7,7 +7,6 @@
 
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
-import weak = require('weak-napi');
 import prettyFormat = require('pretty-format');
 import {isPrimitive} from 'jest-get-type';
 
@@ -21,6 +20,22 @@ export default class {
           'Primitives cannot leak memory.',
           'You passed a ' + typeof value + ': <' + prettyFormat(value) + '>',
         ].join(' '),
+      );
+    }
+
+    let weak: typeof import('weak-napi');
+
+    try {
+      // eslint-disable-next-line import/no-extraneous-dependencies
+      weak = require('weak-napi');
+    } catch (err) {
+      if (!err || err.code !== 'MODULE_NOT_FOUND') {
+        throw err;
+      }
+
+      throw new Error(
+        'The leaking detection mechanism requires the "weak-napi" package to be installed and work. ' +
+          'Please install it as a dependency on your main project',
       );
     }
 
