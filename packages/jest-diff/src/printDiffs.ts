@@ -163,11 +163,11 @@ export const diffStringsUnified = (
   const isMultiline = a.includes('\n') || b.includes('\n');
 
   // getAlignedDiffs assumes that a newline was appended to the strings.
-  const diffs = diffStrings(
+  const diffs = diffStringsRaw(
     isMultiline ? a + '\n' : a,
     isMultiline ? b + '\n' : b,
+    true, // cleanupSemantic
   );
-  cleanupSemantic(diffs); // impure function
 
   if (hasCommonDiff(diffs, isMultiline)) {
     const lines = getAlignedDiffs(diffs);
