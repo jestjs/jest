@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiRegex = require('ansi-regex')
+import ansiRegex = require('ansi-regex');
 import * as style from 'ansi-styles';
 import {printDiffOrStringified} from '../print';
 import {serialize, unescape} from '../utils';

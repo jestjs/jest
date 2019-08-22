@@ -9,7 +9,6 @@ import * as path from 'path';
 import {Config} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
 import {TestResult} from '@jest/test-result';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Runtime = require('jest-runtime');
 import {SnapshotStateType} from 'jest-snapshot';
 
