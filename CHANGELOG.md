@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-circus]` [**BREAKING**] Export `state` and `run` ([#8748](https://github.com/facebook/jest/pull/8748))
 - `[jest-config]` [**BREAKING**] Set default display name color based on runner ([#8689](https://github.com/facebook/jest/pull/8689))
 
 ### Fixes
