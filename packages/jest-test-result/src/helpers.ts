@@ -147,7 +147,7 @@ export const addResult = (
 };
 
 export const createEmptyTestResult = (): TestResult => ({
-  leaks: false,
+  leaks: false, // That's legacy code, just adding it as needed for typing
   numFailingTests: 0,
   numPassingTests: 0,
   numPendingTests: 0,
