@@ -11,7 +11,7 @@
 
 module.exports = ({template}) => {
   const moduleExportsDeclaration = template(`
-    const NAME = require('IMPORT');
+    import NAME from 'IMPORT';
   `);
   return {
     name: 'jest-replace-ts-require-assignment',
