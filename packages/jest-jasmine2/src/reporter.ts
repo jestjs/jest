@@ -6,7 +6,7 @@
  */
 
 import {Config} from '@jest/types';
-import {AssertionResult, TestResult} from '@jest/test-result';
+import {AssertionResult, TestResult, emptyTestResult} from '@jest/test-result';
 import {formatResultsErrors} from 'jest-message-util';
 import {SpecResult} from './jasmine/Spec';
 import {SuiteResult} from './jasmine/Suite';
@@ -78,6 +78,7 @@ export default class Jasmine2Reporter implements Reporter {
     });
 
     const testResult = {
+      ...emptyTestResult(),
       console: null,
       failureMessage: formatResultsErrors(
         testResults,
@@ -89,10 +90,6 @@ export default class Jasmine2Reporter implements Reporter {
       numPassingTests,
       numPendingTests,
       numTodoTests,
-      perfStats: {
-        end: 0,
-        start: 0,
-      },
       snapshot: {
         added: 0,
         fileDeleted: false,

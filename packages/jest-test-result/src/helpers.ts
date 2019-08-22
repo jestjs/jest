@@ -145,3 +145,28 @@ export const addResult = (
     testResult.snapshot.unmatched +
     testResult.snapshot.updated;
 };
+
+export const emptyTestResult = (): TestResult => ({
+  leaks: false, // That's legacy code, just adding it so Flow is happy.
+  numFailingTests: 0,
+  numPassingTests: 0,
+  numPendingTests: 0,
+  numTodoTests: 0,
+  openHandles: [],
+  perfStats: {
+    end: 0,
+    start: 0,
+  },
+  skipped: false,
+  snapshot: {
+    added: 0,
+    fileDeleted: false,
+    matched: 0,
+    unchecked: 0,
+    uncheckedKeys: [],
+    unmatched: 0,
+    updated: 0,
+  },
+  testFilePath: '',
+  testResults: [],
+});
