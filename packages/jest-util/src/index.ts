@@ -8,7 +8,6 @@
 import clearLine from './clearLine';
 import createDirectory from './createDirectory';
 import ErrorWithStack from './ErrorWithStack';
-import getFailedSnapshotTests from './getFailedSnapshotTests';
 import installCommonGlobals from './installCommonGlobals';
 import interopRequireDefault from './interopRequireDefault';
 import isInteractive from './isInteractive';
@@ -28,7 +27,6 @@ export {
   convertDescriptorToString,
   createDirectory,
   deepCyclicCopy,
-  getFailedSnapshotTests,
   installCommonGlobals,
   interopRequireDefault,
   isInteractive,
