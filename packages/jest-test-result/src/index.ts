@@ -9,6 +9,7 @@ export {default as formatTestResults} from './formatTestResults';
 export {
   addResult,
   buildFailureTestResult,
+  createEmptyTestResult,
   makeEmptyAggregatedTestResult,
 } from './helpers';
 export {

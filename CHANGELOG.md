@@ -2,8 +2,10 @@
 
 ### Features
 
+- `[babel-plugin-jest-hoist]` Show codeframe on static hoisting issues ([#8865](https://github.com/facebook/jest/pull/8865))
 - `[jest-config]` [**BREAKING**] Set default display name color based on runner ([#8689](https://github.com/facebook/jest/pull/8689))
 - `[jest-diff]` Add options for colors and symbols ([#8841](https://github.com/facebook/jest/pull/8841))
+- `[@jest/test-result]` Create method to create empty `TestResult` ([#8867](https://github.com/facebook/jest/pull/8867))
 
 ### Fixes
 
@@ -20,6 +22,7 @@
 - `[*]` [**BREAKING**] Upgrade to Micromatch v4 ([#8852](https://github.com/facebook/jest/pull/8852))
 - `[docs]` Fix broken link pointing to legacy JS file in "Snapshot Testing".
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM from v11 to v15 ([#8851](https://github.com/facebook/jest/pull/8851))
+- `[jest-util]` [**BREAKING**] Remove deprecated exports ([#8863](https://github.com/facebook/jest/pull/8863))
 
 ### Performance
 

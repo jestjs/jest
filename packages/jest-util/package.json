@@ -10,18 +10,10 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/console": "^24.9.0",
-    "@jest/fake-timers": "^24.9.0",
-    "@jest/source-map": "^24.9.0",
-    "@jest/test-result": "^24.9.0",
     "@jest/types": "^24.9.0",
-    "callsites": "^3.0.0",
     "chalk": "^2.0.1",
-    "graceful-fs": "^4.1.15",
     "is-ci": "^2.0.0",
-    "mkdirp": "^0.5.1",
-    "slash": "^3.0.0",
-    "source-map": "^0.6.0"
+    "mkdirp": "^0.5.1"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
