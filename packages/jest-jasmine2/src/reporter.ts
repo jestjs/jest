@@ -6,7 +6,11 @@
  */
 
 import {Config} from '@jest/types';
-import {AssertionResult, TestResult, createEmptyTestResult} from '@jest/test-result';
+import {
+  AssertionResult,
+  TestResult,
+  createEmptyTestResult,
+} from '@jest/test-result';
 import {formatResultsErrors} from 'jest-message-util';
 import {SpecResult} from './jasmine/Spec';
 import {SuiteResult} from './jasmine/Suite';
