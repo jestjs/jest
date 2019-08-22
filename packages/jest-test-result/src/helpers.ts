@@ -147,7 +147,7 @@ export const addResult = (
 };
 
 export const createEmptyTestResult = (): TestResult => ({
-  leaks: false, // That's legacy code, just adding it so Flow is happy.
+  leaks: false,
   numFailingTests: 0,
   numPassingTests: 0,
   numPendingTests: 0,
