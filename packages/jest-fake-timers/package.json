@@ -12,7 +12,8 @@
   "dependencies": {
     "@jest/types": "^24.9.0",
     "jest-message-util": "^24.9.0",
-    "jest-mock": "^24.9.0"
+    "jest-mock": "^24.9.0",
+    "jest-util": "^24.9.0"
   },
   "engines": {
     "node": ">= 8"

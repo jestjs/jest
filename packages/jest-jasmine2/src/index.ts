@@ -12,7 +12,7 @@ import {JestEnvironment} from '@jest/environment';
 import {SnapshotStateType} from 'jest-snapshot';
 import Runtime = require('jest-runtime');
 
-import {getCallsite} from 'jest-util';
+import {getCallsite} from '@jest/source-map';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
 import JasmineReporter from './reporter';
