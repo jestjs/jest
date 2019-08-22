@@ -9,7 +9,7 @@ import * as path from 'path';
 import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
-import {formatTestResults, interopRequireDefault} from 'jest-util';
+import {interopRequireDefault} from 'jest-util';
 import exit = require('exit');
 import * as fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
@@ -18,6 +18,7 @@ import {Test} from 'jest-runner';
 import {Config} from '@jest/types';
 import {
   AggregatedResult,
+  formatTestResults,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
 // eslint-disable-next-line import/no-extraneous-dependencies

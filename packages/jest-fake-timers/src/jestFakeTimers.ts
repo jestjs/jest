@@ -7,6 +7,7 @@
 
 import {ModuleMocker} from 'jest-mock';
 import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
+import {setGlobal} from 'jest-util';
 
 type Callback = (...args: Array<unknown>) => void;
 
@@ -41,16 +42,6 @@ type TimerConfig<Ref> = {
 };
 
 const MS_IN_A_YEAR = 31536000000;
-
-// TODO: Copied from `jest-util` to avoid cyclic dependency. Import from `jest-util` in the next major
-const setGlobal = (
-  globalToMutate: NodeJS.Global | Window,
-  key: string,
-  value: unknown,
-) => {
-  // @ts-ignore: no index
-  globalToMutate[key] = value;
-};
 
 export default class FakeTimers<TimerRef> {
   private _cancelledTicks!: Record<string, boolean>;

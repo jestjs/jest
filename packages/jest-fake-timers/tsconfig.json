@@ -6,6 +6,7 @@
   },
   "references": [
     {"path": "../jest-message-util"},
-    {"path": "../jest-mock"}
+    {"path": "../jest-mock"},
+    {"path": "../jest-util"}
   ]
 }

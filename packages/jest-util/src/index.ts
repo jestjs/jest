@@ -5,16 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO: Remove these exports in the next major
-import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
-import {getCallsite} from '@jest/source-map';
-import {
-  BufferedConsole,
-  CustomConsole,
-  NullConsole,
-  getConsoleOutput,
-} from '@jest/console';
-import {formatTestResults} from '@jest/test-result';
 import clearLine from './clearLine';
 import createDirectory from './createDirectory';
 import ErrorWithStack from './ErrorWithStack';
@@ -32,19 +22,12 @@ import testPathPatternToRegExp from './testPathPatternToRegExp';
 import * as preRunMessage from './preRunMessage';
 import pluralize from './pluralize';
 
-export = {
-  BufferedConsole,
-  Console: CustomConsole,
+export {
   ErrorWithStack,
-  FakeTimers,
-  NullConsole,
   clearLine,
   convertDescriptorToString,
   createDirectory,
   deepCyclicCopy,
-  formatTestResults,
-  getCallsite,
-  getConsoleOutput,
   getFailedSnapshotTests,
   installCommonGlobals,
   interopRequireDefault,

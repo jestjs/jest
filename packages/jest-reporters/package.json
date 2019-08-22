@@ -5,6 +5,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/console": "^24.9.0",
     "@jest/environment": "^24.9.0",
     "@jest/test-result": "^24.9.0",
     "@jest/transform": "^24.9.0",
