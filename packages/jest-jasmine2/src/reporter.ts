@@ -6,7 +6,7 @@
  */
 
 import {Config} from '@jest/types';
-import {AssertionResult, TestResult, emptyTestResult} from '@jest/test-result';
+import {AssertionResult, TestResult, createEmptyTestResult} from '@jest/test-result';
 import {formatResultsErrors} from 'jest-message-util';
 import {SpecResult} from './jasmine/Spec';
 import {SuiteResult} from './jasmine/Suite';
@@ -78,7 +78,7 @@ export default class Jasmine2Reporter implements Reporter {
     });
 
     const testResult = {
-      ...emptyTestResult(),
+      ...createEmptyTestResult(),
       console: null,
       failureMessage: formatResultsErrors(
         testResults,

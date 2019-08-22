@@ -146,7 +146,7 @@ export const addResult = (
     testResult.snapshot.updated;
 };
 
-export const emptyTestResult = (): TestResult => ({
+export const createEmptyTestResult = (): TestResult => ({
   leaks: false, // That's legacy code, just adding it so Flow is happy.
   numFailingTests: 0,
   numPassingTests: 0,

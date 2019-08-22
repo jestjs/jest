@@ -11,7 +11,7 @@ import {
   AssertionResult,
   Status,
   TestResult,
-  emptyTestResult,
+  createEmptyTestResult,
 } from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
@@ -220,7 +220,7 @@ export const runAndTransformResultsToJestFormat = async ({
 
   dispatch({name: 'teardown'});
   return {
-    ...emptyTestResult(),
+    ...createEmptyTestResult(),
     console: undefined,
     displayName: config.displayName,
     failureMessage,
