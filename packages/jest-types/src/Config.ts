@@ -115,6 +115,9 @@ export type DisplayName =
       color: DisplayNameColor;
     };
 
+export type InitialOptionsWithRootDir = InitialOptions &
+  Required<Pick<InitialOptions, 'rootDir'>>;
+
 export type InitialOptions = Partial<{
   automock: boolean;
   bail: boolean | number;
