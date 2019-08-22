@@ -140,6 +140,8 @@ The returned **array** describes substrings as instances of the `Diff` class (wh
 |  `-1` | `DIFF_DELETE` | in `a` but not in `b` |
 |   `1` | `DIFF_INSERT` | in `b` but not in `a` |
 
+Because `diffStringsRaw` returns the difference as **data** instead of a string, you are free to format it as your application requires (for example, enclosed in HTML markup for browser instead of escape sequences for console).
+
 ### Example of diffStringsRaw with cleanup
 
 ```js
