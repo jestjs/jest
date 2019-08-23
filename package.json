@@ -38,6 +38,7 @@
     "eslint-plugin-react": "^7.1.0",
     "execa": "^2.0.4",
     "fast-check": "^1.13.0",
+    "find-process": "^1.4.1",
     "glob": "^7.1.1",
     "graceful-fs": "^4.1.15",
     "isbinaryfile": "^4.0.0",

@@ -90,6 +90,21 @@ export const writeFiles = (
   });
 };
 
+const NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS = 25;
+/**
+ * Forces Jest to use workers by generating many test files to run.
+ * Slow and modifies the test output. Use sparingly.
+ */
+export const generateTestFilesToForceUsingWorkers = () => {
+  const testFiles = {};
+  for (let i = 0; i <= NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS; i++) {
+    testFiles[`__tests__/test${i}.test.js`] = `
+      test.todo('test ${i}');
+    `;
+  }
+  return testFiles;
+};
+
 export const copyDir = (src: string, dest: string) => {
   const srcStat = fs.lstatSync(src);
   if (srcStat.isDirectory()) {

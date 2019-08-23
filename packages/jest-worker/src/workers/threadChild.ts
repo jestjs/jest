@@ -38,7 +38,7 @@ let initialized = false;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-parentPort!.on('message', (request: any) => {
+const messageListener = (request: any) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
@@ -60,7 +60,8 @@ parentPort!.on('message', (request: any) => {
         'Unexpected request from parent process: ' + request[0],
       );
   }
-});
+};
+parentPort!.on('message', messageListener);
 
 function reportSuccess(result: any) {
   if (isMainThread) {
@@ -109,7 +110,8 @@ function end(): void {
 }
 
 function exitProcess(): void {
-  process.exit(0);
+  // Clean up open handles so the worker ideally exits gracefully
+  parentPort!.removeListener('message', messageListener);
 }
 
 function execMethod(method: string, args: Array<any>): void {
