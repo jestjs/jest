@@ -4,15 +4,13 @@
     "transform": {
       "\\.(js)$": "<rootDir>/preprocessor.js"
     },
-    "transformIgnorePatterns": [
-      "jest-jasmine2",
-      "jest-each",
-      "jest-circus"
-    ],
     "testRegex": "/__tests__/.*\\.(js)$",
     "testEnvironment": "node",
     "transformIgnorePatterns": [
-      "/jest-environment-node/"
+      "jest-circus",
+      "jest-each",
+      "jest-environment-node/",
+      "jest-jasmine2"
     ],
     "moduleFileExtensions": [
       "js"

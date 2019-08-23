@@ -8,9 +8,10 @@
 module.exports = {
   only: [
     'blablabla',
-    /jest-environment-node/,
-    /jest-jasmine2/,
     /jest-circus/,
     /jest-each/,
+    /jest-environment-node/,
+    /jest-jasmine2/,
+    /jest-source-map/,
   ],
 };
