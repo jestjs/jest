@@ -27,7 +27,7 @@ Given values and optional options, `diffLinesUnified(a, b, options?)` does the f
 To use this function, write either of the following:
 
 - `const diffLinesUnified = require('jest-diff');` in CommonJS modules
-- `import diffLinesUnified from 'jest-diff';` in ECMAScript or TypeScript modules
+- `import diffLinesUnified from 'jest-diff';` in ECMAScript modules
 
 ### Example of default export
 
@@ -77,7 +77,7 @@ Although the function is mainly for **multiline** strings, it compares any strin
 Write either of the following:
 
 - `const {diffStringsUnified} = require('jest-diff');` in CommonJS modules
-- `import {diffStringsUnified} from 'jest-diff';` in ECMAScript or TypeScript modules
+- `import {diffStringsUnified} from 'jest-diff';` in ECMAScript modules
 
 ### Example of diffStringsUnified
 
@@ -127,7 +127,7 @@ Given strings and boolean, `diffStringsRaw(a, b, cleanup)` does the following:
 Write one of the following:
 
 - `const {diffStringsRaw} = require('jest-diff');` in CommonJS modules
-- `import {diffStringsRaw} from 'jest-diff';` in ECMAScript or TypeScript modules
+- `import {diffStringsRaw} from 'jest-diff';` in ECMAScript modules
 
 Because `diffStringsRaw` returns the difference as **data** instead of a string, you can format it as your application requires (for example, enclosed in HTML markup for browser instead of escape sequences for console).
 
@@ -189,7 +189,7 @@ diffs[4][1] === 'm'
 Here are all the named imports for the `diffStringsRaw` function:
 
 - `const {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} = require('jest-diff');` in CommonJS modules
-- `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} from 'jest-diff';` in ECMAScript or TypeScript modules
+- `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} from 'jest-diff';` in ECMAScript modules
 
 To write a **formatting** function, you might need the named constants (and `Diff` in TypeScript annotations).
 
