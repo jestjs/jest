@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import jestDiff = require('../');
-const {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} = jestDiff;
+import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} from '../';
 
 describe('diffStringsRaw', () => {
   test('one-line with cleanup', () => {

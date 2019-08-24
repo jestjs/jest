@@ -191,11 +191,7 @@ Here are all the named imports for the `diffStringsRaw` function:
 - `const {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} = require('jest-diff');` in CommonJS modules
 - `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} from 'jest-diff';` in ECMAScript or TypeScript modules
 
-If you write TypeScript declarations like `diff: Diff` or `diffs: Array<Diff>` in a **formatting** function, then `error TS2749: 'Diff' refers to a value, but is being used as a type here.` means you need to declare the **instance** type of the **constructor** function type, as follows:
-
-```ts
-type Diff = InstanceType<typeof Diff>;
-```
+To write a **formatting** function, you might need the named constants (and `Diff` in TypeScript annotations).
 
 If you write an application-specific **cleanup** algorithm, then you might need to call the `Diff` constructor:
 
