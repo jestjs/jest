@@ -14,9 +14,11 @@ const {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
+  Diff,
   diffStringsRaw,
   diffStringsUnified,
 } = jestDiff;
+type Diff = InstanceType<typeof Diff>;
 
 const {
   AsymmetricMatcher,
@@ -226,12 +228,12 @@ export const ensureExpectedIsNonNegativeInteger = (
 // * include change substrings which have argument op
 //   with inverse highlight only if there is a common substring
 const getCommonAndChangedSubstrings = (
-  diffs: Array<jestDiff.Diff>,
+  diffs: Array<Diff>,
   op: number,
   hasCommonDiff: boolean,
 ): string =>
   diffs.reduce(
-    (reduced: string, diff: jestDiff.Diff): string =>
+    (reduced: string, diff: Diff): string =>
       reduced +
       (diff[0] === DIFF_EQUAL
         ? diff[1]

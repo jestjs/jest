@@ -8,12 +8,7 @@
 import prettyFormat = require('pretty-format');
 import chalk from 'chalk';
 import getType = require('jest-get-type');
-import {
-  DIFF_DELETE,
-  DIFF_EQUAL,
-  DIFF_INSERT,
-  Diff as DiffClass,
-} from './cleanupSemantic';
+import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import diffLines from './diffLines';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {diffStringsRaw, diffStringsUnified} from './printDiffs';
@@ -165,14 +160,15 @@ function compareObjects(
 
 // eslint-disable-next-line no-redeclare
 namespace diff {
-  export type Diff = DiffClass;
   export type DiffOptions = JestDiffOptions;
 }
 
 diff.diffStringsUnified = diffStringsUnified;
+
 diff.diffStringsRaw = diffStringsRaw;
 diff.DIFF_DELETE = DIFF_DELETE;
 diff.DIFF_EQUAL = DIFF_EQUAL;
 diff.DIFF_INSERT = DIFF_INSERT;
+diff.Diff = Diff;
 
 export = diff;
