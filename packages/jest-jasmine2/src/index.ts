@@ -38,7 +38,7 @@ async function jasmine2(
   });
 
   const env = jasmine.getEnv();
-  const jasmineInterface = jasmineFactory.interface(jasmine, env);
+  const jasmineInterface = jasmineFactory._interface(jasmine, env);
   Object.assign(environment.global, jasmineInterface);
   env.addReporter(jasmineInterface.jsApiReporter);
 

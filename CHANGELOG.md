@@ -23,8 +23,10 @@
 - `[*]` Add Node 12 to CI ([#8411](https://github.com/facebook/jest/pull/8411))
 - `[*]` [**BREAKING**] Upgrade to Micromatch v4 ([#8852](https://github.com/facebook/jest/pull/8852))
 - `[docs]` Fix broken link pointing to legacy JS file in "Snapshot Testing".
+- `[jest-cli]` [**BREAKING**] Use ESM exports
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM from v11 to v15 ([#8851](https://github.com/facebook/jest/pull/8851))
 - `[jest-util]` [**BREAKING**] Remove deprecated exports ([#8863](https://github.com/facebook/jest/pull/8863))
+- `[jest-validate]` [**BREAKING**] Use ESM exports
 
 ### Performance
 

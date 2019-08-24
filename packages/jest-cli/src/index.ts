@@ -6,20 +6,11 @@
  */
 
 // TODO: remove @jest/core exports for the next major
-import {
+export {
   SearchSource,
   TestScheduler,
   TestWatcher,
   getVersion,
   runCLI,
 } from '@jest/core';
-import {run} from './cli';
-
-export = {
-  SearchSource,
-  TestScheduler,
-  TestWatcher,
-  getVersion,
-  run,
-  runCLI,
-};
+export {run} from './cli';
