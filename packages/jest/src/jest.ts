@@ -5,6 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as cli from 'jest-cli';
-
-export = cli;
+export {
+  SearchSource,
+  TestScheduler,
+  TestWatcher,
+  getVersion,
+  run,
+  runCLI,
+} from 'jest-cli';
