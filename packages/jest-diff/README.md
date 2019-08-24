@@ -26,7 +26,7 @@ Given values and optional options, `diffLinesUnified(a, b, options?)` does the f
 
 To use this function, write either of the following:
 
-- `const diffLinesUnified = require('jest-diff');` in CommonJS modules
+- `const diffLinesUnified = require('jest-diff').default;` in CommonJS modules
 - `import diffLinesUnified from 'jest-diff';` in ECMAScript modules
 
 ### Example of default export
