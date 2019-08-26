@@ -36,7 +36,7 @@ import {Filter, TestRunData} from './types';
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
   context: Context,
-  outputStream: NodeJS.WritableStream,
+  outputStream: NodeJS.WriteStream,
   changedFiles: ChangedFiles | undefined,
   jestHooks: JestHookEmitter,
   filter?: Filter,
@@ -75,7 +75,7 @@ type ProcessResultOptions = Pick<
 > & {
   collectHandles?: () => Array<Error>;
   onComplete?: (result: AggregatedResult) => void;
-  outputStream: NodeJS.WritableStream;
+  outputStream: NodeJS.WriteStream;
 };
 
 const processResults = (
@@ -136,7 +136,7 @@ export default (async function runJest({
 }: {
   globalConfig: Config.GlobalConfig;
   contexts: Array<Context>;
-  outputStream: NodeJS.WritableStream;
+  outputStream: NodeJS.WriteStream;
   testWatcher: TestWatcher;
   jestHooks?: JestHookEmitter;
   startRun: (globalConfig: Config.GlobalConfig) => void;
