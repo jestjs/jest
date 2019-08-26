@@ -114,7 +114,7 @@ export const runCLI = async (
 const buildContextsAndHasteMaps = async (
   configs: Array<Config.ProjectConfig>,
   globalConfig: Config.GlobalConfig,
-  outputStream: NodeJS.WritableStream,
+  outputStream: NodeJS.WriteStream,
 ) => {
   const hasteMapInstances = Array(configs.length);
   const contexts = await Promise.all(
@@ -242,7 +242,7 @@ const runWatch = async (
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
   contexts: Array<Runtime.Context>,
-  outputStream: NodeJS.WritableStream,
+  outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,
   filter?: Filter,

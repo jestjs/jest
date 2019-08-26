@@ -9,13 +9,13 @@ import chalk from 'chalk';
 import clearLine from './clearLine';
 import isInteractive from './isInteractive';
 
-export const print = (stream: NodeJS.WritableStream) => {
+export const print = (stream: NodeJS.WriteStream) => {
   if (isInteractive) {
     stream.write(chalk.bold.dim('Determining test suites to run...'));
   }
 };
 
-export const remove = (stream: NodeJS.WritableStream) => {
+export const remove = (stream: NodeJS.WriteStream) => {
   if (isInteractive) {
     clearLine(stream);
   }
