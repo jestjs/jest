@@ -185,7 +185,7 @@ export default class SnapshotState {
     // Do not mark the snapshot as "checked" if the snapshot is inline and
     // there's an external snapshot. This way the external snapshot can be
     // removed with `--updateSnapshot`.
-    if (!(isInline && this._snapshotData[key])) {
+    if (!(isInline && this._snapshotData[key] !== undefined)) {
       this._uncheckedKeys.delete(key);
     }
 
@@ -248,7 +248,7 @@ export default class SnapshotState {
         return {
           actual: unescape(receivedSerialized),
           count,
-          expected: expected ? unescape(expected) : null,
+          expected: expected !== undefined ? unescape(expected) : null,
           key,
           pass: false,
         };

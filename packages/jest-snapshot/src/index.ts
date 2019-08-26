@@ -340,7 +340,7 @@ const _toMatchSnapshot = ({
   let report: () => string;
   if (pass) {
     return {message: () => '', pass: true};
-  } else if (!expected) {
+  } else if (expected == null) {
     report = () =>
       `New snapshot was ${RECEIVED_COLOR('not written')}. The update flag ` +
       `must be explicitly passed to write a new snapshot.\n\n` +
