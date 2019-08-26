@@ -39,9 +39,9 @@ const initialOptions: Config.InitialOptions = {
   },
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: multipleValidOptions('test-config', {
-    color: 'blue' as 'blue',
+    color: 'blue',
     name: 'test-config',
-  }),
+  } as const),
   errorOnDeprecated: false,
   expand: false,
   extraGlobals: [],
