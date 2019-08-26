@@ -10,6 +10,7 @@ export {
   TestScheduler,
   TestWatcher,
   getVersion,
-  run,
   runCLI,
-} from 'jest-cli';
+} from '@jest/core';
+
+export {run} from 'jest-cli';
