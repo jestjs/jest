@@ -8,13 +8,17 @@
 import prettyFormat = require('pretty-format');
 import chalk from 'chalk';
 import getType = require('jest-get-type');
-export {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
+import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import diffLines from './diffLines';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
-export {diffStringsRaw, diffStringsUnified} from './printDiffs';
+import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 import {DiffOptionsNormalized, DiffOptions as ImportDiffOptions} from './types';
+
 export type DiffOptions = ImportDiffOptions;
+
+export {diffStringsRaw, diffStringsUnified};
+export {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff};
 
 const {
   AsymmetricMatcher,
