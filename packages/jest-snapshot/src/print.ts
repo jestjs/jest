@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff = require('jest-diff');
+import diff, {diffStringsUnified} from 'jest-diff';
 import getType = require('jest-get-type');
 import {
   EXPECTED_COLOR,
@@ -86,7 +86,7 @@ export const printDiffOrStringified = (
       receivedSerializedTrimmed.length <= MAX_DIFF_STRING_LENGTH &&
       expectedSerializedTrimmed !== receivedSerializedTrimmed
     ) {
-      return diff.diffStringsUnified(
+      return diffStringsUnified(
         expectedSerializedTrimmed,
         receivedSerializedTrimmed,
         {

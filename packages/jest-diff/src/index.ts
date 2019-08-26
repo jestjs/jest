@@ -8,17 +8,17 @@
 import prettyFormat = require('pretty-format');
 import chalk from 'chalk';
 import getType = require('jest-get-type');
-import {
-  DIFF_DELETE,
-  DIFF_EQUAL,
-  DIFF_INSERT,
-  Diff as DiffClass,
-} from './cleanupSemantic';
+import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import diffLines from './diffLines';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
-import {DiffOptionsNormalized, DiffOptions as JestDiffOptions} from './types';
+import {DiffOptionsNormalized, DiffOptions as ImportDiffOptions} from './types';
+
+export type DiffOptions = ImportDiffOptions;
+
+export {diffStringsRaw, diffStringsUnified};
+export {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff};
 
 const {
   AsymmetricMatcher,
@@ -50,7 +50,7 @@ const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
-function diff(a: any, b: any, options?: JestDiffOptions): string | null {
+function diff(a: any, b: any, options?: DiffOptions): string | null {
   if (Object.is(a, b)) {
     return NO_DIFF_MESSAGE;
   }
@@ -163,16 +163,4 @@ function compareObjects(
   return diffMessage;
 }
 
-// eslint-disable-next-line no-redeclare
-namespace diff {
-  export type Diff = DiffClass;
-  export type DiffOptions = JestDiffOptions;
-}
-
-diff.diffStringsUnified = diffStringsUnified;
-diff.diffStringsRaw = diffStringsRaw;
-diff.DIFF_DELETE = DIFF_DELETE;
-diff.DIFF_EQUAL = DIFF_EQUAL;
-diff.DIFF_INSERT = DIFF_INSERT;
-
-export = diff;
+export default diff;

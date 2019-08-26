@@ -26,8 +26,8 @@ Given values and optional options, `diffLinesUnified(a, b, options?)` does the f
 
 To use this function, write either of the following:
 
-- `const diffLinesUnified = require('jest-diff');` in a CommonJS module
-- `import diffLinesUnified from 'jest-diff';` in an ECMAScript module
+- `const diffLinesUnified = require('jest-diff').default;` in CommonJS modules
+- `import diffLinesUnified from 'jest-diff';` in ECMAScript modules
 
 ### Example of default export
 
@@ -40,8 +40,7 @@ const difference = diffLinesUnified(a, b);
 
 The returned **string** consists of:
 
-- annotation lines which describe the change symbols with labels
-- blank line
+- annotation lines: describe the two change symbols with labels, and a blank line
 - comparison lines: similar to “unified” view on GitHub, but `Expected` lines are green, `Received` lines are red, and common lines are dim (by default, see Options)
 
 ```diff
@@ -77,8 +76,8 @@ Although the function is mainly for **multiline** strings, it compares any strin
 
 Write either of the following:
 
-- `const {diffStringsUnified} = require('jest-diff');` in a CommonJS module
-- `import {diffStringsUnified} from 'jest-diff';` in an ECMAScript module
+- `const {diffStringsUnified} = require('jest-diff');` in CommonJS modules
+- `import {diffStringsUnified} from 'jest-diff';` in ECMAScript modules
 
 ### Example of diffStringsUnified
 
@@ -91,9 +90,8 @@ const difference = diffStringsUnified(a, b);
 
 The returned **string** consists of:
 
-- annotation lines which describe the change symbols with labels
-- blank line
-- comparison lines: similar to “unified” view on GitHub, and **changed substrings** have **inverted** foreground and background colors
+- annotation lines: describe the two change symbols with labels, and a blank line
+- comparison lines: similar to “unified” view on GitHub, and **changed substrings** have **inverted** foreground and background colors (which the following example does not show)
 
 ```diff
 - Expected
@@ -121,18 +119,21 @@ If the input strings can have **arbitrary length**, we recommend that the callin
 
 ## Usage of diffStringsRaw
 
-Given strings, `diffStringsRaw(a, b, cleanup)` does the following:
+Given strings and boolean, `diffStringsRaw(a, b, cleanup)` does the following:
 
 - **compare** the strings character-by-character using the `diff-sequences` package
 - optionally **clean up** small (often coincidental) common substrings, also known as chaff
 
 Write one of the following:
 
-- `const {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diffStringsRaw} = require('jest-diff');` in a CommonJS module
-- `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diffStringsRaw} from 'jest-diff';` in an ECMAScript module
-- `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} from 'jest-diff';` in a TypeScript module
+- `const {diffStringsRaw} = require('jest-diff');` in CommonJS modules
+- `import {diffStringsRaw} from 'jest-diff';` in ECMAScript modules
 
-The returned **array** describes substrings as instances of the `Diff` class (which calling code can access like array tuples).
+Because `diffStringsRaw` returns the difference as **data** instead of a string, you can format it as your application requires (for example, enclosed in HTML markup for browser instead of escape sequences for console).
+
+The returned **array** describes substrings as instances of the `Diff` class, which calling code can access like array tuples:
+
+The value at index `0` is one of the following:
 
 | value | named export  | description           |
 | ----: | :------------ | :-------------------- |
@@ -140,21 +141,23 @@ The returned **array** describes substrings as instances of the `Diff` class (wh
 |  `-1` | `DIFF_DELETE` | in `a` but not in `b` |
 |   `1` | `DIFF_INSERT` | in `b` but not in `a` |
 
-Because `diffStringsRaw` returns the difference as **data** instead of a string, you are free to format it as your application requires (for example, enclosed in HTML markup for browser instead of escape sequences for console).
+The value at index `1` is a substring of `a` or `b` or both.
 
 ### Example of diffStringsRaw with cleanup
 
 ```js
 const diffs = diffStringsRaw('change from', 'change to', true);
 
-// diffs[0][0] === DIFF_EQUAL
-// diffs[0][1] === 'change '
+/*
+diffs[0][0] === 0 // DIFF_EQUAL
+diffs[0][1] === 'change '
 
-// diffs[1][0] === DIFF_DELETE
-// diffs[1][1] === 'from'
+diffs[1][0] === -1 // DIFF_DELETE
+diffs[1][1] === 'from'
 
-// diffs[2][0] === DIFF_INSERT
-// diffs[2][1] === 'to'
+diffs[2][0] === 1 // DIFF_INSERT
+diffs[2][1] === 'to'
+*/
 ```
 
 ### Example of diffStringsRaw without cleanup
@@ -162,21 +165,40 @@ const diffs = diffStringsRaw('change from', 'change to', true);
 ```js
 const diffs = diffStringsRaw('change from', 'change to', false);
 
-// diffs[0][0] === DIFF_EQUAL
-// diffs[0][1] === 'change '
+/*
+diffs[0][0] === 0 // DIFF_EQUAL
+diffs[0][1] === 'change '
 
-// diffs[1][0] === DIFF_DELETE
-// diffs[1][1] === 'fr'
+diffs[1][0] === -1 // DIFF_DELETE
+diffs[1][1] === 'fr'
 
-// diffs[2][0] === DIFF_INSERT
-// diffs[2][1] === 't'
+diffs[2][0] === 1 // DIFF_INSERT
+diffs[2][1] === 't'
 
 // Here is a small coincidental common substring:
-// diffs[3][0] === DIFF_EQUAL
-// diffs[3][1] === 'o'
+diffs[3][0] === 0 // DIFF_EQUAL
+diffs[3][1] === 'o'
 
-// diffs[4][0] === DIFF_DELETE
-// diffs[4][1] === 'm'
+diffs[4][0] === -1 // DIFF_DELETE
+diffs[4][1] === 'm'
+*/
+```
+
+## Advanced import for diffStringsRaw
+
+Here are all the named imports for the `diffStringsRaw` function:
+
+- `const {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} = require('jest-diff');` in CommonJS modules
+- `import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff, diffStringsRaw} from 'jest-diff';` in ECMAScript modules
+
+To write a **formatting** function, you might need the named constants (and `Diff` in TypeScript annotations).
+
+If you write an application-specific **cleanup** algorithm, then you might need to call the `Diff` constructor:
+
+```js
+const diffCommon = new Diff(DIFF_EQUAL, 'change ');
+const diffDelete = new Diff(DIFF_DELETE, 'from');
+const diffInsert = new Diff(DIFF_INSERT, 'to');
 ```
 
 ## Options

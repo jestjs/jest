@@ -6,17 +6,17 @@
  */
 
 import chalk from 'chalk';
-import jestDiff = require('jest-diff');
-import getType = require('jest-get-type');
-import prettyFormat = require('pretty-format');
-
-const {
+import diffLinesUnified, {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
+  Diff,
+  DiffOptions as ImportDiffOptions,
   diffStringsRaw,
   diffStringsUnified,
-} = jestDiff;
+} from 'jest-diff';
+import getType = require('jest-get-type');
+import prettyFormat = require('pretty-format');
 
 const {
   AsymmetricMatcher,
@@ -49,7 +49,7 @@ export type MatcherHintOptions = {
   secondArgumentColor?: MatcherHintColor;
 };
 
-export type DiffOptions = jestDiff.DiffOptions;
+export type DiffOptions = ImportDiffOptions;
 
 export const EXPECTED_COLOR = chalk.green;
 export const RECEIVED_COLOR = chalk.red;
@@ -226,12 +226,12 @@ export const ensureExpectedIsNonNegativeInteger = (
 // * include change substrings which have argument op
 //   with inverse highlight only if there is a common substring
 const getCommonAndChangedSubstrings = (
-  diffs: Array<jestDiff.Diff>,
+  diffs: Array<Diff>,
   op: number,
   hasCommonDiff: boolean,
 ): string =>
   diffs.reduce(
-    (reduced: string, diff: jestDiff.Diff): string =>
+    (reduced: string, diff: Diff): string =>
       reduced +
       (diff[0] === DIFF_EQUAL
         ? diff[1]
@@ -338,7 +338,7 @@ export const printDiffOrStringify = (
   }
 
   if (isLineDiffable(expected, received)) {
-    const difference = jestDiff(expected, received, {
+    const difference = diffLinesUnified(expected, received, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,
       expand,
@@ -378,7 +378,7 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
 };
 
 export const diff = (a: any, b: any, options?: DiffOptions): string | null =>
-  shouldPrintDiff(a, b) ? jestDiff(a, b, options) : null;
+  shouldPrintDiff(a, b) ? diffLinesUnified(a, b, options) : null;
 
 export const pluralize = (word: string, count: number) =>
   (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
