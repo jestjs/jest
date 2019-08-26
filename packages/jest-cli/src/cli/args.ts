@@ -159,7 +159,7 @@ export const options = {
   },
   collectCoverageOnlyFrom: {
     description: 'Explicit list of paths coverage will be restricted to.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   color: {
@@ -199,14 +199,14 @@ export const options = {
       'An array of regexp pattern strings that are matched ' +
       'against all file paths before executing the test. If the file path' +
       'matches any of the patterns, coverage information will be skipped.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   coverageReporters: {
     description:
       'A list of reporter names that Jest uses when writing ' +
       'coverage reports. Any istanbul reporter can be used.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   coverageThreshold: {
@@ -358,7 +358,7 @@ export const options = {
     description:
       'An array of directory names to be searched recursively ' +
       "up from the requiring module's location.",
-    string: true as true,
+    string: true,
     type: 'array',
   },
   moduleFileExtensions: {
@@ -366,7 +366,7 @@ export const options = {
       'An array of file extensions your modules use. If you ' +
       'require modules without specifying a file extension, these are the ' +
       'extensions Jest will look for. ',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   moduleNameMapper: {
@@ -381,7 +381,7 @@ export const options = {
       'An array of regexp pattern strings that are matched ' +
       'against all module paths before those paths are to be considered ' +
       '"visible" to the module loader.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   modulePaths: {
@@ -389,7 +389,7 @@ export const options = {
       'An alternative API to setting the NODE_PATH env variable, ' +
       'modulePaths is an array of absolute paths to additional locations to ' +
       'search when resolving modules.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   noStackTrace: {
@@ -447,12 +447,12 @@ export const options = {
     description:
       'A list of projects that use Jest to run all tests of all ' +
       'projects in a single instance of Jest.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   reporters: {
     description: 'A list of custom reporters for the test suite.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   resetMocks: {
@@ -490,7 +490,7 @@ export const options = {
     description:
       'A list of paths to directories that Jest should use to ' +
       'search for files in.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   runInBand: {
@@ -520,14 +520,14 @@ export const options = {
     description:
       'A list of paths to modules that run some code to configure or ' +
       'set up the testing environment before each test. ',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   setupFilesAfterEnv: {
     description:
       'A list of paths to modules that run some code to configure or ' +
       'set up the testing framework before each test ',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   showConfig: {
@@ -551,7 +551,7 @@ export const options = {
     description:
       'A list of paths to snapshot serializer modules Jest should ' +
       'use for snapshot testing.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   testEnvironment: {
@@ -575,7 +575,7 @@ export const options = {
   },
   testMatch: {
     description: 'The glob patterns Jest uses to detect test files.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   testNamePattern: {
@@ -588,20 +588,20 @@ export const options = {
       'An array of regexp pattern strings that are matched ' +
       'against all test paths before executing the test. If the test path ' +
       'matches any of the patterns, it will be skipped.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   testPathPattern: {
     description:
       'A regexp pattern string that is matched against all tests ' +
       'paths before executing the test.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   testRegex: {
     description:
       'A string or array of string regexp patterns that Jest uses to detect test files.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   testResultsProcessor: {
@@ -649,7 +649,7 @@ export const options = {
     description:
       'An array of regexp pattern strings that are matched ' +
       'against all source file paths before transformation.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   unmockedModulePathPatterns: {
@@ -657,7 +657,7 @@ export const options = {
       'An array of regexp pattern strings that are matched ' +
       'against all modules before the module loader will automatically ' +
       'return a mock for them.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   updateSnapshot: {
@@ -708,7 +708,7 @@ export const options = {
       'An array of regexp pattern strings that are matched ' +
       'against all paths before trigger test re-run in watch mode. ' +
       'If the test path matches any of the patterns, it will be skipped.',
-    string: true as true,
+    string: true,
     type: 'array',
   },
   watchman: {

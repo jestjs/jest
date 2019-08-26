@@ -176,7 +176,11 @@ export default class ScriptTransformer {
         return transformer;
       }
 
-      transform = require(transformPath) as Transformer;
+      transform = require(transformPath);
+
+      if (!transform) {
+        throw new TypeError('Jest: a transform must export something.');
+      }
       const transformerConfig = this._transformConfigCache.get(transformPath);
       if (typeof transform.createTransformer === 'function') {
         transform = transform.createTransformer(transformerConfig);
