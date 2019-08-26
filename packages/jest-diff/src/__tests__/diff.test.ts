@@ -5,9 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 
 import diff from '../';
+import {diffStringsUnified} from '../printDiffs';
 import {DiffOptions} from '../types';
 
 const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
@@ -833,9 +835,13 @@ test('collapses big diffs to patch format', () => {
 describe('context', () => {
   const testDiffContextLines = (contextLines?: number) => {
     test(`number of lines: ${
-      typeof contextLines === 'number' ? contextLines : 'null'
+      typeof contextLines === 'number' ? contextLines : 'undefined'
     } ${
-      typeof contextLines !== 'number' || contextLines < 0 ? '(5 default)' : ''
+      typeof contextLines === 'number' &&
+      Number.isSafeInteger(contextLines) &&
+      contextLines >= 0
+        ? ''
+        : '(5 default)'
     }`, () => {
       const result = diff(
         {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
@@ -849,9 +855,117 @@ describe('context', () => {
     });
   };
 
-  testDiffContextLines(); // 5 by default
-  testDiffContextLines(2);
-  testDiffContextLines(1);
+  testDiffContextLines(-1); // (5 default)
   testDiffContextLines(0);
-  testDiffContextLines(-1); // Will use default
+  testDiffContextLines(1);
+  testDiffContextLines(2);
+  testDiffContextLines(3.1); // (5 default)
+  testDiffContextLines(); // (5 default)
+});
+
+describe('diffStringsUnified edge cases', () => {
+  test('empty both a and b', () => {
+    const a = '';
+    const b = '';
+
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+  });
+
+  test('empty only a', () => {
+    const a = '';
+    const b = 'one-line string';
+
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+  });
+
+  test('empty only b', () => {
+    const a = 'one-line string';
+    const b = '';
+
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+  });
+
+  test('equal both non-empty', () => {
+    const a = 'one-line string';
+    const b = 'one-line string';
+
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+  });
+
+  test('multiline has no common after clean up chaff', () => {
+    const a = 'delete\ntwo';
+    const b = 'insert\n2';
+
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+  });
+
+  test('one-line has no common after clean up chaff', () => {
+    const a = 'delete';
+    const b = 'insert';
+
+    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+  });
+});
+
+describe('options 7980', () => {
+  const a =
+    '`${Ti.App.name} ${Ti.App.version} ${Ti.Platform.name} ${Ti.Platform.version}`';
+  const b =
+    '`${Ti.App.getName()} ${Ti.App.getVersion()} ${Ti.Platform.getName()} ${Ti.Platform.getVersion()}`';
+
+  const options = {
+    aAnnotation: 'Original',
+    aColor: chalk.red,
+    bAnnotation: 'Modified',
+    bColor: chalk.green,
+  };
+
+  test('diff', () => {
+    expect(diff(a, b, options)).toMatchSnapshot();
+  });
+
+  test('diffStringsUnified', () => {
+    expect(diffStringsUnified(a, b, options)).toMatchSnapshot();
+  });
+});
+
+describe('options', () => {
+  const a = ['delete', 'change from', 'common'];
+  const b = ['change to', 'insert', 'common'];
+
+  describe('change symbols', () => {
+    const options = {
+      aSymbol: '<',
+      bSymbol: '>',
+    };
+
+    test('diff', () => {
+      expect(diff(a, b, options)).toMatchSnapshot();
+    });
+  });
+
+  describe('common', () => {
+    const options = {
+      commonColor: line => line,
+      commonSymbol: '=',
+    };
+
+    test('diff', () => {
+      expect(diff(a, b, options)).toMatchSnapshot();
+    });
+  });
+
+  describe('omitAnnotationLines', () => {
+    const options = {
+      omitAnnotationLines: true,
+    };
+
+    test('diff', () => {
+      expect(diff(a, b, options)).toMatchSnapshot();
+    });
+
+    test('diffStringsUnified empty strings', () => {
+      expect(diffStringsUnified('', '', options)).toMatchSnapshot();
+    });
+  });
 });

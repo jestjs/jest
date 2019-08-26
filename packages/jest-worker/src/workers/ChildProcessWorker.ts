@@ -23,6 +23,13 @@ import {
   WorkerOptions,
 } from '../types';
 
+const SIGNAL_BASE_EXIT_CODE = 128;
+const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
+const SIGTERM_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 15;
+
+// How long to wait after SIGTERM before sending SIGKILL
+const SIGKILL_DELAY = 500;
+
 /**
  * This class wraps the child process and provides a nice interface to
  * communicate with. It takes care of:
@@ -44,19 +51,30 @@ import {
 export default class ChildProcessWorker implements WorkerInterface {
   private _child!: ChildProcess;
   private _options: WorkerOptions;
-  private _onProcessEnd!: OnEnd;
-  private _fakeStream: PassThrough | null;
+
   private _request: ChildMessage | null;
   private _retries!: number;
-  private _stderr: ReturnType<typeof mergeStream> | null;
+  private _onProcessEnd!: OnEnd;
+
+  private _fakeStream: PassThrough | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
+  private _stderr: ReturnType<typeof mergeStream> | null;
+
+  private _exitPromise: Promise<void>;
+  private _resolveExitPromise!: () => void;
 
   constructor(options: WorkerOptions) {
     this._options = options;
-    this._fakeStream = null;
+
     this._request = null;
-    this._stderr = null;
+
+    this._fakeStream = null;
     this._stdout = null;
+    this._stderr = null;
+
+    this._exitPromise = new Promise(resolve => {
+      this._resolveExitPromise = resolve;
+    });
 
     this.initialize();
   }
@@ -96,8 +114,8 @@ export default class ChildProcessWorker implements WorkerInterface {
       this._stderr.add(child.stderr);
     }
 
-    child.on('message', this.onMessage.bind(this));
-    child.on('exit', this.onExit.bind(this));
+    child.on('message', this._onMessage.bind(this));
+    child.on('exit', this._onExit.bind(this));
 
     child.send([
       CHILD_MESSAGE_INITIALIZE,
@@ -116,7 +134,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     if (this._retries > this._options.maxRetries) {
       const error = new Error('Call retries were exceeded');
 
-      this.onMessage([
+      this._onMessage([
         PARENT_MESSAGE_CLIENT_ERROR,
         error.name,
         error.message,
@@ -132,9 +150,11 @@ export default class ChildProcessWorker implements WorkerInterface {
       this._fakeStream.end();
       this._fakeStream = null;
     }
+
+    this._resolveExitPromise();
   }
 
-  onMessage(response: ParentMessage) {
+  private _onMessage(response: ParentMessage) {
     let error;
 
     switch (response[0]) {
@@ -179,8 +199,12 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  onExit(exitCode: number) {
-    if (exitCode !== 0) {
+  private _onExit(exitCode: number) {
+    if (
+      exitCode !== 0 &&
+      exitCode !== SIGTERM_EXIT_CODE &&
+      exitCode !== SIGKILL_EXIT_CODE
+    ) {
       this.initialize();
 
       if (this._request) {
@@ -203,6 +227,19 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._request = request;
     this._retries = 0;
     this._child.send(request);
+  }
+
+  waitForExit() {
+    return this._exitPromise;
+  }
+
+  forceExit() {
+    this._child.kill('SIGTERM');
+    const sigkillTimeout = setTimeout(
+      () => this._child.kill('SIGKILL'),
+      SIGKILL_DELAY,
+    );
+    this._exitPromise.then(() => clearTimeout(sigkillTimeout));
   }
 
   getWorkerId() {

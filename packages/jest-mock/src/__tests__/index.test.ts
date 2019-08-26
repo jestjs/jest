@@ -1020,6 +1020,15 @@ describe('moduleMocker', () => {
     });
   });
 
+  test('mockReturnValue does not override mockImplementationOnce', () => {
+    const mockFn = jest
+      .fn()
+      .mockReturnValue(1)
+      .mockImplementationOnce(() => 2);
+    expect(mockFn()).toBe(2);
+    expect(mockFn()).toBe(1);
+  });
+
   test('mockImplementation resets the mock', () => {
     const fn = jest.fn();
     expect(fn()).toBeUndefined();
