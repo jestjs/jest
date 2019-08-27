@@ -184,7 +184,7 @@ diffs[4][1] === 'm'
 */
 ```
 
-## Advanced import for diffStringsRaw
+### Advanced import for diffStringsRaw
 
 Here are all the named imports for the `diffStringsRaw` function:
 
@@ -224,6 +224,7 @@ For other applications, you can provide an options object as a third argument:
 | `commonSymbol`        | `' '`         |
 | `contextLines`        | `5`           |
 | `expand`              | `true`        |
+| `includeChangeCounts` | `false`       |
 | `omitAnnotationLines` | `false`       |
 
 ### Example of options for labels
@@ -291,6 +292,32 @@ const options = {
 ```
 
 A patch mark like `@@ -12,7 +12,9 @@` accounts for omitted common lines.
+
+### Example of option to include change counts
+
+To display the number of change lines at the right of annotation lines:
+
+```js
+const a = ['change from', 'common'];
+const b = ['change to', 'insert', 'common'];
+const options = {
+  includeChangeCounts: true,
+};
+
+const difference = diffLinesUnified(a, b, options);
+```
+
+```diff
+- Expected  1
++ Received  2
+
+  Array [
+-   "change from",
++   "change to",
++   "insert",
+    "common",
+  ]
+```
 
 ### Example of option to omit annotation lines
 

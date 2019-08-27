@@ -8,7 +8,7 @@
 import chalk, {Chalk} from 'chalk';
 import diff, {Callbacks} from 'diff-sequences';
 import {NO_DIFF_MESSAGE} from './constants';
-import {createPatchMark, printAnnotation} from './printDiffs';
+import {ChangeCounts, createPatchMark, printAnnotation} from './printDiffs';
 import {DiffOptionsNormalized} from './types';
 
 type Original = {
@@ -130,6 +130,11 @@ const diffExpand = (
     array.push(line);
   };
 
+  const changeCounts: ChangeCounts = {
+    a: 0,
+    b: 0,
+  };
+
   let aStart = 0;
   let bStart = 0;
 
@@ -138,6 +143,8 @@ const diffExpand = (
     aCommon,
     bCommon,
   ) => {
+    changeCounts.a += aCommon - aStart;
+    changeCounts.b += bCommon - bStart;
     formatDelete(aStart, aCommon, aLinesUn, aLinesIn, options, put);
     formatInsert(bStart, bCommon, bLinesUn, bLinesIn, options, put);
     formatCommon(
@@ -160,10 +167,12 @@ const diffExpand = (
   diff(aLength, bLength, isCommon, foundSubsequence);
 
   // After the last common subsequence, format remaining change lines.
+  changeCounts.a += aLength - aStart;
+  changeCounts.b += bLength - bStart;
   formatDelete(aStart, aLength, aLinesUn, aLinesIn, options, put);
   formatInsert(bStart, bLength, bLinesUn, bLinesIn, options, put);
 
-  return array.join('\n');
+  return printAnnotation(options, changeCounts) + array.join('\n');
 };
 
 // jest --no-expand
@@ -191,6 +200,10 @@ const diffNoExpand = (
   const bLength = bLinesUn.length;
   const nContextLines = options.contextLines;
   const nContextLines2 = nContextLines + nContextLines;
+  const changeCounts: ChangeCounts = {
+    a: 0,
+    b: 0,
+  };
 
   // Initialize the first patch for changes at the start,
   // especially for edge case in which there is no common subsequence.
@@ -232,6 +245,8 @@ const diffNoExpand = (
     }
 
     // Format preceding change lines.
+    changeCounts.a += aStartCommon - aEnd;
+    changeCounts.b += bStartCommon - bEnd;
     formatDelete(aEnd, aStartCommon, aLinesUn, aLinesIn, options, put);
     formatInsert(bEnd, bStartCommon, bLinesUn, bLinesIn, options, put);
     aEnd = aStartCommon;
@@ -302,6 +317,8 @@ const diffNoExpand = (
 
   // If no common subsequence or last was not at end, format remaining change lines.
   if (!isAtEnd) {
+    changeCounts.a += aLength - aEnd;
+    changeCounts.b += bLength - bEnd;
     formatDelete(aEnd, aLength, aLinesUn, aLinesIn, options, put);
     formatInsert(bEnd, bLength, bLinesUn, bLinesIn, options, put);
     aEnd = aLength;
@@ -314,7 +331,7 @@ const diffNoExpand = (
     array[iPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd);
   }
 
-  return array.join('\n');
+  return printAnnotation(options, changeCounts) + array.join('\n');
 };
 
 export default (
@@ -350,10 +367,7 @@ export default (
     }
   }
 
-  return (
-    printAnnotation(options) +
-    (options.expand
-      ? diffExpand(aLinesUn, bLinesUn, aLinesIn, bLinesIn, options)
-      : diffNoExpand(aLinesUn, bLinesUn, aLinesIn, bLinesIn, options))
-  );
+  return options.expand
+    ? diffExpand(aLinesUn, bLinesUn, aLinesIn, bLinesIn, options)
+    : diffNoExpand(aLinesUn, bLinesUn, aLinesIn, bLinesIn, options);
 };

@@ -18,6 +18,7 @@ export type DiffOptions = {
   commonSymbol?: string;
   contextLines?: number;
   expand?: boolean;
+  includeChangeCounts?: boolean;
   omitAnnotationLines?: boolean;
 };
 
@@ -32,5 +33,6 @@ export type DiffOptionsNormalized = {
   commonSymbol: string;
   contextLines: number;
   expand: boolean;
+  includeChangeCounts: boolean;
   omitAnnotationLines: boolean;
 };

@@ -22,6 +22,7 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   commonSymbol: ' ',
   contextLines: DIFF_CONTEXT_DEFAULT,
   expand: true,
+  includeChangeCounts: false,
   omitAnnotationLines: false,
 };
 
