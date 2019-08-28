@@ -23,6 +23,7 @@
 - `[*]` [**BREAKING**] Drop support for Node 6 ([#8455](https://github.com/facebook/jest/pull/8455))
 - `[*]` Add Node 12 to CI ([#8411](https://github.com/facebook/jest/pull/8411))
 - `[*]` [**BREAKING**] Upgrade to Micromatch v4 ([#8852](https://github.com/facebook/jest/pull/8852))
+- `[*]` Delete obsolete `$FlowFixMe` comments ([#8885](https://github.com/facebook/jest/pull/8885))
 - `[babel-plugin-jest-hoist]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[docs]` Fix broken link pointing to legacy JS file in "Snapshot Testing".
 - `[jest]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
