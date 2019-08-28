@@ -248,7 +248,7 @@ export default class SnapshotState {
         return {
           actual: unescape(receivedSerialized),
           count,
-          expected: expected !== undefined ? unescape(expected) : null,
+          expected: expected !== undefined ? unescape(expected) : undefined,
           key,
           pass: false,
         };
