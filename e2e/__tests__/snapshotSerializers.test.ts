@@ -33,7 +33,6 @@ describe('Snapshot serializers', () => {
 
   it('renders snapshot', () => {
     runAndAssert();
-    // $FlowFixMe dynamic require
     const snapshot = require(snapshotPath);
     expect(snapshot).toMatchSnapshot();
   });
