@@ -11,17 +11,25 @@ With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async
 
 [Jest Puppeteer](https://github.com/smooth-code/jest-puppeteer) provides all required configuration to run your tests using Puppeteer.
 
-1.  First install `jest-puppeteer`
+1.  First install `jest-environment-puppeteer`
 
 ```
-yarn add --dev jest-puppeteer
+yarn add --dev jest-environment-puppeteer puppeteer
+```
+
+or
+
+```
+npm install -D jest-environment-puppeteer puppeteer
 ```
 
 2.  Specify preset in your Jest configuration:
 
 ```json
 {
-  "preset": "jest-puppeteer"
+  "globalSetup": "jest-environment-puppeteer/setup",
+  "globalTeardown": "jest-environment-puppeteer/teardown",
+  "testEnvironment": "jest-environment-puppeteer",
 }
 ```
 
@@ -33,15 +41,16 @@ describe('Google', () => {
     await page.goto('https://google.com');
   });
 
-  it('should be titled "Google"', async () => {
-    await expect(page.title()).resolves.toMatch('Google');
+  it('should display "google" text on page', async () => {
+    const text = await page.evaluate(() => document.body.textContent);
+    expect(text).toContain('google');
   });
 });
 ```
 
 There's no need to load any dependencies. Puppeteer's `page` and `browser` classes will automatically be exposed
 
-See [documentation](https://github.com/smooth-code/jest-puppeteer).
+See [documentation](https://github.com/smooth-code/jest-puppeteer/tree/master/packages/jest-environment-puppeteer).
 
 ## Custom example without jest-puppeteer preset
 
