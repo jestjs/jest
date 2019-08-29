@@ -154,8 +154,8 @@ export const printAnnotation = (
       Math.max(aCount.length - bCount.length, 0);
 
     // Separate annotation from count by padding plus margin of 2 spaces.
-    aRest = ' '.repeat(aPadding + 2) + aCount;
-    bRest = ' '.repeat(bPadding + 2) + bCount;
+    aRest = ' '.repeat(aPadding + 2) + aCount + ' ' + aIndicator;
+    bRest = ' '.repeat(bPadding + 2) + bCount + ' ' + bIndicator;
   }
 
   return (
