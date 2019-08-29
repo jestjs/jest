@@ -265,14 +265,14 @@ FAIL __tests__/testMacro.test.js
     Expected: 2
     Received: 1
 
-      10 | 
-      11 | module.exports = (one: any, two: any) => {
-    > 12 |   expect(one).toEqual(two);
+       8 | 
+       9 | module.exports = (one: any, two: any) => {
+    > 10 |   expect(one).toEqual(two);
          |               ^
-      13 | };
-      14 | 
+      11 | };
+      12 | 
 
-      at toEqual (macros.js:12:15)
+      at toEqual (macros.js:10:15)
       at Object.shouldEqual (__tests__/testMacro.test.js:13:3)
 `;
 
