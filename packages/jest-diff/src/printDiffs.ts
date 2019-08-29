@@ -7,7 +7,13 @@
 
 import chalk from 'chalk';
 
-import {DIFF_EQUAL, Diff, cleanupSemantic} from './cleanupSemantic';
+import {
+  DIFF_DELETE,
+  DIFF_EQUAL,
+  DIFF_INSERT,
+  Diff,
+  cleanupSemantic,
+} from './cleanupSemantic';
 import diffLines from './diffLines';
 import diffStrings from './diffStrings';
 import getAlignedDiffs from './getAlignedDiffs';
@@ -50,30 +56,34 @@ const replaceSpacesAtEnd = (line: string): string =>
 
 export const printDeleteLine = (
   line: string,
-  {aColor, aSymbol}: DiffOptionsNormalized,
+  {aColor, aIndicator}: DiffOptionsNormalized,
 ): string =>
   aColor(
-    line.length !== 0 ? aSymbol + ' ' + replaceSpacesAtEnd(line) : aSymbol,
+    line.length !== 0
+      ? aIndicator + ' ' + replaceSpacesAtEnd(line)
+      : aIndicator,
   );
 
 export const printInsertLine = (
   line: string,
-  {bColor, bSymbol}: DiffOptionsNormalized,
+  {bColor, bIndicator}: DiffOptionsNormalized,
 ): string =>
   bColor(
-    line.length !== 0 ? bSymbol + ' ' + replaceSpacesAtEnd(line) : bSymbol,
+    line.length !== 0
+      ? bIndicator + ' ' + replaceSpacesAtEnd(line)
+      : bIndicator,
   );
 
 // Prevent visually ambiguous empty line as the first or the last.
 export const printCommonLine = (
   line: string,
   isFirstOrLast: boolean,
-  {commonColor, commonSymbol}: DiffOptionsNormalized,
+  {commonColor, commonIndicator}: DiffOptionsNormalized,
 ): string =>
   line.length !== 0
-    ? commonColor(commonSymbol + ' ' + replaceSpacesAtEnd(line))
+    ? commonColor(commonIndicator + ' ' + replaceSpacesAtEnd(line))
     : isFirstOrLast
-    ? commonColor(commonSymbol + ' ' + NEWLINE_SYMBOL)
+    ? commonColor(commonIndicator + ' ' + NEWLINE_SYMBOL)
     : '';
 
 export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
@@ -88,21 +98,73 @@ export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
   return diffs.some(diff => diff[0] === DIFF_EQUAL);
 };
 
-export const printAnnotation = ({
-  aAnnotation,
-  aColor,
-  aSymbol,
-  bAnnotation,
-  bColor,
-  bSymbol,
-  omitAnnotationLines,
-}: DiffOptionsNormalized): string =>
-  omitAnnotationLines
-    ? ''
-    : aColor(aSymbol + ' ' + aAnnotation) +
-      '\n' +
-      bColor(bSymbol + ' ' + bAnnotation) +
-      '\n\n';
+export type ChangeCounts = {
+  a: number;
+  b: number;
+};
+
+const countChanges = (diffs: Array<Diff>): ChangeCounts => {
+  let a = 0;
+  let b = 0;
+
+  diffs.forEach(diff => {
+    switch (diff[0]) {
+      case DIFF_DELETE:
+        a += 1;
+        break;
+
+      case DIFF_INSERT:
+        b += 1;
+        break;
+    }
+  });
+
+  return {a, b};
+};
+
+export const printAnnotation = (
+  {
+    aAnnotation,
+    aColor,
+    aIndicator,
+    bAnnotation,
+    bColor,
+    bIndicator,
+    includeChangeCounts,
+    omitAnnotationLines,
+  }: DiffOptionsNormalized,
+  changeCounts: ChangeCounts,
+): string => {
+  if (omitAnnotationLines) {
+    return '';
+  }
+
+  let aRest = '';
+  let bRest = '';
+
+  if (includeChangeCounts) {
+    const aCount = String(changeCounts.a);
+    const bCount = String(changeCounts.b);
+
+    const aPadding =
+      Math.max(bAnnotation.length - aAnnotation.length, 0) +
+      Math.max(bCount.length - aCount.length, 0);
+    const bPadding =
+      Math.max(aAnnotation.length - bAnnotation.length, 0) +
+      Math.max(aCount.length - bCount.length, 0);
+
+    // Separate annotation from count by padding plus margin of 2 spaces.
+    aRest = ' '.repeat(aPadding + 2) + aCount + ' ' + aIndicator;
+    bRest = ' '.repeat(bPadding + 2) + bCount + ' ' + bIndicator;
+  }
+
+  return (
+    aColor(aIndicator + ' ' + aAnnotation + aRest) +
+    '\n' +
+    bColor(bIndicator + ' ' + bAnnotation + bRest) +
+    '\n\n'
+  );
+};
 
 // In GNU diff format, indexes are one-based instead of zero-based.
 export const createPatchMark = (
@@ -126,32 +188,43 @@ export const diffStringsUnified = (
 
   if (a.length === 0 || b.length === 0) {
     const lines: Array<string> = [];
+    const changeCounts: ChangeCounts = {
+      a: 0,
+      b: 0,
+    };
 
-    // All comparison lines have aColor and aSymbol.
     if (a.length !== 0) {
+      // All comparison lines have aColor and aIndicator.
       a.split('\n').forEach(line => {
         lines.push(printDeleteLine(line, optionsNormalized));
       });
+      changeCounts.a = lines.length;
     }
 
-    // All comparison lines have bColor and bSymbol.
     if (b.length !== 0) {
+      // All comparison lines have bColor and bIndicator.
       b.split('\n').forEach(line => {
         lines.push(printInsertLine(line, optionsNormalized));
       });
+      changeCounts.b = lines.length;
     }
 
-    // If both are empty strings, there are no comparison lines.
-    return printAnnotation(optionsNormalized) + lines.join('\n');
+    // Else if both are empty strings, there are no comparison lines.
+
+    return printAnnotation(optionsNormalized, changeCounts) + lines.join('\n');
   }
 
   if (a === b) {
     const lines = a.split('\n');
     const iLast = lines.length - 1;
+    const changeCounts = {
+      a: 0,
+      b: 0,
+    };
 
-    // All comparison lines have commonColor and commonSymbol.
+    // All comparison lines have commonColor and commonIndicator.
     return (
-      printAnnotation(optionsNormalized) +
+      printAnnotation(optionsNormalized, changeCounts) +
       lines
         .map((line, i) =>
           printCommonLine(line, i === 0 || i === iLast, optionsNormalized),
@@ -172,7 +245,7 @@ export const diffStringsUnified = (
   if (hasCommonDiff(diffs, isMultiline)) {
     const lines = getAlignedDiffs(diffs);
     return (
-      printAnnotation(optionsNormalized) +
+      printAnnotation(optionsNormalized, countChanges(lines)) +
       (optionsNormalized.expand
         ? joinAlignedDiffsExpand(lines, optionsNormalized)
         : joinAlignedDiffsNoExpand(lines, optionsNormalized))

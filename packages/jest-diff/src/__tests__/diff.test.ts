@@ -12,6 +12,10 @@ import diff from '../';
 import {diffStringsUnified} from '../printDiffs';
 import {DiffOptions} from '../types';
 
+const optionsCounts = {
+  includeChangeCounts: true,
+};
+
 const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
 
 const stripped = (a: unknown, b: unknown, options?: DiffOptions) =>
@@ -88,10 +92,10 @@ describe('no visual difference', () => {
 });
 
 test('oneline strings', () => {
-  expect(diff('ab', 'aa')).toMatchSnapshot();
-  expect(diff('123456789', '234567890')).toMatchSnapshot();
-  expect(diff('oneline', 'multi\nline')).toMatchSnapshot();
-  expect(diff('multi\nline', 'oneline')).toMatchSnapshot();
+  expect(diff('ab', 'aa', optionsCounts)).toMatchSnapshot();
+  expect(diff('123456789', '234567890', optionsCounts)).toMatchSnapshot();
+  expect(diff('oneline', 'multi\nline', optionsCounts)).toMatchSnapshot();
+  expect(diff('multi\nline', 'oneline', optionsCounts)).toMatchSnapshot();
 });
 
 describe('falls back to not call toJSON', () => {
@@ -103,7 +107,7 @@ describe('falls back to not call toJSON', () => {
     test('but then objects have differences', () => {
       const a = {line: 1, toJSON};
       const b = {line: 2, toJSON};
-      expect(diff(a, b)).toMatchSnapshot();
+      expect(diff(a, b, optionsCounts)).toMatchSnapshot();
     });
     test('and then objects have no differences', () => {
       const a = {line: 2, toJSON};
@@ -119,7 +123,7 @@ describe('falls back to not call toJSON', () => {
     test('and then objects have differences', () => {
       const a = {line: 1, toJSON};
       const b = {line: 2, toJSON};
-      expect(diff(a, b)).toMatchSnapshot();
+      expect(diff(a, b, optionsCounts)).toMatchSnapshot();
     });
     test('and then objects have no differences', () => {
       const a = {line: 2, toJSON};
@@ -849,6 +853,7 @@ describe('context', () => {
         {
           contextLines,
           expand: false,
+          ...optionsCounts,
         },
       );
       expect(result).toMatchSnapshot();
@@ -868,42 +873,42 @@ describe('diffStringsUnified edge cases', () => {
     const a = '';
     const b = '';
 
-    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b, optionsCounts)).toMatchSnapshot();
   });
 
   test('empty only a', () => {
     const a = '';
     const b = 'one-line string';
 
-    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b, optionsCounts)).toMatchSnapshot();
   });
 
   test('empty only b', () => {
     const a = 'one-line string';
     const b = '';
 
-    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b, optionsCounts)).toMatchSnapshot();
   });
 
   test('equal both non-empty', () => {
     const a = 'one-line string';
     const b = 'one-line string';
 
-    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b, optionsCounts)).toMatchSnapshot();
   });
 
   test('multiline has no common after clean up chaff', () => {
     const a = 'delete\ntwo';
     const b = 'insert\n2';
 
-    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b, optionsCounts)).toMatchSnapshot();
   });
 
   test('one-line has no common after clean up chaff', () => {
     const a = 'delete';
     const b = 'insert';
 
-    expect(diffStringsUnified(a, b)).toMatchSnapshot();
+    expect(diffStringsUnified(a, b, optionsCounts)).toMatchSnapshot();
   });
 });
 
@@ -933,10 +938,13 @@ describe('options', () => {
   const a = ['delete', 'change from', 'common'];
   const b = ['change to', 'insert', 'common'];
 
-  describe('change symbols', () => {
+  const aString = 'change from\ncommon'; // without delete
+  const bString = 'change to\ncommon'; // without insert
+
+  describe('change indicators', () => {
     const options = {
-      aSymbol: '<',
-      bSymbol: '>',
+      aIndicator: '<',
+      bIndicator: '>',
     };
 
     test('diff', () => {
@@ -947,7 +955,7 @@ describe('options', () => {
   describe('common', () => {
     const options = {
       commonColor: line => line,
-      commonSymbol: '=',
+      commonIndicator: '=',
     };
 
     test('diff', () => {
@@ -955,13 +963,57 @@ describe('options', () => {
     });
   });
 
-  describe('omitAnnotationLines', () => {
+  describe('includeChangeCounts false', () => {
+    const options = {
+      includeChangeCounts: false,
+    };
+
+    test('diffLinesUnified', () => {
+      expect(diff(a, b, options)).toMatchSnapshot();
+    });
+
+    test('diffStringsUnified', () => {
+      expect(diffStringsUnified(aString, bString, options)).toMatchSnapshot();
+    });
+  });
+
+  describe('includeChangeCounts true padding', () => {
+    const options = {
+      aAnnotation: 'Before',
+      bAnnotation: 'After',
+      includeChangeCounts: true,
+    };
+
+    test('diffLinesUnified a has 2 digits', () => {
+      const has2 = 'common\na\na\na\na\na\na\na\na\na\na';
+      const has1 = 'common\nb';
+      expect(diff(has2, has1, options)).toMatchSnapshot();
+    });
+
+    test('diffLinesUnified b has 2 digits', () => {
+      const has1 = 'common\na';
+      const has2 = 'common\nb\nb\nb\nb\nb\nb\nb\nb\nb\nb';
+      expect(diff(has1, has2, options)).toMatchSnapshot();
+    });
+
+    test('diffStringsUnified', () => {
+      expect(diffStringsUnified(aString, bString, options)).toMatchSnapshot();
+    });
+  });
+
+  describe('omitAnnotationLines true', () => {
     const options = {
       omitAnnotationLines: true,
     };
 
     test('diff', () => {
       expect(diff(a, b, options)).toMatchSnapshot();
+    });
+
+    test('diffStringsUnified and includeChangeCounts true', () => {
+      const options2 = {...options, includeChangeCounts: true};
+
+      expect(diffStringsUnified(aString, bString, options2)).toMatchSnapshot();
     });
 
     test('diffStringsUnified empty strings', () => {

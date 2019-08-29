@@ -14,14 +14,15 @@ const DIFF_CONTEXT_DEFAULT = 5;
 const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   aAnnotation: 'Expected',
   aColor: chalk.green,
-  aSymbol: '-',
+  aIndicator: '-',
   bAnnotation: 'Received',
   bColor: chalk.red,
-  bSymbol: '+',
+  bIndicator: '+',
   commonColor: chalk.dim,
-  commonSymbol: ' ',
+  commonIndicator: ' ',
   contextLines: DIFF_CONTEXT_DEFAULT,
   expand: true,
+  includeChangeCounts: false,
   omitAnnotationLines: false,
 };
 

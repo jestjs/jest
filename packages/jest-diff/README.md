@@ -40,7 +40,7 @@ const difference = diffLinesUnified(a, b);
 
 The returned **string** consists of:
 
-- annotation lines: describe the two change symbols with labels, and a blank line
+- annotation lines: describe the two change indicators with labels, and a blank line
 - comparison lines: similar to “unified” view on GitHub, but `Expected` lines are green, `Received` lines are red, and common lines are dim (by default, see Options)
 
 ```diff
@@ -90,7 +90,7 @@ const difference = diffStringsUnified(a, b);
 
 The returned **string** consists of:
 
-- annotation lines: describe the two change symbols with labels, and a blank line
+- annotation lines: describe the two change indicators with labels, and a blank line
 - comparison lines: similar to “unified” view on GitHub, and **changed substrings** have **inverted** foreground and background colors (which the following example does not show)
 
 ```diff
@@ -107,9 +107,9 @@ The returned **string** consists of:
 Here are edge cases for the return value:
 
 - both `a` and `b` are empty strings: no comparison lines
-- only `a` is empty string: all comparison lines have `bColor` and `bSymbol` (see Options)
-- only `b` is empty string: all comparison lines have `aColor` and `aSymbol` (see Options)
-- `a` and `b` are equal non-empty strings: all comparison lines have `commonColor` and `commonSymbol` (see Options)
+- only `a` is empty string: all comparison lines have `bColor` and `bIndicator` (see Options)
+- only `b` is empty string: all comparison lines have `aColor` and `aIndicator` (see Options)
+- `a` and `b` are equal non-empty strings: all comparison lines have `commonColor` and `commonIndicator` (see Options)
 
 ### Performance of diffStringsUnified
 
@@ -184,7 +184,7 @@ diffs[4][1] === 'm'
 */
 ```
 
-## Advanced import for diffStringsRaw
+### Advanced import for diffStringsRaw
 
 Here are all the named imports for the `diffStringsRaw` function:
 
@@ -216,14 +216,15 @@ For other applications, you can provide an options object as a third argument:
 | :-------------------- | :------------ |
 | `aAnnotation`         | `'Expected'`  |
 | `aColor`              | `chalk.green` |
-| `aSymbol`             | `'-'`         |
+| `aIndicator`          | `'-'`         |
 | `bAnnotation`         | `'Received'`  |
 | `bColor`              | `chalk.red`   |
-| `bSymbol`             | `'+'`         |
+| `bIndicator`          | `'+'`         |
 | `commonColor`         | `chalk.dim`   |
-| `commonSymbol`        | `' '`         |
+| `commonIndicator`     | `' '`         |
 | `contextLines`        | `5`           |
 | `expand`              | `true`        |
+| `includeChangeCounts` | `false`       |
 | `omitAnnotationLines` | `false`       |
 
 ### Example of options for labels
@@ -264,18 +265,18 @@ const options = {
 };
 ```
 
-### Example of options for symbols
+### Example of options for indicators
 
-For consistency with the `diff` command, you might replace the symbols:
+For consistency with the `diff` command, you might replace the indicators:
 
 ```js
 const options = {
-  aSymbol: '<',
-  bSymbol: '>',
+  aIndicator: '<',
+  bIndicator: '>',
 };
 ```
 
-The `jest-diff` package assumes (but does not enforce) that the 3 symbols have equal length.
+The `jest-diff` package assumes (but does not enforce) that the 3 indicators have equal length.
 
 ### Example of options to limit common lines
 
@@ -291,6 +292,32 @@ const options = {
 ```
 
 A patch mark like `@@ -12,7 +12,9 @@` accounts for omitted common lines.
+
+### Example of option to include change counts
+
+To display the number of change lines at the right of annotation lines:
+
+```js
+const a = ['change from', 'common'];
+const b = ['change to', 'insert', 'common'];
+const options = {
+  includeChangeCounts: true,
+};
+
+const difference = diffLinesUnified(a, b, options);
+```
+
+```diff
+- Expected  1 -
++ Received  2 +
+
+  Array [
+-   "change from",
++   "change to",
++   "insert",
+    "common",
+  ]
+```
 
 ### Example of option to omit annotation lines
 
