@@ -15,7 +15,7 @@ import {
   TestWatcher,
 } from 'jest-runner';
 import throat from 'throat';
-import {TestResult} from '@jest/test-result';
+import {TestResult, createEmptyTestResult} from '@jest/test-result';
 
 export default class BaseTestRunner {
   private _globalConfig: Config.GlobalConfig;
@@ -38,25 +38,11 @@ export default class BaseTestRunner {
       (promise, test) =>
         mutex(() =>
           promise
-            .then(async () => {
+            .then(async () : Promise<TestResult> => {
               await onStart(test);
               return {
-                numFailingTests: 0,
+                ...createEmptyTestResult(),
                 numPassingTests: 1,
-                numPendingTests: 0,
-                numTodoTests: 0,
-                perfStats: {
-                  end: 0,
-                  start: 0,
-                },
-                snapshot: {
-                  added: 0,
-                  fileDeleted: false,
-                  matched: 0,
-                  unchecked: 0,
-                  unmatched: 0,
-                  updated: 0,
-                },
                 testFilePath: test.path,
                 testResults: [
                   {
@@ -64,11 +50,13 @@ export default class BaseTestRunner {
                     duration: 2,
                     failureMessages: [],
                     fullName: 'sample test',
+                    location: null,
+                    numPassingAsserts: 1,
                     status: 'passed',
                     title: 'sample test',
                   },
                 ],
-              } as TestResult;
+              };
             })
             .then(result => onResult(test, result))
             .catch(err => onFailure(test, err))
