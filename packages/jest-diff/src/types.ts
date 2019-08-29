@@ -10,12 +10,12 @@ type DiffOptionsColor = (arg: string) => string; // subset of Chalk type
 export type DiffOptions = {
   aAnnotation?: string;
   aColor?: DiffOptionsColor;
-  aSymbol?: string;
+  aIndicator?: string;
   bAnnotation?: string;
   bColor?: DiffOptionsColor;
-  bSymbol?: string;
+  bIndicator?: string;
   commonColor?: DiffOptionsColor;
-  commonSymbol?: string;
+  commonIndicator?: string;
   contextLines?: number;
   expand?: boolean;
   includeChangeCounts?: boolean;
@@ -25,12 +25,12 @@ export type DiffOptions = {
 export type DiffOptionsNormalized = {
   aAnnotation: string;
   aColor: DiffOptionsColor;
-  aSymbol: string;
+  aIndicator: string;
   bAnnotation: string;
   bColor: DiffOptionsColor;
-  bSymbol: string;
+  bIndicator: string;
   commonColor: DiffOptionsColor;
-  commonSymbol: string;
+  commonIndicator: string;
   contextLines: number;
   expand: boolean;
   includeChangeCounts: boolean;

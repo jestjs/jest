@@ -46,7 +46,7 @@ const formatDelete = (
   aEnd: number,
   aLinesUn: Array<string>,
   aLinesIn: Array<string>,
-  {aColor, aSymbol}: DiffOptionsNormalized,
+  {aColor, aIndicator}: DiffOptionsNormalized,
   put: Put,
 ) => {
   const highlightSpaces = getHighlightSpaces(aLinesUn !== aLinesIn);
@@ -56,7 +56,9 @@ const formatDelete = (
     const indentation = aLineIn.slice(0, aLineIn.length - aLineUn.length);
 
     put(
-      aColor(aSymbol + ' ' + indentation + highlightSpaces(aLineUn, bgInverse)),
+      aColor(
+        aIndicator + ' ' + indentation + highlightSpaces(aLineUn, bgInverse),
+      ),
     );
   }
 };
@@ -67,7 +69,7 @@ const formatInsert = (
   bEnd: number,
   bLinesUn: Array<string>,
   bLinesIn: Array<string>,
-  {bColor, bSymbol}: DiffOptionsNormalized,
+  {bColor, bIndicator}: DiffOptionsNormalized,
   put: Put,
 ) => {
   const highlightSpaces = getHighlightSpaces(bLinesUn !== bLinesIn);
@@ -77,7 +79,9 @@ const formatInsert = (
     const indentation = bLineIn.slice(0, bLineIn.length - bLineUn.length);
 
     put(
-      bColor(bSymbol + ' ' + indentation + highlightSpaces(bLineUn, bgInverse)),
+      bColor(
+        bIndicator + ' ' + indentation + highlightSpaces(bLineUn, bgInverse),
+      ),
     );
   }
 };
@@ -92,7 +96,7 @@ const formatCommon = (
   aLinesIn: Array<string>,
   bLinesUn: Array<string>,
   bLinesIn: Array<string>,
-  {commonColor, commonSymbol}: DiffOptionsNormalized,
+  {commonColor, commonIndicator}: DiffOptionsNormalized,
   put: Put,
 ) => {
   const highlightSpaces = getHighlightSpaces(bLinesUn !== bLinesIn);
@@ -109,7 +113,7 @@ const formatCommon = (
     const fg = hasSameIndentation ? commonColor : fgIndent;
     const bg = hasSameIndentation ? bgCommon : bgInverse;
 
-    put(fg(commonSymbol + ' ' + indentation + highlightSpaces(bLineUn, bg)));
+    put(fg(commonIndicator + ' ' + indentation + highlightSpaces(bLineUn, bg)));
   }
 };
 

@@ -322,7 +322,7 @@ exports[`options 7980 diffStringsUnified 1`] = `
 <green>+ \`\${Ti.App.<inverse>getN</>ame<inverse>()</>} \${Ti.App.<inverse>getV</>ersion<inverse>()</>} \${Ti.Platform.<inverse>getN</>ame<inverse>()</>} \${Ti.Platform.<inverse>getV</>ersion<inverse>()</>}\`</>"
 `;
 
-exports[`options change symbols diff 1`] = `
+exports[`options change indicators diff 1`] = `
 "<green>< Expected</>
 <red>> Received</>
 

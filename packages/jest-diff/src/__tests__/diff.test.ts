@@ -941,10 +941,10 @@ describe('options', () => {
   const aString = 'change from\ncommon'; // without delete
   const bString = 'change to\ncommon'; // without insert
 
-  describe('change symbols', () => {
+  describe('change indicators', () => {
     const options = {
-      aSymbol: '<',
-      bSymbol: '>',
+      aIndicator: '<',
+      bIndicator: '>',
     };
 
     test('diff', () => {
@@ -955,7 +955,7 @@ describe('options', () => {
   describe('common', () => {
     const options = {
       commonColor: line => line,
-      commonSymbol: '=',
+      commonIndicator: '=',
     };
 
     test('diff', () => {

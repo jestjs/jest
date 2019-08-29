@@ -56,30 +56,34 @@ const replaceSpacesAtEnd = (line: string): string =>
 
 export const printDeleteLine = (
   line: string,
-  {aColor, aSymbol}: DiffOptionsNormalized,
+  {aColor, aIndicator}: DiffOptionsNormalized,
 ): string =>
   aColor(
-    line.length !== 0 ? aSymbol + ' ' + replaceSpacesAtEnd(line) : aSymbol,
+    line.length !== 0
+      ? aIndicator + ' ' + replaceSpacesAtEnd(line)
+      : aIndicator,
   );
 
 export const printInsertLine = (
   line: string,
-  {bColor, bSymbol}: DiffOptionsNormalized,
+  {bColor, bIndicator}: DiffOptionsNormalized,
 ): string =>
   bColor(
-    line.length !== 0 ? bSymbol + ' ' + replaceSpacesAtEnd(line) : bSymbol,
+    line.length !== 0
+      ? bIndicator + ' ' + replaceSpacesAtEnd(line)
+      : bIndicator,
   );
 
 // Prevent visually ambiguous empty line as the first or the last.
 export const printCommonLine = (
   line: string,
   isFirstOrLast: boolean,
-  {commonColor, commonSymbol}: DiffOptionsNormalized,
+  {commonColor, commonIndicator}: DiffOptionsNormalized,
 ): string =>
   line.length !== 0
-    ? commonColor(commonSymbol + ' ' + replaceSpacesAtEnd(line))
+    ? commonColor(commonIndicator + ' ' + replaceSpacesAtEnd(line))
     : isFirstOrLast
-    ? commonColor(commonSymbol + ' ' + NEWLINE_SYMBOL)
+    ? commonColor(commonIndicator + ' ' + NEWLINE_SYMBOL)
     : '';
 
 export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
@@ -122,10 +126,10 @@ export const printAnnotation = (
   {
     aAnnotation,
     aColor,
-    aSymbol,
+    aIndicator,
     bAnnotation,
     bColor,
-    bSymbol,
+    bIndicator,
     includeChangeCounts,
     omitAnnotationLines,
   }: DiffOptionsNormalized,
@@ -155,9 +159,9 @@ export const printAnnotation = (
   }
 
   return (
-    aColor(aSymbol + ' ' + aAnnotation + aRest) +
+    aColor(aIndicator + ' ' + aAnnotation + aRest) +
     '\n' +
-    bColor(bSymbol + ' ' + bAnnotation + bRest) +
+    bColor(bIndicator + ' ' + bAnnotation + bRest) +
     '\n\n'
   );
 };
@@ -190,7 +194,7 @@ export const diffStringsUnified = (
     };
 
     if (a.length !== 0) {
-      // All comparison lines have aColor and aSymbol.
+      // All comparison lines have aColor and aIndicator.
       a.split('\n').forEach(line => {
         lines.push(printDeleteLine(line, optionsNormalized));
       });
@@ -198,7 +202,7 @@ export const diffStringsUnified = (
     }
 
     if (b.length !== 0) {
-      // All comparison lines have bColor and bSymbol.
+      // All comparison lines have bColor and bIndicator.
       b.split('\n').forEach(line => {
         lines.push(printInsertLine(line, optionsNormalized));
       });
@@ -218,7 +222,7 @@ export const diffStringsUnified = (
       b: 0,
     };
 
-    // All comparison lines have commonColor and commonSymbol.
+    // All comparison lines have commonColor and commonIndicator.
     return (
       printAnnotation(optionsNormalized, changeCounts) +
       lines
