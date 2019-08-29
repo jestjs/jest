@@ -67,17 +67,11 @@ function resolveSync(
     }
   } else {
     // otherwise search for node_modules
-    const dirs = nodeModulesPaths(basedir, {
+    const paths = nodeModulesPaths(basedir, {
       moduleDirectory: options.moduleDirectory,
       paths,
     });
-    for (let i = 0; i < dirs.length; i++) {
-      const resolveTarget = path.join(dirs[i], target);
-      const result = tryResolve(resolveTarget);
-      if (result) {
-        return result;
-      }
-    }
+    return require.resolve(target, { paths });
   }
 
   if (isBuiltinModule(target)) {
@@ -123,26 +117,11 @@ function resolveSync(
   }
 
   function resolveAsDirectory(name: Config.Path): Config.Path | undefined {
-    if (!isDirectory(name)) {
-      return undefined;
-    }
-
-    const pkgfile = path.join(name, 'package.json');
-    let pkgmain;
     try {
-      const body = fs.readFileSync(pkgfile, 'utf8');
-      pkgmain = JSON.parse(body).main;
-    } catch (e) {}
-
-    if (pkgmain && !isCurrentDirectory(pkgmain)) {
-      const resolveTarget = path.resolve(name, pkgmain);
-      const result = tryResolve(resolveTarget);
-      if (result) {
-        return result;
-      }
+      return require.resolve(name);
+    } catch {
+      return undefined
     }
-
-    return resolveAsFile(path.join(name, 'index'));
   }
 }
 
@@ -190,9 +169,4 @@ function isFile(file: Config.Path): boolean {
 
 function isDirectory(dir: Config.Path): boolean {
   return statSyncCached(dir) === IPathType.DIRECTORY;
-}
-
-const CURRENT_DIRECTORY = path.resolve('.');
-function isCurrentDirectory(testPath: Config.Path): boolean {
-  return CURRENT_DIRECTORY === path.resolve(testPath);
 }
