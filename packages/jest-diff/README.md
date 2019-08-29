@@ -308,8 +308,8 @@ const difference = diffLinesUnified(a, b, options);
 ```
 
 ```diff
-- Expected  1
-+ Received  2
+- Expected  1 -
++ Received  2 +
 
   Array [
 -   "change from",
