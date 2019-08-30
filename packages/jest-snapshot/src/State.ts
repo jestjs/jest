@@ -35,6 +35,14 @@ export type SnapshotMatchOptions = {
   error?: Error;
 };
 
+type SnapshotReturnOptions = {
+  actual: string;
+  count: number;
+  expected?: string;
+  key: string;
+  pass: boolean;
+};
+
 export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
@@ -173,7 +181,7 @@ export default class SnapshotState {
     key,
     inlineSnapshot,
     error,
-  }: SnapshotMatchOptions) {
+  }: SnapshotMatchOptions): SnapshotReturnOptions {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
     const isInline = inlineSnapshot !== undefined;
