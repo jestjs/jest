@@ -475,7 +475,7 @@ export default class ScriptTransformer {
         }
       },
       {
-        exts: [path.extname(moduleName)],
+        exts: this._config.moduleFileExtensions.map(ext => `.${ext}`),
         ignoreNodeModules: false,
         matcher: filename => {
           if (transforming) {
