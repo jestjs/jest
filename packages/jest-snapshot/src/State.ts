@@ -35,6 +35,14 @@ export type SnapshotMatchOptions = {
   error?: Error;
 };
 
+type SnapshotReturnOptions = {
+  actual: string;
+  count: number;
+  expected?: string;
+  key: string;
+  pass: boolean;
+};
+
 export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
@@ -173,7 +181,7 @@ export default class SnapshotState {
     key,
     inlineSnapshot,
     error,
-  }: SnapshotMatchOptions) {
+  }: SnapshotMatchOptions): SnapshotReturnOptions {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
     const isInline = inlineSnapshot !== undefined;
@@ -185,7 +193,7 @@ export default class SnapshotState {
     // Do not mark the snapshot as "checked" if the snapshot is inline and
     // there's an external snapshot. This way the external snapshot can be
     // removed with `--updateSnapshot`.
-    if (!(isInline && this._snapshotData[key])) {
+    if (!(isInline && this._snapshotData[key] !== undefined)) {
       this._uncheckedKeys.delete(key);
     }
 
@@ -248,7 +256,7 @@ export default class SnapshotState {
         return {
           actual: unescape(receivedSerialized),
           count,
-          expected: expected ? unescape(expected) : null,
+          expected: expected !== undefined ? unescape(expected) : undefined,
           key,
           pass: false,
         };

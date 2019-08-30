@@ -340,7 +340,7 @@ const _toMatchSnapshot = ({
   let report: () => string;
   if (pass) {
     return {message: () => '', pass: true};
-  } else if (!expected) {
+  } else if (expected === undefined) {
     report = () =>
       `New snapshot was ${RECEIVED_COLOR('not written')}. The update flag ` +
       `must be explicitly passed to write a new snapshot.\n\n` +
@@ -349,8 +349,8 @@ const _toMatchSnapshot = ({
       `${RECEIVED_COLOR('Received value')} ` +
       `${actual}`;
   } else {
-    expected = utils.removeExtraLineBreaks(expected || '');
-    actual = utils.removeExtraLineBreaks(actual || '');
+    expected = utils.removeExtraLineBreaks(expected);
+    actual = utils.removeExtraLineBreaks(actual);
 
     // Assign to local variable because of declaration let expected:
     // TypeScript thinks it could change before report function is called.
