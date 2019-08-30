@@ -43,10 +43,7 @@ const {version: VERSION} = require('../package.json');
 // This data structure is used to avoid recalculating some data every time that
 // we need to transform a file. Since ScriptTransformer is instantiated for each
 // file we need to keep this object in the local scope of this module.
-const projectCaches: WeakMap<
-  Config.ProjectConfig,
-  ProjectCache
-> = new WeakMap();
+const projectCaches = new Map<string, ProjectCache>();
 
 // To reset the cache for specific changesets (rather than package version).
 const CACHE_VERSION = '1';
@@ -74,17 +71,18 @@ export default class ScriptTransformer {
     this._transformCache = new Map();
     this._transformConfigCache = new Map();
 
-    let projectCache = projectCaches.get(config);
+    const configString = stableStringify(this._config);
+    let projectCache = projectCaches.get(configString);
 
     if (!projectCache) {
       projectCache = {
-        configString: stableStringify(this._config),
+        configString,
         ignorePatternsRegExp: calcIgnorePatternRegExp(this._config),
         transformRegExp: calcTransformRegExp(this._config),
         transformedFiles: new Map(),
       };
 
-      projectCaches.set(config, projectCache);
+      projectCaches.set(configString, projectCache);
     }
 
     this._cache = projectCache;
