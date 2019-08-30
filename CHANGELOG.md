@@ -40,6 +40,7 @@
 - `[expect]` Consider all RegExp flags for equality ([#9167](https://github.com/facebook/jest/pull/9167))
 - `[expect]` [**BREAKING**] Consider primitives different from wrappers instantiated with `new` ([#9167](https://github.com/facebook/jest/pull/9167))
 - `[jest-config]` Use half of the available cores when `watchAll` mode is enabled ([#9117](https://github.com/facebook/jest/pull/9117))
+- `[jest-config]` Fix Jest multi project runner still cannot handle exactly one project ([#8894](https://github.com/facebook/jest/pull/8894))
 - `[jest-console]` Add missing `console.group` calls to `NullConsole` ([#9024](https://github.com/facebook/jest/pull/9024))
 - `[jest-core]` Don't include unref'd timers in --detectOpenHandles results ([#8941](https://github.com/facebook/jest/pull/8941))
 - `[jest-diff]` Do not inverse format if line consists of one change ([#8903](https://github.com/facebook/jest/pull/8903))
