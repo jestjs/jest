@@ -6,3 +6,4 @@
  */
 
 export {default as JestFakeTimers} from './jestFakeTimers';
+export {default as LolexFakeTimers} from './FakeTimersLolex';
