@@ -213,7 +213,7 @@ If you'd like to assert, and manipulate your rendered components you can use [re
 
 #### react-testing-library
 
-You have to run `yarn add --dev react-testing-library` to use react-testing-library.
+You have to run `yarn add --dev @testing-library/react` to use react-testing-library.
 
 Let's implement a simple checkbox which swaps between two labels:
 
@@ -254,7 +254,7 @@ export default class CheckboxWithLabel extends React.Component {
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
 import React from 'react';
-import {render, fireEvent, cleanup} from 'react-testing-library';
+import {render, fireEvent, cleanup} from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
 // automatically unmount and cleanup DOM after the test is finished.

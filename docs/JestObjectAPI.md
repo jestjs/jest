@@ -623,6 +623,12 @@ Executes only the macro-tasks that are currently pending (i.e., only the tasks t
 
 This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
 
+### `jest.advanceTimersToNextTimer(steps)`
+
+Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
+
+Optionally, you can provide `steps`, so it will run `steps` amount of next timeouts/intervals.
+
 ### `jest.clearAllTimers()`
 
 Removes any pending timers from the timer system.

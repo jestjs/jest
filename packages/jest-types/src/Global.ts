@@ -82,4 +82,5 @@ export interface Global extends NodeJS.Global {
   pending: () => void;
   spyOn: () => void;
   spyOnProperty: () => void;
+  [extras: string]: any;
 }

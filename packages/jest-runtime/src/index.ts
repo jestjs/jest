@@ -1037,6 +1037,8 @@ class Runtime {
         this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
+      advanceTimersToNextTimer: (steps?: number) =>
+        _getFakeTimers().advanceTimersToNextTimer(steps),
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
