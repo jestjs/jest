@@ -42,8 +42,9 @@ export const check = (argv: Config.Argv) => {
 
   if (argv.hasOwnProperty('maxWorkers') && argv.maxWorkers === undefined) {
     throw new Error(
-      'The --maxWorkers (-w) option requires a number to be specified.\n' +
+      'The --maxWorkers (-w) option requires a number or string to be specified.\n' +
         'Example usage: jest --maxWorkers 2\n' +
+        'Example usage: jest --maxWorkers 50%\n' +
         'Or did you mean --watch?',
     );
   }
@@ -349,7 +350,7 @@ export const options = {
       'will spawn for running tests. This defaults to the number of the ' +
       'cores available on your machine. (its usually best not to override ' +
       'this default)',
-    type: 'number' as 'number',
+    type: 'string' as 'string',
   },
   moduleDirectories: {
     description:

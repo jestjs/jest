@@ -390,7 +390,7 @@ class ModuleMockerClass {
       return [];
     }
 
-    const slots = new Set();
+    const slots = new Set<string>();
     const EnvObjectProto = this._environmentGlobal.Object.prototype;
     const EnvFunctionProto = this._environmentGlobal.Function.prototype;
     const EnvRegExpProto = this._environmentGlobal.RegExp.prototype;
@@ -1079,7 +1079,9 @@ class ModuleMockerClass {
         );
       }
 
+      // @ts-ignore: mock is assignable
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
+        // @ts-ignore: mock is assignable
         descriptor![accessType] = original;
         Object.defineProperty(obj, propertyName, descriptor!);
       });

@@ -10,10 +10,8 @@ import {Config} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 import {MatcherState} from 'expect';
 
-import diff from 'jest-diff';
 import {
   BOLD_WEIGHT,
-  EXPECTED_COLOR,
   matcherHint,
   MatcherHintOptions,
   RECEIVED_COLOR,
@@ -26,6 +24,7 @@ import {
 } from './snapshot_resolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
+import {printDiffOrStringified} from './print';
 import * as utils from './utils';
 
 type Context = MatcherState & {
@@ -327,19 +326,22 @@ const _toMatchSnapshot = ({
   } else {
     expected = (expected || '').trim();
     actual = (actual || '').trim();
-    const diffMessage = diff(expected, actual, {
-      aAnnotation: 'Snapshot',
-      bAnnotation: 'Received',
-      expand: snapshotState.expand,
-    });
+
+    // Assign to local variable because of declaration let expected:
+    // TypeScript thinks it could change before report function is called.
+    const printed = printDiffOrStringified(
+      expected,
+      actual,
+      received,
+      'Snapshot',
+      'Received',
+      snapshotState.expand,
+    );
 
     report = () =>
-      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` +
-      (diffMessage ||
-        EXPECTED_COLOR('- ' + (expected || '')) +
-          '\n' +
-          RECEIVED_COLOR('+ ' + actual));
+      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` + printed;
   }
+
   // Passing the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
   // or create a different error message

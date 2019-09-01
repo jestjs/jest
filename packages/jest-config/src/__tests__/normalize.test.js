@@ -331,6 +331,24 @@ describe('transform', () => {
       ['abs-path', '/qux/quux'],
     ]);
   });
+  it("pulls in config if it's passed as an array", () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        transform: {
+          [DEFAULT_CSS_PATTERN]: '<rootDir>/node_modules/jest-regex-util',
+          [DEFAULT_JS_PATTERN]: ['babel-jest', {rootMode: 'upward'}],
+          'abs-path': '/qux/quux',
+        },
+      },
+      {},
+    );
+    expect(options.transform).toEqual([
+      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
+      [DEFAULT_JS_PATTERN, require.resolve('babel-jest'), {rootMode: 'upward'}],
+      ['abs-path', '/qux/quux'],
+    ]);
+  });
 });
 
 describe('haste', () => {

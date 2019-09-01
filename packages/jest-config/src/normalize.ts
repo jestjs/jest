@@ -46,19 +46,29 @@ type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
-const mergeOptionWithPreset = (
+// TS 3.5 forces us to split these into 2
+const mergeModuleNameMapperWithPreset = (
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
-  optionName: keyof Pick<
-    Config.InitialOptions,
-    'moduleNameMapper' | 'transform'
-  >,
 ) => {
-  if (options[optionName] && preset[optionName]) {
-    options[optionName] = {
-      ...options[optionName],
-      ...preset[optionName],
-      ...options[optionName],
+  if (options['moduleNameMapper'] && preset['moduleNameMapper']) {
+    options['moduleNameMapper'] = {
+      ...options['moduleNameMapper'],
+      ...preset['moduleNameMapper'],
+      ...options['moduleNameMapper'],
+    };
+  }
+};
+
+const mergeTransformWithPreset = (
+  options: Config.InitialOptions,
+  preset: Config.InitialOptions,
+) => {
+  if (options['transform'] && preset['transform']) {
+    options['transform'] = {
+      ...options['transform'],
+      ...preset['transform'],
+      ...options['transform'],
     };
   }
 };
@@ -121,8 +131,8 @@ const setupPreset = (
       options.modulePathIgnorePatterns,
     );
   }
-  mergeOptionWithPreset(options, preset, 'moduleNameMapper');
-  mergeOptionWithPreset(options, preset, 'transform');
+  mergeModuleNameMapperWithPreset(options, preset);
+  mergeTransformWithPreset(options, preset);
 
   return {...preset, ...options};
 };
@@ -140,27 +150,26 @@ const setupBabelJest = (options: Config.InitialOptions) => {
       return regex.test('a.ts') || regex.test('a.tsx');
     });
 
-    if (customJSPattern) {
-      const customJSTransformer = transform[customJSPattern];
-
-      if (customJSTransformer === 'babel-jest') {
-        babelJest = require.resolve('babel-jest');
-        transform[customJSPattern] = babelJest;
-      } else if (customJSTransformer.includes('babel-jest')) {
-        babelJest = customJSTransformer;
+    [customJSPattern, customTSPattern].forEach(pattern => {
+      if (pattern) {
+        const customTransformer = transform[pattern];
+        if (Array.isArray(customTransformer)) {
+          if (customTransformer[0] === 'babel-jest') {
+            babelJest = require.resolve('babel-jest');
+            customTransformer[0] = babelJest;
+          } else if (customTransformer[0].includes('babel-jest')) {
+            babelJest = customTransformer[0];
+          }
+        } else {
+          if (customTransformer === 'babel-jest') {
+            babelJest = require.resolve('babel-jest');
+            transform[pattern] = babelJest;
+          } else if (customTransformer.includes('babel-jest')) {
+            babelJest = customTransformer;
+          }
+        }
       }
-    }
-
-    if (customTSPattern) {
-      const customTSTransformer = transform[customTSPattern];
-
-      if (customTSTransformer === 'babel-jest') {
-        babelJest = require.resolve('babel-jest');
-        transform[customTSPattern] = babelJest;
-      } else if (customTSTransformer.includes('babel-jest')) {
-        babelJest = customTSTransformer;
-      }
-    }
+    });
   } else {
     babelJest = require.resolve('babel-jest');
     options.transform = {
@@ -620,14 +629,20 @@ export default function normalize(
         const transform = oldOptions[key];
         value =
           transform &&
-          Object.keys(transform).map(regex => [
-            regex,
-            resolve(newOptions.resolver, {
-              filePath: transform[regex],
-              key,
-              rootDir: options.rootDir,
-            }),
-          ]);
+          Object.keys(transform).map(regex => {
+            const transformElement = transform[regex];
+            return [
+              regex,
+              resolve(newOptions.resolver, {
+                filePath: Array.isArray(transformElement)
+                  ? transformElement[0]
+                  : transformElement,
+                key,
+                rootDir: options.rootDir,
+              }),
+              ...(Array.isArray(transformElement) ? [transformElement[1]] : []),
+            ];
+          });
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
@@ -928,7 +943,7 @@ export default function normalize(
     (newOptions.maxConcurrency as unknown) as string,
     10,
   );
-  newOptions.maxWorkers = getMaxWorkers(argv);
+  newOptions.maxWorkers = getMaxWorkers(argv, options);
 
   if (newOptions.testRegex!.length && options.testMatch) {
     throw createConfigError(

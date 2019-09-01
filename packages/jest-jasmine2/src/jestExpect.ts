@@ -6,6 +6,7 @@
  */
 
 import expect, {MatcherState} from 'expect';
+import {Global} from '@jest/types';
 import {
   addSerializer,
   toMatchSnapshot,
@@ -14,6 +15,8 @@ import {
   toThrowErrorMatchingInlineSnapshot,
 } from 'jest-snapshot';
 import {RawMatcherFn, Jasmine} from './types';
+
+declare const global: Global.Global;
 
 type JasmineMatcher = {
   (matchersUtil: any, context: any): JasmineMatcher;

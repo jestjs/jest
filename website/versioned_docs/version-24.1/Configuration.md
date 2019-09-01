@@ -408,7 +408,7 @@ This option allows the use of a custom global teardown module which exports an a
 
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
-_Node: The same caveat concerning transformation of `node_modules_ as for `globalSetup` applies to `globalTeardown`.
+_Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
 
 ### `maxConcurrency` [number]
 
@@ -648,6 +648,7 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 {
   "basedir": string,
   "browser": bool,
+  "defaultResolver": "function(request, options)",
   "extensions": [string],
   "moduleDirectory": [string],
   "paths": [string],
@@ -656,6 +657,8 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```
 
 The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
+
+Note: the defaultResolver passed as options is the jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. (request, options).
 
 ### `restoreMocks` [boolean]
 

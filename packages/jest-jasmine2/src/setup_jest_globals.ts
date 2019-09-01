@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {Config, Global} from '@jest/types';
 import {Plugin} from 'pretty-format';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
@@ -15,6 +15,8 @@ import {
 } from 'jest-snapshot';
 import JasmineSpec, {Attributes, SpecResult} from './jasmine/Spec';
 import {Jasmine} from './types';
+
+declare const global: Global.Global;
 
 export type SetupOptions = {
   config: Config.ProjectConfig;

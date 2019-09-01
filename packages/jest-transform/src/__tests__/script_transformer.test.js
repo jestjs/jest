@@ -61,6 +61,16 @@ jest.mock(
 );
 
 jest.mock(
+  'configureable-preprocessor',
+  () => ({
+    createTransformer: jest.fn(() => ({
+      process: jest.fn(() => 'processedCode'),
+    })),
+  }),
+  {virtual: true},
+);
+
+jest.mock(
   'preprocessor-with-sourcemaps',
   () => ({
     getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
@@ -490,6 +500,21 @@ describe('ScriptTransformer', () => {
 
     const {getCacheKey} = require('test_preprocessor');
     expect(getCacheKey.mock.calls[0][3]).toMatchSnapshot();
+  });
+
+  it('creates transformer with config', () => {
+    const transformerConfig = {};
+    config = Object.assign(config, {
+      transform: [
+        ['^.+\\.js$', 'configureable-preprocessor', transformerConfig],
+      ],
+    });
+
+    const scriptTransformer = new ScriptTransformer(config);
+    scriptTransformer.transform('/fruits/banana.js', {});
+    expect(
+      require('configureable-preprocessor').createTransformer,
+    ).toHaveBeenCalledWith(transformerConfig);
   });
 
   it('reads values from the cache', () => {

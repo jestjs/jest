@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus, Config} from '@jest/types';
+import {Circus, Config, Global} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
 import {AssertionResult, Status, TestResult} from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
   SnapshotState,
+  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
@@ -53,15 +54,16 @@ export const initialize = ({
 
   const mutex = throat(globalConfig.maxConcurrency);
 
-  Object.assign(global, globals);
+  const nodeGlobal = global as Global.Global;
+  Object.assign(nodeGlobal, globals);
 
-  global.xit = global.it.skip;
-  global.xtest = global.it.skip;
-  global.xdescribe = global.describe.skip;
-  global.fit = global.it.only;
-  global.fdescribe = global.describe.only;
+  nodeGlobal.xit = nodeGlobal.it.skip;
+  nodeGlobal.xtest = nodeGlobal.it.skip;
+  nodeGlobal.xdescribe = nodeGlobal.describe.skip;
+  nodeGlobal.fit = nodeGlobal.it.only;
+  nodeGlobal.fdescribe = nodeGlobal.describe.only;
 
-  global.test.concurrent = (test => {
+  nodeGlobal.test.concurrent = (test => {
     const concurrent = (
       testName: string,
       testFn: () => Promise<any>,
@@ -74,7 +76,7 @@ export const initialize = ({
       // that will result in this test to be skipped, so we'll be executing the promise function anyway,
       // even if it ends up being skipped.
       const promise = mutex(() => testFn());
-      global.test(testName, () => promise, timeout);
+      nodeGlobal.test(testName, () => promise, timeout);
     };
 
     concurrent.only = (
@@ -90,7 +92,7 @@ export const initialize = ({
     concurrent.skip = test.skip;
 
     return concurrent;
-  })(global.test);
+  })(nodeGlobal.test);
 
   addEventHandler(eventHandler);
 
@@ -129,6 +131,8 @@ export const initialize = ({
     updateSnapshot,
   });
   setState({snapshotState, testPath});
+
+  addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
 
   // Return it back to the outer scope (test runner outside the VM).
   return {globals, snapshotState};
@@ -240,6 +244,17 @@ export const runAndTransformResultsToJestFormat = async ({
     testFilePath: testPath,
     testResults: assertionResults,
   };
+};
+
+const handleSnapshotStateAfterRetry = (snapshotState: SnapshotStateType) => (
+  event: Circus.Event,
+) => {
+  switch (event.name) {
+    case 'test_retry': {
+      // Clear any snapshot data that occurred in previous test run
+      snapshotState.clear();
+    }
+  }
 };
 
 const eventHandler = (event: Circus.Event) => {

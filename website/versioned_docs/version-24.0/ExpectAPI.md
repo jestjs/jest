@@ -173,13 +173,13 @@ expect.extend({
           `Expected: ${this.utils.printExpected(expected)}\n` +
           `Received: ${this.utils.printReceived(received)}`
       : () => {
-          const difference = diff(expected, received, {
+          const diffString = diff(expected, received, {
             expand: this.expand,
           });
           return (
             this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
-            (difference && difference.includes('- Expect')
+            (diffString && diffString.includes('- Expect')
               ? `Difference:\n\n${diffString}`
               : `Expected: ${this.utils.printExpected(expected)}\n` +
                 `Received: ${this.utils.printReceived(received)}`)
@@ -764,6 +764,72 @@ test('drink returns expected nth calls', () => {
 
 Note: the nth argument must be positive integer starting from 1.
 
+### `.toHaveLength(number)`
+
+Use `.toHaveLength` to check that an object has a `.length` property and it is set to a certain numeric value.
+
+This is especially useful for checking arrays or strings size.
+
+```js
+expect([1, 2, 3]).toHaveLength(3);
+expect('abc').toHaveLength(3);
+expect('').not.toHaveLength(5);
+```
+
+### `.toHaveProperty(keyPath, value?)`
+
+Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object. For checking deeply nested properties in an object you may use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) or an array containing the keyPath for deep references.
+
+You can provide an optional `value` argument to compare the received property value (recursively for all properties of object instances, also known as deep equality, like the `toEqual` matcher).
+
+The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty` to check for the existence and values of various properties in the object.
+
+```js
+// Object containing house features to be tested
+const houseForSale = {
+  bath: true,
+  bedrooms: 4,
+  kitchen: {
+    amenities: ['oven', 'stove', 'washer'],
+    area: 20,
+    wallColor: 'white',
+    'nice.oven': true,
+  },
+  'ceiling.height': 2,
+};
+
+test('this house has my desired features', () => {
+  // Simple Referencing
+  expect(houseForSale).toHaveProperty('bath');
+  expect(houseForSale).toHaveProperty('bedrooms', 4);
+
+  expect(houseForSale).not.toHaveProperty('pool');
+
+  // Deep referencing using dot notation
+  expect(houseForSale).toHaveProperty('kitchen.area', 20);
+  expect(houseForSale).toHaveProperty('kitchen.amenities', [
+    'oven',
+    'stove',
+    'washer',
+  ]);
+
+  expect(houseForSale).not.toHaveProperty('kitchen.open');
+
+  // Deep referencing using an array containing the keyPath
+  expect(houseForSale).toHaveProperty(['kitchen', 'area'], 20);
+  expect(houseForSale).toHaveProperty(
+    ['kitchen', 'amenities'],
+    ['oven', 'stove', 'washer'],
+  );
+  expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
+  expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
+  expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
+
+  // Referencing keys with dot in the key itself
+  expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
+});
+```
+
 ### `.toBeCloseTo(number, numDigits?)`
 
 Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
@@ -989,18 +1055,6 @@ If differences between properties do not help you to understand why a test fails
 - rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
 - rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
 
-### `.toHaveLength(number)`
-
-Use `.toHaveLength` to check that an object has a `.length` property and it is set to a certain numeric value.
-
-This is especially useful for checking arrays or strings size.
-
-```js
-expect([1, 2, 3]).toHaveLength(3);
-expect('abc').toHaveLength(3);
-expect('').not.toHaveLength(5);
-```
-
 ### `.toMatch(regexpOrString)`
 
 Use `.toMatch` to check that a string matches a regular expression.
@@ -1075,60 +1129,6 @@ describe('toMatchObject applied to arrays', () => {
       {baz: 1},
     ]);
   });
-});
-```
-
-### `.toHaveProperty(keyPath, value?)`
-
-Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object. For checking deeply nested properties in an object you may use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) or an array containing the keyPath for deep references.
-
-You can provide an optional `value` argument to compare the received property value (recursively for all properties of object instances, also known as deep equality, like the `toEqual` matcher).
-
-The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty` to check for the existence and values of various properties in the object.
-
-```js
-// Object containing house features to be tested
-const houseForSale = {
-  bath: true,
-  bedrooms: 4,
-  kitchen: {
-    amenities: ['oven', 'stove', 'washer'],
-    area: 20,
-    wallColor: 'white',
-    'nice.oven': true,
-  },
-  'ceiling.height': 2,
-};
-
-test('this house has my desired features', () => {
-  // Simple Referencing
-  expect(houseForSale).toHaveProperty('bath');
-  expect(houseForSale).toHaveProperty('bedrooms', 4);
-
-  expect(houseForSale).not.toHaveProperty('pool');
-
-  // Deep referencing using dot notation
-  expect(houseForSale).toHaveProperty('kitchen.area', 20);
-  expect(houseForSale).toHaveProperty('kitchen.amenities', [
-    'oven',
-    'stove',
-    'washer',
-  ]);
-
-  expect(houseForSale).not.toHaveProperty('kitchen.open');
-
-  // Deep referencing using an array containing the keyPath
-  expect(houseForSale).toHaveProperty(['kitchen', 'area'], 20);
-  expect(houseForSale).toHaveProperty(
-    ['kitchen', 'amenities'],
-    ['oven', 'stove', 'washer'],
-  );
-  expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
-  expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
-  expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
-
-  // Referencing keys with dot in the key itself
-  expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
 });
 ```
 
