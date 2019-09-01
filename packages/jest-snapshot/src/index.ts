@@ -36,6 +36,7 @@ type MatchSnapshotConfig = {
   expectedArgument: string;
   hint?: string;
   inlineSnapshot?: string;
+  isInline: boolean;
   matcherName: string;
   options: MatcherHintOptions;
   propertyMatchers?: any;
@@ -204,6 +205,7 @@ const toMatchSnapshot = function(
     context: this,
     expectedArgument,
     hint,
+    isInline: false,
     matcherName,
     options,
     propertyMatchers,
@@ -249,7 +251,11 @@ const toMatchInlineSnapshot = function(
   return _toMatchSnapshot({
     context: this,
     expectedArgument,
-    inlineSnapshot: stripAddedIndentation(inlineSnapshot || ''),
+    inlineSnapshot:
+      inlineSnapshot !== undefined
+        ? stripAddedIndentation(inlineSnapshot)
+        : undefined,
+    isInline: true,
     matcherName,
     options,
     propertyMatchers,
@@ -262,6 +268,7 @@ const _toMatchSnapshot = ({
   expectedArgument,
   hint,
   inlineSnapshot,
+  isInline,
   matcherName,
   options,
   propertyMatchers,
@@ -331,6 +338,7 @@ const _toMatchSnapshot = ({
   const result = snapshotState.match({
     error: context.error,
     inlineSnapshot,
+    isInline,
     received,
     testName: fullTestName,
   });
@@ -404,6 +412,7 @@ const toThrowErrorMatchingSnapshot = function(
       context: this,
       expectedArgument,
       hint,
+      isInline: false,
       matcherName,
       options,
       received,
@@ -431,7 +440,8 @@ const toThrowErrorMatchingInlineSnapshot = function(
     {
       context: this,
       expectedArgument,
-      inlineSnapshot: inlineSnapshot || '',
+      inlineSnapshot,
+      isInline: true,
       matcherName,
       options,
       received,
@@ -445,6 +455,7 @@ const _toThrowErrorMatchingSnapshot = (
     context,
     expectedArgument,
     inlineSnapshot,
+    isInline,
     matcherName,
     options,
     received,
@@ -488,6 +499,7 @@ const _toThrowErrorMatchingSnapshot = (
     expectedArgument,
     hint,
     inlineSnapshot,
+    isInline,
     matcherName,
     options,
     received: error.message,
