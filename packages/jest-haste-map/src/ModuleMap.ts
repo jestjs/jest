@@ -9,10 +9,10 @@ import {Config} from '@jest/types';
 import {
   DuplicatesSet,
   HTypeValue,
+  MockData,
+  ModuleMapData,
   ModuleMetaData,
   RawModuleMap,
-  ModuleMapData,
-  MockData,
 } from './types';
 
 import * as fastPath from './lib/fast_path';

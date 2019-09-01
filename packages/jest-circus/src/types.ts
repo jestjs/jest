@@ -7,7 +7,7 @@
 
 // Used as type
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import expect from 'expect';
+import expect = require('expect');
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Circus} from '@jest/types';
 

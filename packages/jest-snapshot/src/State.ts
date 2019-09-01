@@ -5,19 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
+import * as fs from 'fs';
 import {Config} from '@jest/types';
 
-import {getTopFrame, getStackTraceLines} from 'jest-message-util';
+import {getStackTraceLines, getTopFrame} from 'jest-message-util';
 import {
-  saveSnapshotFile,
   getSnapshotData,
   keyToTestName,
+  saveSnapshotFile,
   serialize,
   testNameToKey,
   unescape,
 } from './utils';
-import {saveInlineSnapshots, InlineSnapshot} from './inline_snapshots';
+import {InlineSnapshot, saveInlineSnapshots} from './inline_snapshots';
 import {SnapshotData} from './types';
 
 export type SnapshotStateOptions = {
@@ -33,6 +33,14 @@ export type SnapshotMatchOptions = {
   key?: string;
   inlineSnapshot?: string;
   error?: Error;
+};
+
+type SnapshotReturnOptions = {
+  actual: string;
+  count: number;
+  expected?: string;
+  key: string;
+  pass: boolean;
 };
 
 export default class SnapshotState {
@@ -173,7 +181,7 @@ export default class SnapshotState {
     key,
     inlineSnapshot,
     error,
-  }: SnapshotMatchOptions) {
+  }: SnapshotMatchOptions): SnapshotReturnOptions {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
     const isInline = inlineSnapshot !== undefined;
@@ -185,7 +193,7 @@ export default class SnapshotState {
     // Do not mark the snapshot as "checked" if the snapshot is inline and
     // there's an external snapshot. This way the external snapshot can be
     // removed with `--updateSnapshot`.
-    if (!(isInline && this._snapshotData[key])) {
+    if (!(isInline && this._snapshotData[key] !== undefined)) {
       this._uncheckedKeys.delete(key);
     }
 
@@ -248,7 +256,7 @@ export default class SnapshotState {
         return {
           actual: unescape(receivedSerialized),
           count,
-          expected: expected ? unescape(expected) : null,
+          expected: expected !== undefined ? unescape(expected) : undefined,
           key,
           pass: false,
         };

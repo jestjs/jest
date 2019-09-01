@@ -13,14 +13,14 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
 
   ●  GETADDRINFOREQWRAP
 
-       7 | const app = new Server();
-       8 | 
-    >  9 | app.listen({host: 'localhost', port: 0});
+      12 | const app = new Server();
+      13 | 
+    > 14 | app.listen({host: 'localhost', port: 0});
          |     ^
-      10 | 
+      15 | 
 
-      at Object.listen (server.js:9:5)
-      at Object.require (__tests__/outside.js:3:1)
+      at Object.listen (server.js:14:5)
+      at Object.require (__tests__/outside.js:8:1)
 `;
 
 exports[`prints out info about open handlers from inside tests 1`] = `
@@ -28,13 +28,13 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
 
   ●  Timeout
 
-      2 | 
-      3 | test('something', () => {
-    > 4 |   setTimeout(() => {}, 30000);
-        |   ^
-      5 |   expect(true).toBe(true);
-      6 | });
-      7 | 
+       7 | 
+       8 | test('something', () => {
+    >  9 |   setTimeout(() => {}, 30000);
+         |   ^
+      10 |   expect(true).toBe(true);
+      11 | });
+      12 | 
 
-      at Object.setTimeout (__tests__/inside.js:4:3)
+      at Object.setTimeout (__tests__/inside.js:9:3)
 `;

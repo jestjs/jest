@@ -9,6 +9,7 @@
 
 import EventEmitter from 'events';
 import supportsColor from 'supports-color';
+// eslint-disable-next-line import/default
 import getStream from 'get-stream';
 import {PassThrough} from 'stream';
 
@@ -18,6 +19,8 @@ import {
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_OK,
 } from '../../types';
+
+jest.useFakeTimers();
 
 let Worker;
 let forkInterface;
@@ -31,6 +34,7 @@ beforeEach(() => {
   childProcess = require('child_process');
   childProcess.fork.mockImplementation(() => {
     forkInterface = Object.assign(new EventEmitter(), {
+      kill: jest.fn(),
       send: jest.fn(),
       stderr: new PassThrough(),
       stdout: new PassThrough(),
@@ -113,10 +117,10 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
   worker.send(request, onProcessStart, onProcessEnd);
 
   // We fail four times (initial + three retries).
-  forkInterface.emit('exit');
-  forkInterface.emit('exit');
-  forkInterface.emit('exit');
-  forkInterface.emit('exit');
+  forkInterface.emit('exit', 1);
+  forkInterface.emit('exit', 1);
+  forkInterface.emit('exit', 1);
+  forkInterface.emit('exit', 1);
 
   expect(childProcess.fork).toHaveBeenCalledTimes(5);
   expect(onProcessStart).toBeCalledWith(worker);
@@ -138,7 +142,7 @@ it('provides stdout and stderr from the child processes', async () => {
 
   forkInterface.stdout.end('Hello ', {encoding: 'utf8'});
   forkInterface.stderr.end('Jest ', {encoding: 'utf8'});
-  forkInterface.emit('exit');
+  forkInterface.emit('exit', 1);
   forkInterface.stdout.end('World!', {encoding: 'utf8'});
   forkInterface.stderr.end('Workers!', {encoding: 'utf8'});
   forkInterface.emit('exit', 0);
@@ -178,7 +182,7 @@ it('resends the task to the child process after a retry', () => {
   expect(forkInterface.send.mock.calls[1][0]).toEqual(request);
 
   const previousForkInterface = forkInterface;
-  forkInterface.emit('exit');
+  forkInterface.emit('exit', 1);
 
   expect(forkInterface).not.toBe(previousForkInterface);
 
@@ -297,6 +301,18 @@ it('does not restart the child if it cleanly exited', () => {
   expect(childProcess.fork).toHaveBeenCalledTimes(1);
 });
 
+it('resolves waitForExit() after the child process cleanly exited', async () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  });
+
+  expect(childProcess.fork).toHaveBeenCalledTimes(1);
+  forkInterface.emit('exit', 0);
+  await worker.waitForExit(); // should not timeout
+});
+
 it('restarts the child when the child process dies', () => {
   new Worker({
     workerPath: '/tmp/foo',
@@ -305,4 +321,42 @@ it('restarts the child when the child process dies', () => {
   expect(childProcess.fork).toHaveBeenCalledTimes(1);
   forkInterface.emit('exit', 1);
   expect(childProcess.fork).toHaveBeenCalledTimes(2);
+});
+
+it('sends SIGTERM when forceExit() is called', async () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  });
+
+  worker.forceExit();
+  expect(forkInterface.kill.mock.calls).toEqual([['SIGTERM']]);
+});
+
+it('sends SIGKILL some time after SIGTERM', async () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  });
+
+  worker.forceExit();
+  jest.runAllTimers();
+  expect(forkInterface.kill.mock.calls).toEqual([['SIGTERM'], ['SIGKILL']]);
+});
+
+it('does not send SIGKILL if SIGTERM exited the process', async () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  });
+
+  worker.forceExit();
+  forkInterface.emit('exit', 143 /* SIGTERM exit code */);
+  await Promise.resolve();
+
+  jest.runAllTimers();
+  expect(forkInterface.kill.mock.calls).toEqual([['SIGTERM']]);
 });

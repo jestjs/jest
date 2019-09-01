@@ -11,6 +11,7 @@ import {
   joinAlignedDiffsExpand,
   joinAlignedDiffsNoExpand,
 } from '../joinAlignedDiffs';
+import {normalizeDiffOptions} from '../normalizeDiffOptions';
 
 const diffsCommonStartEnd = [
   new Diff(DIFF_EQUAL, ''),
@@ -53,28 +54,46 @@ const diffsChangeStartEnd = [
 
 describe('joinAlignedDiffsExpand', () => {
   test('first line is empty common', () => {
-    expect(joinAlignedDiffsExpand(diffsCommonStartEnd)).toMatchSnapshot();
+    const options = normalizeDiffOptions();
+    expect(
+      joinAlignedDiffsExpand(diffsCommonStartEnd, options),
+    ).toMatchSnapshot();
   });
 });
 
 describe('joinAlignedDiffsNoExpand', () => {
   test('patch 0 with context 1 and change at start and end', () => {
-    expect(joinAlignedDiffsNoExpand(diffsChangeStartEnd, 1)).toMatchSnapshot();
+    const options = normalizeDiffOptions({contextLines: 1, expand: false});
+    expect(
+      joinAlignedDiffsNoExpand(diffsChangeStartEnd, options),
+    ).toMatchSnapshot();
   });
 
   test('patch 0 with context 5 and first line is empty common', () => {
-    expect(joinAlignedDiffsNoExpand(diffsCommonStartEnd)).toMatchSnapshot();
+    const options = normalizeDiffOptions({expand: false});
+    expect(
+      joinAlignedDiffsNoExpand(diffsCommonStartEnd, options),
+    ).toMatchSnapshot();
   });
 
   test('patch 1 with context 4 and last line is empty common', () => {
-    expect(joinAlignedDiffsNoExpand(diffsCommonStartEnd, 4)).toMatchSnapshot();
+    const options = normalizeDiffOptions({contextLines: 4, expand: false});
+    expect(
+      joinAlignedDiffsNoExpand(diffsCommonStartEnd, options),
+    ).toMatchSnapshot();
   });
 
   test('patch 2 with context 3', () => {
-    expect(joinAlignedDiffsNoExpand(diffsCommonStartEnd, 3)).toMatchSnapshot();
+    const options = normalizeDiffOptions({contextLines: 3, expand: false});
+    expect(
+      joinAlignedDiffsNoExpand(diffsCommonStartEnd, options),
+    ).toMatchSnapshot();
   });
 
   test('patch 3 with context 2 and omit excess common at start', () => {
-    expect(joinAlignedDiffsNoExpand(diffsCommonStartEnd, 2)).toMatchSnapshot();
+    const options = normalizeDiffOptions({contextLines: 2, expand: false});
+    expect(
+      joinAlignedDiffsNoExpand(diffsCommonStartEnd, options),
+    ).toMatchSnapshot();
   });
 });

@@ -9,11 +9,11 @@ import BaseWorkerPool from './base/BaseWorkerPool';
 
 import {
   ChildMessage,
-  WorkerOptions,
-  OnStart,
   OnEnd,
-  WorkerPoolInterface,
+  OnStart,
   WorkerInterface,
+  WorkerOptions,
+  WorkerPoolInterface,
 } from './types';
 
 const canUseWorkerThreads = () => {

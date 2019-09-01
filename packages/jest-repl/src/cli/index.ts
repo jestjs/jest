@@ -7,8 +7,8 @@
  *
  */
 
-import Runtime from 'jest-runtime';
-import yargs from 'yargs';
+import Runtime = require('jest-runtime');
+import yargs = require('yargs');
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
 import {Config} from '@jest/types';

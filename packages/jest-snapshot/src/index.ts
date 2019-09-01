@@ -5,22 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
+import * as fs from 'fs';
 import {Config} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 import {MatcherState} from 'expect';
 
 import {
   BOLD_WEIGHT,
-  matcherHint,
   MatcherHintOptions,
   RECEIVED_COLOR,
+  matcherHint,
 } from 'jest-matcher-utils';
 import {
+  EXTENSION,
+  SnapshotResolver as JestSnapshotResolver,
   buildSnapshotResolver,
   isSnapshotPath,
-  SnapshotResolver as JestSnapshotResolver,
-  EXTENSION,
 } from './snapshot_resolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
@@ -47,7 +47,8 @@ const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
   'not',
 )} cannot be used with snapshot matchers`;
 
-const HINT_ARG = BOLD_WEIGHT('hint');
+const HINT_ARG = 'hint';
+const HINT_COLOR = BOLD_WEIGHT;
 const INLINE_SNAPSHOT_ARG = 'snapshot';
 const PROPERTY_MATCHERS_ARG = 'properties';
 const INDENTATION_REGEX = /^([^\S\n]*)\S/m;
@@ -185,6 +186,13 @@ const toMatchSnapshot = function(
     promise: this.promise,
     secondArgument,
   };
+
+  if (expectedArgument === HINT_ARG) {
+    options.expectedColor = HINT_COLOR;
+  }
+  if (secondArgument === HINT_ARG) {
+    options.secondArgumentColor = HINT_COLOR;
+  }
 
   if (arguments.length === 3 && !propertyMatchers) {
     throw new Error(
@@ -332,7 +340,7 @@ const _toMatchSnapshot = ({
   let report: () => string;
   if (pass) {
     return {message: () => '', pass: true};
-  } else if (!expected) {
+  } else if (expected === undefined) {
     report = () =>
       `New snapshot was ${RECEIVED_COLOR('not written')}. The update flag ` +
       `must be explicitly passed to write a new snapshot.\n\n` +
@@ -341,8 +349,8 @@ const _toMatchSnapshot = ({
       `${RECEIVED_COLOR('Received value')} ` +
       `${actual}`;
   } else {
-    expected = (expected || '').trim();
-    actual = (actual || '').trim();
+    expected = utils.removeExtraLineBreaks(expected);
+    actual = utils.removeExtraLineBreaks(actual);
 
     // Assign to local variable because of declaration let expected:
     // TypeScript thinks it could change before report function is called.
@@ -385,6 +393,7 @@ const toThrowErrorMatchingSnapshot = function(
   const expectedArgument =
     typeof hint === 'string' && hint.length !== 0 ? HINT_ARG : '';
   const options = {
+    expectedColor: HINT_COLOR,
     isNot: this.isNot,
     promise: this.promise,
     secondArgument: '',

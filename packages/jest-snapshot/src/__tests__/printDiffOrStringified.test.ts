@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiRegex from 'ansi-regex';
-import style from 'ansi-styles';
+import ansiRegex = require('ansi-regex');
+import * as style from 'ansi-styles';
 import {printDiffOrStringified} from '../print';
 import {serialize, unescape} from '../utils';
 
@@ -231,6 +231,22 @@ test('fallback to line diff', () => {
   expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
 });
 
+describe('has no common after clean up chaff', () => {
+  test('array', () => {
+    const expected = ['delete', 'two'];
+    const received = ['insert', '2'];
+
+    expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
+  });
+
+  test('string single line', () => {
+    const expected = 'delete';
+    const received = 'insert';
+
+    expect(testWithSerialize(expected, received, false)).toMatchSnapshot();
+  });
+});
+
 describe('isLineDiffable', () => {
   describe('false', () => {
     test('boolean', () => {
@@ -357,6 +373,20 @@ describe('without serialize', () => {
   test('backtick single line expected and multi line received', () => {
     const expected = 'var foo = `backtick`;';
     const received = 'var foo = `back\ntick`;';
+
+    expect(testWithoutSerialize(expected, received, false)).toMatchSnapshot();
+  });
+
+  test('has no common after clean up chaff multi line', () => {
+    const expected = 'delete\ntwo';
+    const received = 'insert\n2';
+
+    expect(testWithoutSerialize(expected, received, false)).toMatchSnapshot();
+  });
+
+  test('has no common after clean up chaff single line', () => {
+    const expected = 'delete';
+    const received = 'insert';
 
     expect(testWithoutSerialize(expected, received, false)).toMatchSnapshot();
   });

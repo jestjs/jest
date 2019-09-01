@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {cleanup} from '../Utils';
 import {json as runWithJson} from '../runJest';
 
@@ -33,7 +33,6 @@ describe('Snapshot serializers', () => {
 
   it('renders snapshot', () => {
     runAndAssert();
-    // $FlowFixMe dynamic require
     const snapshot = require(snapshotPath);
     expect(snapshot).toMatchSnapshot();
   });

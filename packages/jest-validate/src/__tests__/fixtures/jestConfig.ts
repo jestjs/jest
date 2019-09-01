@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import chalk from 'chalk';
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
@@ -23,7 +23,7 @@ const defaultConfig = {
   automock: false,
   bail: 0,
   browser: false,
-  cacheDirectory: path.join(os.tmpdir(), 'jest'),
+  cacheDirectory: path.join(tmpdir(), 'jest'),
   clearMocks: false,
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],

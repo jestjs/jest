@@ -5,38 +5,29 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs');
+jest.mock('fs', () => ({
+  ...jest.genMockFromModule('fs'),
+  existsSync: jest.fn().mockReturnValue(true),
+}));
 
-import fs from 'fs';
-import path from 'path';
-import assert from 'assert';
+import * as fs from 'fs';
+import * as path from 'path';
+import assert = require('assert');
 import chalk from 'chalk';
 
 import {
-  deepMerge,
-  getSnapshotData,
-  keyToTestName,
-  saveSnapshotFile,
-  serialize,
-  testNameToKey,
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
   SNAPSHOT_VERSION_WARNING,
+  addExtraLineBreaks,
+  deepMerge,
+  getSnapshotData,
+  keyToTestName,
+  removeExtraLineBreaks,
+  saveSnapshotFile,
+  serialize,
+  testNameToKey,
 } from '../utils';
-
-const writeFileSync = fs.writeFileSync;
-const readFileSync = fs.readFileSync;
-const existsSync = fs.existsSync;
-beforeEach(() => {
-  fs.writeFileSync = jest.fn();
-  fs.readFileSync = jest.fn();
-  fs.existsSync = jest.fn(() => true);
-});
-afterEach(() => {
-  fs.writeFileSync = writeFileSync;
-  fs.readFileSync = readFileSync;
-  fs.existsSync = existsSync;
-});
 
 test('keyToTestName()', () => {
   expect(keyToTestName('abc cde 12')).toBe('abc cde');
@@ -177,8 +168,11 @@ test('getSnapshotData() marks valid snapshot not dirty when updating', () => {
 test('escaping', () => {
   const filename = path.join(__dirname, 'escaping.snap');
   const data = '"\'\\';
+  const writeFileSync = fs.writeFileSync as jest.Mock;
+
+  writeFileSync.mockReset();
   saveSnapshotFile({key: data}, filename);
-  const writtenData = (fs.writeFileSync as jest.Mock).mock.calls[0][1];
+  const writtenData = writeFileSync.mock.calls[0][1];
   expect(writtenData).toBe(
     `// Jest Snapshot v1, ${SNAPSHOT_GUIDE_LINK}\n\n` +
       'exports[`key`] = `"\'\\\\`;\n',
@@ -198,6 +192,78 @@ test('serialize handles \\r\\n', () => {
   const serializedData = serialize(data);
 
   expect(serializedData).toBe('\n"<div>\n</div>"\n');
+});
+
+describe('ExtraLineBreaks', () => {
+  test('0 empty string', () => {
+    const expected = '';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe(expected);
+    expect(removed).toBe(expected);
+  });
+
+  test('1 line has double quote marks at edges', () => {
+    const expected = '" one line "';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe(expected);
+    expect(removed).toBe(expected);
+  });
+
+  test('1 line has spaces at edges', () => {
+    const expected = ' one line ';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe(expected);
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines both are blank', () => {
+    const expected = '\n';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines have double quote marks at edges', () => {
+    const expected = '"\n"';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines first is blank', () => {
+    const expected = '\nsecond line ';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
+
+  test('2 lines last is blank', () => {
+    const expected = ' first line\n';
+
+    const added = addExtraLineBreaks(expected);
+    const removed = removeExtraLineBreaks(added);
+
+    expect(added).toBe('\n' + expected + '\n');
+    expect(removed).toBe(expected);
+  });
 });
 
 describe('DeepMerge with property matchers', () => {

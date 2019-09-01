@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
@@ -107,7 +107,6 @@ describe('Snapshot', () => {
     expect(json.numPendingTests).toBe(0);
     expect(result.status).toBe(0);
 
-    // $FlowFixMe dynamic require
     const content = require(snapshotFile);
     expect(
       content['snapshot is not influenced by previous counter 1'],
@@ -238,7 +237,6 @@ describe('Snapshot', () => {
     it('works on subsequent runs without `-u`', () => {
       const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
 
-      // $FlowFixMe dynamic require
       const content = require(snapshotOfCopy);
       expect(content).not.toBe(undefined);
       const secondRun = runWithJson('snapshot', []);
@@ -257,7 +255,6 @@ describe('Snapshot', () => {
       const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
       fs.unlinkSync(copyOfTestPath);
 
-      // $FlowFixMe dynamic require
       const content = require(snapshotOfCopy);
       expect(content).not.toBe(undefined);
       const secondRun = runWithJson('snapshot', ['-w=1', '--ci=false', '-u']);

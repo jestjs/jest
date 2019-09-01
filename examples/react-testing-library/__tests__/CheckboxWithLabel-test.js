@@ -1,7 +1,7 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
 import React from 'react';
-import {render, fireEvent, cleanup} from '@testing-library/react';
+import {cleanup, fireEvent, render} from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
 // automatically unmount and cleanup DOM after the test is finished.

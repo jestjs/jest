@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Diff, DIFF_DELETE, DIFF_INSERT} from './cleanupSemantic';
-import {MULTILINE_REGEXP, getHighlightedString} from './printDiffs';
+import {DIFF_DELETE, DIFF_INSERT, Diff} from './cleanupSemantic';
+import {invertChangedSubstrings} from './printDiffs';
 
 // Encapsulate change lines until either a common newline or the end.
 class ChangeBuffer {
@@ -28,7 +28,7 @@ class ChangeBuffer {
     // Assume call only if line has at least one diff,
     // therefore an empty line must have a diff which has an empty string.
     this.lines.push(
-      new Diff(this.op, getHighlightedString(this.op, this.line)),
+      new Diff(this.op, invertChangedSubstrings(this.op, this.line)),
     );
     this.line.length = 0;
   }
@@ -46,7 +46,7 @@ class ChangeBuffer {
   align(diff: Diff): void {
     const string = diff[1];
 
-    if (MULTILINE_REGEXP.test(string)) {
+    if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
       substrings.forEach((substring, i) => {
@@ -117,7 +117,7 @@ class CommonBuffer {
     const op = diff[0];
     const string = diff[1];
 
-    if (MULTILINE_REGEXP.test(string)) {
+    if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
       substrings.forEach((substring, i) => {

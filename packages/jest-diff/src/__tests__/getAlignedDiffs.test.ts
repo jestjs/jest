@@ -5,12 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {computeStringDiffs, printMultilineStringDiffs} from '../printDiffs';
+import {diffStringsUnified} from '../printDiffs';
 
-const testAlignedDiffs = (a: string, b: string): string => {
-  const {diffs} = computeStringDiffs(a, b);
-  return printMultilineStringDiffs(diffs, true);
-};
+const testAlignedDiffs = (a: string, b: string): string =>
+  diffStringsUnified(a, b, {omitAnnotationLines: true});
 
 describe('getAlignedDiffs', () => {
   describe('lines', () => {

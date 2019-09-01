@@ -10,7 +10,7 @@ Manual mocks are used to stub out functionality with mock data. For example, ins
 
 Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. For example, to mock a module called `user` in the `models` directory, create a file called `user.js` and put it in the `models/__mocks__` directory. Note that the `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
 
-> When we require that module in our tests, then explicitly calling `jest.mock('./moduleName')` is **required**.
+> When we require that module in our tests, explicitly calling `jest.mock('./moduleName')` is **required**.
 
 ## Mocking Node modules
 
@@ -147,8 +147,11 @@ window.matchMedia = jest.fn().mockImplementation(query => {
     matches: false,
     media: query,
     onchange: null,
-    addListener: jest.fn(),
-    removeListener: jest.fn(),
+    addListener: jest.fn(), // deprecated
+    removeListener: jest.fn(), // deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
   };
 });
 ```

@@ -5,21 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff, {getStringDiff} from 'jest-diff';
-import getType, {isPrimitive} from 'jest-get-type';
+import diff, {diffStringsUnified} from 'jest-diff';
+import getType = require('jest-get-type');
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   getLabelPrinter,
   printDiffOrStringify,
 } from 'jest-matcher-utils';
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 import {unescape} from './utils';
 
 const isLineDiffable = (received: any): boolean => {
   const receivedType = getType(received);
 
-  if (isPrimitive(received)) {
+  if (getType.isPrimitive(received)) {
     return typeof received === 'string' && received.includes('\n');
   }
 
@@ -44,6 +44,8 @@ const isLineDiffable = (received: any): boolean => {
 
   return true;
 };
+
+const MAX_DIFF_STRING_LENGTH = 20000;
 
 export const printDiffOrStringified = (
   expectedSerializedTrimmed: string,
@@ -77,32 +79,21 @@ export const printDiffOrStringified = (
     }
 
     // Display substring highlight even when strings have custom serialization.
-    const result = getStringDiff(
-      expectedSerializedTrimmed,
-      receivedSerializedTrimmed,
-      {
-        aAnnotation: expectedLabel,
-        bAnnotation: receivedLabel,
-        expand,
-      },
-    );
-
-    if (result !== null) {
-      if (result.isMultiline) {
-        return result.annotatedDiff;
-      }
-
-      // Because not default stringify, call EXPECTED_COLOR and RECEIVED_COLOR
-      // This is reason to call getStringDiff instead of printDiffOrStringify
-      // Because there is no closing double quote mark at end of single lines,
-      // future improvement is to call replaceSpacesAtEnd if it becomes public.
-      const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
-      return (
-        printLabel(expectedLabel) +
-        EXPECTED_COLOR(result.a) +
-        '\n' +
-        printLabel(receivedLabel) +
-        RECEIVED_COLOR(result.b)
+    if (
+      expectedSerializedTrimmed.length !== 0 &&
+      receivedSerializedTrimmed.length !== 0 &&
+      expectedSerializedTrimmed.length <= MAX_DIFF_STRING_LENGTH &&
+      receivedSerializedTrimmed.length <= MAX_DIFF_STRING_LENGTH &&
+      expectedSerializedTrimmed !== receivedSerializedTrimmed
+    ) {
+      return diffStringsUnified(
+        expectedSerializedTrimmed,
+        receivedSerializedTrimmed,
+        {
+          aAnnotation: expectedLabel,
+          bAnnotation: receivedLabel,
+          expand,
+        },
       );
     }
   }

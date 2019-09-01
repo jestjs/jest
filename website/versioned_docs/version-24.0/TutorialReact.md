@@ -254,7 +254,7 @@ export default class CheckboxWithLabel extends React.Component {
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
 import React from 'react';
-import {render, fireEvent, cleanup} from '@testing-library/react';
+import {cleanup, fireEvent, render} from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
 // automatically unmount and cleanup DOM after the test is finished.

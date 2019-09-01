@@ -18,11 +18,11 @@ Received has value: <red>[Function fn]</>"
 `;
 
 exports[`lastCalledWith works when not called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>lastCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been last called with:
-  <green>[\\"foo\\", \\"bar\\"]</>
-But it was <red>not called</>."
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+
+Number of calls: <red>0</>"
 `;
 
 exports[`lastCalledWith works with Immutable.js objects 1`] = `
@@ -42,14 +42,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`lastCalledWith works with Map 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been last called with:
-  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-as argument 1, but it was called with
-  <red>Map {1 => 2, 2 => 1}</>.
-
-Difference:
+"<dim>expect(</><red>jest.fn()</><dim>).</>lastCalledWith<dim>(</><green>...expected</><dim>)</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -59,7 +52,9 @@ Difference:
 <green>-   \\"b\\" => \\"a\\",</>
 <red>+   1 => 2,</>
 <red>+   2 => 1,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`lastCalledWith works with Set 1`] = `
@@ -71,14 +66,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`lastCalledWith works with Set 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been last called with:
-  <green>Set {3, 4}</>
-as argument 1, but it was called with
-  <red>Set {1, 2}</>.
-
-Difference:
+"<dim>expect(</><red>jest.fn()</><dim>).</>lastCalledWith<dim>(</><green>...expected</><dim>)</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -88,16 +76,18 @@ Difference:
 <green>-   4,</>
 <red>+   1,</>
 <red>+   2,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`lastCalledWith works with arguments that don't match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>lastCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been last called with:
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar1\\"</>."
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+Received: <dim>\\"foo\\"</>, <red>\\"bar1\\"</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`lastCalledWith works with arguments that match 1`] = `
@@ -120,19 +110,23 @@ Number of calls: <red>3</>"
 `;
 
 exports[`lastCalledWith works with many arguments that don't match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>lastCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been last called with:
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar3\\"</>."
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+Received
+       2: <dim>\\"foo\\"</>, <red>\\"bar2\\"</>
+->     3: <dim>\\"foo\\"</>, <red>\\"bar3\\"</>
+
+Number of calls: <red>3</>"
 `;
 
 exports[`lastCalledWith works with trailing undefined arguments 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).lastCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>lastCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been last called with:
-  Did not expect argument 2 but it was called with <red>undefined</>."
+Expected: <green>\\"foo\\"</>
+Received: <dim>\\"foo\\"</>, <red>undefined</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`lastReturnedWith a call that throws is not considered to have returned 1`] = `
@@ -181,7 +175,7 @@ exports[`lastReturnedWith lastReturnedWith works with three calls 1`] = `
 Expected: not <green>\\"foo3\\"</>
 Received
        2:     <red>\\"foo2\\"</>
-->     3:     <red>\\"foo3\\"</>
+->     3:     <dim>\\"foo3\\"</>
 
 Number of returns: <red>3</>"
 `;
@@ -279,7 +273,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`nthCalledWith includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).</>not<dim>.</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).</>not<dim>.</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo\\"</>, <green>\\"bar\\"</>
@@ -288,34 +282,34 @@ Number of calls: <red>1</>"
 `;
 
 exports[`nthCalledWith negative throw matcher error for n that is not integer 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
 n has type:  number
-n has value: <green>Infinity</>"
+n has value: Infinity"
 `;
 
 exports[`nthCalledWith positive throw matcher error for n that is not integer 1`] = `
-"<dim>expect(</><red>received</><dim>).</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
 n has type:  number
-n has value: <green>0.1</>"
+n has value: 0.1"
 `;
 
 exports[`nthCalledWith positive throw matcher error for n that is not positive integer 1`] = `
-"<dim>expect(</><red>received</><dim>).</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
 n has type:  number
-n has value: <green>0</>"
+n has value: 0"
 `;
 
 exports[`nthCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>received</><dim>).</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -324,15 +318,16 @@ Received has value: <red>[Function fn]</>"
 `;
 
 exports[`nthCalledWith works when not called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-Expected mock function first call to have been called with:
-  <green>[\\"foo\\", \\"bar\\"]</>
-But it was <red>not called</>."
+n: 1
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+
+Number of calls: <red>0</>"
 `;
 
 exports[`nthCalledWith works with Immutable.js objects 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>, <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
@@ -341,7 +336,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`nthCalledWith works with Map 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>Map {1 => 2, 2 => 1}</>
@@ -350,15 +345,9 @@ Number of calls: <red>1</>"
 `;
 
 exports[`nthCalledWith works with Map 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-Expected mock function first call to have been called with:
-  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-as argument 1, but it was called with
-  <red>Map {1 => 2, 2 => 1}</>.
-
-Difference:
-
+n: 1
 <green>- Expected</>
 <red>+ Received</>
 
@@ -367,11 +356,13 @@ Difference:
 <green>-   \\"b\\" => \\"a\\",</>
 <red>+   1 => 2,</>
 <red>+   2 => 1,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`nthCalledWith works with Set 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>Set {1, 2}</>
@@ -380,15 +371,9 @@ Number of calls: <red>1</>"
 `;
 
 exports[`nthCalledWith works with Set 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-Expected mock function first call to have been called with:
-  <green>Set {3, 4}</>
-as argument 1, but it was called with
-  <red>Set {1, 2}</>.
-
-Difference:
-
+n: 1
 <green>- Expected</>
 <red>+ Received</>
 
@@ -397,20 +382,23 @@ Difference:
 <green>-   4,</>
 <red>+   1,</>
 <red>+   2,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`nthCalledWith works with arguments that don't match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-Expected mock function first call to have been called with:
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar1\\"</>."
+n: 1
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+Received: <dim>\\"foo\\"</>, <red>\\"bar1\\"</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`nthCalledWith works with arguments that match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo\\"</>, <green>\\"bar\\"</>
@@ -419,7 +407,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`nthCalledWith works with three calls 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo1\\"</>, <green>\\"bar\\"</>
@@ -431,14 +419,17 @@ Number of calls: <red>3</>"
 `;
 
 exports[`nthCalledWith works with trailing undefined arguments 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).nthCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-Expected mock function first call to have been called with:
-  Did not expect argument 2 but it was called with <red>undefined</>."
+n: 1
+Expected: <green>\\"foo\\"</>
+Received: <dim>\\"foo\\"</>, <red>undefined</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`nthReturnedWith a call that throws is not considered to have returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>undefined</>
@@ -449,7 +440,7 @@ Number of calls:   <red>1</>"
 `;
 
 exports[`nthReturnedWith a call that throws undefined is not considered to have returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>undefined</>
@@ -460,7 +451,7 @@ Number of calls:   <red>1</>"
 `;
 
 exports[`nthReturnedWith includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>\\"foo\\"</>
@@ -469,7 +460,7 @@ Number of returns: <red>0</>"
 `;
 
 exports[`nthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>6</>
@@ -482,7 +473,7 @@ Number of calls:   <red>4</>"
 `;
 
 exports[`nthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 2
 Expected: <green>3</>
@@ -496,13 +487,13 @@ Number of calls:   <red>4</>"
 `;
 
 exports[`nthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 3`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 3
 Expected: not <green>1</>
 Received
        2:     function call has not returned yet
-->     3:     <red>1</>
+->     3:     <dim>1</>
        4:     <red>0</>
 
 Number of returns: <red>2</>
@@ -510,57 +501,57 @@ Number of calls:   <red>4</>"
 `;
 
 exports[`nthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 4`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 4
 Expected: not <green>0</>
 Received
        3:     <red>1</>
-->     4:     <red>0</>
+->     4:     <dim>0</>
 
 Number of returns: <red>2</>
 Number of calls:   <red>4</>"
 `;
 
 exports[`nthReturnedWith nthReturnedWith negative throw matcher error for n that is not number 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
-n has value: <green>undefined</>"
+n has value: undefined"
 `;
 
 exports[`nthReturnedWith nthReturnedWith positive throw matcher error for n that is not integer 1`] = `
-"<dim>expect(</><red>received</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
 n has type:  number
-n has value: <green>0.1</>"
+n has value: 0.1"
 `;
 
 exports[`nthReturnedWith nthReturnedWith positive throw matcher error for n that is not positive integer 1`] = `
-"<dim>expect(</><red>received</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
 n has type:  number
-n has value: <green>0</>"
+n has value: 0"
 `;
 
 exports[`nthReturnedWith nthReturnedWith should reject nth value greater than number of calls 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 4
 Expected: <green>\\"foo\\"</>
 Received
-       3: <red>\\"foo\\"</>
+       3: <dim>\\"foo\\"</>
 
 Number of returns: <red>3</>"
 `;
 
 exports[`nthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>\\"bar1\\"</>
@@ -572,31 +563,31 @@ Number of returns: <red>3</>"
 `;
 
 exports[`nthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo1\\"</>
 Received
-->     1:     <red>\\"foo1\\"</>
+->     1:     <dim>\\"foo1\\"</>
        2:     <red>\\"foo2\\"</>
 
 Number of returns: <red>3</>"
 `;
 
 exports[`nthReturnedWith nthReturnedWith works with three calls 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo1\\"</>
 Received
-->     1:     <red>\\"foo1\\"</>
+->     1:     <dim>\\"foo1\\"</>
        2:     <red>\\"foo2\\"</>
 
 Number of returns: <red>3</>"
 `;
 
 exports[`nthReturnedWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>received</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock function
 
@@ -605,7 +596,7 @@ Received has value: <red>[Function fn]</>"
 `;
 
 exports[`nthReturnedWith works when not called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>\\"foo\\"</>
@@ -614,7 +605,7 @@ Number of returns: <red>0</>"
 `;
 
 exports[`nthReturnedWith works with Immutable.js objects directly created 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
@@ -623,7 +614,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`nthReturnedWith works with Immutable.js objects indirectly created 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
@@ -632,7 +623,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`nthReturnedWith works with Map 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>Map {1 => 2, 2 => 1}</>
@@ -641,7 +632,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`nthReturnedWith works with Map 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
@@ -651,7 +642,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`nthReturnedWith works with Set 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>Set {1, 2}</>
@@ -660,7 +651,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`nthReturnedWith works with Set 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>Set {3, 4}</>
@@ -670,7 +661,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`nthReturnedWith works with argument that does match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo\\"</>
@@ -679,7 +670,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`nthReturnedWith works with argument that does not match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>\\"bar\\"</>
@@ -689,7 +680,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`nthReturnedWith works with undefined 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>nthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>undefined</>
@@ -911,11 +902,11 @@ Received has value: <red>[Function fn]</>"
 `;
 
 exports[`toBeCalledWith works when not called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toBeCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been called with:
-  <green>[\\"foo\\", \\"bar\\"]</>
-But it was <red>not called</>."
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+
+Number of calls: <red>0</>"
 `;
 
 exports[`toBeCalledWith works with Immutable.js objects 1`] = `
@@ -935,14 +926,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toBeCalledWith works with Map 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been called with:
-  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-as argument 1, but it was called with
-  <red>Map {1 => 2, 2 => 1}</>.
-
-Difference:
+"<dim>expect(</><red>jest.fn()</><dim>).</>toBeCalledWith<dim>(</><green>...expected</><dim>)</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -952,7 +936,9 @@ Difference:
 <green>-   \\"b\\" => \\"a\\",</>
 <red>+   1 => 2,</>
 <red>+   2 => 1,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toBeCalledWith works with Set 1`] = `
@@ -964,14 +950,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toBeCalledWith works with Set 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been called with:
-  <green>Set {3, 4}</>
-as argument 1, but it was called with
-  <red>Set {1, 2}</>.
-
-Difference:
+"<dim>expect(</><red>jest.fn()</><dim>).</>toBeCalledWith<dim>(</><green>...expected</><dim>)</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -981,16 +960,18 @@ Difference:
 <green>-   4,</>
 <red>+   1,</>
 <red>+   2,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toBeCalledWith works with arguments that don't match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toBeCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been called with:
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar1\\"</>."
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+Received: <dim>\\"foo\\"</>, <red>\\"bar1\\"</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toBeCalledWith works with arguments that match 1`] = `
@@ -1012,27 +993,24 @@ Number of calls: <red>3</>"
 `;
 
 exports[`toBeCalledWith works with many arguments that don't match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toBeCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been called with:
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar3\\"</>.
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+Received
+       1: <dim>\\"foo\\"</>, <red>\\"bar1\\"</>
+       2: <dim>\\"foo\\"</>, <red>\\"bar2\\"</>
+       3: <dim>\\"foo\\"</>, <red>\\"bar3\\"</>
 
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar2\\"</>.
-
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar1\\"</>."
+Number of calls: <red>3</>"
 `;
 
 exports[`toBeCalledWith works with trailing undefined arguments 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toBeCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been called with:
-  Did not expect argument 2 but it was called with <red>undefined</>."
+Expected: <green>\\"foo\\"</>
+Received: <dim>\\"foo\\"</>, <red>undefined</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenCalled .not fails with any argument passed 1`] = `
@@ -1249,11 +1227,11 @@ Received has value: <red>[Function fn]</>"
 `;
 
 exports[`toHaveBeenCalledWith works when not called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been called with:
-  <green>[\\"foo\\", \\"bar\\"]</>
-But it was <red>not called</>."
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+
+Number of calls: <red>0</>"
 `;
 
 exports[`toHaveBeenCalledWith works with Immutable.js objects 1`] = `
@@ -1273,14 +1251,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenCalledWith works with Map 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been called with:
-  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-as argument 1, but it was called with
-  <red>Map {1 => 2, 2 => 1}</>.
-
-Difference:
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenCalledWith<dim>(</><green>...expected</><dim>)</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -1290,7 +1261,9 @@ Difference:
 <green>-   \\"b\\" => \\"a\\",</>
 <red>+   1 => 2,</>
 <red>+   2 => 1,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenCalledWith works with Set 1`] = `
@@ -1302,14 +1275,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenCalledWith works with Set 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been called with:
-  <green>Set {3, 4}</>
-as argument 1, but it was called with
-  <red>Set {1, 2}</>.
-
-Difference:
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenCalledWith<dim>(</><green>...expected</><dim>)</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -1319,16 +1285,18 @@ Difference:
 <green>-   4,</>
 <red>+   1,</>
 <red>+   2,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenCalledWith works with arguments that don't match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been called with:
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar1\\"</>."
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+Received: <dim>\\"foo\\"</>, <red>\\"bar1\\"</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenCalledWith works with arguments that match 1`] = `
@@ -1350,27 +1318,24 @@ Number of calls: <red>3</>"
 `;
 
 exports[`toHaveBeenCalledWith works with many arguments that don't match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been called with:
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar3\\"</>.
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+Received
+       1: <dim>\\"foo\\"</>, <red>\\"bar1\\"</>
+       2: <dim>\\"foo\\"</>, <red>\\"bar2\\"</>
+       3: <dim>\\"foo\\"</>, <red>\\"bar3\\"</>
 
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar2\\"</>.
-
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar1\\"</>."
+Number of calls: <red>3</>"
 `;
 
 exports[`toHaveBeenCalledWith works with trailing undefined arguments 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been called with:
-  Did not expect argument 2 but it was called with <red>undefined</>."
+Expected: <green>\\"foo\\"</>
+Received: <dim>\\"foo\\"</>, <red>undefined</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenLastCalledWith includes the custom mock name in the error message 1`] = `
@@ -1391,11 +1356,11 @@ Received has value: <red>[Function fn]</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works when not called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenLastCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been last called with:
-  <green>[\\"foo\\", \\"bar\\"]</>
-But it was <red>not called</>."
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+
+Number of calls: <red>0</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with Immutable.js objects 1`] = `
@@ -1415,14 +1380,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with Map 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been last called with:
-  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-as argument 1, but it was called with
-  <red>Map {1 => 2, 2 => 1}</>.
-
-Difference:
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenLastCalledWith<dim>(</><green>...expected</><dim>)</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -1432,7 +1390,9 @@ Difference:
 <green>-   \\"b\\" => \\"a\\",</>
 <red>+   1 => 2,</>
 <red>+   2 => 1,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with Set 1`] = `
@@ -1444,14 +1404,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with Set 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
-
-Expected mock function to have been last called with:
-  <green>Set {3, 4}</>
-as argument 1, but it was called with
-  <red>Set {1, 2}</>.
-
-Difference:
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenLastCalledWith<dim>(</><green>...expected</><dim>)</>
 
 <green>- Expected</>
 <red>+ Received</>
@@ -1461,16 +1414,18 @@ Difference:
 <green>-   4,</>
 <red>+   1,</>
 <red>+   2,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with arguments that don't match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenLastCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been last called with:
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar1\\"</>."
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+Received: <dim>\\"foo\\"</>, <red>\\"bar1\\"</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with arguments that match 1`] = `
@@ -1493,23 +1448,27 @@ Number of calls: <red>3</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with many arguments that don't match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenLastCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been last called with:
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar3\\"</>."
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+Received
+       2: <dim>\\"foo\\"</>, <red>\\"bar2\\"</>
+->     3: <dim>\\"foo\\"</>, <red>\\"bar3\\"</>
+
+Number of calls: <red>3</>"
 `;
 
 exports[`toHaveBeenLastCalledWith works with trailing undefined arguments 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenLastCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenLastCalledWith<dim>(</><green>...expected</><dim>)</>
 
-Expected mock function to have been last called with:
-  Did not expect argument 2 but it was called with <red>undefined</>."
+Expected: <green>\\"foo\\"</>
+Received: <dim>\\"foo\\"</>, <red>undefined</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenNthCalledWith includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo\\"</>, <green>\\"bar\\"</>
@@ -1518,34 +1477,34 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenNthCalledWith negative throw matcher error for n that is not integer 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
 n has type:  number
-n has value: <green>Infinity</>"
+n has value: Infinity"
 `;
 
 exports[`toHaveBeenNthCalledWith positive throw matcher error for n that is not integer 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
 n has type:  number
-n has value: <green>0.1</>"
+n has value: 0.1"
 `;
 
 exports[`toHaveBeenNthCalledWith positive throw matcher error for n that is not positive integer 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
 n has type:  number
-n has value: <green>0</>"
+n has value: 0"
 `;
 
 exports[`toHaveBeenNthCalledWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock or spy function
 
@@ -1554,15 +1513,16 @@ Received has value: <red>[Function fn]</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works when not called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-Expected mock function first call to have been called with:
-  <green>[\\"foo\\", \\"bar\\"]</>
-But it was <red>not called</>."
+n: 1
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+
+Number of calls: <red>0</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works with Immutable.js objects 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>, <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
@@ -1571,7 +1531,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works with Map 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>Map {1 => 2, 2 => 1}</>
@@ -1580,15 +1540,9 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works with Map 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-Expected mock function first call to have been called with:
-  <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
-as argument 1, but it was called with
-  <red>Map {1 => 2, 2 => 1}</>.
-
-Difference:
-
+n: 1
 <green>- Expected</>
 <red>+ Received</>
 
@@ -1597,11 +1551,13 @@ Difference:
 <green>-   \\"b\\" => \\"a\\",</>
 <red>+   1 => 2,</>
 <red>+   2 => 1,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works with Set 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>Set {1, 2}</>
@@ -1610,15 +1566,9 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works with Set 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-Expected mock function first call to have been called with:
-  <green>Set {3, 4}</>
-as argument 1, but it was called with
-  <red>Set {1, 2}</>.
-
-Difference:
-
+n: 1
 <green>- Expected</>
 <red>+ Received</>
 
@@ -1627,20 +1577,23 @@ Difference:
 <green>-   4,</>
 <red>+   1,</>
 <red>+   2,</>
-<dim>  }</>"
+<dim>  }</>,
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works with arguments that don't match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-Expected mock function first call to have been called with:
-  <green>\\"bar\\"</>
-as argument 2, but it was called with
-  <red>\\"bar1\\"</>."
+n: 1
+Expected: <green>\\"foo\\"</>, <green>\\"bar\\"</>
+Received: <dim>\\"foo\\"</>, <red>\\"bar1\\"</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works with arguments that match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo\\"</>, <green>\\"bar\\"</>
@@ -1649,7 +1602,7 @@ Number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works with three calls 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</><green>n</><dim>, </><green>...expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo1\\"</>, <green>\\"bar\\"</>
@@ -1661,10 +1614,13 @@ Number of calls: <red>3</>"
 `;
 
 exports[`toHaveBeenNthCalledWith works with trailing undefined arguments 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenNthCalledWith(</><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenNthCalledWith<dim>(</>n<dim>, </><green>...expected</><dim>)</>
 
-Expected mock function first call to have been called with:
-  Did not expect argument 2 but it was called with <red>undefined</>."
+n: 1
+Expected: <green>\\"foo\\"</>
+Received: <dim>\\"foo\\"</>, <red>undefined</>
+
+Number of calls: <red>1</>"
 `;
 
 exports[`toHaveLastReturnedWith a call that throws is not considered to have returned 1`] = `
@@ -1713,7 +1669,7 @@ exports[`toHaveLastReturnedWith lastReturnedWith works with three calls 1`] = `
 Expected: not <green>\\"foo3\\"</>
 Received
        2:     <red>\\"foo2\\"</>
-->     3:     <red>\\"foo3\\"</>
+->     3:     <dim>\\"foo3\\"</>
 
 Number of returns: <red>3</>"
 `;
@@ -1811,7 +1767,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith a call that throws is not considered to have returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>undefined</>
@@ -1822,7 +1778,7 @@ Number of calls:   <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith a call that throws undefined is not considered to have returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>undefined</>
@@ -1833,7 +1789,7 @@ Number of calls:   <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>\\"foo\\"</>
@@ -1842,7 +1798,7 @@ Number of returns: <red>0</>"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>6</>
@@ -1855,7 +1811,7 @@ Number of calls:   <red>4</>"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 2
 Expected: <green>3</>
@@ -1869,13 +1825,13 @@ Number of calls:   <red>4</>"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 3`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 3
 Expected: not <green>1</>
 Received
        2:     function call has not returned yet
-->     3:     <red>1</>
+->     3:     <dim>1</>
        4:     <red>0</>
 
 Number of returns: <red>2</>
@@ -1883,57 +1839,57 @@ Number of calls:   <red>4</>"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith incomplete recursive calls are handled properly 4`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 4
 Expected: not <green>0</>
 Received
        3:     <red>1</>
-->     4:     <red>0</>
+->     4:     <dim>0</>
 
 Number of returns: <red>2</>
 Number of calls:   <red>4</>"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith negative throw matcher error for n that is not number 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
-n has value: <green>undefined</>"
+n has value: undefined"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith positive throw matcher error for n that is not integer 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
 n has type:  number
-n has value: <green>0.1</>"
+n has value: 0.1"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith positive throw matcher error for n that is not positive integer 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>n</> must be a positive integer
+<bold>Matcher error</>: n must be a positive integer
 
 n has type:  number
-n has value: <green>0</>"
+n has value: 0"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith should reject nth value greater than number of calls 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 4
 Expected: <green>\\"foo\\"</>
 Received
-       3: <red>\\"foo\\"</>
+       3: <dim>\\"foo\\"</>
 
 Number of returns: <red>3</>"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>\\"bar1\\"</>
@@ -1945,31 +1901,31 @@ Number of returns: <red>3</>"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith should replace 1st, 2nd, 3rd with first, second, third 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo1\\"</>
 Received
-->     1:     <red>\\"foo1\\"</>
+->     1:     <dim>\\"foo1\\"</>
        2:     <red>\\"foo2\\"</>
 
 Number of returns: <red>3</>"
 `;
 
 exports[`toHaveNthReturnedWith nthReturnedWith works with three calls 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo1\\"</>
 Received
-->     1:     <red>\\"foo1\\"</>
+->     1:     <dim>\\"foo1\\"</>
        2:     <red>\\"foo2\\"</>
 
 Number of returns: <red>3</>"
 `;
 
 exports[`toHaveNthReturnedWith works only on spies or jest.fn 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>received</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a mock function
 
@@ -1978,7 +1934,7 @@ Received has value: <red>[Function fn]</>"
 `;
 
 exports[`toHaveNthReturnedWith works when not called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>\\"foo\\"</>
@@ -1987,7 +1943,7 @@ Number of returns: <red>0</>"
 `;
 
 exports[`toHaveNthReturnedWith works with Immutable.js objects directly created 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
@@ -1996,7 +1952,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith works with Immutable.js objects indirectly created 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>Immutable.Map {\\"a\\": {\\"b\\": \\"c\\"}}</>
@@ -2005,7 +1961,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith works with Map 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>Map {1 => 2, 2 => 1}</>
@@ -2014,7 +1970,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith works with Map 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>Map {\\"a\\" => \\"b\\", \\"b\\" => \\"a\\"}</>
@@ -2024,7 +1980,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith works with Set 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>Set {1, 2}</>
@@ -2033,7 +1989,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith works with Set 2`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>Set {3, 4}</>
@@ -2043,7 +1999,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith works with argument that does match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>\\"foo\\"</>
@@ -2052,7 +2008,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith works with argument that does not match 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: <green>\\"bar\\"</>
@@ -2062,7 +2018,7 @@ Number of returns: <red>1</>"
 `;
 
 exports[`toHaveNthReturnedWith works with undefined 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</><green>n</><dim>, </><green>expected</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveNthReturnedWith<dim>(</>n<dim>, </><green>expected</><dim>)</>
 
 n: 1
 Expected: not <green>undefined</>

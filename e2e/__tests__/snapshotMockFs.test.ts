@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import rimraf from 'rimraf';
+import * as path from 'path';
+import rimraf = require('rimraf');
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import {json as runJestJson} from '../runJest';
@@ -28,7 +28,6 @@ test('store snapshot even if fs is mocked', () => {
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
 
-  // $FlowFixMe dynamic require
   const content = require(snapshotFile);
   expect(content['snapshot 1']).toBe(`
 Object {

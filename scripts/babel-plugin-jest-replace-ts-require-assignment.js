@@ -7,18 +7,23 @@
 
 'use strict';
 
-// Replace `export =` with `module.exports` which allows us to keep CJS semantics
+// Replace `import thing = require('thing')` with `const thing = require('thing')` which allows us to keep CJS semantics
 
 module.exports = ({template}) => {
   const moduleExportsDeclaration = template(`
-    module.exports = ASSIGNMENT;
+    import NAME from 'IMPORT';
   `);
   return {
-    name: 'jest-replace-ts-export-assignment',
+    name: 'jest-replace-ts-require-assignment',
     visitor: {
-      TSExportAssignment(path) {
+      TSImportEqualsDeclaration(path) {
+        const {node} = path;
+
         path.replaceWith(
-          moduleExportsDeclaration({ASSIGNMENT: path.node.expression})
+          moduleExportsDeclaration({
+            IMPORT: node.moduleReference.expression,
+            NAME: node.id,
+          })
         );
       },
     },

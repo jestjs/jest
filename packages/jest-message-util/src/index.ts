@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {AssertionResult, SerializableError} from '@jest/test-result';
 import chalk from 'chalk';
-import micromatch from 'micromatch';
-import slash from 'slash';
+import micromatch = require('micromatch');
+import slash = require('slash');
 import {codeFrameColumns} from '@babel/code-frame';
-import StackUtils from 'stack-utils';
+import StackUtils = require('stack-utils');
 import {Frame} from './types';
 
 export {Frame} from './types';
@@ -216,7 +216,7 @@ const formatPaths = (
   if (
     (config.testMatch &&
       config.testMatch.length &&
-      micromatch.some(filePath, config.testMatch)) ||
+      micromatch([filePath], config.testMatch).length > 0) ||
     filePath === relativeTestPath
   ) {
     filePath = chalk.reset.cyan(filePath);

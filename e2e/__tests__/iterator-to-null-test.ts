@@ -8,9 +8,7 @@
 
 'use strict';
 
-// $FlowFixMe
 Array.prototype[Symbol.iterator] = null;
-// $FlowFixMe
 String.prototype[Symbol.iterator] = null;
 
 test('modifying global object does not affect test runner', () => {});

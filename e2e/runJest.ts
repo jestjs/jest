@@ -6,10 +6,14 @@
  *
  */
 
-import path from 'path';
-import fs from 'fs';
+import * as path from 'path';
+import * as fs from 'fs';
 import {Writable} from 'stream';
-import execa, {ExecaChildProcess, ExecaReturns} from 'execa';
+import execa, {
+  ExecaChildProcess,
+  ExecaReturnValue,
+  ExecaSyncReturnValue,
+} from 'execa';
 import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
 
@@ -39,7 +43,7 @@ function spawnJest(
   args?: Array<string>,
   options?: RunJestOptions,
   spawnAsync?: false,
-): ExecaReturns;
+): ExecaReturnValue;
 function spawnJest(
   dir: string,
   args?: Array<string>,
@@ -53,7 +57,7 @@ function spawnJest(
   args?: Array<string>,
   options: RunJestOptions = {},
   spawnAsync: boolean = false,
-): ExecaReturns | ExecaChildProcess {
+): ExecaSyncReturnValue | ExecaChildProcess {
   const isRelative = !path.isAbsolute(dir);
 
   if (isRelative) {
@@ -91,19 +95,18 @@ function spawnJest(
   );
 }
 
-type RunJestResult = ExecaReturns & {
+interface RunJestResult extends ExecaReturnValue {
   status?: number;
-  code?: number;
   json?: (
     dir: string,
     args: Array<string> | undefined,
     options: RunJestOptions,
   ) => RunJestResult;
-};
+}
 
 function normalizeResult(result: RunJestResult, options: RunJestOptions) {
   // For compat with cross-spawn
-  result.status = result.code;
+  result.status = result.exitCode;
 
   result.stdout = normalizeIcons(result.stdout);
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);

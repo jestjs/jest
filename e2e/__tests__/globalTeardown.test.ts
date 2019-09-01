@@ -6,16 +6,16 @@
  */
 'use strict';
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+import * as fs from 'fs';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {createDirectory} from 'jest-util';
 import runJest, {json as runWithJson} from '../runJest';
 import {cleanup, run} from '../Utils';
 
-const DIR = path.join(os.tmpdir(), 'jest-global-teardown');
-const project1DIR = path.join(os.tmpdir(), 'jest-global-teardown-project-1');
-const project2DIR = path.join(os.tmpdir(), 'jest-global-teardown-project-2');
+const DIR = path.join(tmpdir(), 'jest-global-teardown');
+const project1DIR = path.join(tmpdir(), 'jest-global-teardown-project-1');
+const project2DIR = path.join(tmpdir(), 'jest-global-teardown-project-2');
 const e2eDir = path.resolve(__dirname, '../global-teardown');
 
 beforeAll(() => {

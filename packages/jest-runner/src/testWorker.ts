@@ -8,17 +8,17 @@
 
 import {Config} from '@jest/types';
 import {SerializableError, TestResult} from '@jest/test-result';
-import HasteMap, {SerializableModuleMap} from 'jest-haste-map';
-import exit from 'exit';
+import HasteMap = require('jest-haste-map');
+import exit = require('exit');
 import {separateMessageFromStack} from 'jest-message-util';
-import Runtime from 'jest-runtime';
-import Resolver from 'jest-resolve';
+import Runtime = require('jest-runtime');
+import Resolver = require('jest-resolve');
 import {ErrorWithCode, TestRunnerSerializedContext} from './types';
 import runTest from './runTest';
 
 export type SerializableResolver = {
   config: Config.ProjectConfig;
-  serializableModuleMap: SerializableModuleMap;
+  serializableModuleMap: HasteMap.SerializableModuleMap;
 };
 
 type WorkerData = {

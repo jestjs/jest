@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import pEachSeries from 'p-each-series';
+import pEachSeries = require('p-each-series');
 import {Config} from '@jest/types';
 import {Test} from 'jest-runner';
 import {ScriptTransformer} from '@jest/transform';
