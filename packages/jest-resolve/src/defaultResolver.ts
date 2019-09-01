@@ -44,6 +44,10 @@ export default function defaultResolver(
   });
 }
 
+export const clearDefaultResolverCache = () => {
+  checkedPaths.clear();
+};
+
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 
 function resolveSync(

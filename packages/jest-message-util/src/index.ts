@@ -90,6 +90,8 @@ const getRenderedCallsite = (
   return renderedCallsite;
 };
 
+const blankStringRegexp = /^\s*$/;
+
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
@@ -119,7 +121,7 @@ export const formatExecError = (
   const separated = separateMessageFromStack(stack || '');
   stack = separated.stack;
 
-  if (separated.message.indexOf(trim(message)) !== -1) {
+  if (separated.message.includes(trim(message))) {
     // Often stack trace already contains the duplicate of the message
     message = separated.message;
   }
@@ -131,7 +133,7 @@ export const formatExecError = (
       ? '\n' + formatStackTrace(stack, config, options, testPath)
       : '';
 
-  if (message.match(/^\s*$/) && stack.match(/^\s*$/)) {
+  if (blankStringRegexp.test(message) && blankStringRegexp.test(stack)) {
     // this can happen if an empty object is thrown.
     message = MESSAGE_INDENT + 'Error: No message was provided';
   }
@@ -331,6 +333,16 @@ export const formatResultsErrors = (
     .join('\n');
 };
 
+const errorRegexp = /^Error:?\s*$/;
+
+const removeBlankErrorLine = (str: string) =>
+  str
+    .split('\n')
+    // Lines saying just `Error:` are useless
+    .filter(line => !errorRegexp.test(line))
+    .join('\n')
+    .trimRight();
+
 // jasmine and worker farm sometimes don't give us access to the actual
 // Error object, so we have to regexp out the message from the stack string
 // to format it.
@@ -344,13 +356,13 @@ export const separateMessageFromStack = (content: string) => {
   // If the error is a plain "Error:" instead of a SyntaxError or TypeError we
   // remove the prefix from the message because it is generally not useful.
   const messageMatch = content.match(
-    /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*\:\d*\:\d*)|\s*.*)([\s\S]*)$/,
+    /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\s\S]*)$/,
   );
   if (!messageMatch) {
-    // For flow
+    // For typescript
     throw new Error('If you hit this error, the regex above is buggy.');
   }
-  const message = messageMatch[1];
-  const stack = messageMatch[2];
+  const message = removeBlankErrorLine(messageMatch[1]);
+  const stack = removeBlankErrorLine(messageMatch[2]);
   return {message, stack};
 };

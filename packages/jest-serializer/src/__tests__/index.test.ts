@@ -7,12 +7,11 @@
 
 'use strict';
 
-import prettyFormat from 'pretty-format';
-
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import v8 from 'v8';
+import prettyFormat from 'pretty-format';
 
 import serializer from '..';
 

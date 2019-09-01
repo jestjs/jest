@@ -42,6 +42,12 @@ _Before_ submitting a pull request, please make sure the following is done…
     python --version
     ```
 
+1.  Make sure you have a compatible version of `node` installed (As of July 10th 2019, `v10.x` is recommended since there is a known issues with `v12.x` [#8490](https://github.com/facebook/jest/issues/8490)).
+
+    ```sh
+    node -v
+    ```
+
 1.  Run `yarn install`. On Windows: To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may need to download either node.js or Chocolatey<br />
 
     ```sh
@@ -69,7 +75,7 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 1.  If you've changed APIs, update the documentation.
 
-1.  Ensure the test suite passes via `yarn test`. To run the test suite you may need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On macOS, this can be done using [homebrew](http://brew.sh/): `brew install hg`.
+1.  Ensure the test suite passes via `yarn jest`. To run the test suite you may need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On macOS, this can be done using [homebrew](http://brew.sh/): `brew install hg`.
 
     ```sh-session
     $ brew install hg # maybe
