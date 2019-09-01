@@ -101,7 +101,7 @@ class DependencyResolver {
               related.delete(file);
             }
             visitedModules.add(file);
-            acc.push(module.file);
+            acc.push(file);
             return acc;
           }, []),
         );

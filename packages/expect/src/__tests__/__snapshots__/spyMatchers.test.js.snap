@@ -607,9 +607,10 @@ Expected has value: <green>555</>"
 `;
 
 exports[`toBeCalled .not passes when called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalled()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toBeCalled<dim>()</>
 
-Expected mock function to have been called, but it was not called."
+Expected number of calls: >= <green>1</>
+Received number of calls:    <red>0</>"
 `;
 
 exports[`toBeCalled fails with any argument passed 1`] = `
@@ -622,17 +623,21 @@ Expected has value: <green>555</>"
 `;
 
 exports[`toBeCalled includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).not.toBeCalled()</>
+"<dim>expect(</><red>named-mock</><dim>).</>not<dim>.</>toBeCalled<dim>()</>
 
-Expected mock function \\"named-mock\\" not to be called but it was called with:
-  <red>[]</>"
+Expected number of calls: <green>0</>
+Received number of calls: <red>1</>
+
+1: called with no arguments"
 `;
 
 exports[`toBeCalled passes when called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalled()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toBeCalled<dim>()</>
 
-Expected mock function not to be called but it was called with:
-  <red>[]</>"
+Expected number of calls: <green>0</>
+Received number of calls: <red>1</>
+
+1: <red>\\"arg0\\"</>, <red>\\"arg1\\"</>, <red>\\"arg2\\"</>"
 `;
 
 exports[`toBeCalled works only on spies or jest.fn 1`] = `
@@ -699,15 +704,17 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`toBeCalledTimes .not passes if function called less than expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function to have been called <green>two times</>, but it was called <red>one time</>."
+Expected number of calls: <green>2</>
+Received number of calls: <red>1</>"
 `;
 
 exports[`toBeCalledTimes .not passes if function called more than expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toBeCalledTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function to have been called <green>two times</>, but it was called <red>three times</>."
+Expected number of calls: <green>2</>
+Received number of calls: <red>3</>"
 `;
 
 exports[`toBeCalledTimes .not works only on spies or jest.fn 1`] = `
@@ -720,9 +727,10 @@ Received has value: <red>[Function fn]</>"
 `;
 
 exports[`toBeCalledTimes includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).toBeCalledTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function \\"named-mock\\" to have been called <green>two times</>, but it was called <red>one time</>."
+Expected number of calls: <green>2</>
+Received number of calls: <red>1</>"
 `;
 
 exports[`toBeCalledTimes only accepts a number argument 1`] = `
@@ -780,9 +788,9 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`toBeCalledTimes passes if function called equal to expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toBeCalledTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to be called <green>two times</>, but it was called exactly <red>two times</>."
+Expected number of calls: not <green>2</>"
 `;
 
 exports[`toBeCalledWith includes the custom mock name in the error message 1`] = `
@@ -929,9 +937,10 @@ Expected has value: <green>555</>"
 `;
 
 exports[`toHaveBeenCalled .not passes when called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalled()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenCalled<dim>()</>
 
-Expected mock function to have been called, but it was not called."
+Expected number of calls: >= <green>1</>
+Received number of calls:    <red>0</>"
 `;
 
 exports[`toHaveBeenCalled fails with any argument passed 1`] = `
@@ -944,17 +953,21 @@ Expected has value: <green>555</>"
 `;
 
 exports[`toHaveBeenCalled includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).not.toHaveBeenCalled()</>
+"<dim>expect(</><red>named-mock</><dim>).</>not<dim>.</>toHaveBeenCalled<dim>()</>
 
-Expected mock function \\"named-mock\\" not to be called but it was called with:
-  <red>[]</>"
+Expected number of calls: <green>0</>
+Received number of calls: <red>1</>
+
+1: called with no arguments"
 `;
 
 exports[`toHaveBeenCalled passes when called 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalled()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenCalled<dim>()</>
 
-Expected mock function not to be called but it was called with:
-  <red>[]</>"
+Expected number of calls: <green>0</>
+Received number of calls: <red>1</>
+
+1: <red>\\"arg0\\"</>, <red>\\"arg1\\"</>, <red>\\"arg2\\"</>"
 `;
 
 exports[`toHaveBeenCalled works only on spies or jest.fn 1`] = `
@@ -1021,15 +1034,17 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`toHaveBeenCalledTimes .not passes if function called less than expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function to have been called <green>two times</>, but it was called <red>one time</>."
+Expected number of calls: <green>2</>
+Received number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenCalledTimes .not passes if function called more than expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function to have been called <green>two times</>, but it was called <red>three times</>."
+Expected number of calls: <green>2</>
+Received number of calls: <red>3</>"
 `;
 
 exports[`toHaveBeenCalledTimes .not works only on spies or jest.fn 1`] = `
@@ -1042,9 +1057,10 @@ Received has value: <red>[Function fn]</>"
 `;
 
 exports[`toHaveBeenCalledTimes includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).toHaveBeenCalledTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function \\"named-mock\\" to have been called <green>two times</>, but it was called <red>one time</>."
+Expected number of calls: <green>2</>
+Received number of calls: <red>1</>"
 `;
 
 exports[`toHaveBeenCalledTimes only accepts a number argument 1`] = `
@@ -1102,9 +1118,9 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`toHaveBeenCalledTimes passes if function called equal to expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveBeenCalledTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to be called <green>two times</>, but it was called exactly <red>two times</>."
+Expected number of calls: not <green>2</>"
 `;
 
 exports[`toHaveBeenCalledWith includes the custom mock name in the error message 1`] = `
@@ -1848,21 +1864,26 @@ Expected has value: <green>555</>"
 `;
 
 exports[`toHaveReturned .not passes when a call throws undefined 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturned<dim>()</>
 
-Expected mock function to have returned."
+Expected number of returns: >= <green>1</>
+Received number of returns:    <red>0</>
+Received number of calls:      <red>1</>"
 `;
 
 exports[`toHaveReturned .not passes when all calls throw 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturned<dim>()</>
 
-Expected mock function to have returned."
+Expected number of returns: >= <green>1</>
+Received number of returns:    <red>0</>
+Received number of calls:      <red>2</>"
 `;
 
 exports[`toHaveReturned .not passes when not returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturned<dim>()</>
 
-Expected mock function to have returned."
+Expected number of returns: >= <green>1</>
+Received number of returns:    <red>0</>"
 `;
 
 exports[`toHaveReturned .not works only on jest.fn 1`] = `
@@ -1884,39 +1905,50 @@ Expected has value: <green>555</>"
 `;
 
 exports[`toHaveReturned includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).not.toHaveReturned()</>
+"<dim>expect(</><red>named-mock</><dim>).</>not<dim>.</>toHaveReturned<dim>()</>
 
-Expected mock function \\"named-mock\\" not to have returned, but it returned:
-  <red>42</>"
+Expected number of returns: <green>0</>
+Received number of returns: <red>1</>
+
+1: <red>42</>"
 `;
 
 exports[`toHaveReturned incomplete recursive calls are handled properly 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturned()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturned<dim>()</>
 
-Expected mock function to have returned."
+Expected number of returns: >= <green>1</>
+Received number of returns:    <red>0</>
+Received number of calls:      <red>4</>"
 `;
 
 exports[`toHaveReturned passes when at least one call does not throw 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturned<dim>()</>
 
-Expected mock function not to have returned, but it returned:
-  <red>42</>
+Expected number of returns: <green>0</>
+Received number of returns: <red>2</>
 
-  <red>42</>"
+1: <red>42</>
+3: <red>42</>
+
+Received number of calls:   <red>3</>"
 `;
 
 exports[`toHaveReturned passes when returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturned<dim>()</>
 
-Expected mock function not to have returned, but it returned:
-  <red>42</>"
+Expected number of returns: <green>0</>
+Received number of returns: <red>1</>
+
+1: <red>42</>"
 `;
 
 exports[`toHaveReturned passes when undefined is returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturned()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturned<dim>()</>
 
-Expected mock function not to have returned, but it returned:
-  <red>undefined</>"
+Expected number of returns: <green>0</>
+Received number of returns: <red>1</>
+
+1: <red>undefined</>"
 `;
 
 exports[`toHaveReturnedTimes .not only accepts a number argument 1`] = `
@@ -1974,45 +2006,54 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`toHaveReturnedTimes .not passes if function called less than expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function to have returned <green>two times</>, but it returned <red>one time</>."
+Expected number of returns: <green>2</>
+Received number of returns: <red>1</>"
 `;
 
 exports[`toHaveReturnedTimes .not passes if function returned more than expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toHaveReturnedTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function to have returned <green>two times</>, but it returned <red>three times</>."
+Expected number of returns: <green>2</>
+Received number of returns: <red>3</>"
 `;
 
 exports[`toHaveReturnedTimes calls that return undefined are counted as returns 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+Expected number of returns: not <green>2</>"
 `;
 
 exports[`toHaveReturnedTimes calls that throw are not counted 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+Expected number of returns: <green>3</>
+Received number of returns: <red>2</>
+Received number of calls:   <red>3</>"
 `;
 
 exports[`toHaveReturnedTimes calls that throw undefined are not counted 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+Expected number of returns: not <green>2</>
+
+Received number of calls:       <red>3</>"
 `;
 
 exports[`toHaveReturnedTimes includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).toHaveReturnedTimes(</><green>1</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
+Expected number of returns: <green>1</>
+Received number of returns: <red>2</>"
 `;
 
 exports[`toHaveReturnedTimes incomplete recursive calls are handled properly 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+Expected number of returns: not <green>2</>
+
+Received number of calls:       <red>4</>"
 `;
 
 exports[`toHaveReturnedTimes only accepts a number argument 1`] = `
@@ -2070,9 +2111,9 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`toHaveReturnedTimes passes if function returned equal to expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toHaveReturnedTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+Expected number of returns: not <green>2</>"
 `;
 
 exports[`toHaveReturnedTimes works only on spies or jest.fn 1`] = `
@@ -2243,21 +2284,26 @@ Expected has value: <green>555</>"
 `;
 
 exports[`toReturn .not passes when a call throws undefined 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toReturn<dim>()</>
 
-Expected mock function to have returned."
+Expected number of returns: >= <green>1</>
+Received number of returns:    <red>0</>
+Received number of calls:      <red>1</>"
 `;
 
 exports[`toReturn .not passes when all calls throw 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toReturn<dim>()</>
 
-Expected mock function to have returned."
+Expected number of returns: >= <green>1</>
+Received number of returns:    <red>0</>
+Received number of calls:      <red>2</>"
 `;
 
 exports[`toReturn .not passes when not returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toReturn<dim>()</>
 
-Expected mock function to have returned."
+Expected number of returns: >= <green>1</>
+Received number of returns:    <red>0</>"
 `;
 
 exports[`toReturn .not works only on jest.fn 1`] = `
@@ -2279,39 +2325,50 @@ Expected has value: <green>555</>"
 `;
 
 exports[`toReturn includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).not.toReturn()</>
+"<dim>expect(</><red>named-mock</><dim>).</>not<dim>.</>toReturn<dim>()</>
 
-Expected mock function \\"named-mock\\" not to have returned, but it returned:
-  <red>42</>"
+Expected number of returns: <green>0</>
+Received number of returns: <red>1</>
+
+1: <red>42</>"
 `;
 
 exports[`toReturn incomplete recursive calls are handled properly 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toReturn()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toReturn<dim>()</>
 
-Expected mock function to have returned."
+Expected number of returns: >= <green>1</>
+Received number of returns:    <red>0</>
+Received number of calls:      <red>4</>"
 `;
 
 exports[`toReturn passes when at least one call does not throw 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturn<dim>()</>
 
-Expected mock function not to have returned, but it returned:
-  <red>42</>
+Expected number of returns: <green>0</>
+Received number of returns: <red>2</>
 
-  <red>42</>"
+1: <red>42</>
+3: <red>42</>
+
+Received number of calls:   <red>3</>"
 `;
 
 exports[`toReturn passes when returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturn<dim>()</>
 
-Expected mock function not to have returned, but it returned:
-  <red>42</>"
+Expected number of returns: <green>0</>
+Received number of returns: <red>1</>
+
+1: <red>42</>"
 `;
 
 exports[`toReturn passes when undefined is returned 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturn()</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturn<dim>()</>
 
-Expected mock function not to have returned, but it returned:
-  <red>undefined</>"
+Expected number of returns: <green>0</>
+Received number of returns: <red>1</>
+
+1: <red>undefined</>"
 `;
 
 exports[`toReturnTimes .not only accepts a number argument 1`] = `
@@ -2369,45 +2426,54 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`toReturnTimes .not passes if function called less than expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toReturnTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function to have returned <green>two times</>, but it returned <red>one time</>."
+Expected number of returns: <green>2</>
+Received number of returns: <red>1</>"
 `;
 
 exports[`toReturnTimes .not passes if function returned more than expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).toReturnTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function to have returned <green>two times</>, but it returned <red>three times</>."
+Expected number of returns: <green>2</>
+Received number of returns: <red>3</>"
 `;
 
 exports[`toReturnTimes calls that return undefined are counted as returns 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+Expected number of returns: not <green>2</>"
 `;
 
 exports[`toReturnTimes calls that throw are not counted 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+Expected number of returns: <green>3</>
+Received number of returns: <red>2</>
+Received number of calls:   <red>3</>"
 `;
 
 exports[`toReturnTimes calls that throw undefined are not counted 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+Expected number of returns: not <green>2</>
+
+Received number of calls:       <red>3</>"
 `;
 
 exports[`toReturnTimes includes the custom mock name in the error message 1`] = `
-"<dim>expect(</><red>named-mock</><dim>).toReturnTimes(</><green>1</><dim>)</>
+"<dim>expect(</><red>named-mock</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function \\"named-mock\\" to have returned <green>one time</>, but it returned <red>two times</>."
+Expected number of returns: <green>1</>
+Received number of returns: <red>2</>"
 `;
 
 exports[`toReturnTimes incomplete recursive calls are handled properly 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+Expected number of returns: not <green>2</>
+
+Received number of calls:       <red>4</>"
 `;
 
 exports[`toReturnTimes only accepts a number argument 1`] = `
@@ -2465,9 +2531,9 @@ Expected has value: <green>[Function anonymous]</>"
 `;
 
 exports[`toReturnTimes passes if function returned equal to expected times 1`] = `
-"<dim>expect(</><red>jest.fn()</><dim>).not.toReturnTimes(</><green>2</><dim>)</>
+"<dim>expect(</><red>jest.fn()</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-Expected mock function not to have returned <green>two times</>, but it returned exactly <red>two times</>."
+Expected number of returns: not <green>2</>"
 `;
 
 exports[`toReturnTimes works only on spies or jest.fn 1`] = `
