@@ -1460,7 +1460,7 @@ describe('.toBeCloseTo()', () => {
       const precision = 3;
       const expected = null;
       const received = Promise.resolve(0.1);
-      expect(
+      return expect(
         jestExpect(received).resolves.not.toBeCloseTo(expected, precision),
       ).rejects.toThrowErrorMatchingSnapshot();
     });

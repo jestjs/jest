@@ -3,13 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
 
-const os = require('os');
-const path = require('path');
-const chalk = require('chalk');
+import os from 'os';
+import path from 'path';
+import chalk from 'chalk';
+
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const replacePathSepForRegex = (string: string) => {
   if (path.sep === '\\') {
@@ -134,7 +133,7 @@ const validConfig = {
 const format = (value: string) => require('pretty-format')(value, {min: true});
 
 const deprecatedConfig = {
-  preprocessorIgnorePatterns: (config: Object) =>
+  preprocessorIgnorePatterns: (config: Record<string, any>) =>
     `  Option ${chalk.bold(
       'preprocessorIgnorePatterns',
     )} was replaced by ${chalk.bold(
@@ -150,7 +149,7 @@ const deprecatedConfig = {
 
   Please update your configuration.`,
 
-  scriptPreprocessor: (config: Object) =>
+  scriptPreprocessor: (config: Record<string, any>) =>
     `  Option ${chalk.bold('scriptPreprocessor')} was replaced by ${chalk.bold(
       'transform',
     )}, which support multiple preprocessors.
