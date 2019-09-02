@@ -11,8 +11,8 @@ import runJest from '../runJest';
 const dir = path.resolve(__dirname, '../deprecated-cli-options');
 
 it('Prints deprecation warnings for CLI flags', () => {
-  const {stderr, status} = runJest(dir, ['--mapCoverage']);
-  expect(status).toBe(0);
+  const {stderr, exitCode} = runJest(dir, ['--mapCoverage']);
+  expect(exitCode).toBe(0);
   expect(stderr).toMatch(/Test Suites: 1 passed, 1 total/);
   expect(stderr).toMatch(`● Deprecation Warning:
 

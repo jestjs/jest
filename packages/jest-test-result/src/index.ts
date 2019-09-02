@@ -17,6 +17,7 @@ export {
   AssertionLocation,
   AssertionResult,
   FailedAssertion,
+  FormattedTestResults,
   Milliseconds,
   SerializableError,
   SnapshotSummary,

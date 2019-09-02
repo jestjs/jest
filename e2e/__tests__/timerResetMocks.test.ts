@@ -9,10 +9,10 @@ import runJest from '../runJest';
 
 test('run timers after resetAllMocks test', () => {
   const result = runJest('timer-reset-mocks/after-reset-all-mocks');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });
 
 test('run timers with resetMocks in config test', () => {
   const result = runJest('timer-reset-mocks/with-reset-mocks');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

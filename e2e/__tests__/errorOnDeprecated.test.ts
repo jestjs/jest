@@ -40,7 +40,7 @@ testFiles.forEach(testFile => {
       testFile,
       '--errorOnDeprecated',
     ]);
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     let {rest} = extractSummary(result.stderr);
 
     if (
@@ -69,6 +69,6 @@ testFiles.forEach(testFile => {
 
   test(testName, () => {
     const result = runJest('error-on-deprecated', [testFile]);
-    expect(result.status).toBe(shouldPass ? 1 : 0);
+    expect(result.exitCode).toBe(shouldPass ? 1 : 0);
   });
 });

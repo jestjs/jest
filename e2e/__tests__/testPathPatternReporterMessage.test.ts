@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import {tmpdir} from 'os';
 import * as path from 'path';
 import runJest from '../runJest';

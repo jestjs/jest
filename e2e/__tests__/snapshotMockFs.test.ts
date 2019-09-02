@@ -19,9 +19,9 @@ beforeEach(() => rimraf.sync(snapshotDir));
 afterAll(() => rimraf.sync(snapshotDir));
 
 test('store snapshot even if fs is mocked', () => {
-  const {json, status, stderr} = runJestJson(DIR, ['--ci=false']);
+  const {json, exitCode, stderr} = runJestJson(DIR, ['--ci=false']);
 
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
   expect(json.numTotalTests).toBe(1);
   expect(json.numPassedTests).toBe(1);
 

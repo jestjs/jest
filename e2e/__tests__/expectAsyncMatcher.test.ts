@@ -18,13 +18,13 @@ beforeAll(() => {
 
 test('works with passing tests', () => {
   const result = runJest(dir, ['success.test.js']);
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });
 
 test('shows the correct errors in stderr when failing tests', () => {
   const result = runJest(dir, ['failure.test.js']);
 
-  expect(result.status).toBe(1);
+  expect(result.exitCode).toBe(1);
 
   const rest = extractSummary(result.stderr)
     .rest.split('\n')
