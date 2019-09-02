@@ -30,19 +30,19 @@ test('basic support', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template(['{apple: "original value"}']),
     });
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('initial write');
   }
 
   {
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
   }
 
@@ -50,15 +50,15 @@ test('basic support', () => {
     writeFiles(TESTS_DIR, {
       [filename]: readFile(filename).replace('original value', 'updated value'),
     });
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshot name: `inline snapshots 1`');
-    expect(status).toBe(1);
+    expect(exitCode).toBe(1);
     expect(wrap(fileAfter)).toMatchSnapshot('snapshot mismatch');
   }
 
   {
-    const {stderr, status} = runJest(DIR, [
+    const {stderr, exitCode} = runJest(DIR, [
       '-w=1',
       '--ci=false',
       filename,
@@ -66,7 +66,7 @@ test('basic support', () => {
     ]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('snapshot updated');
   }
 });
@@ -81,19 +81,19 @@ test('do not indent empty lines', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template(['`hello\n\nworld`']),
     });
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('initial write');
   }
 
   {
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
   }
 });
@@ -107,18 +107,18 @@ test('handles property matchers', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['new Date()'])});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('initial write');
   }
 
   {
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
   }
 
@@ -126,11 +126,11 @@ test('handles property matchers', () => {
     writeFiles(TESTS_DIR, {
       [filename]: readFile(filename).replace('new Date()', '"string"'),
     });
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshot name: `handles property matchers 1`');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
-    expect(status).toBe(1);
+    expect(exitCode).toBe(1);
     expect(wrap(fileAfter)).toMatchSnapshot('snapshot failed');
   }
 
@@ -138,7 +138,7 @@ test('handles property matchers', () => {
     writeFiles(TESTS_DIR, {
       [filename]: readFile(filename).replace('any(Date)', 'any(String)'),
     });
-    const {stderr, status} = runJest(DIR, [
+    const {stderr, exitCode} = runJest(DIR, [
       '-w=1',
       '--ci=false',
       filename,
@@ -146,7 +146,7 @@ test('handles property matchers', () => {
     ]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('snapshot updated');
   }
 });
@@ -166,26 +166,26 @@ test('removes obsolete external snapshots', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['toMatchSnapshot'])});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('initial write');
     expect(fs.existsSync(snapshotPath)).toEqual(true);
   }
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['toMatchInlineSnapshot'])});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 obsolete, 1 written, 1 total');
-    expect(status).toBe(1);
+    expect(exitCode).toBe(1);
     expect(wrap(fileAfter)).toMatchSnapshot('inline snapshot written');
     expect(fs.existsSync(snapshotPath)).toEqual(true);
   }
 
   {
-    const {stderr, status} = runJest(DIR, [
+    const {stderr, exitCode} = runJest(DIR, [
       '-w=1',
       '--ci=false',
       filename,
@@ -193,7 +193,7 @@ test('removes obsolete external snapshots', () => {
     ]);
     const fileAfter = readFile(filename);
     expect(stderr).toMatch('Snapshots:   1 file removed, 1 passed, 1 total');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('external snapshot cleaned');
     expect(fs.existsSync(snapshotPath)).toEqual(false);
   }
@@ -209,10 +209,10 @@ test('supports async matchers', () => {
   `;
 
   writeFiles(TESTS_DIR, {[filename]: test});
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('2 snapshots written from 1 test suite.');
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
   expect(wrap(fileAfter)).toMatchSnapshot();
 });
 
@@ -226,10 +226,10 @@ test('supports async tests', () => {
   `;
 
   writeFiles(TESTS_DIR, {[filename]: test});
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
   expect(wrap(fileAfter)).toMatchSnapshot();
 });
 
@@ -242,11 +242,11 @@ test('writes snapshots with non-literals in expect(...)', () => {
   `;
 
   writeFiles(TESTS_DIR, {[filename]: test});
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
 
   const fileAfter = readFile(filename);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
   expect(wrap(fileAfter)).toMatchSnapshot();
 });
 
@@ -262,7 +262,7 @@ test('handles mocking native modules prettier relies on', () => {
   `;
 
   writeFiles(TESTS_DIR, {[filename]: test});
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });

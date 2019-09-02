@@ -11,5 +11,5 @@ test('setImmediate', () => {
   const result = runJest('set-immediate', ['--verbose']);
 
   expect(result.stderr).toMatch('setImmediate test');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

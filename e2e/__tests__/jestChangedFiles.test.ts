@@ -254,9 +254,9 @@ test('handles a bad revision for "changedSince", for git', async () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
-  const {status, stderr} = runJest(DIR, ['--changedSince=blablabla']);
+  const {exitCode, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
   expect(wrap(stderr)).toMatchSnapshot();
 });
 
@@ -406,8 +406,8 @@ test('handles a bad revision for "changedSince", for hg', async () => {
   run(`${HG} add .`, DIR);
   run(`${HG} commit -m "first"`, DIR);
 
-  const {status, stderr} = runJest(DIR, ['--changedSince=blablabla']);
+  const {exitCode, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
   expect(wrap(stderr)).toMatchSnapshot();
 });

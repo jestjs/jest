@@ -26,7 +26,7 @@ it('triggers setup/teardown hooks', () => {
   const testFile = path.join(testDir, 'custom.test.js');
 
   const result = runJest('test-environment-async');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
   expect(result.stdout).toContain(`TestEnvironment.setup: ${testFile}`);
 
   const teardown = fs.readFileSync(DIR + '/teardown', 'utf8');

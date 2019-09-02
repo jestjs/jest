@@ -21,10 +21,10 @@ test('works with jest.config.js', () => {
     'package.json': '{}',
   });
 
-  const {status, stdout, stderr} = runJest(DIR, ['--version']);
+  const {exitCode, stdout, stderr} = runJest(DIR, ['--version']);
   expect(stdout).toMatch(/\d{2}\.\d{1,2}\.\d{1,2}[\-\S]*-dev$/);
   // Only version gets printed and nothing else
   expect(stdout.split(/\n/)).toHaveLength(1);
   expect(stderr).toBe('');
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });

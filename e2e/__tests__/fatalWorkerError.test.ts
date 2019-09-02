@@ -34,11 +34,11 @@ test('fails a test that terminates the worker with a fatal error', () => {
     'package.json': '{}',
   });
 
-  const {status, stderr} = runJest(DIR, ['--maxWorkers=2']);
+  const {exitCode, stderr} = runJest(DIR, ['--maxWorkers=2']);
 
   const numberOfTestsPassed = (stderr.match(/\bPASS\b/g) || []).length;
 
-  expect(status).not.toBe(0);
+  expect(exitCode).not.toBe(0);
   expect(numberOfTestsPassed).toBe(Object.keys(testFiles).length - 1);
   expect(stderr).toContain('FAIL __tests__/fatalWorkerError.test.js');
   expect(stderr).toContain('Call retries were exceeded');

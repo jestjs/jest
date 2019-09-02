@@ -14,15 +14,15 @@ const CACHE = path.resolve(tmpdir(), 'clear-cache-directory');
 
 describe('jest --clearCache', () => {
   test('normal run results in cache directory being written', () => {
-    const {status} = runJest('clear-cache', [`--cacheDirectory=${CACHE}`]);
+    const {exitCode} = runJest('clear-cache', [`--cacheDirectory=${CACHE}`]);
 
     expect(fs.existsSync(CACHE)).toBe(true);
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   });
-  test('clearCache results in deleted directory and exit status 0', () => {
+  test('clearCache results in deleted directory and exit exitCode 0', () => {
     expect(fs.existsSync(CACHE)).toBe(true);
 
-    const {status, stdout, stderr} = runJest('clear-cache', [
+    const {exitCode, stdout, stderr} = runJest('clear-cache', [
       '--clearCache',
       `--cacheDirectory=${CACHE}`,
     ]);
@@ -30,6 +30,6 @@ describe('jest --clearCache', () => {
     expect(fs.existsSync(CACHE)).toBe(false);
     expect(stdout).toBe(`Cleared ${CACHE}`);
     expect(stderr).toBe('');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   });
 });

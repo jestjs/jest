@@ -16,10 +16,10 @@ beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 test('show error message with matching files', () => {
-  const {status, stderr} = runJest('resolve-no-extensions');
+  const {exitCode, stderr} = runJest('resolve-no-extensions');
   const {rest} = extractSummary(stderr);
 
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();
 });
 
@@ -44,8 +44,8 @@ test('show error message when no js moduleFileExtensions', () => {
     `,
   });
 
-  const {status, stderr} = runJest('resolve-no-extensions-no-js');
+  const {exitCode, stderr} = runJest('resolve-no-extensions-no-js');
 
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
   expect(wrap(stderr)).toMatchSnapshot();
 });

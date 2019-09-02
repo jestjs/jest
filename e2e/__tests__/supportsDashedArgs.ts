@@ -26,10 +26,10 @@ test('works with passing tests', () => {
     '--clear-mocks',
     '--useStderr',
   ]);
-  if (result.status !== 0) {
+  if (result.exitCode !== 0) {
     console.error(result.stderr);
   }
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });
 
 test('throws error for unknown dashed & camelcase args', () => {
@@ -54,5 +54,5 @@ test('throws error for unknown dashed & camelcase args', () => {
       https://jestjs.io/docs/en/cli.html
 
   `);
-  expect(result.status).toBe(1);
+  expect(result.exitCode).toBe(1);
 });

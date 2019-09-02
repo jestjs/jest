@@ -40,27 +40,27 @@ test('empty external', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template([`''`]),
     });
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   }
 
   {
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
     expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   }
 
   {
     writeFiles(TESTS_DIR, {
       [filename]: template([`'non-empty'`]),
     });
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(stderr).not.toMatch('not written'); // not confused with --ci option
     expect(stderr).toMatch(ORDINARY_FAILURE);
-    expect(status).toBe(1);
+    expect(exitCode).toBe(1);
   }
 });
 
@@ -79,20 +79,20 @@ test('empty internal ci false', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template([received1]),
     });
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   }
 
   {
     writeFiles(TESTS_DIR, {
       [filename]: readFile(filename).replace(received1, received2),
     });
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
     expect(stderr).toMatch(ORDINARY_FAILURE);
-    expect(status).toBe(1);
+    expect(exitCode).toBe(1);
   }
 });
 
@@ -108,10 +108,10 @@ test('undefined internal ci true', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template([`'non-empty'`]),
     });
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=true', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=true', filename]);
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(stderr).not.toMatch(ORDINARY_FAILURE);
     expect(stderr).toMatch(NOT_WRITTEN);
-    expect(status).toBe(1);
+    expect(exitCode).toBe(1);
   }
 });
