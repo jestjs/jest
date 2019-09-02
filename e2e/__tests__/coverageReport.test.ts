@@ -162,7 +162,7 @@ test('does not output coverage report when html is requested', () => {
 test('collects coverage from duplicate files avoiding shared cache', () => {
   const args = [
     '--coverage',
-    // Ensure the exitCode code is non-zero if super edge case with coverage triggers
+    // Ensure the exitCode is non-zero if super edge case with coverage triggers
     '--coverageThreshold',
     '{"global": {"lines": 100}}',
     '--collectCoverageOnlyFrom',

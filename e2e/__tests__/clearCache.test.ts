@@ -19,7 +19,7 @@ describe('jest --clearCache', () => {
     expect(fs.existsSync(CACHE)).toBe(true);
     expect(exitCode).toBe(0);
   });
-  test('clearCache results in deleted directory and exit exitCode 0', () => {
+  test('clearCache results in deleted directory and exitCode 0', () => {
     expect(fs.existsSync(CACHE)).toBe(true);
 
     const {exitCode, stdout, stderr} = runJest('clear-cache', [

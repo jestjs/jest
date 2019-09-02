@@ -17,7 +17,7 @@ expect.addSnapshotSerializer({
 });
 
 test('works with passing tests', () => {
-  const result = runJest(eachDir, [
+  const {exitCode} = runJest(eachDir, [
     'success.test.js',
     '--runInBand',
     '--collect-coverage',
@@ -26,14 +26,11 @@ test('works with passing tests', () => {
     '--clear-mocks',
     '--useStderr',
   ]);
-  if (result.exitCode !== 0) {
-    console.error(result.stderr);
-  }
-  expect(result.exitCode).toBe(0);
+  expect(exitCode).toBe(0);
 });
 
 test('throws error for unknown dashed & camelcase args', () => {
-  const result = runJest(consoleDir, [
+  const {exitCode, stderr} = runJest(consoleDir, [
     'success.test.js',
     '--runInBand',
     '--collect-coverage',
@@ -44,7 +41,7 @@ test('throws error for unknown dashed & camelcase args', () => {
     '--also-does-not-exist',
     '--useStderr',
   ]);
-  expect(result.stderr).toMatchInlineSnapshot(`
+  expect(stderr).toMatchInlineSnapshot(`
     ● Unrecognized CLI Parameters:
 
       Following options were not recognized:
@@ -54,5 +51,5 @@ test('throws error for unknown dashed & camelcase args', () => {
       https://jestjs.io/docs/en/cli.html
 
   `);
-  expect(result.exitCode).toBe(1);
+  expect(exitCode).toBe(1);
 });
