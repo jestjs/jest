@@ -27,8 +27,16 @@ class ChangeBuffer {
   private pushLine(): void {
     // Assume call only if line has at least one diff,
     // therefore an empty line must have a diff which has an empty string.
+
+    // If line has multiple diffs, then assume it has a common diff,
+    // therefore change diffs have change color;
+    // otherwise then it has line color only.
     this.lines.push(
-      new Diff(this.op, invertChangedSubstrings(this.op, this.line)),
+      this.line.length !== 1
+        ? new Diff(this.op, invertChangedSubstrings(this.op, this.line))
+        : this.line[0][0] === this.op
+        ? this.line[0] // can use instance
+        : new Diff(this.op, this.line[0][1]), // was common diff
     );
     this.line.length = 0;
   }
