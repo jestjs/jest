@@ -22,28 +22,36 @@ test('suite without mock name, mock not called', () => {
 });
 
 test('suite with mock name, expect mock not called', () => {
-  const {stderr, exitCode} = runJest('mock-names/with-mock-name-not-called-pass');
+  const {stderr, exitCode} = runJest(
+    'mock-names/with-mock-name-not-called-pass',
+  );
 
   expect(exitCode).toBe(0);
   expect(stderr).toMatch(/PASS/);
 });
 
 test('suite with mock name, mock called, expect fail', () => {
-  const {stderr, exitCode} = runJest('mock-names/with-mock-name-not-called-fail');
+  const {stderr, exitCode} = runJest(
+    'mock-names/with-mock-name-not-called-fail',
+  );
 
   expect(exitCode).toBe(1);
   expect(stderr).toMatch(/expect\(myMockedFunction\)\.not\.toHaveBeenCalled/);
 });
 
 test('suite with mock name, mock called 5 times', () => {
-  const {stderr, exitCode} = runJest('mock-names/with-mock-name-call-times-pass');
+  const {stderr, exitCode} = runJest(
+    'mock-names/with-mock-name-call-times-pass',
+  );
 
   expect(exitCode).toBe(0);
   expect(stderr).toMatch(/PASS/);
 });
 
 test('suite with mock name, mock not called 5 times, expect fail', () => {
-  const {stderr, exitCode} = runJest('mock-names/with-mock-name-call-times-fail');
+  const {stderr, exitCode} = runJest(
+    'mock-names/with-mock-name-call-times-fail',
+  );
 
   expect(exitCode).toBe(1);
   expect(stderr).toMatch(/expect\(myMockedFunction\)\.toHaveBeenCalledTimes/);
