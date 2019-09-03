@@ -831,7 +831,11 @@ test('this house has my desired features', () => {
 
 ### `.toBeCloseTo(number, numDigits?)`
 
-Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
+Use `toBeCloseTo` to compare floating point numbers.
+
+The optional `numDigits` argument limits the number of digits to check **after** the decimal point. For the default value `2`, the test criterion is `Math.abs(expected - received) < 0.005` (that is, `10 ** -2 / 2`).
+
+Intuitive equality comparisons often fail, because arithmetic on decimal (base 10) values often have rounding errors in limited precision binary (base 2) representation. For example, this test fails:
 
 ```js
 test('adding works sanely with simple decimals', () => {
@@ -839,9 +843,9 @@ test('adding works sanely with simple decimals', () => {
 });
 ```
 
-It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`. Sorry.
+It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`.
 
-Instead, use `.toBeCloseTo`. Use `numDigits` to control how many digits after the decimal point to check. For example, if you want to be sure that `0.2 + 0.1` is equal to `0.3` with a precision of 5 decimal digits, you can use this test:
+For example, this test passes with a precision of 5 digits:
 
 ```js
 test('adding works sanely with simple decimals', () => {
@@ -849,7 +853,7 @@ test('adding works sanely with simple decimals', () => {
 });
 ```
 
-The optional `numDigits` argument has default value `2` which means the criterion is `Math.abs(expected - received) < 0.005` (that is, `10 ** -2 / 2`).
+Because floating point errors are the problem that `toBeCloseTo` solves, it does not support big integer values.
 
 ### `.toBeDefined()`
 
@@ -885,9 +889,9 @@ test('drinking La Croix does not lead to errors', () => {
 
 In JavaScript, there are six falsy values: `false`, `0`, `''`, `null`, `undefined`, and `NaN`. Everything else is truthy.
 
-### `.toBeGreaterThan(number)`
+### `.toBeGreaterThan(number | bigint)`
 
-To compare floating point numbers, you can use `toBeGreaterThan`. For example, if you want to test that `ouncesPerCan()` returns a value of more than 10 ounces, write:
+Use `toBeGreaterThan` to compare `received > expected` for number or big integer values. For example, test that `ouncesPerCan()` returns a value of more than 10 ounces:
 
 ```js
 test('ounces per can is more than 10', () => {
@@ -895,9 +899,9 @@ test('ounces per can is more than 10', () => {
 });
 ```
 
-### `.toBeGreaterThanOrEqual(number)`
+### `.toBeGreaterThanOrEqual(number | bigint)`
 
-To compare floating point numbers, you can use `toBeGreaterThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at least 12 ounces, write:
+Use `toBeGreaterThanOrEqual` to compare `received >= expected` for number or big integer values. For example, test that `ouncesPerCan()` returns a value of at least 12 ounces:
 
 ```js
 test('ounces per can is at least 12', () => {
@@ -905,9 +909,9 @@ test('ounces per can is at least 12', () => {
 });
 ```
 
-### `.toBeLessThan(number)`
+### `.toBeLessThan(number | bigint)`
 
-To compare floating point numbers, you can use `toBeLessThan`. For example, if you want to test that `ouncesPerCan()` returns a value of less than 20 ounces, write:
+Use `toBeLessThan` to compare `received < expected` for number or big integer values. For example, test that `ouncesPerCan()` returns a value of less than 20 ounces:
 
 ```js
 test('ounces per can is less than 20', () => {
@@ -915,9 +919,9 @@ test('ounces per can is less than 20', () => {
 });
 ```
 
-### `.toBeLessThanOrEqual(number)`
+### `.toBeLessThanOrEqual(number | bigint)`
 
-To compare floating point numbers, you can use `toBeLessThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at most 12 ounces, write:
+Use `toBeLessThanOrEqual` to compare `received <= expected` for number or big integer values. For example, test that `ouncesPerCan()` returns a value of at most 12 ounces:
 
 ```js
 test('ounces per can is at most 12', () => {
