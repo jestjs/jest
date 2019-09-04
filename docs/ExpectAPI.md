@@ -831,7 +831,7 @@ test('this house has my desired features', () => {
 
 ### `.toBeCloseTo(number, numDigits?)`
 
-Use `toBeCloseTo` to compare floating point numbers.
+Use `toBeCloseTo` to compare floating point numbers for approximate equality.
 
 The optional `numDigits` argument limits the number of digits to check **after** the decimal point. For the default value `2`, the test criterion is `Math.abs(expected - received) < 0.005` (that is, `10 ** -2 / 2`).
 
