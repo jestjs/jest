@@ -254,6 +254,7 @@ const options = {
   bColor: chalk.green,
 };
 ```
+
 ### Example of option for color of change substrings
 
 Although the default inverse of foreground and background colors is hard to beat for change substrings **within lines**, especially because it highlights spaces, if you want bold font weight on yellow background:
