@@ -27,3 +27,18 @@ exports[`printDiffOrStringify expected is multi line and received is empty 1`] =
 <green>line\\"</>
 Received: <red>\\"\\"</>"
 `;
+
+exports[`printDiffOrStringify has no common after clean up chaff multiline 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- delete</>
+<green>- two</>
+<red>+ insert</>
+<red>+ 2</>"
+`;
+
+exports[`printDiffOrStringify has no common after clean up chaff one-line 1`] = `
+"Expected: <green>\\"delete\\"</>
+Received: <red>\\"insert\\"</>"
+`;

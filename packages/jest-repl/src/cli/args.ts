@@ -6,7 +6,7 @@
  *
  */
 
-import Runtime from 'jest-runtime';
+import Runtime = require('jest-runtime');
 
 export const usage = 'Usage: $0 [--config=<pathToConfigFile>]';
 

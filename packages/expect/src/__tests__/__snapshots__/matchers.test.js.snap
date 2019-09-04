@@ -469,183 +469,216 @@ Expected: <green>false</>
 Received: <red>true</>"
 `;
 
-exports[`.toBeCloseTo() {pass: false} expect(-Infinity)toBeCloseTo( -1.23) 1`] = `
+exports[`.toBeCloseTo {pass: false} expect(-Infinity).toBeCloseTo(-1.23) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: <green>-1.23</>
 Received: <red>-Infinity</>
 
-Expected precision:    <green>2</>
+Expected precision:    2
 Expected difference: < <green>0.005</>
 Received difference:   <red>Infinity</>"
 `;
 
-exports[`.toBeCloseTo() {pass: false} expect(Infinity)toBeCloseTo( -Infinity) 1`] = `
+exports[`.toBeCloseTo {pass: false} expect(0).toBeCloseTo(0.01) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+Expected: <green>0.01</>
+Received: <red>0</>
+
+Expected precision:    2
+Expected difference: < <green>0.005</>
+Received difference:   <red>0.01</>"
+`;
+
+exports[`.toBeCloseTo {pass: false} expect(1).toBeCloseTo(1.23) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+Expected: <green>1.23</>
+Received: <red>1</>
+
+Expected precision:    2
+Expected difference: < <green>0.005</>
+Received difference:   <red>0.22999999999999998</>"
+`;
+
+exports[`.toBeCloseTo {pass: false} expect(1.23).toBeCloseTo(1.2249999) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+
+Expected: <green>1.2249999</>
+Received: <red>1.23</>
+
+Expected precision:    2
+Expected difference: < <green>0.005</>
+Received difference:   <red>0.005000099999999952</>"
+`;
+
+exports[`.toBeCloseTo {pass: false} expect(3.141592e-7).toBeCloseTo(3e-7, 8) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>, </>precision<dim>)</>
+
+Expected: <green>3e-7</>
+Received: <red>3.141592e-7</>
+
+Expected precision:    8
+Expected difference: < <green>5e-9</>
+Received difference:   <red>1.4159200000000025e-8</>"
+`;
+
+exports[`.toBeCloseTo {pass: false} expect(56789).toBeCloseTo(51234, -4) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>, </>precision<dim>)</>
+
+Expected: <green>51234</>
+Received: <red>56789</>
+
+Expected precision:    -4
+Expected difference: < <green>5000</>
+Received difference:   <red>5555</>"
+`;
+
+exports[`.toBeCloseTo {pass: false} expect(Infinity).toBeCloseTo(-Infinity) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: <green>-Infinity</>
 Received: <red>Infinity</>
 
-Expected precision:    <green>2</>
+Expected precision:    2
 Expected difference: < <green>0.005</>
 Received difference:   <red>Infinity</>"
 `;
 
-exports[`.toBeCloseTo() {pass: false} expect(Infinity)toBeCloseTo( 1.23) 1`] = `
+exports[`.toBeCloseTo {pass: false} expect(Infinity).toBeCloseTo(1.23) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: <green>1.23</>
 Received: <red>Infinity</>
 
-Expected precision:    <green>2</>
+Expected precision:    2
 Expected difference: < <green>0.005</>
 Received difference:   <red>Infinity</>"
 `;
 
-exports[`.toBeCloseTo() {pass: true} expect(-Infinity)toBeCloseTo( -Infinity) 1`] = `
+exports[`.toBeCloseTo {pass: true} expect(-Infinity).toBeCloseTo(-Infinity) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: not <green>-Infinity</>
 "
 `;
 
-exports[`.toBeCloseTo() {pass: true} expect(0)toBeCloseTo( 0) 1`] = `
+exports[`.toBeCloseTo {pass: true} expect(0).toBeCloseTo(0) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: not <green>0</>
 "
 `;
 
-exports[`.toBeCloseTo() {pass: true} expect(0)toBeCloseTo( 0.001) 1`] = `
+exports[`.toBeCloseTo {pass: true} expect(0).toBeCloseTo(0.000004, 5) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </>precision<dim>)</>
+
+Expected: not <green>0.000004</>
+Received:     <red>0</>
+
+Expected precision:        5
+Expected difference: not < <green>0.000005</>
+Received difference:       <red>0.000004</>"
+`;
+
+exports[`.toBeCloseTo {pass: true} expect(0).toBeCloseTo(0.0001, 3) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </>precision<dim>)</>
+
+Expected: not <green>0.0001</>
+Received:     <red>0</>
+
+Expected precision:        3
+Expected difference: not < <green>0.0005</>
+Received difference:       <red>0.0001</>"
+`;
+
+exports[`.toBeCloseTo {pass: true} expect(0).toBeCloseTo(0.001) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: not <green>0.001</>
 Received:     <red>0</>
 
-Expected precision:        <green>2</>
+Expected precision:        2
 Expected difference: not < <green>0.005</>
 Received difference:       <red>0.001</>"
 `;
 
-exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.225) 1`] = `
+exports[`.toBeCloseTo {pass: true} expect(0).toBeCloseTo(0.1, 0) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </>precision<dim>)</>
+
+Expected: not <green>0.1</>
+Received:     <red>0</>
+
+Expected precision:        0
+Expected difference: not < <green>0.5</>
+Received difference:       <red>0.1</>"
+`;
+
+exports[`.toBeCloseTo {pass: true} expect(1.23).toBeCloseTo(1.225) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: not <green>1.225</>
 Received:     <red>1.23</>
 
-Expected precision:        <green>2</>
+Expected precision:        2
 Expected difference: not < <green>0.005</>
 Received difference:       <red>0.004999999999999893</>"
 `;
 
-exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.226) 1`] = `
+exports[`.toBeCloseTo {pass: true} expect(1.23).toBeCloseTo(1.226) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: not <green>1.226</>
 Received:     <red>1.23</>
 
-Expected precision:        <green>2</>
+Expected precision:        2
 Expected difference: not < <green>0.005</>
 Received difference:       <red>0.0040000000000000036</>"
 `;
 
-exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.229) 1`] = `
+exports[`.toBeCloseTo {pass: true} expect(1.23).toBeCloseTo(1.229) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: not <green>1.229</>
 Received:     <red>1.23</>
 
-Expected precision:        <green>2</>
+Expected precision:        2
 Expected difference: not < <green>0.005</>
 Received difference:       <red>0.0009999999999998899</>"
 `;
 
-exports[`.toBeCloseTo() {pass: true} expect(1.23)toBeCloseTo( 1.234) 1`] = `
+exports[`.toBeCloseTo {pass: true} expect(1.23).toBeCloseTo(1.234) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: not <green>1.234</>
 Received:     <red>1.23</>
 
-Expected precision:        <green>2</>
+Expected precision:        2
 Expected difference: not < <green>0.005</>
 Received difference:       <red>0.0040000000000000036</>"
 `;
 
-exports[`.toBeCloseTo() {pass: true} expect(Infinity)toBeCloseTo( Infinity) 1`] = `
+exports[`.toBeCloseTo {pass: true} expect(2.0000002).toBeCloseTo(2, 5) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </>precision<dim>)</>
+
+Expected: not <green>2</>
+Received:     <red>2.0000002</>
+
+Expected precision:        5
+Expected difference: not < <green>5e-6</>
+Received difference:       <red>2.0000000011677344e-7</>"
+`;
+
+exports[`.toBeCloseTo {pass: true} expect(Infinity).toBeCloseTo(Infinity) 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 Expected: not <green>Infinity</>
 "
 `;
 
-exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.000004, 5] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
-
-Expected: not <green>0.000004</>
-Received:     <red>0</>
-
-Expected precision:        <green>5</>
-Expected difference: not < <green>0.000005</>
-Received difference:       <red>0.000004</>"
-`;
-
-exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.0001, 3] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
-
-Expected: not <green>0.0001</>
-Received:     <red>0</>
-
-Expected precision:        <green>3</>
-Expected difference: not < <green>0.0005</>
-Received difference:       <red>0.0001</>"
-`;
-
-exports[`.toBeCloseTo() accepts an optional precision argument: [0, 0.1, 0] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
-
-Expected: not <green>0.1</>
-Received:     <red>0</>
-
-Expected precision:        <green>0</>
-Expected difference: not < <green>0.5</>
-Received difference:       <red>0.1</>"
-`;
-
-exports[`.toBeCloseTo() throws: [0, 0.01] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
-
-Expected: <green>0.01</>
-Received: <red>0</>
-
-Expected precision:    <green>2</>
-Expected difference: < <green>0.005</>
-Received difference:   <red>0.01</>"
-`;
-
-exports[`.toBeCloseTo() throws: [1, 1.23] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
-
-Expected: <green>1.23</>
-Received: <red>1</>
-
-Expected precision:    <green>2</>
-Expected difference: < <green>0.005</>
-Received difference:   <red>0.22999999999999998</>"
-`;
-
-exports[`.toBeCloseTo() throws: [1.23, 1.2249999] 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
-
-Expected: <green>1.2249999</>
-Received: <red>1.23</>
-
-Expected precision:    <green>2</>
-Expected difference: < <green>0.005</>
-Received difference:   <red>0.005000099999999952</>"
-`;
-
-exports[`.toBeCloseTo() throws: Matcher error promise empty isNot false received 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
+exports[`.toBeCloseTo throws: Matcher error promise empty isNot false received 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>, </>precision<dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a number
 
@@ -653,7 +686,7 @@ Received has type:  string
 Received has value: <red>\\"\\"</>"
 `;
 
-exports[`.toBeCloseTo() throws: Matcher error promise empty isNot true expected 1`] = `
+exports[`.toBeCloseTo throws: Matcher error promise empty isNot true expected 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a number
@@ -661,7 +694,7 @@ exports[`.toBeCloseTo() throws: Matcher error promise empty isNot true expected 
 Expected has value: <green>undefined</>"
 `;
 
-exports[`.toBeCloseTo() throws: Matcher error promise rejects isNot false expected 1`] = `
+exports[`.toBeCloseTo throws: Matcher error promise rejects isNot false expected 1`] = `
 "<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a number
@@ -670,7 +703,7 @@ Expected has type:  string
 Expected has value: <green>\\"0\\"</>"
 `;
 
-exports[`.toBeCloseTo() throws: Matcher error promise rejects isNot true received 1`] = `
+exports[`.toBeCloseTo throws: Matcher error promise rejects isNot true received 1`] = `
 "<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a number
@@ -679,8 +712,8 @@ Received has type:  symbol
 Received has value: <red>Symbol(0.1)</>"
 `;
 
-exports[`.toBeCloseTo() throws: Matcher error promise resolves isNot false received 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
+exports[`.toBeCloseTo throws: Matcher error promise resolves isNot false received 1`] = `
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </>precision<dim>)</>
 
 <bold>Matcher error</>: <red>received</> value must be a number
 
@@ -688,8 +721,8 @@ Received has type:  boolean
 Received has value: <red>false</>"
 `;
 
-exports[`.toBeCloseTo() throws: Matcher error promise resolves isNot true expected 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
+exports[`.toBeCloseTo throws: Matcher error promise resolves isNot true expected 1`] = `
+"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>, </>precision<dim>)</>
 
 <bold>Matcher error</>: <green>expected</> value must be a number
 
@@ -4090,6 +4123,128 @@ exports[`toMatchObject() {pass: true} expect(Set {1, 2}).toMatchObject(Set {2, 1
 
 Expected: not <green>Set {2, 1}</>
 Received:     <red>Set {1, 2}</>"
+`;
+
+exports[`toMatchObject() circular references simple circular references {pass: false} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "world", "ref": [Circular]}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"a\\": \\"world\\",</>
+<red>+   \\"a\\": \\"hello\\",</>
+<dim>    \\"ref\\": [Circular],</>
+<dim>  }</>"
+`;
+
+exports[`toMatchObject() circular references simple circular references {pass: false} expect({"ref": "not a ref"}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"a\\": \\"hello\\",</>
+<green>-   \\"ref\\": [Circular],</>
+<red>+   \\"ref\\": \\"not a ref\\",</>
+<dim>  }</>"
+`;
+
+exports[`toMatchObject() circular references simple circular references {pass: false} expect({}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<green>- Object {</>
+<green>-   \\"a\\": \\"hello\\",</>
+<green>-   \\"ref\\": [Circular],</>
+<green>- }</>
+<red>+ Object {}</>"
+`;
+
+exports[`toMatchObject() circular references simple circular references {pass: true} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+Expected: not <green>{\\"a\\": \\"hello\\", \\"ref\\": [Circular]}</>"
+`;
+
+exports[`toMatchObject() circular references simple circular references {pass: true} expect({"a": "hello", "ref": [Circular]}).toMatchObject({}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+Expected: not <green>{}</>
+Received:     <red>{\\"a\\": \\"hello\\", \\"ref\\": [Circular]}</>"
+`;
+
+exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"a": "world", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"a\\": \\"hello\\",</>
+<red>+   \\"a\\": \\"world\\",</>
+<dim>    \\"nestedObj\\": Object {</>
+<dim>      \\"parentObj\\": [Circular],</>
+<dim>    },</>
+<dim>  }</>"
+`;
+
+exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"nestedObj": {"parentObj": "not the parent ref"}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<green>-   \\"a\\": \\"hello\\",</>
+<dim>    \\"nestedObj\\": Object {</>
+<green>-     \\"parentObj\\": [Circular],</>
+<red>+     \\"parentObj\\": \\"not the parent ref\\",</>
+<dim>    },</>
+<dim>  }</>"
+`;
+
+exports[`toMatchObject() circular references transitive circular references {pass: false} expect({}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<green>- Object {</>
+<green>-   \\"a\\": \\"hello\\",</>
+<green>-   \\"nestedObj\\": Object {</>
+<green>-     \\"parentObj\\": [Circular],</>
+<green>-   },</>
+<green>- }</>
+<red>+ Object {}</>"
+`;
+
+exports[`toMatchObject() circular references transitive circular references {pass: true} expect({"a": "hello", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+Expected: not <green>{\\"a\\": \\"hello\\", \\"nestedObj\\": {\\"parentObj\\": [Circular]}}</>"
+`;
+
+exports[`toMatchObject() circular references transitive circular references {pass: true} expect({"a": "hello", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({}) 1`] = `
+"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+Expected: not <green>{}</>
+Received:     <red>{\\"a\\": \\"hello\\", \\"nestedObj\\": {\\"parentObj\\": [Circular]}}</>"
+`;
+
+exports[`toMatchObject() does not match properties up in the prototype chain 1`] = `
+"<dim>expect(</><red>received</><dim>).</>toMatchObject<dim>(</><green>expected</><dim>)</>
+
+<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Object {</>
+<dim>    \\"other\\": \\"child\\",</>
+<green>-   \\"ref\\": [Circular],</>
+<dim>  }</>"
 `;
 
 exports[`toMatchObject() throws expect("44").toMatchObject({}) 1`] = `

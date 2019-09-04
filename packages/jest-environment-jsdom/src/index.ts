@@ -6,11 +6,11 @@
  */
 
 import {Script} from 'vm';
-import {Global, Config} from '@jest/types';
+import {Config, Global} from '@jest/types';
 import {installCommonGlobals} from 'jest-util';
-import mock, {ModuleMocker} from 'jest-mock';
+import mock = require('jest-mock');
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
-import {JestEnvironment, EnvironmentContext} from '@jest/environment';
+import {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
@@ -27,7 +27,7 @@ class JSDOMEnvironment implements JestEnvironment {
   fakeTimers: FakeTimers<number> | null;
   global: Win;
   errorEventListener: ((event: Event & {error: Error}) => void) | null;
-  moduleMocker: ModuleMocker | null;
+  moduleMocker: mock.ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
     this.dom = new JSDOM('<!DOCTYPE html>', {

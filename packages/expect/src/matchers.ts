@@ -6,10 +6,11 @@
  *
  */
 
-import getType, {isPrimitive} from 'jest-get-type';
+import getType = require('jest-get-type');
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
+  MatcherHintOptions,
   RECEIVED_COLOR,
   SUGGEST_TO_CONTAIN_EQUAL,
   ensureExpectedIsNonNegativeInteger,
@@ -19,14 +20,14 @@ import {
   matcherErrorMessage,
   matcherHint,
   printDiffOrStringify,
-  printReceived,
   printExpected,
+  printReceived,
   printWithType,
   stringify,
-  MatcherHintOptions,
 } from 'jest-matcher-utils';
-import {MatchersObject, MatcherState} from './types';
+import {MatcherState, MatchersObject} from './types';
 import {
+  printCloseTo,
   printExpectedConstructorName,
   printExpectedConstructorNameNot,
   printReceivedArrayContainExpectedItem,
@@ -129,10 +130,12 @@ const matchers: MatchersObject = {
   ) {
     const matcherName = 'toBeCloseTo';
     const secondArgument = arguments.length === 3 ? 'precision' : undefined;
+    const isNot = this.isNot;
     const options: MatcherHintOptions = {
-      isNot: this.isNot,
+      isNot,
       promise: this.promise,
       secondArgument,
+      secondArgumentColor: (arg: string) => arg,
     };
     ensureNumbers(received, expected, matcherName, options);
 
@@ -159,18 +162,14 @@ const matchers: MatchersObject = {
             ? ''
             : `Received:     ${printReceived(received)}\n` +
               '\n' +
-              `Expected precision:        ${printExpected(precision)}\n` +
-              `Expected difference: not < ${printExpected(expectedDiff)}\n` +
-              `Received difference:       ${printReceived(receivedDiff)}`)
+              printCloseTo(receivedDiff, expectedDiff, precision, isNot))
       : () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}\n` +
           '\n' +
-          `Expected precision:    ${printExpected(precision)}\n` +
-          `Expected difference: < ${printExpected(expectedDiff)}\n` +
-          `Received difference:   ${printReceived(receivedDiff)}`;
+          printCloseTo(receivedDiff, expectedDiff, precision, isNot);
 
     return {message, pass};
   },
@@ -291,7 +290,8 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           printExpectedConstructorName('Expected constructor', expected) +
-          (isPrimitive(received) || Object.getPrototypeOf(received) === null
+          (getType.isPrimitive(received) ||
+          Object.getPrototypeOf(received) === null
             ? `\nReceived value has no prototype\nReceived value: ${printReceived(
                 received,
               )}`

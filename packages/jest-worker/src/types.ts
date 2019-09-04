@@ -24,10 +24,6 @@ export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
   | typeof PARENT_MESSAGE_SETUP_ERROR;
 
-// Option objects.
-
-export {ForkOptions};
-
 export interface WorkerPoolInterface {
   getStderr(): NodeJS.ReadableStream;
   getStdout(): NodeJS.ReadableStream;
@@ -39,7 +35,7 @@ export interface WorkerPoolInterface {
     onStart: OnStart,
     onEnd: OnEnd,
   ): void;
-  end(): void;
+  end(): Promise<PoolExitResult>;
 }
 
 export interface WorkerInterface {
@@ -48,12 +44,21 @@ export interface WorkerInterface {
     onProcessStart: OnStart,
     onProcessEnd: OnEnd,
   ): void;
+  waitForExit(): Promise<void>;
+  forceExit(): void;
+
   getWorkerId(): number;
   getStderr(): NodeJS.ReadableStream | null;
   getStdout(): NodeJS.ReadableStream | null;
-  onExit(exitCode: number): void;
-  onMessage(message: ParentMessage): void;
 }
+
+export type PoolExitResult = {
+  forceExited: boolean;
+};
+
+// Option objects.
+
+export {ForkOptions};
 
 export type FarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;

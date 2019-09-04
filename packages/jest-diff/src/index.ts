@@ -5,13 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 import chalk from 'chalk';
-import getType from 'jest-get-type';
+import getType = require('jest-get-type');
+import {
+  DIFF_DELETE,
+  DIFF_EQUAL,
+  DIFF_INSERT,
+  Diff as DiffClass,
+} from './cleanupSemantic';
 import diffLines from './diffLines';
-import {getStringDiff} from './printDiffs';
+import {normalizeDiffOptions} from './normalizeDiffOptions';
+import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
-import {DiffOptions as JestDiffOptions} from './types';
+import {DiffOptionsNormalized, DiffOptions as JestDiffOptions} from './types';
 
 const {
   AsymmetricMatcher,
@@ -78,25 +85,26 @@ function diff(a: any, b: any, options?: JestDiffOptions): string | null {
     return null;
   }
 
+  const optionsNormalized = normalizeDiffOptions(options);
   switch (aType) {
     case 'string':
-      return diffLines(a, b, options);
+      return diffLines(a, b, optionsNormalized);
     case 'boolean':
     case 'number':
-      return comparePrimitive(a, b, options);
+      return comparePrimitive(a, b, optionsNormalized);
     case 'map':
-      return compareObjects(sortMap(a), sortMap(b), options);
+      return compareObjects(sortMap(a), sortMap(b), optionsNormalized);
     case 'set':
-      return compareObjects(sortSet(a), sortSet(b), options);
+      return compareObjects(sortSet(a), sortSet(b), optionsNormalized);
     default:
-      return compareObjects(a, b, options);
+      return compareObjects(a, b, optionsNormalized);
   }
 }
 
 function comparePrimitive(
   a: number | boolean,
   b: number | boolean,
-  options?: JestDiffOptions,
+  options: DiffOptionsNormalized,
 ) {
   return diffLines(
     prettyFormat(a, FORMAT_OPTIONS),
@@ -116,7 +124,7 @@ function sortSet(set: Set<unknown>) {
 function compareObjects(
   a: Record<string, any>,
   b: Record<string, any>,
-  options?: JestDiffOptions,
+  options: DiffOptionsNormalized,
 ) {
   let diffMessage;
   let hasThrown = false;
@@ -157,9 +165,14 @@ function compareObjects(
 
 // eslint-disable-next-line no-redeclare
 namespace diff {
+  export type Diff = DiffClass;
   export type DiffOptions = JestDiffOptions;
 }
 
-diff.getStringDiff = getStringDiff;
+diff.diffStringsUnified = diffStringsUnified;
+diff.diffStringsRaw = diffStringsRaw;
+diff.DIFF_DELETE = DIFF_DELETE;
+diff.DIFF_EQUAL = DIFF_EQUAL;
+diff.DIFF_INSERT = DIFF_INSERT;
 
 export = diff;

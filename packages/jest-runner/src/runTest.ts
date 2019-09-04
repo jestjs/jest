@@ -11,23 +11,21 @@ import {TestResult} from '@jest/test-result';
 import {
   BufferedConsole,
   CustomConsole,
-  NullConsole,
-  LogType,
   LogMessage,
+  LogType,
+  NullConsole,
   getConsoleOutput,
 } from '@jest/console';
 import {JestEnvironment} from '@jest/environment';
-import RuntimeClass from 'jest-runtime';
-import fs from 'graceful-fs';
-import {ErrorWithStack, setGlobal, interopRequireDefault} from 'jest-util';
+import RuntimeClass = require('jest-runtime');
+import * as fs from 'graceful-fs';
+import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
-import Resolver from 'jest-resolve';
+import Resolver = require('jest-resolve');
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
-import sourcemapSupport, {
-  Options as SourceMapOptions,
-} from 'source-map-support';
+import sourcemapSupport = require('source-map-support');
 import chalk from 'chalk';
 import {TestFramework, TestRunnerContext} from './types';
 
@@ -163,7 +161,7 @@ async function runTestInternal(
 
   const start = Date.now();
 
-  const sourcemapOptions: SourceMapOptions = {
+  const sourcemapOptions: sourcemapSupport.Options = {
     environment: 'node',
     handleUncaughtExceptions: false,
     retrieveSourceMap: source => {
@@ -301,7 +299,7 @@ export default async function runTest(
     await new Promise(resolve => setTimeout(resolve, 100));
 
     // Resolve leak detector, outside the "runTestInternal" closure.
-    result.leaks = leakDetector.isLeaking();
+    result.leaks = await leakDetector.isLeaking();
   } else {
     result.leaks = false;
   }

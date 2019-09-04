@@ -6,8 +6,8 @@
  *
  */
 
-import util from 'util';
-import pretty from 'pretty-format';
+import * as util from 'util';
+import pretty = require('pretty-format');
 
 import {Global} from '@jest/types';
 import {EachTests} from '../bind';

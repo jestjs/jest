@@ -5,12 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import util from 'util';
-
+const util = require('util');
 const chalk = require('chalk');
 const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
-const leftPad = require('left-pad');
 const prettyFormat = require('../build');
 const ReactTestComponent = require('../build/plugins/ReactTestComponent');
 const worldGeoJson = require('./world.geo.json');
@@ -80,7 +78,7 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
     let message = current.name;
 
     if (current.time) {
-      message += ' - ' + leftPad(current.time, 6) + 'ns';
+      message += ' - ' + String(current.time).padStart(6) + 'ns';
     }
     if (current.total) {
       message +=

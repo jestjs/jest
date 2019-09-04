@@ -84,6 +84,14 @@ export default (
       );
     }
   }
+  if (snapshots.filesRemovedList && snapshots.filesRemovedList.length) {
+    const [head, ...tail] = snapshots.filesRemovedList;
+    summary.push(`  ${DOWN_ARROW} ${DOT}${formatTestPath(globalConfig, head)}`);
+
+    tail.forEach(key => {
+      summary.push(`      ${DOT}${formatTestPath(globalConfig, key)}`);
+    });
+  }
 
   if (snapshots.unchecked) {
     if (snapshots.didUpdate) {

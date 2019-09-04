@@ -618,7 +618,7 @@ class MyCustomReporter {
 }
 ```
 
-For the full list of methods and argument types see `Reporter` type in [types/TestRunner.js](https://github.com/facebook/jest/blob/master/types/TestRunner.js)
+For the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/master/packages/jest-reporters/src/types.ts)
 
 ### `resetMocks` [boolean]
 
@@ -659,7 +659,7 @@ Automatically restore mock state between every test. Equivalent to calling `jest
 
 ### `rootDir` [string]
 
-Default: The root of the directory containing your jest's [config file](#) _or_ the `package.json` _or_ the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
+Default: The root of the directory containing your Jest [config file](#) _or_ the `package.json` _or_ the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
 
 The root directory that Jest should scan for tests and modules within. If you put your Jest config inside your `package.json` and want the root directory to be the root of your repo, the value for this config param will default to the directory of the `package.json`.
 
@@ -894,7 +894,7 @@ The glob patterns Jest uses to detect test files. By default it looks for `.js`,
 
 See the [micromatch](https://github.com/jonschlinkert/micromatch) package for details of the patterns you can specify.
 
-See also [`testRegex` [string | Array<string>]](#testregex-string), but note that you cannot specify both options.
+See also [`testRegex` [string | array<string>]](#testregex-string-array-string), but note that you cannot specify both options.
 
 ### `testPathIgnorePatterns` [array<string>]
 
@@ -904,7 +904,7 @@ An array of regexp pattern strings that are matched against all test paths befor
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
-### `testRegex` [string | Array<string>]
+### `testRegex` [string | array<string>]
 
 Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$`
 

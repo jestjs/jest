@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
+import * as path from 'path';
+import {tmpdir} from 'os';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 import {
@@ -16,7 +16,7 @@ import {
   writeFiles,
 } from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'globalVariables.test');
+const DIR = path.resolve(tmpdir(), 'globalVariables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
 function cleanStderr(stderr) {

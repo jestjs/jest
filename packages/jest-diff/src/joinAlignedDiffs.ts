@@ -12,8 +12,7 @@ import {
   printDeleteLine,
   printInsertLine,
 } from './printDiffs';
-
-const DIFF_CONTEXT_DEFAULT = 5; // same as diffLines
+import {DiffOptionsNormalized} from './types';
 
 // jest --no-expand
 //
@@ -21,9 +20,10 @@ const DIFF_CONTEXT_DEFAULT = 5; // same as diffLines
 // return joined lines with diff formatting (and patch marks, if needed).
 export const joinAlignedDiffsNoExpand = (
   diffs: Array<Diff>,
-  nContextLines: number = DIFF_CONTEXT_DEFAULT,
+  options: DiffOptionsNormalized,
 ): string => {
   const iLength = diffs.length;
+  const nContextLines = options.contextLines;
   const nContextLines2 = nContextLines + nContextLines;
 
   // First pass: count output lines and see if it has patches.
@@ -89,18 +89,18 @@ export const joinAlignedDiffsNoExpand = (
 
   const pushCommonLine = (line: string): void => {
     const j = lines.length;
-    lines.push(printCommonLine(line, j === 0 || j === jLast));
+    lines.push(printCommonLine(line, j === 0 || j === jLast, options));
     aEnd += 1;
     bEnd += 1;
   };
 
   const pushDeleteLine = (line: string): void => {
-    lines.push(printDeleteLine(line));
+    lines.push(printDeleteLine(line, options));
     aEnd += 1;
   };
 
   const pushInsertLine = (line: string): void => {
-    lines.push(printInsertLine(line));
+    lines.push(printInsertLine(line, options));
     bEnd += 1;
   };
 
@@ -187,20 +187,27 @@ export const joinAlignedDiffsNoExpand = (
 //
 // Given array of aligned strings with inverse highlight formatting,
 // return joined lines with diff formatting.
-export const joinAlignedDiffsExpand = (diffs: Array<Diff>) =>
+export const joinAlignedDiffsExpand = (
+  diffs: Array<Diff>,
+  options: DiffOptionsNormalized,
+) =>
   diffs
     .map((diff: Diff, i: number, diffs: Array<Diff>): string => {
       const line = diff[1];
 
       switch (diff[0]) {
         case DIFF_DELETE:
-          return printDeleteLine(line);
+          return printDeleteLine(line, options);
 
         case DIFF_INSERT:
-          return printInsertLine(line);
+          return printInsertLine(line, options);
 
         default:
-          return printCommonLine(line, i === 0 || i === diffs.length - 1);
+          return printCommonLine(
+            line,
+            i === 0 || i === diffs.length - 1,
+            options,
+          );
       }
     })
     .join('\n');

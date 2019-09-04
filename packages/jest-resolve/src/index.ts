@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {ModuleMap} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 import {sync as realpath} from 'realpath-native';

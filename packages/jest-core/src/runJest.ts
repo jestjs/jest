@@ -5,19 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import chalk from 'chalk';
 import {sync as realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
-import {formatTestResults, interopRequireDefault} from 'jest-util';
-import exit from 'exit';
-import fs from 'graceful-fs';
+import {interopRequireDefault} from 'jest-util';
+import exit = require('exit');
+import * as fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
 import {Config} from '@jest/types';
 import {
   AggregatedResult,
+  formatTestResults,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -30,12 +31,12 @@ import TestScheduler, {TestSchedulerContext} from './TestScheduler';
 import FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
 import TestWatcher from './TestWatcher';
-import {TestRunData, Filter} from './types';
+import {Filter, TestRunData} from './types';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
   context: Context,
-  outputStream: NodeJS.WritableStream,
+  outputStream: NodeJS.WriteStream,
   changedFiles: ChangedFiles | undefined,
   jestHooks: JestHookEmitter,
   filter?: Filter,
@@ -74,7 +75,7 @@ type ProcessResultOptions = Pick<
 > & {
   collectHandles?: () => Array<Error>;
   onComplete?: (result: AggregatedResult) => void;
-  outputStream: NodeJS.WritableStream;
+  outputStream: NodeJS.WriteStream;
 };
 
 const processResults = (
@@ -135,7 +136,7 @@ export default (async function runJest({
 }: {
   globalConfig: Config.GlobalConfig;
   contexts: Array<Context>;
-  outputStream: NodeJS.WritableStream;
+  outputStream: NodeJS.WriteStream;
   testWatcher: TestWatcher;
   jestHooks?: JestHookEmitter;
   startRun: (globalConfig: Config.GlobalConfig) => void;

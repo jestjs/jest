@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 import leven from 'leven';
 
 const BULLET: string = chalk.bold('\u25cf');
