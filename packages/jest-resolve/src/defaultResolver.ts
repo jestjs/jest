@@ -103,7 +103,7 @@ function resolveSync(
     const dir = path.dirname(name);
     let result;
     if (isDirectory(dir)) {
-      result = resolveAsFile(name) || resolveAsDirectory(name);
+      result = resolveAsDirectory(name) || resolveAsFile(name);
     }
     if (result) {
       // Dereference symlinks to ensure we don't create a separate

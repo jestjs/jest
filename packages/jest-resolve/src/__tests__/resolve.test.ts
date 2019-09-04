@@ -9,7 +9,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {ModuleMap} from 'jest-haste-map';
-import Resolver from '../';
+import Resolver = require('../');
 // @ts-ignore: js file
 import userResolver from '../__mocks__/userResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
@@ -83,7 +83,7 @@ describe('findNodeModule', () => {
 });
 
 describe('resolveModule', () => {
-  let moduleMap: typeof ModuleMap;
+  let moduleMap: ModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -156,6 +156,18 @@ describe('resolveModule', () => {
     });
     expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
   });
+
+  it('does not confuse directories with files', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const mocksDirectory = path.resolve(__dirname, '../__mocks__');
+    const resolved = resolver.resolveModule(
+      path.join(mocksDirectory, 'foo/foo.js'),
+      './',
+    );
+    expect(resolved).toBe(path.join(mocksDirectory, 'foo/index.js'));
+  });
 });
 
 describe('getMockModule', () => {
@@ -195,7 +207,7 @@ describe('nodeModulesPaths', () => {
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   const _path = path;
-  let moduleMap: typeof ModuleMap;
+  let moduleMap: ModuleMap;
 
   beforeEach(() => {
     jest.resetModules();
