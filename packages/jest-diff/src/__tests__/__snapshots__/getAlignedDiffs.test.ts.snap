@@ -1,34 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`getAlignedDiffs lines change preceding and following common 1`] = `
-"<green>- <inverse>delete</></>
-<red>+ <inverse>insert</></>
+"<green>- delete</>
+<red>+ insert</>
 <dim>  common between changes</>
-<green>- <inverse>prev</></>
-<red>+ <inverse>next</></>"
+<green>- prev</>
+<red>+ next</>"
 `;
 
 exports[`getAlignedDiffs lines common at end when both current change lines are empty 1`] = `
-"<green>- <inverse>delete</></>
+"<green>- delete</>
 <dim>  common at end</>"
 `;
 
 exports[`getAlignedDiffs lines common between delete and insert 1`] = `
-"<green>- <inverse>delete</></>
+"<green>- delete</>
 <dim>  common between changes</>
-<red>+ <inverse>insert</></>"
+<red>+ insert</>"
 `;
 
 exports[`getAlignedDiffs lines common between insert and delete 1`] = `
-"<red>+ <inverse>insert</></>
+"<red>+ insert</>
 <dim>  common between changes</>
-<green>- <inverse>delete</></>"
+<green>- delete</>"
 `;
 
 exports[`getAlignedDiffs lines common preceding and following change 1`] = `
 "<dim>  common preceding</>
-<green>- <inverse>delete</></>
-<red>+ <inverse>insert</></>
+<green>- delete</>
+<red>+ insert</>
 <dim>  common following</>"
 `;
 
@@ -85,7 +85,7 @@ exports[`getAlignedDiffs strings delete or insert at start and change at end 1`]
 `;
 
 exports[`getAlignedDiffs substrings first common when both current change lines are empty 1`] = `
-"<red>+ <inverse>insert</></>
+"<red>+ insert</>
 <dim>  first</>
 <dim>  middle</>
 <green>- last <inverse>prev</></>
@@ -101,7 +101,7 @@ exports[`getAlignedDiffs substrings first common when either current change line
 
 exports[`getAlignedDiffs substrings first delete completes the current line 1`] = `
 "<green>- common preceding <inverse>first</></>
-<green>- <inverse>middle</></>
+<green>- middle</>
 <green>- <inverse>last </>and following</>
 <red>+ common preceding and following</>"
 `;
@@ -109,7 +109,7 @@ exports[`getAlignedDiffs substrings first delete completes the current line 1`] 
 exports[`getAlignedDiffs substrings first insert completes the current line 1`] = `
 "<green>- common preceding</>
 <red>+ common preceding<inverse> first</></>
-<red>+ <inverse>middle</></>
+<red>+ middle</>
 <red>+</>"
 `;
 
@@ -140,21 +140,21 @@ exports[`getAlignedDiffs substrings middle is empty in delete between common 1`]
 
 exports[`getAlignedDiffs substrings middle is empty in insert at start 1`] = `
 "<green>- <inverse>expect</>ed common at end</>
-<red>+ <inverse>insert line</></>
+<red>+ insert line</>
 <red>+</>
 <red>+ <inverse>receiv</>ed common at end</>"
 `;
 
 exports[`getAlignedDiffs substrings middle is non-empty in delete at end 1`] = `
 "<green>- common at start precedes <inverse>delete</></>
-<green>- <inverse>non-empty line</></>
-<green>- <inverse>next</></>
+<green>- non-empty line</>
+<green>- next</>
 <red>+ common at start precedes <inverse>prev</></>"
 `;
 
 exports[`getAlignedDiffs substrings middle is non-empty in insert between common 1`] = `
 "<green>- common at start precedes <inverse>delete expect</>ed</>
 <red>+ common at start precedes <inverse>insert</></>
-<red>+ <inverse>non-empty</></>
+<red>+ non-empty</>
 <red>+ <inverse>receiv</>ed</>"
 `;
