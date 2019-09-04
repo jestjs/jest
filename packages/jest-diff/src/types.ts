@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-type DiffOptionsColor = (arg: string) => string; // subset of Chalk type
+export type DiffOptionsColor = (arg: string) => string; // subset of Chalk type
 
 export type DiffOptions = {
   aAnnotation?: string;
@@ -14,12 +14,14 @@ export type DiffOptions = {
   bAnnotation?: string;
   bColor?: DiffOptionsColor;
   bIndicator?: string;
+  changeColor?: DiffOptionsColor;
   commonColor?: DiffOptionsColor;
   commonIndicator?: string;
   contextLines?: number;
   expand?: boolean;
   includeChangeCounts?: boolean;
   omitAnnotationLines?: boolean;
+  patchColor?: DiffOptionsColor;
 };
 
 export type DiffOptionsNormalized = {
@@ -29,10 +31,12 @@ export type DiffOptionsNormalized = {
   bAnnotation: string;
   bColor: DiffOptionsColor;
   bIndicator: string;
+  changeColor: DiffOptionsColor;
   commonColor: DiffOptionsColor;
   commonIndicator: string;
   contextLines: number;
   expand: boolean;
   includeChangeCounts: boolean;
   omitAnnotationLines: boolean;
+  patchColor: DiffOptionsColor;
 };

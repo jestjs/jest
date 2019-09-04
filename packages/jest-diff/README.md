@@ -91,7 +91,7 @@ const difference = diffStringsUnified(a, b);
 The returned **string** consists of:
 
 - annotation lines: describe the two change indicators with labels, and a blank line
-- comparison lines: similar to “unified” view on GitHub, and **changed substrings** have **inverted** foreground and background colors (which the following example does not show)
+- comparison lines: similar to “unified” view on GitHub, and **changed substrings** have **inverse** foreground and background colors (which the following example does not show)
 
 ```diff
 - Expected
@@ -212,20 +212,22 @@ For other applications, you can provide an options object as a third argument:
 
 ### Properties of options object
 
-| name                  | default       |
-| :-------------------- | :------------ |
-| `aAnnotation`         | `'Expected'`  |
-| `aColor`              | `chalk.green` |
-| `aIndicator`          | `'-'`         |
-| `bAnnotation`         | `'Received'`  |
-| `bColor`              | `chalk.red`   |
-| `bIndicator`          | `'+'`         |
-| `commonColor`         | `chalk.dim`   |
-| `commonIndicator`     | `' '`         |
-| `contextLines`        | `5`           |
-| `expand`              | `true`        |
-| `includeChangeCounts` | `false`       |
-| `omitAnnotationLines` | `false`       |
+| name                  | default         |
+| :-------------------- | :-------------- |
+| `aAnnotation`         | `'Expected'`    |
+| `aColor`              | `chalk.green`   |
+| `aIndicator`          | `'-'`           |
+| `bAnnotation`         | `'Received'`    |
+| `bColor`              | `chalk.red`     |
+| `bIndicator`          | `'+'`           |
+| `changeColor`         | `chalk.inverse` |
+| `commonColor`         | `chalk.dim`     |
+| `commonIndicator`     | `' '`           |
+| `contextLines`        | `5`             |
+| `expand`              | `true`          |
+| `includeChangeCounts` | `false`         |
+| `omitAnnotationLines` | `false`         |
+| `patchColor`          | `chalk.yellow`  |
 
 ### Example of options for labels
 
@@ -240,7 +242,7 @@ const options = {
 
 The `jest-diff` package does not assume that the 2 labels have equal length.
 
-### Example of options for colors
+### Example of options for colors of change lines
 
 For consistency with most diff tools, you might exchange the colors:
 
@@ -252,16 +254,31 @@ const options = {
   bColor: chalk.green,
 };
 ```
+### Example of option for color of change substrings
 
-### Example of option to keep the default color
-
-The value of a color option is a function, which given a string, returns a string.
-
-For common lines to keep the default (usually black) color, you might provide an identity function:
+Although the default inverse of foreground and background colors is hard to beat for change substrings **within lines**, especially because it highlights spaces, if you want bold font weight on yellow background:
 
 ```js
 const options = {
-  commonColor: line => line,
+  changeColor: chalk.bold.bgAnsi256(226), // #ffff00
+};
+```
+
+### Example of options for no colors
+
+The value of a color option is a function, which given a string, returns a string.
+
+To store the difference in a file without escape codes for colors, provide an identity function:
+
+```js
+const identity = string => string;
+
+const options = {
+  aColor: identity,
+  bColor: identity,
+  changeColor: identity,
+  commonColor: identity,
+  patchColor: identity,
 };
 ```
 
@@ -292,6 +309,17 @@ const options = {
 ```
 
 A patch mark like `@@ -12,7 +12,9 @@` accounts for omitted common lines.
+
+### Example of option for color of patch marks
+
+If you want patch marks to have the same dim color as common lines:
+
+```js
+const options = {
+  expand: false,
+  patchColor: chalk.dim,
+};
+```
 
 ### Example of option to include change counts
 
