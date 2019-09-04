@@ -242,7 +242,7 @@ const options = {
 
 The `jest-diff` package does not assume that the 2 labels have equal length.
 
-### Example of options for colors of changes lines
+### Example of options for colors of changed lines
 
 For consistency with most diff tools, you might exchange the colors:
 
@@ -255,9 +255,9 @@ const options = {
 };
 ```
 
-### Example of option for color of changes substringss
+### Example of option for color of changed substrings
 
-Although the default inverse of foreground and background colors is hard to beat for changes substringss **within lines**, especially because it highlights spaces, if you want bold font weight on yellow background:
+Although the default inverse of foreground and background colors is hard to beat for changed substrings **within lines**, especially because it highlights spaces, if you want bold font weight on yellow background:
 
 ```js
 const options = {
@@ -324,7 +324,7 @@ const options = {
 
 ### Example of option to include change counts
 
-To display the number of changes lines at the right of annotation lines:
+To display the number of changed lines at the right of annotation lines:
 
 ```js
 const a = ['change from', 'common'];
