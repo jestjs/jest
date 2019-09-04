@@ -8,7 +8,7 @@
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {DiffOptionsColor} from './types';
 
-// Given change op and array of diffs, return concatenateRelevantDiffsd string:
+// Given change op and array of diffs, return concatenated string:
 // * include common strings
 // * include change strings which have argument op with changeColor
 // * exclude change strings which have opposite op
