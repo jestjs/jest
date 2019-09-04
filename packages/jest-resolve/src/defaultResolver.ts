@@ -68,7 +68,10 @@ function resolveSync(
 
   if (REGEX_RELATIVE_IMPORT.test(target)) {
     // resolve relative import
-    const resolveTarget = path.resolve(basedir, target);
+    let resolveTarget = path.resolve(basedir, target);
+    if (target === '..' || target.endsWith('/')) {
+      resolveTarget += '/';
+    }
     const result = tryResolve(resolveTarget);
     if (result) {
       return result;
@@ -103,7 +106,7 @@ function resolveSync(
     const dir = path.dirname(name);
     let result;
     if (isDirectory(dir)) {
-      result = resolveAsDirectory(name) || resolveAsFile(name);
+      result = resolveAsFile(name) || resolveAsDirectory(name);
     }
     if (result) {
       // Dereference symlinks to ensure we don't create a separate
