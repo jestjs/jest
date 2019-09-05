@@ -9,9 +9,6 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "scripts": {
-    "build": "tsc && mv ./build/runner.js ./runner.js"
-  },
   "dependencies": {
     "@babel/traverse": "^7.1.0",
     "@jest/environment": "^24.9.0",

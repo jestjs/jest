@@ -2,8 +2,7 @@
   "extends": "../../tsconfig",
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src",
-    "esModuleInterop": true
+    "rootDir": "src"
   },
   "references": [
     {"path": "../jest-each"},
