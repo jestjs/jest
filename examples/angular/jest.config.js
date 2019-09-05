@@ -1,10 +1,12 @@
 module.exports = {
-  testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'],
-  transform: {
-    '^.+\\.(ts|js|html)$': 'ts-jest'
+  globals: {
+    'ts-jest': {
+      tsConfig: '<rootDir>/tsconfig.json'
+    }
   },
-  resolver: '@nrwl/jest/plugins/resolver',
-  moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageReporters: ['html'],
-  passWithNoTests: true
+  setupFilesAfterEnv: ['<rootDir>/setupJest.js'],
+  transform: {
+    '^.+\\.(ts|js|html)$': 'ts-jest',
+  },
+  moduleFileExtensions: ['ts', 'html', 'js', 'json']
 };
