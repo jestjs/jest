@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
-import { DataService } from './shared/data.service';
+import {DataService} from './shared/data.service';
 
 @Component({
   selector: 'app-root',
-  template: '<h1>Welcome to {{ title }}!</h1>'
+  template: '<h1>Welcome to {{ title }}!</h1>',
 })
 export class AppComponent {
   public title: string;
