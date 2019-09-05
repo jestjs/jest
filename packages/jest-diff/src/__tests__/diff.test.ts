@@ -838,23 +838,27 @@ test('collapses big diffs to patch format', () => {
 
 describe('context', () => {
   const testDiffContextLines = (contextLines?: number) => {
-    test(`number of lines: ${
-      typeof contextLines === 'number' ? contextLines : 'undefined'
-    } ${
+    const validContextLines =
       typeof contextLines === 'number' &&
       Number.isSafeInteger(contextLines) &&
-      contextLines >= 0
-        ? ''
-        : '(5 default)'
-    }`, () => {
+      contextLines >= 0;
+
+    test(`number of lines: ${
+      typeof contextLines === 'number' ? contextLines : 'undefined'
+    } ${validContextLines ? '' : '(5 default)'}`, () => {
+      const options = {
+        ...optionsCounts,
+        contextLines,
+        expand: false,
+      };
+      if (!validContextLines) {
+        options.patchColor = chalk.dim;
+      }
+
       const result = diff(
         {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
         {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]},
-        {
-          contextLines,
-          expand: false,
-          ...optionsCounts,
-        },
+        options,
       );
       expect(result).toMatchSnapshot();
     });
@@ -949,6 +953,18 @@ describe('options', () => {
 
     test('diff', () => {
       expect(diff(a, b, options)).toMatchSnapshot();
+    });
+  });
+
+  describe('change color', () => {
+    const options = {
+      changeColor: chalk.bold,
+    };
+
+    test('diffStringsUnified', () => {
+      const aChanged = a.join('\n').replace('change', 'changed');
+      const bChanged = b.join('\n').replace('change', 'changed');
+      expect(diffStringsUnified(aChanged, bChanged, options)).toMatchSnapshot();
     });
   });
 

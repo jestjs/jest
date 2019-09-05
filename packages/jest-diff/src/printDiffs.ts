@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
-
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -23,28 +21,6 @@ import {
 } from './joinAlignedDiffs';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {DiffOptions, DiffOptionsNormalized} from './types';
-
-export const INVERTED_COLOR = chalk.inverse; // export for joinAlignedDiffs test
-const PATCH_COLOR = chalk.yellow;
-
-// Given change op and array of diffs, return concatenated string:
-// * include common strings
-// * include change strings which have argument op (inverse highlight)
-// * exclude change strings which have opposite op
-export const invertChangedSubstrings = (
-  op: number,
-  diffs: Array<Diff>,
-): string =>
-  diffs.reduce(
-    (reduced: string, diff: Diff): string =>
-      reduced +
-      (diff[0] === DIFF_EQUAL
-        ? diff[1]
-        : diff[0] === op
-        ? INVERTED_COLOR(diff[1])
-        : ''),
-    '',
-  );
 
 const NEWLINE_SYMBOL = '\u{21B5}'; // downwards arrow with corner leftwards
 const SPACE_SYMBOL = '\u{00B7}'; // middle dot
@@ -172,8 +148,9 @@ export const createPatchMark = (
   aEnd: number,
   bStart: number,
   bEnd: number,
+  {patchColor}: DiffOptionsNormalized,
 ): string =>
-  PATCH_COLOR(
+  patchColor(
     `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
   );
 
@@ -243,7 +220,7 @@ export const diffStringsUnified = (
   );
 
   if (hasCommonDiff(diffs, isMultiline)) {
-    const lines = getAlignedDiffs(diffs);
+    const lines = getAlignedDiffs(diffs, optionsNormalized.changeColor);
     return (
       printAnnotation(optionsNormalized, countChanges(lines)) +
       (optionsNormalized.expand

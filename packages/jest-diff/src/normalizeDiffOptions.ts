@@ -18,12 +18,14 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   bAnnotation: 'Received',
   bColor: chalk.red,
   bIndicator: '+',
+  changeColor: chalk.inverse,
   commonColor: chalk.dim,
   commonIndicator: ' ',
   contextLines: DIFF_CONTEXT_DEFAULT,
   expand: true,
   includeChangeCounts: false,
   omitAnnotationLines: false,
+  patchColor: chalk.yellow,
 };
 
 const getContextLines = (contextLines?: number): number =>
