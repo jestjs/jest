@@ -15,7 +15,8 @@
     "core-js": "*",
     "rxjs": "*",
     "typescript": "*",
-    "zone.js": "*"
+    "zone.js": "*",
+    "jest-zone-patch": "*"
   },
   "devDependencies": {
     "@types/jest": "*",
