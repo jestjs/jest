@@ -9,7 +9,6 @@ import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest, {until} from '../runJest';
 
 try {
-  // $FlowFixMe: Node core
   require('async_hooks');
 } catch (e) {
   if (e.code === 'MODULE_NOT_FOUND') {

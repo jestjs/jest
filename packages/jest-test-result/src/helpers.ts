@@ -27,6 +27,7 @@ export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
     filesAdded: 0,
     // combines individual test results + removed files after the full run
     filesRemoved: 0,
+    filesRemovedList: [],
     filesUnmatched: 0,
     filesUpdated: 0,
     matched: 0,
@@ -46,7 +47,7 @@ export const buildFailureTestResult = (
   testPath: Config.Path,
   err: SerializableError,
 ): TestResult => ({
-  console: null,
+  console: undefined,
   displayName: '',
   failureMessage: null,
   leaks: false,
@@ -144,3 +145,28 @@ export const addResult = (
     testResult.snapshot.unmatched +
     testResult.snapshot.updated;
 };
+
+export const createEmptyTestResult = (): TestResult => ({
+  leaks: false, // That's legacy code, just adding it as needed for typing
+  numFailingTests: 0,
+  numPassingTests: 0,
+  numPendingTests: 0,
+  numTodoTests: 0,
+  openHandles: [],
+  perfStats: {
+    end: 0,
+    start: 0,
+  },
+  skipped: false,
+  snapshot: {
+    added: 0,
+    fileDeleted: false,
+    matched: 0,
+    unchecked: 0,
+    uncheckedKeys: [],
+    unmatched: 0,
+    updated: 0,
+  },
+  testFilePath: '',
+  testResults: [],
+});

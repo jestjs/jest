@@ -5,16 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO: Remove this
-/// <reference path="../node-notifier.d.ts" />
-
-import path from 'path';
-import util from 'util';
-import exit from 'exit';
+import * as path from 'path';
+import * as util from 'util';
+import exit = require('exit');
 import {Config} from '@jest/types';
 import {AggregatedResult} from '@jest/test-result';
-import notifier from 'node-notifier';
-import {TestSchedulerContext, Context} from './types';
+import {notify} from 'node-notifier';
+import {Context, TestSchedulerContext} from './types';
 import BaseReporter from './base_reporter';
 
 const isDarwin = process.platform === 'darwin';
@@ -81,7 +78,7 @@ export default class NotifyReporter extends BaseReporter {
         result.numPassedTests,
       );
 
-      notifier.notify({icon, message, title});
+      notify({icon, message, title});
     } else if (
       testsHaveRun &&
       !success &&
@@ -109,18 +106,15 @@ export default class NotifyReporter extends BaseReporter {
       const quitAnswer = 'Exit tests';
 
       if (!watchMode) {
-        notifier.notify({
-          icon,
-          message,
-          title,
-        });
+        notify({icon, message, title});
       } else {
-        notifier.notify(
+        notify(
           {
             actions: [restartAnswer, quitAnswer],
             closeLabel: 'Close',
             icon,
             message,
+            timeout: 10,
             title,
           },
           (err, _, metadata) => {

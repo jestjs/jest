@@ -33,10 +33,10 @@ export function validationCondition(option: any, validOption: any): boolean {
   return getValues(validOption).some(e => validationConditionSingle(option, e));
 }
 
-// TODO: This should infer the types of its arguments, and return a union type of the types
-// See https://github.com/Microsoft/TypeScript/issues/5453
-export function multipleValidOptions(...args: Array<any>) {
-  const options = [...args];
+export function multipleValidOptions<T extends Array<any>>(
+  ...args: T
+): T[number] {
+  const options = <T>[...args];
   // @ts-ignore
   options[MULTIPLE_VALID_OPTIONS_SYMBOL] = true;
   return options;

@@ -5,22 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventHandler, TEST_TIMEOUT_SYMBOL} from './types';
+import {Circus} from '@jest/types';
+import {TEST_TIMEOUT_SYMBOL} from './types';
 
 import {
   addErrorToEachTestUnderDescribe,
-  makeDescribe,
+  describeBlockHasTests,
   getTestDuration,
   invariant,
+  makeDescribe,
   makeTest,
-  describeBlockHasTests,
 } from './utils';
 import {
   injectGlobalErrorHandlers,
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
 
-const eventHandler: EventHandler = (event, state): void => {
+const eventHandler: Circus.EventHandler = (event, state): void => {
   switch (event.name) {
     case 'include_test_location_in_result': {
       state.includeTestLocationInResult = true;
@@ -43,9 +44,7 @@ const eventHandler: EventHandler = (event, state): void => {
 
       if (!describeBlockHasTests(currentDescribeBlock)) {
         currentDescribeBlock.hooks.forEach(hook => {
-          hook.asyncError.message = `Invalid: ${
-            hook.type
-          }() may not be used in a describe block containing no tests.`;
+          hook.asyncError.message = `Invalid: ${hook.type}() may not be used in a describe block containing no tests.`;
           state.unhandledErrors.push(hook.asyncError);
         });
       }

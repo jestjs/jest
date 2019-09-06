@@ -6,6 +6,7 @@
  */
 
 import {Arguments} from 'yargs';
+import {ReportOptions} from 'istanbul-reports';
 
 export type Path = string;
 
@@ -20,7 +21,8 @@ export type HasteConfig = {
   throwOnModuleCollision?: boolean;
 };
 
-export type ReporterConfig = [string, {[key: string]: unknown}];
+export type ReporterConfig = [string, Record<string, unknown>];
+export type TransformerConfig = [string, Record<string, unknown>];
 
 export type ConfigGlobals = Record<string, any>;
 
@@ -45,7 +47,6 @@ export type DefaultOptions = {
       }
     | null
     | undefined;
-  cwd: Path;
   dependencyExtractor: string | null | undefined;
   errorOnDeprecated: boolean;
   expand: boolean;
@@ -55,6 +56,7 @@ export type DefaultOptions = {
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
+  maxWorkers: number | string;
   maxConcurrency: number;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
@@ -89,11 +91,12 @@ export type DefaultOptions = {
   testRegex: Array<string>;
   testResultsProcessor: string | null | undefined;
   testRunner: string | null | undefined;
+  testSequencer: string;
   testURL: string;
   timers: 'real' | 'fake';
   transform:
     | {
-        [key: string]: string;
+        [regex: string]: Path | TransformerConfig;
       }
     | null
     | undefined;
@@ -104,6 +107,13 @@ export type DefaultOptions = {
   watch: boolean;
   watchman: boolean;
 };
+
+export type DisplayName =
+  | string
+  | {
+      name: string;
+      color: DisplayNameColor;
+    };
 
 export type InitialOptions = {
   automock?: boolean;
@@ -130,7 +140,7 @@ export type InitialOptions = {
   dependencyExtractor?: string;
   detectLeaks?: boolean;
   detectOpenHandles?: boolean;
-  displayName?: string;
+  displayName?: DisplayName;
   expand?: boolean;
   extraGlobals?: Array<string>;
   filter?: Path;
@@ -148,6 +158,7 @@ export type InitialOptions = {
   listTests?: boolean;
   mapCoverage?: boolean;
   maxConcurrency?: number;
+  maxWorkers: number | string;
   moduleDirectories?: Array<string>;
   moduleFileExtensions?: Array<string>;
   moduleLoader?: Path;
@@ -197,10 +208,12 @@ export type InitialOptions = {
   testRegex?: string | Array<string>;
   testResultsProcessor?: string | null | undefined;
   testRunner?: string;
+  testSequencer?: string;
   testURL?: string;
+  testTimeout?: number;
   timers?: 'real' | 'fake';
   transform?: {
-    [key: string]: string;
+    [regex: string]: Path | TransformerConfig;
   };
   transformIgnorePatterns?: Array<Glob>;
   watchPathIgnorePatterns?: Array<string>;
@@ -223,6 +236,47 @@ type NotifyMode =
   | 'change'
   | 'success-change'
   | 'failure-change';
+
+/**
+ * Hard coding this until
+ * https://github.com/chalk/chalk/pull/336
+ * gets merged
+ */
+type DisplayNameColor =
+  | 'black'
+  | 'red'
+  | 'green'
+  | 'yellow'
+  | 'blue'
+  | 'magenta'
+  | 'cyan'
+  | 'white'
+  | 'gray'
+  | 'grey'
+  | 'blackBright'
+  | 'redBright'
+  | 'greenBright'
+  | 'yellowBright'
+  | 'blueBright'
+  | 'magentaBright'
+  | 'cyanBright'
+  | 'whiteBright'
+  | 'bgBlack'
+  | 'bgRed'
+  | 'bgGreen'
+  | 'bgYellow'
+  | 'bgBlue'
+  | 'bgMagenta'
+  | 'bgCyan'
+  | 'bgWhite'
+  | 'bgBlackBright'
+  | 'bgRedBright'
+  | 'bgGreenBright'
+  | 'bgYellowBright'
+  | 'bgBlueBright'
+  | 'bgMagentaBright'
+  | 'bgCyanBright'
+  | 'bgWhiteBright';
 
 type CoverageThreshold = {
   [path: string]: {
@@ -247,7 +301,7 @@ export type GlobalConfig = {
     | undefined;
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
-  coverageReporters: Array<string>;
+  coverageReporters: Array<keyof ReportOptions>;
   coverageThreshold: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
@@ -293,6 +347,8 @@ export type GlobalConfig = {
   testNamePattern: string;
   testPathPattern: string;
   testResultsProcessor: string | null | undefined;
+  testSequencer: string;
+  testTimeout: number;
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose: boolean | null | undefined;
@@ -319,7 +375,7 @@ export type ProjectConfig = {
   dependencyExtractor?: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  displayName: string | null | undefined;
+  displayName?: DisplayName;
   errorOnDeprecated: boolean;
   extraGlobals: Array<keyof NodeJS.Global>;
   filter: Path | null | undefined;
@@ -358,7 +414,7 @@ export type ProjectConfig = {
   testRunner: string;
   testURL: string;
   timers: 'real' | 'fake';
-  transform: Array<[string, Path]>;
+  transform: Array<[string, Path, Record<string, unknown>]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns: Array<string> | null | undefined;
@@ -401,7 +457,7 @@ export type Argv = Arguments<
     json: boolean;
     lastCommit: boolean;
     logHeapUsage: boolean;
-    maxWorkers: number;
+    maxWorkers: number | string;
     moduleDirectories: Array<string>;
     moduleFileExtensions: Array<string>;
     moduleNameMapper: string;
@@ -436,7 +492,9 @@ export type Argv = Arguments<
     testRegex: string | Array<string>;
     testResultsProcessor: string | null | undefined;
     testRunner: string;
+    testSequencer: string;
     testURL: string;
+    testTimeout: number | null | undefined;
     timers: string;
     transform: string;
     transformIgnorePatterns: Array<string>;

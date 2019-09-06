@@ -7,6 +7,7 @@
  */
 import {Config} from '@jest/types';
 import * as jestMatcherUtils from 'jest-matcher-utils';
+import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
 export type SyncExpectationResult = {
   pass: boolean;
@@ -17,11 +18,10 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
-export type RawMatcherFn = (
-  received: any,
-  expected: any,
-  options?: any,
-) => ExpectationResult;
+export type RawMatcherFn = {
+  (received: any, expected: any, options?: any): ExpectationResult;
+  [INTERNAL_MATCHER_FLAG]?: boolean;
+};
 
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
@@ -150,11 +150,11 @@ export interface Matchers<R> {
   /**
    * For comparing floating point numbers.
    */
-  toBeGreaterThan(expected: number): R;
+  toBeGreaterThan(expected: number | bigint): R;
   /**
    * For comparing floating point numbers.
    */
-  toBeGreaterThanOrEqual(expected: number): R;
+  toBeGreaterThanOrEqual(expected: number | bigint): R;
   /**
    * Ensure that an object is an instance of a class.
    * This matcher uses `instanceof` underneath.
@@ -163,11 +163,11 @@ export interface Matchers<R> {
   /**
    * For comparing floating point numbers.
    */
-  toBeLessThan(expected: number): R;
+  toBeLessThan(expected: number | bigint): R;
   /**
    * For comparing floating point numbers.
    */
-  toBeLessThanOrEqual(expected: number): R;
+  toBeLessThanOrEqual(expected: number | bigint): R;
   /**
    * This is the same as `.toBe(null)` but the error messages are a bit nicer.
    * So use `.toBeNull()` when you want to check that something is null.

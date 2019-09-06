@@ -61,6 +61,16 @@ jest.mock(
 );
 
 jest.mock(
+  'configureable-preprocessor',
+  () => ({
+    createTransformer: jest.fn(() => ({
+      process: jest.fn(() => 'processedCode'),
+    })),
+  }),
+  {virtual: true},
+);
+
+jest.mock(
   'preprocessor-with-sourcemaps',
   () => ({
     getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
@@ -152,6 +162,7 @@ describe('ScriptTransformer', () => {
 
     mockFs = object({
       '/fruits/banana.js': ['module.exports = "banana";'].join('\n'),
+      '/fruits/banana:colon.js': ['module.exports = "bananaColon";'].join('\n'),
       '/fruits/grapefruit.js': [
         'module.exports = function () { return "grapefruit"; }',
       ].join('\n'),
@@ -491,6 +502,21 @@ describe('ScriptTransformer', () => {
     expect(getCacheKey.mock.calls[0][3]).toMatchSnapshot();
   });
 
+  it('creates transformer with config', () => {
+    const transformerConfig = {};
+    config = Object.assign(config, {
+      transform: [
+        ['^.+\\.js$', 'configureable-preprocessor', transformerConfig],
+      ],
+    });
+
+    const scriptTransformer = new ScriptTransformer(config);
+    scriptTransformer.transform('/fruits/banana.js', {});
+    expect(
+      require('configureable-preprocessor').createTransformer,
+    ).toHaveBeenCalledWith(transformerConfig);
+  });
+
   it('reads values from the cache', () => {
     const transformConfig = {
       ...config,
@@ -530,6 +556,34 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
     expect(fs.readFileSync).not.toBeCalledWith(cachePath, 'utf8');
     expect(writeFileAtomic.sync).toBeCalled();
+  });
+
+  it('reads values from the cache when the file contains colons', () => {
+    const transformConfig = {
+      ...config,
+      transform: [['^.+\\.js$', 'test_preprocessor']],
+    };
+    let scriptTransformer = new ScriptTransformer(transformConfig);
+    scriptTransformer.transform('/fruits/banana:colon.js', {});
+
+    const cachePath = getCachePath(mockFs, config);
+    expect(writeFileAtomic.sync).toBeCalled();
+    expect(writeFileAtomic.sync.mock.calls[0][0]).toBe(cachePath);
+
+    // Cache the state in `mockFsCopy`
+    const mockFsCopy = mockFs;
+    jest.resetModuleRegistry();
+    reset();
+
+    // Restore the cached fs
+    mockFs = mockFsCopy;
+    scriptTransformer = new ScriptTransformer(transformConfig);
+    scriptTransformer.transform('/fruits/banana:colon.js', {});
+
+    expect(fs.readFileSync).toHaveBeenCalledTimes(2);
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana:colon.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
+    expect(writeFileAtomic.sync).not.toBeCalled();
   });
 
   it('does not reuse the in-memory cache between different projects', () => {

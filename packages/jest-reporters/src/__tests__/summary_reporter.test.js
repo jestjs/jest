@@ -6,7 +6,7 @@
  */
 'use strict';
 
-import SummaryReporter from '../summary_reporter';
+let SummaryReporter;
 
 const env = {...process.env};
 const now = Date.now;
@@ -17,6 +17,12 @@ const globalConfig = {
 };
 
 let results = [];
+
+function requireReporter() {
+  jest.isolateModules(() => {
+    SummaryReporter = require('../summary_reporter').default;
+  });
+}
 
 beforeEach(() => {
   process.env.npm_lifecycle_event = 'test';
@@ -50,6 +56,7 @@ test('snapshots needs update with npm test', () => {
   };
 
   process.env.npm_config_user_agent = 'npm';
+  requireReporter();
   const testReporter = new SummaryReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
   expect(results.join('')).toMatchSnapshot();
@@ -63,6 +70,7 @@ test('snapshots needs update with yarn test', () => {
     numTotalTestSuites: 1,
     numTotalTests: 1,
     snapshot: {
+      filesRemovedList: [],
       filesUnmatched: 1,
       total: 2,
       uncheckedKeysByFile: [],
@@ -73,6 +81,7 @@ test('snapshots needs update with yarn test', () => {
   };
 
   process.env.npm_config_user_agent = 'yarn';
+  requireReporter();
   const testReporter = new SummaryReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
   expect(results.join('')).toMatchSnapshot();
@@ -90,6 +99,7 @@ test('snapshots all have results (no update)', () => {
       didUpdate: false,
       filesAdded: 1,
       filesRemoved: 1,
+      filesRemovedList: [],
       filesUnmatched: 1,
       filesUpdated: 1,
       matched: 2,
@@ -108,6 +118,7 @@ test('snapshots all have results (no update)', () => {
     testResults: {},
   };
 
+  requireReporter();
   const testReporter = new SummaryReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
   expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();
@@ -125,6 +136,7 @@ test('snapshots all have results (after update)', () => {
       didUpdate: true,
       filesAdded: 1,
       filesRemoved: 1,
+      filesRemovedList: [],
       filesUnmatched: 1,
       filesUpdated: 1,
       matched: 2,
@@ -143,6 +155,7 @@ test('snapshots all have results (after update)', () => {
     testResults: {},
   };
 
+  requireReporter();
   const testReporter = new SummaryReporter(globalConfig);
   testReporter.onRunComplete(new Set(), aggregatedResults);
   expect(results.join('').replace(/\\/g, '/')).toMatchSnapshot();

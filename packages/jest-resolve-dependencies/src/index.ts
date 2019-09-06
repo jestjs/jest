@@ -6,9 +6,10 @@
  */
 
 import {Config} from '@jest/types';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import {FS as HasteFS} from 'jest-haste-map';
-import Resolver from 'jest-resolve';
-import {isSnapshotPath, SnapshotResolver} from 'jest-snapshot';
+import Resolver = require('jest-resolve');
+import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
 namespace DependencyResolver {
   export type ResolvedModule = {
@@ -101,7 +102,7 @@ class DependencyResolver {
               related.delete(file);
             }
             visitedModules.add(file);
-            acc.push(module.file);
+            acc.push(file);
             return acc;
           }, []),
         );

@@ -14,6 +14,7 @@ Although Jest may be considered a React-specific test runner, in fact it is a un
 
 - [Testing an AngularJS app with Jest](https://medium.com/aya-experience/testing-an-angularjs-app-with-jest-3029a613251) by Matthieu Lux ([@Swiip](https://twitter.com/Swiip))
 - [Running AngularJS Tests with Jest](https://engineering.talentpair.com/running-angularjs-tests-with-jest-49d0cc9c6d26) by Ben Brandt ([@benjaminbrandt](https://twitter.com/benjaminbrandt))
+- [AngularJS Unit Tests with Jest Actions (Traditional Chinese)](https://dwatow.github.io/2019/08-14-angularjs/angular-jest/?fbclid=IwAR2SrqYg_o6uvCQ79FdNPeOxs86dUqB6pPKgd9BgnHt1kuIDRyRM-ch11xg) by Chris Wang ([@dwatow](https://github.com/dwatow))
 
 ## Angular
 
@@ -30,3 +31,7 @@ Although Jest may be considered a React-specific test runner, in fact it is a un
 ## Express.js
 
 - [How to test Express.js with Jest and Supertest](http://www.albertgao.xyz/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/) by Albert Gao ([@albertgao](https://twitter.com/albertgao))
+
+## GatsbyJS
+
+- [Unit Testing](https://www.gatsbyjs.org/docs/unit-testing/) by GatsbyJS docs

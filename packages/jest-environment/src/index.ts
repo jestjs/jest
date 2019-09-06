@@ -6,36 +6,48 @@
  */
 
 import {Script} from 'vm';
-import {Config, Global} from '@jest/types';
-import jestMock, {ModuleMocker} from 'jest-mock';
+import {Circus, Config, Global} from '@jest/types';
+import jestMock = require('jest-mock');
 import {ScriptTransformer} from '@jest/transform';
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
 
 type JestMockFn = typeof jestMock.fn;
 type JestMockSpyOn = typeof jestMock.spyOn;
 
-export type EnvironmentContext = {
-  console?: Console;
-  testPath?: Config.Path;
-};
+// In Jest 25, remove `Partial` since it's incorrect. The properties are always
+// passed, or not. The context itself is optional, not properties within it.
+export type EnvironmentContext = Partial<{
+  console: Console;
+  docblockPragmas: Record<string, string | Array<string>>;
+  testPath: Config.Path;
+}>;
 
-// TODO: type this better: https://nodejs.org/api/modules.html#modules_the_module_wrapper
-type ModuleWrapper = (...args: Array<unknown>) => unknown;
+// Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
+export type ModuleWrapper = (
+  module: Module,
+  exports: Module['exports'],
+  require: Module['require'],
+  __dirname: string,
+  __filename: Module['filename'],
+  global: Global.Global,
+  jest: Jest,
+  ...extraGlobals: Array<Global.Global[keyof Global.Global]>
+) => unknown;
 
 export declare class JestEnvironment {
-  constructor(config: Config.ProjectConfig);
-  constructor(config: Config.ProjectConfig, context: EnvironmentContext);
+  constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
   fakeTimers: FakeTimers<unknown> | null;
-  moduleMocker: ModuleMocker | null;
+  moduleMocker: jestMock.ModuleMocker | null;
   runScript(
     script: Script,
   ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
+  handleTestEvent?(event: Circus.Event, state: Circus.State): void;
 }
 
-export type Module = typeof module;
+export type Module = NodeModule;
 
 export interface LocalModuleRequire extends NodeRequire {
   requireActual(moduleName: string): unknown;
@@ -50,6 +62,11 @@ export interface Jest {
    * @deprecated Use `expect.extend` instead
    */
   addMatchers(matchers: Record<string, any>): void;
+  /**
+   * Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
+   * Optionally, you can provide steps, so it will run steps amount of next timeouts/intervals.
+   */
+  advanceTimersToNextTimer(steps?: number): void;
   /**
    * Disables automatic mocking in the module loader.
    */
@@ -125,6 +142,23 @@ export interface Jest {
   /**
    * Returns the actual module instead of a mock, bypassing all checks on
    * whether the module should receive a mock implementation or not.
+   *
+   * @example
+   ```
+    jest.mock('../myModule', () => {
+    // Require the original module to not be mocked...
+    const originalModule = jest.requireActual(moduleName);
+      return {
+        __esModule: true, // Use it when dealing with esModules
+        ...originalModule,
+        getRandom: jest.fn().mockReturnValue(10),
+      };
+    });
+
+    const getRandom = require('../myModule').getRandom;
+
+    getRandom(); // Always returns 10
+    ```
    */
   requireActual: (moduleName: string) => unknown;
   /**
@@ -153,7 +187,7 @@ export interface Jest {
    * Restores all mocks back to their original value. Equivalent to calling
    * `.mockRestore` on every mocked function.
    *
-   * Beware that jest.restoreAllMocks() only works when mock was created with
+   * Beware that jest.restoreAllMocks() only works when the mock was created with
    * jest.spyOn; other mocks will require you to manually restore them.
    */
   restoreAllMocks(): Jest;

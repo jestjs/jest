@@ -1,4 +1,9 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 import runJest from '../runJest';
 
@@ -16,7 +21,7 @@ describe('runJest', () => {
     await runJest({
       changedFilesPromise: Promise.resolve({repos: {git: {size: 0}}}),
       contexts: [],
-      globalConfig: {watch: true},
+      globalConfig: {testSequencer: '@jest/test-sequencer', watch: true},
       onComplete: () => null,
       outputStream: {},
       startRun: {},

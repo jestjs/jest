@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary} from '../Utils';
+import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
@@ -21,6 +21,12 @@ function cleanStderr(stderr: string) {
     .replace(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
 }
 
+const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
+
+beforeAll(() => {
+  run('yarn', dir);
+});
+
 test('not throwing Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throwNumber.test.js']).stderr;
@@ -32,17 +38,28 @@ test('not throwing Error objects', () => {
   stderr = runJest(dir, ['assertionCount.test.js']).stderr;
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['duringTests.test.js']).stderr;
+
+  if (nodeMajorVersion < 12) {
+    const lineEntry = '(__tests__/duringTests.test.js:38:8)';
+
+    expect(stderr).toContain(`at Object.<anonymous>.done ${lineEntry}`);
+
+    stderr = stderr.replace(
+      `at Object.<anonymous>.done ${lineEntry}`,
+      `at Object.<anonymous> ${lineEntry}`,
+    );
+  }
+
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
-  const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
   const {stderr} = runJest(dir, ['assertionError.test.js']);
   let summary = normalizeDots(cleanStderr(stderr));
 
   // Node 9 started to include the error for `doesNotThrow`
   // https://github.com/nodejs/node/pull/12167
-  if (nodeMajorVersion >= 9) {
+  if (nodeMajorVersion >= 10) {
     expect(summary).toContain(`
     assert.doesNotThrow(function)
 
@@ -55,15 +72,15 @@ test('works with node assert', () => {
 `);
 
     expect(summary).toContain(`
-      69 | 
-      70 | test('assert.doesNotThrow', () => {
-    > 71 |   assert.doesNotThrow(() => {
+      68 | 
+      69 | test('assert.doesNotThrow', () => {
+    > 70 |   assert.doesNotThrow(() => {
          |          ^
-      72 |     throw Error('err!');
-      73 |   });
-      74 | });
+      71 |     throw Error('err!');
+      72 |   });
+      73 | });
 
-      at Object.doesNotThrow (__tests__/assertionError.test.js:71:10)
+      at Object.doesNotThrow (__tests__/assertionError.test.js:70:10)
 `);
 
     const commonErrorMessage = `Message:
@@ -87,9 +104,7 @@ test('works with node assert', () => {
       expect(summary).toContain(specificErrorMessage);
       summary = summary.replace(specificErrorMessage, commonErrorMessage);
     }
-  }
 
-  if (nodeMajorVersion >= 10) {
     const ifErrorMessage = `
     assert.ifError(received, expected)
 
@@ -105,15 +120,15 @@ test('works with node assert', () => {
 
       Comparing two different types of values. Expected null but received number.
 
-      65 | 
-      66 | test('assert.ifError', () => {
-    > 67 |   assert.ifError(1);
+      64 | 
+      65 | test('assert.ifError', () => {
+    > 66 |   assert.ifError(1);
          |          ^
-      68 | });
-      69 | 
-      70 | test('assert.doesNotThrow', () => {
+      67 | });
+      68 | 
+      69 | test('assert.doesNotThrow', () => {
 
-      at Object.ifError (__tests__/assertionError.test.js:67:10)
+      at Object.ifError (__tests__/assertionError.test.js:66:10)
 `;
 
     expect(summary).toContain(ifErrorMessage);
@@ -122,15 +137,15 @@ test('works with node assert', () => {
     const ifErrorMessage = `
     thrown: 1
 
-      64 | });
-      65 | 
-    > 66 | test('assert.ifError', () => {
+      63 | });
+      64 | 
+    > 65 | test('assert.ifError', () => {
          | ^
-      67 |   assert.ifError(1);
-      68 | });
-      69 | 
+      66 |   assert.ifError(1);
+      67 | });
+      68 | 
 
-      at Object.test (__tests__/assertionError.test.js:66:1)
+      at Object.test (__tests__/assertionError.test.js:65:1)
 `;
 
     expect(summary).toContain(ifErrorMessage);

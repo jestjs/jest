@@ -5,12 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 import chalk from 'chalk';
-import getType from 'jest-get-type';
-import diffStrings from './diffStrings';
+import getType = require('jest-get-type');
+import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
+import diffLines from './diffLines';
+import {normalizeDiffOptions} from './normalizeDiffOptions';
+import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
-import {DiffOptions as JestDiffOptions} from './types';
+import {DiffOptionsNormalized, DiffOptions as ImportDiffOptions} from './types';
+
+export type DiffOptions = ImportDiffOptions;
+
+export {diffStringsRaw, diffStringsUnified};
+export {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff};
 
 const {
   AsymmetricMatcher,
@@ -42,7 +50,7 @@ const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
-function diff(a: any, b: any, options?: JestDiffOptions): string | null {
+function diff(a: any, b: any, options?: DiffOptions): string | null {
   if (Object.is(a, b)) {
     return NO_DIFF_MESSAGE;
   }
@@ -77,27 +85,28 @@ function diff(a: any, b: any, options?: JestDiffOptions): string | null {
     return null;
   }
 
+  const optionsNormalized = normalizeDiffOptions(options);
   switch (aType) {
     case 'string':
-      return diffStrings(a, b, options);
+      return diffLines(a, b, optionsNormalized);
     case 'boolean':
     case 'number':
-      return comparePrimitive(a, b, options);
+      return comparePrimitive(a, b, optionsNormalized);
     case 'map':
-      return compareObjects(sortMap(a), sortMap(b), options);
+      return compareObjects(sortMap(a), sortMap(b), optionsNormalized);
     case 'set':
-      return compareObjects(sortSet(a), sortSet(b), options);
+      return compareObjects(sortSet(a), sortSet(b), optionsNormalized);
     default:
-      return compareObjects(a, b, options);
+      return compareObjects(a, b, optionsNormalized);
   }
 }
 
 function comparePrimitive(
   a: number | boolean,
   b: number | boolean,
-  options?: JestDiffOptions,
+  options: DiffOptionsNormalized,
 ) {
-  return diffStrings(
+  return diffLines(
     prettyFormat(a, FORMAT_OPTIONS),
     prettyFormat(b, FORMAT_OPTIONS),
     options,
@@ -115,13 +124,13 @@ function sortSet(set: Set<unknown>) {
 function compareObjects(
   a: Record<string, any>,
   b: Record<string, any>,
-  options?: JestDiffOptions,
+  options: DiffOptionsNormalized,
 ) {
   let diffMessage;
   let hasThrown = false;
 
   try {
-    diffMessage = diffStrings(
+    diffMessage = diffLines(
       prettyFormat(a, FORMAT_OPTIONS_0),
       prettyFormat(b, FORMAT_OPTIONS_0),
       options,
@@ -137,7 +146,7 @@ function compareObjects(
   // If the comparison yields no results, compare again but this time
   // without calling `toJSON`. It's also possible that toJSON might throw.
   if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
-    diffMessage = diffStrings(
+    diffMessage = diffLines(
       prettyFormat(a, FALLBACK_FORMAT_OPTIONS_0),
       prettyFormat(b, FALLBACK_FORMAT_OPTIONS_0),
       options,
@@ -154,9 +163,4 @@ function compareObjects(
   return diffMessage;
 }
 
-// eslint-disable-next-line no-redeclare
-namespace diff {
-  export type DiffOptions = JestDiffOptions;
-}
-
-export = diff;
+export default diff;

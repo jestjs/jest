@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, Printer, NewPlugin, Refs} from '../types';
+import {Config, NewPlugin, Printer, Refs} from '../types';
 
 export type ReactTestObject = {
   $$typeof: symbol;
@@ -31,7 +31,7 @@ const getPropKeys = (object: ReactTestObject) => {
 
   return props
     ? Object.keys(props)
-        .filter(key => (props as any)[key] !== undefined)
+        .filter(key => props[key] !== undefined)
         .sort()
     : [];
 };

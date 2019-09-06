@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
+import * as fs from 'fs';
 import {Config} from '@jest/types';
 import ModuleMap from './ModuleMap';
 import HasteFS from './HasteFS';
@@ -51,8 +51,8 @@ export type FileMetaData = [
   /* mtime */ number,
   /* size */ number,
   /* visited */ 0 | 1,
-  /* dependencies */ Array<string>,
-  /* sha1 */ string | null | undefined
+  /* dependencies */ string,
+  /* sha1 */ string | null | undefined,
 ];
 
 export type MockData = Map<string, Config.Path>;
@@ -100,6 +100,7 @@ export type HType = {
   PACKAGE: 1;
   GENERIC_PLATFORM: 'g';
   NATIVE_PLATFORM: 'native';
+  DEPENDENCY_DELIM: '\0';
 };
 
 export type HTypeValue = HType[keyof HType];

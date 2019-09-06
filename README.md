@@ -3,9 +3,12 @@
   <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img align="right" src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>
 </p>
 
-<p align="center"><img src="website/static/img/jest-readme-headline.png" height="289" width="700"/></p>
+<!-- A spacer -->
+<p>&nbsp;</p>
 
-<h1 align="center">🃏 Delightful JavaScript Testing</h1>
+<p align="center"><img src="website/static/img/jest-readme-headline.png" width="80%"/></p>
+
+<h2 align="center">🃏 Delightful JavaScript Testing</h2>
 
 **👩🏻‍💻 Developer Ready**: A comprehensive JavaScript testing solution. Works out of the box for most JavaScript projects.
 
@@ -14,6 +17,26 @@
 **📸 Snapshot Testing**: Capture snapshots of large objects to simplify testing and to analyze how they change over time.
 
 <p align="right"><em>See more on <a href="https://jestjs.io">jestjs.io</a></em></p>
+
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Running from command line](#running-from-command-line)
+- [Additional Configuration](#additional-configuration)
+  - [Generate a basic configuration file](#generate-a-basic-configuration-file)
+  - [Using Babel](#using-babel)
+  - [Using Webpack](#using-webpack)
+  - [Using Typescript](#using-typescript)
+- [Documentation](#documentation)
+- [Badge](#badge)
+- [Contributing](#contributing)
+  - [Code of Conduct](#code-of-conduct)
+  - [Contributing Guide](#contributing-guide)
+  - [Good First Issues](#good-first-issues)
+- [Credits](#credits)
+  - [Backers](#backers)
+  - [Sponsors](#sponsors)
+- [License](#license)
 
 ## Getting Started
 
@@ -200,9 +223,9 @@ Facebook has adopted a Code of Conduct that we expect project participants to ad
 
 Read our [contributing guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Jest.
 
-### [Good First Issues](https://github.com/facebook/jest/labels/%3Awave%3A%20Good%20First%20Issue)
+### [Good First Issues](https://github.com/facebook/jest/labels/good%20first%20issue)
 
-To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/jest/labels/%3Awave%3A%20Good%20First%20Issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
+To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/jest/labels/good%20first%20issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
 
 ## Credits
 

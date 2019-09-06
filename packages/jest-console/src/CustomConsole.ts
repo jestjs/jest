@@ -5,48 +5,47 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert from 'assert';
+import assert = require('assert');
 import {format} from 'util';
 import {Console} from 'console';
 import chalk from 'chalk';
+import {clearLine} from 'jest-util';
 import {LogCounters, LogMessage, LogTimers, LogType} from './types';
-
-// TODO: Copied from `jest-util`. Import from it in Jest 25
-function clearLine(stream: NodeJS.WritableStream) {
-  if (process.stdout.isTTY) {
-    stream.write('\x1b[999D\x1b[K');
-  }
-}
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
 export default class CustomConsole extends Console {
-  private _stdout: NodeJS.WritableStream;
+  private _stdout: NodeJS.WriteStream;
+  private _stderr: NodeJS.WriteStream;
   private _formatBuffer: Formatter;
   private _counters: LogCounters;
   private _timers: LogTimers;
   private _groupDepth: number;
 
   constructor(
-    stdout: NodeJS.WritableStream,
-    stderr: NodeJS.WritableStream,
+    stdout: NodeJS.WriteStream,
+    stderr: NodeJS.WriteStream,
     formatBuffer: Formatter = (_type, message) => message,
   ) {
     super(stdout, stderr);
     this._stdout = stdout;
+    this._stderr = stderr;
     this._formatBuffer = formatBuffer;
     this._counters = {};
     this._timers = {};
     this._groupDepth = 0;
   }
 
-  private _logToParentConsole(message: string) {
-    super.log(message);
-  }
-
   private _log(type: LogType, message: string) {
     clearLine(this._stdout);
-    this._logToParentConsole(
+    super.log(
+      this._formatBuffer(type, '  '.repeat(this._groupDepth) + message),
+    );
+  }
+
+  private _logError(type: LogType, message: string) {
+    clearLine(this._stderr);
+    super.error(
       this._formatBuffer(type, '  '.repeat(this._groupDepth) + message),
     );
   }
@@ -55,7 +54,7 @@ export default class CustomConsole extends Console {
     try {
       assert(value, message);
     } catch (error) {
-      this._log('assert', error.toString());
+      this._logError('assert', error.toString());
     }
   }
 
@@ -84,7 +83,7 @@ export default class CustomConsole extends Console {
   }
 
   error(firstArg: any, ...args: Array<any>) {
-    this._log('error', format(firstArg, ...args));
+    this._logError('error', format(firstArg, ...args));
   }
 
   group(title?: string, ...args: Array<any>) {
@@ -137,10 +136,10 @@ export default class CustomConsole extends Console {
   }
 
   warn(firstArg: any, ...args: Array<any>) {
-    this._log('warn', format(firstArg, ...args));
+    this._logError('warn', format(firstArg, ...args));
   }
 
   getBuffer() {
-    return null;
+    return undefined;
   }
 }

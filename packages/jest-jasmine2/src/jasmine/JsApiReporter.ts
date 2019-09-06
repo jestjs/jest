@@ -53,7 +53,7 @@ export default class JsApiReporter implements Reporter {
   suiteStarted: (result: SuiteResult) => void;
   suiteDone: (result: SuiteResult) => void;
   suiteResults: (index: number, length: number) => Array<SuiteResult>;
-  suites: () => {[key: string]: SuiteResult};
+  suites: () => Record<string, SuiteResult>;
 
   specResults: (index: number, length: number) => Array<SpecResult>;
   specDone: (result: SpecResult) => void;
@@ -95,7 +95,7 @@ export default class JsApiReporter implements Reporter {
     };
 
     const suites: Array<SuiteResult> = [];
-    const suites_hash: {[key: string]: SuiteResult} = {};
+    const suites_hash: Record<string, SuiteResult> = {};
 
     this.specStarted = function() {};
 

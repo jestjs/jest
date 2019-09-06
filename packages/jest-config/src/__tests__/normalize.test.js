@@ -24,8 +24,10 @@ let expectedPathFooQux;
 let expectedPathAbs;
 let expectedPathAbsAnother;
 
+let virtualModuleRegexes;
+beforeEach(() => (virtualModuleRegexes = [/jest-jasmine2/, /babel-jest/]));
 const findNodeModule = jest.fn(name => {
-  if (name.match(/jest-jasmine2|babel-jest/)) {
+  if (virtualModuleRegexes.some(regex => regex.test(name))) {
     return name;
   }
   return null;
@@ -328,6 +330,24 @@ describe('transform', () => {
     expect(options.transform).toEqual([
       [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
       [DEFAULT_JS_PATTERN, require.resolve('babel-jest')],
+      ['abs-path', '/qux/quux'],
+    ]);
+  });
+  it("pulls in config if it's passed as an array", () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        transform: {
+          [DEFAULT_CSS_PATTERN]: '<rootDir>/node_modules/jest-regex-util',
+          [DEFAULT_JS_PATTERN]: ['babel-jest', {rootMode: 'upward'}],
+          'abs-path': '/qux/quux',
+        },
+      },
+      {},
+    );
+    expect(options.transform).toEqual([
+      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
+      [DEFAULT_JS_PATTERN, require.resolve('babel-jest'), {rootMode: 'upward'}],
       ['abs-path', '/qux/quux'],
     ]);
   });
@@ -1512,10 +1532,91 @@ describe('moduleFileExtensions', () => {
   });
 });
 
+describe('cwd', () => {
+  it('is set to process.cwd', () => {
+    const {options} = normalize({rootDir: '/root/'}, {});
+    expect(options.cwd).toBe(process.cwd());
+  });
+
+  it('is not lost if the config has its own cwd property', () => {
+    console.warn.mockImplementation(() => {});
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        cwd: '/tmp/config-sets-cwd-itself',
+      },
+      {},
+    );
+    expect(options.cwd).toBe(process.cwd());
+    expect(console.warn).toHaveBeenCalled();
+  });
+});
+
 describe('Defaults', () => {
   it('should be accepted by normalize', () => {
     normalize({...Defaults, rootDir: '/root'}, {});
 
     expect(console.warn).not.toHaveBeenCalled();
+  });
+});
+
+describe('displayName', () => {
+  test.each`
+    displayName             | description
+    ${{}}                   | ${'is an empty object'}
+    ${{name: 'hello'}}      | ${'missing color'}
+    ${{color: 'green'}}     | ${'missing name'}
+    ${{color: 2, name: []}} | ${'using invalid values'}
+  `(
+    'should throw an error when displayName is $description',
+    ({displayName}) => {
+      expect(() => {
+        normalize(
+          {
+            rootDir: '/root/',
+            displayName,
+          },
+          {},
+        );
+      }).toThrowErrorMatchingSnapshot();
+    },
+  );
+
+  it.each([
+    undefined,
+    'jest-runner',
+    'jest-runner-eslint',
+    'jest-runner-tslint',
+    'jest-runner-tsc',
+  ])('generates a default color for the runner %s', runner => {
+    virtualModuleRegexes.push(/jest-runner-.+/);
+    const {
+      options: {displayName},
+    } = normalize(
+      {
+        rootDir: '/root/',
+        displayName: 'project',
+        runner,
+      },
+      {},
+    );
+    expect(displayName.name).toBe('project');
+    expect(displayName.color).toMatchSnapshot();
+  });
+});
+
+describe('testTimeout', () => {
+  it('should return timeout value if defined', () => {
+    console.warn.mockImplementation(() => {});
+    const {options} = normalize({rootDir: '/root/', testTimeout: 1000}, {});
+
+    expect(options.testTimeout).toBe(1000);
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
+  it('should throw an error if timeout is a negative number', () => {
+    expect(() =>
+      normalize({rootDir: '/root/', testTimeout: -1}, {}),
+    ).toThrowErrorMatchingSnapshot();
   });
 });

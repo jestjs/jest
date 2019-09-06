@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
-import mkdirp from 'mkdirp';
-import naturalCompare from 'natural-compare';
+import * as fs from 'fs';
+import * as path from 'path';
+import {sync as mkdirp} from 'mkdirp';
+import naturalCompare = require('natural-compare');
 import chalk from 'chalk';
 import {Config} from '@jest/types';
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 import {getSerializers} from './plugins';
 import {SnapshotData} from './types';
 
@@ -123,10 +123,18 @@ export const getSnapshotData = (
   return {data, dirty};
 };
 
-// Extra line breaks at the beginning and at the end of the snapshot are useful
-// to make the content of the snapshot easier to read
-const addExtraLineBreaks = (string: string): string =>
+// Add extra line breaks at beginning and end of multiline snapshot
+// to make the content easier to read.
+export const addExtraLineBreaks = (string: string): string =>
   string.includes('\n') ? `\n${string}\n` : string;
+
+// Remove extra line breaks at beginning and end of multiline snapshot.
+// Instead of trim, which can remove additional newlines or spaces
+// at beginning or end of the content from a custom serializer.
+export const removeExtraLineBreaks = (string: string): string =>
+  string.length > 2 && string.startsWith('\n') && string.endsWith('\n')
+    ? string.slice(1, -1)
+    : string;
 
 export const serialize = (data: string): string =>
   addExtraLineBreaks(
@@ -150,14 +158,14 @@ const printBacktickString = (str: string): string =>
 
 export const ensureDirectoryExists = (filePath: Config.Path) => {
   try {
-    mkdirp.sync(path.join(path.dirname(filePath)), '777');
+    mkdirp(path.join(path.dirname(filePath)), '777');
   } catch (e) {}
 };
 
 const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
-  snapshotData: {[key: string]: string},
+  snapshotData: SnapshotData,
   snapshotPath: Config.Path,
 ) => {
   const snapshots = Object.keys(snapshotData)
@@ -178,6 +186,25 @@ export const saveSnapshotFile = (
   );
 };
 
+const deepMergeArray = (target: Array<any>, source: Array<any>) => {
+  const mergedOutput = Array.from(target);
+
+  source.forEach((sourceElement, index) => {
+    const targetElement = mergedOutput[index];
+
+    if (Array.isArray(target[index])) {
+      mergedOutput[index] = deepMergeArray(target[index], sourceElement);
+    } else if (isObject(targetElement)) {
+      mergedOutput[index] = deepMerge(target[index], sourceElement);
+    } else {
+      // Source does not exist in target or target is primitive and cannot be deep merged
+      mergedOutput[index] = sourceElement;
+    }
+  });
+
+  return mergedOutput;
+};
+
 export const deepMerge = (target: any, source: any) => {
   const mergedOutput = {...target};
   if (isObject(target) && isObject(source)) {
@@ -185,6 +212,8 @@ export const deepMerge = (target: any, source: any) => {
       if (isObject(source[key]) && !source[key].$$typeof) {
         if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
         else mergedOutput[key] = deepMerge(target[key], source[key]);
+      } else if (Array.isArray(source[key])) {
+        mergedOutput[key] = deepMergeArray(target[key], source[key]);
       } else {
         Object.assign(mergedOutput, {[key]: source[key]});
       }

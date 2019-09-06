@@ -44,5 +44,29 @@ describe('Runtime', () => {
         const exports = runtime.requireInternalModule(modulePath);
         expect(exports()).toBe('internal-module-data');
       }));
+
+    it('loads JSON modules and applies transforms', () =>
+      createRuntime(__filename, {
+        transform: {'^.+\\.json$': './test_json_preprocessor'},
+      }).then(runtime => {
+        const modulePath = path.resolve(
+          path.dirname(runtime.__mockRootPath),
+          'internal-root.json',
+        );
+        const exports = runtime.requireModule(modulePath);
+        expect(exports).toEqual({foo: 'foo'});
+      }));
+
+    it('loads internal JSON modules without applying transforms', () =>
+      createRuntime(__filename, {
+        transform: {'^.+\\.json$': './test_json_preprocessor'},
+      }).then(runtime => {
+        const modulePath = path.resolve(
+          path.dirname(runtime.__mockRootPath),
+          'internal-root.json',
+        );
+        const exports = runtime.requireInternalModule(modulePath);
+        expect(exports).toEqual({foo: 'bar'});
+      }));
   });
 });

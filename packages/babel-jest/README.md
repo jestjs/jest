@@ -16,10 +16,10 @@ If you would like to write your own preprocessor, uninstall and delete babel-jes
 
 _Note: this step is only required if you are using `babel-jest` with additional code preprocessors._
 
-To explicitly define `babel-jest` as a transformer for your JavaScript code, map _.js_ files to the `babel-jest` module.
+To explicitly define `babel-jest` as a transformer for your JavaScript code, map _.js_ files to the `babel-jest` module. Typescript files are also supported.
 
 ```json
 "transform": {
-  "^.+\\.jsx?$": "babel-jest"
+  "^.+\\.[t|j]sx?$": "babel-jest"
 },
 ```

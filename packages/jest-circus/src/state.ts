@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Event, State, EventHandler, STATE_SYM} from './types';
+import {Circus} from '@jest/types';
+import {STATE_SYM} from './types';
 
 import {makeDescribe} from './utils';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
 
-const eventHandlers: Array<EventHandler> = [
+const eventHandlers: Array<Circus.EventHandler> = [
   eventHandler,
   formatNodeAssertErrors,
 ];
@@ -19,7 +20,7 @@ const eventHandlers: Array<EventHandler> = [
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 
 const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
-const INITIAL_STATE: State = {
+const INITIAL_STATE: Circus.State = {
   currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
   currentlyRunningTest: null,
   expand: undefined,
@@ -34,15 +35,16 @@ const INITIAL_STATE: State = {
 
 global[STATE_SYM] = INITIAL_STATE;
 
-export const getState = (): State => global[STATE_SYM];
-export const setState = (state: State): State => (global[STATE_SYM] = state);
+export const getState = (): Circus.State => global[STATE_SYM];
+export const setState = (state: Circus.State): Circus.State =>
+  (global[STATE_SYM] = state);
 
-export const dispatch = (event: Event): void => {
+export const dispatch = (event: Circus.Event): void => {
   for (const handler of eventHandlers) {
     handler(event, getState());
   }
 };
 
-export const addEventHandler = (handler: EventHandler): void => {
+export const addEventHandler = (handler: Circus.EventHandler): void => {
   eventHandlers.push(handler);
 };

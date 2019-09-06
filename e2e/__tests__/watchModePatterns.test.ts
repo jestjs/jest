@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
+import * as path from 'path';
+import {tmpdir} from 'os';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummaries, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'watch-mode-patterns');
+const DIR = path.resolve(tmpdir(), 'watch-mode-patterns');
 const pluginPath = path.resolve(__dirname, '../MockStdinWatchPlugin');
 
 beforeEach(() => cleanup(DIR));
@@ -45,7 +45,7 @@ test('can press "p" to filter by file name', () => {
   const input = [{keys: ['p', 'b', 'a', 'r', '\r']}, {keys: ['q']}];
   setupFiles(input);
 
-  const {status, stdout, stderr} = runJest(DIR, [
+  const {exitCode, stdout, stderr} = runJest(DIR, [
     '--no-watchman',
     '--watchAll',
   ]);
@@ -58,14 +58,14 @@ test('can press "p" to filter by file name', () => {
     expect(wrap(rest)).toMatchSnapshot('test results');
     expect(wrap(summary)).toMatchSnapshot('test summary');
   });
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });
 
 test('can press "t" to filter by test name', () => {
   const input = [{keys: ['t', '2', '\r']}, {keys: ['q']}];
   setupFiles(input);
 
-  const {status, stdout, stderr} = runJest(DIR, [
+  const {exitCode, stdout, stderr} = runJest(DIR, [
     '--no-watchman',
     '--watchAll',
   ]);
@@ -78,5 +78,5 @@ test('can press "t" to filter by test name', () => {
     expect(wrap(rest)).toMatchSnapshot('test results');
     expect(wrap(summary)).toMatchSnapshot('test summary');
   });
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });

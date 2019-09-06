@@ -52,7 +52,7 @@ export const getChangedFilesForRoots = async (
     }
 
     return allFiles;
-  }, new Set());
+  }, new Set<string>());
 
   return {changedFiles, repos};
 };

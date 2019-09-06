@@ -50,6 +50,17 @@ Watch Usage
 ]
 `;
 
+exports[`Watch mode flows makes watch plugin initialization errors look nice 1`] = `
+[Error: Failed to initialize watch plugin "packages/jest-core/src/__tests__/__fixtures__/watch_plugin_throws":
+
+  ● Test suite failed to run
+
+    initialization error
+
+      at Object.<anonymous> (__fixtures__/watch_plugin_throws.js:8:7)
+]
+`;
+
 exports[`Watch mode flows shows prompts for WatchPlugins in alphabetical order 1`] = `
 Array [
   Array [

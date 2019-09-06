@@ -1,0 +1,44 @@
+{
+  "version-24.8-docs": {
+    "Introduction": [
+      "version-24.8-getting-started",
+      "version-24.8-using-matchers",
+      "version-24.8-asynchronous",
+      "version-24.8-setup-teardown",
+      "version-24.8-mock-functions",
+      "version-24.8-jest-platform",
+      "version-24.8-jest-community",
+      "version-24.8-more-resources"
+    ],
+    "Guides": [
+      "version-24.8-snapshot-testing",
+      "version-24.8-tutorial-async",
+      "version-24.8-timer-mocks",
+      "version-24.8-manual-mocks",
+      "version-24.8-es6-class-mocks",
+      "version-24.8-bypassing-module-mocks",
+      "version-24.8-webpack",
+      "version-24.8-puppeteer",
+      "version-24.8-mongodb",
+      "version-24.8-dynamodb",
+      "version-24.8-tutorial-jquery",
+      "version-24.8-watch-plugins",
+      "version-24.8-migration-guide",
+      "version-24.8-troubleshooting",
+      "version-24.8-architecture"
+    ],
+    "Framework Guides": [
+      "version-24.8-tutorial-react",
+      "version-24.8-tutorial-react-native",
+      "version-24.8-testing-frameworks"
+    ],
+    "API Reference": [
+      "version-24.8-api",
+      "version-24.8-expect",
+      "version-24.8-mock-function-api",
+      "version-24.8-jest-object",
+      "version-24.8-configuration",
+      "version-24.8-cli"
+    ]
+  }
+}

@@ -5,19 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {AggregatedResult} from '@jest/test-result';
 import {clearLine} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
-import {runCLI} from '@jest/core';
+import {getVersion, runCLI} from '@jest/core';
 import chalk from 'chalk';
-import exit from 'exit';
-import yargs from 'yargs';
+import exit = require('exit');
+import yargs = require('yargs');
 import {sync as realpath} from 'realpath-native';
 import init from '../init';
-import getVersion from '../version';
 import * as args from './args';
 
 export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
@@ -36,7 +35,12 @@ export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);
-    console.error(chalk.red(error.stack));
+    if (error.stack) {
+      console.error(chalk.red(error.stack));
+    } else {
+      console.error(chalk.red(error));
+    }
+
     exit(1);
     throw error;
   }
@@ -119,23 +123,21 @@ const readResultsAndExit = (
 
   if (globalConfig.forceExit) {
     if (!globalConfig.detectOpenHandles) {
-      console.error(
-        chalk.red.bold('Force exiting Jest\n\n') +
-          chalk.red(
-            'Have you considered using `--detectOpenHandles` to detect ' +
-              'async operations that kept running after all tests finished?',
-          ),
+      console.warn(
+        chalk.bold('Force exiting Jest: ') +
+          'Have you considered using `--detectOpenHandles` to detect ' +
+          'async operations that kept running after all tests finished?',
       );
     }
 
     exit(code);
   } else if (!globalConfig.detectOpenHandles) {
     setTimeout(() => {
-      console.error(
-        chalk.red.bold(
+      console.warn(
+        chalk.yellow.bold(
           'Jest did not exit one second after the test run has completed.\n\n',
         ) +
-          chalk.red(
+          chalk.yellow(
             'This usually means that there are asynchronous operations that ' +
               "weren't stopped in your tests. Consider running Jest with " +
               '`--detectOpenHandles` to troubleshoot this issue.',

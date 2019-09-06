@@ -14,7 +14,6 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
 const initialOptions: Config.InitialOptions = {
   automock: false,
-  // @ts-ignore TODO: type this properly
   bail: multipleValidOptions(false, 0),
   browser: false,
   cache: true,
@@ -38,10 +37,11 @@ const initialOptions: Config.InitialOptions = {
       statements: 100,
     },
   },
-  // @ts-ignore: Missing from initial options... https://github.com/facebook/jest/pull/7923
-  cwd: '/root',
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
-  displayName: 'project-name',
+  displayName: multipleValidOptions('test-config', {
+    color: 'blue',
+    name: 'test-config',
+  } as const),
   errorOnDeprecated: false,
   expand: false,
   extraGlobals: [],
@@ -63,6 +63,7 @@ const initialOptions: Config.InitialOptions = {
   lastCommit: false,
   logHeapUsage: true,
   maxConcurrency: 5,
+  maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleLoader: '<rootDir>',
@@ -112,6 +113,8 @@ const initialOptions: Config.InitialOptions = {
   ),
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
+  testSequencer: '@jest/test-sequencer',
+  testTimeout: 5000,
   testURL: 'http://localhost',
   timers: 'real',
   transform: {

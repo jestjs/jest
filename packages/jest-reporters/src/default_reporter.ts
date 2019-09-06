@@ -7,9 +7,10 @@
 
 import {Config} from '@jest/types';
 import {AggregatedResult, TestResult} from '@jest/test-result';
-import {clearLine, getConsoleOutput, isInteractive} from 'jest-util';
+import {clearLine, isInteractive} from 'jest-util';
+import {getConsoleOutput} from '@jest/console';
 import chalk from 'chalk';
-import {Test, ReporterOnStartOptions} from './types';
+import {ReporterOnStartOptions, Test} from './types';
 import BaseReporter from './base_reporter';
 import Status from './Status';
 import getResultHeader from './get_result_header';
@@ -172,8 +173,7 @@ export default class DefaultReporter extends BaseReporter {
     result: TestResult,
   ) {
     this.log(getResultHeader(result, this._globalConfig, config));
-    const consoleBuffer = result.console;
-    if (consoleBuffer && consoleBuffer.length) {
+    if (result.console) {
       this.log(
         '  ' +
           TITLE_BULLET +
@@ -181,7 +181,7 @@ export default class DefaultReporter extends BaseReporter {
           getConsoleOutput(
             config.cwd,
             !!this._globalConfig.verbose,
-            consoleBuffer,
+            result.console,
           ),
       );
     }

@@ -1,18 +1,9 @@
 # pretty-format
 
-> Stringify any JavaScript value.
+Stringify any JavaScript value.
 
-- Supports all built-in JavaScript types
-  - primitive types: `Boolean`, `null`, `Number`, `String`, `Symbol`, `undefined`
-  - other non-collection types: `Date`, `Error`, `Function`, `RegExp`
-  - collection types:
-    - `arguments`, `Array`, `ArrayBuffer`, `DataView`, `Float32Array`, `Float64Array`, `Int8Array`, `Int16Array`, `Int32Array`, `Uint8Array`, `Uint8ClampedArray`, `Uint16Array`, `Uint32Array`,
-    - `Map`, `Set`, `WeakMap`, `WeakSet`
-    - `Object`
-- [Blazingly fast](https://gist.github.com/thejameskyle/2b04ffe4941aafa8f970de077843a8fd)
-  - similar performance to `JSON.stringify` in v8
-  - significantly faster than `util.format` in Node.js
-- Serialize application-specific data types with built-in or user-defined plugins
+- Serialize built-in JavaScript types.
+- Serialize application-specific data types with built-in or user-defined plugins.
 
 ## Installation
 
@@ -74,6 +65,7 @@ console.log(prettyFormat(onClick, options));
 */
 ```
 
+<!-- prettier-ignore -->
 | key                 | type      | default    | description                                             |
 | :------------------ | :-------- | :--------- | :------------------------------------------------------ |
 | `callToJSON`        | `boolean` | `true`     | call `toJSON` method (if it exists) on objects          |
@@ -211,6 +203,7 @@ Write `serialize` to return a string, given the arguments:
 
 ### config
 
+<!-- prettier-ignore -->
 | key                 | type      | description                                             |
 | :------------------ | :-------- | :------------------------------------------------------ |
 | `callToJSON`        | `boolean` | call `toJSON` method (if it exists) on objects          |

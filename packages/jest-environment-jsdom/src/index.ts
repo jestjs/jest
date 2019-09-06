@@ -6,35 +6,28 @@
  */
 
 import {Script} from 'vm';
-import {Global, Config} from '@jest/types';
+import {Config, Global} from '@jest/types';
 import {installCommonGlobals} from 'jest-util';
-import mock, {ModuleMocker} from 'jest-mock';
+import mock = require('jest-mock');
 import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
-import {JestEnvironment, EnvironmentContext} from '@jest/environment';
+import {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
 // `JSDOMEnvironment` assumes it is there.
-interface Win extends Window {
-  Error: {
-    stackTraceLimit: number;
+type Win = Window &
+  Global.Global & {
+    Error: {
+      stackTraceLimit: number;
+    };
   };
-}
-
-function isWin(globals: Win | Global.Global): globals is Win {
-  return (globals as Win).document !== undefined;
-}
-
-// A lot of the globals expected by other APIs are `NodeJS.Global` and not
-// `Window`, so we need to cast here and there
 
 class JSDOMEnvironment implements JestEnvironment {
   dom: JSDOM | null;
   fakeTimers: FakeTimers<number> | null;
-  // @ts-ignore
-  global: Global.Global | Win | null;
+  global: Win;
   errorEventListener: ((event: Event & {error: Error}) => void) | null;
-  moduleMocker: ModuleMocker | null;
+  moduleMocker: mock.ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
     this.dom = new JSDOM('<!DOCTYPE html>', {
@@ -109,16 +102,15 @@ class JSDOMEnvironment implements JestEnvironment {
       this.fakeTimers.dispose();
     }
     if (this.global) {
-      if (this.errorEventListener && isWin(this.global)) {
+      if (this.errorEventListener) {
         this.global.removeEventListener('error', this.errorEventListener);
       }
       // Dispose "document" to prevent "load" event from triggering.
       Object.defineProperty(this.global, 'document', {value: null});
-      if (isWin(this.global)) {
-        this.global.close();
-      }
+      this.global.close();
     }
     this.errorEventListener = null;
+    // @ts-ignore
     this.global = null;
     this.dom = null;
     this.fakeTimers = null;

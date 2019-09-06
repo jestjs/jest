@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import style from 'ansi-styles';
+import * as style from 'ansi-styles';
 import * as PrettyFormat from './types';
 
 import {
@@ -360,7 +360,9 @@ const DEFAULT_THEME: PrettyFormat.Theme = {
   value: 'green',
 };
 
-const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME);
+const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME) as Array<
+  keyof typeof DEFAULT_THEME
+>;
 
 const DEFAULT_OPTIONS: PrettyFormat.Options = {
   callToJSON: true,
@@ -406,10 +408,10 @@ const getColorsHighlight = (
 ): PrettyFormat.Colors =>
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
     const value =
-      options.theme && (options.theme as any)[key] !== undefined
-        ? (options.theme as any)[key]
-        : (DEFAULT_THEME as any)[key];
-    const color = (style as any)[value];
+      options.theme && options.theme[key] !== undefined
+        ? options.theme[key]
+        : DEFAULT_THEME[key];
+    const color = value && (style as any)[value];
     if (
       color &&
       typeof color.close === 'string' &&

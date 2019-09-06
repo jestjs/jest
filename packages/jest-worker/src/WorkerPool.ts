@@ -9,16 +9,15 @@ import BaseWorkerPool from './base/BaseWorkerPool';
 
 import {
   ChildMessage,
-  WorkerOptions,
-  OnStart,
   OnEnd,
-  WorkerPoolInterface,
+  OnStart,
   WorkerInterface,
+  WorkerOptions,
+  WorkerPoolInterface,
 } from './types';
 
 const canUseWorkerThreads = () => {
   try {
-    // $FlowFixMe: Flow doesn't know about experimental APIs
     require('worker_threads');
     return true;
   } catch (_) {

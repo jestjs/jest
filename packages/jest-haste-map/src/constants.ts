@@ -18,6 +18,9 @@
 import {HType} from './types';
 
 const constants: HType = {
+  /* dependency serialization */
+  DEPENDENCY_DELIM: '\0',
+
   /* file map attributes */
   ID: 0,
   MTIME: 1,

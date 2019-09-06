@@ -5,29 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const EMPTY = new Set();
+const EMPTY = new Set<string>();
 
 export type DeepCyclicCopyOptions = {
   blacklist?: Set<string>;
   keepPrototype?: boolean;
 };
-
-// Node 6 does not have gOPDs, so we define a simple polyfill for it.
-if (!Object.getOwnPropertyDescriptors) {
-  // @ts-ignore: polyfill
-  Object.getOwnPropertyDescriptors = obj => {
-    const list: {[key: string]: PropertyDescriptor | undefined} = {};
-
-    (Object.getOwnPropertyNames(obj) as Array<string | symbol>)
-      .concat(Object.getOwnPropertySymbols(obj))
-      .forEach(key => {
-        // @ts-ignore: assignment with a Symbol is OK.
-        list[key] = Object.getOwnPropertyDescriptor(obj, key);
-      });
-
-    return list;
-  };
-}
 
 export default function deepCyclicCopy<T>(
   value: T,
@@ -54,7 +37,6 @@ function deepCyclicCopyObject<T>(
     ? Object.create(Object.getPrototypeOf(object))
     : {};
 
-  // $FlowFixMe: Object.getOwnPropertyDescriptors is polyfilled above.
   const descriptors = Object.getOwnPropertyDescriptors(object);
 
   cycles.set(object, newObject);

@@ -40,6 +40,9 @@ const getType = (element: any) => {
   if (ReactIs.isFragment(element)) {
     return 'React.Fragment';
   }
+  if (ReactIs.isSuspense(element)) {
+    return 'React.Suspense';
+  }
   if (typeof type === 'object' && type !== null) {
     if (ReactIs.isContextProvider(element)) {
       return 'Context.Provider';
@@ -58,7 +61,8 @@ const getType = (element: any) => {
     }
 
     if (ReactIs.isMemo(type)) {
-      const functionName = type.type.displayName || type.type.name || '';
+      const functionName =
+        type.displayName || type.type.displayName || type.type.name || '';
 
       return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
     }

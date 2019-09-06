@@ -17,6 +17,7 @@
     {"path": "../jest-runtime"},
     {"path": "../jest-snapshot"},
     {"path": "../jest-test-result"},
+    {"path": "../jest-test-sequencer"},
     {"path": "../jest-types"},
     {"path": "../jest-transform"},
     {"path": "../jest-util"},

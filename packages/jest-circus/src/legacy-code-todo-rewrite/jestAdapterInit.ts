@@ -5,26 +5,38 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AssertionResult, Status, TestResult} from '@jest/test-result';
+import {Circus, Config, Global} from '@jest/types';
+import {JestEnvironment} from '@jest/environment';
+import {
+  AssertionResult,
+  Status,
+  TestResult,
+  createEmptyTestResult,
+} from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
   SnapshotState,
+  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
 import throat from 'throat';
-import {addEventHandler, dispatch, ROOT_DESCRIBE_BLOCK_NAME} from '../state';
+import {
+  ROOT_DESCRIBE_BLOCK_NAME,
+  addEventHandler,
+  dispatch,
+  getState as getRunnerState,
+} from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
 import globals from '..';
-import {Event, RunResult, TestEntry} from '../types';
 
 type Process = NodeJS.Process;
 
 export const initialize = ({
   config,
+  environment,
   getPrettier,
   getBabelTraverse,
   globalConfig,
@@ -33,6 +45,7 @@ export const initialize = ({
   testPath,
 }: {
   config: Config.ProjectConfig;
+  environment: JestEnvironment;
   getPrettier: () => null | any;
   getBabelTraverse: () => Function;
   globalConfig: Config.GlobalConfig;
@@ -40,17 +53,22 @@ export const initialize = ({
   testPath: Config.Path;
   parentProcess: Process;
 }) => {
+  if (globalConfig.testTimeout) {
+    getRunnerState().testTimeout = globalConfig.testTimeout;
+  }
+
   const mutex = throat(globalConfig.maxConcurrency);
 
-  Object.assign(global, globals);
+  const nodeGlobal = global as Global.Global;
+  Object.assign(nodeGlobal, globals);
 
-  global.xit = global.it.skip;
-  global.xtest = global.it.skip;
-  global.xdescribe = global.describe.skip;
-  global.fit = global.it.only;
-  global.fdescribe = global.describe.only;
+  nodeGlobal.xit = nodeGlobal.it.skip;
+  nodeGlobal.xtest = nodeGlobal.it.skip;
+  nodeGlobal.xdescribe = nodeGlobal.describe.skip;
+  nodeGlobal.fit = nodeGlobal.it.only;
+  nodeGlobal.fdescribe = nodeGlobal.describe.only;
 
-  global.test.concurrent = (test => {
+  nodeGlobal.test.concurrent = (test => {
     const concurrent = (
       testName: string,
       testFn: () => Promise<any>,
@@ -63,7 +81,7 @@ export const initialize = ({
       // that will result in this test to be skipped, so we'll be executing the promise function anyway,
       // even if it ends up being skipped.
       const promise = mutex(() => testFn());
-      global.test(testName, () => promise, timeout);
+      nodeGlobal.test(testName, () => promise, timeout);
     };
 
     concurrent.only = (
@@ -79,9 +97,13 @@ export const initialize = ({
     concurrent.skip = test.skip;
 
     return concurrent;
-  })(global.test);
+  })(nodeGlobal.test);
 
   addEventHandler(eventHandler);
+
+  if (environment.handleTestEvent) {
+    addEventHandler(environment.handleTestEvent.bind(environment));
+  }
 
   dispatch({
     name: 'setup',
@@ -115,6 +137,8 @@ export const initialize = ({
   });
   setState({snapshotState, testPath});
 
+  addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
+
   // Return it back to the outer scope (test runner outside the VM).
   return {globals, snapshotState};
 };
@@ -128,7 +152,7 @@ export const runAndTransformResultsToJestFormat = async ({
   globalConfig: Config.GlobalConfig;
   testPath: string;
 }): Promise<TestResult> => {
-  const runResult: RunResult = await run();
+  const runResult: Circus.RunResult = await run();
 
   let numFailingTests = 0;
   let numPassingTests = 0;
@@ -196,30 +220,14 @@ export const runAndTransformResultsToJestFormat = async ({
 
   dispatch({name: 'teardown'});
   return {
-    console: null,
+    ...createEmptyTestResult(),
+    console: undefined,
     displayName: config.displayName,
     failureMessage,
-    leaks: false, // That's legacy code, just adding it so Flow is happy.
     numFailingTests,
     numPassingTests,
     numPendingTests,
     numTodoTests,
-    openHandles: [],
-    perfStats: {
-      // populated outside
-      end: 0,
-      start: 0,
-    },
-    skipped: false,
-    snapshot: {
-      added: 0,
-      fileDeleted: false,
-      matched: 0,
-      unchecked: 0,
-      uncheckedKeys: [],
-      unmatched: 0,
-      updated: 0,
-    },
     sourceMaps: {},
     testExecError,
     testFilePath: testPath,
@@ -227,7 +235,18 @@ export const runAndTransformResultsToJestFormat = async ({
   };
 };
 
-const eventHandler = (event: Event) => {
+const handleSnapshotStateAfterRetry = (snapshotState: SnapshotStateType) => (
+  event: Circus.Event,
+) => {
+  switch (event.name) {
+    case 'test_retry': {
+      // Clear any snapshot data that occurred in previous test run
+      snapshotState.clear();
+    }
+  }
+};
+
+const eventHandler = (event: Circus.Event) => {
   switch (event.name) {
     case 'test_start': {
       setState({currentTestName: getTestID(event.test)});
@@ -241,7 +260,7 @@ const eventHandler = (event: Event) => {
   }
 };
 
-const _addExpectedAssertionErrors = (test: TestEntry) => {
+const _addExpectedAssertionErrors = (test: Circus.TestEntry) => {
   const failures = extractExpectedAssertionsErrors();
   const errors = failures.map(failure => failure.error);
   test.errors = test.errors.concat(errors);
@@ -250,7 +269,7 @@ const _addExpectedAssertionErrors = (test: TestEntry) => {
 // Get suppressed errors from ``jest-matchers`` that weren't throw during
 // test execution and add them to the test result, potentially failing
 // a passing test.
-const _addSuppressedErrors = (test: TestEntry) => {
+const _addSuppressedErrors = (test: Circus.TestEntry) => {
   const {suppressedErrors} = getState();
   setState({suppressedErrors: []});
   if (suppressedErrors.length) {

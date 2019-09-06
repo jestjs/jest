@@ -8,7 +8,7 @@
 import runJest from '../runJest';
 
 test('module.parent should be null in test files', () => {
-  const {status} = runJest('module-parent-null-in-test');
+  const {exitCode} = runJest('module-parent-null-in-test');
 
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });

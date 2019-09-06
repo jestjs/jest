@@ -6,8 +6,8 @@
  *
  */
 
-import util from 'util';
-import pretty from 'pretty-format';
+import * as util from 'util';
+import pretty = require('pretty-format');
 
 import {Global} from '@jest/types';
 import {EachTests} from '../bind';
@@ -15,6 +15,8 @@ import {EachTests} from '../bind';
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
+const PLACEHOLDER_PREFIX = '%';
+const JEST_EACH_PLACEHOLDER_ESCAPE = '@@__JEST_EACH_PLACEHOLDER_ESCAPE__@@';
 
 export default (title: string, arrayTable: Global.ArrayTable): EachTests =>
   normaliseTable(arrayTable).map((row, index) => ({
@@ -35,15 +37,23 @@ const formatTitle = (
   row: Global.Row,
   rowIndex: number,
 ): string =>
-  row.reduce<string>((formattedTitle, value) => {
-    const [placeholder] = getMatchingPlaceholders(formattedTitle);
-    if (!placeholder) return formattedTitle;
+  row
+    .reduce<string>((formattedTitle, value) => {
+      const [placeholder] = getMatchingPlaceholders(formattedTitle);
+      const normalisedValue = normalisePlaceholderValue(value);
+      if (!placeholder) return formattedTitle;
 
-    if (placeholder === PRETTY_PLACEHOLDER)
-      return interpolatePrettyPlaceholder(formattedTitle, value);
+      if (placeholder === PRETTY_PLACEHOLDER)
+        return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
 
-    return util.format(formattedTitle, value);
-  }, interpolateTitleIndex(title, rowIndex));
+      return util.format(formattedTitle, normalisedValue);
+    }, interpolateTitleIndex(title, rowIndex))
+    .replace(new RegExp(JEST_EACH_PLACEHOLDER_ESCAPE, 'g'), PLACEHOLDER_PREFIX);
+
+const normalisePlaceholderValue = (value: unknown) =>
+  typeof value === 'string' && SUPPORTED_PLACEHOLDERS.test(value)
+    ? value.replace(PLACEHOLDER_PREFIX, JEST_EACH_PLACEHOLDER_ESCAPE)
+    : value;
 
 const getMatchingPlaceholders = (title: string) =>
   title.match(SUPPORTED_PLACEHOLDERS) || [];

@@ -100,10 +100,10 @@ exports[`color of text (expanded) 1`] = `
 `;
 
 exports[`context number of lines: -1 (5 default) 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
+"<green>- Expected  1 -</>
+<red>+ Received  1 +</>
 
-<yellow>@@ -6,9 +6,9 @@</>
+<dim>@@ -6,9 +6,9 @@</>
 <dim>      4,</>
 <dim>      5,</>
 <dim>      6,</>
@@ -117,8 +117,8 @@ exports[`context number of lines: -1 (5 default) 1`] = `
 `;
 
 exports[`context number of lines: 0  1`] = `
-"<green>- Expected</>
-<red>+ Received</>
+"<green>- Expected  1 -</>
+<red>+ Received  1 +</>
 
 <yellow>@@ -11,1 +11,0 @@</>
 <green>-     9,</>
@@ -127,8 +127,8 @@ exports[`context number of lines: 0  1`] = `
 `;
 
 exports[`context number of lines: 1  1`] = `
-"<green>- Expected</>
-<red>+ Received</>
+"<green>- Expected  1 -</>
+<red>+ Received  1 +</>
 
 <yellow>@@ -10,4 +10,4 @@</>
 <dim>      8,</>
@@ -139,8 +139,8 @@ exports[`context number of lines: 1  1`] = `
 `;
 
 exports[`context number of lines: 2  1`] = `
-"<green>- Expected</>
-<red>+ Received</>
+"<green>- Expected  1 -</>
+<red>+ Received  1 +</>
 
 <yellow>@@ -9,6 +9,6 @@</>
 <dim>      7,</>
@@ -152,11 +152,11 @@ exports[`context number of lines: 2  1`] = `
 <dim>  }</>"
 `;
 
-exports[`context number of lines: null (5 default) 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
+exports[`context number of lines: 3.1 (5 default) 1`] = `
+"<green>- Expected  1 -</>
+<red>+ Received  1 +</>
 
-<yellow>@@ -6,9 +6,9 @@</>
+<dim>@@ -6,9 +6,9 @@</>
 <dim>      4,</>
 <dim>      5,</>
 <dim>      6,</>
@@ -169,9 +169,72 @@ exports[`context number of lines: null (5 default) 1`] = `
 <dim>  }</>"
 `;
 
+exports[`context number of lines: undefined (5 default) 1`] = `
+"<green>- Expected  1 -</>
+<red>+ Received  1 +</>
+
+<dim>@@ -6,9 +6,9 @@</>
+<dim>      4,</>
+<dim>      5,</>
+<dim>      6,</>
+<dim>      7,</>
+<dim>      8,</>
+<green>-     9,</>
+<dim>      10,</>
+<red>+     9,</>
+<dim>    ],</>
+<dim>  }</>"
+`;
+
+exports[`diffStringsUnified edge cases empty both a and b 1`] = `
+"<green>- Expected  0 -</>
+<red>+ Received  0 +</>
+
+"
+`;
+
+exports[`diffStringsUnified edge cases empty only a 1`] = `
+"<green>- Expected  0 -</>
+<red>+ Received  1 +</>
+
+<red>+ one-line string</>"
+`;
+
+exports[`diffStringsUnified edge cases empty only b 1`] = `
+"<green>- Expected  1 -</>
+<red>+ Received  0 +</>
+
+<green>- one-line string</>"
+`;
+
+exports[`diffStringsUnified edge cases equal both non-empty 1`] = `
+"<green>- Expected  0 -</>
+<red>+ Received  0 +</>
+
+<dim>  one-line string</>"
+`;
+
+exports[`diffStringsUnified edge cases multiline has no common after clean up chaff 1`] = `
+"<green>- Expected  2 -</>
+<red>+ Received  2 +</>
+
+<green>- delete</>
+<green>- two</>
+<red>+ insert</>
+<red>+ 2</>"
+`;
+
+exports[`diffStringsUnified edge cases one-line has no common after clean up chaff 1`] = `
+"<green>- Expected  1 -</>
+<red>+ Received  1 +</>
+
+<green>- delete</>
+<red>+ insert</>"
+`;
+
 exports[`falls back to not call toJSON if it throws and then objects have differences 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
+"<green>- Expected  1 -</>
+<red>+ Received  1 +</>
 
 <dim>  Object {</>
 <green>-   \\"line\\": 1,</>
@@ -184,8 +247,8 @@ exports[`falls back to not call toJSON if serialization has no differences but t
 "<dim>Compared values serialize to the same structure.</>
 <dim>Printing internal object structure without calling \`toJSON\` instead.</>
 
-<green>- Expected</>
-<red>+ Received</>
+<green>- Expected  1 -</>
+<red>+ Received  1 +</>
 
 <dim>  Object {</>
 <green>-   \\"line\\": 1,</>
@@ -210,24 +273,24 @@ exports[`highlight only the last in odd length of leading spaces (expanded) 1`] 
 `;
 
 exports[`oneline strings 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
+"<green>- Expected  1 -</>
+<red>+ Received  1 +</>
 
 <green>- ab</>
 <red>+ aa</>"
 `;
 
 exports[`oneline strings 2`] = `
-"<green>- Expected</>
-<red>+ Received</>
+"<green>- Expected  1 -</>
+<red>+ Received  1 +</>
 
 <green>- 123456789</>
 <red>+ 234567890</>"
 `;
 
 exports[`oneline strings 3`] = `
-"<green>- Expected</>
-<red>+ Received</>
+"<green>- Expected  1 -</>
+<red>+ Received  2 +</>
 
 <green>- oneline</>
 <red>+ multi</>
@@ -235,10 +298,148 @@ exports[`oneline strings 3`] = `
 `;
 
 exports[`oneline strings 4`] = `
-"<green>- Expected</>
-<red>+ Received</>
+"<green>- Expected  2 -</>
+<red>+ Received  1 +</>
 
 <green>- multi</>
 <green>- line</>
 <red>+ oneline</>"
 `;
+
+exports[`options 7980 diff 1`] = `
+"<red>- Original</>
+<green>+ Modified</>
+
+<red>- \`\${Ti.App.name} \${Ti.App.version} \${Ti.Platform.name} \${Ti.Platform.version}\`</>
+<green>+ \`\${Ti.App.getName()} \${Ti.App.getVersion()} \${Ti.Platform.getName()} \${Ti.Platform.getVersion()}\`</>"
+`;
+
+exports[`options 7980 diffStringsUnified 1`] = `
+"<red>- Original</>
+<green>+ Modified</>
+
+<red>- \`\${Ti.App.<inverse>n</>ame} \${Ti.App.<inverse>v</>ersion} \${Ti.Platform.<inverse>n</>ame} \${Ti.Platform.<inverse>v</>ersion}\`</>
+<green>+ \`\${Ti.App.<inverse>getN</>ame<inverse>()</>} \${Ti.App.<inverse>getV</>ersion<inverse>()</>} \${Ti.Platform.<inverse>getN</>ame<inverse>()</>} \${Ti.Platform.<inverse>getV</>ersion<inverse>()</>}\`</>"
+`;
+
+exports[`options change color diffStringsUnified 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- delete</>
+<green>- changed <bold>from</></>
+<red>+ changed <bold>to</></>
+<red>+ insert</>
+<dim>  common</>"
+`;
+
+exports[`options change indicators diff 1`] = `
+"<green>< Expected</>
+<red>> Received</>
+
+<dim>  Array [</>
+<green><   \\"delete\\",</>
+<green><   \\"change from\\",</>
+<red>>   \\"change to\\",</>
+<red>>   \\"insert\\",</>
+<dim>    \\"common\\",</>
+<dim>  ]</>"
+`;
+
+exports[`options common diff 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+= Array [
+<green>-   \\"delete\\",</>
+<green>-   \\"change from\\",</>
+<red>+   \\"change to\\",</>
+<red>+   \\"insert\\",</>
+=   \\"common\\",
+= ]"
+`;
+
+exports[`options includeChangeCounts false diffLinesUnified 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<dim>  Array [</>
+<green>-   \\"delete\\",</>
+<green>-   \\"change from\\",</>
+<red>+   \\"change to\\",</>
+<red>+   \\"insert\\",</>
+<dim>    \\"common\\",</>
+<dim>  ]</>"
+`;
+
+exports[`options includeChangeCounts false diffStringsUnified 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- change <inverse>from</></>
+<red>+ change <inverse>to</></>
+<dim>  common</>"
+`;
+
+exports[`options includeChangeCounts true padding diffLinesUnified a has 2 digits 1`] = `
+"<green>- Before  10 -</>
+<red>+ After    1 +</>
+
+<dim>  common</>
+<green>- a</>
+<green>- a</>
+<green>- a</>
+<green>- a</>
+<green>- a</>
+<green>- a</>
+<green>- a</>
+<green>- a</>
+<green>- a</>
+<green>- a</>
+<red>+ b</>"
+`;
+
+exports[`options includeChangeCounts true padding diffLinesUnified b has 2 digits 1`] = `
+"<green>- Before   1 -</>
+<red>+ After   10 +</>
+
+<dim>  common</>
+<green>- a</>
+<red>+ b</>
+<red>+ b</>
+<red>+ b</>
+<red>+ b</>
+<red>+ b</>
+<red>+ b</>
+<red>+ b</>
+<red>+ b</>
+<red>+ b</>
+<red>+ b</>"
+`;
+
+exports[`options includeChangeCounts true padding diffStringsUnified 1`] = `
+"<green>- Before  1 -</>
+<red>+ After   1 +</>
+
+<green>- change <inverse>from</></>
+<red>+ change <inverse>to</></>
+<dim>  common</>"
+`;
+
+exports[`options omitAnnotationLines true diff 1`] = `
+"<dim>  Array [</>
+<green>-   \\"delete\\",</>
+<green>-   \\"change from\\",</>
+<red>+   \\"change to\\",</>
+<red>+   \\"insert\\",</>
+<dim>    \\"common\\",</>
+<dim>  ]</>"
+`;
+
+exports[`options omitAnnotationLines true diffStringsUnified and includeChangeCounts true 1`] = `
+"<green>- change <inverse>from</></>
+<red>+ change <inverse>to</></>
+<dim>  common</>"
+`;
+
+exports[`options omitAnnotationLines true diffStringsUnified empty strings 1`] = `""`;

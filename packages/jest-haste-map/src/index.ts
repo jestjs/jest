@@ -6,13 +6,13 @@
  */
 
 import {execSync} from 'child_process';
-import crypto from 'crypto';
-import EventEmitter from 'events';
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import sane from 'sane';
-import invariant from 'invariant';
+import {createHash} from 'crypto';
+import {EventEmitter} from 'events';
+import * as fs from 'fs';
+import {tmpdir} from 'os';
+import * as path from 'path';
+import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
+import invariant = require('invariant');
 import {Config} from '@jest/types';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
@@ -24,26 +24,27 @@ import HasteFS from './HasteFS';
 import HasteModuleMap, {
   SerializableModuleMap as HasteSerializableModuleMap,
 } from './ModuleMap';
-import nodeCrawl from './crawlers/node';
+import nodeCrawl = require('./crawlers/node');
 import normalizePathSep from './lib/normalizePathSep';
-import watchmanCrawl from './crawlers/watchman';
+import watchmanCrawl = require('./crawlers/watchman');
 // @ts-ignore: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
 import WatchmanWatcher from './lib/WatchmanWatcher';
+import FSEventsWatcher = require('./lib/FSEventsWatcher');
 import * as fastPath from './lib/fast_path';
 import {
   ChangeEvent,
+  CrawlerOptions,
   EventsQueue,
+  FileData,
   FileMetaData,
-  HasteMap as InternalHasteMapObject,
   HasteRegExp,
   InternalHasteMap,
+  HasteMap as InternalHasteMapObject,
   Mapper,
   MockData,
   ModuleMapData,
   ModuleMetaData,
   WorkerMetadata,
-  CrawlerOptions,
-  FileData,
 } from './types';
 
 type HType = typeof H;
@@ -244,7 +245,7 @@ class HasteMap extends EventEmitter {
   constructor(options: Options) {
     super();
     this._options = {
-      cacheDirectory: options.cacheDirectory || os.tmpdir(),
+      cacheDirectory: options.cacheDirectory || tmpdir(),
       computeDependencies:
         options.computeDependencies === undefined
           ? true
@@ -255,6 +256,7 @@ class HasteMap extends EventEmitter {
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
+      mapper: options.mapper,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)
@@ -278,8 +280,7 @@ class HasteMap extends EventEmitter {
       );
     }
 
-    const rootDirHash = crypto
-      .createHash('md5')
+    const rootDirHash = createHash('md5')
       .update(options.rootDir)
       .digest('hex');
     let hasteImplHash = '';
@@ -326,7 +327,7 @@ class HasteMap extends EventEmitter {
     name: string,
     ...extra: Array<string>
   ): string {
-    const hash = crypto.createHash('md5').update(extra.join(''));
+    const hash = createHash('md5').update(extra.join(''));
     return path.join(
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
@@ -522,7 +523,9 @@ class HasteMap extends EventEmitter {
         setModule(metadataId, metadataModule);
       }
 
-      fileMetadata[H.DEPENDENCIES] = metadata.dependencies || [];
+      fileMetadata[H.DEPENDENCIES] = metadata.dependencies
+        ? metadata.dependencies.join(H.DEPENDENCY_DELIM)
+        : '';
 
       if (computeSha1) {
         fileMetadata[H.SHA1] = metadata.sha1;
@@ -638,7 +641,7 @@ class HasteMap extends EventEmitter {
       .then(workerReply, workerError);
   }
 
-  private async _buildHasteMap(data: {
+  private _buildHasteMap(data: {
     removedFiles: FileData;
     changedFiles?: FileData;
     hasteMap: InternalHasteMap;
@@ -683,16 +686,18 @@ class HasteMap extends EventEmitter {
       }
     }
 
-    try {
-      await Promise.all(promises);
-      this._cleanup();
-      hasteMap.map = map;
-      hasteMap.mocks = mocks;
-      return hasteMap;
-    } catch (error) {
-      this._cleanup();
-      throw error;
-    }
+    return Promise.all(promises).then(
+      () => {
+        this._cleanup();
+        hasteMap.map = map;
+        hasteMap.mocks = mocks;
+        return hasteMap;
+      },
+      error => {
+        this._cleanup();
+        throw error;
+      },
+    );
   }
 
   private _cleanup() {
@@ -793,10 +798,14 @@ class HasteMap extends EventEmitter {
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
 
-    const Watcher: sane.Watcher =
+    // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
+    const Watcher: SaneWatcher =
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
-        : sane.NodeWatcher;
+        : FSEventsWatcher.isSupported()
+        ? FSEventsWatcher
+        : NodeWatcher;
+
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     const rootDir = this._options.rootDir;
@@ -944,7 +953,7 @@ class HasteMap extends EventEmitter {
               stat ? stat.mtime.getTime() : -1,
               stat ? stat.size : 0,
               0,
-              [],
+              '',
               null,
             ];
             hasteMap.files.set(relativeFilePath, fileMetadata);

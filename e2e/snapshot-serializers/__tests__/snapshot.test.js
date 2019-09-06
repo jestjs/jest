@@ -91,4 +91,20 @@ describe('snapshot serializers', () => {
     });
     expect(test).toMatchSnapshot();
   });
+
+  it('works with array of strings in property matcher', () => {
+    expect({
+      arrayOfStrings: ['stream'],
+    }).toMatchSnapshot({
+      arrayOfStrings: ['stream'],
+    });
+  });
+
+  it('works with expect.XXX within array in property matcher', () => {
+    expect({
+      arrayOfStrings: ['stream'],
+    }).toMatchSnapshot({
+      arrayOfStrings: [expect.any(String)],
+    });
+  });
 });

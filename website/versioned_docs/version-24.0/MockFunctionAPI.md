@@ -99,7 +99,7 @@ Does everything that [`mockFn.mockReset()`](#mockfnmockreset) does, and also res
 
 This is useful when you want to mock functions in certain test cases and restore the original implementation in others.
 
-Beware that `mockFn.mockRestore` only works when mock was created with `jest.spyOn`. Thus you have to take care of restoration yourself when manually assigning `jest.fn()`.
+Beware that `mockFn.mockRestore` only works when the mock was created with `jest.spyOn`. Thus you have to take care of restoration yourself when manually assigning `jest.fn()`.
 
 The [`restoreMocks`](configuration.html#restoremocks-boolean) configuration option is available to restore mocks automatically between tests.
 
@@ -189,15 +189,15 @@ expect(mockFn).toHaveBeenCalled();
 
 Will result in this error:
 
-```bash
-    expect(mockedFunction).toHaveBeenCalled()
+```
+expect(mockedFunction).toHaveBeenCalled()
 
-    Expected mock function to have been called.
+Expected mock function "mockedFunction" to have been called, but it was not called.
 ```
 
 ### `mockFn.mockReturnThis()`
 
-Just a simple sugar function for:
+Syntactic sugar function for:
 
 ```js
 jest.fn(function() {
@@ -234,7 +234,7 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 
 ### `mockFn.mockResolvedValue(value)`
 
-Simple sugar function for:
+Syntactic sugar function for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.resolve(value));
@@ -252,7 +252,7 @@ test('async test', async () => {
 
 ### `mockFn.mockResolvedValueOnce(value)`
 
-Simple sugar function for:
+Syntactic sugar function for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.resolve(value));
@@ -277,7 +277,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValue(value)`
 
-Simple sugar function for:
+Syntactic sugar function for:
 
 ```js
 jest.fn().mockImplementation(() => Promise.reject(value));
@@ -295,7 +295,7 @@ test('async test', async () => {
 
 ### `mockFn.mockRejectedValueOnce(value)`
 
-Simple sugar function for:
+Syntactic sugar function for:
 
 ```js
 jest.fn().mockImplementationOnce(() => Promise.reject(value));

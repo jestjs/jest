@@ -41,7 +41,7 @@ import queueRunner, {
 import treeProcessor, {TreeNode} from '../treeProcessor';
 import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
-import {Jasmine, AssertionErrorWithStack, Reporter, Spy} from '../types';
+import {AssertionErrorWithStack, Jasmine, Reporter, Spy} from '../types';
 import Spec, {SpecResult} from './Spec';
 import Suite from './Suite';
 
@@ -66,7 +66,7 @@ export default function(j$: Jasmine) {
     ) => Promise<void>;
     fdescribe: (description: string, specDefinitions: Function) => Suite;
     spyOn: (
-      obj: {[key: string]: any},
+      obj: Record<string, any>,
       methodName: string,
       accessType?: keyof PropertyDescriptor,
     ) => Spy;
@@ -94,7 +94,7 @@ export default function(j$: Jasmine) {
       const realSetTimeout = global.setTimeout;
       const realClearTimeout = global.clearTimeout;
 
-      const runnableResources: {[key: string]: {spies: Array<Spy>}} = {};
+      const runnableResources: Record<string, {spies: Array<Spy>}> = {};
       const currentlyExecutingSuites: Array<Suite> = [];
       let currentSpec: Spec | null = null;
       let throwOnExpectationFailure = false;
@@ -416,8 +416,8 @@ export default function(j$: Jasmine) {
         parentSuite.addChild(suite);
         currentDeclarationSuite = suite;
 
-        let declarationError: null | Error = null;
-        let describeReturnValue: null | Error = null;
+        let declarationError: undefined | Error = undefined;
+        let describeReturnValue: undefined | Error = undefined;
         try {
           describeReturnValue = specDefinitions.call(suite);
         } catch (e) {
@@ -663,7 +663,10 @@ export default function(j$: Jasmine) {
         let checkIsError;
         let message;
 
-        if (error instanceof AssertionError) {
+        if (
+          error instanceof AssertionError ||
+          (error && error.name === AssertionError.name)
+        ) {
           checkIsError = false;
           // @ts-ignore TODO Possible error: j$.Spec does not have expand property
           message = assertionErrorMessage(error, {expand: j$.Spec.expand});

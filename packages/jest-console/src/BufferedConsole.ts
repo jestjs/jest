@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import assert from 'assert';
+import assert = require('assert');
 import {Console} from 'console';
 import {format} from 'util';
 import chalk from 'chalk';
-import {getCallsite, SourceMapRegistry} from '@jest/source-map';
+import {SourceMapRegistry, getCallsite} from '@jest/source-map';
 import {
   ConsoleBuffer,
   LogCounters,
@@ -159,7 +159,7 @@ export default class BufferedConsole extends Console {
     this._log('warn', format(firstArg, ...rest));
   }
 
-  getBuffer(): ConsoleBuffer {
-    return this._buffer;
+  getBuffer() {
+    return this._buffer.length ? this._buffer : undefined;
   }
 }

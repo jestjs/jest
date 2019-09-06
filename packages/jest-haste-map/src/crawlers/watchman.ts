@@ -5,17 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import watchman from 'fb-watchman';
+import * as path from 'path';
+import watchman = require('fb-watchman');
 import {Config} from '@jest/types';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
 import H from '../constants';
 import {
-  InternalHasteMap,
   CrawlerOptions,
-  FileMetaData,
   FileData,
+  FileMetaData,
+  InternalHasteMap,
 } from '../types';
 
 type WatchmanRoots = Map<string, Array<string>>;
@@ -232,7 +232,7 @@ export = async function watchmanCrawl(
           ];
         } else {
           // See ../constants.ts
-          nextData = ['', mtime, size, 0, [], sha1hex];
+          nextData = ['', mtime, size, 0, '', sha1hex];
         }
 
         const mappings = options.mapper ? options.mapper(filePath) : null;

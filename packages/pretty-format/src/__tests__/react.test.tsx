@@ -8,11 +8,12 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import prettyFormat from '..';
 import {OptionsReceived} from '../types';
+import prettyFormat from '..';
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');
+const suspenseSymbol = Symbol.for('react.suspense');
 const testSymbol = Symbol.for('react.test.json');
 const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
@@ -306,6 +307,18 @@ test('supports a fragment with element child', () => {
       type: fragmentSymbol,
     }),
   ).toEqual('<React.Fragment>\n  <div>\n    test\n  </div>\n</React.Fragment>');
+});
+
+test('supports suspense', () => {
+  expect(
+    formatElement({
+      $$typeof: elementSymbol,
+      props: {
+        children: React.createElement('div', null, 'test'),
+      },
+      type: suspenseSymbol,
+    }),
+  ).toEqual('<React.Suspense>\n  <div>\n    test\n  </div>\n</React.Suspense>');
 });
 
 test('supports a single element with React elements with a child', () => {
@@ -709,14 +722,41 @@ test('supports forwardRef with a child', () => {
   ).toEqual('<ForwardRef(Cat)>\n  mouse\n</ForwardRef(Cat)>');
 });
 
-test('supports memo with a child', () => {
-  function Dog(props: any) {
-    return React.createElement('div', props, props.children);
-  }
+describe('React.memo', () => {
+  describe('without displayName', () => {
+    test('renders the component name', () => {
+      function Dog(props: any) {
+        return React.createElement('div', props, props.children);
+      }
 
-  expect(
-    formatElement(React.createElement(React.memo(Dog), null, 'cat')),
-  ).toEqual('<Memo(Dog)>\n  cat\n</Memo(Dog)>');
+      expect(
+        formatElement(React.createElement(React.memo(Dog), null, 'cat')),
+      ).toEqual('<Memo(Dog)>\n  cat\n</Memo(Dog)>');
+    });
+  });
+
+  describe('with displayName', () => {
+    test('renders the displayName of component before memoizing', () => {
+      const Foo = () => React.createElement('div');
+      Foo.displayName = 'DisplayNameBeforeMemoizing(Foo)';
+      const MemoFoo = React.memo(Foo);
+
+      expect(formatElement(React.createElement(MemoFoo, null, 'cat'))).toEqual(
+        '<Memo(DisplayNameBeforeMemoizing(Foo))>\n  cat\n</Memo(DisplayNameBeforeMemoizing(Foo))>',
+      );
+    });
+
+    test('renders the displayName of memoized component', () => {
+      const Foo = () => React.createElement('div');
+      Foo.displayName = 'DisplayNameThatWillBeIgnored(Foo)';
+      const MemoFoo = React.memo(Foo);
+      MemoFoo.displayName = 'DisplayNameForMemoized(Foo)';
+
+      expect(formatElement(React.createElement(MemoFoo, null, 'cat'))).toEqual(
+        '<Memo(DisplayNameForMemoized(Foo))>\n  cat\n</Memo(DisplayNameForMemoized(Foo))>',
+      );
+    });
+  });
 });
 
 test('supports context Provider with a child', () => {

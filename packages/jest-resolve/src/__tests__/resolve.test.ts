@@ -6,8 +6,8 @@
  *
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {ModuleMap} from 'jest-haste-map';
 import Resolver from '../';
 // @ts-ignore: js file

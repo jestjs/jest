@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
+import * as path from 'path';
+import {tmpdir} from 'os';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {
   cleanup,
@@ -49,8 +49,8 @@ describe('babel-jest ignored', () => {
 
   it('tells user to match ignored files', () => {
     // --no-cache because babel can cache stuff and result in false green
-    const {status, stderr} = runJest(dir, ['--no-cache']);
-    expect(status).toBe(1);
+    const {exitCode, stderr} = runJest(dir, ['--no-cache']);
+    expect(exitCode).toBe(1);
     expect(wrap(extractSummary(stderr).rest)).toMatchSnapshot();
   });
 });
@@ -75,7 +75,7 @@ describe('babel-jest with manual transformer', () => {
 describe('no babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/no-babel-jest');
   // doing test in a temp directory because we don't want jest node_modules affect it
-  const tempDir = path.resolve(os.tmpdir(), 'transform-no-babel-jest');
+  const tempDir = path.resolve(tmpdir(), 'transform-no-babel-jest');
 
   beforeEach(() => {
     cleanup(tempDir);
@@ -120,12 +120,12 @@ describe('custom transformer', () => {
   });
 
   it('instruments files', () => {
-    const {stdout, status} = runJest(dir, ['--no-cache', '--coverage'], {
+    const {stdout, exitCode} = runJest(dir, ['--no-cache', '--coverage'], {
       stripAnsi: true,
     });
     // coverage should be empty because there's no real instrumentation
     expect(wrap(stdout)).toMatchSnapshot();
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   });
 });
 
@@ -157,5 +157,31 @@ describe('ecmascript-modules-support', () => {
     const {json} = runWithJson(dir, ['--no-cache']);
     expect(json.success).toBe(true);
     expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
+  });
+});
+
+describe('transformer-config', () => {
+  const dir = path.resolve(__dirname, '..', 'transform/transformer-config');
+
+  beforeEach(() => {
+    run('yarn', dir);
+  });
+
+  it('runs transpiled code', () => {
+    // --no-cache because babel can cache stuff and result in false green
+    const {json} = runWithJson(dir, ['--no-cache']);
+    expect(json.success).toBe(true);
+    expect(json.numTotalTests).toBeGreaterThanOrEqual(1);
+  });
+
+  it('instruments only specific files and collects coverage', () => {
+    const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
+      stripAnsi: true,
+    });
+    expect(stdout).toMatch('Covered.js');
+    expect(stdout).not.toMatch('NotCovered.js');
+    expect(stdout).not.toMatch('ExcludedFromCoverage.js');
+    // coverage result should not change
+    expect(stdout).toMatchSnapshot();
   });
 });

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
@@ -36,13 +36,13 @@ test('exceeds the timeout set using jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
     'package.json': '{}',
   });
 
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
   expect(rest).toMatch(
     /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
   );
   expect(wrap(summary)).toMatchSnapshot();
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
 });
 
 test('does not exceed the timeout using jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
@@ -59,11 +59,11 @@ test('does not exceed the timeout using jasmine.DEFAULT_TIMEOUT_INTERVAL', () =>
     'package.json': '{}',
   });
 
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });
 
 test('can read and write jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
@@ -81,8 +81,8 @@ test('can read and write jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
     'package.json': '{}',
   });
 
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {summary} = extractSummary(stderr);
   expect(wrap(summary)).toMatchSnapshot();
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });

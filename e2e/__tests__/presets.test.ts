@@ -9,10 +9,10 @@ import runJest from '../runJest';
 
 test('supports json preset', () => {
   const result = runJest('presets/json');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });
 
 test('supports js preset', () => {
   const result = runJest('presets/js');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

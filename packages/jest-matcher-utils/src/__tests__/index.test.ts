@@ -6,15 +6,20 @@
  *
  */
 
+import chalk from 'chalk';
 import {
+  MatcherHintOptions,
   diff,
-  ensureNumbers,
   ensureNoExpected,
+  ensureNumbers,
   getLabelPrinter,
+  matcherHint,
   pluralize,
   stringify,
-  MatcherHintOptions,
 } from '../';
+
+/* global BigInt */
+const isBigIntDefined = typeof BigInt === 'function';
 
 describe('.stringify()', () => {
   [
@@ -31,6 +36,8 @@ describe('.stringify()', () => {
     [Infinity, 'Infinity'],
     [-Infinity, '-Infinity'],
     [/ab\.c/gi, '/ab\\.c/gi'],
+    isBigIntDefined ? [BigInt(1), '1n'] : [12, '12'],
+    isBigIntDefined ? [BigInt(0), '0n'] : [123, '123'],
   ].forEach(([v, s]) => {
     test(stringify(v), () => {
       expect(stringify(v)).toBe(s);
@@ -97,6 +104,12 @@ describe('.ensureNumbers()', () => {
       // @ts-ignore
       ensureNumbers(1, 2);
     }).not.toThrow();
+    if (isBigIntDefined) {
+      expect(() => {
+        // @ts-ignore
+        ensureNumbers(BigInt(1), BigInt(2));
+      }).not.toThrow();
+    }
   });
 
   test('throws error when expected is not a number (backward compatibility)', () => {
@@ -217,6 +230,7 @@ describe('diff', () => {
       ['a', 1],
       ['a', true],
       [1, true],
+      [isBigIntDefined ? BigInt(1) : 1, true],
     ].forEach(([actual, expected]) =>
       expect(diff(actual, expected)).toBe('diff output'),
     );
@@ -229,6 +243,12 @@ describe('diff', () => {
   test('two numbers', () => {
     expect(diff(1, 2)).toBe(null);
   });
+
+  if (isBigIntDefined) {
+    test('two bigints', () => {
+      expect(diff(BigInt(1), BigInt(2))).toBe(null);
+    });
+  }
 });
 
 describe('.pluralize()', () => {
@@ -284,5 +304,51 @@ describe('getLabelPrinter', () => {
     expect(() => {
       printLabel(stringInconsistentLonger);
     }).toThrow();
+  });
+});
+
+describe('matcherHint', () => {
+  test('expectedColor', () => {
+    const expectedColor = (arg: string): string => arg; // default (black) color
+    const expectedArgument = 'n';
+    const received = matcherHint(
+      'toHaveBeenNthCalledWith',
+      'jest.fn()',
+      expectedArgument,
+      {expectedColor, secondArgument: '...expected'},
+    );
+
+    const substringNegative = chalk.green(expectedArgument);
+
+    expect(received).not.toMatch(substringNegative);
+  });
+
+  test('receivedColor', () => {
+    const receivedColor = chalk.cyan.bgAnsi256(158);
+    const receivedArgument = 'received';
+    const received = matcherHint('toMatchSnapshot', receivedArgument, '', {
+      receivedColor,
+    });
+
+    const substringNegative = chalk.red(receivedArgument);
+    const substringPositive = receivedColor(receivedArgument);
+
+    expect(received).not.toMatch(substringNegative);
+    expect(received).toMatch(substringPositive);
+  });
+
+  test('secondArgumentColor', () => {
+    const secondArgumentColor = chalk.bold;
+    const secondArgument = 'hint';
+    const received = matcherHint('toMatchSnapshot', undefined, 'properties', {
+      secondArgument,
+      secondArgumentColor,
+    });
+
+    const substringNegative = chalk.green(secondArgument);
+    const substringPositive = secondArgumentColor(secondArgument);
+
+    expect(received).not.toMatch(substringNegative);
+    expect(received).toMatch(substringPositive);
   });
 });

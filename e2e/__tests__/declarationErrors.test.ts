@@ -17,7 +17,7 @@ it('warns if describe returns a Promise', () => {
     'describeReturnPromise.test.js',
   ]);
 
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
   expect(normalizeCircusJasmine(result.stdout)).toMatchSnapshot();
 });
 
@@ -26,6 +26,14 @@ it('warns if describe returns something', () => {
     'describeReturnSomething.test.js',
   ]);
 
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
   expect(normalizeCircusJasmine(result.stdout)).toMatchSnapshot();
+});
+
+it('errors if describe throws', () => {
+  const result = runJest('declaration-errors', ['describeThrow.test.js']);
+
+  expect(result.exitCode).toBe(1);
+  expect(result.stdout).toBe('');
+  expect(result.stderr).toContain('whoops');
 });
