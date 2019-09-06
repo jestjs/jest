@@ -728,7 +728,7 @@ const matchers: MatchersObject = {
         ),
       );
     }
-    
+
     const result = getPath(received, expectedPath);
     const {lastTraversedObject, endPropIsDefined, hasEndProp, value} = result;
     const receivedPath = result.traversedPath;
