@@ -116,7 +116,7 @@ Errors can be handled using the `.catch` method. Make sure to add `expect.assert
 
 ```js
 // Testing for async errors using Promise.catch.
-test('tests error with promises', () => {
+it('tests error with promises', () => {
   expect.assertions(1);
   return user.getUserName(2).catch(e =>
     expect(e).toEqual({
