@@ -152,42 +152,51 @@ export const ensureNoExpected = (
   }
 };
 
+/**
+ * Ensures that `actual` is of type `number | bigint`
+ */
 export const ensureActualIsNumber = (
   actual: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
 ) => {
-  if (typeof actual !== 'number') {
+  if (typeof actual !== 'number' && typeof actual !== 'bigint') {
     // Prepend maybe not only for backward compatibility.
     const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherString, undefined, undefined, options),
-        `${RECEIVED_COLOR('received')} value must be a number`,
+        `${RECEIVED_COLOR('received')} value must be a number or bigint`,
         printWithType('Received', actual, printReceived),
       ),
     );
   }
 };
 
+/**
+ * Ensures that `expected` is of type `number | bigint`
+ */
 export const ensureExpectedIsNumber = (
   expected: unknown,
   matcherName: string,
   options?: MatcherHintOptions,
 ) => {
-  if (typeof expected !== 'number') {
+  if (typeof expected !== 'number' && typeof expected !== 'bigint') {
     // Prepend maybe not only for backward compatibility.
     const matcherString = (options ? '' : '[.not]') + matcherName;
     throw new Error(
       matcherErrorMessage(
         matcherHint(matcherString, undefined, undefined, options),
-        `${EXPECTED_COLOR('expected')} value must be a number`,
+        `${EXPECTED_COLOR('expected')} value must be a number or bigint`,
         printWithType('Expected', expected, printExpected),
       ),
     );
   }
 };
 
+/**
+ * Ensures that `actual` & `expected` are of type `number | bigint`
+ */
 export const ensureNumbers = (
   actual: unknown,
   expected: unknown,
@@ -369,6 +378,9 @@ export const printDiffOrStringify = (
 // In those cases, we do not print a diff to make the output shorter and not redundant.
 const shouldPrintDiff = (actual: unknown, expected: unknown) => {
   if (typeof actual === 'number' && typeof expected === 'number') {
+    return false;
+  }
+  if (typeof actual === 'bigint' && typeof expected === 'bigint') {
     return false;
   }
   if (typeof actual === 'boolean' && typeof expected === 'boolean') {

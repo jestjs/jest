@@ -743,7 +743,7 @@ Received has value: <red>[Function fn]</>"
 exports[`toBeCalledTimes .not only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  object
 Expected has value: <green>{}</>"
@@ -752,7 +752,7 @@ Expected has value: <green>{}</>"
 exports[`toBeCalledTimes .not only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  array
 Expected has value: <green>[]</>"
@@ -761,7 +761,7 @@ Expected has value: <green>[]</>"
 exports[`toBeCalledTimes .not only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  boolean
 Expected has value: <green>true</>"
@@ -770,7 +770,7 @@ Expected has value: <green>true</>"
 exports[`toBeCalledTimes .not only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  string
 Expected has value: <green>\\"a\\"</>"
@@ -779,7 +779,7 @@ Expected has value: <green>\\"a\\"</>"
 exports[`toBeCalledTimes .not only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  map
 Expected has value: <green>Map {}</>"
@@ -788,7 +788,7 @@ Expected has value: <green>Map {}</>"
 exports[`toBeCalledTimes .not only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  function
 Expected has value: <green>[Function anonymous]</>"
@@ -827,7 +827,7 @@ Received number of calls: <red>1</>"
 exports[`toBeCalledTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  object
 Expected has value: <green>{}</>"
@@ -836,7 +836,7 @@ Expected has value: <green>{}</>"
 exports[`toBeCalledTimes only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  array
 Expected has value: <green>[]</>"
@@ -845,7 +845,7 @@ Expected has value: <green>[]</>"
 exports[`toBeCalledTimes only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  boolean
 Expected has value: <green>true</>"
@@ -854,7 +854,7 @@ Expected has value: <green>true</>"
 exports[`toBeCalledTimes only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  string
 Expected has value: <green>\\"a\\"</>"
@@ -863,7 +863,7 @@ Expected has value: <green>\\"a\\"</>"
 exports[`toBeCalledTimes only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  map
 Expected has value: <green>Map {}</>"
@@ -872,7 +872,7 @@ Expected has value: <green>Map {}</>"
 exports[`toBeCalledTimes only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>).</>toBeCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  function
 Expected has value: <green>[Function anonymous]</>"
@@ -1068,7 +1068,7 @@ Received has value: <red>[Function fn]</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  object
 Expected has value: <green>{}</>"
@@ -1077,7 +1077,7 @@ Expected has value: <green>{}</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  array
 Expected has value: <green>[]</>"
@@ -1086,7 +1086,7 @@ Expected has value: <green>[]</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  boolean
 Expected has value: <green>true</>"
@@ -1095,7 +1095,7 @@ Expected has value: <green>true</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  string
 Expected has value: <green>\\"a\\"</>"
@@ -1104,7 +1104,7 @@ Expected has value: <green>\\"a\\"</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  map
 Expected has value: <green>Map {}</>"
@@ -1113,7 +1113,7 @@ Expected has value: <green>Map {}</>"
 exports[`toHaveBeenCalledTimes .not only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  function
 Expected has value: <green>[Function anonymous]</>"
@@ -1152,7 +1152,7 @@ Received number of calls: <red>1</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  object
 Expected has value: <green>{}</>"
@@ -1161,7 +1161,7 @@ Expected has value: <green>{}</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  array
 Expected has value: <green>[]</>"
@@ -1170,7 +1170,7 @@ Expected has value: <green>[]</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  boolean
 Expected has value: <green>true</>"
@@ -1179,7 +1179,7 @@ Expected has value: <green>true</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  string
 Expected has value: <green>\\"a\\"</>"
@@ -1188,7 +1188,7 @@ Expected has value: <green>\\"a\\"</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  map
 Expected has value: <green>Map {}</>"
@@ -1197,7 +1197,7 @@ Expected has value: <green>Map {}</>"
 exports[`toHaveBeenCalledTimes only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveBeenCalledTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  function
 Expected has value: <green>[Function anonymous]</>"
@@ -2135,7 +2135,7 @@ Received has value: <red>[Function spy]</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  object
 Expected has value: <green>{}</>"
@@ -2144,7 +2144,7 @@ Expected has value: <green>{}</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  array
 Expected has value: <green>[]</>"
@@ -2153,7 +2153,7 @@ Expected has value: <green>[]</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  boolean
 Expected has value: <green>true</>"
@@ -2162,7 +2162,7 @@ Expected has value: <green>true</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  string
 Expected has value: <green>\\"a\\"</>"
@@ -2171,7 +2171,7 @@ Expected has value: <green>\\"a\\"</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  map
 Expected has value: <green>Map {}</>"
@@ -2180,7 +2180,7 @@ Expected has value: <green>Map {}</>"
 exports[`toHaveReturnedTimes .not only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  function
 Expected has value: <green>[Function anonymous]</>"
@@ -2240,7 +2240,7 @@ Received number of calls:       <red>4</>"
 exports[`toHaveReturnedTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  object
 Expected has value: <green>{}</>"
@@ -2249,7 +2249,7 @@ Expected has value: <green>{}</>"
 exports[`toHaveReturnedTimes only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  array
 Expected has value: <green>[]</>"
@@ -2258,7 +2258,7 @@ Expected has value: <green>[]</>"
 exports[`toHaveReturnedTimes only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  boolean
 Expected has value: <green>true</>"
@@ -2267,7 +2267,7 @@ Expected has value: <green>true</>"
 exports[`toHaveReturnedTimes only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  string
 Expected has value: <green>\\"a\\"</>"
@@ -2276,7 +2276,7 @@ Expected has value: <green>\\"a\\"</>"
 exports[`toHaveReturnedTimes only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  map
 Expected has value: <green>Map {}</>"
@@ -2285,7 +2285,7 @@ Expected has value: <green>Map {}</>"
 exports[`toHaveReturnedTimes only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>).</>toHaveReturnedTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  function
 Expected has value: <green>[Function anonymous]</>"
@@ -2560,7 +2560,7 @@ Received has value: <red>[Function spy]</>"
 exports[`toReturnTimes .not only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  object
 Expected has value: <green>{}</>"
@@ -2569,7 +2569,7 @@ Expected has value: <green>{}</>"
 exports[`toReturnTimes .not only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  array
 Expected has value: <green>[]</>"
@@ -2578,7 +2578,7 @@ Expected has value: <green>[]</>"
 exports[`toReturnTimes .not only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  boolean
 Expected has value: <green>true</>"
@@ -2587,7 +2587,7 @@ Expected has value: <green>true</>"
 exports[`toReturnTimes .not only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  string
 Expected has value: <green>\\"a\\"</>"
@@ -2596,7 +2596,7 @@ Expected has value: <green>\\"a\\"</>"
 exports[`toReturnTimes .not only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  map
 Expected has value: <green>Map {}</>"
@@ -2605,7 +2605,7 @@ Expected has value: <green>Map {}</>"
 exports[`toReturnTimes .not only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>).</>not<dim>.</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  function
 Expected has value: <green>[Function anonymous]</>"
@@ -2665,7 +2665,7 @@ Received number of calls:       <red>4</>"
 exports[`toReturnTimes only accepts a number argument 1`] = `
 "<dim>expect(</><red>received</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  object
 Expected has value: <green>{}</>"
@@ -2674,7 +2674,7 @@ Expected has value: <green>{}</>"
 exports[`toReturnTimes only accepts a number argument 2`] = `
 "<dim>expect(</><red>received</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  array
 Expected has value: <green>[]</>"
@@ -2683,7 +2683,7 @@ Expected has value: <green>[]</>"
 exports[`toReturnTimes only accepts a number argument 3`] = `
 "<dim>expect(</><red>received</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  boolean
 Expected has value: <green>true</>"
@@ -2692,7 +2692,7 @@ Expected has value: <green>true</>"
 exports[`toReturnTimes only accepts a number argument 4`] = `
 "<dim>expect(</><red>received</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  string
 Expected has value: <green>\\"a\\"</>"
@@ -2701,7 +2701,7 @@ Expected has value: <green>\\"a\\"</>"
 exports[`toReturnTimes only accepts a number argument 5`] = `
 "<dim>expect(</><red>received</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  map
 Expected has value: <green>Map {}</>"
@@ -2710,7 +2710,7 @@ Expected has value: <green>Map {}</>"
 exports[`toReturnTimes only accepts a number argument 6`] = `
 "<dim>expect(</><red>received</><dim>).</>toReturnTimes<dim>(</><green>expected</><dim>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<bold>Matcher error</>: <green>expected</> value must be a non-negative integer
 
 Expected has type:  function
 Expected has value: <green>[Function anonymous]</>"

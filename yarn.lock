@@ -385,6 +385,13 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
+"@babel/plugin-syntax-bigint@^7.0.0":
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-bigint/-/plugin-syntax-bigint-7.4.4.tgz#3c6f77ba5f4aefbabfd5183117278c9695971093"
+  integrity sha512-tXyL/mlth1QBl5OwpsABCmAWm4u9xvUIk5nsLd2wWKrC6C4Qm9JvmN18IAGlIXkMvWZTRJVuGRXSLCuz+1hG9Q==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.0.0"
+
 "@babel/plugin-syntax-class-properties@^7.0.0":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-class-properties/-/plugin-syntax-class-properties-7.2.0.tgz#23b3b7b9bcdabd73672a9149f728cd3be6214812"

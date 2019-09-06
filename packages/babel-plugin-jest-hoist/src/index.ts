@@ -20,6 +20,7 @@ const WHITELISTED_IDENTIFIERS = new Set<string>(
     'Array',
     'ArrayBuffer',
     'Boolean',
+    'BigInt',
     'DataView',
     'Date',
     'Error',
