@@ -19,6 +19,8 @@
     "jest-zone-patch": "*"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "*",
+    "babel-plugin-transform-typescript-metadata": "*",
     "@types/jest": "*",
     "jest": "*",
     "ts-jest": "*"
