@@ -728,18 +728,17 @@ const matchers: MatchersObject = {
         ),
       );
     }
-
     
-    const result = getPath(object, expectedPath);
-    const {lastTraversedObject, endPropIsDefined, hasEndProp} = result;
+    const result = getPath(received, expectedPath);
+    const {lastTraversedObject, endPropIsDefined, hasEndProp, value} = result;
     const receivedPath = result.traversedPath;
     const hasCompletePath = receivedPath.length === expectedPathLength;
     const receivedValue = hasCompletePath ? result.value : lastTraversedObject;
 
     const pass =
-      valuePassed && endPropIsDefined
-        ? equals(result.value, value, [iterableEquality])
-        : hasEndProp;
+      hasValue && endPropIsDefined
+        ? equals(value, expectedValue, [iterableEquality])
+        : Boolean(hasEndProp);
 
     const message = pass
       ? () =>

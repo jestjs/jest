@@ -1659,7 +1659,6 @@ describe('.toHaveProperty()', () => {
     [{a: {b: [1, 2, 3]}}, ['a', 'b', 1], expect.any(Number)],
     [{a: 0}, 'a', 0],
     [{a: {b: undefined}}, 'a.b', undefined],
-    [{a: {}}, 'a.b', undefined], // delete for breaking change in future major
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
     [new Foo(), 'a', undefined],
