@@ -22,7 +22,7 @@ module.exports = {
   ],
   plugins: [
     'babel-plugin-transform-typescript-metadata',
-    ["@babel/plugin-proposal-decorators", {legacy: true}],
+    ['@babel/plugin-proposal-decorators', {legacy: true}],
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
     '@babel/plugin-transform-strict-mode',
     '@babel/plugin-proposal-class-properties',
