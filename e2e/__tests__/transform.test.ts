@@ -49,8 +49,8 @@ describe('babel-jest ignored', () => {
 
   it('tells user to match ignored files', () => {
     // --no-cache because babel can cache stuff and result in false green
-    const {status, stderr} = runJest(dir, ['--no-cache']);
-    expect(status).toBe(1);
+    const {exitCode, stderr} = runJest(dir, ['--no-cache']);
+    expect(exitCode).toBe(1);
     expect(wrap(extractSummary(stderr).rest)).toMatchSnapshot();
   });
 });
@@ -120,12 +120,12 @@ describe('custom transformer', () => {
   });
 
   it('instruments files', () => {
-    const {stdout, status} = runJest(dir, ['--no-cache', '--coverage'], {
+    const {stdout, exitCode} = runJest(dir, ['--no-cache', '--coverage'], {
       stripAnsi: true,
     });
     // coverage should be empty because there's no real instrumentation
     expect(wrap(stdout)).toMatchSnapshot();
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   });
 });
 

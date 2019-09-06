@@ -103,7 +103,7 @@ exports[`context number of lines: -1 (5 default) 1`] = `
 "<green>- Expected  1 -</>
 <red>+ Received  1 +</>
 
-<yellow>@@ -6,9 +6,9 @@</>
+<dim>@@ -6,9 +6,9 @@</>
 <dim>      4,</>
 <dim>      5,</>
 <dim>      6,</>
@@ -156,7 +156,7 @@ exports[`context number of lines: 3.1 (5 default) 1`] = `
 "<green>- Expected  1 -</>
 <red>+ Received  1 +</>
 
-<yellow>@@ -6,9 +6,9 @@</>
+<dim>@@ -6,9 +6,9 @@</>
 <dim>      4,</>
 <dim>      5,</>
 <dim>      6,</>
@@ -173,7 +173,7 @@ exports[`context number of lines: undefined (5 default) 1`] = `
 "<green>- Expected  1 -</>
 <red>+ Received  1 +</>
 
-<yellow>@@ -6,9 +6,9 @@</>
+<dim>@@ -6,9 +6,9 @@</>
 <dim>      4,</>
 <dim>      5,</>
 <dim>      6,</>
@@ -320,6 +320,17 @@ exports[`options 7980 diffStringsUnified 1`] = `
 
 <red>- \`\${Ti.App.<inverse>n</>ame} \${Ti.App.<inverse>v</>ersion} \${Ti.Platform.<inverse>n</>ame} \${Ti.Platform.<inverse>v</>ersion}\`</>
 <green>+ \`\${Ti.App.<inverse>getN</>ame<inverse>()</>} \${Ti.App.<inverse>getV</>ersion<inverse>()</>} \${Ti.Platform.<inverse>getN</>ame<inverse>()</>} \${Ti.Platform.<inverse>getV</>ersion<inverse>()</>}\`</>"
+`;
+
+exports[`options change color diffStringsUnified 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- delete</>
+<green>- changed <bold>from</></>
+<red>+ changed <bold>to</></>
+<red>+ insert</>
+<dim>  common</>"
 `;
 
 exports[`options change indicators diff 1`] = `

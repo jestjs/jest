@@ -303,9 +303,9 @@ string" 1`] = `
 <green>- Expected</>
 <red>+ Received</>
 
-<green>- <inverse>3</></>
-<red>+ <inverse>four</></>
-<red>+ <inverse>4</></>
+<green>- 3</>
+<red>+ four</>
+<red>+ 4</>
 <dim>  line</>
 <dim>  string</>"
 `;

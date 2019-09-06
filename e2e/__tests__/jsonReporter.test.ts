@@ -66,7 +66,7 @@ describe('JSON Reporter', () => {
     let jsonResult;
 
     expect(result.stderr).toMatch(/1 failed, 2 passed/);
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
 
     try {
       jsonResult = JSON.parse(result.stdout);

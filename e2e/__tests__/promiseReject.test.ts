@@ -23,8 +23,8 @@ test('', () => {
      });
    `,
   });
-  const {stdout, stderr, status} = runJest(DIR);
+  const {stdout, stderr, exitCode} = runJest(DIR);
   expect(stdout).toBe('');
   expect(stderr).toMatch(/(Failed|thrown): null/);
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
 });

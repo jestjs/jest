@@ -32,6 +32,7 @@ export type SnapshotMatchOptions = {
   received: any;
   key?: string;
   inlineSnapshot?: string;
+  isInline: boolean;
   error?: Error;
 };
 
@@ -180,11 +181,11 @@ export default class SnapshotState {
     received,
     key,
     inlineSnapshot,
+    isInline,
     error,
   }: SnapshotMatchOptions): SnapshotReturnOptions {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
-    const isInline = inlineSnapshot !== undefined;
 
     if (!key) {
       key = testNameToKey(testName, count);
@@ -200,9 +201,7 @@ export default class SnapshotState {
     const receivedSerialized = serialize(received);
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;
-    const hasSnapshot = isInline
-      ? inlineSnapshot !== ''
-      : this._snapshotData[key] !== undefined;
+    const hasSnapshot = expected !== undefined;
     const snapshotIsPersisted = isInline || fs.existsSync(this._snapshotPath);
 
     if (pass && !isInline) {

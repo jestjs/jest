@@ -144,7 +144,13 @@ export const joinAlignedDiffsNoExpand = (
             pushCommonLine(diffs[iCommon][1]);
           }
 
-          lines[jPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd);
+          lines[jPatchMark] = createPatchMark(
+            aStart,
+            aEnd,
+            bStart,
+            bEnd,
+            options,
+          );
           jPatchMark = lines.length;
           lines.push(''); // placeholder line for next patch mark
 
@@ -177,7 +183,7 @@ export const joinAlignedDiffsNoExpand = (
   }
 
   if (hasPatch) {
-    lines[jPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd);
+    lines[jPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd, options);
   }
 
   return lines.join('\n');

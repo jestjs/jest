@@ -11,5 +11,5 @@ test('supports NODE_PATH', () => {
   const result = runJest('node-path', [], {
     nodePath: ['../node-path/src'],
   });
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

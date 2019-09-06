@@ -291,7 +291,7 @@ const diffNoExpand = (
     aEnd += nContextLines;
     bEnd += nContextLines;
 
-    array[iPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd);
+    array[iPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd, options);
 
     // If common subsequence is not at end, another patch follows it.
     if (!isAtEnd) {
@@ -332,7 +332,7 @@ const diffNoExpand = (
   if (aStart === 0 && aEnd === aLength && bStart === 0 && bEnd === bLength) {
     array.splice(0, 1); // delete placeholder line for patch mark
   } else {
-    array[iPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd);
+    array[iPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd, options);
   }
 
   return printAnnotation(options, changeCounts) + array.join('\n');
