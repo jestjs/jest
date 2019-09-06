@@ -12,50 +12,50 @@ const DIR = path.resolve(__dirname, '../no-tests-found-test');
 
 describe('No tests are found', () => {
   test('fails the test suite in standard situation', () => {
-    const {status, stdout} = runJest(DIR, [
+    const {exitCode, stdout} = runJest(DIR, [
       '--testPathPattern',
       '/non/existing/path/',
     ]);
 
     expect(stdout).toMatch('No tests found');
-    expect(status).toBe(1);
+    expect(exitCode).toBe(1);
   });
 
   test("doesn't fail the test suite if --passWithNoTests passed", () => {
-    const {status, stdout} = runJest(DIR, [
+    const {exitCode, stdout} = runJest(DIR, [
       '--testPathPattern',
       '/non/existing/path/',
       '--passWithNoTests',
     ]);
 
     expect(stdout).toMatch('No tests found');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   });
 
   test("doesn't fail the test suite if using --lastCommit", () => {
     // Since there are no files in DIR no tests will be found
-    const {status, stdout} = runJest(DIR, ['--lastCommit']);
+    const {exitCode, stdout} = runJest(DIR, ['--lastCommit']);
 
     expect(stdout).toMatch('No tests found');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   });
 
   test("doesn't fail the test suite if using --onlyChanged", () => {
     // Since there are no files in DIR no tests will be found
-    const {status, stdout} = runJest(DIR, ['--onlyChanged']);
+    const {exitCode, stdout} = runJest(DIR, ['--onlyChanged']);
 
     expect(stdout).toMatch('No tests found');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   });
 
   test("doesn't fail the test suite if using --findRelatedTests", () => {
     // Since there are no files in DIR no tests will be found
-    const {status, stdout} = runJest(DIR, [
+    const {exitCode, stdout} = runJest(DIR, [
       '--findRelatedTests',
       '/non/existing/path',
     ]);
 
     expect(stdout).toMatch('No tests found');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   });
 });

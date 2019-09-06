@@ -23,11 +23,11 @@ test('exits with a specified code when test fail', () => {
     }),
   });
 
-  let {status} = runJest(DIR);
-  expect(status).toBe(99);
+  let {exitCode} = runJest(DIR);
+  expect(exitCode).toBe(99);
 
-  ({status} = runJest(DIR, ['--testFailureExitCode', '77']));
-  expect(status).toBe(77);
+  ({exitCode} = runJest(DIR, ['--testFailureExitCode', '77']));
+  expect(exitCode).toBe(77);
 
   writeFiles(DIR, {
     '__tests__/test.test.js': `test('test', () => { expect(1).toBe(2); });`,
@@ -35,6 +35,6 @@ test('exits with a specified code when test fail', () => {
       jest: {testEnvironment: 'node'},
     }),
   });
-  ({status} = runJest(DIR));
-  expect(status).toBe(1);
+  ({exitCode} = runJest(DIR));
+  expect(exitCode).toBe(1);
 });

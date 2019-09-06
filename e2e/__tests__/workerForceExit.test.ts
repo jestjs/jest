@@ -42,9 +42,9 @@ test('prints a warning if a worker is force exited', () => {
       });
     `,
   });
-  const {status, stderr, stdout} = runJest(DIR, ['--maxWorkers=2']);
+  const {exitCode, stderr, stdout} = runJest(DIR, ['--maxWorkers=2']);
 
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
   verifyNumPassed(stderr);
   expect(stdout).toContain('A worker process has failed to exit gracefully');
 });
@@ -59,9 +59,9 @@ test('force exits a worker that fails to exit gracefully', async () => {
       });
     `,
   });
-  const {status, stderr} = runJest(DIR, ['--maxWorkers=2']);
+  const {exitCode, stderr} = runJest(DIR, ['--maxWorkers=2']);
 
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
   verifyNumPassed(stderr);
 
   const [pid] = /pid: \d+/.exec(stderr);

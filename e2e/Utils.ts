@@ -96,7 +96,7 @@ const NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS = 25;
  * Slow and modifies the test output. Use sparingly.
  */
 export const generateTestFilesToForceUsingWorkers = () => {
-  const testFiles = {};
+  const testFiles: Record<string, string> = {};
   for (let i = 0; i <= NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS; i++) {
     testFiles[`__tests__/test${i}.test.js`] = `
       test.todo('test ${i}');

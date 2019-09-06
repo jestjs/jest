@@ -15,6 +15,6 @@ describe('Snapshot serializers', () => {
     expect(stderr).toMatch('2 snapshot files obsolete');
     expect(stderr).toMatch('__tests__/__snapshots__/fails.test.js.snap');
     expect(stderr).toMatch('__tests__/__snapshots__/fails2.test.js.snap');
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
   });
 });

@@ -8,6 +8,6 @@
 import runJest from '../runJest';
 
 test('require.resolve.paths', () => {
-  const {status} = runJest('resolve-get-paths');
-  expect(status).toBe(0);
+  const {exitCode} = runJest('resolve-get-paths');
+  expect(exitCode).toBe(0);
 });

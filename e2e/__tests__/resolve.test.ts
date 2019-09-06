@@ -9,5 +9,5 @@ import runJest from '../runJest';
 
 test('resolve platform modules', () => {
   const result = runJest('resolve');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

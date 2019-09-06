@@ -10,6 +10,7 @@
 - `[jest-diff]` Add options for colors and symbols ([#8841](https://github.com/facebook/jest/pull/8841))
 - `[jest-diff]` [**BREAKING**] Export as ECMAScript module ([#8873](https://github.com/facebook/jest/pull/8873))
 - `[jest-diff]` Add `includeChangeCounts` and rename `Indicator` options ([#8881](https://github.com/facebook/jest/pull/8881))
+- `[jest-diff]` Add `changeColor` and `patchColor` options ([#8911](https://github.com/facebook/jest/pull/8911))
 - `[jest-get-type]` Add `BigInt` support. ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-matcher-utils]` Add `BigInt` support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-runner]` Warn if a worker had to be force exited ([#8206](https://github.com/facebook/jest/pull/8206))
@@ -19,11 +20,13 @@
 ### Fixes
 
 - `[expect]` Display expectedDiff more carefully in toBeCloseTo ([#8389](https://github.com/facebook/jest/pull/8389))
+- `[jest-diff]` Do not inverse format if line consists of one change ([#8903](https://github.com/facebook/jest/pull/8903))
 - `[jest-fake-timers]` `getTimerCount` will not include cancelled immediates ([#8764](https://github.com/facebook/jest/pull/8764))
 - `[jest-leak-detector]` [**BREAKING**] Use `weak-napi` instead of `weak` package ([#8686](https://github.com/facebook/jest/pull/8686))
 - `[jest-mock]` Fix for mockReturnValue overriding mockImplementationOnce ([#8398](https://github.com/facebook/jest/pull/8398))
 - `[jest-snapshot]` Remove only the added newlines in multiline snapshots ([#8859](https://github.com/facebook/jest/pull/8859))
 - `[jest-snapshot]` Distinguish empty string from external snapshot not written ([#8880](https://github.com/facebook/jest/pull/8880))
+- `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))
 
 ### Chore & Maintenance
 

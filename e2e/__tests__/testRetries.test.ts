@@ -27,7 +27,7 @@ describe('Test Retries', () => {
   it('retries failed tests', () => {
     const result = runJest('test-retries', ['e2e.test.js']);
 
-    expect(result.status).toEqual(0);
+    expect(result.exitCode).toEqual(0);
     expect(result.failed).toBe(false);
   });
 
