@@ -113,7 +113,7 @@ const setupPreset = (
         const preset = Resolver.findNodeModule(presetPath, {
           basedir: options.rootDir,
         });
-    
+
         if (preset) {
           throw createConfigError(
             `  Module ${chalk.bold(
@@ -121,7 +121,9 @@ const setupPreset = (
             )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
           );
         }
-        throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
+        throw createConfigError(
+          `  Preset ${chalk.bold(presetPath)} not found.`,
+        );
       }
       throw createConfigError(
         `  Missing dependency in ${chalk.bold(presetPath)}:\n\n  ${
