@@ -120,7 +120,11 @@ const setupPreset = (
       );
     }
 
-    throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
+    throw createConfigError(
+      `  Error resolving ${chalk.bold(presetPath)}:\n\n  ${
+        error.message
+      }\n  ${error.stack}`,
+    );
   }
 
   if (options.setupFiles) {
