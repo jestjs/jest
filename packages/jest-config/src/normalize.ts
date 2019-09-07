@@ -120,8 +120,12 @@ const setupPreset = (
       );
     }
 
+    if (error.message.includes('Cannot find module') && error.message.includes(presetPath)) {
+      throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
+    }
+
     throw createConfigError(
-      `  Error resolving ${chalk.bold(presetPath)}:\n\n  ${
+      `  Failed to load ${chalk.bold(presetPath)}:\n\n  ${
         error.message
       }\n  ${error.stack}`,
     );
