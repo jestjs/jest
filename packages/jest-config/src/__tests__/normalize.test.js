@@ -1041,6 +1041,29 @@ describe('preset', () => {
     }).toThrowErrorMatchingSnapshot();
   });
 
+  test('throws when a dependency is missing in the preset', () => {
+    jest.doMock(
+      '/node_modules/react-native-js-preset/jest-preset.js',
+      () => {
+        require('library-that-is-not-installed');
+        return {
+          transform: {},
+        };
+      },
+      {virtual: true},
+    );
+
+    expect(() => {
+      normalize(
+        {
+          preset: 'react-native-js-preset',
+          rootDir: '/root/path/foo',
+        },
+        {},
+      );
+    }).toThrowError(/Cannot find module 'library-that-is-not-installed'/);
+  });
+
   test('throws when preset is invalid', () => {
     jest.doMock('/node_modules/react-native/jest-preset.json', () =>
       jest.requireActual('./jest-preset.json'),

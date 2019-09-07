@@ -108,24 +108,30 @@ const setupPreset = (
       );
     }
 
-    const preset = Resolver.findNodeModule(presetPath, {
-      basedir: options.rootDir,
-    });
-
-    if (preset) {
+    if (error.message.includes('Cannot find module')) {
+      if (error.message.includes(presetPath)) {
+        const preset = Resolver.findNodeModule(presetPath, {
+          basedir: options.rootDir,
+        });
+    
+        if (preset) {
+          throw createConfigError(
+            `  Module ${chalk.bold(
+              presetPath,
+            )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
+          );
+        }
+        throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
+      }
       throw createConfigError(
-        `  Module ${chalk.bold(
-          presetPath,
-        )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
+        `  Missing dependency in ${chalk.bold(presetPath)}:\n\n  ${
+          error.message
+        }\n  ${error.stack}`,
       );
     }
 
-    if (error.message.includes('Cannot find module') && error.message.includes(presetPath)) {
-      throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
-    }
-
     throw createConfigError(
-      `  Failed to load ${chalk.bold(presetPath)}:\n\n  ${
+      `  An unknown error occurred in ${chalk.bold(presetPath)}:\n\n  ${
         error.message
       }\n  ${error.stack}`,
     );
