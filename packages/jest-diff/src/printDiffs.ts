@@ -20,33 +20,32 @@ import {
   joinAlignedDiffsNoExpand,
 } from './joinAlignedDiffs';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
-import {DiffOptions, DiffOptionsNormalized} from './types';
+import {DiffOptions, DiffOptionsColor, DiffOptionsNormalized} from './types';
 
 const NEWLINE_SYMBOL = '\u{21B5}'; // downwards arrow with corner leftwards
-const SPACE_SYMBOL = '\u{00B7}'; // middle dot
 
-// Instead of inverse highlight which now implies a change,
-// replace common spaces with middle dot at the end of the line.
-const replaceSpacesAtEnd = (line: string): string =>
-  line.replace(/\s+$/, spaces => SPACE_SYMBOL.repeat(spaces.length));
+export const formatTrailingSpaces = (
+  line: string,
+  trailingSpaceFormatter: DiffOptionsColor,
+): string => line.replace(/\s+$/, match => trailingSpaceFormatter(match));
 
 export const printDeleteLine = (
   line: string,
-  {aColor, aIndicator}: DiffOptionsNormalized,
+  {aColor, aIndicator, trailingSpaceFormatter}: DiffOptionsNormalized,
 ): string =>
   aColor(
     line.length !== 0
-      ? aIndicator + ' ' + replaceSpacesAtEnd(line)
+      ? aIndicator + ' ' + formatTrailingSpaces(line, trailingSpaceFormatter)
       : aIndicator,
   );
 
 export const printInsertLine = (
   line: string,
-  {bColor, bIndicator}: DiffOptionsNormalized,
+  {bColor, bIndicator, trailingSpaceFormatter}: DiffOptionsNormalized,
 ): string =>
   bColor(
     line.length !== 0
-      ? bIndicator + ' ' + replaceSpacesAtEnd(line)
+      ? bIndicator + ' ' + formatTrailingSpaces(line, trailingSpaceFormatter)
       : bIndicator,
   );
 
@@ -54,10 +53,14 @@ export const printInsertLine = (
 export const printCommonLine = (
   line: string,
   isFirstOrLast: boolean,
-  {commonColor, commonIndicator}: DiffOptionsNormalized,
+  {commonColor, commonIndicator, trailingSpaceFormatter}: DiffOptionsNormalized,
 ): string =>
   line.length !== 0
-    ? commonColor(commonIndicator + ' ' + replaceSpacesAtEnd(line))
+    ? commonColor(
+        commonIndicator +
+          ' ' +
+          formatTrailingSpaces(line, trailingSpaceFormatter),
+      )
     : isFirstOrLast
     ? commonColor(commonIndicator + ' ' + NEWLINE_SYMBOL)
     : '';

@@ -34,11 +34,14 @@ const convertStyles = (val: string): string =>
         return '<r>';
       case style.yellow.open:
         return '<y>';
+      case style.bgYellow.open:
+        return '<Y>';
 
       case style.dim.close:
       case style.green.close:
       case style.red.close:
       case style.yellow.close:
+      case style.bgYellow.close:
         return '</>';
 
       default:

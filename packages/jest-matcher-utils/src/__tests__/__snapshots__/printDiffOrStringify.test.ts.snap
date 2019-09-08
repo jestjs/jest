@@ -4,12 +4,12 @@ exports[`printDiffOrStringify expected and received are multi line with trailing
 "<green>- Expected</>
 <red>+ Received</>
 
-<green>- <inverse>delete</>·</>
-<red>+ <inverse>insert</>·</>
+<green>- <inverse>delete</><bgYellow> </></>
+<red>+ <inverse>insert</><bgYellow> </></>
 <green>- common <inverse>expect</>ed common</>
 <red>+ common <inverse>receiv</>ed common</>
-<green>- <inverse>prev</>·</>
-<red>+ <inverse>next</>·</>"
+<green>- <inverse>prev</><bgYellow> </></>
+<red>+ <inverse>next</><bgYellow> </></>"
 `;
 
 exports[`printDiffOrStringify expected and received are single line with multiple changes 1`] = `

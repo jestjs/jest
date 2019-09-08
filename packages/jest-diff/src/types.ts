@@ -22,6 +22,7 @@ export type DiffOptions = {
   includeChangeCounts?: boolean;
   omitAnnotationLines?: boolean;
   patchColor?: DiffOptionsColor;
+  trailingSpaceFormatter?: DiffOptionsColor;
 };
 
 export type DiffOptionsNormalized = {
@@ -39,4 +40,5 @@ export type DiffOptionsNormalized = {
   includeChangeCounts: boolean;
   omitAnnotationLines: boolean;
   patchColor: DiffOptionsColor;
+  trailingSpaceFormatter: DiffOptionsColor;
 };

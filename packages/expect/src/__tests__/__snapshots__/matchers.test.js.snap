@@ -325,7 +325,7 @@ trailing space" and "without trailing space" 1`] = `
 <red>+ Received</>
 
 <green>- with<inverse>out</> trailing space</>
-<red>+ with·</>
+<red>+ with<bgYellow> </></>
 <red>+ trailing space</>"
 `;
 
@@ -3603,8 +3603,8 @@ exports[`.toStrictEqual() displays substring diff for multiple lines 1`] = `
 <green>- Expected</>
 <red>+ Received</>
 
-<green>-     6<inverse>9</> |·</>
-<red>+     6<inverse>8</> |·</>
+<green>-     6<inverse>9</> |<bgYellow> </></>
+<red>+     6<inverse>8</> |<bgYellow> </></>
 <green>-     <inverse>70</> | test('assert.doesNotThrow', () => {</>
 <red>+     <inverse>69</> | test('assert.doesNotThrow', () => {</>
 <green>-   > 7<inverse>1</> |   assert.doesNotThrow(() => {</>
