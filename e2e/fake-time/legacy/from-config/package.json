@@ -1,9 +1,6 @@
 {
   "jest": {
     "timers": "legacy",
-    "setupFiles": [
-      "<rootDir>/fake-promises"
-    ],
     "testEnvironment": "node"
   }
 }
