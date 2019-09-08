@@ -185,3 +185,23 @@ describe('transformer-config', () => {
     expect(stdout).toMatchSnapshot();
   });
 });
+
+describe('transformer caching', () => {
+  const dir = path.resolve(__dirname, '../transform/cache');
+  const transformedFile = path.resolve(dir, './common-file.js');
+
+  it('does not rerun transform within worker', () => {
+    // --no-cache because babel can cache stuff and result in false green
+    const {stdout} = runJest(dir, ['--no-cache', '-w=2']);
+
+    const loggedFiles = stdout.split('\n');
+
+    // Verify any lines logged are _just_ the file we care about
+    loggedFiles.forEach(line => {
+      expect(line).toBe(transformedFile);
+    });
+
+    // We run with 2 workers, so the file should be transformed twice
+    expect(loggedFiles).toHaveLength(2);
+  });
+});
