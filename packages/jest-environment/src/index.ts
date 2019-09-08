@@ -9,7 +9,10 @@ import {Script} from 'vm';
 import {Circus, Config, Global} from '@jest/types';
 import jestMock = require('jest-mock');
 import {ScriptTransformer} from '@jest/transform';
-import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+import {
+  JestFakeTimers as LegacyFakeTimers,
+  LolexFakeTimers,
+} from '@jest/fake-timers';
 
 type JestMockFn = typeof jestMock.fn;
 type JestMockSpyOn = typeof jestMock.spyOn;
@@ -37,7 +40,8 @@ export type ModuleWrapper = (
 export declare class JestEnvironment {
   constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
-  fakeTimers: FakeTimers<unknown> | null;
+  fakeTimers: LegacyFakeTimers<unknown> | null;
+  fakeTimersLolex: LolexFakeTimers | null;
   moduleMocker: jestMock.ModuleMocker | null;
   runScript(
     script: Script,

@@ -94,11 +94,11 @@ export default class FakeTimers {
   }
 
   useFakeTimers() {
-    const toFake = Object.keys(this._lolex.timers) as Array<
-      keyof LolexWithContext['timers']
-    >;
-
     if (!this._fakingTime) {
+      const toFake = Object.keys(this._lolex.timers) as Array<
+        keyof LolexWithContext['timers']
+      >;
+
       this._clock = this._lolex.install({
         loopLimit: this._maxLoops,
         now: Date.now(),
