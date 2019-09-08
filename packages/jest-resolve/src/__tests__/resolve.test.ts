@@ -162,11 +162,13 @@ describe('resolveModule', () => {
       extensions: ['.js'],
     } as ResolverConfig);
     const mocksDirectory = path.resolve(__dirname, '../__mocks__');
-    const resolved = resolver.resolveModule(
-      path.join(mocksDirectory, 'foo/foo.js'),
-      './',
-    );
-    expect(resolved).toBe(path.join(mocksDirectory, 'foo/index.js'));
+    const fooSlashFoo = path.join(mocksDirectory, 'foo/foo.js');
+    const fooSlashIndex = path.join(mocksDirectory, 'foo/index.js');
+
+    const resolvedWithSlash = resolver.resolveModule(fooSlashFoo, './');
+    const resolvedWithDot = resolver.resolveModule(fooSlashFoo, '.');
+    expect(resolvedWithSlash).toBe(fooSlashIndex);
+    expect(resolvedWithSlash).toBe(resolvedWithDot);
   });
 });
 

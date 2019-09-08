@@ -69,7 +69,7 @@ function resolveSync(
   if (REGEX_RELATIVE_IMPORT.test(target)) {
     // resolve relative import
     let resolveTarget = path.resolve(basedir, target);
-    if (target === '..' || target.endsWith('/')) {
+    if (target === '.' || target === '..' || target.endsWith('/')) {
       resolveTarget += '/';
     }
     const result = tryResolve(resolveTarget);
