@@ -20,6 +20,7 @@
 
 ### Fixes
 
+- `[expect]` Fix false positives when looking for undefined prop ([#8786](https://github.com/facebook/jest/issues/8786))
 - `[expect]` Display expectedDiff more carefully in toBeCloseTo ([#8389](https://github.com/facebook/jest/pull/8389))
 - `[jest-diff]` Do not inverse format if line consists of one change ([#8903](https://github.com/facebook/jest/pull/8903))
 - `[jest-fake-timers]` `getTimerCount` will not include cancelled immediates ([#8764](https://github.com/facebook/jest/pull/8764))
@@ -197,7 +198,6 @@
 
 ### Fixes
 
-- `[expect]` Fix false positives when looking for undefined prop ([#8786](https://github.com/facebook/jest/issues/8786))
 - `[jest-circus]` Fix test retries with beforeAll/beforeEach failures ([#8227](https://github.com/facebook/jest/pull/8227))
 - `[expect]` Fix circular references in iterable equality ([#8160](https://github.com/facebook/jest/pull/8160))
 - `[jest-changed-files]` Change method of obtaining git root ([#8052](https://github.com/facebook/jest/pull/8052))
