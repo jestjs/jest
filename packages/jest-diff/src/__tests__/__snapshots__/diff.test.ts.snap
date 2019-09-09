@@ -1,71 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`background color of spaces cyan for inchanged (expanded) 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<dim>  <div></>
-<red>+   <p></>
-<cyan>      <span></>
-<cyan>        following string consists of a space:</>
-<cyan>        <inverse> </></>
-<cyan>        <inverse> </>line has preceding space only</>
-<cyan>        <inverse> </>line has both preceding and following space<inverse> </></>
-<cyan>        line has following space only<inverse> </></>
-<cyan>      </span></>
-<red>+   </p></>
-<dim>  </div></>"
-`;
-
-exports[`background color of spaces green for removed (expanded) 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<dim>  <div></>
-<dim>    <span></>
-<green>-     following string consists of a space:</>
-<green>-     <inverse> </></>
-<green>-     <inverse> </>line has preceding space only</>
-<green>-     <inverse> </>line has both preceding and following space<inverse> </></>
-<green>-     line has following space only<inverse> </></>
-<red>+     </>
-<dim>    </span></>
-<dim>  </div></>"
-`;
-
-exports[`background color of spaces red for added (expanded) 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<dim>  <div></>
-<dim>    <span></>
-<green>-     </>
-<red>+     following string consists of a space:</>
-<red>+     <inverse> </></>
-<red>+     <inverse> </>line has preceding space only</>
-<red>+     <inverse> </>line has both preceding and following space<inverse> </></>
-<red>+     line has following space only<inverse> </></>
-<dim>    </span></>
-<dim>  </div></>"
-`;
-
-exports[`background color of spaces yellow for unchanged (expanded) 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<dim>  <div></>
-<green>-   <span></>
-<red>+   <p></>
-<dim>      following string consists of a space:</>
-<dim>      <bgYellow> </></>
-<dim>      <bgYellow> </>line has preceding space only</>
-<dim>      <bgYellow> </>line has both preceding and following space<bgYellow> </></>
-<dim>      line has following space only<bgYellow> </></>
-<green>-   </span></>
-<red>+   </p></>
-<dim>  </div></>"
-`;
-
 exports[`collapses big diffs to patch format 1`] = `
 "<green>- Expected</>
 <red>+ Received</>
@@ -92,9 +26,9 @@ exports[`color of text (expanded) 1`] = `
 <green>-   \\"sorting\\": Object {</>
 <red>+   \\"sorting\\": Array [</>
 <red>+     Object {</>
-<cyan>        \\"descending\\": false,</>
-<cyan>        \\"fieldKey\\": \\"what\\",</>
-<cyan>      },</>
+<dim>        \\"descending\\": false,</>
+<dim>        \\"fieldKey\\": \\"what\\",</>
+<dim>      },</>
 <red>+   ],</>
 <dim>  }</>"
 `;
@@ -255,21 +189,6 @@ exports[`falls back to not call toJSON if serialization has no differences but t
 <red>+   \\"line\\": 2,</>
 <dim>    \\"toJSON\\": [Function toJSON],</>
 <dim>  }</>"
-`;
-
-exports[`highlight only the last in odd length of leading spaces (expanded) 1`] = `
-"<green>- Expected</>
-<red>+ Received</>
-
-<dim>  <pre></>
-<green>-   attributes.reduce(function (props, attribute) {</>
-<green>-   <inverse> </>props[attribute.name] = attribute.value;</>
-<red>+   attributes.reduce((props, {name, value}) =&gt; {</>
-<red>+   props[name] = value;</>
-<dim>    return props;</>
-<green>- <inverse> </>}, {});</>
-<red>+ }, {});</>
-<dim>  </pre></>"
 `;
 
 exports[`oneline strings 1`] = `
@@ -443,3 +362,25 @@ exports[`options omitAnnotationLines true diffStringsUnified and includeChangeCo
 `;
 
 exports[`options omitAnnotationLines true diffStringsUnified empty strings 1`] = `""`;
+
+exports[`options trailingSpaceFormatter diffDefault default yellowish 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- delete 1 trailing space:<bgYellow> </></>
+<red>+ delete 1 trailing space:</>
+<dim>  common 2 trailing spaces:<bgYellow>  </></>
+<green>- insert 1 trailing space:</>
+<red>+ insert 1 trailing space:<bgYellow> </></>"
+`;
+
+exports[`options trailingSpaceFormatter diffDefault middle dot 1`] = `
+"<green>- Expected</>
+<red>+ Received</>
+
+<green>- delete 1 trailing space:·</>
+<red>+ delete 1 trailing space:</>
+<dim>  common 2 trailing spaces:··</>
+<green>- insert 1 trailing space:</>
+<red>+ insert 1 trailing space:·</>"
+`;

@@ -18,7 +18,7 @@ To add this package as a dependency of a project, run either of the following co
 
 ## Usage of default export
 
-Given values and optional options, `diffLinesUnified(a, b, options?)` does the following:
+Given values and optional options, `diffDefault(a, b, options?)` does the following:
 
 - **serialize** the values as strings using the `pretty-format` package
 - **compare** the strings line-by-line using the `diff-sequences` package
@@ -26,16 +26,16 @@ Given values and optional options, `diffLinesUnified(a, b, options?)` does the f
 
 To use this function, write either of the following:
 
-- `const diffLinesUnified = require('jest-diff').default;` in CommonJS modules
-- `import diffLinesUnified from 'jest-diff';` in ECMAScript modules
+- `const diffDefault = require('jest-diff').default;` in CommonJS modules
+- `import diffDefault from 'jest-diff';` in ECMAScript modules
 
 ### Example of default export
 
 ```js
-const a = ['delete', 'change from', 'common'];
-const b = ['change to', 'insert', 'common'];
+const a = ['delete', 'changed from', 'common'];
+const b = ['changed to', 'insert', 'common'];
 
-const difference = diffLinesUnified(a, b);
+const difference = diffDefault(a, b);
 ```
 
 The returned **string** consists of:
@@ -49,8 +49,8 @@ The returned **string** consists of:
 
   Array [
 -   "delete",
--   "change from",
-+   "change to",
+-   "changed from",
++   "changed to",
 +   "insert",
     "common",
   ]
@@ -82,8 +82,8 @@ Write either of the following:
 ### Example of diffStringsUnified
 
 ```js
-const a = 'change from\ncommon';
-const b = 'change to\ncommon';
+const a = 'changed from\ncommon';
+const b = 'changed to\ncommon';
 
 const difference = diffStringsUnified(a, b);
 ```
@@ -97,8 +97,8 @@ The returned **string** consists of:
 - Expected
 + Received
 
-- change from
-+ change to
+- changed from
++ changed to
   common
 ```
 
@@ -146,11 +146,11 @@ The value at index `1` is a substring of `a` or `b` or both.
 ### Example of diffStringsRaw with cleanup
 
 ```js
-const diffs = diffStringsRaw('change from', 'change to', true);
+const diffs = diffStringsRaw('changed from', 'changed to', true);
 
 /*
 diffs[0][0] === 0 // DIFF_EQUAL
-diffs[0][1] === 'change '
+diffs[0][1] === 'changed '
 
 diffs[1][0] === -1 // DIFF_DELETE
 diffs[1][1] === 'from'
@@ -163,11 +163,11 @@ diffs[2][1] === 'to'
 ### Example of diffStringsRaw without cleanup
 
 ```js
-const diffs = diffStringsRaw('change from', 'change to', false);
+const diffs = diffStringsRaw('changed from', 'changed to', false);
 
 /*
 diffs[0][0] === 0 // DIFF_EQUAL
-diffs[0][1] === 'change '
+diffs[0][1] === 'changed '
 
 diffs[1][0] === -1 // DIFF_DELETE
 diffs[1][1] === 'fr'
@@ -196,7 +196,7 @@ To write a **formatting** function, you might need the named constants (and `Dif
 If you write an application-specific **cleanup** algorithm, then you might need to call the `Diff` constructor:
 
 ```js
-const diffCommon = new Diff(DIFF_EQUAL, 'change ');
+const diffCommon = new Diff(DIFF_EQUAL, 'changed ');
 const diffDelete = new Diff(DIFF_DELETE, 'from');
 const diffInsert = new Diff(DIFF_INSERT, 'to');
 ```
@@ -207,27 +207,30 @@ The default options are for the report when an assertion fails from the `expect`
 
 For other applications, you can provide an options object as a third argument:
 
-- `diffLinesUnified(a, b, options)`
+- `diffDefault(a, b, options)`
 - `diffStringsUnified(a, b, options)`
 
 ### Properties of options object
 
-| name                  | default         |
-| :-------------------- | :-------------- |
-| `aAnnotation`         | `'Expected'`    |
-| `aColor`              | `chalk.green`   |
-| `aIndicator`          | `'-'`           |
-| `bAnnotation`         | `'Received'`    |
-| `bColor`              | `chalk.red`     |
-| `bIndicator`          | `'+'`           |
-| `changeColor`         | `chalk.inverse` |
-| `commonColor`         | `chalk.dim`     |
-| `commonIndicator`     | `' '`           |
-| `contextLines`        | `5`             |
-| `expand`              | `true`          |
-| `includeChangeCounts` | `false`         |
-| `omitAnnotationLines` | `false`         |
-| `patchColor`          | `chalk.yellow`  |
+| name                     | default          |
+| :----------------------- | :--------------- |
+| `aAnnotation`            | `'Expected'`     |
+| `aColor`                 | `chalk.green`    |
+| `aIndicator`             | `'-'`            |
+| `bAnnotation`            | `'Received'`     |
+| `bColor`                 | `chalk.red`      |
+| `bIndicator`             | `'+'`            |
+| `changeColor`            | `chalk.inverse`  |
+| `commonColor`            | `chalk.dim`      |
+| `commonIndicator`        | `' '`            |
+| `contextLines`           | `5`              |
+| `expand`                 | `true`           |
+| `includeChangeCounts`    | `false`          |
+| `omitAnnotationLines`    | `false`          |
+| `patchColor`             | `chalk.yellow`   |
+| `trailingSpaceFormatter` | `chalk.bgYellow` |
+
+For more information about the options, see the following examples.
 
 ### Example of options for labels
 
@@ -238,6 +241,15 @@ const options = {
   aAnnotation: 'Original',
   bAnnotation: 'Modified',
 };
+```
+
+```diff
+- Original
++ Modified
+
+- changed from
++ changed to
+  common
 ```
 
 The `jest-diff` package does not assume that the 2 labels have equal length.
@@ -257,29 +269,46 @@ const options = {
 
 ### Example of option for color of changed substrings
 
-Although the default inverse of foreground and background colors is hard to beat for changed substrings **within lines**, especially because it highlights spaces, if you want bold font weight on yellow background:
+Although the default inverse of foreground and background colors is hard to beat for changed substrings **within lines**, especially because it highlights spaces, if you want bold font weight on yellow background color:
 
 ```js
+import chalk from 'chalk';
+
 const options = {
   changeColor: chalk.bold.bgAnsi256(226), // #ffff00
 };
 ```
 
+### Example of option to format trailing spaces
+
+Because the default export does not display substring differences within lines, formatting can help you see when lines differ by the presence or absence of trailing spaces found by `/\s+$/` regular expression.
+
+The formatter is a function, which given a string, returns a string.
+
+If instead of yellowish background color, you want to replace trailing spaces with middle dot characters:
+
+```js
+const options = {
+  trailingSpaceFormatter: string => '·'.repeat(string.length),
+};
+```
+
 ### Example of options for no colors
 
-The value of a color option is a function, which given a string, returns a string.
+The value of a color or formatter option is a function, which given a string, returns a string.
 
 To store the difference in a file without escape codes for colors, provide an identity function:
 
 ```js
-const identity = string => string;
+const noColor = string => string;
 
 const options = {
-  aColor: identity,
-  bColor: identity,
-  changeColor: identity,
-  commonColor: identity,
-  patchColor: identity,
+  aColor: noColor,
+  bColor: noColor,
+  changeColor: noColor,
+  commonColor: noColor,
+  patchColor: noColor,
+  trailingSpaceFormatter: noColor,
 };
 ```
 
@@ -316,6 +345,8 @@ A patch mark like `@@ -12,7 +12,9 @@` accounts for omitted common lines.
 If you want patch marks to have the same dim color as common lines:
 
 ```js
+import chalk from 'chalk';
+
 const options = {
   expand: false,
   patchColor: chalk.dim,
@@ -327,13 +358,14 @@ const options = {
 To display the number of changed lines at the right of annotation lines:
 
 ```js
-const a = ['change from', 'common'];
-const b = ['change to', 'insert', 'common'];
+const a = ['changed from', 'common'];
+const b = ['changed to', 'insert', 'common'];
+
 const options = {
   includeChangeCounts: true,
 };
 
-const difference = diffLinesUnified(a, b, options);
+const difference = diffDefault(a, b, options);
 ```
 
 ```diff
@@ -341,8 +373,8 @@ const difference = diffLinesUnified(a, b, options);
 + Received  2 +
 
   Array [
--   "change from",
-+   "change to",
+-   "changed from",
++   "changed to",
 +   "insert",
     "common",
   ]
@@ -353,8 +385,9 @@ const difference = diffLinesUnified(a, b, options);
 To display only the comparison lines:
 
 ```js
-const a = 'change from\ncommon';
-const b = 'change to\ncommon';
+const a = 'changed from\ncommon';
+const b = 'changed to\ncommon';
+
 const options = {
   omitAnnotationLines: true,
 };
@@ -363,7 +396,7 @@ const difference = diffStringsUnified(a, b, options);
 ```
 
 ```diff
-- change from
-+ change to
+- changed from
++ changed to
   common
 ```

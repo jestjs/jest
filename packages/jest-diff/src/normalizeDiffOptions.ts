@@ -26,6 +26,7 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   includeChangeCounts: false,
   omitAnnotationLines: false,
   patchColor: chalk.yellow,
+  trailingSpaceFormatter: chalk.bgYellow,
 };
 
 const getContextLines = (contextLines?: number): number =>

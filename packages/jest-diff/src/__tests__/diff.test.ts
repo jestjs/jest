@@ -676,156 +676,6 @@ describe('trailing newline in multiline string not enclosed in quotes', () => {
   });
 });
 
-describe('background color of spaces', () => {
-  const baseline = {
-    $$typeof: elementSymbol,
-    props: {
-      children: [
-        {
-          $$typeof: elementSymbol,
-          props: {
-            children: [''],
-          },
-          type: 'span',
-        },
-      ],
-    },
-    type: 'div',
-  };
-  const lines = [
-    'following string consists of a space:',
-    ' ',
-    ' line has preceding space only',
-    ' line has both preceding and following space ',
-    'line has following space only ',
-  ];
-  const examples = {
-    $$typeof: elementSymbol,
-    props: {
-      children: [
-        {
-          $$typeof: elementSymbol,
-          props: {
-            children: lines,
-          },
-          type: 'span',
-        },
-      ],
-    },
-    type: 'div',
-  };
-  const unchanged = {
-    $$typeof: elementSymbol,
-    props: {
-      children: [
-        {
-          $$typeof: elementSymbol,
-          props: {
-            children: lines,
-          },
-          type: 'p',
-        },
-      ],
-    },
-    type: 'div',
-  };
-  const inchanged = {
-    $$typeof: elementSymbol,
-    props: {
-      children: [
-        {
-          $$typeof: elementSymbol,
-          props: {
-            children: [
-              {
-                $$typeof: elementSymbol,
-                props: {
-                  children: [lines],
-                },
-                type: 'span',
-              },
-            ],
-          },
-          type: 'p',
-        },
-      ],
-    },
-    type: 'div',
-  };
-
-  // Expect same results, unless diff is long enough to require patch marks.
-  describe('cyan for inchanged', () => {
-    const received = diff(examples, inchanged, expanded);
-    test('(expanded)', () => {
-      expect(received).toMatchSnapshot();
-    });
-    test('(unexpanded)', () => {
-      expect(diff(examples, inchanged, unexpanded)).toBe(received);
-    });
-  });
-  describe('green for removed', () => {
-    const received = diff(examples, baseline, expanded);
-    test('(expanded)', () => {
-      expect(received).toMatchSnapshot();
-    });
-    test('(unexpanded)', () => {
-      expect(diff(examples, baseline, unexpanded)).toBe(received);
-    });
-  });
-  describe('red for added', () => {
-    const received = diff(baseline, examples, expanded);
-    test('(expanded)', () => {
-      expect(received).toMatchSnapshot();
-    });
-    test('(unexpanded)', () => {
-      expect(diff(baseline, examples, unexpanded)).toBe(received);
-    });
-  });
-  describe('yellow for unchanged', () => {
-    const received = diff(examples, unchanged, expanded);
-    test('(expanded)', () => {
-      expect(received).toMatchSnapshot();
-    });
-    test('(unexpanded)', () => {
-      expect(diff(examples, unchanged, unexpanded)).toBe(received);
-    });
-  });
-});
-
-describe('highlight only the last in odd length of leading spaces', () => {
-  const pre5 = {
-    $$typeof: elementSymbol,
-    props: {
-      children: [
-        'attributes.reduce(function (props, attribute) {',
-        '   props[attribute.name] = attribute.value;', // 3 leading spaces
-        '  return props;', // 2 leading spaces
-        ' }, {});', // 1 leading space
-      ].join('\n'),
-    },
-    type: 'pre',
-  };
-  const pre6 = {
-    $$typeof: elementSymbol,
-    props: {
-      children: [
-        'attributes.reduce((props, {name, value}) => {',
-        '  props[name] = value;', // from 3 to 2 leading spaces
-        '  return props;', // unchanged 2 leading spaces
-        '}, {});', // from 1 to 0 leading spaces
-      ].join('\n'),
-    },
-    type: 'pre',
-  };
-  const received = diff(pre5, pre6, expanded);
-  test('(expanded)', () => {
-    expect(received).toMatchSnapshot();
-  });
-  test('(unexpanded)', () => {
-    expect(diff(pre5, pre6, unexpanded)).toBe(received);
-  });
-});
-
 test('collapses big diffs to patch format', () => {
   const result = diff(
     {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
@@ -1034,6 +884,31 @@ describe('options', () => {
 
     test('diffStringsUnified empty strings', () => {
       expect(diffStringsUnified('', '', options)).toMatchSnapshot();
+    });
+  });
+
+  describe('trailingSpaceFormatter', () => {
+    const aTrailingSpaces = [
+      'delete 1 trailing space: ',
+      'common 2 trailing spaces:  ',
+      'insert 1 trailing space:',
+    ].join('\n');
+    const bTrailingSpaces = [
+      'delete 1 trailing space:',
+      'common 2 trailing spaces:  ',
+      'insert 1 trailing space: ',
+    ].join('\n');
+
+    test('diffDefault default yellowish', () => {
+      expect(diff(aTrailingSpaces, bTrailingSpaces)).toMatchSnapshot();
+    });
+
+    test('diffDefault middle dot', () => {
+      const options = {
+        trailingSpaceFormatter: string => '·'.repeat(string.length),
+      };
+
+      expect(diff(aTrailingSpaces, bTrailingSpaces, options)).toMatchSnapshot();
     });
   });
 });

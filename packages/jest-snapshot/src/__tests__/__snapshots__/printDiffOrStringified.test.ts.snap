@@ -194,8 +194,8 @@ exports[`multi line small changes 1`] = `
 <g>- Snapshot</>
 <r>+ Received</>
 
-<g>-     6<i>9</i> |·</>
-<r>+     6<i>8</i> |·</>
+<g>-     6<i>9</i> |<Y> </></>
+<r>+     6<i>8</i> |<Y> </></>
 <g>-     <i>70</i> | test('assert.doesNotThrow', () => {</>
 <r>+     <i>69</i> | test('assert.doesNotThrow', () => {</>
 <g>-   > 7<i>1</i> |   assert.doesNotThrow(() => {</>
