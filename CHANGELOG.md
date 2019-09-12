@@ -34,6 +34,7 @@
 - `[jest-snapshot]` Distinguish empty string from external snapshot not written ([#8880](https://github.com/facebook/jest/pull/8880))
 - `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
+- `[jest-resolve-dependencies]` Resolve mocks as dependencies ([#8952](https://github.com/facebook/jest/pull/8952))
 
 ### Chore & Maintenance
 
@@ -48,7 +49,6 @@
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM from v11 to v15 ([#8851](https://github.com/facebook/jest/pull/8851))
 - `[jest-util]` [**BREAKING**] Remove deprecated exports ([#8863](https://github.com/facebook/jest/pull/8863))
 - `[jest-validate]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
-- `[jest-resolve-dependencies]` Resolve mocks as dependencies ([#8952](https://github.com/facebook/jest/pull/8952))
 
 ### Performance
 
