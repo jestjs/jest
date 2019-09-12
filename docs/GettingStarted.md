@@ -87,6 +87,12 @@ To use [Babel](http://babeljs.io/), install required dependencies via `yarn`:
 yarn add --dev babel-jest @babel/core @babel/preset-env
 ```
 
+Or [`npm`](https://www.npmjs.com/):
+
+```bash
+npm install --save-dev babel-jest @babel/core @babel/preset-env
+```
+
 Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
 
 ```javascript
@@ -161,6 +167,12 @@ Jest supports TypeScript, via Babel. First make sure you followed the instructio
 
 ```bash
 yarn add --dev @babel/preset-typescript
+```
+
+Or [`npm`](https://www.npmjs.com/):
+
+```bash
+npm install --save-dev @babel/preset-typescript
 ```
 
 Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
