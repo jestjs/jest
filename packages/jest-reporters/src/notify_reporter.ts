@@ -10,7 +10,6 @@ import * as util from 'util';
 import exit = require('exit');
 import {Config} from '@jest/types';
 import {AggregatedResult} from '@jest/test-result';
-import {notify} from 'node-notifier';
 import {Context, TestSchedulerContext} from './types';
 import BaseReporter from './base_reporter';
 
@@ -19,6 +18,7 @@ const isDarwin = process.platform === 'darwin';
 const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 export default class NotifyReporter extends BaseReporter {
+  private _notifier = loadNotifier();
   private _startRun: (globalConfig: Config.GlobalConfig) => any;
   private _globalConfig: Config.GlobalConfig;
   private _context: TestSchedulerContext;
@@ -78,7 +78,7 @@ export default class NotifyReporter extends BaseReporter {
         result.numPassedTests,
       );
 
-      notify({icon, message, title});
+      this._notifier.notify({icon, message, title});
     } else if (
       testsHaveRun &&
       !success &&
@@ -106,9 +106,9 @@ export default class NotifyReporter extends BaseReporter {
       const quitAnswer = 'Exit tests';
 
       if (!watchMode) {
-        notify({icon, message, title});
+        this._notifier.notify({icon, message, title});
       } else {
-        notify(
+        this._notifier.notify(
           {
             actions: [restartAnswer, quitAnswer],
             closeLabel: 'Close',
@@ -135,5 +135,19 @@ export default class NotifyReporter extends BaseReporter {
 
     this._context.previousSuccess = success;
     this._context.firstRun = false;
+  }
+}
+
+function loadNotifier(): typeof import('node-notifier') {
+  try {
+    return require('node-notifier');
+  } catch (err) {
+    if (err.code !== 'MODULE_NOT_FOUND') {
+      throw err;
+    } else {
+      throw Error(
+        'notify reporter requires optional dependeny node-notifier but it was not found',
+      );
+    }
   }
 }
