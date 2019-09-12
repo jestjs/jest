@@ -58,6 +58,17 @@ test('resolves dependencies for existing path', () => {
   ]);
 });
 
+test('includes the mocks of dependencies as dependencies', () => {
+  const resolved = dependencyResolver.resolve(
+    path.resolve(__dirname, '__fixtures__', 'hasMocked', 'file.test.js'),
+  );
+
+  expect(resolved).toEqual([
+    expect.stringContaining(path.join('hasMocked', 'file.js')),
+    expect.stringContaining(path.join('hasMocked', '__mocks__', 'file.js')),
+  ]);
+});
+
 test('resolves dependencies for scoped packages', () => {
   const resolved = dependencyResolver.resolve(
     path.resolve(__dirname, '__fixtures__', 'scoped.js'),
