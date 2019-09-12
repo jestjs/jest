@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'path';
 import {Config} from '@jest/types';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {FS as HasteFS} from 'jest-haste-map';
@@ -51,7 +52,9 @@ class DependencyResolver {
       if (this._resolver.isCoreModule(dependency)) {
         return acc;
       }
+
       let resolvedDependency;
+      let resolvedMockDependency;
       try {
         resolvedDependency = this._resolver.resolveModule(
           file,
@@ -59,11 +62,22 @@ class DependencyResolver {
           options,
         );
       } catch (e) {
-        resolvedDependency = this._resolver.getMockModule(file, dependency);
+        resolvedMockDependency = this._resolver.getMockModule(file, dependency);
       }
 
       if (resolvedDependency) {
         acc.push(resolvedDependency);
+
+        // If we resolve a dependency, then look for a mock dependency
+        // of the same name in that dependency's directory.
+        resolvedMockDependency = this._resolver.getMockModule(
+          path.dirname(resolvedDependency),
+          path.basename(dependency),
+        );
+      }
+
+      if (resolvedMockDependency) {
+        acc.push(resolvedMockDependency);
       }
 
       return acc;
