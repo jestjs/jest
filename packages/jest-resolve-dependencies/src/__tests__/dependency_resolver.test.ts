@@ -60,7 +60,7 @@ test('resolves dependencies for existing path', () => {
 
 test('includes the mocks of dependencies as dependencies', () => {
   const resolved = dependencyResolver.resolve(
-    path.resolve(__dirname, '__fixtures__', 'hasMocked', 'file.test.js'),
+    path.resolve(__dirname, '__fixtures__/hasMocked/file.test.js'),
   );
 
   expect(resolved).toEqual([
