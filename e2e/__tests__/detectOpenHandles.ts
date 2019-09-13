@@ -7,6 +7,7 @@
 
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest, {until} from '../runJest';
+import { onNodeVersions } from '../../packages/test-utils';
 
 try {
   require('async_hooks');
@@ -69,9 +70,7 @@ it('does not report promises', () => {
   expect(textAfterTest).toBe('');
 });
 
-const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
-
-if (nodeMajorVersion >= 11) {
+onNodeVersions('>=11', () => {
   it('does not report timeouts using unref', () => {
     // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
     const {stderr} = runJest('detect-open-handles', [
@@ -82,7 +81,7 @@ if (nodeMajorVersion >= 11) {
 
     expect(textAfterTest).toBe('');
   });
-}
+});
 
 it('prints out info about open handlers from inside tests', async () => {
   const {stderr} = await until(
