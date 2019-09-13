@@ -185,7 +185,7 @@ const difference = diffLinesUnified2(
   format(a).split('\n'),
   format(b).split('\n'),
   // serialize without indentation to compare lines
-  format(a, {indent: 0}).split('\n'), 
+  format(a, {indent: 0}).split('\n'),
   format(b, {indent: 0}).split('\n'),
 );
 ```
@@ -234,11 +234,11 @@ The value at index `1` is a substring of `a` or `b` or both.
 const diffs = diffStringsRaw('changed from', 'changed to', true);
 ```
 
-|  `i` | `diffs[i][0]` | `diffs[i][1]` |
-| ---: | ------------: | :------------ |
-|  `0` |           `0` | `'changed '`  |
-|  `1` |          `-1` | `'from'`      |
-|  `2` |           `1` | `'to'`        |
+| `i` | `diffs[i][0]` | `diffs[i][1]` |
+| --: | ------------: | :------------ |
+| `0` |           `0` | `'changed '`  |
+| `1` |          `-1` | `'from'`      |
+| `2` |           `1` | `'to'`        |
 
 ### Example of diffStringsRaw without cleanup
 
@@ -246,13 +246,13 @@ const diffs = diffStringsRaw('changed from', 'changed to', true);
 const diffs = diffStringsRaw('changed from', 'changed to', false);
 ```
 
-|  `i` | `diffs[i][0]` | `diffs[i][1]` |
-| ---: | ------------: | :------------ |
-|  `0` |           `0` | `'changed '`  |
-|  `1` |          `-1` | `'fr'`        |
-|  `2` |           `1` | `'t'`         |
-|  `3` |           `0` | `'o'`         |
-|  `4` |          `-1` | `'m'`         |
+| `i` | `diffs[i][0]` | `diffs[i][1]` |
+| --: | ------------: | :------------ |
+| `0` |           `0` | `'changed '`  |
+| `1` |          `-1` | `'fr'`        |
+| `2` |           `1` | `'t'`         |
+| `3` |           `0` | `'o'`         |
+| `4` |          `-1` | `'m'`         |
 
 ### Advanced import for diffStringsRaw
 
@@ -275,7 +275,7 @@ const diffInsert = new Diff(DIFF_INSERT, 'to');
 
 Given **arrays of strings**, `diffLinesRaw(aLines, bLines)` does the following:
 
-* **compare** the arrays line-by-line using the `diff-sequences` package
+- **compare** the arrays line-by-line using the `diff-sequences` package
 
 Because `diffLinesRaw` returns the difference as **data** instead of a string, you can format it as your application requires.
 
@@ -288,13 +288,13 @@ const bLines = ['common', 'changed to', 'insert'];
 const diffs = diffLinesRaw(aLines, bLines);
 ```
 
-|  `i` | `diffs[i][0]` | `diffs[i][1]`    |
-| ---: | ------------: | :--------------- |
-|  `0` |          `-1` | `'delete'`       |
-|  `1` |           `0` | `'common'`       |
-|  `2` |          `-1` | `'changed from'` |
-|  `3` |           `1` | `'changed to'`   |
-|  `4` |           `1` | `'insert'`       |
+| `i` | `diffs[i][0]` | `diffs[i][1]`    |
+| --: | ------------: | :--------------- |
+| `0` |          `-1` | `'delete'`       |
+| `1` |           `0` | `'common'`       |
+| `2` |          `-1` | `'changed from'` |
+| `3` |           `1` | `'changed to'`   |
+| `4` |           `1` | `'insert'`       |
 
 ## Options
 
@@ -517,6 +517,6 @@ const options = {
 
 By the way, other empty comparison lines are automatically trimmed as follows:
 
-- common: `''` instead of `'  '`
+- common: `''` instead of `' '`
 - Expected: `'-'` instead of `'- '`
 - Received: `'+'` instead of `'+ '`
