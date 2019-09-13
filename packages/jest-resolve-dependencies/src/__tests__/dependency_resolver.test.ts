@@ -100,6 +100,19 @@ test('resolves inverse dependencies for existing path', () => {
   ]);
 });
 
+test('resolves inverse dependencies of mock', () => {
+  const paths = new Set([
+    path.resolve(__dirname, '__fixtures__/hasMocked/__mocks__/file.js'),
+  ]);
+  const resolved = dependencyResolver.resolveInverse(paths, filter);
+
+  expect(resolved).toEqual([
+    expect.stringContaining(
+      path.join('__tests__', '__fixtures__', 'hasMocked', 'file.test.js'),
+    ),
+  ]);
+});
+
 test('resolves inverse dependencies from available snapshot', () => {
   const paths = new Set([
     path.resolve(__dirname, '__fixtures__/file.js'),
