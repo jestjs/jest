@@ -10,5 +10,5 @@ export {
   skipSuiteOnJasmine,
   skipSuiteOnJestCircus,
   skipSuiteOnWindows,
-  onNodeVersions
+  onNodeVersions,
 } from './ConditionalTest';

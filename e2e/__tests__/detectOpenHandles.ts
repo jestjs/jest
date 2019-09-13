@@ -7,7 +7,7 @@
 
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest, {until} from '../runJest';
-import { onNodeVersions } from '../../packages/test-utils';
+import {onNodeVersions} from '../../packages/test-utils';
 
 try {
   require('async_hooks');
