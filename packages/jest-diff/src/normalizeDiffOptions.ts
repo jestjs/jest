@@ -27,6 +27,7 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   omitAnnotationLines: false,
   patchColor: chalk.yellow,
   trailingSpaceFormatter: chalk.bgYellow,
+  trimmableLineReplacement: '\u{21B5}', // downwards arrow with corner leftwards
 };
 
 const getContextLines = (contextLines?: number): number =>

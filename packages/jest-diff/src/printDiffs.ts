@@ -12,7 +12,7 @@ import {
   Diff,
   cleanupSemantic,
 } from './cleanupSemantic';
-import diffLines from './diffLines';
+import {diffLinesUnified} from './diffLines';
 import diffStrings from './diffStrings';
 import getAlignedDiffs from './getAlignedDiffs';
 import {
@@ -21,8 +21,6 @@ import {
 } from './joinAlignedDiffs';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {DiffOptions, DiffOptionsColor, DiffOptionsNormalized} from './types';
-
-const NEWLINE_SYMBOL = '\u{21B5}'; // downwards arrow with corner leftwards
 
 export const formatTrailingSpaces = (
   line: string,
@@ -53,7 +51,12 @@ export const printInsertLine = (
 export const printCommonLine = (
   line: string,
   isFirstOrLast: boolean,
-  {commonColor, commonIndicator, trailingSpaceFormatter}: DiffOptionsNormalized,
+  {
+    commonColor,
+    commonIndicator,
+    trailingSpaceFormatter,
+    trimmableLineReplacement,
+  }: DiffOptionsNormalized,
 ): string =>
   line.length !== 0
     ? commonColor(
@@ -61,8 +64,8 @@ export const printCommonLine = (
           ' ' +
           formatTrailingSpaces(line, trailingSpaceFormatter),
       )
-    : isFirstOrLast
-    ? commonColor(commonIndicator + ' ' + NEWLINE_SYMBOL)
+    : isFirstOrLast && trimmableLineReplacement.length !== 0
+    ? commonColor(commonIndicator + ' ' + trimmableLineReplacement)
     : '';
 
 export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
@@ -82,7 +85,7 @@ export type ChangeCounts = {
   b: number;
 };
 
-const countChanges = (diffs: Array<Diff>): ChangeCounts => {
+export const countChanges = (diffs: Array<Diff>): ChangeCounts => {
   let a = 0;
   let b = 0;
 
@@ -145,6 +148,15 @@ export const printAnnotation = (
   );
 };
 
+export const printDiffs = (
+  diffs: Array<Diff>,
+  options: DiffOptionsNormalized,
+): string =>
+  printAnnotation(options, countChanges(diffs)) +
+  (options.expand
+    ? joinAlignedDiffsExpand(diffs, options)
+    : joinAlignedDiffsNoExpand(diffs, options));
+
 // In GNU diff format, indexes are one-based instead of zero-based.
 export const createPatchMark = (
   aStart: number,
@@ -157,16 +169,16 @@ export const createPatchMark = (
     `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
   );
 
-// Given two string arguments, compare them character-by-character.
+// Compare two strings character-by-character.
 // Format as comparison lines in which changed substrings have inverse colors.
 export const diffStringsUnified = (
   a: string,
   b: string,
   options?: DiffOptions,
 ): string => {
-  const optionsNormalized = normalizeDiffOptions(options);
-
   if (a.length === 0 || b.length === 0) {
+    const optionsNormalized = normalizeDiffOptions(options);
+
     const lines: Array<string> = [];
     const changeCounts: ChangeCounts = {
       a: 0,
@@ -195,6 +207,8 @@ export const diffStringsUnified = (
   }
 
   if (a === b) {
+    const optionsNormalized = normalizeDiffOptions(options);
+
     const lines = a.split('\n');
     const iLast = lines.length - 1;
     const changeCounts = {
@@ -223,23 +237,18 @@ export const diffStringsUnified = (
   );
 
   if (hasCommonDiff(diffs, isMultiline)) {
+    const optionsNormalized = normalizeDiffOptions(options);
     const lines = getAlignedDiffs(diffs, optionsNormalized.changeColor);
-    return (
-      printAnnotation(optionsNormalized, countChanges(lines)) +
-      (optionsNormalized.expand
-        ? joinAlignedDiffsExpand(lines, optionsNormalized)
-        : joinAlignedDiffsNoExpand(lines, optionsNormalized))
-    );
+    return printDiffs(lines, optionsNormalized);
   }
 
   // Fall back to line-by-line diff.
   // Given strings, it returns a string, not null.
-  return diffLines(a, b, optionsNormalized) as string;
+  return diffLinesUnified(a.split('\n'), b.split('\n'), options);
 };
 
-// Given two string arguments, compare them character-by-character.
+// Compare two strings character-by-character.
 // Optionally clean up small common substrings, also known as chaff.
-// Return an array of diff objects.
 export const diffStringsRaw = (
   a: string,
   b: string,

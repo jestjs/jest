@@ -654,7 +654,7 @@ describe('trailing newline in multiline string not enclosed in quotes', () => {
   const b = a + '\n';
 
   describe('from less to more', () => {
-    const expected = ['  line 1', '  line 2', '  line 3', '+ '].join('\n');
+    const expected = ['  line 1', '  line 2', '  line 3', '+'].join('\n');
 
     test('(unexpanded)', () => {
       expect(stripped(a, b, unexpanded)).toMatch(expected);
@@ -665,7 +665,7 @@ describe('trailing newline in multiline string not enclosed in quotes', () => {
   });
 
   describe('from more to less', () => {
-    const expected = ['  line 1', '  line 2', '  line 3', '- '].join('\n');
+    const expected = ['  line 1', '  line 2', '  line 3', '-'].join('\n');
 
     test('(unexpanded)', () => {
       expect(stripped(b, a, unexpanded)).toMatch(expected);
@@ -909,6 +909,37 @@ describe('options', () => {
       };
 
       expect(diff(aTrailingSpaces, bTrailingSpaces, options)).toMatchSnapshot();
+    });
+  });
+
+  describe('trimmableLineReplacement', () => {
+    const noColor = (string: string) => string;
+    const options = {
+      aColor: noColor,
+      bColor: noColor,
+      changeColor: noColor,
+      commonColor: noColor,
+      omitAnnotationLines: true,
+      trimmableLineReplacement: '',
+    };
+
+    const aEmpty = '\ncommon\nchanged from\n';
+    const bEmpty = '\ncommon\nchanged to\n';
+
+    const expected = [
+      '',
+      '  common',
+      '- changed from',
+      '+ changed to',
+      '',
+    ].join('\n');
+
+    test('diffDefault', () => {
+      expect(diff(aEmpty, bEmpty, options)).toBe(expected);
+    });
+
+    test('diffStringsUnified', () => {
+      expect(diffStringsUnified(aEmpty, bEmpty, options)).toBe(expected);
     });
   });
 });

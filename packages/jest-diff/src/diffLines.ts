@@ -5,313 +5,105 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff, {Callbacks} from 'diff-sequences';
-import {NO_DIFF_MESSAGE} from './constants';
-import {
-  ChangeCounts,
-  createPatchMark,
-  formatTrailingSpaces,
-  printAnnotation,
-} from './printDiffs';
-import {DiffOptionsNormalized} from './types';
+import diff from 'diff-sequences';
+import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
+import {normalizeDiffOptions} from './normalizeDiffOptions';
+import {printDiffs} from './printDiffs';
+import {DiffOptions} from './types';
 
-type Original = {
-  a: string;
-  b: string;
-};
+// Compare two arrays of strings line-by-line. Format as comparison lines.
+export const diffLinesUnified = (
+  aLines: Array<string>,
+  bLines: Array<string>,
+  options?: DiffOptions,
+): string =>
+  printDiffs(diffLinesRaw(aLines, bLines), normalizeDiffOptions(options));
 
-type Put = (line: string) => void;
-
-// Given index interval in expected lines, put formatted delete lines.
-const formatDelete = (
-  aStart: number,
-  aEnd: number,
-  aLinesUn: Array<string>,
-  aLinesIn: Array<string>,
-  {aColor, aIndicator, trailingSpaceFormatter}: DiffOptionsNormalized,
-  put: Put,
-) => {
-  for (let aIndex = aStart; aIndex !== aEnd; aIndex += 1) {
-    const aLineUn = aLinesUn[aIndex];
-    const aLineIn = aLinesIn[aIndex];
-    const indentation = aLineIn.slice(0, aLineIn.length - aLineUn.length);
-
-    put(
-      aColor(
-        aIndicator +
-          ' ' +
-          indentation +
-          formatTrailingSpaces(aLineUn, trailingSpaceFormatter),
-      ),
-    );
-  }
-};
-
-// Given index interval in received lines, put formatted insert lines.
-const formatInsert = (
-  bStart: number,
-  bEnd: number,
-  bLinesUn: Array<string>,
-  bLinesIn: Array<string>,
-  {bColor, bIndicator, trailingSpaceFormatter}: DiffOptionsNormalized,
-  put: Put,
-) => {
-  for (let bIndex = bStart; bIndex !== bEnd; bIndex += 1) {
-    const bLineUn = bLinesUn[bIndex];
-    const bLineIn = bLinesIn[bIndex];
-    const indentation = bLineIn.slice(0, bLineIn.length - bLineUn.length);
-
-    put(
-      bColor(
-        bIndicator +
-          ' ' +
-          indentation +
-          formatTrailingSpaces(bLineUn, trailingSpaceFormatter),
-      ),
-    );
-  }
-};
-
-// Given the number of items and starting indexes of a common subsequence,
-// put formatted common lines.
-const formatCommon = (
-  nCommon: number,
-  aCommon: number,
-  bCommon: number,
-  bLinesUn: Array<string>,
-  bLinesIn: Array<string>,
-  {commonColor, commonIndicator, trailingSpaceFormatter}: DiffOptionsNormalized,
-  put: Put,
-) => {
-  for (; nCommon !== 0; nCommon -= 1, aCommon += 1, bCommon += 1) {
-    const bLineUn = bLinesUn[bCommon];
-    const bLineIn = bLinesIn[bCommon];
-    const bLineInLength = bLineIn.length;
-
-    // For common lines, received indentation seems more intuitive.
-    const indentation = bLineIn.slice(0, bLineInLength - bLineUn.length);
-
-    put(
-      commonColor(
-        commonIndicator +
-          ' ' +
-          indentation +
-          formatTrailingSpaces(bLineUn, trailingSpaceFormatter),
-      ),
-    );
-  }
-};
-
-// jest --expand
-// Return formatted diff as joined string of all lines.
-const diffExpand = (
-  aLinesUn: Array<string>,
-  bLinesUn: Array<string>,
-  aLinesIn: Array<string>,
-  bLinesIn: Array<string>,
-  options: DiffOptionsNormalized,
+// Given two pairs of arrays of strings:
+// Compare the pair of comparison arrays line-by-line.
+// Format the corresponding lines in the pair of displayable arrays.
+export const diffLinesUnified2 = (
+  aLinesDisplay: Array<string>,
+  bLinesDisplay: Array<string>,
+  aLinesCompare: Array<string>,
+  bLinesCompare: Array<string>,
+  options?: DiffOptions,
 ): string => {
-  const isCommon: Callbacks['isCommon'] = (aIndex, bIndex) =>
-    aLinesUn[aIndex] === bLinesUn[bIndex];
+  if (
+    aLinesDisplay.length !== aLinesCompare.length ||
+    bLinesDisplay.length !== bLinesCompare.length
+  ) {
+    // Fall back to diff of display lines.
+    return diffLinesUnified(aLinesDisplay, bLinesDisplay, options);
+  }
 
-  const array: Array<string> = [];
-  const put = (line: string) => {
-    array.push(line);
-  };
+  const diffs = diffLinesRaw(aLinesCompare, bLinesCompare);
 
-  const changeCounts: ChangeCounts = {
-    a: 0,
-    b: 0,
-  };
+  // Replace comparison lines with displayable lines.
+  let aIndex = 0;
+  let bIndex = 0;
+  diffs.forEach((diff: Diff) => {
+    switch (diff[0]) {
+      case DIFF_DELETE:
+        diff[1] = aLinesDisplay[aIndex];
+        aIndex += 1;
+        break;
 
-  let aStart = 0;
-  let bStart = 0;
+      case DIFF_INSERT:
+        diff[1] = bLinesDisplay[bIndex];
+        bIndex += 1;
+        break;
 
-  const foundSubsequence: Callbacks['foundSubsequence'] = (
-    nCommon,
-    aCommon,
-    bCommon,
-  ) => {
-    changeCounts.a += aCommon - aStart;
-    changeCounts.b += bCommon - bStart;
-    formatDelete(aStart, aCommon, aLinesUn, aLinesIn, options, put);
-    formatInsert(bStart, bCommon, bLinesUn, bLinesIn, options, put);
-    formatCommon(nCommon, aCommon, bCommon, bLinesUn, bLinesIn, options, put);
-    aStart = aCommon + nCommon;
-    bStart = bCommon + nCommon;
-  };
+      default:
+        diff[1] = bLinesDisplay[bIndex];
+        aIndex += 1;
+        bIndex += 1;
+    }
+  });
 
-  const aLength = aLinesUn.length;
-  const bLength = bLinesUn.length;
-
-  diff(aLength, bLength, isCommon, foundSubsequence);
-
-  // After the last common subsequence, format remaining change lines.
-  changeCounts.a += aLength - aStart;
-  changeCounts.b += bLength - bStart;
-  formatDelete(aStart, aLength, aLinesUn, aLinesIn, options, put);
-  formatInsert(bStart, bLength, bLinesUn, bLinesIn, options, put);
-
-  return printAnnotation(options, changeCounts) + array.join('\n');
+  return printDiffs(diffs, normalizeDiffOptions(options));
 };
 
-// jest --no-expand
-// Return joined string of formatted diff for all change lines,
-// but if some common lines are omitted because there are more than the context,
-// then a “patch mark” precedes each set of adjacent changed and common lines.
-const diffNoExpand = (
-  aLinesUn: Array<string>,
-  bLinesUn: Array<string>,
-  aLinesIn: Array<string>,
-  bLinesIn: Array<string>,
-  options: DiffOptionsNormalized,
-): string => {
-  const isCommon: Callbacks['isCommon'] = (aIndex, bIndex) =>
-    aLinesUn[aIndex] === bLinesUn[bIndex];
+// Compare two arrays of strings line-by-line.
+export const diffLinesRaw = (
+  aLines: Array<string>,
+  bLines: Array<string>,
+): Array<Diff> => {
+  const aLength = aLines.length;
+  const bLength = bLines.length;
 
-  let iPatchMark = 0; // index of placeholder line for patch mark
-  const array = [''];
-  const put = (line: string) => {
-    array.push(line);
-  };
+  const isCommon = (aIndex: number, bIndex: number) =>
+    aLines[aIndex] === bLines[bIndex];
 
-  let isAtEnd = false;
-  const aLength = aLinesUn.length;
-  const bLength = bLinesUn.length;
-  const nContextLines = options.contextLines;
-  const nContextLines2 = nContextLines + nContextLines;
-  const changeCounts: ChangeCounts = {
-    a: 0,
-    b: 0,
-  };
+  const diffs: Array<Diff> = [];
+  let aIndex = 0;
+  let bIndex = 0;
 
-  // Initialize the first patch for changes at the start,
-  // especially for edge case in which there is no common subsequence.
-  let aStart = 0;
-  let aEnd = 0;
-  let bStart = 0;
-  let bEnd = 0;
-
-  // Given the number of items and starting indexes of each common subsequence,
-  // format any preceding change lines, and then common context lines.
-  const foundSubsequence: Callbacks['foundSubsequence'] = (
-    nCommon,
-    aStartCommon,
-    bStartCommon,
+  const foundSubsequence = (
+    nCommon: number,
+    aCommon: number,
+    bCommon: number,
   ) => {
-    const aEndCommon = aStartCommon + nCommon;
-    const bEndCommon = bStartCommon + nCommon;
-    isAtEnd = aEndCommon === aLength && bEndCommon === bLength;
-
-    // If common subsequence is at start, re-initialize the first patch.
-    if (aStartCommon === 0 && bStartCommon === 0) {
-      const nLines = nContextLines < nCommon ? nContextLines : nCommon;
-      aStart = aEndCommon - nLines;
-      bStart = bEndCommon - nLines;
-
-      formatCommon(nLines, aStart, bStart, bLinesUn, bLinesIn, options, put);
-      aEnd = aEndCommon;
-      bEnd = bEndCommon;
-      return;
+    for (; aIndex !== aCommon; aIndex += 1) {
+      diffs.push(new Diff(DIFF_DELETE, aLines[aIndex]));
     }
-
-    // Format preceding change lines.
-    changeCounts.a += aStartCommon - aEnd;
-    changeCounts.b += bStartCommon - bEnd;
-    formatDelete(aEnd, aStartCommon, aLinesUn, aLinesIn, options, put);
-    formatInsert(bEnd, bStartCommon, bLinesUn, bLinesIn, options, put);
-    aEnd = aStartCommon;
-    bEnd = bStartCommon;
-
-    // If common subsequence is at end, then context follows preceding changes;
-    // else context follows preceding changes AND precedes following changes.
-    const maxContextLines = isAtEnd ? nContextLines : nContextLines2;
-
-    if (nCommon <= maxContextLines) {
-      // The patch includes all lines in the common subsequence.
-      formatCommon(nCommon, aEnd, bEnd, bLinesUn, bLinesIn, options, put);
-      aEnd += nCommon;
-      bEnd += nCommon;
-      return;
+    for (; bIndex !== bCommon; bIndex += 1) {
+      diffs.push(new Diff(DIFF_INSERT, bLines[bIndex]));
     }
-
-    // The patch ends because context is less than number of common lines.
-    formatCommon(nContextLines, aEnd, bEnd, bLinesUn, bLinesIn, options, put);
-    aEnd += nContextLines;
-    bEnd += nContextLines;
-
-    array[iPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd, options);
-
-    // If common subsequence is not at end, another patch follows it.
-    if (!isAtEnd) {
-      iPatchMark = array.length; // index of placeholder line
-      array[iPatchMark] = '';
-
-      const nLines = nContextLines < nCommon ? nContextLines : nCommon;
-      aStart = aEndCommon - nLines;
-      bStart = bEndCommon - nLines;
-
-      formatCommon(nLines, aStart, bStart, bLinesUn, bLinesIn, options, put);
-      aEnd = aEndCommon;
-      bEnd = bEndCommon;
+    for (; nCommon !== 0; nCommon -= 1, aIndex += 1, bIndex += 1) {
+      diffs.push(new Diff(DIFF_EQUAL, bLines[bIndex]));
     }
   };
 
   diff(aLength, bLength, isCommon, foundSubsequence);
 
-  // If no common subsequence or last was not at end, format remaining change lines.
-  if (!isAtEnd) {
-    changeCounts.a += aLength - aEnd;
-    changeCounts.b += bLength - bEnd;
-    formatDelete(aEnd, aLength, aLinesUn, aLinesIn, options, put);
-    formatInsert(bEnd, bLength, bLinesUn, bLinesIn, options, put);
-    aEnd = aLength;
-    bEnd = bLength;
+  // After the last common subsequence, push remaining change items.
+  for (; aIndex !== aLength; aIndex += 1) {
+    diffs.push(new Diff(DIFF_DELETE, aLines[aIndex]));
+  }
+  for (; bIndex !== bLength; bIndex += 1) {
+    diffs.push(new Diff(DIFF_INSERT, bLines[bIndex]));
   }
 
-  if (aStart === 0 && aEnd === aLength && bStart === 0 && bEnd === bLength) {
-    array.splice(0, 1); // delete placeholder line for patch mark
-  } else {
-    array[iPatchMark] = createPatchMark(aStart, aEnd, bStart, bEnd, options);
-  }
-
-  return printAnnotation(options, changeCounts) + array.join('\n');
-};
-
-export default (
-  a: string,
-  b: string,
-  options: DiffOptionsNormalized,
-  original?: Original,
-): string => {
-  if (a === b) {
-    return NO_DIFF_MESSAGE;
-  }
-
-  let aLinesUn = a.split('\n');
-  let bLinesUn = b.split('\n');
-
-  // Indentation is unknown if expected value is snapshot or multiline string.
-  let aLinesIn = aLinesUn;
-  let bLinesIn = bLinesUn;
-
-  if (original) {
-    // Indentation is known if expected value is data structure:
-    // Compare lines without indentation and format lines with indentation.
-    aLinesIn = original.a.split('\n');
-    bLinesIn = original.b.split('\n');
-
-    if (
-      aLinesUn.length !== aLinesIn.length ||
-      bLinesUn.length !== bLinesIn.length
-    ) {
-      // Fall back if unindented and indented lines are inconsistent.
-      aLinesUn = aLinesIn;
-      bLinesUn = bLinesIn;
-    }
-  }
-
-  return options.expand
-    ? diffExpand(aLinesUn, bLinesUn, aLinesIn, bLinesIn, options)
-    : diffNoExpand(aLinesUn, bLinesUn, aLinesIn, bLinesIn, options);
+  return diffs;
 };
