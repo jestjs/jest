@@ -5,7 +5,43 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import ansiRegex = require('ansi-regex');
+import * as style from 'ansi-styles';
 import {EXPECTED_COLOR, INVERTED_COLOR, printDiffOrStringify} from '../index';
+
+expect.addSnapshotSerializer({
+  serialize(val: string): string {
+    return val.replace(ansiRegex(), match => {
+      switch (match) {
+        case style.inverse.open:
+          return '<i>';
+        case style.inverse.close:
+          return '</i>';
+
+        case style.dim.open:
+          return '<d>';
+        case style.green.open:
+          return '<g>';
+        case style.red.open:
+          return '<r>';
+        case style.bgYellow.open:
+          return '<Y>';
+
+        case style.dim.close:
+        case style.green.close:
+        case style.red.close:
+        case style.bgYellow.close:
+          return '</>';
+
+        default:
+          return match;
+      }
+    });
+  },
+  test(val: any): val is string {
+    return typeof val === 'string';
+  },
+});
 
 describe('printDiffOrStringify', () => {
   const testDiffOrStringify = (expected: string, received: string): string =>
