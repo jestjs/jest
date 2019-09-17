@@ -13,6 +13,7 @@
 - `[jest-config]` Merge preset globals with project globals ([#9027](https://github.com/facebook/jest/pull/9027))
 - `[jest-config]` Support `.cjs` config files ([#9291](https://github.com/facebook/jest/pull/9291))
 - `[jest-core]` Support reporters as default exports ([#9161](https://github.com/facebook/jest/pull/9161))
+- `[jest-core]` Support `--findRelatedTests` paths case insensitivity on Windows ([#8900](https://github.com/facebook/jest/issues/8900))
 - `[jest-diff]` Add options for colors and symbols ([#8841](https://github.com/facebook/jest/pull/8841))
 - `[jest-diff]` [**BREAKING**] Export as ECMAScript module ([#8873](https://github.com/facebook/jest/pull/8873))
 - `[jest-diff]` Add `includeChangeCounts` and rename `Indicator` options ([#8881](https://github.com/facebook/jest/pull/8881))

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as os from 'os';
 import * as path from 'path';
 import micromatch = require('micromatch');
 import {Context} from 'jest-runtime';
@@ -252,8 +253,6 @@ export default class SearchSource {
     globalConfig: Config.GlobalConfig,
     changedFiles?: ChangedFiles,
   ): SearchResult {
-    const paths = globalConfig.nonFlagArgs;
-
     if (globalConfig.onlyChanged) {
       if (!changedFiles) {
         throw new Error('Changed files must be set when running with -o.');
@@ -263,7 +262,21 @@ export default class SearchSource {
         changedFiles,
         globalConfig.collectCoverage,
       );
-    } else if (globalConfig.runTestsByPath && paths && paths.length) {
+    }
+
+    let paths = globalConfig.nonFlagArgs;
+
+    if (globalConfig.findRelatedTests && 'win32' === os.platform()) {
+      const allFiles = this._context.hasteFS.getAllFiles();
+      const options = {nocase: true, windows: false};
+
+      paths = paths
+        .map(p => path.resolve(this._context.config.cwd, p))
+        .map(p => micromatch(allFiles, p.replace(/\\/g, '\\\\'), options)[0])
+        .filter(p => p);
+    }
+
+    if (globalConfig.runTestsByPath && paths && paths.length) {
       return this.findTestsByPaths(paths);
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
       return this.findRelatedTestsFromPattern(
