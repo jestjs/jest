@@ -22,7 +22,7 @@ import {
 import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {DiffOptions, DiffOptionsColor, DiffOptionsNormalized} from './types';
 
-export const formatTrailingSpaces = (
+const formatTrailingSpaces = (
   line: string,
   trailingSpaceFormatter: DiffOptionsColor,
 ): string => line.replace(/\s+$/, match => trailingSpaceFormatter(match));
@@ -148,7 +148,7 @@ export const printAnnotation = (
   );
 };
 
-export const printDiffs = (
+export const printDiffLines = (
   diffs: Array<Diff>,
   options: DiffOptionsNormalized,
 ): string =>
@@ -239,7 +239,7 @@ export const diffStringsUnified = (
   if (hasCommonDiff(diffs, isMultiline)) {
     const optionsNormalized = normalizeDiffOptions(options);
     const lines = getAlignedDiffs(diffs, optionsNormalized.changeColor);
-    return printDiffs(lines, optionsNormalized);
+    return printDiffLines(lines, optionsNormalized);
   }
 
   // Fall back to line-by-line diff.

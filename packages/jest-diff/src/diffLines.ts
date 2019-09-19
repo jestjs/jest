@@ -8,7 +8,7 @@
 import diff from 'diff-sequences';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
-import {printDiffs} from './printDiffs';
+import {printDiffLines} from './printDiffs';
 import {DiffOptions} from './types';
 
 // Compare two arrays of strings line-by-line. Format as comparison lines.
@@ -17,7 +17,7 @@ export const diffLinesUnified = (
   bLines: Array<string>,
   options?: DiffOptions,
 ): string =>
-  printDiffs(diffLinesRaw(aLines, bLines), normalizeDiffOptions(options));
+  printDiffLines(diffLinesRaw(aLines, bLines), normalizeDiffOptions(options));
 
 // Given two pairs of arrays of strings:
 // Compare the pair of comparison arrays line-by-line.
@@ -61,7 +61,7 @@ export const diffLinesUnified2 = (
     }
   });
 
-  return printDiffs(diffs, normalizeDiffOptions(options));
+  return printDiffLines(diffs, normalizeDiffOptions(options));
 };
 
 // Compare two arrays of strings line-by-line.
