@@ -5,10 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export {
-  isJestCircusRun,
-  skipSuiteOnJasmine,
-  skipSuiteOnJestCircus,
-  skipSuiteOnWindows,
-  onNodeVersions,
-} from './ConditionalTest';
+test('something', () => {
+  const timeout = setTimeout(() => {}, 30000);
+  timeout.unref();
+  expect(true).toBe(true);
+});
