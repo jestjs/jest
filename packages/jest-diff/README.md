@@ -127,7 +127,8 @@ Here are edge cases for the return value:
 In the edge cases described under the preceding above, to get consistent results from the `diffLineUnified` function described below, we recommend that you call `splitLines0(string)` instead of `string.split('\n')`
 
 ```js
-export const splitLines0 = string => string.length === 0 ? [] : string.split('\n');
+export const splitLines0 = string =>
+  string.length === 0 ? [] : string.split('\n');
 ```
 
 ### Example of splitLines0 function
