@@ -107,6 +107,12 @@ The returned **string** consists of:
 + changed to
 ```
 
+### Performance of diffStringsUnified
+
+To get the benefit of **changed substrings** within the comparison lines, a character-by-character comparison has a higher computational cost (in time and space) than a line-by-line comparison.
+
+If the input strings can have **arbitrary length**, we recommend that the calling code set a limit, beyond which splits the strings, and then calls `diffLinesUnified` instead. For example, Jest falls back to line-by-line comparison if either string has length greater than 20K characters.
+
 ### Edge cases of diffStringsUnified
 
 Here are edge cases for the return value:
@@ -116,11 +122,58 @@ Here are edge cases for the return value:
 - only `b` is empty string: all comparison lines have `aColor` and `aIndicator` (see Options)
 - `a` and `b` are equal non-empty strings: all comparison lines have `commonColor` and `commonIndicator` (see Options)
 
-### Performance of diffStringsUnified
+## Usage of splitLines0
 
-To get the benefit of **changed substrings** within the comparison lines, a character-by-character comparison has a higher computational cost (in time and space) than a line-by-line comparison.
+In the edge cases described under the preceding above, to get consistent results from the `diffLineUnified` function described below, we recommend that you call `splitLines0(string)` instead of `string.split('\n')`
 
-If the input strings can have **arbitrary length**, we recommend that the calling code set a limit, beyond which splits the strings, and then calls `diffLinesUnified` instead. For example, Jest falls back to line-by-line comparison if either string has length greater than 20K characters.
+```js
+export const splitLines0 = string => string.length === 0 ? [] : string.split('\n');
+```
+
+### Example of splitLines0 function
+
+```js
+import {diffLinesUnified, splitLines0} from 'jest-diff';
+
+const a = 'multi\nline\nstring';
+const b = '';
+const options = {includeChangeCounts: true}; // see Options
+
+const difference = diffLinesUnified(splitLines0(a), splitLines0(b), options);
+```
+
+Given an empty string, `splitLines0(b)` returns `[]` an empty array, formatted as no `Received` lines:
+
+```diff
+- Expected 3
++ Received 0
+
+- multi
+- line
+- string
+```
+
+### Example of split method
+
+```js
+const a = 'multi\nline\nstring';
+const b = '';
+const options = {includeChangeCounts: true}; // see Options
+
+const difference = diffLinesUnified(a.split('\n'), b.split('\n'), options);
+```
+
+Given an empty string, `b.split('\n')` returns `['']` an array that contains an empty string, formatted as one empty `Received` line, which is **ambiguous** with an empty line:
+
+```diff
+- Expected 3
++ Received 1
+
+- multi
+- line
+- string
++
+```
 
 ## Usage of diffLinesUnified
 

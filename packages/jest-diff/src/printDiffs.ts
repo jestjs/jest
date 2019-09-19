@@ -169,6 +169,9 @@ export const createPatchMark = (
     `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
   );
 
+export const splitLines0 = (string: string) =>
+  string.length === 0 ? [] : string.split('\n');
+
 // Compare two strings character-by-character.
 // Format as comparison lines in which changed substrings have inverse colors.
 export const diffStringsUnified = (
@@ -176,75 +179,25 @@ export const diffStringsUnified = (
   b: string,
   options?: DiffOptions,
 ): string => {
-  if (a.length === 0 || b.length === 0) {
-    const optionsNormalized = normalizeDiffOptions(options);
+  if (a !== b && a.length !== 0 && b.length !== 0) {
+    const isMultiline = a.includes('\n') || b.includes('\n');
 
-    const lines: Array<string> = [];
-    const changeCounts: ChangeCounts = {
-      a: 0,
-      b: 0,
-    };
-
-    if (a.length !== 0) {
-      // All comparison lines have aColor and aIndicator.
-      a.split('\n').forEach(line => {
-        lines.push(printDeleteLine(line, optionsNormalized));
-      });
-      changeCounts.a = lines.length;
-    }
-
-    if (b.length !== 0) {
-      // All comparison lines have bColor and bIndicator.
-      b.split('\n').forEach(line => {
-        lines.push(printInsertLine(line, optionsNormalized));
-      });
-      changeCounts.b = lines.length;
-    }
-
-    // Else if both are empty strings, there are no comparison lines.
-
-    return printAnnotation(optionsNormalized, changeCounts) + lines.join('\n');
-  }
-
-  if (a === b) {
-    const optionsNormalized = normalizeDiffOptions(options);
-
-    const lines = a.split('\n');
-    const iLast = lines.length - 1;
-    const changeCounts = {
-      a: 0,
-      b: 0,
-    };
-
-    // All comparison lines have commonColor and commonIndicator.
-    return (
-      printAnnotation(optionsNormalized, changeCounts) +
-      lines
-        .map((line, i) =>
-          printCommonLine(line, i === 0 || i === iLast, optionsNormalized),
-        )
-        .join('\n')
+    // getAlignedDiffs assumes that a newline was appended to the strings.
+    const diffs = diffStringsRaw(
+      isMultiline ? a + '\n' : a,
+      isMultiline ? b + '\n' : b,
+      true, // cleanupSemantic
     );
-  }
 
-  const isMultiline = a.includes('\n') || b.includes('\n');
-
-  // getAlignedDiffs assumes that a newline was appended to the strings.
-  const diffs = diffStringsRaw(
-    isMultiline ? a + '\n' : a,
-    isMultiline ? b + '\n' : b,
-    true, // cleanupSemantic
-  );
-
-  if (hasCommonDiff(diffs, isMultiline)) {
-    const optionsNormalized = normalizeDiffOptions(options);
-    const lines = getAlignedDiffs(diffs, optionsNormalized.changeColor);
-    return printDiffLines(lines, optionsNormalized);
+    if (hasCommonDiff(diffs, isMultiline)) {
+      const optionsNormalized = normalizeDiffOptions(options);
+      const lines = getAlignedDiffs(diffs, optionsNormalized.changeColor);
+      return printDiffLines(lines, optionsNormalized);
+    }
   }
 
   // Fall back to line-by-line diff.
-  // Given strings, it returns a string, not null.
-  return diffLinesUnified(a.split('\n'), b.split('\n'), options);
+  return diffLinesUnified(splitLines0(a), splitLines0(b), options);
 };
 
 // Compare two strings character-by-character.
