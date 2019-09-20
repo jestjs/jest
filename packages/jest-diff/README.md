@@ -113,18 +113,45 @@ To get the benefit of **changed substrings** within the comparison lines, a char
 
 If the input strings can have **arbitrary length**, we recommend that the calling code set a limit, beyond which splits the strings, and then calls `diffLinesUnified` instead. For example, Jest falls back to line-by-line comparison if either string has length greater than 20K characters.
 
-### Edge cases of diffStringsUnified
+## Usage of diffLinesUnified
 
-Here are edge cases for the return value:
+Given **arrays of strings**, `diffLinesUnified(aLines, bLines, options?)` does the following:
+
+1. **compare** the arrays line-by-line using the `diff-sequences` package
+2. **format** the changed or common lines using the `chalk` package
+
+You might call this function when strings have been split into lines and you do not need to see changed substrings within lines.
+
+### Example of diffLinesUnified
+
+```js
+const aLines = ['delete', 'common', 'changed from'];
+const bLines = ['common', 'changed to', 'insert'];
+
+const difference = diffLinesUnified(aLines, bLines);
+```
+
+```diff
+- Expected
++ Received
+
+- delete
+  common
+- changed from
++ changed to
++ insert
+```
+
+### Edge cases of diffLinesUnified or diffStringsUnified
+
+Here are edge cases for arguments and return values:
 
 - both `a` and `b` are empty strings: no comparison lines
 - only `a` is empty string: all comparison lines have `bColor` and `bIndicator` (see Options)
 - only `b` is empty string: all comparison lines have `aColor` and `aIndicator` (see Options)
 - `a` and `b` are equal non-empty strings: all comparison lines have `commonColor` and `commonIndicator` (see Options)
 
-## Usage of splitLines0
-
-In the edge cases described under the preceding above, to get consistent results from the `diffLineUnified` function described below, we recommend that you call `splitLines0(string)` instead of `string.split('\n')`
+To get the comparison lines described above from the `diffLineUnified` function, call `splitLines0(string)` instead of `string.split('\n')`
 
 ```js
 export const splitLines0 = string =>
@@ -174,35 +201,6 @@ Given an empty string, `b.split('\n')` returns `['']` an array that contains an 
 - line
 - string
 +
-```
-
-## Usage of diffLinesUnified
-
-Given **arrays of strings**, `diffLinesUnified(aLines, bLines, options?)` does the following:
-
-1. **compare** the arrays line-by-line using the `diff-sequences` package
-2. **format** the changed or common lines using the `chalk` package
-
-You might call this function when strings have been split into lines and you do not need to see changed substrings within lines.
-
-### Example of diffLinesUnified
-
-```js
-const aLines = ['delete', 'common', 'changed from'];
-const bLines = ['common', 'changed to', 'insert'];
-
-const difference = diffLinesUnified(aLines, bLines);
-```
-
-```diff
-- Expected
-+ Received
-
-- delete
-  common
-- changed from
-+ changed to
-+ insert
 ```
 
 ## Usage of diffLinesUnified2
