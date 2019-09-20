@@ -27,46 +27,80 @@ const formatTrailingSpaces = (
   trailingSpaceFormatter: DiffOptionsColor,
 ): string => line.replace(/\s+$/, match => trailingSpaceFormatter(match));
 
+const printDiffLine = (
+  line: string,
+  isFirstOrLast: boolean,
+  color: DiffOptionsColor,
+  indicator: string,
+  firstOrLastEmptyLineReplacement: string,
+  trailingSpaceFormatter: DiffOptionsColor,
+): string =>
+  line.length !== 0
+    ? color(
+        indicator + ' ' + formatTrailingSpaces(line, trailingSpaceFormatter),
+      )
+    : indicator !== ' '
+    ? color(indicator)
+    : isFirstOrLast && firstOrLastEmptyLineReplacement.length !== 0
+    ? color(indicator + ' ' + firstOrLastEmptyLineReplacement)
+    : '';
+
 export const printDeleteLine = (
   line: string,
-  {aColor, aIndicator, trailingSpaceFormatter}: DiffOptionsNormalized,
+  isFirstOrLast: boolean,
+  {
+    aColor,
+    aIndicator,
+    firstOrLastEmptyLineReplacement,
+    trailingSpaceFormatter,
+  }: DiffOptionsNormalized,
 ): string =>
-  aColor(
-    line.length !== 0
-      ? aIndicator + ' ' + formatTrailingSpaces(line, trailingSpaceFormatter)
-      : aIndicator,
+  printDiffLine(
+    line,
+    isFirstOrLast,
+    aColor,
+    aIndicator,
+    firstOrLastEmptyLineReplacement,
+    trailingSpaceFormatter,
   );
 
 export const printInsertLine = (
   line: string,
-  {bColor, bIndicator, trailingSpaceFormatter}: DiffOptionsNormalized,
+  isFirstOrLast: boolean,
+  {
+    bColor,
+    bIndicator,
+    firstOrLastEmptyLineReplacement,
+    trailingSpaceFormatter,
+  }: DiffOptionsNormalized,
 ): string =>
-  bColor(
-    line.length !== 0
-      ? bIndicator + ' ' + formatTrailingSpaces(line, trailingSpaceFormatter)
-      : bIndicator,
+  printDiffLine(
+    line,
+    isFirstOrLast,
+    bColor,
+    bIndicator,
+    firstOrLastEmptyLineReplacement,
+    trailingSpaceFormatter,
   );
 
-// Prevent visually ambiguous empty line as the first or the last.
 export const printCommonLine = (
   line: string,
   isFirstOrLast: boolean,
   {
     commonColor,
     commonIndicator,
+    firstOrLastEmptyLineReplacement,
     trailingSpaceFormatter,
-    trimmableLineReplacement,
   }: DiffOptionsNormalized,
 ): string =>
-  line.length !== 0
-    ? commonColor(
-        commonIndicator +
-          ' ' +
-          formatTrailingSpaces(line, trailingSpaceFormatter),
-      )
-    : isFirstOrLast && trimmableLineReplacement.length !== 0
-    ? commonColor(commonIndicator + ' ' + trimmableLineReplacement)
-    : '';
+  printDiffLine(
+    line,
+    isFirstOrLast,
+    commonColor,
+    commonIndicator,
+    firstOrLastEmptyLineReplacement,
+    trailingSpaceFormatter,
+  );
 
 export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
   if (isMultiline) {

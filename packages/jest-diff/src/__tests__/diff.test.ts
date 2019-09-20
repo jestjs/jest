@@ -957,7 +957,7 @@ describe('options', () => {
     });
   });
 
-  describe('trimmableLineReplacement', () => {
+  describe('firstOrLastEmptyLineReplacement', () => {
     const noColor = (string: string) => string;
     const options = {
       aColor: noColor,
@@ -965,7 +965,7 @@ describe('options', () => {
       changeColor: noColor,
       commonColor: noColor,
       omitAnnotationLines: true,
-      trimmableLineReplacement: '',
+      firstOrLastEmptyLineReplacement: '',
     };
 
     const aEmpty = '\ncommon\nchanged from\n';

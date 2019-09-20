@@ -95,12 +95,14 @@ export const joinAlignedDiffsNoExpand = (
   };
 
   const pushDeleteLine = (line: string): void => {
-    lines.push(printDeleteLine(line, options));
+    const j = lines.length;
+    lines.push(printDeleteLine(line, j === 0 || j === jLast, options));
     aEnd += 1;
   };
 
   const pushInsertLine = (line: string): void => {
-    lines.push(printInsertLine(line, options));
+    const j = lines.length;
+    lines.push(printInsertLine(line, j === 0 || j === jLast, options));
     bEnd += 1;
   };
 
@@ -200,20 +202,17 @@ export const joinAlignedDiffsExpand = (
   diffs
     .map((diff: Diff, i: number, diffs: Array<Diff>): string => {
       const line = diff[1];
+      const isFirstOrLast = i === 0 || i === diffs.length - 1;
 
       switch (diff[0]) {
         case DIFF_DELETE:
-          return printDeleteLine(line, options);
+          return printDeleteLine(line, isFirstOrLast, options);
 
         case DIFF_INSERT:
-          return printInsertLine(line, options);
+          return printInsertLine(line, isFirstOrLast, options);
 
         default:
-          return printCommonLine(
-            line,
-            i === 0 || i === diffs.length - 1,
-            options,
-          );
+          return printCommonLine(line, isFirstOrLast, options);
       }
     })
     .join('\n');

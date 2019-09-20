@@ -361,24 +361,24 @@ For other applications, you can provide an options object as a third argument:
 
 ### Properties of options object
 
-| name                       | default          |
-| :------------------------- | :--------------- |
-| `aAnnotation`              | `'Expected'`     |
-| `aColor`                   | `chalk.green`    |
-| `aIndicator`               | `'-'`            |
-| `bAnnotation`              | `'Received'`     |
-| `bColor`                   | `chalk.red`      |
-| `bIndicator`               | `'+'`            |
-| `changeColor`              | `chalk.inverse`  |
-| `commonColor`              | `chalk.dim`      |
-| `commonIndicator`          | `' '`            |
-| `contextLines`             | `5`              |
-| `expand`                   | `true`           |
-| `includeChangeCounts`      | `false`          |
-| `omitAnnotationLines`      | `false`          |
-| `patchColor`               | `chalk.yellow`   |
-| `trailingSpaceFormatter`   | `chalk.bgYellow` |
-| `trimmableLineReplacement` | `'↵'`            |
+| name                              | default          |
+| :-------------------------------- | :--------------- |
+| `aAnnotation`                     | `'Expected'`     |
+| `aColor`                          | `chalk.green`    |
+| `aIndicator`                      | `'-'`            |
+| `bAnnotation`                     | `'Received'`     |
+| `bColor`                          | `chalk.red`      |
+| `bIndicator`                      | `'+'`            |
+| `changeColor`                     | `chalk.inverse`  |
+| `commonColor`                     | `chalk.dim`      |
+| `commonIndicator`                 | `' '`            |
+| `contextLines`                    | `5`              |
+| `expand`                          | `true`           |
+| `firstOrLastEmptyLineReplacement` | `'↵'`            |
+| `includeChangeCounts`             | `false`          |
+| `omitAnnotationLines`             | `false`          |
+| `patchColor`                      | `chalk.yellow`   |
+| `trailingSpaceFormatter`          | `chalk.bgYellow` |
 
 For more information about the options, see the following examples.
 
@@ -551,11 +551,11 @@ const difference = diffStringsUnified(a, b, options);
 + changed to
 ```
 
-### Example of option not to replace trimmable lines
+### Example of option not to replace first or last empty lines
 
-If the **first** or **last** comparison line is **empty and common** to both arguments, you might not notice it.
+If the **first** or **last** comparison line is **empty**, because the content is empty and the indicator is a space, you might not notice it.
 
-Also, because Jest trims the report when a matcher fails, it deletes an empty common last line.
+Also, because Jest trims the report when a matcher fails, it deletes an empty last line.
 
 The replacement is a string whose default value is `'↵'` U+21B5 downwards arrow with corner leftwards.
 
@@ -563,12 +563,14 @@ To store the difference in a file without a replacement, because it could be amb
 
 ```js
 const options = {
-  trimmableLineReplacement: '',
+  firstOrLastEmptyLineReplacement: '',
 };
 ```
 
-By the way, other empty comparison lines are automatically trimmed as follows:
+If a content line is empty, then the corresponding comparison line is automatically trimmed to remove the margin space (represented as a middle dot below) for the default indicators:
 
-- common: `''` instead of `' '`
-- Expected: `'-'` instead of `'- '`
-- Received: `'+'` instead of `'+ '`
+|         Indicator | untrimmed | trimmed |
+| ----------------: | :-------- | :------ |
+|      `aIndicator` | `'-·'`    | `'-'`   |
+|      `bIndicator` | `'+·'`    | `'+'`   |
+| `commonIndicator` | `' ·'`    | `''`    |

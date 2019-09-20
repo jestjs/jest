@@ -23,11 +23,11 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   commonIndicator: ' ',
   contextLines: DIFF_CONTEXT_DEFAULT,
   expand: true,
+  firstOrLastEmptyLineReplacement: '\u{21B5}', // downwards arrow with corner leftwards
   includeChangeCounts: false,
   omitAnnotationLines: false,
   patchColor: chalk.yellow,
   trailingSpaceFormatter: chalk.bgYellow,
-  trimmableLineReplacement: '\u{21B5}', // downwards arrow with corner leftwards
 };
 
 const getContextLines = (contextLines?: number): number =>

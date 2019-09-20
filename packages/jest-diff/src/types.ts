@@ -23,7 +23,7 @@ export type DiffOptions = {
   omitAnnotationLines?: boolean;
   patchColor?: DiffOptionsColor;
   trailingSpaceFormatter?: DiffOptionsColor;
-  trimmableLineReplacement?: string;
+  firstOrLastEmptyLineReplacement?: string;
 };
 
 export type DiffOptionsNormalized = {
@@ -42,5 +42,5 @@ export type DiffOptionsNormalized = {
   omitAnnotationLines: boolean;
   patchColor: DiffOptionsColor;
   trailingSpaceFormatter: DiffOptionsColor;
-  trimmableLineReplacement: string;
+  firstOrLastEmptyLineReplacement: string;
 };
