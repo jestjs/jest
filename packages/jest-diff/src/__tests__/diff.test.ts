@@ -964,8 +964,8 @@ describe('options', () => {
       bColor: noColor,
       changeColor: noColor,
       commonColor: noColor,
-      omitAnnotationLines: true,
       firstOrLastEmptyLineReplacement: '',
+      omitAnnotationLines: true,
     };
 
     const aEmpty = '\ncommon\nchanged from\n';
