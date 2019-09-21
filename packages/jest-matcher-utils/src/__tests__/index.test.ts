@@ -6,10 +6,9 @@
  *
  */
 
-import ansiRegex = require('ansi-regex');
-import * as style from 'ansi-styles';
 import chalk from 'chalk';
 import prettyFormat = require('pretty-format');
+import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1.ts';
 import {
   MatcherHintOptions,
   diff,
@@ -24,34 +23,7 @@ import {
 /* global BigInt */
 const isBigIntDefined = typeof BigInt === 'function';
 
-expect.addSnapshotSerializer({
-  serialize(val: string): string {
-    return val.replace(ansiRegex(), match => {
-      switch (match) {
-        case style.bold.open:
-          return '<b>';
-        case style.dim.open:
-          return '<d>';
-        case style.green.open:
-          return '<g>';
-        case style.red.open:
-          return '<r>';
-
-        case style.bold.close:
-        case style.dim.close:
-        case style.green.close:
-        case style.red.close:
-          return '</>';
-
-        default:
-          return match;
-      }
-    });
-  },
-  test(val: any): val is string {
-    return typeof val === 'string';
-  },
-});
+expect.addSnapshotSerializer(convertAnsi1);
 
 describe('stringify()', () => {
   [

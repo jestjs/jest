@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiRegex = require('ansi-regex');
-import * as style from 'ansi-styles';
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
+import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1.ts';
 
 import diff from '../';
 import {diffStringsUnified} from '../printDiffs';
@@ -46,45 +45,7 @@ const expanded = {expand: true};
 
 const elementSymbol = Symbol.for('react.element');
 
-expect.addSnapshotSerializer({
-  serialize(val: string): string {
-    return val.replace(ansiRegex(), match => {
-      switch (match) {
-        case style.inverse.open:
-          return '<i>';
-        case style.inverse.close:
-          return '</i>';
-
-        case style.bold.open:
-          return '<b>';
-        case style.dim.open:
-          return '<d>';
-        case style.green.open:
-          return '<g>';
-        case style.red.open:
-          return '<r>';
-        case style.yellow.open:
-          return '<y>';
-        case style.bgYellow.open:
-          return '<Y>';
-
-        case style.bold.close:
-        case style.dim.close:
-        case style.green.close:
-        case style.red.close:
-        case style.yellow.close:
-        case style.bgYellow.close:
-          return '</>';
-
-        default:
-          return match;
-      }
-    });
-  },
-  test(val: any): val is string {
-    return typeof val === 'string';
-  },
-});
+expect.addSnapshotSerializer(convertAnsi1);
 
 describe('different types', () => {
   [
