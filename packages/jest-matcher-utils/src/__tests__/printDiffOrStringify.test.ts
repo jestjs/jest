@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1.ts';
+import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1';
 import {EXPECTED_COLOR, INVERTED_COLOR, printDiffOrStringify} from '../index';
 
 expect.addSnapshotSerializer(convertAnsi1);

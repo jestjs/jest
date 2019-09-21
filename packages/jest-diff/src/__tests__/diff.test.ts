@@ -7,7 +7,7 @@
 
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
-import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1.ts';
+import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1';
 
 import diff from '../';
 import {diffStringsUnified} from '../printDiffs';

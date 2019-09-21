@@ -8,7 +8,7 @@
 
 import chalk from 'chalk';
 import prettyFormat = require('pretty-format');
-import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1.ts';
+import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1';
 import {
   MatcherHintOptions,
   diff,
