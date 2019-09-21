@@ -9,15 +9,15 @@ import prettyFormat = require('pretty-format');
 import chalk from 'chalk';
 import getType = require('jest-get-type');
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
-import diffLines from './diffLines';
-import {normalizeDiffOptions} from './normalizeDiffOptions';
-import {diffStringsRaw, diffStringsUnified} from './printDiffs';
+import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
+import {diffStringsRaw, diffStringsUnified, splitLines0} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
-import {DiffOptionsNormalized, DiffOptions as ImportDiffOptions} from './types';
+import {DiffOptions as ImportDiffOptions} from './types';
 
 export type DiffOptions = ImportDiffOptions;
 
-export {diffStringsRaw, diffStringsUnified};
+export {diffLinesRaw, diffLinesUnified, diffLinesUnified2};
+export {diffStringsRaw, diffStringsUnified, splitLines0};
 export {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff};
 
 const {
@@ -85,32 +85,31 @@ function diff(a: any, b: any, options?: DiffOptions): string | null {
     return null;
   }
 
-  const optionsNormalized = normalizeDiffOptions(options);
   switch (aType) {
     case 'string':
-      return diffLines(a, b, optionsNormalized);
+      return diffLinesUnified(splitLines0(a), splitLines0(b), options);
     case 'boolean':
     case 'number':
-      return comparePrimitive(a, b, optionsNormalized);
+      return comparePrimitive(a, b, options);
     case 'map':
-      return compareObjects(sortMap(a), sortMap(b), optionsNormalized);
+      return compareObjects(sortMap(a), sortMap(b), options);
     case 'set':
-      return compareObjects(sortSet(a), sortSet(b), optionsNormalized);
+      return compareObjects(sortSet(a), sortSet(b), options);
     default:
-      return compareObjects(a, b, optionsNormalized);
+      return compareObjects(a, b, options);
   }
 }
 
 function comparePrimitive(
   a: number | boolean,
   b: number | boolean,
-  options: DiffOptionsNormalized,
+  options?: DiffOptions,
 ) {
-  return diffLines(
-    prettyFormat(a, FORMAT_OPTIONS),
-    prettyFormat(b, FORMAT_OPTIONS),
-    options,
-  );
+  const aFormat = prettyFormat(a, FORMAT_OPTIONS);
+  const bFormat = prettyFormat(b, FORMAT_OPTIONS);
+  return aFormat === bFormat
+    ? NO_DIFF_MESSAGE
+    : diffLinesUnified(splitLines0(aFormat), splitLines0(bFormat), options);
 }
 
 function sortMap(map: Map<unknown, unknown>) {
@@ -124,43 +123,60 @@ function sortSet(set: Set<unknown>) {
 function compareObjects(
   a: Record<string, any>,
   b: Record<string, any>,
-  options: DiffOptionsNormalized,
+  options?: DiffOptions,
 ) {
-  let diffMessage;
+  let difference;
   let hasThrown = false;
 
   try {
-    diffMessage = diffLines(
-      prettyFormat(a, FORMAT_OPTIONS_0),
-      prettyFormat(b, FORMAT_OPTIONS_0),
-      options,
-      {
-        a: prettyFormat(a, FORMAT_OPTIONS),
-        b: prettyFormat(b, FORMAT_OPTIONS),
-      },
-    );
+    const aCompare = prettyFormat(a, FORMAT_OPTIONS_0);
+    const bCompare = prettyFormat(b, FORMAT_OPTIONS_0);
+
+    if (aCompare === bCompare) {
+      difference = NO_DIFF_MESSAGE;
+    } else {
+      const aDisplay = prettyFormat(a, FORMAT_OPTIONS);
+      const bDisplay = prettyFormat(b, FORMAT_OPTIONS);
+
+      difference = diffLinesUnified2(
+        aDisplay.split('\n'),
+        bDisplay.split('\n'),
+        aCompare.split('\n'),
+        bCompare.split('\n'),
+        options,
+      );
+    }
   } catch (e) {
     hasThrown = true;
   }
 
   // If the comparison yields no results, compare again but this time
   // without calling `toJSON`. It's also possible that toJSON might throw.
-  if (!diffMessage || diffMessage === NO_DIFF_MESSAGE) {
-    diffMessage = diffLines(
-      prettyFormat(a, FALLBACK_FORMAT_OPTIONS_0),
-      prettyFormat(b, FALLBACK_FORMAT_OPTIONS_0),
-      options,
-      {
-        a: prettyFormat(a, FALLBACK_FORMAT_OPTIONS),
-        b: prettyFormat(b, FALLBACK_FORMAT_OPTIONS),
-      },
-    );
-    if (diffMessage !== NO_DIFF_MESSAGE && !hasThrown) {
-      diffMessage = SIMILAR_MESSAGE + '\n\n' + diffMessage;
+  if (difference === undefined || difference === NO_DIFF_MESSAGE) {
+    const aCompare = prettyFormat(a, FALLBACK_FORMAT_OPTIONS_0);
+    const bCompare = prettyFormat(b, FALLBACK_FORMAT_OPTIONS_0);
+
+    if (aCompare === bCompare) {
+      difference = NO_DIFF_MESSAGE;
+    } else {
+      const aDisplay = prettyFormat(a, FALLBACK_FORMAT_OPTIONS);
+      const bDisplay = prettyFormat(b, FALLBACK_FORMAT_OPTIONS);
+
+      difference = diffLinesUnified2(
+        aDisplay.split('\n'),
+        bDisplay.split('\n'),
+        aCompare.split('\n'),
+        bCompare.split('\n'),
+        options,
+      );
+    }
+
+    if (difference !== NO_DIFF_MESSAGE && !hasThrown) {
+      difference = SIMILAR_MESSAGE + '\n\n' + difference;
     }
   }
 
-  return diffMessage;
+  return difference;
 }
 
 export default diff;

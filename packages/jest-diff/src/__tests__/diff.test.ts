@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import ansiRegex = require('ansi-regex');
+import * as style from 'ansi-styles';
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
 
@@ -12,19 +14,77 @@ import diff from '../';
 import {diffStringsUnified} from '../printDiffs';
 import {DiffOptions} from '../types';
 
-const optionsCounts = {
+const optionsCounts: DiffOptions = {
   includeChangeCounts: true,
 };
 
 const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
 
-const stripped = (a: unknown, b: unknown, options?: DiffOptions) =>
-  stripAnsi(diff(a, b, options) || '');
+// Use only in toBe assertions for edge case messages.
+const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) || '');
 
+// Use in toBe assertions for comparison lines.
+const noColor = (string: string) => string;
+const optionsBe: DiffOptions = {
+  aColor: noColor,
+  bColor: noColor,
+  commonColor: noColor,
+  omitAnnotationLines: true,
+};
+const unexpandedBe: DiffOptions = {
+  ...optionsBe,
+  expand: false,
+};
+const expandedBe: DiffOptions = {
+  ...optionsBe,
+  expand: true,
+};
+
+// Use for toMatchSnapshot assertions.
 const unexpanded = {expand: false};
 const expanded = {expand: true};
 
 const elementSymbol = Symbol.for('react.element');
+
+expect.addSnapshotSerializer({
+  serialize(val: string): string {
+    return val.replace(ansiRegex(), match => {
+      switch (match) {
+        case style.inverse.open:
+          return '<i>';
+        case style.inverse.close:
+          return '</i>';
+
+        case style.bold.open:
+          return '<b>';
+        case style.dim.open:
+          return '<d>';
+        case style.green.open:
+          return '<g>';
+        case style.red.open:
+          return '<r>';
+        case style.yellow.open:
+          return '<y>';
+        case style.bgYellow.open:
+          return '<Y>';
+
+        case style.bold.close:
+        case style.dim.close:
+        case style.green.close:
+        case style.red.close:
+        case style.yellow.close:
+        case style.bgYellow.close:
+          return '</>';
+
+        default:
+          return match;
+      }
+    });
+  },
+  test(val: any): val is string {
+    return typeof val === 'string';
+  },
+});
 
 describe('different types', () => {
   [
@@ -66,13 +126,8 @@ describe('no visual difference', () => {
   ].forEach(values => {
     test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(
       values[1],
-    )}' (unexpanded)`, () => {
-      expect(stripped(values[0], values[1], unexpanded)).toBe(NO_DIFF_MESSAGE);
-    });
-    test(`'${JSON.stringify(values[0])}' and '${JSON.stringify(
-      values[1],
-    )}' (expanded)`, () => {
-      expect(stripped(values[0], values[1], expanded)).toBe(NO_DIFF_MESSAGE);
+    )}'`, () => {
+      expect(stripped(values[0], values[1])).toBe(NO_DIFF_MESSAGE);
     });
   });
 
@@ -134,7 +189,7 @@ describe('falls back to not call toJSON', () => {
 });
 
 // Some of the following assertions seem complex, but compare to alternatives:
-// * toMatch instead of toMatchSnapshot:
+// * toBe instead of toMatchSnapshot:
 //   * to avoid visual complexity of escaped quotes in expected string
 //   * to omit Expected/Received heading which is an irrelevant detail
 // * join lines of expected string instead of multiline string:
@@ -158,10 +213,10 @@ line 4`;
   ].join('\n');
 
   test('(unexpanded)', () => {
-    expect(stripped(a, b, unexpanded)).toMatch(expected);
+    expect(diff(a, b, unexpandedBe)).toBe(expected);
   });
   test('(expanded)', () => {
-    expect(stripped(a, b, expanded)).toMatch(expected);
+    expect(diff(a, b, expandedBe)).toBe(expected);
   });
 });
 
@@ -180,42 +235,36 @@ describe('objects', () => {
   ].join('\n');
 
   test('(unexpanded)', () => {
-    expect(stripped(a, b, unexpanded)).toMatch(expected);
+    expect(diff(a, b, unexpandedBe)).toBe(expected);
   });
   test('(expanded)', () => {
-    expect(stripped(a, b, expanded)).toMatch(expected);
+    expect(diff(a, b, expandedBe)).toBe(expected);
   });
 });
 
 test('numbers', () => {
-  expect(stripped(1, 2)).toEqual(expect.stringContaining('- 1\n+ 2'));
+  expect(diff(1, 2, optionsBe)).toBe('- 1\n+ 2');
 });
 
 test('-0 and 0', () => {
-  expect(stripped(-0, 0)).toEqual(expect.stringContaining('- -0\n+ 0'));
+  expect(diff(-0, 0, optionsBe)).toBe('- -0\n+ 0');
 });
 
 test('booleans', () => {
-  expect(stripped(false, true)).toEqual(
-    expect.stringContaining('- false\n+ true'),
-  );
+  expect(diff(false, true, optionsBe)).toBe('- false\n+ true');
 });
 
 describe('multiline string non-snapshot', () => {
   // For example, CLI output
   // toBe or toEqual for a string isn’t enclosed in double quotes.
-  const a = `
-Options:
+  const a = `Options:
 --help, -h  Show help                            [boolean]
 --bail, -b  Exit the test suite immediately upon the first
-            failing test.                        [boolean]
-`;
-  const b = `
-Options:
+            failing test.                        [boolean]`;
+  const b = `Options:
   --help, -h  Show help                            [boolean]
   --bail, -b  Exit the test suite immediately upon the first
-              failing test.                        [boolean]
-`;
+              failing test.                        [boolean]`;
   const expected = [
     '  Options:',
     '- --help, -h  Show help                            [boolean]',
@@ -227,32 +276,28 @@ Options:
   ].join('\n');
 
   test('(unexpanded)', () => {
-    expect(stripped(a, b, unexpanded)).toMatch(expected);
+    expect(diff(a, b, unexpandedBe)).toBe(expected);
   });
   test('(expanded)', () => {
-    expect(stripped(a, b, expanded)).toMatch(expected);
+    expect(diff(a, b, expandedBe)).toBe(expected);
   });
 });
 
 describe('multiline string snapshot', () => {
   // For example, CLI output
   // A snapshot of a string is enclosed in double quotes.
-  const a = `
-"
+  const a = `"
 Options:
 --help, -h  Show help                            [boolean]
 --bail, -b  Exit the test suite immediately upon the first
-            failing test.                        [boolean]"
-`;
-  const b = `
-"
+            failing test.                        [boolean]"`;
+  const b = `"
 Options:
   --help, -h  Show help                            [boolean]
   --bail, -b  Exit the test suite immediately upon the first
-              failing test.                        [boolean]"
-`;
+              failing test.                        [boolean]"`;
   const expected = [
-    ' "',
+    '  "',
     '  Options:',
     '- --help, -h  Show help                            [boolean]',
     '- --bail, -b  Exit the test suite immediately upon the first',
@@ -263,10 +308,10 @@ Options:
   ].join('\n');
 
   test('(unexpanded)', () => {
-    expect(stripped(a, b, unexpanded)).toMatch(expected);
+    expect(diff(a, b, unexpandedBe)).toBe(expected);
   });
   test('(expanded)', () => {
-    expect(stripped(a, b, expanded)).toMatch(expected);
+    expect(diff(a, b, expandedBe)).toBe(expected);
   });
 });
 
@@ -297,10 +342,10 @@ describe('React elements', () => {
   ].join('\n');
 
   test('(unexpanded)', () => {
-    expect(stripped(a, b, unexpanded)).toMatch(expected);
+    expect(diff(a, b, unexpandedBe)).toBe(expected);
   });
   test('(expanded)', () => {
-    expect(stripped(a, b, expanded)).toMatch(expected);
+    expect(diff(a, b, expandedBe)).toBe(expected);
   });
 });
 
@@ -324,10 +369,10 @@ describe('multiline string as value of object property', () => {
       points: '0.5,0.460\n0.5,0.875\n0.25,0.875',
     };
     test('(unexpanded)', () => {
-      expect(stripped(a, b, unexpanded)).toMatch(expected);
+      expect(diff(a, b, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(a, b, expanded)).toMatch(expected);
+      expect(diff(a, b, expandedBe)).toBe(expected);
     });
   });
 
@@ -348,10 +393,10 @@ describe('multiline string as value of object property', () => {
       '}',
     ].join('\n');
     test('(unexpanded)', () => {
-      expect(stripped(a, b, unexpanded)).toMatch(expected);
+      expect(diff(a, b, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(a, b, expanded)).toMatch(expected);
+      expect(diff(a, b, expandedBe)).toBe(expected);
     });
   });
 });
@@ -387,10 +432,10 @@ describe('indentation in JavaScript structures', () => {
     ].join('\n');
 
     test('(unexpanded)', () => {
-      expect(stripped(a, b, unexpanded)).toMatch(expected);
+      expect(diff(a, b, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(a, b, expanded)).toMatch(expected);
+      expect(diff(a, b, expandedBe)).toBe(expected);
     });
   });
 
@@ -410,10 +455,10 @@ describe('indentation in JavaScript structures', () => {
     ].join('\n');
 
     test('(unexpanded)', () => {
-      expect(stripped(b, a, unexpanded)).toMatch(expected);
+      expect(diff(b, a, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(b, a, expanded)).toMatch(expected);
+      expect(diff(b, a, expandedBe)).toBe(expected);
     });
   });
 });
@@ -487,10 +532,10 @@ describe('indentation in React elements (non-snapshot)', () => {
     ].join('\n');
 
     test('(unexpanded)', () => {
-      expect(stripped(a, b, unexpanded)).toMatch(expected);
+      expect(diff(a, b, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(a, b, expanded)).toMatch(expected);
+      expect(diff(a, b, expandedBe)).toBe(expected);
     });
   });
 
@@ -507,10 +552,10 @@ describe('indentation in React elements (non-snapshot)', () => {
     ].join('\n');
 
     test('(unexpanded)', () => {
-      expect(stripped(b, a, unexpanded)).toMatch(expected);
+      expect(diff(b, a, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(b, a, expanded)).toMatch(expected);
+      expect(diff(b, a, expandedBe)).toBe(expected);
     });
   });
 });
@@ -550,10 +595,10 @@ describe('indentation in React elements (snapshot)', () => {
     ].join('\n');
 
     test('(unexpanded)', () => {
-      expect(stripped(a, b, unexpanded)).toMatch(expected);
+      expect(diff(a, b, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(a, b, expanded)).toMatch(expected);
+      expect(diff(a, b, expandedBe)).toBe(expected);
     });
   });
 
@@ -573,10 +618,10 @@ describe('indentation in React elements (snapshot)', () => {
     ].join('\n');
 
     test('(unexpanded)', () => {
-      expect(stripped(b, a, unexpanded)).toMatch(expected);
+      expect(diff(b, a, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(b, a, expanded)).toMatch(expected);
+      expect(diff(b, a, expandedBe)).toBe(expected);
     });
   });
 });
@@ -620,10 +665,10 @@ describe('outer React element (non-snapshot)', () => {
     ].join('\n');
 
     test('(unexpanded)', () => {
-      expect(stripped(a, b, unexpanded)).toMatch(expected);
+      expect(diff(a, b, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(a, b, expanded)).toMatch(expected);
+      expect(diff(a, b, expandedBe)).toBe(expected);
     });
   });
 
@@ -641,10 +686,10 @@ describe('outer React element (non-snapshot)', () => {
     ].join('\n');
 
     test('(unexpanded)', () => {
-      expect(stripped(b, a, unexpanded)).toMatch(expected);
+      expect(diff(b, a, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(b, a, expanded)).toMatch(expected);
+      expect(diff(b, a, expandedBe)).toBe(expected);
     });
   });
 });
@@ -654,24 +699,24 @@ describe('trailing newline in multiline string not enclosed in quotes', () => {
   const b = a + '\n';
 
   describe('from less to more', () => {
-    const expected = ['  line 1', '  line 2', '  line 3', '+ '].join('\n');
+    const expected = ['  line 1', '  line 2', '  line 3', '+'].join('\n');
 
     test('(unexpanded)', () => {
-      expect(stripped(a, b, unexpanded)).toMatch(expected);
+      expect(diff(a, b, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(a, b, expanded)).toMatch(expected);
+      expect(diff(a, b, expandedBe)).toBe(expected);
     });
   });
 
   describe('from more to less', () => {
-    const expected = ['  line 1', '  line 2', '  line 3', '- '].join('\n');
+    const expected = ['  line 1', '  line 2', '  line 3', '-'].join('\n');
 
     test('(unexpanded)', () => {
-      expect(stripped(b, a, unexpanded)).toMatch(expected);
+      expect(diff(b, a, unexpandedBe)).toBe(expected);
     });
     test('(expanded)', () => {
-      expect(stripped(b, a, expanded)).toMatch(expected);
+      expect(diff(b, a, expandedBe)).toBe(expected);
     });
   });
 });
@@ -909,6 +954,37 @@ describe('options', () => {
       };
 
       expect(diff(aTrailingSpaces, bTrailingSpaces, options)).toMatchSnapshot();
+    });
+  });
+
+  describe('firstOrLastEmptyLineReplacement', () => {
+    const noColor = (string: string) => string;
+    const options = {
+      aColor: noColor,
+      bColor: noColor,
+      changeColor: noColor,
+      commonColor: noColor,
+      firstOrLastEmptyLineReplacement: '',
+      omitAnnotationLines: true,
+    };
+
+    const aEmpty = '\ncommon\nchanged from\n';
+    const bEmpty = '\ncommon\nchanged to\n';
+
+    const expected = [
+      '',
+      '  common',
+      '- changed from',
+      '+ changed to',
+      '',
+    ].join('\n');
+
+    test('diffDefault', () => {
+      expect(diff(aEmpty, bEmpty, options)).toBe(expected);
+    });
+
+    test('diffStringsUnified', () => {
+      expect(diffStringsUnified(aEmpty, bEmpty, options)).toBe(expected);
     });
   });
 });
