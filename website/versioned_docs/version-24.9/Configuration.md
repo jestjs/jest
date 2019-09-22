@@ -760,10 +760,11 @@ Example `setupFilesAfterEnv` array in a jest.config.js:
 ```js
 module.exports = {
   setupFilesAfterEnv: ['./jest.setup.js'],
-}
+};
 ```
 
 Example `jest.setup.js` file
+
 ```js
 jest.setTimeout(10000); // in milliseconds
 ```
