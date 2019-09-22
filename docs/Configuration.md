@@ -767,7 +767,6 @@ Example `jest.setup.js` file
 jest.setTimeout(10000); // in milliseconds
 ```
 
-
 ### `snapshotResolver` [string]
 
 Default: `undefined`

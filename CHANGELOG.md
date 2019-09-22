@@ -43,13 +43,13 @@
 - `[*]` [**BREAKING**] Upgrade to Micromatch v4 ([#8852](https://github.com/facebook/jest/pull/8852))
 - `[babel-plugin-jest-hoist]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[docs]` Fix broken link pointing to legacy JS file in "Snapshot Testing".
+- `[docs]` Add `setupFilesAfterEnv` and `jest.setTimeout` example ([#8971](https://github.com/facebook/jest/pull/8971))
 - `[jest]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-cli]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-cli]` [**BREAKING**] Remove re-exports from `@jest/core` ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM from v11 to v15 ([#8851](https://github.com/facebook/jest/pull/8851))
 - `[jest-util]` [**BREAKING**] Remove deprecated exports ([#8863](https://github.com/facebook/jest/pull/8863))
 - `[jest-validate]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
-- `[docs]` setupFilesAfterEnv arr expansion and updated reference in JestObjectApi ([#8824](https://github.com/facebook/jest/pull/8971))
 
 ### Performance
 
