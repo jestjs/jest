@@ -754,6 +754,19 @@ For example, Jest ships with several plug-ins to `jasmine` that work by monkey-p
 
 _Note: `setupTestFrameworkScriptFile` is deprecated in favor of `setupFilesAfterEnv`._
 
+Example `setupFilesAfterEnv` array in a jest.config.js:
+
+```js
+module.exports = {
+  setupFilesAfterEnv: ['./jest.setup.js'],
+}
+```
+
+Example `jest.setup.js` file
+```js
+jest.setTimeout(10000); // in milliseconds
+```
+
 ### `snapshotResolver` [string]
 
 Default: `undefined`
