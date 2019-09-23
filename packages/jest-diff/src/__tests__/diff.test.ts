@@ -7,7 +7,7 @@
 
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
-import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1';
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 
 import diff from '../';
 import {diffStringsUnified} from '../printDiffs';
@@ -45,7 +45,7 @@ const expanded = {expand: true};
 
 const elementSymbol = Symbol.for('react.element');
 
-expect.addSnapshotSerializer(convertAnsi1);
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('different types', () => {
   [

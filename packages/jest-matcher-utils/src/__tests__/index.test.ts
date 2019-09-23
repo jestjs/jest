@@ -8,7 +8,7 @@
 
 import chalk from 'chalk';
 import prettyFormat = require('pretty-format');
-import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1';
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {
   MatcherHintOptions,
   diff,
@@ -23,7 +23,7 @@ import {
 /* global BigInt */
 const isBigIntDefined = typeof BigInt === 'function';
 
-expect.addSnapshotSerializer(convertAnsi1);
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('stringify()', () => {
   [

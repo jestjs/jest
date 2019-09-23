@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import convertAnsi1 from '../../../pretty-format/src/plugins/ConvertAnsi1';
+ import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {EXPECTED_COLOR, INVERTED_COLOR, printDiffOrStringify} from '../index';
 
-expect.addSnapshotSerializer(convertAnsi1);
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('printDiffOrStringify', () => {
   const testDiffOrStringify = (expected: string, received: string): string =>
