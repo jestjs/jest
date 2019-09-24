@@ -6,7 +6,10 @@
  */
 
 const Immutable = require('immutable');
+const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const jestExpect = require('../');
+
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 // Given a Jest mock function, return a minimal mock of a Jasmine spy.
 const createSpy = fn => {

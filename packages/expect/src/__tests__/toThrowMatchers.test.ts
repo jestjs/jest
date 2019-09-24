@@ -5,7 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import jestExpect from '../';
+
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 // Custom Error class because node versions have different stack trace strings.
 class CustomError extends Error {

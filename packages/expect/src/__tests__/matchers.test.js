@@ -6,10 +6,13 @@
  */
 
 const {stringify} = require('jest-matcher-utils');
+const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const jestExpect = require('../');
 const Immutable = require('immutable');
 const chalk = require('chalk');
 const chalkEnabled = chalk.enabled;
+
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 beforeAll(() => {
   chalk.enabled = true;

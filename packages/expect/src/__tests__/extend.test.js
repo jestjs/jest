@@ -7,9 +7,12 @@
  */
 
 const matcherUtils = require('jest-matcher-utils');
+const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const {iterableEquality, subsetEquality} = require('../utils');
 const {equals} = require('../jasmineUtils');
 const jestExpect = require('../');
+
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 jestExpect.extend({
   toBeDivisibleBy(actual, expected) {
