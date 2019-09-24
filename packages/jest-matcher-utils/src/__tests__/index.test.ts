@@ -7,6 +7,8 @@
  */
 
 import chalk from 'chalk';
+import prettyFormat = require('pretty-format');
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {
   MatcherHintOptions,
   diff,
@@ -21,7 +23,9 @@ import {
 /* global BigInt */
 const isBigIntDefined = typeof BigInt === 'function';
 
-describe('.stringify()', () => {
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
+
+describe('stringify()', () => {
   [
     [[], '[]'],
     [{}, '{}'],
@@ -93,12 +97,12 @@ describe('.stringify()', () => {
       small.b[i] = 'test';
     }
 
-    expect(stringify(big)).toMatchSnapshot();
-    expect(stringify(small)).toMatchSnapshot();
+    expect(stringify(big)).toBe(prettyFormat(big, {maxDepth: 1, min: true}));
+    expect(stringify(small)).toBe(prettyFormat(small, {min: true}));
   });
 });
 
-describe('.ensureNumbers()', () => {
+describe('ensureNumbers()', () => {
   test('dont throw error when variables are numbers', () => {
     expect(() => {
       // @ts-ignore
@@ -198,7 +202,7 @@ describe('.ensureNumbers()', () => {
   });
 });
 
-describe('.ensureNoExpected()', () => {
+describe('ensureNoExpected()', () => {
   test('dont throw error when undefined', () => {
     expect(() => {
       // @ts-ignore
@@ -251,7 +255,7 @@ describe('diff', () => {
   }
 });
 
-describe('.pluralize()', () => {
+describe('pluralize()', () => {
   test('one', () => expect(pluralize('apple', 1)).toEqual('one apple'));
   test('two', () => expect(pluralize('apple', 2)).toEqual('two apples'));
   test('20', () => expect(pluralize('apple', 20)).toEqual('20 apples'));
