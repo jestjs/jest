@@ -87,7 +87,7 @@ export const printDiffOrStringified = (
   }
 
   if (isLineDiffable(received)) {
-    // TODO replace with diffLinesUnified2 to ignore indenation
+    // TODO future PR will replace with diffLinesUnified2 to ignore indentation
     return diffLinesUnified(splitLines0(a), splitLines0(b), options);
   }
 
