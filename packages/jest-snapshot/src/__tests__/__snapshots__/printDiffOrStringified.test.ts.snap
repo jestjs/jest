@@ -1,25 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`backtick single line expected and received 1`] = `
-Snapshot: <g>"var foo = \`backtick\`;"</>
-Received: <r>"var foo = <i>tag</i>\`backtick\`;"</>
+<g>- Snapshot  1 -</>
+<r>+ Received  1 +</>
+
+<g>- var foo = \`backtick\`;</>
+<r>+ var foo = <i>tag</i>\`backtick\`;</>
 `;
 
 exports[`empty string expected and received single line 1`] = `
-Snapshot: <g>""</>
-Received: <r>"single line string"</>
+<g>- Snapshot  0 -</>
+<r>+ Received  1 +</>
+
+<r>+ single line string</>
 `;
 
 exports[`empty string received and expected multi line 1`] = `
-Snapshot: <g>"multi</>
-<g>line</>
-<g>string"</>
-Received: <r>""</>
+<g>- Snapshot  3 -</>
+<r>+ Received  0 +</>
+
+<g>- multi</>
+<g>- line</>
+<g>- string</>
 `;
 
 exports[`escape backslash in multi line string 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  1 -</>
+<r>+ Received  2 +</>
 
 <g>- Forward / slash<i> and b</i>ack \\ slash</>
 <r>+ Forward / slash</>
@@ -27,13 +34,19 @@ exports[`escape backslash in multi line string 1`] = `
 `;
 
 exports[`escape backslash in single line string 1`] = `
-Snapshot: <g>"<i>f</i>orward / slash and back \\\\ slash"</>
-Received: <r>"<i>F</i>orward / slash and back \\\\ slash"</>
+<g>- Snapshot  1 -</>
+<r>+ Received  1 +</>
+
+<g>- <i>f</i>orward / slash and back \\ slash</>
+<r>+ <i>F</i>orward / slash and back \\ slash</>
 `;
 
 exports[`escape double quote marks in string 1`] = `
-Snapshot: <g>"What does \\"<i>oo</i>bleck\\" mean?"</>
-Received: <r>"What does \\"<i>ew</i>bleck\\" mean?"</>
+<g>- Snapshot  1 -</>
+<r>+ Received  1 +</>
+
+<g>- What does "<i>oo</i>bleck" mean?</>
+<r>+ What does "<i>ew</i>bleck" mean?</>
 `;
 
 exports[`escape regexp 1`] = `
@@ -42,8 +55,8 @@ Received: <r>/\\\\\\\\\\("\\)/</>
 `;
 
 exports[`expand false 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  1 -</>
+<r>+ Received  3 +</>
 
 <y>@@ -12,7 +12,9 @@</>
 <d>  ? "number"</>
@@ -59,8 +72,8 @@ exports[`expand false 1`] = `
 `;
 
 exports[`expand true 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  1 -</>
+<r>+ Received  3 +</>
 
 <d>  type TypeName<T> =</>
 <d>  T extends string ? "string" :</>
@@ -86,8 +99,8 @@ exports[`expand true 1`] = `
 `;
 
 exports[`fallback to line diff 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  1 -</>
+<r>+ Received  8 +</>
 
 <r>+ ====================================options=====================================</>
 <r>+ parsers: ["flow", "typescript"]</>
@@ -106,8 +119,8 @@ exports[`fallback to line diff 1`] = `
 `;
 
 exports[`has no common after clean up chaff array 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  2 -</>
+<r>+ Received  2 +</>
 
 <d>  Array [</>
 <g>-   "delete",</>
@@ -118,13 +131,38 @@ exports[`has no common after clean up chaff array 1`] = `
 `;
 
 exports[`has no common after clean up chaff string single line 1`] = `
-Snapshot: <g>"delete"</>
-Received: <r>"insert"</>
+<g>- Snapshot  1 -</>
+<r>+ Received  1 +</>
+
+<g>- delete</>
+<r>+ insert</>
+`;
+
+exports[`isLineDiffable false asymmetric matcher 1`] = `
+Snapshot: <g>null</>
+Received: <r>Object {</>
+<r>  "asymmetricMatch": [Function],</>
+<r>}</>
 `;
 
 exports[`isLineDiffable false boolean 1`] = `
 Snapshot: <g>true</>
 Received: <r>false</>
+`;
+
+exports[`isLineDiffable false date 1`] = `
+Snapshot: <g>2019-09-19T00:00:00.000Z</>
+Received: <r>2019-09-20T00:00:00.000Z</>
+`;
+
+exports[`isLineDiffable false error 1`] = `
+Snapshot: <g>[Error: Cannot spread fragment "NameAndAppearances" within itself.]</>
+Received: <r>[Error: Cannot spread fragment "NameAndAppearancesAndFriends" within itself.]</>
+`;
+
+exports[`isLineDiffable false function 1`] = `
+Snapshot: <g>undefined</>
+Received: <r>[Function]</>
 `;
 
 exports[`isLineDiffable false number 1`] = `
@@ -133,8 +171,8 @@ Received: <r>NaN</>
 `;
 
 exports[`isLineDiffable true array 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  0 -</>
+<r>+ Received  2 +</>
 
 <d>  Array [</>
 <d>    Object {</>
@@ -151,8 +189,8 @@ exports[`isLineDiffable true array 1`] = `
 `;
 
 exports[`isLineDiffable true object 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  2 -</>
+<r>+ Received  3 +</>
 
 <d>  Object {</>
 <d>    "props": Object {</>
@@ -167,8 +205,8 @@ exports[`isLineDiffable true object 1`] = `
 `;
 
 exports[`isLineDiffable true single line expected and multi line received 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  1 -</>
+<r>+ Received  3 +</>
 
 <g>- Array []</>
 <r>+ Array [</>
@@ -177,13 +215,16 @@ exports[`isLineDiffable true single line expected and multi line received 1`] = 
 `;
 
 exports[`isLineDiffable true single line expected and received 1`] = `
-Snapshot: <g>Array []</>
-Received: <r>Object {}</>
+<g>- Snapshot  1 -</>
+<r>+ Received  1 +</>
+
+<g>- Array []</>
+<r>+ Object {}</>
 `;
 
 exports[`multi line small change in one line and other is unchanged 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  1 -</>
+<r>+ Received  1 +</>
 
 <g>- There is no route defined for key <i>'</i>Settings<i>'</i>.</>
 <r>+ There is no route defined for key Settings.</>
@@ -191,8 +232,8 @@ exports[`multi line small change in one line and other is unchanged 1`] = `
 `;
 
 exports[`multi line small changes 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  7 -</>
+<r>+ Received  7 +</>
 
 <g>-     6<i>9</i> |<Y> </></>
 <r>+     6<i>8</i> |<Y> </></>
@@ -212,13 +253,16 @@ exports[`multi line small changes 1`] = `
 `;
 
 exports[`single line large changes 1`] = `
-Snapshot: <g>"<i>A</i>rray length<i> must be a finite positive integer</i>"</>
-Received: <r>"<i>Invalid a</i>rray length"</>
+<g>- Snapshot  1 -</>
+<r>+ Received  1 +</>
+
+<g>- <i>A</i>rray length<i> must be a finite positive integer</i></>
+<r>+ <i>Invalid a</i>rray length</>
 `;
 
 exports[`without serialize backtick single line expected and multi line received 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  1 -</>
+<r>+ Received  2 +</>
 
 <g>- var foo = \`backtick\`;</>
 <r>+ var foo = \`back</>
@@ -226,16 +270,16 @@ exports[`without serialize backtick single line expected and multi line received
 `;
 
 exports[`without serialize backtick single line expected and received 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  1 -</>
+<r>+ Received  1 +</>
 
 <g>- var foo = \`backtick\`;</>
 <r>+ var foo = \`back<i>\${x}</i>tick\`;</>
 `;
 
 exports[`without serialize has no common after clean up chaff multi line 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  2 -</>
+<r>+ Received  2 +</>
 
 <g>- delete</>
 <g>- two</>
@@ -244,16 +288,16 @@ exports[`without serialize has no common after clean up chaff multi line 1`] = `
 `;
 
 exports[`without serialize has no common after clean up chaff single line 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  1 -</>
+<r>+ Received  1 +</>
 
 <g>- delete</>
 <r>+ insert</>
 `;
 
 exports[`without serialize prettier/pull/5590 1`] = `
-<g>- Snapshot</>
-<r>+ Received</>
+<g>- Snapshot  1 -</>
+<r>+ Received  1 +</>
 
 <y>@@ -4,8 +4,8 @@</>
 <d>                                                                                  | printWidth</>

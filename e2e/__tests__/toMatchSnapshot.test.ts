@@ -108,7 +108,11 @@ test('first snapshot fails, second passes', () => {
     writeFiles(TESTS_DIR, {[filename]: template([`'kiwi'`, `'banana'`])});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshot name: `snapshots 1`');
-    expect(stderr).toMatch('Snapshot: "apple"\n    Received: "kiwi"');
+    // Match lines separately because empty line has been replaced with space:
+    expect(stderr).toMatch('- Snapshot  1 -');
+    expect(stderr).toMatch('+ Received  1 +');
+    expect(stderr).toMatch('- apple');
+    expect(stderr).toMatch('+ kiwi');
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(exitCode).toBe(1);
   }

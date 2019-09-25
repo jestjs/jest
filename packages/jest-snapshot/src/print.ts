@@ -5,22 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff, {diffStringsUnified} from 'jest-diff';
+import {diffLinesUnified, diffStringsUnified, splitLines0} from 'jest-diff';
 import getType = require('jest-get-type');
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
   getLabelPrinter,
-  printDiffOrStringify,
 } from 'jest-matcher-utils';
 import prettyFormat = require('pretty-format');
-import {unescape} from './utils';
+import {unstringifyString} from './utils';
 
 const isLineDiffable = (received: any): boolean => {
   const receivedType = getType(received);
 
   if (getType.isPrimitive(received)) {
-    return typeof received === 'string' && received.includes('\n');
+    return typeof received === 'string';
   }
 
   if (
@@ -48,74 +47,56 @@ const isLineDiffable = (received: any): boolean => {
 const MAX_DIFF_STRING_LENGTH = 20000;
 
 export const printDiffOrStringified = (
-  expectedSerializedTrimmed: string,
-  receivedSerializedTrimmed: string,
+  a: string, // snapshot without extra line breaks
+  b: string, // received serialized but without extra line breaks
   received: unknown,
-  expectedLabel: string,
-  receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
 ): string => {
+  const aAnnotation = 'Snapshot';
+  const bAnnotation = 'Received';
+  const aColor = EXPECTED_COLOR;
+  const bColor = RECEIVED_COLOR;
+  const options = {
+    aAnnotation,
+    aColor,
+    bAnnotation,
+    bColor,
+    expand,
+    includeChangeCounts: true,
+  };
+
   if (typeof received === 'string') {
     if (
-      expectedSerializedTrimmed.length >= 2 &&
-      expectedSerializedTrimmed.startsWith('"') &&
-      expectedSerializedTrimmed.endsWith('"') &&
-      receivedSerializedTrimmed === unescape(prettyFormat(received))
+      a.length >= 2 &&
+      a.startsWith('"') &&
+      a.endsWith('"') &&
+      b === prettyFormat(received)
     ) {
-      // The expected snapshot looks like a stringified string.
-      // The received serialization is default stringified string.
-
-      // Undo default serialization of expected snapshot:
-      // Remove enclosing double quote marks.
-      // Remove backslash escape preceding backslash here,
-      // because unescape replaced it only preceding double quote mark.
-      return printDiffOrStringify(
-        expectedSerializedTrimmed.slice(1, -1).replace(/\\\\/g, '\\'),
-        received,
-        expectedLabel,
-        receivedLabel,
-        expand,
-      );
+      // If snapshot looks like default serialization of a string
+      // and received is string which has default serialization, then replace:
+      a = unstringifyString(a); //  hypothetical unserialized expected string
+      b = received; // not serialized
     }
+    // else expected had custom serialization or was not a string
+    // or received has custom serialization
 
-    // Display substring highlight even when strings have custom serialization.
-    if (
-      expectedSerializedTrimmed.length !== 0 &&
-      receivedSerializedTrimmed.length !== 0 &&
-      expectedSerializedTrimmed.length <= MAX_DIFF_STRING_LENGTH &&
-      receivedSerializedTrimmed.length <= MAX_DIFF_STRING_LENGTH &&
-      expectedSerializedTrimmed !== receivedSerializedTrimmed
-    ) {
-      return diffStringsUnified(
-        expectedSerializedTrimmed,
-        receivedSerializedTrimmed,
-        {
-          aAnnotation: expectedLabel,
-          bAnnotation: receivedLabel,
-          expand,
-        },
-      );
-    }
+    return a.length <= MAX_DIFF_STRING_LENGTH &&
+      b.length <= MAX_DIFF_STRING_LENGTH
+      ? diffStringsUnified(a, b, options)
+      : diffLinesUnified(splitLines0(a), splitLines0(b), options);
   }
 
-  if (
-    (expectedSerializedTrimmed.includes('\n') ||
-      receivedSerializedTrimmed.includes('\n')) &&
-    isLineDiffable(received)
-  ) {
-    return diff(expectedSerializedTrimmed, receivedSerializedTrimmed, {
-      aAnnotation: expectedLabel,
-      bAnnotation: receivedLabel,
-      expand,
-    }) as string;
+  if (isLineDiffable(received)) {
+    // TODO replace with diffLinesUnified2 to ignore indenation
+    return diffLinesUnified(splitLines0(a), splitLines0(b), options);
   }
 
-  const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+  const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
   return (
-    printLabel(expectedLabel) +
-    EXPECTED_COLOR(expectedSerializedTrimmed) +
+    printLabel(aAnnotation) +
+    aColor(a) +
     '\n' +
-    printLabel(receivedLabel) +
-    RECEIVED_COLOR(receivedSerializedTrimmed)
+    printLabel(bAnnotation) +
+    bColor(b)
   );
 };

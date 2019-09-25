@@ -343,7 +343,7 @@ const _toMatchSnapshot = ({
     testName: fullTestName,
   });
   const {count, pass} = result;
-  let {actual, expected} = result;
+  const {actual, expected} = result;
 
   let report: () => string;
   if (pass) {
@@ -357,17 +357,12 @@ const _toMatchSnapshot = ({
       `${RECEIVED_COLOR('Received value')} ` +
       `${actual}`;
   } else {
-    expected = utils.removeExtraLineBreaks(expected);
-    actual = utils.removeExtraLineBreaks(actual);
-
     // Assign to local variable because of declaration let expected:
     // TypeScript thinks it could change before report function is called.
     const printed = printDiffOrStringified(
       expected,
       actual,
       received,
-      'Snapshot',
-      'Received',
       snapshotState.expand,
     );
 
