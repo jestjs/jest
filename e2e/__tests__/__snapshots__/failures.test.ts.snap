@@ -786,8 +786,8 @@ FAIL __tests__/snapshot.test.js
 
     Snapshot name: \`failing snapshot 1\`
 
-    - Snapshot  1 -
-    + Received  1 +
+    - Snapshot  - 1
+    + Received  + 1
 
     - bar
     + foo
@@ -815,8 +815,8 @@ FAIL __tests__/snapshotWithHint.test.js
 
     Snapshot name: \`failing snapshot with hint: descriptive hint 1\`
 
-    - Snapshot  1 -
-    + Received  1 +
+    - Snapshot  - 1
+    + Received  + 1
 
     - bar
     + foo
