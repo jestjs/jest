@@ -6,10 +6,8 @@ FAIL __tests__/bar.spec.js
   ● bar
     expect(received).toMatchSnapshot()
     Snapshot name: \`bar 1\`
-    - Snapshot  - 1
-    + Received  + 1
-    - foo
-    + bar
+    Snapshot: "foo"
+    Received: "bar"
       1 |
     > 2 |       test('bar', () => { expect('bar').toMatchSnapshot(); });
         |                                         ^

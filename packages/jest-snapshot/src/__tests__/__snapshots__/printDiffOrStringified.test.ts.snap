@@ -1,18 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`backtick single line expected and received 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
-
-<g>- var foo = \`backtick\`;</>
-<r>+ var foo = <i>tag</i>\`backtick\`;</>
+Snapshot: <g>"var foo = \`backtick\`;"</>
+Received: <r>"var foo = <i>tag</i>\`backtick\`;"</>
 `;
 
 exports[`empty string expected and received single line 1`] = `
-<g>- Snapshot  - 0</>
-<r>+ Received  + 1</>
-
-<r>+ single line string</>
+Snapshot: <g>""</>
+Received: <r>"single line string"</>
 `;
 
 exports[`empty string received and expected multi line 1`] = `
@@ -34,19 +29,13 @@ exports[`escape backslash in multi line string 1`] = `
 `;
 
 exports[`escape backslash in single line string 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
-
-<g>- <i>f</i>orward / slash and back \\ slash</>
-<r>+ <i>F</i>orward / slash and back \\ slash</>
+Snapshot: <g>"<i>f</i>orward / slash and back \\\\ slash"</>
+Received: <r>"<i>F</i>orward / slash and back \\\\ slash"</>
 `;
 
 exports[`escape double quote marks in string 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
-
-<g>- What does "<i>oo</i>bleck" mean?</>
-<r>+ What does "<i>ew</i>bleck" mean?</>
+Snapshot: <g>"What does \\"<i>oo</i>bleck\\" mean?"</>
+Received: <r>"What does \\"<i>ew</i>bleck\\" mean?"</>
 `;
 
 exports[`escape regexp 1`] = `
@@ -131,11 +120,8 @@ exports[`has no common after clean up chaff array 1`] = `
 `;
 
 exports[`has no common after clean up chaff string single line 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
-
-<g>- delete</>
-<r>+ insert</>
+Snapshot: <g>"delete"</>
+Received: <r>"insert"</>
 `;
 
 exports[`isLineDiffable false asymmetric matcher 1`] = `
@@ -253,11 +239,8 @@ exports[`multi line small changes 1`] = `
 `;
 
 exports[`single line large changes 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
-
-<g>- <i>A</i>rray length<i> must be a finite positive integer</i></>
-<r>+ <i>Invalid a</i>rray length</>
+Snapshot: <g>"<i>A</i>rray length<i> must be a finite positive integer</i>"</>
+Received: <r>"<i>Invalid a</i>rray length"</>
 `;
 
 exports[`without serialize backtick single line expected and multi line received 1`] = `

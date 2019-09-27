@@ -236,39 +236,88 @@ describe('has no common after clean up chaff', () => {
 });
 
 describe('MAX_DIFF_STRING_LENGTH', () => {
-  const lessChange = chalk.inverse('single ');
-  const less = 'single line';
-  const more = 'multi line' + '\n123456789'.repeat(2000); // 10 + 20K chars
+  describe('unquoted', () => {
+    // Do not call diffStringsUnified if either string is longer than max.
+    const lessChange = chalk.inverse('single ');
+    const less = 'single line';
+    const more = 'multi line' + '\n123456789'.repeat(2000); // 10 + 20K chars
 
-  test('both are less', () => {
-    const difference = printDiffOrStringified('multi\nline', less, less, true);
+    test('both are less', () => {
+      const less2 = 'multi\nline';
+      const difference = printDiffOrStringified(less2, less, less, true);
 
-    expect(difference).toMatch('- multi');
-    expect(difference).toMatch('- line');
+      expect(difference).toMatch('- multi');
+      expect(difference).toMatch('- line');
+      expect(difference).toMatch(lessChange);
+      expect(difference).not.toMatch('+ single line');
+    });
 
-    // diffStringsUnified has substring change
-    expect(difference).not.toMatch('+ single line');
-    expect(difference).toMatch(lessChange);
+    test('expected is more', () => {
+      const difference = printDiffOrStringified(more, less, less, true);
+
+      expect(difference).toMatch('- multi line');
+      expect(difference).toMatch('+ single line');
+      expect(difference).not.toMatch(lessChange);
+    });
+
+    test('received is more', () => {
+      const difference = printDiffOrStringified(less, more, more, true);
+
+      expect(difference).toMatch('- single line');
+      expect(difference).toMatch('+ multi line');
+      expect(difference).not.toMatch(lessChange);
+    });
   });
 
-  test('expected is more', () => {
-    const difference = printDiffOrStringified(more, less, less, true);
+  describe('quoted', () => {
+    // Do not call diffStringsRaw if either string is longer than max.
+    const lessChange = chalk.inverse('no');
+    const less = 'no numbers';
+    const more = 'many numbers' + ' 123456789'.repeat(2000); // 12 + 20K chars
+    const lessQuoted = '"' + less + '"';
+    const moreQuoted = '"' + more + '"';
 
-    expect(difference).toMatch('- multi line');
-    expect(difference).toMatch('+ single line');
+    test('both are less', () => {
+      const lessQuoted2 = '"0 numbers"';
+      const stringified = printDiffOrStringified(
+        lessQuoted2,
+        lessQuoted,
+        less,
+        true,
+      );
 
-    // diffLinesUnified does not have substring change
-    expect(difference).not.toMatch(lessChange);
-  });
+      expect(stringified).toMatch('Received:');
+      expect(stringified).toMatch(lessChange);
+      expect(stringified).not.toMatch('+ Received');
+    });
 
-  test('received is more', () => {
-    const difference = printDiffOrStringified(less, more, more, true);
+    test('expected is more', () => {
+      const stringified = printDiffOrStringified(
+        moreQuoted,
+        lessQuoted,
+        less,
+        true,
+      );
 
-    expect(difference).toMatch('- single line');
-    expect(difference).toMatch('+ multi line');
+      expect(stringified).toMatch('Received:');
+      expect(stringified).toMatch(less);
+      expect(stringified).not.toMatch('+ Received');
+      expect(stringified).not.toMatch(lessChange);
+    });
 
-    // diffLinesUnified does not have substring change
-    expect(difference).not.toMatch(lessChange);
+    test('received is more', () => {
+      const stringified = printDiffOrStringified(
+        lessQuoted,
+        moreQuoted,
+        more,
+        true,
+      );
+
+      expect(stringified).toMatch('Snapshot:');
+      expect(stringified).toMatch(less);
+      expect(stringified).not.toMatch('- Snapshot');
+      expect(stringified).not.toMatch(lessChange);
+    });
   });
 });
 

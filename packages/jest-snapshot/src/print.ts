@@ -5,15 +5,48 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {diffLinesUnified, diffStringsUnified, splitLines0} from 'jest-diff';
+import {
+  DIFF_DELETE,
+  DIFF_EQUAL,
+  DIFF_INSERT,
+  Diff,
+  diffLinesUnified,
+  diffStringsRaw,
+  diffStringsUnified,
+  splitLines0,
+} from 'jest-diff';
 import getType = require('jest-get-type');
 import {
   EXPECTED_COLOR,
+  INVERTED_COLOR,
   RECEIVED_COLOR,
   getLabelPrinter,
 } from 'jest-matcher-utils';
 import prettyFormat = require('pretty-format');
 import {unstringifyString} from './utils';
+
+// Given array of diffs, return string:
+// * include common substrings
+// * exclude change substrings which have opposite op
+// * include change substrings which have argument op
+//   with change color only if there is a common substring
+const joinDiffs = (
+  diffs: Array<Diff>,
+  op: number,
+  hasCommon: boolean,
+): string =>
+  diffs.reduce(
+    (reduced: string, diff: Diff): string =>
+      reduced +
+      (diff[0] === DIFF_EQUAL
+        ? diff[1]
+        : diff[0] !== op
+        ? ''
+        : hasCommon
+        ? INVERTED_COLOR(diff[1])
+        : diff[1]),
+    '',
+  );
 
 const isLineDiffable = (received: any): boolean => {
   const receivedType = getType(received);
@@ -73,12 +106,40 @@ export const printDiffOrStringified = (
       b === prettyFormat(received)
     ) {
       // If snapshot looks like default serialization of a string
-      // and received is string which has default serialization, then replace:
+      // and received is string which has default serialization.
+
+      if (!a.includes('\n') && !b.includes('\n')) {
+        // If neither string is multiline,
+        // display as labels and quoted strings.
+        let aQuoted = a;
+        let bQuoted = b;
+
+        if (
+          a.length - 2 <= MAX_DIFF_STRING_LENGTH &&
+          b.length - 2 <= MAX_DIFF_STRING_LENGTH
+        ) {
+          const diffs = diffStringsRaw(a.slice(1, -1), b.slice(1, -1), true);
+          const hasCommon = diffs.some(diff => diff[0] === DIFF_EQUAL);
+          aQuoted = '"' + joinDiffs(diffs, DIFF_DELETE, hasCommon) + '"';
+          bQuoted = '"' + joinDiffs(diffs, DIFF_INSERT, hasCommon) + '"';
+        }
+
+        const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
+        return (
+          printLabel(aAnnotation) +
+          aColor(aQuoted) +
+          '\n' +
+          printLabel(bAnnotation) +
+          bColor(bQuoted)
+        );
+      }
+
+      // Else either string is multiline, so display as unquoted strings.
       a = unstringifyString(a); //  hypothetical unserialized expected string
       b = received; // not serialized
     }
-    // else expected had custom serialization or was not a string
-    // or received has custom serialization
+    // Else expected had custom serialization or was not a string
+    // or received has custom serialization.
 
     return a.length <= MAX_DIFF_STRING_LENGTH &&
       b.length <= MAX_DIFF_STRING_LENGTH
