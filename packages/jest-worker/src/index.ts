@@ -14,6 +14,9 @@ import {
   WorkerPoolInterface,
   WorkerPoolOptions,
 } from './types';
+import sendCustomMessageToParent from './workers/sendCustomMessageToParent';
+
+export const messageParent = sendCustomMessageToParent;
 
 function getExposedMethods(
   workerPath: string,

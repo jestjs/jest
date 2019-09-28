@@ -150,7 +150,7 @@ class TestRunner {
 
         await onStart(test);
 
-        return worker.worker({
+        const promise = worker.worker({
           config: test.context.config,
           context: {
             ...this._context,
@@ -161,6 +161,13 @@ class TestRunner {
           globalConfig: this._globalConfig,
           path: test.path,
         });
+
+
+        promise.onCustomMessage = () => {
+          console.log('Custom message')
+        }
+
+        return promise;
       });
 
     const onError = async (err: SerializableError, test: JestTest) => {

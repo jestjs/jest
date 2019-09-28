@@ -7,12 +7,16 @@
 
 'use strict';
 
+const { messageParent } = require('jest-worker');
+
 module.exports = function() {
   const points = 10000;
   let inside = 0;
+  messageParent({ r: 'Lucas' }) 
 
   for (let i = 0; i < points; i++) {
     if (Math.pow(Math.random(), 2) + Math.pow(Math.random(), 2) <= 1) {
+      messageParent({ i }) 
       inside++;
     }
   }
