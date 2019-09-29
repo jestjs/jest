@@ -85,6 +85,7 @@ export default class Farm {
         };
 
         const onEnd: OnEnd = (error: Error | null, result: unknown) => {
+          customMessageListeners = []
           if (error) {
             reject(error);
           } else {

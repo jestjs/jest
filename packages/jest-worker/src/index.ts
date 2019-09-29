@@ -13,10 +13,9 @@ import {
   PoolExitResult,
   WorkerPoolInterface,
   WorkerPoolOptions,
+  PromiseWithCustomMessage
 } from './types';
 import sendCustomMessageToParent from './workers/sendCustomMessageToParent';
-
-export const messageParent = sendCustomMessageToParent;
 
 function getExposedMethods(
   workerPath: string,
@@ -149,3 +148,6 @@ export default class JestWorker {
     return this._workerPool.end();
   }
 }
+
+export { PromiseWithCustomMessage }
+export const messageParent = sendCustomMessageToParent;

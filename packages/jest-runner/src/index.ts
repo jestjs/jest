@@ -6,11 +6,11 @@
  */
 
 import {Config} from '@jest/types';
-import {SerializableError} from '@jest/test-result';
+import {SerializableError, TestResult} from '@jest/test-result';
 import exit = require('exit');
 import chalk from 'chalk';
 import throat from 'throat';
-import Worker from 'jest-worker';
+import Worker, { PromiseWithCustomMessage } from 'jest-worker';
 import runTest from './runTest';
 import {SerializableResolver, worker} from './testWorker';
 import {
@@ -160,12 +160,9 @@ class TestRunner {
           },
           globalConfig: this._globalConfig,
           path: test.path,
-        });
+        }) as PromiseWithCustomMessage<TestResult>;
 
-
-        promise.onCustomMessage = () => {
-          console.log('Custom message')
-        }
+        promise.onCustomMessage((message: any) => {})
 
         return promise;
       });
