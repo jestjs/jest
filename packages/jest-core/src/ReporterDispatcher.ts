@@ -27,14 +27,17 @@ export default class ReporterDispatcher {
     );
   }
 
-  async onTestResult(
+  async onTestFileResult(
     test: Test,
     testResult: TestResult,
     results: AggregatedResult,
   ) {
     for (const reporter of this._reporters) {
-      reporter.onTestResult &&
-        (await reporter.onTestResult(test, testResult, results));
+      if (reporter.onTestFileResult) {
+        await reporter.onTestFileResult(test, testResult, results);
+      } else if (reporter.onTestResult) {
+        await reporter.onTestResult(test, testResult, results);
+      }
     }
 
     // Release memory if unused later.
@@ -43,9 +46,13 @@ export default class ReporterDispatcher {
     testResult.console = undefined;
   }
 
-  async onTestStart(test: Test) {
+  async onTestFileStart(test: Test) {
     for (const reporter of this._reporters) {
-      reporter.onTestStart && (await reporter.onTestStart(test));
+      if (reporter.onTestFileStart) {
+        await reporter.onTestFileStart(test);
+      } else if (reporter.onTestStart) {
+        await reporter.onTestStart(test);
+      }
     }
   }
 

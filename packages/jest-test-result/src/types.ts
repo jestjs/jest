@@ -100,6 +100,13 @@ export type Suite = {
   tests: Array<AssertionResult>;
 };
 
+export type TestCase = {
+  ancestorTitles: Array<string>;
+  fullName: string;
+  location: Callsite | null | undefined;
+  title: string;
+};
+
 export type TestResult = {
   console?: ConsoleBuffer;
   coverage?: CoverageMapData;

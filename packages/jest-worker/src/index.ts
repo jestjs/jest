@@ -13,7 +13,7 @@ import {
   PoolExitResult,
   WorkerPoolInterface,
   WorkerPoolOptions,
-  PromiseWithCustomMessage
+  PromiseWithCustomMessage,
 } from './types';
 import sendCustomMessageToParent from './workers/sendCustomMessageToParent';
 
@@ -149,5 +149,5 @@ export default class JestWorker {
   }
 }
 
-export { PromiseWithCustomMessage }
+export {PromiseWithCustomMessage};
 export const messageParent = sendCustomMessageToParent;

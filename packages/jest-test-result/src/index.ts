@@ -24,4 +24,5 @@ export {
   Status,
   Suite,
   TestResult,
+  TestCase,
 } from './types';
