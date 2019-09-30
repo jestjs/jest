@@ -94,6 +94,29 @@ export const relativePath = (
   return {basename, dirname};
 };
 
+const getCurrentQuickStatsValues = (currentQuickStats = []) => {
+  let numFailingTests = 0;
+  let numPassingTests = 0;
+  let numPendingTests = 0;
+  let numTodoTests = 0;
+
+  currentQuickStats.forEach(quickStat => {
+    numFailingTests += quickStat.numFailingTests || 0;
+    numPassingTests += quickStat.numPassingTests || 0;
+    numPendingTests += quickStat.numPendingTests || 0;
+    numTodoTests += quickStat.numTodoTests || 0;
+  });
+
+  return {
+    numFailingTests,
+    numPassingTests,
+    numPendingTests,
+    numTodoTests,
+    numTotalTests:
+      numFailingTests + numPassingTests + numPendingTests + numTodoTests,
+  };
+};
+
 export const getSummary = (
   aggregatedResults: AggregatedResult,
   options?: SummaryOptions,
@@ -102,6 +125,11 @@ export const getSummary = (
   if (options && options.roundTime) {
     runTime = Math.floor(runTime);
   }
+
+  const aggregatedQuickStats = getCurrentQuickStatsValues(
+    options.currentQuickStats,
+  );
+  // console.log(aggregatedQuickStats.numPassingTests);
 
   const estimatedTime = (options && options.estimatedTime) || 0;
   const snapshotResults = aggregatedResults.snapshot;
@@ -139,11 +167,27 @@ export const getSummary = (
 
   const tests =
     chalk.bold('Tests:       ') +
-    (testsFailed ? chalk.bold.red(`${testsFailed} failed`) + ', ' : '') +
-    (testsPending ? chalk.bold.yellow(`${testsPending} skipped`) + ', ' : '') +
-    (testsTodo ? chalk.bold.magenta(`${testsTodo} todo`) + ', ' : '') +
-    (testsPassed ? chalk.bold.green(`${testsPassed} passed`) + ', ' : '') +
-    `${testsTotal} total`;
+    (testsFailed
+      ? chalk.bold.red(
+          `${testsFailed + aggregatedQuickStats.numFailingTests} failed`,
+        ) + ', '
+      : '') +
+    (testsPending
+      ? chalk.bold.yellow(
+          `${testsPending + aggregatedQuickStats.numPendingTests} skipped`,
+        ) + ', '
+      : '') +
+    (testsTodo
+      ? chalk.bold.magenta(
+          `${testsTodo + aggregatedQuickStats.numTodoTests} todo`,
+        ) + ', '
+      : '') +
+    (testsPassed
+      ? chalk.bold.green(
+          `${testsPassed + aggregatedQuickStats.numPassingTests} passed`,
+        ) + ', '
+      : '') +
+    `${testsTotal + aggregatedQuickStats.numTotalTests} total`;
 
   const snapshots =
     chalk.bold('Snapshots:   ') +

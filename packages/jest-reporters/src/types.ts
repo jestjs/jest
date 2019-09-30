@@ -75,6 +75,7 @@ export interface Reporter {
     options: ReporterOnStartOptions,
   ) => Promise<void> | void;
   readonly onTestStart?: (test: Test) => Promise<void> | void;
+  readonly onTestFileStart?: (test: Test) => Promise<void> | void;
   readonly onTestCaseStart?: (
     test: Test,
     testCase: TestCase,

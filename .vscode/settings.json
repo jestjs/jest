@@ -9,5 +9,5 @@
   "flow.useNPMPackagedFlow": true,
   "javascript.validate.enable": false,
   "jest.pathToJest": "yarn jest --",
-  "prettier.eslintIntegration": true
+  "prettier.eslintIntegration": false
 }

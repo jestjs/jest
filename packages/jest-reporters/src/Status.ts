@@ -66,6 +66,7 @@ export default class Status {
   private _cache: {content: string; clear: string} | null;
   private _callback?: () => void;
   private _currentTests: CurrentTestList;
+  private _currentQuickStats: any[];
   private _done: boolean;
   private _emitScheduled: boolean;
   private _estimatedTime: number;
@@ -76,6 +77,7 @@ export default class Status {
   constructor() {
     this._cache = null;
     this._currentTests = new CurrentTestList();
+    this._currentQuickStats = [];
     this._done = false;
     this._emitScheduled = false;
     this._estimatedTime = 0;
@@ -103,6 +105,15 @@ export default class Status {
     this._emit();
   }
 
+  addQuickStats(quickStats) {
+    this._currentQuickStats.push(quickStats);
+    if (!this._showStatus) {
+      this._emit();
+    } else {
+      this._debouncedEmit();
+    }
+  }
+
   testStarted(testPath: Config.Path, config: Config.ProjectConfig) {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
@@ -119,6 +130,9 @@ export default class Status {
   ) {
     const {testFilePath} = testResult;
     this._aggregatedResults = aggregatedResults;
+    this._currentQuickStats = this._currentQuickStats.filter(
+      quickStats => quickStats.testPath !== testFilePath,
+    );
     this._currentTests.delete(testFilePath);
     this._debouncedEmit();
   }
@@ -156,6 +170,7 @@ export default class Status {
       content +=
         '\n' +
         getSummary(this._aggregatedResults, {
+          currentQuickStats: this._currentQuickStats,
           estimatedTime: this._estimatedTime,
           roundTime: true,
           width,

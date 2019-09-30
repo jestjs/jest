@@ -18,6 +18,7 @@
     "co": "^4.6.0",
     "expect": "^24.9.0",
     "is-generator-fn": "^2.0.0",
+    "jest-worker": "^24.9.0",
     "jest-each": "^24.9.0",
     "jest-matcher-utils": "^24.9.0",
     "jest-message-util": "^24.9.0",

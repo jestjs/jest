@@ -61,7 +61,7 @@ class TestRunner {
     watcher: JestTestWatcher,
     options: JestTestRunnerOptions,
   ): Promise<void> {
-    return await (options.serial
+    return await (false
       ? this._createInBandTestRun(tests, watcher)
       : this._createParallelTestRun(tests, watcher));
   }
@@ -154,7 +154,11 @@ class TestRunner {
           path: test.path,
         }) as PromiseWithCustomMessage<TestResult>;
 
-        // promise.onCustomMessage((message: any) => {})
+        if (promise.onCustomMessage) {
+          promise.onCustomMessage(([event, payload]: any) => {
+            this.eventEmitter.emit(event, payload);
+          });
+        }
 
         return promise;
       });

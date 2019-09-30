@@ -63,7 +63,6 @@ function reportSuccess(result: any) {
   if (!process || !process.send) {
     throw new Error('Child can only be used on a forked process');
   }
-
   process.send([PARENT_MESSAGE_OK, result]);
 }
 

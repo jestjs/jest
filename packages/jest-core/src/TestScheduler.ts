@@ -217,9 +217,12 @@ export default class TestScheduler {
               ([test, error]: [TestRunner.Test, SerializableError]) =>
                 onFailure(test, error),
             ),
-            testRunner.eventEmitter.on('test-file-result', () => {
-              // TODO
-            }),
+            testRunner.eventEmitter.on(
+              'test-case-result',
+              ([quickStats]: any) => {
+                this._dispatcher.onTestCaseResult(quickStats);
+              },
+            ),
           ];
 
           await testRunner.runTests(tests, watcher, testRunnerOptions);

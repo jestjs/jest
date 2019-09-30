@@ -130,6 +130,12 @@ export default class DefaultReporter extends BaseReporter {
     this._status.testStarted(test.path, test.context.config);
   }
 
+  onTestCaseResult(quickStats) {
+    // console.log({quickStats});
+    this._status.addQuickStats(quickStats);
+    // console.log('Test case result from reporter');
+  }
+
   onRunComplete() {
     this.forceFlushBufferedOutput();
     this._status.runFinished();
