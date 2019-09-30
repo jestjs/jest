@@ -81,6 +81,13 @@ class TestRunner {
                 throw new CancelRun();
               }
 
+              const sendMessageToJest = (
+                eventName: string,
+                arg: Array<any>,
+              ) => {
+                this.eventEmitter.emit(eventName, arg);
+              };
+
               await this.eventEmitter.emit('test-file-start', [test]);
               return runTest(
                 test.path,
@@ -88,6 +95,7 @@ class TestRunner {
                 test.context.config,
                 test.context.resolver,
                 this._context,
+                sendMessageToJest,
               );
             })
             .then(result =>

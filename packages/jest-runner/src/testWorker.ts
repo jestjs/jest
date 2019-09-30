@@ -15,6 +15,7 @@ import Runtime = require('jest-runtime');
 import Resolver = require('jest-resolve');
 import {ErrorWithCode, TestRunnerSerializedContext} from './types';
 import runTest from './runTest';
+import {messageParent} from 'jest-worker';
 
 export type SerializableResolver = {
   config: Config.ProjectConfig;
@@ -74,6 +75,10 @@ export function setup(setupData: {
   }
 }
 
+const sendMessageToJest = (eventName: string, args: Array<any>) => {
+  messageParent([eventName, args]);
+};
+
 export async function worker({
   config,
   globalConfig,
@@ -90,6 +95,7 @@ export async function worker({
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
       },
+      sendMessageToJest,
     );
   } catch (error) {
     throw formatError(error);

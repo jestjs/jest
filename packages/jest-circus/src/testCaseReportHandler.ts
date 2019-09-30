@@ -1,11 +1,10 @@
 import {Circus} from '@jest/types';
-import {messageParent} from 'jest-worker';
 import {TestCase, TestCaseResult} from '@jest/test-result';
 import {makeSingleTestResult, parseSingleTestResult} from './utils';
 
 const testCaseReportHandler = (
   testPath: string,
-  parentProcess: NodeJS.Process,
+  sendMessageToJest: Function,
 ) => (event: Circus.Event) => {
   switch (event.name) {
     case 'test_done': {
@@ -17,10 +16,11 @@ const testCaseReportHandler = (
         title: testCaseResult.title,
         ancestorTitles: testCaseResult.ancestorTitles,
       };
-      messageParent(
-        ['test-case-result', [testPath, testCase, testCaseResult]],
-        parentProcess,
-      );
+      sendMessageToJest('test-case-result', [
+        testPath,
+        testCase,
+        testCaseResult,
+      ]);
       break;
     }
   }

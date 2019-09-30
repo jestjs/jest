@@ -20,6 +20,7 @@ const jestAdapter = async (
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
+  sendMessageToJest?: Function,
 ): Promise<TestResult> => {
   const {
     initialize,
@@ -45,6 +46,7 @@ const jestAdapter = async (
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
     testPath,
+    sendMessageToJest,
   });
 
   if (config.timers === 'fake') {
