@@ -164,16 +164,18 @@ export const printAnnotation = (
 
     // Padding right aligns the ends of the annotations.
     const baAnnotationLengthDiff = bAnnotation.length - aAnnotation.length;
-    const aPaddingRight = ' '.repeat(Math.max(0, baAnnotationLengthDiff));
-    const bPaddingRight = ' '.repeat(Math.max(0, -baAnnotationLengthDiff));
+    const aAnnotationPadding = ' '.repeat(Math.max(0, baAnnotationLengthDiff));
+    const bAnnotationPadding = ' '.repeat(Math.max(0, -baAnnotationLengthDiff));
 
     // Padding left aligns the ends of the counts.
     const baCountLengthDiff = bCount.length - aCount.length;
-    const aPaddingLeft = ' '.repeat(Math.max(0, baCountLengthDiff));
-    const bPaddingLeft = ' '.repeat(Math.max(0, -baCountLengthDiff));
+    const aCountPadding = ' '.repeat(Math.max(0, baCountLengthDiff));
+    const bCountPadding = ' '.repeat(Math.max(0, -baCountLengthDiff));
 
-    aRest = aPaddingRight + '  ' + aIndicator + ' ' + aPaddingLeft + aCount;
-    bRest = bPaddingRight + '  ' + bIndicator + ' ' + bPaddingLeft + bCount;
+    aRest =
+      aAnnotationPadding + '  ' + aIndicator + ' ' + aCountPadding + aCount;
+    bRest =
+      bAnnotationPadding + '  ' + bIndicator + ' ' + bCountPadding + bCount;
   }
 
   return (
