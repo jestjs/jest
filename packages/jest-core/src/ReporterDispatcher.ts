@@ -9,7 +9,7 @@ import {
   AggregatedResult,
   TestResult,
   TestCase,
-  AssertionResult,
+  TestCaseResult,
 } from '@jest/test-result';
 import {Test} from 'jest-runner';
 import {Context} from 'jest-runtime';
@@ -70,7 +70,7 @@ export default class ReporterDispatcher {
   async onTestCaseResult(
     test: Test,
     testCase: TestCase,
-    testCaseResult: AssertionResult,
+    testCaseResult: TestCaseResult,
   ) {
     for (const reporter of this._reporters) {
       reporter.onTestCaseResult &&

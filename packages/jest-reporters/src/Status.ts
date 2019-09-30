@@ -6,7 +6,7 @@
  */
 
 import {Config} from '@jest/types';
-import {AggregatedResult, TestResult, AssertionResult} from '@jest/test-result';
+import {AggregatedResult, TestResult, TestCaseResult} from '@jest/test-result';
 import chalk from 'chalk';
 import stringLength = require('string-length');
 import {ReporterOnStartOptions, Test} from './types';
@@ -67,7 +67,7 @@ export default class Status {
   private _currentTests: CurrentTestList;
   private _currentTestCases: Array<{
     test: Test;
-    testCaseResult: AssertionResult;
+    testCaseResult: TestCaseResult;
   }>;
   private _done: boolean;
   private _emitScheduled: boolean;
@@ -107,7 +107,7 @@ export default class Status {
     this._emit();
   }
 
-  addTestCaseResult(test: Test, testCaseResult: AssertionResult) {
+  addTestCaseResult(test: Test, testCaseResult: TestCaseResult) {
     this._currentTestCases.push({test, testCaseResult});
     if (!this._showStatus) {
       this._emit();

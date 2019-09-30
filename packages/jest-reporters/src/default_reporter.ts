@@ -10,7 +10,7 @@ import {
   AggregatedResult,
   TestResult,
   TestCase,
-  AssertionResult,
+  TestCaseResult,
 } from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
 import {getConsoleOutput} from '@jest/console';
@@ -137,8 +137,8 @@ export default class DefaultReporter extends BaseReporter {
 
   onTestCaseResult(
     test: Test,
-    testCase: TestCase,
-    testCaseResult: AssertionResult,
+    _testCase: TestCase,
+    testCaseResult: TestCaseResult,
   ) {
     this._status.addTestCaseResult(test, testCaseResult);
   }

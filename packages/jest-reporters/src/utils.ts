@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {Config} from '@jest/types';
-import {AggregatedResult, AssertionResult} from '@jest/test-result';
+import {AggregatedResult, TestCaseResult} from '@jest/test-result';
 import chalk from 'chalk';
 import slash = require('slash');
 import {pluralize} from 'jest-util';
@@ -95,7 +95,7 @@ export const relativePath = (
 };
 
 const getValuesCurrentTestCases = (
-  currentTestCases: Array<{test: Test; testCaseResult: AssertionResult}> = [],
+  currentTestCases: Array<{test: Test; testCaseResult: TestCaseResult}> = [],
 ) => {
   let numFailingTests = 0;
   let numPassingTests = 0;

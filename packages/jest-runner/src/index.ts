@@ -61,7 +61,7 @@ class TestRunner {
     watcher: JestTestWatcher,
     options: JestTestRunnerOptions,
   ): Promise<void> {
-    return await (false
+    return await (options.serial
       ? this._createInBandTestRun(tests, watcher)
       : this._createParallelTestRun(tests, watcher));
   }

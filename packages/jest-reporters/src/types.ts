@@ -10,8 +10,8 @@ import {
   AggregatedResult,
   SerializableError,
   TestResult,
-  AssertionResult,
   TestCase,
+  TestCaseResult,
 } from '@jest/test-result';
 import {JestEnvironment as Environment} from '@jest/environment';
 import {FS as HasteFS, ModuleMap} from 'jest-haste-map';
@@ -68,7 +68,7 @@ export interface Reporter {
   readonly onTestCaseResult?: (
     test: Test,
     testCase: TestCase,
-    testCaseResult: AssertionResult,
+    testCaseResult: TestCaseResult,
   ) => Promise<void> | void;
   readonly onRunStart: (
     results: AggregatedResult,
@@ -88,7 +88,7 @@ export interface Reporter {
 }
 
 export type SummaryOptions = {
-  currentTestCases?: Array<{test: Test; testCaseResult: AssertionResult}>;
+  currentTestCases?: Array<{test: Test; testCaseResult: TestCaseResult}>;
   estimatedTime?: number;
   roundTime?: boolean;
   width?: number;

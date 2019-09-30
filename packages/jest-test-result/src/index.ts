@@ -25,4 +25,5 @@ export {
   Suite,
   TestResult,
   TestCase,
+  TestCaseResult,
 } from './types';
