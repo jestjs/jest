@@ -12,8 +12,6 @@ import {
   Status,
   TestResult,
   createEmptyTestResult,
-  TestCase,
-  Test,
 } from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
@@ -30,66 +28,12 @@ import {
   dispatch,
   getState as getRunnerState,
 } from '../state';
-import {getTestID, makeRunResult} from '../utils';
+import {getTestID} from '../utils';
 import run from '../run';
-import {messageParent} from 'jest-worker';
 import globals from '..';
-import {TestEntry, DescribeBlock} from '@jest/types/build/Circus';
+import testCaseReportHandler from '../testCaseReportHandler';
 
 type Process = NodeJS.Process;
-
-const parseTestResults = (testResults: Circus.TestResult[]) => {
-  let numFailingTests = 0;
-  let numPassingTests = 0;
-  let numPendingTests = 0;
-  let numTodoTests = 0;
-
-  const assertionResults: Array<AssertionResult> = testResults.map(
-    testResult => {
-      let status: Status;
-      if (testResult.status === 'skip') {
-        status = 'pending';
-        numPendingTests += 1;
-      } else if (testResult.status === 'todo') {
-        status = 'todo';
-        numTodoTests += 1;
-      } else if (testResult.errors.length) {
-        status = 'failed';
-        numFailingTests += 1;
-      } else {
-        status = 'passed';
-        numPassingTests += 1;
-      }
-
-      const ancestorTitles = testResult.testPath.filter(
-        name => name !== ROOT_DESCRIBE_BLOCK_NAME,
-      );
-      const title = ancestorTitles.pop();
-
-      return {
-        ancestorTitles,
-        duration: testResult.duration,
-        failureMessages: testResult.errors,
-        fullName: title
-          ? ancestorTitles.concat(title).join(' ')
-          : ancestorTitles.join(' '),
-        invocations: testResult.invocations,
-        location: testResult.location,
-        numPassingAsserts: 0,
-        status,
-        title: testResult.testPath[testResult.testPath.length - 1],
-      };
-    },
-  );
-
-  return {
-    numFailingTests,
-    numPassingTests,
-    numPendingTests,
-    numTodoTests,
-    assertionResults,
-  };
-};
 
 export const initialize = ({
   config,
@@ -195,7 +139,7 @@ export const initialize = ({
   setState({snapshotState, testPath});
 
   addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
-  addEventHandler(reportTestEvents(testPath, parentProcess));
+  addEventHandler(testCaseReportHandler(testPath, parentProcess));
 
   // Return it back to the outer scope (test runner outside the VM).
   return {globals, snapshotState};
@@ -212,13 +156,48 @@ export const runAndTransformResultsToJestFormat = async ({
 }): Promise<TestResult> => {
   const runResult: Circus.RunResult = await run();
 
-  const {
-    numFailingTests,
-    numPassingTests,
-    numPendingTests,
-    numTodoTests,
-    assertionResults,
-  } = parseTestResults(runResult.testResults);
+  let numFailingTests = 0;
+  let numPassingTests = 0;
+  let numPendingTests = 0;
+  let numTodoTests = 0;
+
+  const assertionResults: Array<AssertionResult> = runResult.testResults.map(
+    testResult => {
+      let status: Status;
+      if (testResult.status === 'skip') {
+        status = 'pending';
+        numPendingTests += 1;
+      } else if (testResult.status === 'todo') {
+        status = 'todo';
+        numTodoTests += 1;
+      } else if (testResult.errors.length) {
+        status = 'failed';
+        numFailingTests += 1;
+      } else {
+        status = 'passed';
+        numPassingTests += 1;
+      }
+
+      const ancestorTitles = testResult.testPath.filter(
+        name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+      );
+      const title = ancestorTitles.pop();
+
+      return {
+        ancestorTitles,
+        duration: testResult.duration,
+        failureMessages: testResult.errors,
+        fullName: title
+          ? ancestorTitles.concat(title).join(' ')
+          : ancestorTitles.join(' '),
+        invocations: testResult.invocations,
+        location: testResult.location,
+        numPassingAsserts: 0,
+        status,
+        title: testResult.testPath[testResult.testPath.length - 1],
+      };
+    },
+  );
 
   let failureMessage = formatResultsErrors(
     assertionResults,
@@ -256,55 +235,6 @@ export const runAndTransformResultsToJestFormat = async ({
     testFilePath: testPath,
     testResults: assertionResults,
   };
-};
-
-const getAncestorTitles = (testEntry: TestEntry) => {
-  let current: TestEntry | DescribeBlock | undefined = testEntry;
-  const titles = [];
-  while (current && current.name !== ROOT_DESCRIBE_BLOCK_NAME) {
-    titles.push(current.name);
-    current = current.parent;
-  }
-
-  return titles.reverse();
-};
-
-const reportTestEvents = (testPath: string, parentProcess: NodeJS.Process) => (
-  event: Circus.Event,
-) => {
-  // const toTestCase = (test: TestEntry) => {
-  //   const ancestorTitles = getAncestorTitles(test);
-  //   const title = ancestorTitles.pop() as string;
-  //   const testCase: TestCase = {
-  //     ancestorTitles,
-  //     title,
-  //     location: null,
-  //     fullName: title
-  //       ? ancestorTitles.concat(title).join(' ')
-  //       : ancestorTitles.join(' '),
-  //   };
-  //   return testCase;
-  // };
-  switch (event.name) {
-    case 'test_done': {
-      const quickStats =
-        event.test.errors.length === 0
-          ? {
-              testPath,
-              numFailingTests: 0,
-              numPassingTests: 1,
-              numPendingTests: 0,
-            }
-          : {
-              testPath,
-              numFailingTests: 1,
-              numPassingTests: 0,
-              numPendingTests: 0,
-            };
-      messageParent(['test-case-result', [quickStats]], parentProcess);
-      break;
-    }
-  }
 };
 
 const handleSnapshotStateAfterRetry = (snapshotState: SnapshotStateType) => (

@@ -11,7 +11,8 @@ import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
 import StackUtils = require('stack-utils');
 import prettyFormat = require('pretty-format');
-import {getState} from './state';
+import {getState, ROOT_DESCRIBE_BLOCK_NAME} from './state';
+import {AssertionResult, Status} from '@jest/test-result';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
@@ -353,4 +354,57 @@ export const invariant = (condition: unknown, message?: string) => {
   if (!condition) {
     throw new Error(message);
   }
+};
+
+export const parseTestResults = (testResults: Circus.TestResult[]) => {
+  let numFailingTests = 0;
+  let numPassingTests = 0;
+  let numPendingTests = 0;
+  let numTodoTests = 0;
+
+  const assertionResults: Array<AssertionResult> = testResults.map(
+    testResult => {
+      let status: Status;
+      if (testResult.status === 'skip') {
+        status = 'pending';
+        numPendingTests += 1;
+      } else if (testResult.status === 'todo') {
+        status = 'todo';
+        numTodoTests += 1;
+      } else if (testResult.errors.length) {
+        status = 'failed';
+        numFailingTests += 1;
+      } else {
+        status = 'passed';
+        numPassingTests += 1;
+      }
+
+      const ancestorTitles = testResult.testPath.filter(
+        name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+      );
+      const title = ancestorTitles.pop();
+
+      return {
+        ancestorTitles,
+        duration: testResult.duration,
+        failureMessages: testResult.errors,
+        fullName: title
+          ? ancestorTitles.concat(title).join(' ')
+          : ancestorTitles.join(' '),
+        invocations: testResult.invocations,
+        location: testResult.location,
+        numPassingAsserts: 0,
+        status,
+        title: testResult.testPath[testResult.testPath.length - 1],
+      };
+    },
+  );
+
+  return {
+    numFailingTests,
+    numPassingTests,
+    numPendingTests,
+    numTodoTests,
+    assertionResults,
+  };
 };
