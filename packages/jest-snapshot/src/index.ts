@@ -357,17 +357,9 @@ const _toMatchSnapshot = ({
       `${RECEIVED_COLOR('Received value')} ` +
       `${actual}`;
   } else {
-    // Assign to local variable because of declaration let expected:
-    // TypeScript thinks it could change before report function is called.
-    const printed = printDiffOrStringified(
-      expected,
-      actual,
-      received,
-      snapshotState.expand,
-    );
-
     report = () =>
-      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` + printed;
+      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` +
+      printDiffOrStringified(expected, actual, received, snapshotState.expand);
   }
 
   // Passing the actual and expected objects so that a custom reporter
