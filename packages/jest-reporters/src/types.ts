@@ -88,6 +88,7 @@ export interface Reporter {
 }
 
 export type SummaryOptions = {
+  currentTestCases?: Array<{test: Test; testCaseResult: AssertionResult}>;
   estimatedTime?: number;
   roundTime?: boolean;
   width?: number;

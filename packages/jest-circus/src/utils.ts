@@ -244,49 +244,55 @@ export const makeRunResult = (
   unhandledErrors: unhandledErrors.map(_formatError),
 });
 
+export const makeSingleTestResult = (
+  test: Circus.TestEntry,
+): Circus.TestResult => {
+  const {includeTestLocationInResult} = getState();
+
+  const testPath = [];
+  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
+  do {
+    testPath.unshift(parent.name);
+  } while ((parent = parent.parent));
+
+  const {status} = test;
+
+  if (!status) {
+    throw new Error('Status should be present after tests are run.');
+  }
+
+  let location = null;
+  if (includeTestLocationInResult) {
+    const stackLine = test.asyncError.stack.split('\n')[1];
+    const parsedLine = stackUtils.parseLine(stackLine);
+    if (
+      parsedLine &&
+      typeof parsedLine.column === 'number' &&
+      typeof parsedLine.line === 'number'
+    ) {
+      location = {
+        column: parsedLine.column,
+        line: parsedLine.line,
+      };
+    }
+  }
+
+  return {
+    duration: test.duration,
+    errors: test.errors.map(_formatError),
+    invocations: test.invocations,
+    location,
+    status,
+    testPath,
+  };
+};
+
 const makeTestResults = (
   describeBlock: Circus.DescribeBlock,
 ): Circus.TestResults => {
-  const {includeTestLocationInResult} = getState();
-  let testResults: Circus.TestResults = [];
-  for (const test of describeBlock.tests) {
-    const testPath = [];
-    let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
-    do {
-      testPath.unshift(parent.name);
-    } while ((parent = parent.parent));
-
-    const {status} = test;
-
-    if (!status) {
-      throw new Error('Status should be present after tests are run.');
-    }
-
-    let location = null;
-    if (includeTestLocationInResult) {
-      const stackLine = test.asyncError.stack.split('\n')[1];
-      const parsedLine = stackUtils.parseLine(stackLine);
-      if (
-        parsedLine &&
-        typeof parsedLine.column === 'number' &&
-        typeof parsedLine.line === 'number'
-      ) {
-        location = {
-          column: parsedLine.column,
-          line: parsedLine.line,
-        };
-      }
-    }
-
-    testResults.push({
-      duration: test.duration,
-      errors: test.errors.map(_formatError),
-      invocations: test.invocations,
-      location,
-      status,
-      testPath,
-    });
-  }
+  let testResults: Circus.TestResults = describeBlock.tests.map(
+    makeSingleTestResult,
+  );
 
   for (const child of describeBlock.children) {
     testResults = testResults.concat(makeTestResults(child));
@@ -356,6 +362,40 @@ export const invariant = (condition: unknown, message?: string) => {
   }
 };
 
+export const parseSingleTestResult = (
+  testResult: Circus.TestResult,
+): AssertionResult => {
+  let status: Status;
+  if (testResult.status === 'skip') {
+    status = 'pending';
+  } else if (testResult.status === 'todo') {
+    status = 'todo';
+  } else if (testResult.errors.length) {
+    status = 'failed';
+  } else {
+    status = 'passed';
+  }
+
+  const ancestorTitles = testResult.testPath.filter(
+    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+  );
+  const title = ancestorTitles.pop();
+
+  return {
+    ancestorTitles,
+    duration: testResult.duration,
+    failureMessages: testResult.errors,
+    fullName: title
+      ? ancestorTitles.concat(title).join(' ')
+      : ancestorTitles.join(' '),
+    invocations: testResult.invocations,
+    location: testResult.location,
+    numPassingAsserts: 0,
+    status,
+    title: testResult.testPath[testResult.testPath.length - 1],
+  };
+};
+
 export const parseTestResults = (testResults: Circus.TestResult[]) => {
   let numFailingTests = 0;
   let numPassingTests = 0;
@@ -364,39 +404,17 @@ export const parseTestResults = (testResults: Circus.TestResult[]) => {
 
   const assertionResults: Array<AssertionResult> = testResults.map(
     testResult => {
-      let status: Status;
       if (testResult.status === 'skip') {
-        status = 'pending';
         numPendingTests += 1;
       } else if (testResult.status === 'todo') {
-        status = 'todo';
         numTodoTests += 1;
       } else if (testResult.errors.length) {
-        status = 'failed';
         numFailingTests += 1;
       } else {
-        status = 'passed';
         numPassingTests += 1;
       }
 
-      const ancestorTitles = testResult.testPath.filter(
-        name => name !== ROOT_DESCRIBE_BLOCK_NAME,
-      );
-      const title = ancestorTitles.pop();
-
-      return {
-        ancestorTitles,
-        duration: testResult.duration,
-        failureMessages: testResult.errors,
-        fullName: title
-          ? ancestorTitles.concat(title).join(' ')
-          : ancestorTitles.join(' '),
-        invocations: testResult.invocations,
-        location: testResult.location,
-        numPassingAsserts: 0,
-        status,
-        title: testResult.testPath[testResult.testPath.length - 1],
-      };
+      return parseSingleTestResult(testResult);
     },
   );
 

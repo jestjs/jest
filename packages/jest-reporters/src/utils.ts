@@ -7,11 +7,11 @@
 
 import * as path from 'path';
 import {Config} from '@jest/types';
-import {AggregatedResult} from '@jest/test-result';
+import {AggregatedResult, AssertionResult} from '@jest/test-result';
 import chalk from 'chalk';
 import slash = require('slash');
 import {pluralize} from 'jest-util';
-import {SummaryOptions} from './types';
+import {SummaryOptions, Test} from './types';
 
 const PROGRESS_BAR_WIDTH = 40;
 
@@ -94,17 +94,20 @@ export const relativePath = (
   return {basename, dirname};
 };
 
-const getCurrentQuickStatsValues = (currentQuickStats = []) => {
+const getValuesCurrentTestCases = (
+  currentTestCases: Array<{test: Test; testCaseResult: AssertionResult}> = [],
+) => {
   let numFailingTests = 0;
   let numPassingTests = 0;
   let numPendingTests = 0;
   let numTodoTests = 0;
-
-  currentQuickStats.forEach(quickStat => {
-    numFailingTests += quickStat.numFailingTests || 0;
-    numPassingTests += quickStat.numPassingTests || 0;
-    numPendingTests += quickStat.numPendingTests || 0;
-    numTodoTests += quickStat.numTodoTests || 0;
+  let numTotalTests = 0;
+  currentTestCases.forEach(({testCaseResult: {status}}) => {
+    numFailingTests += status === 'failed' ? 1 : 0;
+    numPassingTests += status === 'passed' ? 1 : 0;
+    numPendingTests += status === 'skipped' ? 1 : 0;
+    numTodoTests += status === 'todo' ? 1 : 0;
+    numTotalTests += 1;
   });
 
   return {
@@ -112,8 +115,7 @@ const getCurrentQuickStatsValues = (currentQuickStats = []) => {
     numPassingTests,
     numPendingTests,
     numTodoTests,
-    numTotalTests:
-      numFailingTests + numPassingTests + numPendingTests + numTodoTests,
+    numTotalTests,
   };
 };
 
@@ -126,8 +128,8 @@ export const getSummary = (
     runTime = Math.floor(runTime);
   }
 
-  const aggregatedQuickStats = getCurrentQuickStatsValues(
-    options.currentQuickStats,
+  const valuesForCurrentTestCases = getValuesCurrentTestCases(
+    options ? options.currentTestCases : [],
   );
   // console.log(aggregatedQuickStats.numPassingTests);
 
@@ -169,25 +171,25 @@ export const getSummary = (
     chalk.bold('Tests:       ') +
     (testsFailed
       ? chalk.bold.red(
-          `${testsFailed + aggregatedQuickStats.numFailingTests} failed`,
+          `${testsFailed + valuesForCurrentTestCases.numFailingTests} failed`,
         ) + ', '
       : '') +
     (testsPending
       ? chalk.bold.yellow(
-          `${testsPending + aggregatedQuickStats.numPendingTests} skipped`,
+          `${testsPending + valuesForCurrentTestCases.numPendingTests} skipped`,
         ) + ', '
       : '') +
     (testsTodo
       ? chalk.bold.magenta(
-          `${testsTodo + aggregatedQuickStats.numTodoTests} todo`,
+          `${testsTodo + valuesForCurrentTestCases.numTodoTests} todo`,
         ) + ', '
       : '') +
     (testsPassed
       ? chalk.bold.green(
-          `${testsPassed + aggregatedQuickStats.numPassingTests} passed`,
+          `${testsPassed + valuesForCurrentTestCases.numPassingTests} passed`,
         ) + ', '
       : '') +
-    `${testsTotal + aggregatedQuickStats.numTotalTests} total`;
+    `${testsTotal + valuesForCurrentTestCases.numTotalTests} total`;
 
   const snapshots =
     chalk.bold('Snapshots:   ') +

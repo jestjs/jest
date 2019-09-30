@@ -27,6 +27,8 @@ import {
   addResult,
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
+  TestCase,
+  AssertionResult,
 } from '@jest/test-result';
 import ReporterDispatcher from './ReporterDispatcher';
 import TestWatcher from './TestWatcher';
@@ -182,12 +184,16 @@ export default class TestScheduler {
     });
 
     const testRunners = Object.create(null);
-    contexts.forEach(({config}) => {
+    const contextsByTestRunner = new WeakMap<TestRunner, Context>();
+    contexts.forEach(context => {
+      const {config} = context;
       if (!testRunners[config.runner]) {
         const Runner: typeof TestRunner = require(config.runner);
-        testRunners[config.runner] = new Runner(this._globalConfig, {
+        const runner = new Runner(this._globalConfig, {
           changedFiles: this._context && this._context.changedFiles,
         });
+        testRunners[config.runner] = runner;
+        contextsByTestRunner.set(runner, context);
       }
     });
 
@@ -197,7 +203,9 @@ export default class TestScheduler {
       try {
         for (const runner of Object.keys(testRunners)) {
           const testRunner = testRunners[runner];
+          const context = contextsByTestRunner.get(testRunner);
           const tests = testsByRunner[runner];
+
           const testRunnerOptions = {
             serial: runInBand || Boolean(testRunner.isSerial),
           };
@@ -219,8 +227,19 @@ export default class TestScheduler {
             ),
             testRunner.eventEmitter.on(
               'test-case-result',
-              ([quickStats]: any) => {
-                this._dispatcher.onTestCaseResult(quickStats);
+              ([testPath, testCase, testCaseResult]: [
+                Config.Path,
+                TestCase,
+                AssertionResult,
+              ]) => {
+                if (context) {
+                  const test: TestRunner.Test = {context, path: testPath};
+                  this._dispatcher.onTestCaseResult(
+                    test,
+                    testCase,
+                    testCaseResult,
+                  );
+                }
               },
             ),
           ];
@@ -258,7 +277,7 @@ export default class TestScheduler {
   private _partitionTests(
     testRunners: Record<string, TestRunner>,
     tests: Array<TestRunner.Test>,
-  ) {
+  ): Record<string, Array<TestRunner.Test>> | null {
     if (Object.keys(testRunners).length > 1) {
       return tests.reduce((testRuns, test) => {
         const runner = test.context.config.runner;

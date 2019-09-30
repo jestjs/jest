@@ -20,11 +20,11 @@ import {
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
+  PARENT_MESSAGE_CUSTOM,
   ParentMessage,
   WorkerInterface,
   WorkerOptions,
   OnCustomMessage,
-  PARENT_MESSAGE_CUSTOM,
 } from '../types';
 
 export default class ExperimentalWorker implements WorkerInterface {
@@ -174,9 +174,6 @@ export default class ExperimentalWorker implements WorkerInterface {
         error.stack = response[3];
 
         this._onProcessEnd(error, null);
-        break;
-      case PARENT_MESSAGE_OK:
-        this._onCustomMessage(response[1]);
         break;
       case PARENT_MESSAGE_CUSTOM:
         this._onCustomMessage(response[1]);

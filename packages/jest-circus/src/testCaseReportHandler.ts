@@ -1,5 +1,7 @@
 import {Circus} from '@jest/types';
 import {messageParent} from 'jest-worker';
+import {TestCase} from '@jest/test-result';
+import {makeSingleTestResult, parseSingleTestResult} from './utils';
 
 const testCaseReportHandler = (
   testPath: string,
@@ -7,21 +9,18 @@ const testCaseReportHandler = (
 ) => (event: Circus.Event) => {
   switch (event.name) {
     case 'test_done': {
-      const quickStats =
-        event.test.errors.length === 0
-          ? {
-              testPath,
-              numFailingTests: 0,
-              numPassingTests: 1,
-              numPendingTests: 0,
-            }
-          : {
-              testPath,
-              numFailingTests: 1,
-              numPassingTests: 0,
-              numPendingTests: 0,
-            };
-      messageParent(['test-case-result', [quickStats]], parentProcess);
+      const testResult = makeSingleTestResult(event.test);
+      const testCaseResult = parseSingleTestResult(testResult);
+      const testCase: TestCase = {
+        fullName: testCaseResult.fullName,
+        location: testCaseResult.location,
+        title: testCaseResult.title,
+        ancestorTitles: testCaseResult.ancestorTitles,
+      };
+      messageParent(
+        ['test-case-result', [testPath, testCase, testCaseResult]],
+        parentProcess,
+      );
       break;
     }
   }
