@@ -136,6 +136,10 @@ When this option is provided, Jest will assume it is running in a CI environment
 
 Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`. _Note: clearing the cache will reduce performance._
 
+### `--collectCoverage[=<boolean>]`
+
+Collect coverage information while executing the test. Optionally pass `<boolean>` to override option set in configuration.
+
 ### `--collectCoverageFrom=<glob>`
 
 A glob pattern relative to <rootDir> matching the files that coverage info needs to be collected from.
