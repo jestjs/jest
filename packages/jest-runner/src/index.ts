@@ -94,8 +94,8 @@ class TestRunner {
                 this._globalConfig,
                 test.context.config,
                 test.context.resolver,
-                this._context,
                 sendMessageToJest,
+                this._context,
               );
             })
             .then(result =>

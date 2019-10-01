@@ -91,11 +91,11 @@ export async function worker({
       globalConfig,
       config,
       getResolver(config),
+      sendMessageToJest,
       context && {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
       },
-      sendMessageToJest,
     );
   } catch (error) {
     throw formatError(error);

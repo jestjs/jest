@@ -210,39 +210,43 @@ export default class TestScheduler {
             serial: runInBand || Boolean(testRunner.isSerial),
           };
 
-          const unsubscribes = [
-            testRunner.eventEmitter.on(
-              'test-file-start',
-              ([test]: [TestRunner.Test]) => onTestFileStart(test),
-            ),
-            testRunner.eventEmitter.on(
-              'test-file-success',
-              ([test, testResult]: [TestRunner.Test, TestResult]) =>
-                onResult(test, testResult),
-            ),
-            testRunner.eventEmitter.on(
-              'test-file-failure',
-              ([test, error]: [TestRunner.Test, SerializableError]) =>
-                onFailure(test, error),
-            ),
-            testRunner.eventEmitter.on(
-              'test-case-result',
-              ([testPath, testCase, testCaseResult]: [
-                Config.Path,
-                TestCase,
-                AssertionResult,
-              ]) => {
-                if (context) {
-                  const test: TestRunner.Test = {context, path: testPath};
-                  this._dispatcher.onTestCaseResult(
-                    test,
-                    testCase,
-                    testCaseResult,
-                  );
-                }
-              },
-            ),
-          ];
+          const unsubscribes: Array<() => void> = [];
+
+          if (typeof testRunner.eventEmitter !== 'undefined') {
+            unsubscribes.concat([
+              testRunner.eventEmitter.on(
+                'test-file-start',
+                ([test]: [TestRunner.Test]) => onTestFileStart(test),
+              ),
+              testRunner.eventEmitter.on(
+                'test-file-success',
+                ([test, testResult]: [TestRunner.Test, TestResult]) =>
+                  onResult(test, testResult),
+              ),
+              testRunner.eventEmitter.on(
+                'test-file-failure',
+                ([test, error]: [TestRunner.Test, SerializableError]) =>
+                  onFailure(test, error),
+              ),
+              testRunner.eventEmitter.on(
+                'test-case-result',
+                ([testPath, testCase, testCaseResult]: [
+                  Config.Path,
+                  TestCase,
+                  AssertionResult,
+                ]) => {
+                  if (context) {
+                    const test: TestRunner.Test = {context, path: testPath};
+                    this._dispatcher.onTestCaseResult(
+                      test,
+                      testCase,
+                      testCaseResult,
+                    );
+                  }
+                },
+              ),
+            ]);
+          }
 
           await testRunner.runTests(tests, watcher, testRunnerOptions);
 
