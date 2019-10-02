@@ -47,6 +47,8 @@ class TestRunner {
   private _context: JestTestRunnerContext;
   public eventEmitter: Emittery;
 
+  public __PRIVATE_UNSTABLE_API_supportsEventEmmiters__: true = true;
+
   constructor(
     globalConfig: Config.GlobalConfig,
     context?: JestTestRunnerContext,
@@ -59,6 +61,7 @@ class TestRunner {
   async runTests(
     tests: Array<JestTest>,
     watcher: JestTestWatcher,
+
     options: JestTestRunnerOptions,
   ): Promise<void> {
     return await (options.serial

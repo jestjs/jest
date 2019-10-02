@@ -210,47 +210,64 @@ export default class TestScheduler {
             serial: runInBand || Boolean(testRunner.isSerial),
           };
 
-          const unsubscribes: Array<() => void> = [];
+          /**
+           * Test runners with event emitters are still not supported
+           * for third party test runners.
+           */
+          if (testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmmiters__) {
+            const unsubscribes: Array<() => void> = [];
 
-          if (typeof testRunner.eventEmitter !== 'undefined') {
-            unsubscribes.concat([
-              testRunner.eventEmitter.on(
-                'test-file-start',
-                ([test]: [TestRunner.Test]) => onTestFileStart(test),
-              ),
-              testRunner.eventEmitter.on(
-                'test-file-success',
-                ([test, testResult]: [TestRunner.Test, TestResult]) =>
-                  onResult(test, testResult),
-              ),
-              testRunner.eventEmitter.on(
-                'test-file-failure',
-                ([test, error]: [TestRunner.Test, SerializableError]) =>
-                  onFailure(test, error),
-              ),
-              testRunner.eventEmitter.on(
-                'test-case-result',
-                ([testPath, testCase, testCaseResult]: [
-                  Config.Path,
-                  TestCase,
-                  AssertionResult,
-                ]) => {
-                  if (context) {
-                    const test: TestRunner.Test = {context, path: testPath};
-                    this._dispatcher.onTestCaseResult(
-                      test,
-                      testCase,
-                      testCaseResult,
-                    );
-                  }
-                },
-              ),
-            ]);
+            if (typeof testRunner.eventEmitter !== 'undefined') {
+              unsubscribes.concat([
+                testRunner.eventEmitter.on(
+                  'test-file-start',
+                  ([test]: [TestRunner.Test]) => onTestFileStart(test),
+                ),
+                testRunner.eventEmitter.on(
+                  'test-file-success',
+                  ([test, testResult]: [TestRunner.Test, TestResult]) =>
+                    onResult(test, testResult),
+                ),
+                testRunner.eventEmitter.on(
+                  'test-file-failure',
+                  ([test, error]: [TestRunner.Test, SerializableError]) =>
+                    onFailure(test, error),
+                ),
+                testRunner.eventEmitter.on(
+                  'test-case-result',
+                  ([testPath, testCase, testCaseResult]: [
+                    Config.Path,
+                    TestCase,
+                    AssertionResult,
+                  ]) => {
+                    if (context) {
+                      const test: TestRunner.Test = {context, path: testPath};
+                      this._dispatcher.onTestCaseResult(
+                        test,
+                        testCase,
+                        testCaseResult,
+                      );
+                    }
+                  },
+                ),
+              ]);
+            }
+
+            await testRunner.runTests(tests, watcher, testRunnerOptions);
+
+            unsubscribes.forEach(sub => sub());
+          } else {
+            await testRunner.runTests(
+              tests,
+              watcher,
+              onTestFileStart,
+              onResult,
+              onFailure,
+              {
+                serial: runInBand || Boolean(testRunners[runner].isSerial),
+              },
+            );
           }
-
-          await testRunner.runTests(tests, watcher, testRunnerOptions);
-
-          unsubscribes.forEach(sub => sub());
         }
       } catch (error) {
         if (!watcher.isInterrupted()) {
