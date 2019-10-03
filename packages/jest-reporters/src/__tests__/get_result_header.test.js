@@ -10,7 +10,7 @@ import {formatTestPath} from '../utils';
 import getResultHeader from '../get_result_header';
 const terminalLink = require('terminal-link');
 
-jest.mock('terminal-link', () => jest.fn());
+jest.mock('terminal-link', () => jest.fn(() => 'wannabehyperlink'));
 
 const testResult = {
   testFilePath: '/foo',
@@ -27,4 +27,10 @@ test('should call `terminal-link` correctly', () => {
   expect(terminalLink).toHaveBeenCalled();
   expect(call[0]).toBe(formatTestPath(globalConfig, testResult.testFilePath));
   expect(call[1]).toBe(`file://${testResult.testFilePath}`);
+});
+
+test('should render the output correctly', () => {
+  const result = getResultHeader(testResult, globalConfig);
+
+  expect(result).toMatch(/wannabehyperlink/);
 });
