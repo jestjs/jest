@@ -111,6 +111,7 @@ export const getObjectSubset = (
 ): any => {
   if (Array.isArray(object)) {
     if (Array.isArray(subset) && subset.length === object.length) {
+      // The map method returns correct subclass of subset.
       return subset.map((sub: any, i: number) =>
         getObjectSubset(object[i], sub),
       );
@@ -119,6 +120,7 @@ export const getObjectSubset = (
     return object;
   } else if (isObject(object) && isObject(subset)) {
     if (equals(object, subset, [iterableEquality, subsetEquality])) {
+      // Avoid unnecessary copy which might return Object instead of subclass.
       return subset;
     }
 
