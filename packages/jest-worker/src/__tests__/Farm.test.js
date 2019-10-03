@@ -98,7 +98,6 @@ describe('Farm', () => {
   });
 
   it('handles null computeWorkerKey, sending to first worker', async () => {
-    process.send([-1, 'ROGELIo'])
     const computeWorkerKey = jest.fn(() => null);
 
     const farm = new Farm(4, callback, computeWorkerKey);

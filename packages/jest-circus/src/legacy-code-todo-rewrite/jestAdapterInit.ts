@@ -30,8 +30,8 @@ import {
 } from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
-import globals from '..';
 import testCaseReportHandler from '../testCaseReportHandler';
+import globals from '..';
 
 type Process = NodeJS.Process;
 

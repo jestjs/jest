@@ -9,9 +9,9 @@ import {Config} from '@jest/types';
 import {
   AggregatedResult,
   SerializableError,
-  TestResult,
   TestCase,
   TestCaseResult,
+  TestResult,
 } from '@jest/test-result';
 import {JestEnvironment as Environment} from '@jest/environment';
 import {FS as HasteFS, ModuleMap} from 'jest-haste-map';

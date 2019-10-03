@@ -11,8 +11,8 @@ import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
 import StackUtils = require('stack-utils');
 import prettyFormat = require('pretty-format');
-import {getState, ROOT_DESCRIBE_BLOCK_NAME} from './state';
 import {AssertionResult, Status} from '@jest/test-result';
+import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
@@ -396,7 +396,7 @@ export const parseSingleTestResult = (
   };
 };
 
-export const parseTestResults = (testResults: Circus.TestResult[]) => {
+export const parseTestResults = (testResults: Array<Circus.TestResult>) => {
   let numFailingTests = 0;
   let numPassingTests = 0;
   let numPendingTests = 0;
@@ -419,10 +419,10 @@ export const parseTestResults = (testResults: Circus.TestResult[]) => {
   );
 
   return {
+    assertionResults,
     numFailingTests,
     numPassingTests,
     numPendingTests,
     numTodoTests,
-    assertionResults,
   };
 };

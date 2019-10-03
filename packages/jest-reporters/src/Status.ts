@@ -6,7 +6,7 @@
  */
 
 import {Config} from '@jest/types';
-import {AggregatedResult, TestResult, TestCaseResult} from '@jest/test-result';
+import {AggregatedResult, TestCaseResult, TestResult} from '@jest/test-result';
 import chalk from 'chalk';
 import stringLength = require('string-length');
 import {ReporterOnStartOptions, Test} from './types';

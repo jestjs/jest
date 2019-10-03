@@ -11,10 +11,10 @@ const testCaseReportHandler = (
       const testResult = makeSingleTestResult(event.test);
       const testCaseResult: TestCaseResult = parseSingleTestResult(testResult);
       const testCase: TestCase = {
+        ancestorTitles: testCaseResult.ancestorTitles,
         fullName: testCaseResult.fullName,
         location: testCaseResult.location,
         title: testCaseResult.title,
-        ancestorTitles: testCaseResult.ancestorTitles,
       };
       sendMessageToJest('test-case-result', [
         testPath,

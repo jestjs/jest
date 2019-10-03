@@ -22,13 +22,13 @@ import {
 import exit = require('exit');
 import {
   AggregatedResult,
+  AssertionResult,
   SerializableError,
+  TestCase,
   TestResult,
   addResult,
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
-  TestCase,
-  AssertionResult,
 } from '@jest/test-result';
 import ReporterDispatcher from './ReporterDispatcher';
 import TestWatcher from './TestWatcher';

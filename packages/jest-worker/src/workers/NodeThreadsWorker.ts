@@ -15,16 +15,16 @@ import mergeStream = require('merge-stream');
 import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessage,
+  OnCustomMessage,
   OnEnd,
   OnStart,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
-  PARENT_MESSAGE_CUSTOM,
   ParentMessage,
   WorkerInterface,
   WorkerOptions,
-  OnCustomMessage,
 } from '../types';
 
 export default class ExperimentalWorker implements WorkerInterface {
@@ -218,11 +218,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       return onProcessEnd(...args);
     };
 
-    this._onCustomMessage = (...arg) => {
-      if (onCustomMessage) {
-        return onCustomMessage(...arg);
-      }
-    };
+    this._onCustomMessage = (...arg) => onCustomMessage(...arg);
 
     this._request = request;
     this._retries = 0;

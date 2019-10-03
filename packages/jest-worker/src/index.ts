@@ -11,9 +11,9 @@ import Farm from './Farm';
 import {
   FarmOptions,
   PoolExitResult,
+  PromiseWithCustomMessage,
   WorkerPoolInterface,
   WorkerPoolOptions,
-  PromiseWithCustomMessage,
 } from './types';
 import _messageParent from './workers/messageParent';
 

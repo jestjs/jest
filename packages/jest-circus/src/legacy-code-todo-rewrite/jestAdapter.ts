@@ -45,8 +45,8 @@ const jestAdapter = async (
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
-    testPath,
     sendMessageToJest,
+    testPath,
   });
 
   if (config.timers === 'fake') {

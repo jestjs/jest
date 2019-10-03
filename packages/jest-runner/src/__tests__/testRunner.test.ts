@@ -8,7 +8,6 @@
 
 import {TestWatcher} from '@jest/core';
 import TestRunner from '../index';
-import {Config} from '@jest/types';
 
 let mockWorkerFarm;
 

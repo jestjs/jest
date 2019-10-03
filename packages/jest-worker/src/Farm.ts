@@ -9,13 +9,13 @@ import {
   CHILD_MESSAGE_CALL,
   ChildMessage,
   FarmOptions,
+  OnCustomMessage,
   OnEnd,
   OnStart,
+  PromiseWithCustomMessage,
   QueueChildMessage,
   QueueItem,
   WorkerInterface,
-  PromiseWithCustomMessage,
-  OnCustomMessage,
 } from './types';
 
 export default class Farm {
@@ -50,7 +50,7 @@ export default class Farm {
     method: string,
     ...args: Array<any>
   ): PromiseWithCustomMessage<unknown> {
-    let customMessageListeners: OnCustomMessage[] = [];
+    let customMessageListeners: Array<OnCustomMessage> = [];
 
     const addCustomMessageListener = (listener: OnCustomMessage) => {
       customMessageListeners.push(listener);
@@ -93,7 +93,7 @@ export default class Farm {
           }
         };
 
-        const task = {onEnd, onStart, request, onCustomMessage};
+        const task = {onCustomMessage, onEnd, onStart, request};
 
         if (worker) {
           this._enqueue(task, worker.getWorkerId());

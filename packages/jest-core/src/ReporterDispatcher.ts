@@ -7,9 +7,9 @@
 
 import {
   AggregatedResult,
-  TestResult,
   TestCase,
   TestCaseResult,
+  TestResult,
 } from '@jest/test-result';
 import {Test} from 'jest-runner';
 import {Context} from 'jest-runtime';

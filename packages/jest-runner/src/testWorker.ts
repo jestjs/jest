@@ -13,9 +13,9 @@ import exit = require('exit');
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime = require('jest-runtime');
 import Resolver = require('jest-resolve');
+import {messageParent} from 'jest-worker';
 import {ErrorWithCode, TestRunnerSerializedContext} from './types';
 import runTest from './runTest';
-import {messageParent} from 'jest-worker';
 
 export type SerializableResolver = {
   config: Config.ProjectConfig;

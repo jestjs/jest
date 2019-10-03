@@ -8,9 +8,9 @@
 import {Config} from '@jest/types';
 import {
   AggregatedResult,
-  TestResult,
   TestCase,
   TestCaseResult,
+  TestResult,
 } from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
 import {getConsoleOutput} from '@jest/console';
