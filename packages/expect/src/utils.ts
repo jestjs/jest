@@ -118,6 +118,10 @@ export const getObjectSubset = (
   } else if (object instanceof Date) {
     return object;
   } else if (isObject(object) && isObject(subset)) {
+    if (equals(object, subset, [iterableEquality, subsetEquality])) {
+      return subset;
+    }
+
     const trimmed: any = {};
     seenReferences.set(object, trimmed);
 
