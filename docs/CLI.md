@@ -230,6 +230,10 @@ Activates notifications for test results. Good for when you don't want your cons
 
 Alias: `-o`. Attempts to identify which tests to run based on which files have changed in the current repository. Only works if you're running tests in a git/hg repository at the moment and requires a static dependency graph (ie. no dynamic requires).
 
+### `--passWithNoCoverage`
+
+Allows the test suite to pass when no files are found in coverage matching on defined in coverageThreshold.
+
 ### `--passWithNoTests`
 
 Allows the test suite to pass when no files are found.
