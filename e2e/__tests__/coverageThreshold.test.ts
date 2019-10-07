@@ -228,3 +228,42 @@ test('file is matched by all path and glob threshold groups', () => {
   expect(wrap(summary)).toMatchSnapshot();
   expect(wrap(stdout)).toMatchSnapshot('stdout');
 });
+
+test('exits with 0 if path threshold group is not found in coverage data and passWithNoCoverage is true', () => {
+  const pkgJson = {
+    jest: {
+      collectCoverage: true,
+      collectCoverageFrom: ['**/*.js'],
+      coverageThreshold: {
+        global: {
+          lines: 100,
+        },
+        'pear.js': {
+          lines: 100,
+        },
+      },
+    },
+  };
+
+  writeFiles(DIR, {
+    '__tests__/grape.test.js': `
+      const grape = require('../grape.js');
+      test('grape', () => expect(grape()).toBe(3));
+    `,
+    'grape.js': `
+      module.exports = () => {
+        return 1 + 2;
+      };
+    `,
+    'package.json': JSON.stringify(pkgJson, null, 2),
+  });
+
+  const {stdout, exitCode} = runJest(
+    DIR,
+    ['--coverage', '--ci=false', '--passWithNoCoverage'],
+    {stripAnsi: true},
+  );
+
+  expect(exitCode).toBe(0);
+  expect(wrap(stdout)).toMatchSnapshot('stdout');
+});

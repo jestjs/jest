@@ -96,6 +96,7 @@ export default function watch(
 
   globalConfig = updateGlobalConfig(globalConfig, {
     mode: globalConfig.watch ? 'watch' : 'watchAll',
+    passWithNoCoverage: true,
     passWithNoTests: true,
   });
 

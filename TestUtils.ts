@@ -43,6 +43,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   onlyChanged: false,
   onlyFailures: false,
   outputFile: null,
+  passWithNoCoverage: false,
   passWithNoTests: false,
   projects: [],
   replname: null,

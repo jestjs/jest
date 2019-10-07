@@ -109,6 +109,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "nonFlagArgs": [],
     "notify": false,
     "notifyMode": "failure-change",
+    "passWithNoCoverage": false,
     "passWithNoTests": false,
     "projects": null,
     "rootDir": "<<REPLACED_ROOT_DIR>>",

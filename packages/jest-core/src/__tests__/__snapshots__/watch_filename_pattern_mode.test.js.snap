@@ -83,6 +83,7 @@ exports[`Watch mode flows Pressing "P" enters pattern mode 8`] = `
 exports[`Watch mode flows Pressing "P" enters pattern mode 9`] = `
 Object {
   "onlyChanged": false,
+  "passWithNoCoverage": true,
   "passWithNoTests": true,
   "testPathPattern": "p.*3",
   "watch": true,

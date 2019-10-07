@@ -379,7 +379,10 @@ export default class CoverageReporter extends BaseReporter {
             break;
           default:
             // If the file specified by path is not found, error is returned.
-            if (thresholdGroup !== THRESHOLD_GROUP_TYPES.GLOBAL) {
+            if (
+              thresholdGroup !== THRESHOLD_GROUP_TYPES.GLOBAL &&
+              !globalConfig.passWithNoCoverage
+            ) {
               errors = errors.concat(
                 `Jest: Coverage data for ${thresholdGroup} was not found.`,
               );

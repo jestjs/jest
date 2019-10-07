@@ -428,6 +428,13 @@ export const options = {
       'also specified.',
     type: 'string',
   },
+  passWithNoCoverage: {
+    default: false,
+    description:
+      'Will not fail if no coverage data is found ' +
+      'for a file defined in coverageThreshold.',
+    type: 'boolean',
+  },
   passWithNoTests: {
     default: false,
     description:

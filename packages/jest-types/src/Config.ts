@@ -173,6 +173,7 @@ export type InitialOptions = {
   notifyMode?: string;
   onlyChanged?: boolean;
   outputFile?: Path;
+  passWithNoCoverage?: boolean;
   passWithNoTests?: boolean;
   preprocessorIgnorePatterns?: Array<Glob>;
   preset?: string | null | undefined;
@@ -334,6 +335,7 @@ export type GlobalConfig = {
   outputFile: Path | null | undefined;
   onlyChanged: boolean;
   onlyFailures: boolean;
+  passWithNoCoverage: boolean;
   passWithNoTests: boolean;
   projects: Array<Glob>;
   replname: string | null | undefined;

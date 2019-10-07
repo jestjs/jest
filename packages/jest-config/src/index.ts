@@ -136,6 +136,7 @@ const groupOptions = (
     onlyChanged: options.onlyChanged,
     onlyFailures: options.onlyFailures,
     outputFile: options.outputFile,
+    passWithNoCoverage: options.passWithNoCoverage,
     passWithNoTests: options.passWithNoTests,
     projects: options.projects,
     replname: options.replname,

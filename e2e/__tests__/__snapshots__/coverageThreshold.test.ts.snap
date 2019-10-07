@@ -34,6 +34,15 @@ All files  |      100 |      100 |      100 |      100 |                   |
 -----------|----------|----------|----------|----------|-------------------|
 `;
 
+exports[`exits with 0 if path threshold group is not found in coverage data and passWithNoCoverage is true: stdout 1`] = `
+----------|----------|----------|----------|----------|-------------------|
+File      |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+----------|----------|----------|----------|----------|-------------------|
+All files |      100 |      100 |      100 |      100 |                   |
+ grape.js |      100 |      100 |      100 |      100 |                   |
+----------|----------|----------|----------|----------|-------------------|
+`;
+
 exports[`exits with 1 if coverage threshold is not met 1`] = `
 PASS __tests__/a-banana.js
   ✓ banana

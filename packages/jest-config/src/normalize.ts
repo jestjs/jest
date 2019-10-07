@@ -845,6 +845,7 @@ export default function normalize(
       case 'notifyMode':
       case 'onlyChanged':
       case 'outputFile':
+      case 'passWithNoCoverage':
       case 'passWithNoTests':
       case 'replname':
       case 'reporters':

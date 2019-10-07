@@ -10,7 +10,7 @@ import {Config} from '@jest/types';
 import {AllowedConfigOptions} from 'jest-watcher';
 
 type ExtraConfigOptions = Partial<
-  Pick<Config.GlobalConfig, 'noSCM' | 'passWithNoTests'>
+  Pick<Config.GlobalConfig, 'noSCM' | 'passWithNoTests' | 'passWithNoCoverage'>
 >;
 
 export default (
@@ -86,6 +86,10 @@ export default (
 
   if (options.onlyFailures !== undefined) {
     newConfig.onlyFailures = options.onlyFailures || false;
+  }
+
+  if (options.passWithNoCoverage !== undefined) {
+    newConfig.passWithNoCoverage = true;
   }
 
   if (options.passWithNoTests !== undefined) {
