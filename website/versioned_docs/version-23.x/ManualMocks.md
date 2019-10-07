@@ -127,7 +127,7 @@ describe('listFilesInDirectorySync', () => {
 
 The example mock shown here uses [`jest.genMockFromModule`](JestObjectAPI.md#jestgenmockfrommodulemodulename) to generate an automatic mock, and overrides its default behavior. This is the recommended approach, but is completely optional. If you do not want to use the automatic mock at all, you can simply export your own functions from the mock file. One downside to fully manual mocks is that they're manual – meaning you have to manually update them any time the module they are mocking changes. Because of this, it's best to use or extend the automatic mock when it works for your needs.
 
-To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using `jest.requireActual(moduleName)` in your manual mock and amending it with mock functions before exporting it.
+To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using [`jest.requireActual(moduleName)`](JestObjectAPI.md#jestrequireactualmodulename) in your manual mock and amending it with mock functions before exporting it.
 
 The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/master/examples/manual-mocks).
 
