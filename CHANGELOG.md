@@ -22,6 +22,7 @@
 - `[jest-runner]` Warn if a worker had to be force exited ([#8206](https://github.com/facebook/jest/pull/8206))
 - `[@jest/test-result]` Create method to create empty `TestResult` ([#8867](https://github.com/facebook/jest/pull/8867))
 - `[jest-worker]` [**BREAKING**] Return a promise from `end()`, resolving with the information whether workers exited gracefully ([#8206](https://github.com/facebook/jest/pull/8206))
+- `[jest-core]` Add `--passWithNoCoverage` flag ([#9019](https://github.com/facebook/jest/pull/9019))
 
 ### Fixes
 
