@@ -258,12 +258,15 @@ test('exits with 0 if path threshold group is not found in coverage data and pas
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, exitCode} = runJest(
+  const {stdout, stderr, exitCode} = runJest(
     DIR,
     ['--coverage', '--ci=false', '--passWithNoCoverage'],
     {stripAnsi: true},
   );
+  const {rest, summary} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
   expect(wrap(stdout)).toMatchSnapshot('stdout');
 });
