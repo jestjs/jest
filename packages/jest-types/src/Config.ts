@@ -283,7 +283,7 @@ export type CoverageThresholdValue = {
   functions?: number | null;
   lines?: number | null;
   statements?: number | null;
-}
+};
 
 type CoverageThreshold = {
   [path: string]: CoverageThresholdValue;
