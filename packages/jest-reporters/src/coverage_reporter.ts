@@ -216,7 +216,7 @@ export default class CoverageReporter extends BaseReporter {
     if (globalConfig.coverageThreshold) {
       function check(
         name: string,
-        thresholds: {[index: string]: number},
+        thresholds: Config.CoverageThresholdValue,
         actuals: istanbulCoverage.CoverageSummaryData,
       ) {
         return (['statements', 'branches', 'lines', 'functions'] as Array<
