@@ -279,10 +279,10 @@ type DisplayNameColor =
   | 'bgWhiteBright';
 
 export type CoverageThresholdValue = {
-  branches?: number | null;
-  functions?: number | null;
-  lines?: number | null;
-  statements?: number | null;
+  branches?: number;
+  functions?: number;
+  lines?: number;
+  statements?: number;
 };
 
 type CoverageThreshold = {

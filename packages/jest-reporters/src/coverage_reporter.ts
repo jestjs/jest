@@ -226,7 +226,7 @@ export default class CoverageReporter extends BaseReporter {
           const actualUncovered = actuals[key].total - actuals[key].covered;
           const threshold = thresholds[key];
 
-          if (threshold != null) {
+          if (threshold !== undefined) {
             if (threshold < 0) {
               if (threshold * -1 < actualUncovered) {
                 errors.push(
