@@ -12,10 +12,10 @@ import {getStackTraceLines, getTopFrame} from 'jest-message-util';
 import {
   getSnapshotData,
   keyToTestName,
+  removeExtraLineBreaks,
   saveSnapshotFile,
   serialize,
   testNameToKey,
-  unescape,
 } from './utils';
 import {InlineSnapshot, saveInlineSnapshots} from './inline_snapshots';
 import {SnapshotData} from './types';
@@ -29,7 +29,7 @@ export type SnapshotStateOptions = {
 
 export type SnapshotMatchOptions = {
   testName: string;
-  received: any;
+  received: unknown;
   key?: string;
   inlineSnapshot?: string;
   isInline: boolean;
@@ -253,9 +253,12 @@ export default class SnapshotState {
       if (!pass) {
         this.unmatched++;
         return {
-          actual: unescape(receivedSerialized),
+          actual: removeExtraLineBreaks(receivedSerialized),
           count,
-          expected: expected !== undefined ? unescape(expected) : undefined,
+          expected:
+            expected !== undefined
+              ? removeExtraLineBreaks(expected)
+              : undefined,
           key,
           pass: false,
         };

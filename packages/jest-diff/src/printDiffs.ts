@@ -162,16 +162,20 @@ export const printAnnotation = (
     const aCount = String(changeCounts.a);
     const bCount = String(changeCounts.b);
 
-    const aPadding =
-      Math.max(bAnnotation.length - aAnnotation.length, 0) +
-      Math.max(bCount.length - aCount.length, 0);
-    const bPadding =
-      Math.max(aAnnotation.length - bAnnotation.length, 0) +
-      Math.max(aCount.length - bCount.length, 0);
+    // Padding right aligns the ends of the annotations.
+    const baAnnotationLengthDiff = bAnnotation.length - aAnnotation.length;
+    const aAnnotationPadding = ' '.repeat(Math.max(0, baAnnotationLengthDiff));
+    const bAnnotationPadding = ' '.repeat(Math.max(0, -baAnnotationLengthDiff));
 
-    // Separate annotation from count by padding plus margin of 2 spaces.
-    aRest = ' '.repeat(aPadding + 2) + aCount + ' ' + aIndicator;
-    bRest = ' '.repeat(bPadding + 2) + bCount + ' ' + bIndicator;
+    // Padding left aligns the ends of the counts.
+    const baCountLengthDiff = bCount.length - aCount.length;
+    const aCountPadding = ' '.repeat(Math.max(0, baCountLengthDiff));
+    const bCountPadding = ' '.repeat(Math.max(0, -baCountLengthDiff));
+
+    aRest =
+      aAnnotationPadding + '  ' + aIndicator + ' ' + aCountPadding + aCount;
+    bRest =
+      bAnnotationPadding + '  ' + bIndicator + ' ' + bCountPadding + bCount;
   }
 
   return (
