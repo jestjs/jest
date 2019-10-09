@@ -383,7 +383,8 @@ export default class ScriptTransformer {
 
       if (
         e instanceof SyntaxError &&
-        e.message.includes('Unexpected token') &&
+        (e.message.includes('Unexpected token') ||
+          e.message.includes('Cannot use import')) &&
         !e.message.includes(' expected')
       ) {
         throw enhanceUnexpectedTokenMessage(e);

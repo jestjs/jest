@@ -50,8 +50,8 @@ test('triggers unexpected token error message for untranspiled node_modules', ()
 
   expect(stdout).toBe('');
   expect(stderr).toMatch(/import {module}/);
+  expect(stderr).toMatch(/Jest encountered an unexpected token/);
   if (nodeMajorVersion < 12) {
-    expect(stderr).toMatch(/Jest encountered an unexpected token/);
     expect(stderr).toMatch(/Unexpected token/);
   } else {
     expect(stderr).toMatch(
