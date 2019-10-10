@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`printDiffOrStringify expected and received are multi line with trailing spaces 1`] = `
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 3</>
+<r>+ Received  + 3</>
 
 <g>- <i>delete</i><Y> </></>
 <r>+ <i>insert</i><Y> </></>
@@ -29,8 +29,8 @@ Received: <r>""</>
 `;
 
 exports[`printDiffOrStringify has no common after clean up chaff multiline 1`] = `
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 2</>
+<r>+ Received  + 2</>
 
 <g>- delete</>
 <g>- two</>
