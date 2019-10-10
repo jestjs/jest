@@ -44,7 +44,7 @@ If `done()` is never called, the test will fail, which is what you want to happe
 
 ## Promises
 
-If your code uses promises, there is a simpler way to handle asynchronous tests. Return a promise from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
+If your code uses promises, there is a more straightforward way to handle asynchronous tests. Return a promise from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
 
 For example, let's say that `fetchData`, instead of using a callback, returns a promise that is supposed to resolve to the string `'peanut butter'`. We could test it with:
 
@@ -107,7 +107,7 @@ test('the fetch fails with an error', async () => {
 });
 ```
 
-Of course, you can combine `async` and `await` with `.resolves` or `.rejects`.
+You can combine `async` and `await` with `.resolves` or `.rejects`.
 
 ```js
 test('the data is peanut butter', async () => {
@@ -121,4 +121,4 @@ test('the fetch fails with an error', async () => {
 
 In these cases, `async` and `await` are effectively syntactic sugar for the same logic as the promises example uses.
 
-None of these forms is particularly superior to the others, and you can mix and match them across a codebase or even in a single file. It just depends on which style makes your tests simpler.
+None of these forms is particularly superior to the others, and you can mix and match them across a codebase or even in a single file. It just depends on which style you feel makes your tests simpler.

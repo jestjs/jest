@@ -3,7 +3,7 @@ id: mock-functions
 title: Mock Functions
 ---
 
-Mock functions make it easy to test the links between code by erasing the actual implementation of a function, capturing calls to the function (and the parameters passed in those calls), capturing instances of constructor functions when instantiated with `new`, and allowing test-time configuration of return values.
+Mock functions allow you to test the links between code by erasing the actual implementation of a function, capturing calls to the function (and the parameters passed in those calls), capturing instances of constructor functions when instantiated with `new`, and allowing test-time configuration of return values.
 
 There are two ways to mock functions: Either by creating a mock function to use in test code, or writing a [`manual mock`](ManualMocks.md) to override a module dependency.
 
@@ -240,7 +240,7 @@ const myMockFn = jest
 
 ## Custom Matchers
 
-Finally, in order to make it simpler to assert how mock functions have been called, we've added some custom matcher functions for you:
+Finally, in order to make it less demanding to assert how mock functions have been called, we've added some custom matcher functions for you:
 
 ```javascript
 // The mock function was called at least once

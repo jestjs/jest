@@ -215,7 +215,7 @@ If you'd like to assert, and manipulate your rendered components you can use [re
 
 You have to run `yarn add --dev @testing-library/react` to use react-testing-library.
 
-Let's implement a simple checkbox which swaps between two labels:
+Let's implement a checkbox which swaps between two labels:
 
 ```javascript
 // CheckboxWithLabel.js

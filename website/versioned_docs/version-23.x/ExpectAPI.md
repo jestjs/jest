@@ -197,7 +197,7 @@ When an assertion fails, the error message should give as much signal as necessa
 
 To use snapshot testing inside of your custom matcher you can import `jest-snapshot` and use it from within your matcher.
 
-Here's a simple snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
+Here's a snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
 
 ```js
 const {toMatchSnapshot} = require('jest-snapshot');
@@ -788,7 +788,7 @@ const houseForSale = {
 };
 
 test('this house has my desired features', () => {
-  // Simple Referencing
+  // Example Referencing
   expect(houseForSale).toHaveProperty('bath');
   expect(houseForSale).toHaveProperty('bedrooms', 4);
 
@@ -824,7 +824,7 @@ test('this house has my desired features', () => {
 Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
 
 ```js
-test('adding works sanely with simple decimals', () => {
+test('adding works sanely with decimals', () => {
   expect(0.2 + 0.1).toBe(0.3); // Fails!
 });
 ```
@@ -834,7 +834,7 @@ It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`. S
 Instead, use `.toBeCloseTo`. Use `numDigits` to control how many digits after the decimal point to check. For example, if you want to be sure that `0.2 + 0.1` is equal to `0.3` with a precision of 5 decimal digits, you can use this test:
 
 ```js
-test('adding works sanely with simple decimals', () => {
+test('adding works sanely with decimals', () => {
   expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
 });
 ```

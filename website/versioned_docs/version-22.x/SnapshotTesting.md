@@ -10,7 +10,7 @@ A typical snapshot test case for a mobile app renders a UI component, takes a sc
 
 ## Snapshot Testing with Jest
 
-A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js) for a simple [Link component](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js):
+A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js) for a [Link component](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js):
 
 ```javascript
 import React from 'react';

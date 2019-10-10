@@ -202,7 +202,7 @@ If you'd like to assert, and manipulate your rendered components you can use [En
 
 You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
 
-Let's implement a simple checkbox which swaps between two labels:
+Let's implement a checkbox which swaps between two labels:
 
 ```javascript
 // CheckboxWithLabel.js

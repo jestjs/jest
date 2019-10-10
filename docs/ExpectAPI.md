@@ -207,7 +207,7 @@ When an assertion fails, the error message should give as much signal as necessa
 
 To use snapshot testing inside of your custom matcher you can import `jest-snapshot` and use it from within your matcher.
 
-Here's a simple snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
+Here's a snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
 
 ```js
 const {toMatchSnapshot} = require('jest-snapshot');
@@ -798,7 +798,7 @@ const houseForSale = {
 };
 
 test('this house has my desired features', () => {
-  // Simple Referencing
+  // Example Referencing
   expect(houseForSale).toHaveProperty('bath');
   expect(houseForSale).toHaveProperty('bedrooms', 4);
 
@@ -838,7 +838,7 @@ The optional `numDigits` argument limits the number of digits to check **after**
 Intuitive equality comparisons often fail, because arithmetic on decimal (base 10) values often have rounding errors in limited precision binary (base 2) representation. For example, this test fails:
 
 ```js
-test('adding works sanely with simple decimals', () => {
+test('adding works sanely with decimals', () => {
   expect(0.2 + 0.1).toBe(0.3); // Fails!
 });
 ```
@@ -848,7 +848,7 @@ It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`.
 For example, this test passes with a precision of 5 digits:
 
 ```js
-test('adding works sanely with simple decimals', () => {
+test('adding works sanely with decimals', () => {
   expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
 });
 ```
