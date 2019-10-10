@@ -579,7 +579,7 @@ The default for `numDigits` is 2, which has proved to be a good default in most 
 
 ### `.toBeDefined()`
 
-Use `.toBeDefined` to check that a variable is not undefined. For example, if you just want to check that a function `fetchNewFlavorIdea()` returns _something_, you can write:
+Use `.toBeDefined` to check that a variable is not undefined. For example, if you want to check that a function `fetchNewFlavorIdea()` returns _something_, you can write:
 
 ```js
 test('there is a new flavor idea', () => {
@@ -591,7 +591,7 @@ You could write `expect(fetchNewFlavorIdea()).not.toBe(undefined)`, but it's bet
 
 ### `.toBeFalsy()`
 
-Use `.toBeFalsy` when you don't care what a value is, you just want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:
+Use `.toBeFalsy` when you don't care what a value is and you want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:
 
 ```js
 drinkSomeLaCroix();
@@ -679,7 +679,7 @@ test('bloop returns null', () => {
 
 ### `.toBeTruthy()`
 
-Use `.toBeTruthy` when you don't care what a value is, you just want to ensure a value is true in a boolean context. For example, let's say you have some application code that looks like:
+Use `.toBeTruthy` when you don't care what a value is and you want to ensure a value is true in a boolean context. For example, let's say you have some application code that looks like:
 
 ```js
 drinkSomeLaCroix();
@@ -688,7 +688,7 @@ if (thirstInfo()) {
 }
 ```
 
-You may not care what `thirstInfo` returns, specifically - it might return `true` or a complex object, and your code would still work. So if you just want to test that `thirstInfo` will be truthy after drinking some La Croix, you could write:
+You may not care what `thirstInfo` returns, specifically - it might return `true` or a complex object, and your code would still work. So if you want to test that `thirstInfo` will be truthy after drinking some La Croix, you could write:
 
 ```js
 test('drinking La Croix leads to having thirst info', () => {

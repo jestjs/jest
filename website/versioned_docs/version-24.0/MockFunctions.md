@@ -257,7 +257,7 @@ expect(mockFunc).lastCalledWith(arg1, arg2);
 expect(mockFunc).toMatchSnapshot();
 ```
 
-These matchers are really just sugar for common forms of inspecting the `.mock` property. You can always do this manually yourself if that's more to your taste or if you need to do something more specific:
+These matchers are sugar for common forms of inspecting the `.mock` property. You can always do this manually yourself if that's more to your taste or if you need to do something more specific:
 
 ```javascript
 // The mock function was called at least once

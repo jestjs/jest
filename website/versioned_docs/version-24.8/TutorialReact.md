@@ -10,7 +10,7 @@ At Facebook, we use Jest to test [React](http://facebook.github.io/react/) appli
 
 ### Setup with Create React App
 
-If you are just getting started with React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://facebook.github.io/create-react-app/docs/running-tests#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
+If you are new to React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://facebook.github.io/create-react-app/docs/running-tests#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
 
 Run
 
