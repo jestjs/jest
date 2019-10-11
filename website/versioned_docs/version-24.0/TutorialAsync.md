@@ -92,7 +92,7 @@ it('works with resolves', () => {
 
 ## `async`/`await`
 
-Writing tests using the `async`/`await` syntax is less complicated than you might expect. Here is how you'd write the same examples from before:
+Writing tests using the `async`/`await` syntax is also possible. Here is how you'd write the same examples from before:
 
 ```js
 // async/await can be used.

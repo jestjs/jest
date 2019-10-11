@@ -190,7 +190,7 @@ describe('When SoundPlayer throws an error', () => {
 
 ## In depth: Understanding mock constructor functions
 
-Building your constructor function mock using `jest.fn().mockImplementation()` makes mocks appear more complicated than they really are. This section shows how you can create your own smaller mocks to illustrate how mocking works.
+Building your constructor function mock using `jest.fn().mockImplementation()` makes mocks appear more complicated than they really are. This section shows how you can create your own mocks to illustrate how mocking works.
 
 ### Manual mock that is another ES6 class
 
