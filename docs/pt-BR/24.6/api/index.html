@@ -180,7 +180,7 @@ test(<span class="hljs-string">'can find things'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>Aqui <code>beforeAll</code> garante que o banco de dados está configurado antes dos testes serem executados. Se a instalação foi síncrona, você poderia fazer isso sem <code>beforeAll</code>. A chave é que Jest esperará por uma promessa resolver, para que você possa ter configuração assíncrona também.</p>
+<p>Aqui <code>beforeAll</code> garante que o banco de dados está configurado antes dos testes serem executados. If setup was synchronous, you could do this without <code>beforeAll</code>. A chave é que Jest esperará por uma promessa resolver, para que você possa ter configuração assíncrona também.</p>
 <p>Se <code>beforeAll</code> está dentro de um bloco <code>describe</code>, ele é executado no início do bloco de &quot;describe&quot;.</p>
 <p>Se você deseja executar algo antes de cada teste, em vez de antes que qualquer teste seja executado, use <code>beforeEach</code>.</p>
 <h3><a class="anchor" aria-hidden="true" id="beforeeachfn-timeout"></a><a href="#beforeeachfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeEach(fn, timeout)</code></h3>
@@ -230,7 +230,7 @@ describe(<span class="hljs-string">'my beverage'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>This isn't required - you can just write the <code>test</code> blocks directly at the top level. But this can be handy if you prefer your tests to be organized into groups.</p>
+<p>This isn't required - you can write the <code>test</code> blocks directly at the top level. But this can be handy if you prefer your tests to be organized into groups.</p>
 <p>Você também pode aninhar blocos <code>describe</code> se você tem uma hierarquia de testes:</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> binaryStringToNumber = <span class="hljs-function"><span class="hljs-params">binString</span> =&gt;</span> {
   <span class="hljs-keyword">if</span> (!<span class="hljs-regexp">/^[01]+$/</span>.test(binString)) {
@@ -405,7 +405,7 @@ describe.skip(<span class="hljs-string">'my other beverage'</span>, () =&gt; {
   <span class="hljs-comment">// ... will be skipped</span>
 });
 </code></pre>
-<p>Usar <code>describe.skip</code> muitas vezes é apenas uma alternativa mais fácil para temporariamente comentar fora um pedaço de testes.</p>
+<p>Using <code>describe.skip</code> is often a cleaner alternative to temporarily commenting out a chunk of tests.</p>
 <h3><a class="anchor" aria-hidden="true" id="describeskipeachtable-name-fn"></a><a href="#describeskipeachtable-name-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.skip.each(table)(name, fn)</code></h3>
 <p>Also under the aliases: <code>xdescribe.each(table)(name, fn)</code> and <code>xdescribe.each`table`(name, fn)</code></p>
 <p>Use <code>describe.skip.each</code> if you want to stop running a suite of data driven tests.</p>
@@ -533,7 +533,7 @@ test(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
 });
 </code></pre>
 <p>Only the &quot;it is raining&quot; test will run in that test file, since it is run with <code>test.only</code>.</p>
-<p>Geralmente você não iria acrescentar código usando <code>test.only</code> no controle de código fonte - você iria usá-lo apenas para depuração, e então removê-lo uma vez que você resolveu os testes quebrados.</p>
+<p>Usually you wouldn't check code using <code>test.only</code> into source control - you would use it for debugging, and remove it once you have fixed the broken tests.</p>
 <h3><a class="anchor" aria-hidden="true" id="testonlyeachtable-name-fn"></a><a href="#testonlyeachtable-name-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only.each(table)(name, fn)</code></h3>
 <p>Also under the aliases: <code>it.only.each(table)(name, fn)</code>, <code>fit.each(table)(name, fn)</code>, <code>it.only.each`table`(name, fn)</code> and <code>fit.each`table`(name, fn)</code></p>
 <p>Use <code>test.only.each</code> if you want to only run specific tests with different test data.</p>
@@ -566,7 +566,7 @@ test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="testskipname-fn"></a><a href="#testskipname-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip(name, fn)</code></h3>
 <p>Também sob os pseudônimos: <code>it.skip(name, fn)</code> ou <code>xit(name, fn)</code> ou <code>xtest(name, fn)</code></p>
-<p>Quando você está mantendo uma grande base de código, você pode às vezes encontrar um teste que está quebrado temporariamente por algum motivo. Se você deseja ignorar a execução deste teste, mas você não quer simplismente excluir esse código, você pode usar <code>test.skip</code> para especificar alguns testes para ignorar.</p>
+<p>Quando você está mantendo uma grande base de código, você pode às vezes encontrar um teste que está quebrado temporariamente por algum motivo. If you want to skip running this test, but you don't want to delete this code, you can use <code>test.skip</code> to specify some tests to skip.</p>
 <p>Por exemplo, digamos que você tenha estes testes:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'it is raining'</span>, () =&gt; {
   expect(inchesOfRain()).toBeGreaterThan(<span class="hljs-number">0</span>);
@@ -577,7 +577,7 @@ test.skip(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
 });
 </code></pre>
 <p>Somente o teste &quot;it is raining&quot; será executado, já que o outro teste é executado com <code>test.skip</code>.</p>
-<p>Você poderia simplesmente comentar o teste para fora, mas muitas vezes é um pouco mais agradável de usar <code>test.skip</code> porque ele vai manter a indentação e realce da sintaxe.</p>
+<p>You could comment the test out, but it's often a bit nicer to use <code>test.skip</code> because it will maintain indentation and syntax highlighting.</p>
 <h3><a class="anchor" aria-hidden="true" id="testskipeachtable-name-fn"></a><a href="#testskipeachtable-name-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip.each(table)(name, fn)</code></h3>
 <p>Also under the aliases: <code>it.skip.each(table)(name, fn)</code>, <code>xit.each(table)(name, fn)</code>, <code>xtest.each(table)(name, fn)</code>, <code>it.skip.each`table`(name, fn)</code>, <code>xit.each`table`(name, fn)</code> and <code>xtest.each`table`(name, fn)</code></p>
 <p>Use <code>test.skip.each</code> if you want to stop running a collection of data driven tests.</p>

@@ -83,8 +83,8 @@ or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 </code></pre>
 <p>This will run Jest in a Node process that an external debugger can connect to. Note that the process will pause until the debugger has connected to it.</p>
-<p>To debug in Google Chrome (or any Chromium-based browser), simply open your browser and go to <code>chrome://inspect</code> and click on &quot;Open Dedicated DevTools for Node&quot;, which will give you a list of available node instances you can connect to. Simply click on the address displayed in the terminal (usually something like <code>localhost:9229</code>) after running the above command, and you will be able to debug Jest using Chrome's DevTools.</p>
-<p>The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done simply to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). 次の実行に進むには画面の上部右側にある再生ボタンのようなボタンをクリックします。 <code>debugger</code> 宣言を含むテストをJestが実行した場合、実行はポーズされ現在いのスコープとコールスタックを調べることができます。</p>
+<p>To debug in Google Chrome (or any Chromium-based browser), open your browser and go to <code>chrome://inspect</code> and click on &quot;Open Dedicated DevTools for Node&quot;, which will give you a list of available node instances you can connect to. Click on the address displayed in the terminal (usually something like <code>localhost:9229</code>) after running the above command, and you will be able to debug Jest using Chrome's DevTools.</p>
+<p>The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). 次の実行に進むには画面の上部右側にある再生ボタンのようなボタンをクリックします。 <code>debugger</code> 宣言を含むテストをJestが実行した場合、実行はポーズされ現在いのスコープとコールスタックを調べることができます。</p>
 <blockquote>
 <p>注意: コマンドラインの<code>--runInBand</code> オプションは個々のテストに対してプロセスを生成するのではなく必ず同じプロセスでJestを実行します。 通常Jestはプロセスをまたいで並列にテストを実行しますが、同時に複数のプロセスをデバッグするのは困難だからです。</p>
 </blockquote>

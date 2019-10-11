@@ -83,8 +83,8 @@ or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 </code></pre>
 <p>This will run Jest in a Node process that an external debugger can connect to. Note that the process will pause until the debugger has connected to it.</p>
-<p>To debug in Google Chrome (or any Chromium-based browser), simply open your browser and go to <code>chrome://inspect</code> and click on &quot;Open Dedicated DevTools for Node&quot;, which will give you a list of available node instances you can connect to. Simply click on the address displayed in the terminal (usually something like <code>localhost:9229</code>) after running the above command, and you will be able to debug Jest using Chrome's DevTools.</p>
-<p>The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done simply to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). 点击开发者工具中右上方调试菜单栏中的“开始调试” 按钮，让代码继续执行。 当 Jest 执行到添加了<code>debugger;</code> 语句的单元测试时，执行就会暂停，此时，你可以检查当前的值域和调用栈。</p>
+<p>To debug in Google Chrome (or any Chromium-based browser), open your browser and go to <code>chrome://inspect</code> and click on &quot;Open Dedicated DevTools for Node&quot;, which will give you a list of available node instances you can connect to. Click on the address displayed in the terminal (usually something like <code>localhost:9229</code>) after running the above command, and you will be able to debug Jest using Chrome's DevTools.</p>
+<p>The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). 点击开发者工具中右上方调试菜单栏中的“开始调试” 按钮，让代码继续执行。 当 Jest 执行到添加了<code>debugger;</code> 语句的单元测试时，执行就会暂停，此时，你可以检查当前的值域和调用栈。</p>
 <blockquote>
 <p>注︰CLI 中 <code>--runInBand</code> 选项能够确保 Jest 执行在同一个进程中，而非为在多个子进程中分别执行。 通常情况下，Jest 并行化测试会跨进程执行，但是很难同时调试多个进程。</p>
 </blockquote>

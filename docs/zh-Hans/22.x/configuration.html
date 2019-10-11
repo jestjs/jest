@@ -172,7 +172,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
   expect(utils.isAuthorized.mock).toBeTruthy();
 
   <span class="hljs-comment">// You can provide them with your own implementation</span>
-  <span class="hljs-comment">// or just pass the expected return value</span>
+  <span class="hljs-comment">// or pass the expected return value</span>
   utils.authorize.mockReturnValue(<span class="hljs-string">'mocked_token'</span>);
   utils.isAuthorized.mockReturnValue(<span class="hljs-literal">true</span>);
 
