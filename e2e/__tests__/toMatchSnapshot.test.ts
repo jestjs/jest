@@ -196,7 +196,7 @@ test('handles invalid property matchers', () => {
     `,
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Property matchers must be an object.');
+    expect(stderr).toMatch('Expected properties must be an object');
     expect(exitCode).toBe(1);
   }
   {
@@ -207,9 +207,9 @@ test('handles invalid property matchers', () => {
     `,
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Property matchers must be an object.');
+    expect(stderr).toMatch('Expected properties must be an object');
     expect(stderr).toMatch(
-      'To provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
+      `To provide a hint without properties: toMatchSnapshot('hint')`,
     );
     expect(exitCode).toBe(1);
   }
@@ -221,9 +221,9 @@ test('handles invalid property matchers', () => {
     `,
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Property matchers must be an object.');
+    expect(stderr).toMatch('Expected properties must be an object');
     expect(stderr).toMatch(
-      'To provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
+      `To provide a hint without properties: toMatchSnapshot('hint')`,
     );
     expect(exitCode).toBe(1);
   }

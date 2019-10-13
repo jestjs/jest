@@ -415,8 +415,11 @@ export const getLabelPrinter = (...strings: Array<string>): PrintLabel => {
 export const matcherErrorMessage = (
   hint: string, // assertion returned from call to matcherHint
   generic: string, // condition which correct value must fulfill
-  specific: string, // incorrect value returned from call to printWithType
-) => `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}\n\n${specific}`;
+  specific?: string, // incorrect value returned from call to printWithType
+) =>
+  `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}${
+    typeof specific === 'string' ? '\n\n' + specific : ''
+  }`;
 
 // Display assertion for the report when a test fails.
 // New format: rejects/resolves, not, and matcher name have black color

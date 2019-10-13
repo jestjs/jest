@@ -8,13 +8,18 @@
 import * as fs from 'fs';
 import {Config} from '@jest/types';
 import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
-import {MatcherState} from 'expect';
 
 import {
   BOLD_WEIGHT,
+  EXPECTED_COLOR,
   MatcherHintOptions,
   RECEIVED_COLOR,
+  matcherErrorMessage,
   matcherHint,
+  printExpected,
+  printReceived,
+  printWithType,
+  stringify,
 } from 'jest-matcher-utils';
 import {
   EXTENSION,
@@ -24,39 +29,25 @@ import {
 } from './snapshot_resolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
-import {printDiffOrStringified} from './print';
+import {
+  PROPERTIES_ARG,
+  SNAPSHOT_ARG,
+  matcherHintFromConfig,
+  printDiffOrStringified,
+} from './printSnapshot';
+import {Context, MatchSnapshotConfig} from './types';
 import * as utils from './utils';
 
-type Context = MatcherState & {
-  snapshotState: SnapshotState;
-};
-
-type MatchSnapshotConfig = {
-  context: Context;
-  expectedArgument: string;
-  hint?: string;
-  inlineSnapshot?: string;
-  isInline: boolean;
-  matcherName: string;
-  options: MatcherHintOptions;
-  propertyMatchers?: any;
-  received: any;
-};
-
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
-const NOT_SNAPSHOT_MATCHERS = `.${BOLD_WEIGHT(
+const NOT_SNAPSHOT_MATCHERS = `Snapshot assertion must not have ${BOLD_WEIGHT(
   'not',
-)} cannot be used with snapshot matchers`;
+)}`;
 
-const HINT_ARG = 'hint';
-const HINT_COLOR = BOLD_WEIGHT;
-const INLINE_SNAPSHOT_ARG = 'snapshot';
-const PROPERTY_MATCHERS_ARG = 'properties';
 const INDENTATION_REGEX = /^([^\S\n]*)\S/m;
 
 // Display name in report when matcher fails same as in snapshot file,
 // but with optional hint argument in bold weight.
-const printName = (
+const printSnapshotName = (
   concatenatedBlockNames = '',
   hint = '',
   count: number,
@@ -65,7 +56,7 @@ const printName = (
   const hasHint = hint.length !== 0;
 
   return (
-    '`' +
+    'Snapshot name: `' +
     (hasNames ? utils.escapeBacktickString(concatenatedBlockNames) : '') +
     (hasNames && hasHint ? ': ' : '') +
     (hasHint ? BOLD_WEIGHT(utils.escapeBacktickString(hint)) : '') +
@@ -163,52 +154,57 @@ const cleanup = (
 const toMatchSnapshot = function(
   this: Context,
   received: any,
-  propertyMatchers?: any,
+  propertiesOrHint?: object | Config.Path,
   hint?: Config.Path,
 ) {
   const matcherName = 'toMatchSnapshot';
-  let expectedArgument = '';
-  let secondArgument = '';
+  let properties;
 
-  if (typeof propertyMatchers === 'object' && propertyMatchers !== null) {
-    expectedArgument = PROPERTY_MATCHERS_ARG;
-    if (typeof hint === 'string' && hint.length !== 0) {
-      secondArgument = HINT_ARG;
+  const length = arguments.length;
+  if (length === 2 && typeof propertiesOrHint === 'string') {
+    hint = propertiesOrHint;
+  } else if (length >= 2) {
+    if (typeof propertiesOrHint !== 'object' || propertiesOrHint === null) {
+      const options: MatcherHintOptions = {
+        isNot: this.isNot,
+        promise: this.promise,
+      };
+      let printedWithType = printWithType(
+        'Expected properties',
+        propertiesOrHint,
+        printExpected,
+      );
+
+      if (length === 3) {
+        options.secondArgument = 'hint';
+        options.secondArgumentColor = BOLD_WEIGHT;
+
+        if (propertiesOrHint == null) {
+          printedWithType += `\n\nTo provide a hint without properties: toMatchSnapshot('hint')`;
+        }
+      }
+
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
+          `Expected ${EXPECTED_COLOR('properties')} must be an object`,
+          printedWithType,
+        ),
+      );
     }
-  } else if (
-    typeof propertyMatchers === 'string' &&
-    propertyMatchers.length !== 0
-  ) {
-    expectedArgument = HINT_ARG;
-  }
 
-  const options: MatcherHintOptions = {
-    isNot: this.isNot,
-    promise: this.promise,
-    secondArgument,
-  };
+    // Future breaking change: Snapshot hint must be a string
+    // if (arguments.length === 3 && typeof hint !== 'string') {}
 
-  if (expectedArgument === HINT_ARG) {
-    options.expectedColor = HINT_COLOR;
-  }
-  if (secondArgument === HINT_ARG) {
-    options.secondArgumentColor = HINT_COLOR;
-  }
-
-  if (arguments.length === 3 && !propertyMatchers) {
-    throw new Error(
-      'Property matchers must be an object.\n\nTo provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
-    );
+    properties = propertiesOrHint;
   }
 
   return _toMatchSnapshot({
     context: this,
-    expectedArgument,
     hint,
     isInline: false,
     matcherName,
-    options,
-    propertyMatchers,
+    properties,
     received,
   });
 };
@@ -216,81 +212,99 @@ const toMatchSnapshot = function(
 const toMatchInlineSnapshot = function(
   this: Context,
   received: any,
-  propertyMatchersOrInlineSnapshot?: any,
+  propertiesOrSnapshot?: object | string,
   inlineSnapshot?: string,
 ) {
   const matcherName = 'toMatchInlineSnapshot';
-  let expectedArgument = '';
-  let secondArgument = '';
+  let properties;
 
-  if (typeof propertyMatchersOrInlineSnapshot === 'string') {
-    expectedArgument = INLINE_SNAPSHOT_ARG;
-  } else if (
-    typeof propertyMatchersOrInlineSnapshot === 'object' &&
-    propertyMatchersOrInlineSnapshot !== null
-  ) {
-    expectedArgument = PROPERTY_MATCHERS_ARG;
-    if (typeof inlineSnapshot === 'string') {
-      secondArgument = INLINE_SNAPSHOT_ARG;
+  const length = arguments.length;
+  if (length === 2 && typeof propertiesOrSnapshot === 'string') {
+    inlineSnapshot = propertiesOrSnapshot;
+  } else if (length >= 2) {
+    if (
+      typeof propertiesOrSnapshot !== 'object' ||
+      propertiesOrSnapshot === null
+    ) {
+      const options: MatcherHintOptions = {
+        isNot: this.isNot,
+        promise: this.promise,
+      };
+
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
+          `Expected ${EXPECTED_COLOR('properties')} must be an object`,
+          printWithType(
+            'Expected properties',
+            propertiesOrSnapshot,
+            printExpected,
+          ),
+        ),
+      );
     }
-  }
 
-  const options: MatcherHintOptions = {
-    isNot: this.isNot,
-    promise: this.promise,
-    secondArgument,
-  };
+    if (length === 3 && typeof inlineSnapshot !== 'string') {
+      const options: MatcherHintOptions = {
+        isNot: this.isNot,
+        promise: this.promise,
+        secondArgument: SNAPSHOT_ARG,
+      };
 
-  let propertyMatchers;
-  if (typeof propertyMatchersOrInlineSnapshot === 'string') {
-    inlineSnapshot = propertyMatchersOrInlineSnapshot;
-  } else {
-    propertyMatchers = propertyMatchersOrInlineSnapshot;
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
+          `Inline ${EXPECTED_COLOR('snapshot')} must be a string`,
+          printWithType('Inline snapshot', inlineSnapshot, printExpected),
+        ),
+      );
+    }
+
+    properties = propertiesOrSnapshot;
   }
 
   return _toMatchSnapshot({
     context: this,
-    expectedArgument,
     inlineSnapshot:
       inlineSnapshot !== undefined
         ? stripAddedIndentation(inlineSnapshot)
         : undefined,
     isInline: true,
     matcherName,
-    options,
-    propertyMatchers,
+    properties,
     received,
   });
 };
 
-const _toMatchSnapshot = ({
-  context,
-  expectedArgument,
-  hint,
-  inlineSnapshot,
-  isInline,
-  matcherName,
-  options,
-  propertyMatchers,
-  received,
-}: MatchSnapshotConfig) => {
+const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
+  const {
+    context,
+    hint,
+    inlineSnapshot,
+    isInline,
+    matcherName,
+    properties,
+  } = config;
+  let {received} = config;
+
   context.dontThrow && context.dontThrow();
-  hint = typeof propertyMatchers === 'string' ? propertyMatchers : hint;
 
   const {currentTestName, isNot, snapshotState} = context;
 
   if (isNot) {
     throw new Error(
-      matcherHint(matcherName, undefined, expectedArgument, options) +
-        '\n\n' +
-        NOT_SNAPSHOT_MATCHERS,
+      matcherErrorMessage(matcherHintFromConfig(config), NOT_SNAPSHOT_MATCHERS),
     );
   }
 
   if (!snapshotState) {
+    // Because the state is the problem, this is not a matcher error.
     throw new Error(
-      matcherHint(matcherName, undefined, expectedArgument, options) +
-        '\n\nsnapshot state must be initialized',
+      matcherHintFromConfig(config) +
+        '\n\n' +
+        `Snapshot state must be initialized` +
+        '\n\n' +
+        printWithType('Snapshot state', snapshotState, stringify),
     );
   }
 
@@ -299,11 +313,8 @@ const _toMatchSnapshot = ({
       ? `${currentTestName}: ${hint}`
       : currentTestName || ''; // future BREAKING change: || hint
 
-  if (typeof propertyMatchers === 'object') {
-    if (propertyMatchers === null) {
-      throw new Error(`Property matchers must be an object.`);
-    }
-    const propertyPass = context.equals(received, propertyMatchers, [
+  if (typeof properties === 'object') {
+    const propertyPass = context.equals(received, properties, [
       context.utils.iterableEquality,
       context.utils.subsetEquality,
     ]);
@@ -313,25 +324,21 @@ const _toMatchSnapshot = ({
       const matched = /(\d+)$/.exec(key);
       const count = matched === null ? 1 : Number(matched[1]);
 
-      const report = () =>
-        `Snapshot name: ${printName(currentTestName, hint, count)}\n` +
-        '\n' +
-        `Expected properties: ${context.utils.printExpected(
-          propertyMatchers,
-        )}\n` +
-        `Received value:      ${context.utils.printReceived(received)}`;
+      const message = () =>
+        matcherHintFromConfig(config) +
+        '\n\n' +
+        printSnapshotName(currentTestName, hint, count) +
+        '\n\n' +
+        `Expected properties: ${printExpected(properties)}\n` +
+        `Received value:      ${printReceived(received)}`;
 
       return {
-        message: () =>
-          matcherHint(matcherName, undefined, expectedArgument, options) +
-          '\n\n' +
-          report(),
+        message,
         name: matcherName,
         pass: false,
-        report,
       };
     } else {
-      received = utils.deepMerge(received, propertyMatchers);
+      received = utils.deepMerge(received, properties);
     }
   }
 
@@ -342,25 +349,37 @@ const _toMatchSnapshot = ({
     received,
     testName: fullTestName,
   });
-  const {count, pass} = result;
-  const {actual, expected} = result;
+  const {actual, count, expected, pass} = result;
 
-  let report: () => string;
   if (pass) {
     return {message: () => '', pass: true};
-  } else if (expected === undefined) {
-    report = () =>
-      `New snapshot was ${RECEIVED_COLOR('not written')}. The update flag ` +
-      `must be explicitly passed to write a new snapshot.\n\n` +
-      `This is likely because this test is run in a continuous integration ` +
-      `(CI) environment in which snapshots are not written by default.\n\n` +
-      `${RECEIVED_COLOR('Received value')} ` +
-      `${actual}`;
-  } else {
-    report = () =>
-      `Snapshot name: ${printName(currentTestName, hint, count)}\n\n` +
-      printDiffOrStringified(expected, actual, received, snapshotState.expand);
   }
+
+  const message =
+    expected === undefined
+      ? () =>
+          matcherHintFromConfig(config) +
+          '\n\n' +
+          printSnapshotName(currentTestName, hint, count) +
+          '\n\n' +
+          `New snapshot was ${BOLD_WEIGHT('not written')}. The update flag ` +
+          `must be explicitly passed to write a new snapshot.\n\n` +
+          `This is likely because this test is run in a continuous integration ` +
+          `(CI) environment in which snapshots are not written by default.\n\n` +
+          `Received:${actual.includes('\n') ? '\n' : ' '}${RECEIVED_COLOR(
+            actual,
+          )}`
+      : () =>
+          matcherHintFromConfig(config) +
+          '\n\n' +
+          printSnapshotName(currentTestName, hint, count) +
+          '\n\n' +
+          printDiffOrStringified(
+            expected,
+            actual,
+            received,
+            snapshotState.expand,
+          );
 
   // Passing the actual and expected objects so that a custom reporter
   // could access them, for example in order to display a custom visual diff,
@@ -368,13 +387,9 @@ const _toMatchSnapshot = ({
   return {
     actual,
     expected,
-    message: () =>
-      matcherHint(matcherName, undefined, expectedArgument, options) +
-      '\n\n' +
-      report(),
+    message,
     name: matcherName,
     pass: false,
-    report,
   };
 };
 
@@ -385,23 +400,16 @@ const toThrowErrorMatchingSnapshot = function(
   fromPromise: boolean,
 ) {
   const matcherName = 'toThrowErrorMatchingSnapshot';
-  const expectedArgument =
-    typeof hint === 'string' && hint.length !== 0 ? HINT_ARG : '';
-  const options = {
-    expectedColor: HINT_COLOR,
-    isNot: this.isNot,
-    promise: this.promise,
-    secondArgument: '',
-  };
+
+  // Future breaking change: Snapshot hint must be a string
+  // if (hint !== undefined && typeof hint !== string) {}
 
   return _toThrowErrorMatchingSnapshot(
     {
       context: this,
-      expectedArgument,
       hint,
       isInline: false,
       matcherName,
-      options,
       received,
     },
     fromPromise,
@@ -415,22 +423,28 @@ const toThrowErrorMatchingInlineSnapshot = function(
   fromPromise?: boolean,
 ) {
   const matcherName = 'toThrowErrorMatchingInlineSnapshot';
-  const expectedArgument =
-    typeof inlineSnapshot === 'string' ? INLINE_SNAPSHOT_ARG : '';
-  const options: MatcherHintOptions = {
-    isNot: this.isNot,
-    promise: this.promise,
-    secondArgument: '',
-  };
+
+  if (inlineSnapshot !== undefined && typeof inlineSnapshot !== 'string') {
+    const options: MatcherHintOptions = {
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherName, undefined, SNAPSHOT_ARG, options),
+        `Inline ${EXPECTED_COLOR('snapshot')} must be a string`,
+        printWithType('Inline snapshot', inlineSnapshot, printExpected),
+      ),
+    );
+  }
 
   return _toThrowErrorMatchingSnapshot(
     {
       context: this,
-      expectedArgument,
       inlineSnapshot,
       isInline: true,
       matcherName,
-      options,
       received,
     },
     fromPromise,
@@ -438,26 +452,39 @@ const toThrowErrorMatchingInlineSnapshot = function(
 };
 
 const _toThrowErrorMatchingSnapshot = (
-  {
+  config: MatchSnapshotConfig,
+  fromPromise?: boolean,
+) => {
+  const {
     context,
-    expectedArgument,
+    hint,
     inlineSnapshot,
     isInline,
     matcherName,
-    options,
     received,
-    hint,
-  }: MatchSnapshotConfig,
-  fromPromise?: boolean,
-) => {
+  } = config;
+
   context.dontThrow && context.dontThrow();
-  const {isNot} = context;
+
+  const {isNot, promise} = context;
+
+  if (!fromPromise) {
+    if (typeof received !== 'function') {
+      const options: MatcherHintOptions = {isNot, promise};
+
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, '', options),
+          `${RECEIVED_COLOR('received')} value must be a function`,
+          printWithType('Received', received, printReceived),
+        ),
+      );
+    }
+  }
 
   if (isNot) {
     throw new Error(
-      matcherHint(matcherName, undefined, expectedArgument, options) +
-        '\n\n' +
-        NOT_SNAPSHOT_MATCHERS,
+      matcherErrorMessage(matcherHintFromConfig(config), NOT_SNAPSHOT_MATCHERS),
     );
   }
 
@@ -474,21 +501,16 @@ const _toThrowErrorMatchingSnapshot = (
   }
 
   if (error === undefined) {
-    throw new Error(
-      matcherHint(matcherName, undefined, expectedArgument, options) +
-        '\n\n' +
-        DID_NOT_THROW,
-    );
+    // Because the received value is a function, this is not a matcher error.
+    throw new Error(matcherHintFromConfig(config) + '\n\n' + DID_NOT_THROW);
   }
 
   return _toMatchSnapshot({
     context,
-    expectedArgument,
     hint,
     inlineSnapshot,
     isInline,
     matcherName,
-    options,
     received: error.message,
   });
 };

@@ -1,0 +1,467 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matcher error toMatchInlineSnapshot Expected properties must be an object (non-null) 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>)</>
+
+<b>Matcher error</>: Expected <g>properties</> must be an object
+
+Expected properties has type:  boolean
+Expected properties has value: <g>false</>
+`;
+
+exports[`matcher error toMatchInlineSnapshot Expected properties must be an object (null) 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>)</>
+
+<b>Matcher error</>: Expected <g>properties</> must be an object
+
+Expected properties has value: <g>null</>
+`;
+
+exports[`matcher error toMatchInlineSnapshot Inline snapshot must be a string 1`] = `
+<d>expect(</><r>received</><d>).</>resolves<d>.</>toMatchInlineSnapshot<d>(</><g>properties</><d>, </><g>snapshot</><d>)</>
+
+<b>Matcher error</>: Inline <g>snapshot</> must be a string
+
+Inline snapshot has type:  symbol
+Inline snapshot has value: <g>Symbol(is not a string)</>
+`;
+
+exports[`matcher error toMatchInlineSnapshot Snapshot assertion must not have not 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchInlineSnapshot<d>(</><g>snapshot</><d>)</>
+
+<b>Matcher error</>: Snapshot assertion must not have <b>not</>
+`;
+
+exports[`matcher error toMatchSnapshot Expected properties must be an object (non-null) 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>)</>
+
+<b>Matcher error</>: Expected <g>properties</> must be an object
+
+Expected properties has type:  function
+Expected properties has value: <g>[Function properties]</>
+`;
+
+exports[`matcher error toMatchSnapshot Expected properties must be an object (null) and does not have hint 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>)</>
+
+<b>Matcher error</>: Expected <g>properties</> must be an object
+
+Expected properties has value: <g>null</>
+`;
+
+exports[`matcher error toMatchSnapshot Expected properties must be an object (null) and has hint 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>, </><b>hint</><d>)</>
+
+<b>Matcher error</>: Expected <g>properties</> must be an object
+
+Expected properties has value: <g>null</>
+
+To provide a hint without properties: toMatchSnapshot('hint')
+`;
+
+exports[`matcher error toMatchSnapshot Snapshot state must be initialized 1`] = `
+<d>expect(</><r>received</><d>).</>resolves<d>.</>toMatchSnapshot<d>(</><b>hint</><d>)</>
+
+Snapshot state must be initialized
+
+Snapshot state has value: undefined
+`;
+
+exports[`matcher error toThrowErrorMatchingInlineSnapshot Inline snapshot must be a string 1`] = `
+<d>expect(</><r>received</><d>).</>toThrowErrorMatchingInlineSnapshot<d>(</><g>snapshot</><d>)</>
+
+<b>Matcher error</>: Inline <g>snapshot</> must be a string
+
+Inline snapshot has type:  number
+Inline snapshot has value: <g>404</>
+`;
+
+exports[`matcher error toThrowErrorMatchingInlineSnapshot Snapshot state must be initialized 1`] = `
+<d>expect(</><r>received</><d>).</>rejects<d>.</>toThrowErrorMatchingInlineSnapshot<d>(</><g>snapshot</><d>)</>
+
+Snapshot state must be initialized
+
+Snapshot state has value: undefined
+`;
+
+exports[`matcher error toThrowErrorMatchingSnapshot Received value must be a function 1`] = `
+<d>expect(</><r>received</><d>).</>toThrowErrorMatchingSnapshot<d>()</>
+
+<b>Matcher error</>: <r>received</> value must be a function
+
+Received has type:  number
+Received has value: <r>13</>
+`;
+
+exports[`matcher error toThrowErrorMatchingSnapshot Snapshot assertion must not have not 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toThrowErrorMatchingSnapshot<d>(</><b>hint</><d>)</>
+
+<b>Matcher error</>: Snapshot assertion must not have <b>not</>
+`;
+
+exports[`other error toThrowErrorMatchingSnapshot Received function did not throw 1`] = `
+<d>expect(</><r>received</><d>).</>toThrowErrorMatchingSnapshot<d>()</>
+
+Received function did not throw
+`;
+
+exports[`pass false toMatchInlineSnapshot with properties equals true 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>, </><g>snapshot</><d>)</>
+
+Snapshot name: \`with properties 1\`
+
+<g>- Snapshot  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<d>    "id": "abcdef",</>
+<g>-   "text": "inline snapshot",</>
+<r>+   "text": "received",</>
+<d>    "type": "ADD_ITEM",</>
+<d>  }</>
+`;
+
+exports[`pass false toMatchSnapshot New snapshot was not written (multi line) 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><b>hint</><d>)</>
+
+Snapshot name: \`New snapshot was not written: <b>(CI)</> 1\`
+
+New snapshot was <b>not written</>. The update flag must be explicitly passed to write a new snapshot.
+
+This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
+
+Received:
+<r>"To write or not to write,</>
+<r>that is the question."</>
+`;
+
+exports[`pass false toMatchSnapshot New snapshot was not written (single line) 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><b>hint</><d>)</>
+
+Snapshot name: \`New snapshot was not written: <b>(CI)</> 2\`
+
+New snapshot was <b>not written</>. The update flag must be explicitly passed to write a new snapshot.
+
+This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
+
+Received: <r>"Write me if you can!"</>
+`;
+
+exports[`pass false toMatchSnapshot with properties equals false 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>)</>
+
+Snapshot name: \`with properties 1\`
+
+Expected properties: <g>{"id": "abcdef"}</>
+Received value:      <r>{"id": "abcdefg", "text": "Increase code coverage", "type": "ADD_ITEM"}</>
+`;
+
+exports[`pass false toMatchSnapshot with properties equals true 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>, </><b>hint</><d>)</>
+
+Snapshot name: \`with properties: <b>change text value</> 1\`
+
+<g>- Snapshot  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<d>    "id": "abcdef",</>
+<g>-   "text": "snapshot",</>
+<r>+   "text": "received",</>
+<d>    "type": "ADD_ITEM",</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringified backtick single line expected and received 1`] = `
+Snapshot: <g>"var foo = \`backtick\`;"</>
+Received: <r>"var foo = <i>tag</i>\`backtick\`;"</>
+`;
+
+exports[`printDiffOrStringified empty string expected and received single line 1`] = `
+Snapshot: <g>""</>
+Received: <r>"single line string"</>
+`;
+
+exports[`printDiffOrStringified empty string received and expected multi line 1`] = `
+<g>- Snapshot  - 3</>
+<r>+ Received  + 0</>
+
+<g>- multi</>
+<g>- line</>
+<g>- string</>
+`;
+
+exports[`printDiffOrStringified escape backslash in multi line string 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 2</>
+
+<g>- Forward / slash<i> and b</i>ack \\ slash</>
+<r>+ Forward / slash</>
+<r>+ <i>B</i>ack \\ slash</>
+`;
+
+exports[`printDiffOrStringified escape backslash in single line string 1`] = `
+Snapshot: <g>"<i>f</i>orward / slash and back \\\\ slash"</>
+Received: <r>"<i>F</i>orward / slash and back \\\\ slash"</>
+`;
+
+exports[`printDiffOrStringified escape double quote marks in string 1`] = `
+Snapshot: <g>"What does \\"<i>oo</i>bleck\\" mean?"</>
+Received: <r>"What does \\"<i>ew</i>bleck\\" mean?"</>
+`;
+
+exports[`printDiffOrStringified escape regexp 1`] = `
+Snapshot: <g>/\\\\\\\\\\("\\)/g</>
+Received: <r>/\\\\\\\\\\("\\)/</>
+`;
+
+exports[`printDiffOrStringified expand false 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 3</>
+
+<y>@@ -12,7 +12,9 @@</>
+<d>  ? "number"</>
+<d>  : T extends boolean</>
+<d>  ? "boolean"</>
+<d>  : T extends undefined</>
+<d>  ? "undefined"</>
+<g>- : T extends Function<i> </i>? "function"<i> </i>: "object";</>
+<r>+ : T extends Function</>
+<r>+ ? "function"</>
+<r>+ : "object";</>
+<d>  ↵</>
+`;
+
+exports[`printDiffOrStringified expand true 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 3</>
+
+<d>  type TypeName<T> =</>
+<d>  T extends string ? "string" :</>
+<d>  T extends number ? "number" :</>
+<d>  T extends boolean ? "boolean" :</>
+<d>  T extends undefined ? "undefined" :</>
+<d>  T extends Function ? "function" :</>
+<d>  "object";</>
+<d>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</>
+<d>  type TypeName<T> = T extends string</>
+<d>  ? "string"</>
+<d>  : T extends number</>
+<d>  ? "number"</>
+<d>  : T extends boolean</>
+<d>  ? "boolean"</>
+<d>  : T extends undefined</>
+<d>  ? "undefined"</>
+<g>- : T extends Function<i> </i>? "function"<i> </i>: "object";</>
+<r>+ : T extends Function</>
+<r>+ ? "function"</>
+<r>+ : "object";</>
+<d>  ↵</>
+`;
+
+exports[`printDiffOrStringified fallback to line diff 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 8</>
+
+<r>+ ====================================options=====================================</>
+<r>+ parsers: ["flow", "typescript"]</>
+<r>+ printWidth: 80</>
+<r>+                                                                                 | printWidth</>
+<r>+ =====================================input======================================</>
+<d>  [...a, ...b,];</>
+<d>  [...a, ...b];</>
+<g>- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</>
+<r>+</>
+<r>+ =====================================output=====================================</>
+<d>  [...a, ...b];</>
+<d>  [...a, ...b];</>
+
+<r>+ ================================================================================</>
+`;
+
+exports[`printDiffOrStringified has no common after clean up chaff array 1`] = `
+<g>- Snapshot  - 2</>
+<r>+ Received  + 2</>
+
+<d>  Array [</>
+<g>-   "delete",</>
+<g>-   "two",</>
+<r>+   "insert",</>
+<r>+   "2",</>
+<d>  ]</>
+`;
+
+exports[`printDiffOrStringified has no common after clean up chaff string single line 1`] = `
+Snapshot: <g>"delete"</>
+Received: <r>"insert"</>
+`;
+
+exports[`printDiffOrStringified isLineDiffable false asymmetric matcher 1`] = `
+Snapshot: <g>null</>
+Received: <r>Object {</>
+<r>  "asymmetricMatch": [Function],</>
+<r>}</>
+`;
+
+exports[`printDiffOrStringified isLineDiffable false boolean 1`] = `
+Snapshot: <g>true</>
+Received: <r>false</>
+`;
+
+exports[`printDiffOrStringified isLineDiffable false date 1`] = `
+Snapshot: <g>2019-09-19T00:00:00.000Z</>
+Received: <r>2019-09-20T00:00:00.000Z</>
+`;
+
+exports[`printDiffOrStringified isLineDiffable false error 1`] = `
+Snapshot: <g>[Error: Cannot spread fragment "NameAndAppearances" within itself.]</>
+Received: <r>[Error: Cannot spread fragment "NameAndAppearancesAndFriends" within itself.]</>
+`;
+
+exports[`printDiffOrStringified isLineDiffable false function 1`] = `
+Snapshot: <g>undefined</>
+Received: <r>[Function]</>
+`;
+
+exports[`printDiffOrStringified isLineDiffable false number 1`] = `
+Snapshot: <g>-0</>
+Received: <r>NaN</>
+`;
+
+exports[`printDiffOrStringified isLineDiffable true array 1`] = `
+<g>- Snapshot  - 0</>
+<r>+ Received  + 2</>
+
+<d>  Array [</>
+<d>    Object {</>
+<r>+     "_id": "b14680dec683e744ada1f2fe08614086",</>
+<d>      "code": 4011,</>
+<d>      "weight": 2.13,</>
+<d>    },</>
+<d>    Object {</>
+<r>+     "_id": "7fc63ff01769c4fa7d9279e97e307829",</>
+<d>      "code": 4019,</>
+<d>      "count": 4,</>
+<d>    },</>
+<d>  ]</>
+`;
+
+exports[`printDiffOrStringified isLineDiffable true object 1`] = `
+<g>- Snapshot  - 2</>
+<r>+ Received  + 3</>
+
+<d>  Object {</>
+<d>    "props": Object {</>
+<g>-     "className": "logo",</>
+<g>-     "src": "/img/jest.png",</>
+<r>+     "alt": "Jest logo",</>
+<r>+     "class": "logo",</>
+<r>+     "src": "/img/jest.svg",</>
+<d>    },</>
+<d>    "type": "img",</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringified isLineDiffable true single line expected and multi line received 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 3</>
+
+<g>- Array []</>
+<r>+ Array [</>
+<r>+   0,</>
+<r>+ ]</>
+`;
+
+exports[`printDiffOrStringified isLineDiffable true single line expected and received 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 1</>
+
+<g>- Array []</>
+<r>+ Object {}</>
+`;
+
+exports[`printDiffOrStringified multi line small change in one line and other is unchanged 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 1</>
+
+<g>- There is no route defined for key <i>'</i>Settings<i>'</i>.</>
+<r>+ There is no route defined for key Settings.</>
+<d>  Must be one of: 'Home'</>
+`;
+
+exports[`printDiffOrStringified multi line small changes 1`] = `
+<g>- Snapshot  - 7</>
+<r>+ Received  + 7</>
+
+<g>-     6<i>9</i> |<Y> </></>
+<r>+     6<i>8</i> |<Y> </></>
+<g>-     <i>70</i> | test('assert.doesNotThrow', () => {</>
+<r>+     <i>69</i> | test('assert.doesNotThrow', () => {</>
+<g>-   > 7<i>1</i> |   assert.doesNotThrow(() => {</>
+<r>+   > 7<i>0</i> |   assert.doesNotThrow(() => {</>
+<d>         |          ^</>
+<g>-     7<i>2</i> |     throw Error('err!');</>
+<r>+     7<i>1</i> |     throw Error('err!');</>
+<g>-     7<i>3</i> |   });</>
+<r>+     7<i>2</i> |   });</>
+<g>-     7<i>4</i> | });</>
+<r>+     7<i>3</i> | });</>
+<g>-     at Object.doesNotThrow (__tests__/assertionError.test.js:7<i>1</i>:10)</>
+<r>+     at Object.doesNotThrow (__tests__/assertionError.test.js:7<i>0</i>:10)</>
+`;
+
+exports[`printDiffOrStringified single line large changes 1`] = `
+Snapshot: <g>"<i>A</i>rray length<i> must be a finite positive integer</i>"</>
+Received: <r>"<i>Invalid a</i>rray length"</>
+`;
+
+exports[`printDiffOrStringified without serialize backtick single line expected and multi line received 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 2</>
+
+<g>- var foo = \`backtick\`;</>
+<r>+ var foo = \`back</>
+<r>+ tick\`;</>
+`;
+
+exports[`printDiffOrStringified without serialize backtick single line expected and received 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 1</>
+
+<g>- var foo = \`backtick\`;</>
+<r>+ var foo = \`back<i>\${x}</i>tick\`;</>
+`;
+
+exports[`printDiffOrStringified without serialize has no common after clean up chaff multi line 1`] = `
+<g>- Snapshot  - 2</>
+<r>+ Received  + 2</>
+
+<g>- delete</>
+<g>- two</>
+<r>+ insert</>
+<r>+ 2</>
+`;
+
+exports[`printDiffOrStringified without serialize has no common after clean up chaff single line 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 1</>
+
+<g>- delete</>
+<r>+ insert</>
+`;
+
+exports[`printDiffOrStringified without serialize prettier/pull/5590 1`] = `
+<g>- Snapshot  - 1</>
+<r>+ Received  + 1</>
+
+<y>@@ -4,8 +4,8 @@</>
+<d>                                                                                  | printWidth</>
+<d>  =====================================input======================================</>
+<d>  <img src="test.png" alt='John "ShotGun" Nelson'></>
+
+<d>  =====================================output=====================================</>
+<g>- <img src="test.png" alt=<i>"</i>John <i>&quot;</i>ShotGun<i>&quot;</i> Nelson<i>"</i> /></>
+<r>+ <img src="test.png" alt=<i>'</i>John <i>"</i>ShotGun<i>"</i> Nelson<i>'</i> /></>
+
+<d>  ================================================================================</>
+`;
