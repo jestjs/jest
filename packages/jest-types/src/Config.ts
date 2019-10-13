@@ -278,13 +278,16 @@ type DisplayNameColor =
   | 'bgCyanBright'
   | 'bgWhiteBright';
 
+export type CoverageThresholdValue = {
+  branches?: number;
+  functions?: number;
+  lines?: number;
+  statements?: number;
+};
+
 type CoverageThreshold = {
-  [path: string]: {
-    [key: string]: number;
-  };
-  global: {
-    [key: string]: number;
-  };
+  [path: string]: CoverageThresholdValue;
+  global: CoverageThresholdValue;
 };
 
 export type GlobalConfig = {
