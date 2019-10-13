@@ -244,13 +244,13 @@ Finally, in order to make it less demanding to assert how mock functions have be
 
 ```javascript
 // The mock function was called at least once
-expect(mockFunc).toBeCalled();
+expect(mockFunc).toHaveBeenCalled();
 
 // The mock function was called at least once with the specified args
-expect(mockFunc).toBeCalledWith(arg1, arg2);
+expect(mockFunc).toHaveBeenCalledWith(arg1, arg2);
 
 // The last call to the mock function was called with the specified args
-expect(mockFunc).lastCalledWith(arg1, arg2);
+expect(mockFunc).toHaveBeenLastCalledWith(arg1, arg2);
 
 // All calls and the name of the mock is written as a snapshot
 expect(mockFunc).toMatchSnapshot();
