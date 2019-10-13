@@ -297,7 +297,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     );
   }
 
-  if (!snapshotState) {
+  if (snapshotState == null) {
     // Because the state is the problem, this is not a matcher error.
     throw new Error(
       matcherHintFromConfig(config) +
