@@ -18,19 +18,22 @@ const testResult = {
 
 const globalConfig = makeGlobalConfig();
 
-test('should call `terminal-link` correctly', () => {
+beforeEach(() => {
   terminalLink.mockClear();
-
-  getResultHeader(testResult, globalConfig);
-  const call = terminalLink.mock.calls[0];
-
-  expect(terminalLink).toHaveBeenCalled();
-  expect(call[0]).toBe(formatTestPath(globalConfig, testResult.testFilePath));
-  expect(call[1]).toBe(`file://${testResult.testFilePath}`);
 });
 
-test('should render the output correctly', () => {
+test('should call `terminal-link` correctly', () => {
+  getResultHeader(testResult, globalConfig);
+
+  expect(terminalLink).toBeCalledWith(
+    formatTestPath(globalConfig, testResult.testFilePath),
+    `file://${testResult.testFilePath}`,
+    expect.objectContaining({fallback: expect.any(Function)}),
+  );
+});
+
+test('should render the terminal link', () => {
   const result = getResultHeader(testResult, globalConfig);
 
-  expect(result).toMatch(/wannabehyperlink/);
+  expect(result).toContain('wannabehyperlink');
 });
