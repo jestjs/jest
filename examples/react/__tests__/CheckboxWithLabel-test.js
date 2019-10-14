@@ -1,16 +1,15 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-import React, { useRef } from 'react';
-import ReactDOM from 'react-dom';
+import React, {useRef} from 'react';
 import * as TestUtils from 'react-dom/test-utils';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
 it('CheckboxWithLabel changes the text after click', () => {
   // Render a checkbox with label in the document
-  const checkboxNodeRefRef = useRef(null);
+  const checkboxNodeRef = useRef(null);
 
   const checkbox = TestUtils.renderIntoDocument(
-    <CheckboxWithLabel ref={checkboxNodeRefRef} labelOn="On" labelOff="Off" />
+    <CheckboxWithLabel ref={checkboxNodeRef} labelOn="On" labelOff="Off" />
   );
 
   // Verify that it's Off by default
