@@ -6,7 +6,6 @@
  */
 
 import {makeGlobalConfig} from '../../../../TestUtils';
-import {formatTestPath} from '../utils';
 import getResultHeader from '../get_result_header';
 const terminalLink = require('terminal-link');
 
@@ -26,8 +25,8 @@ test('should call `terminal-link` correctly', () => {
   getResultHeader(testResult, globalConfig);
 
   expect(terminalLink).toBeCalledWith(
-    formatTestPath(globalConfig, testResult.testFilePath),
-    `file://${testResult.testFilePath}`,
+    expect.stringContaining('foo'),
+    'file:///foo',
     expect.objectContaining({fallback: expect.any(Function)}),
   );
 });
