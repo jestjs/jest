@@ -6,10 +6,11 @@
  *
  */
 
-import path from 'path';
-import fs from 'fs';
-import execa, {ExecaChildProcess, ExecaReturns} from 'execa';
-import {Writable} from 'readable-stream';
+import * as path from 'path';
+import * as fs from 'fs';
+import {Writable} from 'stream';
+import execa = require('execa');
+import {FormattedTestResults} from '@jest/test-result';
 import stripAnsi from 'strip-ansi';
 import {normalizeIcons} from './Utils';
 
@@ -31,7 +32,7 @@ export default function runJest(
   args?: Array<string>,
   options: RunJestOptions = {},
 ) {
-  return normalizeResult(spawnJest(dir, args, options), options);
+  return normalizeStdoutAndStderr(spawnJest(dir, args, options), options);
 }
 
 function spawnJest(
@@ -39,13 +40,13 @@ function spawnJest(
   args?: Array<string>,
   options?: RunJestOptions,
   spawnAsync?: false,
-): ExecaReturns;
+): execa.ExecaReturnValue;
 function spawnJest(
   dir: string,
   args?: Array<string>,
   options?: RunJestOptions,
   spawnAsync?: true,
-): ExecaChildProcess;
+): execa.ExecaChildProcess;
 
 // Spawns Jest and returns either a Promise (if spawnAsync is true) or the completed child process
 function spawnJest(
@@ -53,7 +54,7 @@ function spawnJest(
   args?: Array<string>,
   options: RunJestOptions = {},
   spawnAsync: boolean = false,
-): ExecaReturns | ExecaChildProcess {
+): execa.ExecaSyncReturnValue | execa.ExecaChildProcess {
   const isRelative = !path.isAbsolute(dir);
 
   if (isRelative) {
@@ -91,20 +92,14 @@ function spawnJest(
   );
 }
 
-type RunJestResult = ExecaReturns & {
-  status?: number;
-  code?: number;
-  json?: (
-    dir: string,
-    args: Array<string> | undefined,
-    options: RunJestOptions,
-  ) => RunJestResult;
-};
+interface RunJestJsonResult extends execa.ExecaReturnValue {
+  json: FormattedTestResults;
+}
 
-function normalizeResult(result: RunJestResult, options: RunJestOptions) {
-  // For compat with cross-spawn
-  result.status = result.code;
-
+function normalizeStdoutAndStderr(
+  result: execa.ExecaReturnValue,
+  options: RunJestOptions,
+) {
   result.stdout = normalizeIcons(result.stdout);
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
   result.stderr = normalizeIcons(result.stderr);
@@ -121,11 +116,14 @@ export const json = function(
   dir: string,
   args: Array<string> | undefined,
   options: RunJestOptions = {},
-): RunJestResult {
+): RunJestJsonResult {
   args = [...(args || []), '--json'];
   const result = runJest(dir, args, options);
   try {
-    result.json = JSON.parse(result.stdout || '');
+    return {
+      ...result,
+      json: JSON.parse(result.stdout || ''),
+    };
   } catch (e) {
     throw new Error(
       `
@@ -136,7 +134,6 @@ export const json = function(
     `,
     );
   }
-  return result;
 };
 
 // Runs `jest` until a given output is achieved, then kills it with `SIGTERM`
@@ -148,7 +145,7 @@ export const until = async function(
 ) {
   const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
 
-  jestPromise.stderr.pipe(
+  jestPromise.stderr!.pipe(
     new Writable({
       write(chunk, _encoding, callback) {
         const output = chunk.toString('utf8');
@@ -162,5 +159,5 @@ export const until = async function(
     }),
   );
 
-  return normalizeResult(await jestPromise, options);
+  return normalizeStdoutAndStderr(await jestPromise, options);
 };

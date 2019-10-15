@@ -10,7 +10,7 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-import {Global, Config} from '@jest/types';
+import {Config, Global} from '@jest/types';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
@@ -58,7 +58,7 @@ function promisifyLifeCycleFunction(
     // didn't return a promise.
     const asyncJestLifecycle = function(done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
-      const returnValue = wrappedFn.call({}) as Promise<any>;
+      const returnValue = wrappedFn.call({});
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), (error: Error) => {

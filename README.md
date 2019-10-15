@@ -18,6 +18,26 @@
 
 <p align="right"><em>See more on <a href="https://jestjs.io">jestjs.io</a></em></p>
 
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Running from command line](#running-from-command-line)
+- [Additional Configuration](#additional-configuration)
+  - [Generate a basic configuration file](#generate-a-basic-configuration-file)
+  - [Using Babel](#using-babel)
+  - [Using Webpack](#using-webpack)
+  - [Using Typescript](#using-typescript)
+- [Documentation](#documentation)
+- [Badge](#badge)
+- [Contributing](#contributing)
+  - [Code of Conduct](#code-of-conduct)
+  - [Contributing Guide](#contributing-guide)
+  - [Good First Issues](#good-first-issues)
+- [Credits](#credits)
+  - [Backers](#backers)
+  - [Sponsors](#sponsors)
+- [License](#license)
+
 ## Getting Started
 
 <!-- copied from Getting Started docs, links updated to point to Jest website -->
@@ -170,7 +190,7 @@ module.exports = {
 };
 ```
 
-Note, there are some [caveats](https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is just transpilation, Jest will not type-check your tests as they are ran. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+Note, there are some [caveats](https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is transpilation, Jest will not type-check your tests as they are ran. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
 
 <!-- end copied -->
 
@@ -203,9 +223,9 @@ Facebook has adopted a Code of Conduct that we expect project participants to ad
 
 Read our [contributing guide](CONTRIBUTING.md) to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to Jest.
 
-### [Good First Issues](https://github.com/facebook/jest/labels/%3Awave%3A%20Good%20First%20Issue)
+### [Good First Issues](https://github.com/facebook/jest/labels/good%20first%20issue)
 
-To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/jest/labels/%3Awave%3A%20Good%20First%20Issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
+To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues](https://github.com/facebook/jest/labels/good%20first%20issue) that contain bugs which have a relatively limited scope. This is a great place to get started.
 
 ## Credits
 

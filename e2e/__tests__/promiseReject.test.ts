@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import runJest from '../runJest';
 import {cleanup, writeFiles} from '../Utils';
 
@@ -23,8 +23,8 @@ test('', () => {
      });
    `,
   });
-  const {stdout, stderr, status} = runJest(DIR);
+  const {stdout, stderr, exitCode} = runJest(DIR);
   expect(stdout).toBe('');
   expect(stderr).toMatch(/(Failed|thrown): null/);
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
 });

@@ -7,6 +7,7 @@
 
 type ValueType =
   | 'array'
+  | 'bigint'
   | 'boolean'
   | 'function'
   | 'null'
@@ -19,15 +20,6 @@ type ValueType =
   | 'string'
   | 'symbol'
   | 'undefined';
-
-const PRIMITIVES = new Set<ValueType>([
-  'string',
-  'number',
-  'boolean',
-  'null',
-  'undefined',
-  'symbol',
-]);
 
 // get the type of a value with handling the edge cases like `typeof []`
 // and `typeof null`
@@ -46,6 +38,8 @@ function getType(value: unknown): ValueType {
     return 'number';
   } else if (typeof value === 'string') {
     return 'string';
+  } else if (typeof value === 'bigint') {
+    return 'bigint';
   } else if (typeof value === 'object') {
     if (value != null) {
       if (value.constructor === RegExp) {
@@ -66,6 +60,6 @@ function getType(value: unknown): ValueType {
   throw new Error(`value of unknown type: ${value}`);
 }
 
-getType.isPrimitive = (value: unknown) => PRIMITIVES.has(getType(value));
+getType.isPrimitive = (value: unknown) => Object(value) !== value;
 
 export = getType;

@@ -5,26 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import crypto from 'crypto';
-import path from 'path';
-import vm from 'vm';
+import {createHash} from 'crypto';
+import * as path from 'path';
+import {Script} from 'vm';
 import {Config} from '@jest/types';
-import {createDirectory} from 'jest-util';
-import fs from 'graceful-fs';
+import {createDirectory, isPromise} from 'jest-util';
+import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-ignore: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
-import convertSourceMap from 'convert-source-map';
-import HasteMap from 'jest-haste-map';
-import stableStringify from 'fast-json-stable-stringify';
-import slash from 'slash';
-import writeFileAtomic from 'write-file-atomic';
+import {fromSource as sourcemapFromSource} from 'convert-source-map';
+import HasteMap = require('jest-haste-map');
+import stableStringify = require('fast-json-stable-stringify');
+import slash = require('slash');
+import {sync as writeFileAtomic} from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
+import {addHook} from 'pirates';
 import {
   Options,
-  Transformer,
-  TransformedSource,
   TransformResult,
+  TransformedSource,
+  Transformer,
 } from './types';
 import shouldInstrument from './shouldInstrument';
 import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
@@ -32,7 +33,7 @@ import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
 type ProjectCache = {
   configString: string;
   ignorePatternsRegExp?: RegExp;
-  transformRegExp?: Array<[RegExp, string]>;
+  transformRegExp?: Array<[RegExp, string, Record<string, unknown>]>;
   transformedFiles: Map<string, TransformResult>;
 };
 
@@ -42,35 +43,46 @@ const {version: VERSION} = require('../package.json');
 // This data structure is used to avoid recalculating some data every time that
 // we need to transform a file. Since ScriptTransformer is instantiated for each
 // file we need to keep this object in the local scope of this module.
-const projectCaches: WeakMap<
-  Config.ProjectConfig,
-  ProjectCache
-> = new WeakMap();
+const projectCaches = new Map<string, ProjectCache>();
 
 // To reset the cache for specific changesets (rather than package version).
 const CACHE_VERSION = '1';
+
+async function waitForPromiseWithCleanup(
+  promise: Promise<any>,
+  cleanup: () => void,
+) {
+  try {
+    await promise;
+  } finally {
+    cleanup();
+  }
+}
 
 export default class ScriptTransformer {
   static EVAL_RESULT_VARIABLE: 'Object.<anonymous>';
   private _cache: ProjectCache;
   private _config: Config.ProjectConfig;
   private _transformCache: Map<Config.Path, Transformer>;
+  private _transformConfigCache: Map<Config.Path, unknown>;
 
   constructor(config: Config.ProjectConfig) {
     this._config = config;
     this._transformCache = new Map();
+    this._transformConfigCache = new Map();
 
-    let projectCache = projectCaches.get(config);
+    const configString = stableStringify(this._config);
+    let projectCache = projectCaches.get(configString);
 
     if (!projectCache) {
       projectCache = {
-        configString: stableStringify(this._config),
+        configString,
         ignorePatternsRegExp: calcIgnorePatternRegExp(this._config),
         transformRegExp: calcTransformRegExp(this._config),
         transformedFiles: new Map(),
       };
 
-      projectCaches.set(config, projectCache);
+      projectCaches.set(configString, projectCache);
     }
 
     this._cache = projectCache;
@@ -85,8 +97,7 @@ export default class ScriptTransformer {
     const transformer = this._getTransformer(filename);
 
     if (transformer && typeof transformer.getCacheKey === 'function') {
-      return crypto
-        .createHash('md5')
+      return createHash('md5')
         .update(
           transformer.getCacheKey(fileData, filename, configString, {
             config: this._config,
@@ -97,11 +108,11 @@ export default class ScriptTransformer {
         .update(CACHE_VERSION)
         .digest('hex');
     } else {
-      return crypto
-        .createHash('md5')
+      return createHash('md5')
         .update(fileData)
         .update(configString)
         .update(instrument ? 'instrument' : '')
+        .update(filename)
         .update(CACHE_VERSION)
         .digest('hex');
     }
@@ -121,11 +132,11 @@ export default class ScriptTransformer {
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
+    const cacheFilenamePrefix = path
+      .basename(filename, path.extname(filename))
+      .replace(/\W/g, '');
     const cachePath = slash(
-      path.join(
-        cacheDir,
-        path.basename(filename, path.extname(filename)) + '_' + cacheKey,
-      ),
+      path.join(cacheDir, cacheFilenamePrefix + '_' + cacheKey),
     );
     createDirectory(cacheDir);
 
@@ -140,7 +151,10 @@ export default class ScriptTransformer {
 
     for (let i = 0; i < transformRegExp.length; i++) {
       if (transformRegExp[i][0].test(filename)) {
-        return transformRegExp[i][1];
+        const transformPath = transformRegExp[i][1];
+        this._transformConfigCache.set(transformPath, transformRegExp[i][2]);
+
+        return transformPath;
       }
     }
 
@@ -160,9 +174,14 @@ export default class ScriptTransformer {
         return transformer;
       }
 
-      transform = require(transformPath) as Transformer;
+      transform = require(transformPath);
+
+      if (!transform) {
+        throw new TypeError('Jest: a transform must export something.');
+      }
+      const transformerConfig = this._transformConfigCache.get(transformPath);
       if (typeof transform.createTransformer === 'function') {
-        transform = transform.createTransformer();
+        transform = transform.createTransformer(transformerConfig);
       }
       if (typeof transform.process !== 'function') {
         throw new TypeError(
@@ -279,7 +298,7 @@ export default class ScriptTransformer {
     if (!transformed.map) {
       //Could be a potential freeze here.
       //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
-      const inlineSourceMap = convertSourceMap.fromSource(transformed.code);
+      const inlineSourceMap = sourcemapFromSource(transformed.code);
 
       if (inlineSourceMap) {
         transformed.map = inlineSourceMap.toJSON();
@@ -351,7 +370,7 @@ export default class ScriptTransformer {
 
       return {
         mapCoverage,
-        script: new vm.Script(wrappedCode, {
+        script: new Script(wrappedCode, {
           displayErrors: true,
           filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
         }),
@@ -364,7 +383,8 @@ export default class ScriptTransformer {
 
       if (
         e instanceof SyntaxError &&
-        e.message.includes('Unexpected token') &&
+        (e.message.includes('Unexpected token') ||
+          e.message.includes('Cannot use import')) &&
         !e.message.includes(' expected')
       ) {
         throw enhanceUnexpectedTokenMessage(e);
@@ -427,6 +447,67 @@ export default class ScriptTransformer {
     return fileSource;
   }
 
+  requireAndTranspileModule<ModuleType = unknown>(
+    moduleName: string,
+    callback?: (module: ModuleType) => void,
+  ): ModuleType;
+  requireAndTranspileModule<ModuleType = unknown>(
+    moduleName: string,
+    callback?: (module: ModuleType) => Promise<void>,
+  ): Promise<ModuleType>;
+  requireAndTranspileModule<ModuleType = unknown>(
+    moduleName: string,
+    callback?: (module: ModuleType) => void | Promise<void>,
+  ): ModuleType | Promise<ModuleType> {
+    // Load the transformer to avoid a cycle where we need to load a
+    // transformer in order to transform it in the require hooks
+    this.preloadTransformer(moduleName);
+
+    let transforming = false;
+    const revertHook = addHook(
+      (code, filename) => {
+        try {
+          transforming = true;
+          return this.transformSource(filename, code, false).code || code;
+        } finally {
+          transforming = false;
+        }
+      },
+      {
+        exts: this._config.moduleFileExtensions.map(ext => `.${ext}`),
+        ignoreNodeModules: false,
+        matcher: filename => {
+          if (transforming) {
+            // Don't transform any dependency required by the transformer itself
+            return false;
+          }
+          return this.shouldTransform(filename);
+        },
+      },
+    );
+    const module: ModuleType = require(moduleName);
+
+    if (!callback) {
+      revertHook();
+
+      return module;
+    }
+
+    try {
+      const cbResult = callback(module);
+
+      if (isPromise(cbResult)) {
+        return waitForPromiseWithCleanup(cbResult, revertHook).then(
+          () => module,
+        );
+      }
+    } finally {
+      revertHook();
+    }
+
+    return module;
+  }
+
   /**
    * @deprecated use `this.shouldTransform` instead
    */
@@ -469,8 +550,7 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: Config.Path, code: string) {
-  const checksum = crypto
-    .createHash('md5')
+  const checksum = createHash('md5')
     .update(code)
     .digest('hex');
   writeCacheFile(cachePath, checksum + '\n' + code);
@@ -488,8 +568,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
     return null;
   }
   const code = content.substr(33);
-  const checksum = crypto
-    .createHash('md5')
+  const checksum = createHash('md5')
     .update(code)
     .digest('hex');
   if (checksum === content.substr(0, 32)) {
@@ -506,7 +585,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
  */
 const writeCacheFile = (cachePath: Config.Path, fileData: string) => {
   try {
-    writeFileAtomic.sync(cachePath, fileData, {encoding: 'utf8'});
+    writeFileAtomic(cachePath, fileData, {encoding: 'utf8'});
   } catch (e) {
     if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
       return;
@@ -572,7 +651,7 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
     !config.transformIgnorePatterns ||
     config.transformIgnorePatterns.length === 0
   ) {
-    return;
+    return undefined;
   }
 
   return new RegExp(config.transformIgnorePatterns.join('|'));
@@ -580,14 +659,15 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
 
 const calcTransformRegExp = (config: Config.ProjectConfig) => {
   if (!config.transform.length) {
-    return;
+    return undefined;
   }
 
-  const transformRegexp: Array<[RegExp, string]> = [];
+  const transformRegexp: Array<[RegExp, string, Record<string, unknown>]> = [];
   for (let i = 0; i < config.transform.length; i++) {
     transformRegexp.push([
       new RegExp(config.transform[i][0]),
       config.transform[i][1],
+      config.transform[i][2],
     ]);
   }
 

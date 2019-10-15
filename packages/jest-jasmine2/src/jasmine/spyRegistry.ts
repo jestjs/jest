@@ -54,7 +54,7 @@ const getErrorMsg = formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
 export default class SpyRegistry {
   allowRespy: (allow: unknown) => void;
   spyOn: (
-    obj: {[key: string]: any},
+    obj: Record<string, any>,
     methodName: string,
     accessType?: keyof PropertyDescriptor,
   ) => Spy;
@@ -62,7 +62,7 @@ export default class SpyRegistry {
   respy: unknown;
 
   private _spyOnProperty: (
-    obj: {[key: string]: any},
+    obj: Record<string, any>,
     propertyName: string,
     accessType: keyof PropertyDescriptor,
   ) => Spy;

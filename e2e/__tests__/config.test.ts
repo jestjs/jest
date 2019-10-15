@@ -16,7 +16,7 @@ test('config as JSON', () => {
       }),
   ]);
 
-  expect(result.status).toBe(1);
+  expect(result.exitCode).toBe(1);
   expect(result.stdout).toMatch('No tests found');
 });
 
@@ -28,7 +28,7 @@ test('works with sane config JSON', () => {
       }),
   ]);
 
-  expect(result.status).toBe(1);
+  expect(result.exitCode).toBe(1);
   expect(result.stderr).toMatch('works just fine');
 });
 
@@ -60,11 +60,11 @@ test('works with jsdom testEnvironmentOptions config JSON', () => {
     '--config=' +
       JSON.stringify({
         testEnvironmentOptions: {
-          userAgent: 'Agent/007',
+          url: 'https://jestjs.io',
         },
       }),
   ]);
 
-  expect(result.status).toBe(0);
-  expect(result.stderr).toMatch('found userAgent Agent/007');
+  expect(result.exitCode).toBe(0);
+  expect(result.stderr).toContain('found url jestjs.io');
 });

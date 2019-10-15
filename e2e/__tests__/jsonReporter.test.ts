@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import runJest from '../runJest';
 
 describe('JSON Reporter', () => {
@@ -66,7 +66,7 @@ describe('JSON Reporter', () => {
     let jsonResult;
 
     expect(result.stderr).toMatch(/1 failed, 2 passed/);
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
 
     try {
       jsonResult = JSON.parse(result.stdout);

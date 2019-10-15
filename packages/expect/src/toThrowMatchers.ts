@@ -9,21 +9,26 @@
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   EXPECTED_COLOR,
+  MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
+  printDiffOrStringify,
   printExpected,
   printReceived,
   printWithType,
-  MatcherHintOptions,
 } from 'jest-matcher-utils';
 import {
+  printExpectedConstructorName,
+  printExpectedConstructorNameNot,
+  printReceivedConstructorName,
+  printReceivedConstructorNameNot,
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
 import {
-  MatchersObject,
   MatcherState,
+  MatchersObject,
   RawMatcherFn,
   SyncExpectationResult,
 } from './types';
@@ -227,13 +232,22 @@ const toThrowExpectedObject = (
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected message: ', expected.message) +
         (thrown === null
-          ? '\n' + DID_NOT_THROW
+          ? formatExpected('Expected message: ', expected.message) +
+            '\n' +
+            DID_NOT_THROW
           : thrown.hasMessage
-          ? formatReceived('Received message: ', thrown, 'message') +
+          ? printDiffOrStringify(
+              expected.message,
+              thrown.message,
+              'Expected message',
+              'Received message',
+              true,
+            ) +
+            '\n' +
             formatStack(thrown)
-          : formatReceived('Received value:   ', thrown, 'value'));
+          : formatExpected('Expected message: ', expected.message) +
+            formatReceived('Received value:   ', thrown, 'value'));
 
   return {message, pass};
 };
@@ -250,8 +264,17 @@ const toThrowExpectedClass = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected name: ', expected.name) +
-        formatReceived('Received name: ', thrown, 'name') +
+        printExpectedConstructorNameNot('Expected constructor', expected) +
+        (thrown !== null &&
+        thrown.value != null &&
+        typeof thrown.value.constructor === 'function' &&
+        thrown.value.constructor !== expected
+          ? printReceivedConstructorNameNot(
+              'Received constructor',
+              thrown.value.constructor,
+              expected,
+            )
+          : '') +
         '\n' +
         (thrown !== null && thrown.hasMessage
           ? formatReceived('Received message: ', thrown, 'message') +
@@ -260,15 +283,21 @@ const toThrowExpectedClass = (
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        formatExpected('Expected name: ', expected.name) +
+        printExpectedConstructorName('Expected constructor', expected) +
         (thrown === null
           ? '\n' + DID_NOT_THROW
-          : thrown.hasMessage
-          ? formatReceived('Received name: ', thrown, 'name') +
+          : (thrown.value != null &&
+            typeof thrown.value.constructor === 'function'
+              ? printReceivedConstructorName(
+                  'Received constructor',
+                  thrown.value.constructor,
+                )
+              : '') +
             '\n' +
-            formatReceived('Received message: ', thrown, 'message') +
-            formatStack(thrown)
-          : '\n' + formatReceived('Received value: ', thrown, 'value'));
+            (thrown.hasMessage
+              ? formatReceived('Received message: ', thrown, 'message') +
+                formatStack(thrown)
+              : formatReceived('Received value: ', thrown, 'value')));
 
   return {message, pass};
 };

@@ -34,10 +34,15 @@ function stackIsFromUser(stack: string) {
   return false;
 }
 
+const alwaysActive = () => true;
+
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
 export default function collectHandles(): () => Array<Error> {
-  const activeHandles: Map<number, Error> = new Map();
+  const activeHandles: Map<
+    number,
+    {error: Error; isActive: () => boolean}
+  > = new Map();
 
   let hook: AsyncHook;
 
@@ -47,14 +52,34 @@ export default function collectHandles(): () => Array<Error> {
       destroy(asyncId) {
         activeHandles.delete(asyncId);
       },
-      init: function initHook(asyncId, type) {
+      init: function initHook(
+        asyncId,
+        type,
+        _triggerAsyncId,
+        resource: {} | NodeJS.Timeout,
+      ) {
         if (type === 'PROMISE' || type === 'TIMERWRAP') {
           return;
         }
         const error = new ErrorWithStack(type, initHook);
 
         if (stackIsFromUser(error.stack || '')) {
-          activeHandles.set(asyncId, error);
+          let isActive: () => boolean;
+
+          if (type === 'Timeout' || type === 'Immediate') {
+            if ('hasRef' in resource) {
+              // Timer that supports hasRef (Node v11+)
+              isActive = resource.hasRef.bind(resource);
+            } else {
+              // Timer that doesn't support hasRef
+              isActive = alwaysActive;
+            }
+          } else {
+            // Any other async resource
+            isActive = alwaysActive;
+          }
+
+          activeHandles.set(asyncId, {error, isActive});
         }
       },
     });
@@ -74,7 +99,11 @@ export default function collectHandles(): () => Array<Error> {
   return () => {
     hook.disable();
 
-    const result = Array.from(activeHandles.values());
+    // Get errors for every async resource still referenced at this moment
+    const result = Array.from(activeHandles.values())
+      .filter(({isActive}) => isActive())
+      .map(({error}) => error);
+
     activeHandles.clear();
     return result;
   };

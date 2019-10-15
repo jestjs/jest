@@ -158,8 +158,8 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, any>> {
       for (const property in this.sample) {
         if (
           hasProperty(other, property) &&
-          equals((this.sample as any)[property], other[property]) &&
-          !emptyObject((this.sample as any)[property]) &&
+          equals(this.sample[property], other[property]) &&
+          !emptyObject(this.sample[property]) &&
           !emptyObject(other[property])
         ) {
           return false;
@@ -171,7 +171,7 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, any>> {
       for (const property in this.sample) {
         if (
           !hasProperty(other, property) ||
-          !equals((this.sample as any)[property], other[property])
+          !equals(this.sample[property], other[property])
         ) {
           return false;
         }

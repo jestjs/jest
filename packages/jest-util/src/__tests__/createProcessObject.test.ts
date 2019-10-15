@@ -5,10 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import EventEmitter from 'events';
-import createProcessObject from '../createProcessObject';
+import {EventEmitter} from 'events';
+
+let createProcessObject;
+
+function requireCreateProcessObject() {
+  jest.isolateModules(() => {
+    createProcessObject = require('../createProcessObject').default;
+  });
+}
 
 it('creates a process object that looks like the original one', () => {
+  requireCreateProcessObject();
   const fakeProcess = createProcessObject();
 
   // "process" inherits from EventEmitter through the prototype chain.
@@ -35,6 +43,7 @@ it('fakes require("process") so it is equal to "global.process"', () => {
 
 it('checks that process.env works as expected on Linux platforms', () => {
   Object.defineProperty(process, 'platform', {get: () => 'linux'});
+  requireCreateProcessObject();
 
   // Existing properties inside process.env are copied to the fake environment.
   process.env.PROP_STRING = 'foo';
@@ -73,6 +82,7 @@ it('checks that process.env works as expected on Linux platforms', () => {
 
 it('checks that process.env works as expected in Windows platforms', () => {
   Object.defineProperty(process, 'platform', {get: () => 'win32'});
+  requireCreateProcessObject();
 
   // Windows is not case sensitive when it comes to property names.
   process.env.PROP_STRING = 'foo';

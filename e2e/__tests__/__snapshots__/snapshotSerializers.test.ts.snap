@@ -2,10 +2,24 @@
 
 exports[`Snapshot serializers renders snapshot 1`] = `
 Object {
+  "snapshot serializers works with array of strings in property matcher 1": "
+Object {
+  \\"arrayOfStrings\\": Array [
+    \\"stream\\",
+  ],
+}
+",
   "snapshot serializers works with default serializers 1": "
 <div
   id=\\"foo\\"
 />
+",
+  "snapshot serializers works with expect.XXX within array in property matcher 1": "
+Object {
+  \\"arrayOfStrings\\": Array [
+    Any<String>,
+  ],
+}
 ",
   "snapshot serializers works with first plugin 1": "foo - 1",
   "snapshot serializers works with nested serializable objects 1": "foo - bar - 2",

@@ -21,7 +21,11 @@ else
         sudo dpkg -i crowdin.deb
         # translations upload/download
         yarn crowdin-upload
-        yarn crowdin-download
+        # download only enabled languages
+        for lang in ja es-ES ro zh-CN pt-BR ru uk
+        do
+            yarn crowdin-download -l $lang
+        done
         # build and publish website
         GIT_USER=docusaurus-bot USE_SSH=false yarn publish-gh-pages
     else

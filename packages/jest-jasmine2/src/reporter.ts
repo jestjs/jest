@@ -6,7 +6,11 @@
  */
 
 import {Config} from '@jest/types';
-import {AssertionResult, TestResult} from '@jest/test-result';
+import {
+  AssertionResult,
+  TestResult,
+  createEmptyTestResult,
+} from '@jest/test-result';
 import {formatResultsErrors} from 'jest-message-util';
 import {SpecResult} from './jasmine/Spec';
 import {SuiteResult} from './jasmine/Suite';
@@ -78,6 +82,7 @@ export default class Jasmine2Reporter implements Reporter {
     });
 
     const testResult = {
+      ...createEmptyTestResult(),
       console: null,
       failureMessage: formatResultsErrors(
         testResults,
@@ -89,10 +94,6 @@ export default class Jasmine2Reporter implements Reporter {
       numPassingTests,
       numPendingTests,
       numTodoTests,
-      perfStats: {
-        end: 0,
-        start: 0,
-      },
       snapshot: {
         added: 0,
         fileDeleted: false,
@@ -115,13 +116,9 @@ export default class Jasmine2Reporter implements Reporter {
   private _addMissingMessageToStack(stack: string, message?: string) {
     // Some errors (e.g. Angular injection error) don't prepend error.message
     // to stack, instead the first line of the stack is just plain 'Error'
-    const ERROR_REGEX = /^Error\s*\n/;
-    if (
-      stack &&
-      message &&
-      ERROR_REGEX.test(stack) &&
-      stack.indexOf(message) === -1
-    ) {
+    const ERROR_REGEX = /^Error:?\s*\n/;
+
+    if (stack && message && !stack.includes(message)) {
       return message + stack.replace(ERROR_REGEX, '\n');
     }
     return stack;

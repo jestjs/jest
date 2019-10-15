@@ -5,19 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
+import * as fs from 'fs';
 import {Config} from '@jest/types';
 
-import {getTopFrame, getStackTraceLines} from 'jest-message-util';
+import {getStackTraceLines, getTopFrame} from 'jest-message-util';
 import {
-  saveSnapshotFile,
   getSnapshotData,
   keyToTestName,
+  removeExtraLineBreaks,
+  saveSnapshotFile,
   serialize,
   testNameToKey,
-  unescape,
 } from './utils';
-import {saveInlineSnapshots, InlineSnapshot} from './inline_snapshots';
+import {InlineSnapshot, saveInlineSnapshots} from './inline_snapshots';
 import {SnapshotData} from './types';
 
 export type SnapshotStateOptions = {
@@ -29,10 +29,19 @@ export type SnapshotStateOptions = {
 
 export type SnapshotMatchOptions = {
   testName: string;
-  received: any;
+  received: unknown;
   key?: string;
   inlineSnapshot?: string;
+  isInline: boolean;
   error?: Error;
+};
+
+type SnapshotReturnOptions = {
+  actual: string;
+  count: number;
+  expected?: string;
+  key: string;
+  pass: boolean;
 };
 
 export default class SnapshotState {
@@ -42,6 +51,7 @@ export default class SnapshotState {
   private _index: number;
   private _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;
+  private _initialData: SnapshotData;
   private _snapshotPath: Config.Path;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
@@ -60,6 +70,7 @@ export default class SnapshotState {
       this._snapshotPath,
       options.updateSnapshot,
     );
+    this._initialData = data;
     this._snapshotData = data;
     this._dirty = dirty;
     this._getBabelTraverse = options.getBabelTraverse;
@@ -106,6 +117,17 @@ export default class SnapshotState {
     } else {
       this._snapshotData[key] = receivedSerialized;
     }
+  }
+
+  clear() {
+    this._snapshotData = this._initialData;
+    this._inlineSnapshots = [];
+    this._counters = new Map();
+    this._index = 0;
+    this.added = 0;
+    this.matched = 0;
+    this.unmatched = 0;
+    this.updated = 0;
   }
 
   save() {
@@ -159,11 +181,11 @@ export default class SnapshotState {
     received,
     key,
     inlineSnapshot,
+    isInline,
     error,
-  }: SnapshotMatchOptions) {
+  }: SnapshotMatchOptions): SnapshotReturnOptions {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
-    const isInline = inlineSnapshot !== undefined;
 
     if (!key) {
       key = testNameToKey(testName, count);
@@ -172,16 +194,14 @@ export default class SnapshotState {
     // Do not mark the snapshot as "checked" if the snapshot is inline and
     // there's an external snapshot. This way the external snapshot can be
     // removed with `--updateSnapshot`.
-    if (!(isInline && this._snapshotData[key])) {
+    if (!(isInline && this._snapshotData[key] !== undefined)) {
       this._uncheckedKeys.delete(key);
     }
 
     const receivedSerialized = serialize(received);
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;
-    const hasSnapshot = isInline
-      ? inlineSnapshot !== ''
-      : this._snapshotData[key] !== undefined;
+    const hasSnapshot = expected !== undefined;
     const snapshotIsPersisted = isInline || fs.existsSync(this._snapshotPath);
 
     if (pass && !isInline) {
@@ -233,9 +253,12 @@ export default class SnapshotState {
       if (!pass) {
         this.unmatched++;
         return {
-          actual: unescape(receivedSerialized),
+          actual: removeExtraLineBreaks(receivedSerialized),
           count,
-          expected: expected ? unescape(expected) : null,
+          expected:
+            expected !== undefined
+              ? removeExtraLineBreaks(expected)
+              : undefined,
           key,
           pass: false,
         };

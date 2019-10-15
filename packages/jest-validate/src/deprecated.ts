@@ -7,7 +7,7 @@
 
 import {DeprecatedOptions, ValidationOptions} from './types';
 
-import {logValidationWarning, DEPRECATION} from './utils';
+import {DEPRECATION, logValidationWarning} from './utils';
 
 const deprecationMessage = (message: string, options: ValidationOptions) => {
   const comment = options.comment;
@@ -17,7 +17,7 @@ const deprecationMessage = (message: string, options: ValidationOptions) => {
 };
 
 export const deprecationWarning = (
-  config: {[key: string]: any},
+  config: Record<string, any>,
   option: string,
   deprecatedOptions: DeprecatedOptions,
   options: ValidationOptions,

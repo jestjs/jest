@@ -7,6 +7,8 @@
 
 /* eslint-disable jest/no-focused-tests */
 
+import semver = require('semver');
+
 export function isJestCircusRun() {
   return process.env.JEST_CIRCUS === '1';
 }
@@ -32,5 +34,15 @@ export function skipSuiteOnWindows() {
     test.only('does not work on Windows', () => {
       console.warn('[SKIP] Does not work on Windows');
     });
+  }
+}
+
+export function onNodeVersions(versionRange: string, testBody: () => void) {
+  if (!semver.satisfies(process.versions.node, versionRange)) {
+    describe.skip(`[SKIP] tests that require node ${versionRange}`, () => {
+      testBody();
+    });
+  } else {
+    testBody();
   }
 }
