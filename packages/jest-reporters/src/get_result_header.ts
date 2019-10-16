@@ -18,11 +18,11 @@ const FAIL_TEXT = 'FAIL';
 const PASS_TEXT = 'PASS';
 
 const FAIL = chalk.supportsColor
-  ? chalk.reset.inverse.bold.red(` ${FAIL_TEXT} `)
+  ? chalk.reset.inverse.redBright(` ${FAIL_TEXT} `)
   : FAIL_TEXT;
 
 const PASS = chalk.supportsColor
-  ? chalk.reset.inverse.bold.green(` ${PASS_TEXT} `)
+  ? chalk.reset.inverse.greenBright(` ${PASS_TEXT} `)
   : PASS_TEXT;
 
 export default (

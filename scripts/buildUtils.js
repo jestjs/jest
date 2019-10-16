@@ -12,7 +12,7 @@ const stringLength = require('string-length');
 
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
-const OK = chalk.reset.inverse.bold.green(' DONE ');
+const OK = chalk.reset.inverse.greenBright(' DONE ');
 
 // Get absolute paths of all directories under packages/*
 module.exports.getPackages = function getPackages() {

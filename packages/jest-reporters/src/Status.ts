@@ -18,7 +18,7 @@ import {
 } from './utils';
 
 const RUNNING_TEXT = ' RUNS ';
-const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
+const RUNNING = chalk.reset.inverse.yellowBright(RUNNING_TEXT) + ' ';
 
 /**
  * This class is a perf optimization for sorting the list of currently
