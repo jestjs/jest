@@ -165,7 +165,7 @@ describe('getObjectSubset', () => {
     );
   });
 
-  describe('returns object instance', () => {
+  describe('returns the object instance if the subset has no extra properties', () => {
     test('Date', () => {
       const object = new Date('2015-11-30');
       const subset = new Date('2016-12-30');
@@ -174,7 +174,7 @@ describe('getObjectSubset', () => {
     });
   });
 
-  describe('returns subset instance', () => {
+  describe('returns the subset instance if its property values are equal', () => {
     test('Object', () => {
       const object = {key0: 'zero', key1: 'one', key2: 'two'};
       const subset = {key0: 'zero', key2: 'two'};
