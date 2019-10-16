@@ -296,12 +296,16 @@ export default class ScriptTransformer {
     }
 
     if (!transformed.map) {
-      //Could be a potential freeze here.
-      //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
-      const inlineSourceMap = sourcemapFromSource(transformed.code);
+      try {
+        //Could be a potential freeze here.
+        //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
+        const inlineSourceMap = sourcemapFromSource(transformed.code);
 
-      if (inlineSourceMap) {
-        transformed.map = inlineSourceMap.toJSON();
+        if (inlineSourceMap) {
+          transformed.map = inlineSourceMap.toJSON();
+        }
+      } catch (e) {
+        // Error processing the source map; proceed as if it doesn't exist.
       }
     }
 

@@ -406,6 +406,7 @@ describe('ScriptTransformer', () => {
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
       encoding: 'utf8',
     });
@@ -434,11 +435,39 @@ describe('ScriptTransformer', () => {
       collectCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
       {encoding: 'utf8'},
     );
+  });
+
+  it('ignores the inlined source map from the preprocessor if parsing it fails', () => {
+    config = {
+      ...config,
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    };
+    const scriptTransformer = new ScriptTransformer(config);
+
+    const sourceMap = JSON.stringify({
+      mappings: 'AAAA,IAAM,CAAC,GAAW,CAAC,CAAC',
+      version: 3,
+    });
+
+    // Cut off the inlined map prematurely with slice so the JSON ends abruptly
+    const content =
+      'var x = 1;\n' +
+      '//# sourceMappingURL=data:application/json;base64,' +
+      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
+
+    const result = scriptTransformer.transform('/fruits/banana.js', {
+      collectCoverage: true,
+    });
+    expect(result.sourceMapPath).toBeNull();
+    expect(writeFileAtomic.sync).toBeCalledTimes(1);
   });
 
   it('writes source maps if given by the transformer', () => {
@@ -462,6 +491,7 @@ describe('ScriptTransformer', () => {
       collectCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(map),
