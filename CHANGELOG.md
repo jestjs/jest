@@ -39,6 +39,7 @@
 - `[jest-snapshot]` Distinguish empty string from external snapshot not written ([#8880](https://github.com/facebook/jest/pull/8880))
 - `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
+- `[jest-transform]` Don't fail the test suite when convert-source-map throws an error ([#9058](https://github.com/facebook/jest/pull/9058))
 
 ### Chore & Maintenance
 
