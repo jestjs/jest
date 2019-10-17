@@ -288,8 +288,8 @@ FAIL __tests__/asyncFailures.test.js
 
     expect(received).resolves.toEqual(expected) // deep equality
 
-    - Expected
-    + Received
+    - Expected  - 1
+    + Received  + 1
 
       Object {
     -   "baz": "bar",
@@ -310,8 +310,8 @@ FAIL __tests__/asyncFailures.test.js
 
     expect(received).rejects.toEqual(expected) // deep equality
 
-    - Expected
-    + Received
+    - Expected  - 1
+    + Received  + 1
 
       Object {
     -   "baz": "bar",

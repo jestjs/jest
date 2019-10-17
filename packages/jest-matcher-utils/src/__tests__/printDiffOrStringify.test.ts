@@ -6,7 +6,7 @@
  */
 
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
-import {EXPECTED_COLOR, INVERTED_COLOR, printDiffOrStringify} from '../index';
+import {INVERTED_COLOR, printDiffOrStringify} from '../index';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
@@ -50,16 +50,40 @@ describe('printDiffOrStringify', () => {
     expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
   });
 
-  test('received is multiline longer than max', () => {
-    const expected = 'multi\nline';
-    const received = 'multi' + '\n123456789'.repeat(2000); // 5 + 20K chars
+  describe('MAX_DIFF_STRING_LENGTH', () => {
+    const lessChange = INVERTED_COLOR('single ');
+    const less = 'single line';
+    const more = 'multi line' + '\n123456789'.repeat(2000); // 10 + 20K chars
 
-    const test = testDiffOrStringify(expected, received);
+    test('both are less', () => {
+      const difference = testDiffOrStringify('multi\nline', less);
 
-    // It is a generic line diff:
-    expect(test).toContain(EXPECTED_COLOR('- line'));
+      expect(difference).toMatch('- multi');
+      expect(difference).toMatch('- line');
 
-    // It is not a specific substring diff
-    expect(test).not.toContain(EXPECTED_COLOR('- ' + INVERTED_COLOR('line')));
+      // diffStringsUnified has substring change
+      expect(difference).not.toMatch('+ single line');
+      expect(difference).toMatch(lessChange);
+    });
+
+    test('expected is more', () => {
+      const difference = testDiffOrStringify(more, less);
+
+      expect(difference).toMatch('- multi line');
+      expect(difference).toMatch('+ single line');
+
+      // diffLinesUnified does not have substring change
+      expect(difference).not.toMatch(lessChange);
+    });
+
+    test('received is more', () => {
+      const difference = testDiffOrStringify(less, more);
+
+      expect(difference).toMatch('- single line');
+      expect(difference).toMatch('+ multi line');
+
+      // diffLinesUnified does not have substring change
+      expect(difference).not.toMatch(lessChange);
+    });
   });
 });

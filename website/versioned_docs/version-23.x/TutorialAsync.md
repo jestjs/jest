@@ -6,7 +6,7 @@ original_id: tutorial-async
 
 First, enable Babel support in Jest as documented in the [Getting Started](GettingStarted.md#using-babel) guide.
 
-Let's implement a simple module that fetches user data from an API and returns the user name.
+Let's implement a module that fetches user data from an API and returns the user name.
 
 ```js
 // user.js
@@ -92,7 +92,7 @@ it('works with resolves', () => {
 
 ## `async`/`await`
 
-Writing tests using the `async`/`await` syntax is easy. Here is how you'd write the same examples from before:
+Writing tests using the `async`/`await` syntax is also possible. Here is how you'd write the same examples from before:
 
 ```js
 // async/await can be used.

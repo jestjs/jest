@@ -136,19 +136,21 @@ export const removeExtraLineBreaks = (string: string): string =>
     ? string.slice(1, -1)
     : string;
 
-export const serialize = (data: string): string =>
-  addExtraLineBreaks(
-    normalizeNewlines(
-      prettyFormat(data, {
-        escapeRegex: true,
-        plugins: getSerializers(),
-        printFunctionName: false,
-      }),
-    ),
+export const serialize = (val: unknown): string =>
+  addExtraLineBreaks(stringify(val));
+
+export const stringify = (val: unknown): string =>
+  normalizeNewlines(
+    prettyFormat(val, {
+      escapeRegex: true,
+      plugins: getSerializers(),
+      printFunctionName: false,
+    }),
   );
 
-// unescape double quotes
-export const unescape = (data: string): string => data.replace(/\\(")/g, '$1');
+// Remove double quote marks and unescape double quotes and backslashes.
+export const unstringifyString = (stringified: string): string =>
+  stringified.slice(1, -1).replace(/\\("|\\)/g, '$1');
 
 export const escapeBacktickString = (str: string): string =>
   str.replace(/`|\\|\${/g, '\\$&');

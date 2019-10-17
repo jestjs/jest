@@ -10,7 +10,7 @@ At Facebook, we use Jest to test [React](http://facebook.github.io/react/) appli
 
 ### Setup with Create React App
 
-If you are just getting started with React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://github.com/facebookincubator/create-react-app)! You will only need to add `react-test-renderer` for rendering snapshots.
+If you are new to React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://github.com/facebookincubator/create-react-app)! You will only need to add `react-test-renderer` for rendering snapshots.
 
 Run
 
@@ -215,7 +215,7 @@ If you'd like to assert, and manipulate your rendered components you can use [re
 
 You have to run `yarn add --dev @testing-library/react` to use react-testing-library.
 
-Let's implement a simple checkbox which swaps between two labels:
+Let's implement a checkbox which swaps between two labels:
 
 ```javascript
 // CheckboxWithLabel.js
