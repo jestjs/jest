@@ -102,8 +102,8 @@ const saveSnapshotsForFile = (
     // For older versions of Prettier, do not load configuration.
     const config = prettier.resolveConfig
       ? prettier.resolveConfig.sync(sourceFilePath, {
-        editorconfig: true,
-      })
+          editorconfig: true,
+        })
       : null;
 
     // Detect the parser for the test file.
@@ -139,13 +139,13 @@ const saveSnapshotsForFile = (
 const groupSnapshotsBy = (
   createKey: (inlineSnapshot: InlineSnapshot) => string,
 ) => (snapshots: Array<InlineSnapshot>) =>
-    snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
-      (object, inlineSnapshot) => {
-        const key = createKey(inlineSnapshot);
-        return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
-      },
-      {},
-    );
+  snapshots.reduce<Record<string, Array<InlineSnapshot>>>(
+    (object, inlineSnapshot) => {
+      const key = createKey(inlineSnapshot);
+      return {...object, [key]: (object[key] || []).concat(inlineSnapshot)};
+    },
+    {},
+  );
 
 const groupSnapshotsByFrame = groupSnapshotsBy(({frame: {line, column}}) =>
   typeof line === 'number' && typeof column === 'number'
@@ -260,61 +260,61 @@ const createFormattingParser = (
   text: string,
   parsers: Record<string, (text: string) => any>,
   options: any,
-  ) => {
-    // Workaround for https://github.com/prettier/prettier/issues/3150
-    options.parser = inferredParser;
+) => {
+  // Workaround for https://github.com/prettier/prettier/issues/3150
+  options.parser = inferredParser;
 
-    const ast = resolveAst(parsers[inferredParser](text));
-    babelTraverse(ast, {
-      CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
-        if (
-          callee.type !== 'MemberExpression' ||
-          callee.property.type !== 'Identifier' ||
-          callee.property.name !== 'toMatchInlineSnapshot' ||
-          !callee.loc ||
-          callee.computed
-        ) {
-          return;
+  const ast = resolveAst(parsers[inferredParser](text));
+  babelTraverse(ast, {
+    CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
+      if (
+        callee.type !== 'MemberExpression' ||
+        callee.property.type !== 'Identifier' ||
+        callee.property.name !== 'toMatchInlineSnapshot' ||
+        !callee.loc ||
+        callee.computed
+      ) {
+        return;
+      }
+
+      let snapshotIndex: number | undefined;
+      let snapshot: string | undefined;
+      for (let i = 0; i < args.length; i++) {
+        const node = args[i];
+        if (node.type === 'TemplateLiteral') {
+          snapshotIndex = i;
+          snapshot = node.quasis[0].value.raw;
         }
+      }
+      if (snapshot === undefined || snapshotIndex === undefined) {
+        return;
+      }
 
-        let snapshotIndex: number | undefined;
-        let snapshot: string | undefined;
-        for (let i = 0; i < args.length; i++) {
-          const node = args[i];
-          if (node.type === 'TemplateLiteral') {
-            snapshotIndex = i;
-            snapshot = node.quasis[0].value.raw;
-          }
-        }
-        if (snapshot === undefined || snapshotIndex === undefined) {
-          return;
-        }
+      const useSpaces = !options.useTabs;
+      snapshot = indent(
+        snapshot,
+        Math.ceil(
+          useSpaces
+            ? callee.loc.start.column / options.tabWidth
+            : callee.loc.start.column / 2, // Each tab is 2 characters.
+        ),
+        useSpaces ? ' '.repeat(options.tabWidth) : '\t',
+      );
 
-        const useSpaces = !options.useTabs;
-        snapshot = indent(
-          snapshot,
-          Math.ceil(
-            useSpaces
-              ? callee.loc.start.column / options.tabWidth
-              : callee.loc.start.column / 2, // Each tab is 2 characters.
-          ),
-          useSpaces ? ' '.repeat(options.tabWidth) : '\t',
-        );
+      const replacementNode = templateLiteral(
+        [
+          templateElement({
+            raw: snapshot,
+          }),
+        ],
+        [],
+      );
+      args[snapshotIndex] = replacementNode;
+    },
+  });
 
-        const replacementNode = templateLiteral(
-          [
-            templateElement({
-              raw: snapshot,
-            }),
-          ],
-          [],
-        );
-        args[snapshotIndex] = replacementNode;
-      },
-    });
-
-    return ast;
-  };
+  return ast;
+};
 
 const simpleDetectParser = (filePath: Config.Path) => {
   const extname = path.extname(filePath);
