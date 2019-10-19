@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
@@ -28,7 +28,7 @@ test('CLI accepts exact file names if matchers matched', () => {
 
   const result = runJest(DIR, ['-i', '--forceExit', './foo/bar.spec.js']);
 
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 
   const {rest, summary} = extractSummary(result.stderr);
 
@@ -47,7 +47,7 @@ test('CLI skips exact file names if no matchers matched', () => {
 
   const result = runJest(DIR, ['-i', '--forceExit', './foo/bar.js']);
 
-  expect(result.status).toBe(1);
+  expect(result.exitCode).toBe(1);
   expect(result.stdout).toMatch(/No tests found([\S\s]*)2 files checked./);
   expect(result.stderr).toEqual('');
 });

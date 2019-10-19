@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import runJest from '../runJest';
 import {cleanup, run, writeFiles} from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'jest_only_changed');
+const DIR = path.resolve(tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
 
@@ -153,12 +153,12 @@ test('do not pickup non-tested files when reporting coverage on only changed fil
     'package.json': JSON.stringify({name: 'new name'}),
   });
 
-  const {stderr, stdout, status} = runJest(DIR, ['-o', '--coverage']);
+  const {stderr, stdout, exitCode} = runJest(DIR, ['-o', '--coverage']);
   expect(stderr).toEqual(
     expect.not.stringContaining('Failed to collect coverage from'),
   );
   expect(stdout).toEqual(expect.not.stringContaining('package.json'));
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });
 
 test('collect test coverage when using onlyChanged', () => {
@@ -180,11 +180,11 @@ test('collect test coverage when using onlyChanged', () => {
     'b.test.js': 'it("passes", () => {expect(1).toBe(1)})',
   });
 
-  const {stderr, status} = runJest(DIR, ['-o', '--coverage']);
+  const {stderr, exitCode} = runJest(DIR, ['-o', '--coverage']);
   expect(stderr).toEqual(
     expect.not.stringContaining('Failed to collect coverage from'),
   );
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });
 
 test('onlyChanged in config is overwritten by --all or testPathPattern', () => {

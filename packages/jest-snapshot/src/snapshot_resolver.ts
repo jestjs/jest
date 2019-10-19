@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import chalk from 'chalk';
 
@@ -109,9 +109,7 @@ function verifyConsistentTransformations(custom: SnapshotResolver) {
   if (resolvedTestPath !== custom.testPathForConsistencyCheck) {
     throw new Error(
       chalk.bold(
-        `Custom snapshot resolver functions must transform paths consistently, i.e. expects resolveTestPath(resolveSnapshotPath('${
-          custom.testPathForConsistencyCheck
-        }')) === ${resolvedTestPath}`,
+        `Custom snapshot resolver functions must transform paths consistently, i.e. expects resolveTestPath(resolveSnapshotPath('${custom.testPathForConsistencyCheck}')) === ${resolvedTestPath}`,
       ),
     );
   }

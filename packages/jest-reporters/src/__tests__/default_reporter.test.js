@@ -5,7 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+import DefaultReporter from '../default_reporter';
+
+jest.mock('jest-util', () => ({
+  ...jest.requireActual('jest-util'),
+  // This is not a CI environment, which removes all output by default.
+  isInteractive: true,
+}));
 
 const aggregatedResults = {};
 const options = {};
@@ -26,7 +32,6 @@ const testResult = {
   testFilePath: '/foo',
 };
 
-let DefaultReporter;
 let stdout;
 
 let oldIsTTY;
@@ -34,13 +39,7 @@ let oldStderr;
 let oldStdout;
 
 beforeEach(() => {
-  jest.resetModules();
   jest.useFakeTimers();
-
-  // This is not a CI environment, which removes all output by default.
-  jest.unmock('jest-util');
-  const util = require('jest-util');
-  util.isInteractive = true;
 
   oldIsTTY = process.stdin.isTTY;
   oldStdout = process.stdout.write;
@@ -52,8 +51,6 @@ beforeEach(() => {
   process.stdin.isTTY = true;
   process.stderr.write = jest.fn();
   stdout = process.stdout.write = jest.fn();
-
-  DefaultReporter = require('../default_reporter').default;
 });
 
 afterEach(() => {

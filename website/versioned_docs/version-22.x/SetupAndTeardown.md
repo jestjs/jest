@@ -40,7 +40,7 @@ beforeEach(() => {
 
 ## One-Time Setup
 
-In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't just do it inline. Jest provides `beforeAll` and `afterAll` to handle this situation.
+In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't do it inline. Jest provides `beforeAll` and `afterAll` to handle this situation.
 
 For example, if both `initializeCityDatabase` and `clearCityDatabase` returned promises, and the city database could be reused between tests, we could change our test code to:
 
@@ -176,7 +176,7 @@ describe('outer', () => {
 
 ## General Advice
 
-If a test is failing, one of the first things to check should be whether the test is failing when it's the only test that runs. In Jest it's simple to run only one test - just temporarily change that `test` command to a `test.only`:
+If a test is failing, one of the first things to check should be whether the test is failing when it's the only test that runs. To run only one test with Jest, temporarily change that `test` command to a `test.only`:
 
 ```js
 test.only('this will be the only test that runs', () => {
@@ -188,4 +188,4 @@ test('this test will not run', () => {
 });
 ```
 
-If you have a test that often fails when it's run as part of a larger suite, but doesn't fail when you run it alone, it's a good bet that something from a different test is interfering with this one. You can often fix this by clearing some shared state with `beforeEach`. If you're not sure whether some shared state is being modified, you can also try a `beforeEach` that just logs data.
+If you have a test that often fails when it's run as part of a larger suite, but doesn't fail when you run it alone, it's a good bet that something from a different test is interfering with this one. You can often fix this by clearing some shared state with `beforeEach`. If you're not sure whether some shared state is being modified, you can also try a `beforeEach` that logs data.

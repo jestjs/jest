@@ -54,7 +54,7 @@ const REQUIRE_OR_DYNAMIC_IMPORT_RE = createRegExp(
 
 const IMPORT_OR_EXPORT_RE = createRegExp(
   [
-    '\\b(?:import|export)\\s+(?!type(?:of)?\\s+)[^\'"]+\\s+from\\s+',
+    '\\b(?:import|export)\\s+(?!type(?:of)?\\s+)(?:[^\'"]+\\s+from\\s+)?',
     CAPTURE_STRING_LITERAL(1),
   ],
   'g',

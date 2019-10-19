@@ -7,20 +7,26 @@
 
 import {Circus, Config, Global} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
-import {AssertionResult, Status, TestResult} from '@jest/test-result';
+import {
+  AssertionResult,
+  Status,
+  TestResult,
+  createEmptyTestResult,
+} from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
   SnapshotState,
+  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
 import throat from 'throat';
 import {
+  ROOT_DESCRIBE_BLOCK_NAME,
   addEventHandler,
   dispatch,
   getState as getRunnerState,
-  ROOT_DESCRIBE_BLOCK_NAME,
 } from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
@@ -131,6 +137,8 @@ export const initialize = ({
   });
   setState({snapshotState, testPath});
 
+  addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
+
   // Return it back to the outer scope (test runner outside the VM).
   return {globals, snapshotState};
 };
@@ -212,35 +220,30 @@ export const runAndTransformResultsToJestFormat = async ({
 
   dispatch({name: 'teardown'});
   return {
+    ...createEmptyTestResult(),
     console: undefined,
     displayName: config.displayName,
     failureMessage,
-    leaks: false, // That's legacy code, just adding it so Flow is happy.
     numFailingTests,
     numPassingTests,
     numPendingTests,
     numTodoTests,
-    openHandles: [],
-    perfStats: {
-      // populated outside
-      end: 0,
-      start: 0,
-    },
-    skipped: false,
-    snapshot: {
-      added: 0,
-      fileDeleted: false,
-      matched: 0,
-      unchecked: 0,
-      uncheckedKeys: [],
-      unmatched: 0,
-      updated: 0,
-    },
     sourceMaps: {},
     testExecError,
     testFilePath: testPath,
     testResults: assertionResults,
   };
+};
+
+const handleSnapshotStateAfterRetry = (snapshotState: SnapshotStateType) => (
+  event: Circus.Event,
+) => {
+  switch (event.name) {
+    case 'test_retry': {
+      // Clear any snapshot data that occurred in previous test run
+      snapshotState.clear();
+    }
+  }
 };
 
 const eventHandler = (event: Circus.Event) => {

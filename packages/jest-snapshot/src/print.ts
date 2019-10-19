@@ -5,22 +5,54 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import diff, {getStringDiff} from 'jest-diff';
-import getType, {isPrimitive} from 'jest-get-type';
+import {
+  DIFF_DELETE,
+  DIFF_EQUAL,
+  DIFF_INSERT,
+  Diff,
+  diffLinesUnified,
+  diffStringsRaw,
+  diffStringsUnified,
+  splitLines0,
+} from 'jest-diff';
+import getType = require('jest-get-type');
 import {
   EXPECTED_COLOR,
+  INVERTED_COLOR,
   RECEIVED_COLOR,
   getLabelPrinter,
-  printDiffOrStringify,
 } from 'jest-matcher-utils';
-import prettyFormat from 'pretty-format';
-import {unescape} from './utils';
+import prettyFormat = require('pretty-format');
+import {unstringifyString} from './utils';
+
+// Given array of diffs, return string:
+// * include common substrings
+// * exclude change substrings which have opposite op
+// * include change substrings which have argument op
+//   with change color only if there is a common substring
+const joinDiffs = (
+  diffs: Array<Diff>,
+  op: number,
+  hasCommon: boolean,
+): string =>
+  diffs.reduce(
+    (reduced: string, diff: Diff): string =>
+      reduced +
+      (diff[0] === DIFF_EQUAL
+        ? diff[1]
+        : diff[0] !== op
+        ? ''
+        : hasCommon
+        ? INVERTED_COLOR(diff[1])
+        : diff[1]),
+    '',
+  );
 
 const isLineDiffable = (received: any): boolean => {
   const receivedType = getType(received);
 
-  if (isPrimitive(received)) {
-    return typeof received === 'string' && received.includes('\n');
+  if (getType.isPrimitive(received)) {
+    return typeof received === 'string';
   }
 
   if (
@@ -45,86 +77,87 @@ const isLineDiffable = (received: any): boolean => {
   return true;
 };
 
+const MAX_DIFF_STRING_LENGTH = 20000;
+
 export const printDiffOrStringified = (
-  expectedSerializedTrimmed: string,
-  receivedSerializedTrimmed: string,
+  a: string, // snapshot without extra line breaks
+  b: string, // received serialized but without extra line breaks
   received: unknown,
-  expectedLabel: string,
-  receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
 ): string => {
+  const aAnnotation = 'Snapshot';
+  const bAnnotation = 'Received';
+  const aColor = EXPECTED_COLOR;
+  const bColor = RECEIVED_COLOR;
+  const options = {
+    aAnnotation,
+    aColor,
+    bAnnotation,
+    bColor,
+    expand,
+    includeChangeCounts: true,
+  };
+
   if (typeof received === 'string') {
     if (
-      expectedSerializedTrimmed.length >= 2 &&
-      expectedSerializedTrimmed.startsWith('"') &&
-      expectedSerializedTrimmed.endsWith('"') &&
-      receivedSerializedTrimmed === unescape(prettyFormat(received))
+      a.length >= 2 &&
+      a.startsWith('"') &&
+      a.endsWith('"') &&
+      b === prettyFormat(received)
     ) {
-      // The expected snapshot looks like a stringified string.
-      // The received serialization is default stringified string.
+      // If snapshot looks like default serialization of a string
+      // and received is string which has default serialization.
 
-      // Undo default serialization of expected snapshot:
-      // Remove enclosing double quote marks.
-      // Remove backslash escape preceding backslash here,
-      // because unescape replaced it only preceding double quote mark.
-      return printDiffOrStringify(
-        expectedSerializedTrimmed.slice(1, -1).replace(/\\\\/g, '\\'),
-        received,
-        expectedLabel,
-        receivedLabel,
-        expand,
-      );
-    }
+      if (!a.includes('\n') && !b.includes('\n')) {
+        // If neither string is multiline,
+        // display as labels and quoted strings.
+        let aQuoted = a;
+        let bQuoted = b;
 
-    // Display substring highlight even when strings have custom serialization.
-    const result = getStringDiff(
-      expectedSerializedTrimmed,
-      receivedSerializedTrimmed,
-      {
-        aAnnotation: expectedLabel,
-        bAnnotation: receivedLabel,
-        expand,
-      },
-    );
+        if (
+          a.length - 2 <= MAX_DIFF_STRING_LENGTH &&
+          b.length - 2 <= MAX_DIFF_STRING_LENGTH
+        ) {
+          const diffs = diffStringsRaw(a.slice(1, -1), b.slice(1, -1), true);
+          const hasCommon = diffs.some(diff => diff[0] === DIFF_EQUAL);
+          aQuoted = '"' + joinDiffs(diffs, DIFF_DELETE, hasCommon) + '"';
+          bQuoted = '"' + joinDiffs(diffs, DIFF_INSERT, hasCommon) + '"';
+        }
 
-    if (result !== null) {
-      if (result.isMultiline) {
-        return result.annotatedDiff;
+        const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
+        return (
+          printLabel(aAnnotation) +
+          aColor(aQuoted) +
+          '\n' +
+          printLabel(bAnnotation) +
+          bColor(bQuoted)
+        );
       }
 
-      // Because not default stringify, call EXPECTED_COLOR and RECEIVED_COLOR
-      // This is reason to call getStringDiff instead of printDiffOrStringify
-      // Because there is no closing double quote mark at end of single lines,
-      // future improvement is to call replaceSpacesAtEnd if it becomes public.
-      const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
-      return (
-        printLabel(expectedLabel) +
-        EXPECTED_COLOR(result.a) +
-        '\n' +
-        printLabel(receivedLabel) +
-        RECEIVED_COLOR(result.b)
-      );
+      // Else either string is multiline, so display as unquoted strings.
+      a = unstringifyString(a); //  hypothetical unserialized expected string
+      b = received; // not serialized
     }
+    // Else expected had custom serialization or was not a string
+    // or received has custom serialization.
+
+    return a.length <= MAX_DIFF_STRING_LENGTH &&
+      b.length <= MAX_DIFF_STRING_LENGTH
+      ? diffStringsUnified(a, b, options)
+      : diffLinesUnified(splitLines0(a), splitLines0(b), options);
   }
 
-  if (
-    (expectedSerializedTrimmed.includes('\n') ||
-      receivedSerializedTrimmed.includes('\n')) &&
-    isLineDiffable(received)
-  ) {
-    return diff(expectedSerializedTrimmed, receivedSerializedTrimmed, {
-      aAnnotation: expectedLabel,
-      bAnnotation: receivedLabel,
-      expand,
-    }) as string;
+  if (isLineDiffable(received)) {
+    // TODO future PR will replace with diffLinesUnified2 to ignore indentation
+    return diffLinesUnified(splitLines0(a), splitLines0(b), options);
   }
 
-  const printLabel = getLabelPrinter(expectedLabel, receivedLabel);
+  const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
   return (
-    printLabel(expectedLabel) +
-    EXPECTED_COLOR(expectedSerializedTrimmed) +
+    printLabel(aAnnotation) +
+    aColor(a) +
     '\n' +
-    printLabel(receivedLabel) +
-    RECEIVED_COLOR(receivedSerializedTrimmed)
+    printLabel(bAnnotation) +
+    bColor(b)
   );
 };

@@ -6,11 +6,14 @@
  */
 
 import {Script} from 'vm';
-import {Global, Config} from '@jest/types';
+import {Config, Global} from '@jest/types';
 import {installCommonGlobals} from 'jest-util';
-import mock, {ModuleMocker} from 'jest-mock';
-import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
-import {JestEnvironment, EnvironmentContext} from '@jest/environment';
+import {ModuleMocker} from 'jest-mock';
+import {
+  JestFakeTimers as LegacyFakeTimers,
+  LolexFakeTimers,
+} from '@jest/fake-timers';
+import {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
@@ -24,7 +27,8 @@ type Win = Window &
 
 class JSDOMEnvironment implements JestEnvironment {
   dom: JSDOM | null;
-  fakeTimers: FakeTimers<number> | null;
+  fakeTimers: LegacyFakeTimers<number> | null;
+  fakeTimersLolex: LolexFakeTimers | null;
   global: Win;
   errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
@@ -78,28 +82,31 @@ class JSDOMEnvironment implements JestEnvironment {
       return originalRemoveListener.apply(this, args);
     };
 
-    this.moduleMocker = new mock.ModuleMocker(global as any);
+    this.moduleMocker = new ModuleMocker(global as any);
 
     const timerConfig = {
       idToRef: (id: number) => id,
       refToId: (ref: number) => ref,
     };
 
-    this.fakeTimers = new FakeTimers({
+    this.fakeTimers = new LegacyFakeTimers({
       config,
-      global: global as any,
+      global,
       moduleMocker: this.moduleMocker,
       timerConfig,
     });
+
+    this.fakeTimersLolex = new LolexFakeTimers({config, global});
   }
 
-  setup() {
-    return Promise.resolve();
-  }
+  async setup() {}
 
-  teardown() {
+  async teardown() {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
+    }
+    if (this.fakeTimersLolex) {
+      this.fakeTimersLolex.dispose();
     }
     if (this.global) {
       if (this.errorEventListener) {
@@ -114,7 +121,7 @@ class JSDOMEnvironment implements JestEnvironment {
     this.global = null;
     this.dom = null;
     this.fakeTimers = null;
-    return Promise.resolve();
+    this.fakeTimersLolex = null;
   }
 
   runScript(script: Script) {

@@ -2,3 +2,5 @@
 **/__tests__/**
 example
 src
+tsconfig.json
+tsconfig.tsbuildinfo

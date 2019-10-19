@@ -40,6 +40,7 @@ const defaultOptions: Config.DefaultOptions = {
     throwOnModuleCollision: false,
   },
   maxConcurrency: 5,
+  maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleNameMapper: {},

@@ -8,7 +8,7 @@
 import {Config} from '@jest/types';
 import {readInitialCoverage} from 'istanbul-lib-instrument';
 import {createFileCoverage} from 'istanbul-lib-coverage';
-import {shouldInstrument, ScriptTransformer} from '@jest/transform';
+import {ScriptTransformer, shouldInstrument} from '@jest/transform';
 
 export type CoverageWorkerResult = {
   coverage: any;

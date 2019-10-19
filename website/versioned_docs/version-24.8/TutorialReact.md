@@ -10,7 +10,7 @@ At Facebook, we use Jest to test [React](http://facebook.github.io/react/) appli
 
 ### Setup with Create React App
 
-If you are just getting started with React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://facebook.github.io/create-react-app/docs/running-tests#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
+If you are new to React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://facebook.github.io/create-react-app/docs/running-tests#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
 
 Run
 
@@ -205,7 +205,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
     ```js
     jest.mock('fbjs/lib/warning', () => require('fbjs/lib/emptyFunction'));
     ```
-    This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzling console.warn and suppress specific warnings.
+    This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzle the console.warn and suppress specific warnings.
 
 ### DOM Testing
 
@@ -213,9 +213,9 @@ If you'd like to assert, and manipulate your rendered components you can use [re
 
 #### react-testing-library
 
-You have to run `yarn add --dev react-testing-library` to use react-testing-library.
+You have to run `yarn add --dev @testing-library/react` to use react-testing-library.
 
-Let's implement a simple checkbox which swaps between two labels:
+Let's implement a checkbox which swaps between two labels:
 
 ```javascript
 // CheckboxWithLabel.js
@@ -254,7 +254,7 @@ export default class CheckboxWithLabel extends React.Component {
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
 import React from 'react';
-import {render, fireEvent, cleanup} from 'react-testing-library';
+import {cleanup, fireEvent, render} from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
 // automatically unmount and cleanup DOM after the test is finished.

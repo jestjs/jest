@@ -23,7 +23,7 @@ Inspects the argument and returns its schema in the following recursive format:
 }
 ```
 
-Where type is one of `array`, `object`, `function`, or `ref`, and members is an optional dictionary where the keys are member names and the values are metadata objects. Function prototypes are defined simply by defining metadata for the `member.prototype` of the function. The type of a function prototype should always be `object`. For instance, a simple class might be defined like this:
+Where type is one of `array`, `object`, `function`, or `ref`, and members is an optional dictionary where the keys are member names and the values are metadata objects. Function prototypes are defined by defining metadata for the `member.prototype` of the function. The type of a function prototype should always be `object`. For instance, a class might be defined like this:
 
 ```js
 const classDef = {

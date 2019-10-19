@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
-import mkdirp from 'mkdirp';
-import naturalCompare from 'natural-compare';
+import * as fs from 'fs';
+import * as path from 'path';
+import {sync as mkdirp} from 'mkdirp';
+import naturalCompare = require('natural-compare');
 import chalk from 'chalk';
 import {Config} from '@jest/types';
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 import {getSerializers} from './plugins';
 import {SnapshotData} from './types';
 
@@ -123,24 +123,34 @@ export const getSnapshotData = (
   return {data, dirty};
 };
 
-// Extra line breaks at the beginning and at the end of the snapshot are useful
-// to make the content of the snapshot easier to read
-const addExtraLineBreaks = (string: string): string =>
+// Add extra line breaks at beginning and end of multiline snapshot
+// to make the content easier to read.
+export const addExtraLineBreaks = (string: string): string =>
   string.includes('\n') ? `\n${string}\n` : string;
 
-export const serialize = (data: string): string =>
-  addExtraLineBreaks(
-    normalizeNewlines(
-      prettyFormat(data, {
-        escapeRegex: true,
-        plugins: getSerializers(),
-        printFunctionName: false,
-      }),
-    ),
+// Remove extra line breaks at beginning and end of multiline snapshot.
+// Instead of trim, which can remove additional newlines or spaces
+// at beginning or end of the content from a custom serializer.
+export const removeExtraLineBreaks = (string: string): string =>
+  string.length > 2 && string.startsWith('\n') && string.endsWith('\n')
+    ? string.slice(1, -1)
+    : string;
+
+export const serialize = (val: unknown): string =>
+  addExtraLineBreaks(stringify(val));
+
+export const stringify = (val: unknown): string =>
+  normalizeNewlines(
+    prettyFormat(val, {
+      escapeRegex: true,
+      plugins: getSerializers(),
+      printFunctionName: false,
+    }),
   );
 
-// unescape double quotes
-export const unescape = (data: string): string => data.replace(/\\(")/g, '$1');
+// Remove double quote marks and unescape double quotes and backslashes.
+export const unstringifyString = (stringified: string): string =>
+  stringified.slice(1, -1).replace(/\\("|\\)/g, '$1');
 
 export const escapeBacktickString = (str: string): string =>
   str.replace(/`|\\|\${/g, '\\$&');
@@ -150,7 +160,7 @@ const printBacktickString = (str: string): string =>
 
 export const ensureDirectoryExists = (filePath: Config.Path) => {
   try {
-    mkdirp.sync(path.join(path.dirname(filePath)), '777');
+    mkdirp(path.join(path.dirname(filePath)), '777');
   } catch (e) {}
 };
 

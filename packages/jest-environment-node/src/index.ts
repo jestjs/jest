@@ -5,11 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import vm, {Script, Context} from 'vm';
-import {Global, Config} from '@jest/types';
+import {Context, Script, createContext, runInContext} from 'vm';
+import {Config, Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
-import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+import {
+  JestFakeTimers as LegacyFakeTimers,
+  LolexFakeTimers,
+} from '@jest/fake-timers';
 import {JestEnvironment} from '@jest/environment';
 
 type Timer = {
@@ -20,13 +23,14 @@ type Timer = {
 
 class NodeEnvironment implements JestEnvironment {
   context: Context | null;
-  fakeTimers: FakeTimers<Timer> | null;
+  fakeTimers: LegacyFakeTimers<Timer> | null;
+  fakeTimersLolex: LolexFakeTimers | null;
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig) {
-    this.context = vm.createContext();
-    const global = (this.global = vm.runInContext(
+    this.context = createContext();
+    const global = (this.global = runInContext(
       'this',
       Object.assign(this.context, config.testEnvironmentOptions),
     ));
@@ -38,7 +42,6 @@ class NodeEnvironment implements JestEnvironment {
     global.ArrayBuffer = ArrayBuffer;
     // URL and URLSearchParams are global in Node >= 10
     if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
-      /* global URL, URLSearchParams */
       global.URL = URL;
       global.URLSearchParams = URLSearchParams;
     }
@@ -47,7 +50,6 @@ class NodeEnvironment implements JestEnvironment {
       typeof TextEncoder !== 'undefined' &&
       typeof TextDecoder !== 'undefined'
     ) {
-      /* global TextEncoder, TextDecoder */
       global.TextEncoder = TextEncoder;
       global.TextDecoder = TextDecoder;
     }
@@ -72,25 +74,28 @@ class NodeEnvironment implements JestEnvironment {
       refToId: timerRefToId,
     };
 
-    this.fakeTimers = new FakeTimers({
+    this.fakeTimers = new LegacyFakeTimers({
       config,
       global,
       moduleMocker: this.moduleMocker,
       timerConfig,
     });
+
+    this.fakeTimersLolex = new LolexFakeTimers({config, global});
   }
 
-  setup() {
-    return Promise.resolve();
-  }
+  async setup() {}
 
-  teardown() {
+  async teardown() {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
+    if (this.fakeTimersLolex) {
+      this.fakeTimersLolex.dispose();
+    }
     this.context = null;
     this.fakeTimers = null;
-    return Promise.resolve();
+    this.fakeTimersLolex = null;
   }
 
   // TS infers the return type to be `any`, since that's what `runInContext`

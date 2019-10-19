@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {ValidationError} from 'jest-validate';
-import Resolver from 'jest-resolve';
+import Resolver = require('jest-resolve');
 import chalk from 'chalk';
 
 type ResolveOptions = {

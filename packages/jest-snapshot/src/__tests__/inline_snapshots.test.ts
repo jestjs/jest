@@ -5,45 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs');
+jest.mock('fs', () => ({
+  ...jest.genMockFromModule('fs'),
+  existsSync: jest.fn().mockReturnValue(true),
+  readdirSync: jest.fn().mockReturnValue([]),
+  statSync: jest.fn(filePath => ({
+    isDirectory: () => !filePath.endsWith('.js'),
+  })),
+}));
 jest.mock('prettier');
 jest.mock('@babel/core');
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import prettier from 'prettier';
 import babelTraverse from '@babel/traverse';
 import * as babelCore from '@babel/core';
 import {Frame} from 'jest-message-util';
 
 import {saveInlineSnapshots} from '../inline_snapshots';
-
-const writeFileSync = fs.writeFileSync;
-const readFileSync = fs.readFileSync;
-const existsSync = fs.existsSync;
-const statSync = fs.statSync;
-const readdirSync = fs.readdirSync;
 beforeEach(() => {
-  fs.writeFileSync = jest.fn();
-  fs.readFileSync = jest.fn();
-  fs.existsSync = jest.fn(() => true);
-  (fs.statSync as jest.Mock).mockImplementation(filePath => ({
-    isDirectory: () => !filePath.endsWith('.js'),
-  }));
-  fs.readdirSync = jest.fn(() => []);
-
-  jest
-    .spyOn(babelCore, 'loadPartialConfig')
-    .mockImplementation(() => ({options: {plugins: []}}));
-
   (prettier.resolveConfig.sync as jest.Mock).mockReset();
-});
-afterEach(() => {
-  fs.writeFileSync = writeFileSync;
-  fs.readFileSync = readFileSync;
-  fs.existsSync = existsSync;
-  fs.statSync = statSync;
-  fs.readdirSync = readdirSync;
 });
 
 test('saveInlineSnapshots() replaces empty function call with a template literal', () => {
@@ -432,12 +414,12 @@ test('saveInlineSnapshots() indents multi-line snapshots with spaces', () => {
   expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     "it('is a test', () => {\n" +
-      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
-      '    Object {\n' +
-      "      a: 'a'\n" +
-      '    }\n' +
-      '  `);\n' +
-      '});\n',
+    "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+    '    Object {\n' +
+    "      a: 'a'\n" +
+    '    }\n' +
+    '  `);\n' +
+    '});\n',
   );
 });
 
@@ -475,19 +457,19 @@ test('saveInlineSnapshots() does not re-indent already indented snapshots', () =
   expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     "it('is a test', () => {\n" +
-      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
-      '    Object {\n' +
-      "      a: 'a'\n" +
-      '    }\n' +
-      '  `);\n' +
-      '});\n' +
-      "it('is a another test', () => {\n" +
-      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
-      '    Object {\n' +
-      "      b: 'b'\n" +
-      '    }\n' +
-      '  `);\n' +
-      '});\n',
+    "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+    '    Object {\n' +
+    "      a: 'a'\n" +
+    '    }\n' +
+    '  `);\n' +
+    '});\n' +
+    "it('is a another test', () => {\n" +
+    "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+    '    Object {\n' +
+    "      b: 'b'\n" +
+    '    }\n' +
+    '  `);\n' +
+    '});\n',
   );
 });
 
@@ -519,12 +501,12 @@ test('saveInlineSnapshots() indents multi-line snapshots with tabs', () => {
   expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     "it('is a test', () => {\n" +
-      "\texpect({a: 'a'}).toMatchInlineSnapshot(`\n" +
-      '\t\tObject {\n' +
-      "\t\t  a: 'a'\n" +
-      '\t\t}\n' +
-      '\t`);\n' +
-      '});\n',
+    "\texpect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+    '\t\tObject {\n' +
+    "\t\t  a: 'a'\n" +
+    '\t\t}\n' +
+    '\t`);\n' +
+    '});\n',
   );
 });
 
@@ -552,11 +534,11 @@ test('saveInlineSnapshots() indents snapshots after prettier reformats', () => {
   expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     "it('is a test', () =>\n" +
-      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
-      '    Object {\n' +
-      "      a: 'a'\n" +
-      '    }\n' +
-      '  `));\n',
+    "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+    '    Object {\n' +
+    "      a: 'a'\n" +
+    '    }\n' +
+    '  `));\n',
   );
 });
 
@@ -585,10 +567,10 @@ test('saveInlineSnapshots() does not indent empty lines', () => {
   expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     "it('is a test', () =>\n" +
-      '  expect(`hello\n\nworld`).toMatchInlineSnapshot(`\n' +
-      '    hello\n' +
-      '\n' +
-      '    world\n' +
-      '  `));\n',
+    '  expect(`hello\n\nworld`).toMatchInlineSnapshot(`\n' +
+    '    hello\n' +
+    '\n' +
+    '    world\n' +
+    '  `));\n',
   );
 });

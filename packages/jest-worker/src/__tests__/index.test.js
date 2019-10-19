@@ -133,7 +133,7 @@ it('does not let make calls after the farm is ended', () => {
   );
 });
 
-it('does not let end the farm after it is ended', () => {
+it('does not let end the farm after it is ended', async () => {
   const farm = new Farm('/tmp/baz.js', {
     exposedMethods: ['foo', 'bar'],
     numWorkers: 4,
@@ -141,10 +141,10 @@ it('does not let end the farm after it is ended', () => {
 
   farm.end();
   expect(farm._workerPool.end).toHaveBeenCalledTimes(1);
-  expect(() => farm.end()).toThrow(
+  await expect(farm.end()).rejects.toThrow(
     'Farm is ended, no more calls can be done to it',
   );
-  expect(() => farm.end()).toThrow(
+  await expect(farm.end()).rejects.toThrow(
     'Farm is ended, no more calls can be done to it',
   );
   expect(farm._workerPool.end).toHaveBeenCalledTimes(1);

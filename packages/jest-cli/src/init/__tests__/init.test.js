@@ -6,8 +6,8 @@
  */
 
 /* eslint-disable no-eval */
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import prompts from 'prompts';
 import init from '../';
 
@@ -16,23 +16,24 @@ jest.mock('../../../../jest-config/build/getCacheDirectory', () => () =>
   '/tmp/jest',
 );
 jest.mock('path', () => ({...jest.requireActual('path'), sep: '/'}));
+jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
+  writeFileSync: jest.fn(),
+}));
 
 const resolveFromFixture = relativePath =>
   path.resolve(__dirname, 'fixtures', relativePath);
 
-const writeFileSync = fs.writeFileSync;
 const consoleLog = console.log;
 
 describe('init', () => {
   beforeEach(() => {
     console.log = jest.fn();
-    fs.writeFileSync = jest.fn();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
     console.log = consoleLog;
-    fs.writeFileSync = writeFileSync;
   });
 
   describe('project with package.json and no jest config', () => {

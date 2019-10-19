@@ -73,7 +73,7 @@ test('if utils mocked automatically', () => {
   expect(utils.isAuthorized.mock).toBeTruthy();
 
   // You can provide them with your own implementation
-  // or just pass the expected return value
+  // or pass the expected return value
   utils.authorize.mockReturnValue('mocked_token');
   utils.isAuthorized.mockReturnValue(true);
 
@@ -484,7 +484,7 @@ class MyCustomReporter {
 }
 ```
 
-For the full list of methods and argument types see `Reporter` type in [types/TestRunner.js](https://github.com/facebook/jest/blob/master/types/TestRunner.js)
+For the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/master/packages/jest-reporters/src/types.ts)
 
 ### `resetMocks` [boolean]
 
@@ -525,7 +525,7 @@ Automatically restore mock state between every test. Equivalent to calling `jest
 
 ### `rootDir` [string]
 
-Default: The root of the directory containing your jest's [config file](#) _or_ the `package.json` _or_ the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
+Default: The root of the directory containing your Jest [config file](#) _or_ the `package.json` _or_ the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
 
 The root directory that Jest should scan for tests and modules within. If you put your Jest config inside your `package.json` and want the root directory to be the root of your repo, the value for this config param will default to the directory of the `package.json`.
 

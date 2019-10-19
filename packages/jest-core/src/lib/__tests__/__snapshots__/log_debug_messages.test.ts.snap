@@ -56,7 +56,7 @@ exports[`prints the config object 1`] = `
       "\\\\.test\\\\.js$"
     ],
     "testRunner": "myRunner",
-    "testURL": "",
+    "testURL": "http://localhost",
     "timers": "real",
     "transform": [],
     "transformIgnorePatterns": [],
@@ -112,6 +112,7 @@ exports[`prints the config object 1`] = `
     "testNamePattern": "",
     "testPathPattern": "",
     "testResultsProcessor": null,
+    "testSequencer": "@jest/test-sequencer",
     "testTimeout": 5000,
     "updateSnapshot": "none",
     "useStderr": false,

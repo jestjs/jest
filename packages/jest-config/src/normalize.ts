@@ -5,31 +5,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import crypto from 'crypto';
-import path from 'path';
-import glob from 'glob';
+import {createHash} from 'crypto';
+import * as path from 'path';
+import {sync as glob} from 'glob';
 import {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk from 'chalk';
-import micromatch from 'micromatch';
+import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
-import Resolver from 'jest-resolve';
+import Resolver = require('jest-resolve');
 import {replacePathSepForRegex} from 'jest-regex-util';
-import getType from 'jest-get-type';
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
-  replaceRootDirInPath,
   _replaceRootDirTags,
   escapeGlobCharacters,
-  getTestEnvironment,
   getRunner,
-  getWatchPlugin,
-  resolve,
   getSequencer,
+  getTestEnvironment,
+  getWatchPlugin,
+  replaceRootDirInPath,
+  resolve,
 } from './utils';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import {validateReporters} from './ReporterValidationErrors';
@@ -37,6 +36,7 @@ import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import setFromArgv from './setFromArgv';
 import VALID_CONFIG from './ValidConfig';
+import {getDisplayNameColor} from './color';
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
@@ -46,19 +46,29 @@ type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
-const mergeOptionWithPreset = (
+// TS 3.5 forces us to split these into 2
+const mergeModuleNameMapperWithPreset = (
   options: Config.InitialOptions,
   preset: Config.InitialOptions,
-  optionName: keyof Pick<
-    Config.InitialOptions,
-    'moduleNameMapper' | 'transform'
-  >,
 ) => {
-  if (options[optionName] && preset[optionName]) {
-    options[optionName] = {
-      ...options[optionName],
-      ...preset[optionName],
-      ...options[optionName],
+  if (options['moduleNameMapper'] && preset['moduleNameMapper']) {
+    options['moduleNameMapper'] = {
+      ...options['moduleNameMapper'],
+      ...preset['moduleNameMapper'],
+      ...options['moduleNameMapper'],
+    };
+  }
+};
+
+const mergeTransformWithPreset = (
+  options: Config.InitialOptions,
+  preset: Config.InitialOptions,
+) => {
+  if (options['transform'] && preset['transform']) {
+    options['transform'] = {
+      ...options['transform'],
+      ...preset['transform'],
+      ...options['transform'],
     };
   }
 };
@@ -98,19 +108,35 @@ const setupPreset = (
       );
     }
 
-    const preset = Resolver.findNodeModule(presetPath, {
-      basedir: options.rootDir,
-    });
+    if (error.message.includes('Cannot find module')) {
+      if (error.message.includes(presetPath)) {
+        const preset = Resolver.findNodeModule(presetPath, {
+          basedir: options.rootDir,
+        });
 
-    if (preset) {
+        if (preset) {
+          throw createConfigError(
+            `  Module ${chalk.bold(
+              presetPath,
+            )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
+          );
+        }
+        throw createConfigError(
+          `  Preset ${chalk.bold(presetPath)} not found.`,
+        );
+      }
       throw createConfigError(
-        `  Module ${chalk.bold(
-          presetPath,
-        )} should have "jest-preset.js" or "jest-preset.json" file at the root.`,
+        `  Missing dependency in ${chalk.bold(presetPath)}:\n\n  ${
+          error.message
+        }\n  ${error.stack}`,
       );
     }
 
-    throw createConfigError(`  Preset ${chalk.bold(presetPath)} not found.`);
+    throw createConfigError(
+      `  An unknown error occurred in ${chalk.bold(presetPath)}:\n\n  ${
+        error.message
+      }\n  ${error.stack}`,
+    );
   }
 
   if (options.setupFiles) {
@@ -121,8 +147,8 @@ const setupPreset = (
       options.modulePathIgnorePatterns,
     );
   }
-  mergeOptionWithPreset(options, preset, 'moduleNameMapper');
-  mergeOptionWithPreset(options, preset, 'transform');
+  mergeModuleNameMapperWithPreset(options, preset);
+  mergeTransformWithPreset(options, preset);
 
   return {...preset, ...options};
 };
@@ -140,27 +166,26 @@ const setupBabelJest = (options: Config.InitialOptions) => {
       return regex.test('a.ts') || regex.test('a.tsx');
     });
 
-    if (customJSPattern) {
-      const customJSTransformer = transform[customJSPattern];
-
-      if (customJSTransformer === 'babel-jest') {
-        babelJest = require.resolve('babel-jest');
-        transform[customJSPattern] = babelJest;
-      } else if (customJSTransformer.includes('babel-jest')) {
-        babelJest = customJSTransformer;
+    [customJSPattern, customTSPattern].forEach(pattern => {
+      if (pattern) {
+        const customTransformer = transform[pattern];
+        if (Array.isArray(customTransformer)) {
+          if (customTransformer[0] === 'babel-jest') {
+            babelJest = require.resolve('babel-jest');
+            customTransformer[0] = babelJest;
+          } else if (customTransformer[0].includes('babel-jest')) {
+            babelJest = customTransformer[0];
+          }
+        } else {
+          if (customTransformer === 'babel-jest') {
+            babelJest = require.resolve('babel-jest');
+            transform[pattern] = babelJest;
+          } else if (customTransformer.includes('babel-jest')) {
+            babelJest = customTransformer;
+          }
+        }
       }
-    }
-
-    if (customTSPattern) {
-      const customTSTransformer = transform[customTSPattern];
-
-      if (customTSTransformer === 'babel-jest') {
-        babelJest = require.resolve('babel-jest');
-        transform[customTSPattern] = babelJest;
-      } else if (customTSTransformer.includes('babel-jest')) {
-        babelJest = customTSTransformer;
-      }
-    }
+    });
   } else {
     babelJest = require.resolve('babel-jest');
     options.transform = {
@@ -288,8 +313,7 @@ const normalizeMissingOptions = (
   projectIndex: number,
 ): Config.InitialOptions => {
   if (!options.name) {
-    options.name = crypto
-      .createHash('md5')
+    options.name = createHash('md5')
       .update(options.rootDir)
       // In case we load config from some path that has the same root dir
       .update(configPath || '')
@@ -620,14 +644,20 @@ export default function normalize(
         const transform = oldOptions[key];
         value =
           transform &&
-          Object.keys(transform).map(regex => [
-            regex,
-            resolve(newOptions.resolver, {
-              filePath: transform[regex],
-              key,
-              rootDir: options.rootDir,
-            }),
-          ]);
+          Object.keys(transform).map(regex => {
+            const transformElement = transform[regex];
+            return [
+              regex,
+              resolve(newOptions.resolver, {
+                filePath: Array.isArray(transformElement)
+                  ? transformElement[0]
+                  : transformElement,
+                key,
+                rootDir: options.rootDir,
+              }),
+              ...(Array.isArray(transformElement) ? [transformElement[1]] : []),
+            ];
+          });
         break;
       case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
@@ -665,7 +695,7 @@ export default function normalize(
               // We expand it to these paths. If not, we keep the original path
               // for the future resolution.
               const globMatches =
-                typeof project === 'string' ? glob.sync(project) : [];
+                typeof project === 'string' ? glob(project) : [];
               return projects.concat(
                 globMatches.length ? globMatches : project,
               );
@@ -747,35 +777,11 @@ export default function normalize(
       }
       case 'displayName': {
         const displayName = oldOptions[key] as Config.DisplayName;
-        if (typeof displayName === 'string') {
-          value = displayName;
-          break;
-        }
         /**
          * Ensuring that displayName shape is correct here so that the
          * reporters can trust the shape of the data
-         * TODO: Normalize "displayName" such that given a config option
-         * {
-         *  "displayName": "Test"
-         * }
-         * becomes
-         * {
-         *   displayName: {
-         *     name: "Test",
-         *     color: "white"
-         *   }
-         * }
-         *
-         * This can't be done now since this will be a breaking change
-         * for custom reporters
          */
-        if (getType(displayName) === 'object') {
-          const errorMessage =
-            `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
-            '  {\n' +
-            '    name: string;\n' +
-            '    color: string;\n' +
-            '  }\n';
+        if (typeof displayName === 'object') {
           const {name, color} = displayName;
           if (
             !name ||
@@ -783,10 +789,21 @@ export default function normalize(
             typeof name !== 'string' ||
             typeof color !== 'string'
           ) {
+            const errorMessage =
+              `  Option "${chalk.bold('displayName')}" must be of type:\n\n` +
+              '  {\n' +
+              '    name: string;\n' +
+              '    color: string;\n' +
+              '  }\n';
             throw createConfigError(errorMessage);
           }
+          value = oldOptions[key];
+        } else {
+          value = {
+            color: getDisplayNameColor(options.runner),
+            name: displayName,
+          };
         }
-        value = oldOptions[key];
         break;
       }
       case 'testTimeout': {
@@ -928,7 +945,7 @@ export default function normalize(
     (newOptions.maxConcurrency as unknown) as string,
     10,
   );
-  newOptions.maxWorkers = getMaxWorkers(argv);
+  newOptions.maxWorkers = getMaxWorkers(argv, options);
 
   if (newOptions.testRegex!.length && options.testMatch) {
     throw createConfigError(
@@ -968,10 +985,10 @@ export default function normalize(
     if (newOptions.collectCoverageFrom) {
       collectCoverageFrom = collectCoverageFrom.reduce((patterns, filename) => {
         if (
-          !micromatch.some(
-            replacePathSepForGlob(path.relative(options.rootDir, filename)),
+          micromatch(
+            [replacePathSepForGlob(path.relative(options.rootDir, filename))],
             newOptions.collectCoverageFrom!,
-          )
+          ).length === 0
         ) {
           return patterns;
         }

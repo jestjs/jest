@@ -28,7 +28,7 @@ To add this package as a dependency of a project, do either of the following:
 
 To use `diff` as the name of the default export from this package, do either of the following:
 
-- `var diff = require('diff-sequences'); // CommonJS modules`
+- `var diff = require('diff-sequences').default; // CommonJS modules`
 - `import diff from 'diff-sequences'; // ECMAScript modules`
 
 Call `diff` with the **lengths** of sequences and your **callback** functions:

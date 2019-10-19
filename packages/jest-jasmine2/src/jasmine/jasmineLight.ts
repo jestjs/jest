@@ -40,7 +40,7 @@ import SpyRegistry from './spyRegistry';
 import Suite from './Suite';
 import Timer from './Timer';
 
-const create = function(createOptions: Record<string, any>): Jasmine {
+export const create = function(createOptions: Record<string, any>): Jasmine {
   const j$ = {...createOptions} as Jasmine;
 
   j$._DEFAULT_TIMEOUT_INTERVAL = createOptions.testTimeout || 5000;
@@ -63,7 +63,8 @@ const create = function(createOptions: Record<string, any>): Jasmine {
   return j$;
 };
 
-const _interface = function(jasmine: Jasmine, env: any) {
+// Interface is a reserved word in strict mode, so can't export it as ESM
+export const _interface = function(jasmine: Jasmine, env: any) {
   const jasmineInterface = {
     describe(description: string, specDefinitions: Function) {
       return env.describe(description, specDefinitions);
@@ -146,6 +147,3 @@ const _interface = function(jasmine: Jasmine, env: any) {
 
   return jasmineInterface;
 };
-
-// Interface is a reserved word in strict mode, so can't export it as ESM
-export = {create, interface: _interface};
