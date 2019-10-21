@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`matcher error toMatchInlineSnapshot Expected properties must be an object (non-null) 1`] = `
+exports[`matcher error toMatchInlineSnapshot Expected properties must be an object (non-null) without snapshot 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>)</>
 
 <b>Matcher error</>: Expected <g>properties</> must be an object
@@ -9,8 +9,8 @@ Expected properties has type:  boolean
 Expected properties has value: <g>false</>
 `;
 
-exports[`matcher error toMatchInlineSnapshot Expected properties must be an object (null) 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>)</>
+exports[`matcher error toMatchInlineSnapshot Expected properties must be an object (null) with snapshot 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>, </>snapshot<d>)</>
 
 <b>Matcher error</>: Expected <g>properties</> must be an object
 
@@ -18,16 +18,16 @@ Expected properties has value: <g>null</>
 `;
 
 exports[`matcher error toMatchInlineSnapshot Inline snapshot must be a string 1`] = `
-<d>expect(</><r>received</><d>).</>resolves<d>.</>toMatchInlineSnapshot<d>(</><g>properties</><d>, </><g>snapshot</><d>)</>
+<d>expect(</><r>received</><d>).</>resolves<d>.</>toMatchInlineSnapshot<d>(</><g>properties</><d>, </>snapshot<d>)</>
 
-<b>Matcher error</>: Inline <g>snapshot</> must be a string
+<b>Matcher error</>: Inline snapshot must be a string
 
 Inline snapshot has type:  symbol
-Inline snapshot has value: <g>Symbol(is not a string)</>
+Inline snapshot has value: Symbol(is not a string)
 `;
 
 exports[`matcher error toMatchInlineSnapshot Snapshot matchers cannot be used with not 1`] = `
-<d>expect(</><r>received</><d>).</>not<d>.</>toMatchInlineSnapshot<d>(</><g>snapshot</><d>)</>
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchInlineSnapshot<d>(</>snapshot<d>)</>
 
 <b>Matcher error</>: Snapshot matchers cannot be used with <b>not</>
 `;
@@ -41,15 +41,7 @@ Expected properties has type:  function
 Expected properties has value: <g>[Function properties]</>
 `;
 
-exports[`matcher error toMatchSnapshot Expected properties must be an object (null) and does not have hint 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>)</>
-
-<b>Matcher error</>: Expected <g>properties</> must be an object
-
-Expected properties has value: <g>null</>
-`;
-
-exports[`matcher error toMatchSnapshot Expected properties must be an object (null) and has hint 1`] = `
+exports[`matcher error toMatchSnapshot Expected properties must be an object (null) with hint 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>, </><b>hint</><d>)</>
 
 <b>Matcher error</>: Expected <g>properties</> must be an object
@@ -57,6 +49,14 @@ exports[`matcher error toMatchSnapshot Expected properties must be an object (nu
 Expected properties has value: <g>null</>
 
 To provide a hint without properties: toMatchSnapshot('hint')
+`;
+
+exports[`matcher error toMatchSnapshot Expected properties must be an object (null) without hint 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>)</>
+
+<b>Matcher error</>: Expected <g>properties</> must be an object
+
+Expected properties has value: <g>null</>
 `;
 
 exports[`matcher error toMatchSnapshot Snapshot state must be initialized 1`] = `
@@ -68,16 +68,16 @@ Snapshot state has value: undefined
 `;
 
 exports[`matcher error toThrowErrorMatchingInlineSnapshot Inline snapshot must be a string 1`] = `
-<d>expect(</><r>received</><d>).</>toThrowErrorMatchingInlineSnapshot<d>(</><g>snapshot</><d>)</>
+<d>expect(</><r>received</><d>).</>toThrowErrorMatchingInlineSnapshot<d>(</>snapshot<d>)</>
 
-<b>Matcher error</>: Inline <g>snapshot</> must be a string
+<b>Matcher error</>: Inline snapshot must be a string
 
 Inline snapshot has type:  number
-Inline snapshot has value: <g>404</>
+Inline snapshot has value: 404
 `;
 
 exports[`matcher error toThrowErrorMatchingInlineSnapshot Snapshot state must be initialized 1`] = `
-<d>expect(</><r>received</><d>).</>rejects<d>.</>toThrowErrorMatchingInlineSnapshot<d>(</><g>snapshot</><d>)</>
+<d>expect(</><r>received</><d>).</>rejects<d>.</>toThrowErrorMatchingInlineSnapshot<d>(</>snapshot<d>)</>
 
 Snapshot state must be initialized
 
@@ -105,8 +105,26 @@ exports[`other error toThrowErrorMatchingSnapshot Received function did not thro
 Received function did not throw
 `;
 
+exports[`pass false toMatchInlineSnapshot with properties equals false with snapshot 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>, </>snapshot<d>)</>
+
+Snapshot name: \`with properties 1\`
+
+Expected properties: <g>{"id": "abcdef"}</>
+Received value:      <r>{"id": "abcdefg", "text": "Increase code coverage", "type": "ADD_ITEM"}</>
+`;
+
+exports[`pass false toMatchInlineSnapshot with properties equals false without snapshot 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>)</>
+
+Snapshot name: \`with properties 1\`
+
+Expected properties: <g>{"id": "abcdef"}</>
+Received value:      <r>{"id": "abcdefg", "text": "Increase code coverage", "type": "ADD_ITEM"}</>
+`;
+
 exports[`pass false toMatchInlineSnapshot with properties equals true 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</><g>properties</><d>, </><g>snapshot</><d>)</>
+<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</>properties<d>, </><g>snapshot</><d>)</>
 
 Snapshot name: \`with properties 1\`
 
@@ -157,7 +175,7 @@ Received value:      <r>{"id": "abcdefg", "text": "Increase code coverage", "typ
 `;
 
 exports[`pass false toMatchSnapshot with properties equals true 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>, </><b>hint</><d>)</>
+<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</>properties<d>, </><b>hint</><d>)</>
 
 Snapshot name: \`with properties: <b>change text value</> 1\`
 
@@ -170,6 +188,15 @@ Snapshot name: \`with properties: <b>change text value</> 1\`
 <r>+   "text": "received",</>
 <d>    "type": "ADD_ITEM",</>
 <d>  }</>
+`;
+
+exports[`pass false toThrowErrorMatchingInlineSnapshot with snapshot 1`] = `
+<d>expect(</><r>received</><d>).</>toThrowErrorMatchingInlineSnapshot<d>(</><g>snapshot</><d>)</>
+
+Snapshot name: \`with snapshot 1\`
+
+Snapshot: <g>inline snapshot</>
+Received: <r>undefined</>
 `;
 
 exports[`printDiffOrStringified backtick single line expected and received 1`] = `

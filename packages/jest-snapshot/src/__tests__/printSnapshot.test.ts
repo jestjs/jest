@@ -72,7 +72,7 @@ describe('matcher error', () => {
       type: 'ADD_ITEM',
     };
 
-    test('Expected properties must be an object (non-null)', () => {
+    test('Expected properties must be an object (non-null) without snapshot', () => {
       const context = {
         isNot: false,
         promise: '',
@@ -84,15 +84,16 @@ describe('matcher error', () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test('Expected properties must be an object (null)', () => {
+    test('Expected properties must be an object (null) with snapshot', () => {
       const context = {
         isNot: false,
         promise: '',
       };
       const properties = null;
+      const snapshot = '';
 
       expect(() => {
-        toMatchInlineSnapshot.call(context, received, properties);
+        toMatchInlineSnapshot.call(context, received, properties, snapshot);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -102,15 +103,10 @@ describe('matcher error', () => {
         promise: 'resolves',
       };
       const properties = {};
-      const inlineSnapshot = Symbol('is not a string');
+      const snapshot = Symbol('is not a string');
 
       expect(() => {
-        toMatchInlineSnapshot.call(
-          context,
-          received,
-          properties,
-          inlineSnapshot,
-        );
+        toMatchInlineSnapshot.call(context, received, properties, snapshot);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -120,10 +116,10 @@ describe('matcher error', () => {
         promise: '',
       };
       const received = -13;
-      const inlineSnapshot = '13';
+      const snapshot = '13';
 
       expect(() => {
-        toMatchInlineSnapshot.call(context, received, inlineSnapshot);
+        toMatchInlineSnapshot.call(context, received, snapshot);
       }).toThrowErrorMatchingSnapshot();
     });
   });
@@ -147,19 +143,7 @@ describe('matcher error', () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test('Expected properties must be an object (null) and does not have hint', () => {
-      const context = {
-        isNot: false,
-        promise: '',
-      };
-      const properties = null;
-
-      expect(() => {
-        toMatchSnapshot.call(context, received, properties);
-      }).toThrowErrorMatchingSnapshot();
-    });
-
-    test('Expected properties must be an object (null) and has hint', () => {
+    test('Expected properties must be an object (null) with hint', () => {
       const context = {
         isNot: false,
         promise: '',
@@ -169,6 +153,18 @@ describe('matcher error', () => {
 
       expect(() => {
         toMatchSnapshot.call(context, received, properties, hint);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('Expected properties must be an object (null) without hint', () => {
+      const context = {
+        isNot: false,
+        promise: '',
+      };
+      const properties = null;
+
+      expect(() => {
+        toMatchSnapshot.call(context, received, properties);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -196,14 +192,14 @@ describe('matcher error', () => {
       const received = () => {
         throw new Error('Not found');
       };
-      const inlineSnapshot = 404;
+      const snapshot = 404;
       const fromPromise = false;
 
       expect(() => {
         toThrowErrorMatchingInlineSnapshot.call(
           context,
           received,
-          inlineSnapshot,
+          snapshot,
           fromPromise,
         );
       }).toThrowErrorMatchingSnapshot();
@@ -215,14 +211,14 @@ describe('matcher error', () => {
         promise: 'rejects',
       };
       const received = 404;
-      const inlineSnapshot = 'Not found';
+      const snapshot = 'Not found';
       const fromPromise = true;
 
       expect(() => {
         toThrowErrorMatchingInlineSnapshot.call(
           context,
           received,
-          inlineSnapshot,
+          snapshot,
           fromPromise,
         );
       }).toThrowErrorMatchingSnapshot();
@@ -236,9 +232,15 @@ describe('matcher error', () => {
         promise: '',
       };
       const received = 13;
+      const fromPromise = false;
 
       expect(() => {
-        toThrowErrorMatchingSnapshot.call(context, received);
+        toThrowErrorMatchingSnapshot.call(
+          context,
+          received,
+          undefined,
+          fromPromise,
+        );
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -247,13 +249,12 @@ describe('matcher error', () => {
         isNot: true,
         promise: '',
       };
-      const received = () => {
-        throw new Error('message');
-      };
+      const received = 'received';
       const hint = 'reminder';
+      const fromPromise = true;
 
       expect(() => {
-        toThrowErrorMatchingSnapshot.call(context, received, hint);
+        toThrowErrorMatchingSnapshot.call(context, received, hint, fromPromise);
       }).toThrowErrorMatchingSnapshot();
     });
 
@@ -269,9 +270,15 @@ describe('other error', () => {
         promise: '',
       };
       const received = () => {};
+      const fromPromise = false;
 
       expect(() => {
-        toThrowErrorMatchingSnapshot.call(context, received);
+        toThrowErrorMatchingSnapshot.call(
+          context,
+          received,
+          undefined,
+          fromPromise,
+        );
       }).toThrowErrorMatchingSnapshot();
     });
   });
@@ -279,50 +286,96 @@ describe('other error', () => {
 
 describe('pass false', () => {
   describe('toMatchInlineSnapshot', () => {
-    test('with properties equals true', () => {
-      const context = {
-        currentTestName: 'with properties',
-        equals: () => true,
-        isNot: false,
-        promise: '',
-        snapshotState: {
-          expand: false,
-          match({inlineSnapshot, received}) {
-            return {
-              actual: format(received),
-              count: 1,
-              expected: inlineSnapshot,
-              pass: false,
-            };
-          },
-        },
-        utils: {
-          iterableEquality: () => {},
-          subsetEquality: () => {},
-        },
-      };
+    describe('with properties', () => {
       const id = 'abcdef';
-      const type = 'ADD_ITEM';
-      const received = {
-        id,
-        text: 'received',
-        type,
-      };
       const properties = {id};
-      const snapshot = format({
-        id,
-        text: 'inline snapshot',
-        type,
+      const type = 'ADD_ITEM';
+
+      describe('equals false', () => {
+        const context = {
+          currentTestName: 'with properties',
+          equals: () => false,
+          isNot: false,
+          promise: '',
+          snapshotState: {
+            fail: fullTestName => fullTestName + ' 1',
+          },
+          utils: {
+            iterableEquality: () => {},
+            subsetEquality: () => {},
+          },
+        };
+        const received = {
+          id: 'abcdefg',
+          text: 'Increase code coverage',
+          type,
+        };
+
+        test('with snapshot', () => {
+          const snapshot = '';
+          const {message, pass} = toMatchInlineSnapshot.call(
+            context,
+            received,
+            properties,
+            snapshot,
+          );
+          expect(pass).toBe(false);
+          expect(message()).toMatchSnapshot();
+        });
+
+        test('without snapshot', () => {
+          const {message, pass} = toMatchInlineSnapshot.call(
+            context,
+            received,
+            properties,
+          );
+          expect(pass).toBe(false);
+          expect(message()).toMatchSnapshot();
+        });
       });
 
-      const {message, pass} = toMatchInlineSnapshot.call(
-        context,
-        received,
-        properties,
-        snapshot,
-      );
-      expect(pass).toBe(false);
-      expect(message()).toMatchSnapshot();
+      test('equals true', () => {
+        const context = {
+          currentTestName: 'with properties',
+          equals: () => true,
+          isNot: false,
+          promise: '',
+          snapshotState: {
+            expand: false,
+            match({inlineSnapshot, received}) {
+              return {
+                actual: format(received),
+                count: 1,
+                expected: inlineSnapshot,
+                pass: false,
+              };
+            },
+          },
+          utils: {
+            iterableEquality: () => {},
+            subsetEquality: () => {},
+          },
+        };
+        const received = {
+          id,
+          text: 'received',
+          type,
+        };
+        const snapshot = format({
+          id,
+          text: 'inline snapshot',
+          type,
+        });
+
+        const {message, pass} = toMatchInlineSnapshot.call(
+          context,
+          received,
+          properties,
+          snapshot,
+        );
+        expect(pass).toBe(false);
+        expect(message()).toMatchSnapshot();
+      });
     });
   });
 
@@ -451,6 +504,39 @@ describe('pass false', () => {
         expect(pass).toBe(false);
         expect(message()).toMatchSnapshot();
       });
+    });
+  });
+
+  describe('toThrowErrorMatchingInlineSnapshot', () => {
+    test('with snapshot', () => {
+      const context = {
+        currentTestName: 'with snapshot',
+        isNot: false,
+        promise: '',
+        snapshotState: {
+          expand: false,
+          match({inlineSnapshot, received}) {
+            return {
+              actual: format(received),
+              count: 1,
+              expected: inlineSnapshot,
+              pass: false,
+            };
+          },
+        },
+      };
+      const received = 'received';
+      const snapshot = 'inline snapshot';
+      const fromPromise = true;
+
+      const {message, pass} = toThrowErrorMatchingInlineSnapshot.call(
+        context,
+        received,
+        snapshot,
+        fromPromise,
+      );
+      expect(pass).toBe(false);
+      expect(message()).toMatchSnapshot();
     });
   });
 });
