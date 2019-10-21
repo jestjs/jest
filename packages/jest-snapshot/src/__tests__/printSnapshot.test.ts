@@ -114,7 +114,7 @@ describe('matcher error', () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test('Snapshot assertion must not have not', () => {
+    test('Snapshot matchers cannot be used with not', () => {
       const context = {
         isNot: true,
         promise: '',
@@ -242,7 +242,7 @@ describe('matcher error', () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test('Snapshot assertion must not have not', () => {
+    test('Snapshot matchers cannot be used with not', () => {
       const context = {
         isNot: true,
         promise: '',

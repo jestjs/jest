@@ -30,7 +30,7 @@ describe('snapshot', () => {
 
   it('cannot be used with .not', () => {
     expect(() => expect('').not.toMatchSnapshot()).toThrow(
-      'Snapshot assertion must not have not'
+      'Snapshot matchers cannot be used with not'
     );
   });
 

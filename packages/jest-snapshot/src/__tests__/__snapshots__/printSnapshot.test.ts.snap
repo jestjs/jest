@@ -26,10 +26,10 @@ Inline snapshot has type:  symbol
 Inline snapshot has value: <g>Symbol(is not a string)</>
 `;
 
-exports[`matcher error toMatchInlineSnapshot Snapshot assertion must not have not 1`] = `
+exports[`matcher error toMatchInlineSnapshot Snapshot matchers cannot be used with not 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toMatchInlineSnapshot<d>(</><g>snapshot</><d>)</>
 
-<b>Matcher error</>: Snapshot assertion must not have <b>not</>
+<b>Matcher error</>: Snapshot matchers cannot be used with <b>not</>
 `;
 
 exports[`matcher error toMatchSnapshot Expected properties must be an object (non-null) 1`] = `
@@ -93,10 +93,10 @@ Received has type:  number
 Received has value: <r>13</>
 `;
 
-exports[`matcher error toThrowErrorMatchingSnapshot Snapshot assertion must not have not 1`] = `
+exports[`matcher error toThrowErrorMatchingSnapshot Snapshot matchers cannot be used with not 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toThrowErrorMatchingSnapshot<d>(</><b>hint</><d>)</>
 
-<b>Matcher error</>: Snapshot assertion must not have <b>not</>
+<b>Matcher error</>: Snapshot matchers cannot be used with <b>not</>
 `;
 
 exports[`other error toThrowErrorMatchingSnapshot Received function did not throw 1`] = `

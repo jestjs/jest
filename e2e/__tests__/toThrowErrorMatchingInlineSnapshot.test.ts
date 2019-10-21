@@ -83,7 +83,7 @@ test('cannot be used with .not', () => {
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshot assertion must not have not');
+    expect(stderr).toMatch('Snapshot matchers cannot be used with not');
     expect(exitCode).toBe(1);
   }
 });

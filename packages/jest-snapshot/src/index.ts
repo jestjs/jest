@@ -39,7 +39,7 @@ import {Context, MatchSnapshotConfig} from './types';
 import * as utils from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
-const NOT_SNAPSHOT_MATCHERS = `Snapshot assertion must not have ${BOLD_WEIGHT(
+const NOT_SNAPSHOT_MATCHERS = `Snapshot matchers cannot be used with ${BOLD_WEIGHT(
   'not',
 )}`;
 
