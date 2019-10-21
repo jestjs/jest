@@ -1,8 +1,8 @@
 import diff from '../';
 import fc from 'fast-check'
 
-const findCommonItems = (a: string[], b: string[]): string[] => {
-  const array: string[] = [];
+const findCommonItems = (a: Array<string>, b: Array<string>): Array<string> => {
+  const array: Array<string> = [];
   diff(
     a.length,
     b.length,
@@ -16,15 +16,15 @@ const findCommonItems = (a: string[], b: string[]): string[] => {
   return array;
 };
 
-const flatten = (data: string[][]) => {
-  const array: string[] = [];
+const flatten = (data: Array<Array<string>>) => {
+  const array: Array<string> = [];
   for (const items of data) {
     array.push(...items)
   }
   return array;
 }
 
-test('should be reflexive', () => {
+it('should be reflexive', () => {
   fc.assert(fc.property(
     fc.array(fc.char()), 
     (a) => {
@@ -33,7 +33,7 @@ test('should be reflexive', () => {
   ))
 })
 
-test('should find the same number of common items when switching the inputs', () => {
+it('should find the same number of common items when switching the inputs', () => {
   // findCommonItems is not symmetric as:
   // > findCommonItems(["Z"," "], [" ","Z"]) = [" "]
   // > findCommonItems([" ","Z"], ["Z"," "]) = ["Z"]
@@ -47,7 +47,7 @@ test('should find the same number of common items when switching the inputs', ()
   ))
 })
 
-test('should have at most the length of its inputs', () => {
+it('should have at most the length of its inputs', () => {
   fc.assert(fc.property(
     fc.array(fc.char()), fc.array(fc.char()),
     (a, b) => {
@@ -58,7 +58,7 @@ test('should have at most the length of its inputs', () => {
   ))
 })
 
-test('should be no-op when passing common items', () => {
+it('should be no-op when passing common items', () => {
   fc.assert(fc.property(
     fc.array(fc.char()), fc.array(fc.char()),
     (a, b) => {
@@ -69,7 +69,7 @@ test('should be no-op when passing common items', () => {
   ))
 })
 
-test('should find at the least the maximal known subset', () => {
+it('should find at the least the maximal known subset', () => {
   fc.assert(fc.property(
     fc.array(fc.array(fc.char())),
     (data) => {
