@@ -17,13 +17,67 @@ import {
 } from 'jest-diff';
 import getType = require('jest-get-type');
 import {
+  BOLD_WEIGHT,
   EXPECTED_COLOR,
   INVERTED_COLOR,
+  MatcherHintOptions,
   RECEIVED_COLOR,
   getLabelPrinter,
+  matcherHint,
 } from 'jest-matcher-utils';
 import prettyFormat = require('pretty-format');
+import {MatchSnapshotConfig} from './types';
 import {unstringifyString} from './utils';
+
+export const noColor = (string: string) => string;
+
+export const HINT_ARG = 'hint';
+export const SNAPSHOT_ARG = 'snapshot';
+export const PROPERTIES_ARG = 'properties';
+
+export const matcherHintFromConfig = (
+  {
+    context: {isNot, promise},
+    hint,
+    inlineSnapshot,
+    matcherName,
+    properties,
+  }: MatchSnapshotConfig,
+  isUpdatable: boolean,
+): string => {
+  const options: MatcherHintOptions = {isNot, promise};
+
+  let expectedArgument = '';
+
+  if (typeof properties === 'object') {
+    expectedArgument = PROPERTIES_ARG;
+    if (isUpdatable) {
+      options.expectedColor = noColor;
+    }
+
+    if (typeof hint === 'string' && hint.length !== 0) {
+      options.secondArgument = HINT_ARG;
+      options.secondArgumentColor = BOLD_WEIGHT;
+    } else if (typeof inlineSnapshot === 'string') {
+      options.secondArgument = SNAPSHOT_ARG;
+      if (!isUpdatable) {
+        options.secondArgumentColor = noColor;
+      }
+    }
+  } else {
+    if (typeof hint === 'string' && hint.length !== 0) {
+      expectedArgument = HINT_ARG;
+      options.expectedColor = BOLD_WEIGHT;
+    } else if (typeof inlineSnapshot === 'string') {
+      expectedArgument = SNAPSHOT_ARG;
+      if (!isUpdatable) {
+        options.expectedColor = noColor;
+      }
+    }
+  }
+
+  return matcherHint(matcherName, undefined, expectedArgument, options);
+};
 
 // Given array of diffs, return string:
 // * include common substrings
