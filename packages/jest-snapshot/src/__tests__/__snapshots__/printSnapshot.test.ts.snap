@@ -195,8 +195,8 @@ exports[`pass false toThrowErrorMatchingInlineSnapshot with snapshot 1`] = `
 
 Snapshot name: \`with snapshot 1\`
 
-Snapshot: <g>inline snapshot</>
-Received: <r>undefined</>
+Snapshot: <g>"inline snapshot"</>
+Received: <r>"received"</>
 `;
 
 exports[`printDiffOrStringified backtick single line expected and received 1`] = `

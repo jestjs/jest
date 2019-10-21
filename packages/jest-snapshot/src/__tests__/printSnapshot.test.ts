@@ -210,8 +210,8 @@ describe('matcher error', () => {
         isNot: false,
         promise: 'rejects',
       };
-      const received = 404;
-      const snapshot = 'Not found';
+      const received = new Error('404');
+      const snapshot = '"Not found"';
       const fromPromise = true;
 
       expect(() => {
@@ -249,7 +249,7 @@ describe('matcher error', () => {
         isNot: true,
         promise: '',
       };
-      const received = 'received';
+      const received = new Error('received');
       const hint = 'reminder';
       const fromPromise = true;
 
@@ -525,8 +525,8 @@ describe('pass false', () => {
           },
         },
       };
-      const received = 'received';
-      const snapshot = 'inline snapshot';
+      const received = new Error('received');
+      const snapshot = '"inline snapshot"';
       const fromPromise = true;
 
       const {message, pass} = toThrowErrorMatchingInlineSnapshot.call(
