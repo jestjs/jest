@@ -434,9 +434,8 @@ const options = {
 
 Because the default export does not display substring differences within lines, formatting can help you see when lines differ by the presence or absence of trailing spaces found by `/\s+$/` regular expression.
 
-If change lines have a background color, then you change see trailing spaces.
-
-If you want yellowish background color in common lines which have dim color:
+* If change lines have a background color, then you can see trailing spaces.
+* If common lines have default dim color, then you cannot see trailing spaces. You might want yellowish background color to see them.
 
 ```js
 const options = {
