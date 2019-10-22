@@ -32,8 +32,8 @@ const printDiffLine = (
   isFirstOrLast: boolean,
   color: DiffOptionsColor,
   indicator: string,
-  emptyFirstOrLastLinePlaceholder: string,
   trailingSpaceFormatter: DiffOptionsColor,
+  emptyFirstOrLastLinePlaceholder: string,
 ): string =>
   line.length !== 0
     ? color(
@@ -60,8 +60,8 @@ export const printDeleteLine = (
     isFirstOrLast,
     aColor,
     aIndicator,
-    emptyFirstOrLastLinePlaceholder,
     changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   );
 
 export const printInsertLine = (
@@ -79,8 +79,8 @@ export const printInsertLine = (
     isFirstOrLast,
     bColor,
     bIndicator,
-    emptyFirstOrLastLinePlaceholder,
     changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   );
 
 export const printCommonLine = (
@@ -98,8 +98,8 @@ export const printCommonLine = (
     isFirstOrLast,
     commonColor,
     commonIndicator,
-    emptyFirstOrLastLinePlaceholder,
     commonLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   );
 
 export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
