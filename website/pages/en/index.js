@@ -420,7 +420,7 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Tests fail, and when they do, Jest provides a rich context to why.
+                      Tests fail—when they do, Jest provides rich context why.
                       Here are some examples:
                     </translate>
                   ),
