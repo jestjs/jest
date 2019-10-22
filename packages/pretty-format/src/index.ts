@@ -27,7 +27,12 @@ const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
 const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
-const symbolToString = Symbol.prototype.toString;
+const symbolToString =
+  typeof Symbol === 'function'
+    ? Symbol.prototype.toString
+    : function(this: Symbol) {
+        return String(this);
+      };
 
 /**
  * Explicitly comparing typeof constructor to function avoids undefined as name
