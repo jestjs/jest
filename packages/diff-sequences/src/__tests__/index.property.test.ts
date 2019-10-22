@@ -24,6 +24,15 @@ const findCommonItems = (a: Array<string>, b: Array<string>): Array<string> => {
   return array;
 };
 
+const extractCount = (data: Array<string>): Map<string, number> => {
+  const countPerChar = new Map<string, number>();
+  for (const item of data) {
+    const currentCount = countPerChar.get(item) || 0;
+    countPerChar.set(item, currentCount + 1);
+  }
+  return countPerChar;
+};
+
 const flatten = (data: Array<Array<string>>) => {
   const array: Array<string> = [];
   for (const items of data) {
@@ -59,6 +68,20 @@ it('should have at most the length of its inputs', () => {
       const commonItems = findCommonItems(a, b);
       expect(commonItems.length).toBeLessThanOrEqual(a.length);
       expect(commonItems.length).toBeLessThanOrEqual(b.length);
+    }),
+  );
+});
+
+it('should have at most the same number of each character as its inputs', () => {
+  fc.assert(
+    fc.property(fc.array(fc.char()), fc.array(fc.char()), (a, b) => {
+      const commonItems = findCommonItems(a, b);
+      const commonCount = extractCount(commonItems);
+      const aCount = extractCount(a);
+      for (const [item, count] of commonCount) {
+        const countOfItemInA = aCount.get(item) || 0;
+        expect(countOfItemInA).toBeGreaterThanOrEqual(count);
+      }
     }),
   );
 });
