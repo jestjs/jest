@@ -370,10 +370,10 @@ For other applications, you can provide an options object as a third argument:
 | `bColor`                          | `chalk.red`     |
 | `bIndicator`                      | `'+'`           |
 | `changeColor`                     | `chalk.inverse` |
-| `changeLineTrailingSpaceColor`    | `noColor`       |
+| `changeLineTrailingSpaceColor`    | `arg => arg`    |
 | `commonColor`                     | `chalk.dim`     |
 | `commonIndicator`                 | `' '`           |
-| `commonLineTrailingSpaceColor`    | `noColor`       |
+| `commonLineTrailingSpaceColor`    | `arg => arg`    |
 | `contextLines`                    | `5`             |
 | `emptyFirstOrLastLinePlaceholder` | `''`            |
 | `expand`                          | `true`          |
@@ -470,7 +470,7 @@ import {DiffOptionsColor} from 'jest-diff';
 To store the difference in a file without escape codes for colors, provide an identity function:
 
 ```js
-const noColor = string => string;
+const noColor = arg => arg;
 
 const options = {
   aColor: noColor,
