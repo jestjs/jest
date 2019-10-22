@@ -12,9 +12,13 @@ import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
 import {diffStringsRaw, diffStringsUnified, splitLines0} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
-import {DiffOptions as ImportDiffOptions} from './types';
+import {
+  DiffOptions as ImportDiffOptions,
+  DiffOptionsColor as ImportDiffOptionsColor,
+} from './types';
 
 export type DiffOptions = ImportDiffOptions;
+export type DiffOptionsColor = ImportDiffOptionsColor;
 
 export {diffLinesRaw, diffLinesUnified, diffLinesUnified2};
 export {diffStringsRaw, diffStringsUnified, splitLines0};

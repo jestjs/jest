@@ -10,6 +10,7 @@ import stripAnsi from 'strip-ansi';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 
 import diff from '../';
+import {noColor} from '../normalizeDiffOptions';
 import {diffStringsUnified} from '../printDiffs';
 import {DiffOptions} from '../types';
 
@@ -23,7 +24,6 @@ const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
 const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) || '');
 
 // Use in toBe assertions for comparison lines.
-const noColor = (string: string) => string;
 const optionsBe: DiffOptions = {
   aColor: noColor,
   bColor: noColor,
@@ -905,13 +905,24 @@ describe('options', () => {
       'insert 1 trailing space: ',
     ].join('\n');
 
-    test('diffDefault default yellowish', () => {
+    test('diffDefault default no color', () => {
       expect(diff(aTrailingSpaces, bTrailingSpaces)).toMatchSnapshot();
     });
 
     test('diffDefault middle dot', () => {
+      const replaceSpacesWithMiddleDot = string => '·'.repeat(string.length);
       const options = {
-        trailingSpaceFormatter: string => '·'.repeat(string.length),
+        changeLineTrailingSpaceColor: replaceSpacesWithMiddleDot,
+        commonLineTrailingSpaceColor: replaceSpacesWithMiddleDot,
+      };
+
+      expect(diff(aTrailingSpaces, bTrailingSpaces, options)).toMatchSnapshot();
+    });
+
+    test('diffDefault yellowish', () => {
+      const options = {
+        changeLineTrailingSpaceColor: chalk.bgYellow,
+        commonLineTrailingSpaceColor: chalk.bgYellow,
       };
 
       expect(diff(aTrailingSpaces, bTrailingSpaces, options)).toMatchSnapshot();

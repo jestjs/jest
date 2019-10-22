@@ -324,6 +324,9 @@ export const printDiffOrStringify = (
       return diffStringsUnified(expected, received, {
         aAnnotation: expectedLabel,
         bAnnotation: receivedLabel,
+        changeLineTrailingSpaceColor: chalk.bgYellow,
+        commonLineTrailingSpaceColor: chalk.bgYellow,
+        emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
         expand,
         includeChangeCounts: true,
       });
