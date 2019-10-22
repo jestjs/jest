@@ -30,7 +30,7 @@ const regExpToString = RegExp.prototype.toString;
 const symbolToString =
   typeof Symbol === 'function'
     ? Symbol.prototype.toString
-    : function(this: Symbol) {
+    : function(this: symbol) {
         return String(this);
       };
 
