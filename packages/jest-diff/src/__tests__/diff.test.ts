@@ -919,9 +919,8 @@ describe('options', () => {
       expect(diff(aTrailingSpaces, bTrailingSpaces, options)).toMatchSnapshot();
     });
 
-    test('diffDefault yellowish', () => {
+    test('diffDefault yellowish common', () => {
       const options = {
-        changeLineTrailingSpaceColor: chalk.bgYellow,
         commonLineTrailingSpaceColor: chalk.bgYellow,
       };
 
