@@ -439,8 +439,8 @@ Because the default export does not display substring differences within lines, 
 
 ```js
 const options = {
-  aColor: chalk.hex('800080').bgHex('ffd7ff'), // magenta
-  bColor: chalk.hex('005f00').bgHex('d7ffd7'), // green
+  aColor: chalk.rgb(128, 0, 128).bgRgb(255, 215, 255), // magenta
+  bColor: chalk.rgb(0, 95, 0).bgRgb(215, 255, 215), // green
   commonLineTrailingSpaceColor: chalk.bgYellow,
 };
 ```
