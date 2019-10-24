@@ -26,7 +26,7 @@ const watchmanURL =
 function WatchmanError(error: Error): Error {
   error.message =
     `Watchman error: ${error.message.trim()}. Make sure watchman ` +
-    `is running for this project. See ${watchmanURL}.`;
+    `is running for this project. See ${watchmanURL} .`;
   return error;
 }
 
