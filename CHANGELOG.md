@@ -42,6 +42,7 @@
 - `[jest-snapshot]` [**BREAKING**] Remove `report` method and throw matcher errors ([#9049](https://github.com/facebook/jest/pull/9049))
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
 - `[jest-docblock]` Fix for docblock not being found when the docblock was preceded by a line with a shebang
+
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node 6 ([#8455](https://github.com/facebook/jest/pull/8455))
