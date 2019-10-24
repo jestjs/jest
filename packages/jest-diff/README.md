@@ -361,25 +361,25 @@ For other applications, you can provide an options object as a third argument:
 
 ### Properties of options object
 
-| name                              | default         |
-| :-------------------------------- | :-------------- |
-| `aAnnotation`                     | `'Expected'`    |
-| `aColor`                          | `chalk.green`   |
-| `aIndicator`                      | `'-'`           |
-| `bAnnotation`                     | `'Received'`    |
-| `bColor`                          | `chalk.red`     |
-| `bIndicator`                      | `'+'`           |
-| `changeColor`                     | `chalk.inverse` |
-| `changeLineTrailingSpaceColor`    | `arg => arg`    |
-| `commonColor`                     | `chalk.dim`     |
-| `commonIndicator`                 | `' '`           |
-| `commonLineTrailingSpaceColor`    | `arg => arg`    |
-| `contextLines`                    | `5`             |
-| `emptyFirstOrLastLinePlaceholder` | `''`            |
-| `expand`                          | `true`          |
-| `includeChangeCounts`             | `false`         |
-| `omitAnnotationLines`             | `false`         |
-| `patchColor`                      | `chalk.yellow`  |
+| name                              | default            |
+| :-------------------------------- | :----------------- |
+| `aAnnotation`                     | `'Expected'`       |
+| `aColor`                          | `chalk.green`      |
+| `aIndicator`                      | `'-'`              |
+| `bAnnotation`                     | `'Received'`       |
+| `bColor`                          | `chalk.red`        |
+| `bIndicator`                      | `'+'`              |
+| `changeColor`                     | `chalk.inverse`    |
+| `changeLineTrailingSpaceColor`    | `string => string` |
+| `commonColor`                     | `chalk.dim`        |
+| `commonIndicator`                 | `' '`              |
+| `commonLineTrailingSpaceColor`    | `string => string` |
+| `contextLines`                    | `5`                |
+| `emptyFirstOrLastLinePlaceholder` | `''`               |
+| `expand`                          | `true`             |
+| `includeChangeCounts`             | `false`            |
+| `omitAnnotationLines`             | `false`            |
+| `patchColor`                      | `chalk.yellow`     |
 
 For more information about the options, see the following examples.
 
@@ -469,7 +469,7 @@ import {DiffOptionsColor} from 'jest-diff';
 To store the difference in a file without escape codes for colors, provide an identity function:
 
 ```js
-const noColor = arg => arg;
+const noColor = string => string;
 
 const options = {
   aColor: noColor,
