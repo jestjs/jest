@@ -25,6 +25,20 @@ describe('docblock', () => {
     );
   });
 
+  it('extracts valid docblock after a line with shebang', () => {
+    const code = `#!/usr/bin/env node
+    /**
+    * @team foo
+    */
+    const x = foo;`;
+
+    expect(docblock.extract(code)).toBe(
+      `/**
+    * @team foo
+    */`,
+    );
+  });
+
   it('extracts valid docblock', () => {
     const code =
       '/**' + EOL + ' * @team foo' + EOL + '*/' + EOL + 'const x = foo;';

@@ -12,7 +12,7 @@ type Pragmas = Record<string, string | Array<string>>;
 
 const commentEndRe = /\*\/$/;
 const commentStartRe = /^\/\*\*/;
-const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
+const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/m;
 const lineCommentRe = /(^|\s+)\/\/([^\r\n]*)/g;
 const ltrimNewlineRe = /^(\r?\n)+/;
 const multilineRe = /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *(?![^@\r\n]*\/\/[^]*)([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
