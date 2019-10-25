@@ -41,6 +41,23 @@ const flatten = (data: Array<Array<string>>) => {
   return array;
 };
 
+const isSubsequenceOf = (
+  subsequence: Array<string>,
+  sequence: Array<string>,
+): boolean => {
+  let iSub = 0;
+  let iSeq = 0;
+
+  while (iSub !== subsequence.length && iSeq !== sequence.length) {
+    if (subsequence[iSub] === sequence[iSeq]) {
+      iSub += 1;
+    }
+    iSeq += 1;
+  }
+
+  return iSub === subsequence.length;
+};
+
 it('should be reflexive', () => {
   fc.assert(
     fc.property(fc.array(fc.char()), a => {
@@ -82,6 +99,16 @@ it('should have at most the same number of each character as its inputs', () => 
         const countOfItemInA = aCount.get(item) || 0;
         expect(countOfItemInA).toBeGreaterThanOrEqual(count);
       }
+    }),
+  );
+});
+
+it('should be a subsequence of its inputs', () => {
+  fc.assert(
+    fc.property(fc.array(fc.char()), fc.array(fc.char()), (a, b) => {
+      const commonItems = findCommonItems(a, b);
+      expect(isSubsequenceOf(commonItems, a)).toBe(true);
+      expect(isSubsequenceOf(commonItems, b)).toBe(true);
     }),
   );
 });
