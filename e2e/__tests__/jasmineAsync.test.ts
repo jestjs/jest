@@ -121,10 +121,10 @@ describe('async jasmine', () => {
       'one concurrent test fails',
       'concurrentWithinDescribe.test.js',
     ]);
-    expect(json.numTotalTests).toBe(1);
+    expect(json.numTotalTests).toBe(2);
     expect(json.numPassedTests).toBe(0);
     expect(json.numFailedTests).toBe(1);
-    expect(json.numPendingTests).toBe(0);
+    expect(json.numPendingTests).toBe(1);
     expect(json.testResults[0].message).toMatch(/concurrent test fails/);
   });
 
