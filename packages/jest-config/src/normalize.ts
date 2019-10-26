@@ -73,6 +73,20 @@ const mergeTransformWithPreset = (
   }
 };
 
+const mergeGlobalsWithPreset = (
+  options: Config.InitialOptions,
+  preset: Config.InitialOptions,
+) => {
+  if (options['globals'] && preset['globals']) {
+    for (const p in preset['globals']) {
+      options['globals'][p] = {
+        ...preset['globals'][p],
+        ...options['globals'][p],
+      };
+    }
+  }
+};
+
 const setupPreset = (
   options: Config.InitialOptions,
   optionsPreset: string,
@@ -149,6 +163,7 @@ const setupPreset = (
   }
   mergeModuleNameMapperWithPreset(options, preset);
   mergeTransformWithPreset(options, preset);
+  mergeGlobalsWithPreset(options, preset);
 
   return {...preset, ...options};
 };
