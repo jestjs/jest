@@ -361,24 +361,25 @@ For other applications, you can provide an options object as a third argument:
 
 ### Properties of options object
 
-| name                              | default          |
-| :-------------------------------- | :--------------- |
-| `aAnnotation`                     | `'Expected'`     |
-| `aColor`                          | `chalk.green`    |
-| `aIndicator`                      | `'-'`            |
-| `bAnnotation`                     | `'Received'`     |
-| `bColor`                          | `chalk.red`      |
-| `bIndicator`                      | `'+'`            |
-| `changeColor`                     | `chalk.inverse`  |
-| `commonColor`                     | `chalk.dim`      |
-| `commonIndicator`                 | `' '`            |
-| `contextLines`                    | `5`              |
-| `expand`                          | `true`           |
-| `firstOrLastEmptyLineReplacement` | `'↵'`            |
-| `includeChangeCounts`             | `false`          |
-| `omitAnnotationLines`             | `false`          |
-| `patchColor`                      | `chalk.yellow`   |
-| `trailingSpaceFormatter`          | `chalk.bgYellow` |
+| name                              | default            |
+| :-------------------------------- | :----------------- |
+| `aAnnotation`                     | `'Expected'`       |
+| `aColor`                          | `chalk.green`      |
+| `aIndicator`                      | `'-'`              |
+| `bAnnotation`                     | `'Received'`       |
+| `bColor`                          | `chalk.red`        |
+| `bIndicator`                      | `'+'`              |
+| `changeColor`                     | `chalk.inverse`    |
+| `changeLineTrailingSpaceColor`    | `string => string` |
+| `commonColor`                     | `chalk.dim`        |
+| `commonIndicator`                 | `' '`              |
+| `commonLineTrailingSpaceColor`    | `string => string` |
+| `contextLines`                    | `5`                |
+| `emptyFirstOrLastLinePlaceholder` | `''`               |
+| `expand`                          | `true`             |
+| `includeChangeCounts`             | `false`            |
+| `omitAnnotationLines`             | `false`            |
+| `patchColor`                      | `chalk.yellow`     |
 
 For more information about the options, see the following examples.
 
@@ -425,7 +426,7 @@ Although the default inverse of foreground and background colors is hard to beat
 import chalk from 'chalk';
 
 const options = {
-  changeColor: chalk.bold.bgAnsi256(226), // #ffff00
+  changeColor: chalk.bold.bgYellowBright,
 };
 ```
 
@@ -433,19 +434,37 @@ const options = {
 
 Because the default export does not display substring differences within lines, formatting can help you see when lines differ by the presence or absence of trailing spaces found by `/\s+$/` regular expression.
 
-The formatter is a function, which given a string, returns a string.
-
-If instead of yellowish background color, you want to replace trailing spaces with middle dot characters:
+- If change lines have a background color, then you can see trailing spaces.
+- If common lines have default dim color, then you cannot see trailing spaces. You might want yellowish background color to see them.
 
 ```js
 const options = {
-  trailingSpaceFormatter: string => '·'.repeat(string.length),
+  aColor: chalk.rgb(128, 0, 128).bgRgb(255, 215, 255), // magenta
+  bColor: chalk.rgb(0, 95, 0).bgRgb(215, 255, 215), // green
+  commonLineTrailingSpaceColor: chalk.bgYellow,
 };
 ```
 
-### Example of options for no colors
+The value of a Color option is a function, which given a string, returns a string.
 
-The value of a color or formatter option is a function, which given a string, returns a string.
+If you want to replace trailing spaces with middle dot characters:
+
+```js
+const replaceSpacesWithMiddleDot = string => '·'.repeat(string.length);
+
+const options = {
+  changeLineTrailingSpaceColor: replaceSpacesWithMiddleDot,
+  commonLineTrailingSpaceColor: replaceSpacesWithMiddleDot,
+};
+```
+
+If you need the TypeScript type of a Color option:
+
+```ts
+import {DiffOptionsColor} from 'jest-diff';
+```
+
+### Example of options for no colors
 
 To store the difference in a file without escape codes for colors, provide an identity function:
 
@@ -458,7 +477,6 @@ const options = {
   changeColor: noColor,
   commonColor: noColor,
   patchColor: noColor,
-  trailingSpaceFormatter: noColor,
 };
 ```
 
@@ -551,19 +569,19 @@ const difference = diffStringsUnified(a, b, options);
 + changed to
 ```
 
-### Example of option not to replace first or last empty lines
+### Example of option for empty first or last lines
 
 If the **first** or **last** comparison line is **empty**, because the content is empty and the indicator is a space, you might not notice it.
 
-Also, because Jest trims the report when a matcher fails, it deletes an empty last line.
+The replacement option is a string whose default value is `''` empty string.
 
-The replacement is a string whose default value is `'↵'` U+21B5 downwards arrow with corner leftwards.
+Because Jest trims the report when a matcher fails, it deletes an empty last line.
 
-To store the difference in a file without a replacement, because it could be ambiguous with the content of the arguments, provide an empty string:
+Therefore, Jest uses as placeholder the downwards arrow with corner leftwards:
 
 ```js
 const options = {
-  firstOrLastEmptyLineReplacement: '',
+  emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
 };
 ```
 
