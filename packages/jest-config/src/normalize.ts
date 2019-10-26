@@ -48,7 +48,7 @@ const createConfigError = (message: string) =>
 
 // TS 3.5 forces us to split these into 2
 const mergeModuleNameMapperWithPreset = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptionsWithRootDir,
   preset: Config.InitialOptions,
 ) => {
   if (options['moduleNameMapper'] && preset['moduleNameMapper']) {
@@ -61,7 +61,7 @@ const mergeModuleNameMapperWithPreset = (
 };
 
 const mergeTransformWithPreset = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptionsWithRootDir,
   preset: Config.InitialOptions,
 ) => {
   if (options['transform'] && preset['transform']) {
@@ -88,9 +88,9 @@ const mergeGlobalsWithPreset = (
 };
 
 const setupPreset = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptionsWithRootDir,
   optionsPreset: string,
-): Config.InitialOptions => {
+): Config.InitialOptionsWithRootDir => {
   let preset: Config.InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
@@ -168,7 +168,7 @@ const setupPreset = (
   return {...preset, ...options};
 };
 
-const setupBabelJest = (options: Config.InitialOptions) => {
+const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
   const transform = options.transform;
   let babelJest;
   if (transform) {
@@ -210,7 +210,7 @@ const setupBabelJest = (options: Config.InitialOptions) => {
 };
 
 const normalizeCollectCoverageOnlyFrom = (
-  options: Config.InitialOptions &
+  options: Config.InitialOptionsWithRootDir &
     Required<Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>>,
   key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
 ) => {
@@ -263,7 +263,7 @@ const normalizeCollectCoverageFrom = (
 };
 
 const normalizeUnmockedModulePathPatterns = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptionsWithRootDir,
   key: keyof Pick<
     Config.InitialOptions,
     | 'coveragePathIgnorePatterns'
@@ -285,8 +285,8 @@ const normalizeUnmockedModulePathPatterns = (
   );
 
 const normalizePreprocessor = (
-  options: Config.InitialOptions,
-): Config.InitialOptions => {
+  options: Config.InitialOptionsWithRootDir,
+): Config.InitialOptionsWithRootDir => {
   if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(
       `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold(
@@ -323,10 +323,10 @@ const normalizePreprocessor = (
 };
 
 const normalizeMissingOptions = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptionsWithRootDir,
   configPath: Config.Path | null | undefined,
   projectIndex: number,
-): Config.InitialOptions => {
+): Config.InitialOptionsWithRootDir => {
   if (!options.name) {
     options.name = createHash('md5')
       .update(options.rootDir)
@@ -345,9 +345,9 @@ const normalizeMissingOptions = (
 
 const normalizeRootDir = (
   options: Config.InitialOptions,
-): Config.InitialOptions => {
+): Config.InitialOptionsWithRootDir => {
   // Assert that there *is* a rootDir
-  if (!options.hasOwnProperty('rootDir')) {
+  if (!options.rootDir) {
     throw createConfigError(
       `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
     );
@@ -361,10 +361,13 @@ const normalizeRootDir = (
     // ignored
   }
 
-  return options;
+  return {
+    ...options,
+    rootDir: options.rootDir,
+  };
 };
 
-const normalizeReporters = (options: Config.InitialOptions) => {
+const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
   const reporters = options.reporters;
   if (!reporters || !Array.isArray(reporters)) {
     return options;
@@ -441,7 +444,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
 };
 
 export default function normalize(
-  options: Config.InitialOptions,
+  initialOptions: Config.InitialOptions,
   argv: Config.Argv,
   configPath?: Config.Path | null,
   projectIndex: number = Infinity,
@@ -449,7 +452,7 @@ export default function normalize(
   hasDeprecationWarnings: boolean;
   options: AllOptions;
 } {
-  const {hasDeprecationWarnings} = validate(options, {
+  const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
@@ -465,10 +468,10 @@ export default function normalize(
     ],
   });
 
-  options = normalizePreprocessor(
+  let options = normalizePreprocessor(
     normalizeReporters(
       normalizeMissingOptions(
-        normalizeRootDir(setFromArgv(options, argv)),
+        normalizeRootDir(setFromArgv(initialOptions, argv)),
         configPath,
         projectIndex,
       ),

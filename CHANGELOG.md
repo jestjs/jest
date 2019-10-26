@@ -59,6 +59,8 @@
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM from v11 to v15 ([#8851](https://github.com/facebook/jest/pull/8851))
 - `[jest-util]` [**BREAKING**] Remove deprecated exports ([#8863](https://github.com/facebook/jest/pull/8863))
 - `[jest-validate]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
+- `[jest-types]` Mark `InitialOptions` as `Partial` ([#8848](https://github.com/facebook/jest/pull/8848))
+- `[jest-config]` Refactor `normalize` to be more type safe ([#8848](https://github.com/facebook/jest/pull/8848))
 
 ### Performance
 
