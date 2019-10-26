@@ -16,8 +16,6 @@ import {
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
-  printExpected,
-  printReceived,
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
@@ -34,7 +32,10 @@ import {
   SNAPSHOT_ARG,
   matcherHintFromConfig,
   noColor,
-  printDiffOrStringified,
+  printExpected,
+  printPropertiesAndReceived,
+  printReceived,
+  printSnapshotAndReceived,
 } from './printSnapshot';
 import {Context, MatchSnapshotConfig} from './types';
 import * as utils from './utils';
@@ -254,7 +255,7 @@ const toMatchInlineSnapshot = function(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
           `Inline snapshot must be a string`,
-          printWithType('Inline snapshot', inlineSnapshot, stringify),
+          printWithType('Inline snapshot', inlineSnapshot, utils.serialize),
         ),
       );
     }
@@ -301,6 +302,8 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 
   if (snapshotState == null) {
     // Because the state is the problem, this is not a matcher error.
+    // Call generic stringify from jest-matcher-utils package
+    // because uninitialized snapshot state does not need snapshot serializers.
     throw new Error(
       matcherHintFromConfig(config, false) +
         '\n\n' +
@@ -316,6 +319,20 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
       : currentTestName || ''; // future BREAKING change: || hint
 
   if (typeof properties === 'object') {
+    if (typeof received !== 'object' || received === null) {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHintFromConfig(config, false),
+          `${RECEIVED_COLOR(
+            'received',
+          )} value must be an object when the matcher has ${EXPECTED_COLOR(
+            'properties',
+          )}`,
+          printWithType('Received', received, printReceived),
+        ),
+      );
+    }
+
     const propertyPass = context.equals(received, properties, [
       context.utils.iterableEquality,
       context.utils.subsetEquality,
@@ -331,8 +348,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
         '\n\n' +
         printSnapshotName(currentTestName, hint, count) +
         '\n\n' +
-        `Expected properties: ${printExpected(properties)}\n` +
-        `Received value:      ${printReceived(received)}`;
+        printPropertiesAndReceived(properties, received, snapshotState.expand);
 
       return {
         message,
@@ -376,7 +392,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
           '\n\n' +
           printSnapshotName(currentTestName, hint, count) +
           '\n\n' +
-          printDiffOrStringified(
+          printSnapshotAndReceived(
             expected,
             actual,
             received,
@@ -437,7 +453,7 @@ const toThrowErrorMatchingInlineSnapshot = function(
       matcherErrorMessage(
         matcherHint(matcherName, undefined, SNAPSHOT_ARG, options),
         `Inline snapshot must be a string`,
-        printWithType('Inline snapshot', inlineSnapshot, stringify),
+        printWithType('Inline snapshot', inlineSnapshot, utils.serialize),
       ),
     );
   }
