@@ -9,8 +9,8 @@ steps:
   # Ensure Node.js 10 is active
   - task: NodeTool@0
     inputs:
-      versionSpec: '10.x'
-    displayName: 'Use Node.js 10'
+      versionSpec: '12.x'
+    displayName: 'Use Node.js 12'
 
   # Ensure Python 2.7 is active
   - task: UsePythonVersion@0
