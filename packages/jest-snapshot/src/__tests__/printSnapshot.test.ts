@@ -170,8 +170,10 @@ describe('matcher error', () => {
 
     test('received value must be an object when the matcher has properties', () => {
       const context = {
+        currentTestName: '',
         isNot: false,
         promise: '',
+        snapshotState: {},
       };
       const received = 'string';
       const properties = {};

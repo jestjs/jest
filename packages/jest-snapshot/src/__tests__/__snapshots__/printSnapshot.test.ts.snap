@@ -70,9 +70,10 @@ Snapshot state has value: undefined
 exports[`matcher error toMatchSnapshot received value must be an object when the matcher has properties 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><g>properties</><d>)</>
 
-Snapshot state must be initialized
+<b>Matcher error</>: <r>received</> value must be an object when the matcher has <g>properties</>
 
-Snapshot state has value: undefined
+Received has type:  string
+Received has value: <r>"string"</>
 `;
 
 exports[`matcher error toThrowErrorMatchingInlineSnapshot Inline snapshot must be a string 1`] = `
