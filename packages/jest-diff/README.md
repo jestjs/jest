@@ -173,8 +173,8 @@ const difference = diffLinesUnified(splitLines0(a), splitLines0(b), options);
 Given an empty string, `splitLines0(b)` returns `[]` an empty array, formatted as no `Received` lines:
 
 ```diff
-- Expected 3
-+ Received 0
+- Expected  - 3
++ Received  + 0
 
 - multi
 - line
@@ -194,8 +194,8 @@ const difference = diffLinesUnified(a.split('\n'), b.split('\n'), options);
 Given an empty string, `b.split('\n')` returns `['']` an array that contains an empty string, formatted as one empty `Received` line, which is **ambiguous** with an empty line:
 
 ```diff
-- Expected 3
-+ Received 1
+- Expected  - 3
++ Received  + 1
 
 - multi
 - line
@@ -220,16 +220,16 @@ You might call this function for case insensitive or Unicode equivalence compari
 import format from 'pretty-format';
 
 const a = {
-  action: 'MOVE_TO',
-  x: 1,
-  y: 2,
+  text: 'Ignore indentation in serialized object',
+  time: '2019-09-19T12:34:56.000Z',
+  type: 'CREATE_ITEM',
 };
 const b = {
-  action: 'MOVE_TO',
   payload: {
-    x: 1,
-    y: 2,
+    text: 'Ignore indentation in serialized object',
+    time: '2019-09-19T12:34:56.000Z',
   },
+  type: 'CREATE_ITEM',
 };
 
 const difference = diffLinesUnified2(
@@ -242,18 +242,18 @@ const difference = diffLinesUnified2(
 );
 ```
 
-The `x` and `y` properties are common, because their only difference is indentation:
+The `text` and `time` properties are common, because their only difference is indentation:
 
 ```diff
 - Expected
 + Received
 
   Object {
-    action: 'MOVE_TO',
 +   payload: Object {
-      x: 1,
-      y: 2,
+      text: 'Ignore indentation in serialized object',
+      time: '2019-09-19T12:34:56.000Z',
 +   },
+    type: 'CREATE_ITEM',
   }
 ```
 
@@ -519,8 +519,8 @@ const difference = diffDefault(a, b, options);
 ```
 
 ```diff
-- Expected  1 -
-+ Received  2 +
+- Expected  - 1
++ Received  + 2
 
   Array [
     "common",

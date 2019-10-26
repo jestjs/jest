@@ -11,7 +11,6 @@ import * as path from 'path';
 import {EventEmitter} from 'events';
 import anymatch, {Matcher} from 'anymatch';
 import micromatch = require('micromatch');
-// eslint-disable-next-line
 import {Watcher} from 'fsevents';
 // @ts-ignore no types
 import walker from 'walker';

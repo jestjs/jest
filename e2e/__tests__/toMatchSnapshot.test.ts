@@ -108,7 +108,9 @@ test('first snapshot fails, second passes', () => {
     writeFiles(TESTS_DIR, {[filename]: template([`'kiwi'`, `'banana'`])});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Snapshot name: `snapshots 1`');
-    expect(stderr).toMatch('Snapshot: "apple"\n    Received: "kiwi"');
+    // Match lines separately because empty line has been replaced with space:
+    expect(stderr).toMatch('Snapshot: "apple"');
+    expect(stderr).toMatch('Received: "kiwi"');
     expect(stderr).not.toMatch('1 obsolete snapshot found');
     expect(exitCode).toBe(1);
   }
@@ -194,7 +196,7 @@ test('handles invalid property matchers', () => {
     `,
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Property matchers must be an object.');
+    expect(stderr).toMatch('Expected properties must be an object');
     expect(exitCode).toBe(1);
   }
   {
@@ -205,9 +207,9 @@ test('handles invalid property matchers', () => {
     `,
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Property matchers must be an object.');
+    expect(stderr).toMatch('Expected properties must be an object');
     expect(stderr).toMatch(
-      'To provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
+      `To provide a hint without properties: toMatchSnapshot('hint')`,
     );
     expect(exitCode).toBe(1);
   }
@@ -219,9 +221,9 @@ test('handles invalid property matchers', () => {
     `,
     });
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Property matchers must be an object.');
+    expect(stderr).toMatch('Expected properties must be an object');
     expect(stderr).toMatch(
-      'To provide a snapshot test name without property matchers, use: toMatchSnapshot("name")',
+      `To provide a hint without properties: toMatchSnapshot('hint')`,
     );
     expect(exitCode).toBe(1);
   }

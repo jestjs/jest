@@ -13,7 +13,7 @@
     "@jest/types": "^24.9.0",
     "anymatch": "^3.0.3",
     "fb-watchman": "^2.0.0",
-    "graceful-fs": "^4.1.15",
+    "graceful-fs": "^4.2.3",
     "invariant": "^2.2.4",
     "jest-serializer": "^24.9.0",
     "jest-util": "^24.9.0",

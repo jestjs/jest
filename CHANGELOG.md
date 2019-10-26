@@ -6,6 +6,7 @@
 - `[babel-plugin-jest-hoist]` Add `BigInt` to `WHITELISTED_IDENTIFIERS` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[babel-preset-jest]` Add `@babel/plugin-syntax-bigint` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[expect]` Add `BigInt` support to `toBeGreaterThan`, `toBeGreaterThanOrEqual`, `toBeLessThan` and `toBeLessThanOrEqual` ([#8382](https://github.com/facebook/jest/pull/8382))
+- `[expect, jest-matcher-utils]` Display change counts in annotation lines ([#9035](https://github.com/facebook/jest/pull/9035))
 - `[jest-config]` Throw the full error message and stack when a Jest preset is missing a dependency ([#8924](https://github.com/facebook/jest/pull/8924))
 - `[jest-config]` [**BREAKING**] Set default display name color based on runner ([#8689](https://github.com/facebook/jest/pull/8689))
 - `[jest-diff]` Add options for colors and symbols ([#8841](https://github.com/facebook/jest/pull/8841))
@@ -20,12 +21,15 @@
 - `[jest-get-type]` Add `BigInt` support. ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-matcher-utils]` Add `BigInt` support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-runner]` Warn if a worker had to be force exited ([#8206](https://github.com/facebook/jest/pull/8206))
+- `[jest-snapshot]` Display change counts in annotation lines ([#8982](https://github.com/facebook/jest/pull/8982))
 - `[@jest/test-result]` Create method to create empty `TestResult` ([#8867](https://github.com/facebook/jest/pull/8867))
 - `[jest-worker]` [**BREAKING**] Return a promise from `end()`, resolving with the information whether workers exited gracefully ([#8206](https://github.com/facebook/jest/pull/8206))
+- `[jest-reporters]` Transform file paths into hyperlinks ([#8980](https://github.com/facebook/jest/pull/8980))
 
 ### Fixes
 
-- `[expect]` Display expectedDiff more carefully in toBeCloseTo ([#8389](https://github.com/facebook/jest/pull/8389))
+- `[expect]` Display `expectedDiff` more carefully in `toBeCloseTo` ([#8389](https://github.com/facebook/jest/pull/8389))
+- `[expect]` Avoid incorrect difference for subset when `toMatchObject` fails ([#9005](https://github.com/facebook/jest/pull/9005))
 - `[jest-core]` Don't include unref'd timers in --detectOpenHandles results ([#8941](https://github.com/facebook/jest/pull/8941))
 - `[jest-diff]` Do not inverse format if line consists of one change ([#8903](https://github.com/facebook/jest/pull/8903))
 - `[jest-fake-timers]` `getTimerCount` will not include cancelled immediates ([#8764](https://github.com/facebook/jest/pull/8764))
@@ -35,6 +39,7 @@
 - `[jest-snapshot]` Remove only the added newlines in multiline snapshots ([#8859](https://github.com/facebook/jest/pull/8859))
 - `[jest-snapshot]` Distinguish empty string from external snapshot not written ([#8880](https://github.com/facebook/jest/pull/8880))
 - `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))
+- `[jest-snapshot]` [**BREAKING**] Remove `report` method and throw matcher errors ([#9049](https://github.com/facebook/jest/pull/9049))
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
 
 ### Chore & Maintenance
@@ -43,6 +48,7 @@
 - `[*]` Add Node 12 to CI ([#8411](https://github.com/facebook/jest/pull/8411))
 - `[*]` [**BREAKING**] Upgrade to Micromatch v4 ([#8852](https://github.com/facebook/jest/pull/8852))
 - `[babel-plugin-jest-hoist]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
+- `[docs]` Add alias and optional boolean value to `coverage` CLI Reference ([#8996](https://github.com/facebook/jest/pull/8996))
 - `[docs]` Fix broken link pointing to legacy JS file in "Snapshot Testing".
 - `[docs]` Add `setupFilesAfterEnv` and `jest.setTimeout` example ([#8971](https://github.com/facebook/jest/pull/8971))
 - `[jest]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
@@ -230,7 +236,7 @@
 - `[*]` Move @types/node to the root package.json ([#8129](https://github.com/facebook/jest/pull/8129))
 - `[*]` Add documentation and tests related to auto-mocking ([#8099](https://github.com/facebook/jest/pull/8099))
 - `[*]` Add `jest-watch-typeahead` as a devDependency ([#6449](https://github.com/facebook/jest/pull/6449))
-- `[*]` upgrade TS to 3.4.0-dev\* for inceremental builds ([#8149](https://github.com/facebook/jest/pull/8149))
+- `[*]` upgrade TS to 3.4.0-dev\* for incremental builds ([#8149](https://github.com/facebook/jest/pull/8149))
 - `[docs]` Improve description of optional arguments in ExpectAPI.md ([#8126](https://github.com/facebook/jest/pull/8126))
 
 ### Performance

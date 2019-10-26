@@ -73,7 +73,7 @@ test('if utils mocked automatically', () => {
   expect(utils.isAuthorized.mock).toBeTruthy();
 
   // You can provide them with your own implementation
-  // or just pass the expected return value
+  // or pass the expected return value
   utils.authorize.mockReturnValue('mocked_token');
   utils.isAuthorized.mockReturnValue(true);
 

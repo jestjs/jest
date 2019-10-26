@@ -136,7 +136,7 @@ You are now set up to use all ES6 features and React specific syntax.
 
 ### Using webpack
 
-Jest can be used in projects that use [webpack](https://webpack.github.io/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](Webpack.md) to get started.
+Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](Webpack.md) to get started.
 
 ### Using TypeScript
 

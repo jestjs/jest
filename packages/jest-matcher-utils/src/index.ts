@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import diffLinesUnified, {
+import diffDefault, {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
@@ -325,6 +325,7 @@ export const printDiffOrStringify = (
         aAnnotation: expectedLabel,
         bAnnotation: receivedLabel,
         expand,
+        includeChangeCounts: true,
       });
     }
 
@@ -347,10 +348,11 @@ export const printDiffOrStringify = (
   }
 
   if (isLineDiffable(expected, received)) {
-    const difference = diffLinesUnified(expected, received, {
+    const difference = diffDefault(expected, received, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,
       expand,
+      includeChangeCounts: true,
     });
 
     if (
@@ -390,7 +392,7 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
 };
 
 export const diff = (a: any, b: any, options?: DiffOptions): string | null =>
-  shouldPrintDiff(a, b) ? diffLinesUnified(a, b, options) : null;
+  shouldPrintDiff(a, b) ? diffDefault(a, b, options) : null;
 
 export const pluralize = (word: string, count: number) =>
   (NUMBERS[count] || count) + ' ' + word + (count === 1 ? '' : 's');
@@ -413,8 +415,11 @@ export const getLabelPrinter = (...strings: Array<string>): PrintLabel => {
 export const matcherErrorMessage = (
   hint: string, // assertion returned from call to matcherHint
   generic: string, // condition which correct value must fulfill
-  specific: string, // incorrect value returned from call to printWithType
-) => `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}\n\n${specific}`;
+  specific?: string, // incorrect value returned from call to printWithType
+) =>
+  `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}${
+    typeof specific === 'string' ? '\n\n' + specific : ''
+  }`;
 
 // Display assertion for the report when a test fails.
 // New format: rejects/resolves, not, and matcher name have black color
