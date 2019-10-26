@@ -55,14 +55,14 @@ jobs:
       - run: *install
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci
+          command: yarn test-ci-partial
       - store_test_results:
           path: reports/junit
 
   test-jest-circus:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:12
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -83,14 +83,14 @@ jobs:
       - run: *install
       - save-cache: *save-cache
       - run:
-          command: yarn test-ci-partial
+          command: yarn test-ci
       - store_test_results:
           path: reports/junit
 
   test-browser:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:12-browsers
     steps:
       - checkout
       - restore-cache: *restore-cache
@@ -101,7 +101,7 @@ jobs:
   test-or-deploy-website:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:12
     resource_class: large
     steps:
       - checkout
