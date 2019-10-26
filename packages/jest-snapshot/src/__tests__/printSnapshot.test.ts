@@ -168,19 +168,26 @@ describe('matcher error', () => {
       }).toThrowErrorMatchingSnapshot();
     });
 
-    test('received value must be an object when the matcher has properties', () => {
+    describe('received value must be an object', () => {
       const context = {
         currentTestName: '',
         isNot: false,
         promise: '',
         snapshotState: {},
       };
-      const received = 'string';
       const properties = {};
 
-      expect(() => {
-        toMatchSnapshot.call(context, received, properties);
-      }).toThrowErrorMatchingSnapshot();
+      test('(non-null)', () => {
+        expect(() => {
+          toMatchSnapshot.call(context, 'string', properties);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('(null)', () => {
+        expect(() => {
+          toMatchSnapshot.call(context, null, properties);
+        }).toThrowErrorMatchingSnapshot();
+      });
     });
 
     // Future test: Snapshot hint must be a string
