@@ -41,3 +41,27 @@ jobs:
         run: yarn lint:prettier:ci
       - name: check copyright headers
         run: yarn check-copyright-headers
+  test:
+    name: Node v${{ matrix.node-version }} on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: install
+        run: |
+          node scripts/remove-postinstall
+          yarn --no-progress --frozen-lockfile --ignore-engines
+          node scripts/build
+      - name: run tests
+        run: yarn test-ci-partial
+        env:
+          CI: true
