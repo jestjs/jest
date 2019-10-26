@@ -21,7 +21,7 @@ jobs:
   lint-and-typecheck:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:12
     steps:
       - checkout
       - restore-cache: *restore-cache
