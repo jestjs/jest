@@ -24,9 +24,19 @@ export function extract(contents: string): string {
   return match ? match[0].trimLeft() : '';
 }
 
+// strip returns contents without docblock
 export function strip(contents: string) {
   const match = contents.match(docblockRe);
-  return match && match[0] ? contents.substring(match[0].length) : contents;
+
+  if (!match) {
+    return contents;
+  }
+
+  if (!match[0]) {
+    return contents;
+  }
+
+  return contents.replace(match[0], '');
 }
 
 export function parse(docblock: string): Pragmas {

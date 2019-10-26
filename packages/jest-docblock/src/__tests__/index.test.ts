@@ -387,8 +387,13 @@ describe('docblock', () => {
   });
 
   it('returns a file unchanged if there is no top docblock to strip', () => {
-    const code = 'someCodeAtTheTop();\n/** docblock */';
+    const code = 'someCodeAtTheTop();';
     expect(docblock.strip(code)).toEqual(code);
+  });
+
+  it('strips a docblock even if its not at the top', () => {
+    const code = 'someCodeAtTheTop();\n/** docblock */';
+    expect(docblock.strip(code)).toEqual('someCodeAtTheTop();\n');
   });
 
   it('prints docblocks with no pragmas as empty string', () => {
