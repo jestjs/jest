@@ -41,7 +41,9 @@
 - `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))
 - `[jest-snapshot]` [**BREAKING**] Remove `report` method and throw matcher errors ([#9049](https://github.com/facebook/jest/pull/9049))
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
-- `[jest-docblock]` Fix for docblock not being found when the docblock was preceded by a line with a shebang
+- `[jest-docblock]` Fix for docblock not being found when the docblock was preceded by a line with a shebang ([#9084](https://github.com/facebook/jest/pull/9084))
+- `[jest-docblock]` Fixing broken test to check if docblock was removed.  Adding test to verify that docblock was removed even if it wasn't at the top. ([#9084](https://github.com/facebook/jest/pull/9084))
+- `[jest-docblock]` Updating strip function to more correctly strip the docblock ([#9084](https://github.com/facebook/jest/pull/9084))
 
 ### Chore & Maintenance
 
