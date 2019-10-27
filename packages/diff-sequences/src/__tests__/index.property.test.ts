@@ -46,13 +46,12 @@ const isSubsequenceOf = (
   sequence: Array<string>,
 ): boolean => {
   let iSub = 0;
-  let iSeq = 0;
+  const iSeq = 0;
 
-  while (iSub !== subsequence.length && iSeq !== sequence.length) {
-    if (subsequence[iSub] === sequence[iSeq]) {
+  for (let iSeq = 0; iSeq !== sequence.length; iSeq += 1) {
+    if (iSub !== subsequence.length && subsequence[iSub] === sequence[iSeq]) {
       iSub += 1;
     }
-    iSeq += 1;
   }
 
   return iSub === subsequence.length;
