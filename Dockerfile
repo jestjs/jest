@@ -1,5 +1,5 @@
 #Build: docker build -t jest .
-#Run: docker run -it --rm jest:latest bash
+#Run: docker run --volume="$PWD:/usr/src/app" --rm jest:latest
 
 #Use Python 2.7.17 image
 FROM python:2.7.17
@@ -19,14 +19,11 @@ RUN apt -y install nodejs
 #Install yarn
 RUN npm install -g yarn
 
-#Copy lock and package.json
-COPY yarn.lock package.json ./
-
-#Install dependencies
-RUN yarn install
-
 #Copy entire directory
 COPY . ./
+
+#Install dependencies
+RUN yarn
 
 #Build && Watch for changes
 ENTRYPOINT ["yarn"]
