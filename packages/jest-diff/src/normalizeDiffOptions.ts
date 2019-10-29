@@ -9,6 +9,8 @@ import chalk from 'chalk';
 
 import {DiffOptions, DiffOptionsNormalized} from './types';
 
+export const noColor = (string: string) => string;
+
 const DIFF_CONTEXT_DEFAULT = 5;
 
 const OPTIONS_DEFAULT: DiffOptionsNormalized = {
@@ -19,15 +21,16 @@ const OPTIONS_DEFAULT: DiffOptionsNormalized = {
   bColor: chalk.red,
   bIndicator: '+',
   changeColor: chalk.inverse,
+  changeLineTrailingSpaceColor: noColor,
   commonColor: chalk.dim,
   commonIndicator: ' ',
+  commonLineTrailingSpaceColor: noColor,
   contextLines: DIFF_CONTEXT_DEFAULT,
+  emptyFirstOrLastLinePlaceholder: '',
   expand: true,
-  firstOrLastEmptyLineReplacement: '\u{21B5}', // downwards arrow with corner leftwards
   includeChangeCounts: false,
   omitAnnotationLines: false,
   patchColor: chalk.yellow,
-  trailingSpaceFormatter: chalk.bgYellow,
 };
 
 const getContextLines = (contextLines?: number): number =>

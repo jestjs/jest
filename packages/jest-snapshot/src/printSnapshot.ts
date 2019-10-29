@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import chalk from 'chalk';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -148,6 +149,9 @@ export const printDiffOrStringified = (
     aColor,
     bAnnotation,
     bColor,
+    changeLineTrailingSpaceColor: chalk.bgYellow,
+    commonLineTrailingSpaceColor: chalk.bgYellow,
+    emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
     expand,
     includeChangeCounts: true,
   };

@@ -363,15 +363,15 @@ exports[`options omitAnnotationLines true diffStringsUnified and includeChangeCo
 
 exports[`options omitAnnotationLines true diffStringsUnified empty strings 1`] = ``;
 
-exports[`options trailingSpaceFormatter diffDefault default yellowish 1`] = `
+exports[`options trailingSpaceFormatter diffDefault default no color 1`] = `
 <g>- Expected</>
 <r>+ Received</>
 
-<g>- delete 1 trailing space:<Y> </></>
+<g>- delete 1 trailing space: </>
 <r>+ delete 1 trailing space:</>
-<d>  common 2 trailing spaces:<Y>  </></>
+<d>  common 2 trailing spaces:  </>
 <g>- insert 1 trailing space:</>
-<r>+ insert 1 trailing space:<Y> </></>
+<r>+ insert 1 trailing space: </>
 `;
 
 exports[`options trailingSpaceFormatter diffDefault middle dot 1`] = `
@@ -383,4 +383,15 @@ exports[`options trailingSpaceFormatter diffDefault middle dot 1`] = `
 <d>  common 2 trailing spaces:··</>
 <g>- insert 1 trailing space:</>
 <r>+ insert 1 trailing space:·</>
+`;
+
+exports[`options trailingSpaceFormatter diffDefault yellowish common 1`] = `
+<g>- Expected</>
+<r>+ Received</>
+
+<g>- delete 1 trailing space: </>
+<r>+ delete 1 trailing space:</>
+<d>  common 2 trailing spaces:<Y>  </></>
+<g>- insert 1 trailing space:</>
+<r>+ insert 1 trailing space: </>
 `;
