@@ -32,6 +32,7 @@
 - `[expect]` Avoid incorrect difference for subset when `toMatchObject` fails ([#9005](https://github.com/facebook/jest/pull/9005))
 - `[jest-core]` Don't include unref'd timers in --detectOpenHandles results ([#8941](https://github.com/facebook/jest/pull/8941))
 - `[jest-diff]` Do not inverse format if line consists of one change ([#8903](https://github.com/facebook/jest/pull/8903))
+- `[jest-docblock]` Fix for docblock not being found when the docblock was not at the top of the file ([#9084](https://github.com/facebook/jest/pull/9084))
 - `[jest-fake-timers]` `getTimerCount` will not include cancelled immediates ([#8764](https://github.com/facebook/jest/pull/8764))
 - `[jest-leak-detector]` [**BREAKING**] Use `weak-napi` instead of `weak` package ([#8686](https://github.com/facebook/jest/pull/8686))
 - `[jest-mock]` Fix for mockReturnValue overriding mockImplementationOnce ([#8398](https://github.com/facebook/jest/pull/8398))
@@ -41,9 +42,6 @@
 - `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))
 - `[jest-snapshot]` [**BREAKING**] Remove `report` method and throw matcher errors ([#9049](https://github.com/facebook/jest/pull/9049))
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
-- `[jest-docblock]` Fix for docblock not being found when the docblock was preceded by a line with a shebang ([#9084](https://github.com/facebook/jest/pull/9084))
-- `[jest-docblock]` Fixing broken test to check if docblock was removed. Adding test to verify that docblock was removed even if it wasn't at the top. ([#9084](https://github.com/facebook/jest/pull/9084))
-- `[jest-docblock]` Updating strip function to more correctly strip the docblock ([#9084](https://github.com/facebook/jest/pull/9084))
 
 ### Chore & Maintenance
 
