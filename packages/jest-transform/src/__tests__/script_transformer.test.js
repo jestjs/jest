@@ -443,7 +443,10 @@ describe('ScriptTransformer', () => {
     );
   });
 
-  it('ignores the inlined source map from the preprocessor if parsing it fails', () => {
+  it('warns of unparseable inlined source maps from the preprocessor', () => {
+    const warn = console.warn;
+    console.warn = jest.fn();
+
     config = {
       ...config,
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
@@ -470,6 +473,10 @@ describe('ScriptTransformer', () => {
     });
     expect(result.sourceMapPath).toBeNull();
     expect(writeFileAtomic.sync).toBeCalledTimes(1);
+
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    console.warn = warn;
   });
 
   it('writes source maps if given by the transformer', () => {

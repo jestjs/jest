@@ -305,9 +305,11 @@ export default class ScriptTransformer {
           transformed.map = inlineSourceMap.toJSON();
         }
       } catch (e) {
+        const transformPath = this._getTransformPath(filename);
         console.warn(
           `jest-transform: The source map produced for the file ${filename} ` +
-            'was invalid. Proceeding without source mapping for that file.',
+            `by ${transformPath} was invalid. Proceeding without source ` +
+            'mapping for that file.',
         );
       }
     }
