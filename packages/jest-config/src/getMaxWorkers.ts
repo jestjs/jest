@@ -9,7 +9,9 @@ import {cpus} from 'os';
 import {Config} from '@jest/types';
 
 export default function getMaxWorkers(
-  argv: Partial<Pick<Config.Argv, 'maxWorkers' | 'runInBand' | 'watch' | 'watchAll'>>,
+  argv: Partial<
+    Pick<Config.Argv, 'maxWorkers' | 'runInBand' | 'watch' | 'watchAll'>
+  >,
   defaultOptions?: Partial<Pick<Config.Argv, 'maxWorkers'>>,
 ): number {
   if (argv.runInBand) {
@@ -22,7 +24,10 @@ export default function getMaxWorkers(
     // In watch mode, Jest should be unobtrusive and not use all available CPUs.
     const numCpus = cpus() ? cpus().length : 1;
     const isWatchModeEnabled = argv.watch || argv.watchAll;
-    return Math.max(isWatchModeEnabled ? Math.floor(numCpus / 2) : numCpus - 1, 1);
+    return Math.max(
+      isWatchModeEnabled ? Math.floor(numCpus / 2) : numCpus - 1,
+      1,
+    );
   }
 }
 
