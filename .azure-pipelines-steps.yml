@@ -28,11 +28,8 @@ steps:
       path: $(YARN_CACHE_FOLDER)
     displayName: Cache Yarn packages
 
-  - script: yarn --no-progress --frozen-lockfile
+  - script: yarn install-no-ts-build
     displayName: 'Install dependencies'
-
-  - script: node scripts/build
-    displayName: 'Build'
 
   # Run test-ci-partial
   - script: yarn run test-ci-partial
