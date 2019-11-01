@@ -14,7 +14,7 @@ aliases:
   - &filter-ignore-gh-pages
     branches:
       ignore: gh-pages
-  - &install node scripts/remove-postinstall && yarn --no-progress --frozen-lockfile --ignore-engines && node scripts/build
+  - &install yarn install-no-ts-build
 
 version: 2
 jobs:
