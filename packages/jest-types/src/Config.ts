@@ -52,6 +52,8 @@ export type DefaultOptions = {
   expand: boolean;
   filter: Path | null | undefined;
   forceCoverageMatch: Array<Glob>;
+  freezeCoreModules: boolean;
+  freezeCoreModulesWhitelist: Array<string>;
   globals: ConfigGlobals;
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
@@ -150,6 +152,8 @@ export type InitialOptions = Partial<{
   findRelatedTests: boolean;
   forceCoverageMatch: Array<Glob>;
   forceExit: boolean;
+  freezeCoreModules?: boolean;
+  freezeCoreModulesWhitelist?: Array<string>;
   json: boolean;
   globals: ConfigGlobals;
   globalSetup: string | null | undefined;
@@ -386,6 +390,8 @@ export type ProjectConfig = {
   extraGlobals: Array<keyof NodeJS.Global>;
   filter: Path | null | undefined;
   forceCoverageMatch: Array<Glob>;
+  freezeCoreModules: boolean;
+  freezeCoreModulesWhitelist: Array<string>;
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
   globals: ConfigGlobals;
@@ -424,6 +430,7 @@ export type ProjectConfig = {
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns: Array<string> | null | undefined;
+  verbose: boolean | null | undefined;
 };
 
 export type Argv = Arguments<
