@@ -11,8 +11,8 @@ import chalk from 'chalk';
 import format = require('pretty-format');
 
 import jestSnapshot = require('../index');
-import {printDiffOrStringified} from '../printSnapshot';
-import {stringify} from '../utils';
+import {printSnapshotAndReceived} from '../printSnapshot';
+import {serialize} from '../utils';
 
 const convertAnsi = (val: string): string =>
   val.replace(ansiRegex(), match => {
@@ -166,6 +166,28 @@ describe('matcher error', () => {
       expect(() => {
         toMatchSnapshot.call(context, received, properties);
       }).toThrowErrorMatchingSnapshot();
+    });
+
+    describe('received value must be an object', () => {
+      const context = {
+        currentTestName: '',
+        isNot: false,
+        promise: '',
+        snapshotState: {},
+      };
+      const properties = {};
+
+      test('(non-null)', () => {
+        expect(() => {
+          toMatchSnapshot.call(context, 'string', properties);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      test('(null)', () => {
+        expect(() => {
+          toMatchSnapshot.call(context, null, properties);
+        }).toThrowErrorMatchingSnapshot();
+      });
     });
 
     // Future test: Snapshot hint must be a string
@@ -433,7 +455,7 @@ describe('pass false', () => {
       const properties = {id};
       const type = 'ADD_ITEM';
 
-      test('equals false', () => {
+      describe('equals false', () => {
         const context = {
           currentTestName: 'with properties',
           equals: () => false,
@@ -447,19 +469,32 @@ describe('pass false', () => {
             subsetEquality: () => {},
           },
         };
-        const received = {
-          id: 'abcdefg',
-          text: 'Increase code coverage',
-          type,
-        };
 
-        const {message, pass} = toMatchSnapshot.call(
-          context,
-          received,
-          properties,
-        );
-        expect(pass).toBe(false);
-        expect(message()).toMatchSnapshot();
+        test('isLineDiffable false', () => {
+          const {message, pass} = toMatchSnapshot.call(
+            context,
+            new RangeError('Invalid array length'),
+            {name: 'Error'},
+          );
+          expect(pass).toBe(false);
+          expect(message()).toMatchSnapshot();
+        });
+
+        test('isLineDiffable true', () => {
+          const received = {
+            id: 'abcdefg',
+            text: 'Increase code coverage',
+            type,
+          };
+
+          const {message, pass} = toMatchSnapshot.call(
+            context,
+            received,
+            properties,
+          );
+          expect(pass).toBe(false);
+          expect(message()).toMatchSnapshot();
+        });
       });
 
       test('equals true', () => {
@@ -564,16 +599,16 @@ describe('pass true', () => {
   });
 });
 
-describe('printDiffOrStringified', () => {
+describe('printSnapshotAndReceived', () => {
   // Simulate default serialization.
   const testWithStringify = (
     expected: unknown,
     received: unknown,
     expand: boolean,
   ): string =>
-    printDiffOrStringified(
-      stringify(expected),
-      stringify(received),
+    printSnapshotAndReceived(
+      serialize(expected),
+      serialize(received),
       received,
       expand,
     );
@@ -583,7 +618,7 @@ describe('printDiffOrStringified', () => {
     expected: string,
     received: string,
     expand: boolean,
-  ): string => printDiffOrStringified(expected, received, received, expand);
+  ): string => printSnapshotAndReceived(expected, received, received, expand);
 
   describe('backtick', () => {
     test('single line expected and received', () => {
@@ -747,7 +782,7 @@ describe('printDiffOrStringified', () => {
 
       test('both are less', () => {
         const less2 = 'multi\nline';
-        const difference = printDiffOrStringified(less2, less, less, true);
+        const difference = printSnapshotAndReceived(less2, less, less, true);
 
         expect(difference).toMatch('- multi');
         expect(difference).toMatch('- line');
@@ -756,7 +791,7 @@ describe('printDiffOrStringified', () => {
       });
 
       test('expected is more', () => {
-        const difference = printDiffOrStringified(more, less, less, true);
+        const difference = printSnapshotAndReceived(more, less, less, true);
 
         expect(difference).toMatch('- multi line');
         expect(difference).toMatch('+ single line');
@@ -764,7 +799,7 @@ describe('printDiffOrStringified', () => {
       });
 
       test('received is more', () => {
-        const difference = printDiffOrStringified(less, more, more, true);
+        const difference = printSnapshotAndReceived(less, more, more, true);
 
         expect(difference).toMatch('- single line');
         expect(difference).toMatch('+ multi line');
@@ -782,7 +817,7 @@ describe('printDiffOrStringified', () => {
 
       test('both are less', () => {
         const lessQuoted2 = '"0 numbers"';
-        const stringified = printDiffOrStringified(
+        const stringified = printSnapshotAndReceived(
           lessQuoted2,
           lessQuoted,
           less,
@@ -795,7 +830,7 @@ describe('printDiffOrStringified', () => {
       });
 
       test('expected is more', () => {
-        const stringified = printDiffOrStringified(
+        const stringified = printSnapshotAndReceived(
           moreQuoted,
           lessQuoted,
           less,
@@ -809,7 +844,7 @@ describe('printDiffOrStringified', () => {
       });
 
       test('received is more', () => {
-        const stringified = printDiffOrStringified(
+        const stringified = printSnapshotAndReceived(
           lessQuoted,
           moreQuoted,
           more,

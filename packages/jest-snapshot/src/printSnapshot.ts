@@ -28,7 +28,7 @@ import {
 } from 'jest-matcher-utils';
 import prettyFormat = require('pretty-format');
 import {MatchSnapshotConfig} from './types';
-import {unstringifyString} from './utils';
+import {deserializeString, minify, serialize} from './utils';
 
 export const noColor = (string: string) => string;
 
@@ -132,9 +132,48 @@ const isLineDiffable = (received: any): boolean => {
   return true;
 };
 
+export const printExpected = (val: unknown) => EXPECTED_COLOR(minify(val));
+export const printReceived = (val: unknown) => RECEIVED_COLOR(minify(val));
+
+export const printPropertiesAndReceived = (
+  properties: object,
+  received: object,
+  expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+): string => {
+  const aAnnotation = 'Expected properties';
+  const bAnnotation = 'Received value';
+
+  if (isLineDiffable(properties) && isLineDiffable(received)) {
+    return diffLinesUnified(
+      splitLines0(serialize(properties)),
+      splitLines0(serialize(received)),
+      {
+        aAnnotation,
+        aColor: EXPECTED_COLOR,
+        bAnnotation,
+        bColor: RECEIVED_COLOR,
+        changeLineTrailingSpaceColor: chalk.bgYellow,
+        commonLineTrailingSpaceColor: chalk.bgYellow,
+        emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
+        expand,
+        includeChangeCounts: true,
+      },
+    );
+  }
+
+  const printLabel = getLabelPrinter(aAnnotation, bAnnotation);
+  return (
+    printLabel(aAnnotation) +
+    printExpected(properties) +
+    '\n' +
+    printLabel(bAnnotation) +
+    printReceived(received)
+  );
+};
+
 const MAX_DIFF_STRING_LENGTH = 20000;
 
-export const printDiffOrStringified = (
+export const printSnapshotAndReceived = (
   a: string, // snapshot without extra line breaks
   b: string, // received serialized but without extra line breaks
   received: unknown,
@@ -193,7 +232,7 @@ export const printDiffOrStringified = (
       }
 
       // Else either string is multiline, so display as unquoted strings.
-      a = unstringifyString(a); //  hypothetical unserialized expected string
+      a = deserializeString(a); //  hypothetical expected string
       b = received; // not serialized
     }
     // Else expected had custom serialization or was not a string
