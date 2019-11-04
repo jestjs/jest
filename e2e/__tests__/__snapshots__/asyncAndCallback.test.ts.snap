@@ -8,9 +8,8 @@ FAIL __tests__/promise-and-callback.test.js
 
   ● promise-returning test with callback
 
-
-          test functions cannot take a 'done' callback and return anything. Make sure to _only_ use a callback or promises - not both
-          Returned value: Promise {}
+    test functions cannot take a 'done' callback and return anything. Make sure to _only_ use a callback or promises - not both
+    Returned value: Promise {}
 
        8 | 'use strict';
        9 | 
@@ -20,14 +19,12 @@ FAIL __tests__/promise-and-callback.test.js
       12 | 
       13 |   return Promise.resolve();
 
-            
       at Object.it (__tests__/promise-and-callback.test.js:10:1)
 
   ● async test with callback
 
-
-          test functions cannot take a 'done' callback and return anything. Make sure to _only_ use a callback or promises - not both
-          Returned value: Promise {}
+    test functions cannot take a 'done' callback and return anything. Make sure to _only_ use a callback or promises - not both
+    Returned value: Promise {}
 
       14 | });
       15 | 
@@ -37,14 +34,12 @@ FAIL __tests__/promise-and-callback.test.js
       18 | });
       19 | 
 
-            
       at Object.it (__tests__/promise-and-callback.test.js:16:1)
 
   ● test done before return value
 
-
-          test functions cannot take a 'done' callback and return anything. Make sure to _only_ use a callback or promises - not both
-          Returned value: "foobar"
+    test functions cannot take a 'done' callback and return anything. Make sure to _only_ use a callback or promises - not both
+    Returned value: "foobar"
 
       18 | });
       19 | 
@@ -54,6 +49,5 @@ FAIL __tests__/promise-and-callback.test.js
       22 | 
       23 |   return 'foobar';
 
-            
       at Object.it (__tests__/promise-and-callback.test.js:20:1)
 `;

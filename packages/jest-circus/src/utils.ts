@@ -9,6 +9,7 @@ import {Circus} from '@jest/types';
 import {convertDescriptorToString} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
+import dedent = require('dedent');
 import StackUtils = require('stack-utils');
 import prettyFormat = require('pretty-format');
 import {getState} from './state';
@@ -167,7 +168,7 @@ export const callAsyncCircusFn = (
         // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
-            asyncError.message = `
+            asyncError.message = dedent`
       test functions cannot take a 'done' callback and return anything. Make sure to _only_ use a callback or promises - not both
       Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
       `;
@@ -229,7 +230,7 @@ export const callAsyncCircusFn = (
     if (!isHook && returnedValue !== undefined) {
       reject(
         new Error(
-          `
+          dedent`
       test functions can only return Promise or undefined.
       Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
       `,
