@@ -145,6 +145,7 @@ function checkIsError(error: any): error is Error {
 export const callAsyncCircusFn = (
   fn: Circus.AsyncFn,
   testContext: Circus.TestContext | undefined,
+  asyncError: Circus.Exception,
   {isHook, timeout}: {isHook?: boolean | null; timeout: number},
 ): Promise<any> => {
   let timeoutID: NodeJS.Timeout;
@@ -159,24 +160,37 @@ export const callAsyncCircusFn = (
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
     if (fn.length) {
+      let returnedValue: unknown = undefined;
       const done = (reason?: Error | string): void => {
-        const errorAsErrorObject = checkIsError(reason)
-          ? reason
-          : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`);
+        // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
+        Promise.resolve().then(() => {
+          if (returnedValue !== undefined) {
+            asyncError.message = `
+      test functions cannot take a 'done' callback and return anything. Make sure to _only_ use a callback or promises - not both
+      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+      `;
+            reject(asyncError);
+          }
+          const errorAsErrorObject = checkIsError(reason)
+            ? reason
+            : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`);
 
-        // Consider always throwing, regardless if `reason` is set or not
-        if (completed && reason) {
-          errorAsErrorObject.message =
-            'Caught error after test environment was torn down\n\n' +
-            errorAsErrorObject.message;
+          // Consider always throwing, regardless if `reason` is set or not
+          if (completed && reason) {
+            errorAsErrorObject.message =
+              'Caught error after test environment was torn down\n\n' +
+              errorAsErrorObject.message;
 
-          throw errorAsErrorObject;
-        }
+            throw errorAsErrorObject;
+          }
 
-        return reason ? reject(errorAsErrorObject) : resolve();
+          return reason ? reject(errorAsErrorObject) : resolve();
+        });
       };
 
-      return fn.call(testContext, done);
+      returnedValue = fn.call(testContext, done);
+
+      return;
     }
 
     let returnedValue;
@@ -186,7 +200,8 @@ export const callAsyncCircusFn = (
       try {
         returnedValue = fn.call(testContext);
       } catch (error) {
-        return reject(error);
+        reject(error);
+        return;
       }
     }
 
@@ -197,23 +212,25 @@ export const callAsyncCircusFn = (
       returnedValue !== null &&
       typeof returnedValue.then === 'function'
     ) {
-      return returnedValue.then(resolve, reject);
+      returnedValue.then(resolve, reject);
+      return;
     }
 
-    if (!isHook && returnedValue !== void 0) {
-      return reject(
+    if (!isHook && returnedValue !== undefined) {
+      reject(
         new Error(
           `
       test functions can only return Promise or undefined.
-      Returned value: ${String(returnedValue)}
+      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
       `,
         ),
       );
+      return;
     }
 
     // Otherwise this test is synchronous, and if it didn't throw it means
     // it passed.
-    return resolve();
+    resolve();
   })
     .then(() => {
       completed = true;
