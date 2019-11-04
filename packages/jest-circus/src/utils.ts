@@ -162,6 +162,8 @@ export const callAsyncCircusFn = (
     if (fn.length) {
       let returnedValue: unknown = undefined;
       const done = (reason?: Error | string): void => {
+        // We need to keep a stack here before the promise tick
+        const errorAtDone = new Error();
         // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
@@ -169,11 +171,19 @@ export const callAsyncCircusFn = (
       test functions cannot take a 'done' callback and return anything. Make sure to _only_ use a callback or promises - not both
       Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
       `;
-            reject(asyncError);
+            return reject(asyncError);
           }
-          const errorAsErrorObject = checkIsError(reason)
-            ? reason
-            : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`);
+
+          let errorAsErrorObject: Error;
+
+          if (checkIsError(reason)) {
+            errorAsErrorObject = reason;
+          } else {
+            errorAsErrorObject = errorAtDone;
+            errorAtDone.message = `Failed: ${prettyFormat(reason, {
+              maxDepth: 3,
+            })}`;
+          }
 
           // Consider always throwing, regardless if `reason` is set or not
           if (completed && reason) {
