@@ -155,23 +155,23 @@ Snapshot name: \`with properties 1\`
 `;
 
 exports[`pass false toMatchInlineSnapshot with properties equals true 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchInlineSnapshot<d>(</>properties<d>, </><g>snapshot</><d>)</>
+<d>expect(</><g>received</><d>).</>toMatchInlineSnapshot<d>(</>properties<d>, </><m>snapshot</><d>)</>
 
 Snapshot name: \`with properties 1\`
 
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 1</>
 
 <d>  Object {</>
 <d>    "id": "abcdef",</>
-<g>-   "text": "inline snapshot",</>
-<r>+   "text": "received",</>
+<m>-   "text": "inline snapshot",</>
+<g>+   "text": "received",</>
 <d>    "type": "ADD_ITEM",</>
 <d>  }</>
 `;
 
 exports[`pass false toMatchSnapshot New snapshot was not written (multi line) 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><b>hint</><d>)</>
+<d>expect(</><g>received</><d>).</>toMatchSnapshot<d>(</><b>hint</><d>)</>
 
 Snapshot name: \`New snapshot was not written: <b>(CI)</> 1\`
 
@@ -180,12 +180,12 @@ New snapshot was <b>not written</>. The update flag must be explicitly passed to
 This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
 
 Received:
-<r>"To write or not to write,</>
-<r>that is the question."</>
+<g>"To write or not to write,</>
+<g>that is the question."</>
 `;
 
 exports[`pass false toMatchSnapshot New snapshot was not written (single line) 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</><b>hint</><d>)</>
+<d>expect(</><g>received</><d>).</>toMatchSnapshot<d>(</><b>hint</><d>)</>
 
 Snapshot name: \`New snapshot was not written: <b>(CI)</> 2\`
 
@@ -193,7 +193,7 @@ New snapshot was <b>not written</>. The update flag must be explicitly passed to
 
 This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
 
-Received: <r>"Write me if you can!"</>
+Received: <g>"Write me if you can!"</>
 `;
 
 exports[`pass false toMatchSnapshot with properties equals false isLineDiffable false 1`] = `
@@ -222,76 +222,76 @@ Snapshot name: \`with properties 1\`
 `;
 
 exports[`pass false toMatchSnapshot with properties equals true 1`] = `
-<d>expect(</><r>received</><d>).</>toMatchSnapshot<d>(</>properties<d>, </><b>hint</><d>)</>
+<d>expect(</><g>received</><d>).</>toMatchSnapshot<d>(</>properties<d>, </><b>hint</><d>)</>
 
 Snapshot name: \`with properties: <b>change text value</> 1\`
 
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 1</>
 
 <d>  Object {</>
 <d>    "id": "abcdef",</>
-<g>-   "text": "snapshot",</>
-<r>+   "text": "received",</>
+<m>-   "text": "snapshot",</>
+<g>+   "text": "received",</>
 <d>    "type": "ADD_ITEM",</>
 <d>  }</>
 `;
 
 exports[`pass false toThrowErrorMatchingInlineSnapshot with snapshot 1`] = `
-<d>expect(</><r>received</><d>).</>toThrowErrorMatchingInlineSnapshot<d>(</><g>snapshot</><d>)</>
+<d>expect(</><g>received</><d>).</>toThrowErrorMatchingInlineSnapshot<d>(</><m>snapshot</><d>)</>
 
 Snapshot name: \`with snapshot 1\`
 
-Snapshot: <g>"inline snapshot"</>
-Received: <r>"received"</>
+Snapshot: <m>"inline snapshot"</>
+Received: <g>"received"</>
 `;
 
 exports[`printSnapshotAndReceived backtick single line expected and received 1`] = `
-Snapshot: <g>"var foo = \`backtick\`;"</>
-Received: <r>"var foo = <i>tag</i>\`backtick\`;"</>
+Snapshot: <m>"var foo = \`backtick\`;"</>
+Received: <g>"var foo = <i>tag</i>\`backtick\`;"</>
 `;
 
 exports[`printSnapshotAndReceived empty string expected and received single line 1`] = `
-Snapshot: <g>""</>
-Received: <r>"single line string"</>
+Snapshot: <m>""</>
+Received: <g>"single line string"</>
 `;
 
 exports[`printSnapshotAndReceived empty string received and expected multi line 1`] = `
-<g>- Snapshot  - 3</>
-<r>+ Received  + 0</>
+<m>- Snapshot  - 3</>
+<g>+ Received  + 0</>
 
-<g>- multi</>
-<g>- line</>
-<g>- string</>
+<m>- multi</>
+<m>- line</>
+<m>- string</>
 `;
 
 exports[`printSnapshotAndReceived escape backslash in multi line string 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 2</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 2</>
 
-<g>- Forward / slash<i> and b</i>ack \\ slash</>
-<r>+ Forward / slash</>
-<r>+ <i>B</i>ack \\ slash</>
+<m>- Forward / slash<i> and b</i>ack \\ slash</>
+<g>+ Forward / slash</>
+<g>+ <i>B</i>ack \\ slash</>
 `;
 
 exports[`printSnapshotAndReceived escape backslash in single line string 1`] = `
-Snapshot: <g>"<i>f</i>orward / slash and back \\\\ slash"</>
-Received: <r>"<i>F</i>orward / slash and back \\\\ slash"</>
+Snapshot: <m>"<i>f</i>orward / slash and back \\\\ slash"</>
+Received: <g>"<i>F</i>orward / slash and back \\\\ slash"</>
 `;
 
 exports[`printSnapshotAndReceived escape double quote marks in string 1`] = `
-Snapshot: <g>"What does \\"<i>oo</i>bleck\\" mean?"</>
-Received: <r>"What does \\"<i>ew</i>bleck\\" mean?"</>
+Snapshot: <m>"What does \\"<i>oo</i>bleck\\" mean?"</>
+Received: <g>"What does \\"<i>ew</i>bleck\\" mean?"</>
 `;
 
 exports[`printSnapshotAndReceived escape regexp 1`] = `
-Snapshot: <g>/\\\\\\\\\\("\\)/g</>
-Received: <r>/\\\\\\\\\\("\\)/</>
+Snapshot: <m>/\\\\\\\\\\("\\)/g</>
+Received: <g>/\\\\\\\\\\("\\)/</>
 `;
 
 exports[`printSnapshotAndReceived expand false 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 3</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 3</>
 
 <y>@@ -12,7 +12,9 @@</>
 <d>  ? "number"</>
@@ -299,16 +299,16 @@ exports[`printSnapshotAndReceived expand false 1`] = `
 <d>  ? "boolean"</>
 <d>  : T extends undefined</>
 <d>  ? "undefined"</>
-<g>- : T extends Function<i> </i>? "function"<i> </i>: "object";</>
-<r>+ : T extends Function</>
-<r>+ ? "function"</>
-<r>+ : "object";</>
+<m>- : T extends Function<i> </i>? "function"<i> </i>: "object";</>
+<g>+ : T extends Function</>
+<g>+ ? "function"</>
+<g>+ : "object";</>
 <d>  ↵</>
 `;
 
 exports[`printSnapshotAndReceived expand true 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 3</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 3</>
 
 <d>  type TypeName<T> =</>
 <d>  T extends string ? "string" :</>
@@ -326,94 +326,94 @@ exports[`printSnapshotAndReceived expand true 1`] = `
 <d>  ? "boolean"</>
 <d>  : T extends undefined</>
 <d>  ? "undefined"</>
-<g>- : T extends Function<i> </i>? "function"<i> </i>: "object";</>
-<r>+ : T extends Function</>
-<r>+ ? "function"</>
-<r>+ : "object";</>
+<m>- : T extends Function<i> </i>? "function"<i> </i>: "object";</>
+<g>+ : T extends Function</>
+<g>+ ? "function"</>
+<g>+ : "object";</>
 <d>  ↵</>
 `;
 
 exports[`printSnapshotAndReceived fallback to line diff 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 8</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 8</>
 
-<r>+ ====================================options=====================================</>
-<r>+ parsers: ["flow", "typescript"]</>
-<r>+ printWidth: 80</>
-<r>+                                                                                 | printWidth</>
-<r>+ =====================================input======================================</>
+<g>+ ====================================options=====================================</>
+<g>+ parsers: ["flow", "typescript"]</>
+<g>+ printWidth: 80</>
+<g>+                                                                                 | printWidth</>
+<g>+ =====================================input======================================</>
 <d>  [...a, ...b,];</>
 <d>  [...a, ...b];</>
-<g>- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</>
-<r>+</>
-<r>+ =====================================output=====================================</>
+<m>- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</>
+<g>+</>
+<g>+ =====================================output=====================================</>
 <d>  [...a, ...b];</>
 <d>  [...a, ...b];</>
 
-<r>+ ================================================================================</>
+<g>+ ================================================================================</>
 `;
 
 exports[`printSnapshotAndReceived has no common after clean up chaff array 1`] = `
-<g>- Snapshot  - 2</>
-<r>+ Received  + 2</>
+<m>- Snapshot  - 2</>
+<g>+ Received  + 2</>
 
 <d>  Array [</>
-<g>-   "delete",</>
-<g>-   "two",</>
-<r>+   "insert",</>
-<r>+   "2",</>
+<m>-   "delete",</>
+<m>-   "two",</>
+<g>+   "insert",</>
+<g>+   "2",</>
 <d>  ]</>
 `;
 
 exports[`printSnapshotAndReceived has no common after clean up chaff string single line 1`] = `
-Snapshot: <g>"delete"</>
-Received: <r>"insert"</>
+Snapshot: <m>"delete"</>
+Received: <g>"insert"</>
 `;
 
 exports[`printSnapshotAndReceived isLineDiffable false asymmetric matcher 1`] = `
-Snapshot: <g>null</>
-Received: <r>Object {</>
-<r>  "asymmetricMatch": [Function],</>
-<r>}</>
+Snapshot: <m>null</>
+Received: <g>Object {</>
+<g>  "asymmetricMatch": [Function],</>
+<g>}</>
 `;
 
 exports[`printSnapshotAndReceived isLineDiffable false boolean 1`] = `
-Snapshot: <g>true</>
-Received: <r>false</>
+Snapshot: <m>true</>
+Received: <g>false</>
 `;
 
 exports[`printSnapshotAndReceived isLineDiffable false date 1`] = `
-Snapshot: <g>2019-09-19T00:00:00.000Z</>
-Received: <r>2019-09-20T00:00:00.000Z</>
+Snapshot: <m>2019-09-19T00:00:00.000Z</>
+Received: <g>2019-09-20T00:00:00.000Z</>
 `;
 
 exports[`printSnapshotAndReceived isLineDiffable false error 1`] = `
-Snapshot: <g>[Error: Cannot spread fragment "NameAndAppearances" within itself.]</>
-Received: <r>[Error: Cannot spread fragment "NameAndAppearancesAndFriends" within itself.]</>
+Snapshot: <m>[Error: Cannot spread fragment "NameAndAppearances" within itself.]</>
+Received: <g>[Error: Cannot spread fragment "NameAndAppearancesAndFriends" within itself.]</>
 `;
 
 exports[`printSnapshotAndReceived isLineDiffable false function 1`] = `
-Snapshot: <g>undefined</>
-Received: <r>[Function]</>
+Snapshot: <m>undefined</>
+Received: <g>[Function]</>
 `;
 
 exports[`printSnapshotAndReceived isLineDiffable false number 1`] = `
-Snapshot: <g>-0</>
-Received: <r>NaN</>
+Snapshot: <m>-0</>
+Received: <g>NaN</>
 `;
 
 exports[`printSnapshotAndReceived isLineDiffable true array 1`] = `
-<g>- Snapshot  - 0</>
-<r>+ Received  + 2</>
+<m>- Snapshot  - 0</>
+<g>+ Received  + 2</>
 
 <d>  Array [</>
 <d>    Object {</>
-<r>+     "_id": "b14680dec683e744ada1f2fe08614086",</>
+<g>+     "_id": "b14680dec683e744ada1f2fe08614086",</>
 <d>      "code": 4011,</>
 <d>      "weight": 2.13,</>
 <d>    },</>
 <d>    Object {</>
-<r>+     "_id": "7fc63ff01769c4fa7d9279e97e307829",</>
+<g>+     "_id": "7fc63ff01769c4fa7d9279e97e307829",</>
 <d>      "code": 4019,</>
 <d>      "count": 4,</>
 <d>    },</>
@@ -421,112 +421,112 @@ exports[`printSnapshotAndReceived isLineDiffable true array 1`] = `
 `;
 
 exports[`printSnapshotAndReceived isLineDiffable true object 1`] = `
-<g>- Snapshot  - 2</>
-<r>+ Received  + 3</>
+<m>- Snapshot  - 2</>
+<g>+ Received  + 3</>
 
 <d>  Object {</>
 <d>    "props": Object {</>
-<g>-     "className": "logo",</>
-<g>-     "src": "/img/jest.png",</>
-<r>+     "alt": "Jest logo",</>
-<r>+     "class": "logo",</>
-<r>+     "src": "/img/jest.svg",</>
+<m>-     "className": "logo",</>
+<m>-     "src": "/img/jest.png",</>
+<g>+     "alt": "Jest logo",</>
+<g>+     "class": "logo",</>
+<g>+     "src": "/img/jest.svg",</>
 <d>    },</>
 <d>    "type": "img",</>
 <d>  }</>
 `;
 
 exports[`printSnapshotAndReceived isLineDiffable true single line expected and multi line received 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 3</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 3</>
 
-<g>- Array []</>
-<r>+ Array [</>
-<r>+   0,</>
-<r>+ ]</>
+<m>- Array []</>
+<g>+ Array [</>
+<g>+   0,</>
+<g>+ ]</>
 `;
 
 exports[`printSnapshotAndReceived isLineDiffable true single line expected and received 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 1</>
 
-<g>- Array []</>
-<r>+ Object {}</>
+<m>- Array []</>
+<g>+ Object {}</>
 `;
 
 exports[`printSnapshotAndReceived multi line small change in one line and other is unchanged 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 1</>
 
-<g>- There is no route defined for key <i>'</i>Settings<i>'</i>.</>
-<r>+ There is no route defined for key Settings.</>
+<m>- There is no route defined for key <i>'</i>Settings<i>'</i>.</>
+<g>+ There is no route defined for key Settings.</>
 <d>  Must be one of: 'Home'</>
 `;
 
 exports[`printSnapshotAndReceived multi line small changes 1`] = `
-<g>- Snapshot  - 7</>
-<r>+ Received  + 7</>
+<m>- Snapshot  - 7</>
+<g>+ Received  + 7</>
 
-<g>-     6<i>9</i> |<Y> </></>
-<r>+     6<i>8</i> |<Y> </></>
-<g>-     <i>70</i> | test('assert.doesNotThrow', () => {</>
-<r>+     <i>69</i> | test('assert.doesNotThrow', () => {</>
-<g>-   > 7<i>1</i> |   assert.doesNotThrow(() => {</>
-<r>+   > 7<i>0</i> |   assert.doesNotThrow(() => {</>
+<m>-     6<i>9</i> | </>
+<g>+     6<i>8</i> | </>
+<m>-     <i>70</i> | test('assert.doesNotThrow', () => {</>
+<g>+     <i>69</i> | test('assert.doesNotThrow', () => {</>
+<m>-   > 7<i>1</i> |   assert.doesNotThrow(() => {</>
+<g>+   > 7<i>0</i> |   assert.doesNotThrow(() => {</>
 <d>         |          ^</>
-<g>-     7<i>2</i> |     throw Error('err!');</>
-<r>+     7<i>1</i> |     throw Error('err!');</>
-<g>-     7<i>3</i> |   });</>
-<r>+     7<i>2</i> |   });</>
-<g>-     7<i>4</i> | });</>
-<r>+     7<i>3</i> | });</>
-<g>-     at Object.doesNotThrow (__tests__/assertionError.test.js:7<i>1</i>:10)</>
-<r>+     at Object.doesNotThrow (__tests__/assertionError.test.js:7<i>0</i>:10)</>
+<m>-     7<i>2</i> |     throw Error('err!');</>
+<g>+     7<i>1</i> |     throw Error('err!');</>
+<m>-     7<i>3</i> |   });</>
+<g>+     7<i>2</i> |   });</>
+<m>-     7<i>4</i> | });</>
+<g>+     7<i>3</i> | });</>
+<m>-     at Object.doesNotThrow (__tests__/assertionError.test.js:7<i>1</i>:10)</>
+<g>+     at Object.doesNotThrow (__tests__/assertionError.test.js:7<i>0</i>:10)</>
 `;
 
 exports[`printSnapshotAndReceived single line large changes 1`] = `
-Snapshot: <g>"<i>A</i>rray length<i> must be a finite positive integer</i>"</>
-Received: <r>"<i>Invalid a</i>rray length"</>
+Snapshot: <m>"<i>A</i>rray length<i> must be a finite positive integer</i>"</>
+Received: <g>"<i>Invalid a</i>rray length"</>
 `;
 
 exports[`printSnapshotAndReceived without serialize backtick single line expected and multi line received 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 2</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 2</>
 
-<g>- var foo = \`backtick\`;</>
-<r>+ var foo = \`back</>
-<r>+ tick\`;</>
+<m>- var foo = \`backtick\`;</>
+<g>+ var foo = \`back</>
+<g>+ tick\`;</>
 `;
 
 exports[`printSnapshotAndReceived without serialize backtick single line expected and received 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 1</>
 
-<g>- var foo = \`backtick\`;</>
-<r>+ var foo = \`back<i>\${x}</i>tick\`;</>
+<m>- var foo = \`backtick\`;</>
+<g>+ var foo = \`back<i>\${x}</i>tick\`;</>
 `;
 
 exports[`printSnapshotAndReceived without serialize has no common after clean up chaff multi line 1`] = `
-<g>- Snapshot  - 2</>
-<r>+ Received  + 2</>
+<m>- Snapshot  - 2</>
+<g>+ Received  + 2</>
 
-<g>- delete</>
-<g>- two</>
-<r>+ insert</>
-<r>+ 2</>
+<m>- delete</>
+<m>- two</>
+<g>+ insert</>
+<g>+ 2</>
 `;
 
 exports[`printSnapshotAndReceived without serialize has no common after clean up chaff single line 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 1</>
 
-<g>- delete</>
-<r>+ insert</>
+<m>- delete</>
+<g>+ insert</>
 `;
 
 exports[`printSnapshotAndReceived without serialize prettier/pull/5590 1`] = `
-<g>- Snapshot  - 1</>
-<r>+ Received  + 1</>
+<m>- Snapshot  - 1</>
+<g>+ Received  + 1</>
 
 <y>@@ -4,8 +4,8 @@</>
 <d>                                                                                  | printWidth</>
@@ -534,8 +534,8 @@ exports[`printSnapshotAndReceived without serialize prettier/pull/5590 1`] = `
 <d>  <img src="test.png" alt='John "ShotGun" Nelson'></>
 
 <d>  =====================================output=====================================</>
-<g>- <img src="test.png" alt=<i>"</i>John <i>&quot;</i>ShotGun<i>&quot;</i> Nelson<i>"</i> /></>
-<r>+ <img src="test.png" alt=<i>'</i>John <i>"</i>ShotGun<i>"</i> Nelson<i>'</i> /></>
+<m>- <img src="test.png" alt=<i>"</i>John <i>&quot;</i>ShotGun<i>&quot;</i> Nelson<i>"</i> /></>
+<g>+ <img src="test.png" alt=<i>'</i>John <i>"</i>ShotGun<i>"</i> Nelson<i>'</i> /></>
 
 <d>  ================================================================================</>
 `;
