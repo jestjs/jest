@@ -3,7 +3,7 @@
 
 #Use Node 12.13.0 image
 #Includes Python2.7
-FROM node:12.13.0
+FROM node:12
 
 #Setup basic environment
 ENV DEBIAN_FRONTEND=noninteractive \
