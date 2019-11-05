@@ -109,7 +109,7 @@ it('checks that process.env works as expected in Windows platforms', () => {
 
 test('allows retrieving the current domain', () => {
   const aDomain = domain.create();
-  process.domain = aDomain;
+  Object.defineProperty(process, 'domain', {get: () => aDomain});
 
   expect(createProcessObject().domain).toEqual(aDomain);
 });

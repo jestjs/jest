@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 module.exports = {
   collectCoverageFrom: [
     '**/packages/*/**/*.js',
@@ -20,6 +18,7 @@ module.exports = {
     '!**/vendor/**',
     '!e2e/**',
   ],
+  globalSetup: '<rootDir>/globalSetupFile.js',
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
