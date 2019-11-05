@@ -112,7 +112,7 @@
 
 ### Chore & Maintenance
 
-- `[docs]` Replace FlowType with Typescript in CONTRIBUTING.MD code conventions
+- `[docs]` Replace FlowType with TypeScript in CONTRIBUTING.MD code conventions
 - `[jest-leak-detector]` remove code repeat ([#8438](https://github.com/facebook/jest/pull/8438))
 - `[docs]` Add example to `jest.requireActual` ([#8482](https://github.com/facebook/jest/pull/8482))
 - `[docs]` Add example to `jest.mock` for mocking ES6 modules with the `factory` parameter ([#8550](https://github.com/facebook/jest/pull/8550))
