@@ -229,7 +229,7 @@ export const printSnapshotAndReceived = (
     aColor,
     bAnnotation,
     bColor,
-    changeLineTrailingSpaceColor: chalk.bgYellow,
+    changeLineTrailingSpaceColor: noColor,
     commonLineTrailingSpaceColor: chalk.bgYellow,
     emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
     expand,
