@@ -213,7 +213,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 - 80 character line length strongly preferred.
 - Prefer `'` over `"`.
 - ES6 syntax when possible.
-- Use [Flow types](http://flowtype.org/).
+- Use [TypeScript](https://www.typescriptlang.org/).
 - Use semicolons;
 - Trailing commas,
 - Avd abbr wrds.
