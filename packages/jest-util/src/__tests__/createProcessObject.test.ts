@@ -6,6 +6,7 @@
  */
 
 import {EventEmitter} from 'events';
+import * as domain from 'domain';
 
 let createProcessObject;
 
@@ -104,4 +105,11 @@ it('checks that process.env works as expected in Windows platforms', () => {
 
   expect(fake.hasOwnProperty('PROP_STRING')).toBe(false);
   expect(fake.hasOwnProperty('PROP_string')).toBe(false);
+});
+
+test('allows retrieving the current domain', () => {
+  const aDomain = domain.create();
+  process.domain = aDomain;
+
+  expect(createProcessObject().domain).toEqual(aDomain);
 });

@@ -112,5 +112,11 @@ export default function() {
   newProcess.env = createProcessEnv();
   newProcess.send = () => {};
 
+  Object.defineProperty(newProcess, 'domain', {
+    get() {
+      return process.domain;
+    },
+  });
+
   return newProcess;
 }
