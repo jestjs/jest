@@ -71,7 +71,7 @@
     "slash": "^3.0.0",
     "string-length": "^3.1.0",
     "strip-ansi": "^5.0.0",
-    "typescript": "^3.6.2",
+    "typescript": "^3.7.2",
     "webpack": "^4.28.4",
     "which": "^2.0.1"
   },
