@@ -207,9 +207,6 @@ export const createPatchMark = (
     `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
   );
 
-export const splitLines0 = (string: string) =>
-  string.length === 0 ? [] : string.split('\n');
-
 // Compare two strings character-by-character.
 // Format as comparison lines in which changed substrings have inverse colors.
 export const diffStringsUnified = (
@@ -235,7 +232,7 @@ export const diffStringsUnified = (
   }
 
   // Fall back to line-by-line diff.
-  return diffLinesUnified(splitLines0(a), splitLines0(b), options);
+  return diffLinesUnified(a.split('\n'), b.split('\n'), options);
 };
 
 // Compare two strings character-by-character.
