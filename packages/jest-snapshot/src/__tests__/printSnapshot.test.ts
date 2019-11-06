@@ -52,8 +52,11 @@ const aOpenBackground3 = openBackground3(aBackground3);
 const bOpenForeground3 = openForeground3(bForeground3);
 const bOpenBackground3 = openBackground3(bBackground3);
 
-const convertAnsi = (val: string): string =>
-  val.replace(ansiRegex(), match => {
+const convertAnsi = (val: string): string => {
+  // Trailing spaces in common lines have yellow background color.
+  let isYellowBackground = false;
+
+  return val.replace(ansiRegex(), match => {
     switch (match) {
       case styles.inverse.open:
         return '<i>';
@@ -87,19 +90,27 @@ const convertAnsi = (val: string): string =>
         return '</>';
 
       case styles.bgYellow.open:
+        isYellowBackground = true;
+        return '<Y>';
+
       case aOpenBackground1:
       case bOpenBackground1:
       case aOpenBackground2:
       case bOpenBackground2:
       case aOpenBackground3:
       case bOpenBackground3:
-      case styles.bgYellow.close:
+        isYellowBackground = false;
         return '';
+
+      case styles.bgYellow.close:
+        // The same code closes any background color.
+        return isYellowBackground ? '</Y>' : '';
 
       default:
         return match;
     }
   });
+};
 
 expect.addSnapshotSerializer({
   serialize(val: string): string {
@@ -139,7 +150,8 @@ describe('chalk', () => {
   };
 
   const expected0 = '- delete 1 \n  common 2  \n+ insert 0';
-  const expected1 = '<m>- delete 1 </>\n<d>  common 2  </>\n<g>+ insert 0</>';
+  const expected1 =
+    '<m>- delete 1 </>\n<d>  common 2<Y>  </Y></>\n<g>+ insert 0</>';
 
   test('level 0', () => {
     const chalkInstance = new chalk.Instance({level: 0});
