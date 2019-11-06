@@ -80,13 +80,13 @@
 <p>或 <a href="https://www.npmjs.com/"><code>npm</code></a>：</p>
 <pre><code class="hljs css language-bash">npm install --save-dev jest
 </code></pre>
-<p>Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a <code>sum.js</code> file:</p>
+<p>让我们开始为一个假设函数编写测试，该函数将两个数字相加。 首先，创建一个 <code>sum.js</code> 文件：</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
   <span class="hljs-keyword">return</span> a + b;
 }
 <span class="hljs-built_in">module</span>.exports = sum;
 </code></pre>
-<p>Then, create a file named <code>sum.test.js</code>. This will contain our actual test:</p>
+<p>然后，创建一个名为 <code>sum.test.js</code> 的文件。 这将包含我们的实际测试：</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> sum = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./sum'</span>);
 
 test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
