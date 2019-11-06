@@ -169,7 +169,7 @@ expect.extend({
       ? () =>
           this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
-          `Expected: ${this.isNot ? 'not ' : ''}${this.utils.printExpected(expected)}\n` +
+          `Expected: not ${this.utils.printExpected(expected)}\n` +
           `Received: ${this.utils.printReceived(received)}`
       : () => {
           const diffString = diff(expected, received, {
@@ -180,7 +180,7 @@ expect.extend({
             '\n\n' +
             (diffString && diffString.includes('- Expect')
               ? `Difference:\n\n${diffString}`
-              : `Expected: ${this.isNot ? 'not ' : ''}${this.utils.printExpected(expected)}\n` +
+              : `Expected: ${this.utils.printExpected(expected)}\n` +
                 `Received: ${this.utils.printReceived(received)}`)
           );
         };
