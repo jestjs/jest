@@ -40,7 +40,7 @@
     "strip-ansi": "^5.0.0"
   },
   "optionalDependencies": {
-    "node-notifier": "^5.4.3"
+    "node-notifier": "^6.0.0"
   },
   "engines": {
     "node": ">= 8"
