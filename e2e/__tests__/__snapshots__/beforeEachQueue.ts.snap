@@ -4,26 +4,26 @@ exports[`Correct beforeEach order ensures the correct order for beforeEach 1`] =
 "  console.log
     BeforeEach
 
-      at Object.log (__tests__/beforeEachQueue.test.js:10:13)
+      at Object.<anonymous> (__tests__/beforeEachQueue.test.js:10:13)
 
   console.log
     It Foo
 
-      at Object.log (__tests__/beforeEachQueue.test.js:14:13)
+      at Object.<anonymous> (__tests__/beforeEachQueue.test.js:14:13)
 
   console.log
     BeforeEach Inline Foo
 
-      at Object.log (__tests__/beforeEachQueue.test.js:17:15)
+      at Object.<anonymous> (__tests__/beforeEachQueue.test.js:17:15)
 
   console.log
     BeforeEach
 
-      at Object.log (__tests__/beforeEachQueue.test.js:10:13)
+      at Object.<anonymous> (__tests__/beforeEachQueue.test.js:10:13)
 
   console.log
     It Bar
 
-      at Object.log (__tests__/beforeEachQueue.test.js:22:13)
+      at Object.<anonymous> (__tests__/beforeEachQueue.test.js:22:13)
 "
 `;

@@ -4,7 +4,7 @@ exports[`traverses directory tree up until it finds jest.config 1`] = `
 "  console.log
 <<REPLACED>>/jest-config-js/some/nested/directory
 
-      at Object.log (__tests__/a-banana.js:3:27)
+      at Object.<anonymous> (__tests__/a-banana.js:3:27)
 "
 `;
 

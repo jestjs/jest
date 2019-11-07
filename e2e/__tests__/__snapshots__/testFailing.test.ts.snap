@@ -32,55 +32,55 @@ exports[`works with all statuses 1`] = `
       15 |
       16 | it.skip('skips', () => {
 
-      at Object.toBe (__tests__/statuses.test.js:13:14)
+      at Object.<anonymous> (__tests__/statuses.test.js:13:14)
 
   ● .add(1, 1)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      28 | });
-      29 |
-    > 30 | test.failing.each([
-         | ^
-      31 |   {a: 1, b: 1, expected: 2},
       32 |   {a: 1, b: 2, expected: 3},
       33 |   {a: 2, b: 1, expected: 3},
+    > 34 | ])('.add($a, $b)', ({a, b, expected}) => {
+         |   ^
+      35 |   expect(a + b).toBe(expected);
+      36 | });
+      37 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
+      at Object.<anonymous> (__tests__/statuses.test.js:34:3)
 
   ● .add(1, 2)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      28 | });
-      29 |
-    > 30 | test.failing.each([
-         | ^
-      31 |   {a: 1, b: 1, expected: 2},
       32 |   {a: 1, b: 2, expected: 3},
       33 |   {a: 2, b: 1, expected: 3},
+    > 34 | ])('.add($a, $b)', ({a, b, expected}) => {
+         |   ^
+      35 |   expect(a + b).toBe(expected);
+      36 | });
+      37 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
+      at Object.<anonymous> (__tests__/statuses.test.js:34:3)
 
   ● .add(2, 1)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      28 | });
-      29 |
-    > 30 | test.failing.each([
-         | ^
-      31 |   {a: 1, b: 1, expected: 2},
       32 |   {a: 1, b: 2, expected: 3},
       33 |   {a: 2, b: 1, expected: 3},
+    > 34 | ])('.add($a, $b)', ({a, b, expected}) => {
+         |   ^
+      35 |   expect(a + b).toBe(expected);
+      36 | });
+      37 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at Object.<anonymous> (__tests__/statuses.test.js:30:1)
+      at Object.<anonymous> (__tests__/statuses.test.js:34:3)
 
   ● failing passes = fails
 
@@ -94,7 +94,7 @@ exports[`works with all statuses 1`] = `
       48 | });
       49 |
 
-      at Object.failing (__tests__/statuses.test.js:46:4)"
+      at Object.<anonymous> (__tests__/statuses.test.js:46:4)"
 `;
 
 exports[`works with concurrent and only mode 1`] = `
@@ -120,59 +120,59 @@ exports[`works with concurrent and only mode 1`] = `
       15 |   });
       16 |
 
-      at failing (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
-      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
+      at __tests__/worksWithConcurrentOnlyMode.test.js:13:22
+      at Object.<anonymous> (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
 
   ● block with concurrent › .add(1, 1)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      15 |   });
-      16 |
-    > 17 |   test.concurrent.only.failing.each([
-         |   ^
-      18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
+    > 21 |   ])('.add($a, $b)', ({a, b, expected}) => {
+         |     ^
+      22 |     expect(a + b).toBe(expected);
+      23 |   });
+      24 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
-      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
+      at __tests__/worksWithConcurrentOnlyMode.test.js:21:5
+      at Object.<anonymous> (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
 
   ● block with concurrent › .add(1, 2)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      15 |   });
-      16 |
-    > 17 |   test.concurrent.only.failing.each([
-         |   ^
-      18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
+    > 21 |   ])('.add($a, $b)', ({a, b, expected}) => {
+         |     ^
+      22 |     expect(a + b).toBe(expected);
+      23 |   });
+      24 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
-      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
+      at __tests__/worksWithConcurrentOnlyMode.test.js:21:5
+      at Object.<anonymous> (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
 
   ● block with concurrent › .add(2, 1)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      15 |   });
-      16 |
-    > 17 |   test.concurrent.only.failing.each([
-         |   ^
-      18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
+    > 21 |   ])('.add($a, $b)', ({a, b, expected}) => {
+         |     ^
+      22 |     expect(a + b).toBe(expected);
+      23 |   });
+      24 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentOnlyMode.test.js:17:3
-      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)"
+      at __tests__/worksWithConcurrentOnlyMode.test.js:21:5
+      at Object.<anonymous> (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)"
 `;
 
 exports[`works with concurrent mode 1`] = `
@@ -201,7 +201,7 @@ exports[`works with concurrent mode 1`] = `
       12 |
       13 |   it.concurrent.failing('failing passes = fails', () => {
 
-      at Object.toBe (__tests__/worksWithConcurrentMode.test.js:10:16)
+      at Object.<anonymous> (__tests__/worksWithConcurrentMode.test.js:10:16)
 
   ● block with concurrent › failing passes = fails
 
@@ -215,59 +215,59 @@ exports[`works with concurrent mode 1`] = `
       15 |   });
       16 |
 
-      at failing (__tests__/worksWithConcurrentMode.test.js:13:17)
-      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
+      at __tests__/worksWithConcurrentMode.test.js:13:17
+      at Object.<anonymous> (__tests__/worksWithConcurrentMode.test.js:8:1)
 
   ● block with concurrent › .add(1, 1)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      15 |   });
-      16 |
-    > 17 |   test.concurrent.failing.each([
-         |   ^
-      18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
+    > 21 |   ])('.add($a, $b)', ({a, b, expected}) => {
+         |     ^
+      22 |     expect(a + b).toBe(expected);
+      23 |   });
+      24 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentMode.test.js:17:3
-      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
+      at __tests__/worksWithConcurrentMode.test.js:21:5
+      at Object.<anonymous> (__tests__/worksWithConcurrentMode.test.js:8:1)
 
   ● block with concurrent › .add(1, 2)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      15 |   });
-      16 |
-    > 17 |   test.concurrent.failing.each([
-         |   ^
-      18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
+    > 21 |   ])('.add($a, $b)', ({a, b, expected}) => {
+         |     ^
+      22 |     expect(a + b).toBe(expected);
+      23 |   });
+      24 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentMode.test.js:17:3
-      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
+      at __tests__/worksWithConcurrentMode.test.js:21:5
+      at Object.<anonymous> (__tests__/worksWithConcurrentMode.test.js:8:1)
 
   ● block with concurrent › .add(2, 1)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      15 |   });
-      16 |
-    > 17 |   test.concurrent.failing.each([
-         |   ^
-      18 |     {a: 1, b: 1, expected: 2},
       19 |     {a: 1, b: 2, expected: 3},
       20 |     {a: 2, b: 1, expected: 3},
+    > 21 |   ])('.add($a, $b)', ({a, b, expected}) => {
+         |     ^
+      22 |     expect(a + b).toBe(expected);
+      23 |   });
+      24 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at __tests__/worksWithConcurrentMode.test.js:17:3
-      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)"
+      at __tests__/worksWithConcurrentMode.test.js:21:5
+      at Object.<anonymous> (__tests__/worksWithConcurrentMode.test.js:8:1)"
 `;
 
 exports[`works with only mode 1`] = `
@@ -297,52 +297,52 @@ exports[`works with only mode 1`] = `
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      13 |   });
-      14 |
-    > 15 |   it.only.failing.each([
-         |   ^
-      16 |     {a: 1, b: 1, expected: 2},
       17 |     {a: 1, b: 2, expected: 3},
       18 |     {a: 2, b: 1, expected: 3},
+    > 19 |   ])('.add($a, $b)', ({a, b, expected}) => {
+         |     ^
+      20 |     expect(a + b).toBe(expected);
+      21 |   });
+      22 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at __tests__/worksWithOnlyMode.test.js:15:3
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:10:1)
+      at __tests__/worksWithOnlyMode.test.js:19:5
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:10:1)
 
   ● block with only, should pass › .add(1, 2)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      13 |   });
-      14 |
-    > 15 |   it.only.failing.each([
-         |   ^
-      16 |     {a: 1, b: 1, expected: 2},
       17 |     {a: 1, b: 2, expected: 3},
       18 |     {a: 2, b: 1, expected: 3},
+    > 19 |   ])('.add($a, $b)', ({a, b, expected}) => {
+         |     ^
+      20 |     expect(a + b).toBe(expected);
+      21 |   });
+      22 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at __tests__/worksWithOnlyMode.test.js:15:3
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:10:1)
+      at __tests__/worksWithOnlyMode.test.js:19:5
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:10:1)
 
   ● block with only, should pass › .add(2, 1)
 
     Failing test passed even though it was supposed to fail. Remove \`.failing\` to remove error.
 
-      13 |   });
-      14 |
-    > 15 |   it.only.failing.each([
-         |   ^
-      16 |     {a: 1, b: 1, expected: 2},
       17 |     {a: 1, b: 2, expected: 3},
       18 |     {a: 2, b: 1, expected: 3},
+    > 19 |   ])('.add($a, $b)', ({a, b, expected}) => {
+         |     ^
+      20 |     expect(a + b).toBe(expected);
+      21 |   });
+      22 |
 
       at ../../packages/jest-each/build/bind.js:45:11
           at Array.forEach (<anonymous>)
-      at __tests__/worksWithOnlyMode.test.js:15:3
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:10:1)
+      at __tests__/worksWithOnlyMode.test.js:19:5
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:10:1)
 
   ● block with only, should fail › failing passes = fails, should fail
 
@@ -356,8 +356,8 @@ exports[`works with only mode 1`] = `
       35 |   });
       36 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:33:11)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:32:1)
+      at __tests__/worksWithOnlyMode.test.js:33:11
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:32:1)
 
   ● block with only in other it, should skip › failing test
 
@@ -374,7 +374,7 @@ exports[`works with only mode 1`] = `
       54 |
       55 |   it('passing test but skipped', () => {
 
-      at Object.toBe (__tests__/worksWithOnlyMode.test.js:52:16)
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:52:16)
 
   ● block with only with different syntax, should fail › failing passes = fails, should fail 1
 
@@ -388,8 +388,8 @@ exports[`works with only mode 1`] = `
       63 |   });
       64 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:61:7)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:60:1)
+      at __tests__/worksWithOnlyMode.test.js:61:7
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:60:1)
 
   ● block with only with different syntax, should fail › failing passes = fails, should fail 2
 
@@ -403,8 +403,8 @@ exports[`works with only mode 1`] = `
       67 |   });
       68 |
 
-      at failing (__tests__/worksWithOnlyMode.test.js:65:13)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:60:1)"
+      at __tests__/worksWithOnlyMode.test.js:65:13
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:60:1)"
 `;
 
 exports[`works with skip mode 1`] = `
@@ -438,5 +438,5 @@ exports[`works with skip mode 1`] = `
       24 |
       25 |   it.skip('passing test', () => {
 
-      at Object.toBe (__tests__/worksWithSkipMode.test.js:22:16)"
+      at Object.<anonymous> (__tests__/worksWithSkipMode.test.js:22:16)"
 `;

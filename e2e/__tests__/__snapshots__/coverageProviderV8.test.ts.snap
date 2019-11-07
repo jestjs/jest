@@ -19,7 +19,7 @@ exports[`prints correct coverage report, if a TS module is transpiled by Babel t
 "  console.log
     this will print
 
-      at log (module.ts:13:11)
+      at covered (module.ts:13:11)
 
 --------------|---------|----------|---------|---------|-------------------
 File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
@@ -75,7 +75,7 @@ exports[`prints coverage with missing sourcemaps 1`] = `
 "  console.log
     42
 
-      at Object.log (__tests__/Thing.test.js:10:9)
+      at Object.<anonymous> (__tests__/Thing.test.js:10:9)
 
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
@@ -90,12 +90,12 @@ exports[`reports coverage with \`resetModules\` 1`] = `
 "  console.log
     this will print
 
-      at log (module.js:11:11)
+      at covered (module.js:11:11)
 
   console.log
     this will print
 
-      at log (module.js:11:11)
+      at covered (module.js:11:11)
 
 --------------|---------|----------|---------|---------|-------------------
 File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 

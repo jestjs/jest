@@ -12,7 +12,7 @@ exports[`shows error messages when called with invalid argument 1`] = `
         |    ^
       9 |
 
-      at Object.todo (__tests__/todoNonString.test.js:8:4)"
+      at Object.<anonymous> (__tests__/todoNonString.test.js:8:4)"
 `;
 
 exports[`shows error messages when called with multiple arguments 1`] = `
@@ -27,7 +27,7 @@ exports[`shows error messages when called with multiple arguments 1`] = `
         |    ^
       9 |
 
-      at Object.todo (__tests__/todoMultipleArgs.test.js:8:4)"
+      at Object.<anonymous> (__tests__/todoMultipleArgs.test.js:8:4)"
 `;
 
 exports[`shows error messages when called with no arguments 1`] = `
@@ -42,7 +42,7 @@ exports[`shows error messages when called with no arguments 1`] = `
         |    ^
       9 |
 
-      at Object.todo (__tests__/todoNoArgs.test.js:8:4)"
+      at Object.<anonymous> (__tests__/todoNoArgs.test.js:8:4)"
 `;
 
 exports[`shows todo messages when in verbose mode 1`] = `
@@ -75,5 +75,5 @@ exports[`works with all statuses 1`] = `
       15 |
       16 | it.skip('skips', () => {
 
-      at Object.toBe (__tests__/statuses.test.js:13:14)"
+      at Object.<anonymous> (__tests__/statuses.test.js:13:14)"
 `;

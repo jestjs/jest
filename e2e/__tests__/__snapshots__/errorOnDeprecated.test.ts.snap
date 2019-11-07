@@ -11,12 +11,12 @@ exports[`defaultTimeoutInterval.test.js errors in errorOnDeprecated mode 1`] = `
        8 |
        9 | test('Default Timeout Interval', () => {
     > 10 |   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
-         |   ^
+         |                                   ^
       11 |   expect(true).toBe(true);
       12 | });
       13 |
 
-      at Object.<anonymous> (__tests__/defaultTimeoutInterval.test.js:10:3)"
+      at Object.<anonymous> (__tests__/defaultTimeoutInterval.test.js:10:35)"
 `;
 
 exports[`fail.test.js errors in errorOnDeprecated mode 1`] = `
@@ -35,7 +35,7 @@ exports[`fail.test.js errors in errorOnDeprecated mode 1`] = `
       13 | });
       14 |
 
-      at Object.fail (__tests__/fail.test.js:11:5)"
+      at Object.<anonymous> (__tests__/fail.test.js:11:5)"
 `;
 
 exports[`jasmine.addMatchers.test.js errors in errorOnDeprecated mode 1`] = `
@@ -52,7 +52,7 @@ exports[`jasmine.addMatchers.test.js errors in errorOnDeprecated mode 1`] = `
       11 |     compare: (actual, expected) => ({
       12 |       message: 'Nobdy expects the Spanish Inquisition!',
 
-      at Object.addMatchers (__tests__/jasmine.addMatchers.test.js:9:9)"
+      at Object.<anonymous> (__tests__/jasmine.addMatchers.test.js:9:9)"
 `;
 
 exports[`jasmine.any.test.js errors in errorOnDeprecated mode 1`] = `
@@ -70,7 +70,7 @@ exports[`jasmine.any.test.js errors in errorOnDeprecated mode 1`] = `
       11 | });
       12 |
 
-      at Object.any (__tests__/jasmine.any.test.js:10:51)"
+      at Object.<anonymous> (__tests__/jasmine.any.test.js:10:51)"
 `;
 
 exports[`jasmine.anything.test.js errors in errorOnDeprecated mode 1`] = `
@@ -88,7 +88,7 @@ exports[`jasmine.anything.test.js errors in errorOnDeprecated mode 1`] = `
       11 | });
       12 |
 
-      at Object.anything (__tests__/jasmine.anything.test.js:10:62)"
+      at Object.<anonymous> (__tests__/jasmine.anything.test.js:10:62)"
 `;
 
 exports[`jasmine.arrayContaining.test.js errors in errorOnDeprecated mode 1`] = `
@@ -106,7 +106,7 @@ exports[`jasmine.arrayContaining.test.js errors in errorOnDeprecated mode 1`] = 
       11 | });
       12 |
 
-      at Object.arrayContaining (__tests__/jasmine.arrayContaining.test.js:10:45)"
+      at Object.<anonymous> (__tests__/jasmine.arrayContaining.test.js:10:45)"
 `;
 
 exports[`jasmine.createSpy.test.js errors in errorOnDeprecated mode 1`] = `
@@ -125,7 +125,7 @@ exports[`jasmine.createSpy.test.js errors in errorOnDeprecated mode 1`] = `
       12 |   expect(mySpy).toHaveBeenCalledWith('hello?');
       13 | });
 
-      at Object.createSpy (__tests__/jasmine.createSpy.test.js:10:25)"
+      at Object.<anonymous> (__tests__/jasmine.createSpy.test.js:10:25)"
 `;
 
 exports[`jasmine.objectContaining.test.js errors in errorOnDeprecated mode 1`] = `
@@ -144,7 +144,7 @@ exports[`jasmine.objectContaining.test.js errors in errorOnDeprecated mode 1`] =
       13 | });
       14 |
 
-      at Object.objectContaining (__tests__/jasmine.objectContaining.test.js:11:13)"
+      at Object.<anonymous> (__tests__/jasmine.objectContaining.test.js:11:13)"
 `;
 
 exports[`jasmine.stringMatching.test.js errors in errorOnDeprecated mode 1`] = `
@@ -162,7 +162,7 @@ exports[`jasmine.stringMatching.test.js errors in errorOnDeprecated mode 1`] = `
       11 | });
       12 |
 
-      at Object.stringMatching (__tests__/jasmine.stringMatching.test.js:10:50)"
+      at Object.<anonymous> (__tests__/jasmine.stringMatching.test.js:10:50)"
 `;
 
 exports[`pending.test.js errors in errorOnDeprecated mode 1`] = `
@@ -181,7 +181,7 @@ exports[`pending.test.js errors in errorOnDeprecated mode 1`] = `
       13 |   expect(false).toBe(true);
       14 | });
 
-      at Object.pending (__tests__/pending.test.js:11:5)"
+      at Object.<anonymous> (__tests__/pending.test.js:11:5)"
 `;
 
 exports[`spyOn.test.js errors in errorOnDeprecated mode 1`] = `
@@ -200,7 +200,7 @@ exports[`spyOn.test.js errors in errorOnDeprecated mode 1`] = `
       17 | });
       18 |
 
-      at Object.spyOn (__tests__/spyOn.test.js:15:3)"
+      at Object.<anonymous> (__tests__/spyOn.test.js:15:3)"
 `;
 
 exports[`spyOnProperty.test.js errors in errorOnDeprecated mode 1`] = `
@@ -219,5 +219,5 @@ exports[`spyOnProperty.test.js errors in errorOnDeprecated mode 1`] = `
       26 |   obj.method();
       27 |
 
-      at Object.spyOnProperty (__tests__/spyOnProperty.test.js:24:15)"
+      at Object.<anonymous> (__tests__/spyOnProperty.test.js:24:15)"
 `;

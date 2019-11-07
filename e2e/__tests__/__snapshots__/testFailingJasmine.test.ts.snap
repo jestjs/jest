@@ -14,7 +14,7 @@ exports[`throws an error about unsupported modifier 1`] = `
       24 | });
       25 |
 
-      at Object.failing (__tests__/statuses.test.js:22:4)
+      at Object.<anonymous> (__tests__/statuses.test.js:22:4)
 
 FAIL __tests__/worksWithConcurrentMode.test.js
   ● block with concurrent › failing test
@@ -32,7 +32,7 @@ FAIL __tests__/worksWithConcurrentMode.test.js
       12 |
       13 |   it.concurrent.failing('failing passes = fails', () => {
 
-      at Object.toBe (__tests__/worksWithConcurrentMode.test.js:10:16)
+      at Object.<anonymous> (__tests__/worksWithConcurrentMode.test.js:10:16)
 
   ● block with concurrent › encountered a declaration exception
 
@@ -46,9 +46,9 @@ FAIL __tests__/worksWithConcurrentMode.test.js
       15 |   });
       16 |
 
-      at Function.failing (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:195:11)
-      at Suite.failing (__tests__/worksWithConcurrentMode.test.js:13:17)
-      at Object.describe (__tests__/worksWithConcurrentMode.test.js:8:1)
+      at Function.failing (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:160:11)
+      at Suite.<anonymous> (__tests__/worksWithConcurrentMode.test.js:13:17)
+      at Object.<anonymous> (__tests__/worksWithConcurrentMode.test.js:8:1)
 
 FAIL __tests__/worksWithConcurrentOnlyMode.test.js
   ● block with concurrent › skipped failing test
@@ -66,7 +66,7 @@ FAIL __tests__/worksWithConcurrentOnlyMode.test.js
       12 |
       13 |   it.concurrent.only.failing('failing passes = fails', () => {
 
-      at Object.toBe (__tests__/worksWithConcurrentOnlyMode.test.js:10:16)
+      at Object.<anonymous> (__tests__/worksWithConcurrentOnlyMode.test.js:10:16)
 
   ● block with concurrent › encountered a declaration exception
 
@@ -80,9 +80,9 @@ FAIL __tests__/worksWithConcurrentOnlyMode.test.js
       15 |   });
       16 |
 
-      at Function.failing (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:195:11)
-      at Suite.failing (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
-      at Object.describe (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
+      at Function.failing (../../packages/jest-jasmine2/build/jasmineAsyncInstall.js:160:11)
+      at Suite.<anonymous> (__tests__/worksWithConcurrentOnlyMode.test.js:13:22)
+      at Object.<anonymous> (__tests__/worksWithConcurrentOnlyMode.test.js:8:1)
 
 FAIL __tests__/worksWithOnlyMode.test.js
   ● block with only, should pass › encountered a declaration exception
@@ -97,8 +97,8 @@ FAIL __tests__/worksWithOnlyMode.test.js
       13 |   });
       14 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:11:11)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:10:1)
+      at Suite.<anonymous> (__tests__/worksWithOnlyMode.test.js:11:11)
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:10:1)
 
   ● block with only, should fail › encountered a declaration exception
 
@@ -112,8 +112,8 @@ FAIL __tests__/worksWithOnlyMode.test.js
       35 |   });
       36 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:33:11)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:32:1)
+      at Suite.<anonymous> (__tests__/worksWithOnlyMode.test.js:33:11)
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:32:1)
 
   ● block with only in other it, should skip › encountered a declaration exception
 
@@ -127,8 +127,8 @@ FAIL __tests__/worksWithOnlyMode.test.js
       49 |   });
       50 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:47:6)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:46:1)
+      at Suite.<anonymous> (__tests__/worksWithOnlyMode.test.js:47:6)
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:46:1)
 
   ● block with only with different syntax, should fail › encountered a declaration exception
 
@@ -142,8 +142,8 @@ FAIL __tests__/worksWithOnlyMode.test.js
       63 |   });
       64 |
 
-      at Suite.failing (__tests__/worksWithOnlyMode.test.js:61:7)
-      at Object.describe (__tests__/worksWithOnlyMode.test.js:60:1)
+      at Suite.<anonymous> (__tests__/worksWithOnlyMode.test.js:61:7)
+      at Object.<anonymous> (__tests__/worksWithOnlyMode.test.js:60:1)
 
 FAIL __tests__/worksWithSkipMode.test.js
   ● block with only, should pass › encountered a declaration exception
@@ -158,8 +158,8 @@ FAIL __tests__/worksWithSkipMode.test.js
       11 |   });
       12 |
 
-      at Suite.failing (__tests__/worksWithSkipMode.test.js:9:11)
-      at Object.describe (__tests__/worksWithSkipMode.test.js:8:1)
+      at Suite.<anonymous> (__tests__/worksWithSkipMode.test.js:9:11)
+      at Object.<anonymous> (__tests__/worksWithSkipMode.test.js:8:1)
 
   ● block with only, should fail › encountered a declaration exception
 
@@ -173,6 +173,6 @@ FAIL __tests__/worksWithSkipMode.test.js
       37 |   });
       38 |
 
-      at Suite.failing (__tests__/worksWithSkipMode.test.js:35:11)
-      at Object.describe (__tests__/worksWithSkipMode.test.js:34:1)"
+      at Suite.<anonymous> (__tests__/worksWithSkipMode.test.js:35:11)
+      at Object.<anonymous> (__tests__/worksWithSkipMode.test.js:34:1)"
 `;

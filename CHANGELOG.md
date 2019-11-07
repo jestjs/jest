@@ -16,6 +16,7 @@
 - `[jest-core]` Fix `detectOpenHandles` false positives for some special objects such as `TLSWRAP`. ([#13414](https://github.com/facebook/jest/pull/13414))
 - `[jest-mock]` Fix mocking of getters and setters on classes ([#13398](https://github.com/facebook/jest/pull/13398))
 - `[jest-reporters]` Revert: Transform file paths into hyperlinks ([#13399](https://github.com/facebook/jest/pull/13399))
+- `[jest-runner]` Update `source-map-support` to get correct function name in stack traces ([#9147](https://github.com/facebook/jest/pull/9147))
 - `[@jest/types]` Infer type of `each` table correctly when the table is a tuple or array ([#13381](https://github.com/facebook/jest/pull/13381))
 - `[@jest/types]` Rework typings to allow the `*ReturnedWith` matchers to be called with no argument ([#13385](https://github.com/facebook/jest/pull/13385))
 

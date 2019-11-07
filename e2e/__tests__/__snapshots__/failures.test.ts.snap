@@ -44,7 +44,7 @@ exports[`not throwing Error objects 4`] = `
       14 | const redeclare = () => {
       15 |   expect.assertions(1);
 
-      at Object.toBeTruthy (__tests__/assertionCount.test.js:12:17)
+      at Object.throws (__tests__/assertionCount.test.js:12:17)
 
   ● .assertions() › throws
 
@@ -60,7 +60,7 @@ exports[`not throwing Error objects 4`] = `
       13 | };
       14 | const redeclare = () => {
 
-      at Object.assertions (__tests__/assertionCount.test.js:11:10)
+      at Object.throws (__tests__/assertionCount.test.js:11:10)
 
   ● .assertions() › throws on redeclare of assertion count
 
@@ -76,7 +76,7 @@ exports[`not throwing Error objects 4`] = `
       18 | };
       19 |
 
-      at Object.toBeTruthy (__tests__/assertionCount.test.js:16:17)
+      at Object.redeclare (__tests__/assertionCount.test.js:16:17)
 
   ● .assertions() › throws on assertion
 
@@ -92,7 +92,7 @@ exports[`not throwing Error objects 4`] = `
       23 | };
       24 |
 
-      at Object.assertions (__tests__/assertionCount.test.js:21:10)
+      at Object.noAssertions (__tests__/assertionCount.test.js:21:10)
 
   ● .hasAssertions() › throws when there are not assertions
 
@@ -108,7 +108,7 @@ exports[`not throwing Error objects 4`] = `
       28 |
       29 | describe('.assertions()', () => {
 
-      at Object.hasAssertions (__tests__/assertionCount.test.js:26:10)"
+      at Object.hasNoAssertions (__tests__/assertionCount.test.js:26:10)"
 `;
 
 exports[`not throwing Error objects 5`] = `
@@ -135,7 +135,7 @@ exports[`not throwing Error objects 5`] = `
       16 | });
       17 |
 
-      at Object.test (__tests__/duringTests.test.js:14:1)
+      at Object.<anonymous> (__tests__/duringTests.test.js:14:1)
 
   ● Boolean thrown during test
 
@@ -149,7 +149,7 @@ exports[`not throwing Error objects 5`] = `
       20 |   throw false;
       21 | });
 
-      at Object.test (__tests__/duringTests.test.js:18:1)
+      at Object.<anonymous> (__tests__/duringTests.test.js:18:1)
 
   ● undefined thrown during test
 
@@ -163,7 +163,7 @@ exports[`not throwing Error objects 5`] = `
       25 |   throw undefined;
       26 | });
 
-      at Object.test (__tests__/duringTests.test.js:23:1)
+      at Object.<anonymous> (__tests__/duringTests.test.js:23:1)
 
   ● Object thrown during test
 
@@ -184,7 +184,7 @@ exports[`not throwing Error objects 5`] = `
       30 | });
       31 |
 
-      at Object.test (__tests__/duringTests.test.js:28:1)
+      at Object.<anonymous> (__tests__/duringTests.test.js:28:1)
 
   ● Object with stack prop thrown during test
 
@@ -200,7 +200,7 @@ exports[`not throwing Error objects 5`] = `
       34 |   throw {stack: 42};
       35 | });
 
-      at Object.test (__tests__/duringTests.test.js:32:1)
+      at Object.<anonymous> (__tests__/duringTests.test.js:32:1)
 
   ● Error during test
 
@@ -214,7 +214,7 @@ exports[`not throwing Error objects 5`] = `
       41 |
       42 | test('done(Error)', done => {
 
-      at Object.doesNotExist (__tests__/duringTests.test.js:39:3)
+      at Object.<anonymous> (__tests__/duringTests.test.js:39:3)
 
   ● done(Error)
 
@@ -249,7 +249,7 @@ exports[`not throwing Error objects 5`] = `
       49 |
       50 | test('returned promise rejection', () => Promise.reject(deepObject));
 
-      at Object.done (__tests__/duringTests.test.js:47:3)
+      at Object.<anonymous> (__tests__/duringTests.test.js:47:3)
 
   ● returned promise rejection
 
@@ -268,7 +268,7 @@ exports[`not throwing Error objects 5`] = `
          | ^
       51 |
 
-      at Object.test (__tests__/duringTests.test.js:50:1)"
+      at Object.<anonymous> (__tests__/duringTests.test.js:50:1)"
 `;
 
 exports[`not throwing Error objects 6`] = `
@@ -299,8 +299,8 @@ exports[`works with assertions in separate files 1`] = `
       11 | };
       12 |
 
-      at toEqual (macros.js:10:15)
-      at Object.shouldEqual (__tests__/testMacro.test.js:13:3)"
+      at shouldEqual (macros.js:10:15)
+      at Object.<anonymous> (__tests__/testMacro.test.js:13:3)"
 `;
 
 exports[`works with async failures 1`] = `
@@ -331,7 +331,7 @@ exports[`works with async failures 1`] = `
       13 | test('reject, but fail', () =>
       14 |   expect(Promise.reject({foo: 'bar'})).rejects.toEqual({baz: 'bar'}));
 
-      at Object.toEqual (__tests__/asyncFailures.test.js:11:50)
+      at Object.<anonymous> (__tests__/asyncFailures.test.js:11:50)
 
   ● reject, but fail
 
@@ -353,7 +353,7 @@ exports[`works with async failures 1`] = `
       16 | test('expect reject', () =>
       17 |   expect(Promise.resolve({foo: 'bar'})).rejects.toEqual({foo: 'bar'}));
 
-      at Object.toEqual (__tests__/asyncFailures.test.js:14:48)
+      at Object.<anonymous> (__tests__/asyncFailures.test.js:14:48)
 
   ● expect reject
 
@@ -370,7 +370,7 @@ exports[`works with async failures 1`] = `
       19 | test('expect resolve', () =>
       20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
 
-      at Object.expect (__tests__/asyncFailures.test.js:17:3)
+      at Object.<anonymous> (__tests__/asyncFailures.test.js:17:3)
 
   ● expect resolve
 
@@ -387,7 +387,7 @@ exports[`works with async failures 1`] = `
       22 | test('timeout', done => {
       23 |   setTimeout(done, 50);
 
-      at Object.expect (__tests__/asyncFailures.test.js:20:3)
+      at Object.<anonymous> (__tests__/asyncFailures.test.js:20:3)
 
   ● timeout
 
@@ -401,7 +401,7 @@ exports[`works with async failures 1`] = `
       24 | }, 5);
       25 |
 
-      at Object.test (__tests__/asyncFailures.test.js:22:1)"
+      at Object.<anonymous> (__tests__/asyncFailures.test.js:22:1)"
 `;
 
 exports[`works with node assert 1`] = `
@@ -445,7 +445,7 @@ exports[`works with node assert 1`] = `
       16 |
       17 | test('assert with a message', () => {
 
-      at Object.assert (__tests__/assertionError.test.js:14:3)
+      at Object.<anonymous> (__tests__/assertionError.test.js:14:3)
 
   ● assert with a message
 
@@ -467,7 +467,7 @@ exports[`works with node assert 1`] = `
       20 |
       21 | test('assert.ok', () => {
 
-      at Object.assert (__tests__/assertionError.test.js:18:3)
+      at Object.<anonymous> (__tests__/assertionError.test.js:18:3)
 
   ● assert.ok
 
@@ -486,7 +486,7 @@ exports[`works with node assert 1`] = `
       24 |
       25 | test('assert.ok with a message', () => {
 
-      at Object.ok (__tests__/assertionError.test.js:22:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:22:10)
 
   ● assert.ok with a message
 
@@ -508,7 +508,7 @@ exports[`works with node assert 1`] = `
       28 |
       29 | test('assert.equal', () => {
 
-      at Object.ok (__tests__/assertionError.test.js:26:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:26:10)
 
   ● assert.equal
 
@@ -527,7 +527,7 @@ exports[`works with node assert 1`] = `
       32 |
       33 | test('assert.notEqual', () => {
 
-      at Object.equal (__tests__/assertionError.test.js:30:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:30:10)
 
   ● assert.notEqual
 
@@ -546,7 +546,7 @@ exports[`works with node assert 1`] = `
       36 |
       37 | test('assert.deepEqual', () => {
 
-      at Object.notEqual (__tests__/assertionError.test.js:34:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:34:10)
 
   ● assert.deepEqual
 
@@ -579,7 +579,7 @@ exports[`works with node assert 1`] = `
       40 |
       41 | test('assert.deepEqual with a message', () => {
 
-      at Object.deepEqual (__tests__/assertionError.test.js:38:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:38:10)
 
   ● assert.deepEqual with a message
 
@@ -615,7 +615,7 @@ exports[`works with node assert 1`] = `
       44 |
       45 | test('assert.notDeepEqual', () => {
 
-      at Object.deepEqual (__tests__/assertionError.test.js:42:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:42:10)
 
   ● assert.notDeepEqual
 
@@ -638,7 +638,7 @@ exports[`works with node assert 1`] = `
       48 |
       49 | test('assert.strictEqual', () => {
 
-      at Object.notDeepEqual (__tests__/assertionError.test.js:46:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:46:10)
 
   ● assert.strictEqual
 
@@ -657,7 +657,7 @@ exports[`works with node assert 1`] = `
       52 |
       53 | test('assert.notStrictEqual', () => {
 
-      at Object.strictEqual (__tests__/assertionError.test.js:50:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:50:10)
 
   ● assert.notStrictEqual
 
@@ -679,7 +679,7 @@ exports[`works with node assert 1`] = `
       56 |
       57 | test('assert.deepStrictEqual', () => {
 
-      at Object.notStrictEqual (__tests__/assertionError.test.js:54:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:54:10)
 
   ● assert.deepStrictEqual
 
@@ -708,7 +708,7 @@ exports[`works with node assert 1`] = `
       60 |
       61 | test('assert.notDeepStrictEqual', () => {
 
-      at Object.deepStrictEqual (__tests__/assertionError.test.js:58:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:58:10)
 
   ● assert.notDeepStrictEqual
 
@@ -731,7 +731,7 @@ exports[`works with node assert 1`] = `
       64 |
       65 | test('assert.ifError', () => {
 
-      at Object.notDeepStrictEqual (__tests__/assertionError.test.js:62:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:62:10)
 
   ● assert.ifError
 
@@ -757,7 +757,7 @@ exports[`works with node assert 1`] = `
       68 |
       69 | test('assert.doesNotThrow', () => {
 
-      at Object.ifError (__tests__/assertionError.test.js:66:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:66:10)
 
   ● assert.doesNotThrow
 
@@ -779,7 +779,7 @@ exports[`works with node assert 1`] = `
       72 |   });
       73 | });
 
-      at Object.doesNotThrow (__tests__/assertionError.test.js:70:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:70:10)
 
   ● assert.throws
 
@@ -799,7 +799,7 @@ exports[`works with node assert 1`] = `
       78 |
       79 | test('assert.throws with different error messages', () => {
 
-      at Object.throws (__tests__/assertionError.test.js:76:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:76:10)
 
   ● assert.throws with different error messages
 
@@ -821,7 +821,7 @@ exports[`works with node assert 1`] = `
       82 |       throw new Error('message 1');
       83 |     },
 
-      at Object.throws (__tests__/assertionError.test.js:80:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:80:10)
 
   ● assert.throws with different error types
 
@@ -837,10 +837,10 @@ exports[`works with node assert 1`] = `
       93 |   }, TypeError);
       94 | });
 
-      at Object.throws (__tests__/assertionError.test.js:91:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:91:10)
       Caught error:
       SyntaxError: message 1
-      at Object.throws (__tests__/assertionError.test.js:91:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:91:10)
 
   ● async
 
@@ -871,7 +871,7 @@ exports[`works with node assert 1`] = `
        99 |
       100 | test('assert.fail', () => {
 
-      at Object.equal (__tests__/assertionError.test.js:97:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:97:10)
 
   ● assert.fail
 
@@ -885,7 +885,7 @@ exports[`works with node assert 1`] = `
       103 |
       104 | test('assert.fail with a message', () => {
 
-      at Object.fail (__tests__/assertionError.test.js:101:10)
+      at Object.<anonymous> (__tests__/assertionError.test.js:101:10)
 
   ● assert.fail with a message
 
@@ -901,7 +901,7 @@ exports[`works with node assert 1`] = `
       106 | });
       107 |
 
-      at Object.fail (__tests__/assertionError.test.js:105:10)"
+      at Object.<anonymous> (__tests__/assertionError.test.js:105:10)"
 `;
 
 exports[`works with snapshot failures 1`] = `
@@ -924,7 +924,7 @@ exports[`works with snapshot failures 1`] = `
       12 | });
       13 |
 
-      at Object.toMatchSnapshot (__tests__/snapshot.test.js:11:17)
+      at Object.<anonymous> (__tests__/snapshot.test.js:11:17)
 
  › 1 snapshot failed.
 "
@@ -950,7 +950,7 @@ exports[`works with snapshot failures with hint 1`] = `
       12 | });
       13 |
 
-      at Object.toMatchSnapshot (__tests__/snapshotWithHint.test.js:11:17)
+      at Object.<anonymous> (__tests__/snapshotWithHint.test.js:11:17)
 
  › 1 snapshot failed.
 "

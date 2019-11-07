@@ -21,7 +21,7 @@ exports[`Wrong globals for environment print useful error for document 1`] = `
       18 |   console.log(div);
       19 |
 
-      at Object.document (__tests__/node.js:16:15)"
+      at Object.<anonymous> (__tests__/node.js:16:15)"
 `;
 
 exports[`Wrong globals for environment print useful error for navigator 1`] = `
@@ -45,7 +45,7 @@ exports[`Wrong globals for environment print useful error for navigator 1`] = `
       34 |   console.log(userAgent);
       35 |
 
-      at Object.navigator (__tests__/node.js:32:21)"
+      at Object.<anonymous> (__tests__/node.js:32:21)"
 `;
 
 exports[`Wrong globals for environment print useful error for unref 1`] = `
@@ -67,7 +67,7 @@ exports[`Wrong globals for environment print useful error for unref 1`] = `
       15 |   expect(1).toBe(1);
       16 | });
 
-      at Object.unref (__tests__/jsdom.js:13:27)"
+      at Object.<anonymous> (__tests__/jsdom.js:13:27)"
 `;
 
 exports[`Wrong globals for environment print useful error for window 1`] = `
@@ -91,7 +91,7 @@ exports[`Wrong globals for environment print useful error for window 1`] = `
       26 |   console.log(location);
       27 |
 
-      at Object.window (__tests__/node.js:24:20)"
+      at Object.<anonymous> (__tests__/node.js:24:20)"
 `;
 
 exports[`Wrong globals for environment print useful error when it explodes during evaluation 1`] = `
@@ -111,5 +111,5 @@ exports[`Wrong globals for environment print useful error when it explodes durin
       15 | console.log(div);
       16 |
 
-      at Object.document (__tests__/beforeTest.js:13:13)"
+      at Object.<anonymous> (__tests__/beforeTest.js:13:13)"
 `;

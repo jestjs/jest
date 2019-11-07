@@ -12732,7 +12732,7 @@ __metadata:
     jest-watcher: "workspace:^"
     jest-worker: "workspace:^"
     p-limit: ^3.1.0
-    source-map-support: 0.5.13
+    source-map-support: ^0.5.21
     tsd-lite: ^0.6.0
   languageName: unknown
   linkType: soft
@@ -18992,17 +18992,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-support@npm:0.5.13":
-  version: 0.5.13
-  resolution: "source-map-support@npm:0.5.13"
-  dependencies:
-    buffer-from: ^1.0.0
-    source-map: ^0.6.0
-  checksum: 933550047b6c1a2328599a21d8b7666507427c0f5ef5eaadd56b5da0fd9505e239053c66fe181bf1df469a3b7af9d775778eee283cbb7ae16b902ddc09e93a97
-  languageName: node
-  linkType: hard
-
-"source-map-support@npm:^0.5.16, source-map-support@npm:~0.5.20":
+"source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.21, source-map-support@npm:~0.5.20":
   version: 0.5.21
   resolution: "source-map-support@npm:0.5.21"
   dependencies:

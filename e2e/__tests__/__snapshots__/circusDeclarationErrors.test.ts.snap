@@ -17,7 +17,7 @@ exports[`defining tests and hooks asynchronously throws 1`] = `
       15 | });
 
       at eventHandler (../../packages/jest-circus/build/eventHandler.js:153:11)
-      at test (__tests__/asyncDefinition.test.js:12:5)
+      at __tests__/asyncDefinition.test.js:12:5
 
   ● Test suite failed to run
 
@@ -32,7 +32,7 @@ exports[`defining tests and hooks asynchronously throws 1`] = `
       16 |
 
       at eventHandler (../../packages/jest-circus/build/eventHandler.js:113:11)
-      at afterAll (__tests__/asyncDefinition.test.js:13:5)
+      at __tests__/asyncDefinition.test.js:13:5
 
   ● Test suite failed to run
 
@@ -47,7 +47,7 @@ exports[`defining tests and hooks asynchronously throws 1`] = `
       21 |
 
       at eventHandler (../../packages/jest-circus/build/eventHandler.js:153:11)
-      at test (__tests__/asyncDefinition.test.js:18:3)
+      at __tests__/asyncDefinition.test.js:18:3
 
   ● Test suite failed to run
 
@@ -61,5 +61,5 @@ exports[`defining tests and hooks asynchronously throws 1`] = `
       21 |
 
       at eventHandler (../../packages/jest-circus/build/eventHandler.js:113:11)
-      at afterAll (__tests__/asyncDefinition.test.js:19:3)"
+      at __tests__/asyncDefinition.test.js:19:3"
 `;

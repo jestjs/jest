@@ -22,7 +22,7 @@ exports[`should work without error 1`] = `
       16 |
       17 | test('compare span and div', () => {
 
-      at Object.toBe (__tests__/dom.test.js:14:16)
+      at Object.<anonymous> (__tests__/dom.test.js:14:16)
 
   ● compare span and div
 
@@ -41,7 +41,7 @@ exports[`should work without error 1`] = `
       19 | });
       20 |
 
-      at Object.toBe (__tests__/dom.test.js:18:41)
+      at Object.<anonymous> (__tests__/dom.test.js:18:41)
 
 Test Suites: 1 failed, 1 total
 Tests:       2 failed, 2 total

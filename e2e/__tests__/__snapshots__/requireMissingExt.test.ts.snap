@@ -28,5 +28,5 @@ exports[`shows a proper error from deep requires 1`] = `
 
       at Resolver._throwModNotFoundError (../../packages/jest-resolve/build/resolver.js:487:11)
       at Object.<anonymous> (node_modules/discord.js/src/index.js:21:12)
-      at Object.require (__tests__/test.js:10:1)"
+      at Object.<anonymous> (__tests__/test.js:10:1)"
 `;

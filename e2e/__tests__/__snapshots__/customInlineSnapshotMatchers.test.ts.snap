@@ -21,7 +21,7 @@ exports[`can bail with a custom inline snapshot matcher 1`] = `
       32 |   expect(state).toMatchStateInlineSnapshot(\`"done"\`);
       33 | });
 
-      at Object.toMatchStateInlineSnapshot (__tests__/bail.test.js:30:17)
+      at Object.<anonymous> (__tests__/bail.test.js:30:17)
 
  › 1 snapshot failed.
 Snapshot Summary
@@ -53,7 +53,7 @@ exports[`works with custom inline snapshot matchers 1`] = `
       24 | });
       25 |
 
-      at Object.toMatchObservationInlineSnapshot (__tests__/asynchronous.test.js:22:41)
+      at Object.<anonymous> (__tests__/asynchronous.test.js:22:41)
 
   ● new async, inline snapshots
 
@@ -75,7 +75,7 @@ exports[`works with custom inline snapshot matchers 1`] = `
       25 |
       26 | test('mismatching async, inline snapshots', async () => {
 
-      at Object.toMatchObservationInlineSnapshot (__tests__/asynchronous.test.js:23:41)
+      at Object.<anonymous> (__tests__/asynchronous.test.js:23:41)
 
   ● mismatching async, inline snapshots
 
@@ -94,7 +94,7 @@ exports[`works with custom inline snapshot matchers 1`] = `
       29 |   );
       30 |   await expect(async () => 'result #2').toMatchObservationInlineSnapshot(
 
-      at Object.toMatchObservationInlineSnapshot (__tests__/asynchronous.test.js:27:41)
+      at Object.<anonymous> (__tests__/asynchronous.test.js:27:41)
 
   ● mismatching async, inline snapshots
 
@@ -113,7 +113,7 @@ exports[`works with custom inline snapshot matchers 1`] = `
       32 |   );
       33 | });
 
-      at Object.toMatchObservationInlineSnapshot (__tests__/asynchronous.test.js:30:41)
+      at Object.<anonymous> (__tests__/asynchronous.test.js:30:41)
 
  › 4 snapshots failed.
 Snapshot Summary

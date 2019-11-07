@@ -64,7 +64,7 @@ exports[`diff with prototype is correct 1`] = `
       4 |       "hello": "world",
       5 |     }
 
-      at Object.toMatchInlineSnapshot (__tests__/with-prototype-diff.test.js:2:30)
+      at Object.<anonymous> (__tests__/with-prototype-diff.test.js:2:30)
 
  › 1 snapshot failed.
 Snapshot Summary

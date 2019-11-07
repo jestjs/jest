@@ -12,7 +12,7 @@ exports[`can press "f" to run only failed tests: test results 1`] = `
     > 1 | test('bar 1', () => { expect('bar').toBe('foo'); });
         |                                     ^
 
-      at Object.toBe (__tests__/bar.spec.js:1:37)
+      at Object.<anonymous> (__tests__/bar.spec.js:1:37)
 
 PASS __tests__/foo.spec.js"
 `;
@@ -31,7 +31,7 @@ exports[`can press "f" to run only failed tests: test results 2`] = `
     > 1 | test('bar 1', () => { expect('bar').toBe('foo'); });
         |                                     ^
 
-      at Object.toBe (__tests__/bar.spec.js:1:37)"
+      at Object.<anonymous> (__tests__/bar.spec.js:1:37)"
 `;
 
 exports[`can press "f" to run only failed tests: test summary 1`] = `

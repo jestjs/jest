@@ -4,26 +4,26 @@ exports[`Correct BeforeAll run ensures the BeforeAll of ignored suite is not run
 "  console.log
     beforeAll 1
 
-      at log (__tests__/beforeAllFiltered.test.js:10:13)
+      at Object.<anonymous> (__tests__/beforeAllFiltered.test.js:10:13)
 
   console.log
     beforeEach 1
 
-      at log (__tests__/beforeAllFiltered.test.js:13:13)
+      at Object.<anonymous> (__tests__/beforeAllFiltered.test.js:13:13)
 
   console.log
     It Foo
 
-      at log (__tests__/beforeAllFiltered.test.js:22:13)
+      at Object.<anonymous> (__tests__/beforeAllFiltered.test.js:22:13)
 
   console.log
     afterEach 1
 
-      at log (__tests__/beforeAllFiltered.test.js:16:13)
+      at Object.<anonymous> (__tests__/beforeAllFiltered.test.js:16:13)
 
   console.log
     afterAll 1
 
-      at log (__tests__/beforeAllFiltered.test.js:19:13)
+      at Object.<anonymous> (__tests__/beforeAllFiltered.test.js:19:13)
 "
 `;

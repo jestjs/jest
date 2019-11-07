@@ -100,7 +100,7 @@ it('successfully runs the tests with external babel config', () => {
           7 |       y
           8 |     </div>
 
-          at Object.toMatchInlineSnapshot (__tests__/MismatchingSnapshot.test.js:5:50)
+          at Object.<anonymous> (__tests__/MismatchingSnapshot.test.js:5:50)
     "
   `);
 
@@ -149,7 +149,7 @@ it('successfully runs the tests with inline babel config', () => {
           7 |       y
           8 |     </div>
 
-          at Object.toMatchInlineSnapshot (__tests__/MismatchingSnapshot.test.js:5:50)
+          at Object.<anonymous> (__tests__/MismatchingSnapshot.test.js:5:50)
     "
   `);
 
