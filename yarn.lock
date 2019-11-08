@@ -13473,7 +13473,7 @@ __metadata:
     jest-util: ^28.0.2
     jest-watcher: ^28.0.2
     jest-worker: ^28.0.2
-    source-map-support: 0.5.14
+    source-map-support: ^0.5.21
     throat: ^6.0.1
     tsd-lite: ^0.5.1
   languageName: unknown
@@ -20242,17 +20242,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-support@npm:0.5.14":
-  version: 0.5.14
-  resolution: "source-map-support@npm:0.5.14"
-  dependencies:
-    buffer-from: ^1.0.0
-    source-map: ^0.6.0
-  checksum: 34fc39c7bb2a642a2a74e3ebb920b18e275b74d0f0dff49beb53331e3df524defb2fda675637bd32f9ee7d2d050d28f84d38d4337d519a51f9316df955822c50
-  languageName: node
-  linkType: hard
-
-"source-map-support@npm:^0.5.16, source-map-support@npm:~0.5.20":
+"source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.21, source-map-support@npm:~0.5.20":
   version: 0.5.21
   resolution: "source-map-support@npm:0.5.21"
   dependencies:
