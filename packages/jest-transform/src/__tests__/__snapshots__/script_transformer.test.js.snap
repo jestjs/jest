@@ -254,3 +254,5 @@ exports[`ScriptTransformer uses the supplied preprocessor 2`] = `
 "({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \\"react\\";
 }});"
 `;
+
+exports[`ScriptTransformer warns of unparseable inlined source maps from the preprocessor 1`] = `"jest-transform: The source map produced for the file /fruits/banana.js by preprocessor-with-sourcemaps was invalid. Proceeding without source mapping for that file."`;
