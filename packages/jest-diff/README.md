@@ -300,8 +300,8 @@ const diffs = diffLinesRaw(aLines, bLines);
 
 If you call `string.split('\n')` for an empty string:
 
-* the result is `['']` an array which contains an empty string
-* instead of `[]` an empty array
+- the result is `['']` an array which contains an empty string
+- instead of `[]` an empty array
 
 Depending of your application, you might call `diffLinesRaw` with either array.
 
