@@ -333,7 +333,7 @@ Which you might format as follows:
 
 ### Example of splitLines0 function
 
-For edge case behavior like the `diffLinesUnified` function, you might define a `splitLines0(b)` function, which given an empty string, returns `[]` an empty array:
+For edge case behavior like the `diffLinesUnified` function, you might define a `splitLines0` function, which given an empty string, returns `[]` an empty array:
 
 ```js
 export const splitLines0 = string =>
