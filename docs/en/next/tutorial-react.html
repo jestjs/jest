@@ -279,7 +279,8 @@ This shouldn't normally be your option of choice as useful warnings could be los
 <span class="hljs-keyword">import</span> {cleanup, fireEvent, render} <span class="hljs-keyword">from</span> <span class="hljs-string">'@testing-library/react'</span>;
 <span class="hljs-keyword">import</span> CheckboxWithLabel <span class="hljs-keyword">from</span> <span class="hljs-string">'../CheckboxWithLabel'</span>;
 
-<span class="hljs-comment">// automatically unmount and cleanup DOM after the test is finished.</span>
+<span class="hljs-comment">// Note: running cleanup afterEach is done automatically for you in @testing-library/react@9.0.0 or higher</span>
+<span class="hljs-comment">// unmount and cleanup DOM after the test is finished.</span>
 afterEach(cleanup);
 
 it(<span class="hljs-string">'CheckboxWithLabel changes the text after click'</span>, () =&gt; {
