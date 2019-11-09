@@ -93,7 +93,7 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// jest.config.js</span>
 <span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-comment">// ...</span>
-  watchPlugins: [<span class="hljs-string">'path/to/yourWatchPlugin'</span>],
+  <span class="hljs-attr">watchPlugins</span>: [<span class="hljs-string">'path/to/yourWatchPlugin'</span>],
 };
 </code></pre>
 <p>Custom watch plugins can add hooks to Jest events. These hooks can be added either with or without having an interactive key in the watch mode menu.</p>
@@ -204,12 +204,12 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// jest.config.js</span>
 <span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-comment">// ...</span>
-  watchPlugins: [
+  <span class="hljs-attr">watchPlugins</span>: [
     [
       <span class="hljs-string">'path/to/yourWatchPlugin'</span>,
       {
         <span class="hljs-attr">key</span>: <span class="hljs-string">'k'</span>, <span class="hljs-comment">// &lt;- your custom key</span>
-        prompt: <span class="hljs-string">'show a custom prompt'</span>,
+        <span class="hljs-attr">prompt</span>: <span class="hljs-string">'show a custom prompt'</span>,
       },
     ],
   ],

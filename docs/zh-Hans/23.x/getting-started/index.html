@@ -157,10 +157,10 @@ You can also see the example in the Jest repository: https://github.com/facebook
 <blockquote>
 <p>注意：当你安装 Jest 时，<code>babel-jest</code> 是会被自动安装的，并且如果你的项目下存在一个 Babel 配置文件时，它将会自动对相关文件进行转义。 如果要避免这个行为，你可以显式的重置 <code>transform</code> 配置项：</p>
 </blockquote>
-<pre><code class="hljs css language-json">// package.json
+<pre><code class="hljs css language-json"><span class="hljs-comment">// package.json</span>
 {
-  "jest": {
-    "transform": {}
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"transform"</span>: {}
   }
 }
 </code></pre>

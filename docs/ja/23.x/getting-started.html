@@ -157,10 +157,10 @@ You can also see the example in the Jest repository: https://github.com/facebook
 <blockquote>
 <p>注意:<code>babel-jest</code> はJestのインストール時に自動的にインストールされ、Babelの設定がプロジェクト内にあれば自動的にファイルを変換します。 これを避けるには、 <code>transform</code>設定を明示的にリセットして下さい。</p>
 </blockquote>
-<pre><code class="hljs css language-json">// package.json
+<pre><code class="hljs css language-json"><span class="hljs-comment">// package.json</span>
 {
-  "jest": {
-    "transform": {}
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"transform"</span>: {}
   }
 }
 </code></pre>

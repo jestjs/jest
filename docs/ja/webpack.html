@@ -105,12 +105,12 @@
 <p>Babel で変換された JavaScript ファイルがある場合は、 <code>babel-jest</code> プラグインをインストールすることで <a href="/docs/ja/getting-started#using-babel">Babel へのサポートを有効にする</a>ことができます。 Babel 以外の JavaScriptトランスパイラは Jest の <a href="/docs/ja/configuration#transform-object-string-string"><code>transform</code></a> 設定オプションで管理できます。</p>
 <h3><a class="anchor" aria-hidden="true" id="静的アセットの管理"></a><a href="#静的アセットの管理" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>静的アセットの管理</h3>
 <p>次は、スタイルシートや画像などのアセットを簡潔に管理できるようにJestを設定しましょう。 通常、これらのファイルはテストでは特に扱いづらいので、問題がないようにモックします。 しかし、CSSモジュールを利用している場合はクラス名参照のためのプロキシをモックした方が良いでしょう。</p>
-<pre><code class="hljs css language-json">// package.json
+<pre><code class="hljs css language-json"><span class="hljs-comment">// package.json</span>
 {
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "&lt;rootDir&gt;/__mocks__/fileMock.js",
-      "\\.(css|less)$": "&lt;rootDir&gt;/__mocks__/styleMock.js"
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"moduleNameMapper"</span>: {
+      <span class="hljs-attr">"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/__mocks__/fileMock.js"</span>,
+      <span class="hljs-attr">"\\.(css|less)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/__mocks__/styleMock.js"</span>
     }
   }
 }
@@ -129,12 +129,12 @@
 <pre><code class="hljs css language-bash">yarn add --dev identity-obj-proxy
 </code></pre>
 <p>スタイルオブジェクトの全てのクラス名参照はそのまま返るようになります(つまり<code>styles.foobar === 'foobar'</code>となります)。 この挙動は React の <a href="/docs/ja/snapshot-testing">Snapshot のテスト</a>にとても便利です。</p>
-<pre><code class="hljs css language-json">// package.json (for CSS Modules)
+<pre><code class="hljs css language-json"><span class="hljs-comment">// package.json (for CSS Modules)</span>
 {
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "&lt;rootDir&gt;/__mocks__/fileMock.js",
-      "\\.(css|less)$": "identity-obj-proxy"
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"moduleNameMapper"</span>: {
+      <span class="hljs-attr">"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/__mocks__/fileMock.js"</span>,
+      <span class="hljs-attr">"\\.(css|less)$"</span>: <span class="hljs-string">"identity-obj-proxy"</span>
     }
   }
 }
@@ -152,14 +152,14 @@
   },
 };
 </code></pre>
-<pre><code class="hljs css language-json">// package.json (for custom transformers and CSS Modules)
+<pre><code class="hljs css language-json"><span class="hljs-comment">// package.json (for custom transformers and CSS Modules)</span>
 {
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(css|less)$": "identity-obj-proxy"
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"moduleNameMapper"</span>: {
+      <span class="hljs-attr">"\\.(css|less)$"</span>: <span class="hljs-string">"identity-obj-proxy"</span>
     },
-    "transform": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "&lt;rootDir&gt;/fileTransformer.js"
+    <span class="hljs-attr">"transform"</span>: {
+      <span class="hljs-attr">"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/fileTransformer.js"</span>
     }
   }
 }
@@ -174,15 +174,15 @@
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="ソースファイルを探索できるようにjestを設定する"></a><a href="#ソースファイルを探索できるようにjestを設定する" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ソースファイルを探索できるようにJestを設定する</h3>
 <p>ここまででJestはファイルの処理方法を理解したので、次はJestにファイルを <em>見つける</em>方法を教えてやる必要があります。 webpackの<code>modulesDirectories</code>、そして <code>extensions</code>オプションはJestの <code>moduleDirectories</code> や <code>moduleFileExtensions</code> と直接的な類似性があります。</p>
-<pre><code class="hljs css language-json">// package.json
+<pre><code class="hljs css language-json"><span class="hljs-comment">// package.json</span>
 {
-  "jest": {
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["node_modules", "bower_components", "shared"],
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"moduleFileExtensions"</span>: [<span class="hljs-string">"js"</span>, <span class="hljs-string">"jsx"</span>],
+    <span class="hljs-attr">"moduleDirectories"</span>: [<span class="hljs-string">"node_modules"</span>, <span class="hljs-string">"bower_components"</span>, <span class="hljs-string">"shared"</span>],
 
-    "moduleNameMapper": {
-      "\\.(css|less)$": "&lt;rootDir&gt;/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "&lt;rootDir&gt;/__mocks__/fileMock.js"
+    <span class="hljs-attr">"moduleNameMapper"</span>: {
+      <span class="hljs-attr">"\\.(css|less)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/__mocks__/styleMock.js"</span>,
+      <span class="hljs-attr">"\\.(gif|ttf|eot|svg)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/__mocks__/fileMock.js"</span>
     }
   }
 }
@@ -191,33 +191,33 @@
 <p>注意: <code>&lt;rootDir&gt;</code> は、Jest によってプロジェクトのルートディレクトリに置換される特別なトークンです。 ほとんどの場合、設定で特別に <code>rootDir</code> オプションを指定しない限り、この値は<code>package.json</code> ファイルが格納されているディレクトリになります。</p>
 </blockquote>
 <p>webpackの <code>resolve.root</code>オプションも<code>modulePaths</code>オプションによって<code>NODE_PATH</code>環境変数を設定することと同様のことができます。</p>
-<pre><code class="hljs css language-json">// package.json
+<pre><code class="hljs css language-json"><span class="hljs-comment">// package.json</span>
 {
-  "jest": {
-    "modulePaths": ["/shared/vendor/modules"],
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["node_modules", "bower_components", "shared"],
-    "moduleNameMapper": {
-      "\\.(css|less)$": "&lt;rootDir&gt;/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "&lt;rootDir&gt;/__mocks__/fileMock.js"
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"modulePaths"</span>: [<span class="hljs-string">"/shared/vendor/modules"</span>],
+    <span class="hljs-attr">"moduleFileExtensions"</span>: [<span class="hljs-string">"js"</span>, <span class="hljs-string">"jsx"</span>],
+    <span class="hljs-attr">"moduleDirectories"</span>: [<span class="hljs-string">"node_modules"</span>, <span class="hljs-string">"bower_components"</span>, <span class="hljs-string">"shared"</span>],
+    <span class="hljs-attr">"moduleNameMapper"</span>: {
+      <span class="hljs-attr">"\\.(css|less)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/__mocks__/styleMock.js"</span>,
+      <span class="hljs-attr">"\\.(gif|ttf|eot|svg)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/__mocks__/fileMock.js"</span>
     }
   }
 }
 </code></pre>
 <p>And finally, we have to handle the webpack <code>alias</code>. For that we can make use of the <code>moduleNameMapper</code> option again.</p>
-<pre><code class="hljs css language-json">// package.json
+<pre><code class="hljs css language-json"><span class="hljs-comment">// package.json</span>
 {
-  "jest": {
-    "modulePaths": ["/shared/vendor/modules"],
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["node_modules", "bower_components", "shared"],
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"modulePaths"</span>: [<span class="hljs-string">"/shared/vendor/modules"</span>],
+    <span class="hljs-attr">"moduleFileExtensions"</span>: [<span class="hljs-string">"js"</span>, <span class="hljs-string">"jsx"</span>],
+    <span class="hljs-attr">"moduleDirectories"</span>: [<span class="hljs-string">"node_modules"</span>, <span class="hljs-string">"bower_components"</span>, <span class="hljs-string">"shared"</span>],
 
-    "moduleNameMapper": {
-      "\\.(css|less)$": "&lt;rootDir&gt;/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "&lt;rootDir&gt;/__mocks__/fileMock.js",
+    <span class="hljs-attr">"moduleNameMapper"</span>: {
+      <span class="hljs-attr">"\\.(css|less)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/__mocks__/styleMock.js"</span>,
+      <span class="hljs-attr">"\\.(gif|ttf|eot|svg)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/__mocks__/fileMock.js"</span>,
 
-      "^react(.*)$": "&lt;rootDir&gt;/vendor/react-master$1",
-      "^config$": "&lt;rootDir&gt;/configs/app-config.js"
+      <span class="hljs-attr">"^react(.*)$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/vendor/react-master$1"</span>,
+      <span class="hljs-attr">"^config$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/configs/app-config.js"</span>
     }
   }
 }
@@ -228,13 +228,13 @@
 </blockquote>
 <h2><a class="anchor" aria-hidden="true" id="webpack2と使用する場合"></a><a href="#webpack2と使用する場合" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>webpack2と使用する場合</h2>
 <p>webpack2はESモジュールのネイティブサポートを提供しています。 しかし、JestはNode上で動作するため、ESモジュールはCommonJSモジュールにトランスパイルされている必要があります。 Webpack 2を利用する場合は、 <code>test</code>環境でのみESモジュールをCommonJSモジュールに変換させたいと考えるでしょう。</p>
-<pre><code class="hljs css language-json">// .babelrc
+<pre><code class="hljs css language-json"><span class="hljs-comment">// .babelrc</span>
 {
-  "presets": [["env", {"modules": false}]],
+  <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}]],
 
-  "env": {
-    "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
+  <span class="hljs-attr">"env"</span>: {
+    <span class="hljs-attr">"test"</span>: {
+      <span class="hljs-attr">"plugins"</span>: [<span class="hljs-string">"transform-es2015-modules-commonjs"</span>]
     }
   }
 }
@@ -243,15 +243,15 @@
 <p>Note: Jest caches files to speed up test execution. If you updated .babelrc and Jest is still not working, try running Jest with <code>--no-cache</code>.</p>
 </blockquote>
 <p><code>import('some-file.js').then (module = &gt;...)</code>のように動的インポートを使用する場合は、 <code>dynamic-import-node</code> プラグインを有効にする必要があります。</p>
-<pre><code class="hljs css language-json">// .babelrc
+<pre><code class="hljs css language-json"><span class="hljs-comment">// .babelrc</span>
 {
-  "presets": [["env", {"modules": false}]],
+  <span class="hljs-attr">"presets"</span>: [[<span class="hljs-string">"env"</span>, {<span class="hljs-attr">"modules"</span>: <span class="hljs-literal">false</span>}]],
 
-  "plugins": ["syntax-dynamic-import"],
+  <span class="hljs-attr">"plugins"</span>: [<span class="hljs-string">"syntax-dynamic-import"</span>],
 
-  "env": {
-    "test": {
-      "plugins": ["dynamic-import-node"]
+  <span class="hljs-attr">"env"</span>: {
+    <span class="hljs-attr">"test"</span>: {
+      <span class="hljs-attr">"plugins"</span>: [<span class="hljs-string">"dynamic-import-node"</span>]
     }
   }
 }

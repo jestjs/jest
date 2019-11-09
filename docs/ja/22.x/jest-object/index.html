@@ -247,37 +247,37 @@ module.exports = {
 
 test(<span class="hljs-string">'should run example code'</span>, () =&gt; {
   <span class="hljs-comment">// creates a new mocked function with no formal arguments.</span>
-  expect(example.function.name).toEqual(<span class="hljs-string">'square'</span>);
-  expect(example.function.length).toEqual(<span class="hljs-number">0</span>);
+  expect(example<span class="hljs-function">.<span class="hljs-keyword">function</span>.<span class="hljs-title">name</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params"><span class="hljs-string">'square'</span></span>);
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.function.length</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params"><span class="hljs-number">0</span></span>);
 
-  <span class="hljs-comment">// async functions get the same treatment as standard synchronous functions.</span>
-  expect(example.asyncFunction.name).toEqual(<span class="hljs-string">'asyncSquare'</span>);
-  expect(example.asyncFunction.length).toEqual(<span class="hljs-number">0</span>);
+  // <span class="hljs-title">async</span> <span class="hljs-title">functions</span> <span class="hljs-title">get</span> <span class="hljs-title">the</span> <span class="hljs-title">same</span> <span class="hljs-title">treatment</span> <span class="hljs-title">as</span> <span class="hljs-title">standard</span> <span class="hljs-title">synchronous</span> <span class="hljs-title">functions</span>.
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.asyncFunction.name</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params"><span class="hljs-string">'asyncSquare'</span></span>);
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.asyncFunction.length</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params"><span class="hljs-number">0</span></span>);
 
-  <span class="hljs-comment">// creates a new class with the same interface, member functions and properties are mocked.</span>
-  expect(example.class.constructor.name).toEqual(<span class="hljs-string">'Bar'</span>);
-  expect(example.class.foo.name).toEqual(<span class="hljs-string">'foo'</span>);
-  expect(example.class.array.length).toEqual(<span class="hljs-number">0</span>);
+  // <span class="hljs-title">creates</span> <span class="hljs-title">a</span> <span class="hljs-title">new</span> <span class="hljs-title">class</span> <span class="hljs-title">with</span> <span class="hljs-title">the</span> <span class="hljs-title">same</span> <span class="hljs-title">interface</span>, <span class="hljs-title">member</span> <span class="hljs-title">functions</span> <span class="hljs-title">and</span> <span class="hljs-title">properties</span> <span class="hljs-title">are</span> <span class="hljs-title">mocked</span>.
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.class.constructor.name</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params"><span class="hljs-string">'Bar'</span></span>);
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.class.foo.name</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params"><span class="hljs-string">'foo'</span></span>);
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.class.array.length</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params"><span class="hljs-number">0</span></span>);
 
-  <span class="hljs-comment">// creates a deeply cloned version of the original object.</span>
-  expect(example.object).toEqual({
-    <span class="hljs-attr">baz</span>: <span class="hljs-string">'foo'</span>,
-    <span class="hljs-attr">bar</span>: {
-      <span class="hljs-attr">fiz</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-attr">buzz</span>: [],
+  // <span class="hljs-title">creates</span> <span class="hljs-title">a</span> <span class="hljs-title">deeply</span> <span class="hljs-title">cloned</span> <span class="hljs-title">version</span> <span class="hljs-title">of</span> <span class="hljs-title">the</span> <span class="hljs-title">original</span> <span class="hljs-title">object</span>.
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.object</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params">{
+    baz: <span class="hljs-string">'foo'</span>,
+    bar: {
+      fiz: <span class="hljs-number">1</span>,
+      buzz: [],
     },
-  });
+  }</span>);
 
-  <span class="hljs-comment">// creates a new empty array, ignoring the original array.</span>
-  expect(example.array.length).toEqual(<span class="hljs-number">0</span>);
+  // <span class="hljs-title">creates</span> <span class="hljs-title">a</span> <span class="hljs-title">new</span> <span class="hljs-title">empty</span> <span class="hljs-title">array</span>, <span class="hljs-title">ignoring</span> <span class="hljs-title">the</span> <span class="hljs-title">original</span> <span class="hljs-title">array</span>.
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.array.length</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params"><span class="hljs-number">0</span></span>);
 
-  <span class="hljs-comment">// creates a new property with the same primitive value as the original property.</span>
-  expect(example.number).toEqual(<span class="hljs-number">123</span>);
-  expect(example.string).toEqual(<span class="hljs-string">'baz'</span>);
-  expect(example.boolean).toEqual(<span class="hljs-literal">true</span>);
-  expect(example.symbol).toEqual(<span class="hljs-built_in">Symbol</span>.for(<span class="hljs-string">'a.b.c'</span>));
+  // <span class="hljs-title">creates</span> <span class="hljs-title">a</span> <span class="hljs-title">new</span> <span class="hljs-title">property</span> <span class="hljs-title">with</span> <span class="hljs-title">the</span> <span class="hljs-title">same</span> <span class="hljs-title">primitive</span> <span class="hljs-title">value</span> <span class="hljs-title">as</span> <span class="hljs-title">the</span> <span class="hljs-title">original</span> <span class="hljs-title">property</span>.
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.number</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params"><span class="hljs-number">123</span></span>);
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.string</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params"><span class="hljs-string">'baz'</span></span>);
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.boolean</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params">true</span>);
+  <span class="hljs-title">expect</span>(<span class="hljs-params">example.symbol</span>).<span class="hljs-title">toEqual</span>(<span class="hljs-params">Symbol.for(<span class="hljs-string">'a.b.c'</span></span>));
 });
-</code></pre>
+</span></code></pre>
 <h3><a class="anchor" aria-hidden="true" id="jestmockmodulename-factory-options"></a><a href="#jestmockmodulename-factory-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.mock(moduleName, factory, options)</code></h3>
 <p>Mocks a module with an auto-mocked version when it is being required. <code>factory</code> and <code>options</code> are optional. 例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// banana.js</span>

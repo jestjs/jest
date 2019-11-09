@@ -285,22 +285,23 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt; {
 <li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
 </ul>
 <p>示例：</p>
-<pre><code class="hljs css language-js">describe.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
-  <span class="hljs-string">'.add(%i, %i)'</span>,
-  (a, b, expected) =&gt; {
-    test(<span class="hljs-string">`returns <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
-      expect(a + b).toBe(expected);
-    });
+<pre><code class="hljs css language-js">describe.each([
+  [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
+  [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>],
+])(<span class="hljs-string">'.add(%i, %i)'</span>, (a, b, expected) =&gt; {
+  test(<span class="hljs-string">`returns <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+    expect(a + b).toBe(expected);
+  });
 
-    test(<span class="hljs-string">`returned value not be greater than <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
-      expect(a + b).not.toBeGreaterThan(expected);
-    });
+  test(<span class="hljs-string">`returned value not be greater than <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+    expect(a + b).not.toBeGreaterThan(expected);
+  });
 
-    test(<span class="hljs-string">`returned value not be less than <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
-      expect(a + b).not.toBeLessThan(expected);
-    });
-  },
-);
+  test(<span class="hljs-string">`returned value not be less than <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+    expect(a + b).not.toBeLessThan(expected);
+  });
+});
 </code></pre>
 <h4><a class="anchor" aria-hidden="true" id="2-describeeach-table-name-fn-timeout"></a><a href="#2-describeeach-table-name-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. <code>describe.each`table`(name, fn, timeout)</code></h4>
 <ul>
@@ -358,14 +359,15 @@ describe(<span class="hljs-string">'my other beverage'</span>, () =&gt; {
 <p>Use <code>describe.only.each</code> if you want to only run specific tests suites of data driven tests.</p>
 <p><code>describe.only.each</code> is available with two APIs:</p>
 <h4><a class="anchor" aria-hidden="true" id="describeonlyeachtable-name-fn-1"></a><a href="#describeonlyeachtable-name-fn-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.only.each(table)(name, fn)</code></h4>
-<pre><code class="hljs css language-js">describe.only.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
-  <span class="hljs-string">'.add(%i, %i)'</span>,
-  (a, b, expected) =&gt; {
-    test(<span class="hljs-string">`returns <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
-      expect(a + b).toBe(expected);
-    });
-  },
-);
+<pre><code class="hljs css language-js">describe.only.each([
+  [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
+  [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>],
+])(<span class="hljs-string">'.add(%i, %i)'</span>, (a, b, expected) =&gt; {
+  test(<span class="hljs-string">`returns <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+    expect(a + b).toBe(expected);
+  });
+});
 
 test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
   expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
@@ -410,14 +412,15 @@ describe.skip(<span class="hljs-string">'my other beverage'</span>, () =&gt; {
 <p>Use <code>describe.skip.each</code> if you want to stop running a suite of data driven tests.</p>
 <p><code>describe.skip.each</code> is available with two APIs:</p>
 <h4><a class="anchor" aria-hidden="true" id="describeskipeachtable-name-fn-1"></a><a href="#describeskipeachtable-name-fn-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.skip.each(table)(name, fn)</code></h4>
-<pre><code class="hljs css language-js">describe.skip.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
-  <span class="hljs-string">'.add(%i, %i)'</span>,
-  (a, b, expected) =&gt; {
-    test(<span class="hljs-string">`returns <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
-      expect(a + b).toBe(expected); <span class="hljs-comment">// will not be ran</span>
-    });
-  },
-);
+<pre><code class="hljs css language-js">describe.skip.each([
+  [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
+  [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>],
+])(<span class="hljs-string">'.add(%i, %i)'</span>, (a, b, expected) =&gt; {
+  test(<span class="hljs-string">`returns <span class="hljs-subst">${expected}</span>`</span>, () =&gt; {
+    expect(a + b).toBe(expected); <span class="hljs-comment">// will not be ran</span>
+  });
+});
 
 test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
   expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
@@ -487,12 +490,13 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 <li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
 </ul>
 <p>示例：</p>
-<pre><code class="hljs css language-js">test.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
-  <span class="hljs-string">'.add(%i, %i)'</span>,
-  (a, b, expected) =&gt; {
-    expect(a + b).toBe(expected);
-  },
-);
+<pre><code class="hljs css language-js">test.each([
+  [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
+  [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>],
+])(<span class="hljs-string">'.add(%i, %i)'</span>, (a, b, expected) =&gt; {
+  expect(a + b).toBe(expected);
+});
 </code></pre>
 <h4><a class="anchor" aria-hidden="true" id="2-testeach-table-name-fn-timeout"></a><a href="#2-testeach-table-name-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. <code>test.each`table`(name, fn, timeout)</code></h4>
 <ul>
@@ -538,12 +542,13 @@ test(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
 <p>Use <code>test.only.each</code> if you want to only run specific tests with different test data.</p>
 <p><code>test.only.each</code> is available with two APIs:</p>
 <h4><a class="anchor" aria-hidden="true" id="testonlyeachtable-name-fn-1"></a><a href="#testonlyeachtable-name-fn-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only.each(table)(name, fn)</code></h4>
-<pre><code class="hljs css language-js">test.only.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
-  <span class="hljs-string">'.add(%i, %i)'</span>,
-  (a, b, expected) =&gt; {
-    expect(a + b).toBe(expected);
-  },
-);
+<pre><code class="hljs css language-js">test.only.each([
+  [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
+  [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>],
+])(<span class="hljs-string">'.add(%i, %i)'</span>, (a, b, expected) =&gt; {
+  expect(a + b).toBe(expected);
+});
 
 test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
   expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
@@ -582,12 +587,13 @@ test.skip(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
 <p>Use <code>test.skip.each</code> if you want to stop running a collection of data driven tests.</p>
 <p><code>test.skip.each</code> is available with two APIs:</p>
 <h4><a class="anchor" aria-hidden="true" id="testskipeachtable-name-fn-1"></a><a href="#testskipeachtable-name-fn-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip.each(table)(name, fn)</code></h4>
-<pre><code class="hljs css language-js">test.skip.each([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>]])(
-  <span class="hljs-string">'.add(%i, %i)'</span>,
-  (a, b, expected) =&gt; {
-    expect(a + b).toBe(expected); <span class="hljs-comment">// will not be ran</span>
-  },
-);
+<pre><code class="hljs css language-js">test.skip.each([
+  [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
+  [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>],
+])(<span class="hljs-string">'.add(%i, %i)'</span>, (a, b, expected) =&gt; {
+  expect(a + b).toBe(expected); <span class="hljs-comment">// will not be ran</span>
+});
 
 test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
   expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
