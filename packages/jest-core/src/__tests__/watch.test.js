@@ -8,7 +8,7 @@
 
 'use strict';
 
-import chalk = require('chalk');
+import chalk from 'chalk';
 import TestWatcher from '../TestWatcher';
 import {JestHook, KEYS} from 'jest-watcher';
 
