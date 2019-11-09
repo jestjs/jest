@@ -131,6 +131,7 @@
 - `[docs]` Fix WatchPlugins `jestHooks.shouldRunTestSuite` example that receives an object ([#8784](https://github.com/facebook/jest/pull/8784))
 - `[*]` Enforce LF line endings ([#8809](https://github.com/facebook/jest/pull/8809))
 - `[pretty-format]` Delete obsolete link and simplify structure in README ([#8824](https://github.com/facebook/jest/pull/8824))
+- `[docs]` Fix broken transform link on webpack page ([#9155](https://github.com/facebook/jest/pull/9155))
 
 ### Performance
 
