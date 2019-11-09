@@ -10,12 +10,13 @@ import {Config} from '@jest/types';
 
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
 import {
+  addExtraLineBreaks,
   getSnapshotData,
   keyToTestName,
+  removeExtraLineBreaks,
   saveSnapshotFile,
   serialize,
   testNameToKey,
-  unescape,
 } from './utils';
 import {InlineSnapshot, saveInlineSnapshots} from './inline_snapshots';
 import {SnapshotData} from './types';
@@ -29,10 +30,19 @@ export type SnapshotStateOptions = {
 
 export type SnapshotMatchOptions = {
   testName: string;
-  received: any;
+  received: unknown;
   key?: string;
   inlineSnapshot?: string;
+  isInline: boolean;
   error?: Error;
+};
+
+type SnapshotReturnOptions = {
+  actual: string;
+  count: number;
+  expected?: string;
+  key: string;
+  pass: boolean;
 };
 
 export default class SnapshotState {
@@ -172,11 +182,11 @@ export default class SnapshotState {
     received,
     key,
     inlineSnapshot,
+    isInline,
     error,
-  }: SnapshotMatchOptions) {
+  }: SnapshotMatchOptions): SnapshotReturnOptions {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
-    const isInline = inlineSnapshot !== undefined;
 
     if (!key) {
       key = testNameToKey(testName, count);
@@ -185,16 +195,14 @@ export default class SnapshotState {
     // Do not mark the snapshot as "checked" if the snapshot is inline and
     // there's an external snapshot. This way the external snapshot can be
     // removed with `--updateSnapshot`.
-    if (!(isInline && this._snapshotData[key])) {
+    if (!(isInline && this._snapshotData[key] !== undefined)) {
       this._uncheckedKeys.delete(key);
     }
 
-    const receivedSerialized = serialize(received);
+    const receivedSerialized = addExtraLineBreaks(serialize(received));
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;
-    const hasSnapshot = isInline
-      ? inlineSnapshot !== ''
-      : this._snapshotData[key] !== undefined;
+    const hasSnapshot = expected !== undefined;
     const snapshotIsPersisted = isInline || fs.existsSync(this._snapshotPath);
 
     if (pass && !isInline) {
@@ -246,9 +254,12 @@ export default class SnapshotState {
       if (!pass) {
         this.unmatched++;
         return {
-          actual: unescape(receivedSerialized),
+          actual: removeExtraLineBreaks(receivedSerialized),
           count,
-          expected: expected ? unescape(expected) : null,
+          expected:
+            expected !== undefined
+              ? removeExtraLineBreaks(expected)
+              : undefined,
           key,
           pass: false,
         };

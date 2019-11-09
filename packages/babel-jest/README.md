@@ -4,7 +4,7 @@
 
 ## Usage
 
-If you are already using `jest-cli`, just add `babel-jest` and it will automatically compile JavaScript code using Babel.
+If you are already using `jest-cli`, add `babel-jest` and it will automatically compile JavaScript code using Babel.
 
 ```bash
 yarn add --dev babel-jest @babel/core

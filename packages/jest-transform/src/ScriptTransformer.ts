@@ -43,10 +43,7 @@ const {version: VERSION} = require('../package.json');
 // This data structure is used to avoid recalculating some data every time that
 // we need to transform a file. Since ScriptTransformer is instantiated for each
 // file we need to keep this object in the local scope of this module.
-const projectCaches: WeakMap<
-  Config.ProjectConfig,
-  ProjectCache
-> = new WeakMap();
+const projectCaches = new Map<string, ProjectCache>();
 
 // To reset the cache for specific changesets (rather than package version).
 const CACHE_VERSION = '1';
@@ -74,17 +71,18 @@ export default class ScriptTransformer {
     this._transformCache = new Map();
     this._transformConfigCache = new Map();
 
-    let projectCache = projectCaches.get(config);
+    const configString = stableStringify(this._config);
+    let projectCache = projectCaches.get(configString);
 
     if (!projectCache) {
       projectCache = {
-        configString: stableStringify(this._config),
+        configString,
         ignorePatternsRegExp: calcIgnorePatternRegExp(this._config),
         transformRegExp: calcTransformRegExp(this._config),
         transformedFiles: new Map(),
       };
 
-      projectCaches.set(config, projectCache);
+      projectCaches.set(configString, projectCache);
     }
 
     this._cache = projectCache;
@@ -176,7 +174,11 @@ export default class ScriptTransformer {
         return transformer;
       }
 
-      transform = require(transformPath) as Transformer;
+      transform = require(transformPath);
+
+      if (!transform) {
+        throw new TypeError('Jest: a transform must export something.');
+      }
       const transformerConfig = this._transformConfigCache.get(transformPath);
       if (typeof transform.createTransformer === 'function') {
         transform = transform.createTransformer(transformerConfig);
@@ -294,12 +296,21 @@ export default class ScriptTransformer {
     }
 
     if (!transformed.map) {
-      //Could be a potential freeze here.
-      //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
-      const inlineSourceMap = sourcemapFromSource(transformed.code);
+      try {
+        //Could be a potential freeze here.
+        //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
+        const inlineSourceMap = sourcemapFromSource(transformed.code);
 
-      if (inlineSourceMap) {
-        transformed.map = inlineSourceMap.toJSON();
+        if (inlineSourceMap) {
+          transformed.map = inlineSourceMap.toJSON();
+        }
+      } catch (e) {
+        const transformPath = this._getTransformPath(filename);
+        console.warn(
+          `jest-transform: The source map produced for the file ${filename} ` +
+            `by ${transformPath} was invalid. Proceeding without source ` +
+            'mapping for that file.',
+        );
       }
     }
 
@@ -381,7 +392,8 @@ export default class ScriptTransformer {
 
       if (
         e instanceof SyntaxError &&
-        e.message.includes('Unexpected token') &&
+        (e.message.includes('Unexpected token') ||
+          e.message.includes('Cannot use import')) &&
         !e.message.includes(' expected')
       ) {
         throw enhanceUnexpectedTokenMessage(e);
@@ -471,7 +483,7 @@ export default class ScriptTransformer {
         }
       },
       {
-        exts: [path.extname(moduleName)],
+        exts: this._config.moduleFileExtensions.map(ext => `.${ext}`),
         ignoreNodeModules: false,
         matcher: filename => {
           if (transforming) {

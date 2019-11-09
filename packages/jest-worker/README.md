@@ -109,6 +109,8 @@ Returns a `ReadableStream` where the standard error of all workers is piped. Not
 
 Finishes the workers by killing all workers. No further calls can be done to the `Worker` instance.
 
+Returns a Promise that resolves with `{ forceExited: boolean }` once all workers are dead. If `forceExited` is `true`, at least one of the workers did not exit gracefully, which likely happened because it executed a leaky task that left handles open. This should be avoided, force exiting workers is a last resort to prevent creating lots of orphans.
+
 **Note:** Each worker has a unique id (index that starts with `1`) which is available on `process.env.JEST_WORKER_ID`
 
 ## Setting up and tearing down the child process
@@ -139,7 +141,10 @@ async function main() {
   console.log(await myWorker.bar('Bob')); // "Hello from bar: Bob"
   console.log(await myWorker.getWorkerId()); // "3" -> this message has sent from the 3rd worker
 
-  myWorker.end();
+  const {forceExited} = await myWorker.end();
+  if (forceExited) {
+    console.error('Workers failed to exit gracefully');
+  }
 }
 
 main();
@@ -186,7 +191,10 @@ async function main() {
   // the same worker that processed the file the first time will process it now.
   console.log(await myWorker.transform('/tmp/foo.js'));
 
-  myWorker.end();
+  const {forceExited} = await myWorker.end();
+  if (forceExited) {
+    console.error('Workers failed to exit gracefully');
+  }
 }
 
 main();

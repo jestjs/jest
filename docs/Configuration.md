@@ -86,7 +86,7 @@ test('if utils mocked automatically', () => {
   expect(utils.isAuthorized.mock).toBeTruthy();
 
   // You can provide them with your own implementation
-  // or just pass the expected return value
+  // or pass the expected return value
   utils.authorize.mockReturnValue('mocked_token');
   utils.isAuthorized.mockReturnValue(true);
 
@@ -754,6 +754,20 @@ For example, Jest ships with several plug-ins to `jasmine` that work by monkey-p
 
 _Note: `setupTestFrameworkScriptFile` is deprecated in favor of `setupFilesAfterEnv`._
 
+Example `setupFilesAfterEnv` array in a jest.config.js:
+
+```js
+module.exports = {
+  setupFilesAfterEnv: ['./jest.setup.js'],
+};
+```
+
+Example `jest.setup.js` file
+
+```js
+jest.setTimeout(10000); // in milliseconds
+```
+
 ### `snapshotResolver` [string]
 
 Default: `undefined`
@@ -920,8 +934,6 @@ beforeAll(() => {
   someGlobalObject = global.someGlobalObject;
 });
 ```
-
-_Note: Jest comes with JSDOM@11 by default. Due to JSDOM 12 and newer dropping support for Node 6, Jest is unable to upgrade for the time being. However, you can install a custom `testEnvironment` with whichever version of JSDOM you want. E.g. [jest-environment-jsdom-thirteen](https://www.npmjs.com/package/jest-environment-jsdom-thirteen), which has JSDOM@13._
 
 ### `testEnvironmentOptions` [Object]
 

@@ -8,7 +8,12 @@
 import {cpus} from 'os';
 import WorkerPool from './WorkerPool';
 import Farm from './Farm';
-import {FarmOptions, WorkerPoolInterface, WorkerPoolOptions} from './types';
+import {
+  FarmOptions,
+  PoolExitResult,
+  WorkerPoolInterface,
+  WorkerPoolOptions,
+} from './types';
 
 function getExposedMethods(
   workerPath: string,
@@ -132,13 +137,12 @@ export default class JestWorker {
     return this._workerPool.getStdout();
   }
 
-  end(): void {
+  async end(): Promise<PoolExitResult> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
-
-    this._workerPool.end();
-
     this._ending = true;
+
+    return this._workerPool.end();
   }
 }

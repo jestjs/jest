@@ -170,7 +170,7 @@ Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 }
 ```
 
-And finally we just have the webpack `alias` left to handle. For that we can make use of the `moduleNameMapper` option again.
+And finally, we have to handle the webpack `alias`. For that we can make use of the `moduleNameMapper` option again.
 
 ```json
 // package.json

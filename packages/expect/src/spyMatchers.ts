@@ -12,7 +12,7 @@ import {
   MatcherHintOptions,
   RECEIVED_COLOR,
   diff,
-  ensureExpectedIsNumber,
+  ensureExpectedIsNonNegativeInteger,
   ensureNoExpected,
   matcherErrorMessage,
   matcherHint,
@@ -472,7 +472,7 @@ const createToBeCalledTimesMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureExpectedIsNumber(expected, matcherName, options);
+    ensureExpectedIsNonNegativeInteger(expected, matcherName, options);
     ensureMockOrSpy(received, matcherName, expectedArgument, options);
 
     const receivedIsSpy = isSpy(received);
@@ -508,7 +508,7 @@ const createToReturnTimesMatcher = (matcherName: string) =>
       isNot: this.isNot,
       promise: this.promise,
     };
-    ensureExpectedIsNumber(expected, matcherName, options);
+    ensureExpectedIsNonNegativeInteger(expected, matcherName, options);
     ensureMock(received, matcherName, expectedArgument, options);
 
     const receivedName = received.getMockName();

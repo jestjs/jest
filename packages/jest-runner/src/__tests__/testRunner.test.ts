@@ -15,7 +15,7 @@ jest.mock('jest-worker', () =>
   jest.fn(
     worker =>
       (mockWorkerFarm = {
-        end: jest.fn(),
+        end: jest.fn().mockResolvedValue({forceExited: false}),
         getStderr: jest.fn(),
         getStdout: jest.fn(),
         worker: jest.fn((data, callback) => require(worker)(data, callback)),
@@ -36,7 +36,10 @@ test('injects the serializable module map into each worker in watch mode', async
   };
 
   await new TestRunner(globalConfig).runTests(
-    [{context, path: './file.test.js'}, {context, path: './file2.test.js'}],
+    [
+      {context, path: './file.test.js'},
+      {context, path: './file2.test.js'},
+    ],
     new TestWatcher({isWatchMode: globalConfig.watch}),
     () => {},
     () => {},

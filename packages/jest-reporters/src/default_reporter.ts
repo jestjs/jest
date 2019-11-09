@@ -7,7 +7,8 @@
 
 import {Config} from '@jest/types';
 import {AggregatedResult, TestResult} from '@jest/test-result';
-import {clearLine, getConsoleOutput, isInteractive} from 'jest-util';
+import {clearLine, isInteractive} from 'jest-util';
+import {getConsoleOutput} from '@jest/console';
 import chalk from 'chalk';
 import {ReporterOnStartOptions, Test} from './types';
 import BaseReporter from './base_reporter';

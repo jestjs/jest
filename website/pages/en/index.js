@@ -66,6 +66,7 @@ const Backer = ({
     className="backer-item"
     title={`$${totalDonations.value} by ${name || slug}`}
     target="_blank"
+    rel="nofollow noopener"
     href={website || `https://opencollective.com/${slug}`}
   >
     {
@@ -419,8 +420,8 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Tests fail, when they do Jest provides rich context why,
-                      here’s some examples:
+                      Tests fail—when they do, Jest provides rich context why.
+                      Here are some examples:
                     </translate>
                   ),
                   image: '/img/content/matchers/different-types.png',
@@ -538,9 +539,9 @@ class Index extends React.Component {
                   <MarkdownBlock>
                     <translate>
                       A lot of people! With
-                      [16m](https://www.npmjs.com/package/jest) downloads in the
-                      last 30 days, and used on over
-                      [1,130,000](https://github.com/facebook/jest/network/dependents)
+                      [20m](https://www.npmjs.com/package/jest) downloads in the
+                      last month, and used on over
+                      [1,293,000](https://github.com/facebook/jest/network/dependents)
                       public repos on GitHub. Jest is used extensively at these
                       companies:
                     </translate>

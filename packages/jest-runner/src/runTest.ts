@@ -295,6 +295,9 @@ export default async function runTest(
   );
 
   if (leakDetector) {
+    // We wanna allow a tiny but time to pass to allow last-minute cleanup
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     // Resolve leak detector, outside the "runTestInternal" closure.
     result.leaks = await leakDetector.isLeaking();
   } else {

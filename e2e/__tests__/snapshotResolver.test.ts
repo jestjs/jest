@@ -33,7 +33,6 @@ describe('Custom snapshot resolver', () => {
 
     expect(result.stderr).toMatch('1 snapshot written from 1 test suite');
 
-    // $FlowFixMe dynamic require
     const content = require(snapshotFile);
     expect(content).toHaveProperty(
       'snapshots are written to custom location 1',

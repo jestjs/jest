@@ -647,7 +647,8 @@ class Runtime {
           return module;
         }
       }
-      throw new Error(
+
+      throw new Resolver.ModuleNotFoundError(
         `Cannot resolve module '${moduleName}' from paths ['${paths.join(
           "', '",
         )}'] from ${from}`,

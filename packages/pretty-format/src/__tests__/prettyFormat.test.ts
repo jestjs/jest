@@ -661,7 +661,10 @@ describe('prettyFormat()', () => {
   });
 
   it('supports plugins with deeply nested arrays (#24)', () => {
-    const val = [[1, 2], [3, 4]];
+    const val = [
+      [1, 2],
+      [3, 4],
+    ];
     expect(
       prettyFormat(val, {
         plugins: [

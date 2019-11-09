@@ -7,6 +7,8 @@
  */
 
 import chalk from 'chalk';
+import prettyFormat = require('pretty-format');
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {
   MatcherHintOptions,
   diff,
@@ -18,7 +20,12 @@ import {
   stringify,
 } from '../';
 
-describe('.stringify()', () => {
+/* global BigInt */
+const isBigIntDefined = typeof BigInt === 'function';
+
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
+
+describe('stringify()', () => {
   [
     [[], '[]'],
     [{}, '{}'],
@@ -33,6 +40,8 @@ describe('.stringify()', () => {
     [Infinity, 'Infinity'],
     [-Infinity, '-Infinity'],
     [/ab\.c/gi, '/ab\\.c/gi'],
+    isBigIntDefined ? [BigInt(1), '1n'] : [12, '12'],
+    isBigIntDefined ? [BigInt(0), '0n'] : [123, '123'],
   ].forEach(([v, s]) => {
     test(stringify(v), () => {
       expect(stringify(v)).toBe(s);
@@ -88,17 +97,23 @@ describe('.stringify()', () => {
       small.b[i] = 'test';
     }
 
-    expect(stringify(big)).toMatchSnapshot();
-    expect(stringify(small)).toMatchSnapshot();
+    expect(stringify(big)).toBe(prettyFormat(big, {maxDepth: 1, min: true}));
+    expect(stringify(small)).toBe(prettyFormat(small, {min: true}));
   });
 });
 
-describe('.ensureNumbers()', () => {
+describe('ensureNumbers()', () => {
   test('dont throw error when variables are numbers', () => {
     expect(() => {
       // @ts-ignore
       ensureNumbers(1, 2);
     }).not.toThrow();
+    if (isBigIntDefined) {
+      expect(() => {
+        // @ts-ignore
+        ensureNumbers(BigInt(1), BigInt(2));
+      }).not.toThrow();
+    }
   });
 
   test('throws error when expected is not a number (backward compatibility)', () => {
@@ -187,7 +202,7 @@ describe('.ensureNumbers()', () => {
   });
 });
 
-describe('.ensureNoExpected()', () => {
+describe('ensureNoExpected()', () => {
   test('dont throw error when undefined', () => {
     expect(() => {
       // @ts-ignore
@@ -219,6 +234,7 @@ describe('diff', () => {
       ['a', 1],
       ['a', true],
       [1, true],
+      [isBigIntDefined ? BigInt(1) : 1, true],
     ].forEach(([actual, expected]) =>
       expect(diff(actual, expected)).toBe('diff output'),
     );
@@ -231,9 +247,15 @@ describe('diff', () => {
   test('two numbers', () => {
     expect(diff(1, 2)).toBe(null);
   });
+
+  if (isBigIntDefined) {
+    test('two bigints', () => {
+      expect(diff(BigInt(1), BigInt(2))).toBe(null);
+    });
+  }
 });
 
-describe('.pluralize()', () => {
+describe('pluralize()', () => {
   test('one', () => expect(pluralize('apple', 1)).toEqual('one apple'));
   test('two', () => expect(pluralize('apple', 2)).toEqual('two apples'));
   test('20', () => expect(pluralize('apple', 20)).toEqual('20 apples'));

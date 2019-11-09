@@ -345,9 +345,10 @@ export default function watch(
     }
 
     // Abort test run
-    const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(
-      usage => Number(usage.key).toString(16),
-    );
+    const pluginKeys = getSortedUsageRows(
+      watchPlugins,
+      globalConfig,
+    ).map(usage => Number(usage.key).toString(16));
     if (
       isRunning &&
       testWatcher &&

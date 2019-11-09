@@ -143,12 +143,13 @@ const each = require('jest-each').default;
 Alias: `.it(name, fn)`
 
 ```js
-each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).test(
-  'returns the result of adding %d to %d',
-  (a, b, expected) => {
-    expect(a + b).toBe(expected);
-  },
-);
+each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+]).test('returns the result of adding %d to %d', (a, b, expected) => {
+  expect(a + b).toBe(expected);
+});
 ```
 
 #### `.test.only(name, fn)`
@@ -156,12 +157,13 @@ each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).test(
 Aliases: `.it.only(name, fn)` or `.fit(name, fn)`
 
 ```js
-each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).test.only(
-  'returns the result of adding %d to %d',
-  (a, b, expected) => {
-    expect(a + b).toBe(expected);
-  },
-);
+each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+]).test.only('returns the result of adding %d to %d', (a, b, expected) => {
+  expect(a + b).toBe(expected);
+});
 ```
 
 #### `.test.skip(name, fn)`
@@ -169,12 +171,13 @@ each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).test.only(
 Aliases: `.it.skip(name, fn)` or `.xit(name, fn)` or `.xtest(name, fn)`
 
 ```js
-each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).test.skip(
-  'returns the result of adding %d to %d',
-  (a, b, expected) => {
-    expect(a + b).toBe(expected);
-  },
-);
+each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+]).test.skip('returns the result of adding %d to %d', (a, b, expected) => {
+  expect(a + b).toBe(expected);
+});
 ```
 
 #### Asynchronous `.test(name, fn(done))`
@@ -197,24 +200,25 @@ each([['hello'], ['mr'], ['spy']]).test(
 #### `.describe(name, fn)`
 
 ```js
-each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).describe(
-  '.add(%d, %d)',
-  (a, b, expected) => {
-    test(`returns ${expected}`, () => {
-      expect(a + b).toBe(expected);
-    });
+each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+]).describe('.add(%d, %d)', (a, b, expected) => {
+  test(`returns ${expected}`, () => {
+    expect(a + b).toBe(expected);
+  });
 
-    test('does not mutate first arg', () => {
-      a + b;
-      expect(a).toBe(a);
-    });
+  test('does not mutate first arg', () => {
+    a + b;
+    expect(a).toBe(a);
+  });
 
-    test('does not mutate second arg', () => {
-      a + b;
-      expect(b).toBe(b);
-    });
-  },
-);
+  test('does not mutate second arg', () => {
+    a + b;
+    expect(b).toBe(b);
+  });
+});
 ```
 
 #### `.describe.only(name, fn)`
@@ -222,14 +226,15 @@ each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).describe(
 Aliases: `.fdescribe(name, fn)`
 
 ```js
-each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).describe.only(
-  '.add(%d, %d)',
-  (a, b, expected) => {
-    test(`returns ${expected}`, () => {
-      expect(a + b).toBe(expected);
-    });
-  },
-);
+each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+]).describe.only('.add(%d, %d)', (a, b, expected) => {
+  test(`returns ${expected}`, () => {
+    expect(a + b).toBe(expected);
+  });
+});
 ```
 
 #### `.describe.skip(name, fn)`
@@ -237,14 +242,15 @@ each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).describe.only(
 Aliases: `.xdescribe(name, fn)`
 
 ```js
-each([[1, 1, 2], [1, 2, 3], [2, 1, 3]]).describe.skip(
-  '.add(%d, %d)',
-  (a, b, expected) => {
-    test(`returns ${expected}`, () => {
-      expect(a + b).toBe(expected);
-    });
-  },
-);
+each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+]).describe.skip('.add(%d, %d)', (a, b, expected) => {
+  test(`returns ${expected}`, () => {
+    expect(a + b).toBe(expected);
+  });
+});
 ```
 
 ---

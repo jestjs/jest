@@ -5,6 +5,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/console": "^24.9.0",
     "@jest/environment": "^24.9.0",
     "@jest/test-result": "^24.9.0",
     "@jest/transform": "^24.9.0",
@@ -22,10 +23,10 @@
     "jest-runtime": "^24.9.0",
     "jest-util": "^24.9.0",
     "jest-worker": "^24.6.0",
-    "node-notifier": "^5.4.3",
     "slash": "^3.0.0",
     "source-map": "^0.6.0",
-    "string-length": "^3.1.0"
+    "string-length": "^3.1.0",
+    "terminal-link": "^2.0.0"
   },
   "devDependencies": {
     "@types/exit": "^0.1.30",
@@ -37,6 +38,9 @@
     "@types/istanbul-reports": "^1.1.0",
     "@types/node-notifier": "^5.4.0",
     "strip-ansi": "^5.0.0"
+  },
+  "optionalDependencies": {
+    "node-notifier": "^6.0.0"
   },
   "engines": {
     "node": ">= 8"

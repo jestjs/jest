@@ -5,12 +5,15 @@
 jest.useFakeTimers();
 
 describe('timerGame', () => {
+  beforeEach(() => {
+    jest.spyOn(global, 'setTimeout');
+  });
   it('waits 1 second before ending the game', () => {
     const timerGame = require('../timerGame');
     timerGame();
 
-    expect(setTimeout.mock.calls.length).toBe(1);
-    expect(setTimeout.mock.calls[0][1]).toBe(1000);
+    expect(setTimeout).toBeCalledTimes(1);
+    expect(setTimeout).toBeCalledWith(expect.any(Function), 1000);
   });
 
   it('calls the callback after 1 second via runAllTimers', () => {
@@ -27,7 +30,7 @@ describe('timerGame', () => {
 
     // Now our callback should have been called!
     expect(callback).toBeCalled();
-    expect(callback.mock.calls.length).toBe(1);
+    expect(callback).toBeCalledTimes(1);
   });
 
   it('calls the callback after 1 second via advanceTimersByTime', () => {
@@ -44,6 +47,6 @@ describe('timerGame', () => {
 
     // Now our callback should have been called!
     expect(callback).toBeCalled();
-    expect(callback.mock.calls.length).toBe(1);
+    expect(callback).toBeCalledTimes(1);
   });
 });

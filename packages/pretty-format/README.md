@@ -230,7 +230,7 @@ Some properties in `config` are derived from `min` in `options`:
 
 ### Example of serialize and test
 
-This plugin is a pattern you can apply to serialize composite data types. Of course, `pretty-format` does not need a plugin to serialize arrays :)
+This plugin is a pattern you can apply to serialize composite data types. Side note: `pretty-format` does not need a plugin to serialize arrays.
 
 ```js
 // We reused more code when we factored out a function for child items

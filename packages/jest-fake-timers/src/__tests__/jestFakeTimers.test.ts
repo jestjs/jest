@@ -6,7 +6,7 @@
  */
 
 import {runInNewContext} from 'vm';
-import mock from 'jest-mock';
+import mock = require('jest-mock');
 import FakeTimers from '../jestFakeTimers';
 
 const timerConfig = {

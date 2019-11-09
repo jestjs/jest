@@ -9,28 +9,22 @@ import assert = require('assert');
 import {format} from 'util';
 import {Console} from 'console';
 import chalk from 'chalk';
+import {clearLine} from 'jest-util';
 import {LogCounters, LogMessage, LogTimers, LogType} from './types';
-
-// TODO: Copied from `jest-util`. Import from it in Jest 25
-function clearLine(stream: NodeJS.WritableStream & {isTTY?: boolean}) {
-  if (stream.isTTY) {
-    stream.write('\x1b[999D\x1b[K');
-  }
-}
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
 export default class CustomConsole extends Console {
-  private _stdout: NodeJS.WritableStream;
-  private _stderr: NodeJS.WritableStream;
+  private _stdout: NodeJS.WriteStream;
+  private _stderr: NodeJS.WriteStream;
   private _formatBuffer: Formatter;
   private _counters: LogCounters;
   private _timers: LogTimers;
   private _groupDepth: number;
 
   constructor(
-    stdout: NodeJS.WritableStream,
-    stderr: NodeJS.WritableStream,
+    stdout: NodeJS.WriteStream,
+    stderr: NodeJS.WriteStream,
     formatBuffer: Formatter = (_type, message) => message,
   ) {
     super(stdout, stderr);

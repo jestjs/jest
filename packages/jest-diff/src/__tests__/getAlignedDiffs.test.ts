@@ -5,12 +5,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {computeStringDiffs, printMultilineStringDiffs} from '../printDiffs';
+import {diffStringsUnified} from '../printDiffs';
 
-const testAlignedDiffs = (a: string, b: string): string => {
-  const {diffs} = computeStringDiffs(a, b);
-  return printMultilineStringDiffs(diffs, true);
+// To align columns so people can review snapshots confidently:
+
+// 1. Use options to omit line colors.
+const identity = (string: string) => string;
+const changeColor = (string: string) => '<i>' + string + '</i>';
+const options = {
+  aColor: identity,
+  bColor: identity,
+  changeColor,
+  commonColor: identity,
+  omitAnnotationLines: true,
+  patchColor: identity,
 };
+
+const testAlignedDiffs = (a: string, b: string): string =>
+  diffStringsUnified(a, b, options);
+
+// 2. Add string serializer to omit double quote marks.
+expect.addSnapshotSerializer({
+  serialize: (val: string) => val,
+  test: (val: unknown) => typeof val === 'string',
+});
 
 describe('getAlignedDiffs', () => {
   describe('lines', () => {

@@ -405,7 +405,10 @@ describe('moduleMocker', () => {
         expect(fn.mock.calls).toEqual([[1, 2, 3]]);
 
         fn('a', 'b', 'c');
-        expect(fn.mock.calls).toEqual([[1, 2, 3], ['a', 'b', 'c']]);
+        expect(fn.mock.calls).toEqual([
+          [1, 2, 3],
+          ['a', 'b', 'c'],
+        ]);
       });
 
       it('tracks instances made by mocks', () => {
@@ -732,7 +735,11 @@ describe('moduleMocker', () => {
       expect(fn(6, 3)).toBe(18);
 
       // All call args tracked
-      expect(fn.mock.calls).toEqual([[2, 4], [3, 5], [6, 3]]);
+      expect(fn.mock.calls).toEqual([
+        [2, 4],
+        [3, 5],
+        [6, 3],
+      ]);
       // Results are tracked
       expect(fn.mock.results).toEqual([
         {
@@ -1018,6 +1025,15 @@ describe('moduleMocker', () => {
       expect(mockFn()).toBe('Default');
       expect(mockFn()).toBe('Default');
     });
+  });
+
+  test('mockReturnValue does not override mockImplementationOnce', () => {
+    const mockFn = jest
+      .fn()
+      .mockReturnValue(1)
+      .mockImplementationOnce(() => 2);
+    expect(mockFn()).toBe(2);
+    expect(mockFn()).toBe(1);
   });
 
   test('mockImplementation resets the mock', () => {

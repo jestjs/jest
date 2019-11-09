@@ -4,5 +4,12 @@
   "private": true,
   "license": "MIT",
   "main": "build/index.js",
-  "types": "build/index.d.ts"
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "ansi-regex": "^5.0.0",
+    "ansi-styles": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/ansi-styles": "^3.2.1"
+  }
 }

@@ -43,7 +43,7 @@ test('can press "f" to run only failed tests', () => {
   const input = [{keys: ['f']}, {keys: ['q']}];
   setupFiles(input);
 
-  const {status, stderr} = runJest(DIR, ['--no-watchman', '--watchAll']);
+  const {exitCode, stderr} = runJest(DIR, ['--no-watchman', '--watchAll']);
   const results = extractSummaries(stderr);
 
   expect(results).toHaveLength(2);
@@ -51,5 +51,5 @@ test('can press "f" to run only failed tests', () => {
     expect(wrap(rest)).toMatchSnapshot('test results');
     expect(wrap(summary)).toMatchSnapshot('test summary');
   });
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });

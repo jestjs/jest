@@ -12,7 +12,12 @@
   "dependencies": {
     "@jest/types": "^24.9.0",
     "jest-message-util": "^24.9.0",
-    "jest-mock": "^24.9.0"
+    "jest-mock": "^24.9.0",
+    "jest-util": "^24.9.0",
+    "lolex": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/lolex": "^3.1.1"
   },
   "engines": {
     "node": ">= 8"
