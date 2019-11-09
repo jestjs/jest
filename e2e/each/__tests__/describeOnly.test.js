@@ -7,14 +7,14 @@
 
 /* eslint-disable jest/no-focused-tests */
 
-describe.only.each([[true, true], [true, true]])(
-  'passes all rows expected %s == %s',
-  (left, right) => {
-    it('passes', () => {
-      expect(left).toBe(right);
-    });
-  }
-);
+describe.only.each([
+  [true, true],
+  [true, true],
+])('passes all rows expected %s == %s', (left, right) => {
+  it('passes', () => {
+    expect(left).toBe(right);
+  });
+});
 
 // This failing tests should never because of the above `only` so the suite
 // should pass
