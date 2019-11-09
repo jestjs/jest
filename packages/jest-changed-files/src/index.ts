@@ -44,9 +44,9 @@ export const getChangedFilesForRoots = async (
     hg.findChangedFiles(repo, changedFilesOptions),
   );
 
-  const changedFiles = (await Promise.all(
-    gitPromises.concat(hgPromises),
-  )).reduce((allFiles, changedFilesInTheRepo) => {
+  const changedFiles = (
+    await Promise.all(gitPromises.concat(hgPromises))
+  ).reduce((allFiles, changedFilesInTheRepo) => {
     for (const file of changedFilesInTheRepo) {
       allFiles.add(file);
     }

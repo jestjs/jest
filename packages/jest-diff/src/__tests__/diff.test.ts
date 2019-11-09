@@ -75,7 +75,10 @@ describe('no visual difference', () => {
     ['a', 'a'],
     [{}, {}],
     [[], []],
-    [[1, 2], [1, 2]],
+    [
+      [1, 2],
+      [1, 2],
+    ],
     [11, 11],
     [NaN, NaN],
     [Number.NaN, NaN],
@@ -94,8 +97,14 @@ describe('no visual difference', () => {
   });
 
   test('Map key order should be irrelevant', () => {
-    const arg1 = new Map([[1, 'foo'], [2, 'bar']]);
-    const arg2 = new Map([[2, 'bar'], [1, 'foo']]);
+    const arg1 = new Map([
+      [1, 'foo'],
+      [2, 'bar'],
+    ]);
+    const arg2 = new Map([
+      [2, 'bar'],
+      [1, 'foo'],
+    ]);
 
     expect(stripped(arg1, arg2)).toBe(NO_DIFF_MESSAGE);
   });

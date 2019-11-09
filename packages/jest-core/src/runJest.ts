@@ -243,7 +243,9 @@ export default (async function runJest({
   }
 
   if (changedFilesPromise) {
-    testSchedulerContext.changedFiles = (await changedFilesPromise).changedFiles;
+    testSchedulerContext.changedFiles = (
+      await changedFilesPromise
+    ).changedFiles;
   }
 
   const results = await new TestScheduler(

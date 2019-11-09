@@ -1142,7 +1142,10 @@ describe('preset', () => {
       {},
     );
 
-    expect(options.moduleNameMapper).toEqual([['a', 'a'], ['b', 'b']]);
+    expect(options.moduleNameMapper).toEqual([
+      ['a', 'a'],
+      ['b', 'b'],
+    ]);
     expect(options.modulePathIgnorePatterns).toEqual(['b', 'a']);
     expect(options.setupFiles.sort()).toEqual([
       '/node_modules/a',
