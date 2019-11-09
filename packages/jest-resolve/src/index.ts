@@ -14,6 +14,7 @@ import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
 import {ResolverConfig} from './types';
+import ModuleNotFoundError from './ModuleNotFoundError';
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -78,6 +79,8 @@ class Resolver {
     this._moduleNameCache = new Map();
     this._modulePathCache = new Map();
   }
+
+  static ModuleNotFoundError = ModuleNotFoundError;
 
   static clearDefaultResolverCache() {
     clearDefaultResolverCache();
@@ -209,11 +212,10 @@ class Resolver {
     // produces an error based on the dirname but we have the actual current
     // module name available.
     const relativePath = path.relative(dirname, from);
-    const err: Error & {code?: string} = new Error(
+
+    throw new ModuleNotFoundError(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
     );
-    err.code = 'MODULE_NOT_FOUND';
-    throw err;
   }
 
   isCoreModule(moduleName: string): boolean {

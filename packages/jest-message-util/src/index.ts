@@ -296,13 +296,10 @@ export const formatResultsErrors = (
     result: AssertionResult;
   }>;
 
-  const failedResults: FailedResults = testResults.reduce(
-    (errors, result) => {
-      result.failureMessages.forEach(content => errors.push({content, result}));
-      return errors;
-    },
-    [] as FailedResults,
-  );
+  const failedResults: FailedResults = testResults.reduce((errors, result) => {
+    result.failureMessages.forEach(content => errors.push({content, result}));
+    return errors;
+  }, [] as FailedResults);
 
   if (!failedResults.length) {
     return null;

@@ -1142,7 +1142,10 @@ describe('preset', () => {
       {},
     );
 
-    expect(options.moduleNameMapper).toEqual([['a', 'a'], ['b', 'b']]);
+    expect(options.moduleNameMapper).toEqual([
+      ['a', 'a'],
+      ['b', 'b'],
+    ]);
     expect(options.modulePathIgnorePatterns).toEqual(['b', 'a']);
     expect(options.setupFiles.sort()).toEqual([
       '/node_modules/a',
@@ -1216,6 +1219,62 @@ describe('preset', () => {
     );
 
     expect(options.setupFilesAfterEnv).toEqual(['/node_modules/b']);
+  });
+});
+
+describe('preset with globals', () => {
+  beforeEach(() => {
+    const Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => {
+      if (name === 'global-foo/jest-preset') {
+        return '/node_modules/global-foo/jest-preset.json';
+      }
+
+      return '/node_modules/' + name;
+    });
+    jest.doMock(
+      '/node_modules/global-foo/jest-preset.json',
+      () => ({
+        globals: {
+          config: {
+            hereToStay: 'This should stay here',
+          },
+        },
+      }),
+      {virtual: true},
+    );
+  });
+
+  afterEach(() => {
+    jest.dontMock('/node_modules/global-foo/jest-preset.json');
+  });
+
+  test('should merge the globals preset correctly', () => {
+    const {options} = normalize(
+      {
+        preset: 'global-foo',
+        rootDir: '/root/path/foo',
+        globals: {
+          textValue: 'This is just text',
+          config: {
+            sideBySide: 'This should also live another day',
+          },
+        },
+      },
+      {},
+    );
+
+    expect(options).toEqual(
+      expect.objectContaining({
+        globals: {
+          textValue: 'This is just text',
+          config: {
+            hereToStay: 'This should stay here',
+            sideBySide: 'This should also live another day',
+          },
+        },
+      }),
+    );
   });
 });
 

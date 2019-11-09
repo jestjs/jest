@@ -83,13 +83,10 @@ export const serialize = (
             .sort(),
       nodeIsFragment(node)
         ? []
-        : Array.from(node.attributes).reduce(
-            (props, attribute) => {
-              props[attribute.name] = attribute.value;
-              return props;
-            },
-            {} as any,
-          ),
+        : Array.from(node.attributes).reduce((props, attribute) => {
+            props[attribute.name] = attribute.value;
+            return props;
+          }, {} as any),
       config,
       indentation + config.indent,
       depth,

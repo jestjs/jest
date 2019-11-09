@@ -7,8 +7,6 @@
 
 import * as path from 'path';
 import {PassThrough} from 'stream';
-// ESLint doesn't know about this experimental module
-// eslint-disable-next-line import/no-unresolved
 import {Worker} from 'worker_threads';
 import mergeStream = require('merge-stream');
 

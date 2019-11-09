@@ -13,7 +13,7 @@
     "ansi-escapes": "^4.2.1",
     "chalk": "^2.0.1",
     "exit": "^0.1.2",
-    "graceful-fs": "^4.1.15",
+    "graceful-fs": "^4.2.3",
     "jest-changed-files": "^24.9.0",
     "jest-config": "^24.9.0",
     "jest-haste-map": "^24.9.0",

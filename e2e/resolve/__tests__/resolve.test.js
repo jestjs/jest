@@ -98,3 +98,12 @@ test('should require resolve haste mocks correctly', () => {
 
   expect(require('Test6').key).toBe('mock');
 });
+
+test('should throw module not found error if the module cannot be found', () => {
+  expect(() => require('Test7')).toThrow(
+    expect.objectContaining({
+      code: 'MODULE_NOT_FOUND',
+      message: "Cannot find module 'Test7' from 'resolve.test.js'",
+    })
+  );
+});

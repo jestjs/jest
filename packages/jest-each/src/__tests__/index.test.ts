@@ -10,12 +10,13 @@ import each from '../';
 
 describe('array', () => {
   describe('.add', () => {
-    each([[0, 0, 0], [0, 1, 1], [1, 1, 2]]).test(
-      'returns the result of adding %s to %s',
-      (a, b, expected) => {
-        expect(a + b).toBe(expected);
-      },
-    );
+    each([
+      [0, 0, 0],
+      [0, 1, 1],
+      [1, 1, 2],
+    ]).test('returns the result of adding %s to %s', (a, b, expected) => {
+      expect(a + b).toBe(expected);
+    });
   });
 });
 
