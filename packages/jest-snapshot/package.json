@@ -10,6 +10,9 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@babel/generator": "^7.7.2",
+    "@babel/parser": "^7.7.3",
+    "@babel/traverse": "^7.7.2",
     "@babel/types": "^7.0.0",
     "@jest/types": "^24.9.0",
     "chalk": "^2.0.1",
@@ -34,10 +37,12 @@
     "prettier": "^1.13.4"
   },
   "peerDependencies": {
-    "@babel/core": "7.x",
-    "@babel/generator": "7.x",
-    "@babel/parser": "7.x",
-    "@babel/traverse": "7.x"
+    "@babel/core": "7.x"
+  },
+  "peerDependenciesMeta": {
+    "@babel/core": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">= 8"
