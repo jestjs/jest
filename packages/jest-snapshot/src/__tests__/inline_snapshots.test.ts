@@ -335,10 +335,7 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
   const frame = {column: 11, file: filename, line: 1} as Frame;
   const save = () =>
     saveInlineSnapshots(
-      [
-        {frame, snapshot: `1`},
-        {frame, snapshot: `2`},
-      ],
+      [{frame, snapshot: `1`}, {frame, snapshot: `2`}],
       prettier,
       babelTraverse,
     );
