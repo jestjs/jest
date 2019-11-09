@@ -11,7 +11,7 @@ import {sync as glob} from 'glob';
 import {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');

@@ -11,7 +11,7 @@ import {AggregatedResult, TestResult} from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
 import istanbulReport = require('istanbul-lib-report');
 import istanbulReports = require('istanbul-reports');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import istanbulCoverage = require('istanbul-lib-coverage');
 import libSourceMaps = require('istanbul-lib-source-maps');
 import Worker from 'jest-worker';

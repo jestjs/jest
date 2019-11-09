@@ -8,7 +8,7 @@
 import assert = require('assert');
 import {Console} from 'console';
 import {format} from 'util';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {SourceMapRegistry, getCallsite} from '@jest/source-map';
 import {
   ConsoleBuffer,

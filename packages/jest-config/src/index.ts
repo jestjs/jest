@@ -8,7 +8,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {Config} from '@jest/types';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {isJSONString, replaceRootDirInPath} from './utils';
 import normalize from './normalize';
 import resolveConfigPath from './resolveConfigPath';

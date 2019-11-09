@@ -8,7 +8,7 @@
 
 'use strict';
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {KEYS} from 'jest-watcher';
 
 const runJestMock = jest.fn();

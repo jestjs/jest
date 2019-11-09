@@ -6,7 +6,7 @@
  */
 
 import path from 'path';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import stripAnsi from 'strip-ansi';
 import {printDisplayName, trimAndFormatPath, wrapAnsiString} from '../utils';
 

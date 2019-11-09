@@ -26,7 +26,7 @@ import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
 import sourcemapSupport = require('source-map-support');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {

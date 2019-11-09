@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import ansiEscapes = require('ansi-escapes');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
 import HasteMap = require('jest-haste-map');

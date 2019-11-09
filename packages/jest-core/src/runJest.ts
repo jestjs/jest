@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
 import {interopRequireDefault} from 'jest-util';

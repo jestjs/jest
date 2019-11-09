@@ -12,7 +12,7 @@ import {
   Suite,
   TestResult,
 } from '@jest/test-result';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {specialChars} from 'jest-util';
 import {Test} from './types';
 import DefaultReporter from './default_reporter';
