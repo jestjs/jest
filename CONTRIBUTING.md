@@ -42,6 +42,12 @@ _Before_ submitting a pull request, please make sure the following is done…
     python --version
     ```
 
+1.  Make sure you have a compatible version of `node` installed (As of October 25th 2019, `v12.x` is recommended).
+
+    ```sh
+    node -v
+    ```
+
 1.  Run `yarn install`. On Windows: To install [Yarn](https://yarnpkg.com/en/docs/install#windows-tab) on Windows you may need to download either node.js or Chocolatey<br />
 
     ```sh
@@ -54,6 +60,12 @@ _Before_ submitting a pull request, please make sure the following is done…
     yarn --version
     ```
 
+    On Windows `yarn install` may fail with `gyp ERR! build error`. One of possible solutions:
+
+    ```sh
+     yarn global add windows-build-tools
+    ```
+
 1.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
 
     ```sh
@@ -63,7 +75,7 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 1.  If you've changed APIs, update the documentation.
 
-1.  Ensure the test suite passes via `yarn test`. To run the test suite you may need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On macOS, this can be done using [homebrew](http://brew.sh/): `brew install hg`.
+1.  Ensure the test suite passes via `yarn jest`. To run the test suite you may need to install [Mercurial](https://www.mercurial-scm.org/) (`hg`). On macOS, this can be done using [homebrew](http://brew.sh/): `brew install hg`.
 
     ```sh-session
     $ brew install hg # maybe
@@ -109,7 +121,7 @@ Ran all test suites.
 
 ##### Using jest-circus
 
-There may be cases where you want to run jest using `jest-circus` instead of `jest-jasmine2` (which is the default runner) for integration testing. In situtations like this just set the environment variable `JEST_CIRCUS` to 1. That will configure jest to use `jest-circus`. So something like this.
+There may be cases where you want to run jest using `jest-circus` instead of `jest-jasmine2` (which is the default runner) for integration testing. In situations like this, set the environment variable `JEST_CIRCUS` to 1. That will configure jest to use `jest-circus`. So something like this.
 
 ```bash
 JEST_CIRCUS=1 yarn jest
@@ -201,7 +213,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 - 80 character line length strongly preferred.
 - Prefer `'` over `"`.
 - ES6 syntax when possible.
-- Use [Flow types](http://flowtype.org/).
+- Use [TypeScript](https://www.typescriptlang.org/).
 - Use semicolons;
 - Trailing commas,
 - Avd abbr wrds.

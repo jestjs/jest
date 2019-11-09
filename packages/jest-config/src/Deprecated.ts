@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 
 const format = (value: unknown) => prettyFormat(value, {min: true});
 

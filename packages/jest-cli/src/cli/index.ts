@@ -5,19 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import {AggregatedResult} from '@jest/test-result';
 import {clearLine} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
-import {runCLI} from '@jest/core';
+import {getVersion, runCLI} from '@jest/core';
 import chalk from 'chalk';
-import exit from 'exit';
-import yargs from 'yargs';
+import exit = require('exit');
+import yargs = require('yargs');
 import {sync as realpath} from 'realpath-native';
 import init from '../init';
-import getVersion from '../version';
 import * as args from './args';
 
 export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
@@ -72,15 +71,12 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
   );
 
   // strip dashed args
-  return Object.keys(argv).reduce(
-    (result, key) => {
-      if (!key.includes('-')) {
-        result[key] = argv[key];
-      }
-      return result;
-    },
-    {} as Config.Argv,
-  );
+  return Object.keys(argv).reduce((result, key) => {
+    if (!key.includes('-')) {
+      result[key] = argv[key];
+    }
+    return result;
+  }, {} as Config.Argv);
 };
 
 const getProjectListFromCLIArgs = (

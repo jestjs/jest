@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {Config, Global} from '@jest/types';
 import {AssertionResult, TestResult} from '@jest/test-result';
 import {JestEnvironment} from '@jest/environment';
 import {SnapshotStateType} from 'jest-snapshot';
-import Runtime from 'jest-runtime';
+import Runtime = require('jest-runtime');
 
-import {getCallsite} from 'jest-util';
+import {getCallsite} from '@jest/source-map';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
 import JasmineReporter from './reporter';
@@ -34,10 +34,11 @@ async function jasmine2(
   const jasmine = jasmineFactory.create({
     process,
     testPath,
+    testTimeout: globalConfig.testTimeout,
   });
 
   const env = jasmine.getEnv();
-  const jasmineInterface = jasmineFactory.interface(jasmine, env);
+  const jasmineInterface = jasmineFactory._interface(jasmine, env);
   Object.assign(environment.global, jasmineInterface);
   env.addReporter(jasmineInterface.jsApiReporter);
 

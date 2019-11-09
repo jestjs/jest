@@ -9,6 +9,7 @@ import prettyFormat from '../';
 import {OptionsReceived, Plugins} from '../types';
 
 declare global {
+  // eslint-disable-next-line no-redeclare
   namespace jest {
     interface Matchers<R> {
       toPrettyPrintTo(expected: any, options?: OptionsReceived): R;

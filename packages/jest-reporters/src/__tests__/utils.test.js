@@ -8,7 +8,7 @@
 import path from 'path';
 import chalk from 'chalk';
 import stripAnsi from 'strip-ansi';
-import {trimAndFormatPath, wrapAnsiString, printDisplayName} from '../utils';
+import {printDisplayName, trimAndFormatPath, wrapAnsiString} from '../utils';
 
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {

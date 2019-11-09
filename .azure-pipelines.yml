@@ -34,3 +34,5 @@ variables:
 
   # Ensures the handful of tests that should be skipped during CI are
   CI: true
+
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn

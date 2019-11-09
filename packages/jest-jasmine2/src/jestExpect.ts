@@ -5,15 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import expect, {MatcherState} from 'expect';
+import expect = require('expect');
+import {Global} from '@jest/types';
 import {
   addSerializer,
-  toMatchSnapshot,
   toMatchInlineSnapshot,
-  toThrowErrorMatchingSnapshot,
+  toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
+  toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-import {RawMatcherFn, Jasmine} from './types';
+import {Jasmine, RawMatcherFn} from './types';
+
+declare const global: Global.Global;
 
 type JasmineMatcher = {
   (matchersUtil: any, context: any): JasmineMatcher;
@@ -45,7 +48,7 @@ export default (config: {expand: boolean}) => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
       jestMatchersObject[name] = function(
-        this: MatcherState,
+        this: expect.MatcherState,
         ...args: Array<unknown>
       ): RawMatcherFn {
         // use "expect.extend" if you need to use equality testers (via this.equal)

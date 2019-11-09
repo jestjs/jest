@@ -61,6 +61,16 @@ jest.mock(
 );
 
 jest.mock(
+  'configureable-preprocessor',
+  () => ({
+    createTransformer: jest.fn(() => ({
+      process: jest.fn(() => 'processedCode'),
+    })),
+  }),
+  {virtual: true},
+);
+
+jest.mock(
   'preprocessor-with-sourcemaps',
   () => ({
     getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
@@ -396,6 +406,7 @@ describe('ScriptTransformer', () => {
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
       encoding: 'utf8',
     });
@@ -424,11 +435,48 @@ describe('ScriptTransformer', () => {
       collectCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
       {encoding: 'utf8'},
     );
+  });
+
+  it('warns of unparseable inlined source maps from the preprocessor', () => {
+    const warn = console.warn;
+    console.warn = jest.fn();
+
+    config = {
+      ...config,
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    };
+    const scriptTransformer = new ScriptTransformer(config);
+
+    const sourceMap = JSON.stringify({
+      mappings: 'AAAA,IAAM,CAAC,GAAW,CAAC,CAAC',
+      version: 3,
+    });
+
+    // Cut off the inlined map prematurely with slice so the JSON ends abruptly
+    const content =
+      'var x = 1;\n' +
+      '//# sourceMappingURL=data:application/json;base64,' +
+      Buffer.from(sourceMap)
+        .toString('base64')
+        .slice(0, 16);
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
+
+    const result = scriptTransformer.transform('/fruits/banana.js', {
+      collectCoverage: true,
+    });
+    expect(result.sourceMapPath).toBeNull();
+    expect(writeFileAtomic.sync).toBeCalledTimes(1);
+
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    console.warn = warn;
   });
 
   it('writes source maps if given by the transformer', () => {
@@ -452,6 +500,7 @@ describe('ScriptTransformer', () => {
       collectCoverage: true,
     });
     expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(map),
@@ -490,6 +539,21 @@ describe('ScriptTransformer', () => {
 
     const {getCacheKey} = require('test_preprocessor');
     expect(getCacheKey.mock.calls[0][3]).toMatchSnapshot();
+  });
+
+  it('creates transformer with config', () => {
+    const transformerConfig = {};
+    config = Object.assign(config, {
+      transform: [
+        ['^.+\\.js$', 'configureable-preprocessor', transformerConfig],
+      ],
+    });
+
+    const scriptTransformer = new ScriptTransformer(config);
+    scriptTransformer.transform('/fruits/banana.js', {});
+    expect(
+      require('configureable-preprocessor').createTransformer,
+    ).toHaveBeenCalledWith(transformerConfig);
   });
 
   it('reads values from the cache', () => {

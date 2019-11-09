@@ -6,7 +6,7 @@
  */
 
 import {Config} from '@jest/types';
-import HasteResolver from 'jest-resolve';
+import HasteResolver = require('jest-resolve');
 import {FS as HasteFS, ModuleMap} from 'jest-haste-map';
 
 export type Context = {

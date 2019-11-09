@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "24.8.0",
+  "version": "24.9.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,32 +11,33 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/types": "^7.0.0",
-    "@jest/types": "^24.8.0",
+    "@jest/types": "^24.9.0",
     "chalk": "^2.0.1",
-    "expect": "^24.8.0",
-    "jest-diff": "^24.8.0",
-    "jest-matcher-utils": "^24.8.0",
-    "jest-message-util": "^24.8.0",
-    "jest-resolve": "^24.8.0",
+    "expect": "^24.9.0",
+    "jest-diff": "^24.9.0",
+    "jest-get-type": "^24.9.0",
+    "jest-matcher-utils": "^24.9.0",
+    "jest-message-util": "^24.9.0",
+    "jest-resolve": "^24.9.0",
     "mkdirp": "^0.5.1",
     "natural-compare": "^1.4.0",
-    "pretty-format": "^24.8.0",
-    "semver": "^5.5.0"
+    "pretty-format": "^24.9.0",
+    "semver": "^6.2.0"
   },
   "devDependencies": {
     "@babel/traverse": "^7.3.4",
     "@types/mkdirp": "^0.5.2",
     "@types/natural-compare": "^1.4.0",
     "@types/prettier": "^1.16.1",
-    "@types/semver": "^5.5.0",
-    "jest-haste-map": "^24.8.0",
+    "@types/semver": "^6.0.1",
+    "jest-haste-map": "^24.9.0",
     "prettier": "^1.13.4"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "845728f24b3ef41e450595c384e9b5c9fdf248a4"
+  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
 }

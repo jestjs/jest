@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
-import browserResolve from 'browser-resolve';
+import * as fs from 'fs';
+import * as path from 'path';
+import {sync as browserResolve} from 'browser-resolve';
 import pnpResolver from 'jest-pnp-resolver';
 import {Config} from '@jest/types';
 import isBuiltinModule from './isBuiltinModule';
@@ -33,7 +33,7 @@ export default function defaultResolver(
     return pnpResolver(path, options);
   }
 
-  const resolve = options.browser ? browserResolve.sync : resolveSync;
+  const resolve = options.browser ? browserResolve : resolveSync;
 
   return resolve(path, {
     basedir: options.basedir,
@@ -44,6 +44,10 @@ export default function defaultResolver(
     rootDir: options.rootDir,
   });
 }
+
+export const clearDefaultResolverCache = () => {
+  checkedPaths.clear();
+};
 
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 

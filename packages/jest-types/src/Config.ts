@@ -22,6 +22,7 @@ export type HasteConfig = {
 };
 
 export type ReporterConfig = [string, Record<string, unknown>];
+export type TransformerConfig = [string, Record<string, unknown>];
 
 export type ConfigGlobals = Record<string, any>;
 
@@ -55,6 +56,7 @@ export type DefaultOptions = {
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
+  maxWorkers: number | string;
   maxConcurrency: number;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
@@ -94,7 +96,7 @@ export type DefaultOptions = {
   timers: 'real' | 'fake';
   transform:
     | {
-        [key: string]: string;
+        [regex: string]: Path | TransformerConfig;
       }
     | null
     | undefined;
@@ -113,115 +115,120 @@ export type DisplayName =
       color: DisplayNameColor;
     };
 
-export type InitialOptions = {
-  automock?: boolean;
-  bail?: boolean | number;
-  browser?: boolean;
-  cache?: boolean;
-  cacheDirectory?: Path;
-  clearMocks?: boolean;
-  changedFilesWithAncestor?: boolean;
-  changedSince?: string;
-  collectCoverage?: boolean;
-  collectCoverageFrom?: Array<Glob>;
-  collectCoverageOnlyFrom?: {
+export type InitialOptionsWithRootDir = InitialOptions &
+  Required<Pick<InitialOptions, 'rootDir'>>;
+
+export type InitialOptions = Partial<{
+  automock: boolean;
+  bail: boolean | number;
+  browser: boolean;
+  cache: boolean;
+  cacheDirectory: Path;
+  clearMocks: boolean;
+  changedFilesWithAncestor: boolean;
+  changedSince: string;
+  collectCoverage: boolean;
+  collectCoverageFrom: Array<Glob>;
+  collectCoverageOnlyFrom: {
     [key: string]: boolean;
   };
-  coverageDirectory?: string;
-  coveragePathIgnorePatterns?: Array<string>;
-  coverageReporters?: Array<string>;
-  coverageThreshold?: {
+  coverageDirectory: string;
+  coveragePathIgnorePatterns: Array<string>;
+  coverageReporters: Array<string>;
+  coverageThreshold: {
     global: {
       [key: string]: number;
     };
   };
-  dependencyExtractor?: string;
-  detectLeaks?: boolean;
-  detectOpenHandles?: boolean;
-  displayName?: DisplayName;
-  expand?: boolean;
-  extraGlobals?: Array<string>;
-  filter?: Path;
-  findRelatedTests?: boolean;
-  forceCoverageMatch?: Array<Glob>;
-  forceExit?: boolean;
-  json?: boolean;
-  globals?: ConfigGlobals;
-  globalSetup?: string | null | undefined;
-  globalTeardown?: string | null | undefined;
-  haste?: HasteConfig;
-  reporters?: Array<string | ReporterConfig>;
-  logHeapUsage?: boolean;
-  lastCommit?: boolean;
-  listTests?: boolean;
-  mapCoverage?: boolean;
-  maxConcurrency?: number;
-  moduleDirectories?: Array<string>;
-  moduleFileExtensions?: Array<string>;
-  moduleLoader?: Path;
-  moduleNameMapper?: {
+  dependencyExtractor: string;
+  detectLeaks: boolean;
+  detectOpenHandles: boolean;
+  displayName: DisplayName;
+  expand: boolean;
+  extraGlobals: Array<string>;
+  filter: Path;
+  findRelatedTests: boolean;
+  forceCoverageMatch: Array<Glob>;
+  forceExit: boolean;
+  json: boolean;
+  globals: ConfigGlobals;
+  globalSetup: string | null | undefined;
+  globalTeardown: string | null | undefined;
+  haste: HasteConfig;
+  reporters: Array<string | ReporterConfig>;
+  logHeapUsage: boolean;
+  lastCommit: boolean;
+  listTests: boolean;
+  mapCoverage: boolean;
+  maxConcurrency: number;
+  maxWorkers: number | string;
+  moduleDirectories: Array<string>;
+  moduleFileExtensions: Array<string>;
+  moduleLoader: Path;
+  moduleNameMapper: {
     [key: string]: string;
   };
-  modulePathIgnorePatterns?: Array<string>;
-  modulePaths?: Array<string>;
-  name?: string;
-  noStackTrace?: boolean;
-  notify?: boolean;
-  notifyMode?: string;
-  onlyChanged?: boolean;
-  outputFile?: Path;
-  passWithNoTests?: boolean;
-  preprocessorIgnorePatterns?: Array<Glob>;
-  preset?: string | null | undefined;
-  prettierPath?: string | null | undefined;
-  projects?: Array<Glob>;
-  replname?: string | null | undefined;
-  resetMocks?: boolean;
-  resetModules?: boolean;
-  resolver?: Path | null | undefined;
-  restoreMocks?: boolean;
+  modulePathIgnorePatterns: Array<string>;
+  modulePaths: Array<string>;
+  name: string;
+  noStackTrace: boolean;
+  notify: boolean;
+  notifyMode: string;
+  onlyChanged: boolean;
+  outputFile: Path;
+  passWithNoTests: boolean;
+  preprocessorIgnorePatterns: Array<Glob>;
+  preset: string | null | undefined;
+  prettierPath: string | null | undefined;
+  projects: Array<Glob>;
+  replname: string | null | undefined;
+  resetMocks: boolean;
+  resetModules: boolean;
+  resolver: Path | null | undefined;
+  restoreMocks: boolean;
   rootDir: Path;
-  roots?: Array<Path>;
-  runner?: string;
-  runTestsByPath?: boolean;
-  scriptPreprocessor?: string;
-  setupFiles?: Array<Path>;
-  setupTestFrameworkScriptFile?: Path;
-  setupFilesAfterEnv?: Array<Path>;
-  silent?: boolean;
-  skipFilter?: boolean;
-  skipNodeResolution?: boolean;
-  snapshotResolver?: Path;
-  snapshotSerializers?: Array<Path>;
-  errorOnDeprecated?: boolean;
-  testEnvironment?: string;
-  testEnvironmentOptions?: Record<string, any>;
-  testFailureExitCode?: string | number;
-  testLocationInResults?: boolean;
-  testMatch?: Array<Glob>;
-  testNamePattern?: string;
-  testPathDirs?: Array<Path>;
-  testPathIgnorePatterns?: Array<string>;
-  testRegex?: string | Array<string>;
-  testResultsProcessor?: string | null | undefined;
-  testRunner?: string;
-  testSequencer?: string;
-  testURL?: string;
-  timers?: 'real' | 'fake';
-  transform?: {
-    [key: string]: string;
+  roots: Array<Path>;
+  runner: string;
+  runTestsByPath: boolean;
+  scriptPreprocessor: string;
+  setupFiles: Array<Path>;
+  setupTestFrameworkScriptFile: Path;
+  setupFilesAfterEnv: Array<Path>;
+  silent: boolean;
+  skipFilter: boolean;
+  skipNodeResolution: boolean;
+  snapshotResolver: Path;
+  snapshotSerializers: Array<Path>;
+  errorOnDeprecated: boolean;
+  testEnvironment: string;
+  testEnvironmentOptions: Record<string, any>;
+  testFailureExitCode: string | number;
+  testLocationInResults: boolean;
+  testMatch: Array<Glob>;
+  testNamePattern: string;
+  testPathDirs: Array<Path>;
+  testPathIgnorePatterns: Array<string>;
+  testRegex: string | Array<string>;
+  testResultsProcessor: string | null | undefined;
+  testRunner: string;
+  testSequencer: string;
+  testURL: string;
+  testTimeout: number;
+  timers: 'real' | 'fake';
+  transform: {
+    [regex: string]: Path | TransformerConfig;
   };
-  transformIgnorePatterns?: Array<Glob>;
-  watchPathIgnorePatterns?: Array<string>;
-  unmockedModulePathPatterns?: Array<string>;
-  updateSnapshot?: boolean;
-  useStderr?: boolean;
-  verbose?: boolean | null | undefined;
-  watch?: boolean;
-  watchAll?: boolean;
-  watchman?: boolean;
-  watchPlugins?: Array<string | [string, Record<string, any>]>;
-};
+  transformIgnorePatterns: Array<Glob>;
+  watchPathIgnorePatterns: Array<string>;
+  unmockedModulePathPatterns: Array<string>;
+  updateSnapshot: boolean;
+  useStderr: boolean;
+  verbose: boolean | null | undefined;
+  watch: boolean;
+  watchAll: boolean;
+  watchman: boolean;
+  watchPlugins: Array<string | [string, Record<string, any>]>;
+}>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
 
@@ -274,13 +281,16 @@ type DisplayNameColor =
   | 'bgCyanBright'
   | 'bgWhiteBright';
 
+export type CoverageThresholdValue = {
+  branches?: number;
+  functions?: number;
+  lines?: number;
+  statements?: number;
+};
+
 type CoverageThreshold = {
-  [path: string]: {
-    [key: string]: number;
-  };
-  global: {
-    [key: string]: number;
-  };
+  [path: string]: CoverageThresholdValue;
+  global: CoverageThresholdValue;
 };
 
 export type GlobalConfig = {
@@ -344,6 +354,7 @@ export type GlobalConfig = {
   testPathPattern: string;
   testResultsProcessor: string | null | undefined;
   testSequencer: string;
+  testTimeout: number;
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose: boolean | null | undefined;
@@ -409,7 +420,7 @@ export type ProjectConfig = {
   testRunner: string;
   testURL: string;
   timers: 'real' | 'fake';
-  transform: Array<[string, Path]>;
+  transform: Array<[string, Path, Record<string, unknown>]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns: Array<string> | null | undefined;
@@ -489,6 +500,7 @@ export type Argv = Arguments<
     testRunner: string;
     testSequencer: string;
     testURL: string;
+    testTimeout: number | null | undefined;
     timers: string;
     transform: string;
     transformIgnorePatterns: Array<string>;

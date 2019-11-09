@@ -9,8 +9,7 @@
 import {Global} from '@jest/types';
 import bind from './bind';
 
-type Global = NodeJS.Global;
-
+type Global = Global.Global;
 const install = (
   g: Global,
   table: Global.EachTable,
@@ -44,7 +43,7 @@ const install = (
 };
 
 const each = (table: Global.EachTable, ...data: Global.TemplateData) =>
-  install(global, table, ...data);
+  install(global as Global, table, ...data);
 
 each.withGlobal = (g: Global) => (
   table: Global.EachTable,

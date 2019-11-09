@@ -56,7 +56,7 @@ export interface Transformer {
   canInstrument?: boolean;
   createTransformer?: (options?: any) => Transformer;
 
-  getCacheKey: (
+  getCacheKey?: (
     fileData: string,
     filePath: Config.Path,
     configStr: string,

@@ -11,7 +11,7 @@ import {deprecationWarning} from './deprecated';
 import {unknownOptionWarning} from './warnings';
 import {errorMessage} from './errors';
 import {validationCondition} from './condition';
-import {ERROR, DEPRECATION, WARNING} from './utils';
+import {DEPRECATION, ERROR, WARNING} from './utils';
 
 const validationOptions: ValidationOptions = {
   comment: '',

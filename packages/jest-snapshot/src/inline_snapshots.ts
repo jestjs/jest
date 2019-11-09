@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
-import semver from 'semver';
+import * as fs from 'fs';
+import * as path from 'path';
+import semver = require('semver');
 import {
+  CallExpression,
+  file,
   templateElement,
   templateLiteral,
-  file,
-  CallExpression,
 } from '@babel/types';
 import {Frame} from 'jest-message-util';
 
@@ -120,6 +120,14 @@ const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
 const indent = (snapshot: string, numIndents: number, indentation: string) => {
   const lines = snapshot.split('\n');
+  // Prevent re-identation of inline snapshots.
+  if (
+    lines.length >= 2 &&
+    lines[1].startsWith(indentation.repeat(numIndents + 1))
+  ) {
+    return snapshot;
+  }
+
   return lines
     .map((line, index) => {
       if (index === 0) {

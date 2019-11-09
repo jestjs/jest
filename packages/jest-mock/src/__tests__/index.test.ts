@@ -405,7 +405,10 @@ describe('moduleMocker', () => {
         expect(fn.mock.calls).toEqual([[1, 2, 3]]);
 
         fn('a', 'b', 'c');
-        expect(fn.mock.calls).toEqual([[1, 2, 3], ['a', 'b', 'c']]);
+        expect(fn.mock.calls).toEqual([
+          [1, 2, 3],
+          ['a', 'b', 'c'],
+        ]);
       });
 
       it('tracks instances made by mocks', () => {
@@ -540,6 +543,32 @@ describe('moduleMocker', () => {
         expect(mockFunctionArity1.length).toBe(1);
         expect(mockFunctionArity2.length).toBe(2);
       });
+    });
+
+    it('mocks the method in the passed object itself', () => {
+      const parent = {func: () => 'abcd'};
+      const child = Object.create(parent);
+
+      moduleMocker.spyOn(child, 'func').mockReturnValue('efgh');
+
+      expect(child.hasOwnProperty('func')).toBe(true);
+      expect(child.func()).toEqual('efgh');
+      expect(parent.func()).toEqual('abcd');
+    });
+
+    it('should delete previously inexistent methods when restoring', () => {
+      const parent = {func: () => 'abcd'};
+      const child = Object.create(parent);
+
+      moduleMocker.spyOn(child, 'func').mockReturnValue('efgh');
+
+      moduleMocker.restoreAllMocks();
+      expect(child.func()).toEqual('abcd');
+
+      moduleMocker.spyOn(parent, 'func').mockReturnValue('jklm');
+
+      expect(child.hasOwnProperty('func')).toBe(false);
+      expect(child.func()).toEqual('jklm');
     });
 
     it('supports mock value returning undefined', () => {
@@ -706,7 +735,11 @@ describe('moduleMocker', () => {
       expect(fn(6, 3)).toBe(18);
 
       // All call args tracked
-      expect(fn.mock.calls).toEqual([[2, 4], [3, 5], [6, 3]]);
+      expect(fn.mock.calls).toEqual([
+        [2, 4],
+        [3, 5],
+        [6, 3],
+      ]);
       // Results are tracked
       expect(fn.mock.results).toEqual([
         {
@@ -992,6 +1025,15 @@ describe('moduleMocker', () => {
       expect(mockFn()).toBe('Default');
       expect(mockFn()).toBe('Default');
     });
+  });
+
+  test('mockReturnValue does not override mockImplementationOnce', () => {
+    const mockFn = jest
+      .fn()
+      .mockReturnValue(1)
+      .mockImplementationOnce(() => 2);
+    expect(mockFn()).toBe(2);
+    expect(mockFn()).toBe(1);
   });
 
   test('mockImplementation resets the mock', () => {

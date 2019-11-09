@@ -87,7 +87,7 @@ test('if utils mocked automatically', () => {
   expect(utils.isAuthorized.mock).toBeTruthy();
 
   // You can provide them with your own implementation
-  // or just pass the expected return value
+  // or pass the expected return value
   utils.authorize.mockReturnValue('mocked_token');
   utils.isAuthorized.mockReturnValue(true);
 
@@ -99,8 +99,6 @@ test('if utils mocked automatically', () => {
 _Note: Node modules are automatically mocked when you have a manual mock in place (e.g.: `__mocks__/lodash.js`). More info [here](manual-mocks.html#mocking-node-modules)._
 
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`._
-
-_Note: Automocking has a performance cost most noticeable in large projects. See [here](troubleshooting.html#tests-are-slow-when-leveraging-automocking) for details and a workaround._
 
 ### `bail` [number | boolean]
 
@@ -410,7 +408,7 @@ This option allows the use of a custom global teardown module which exports an a
 
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
-_Node: The same caveat concerning transformation of `node_modules_ as for `globalSetup` applies to `globalTeardown`.
+_Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
 
 ### `maxConcurrency` [number]
 
@@ -650,6 +648,7 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 {
   "basedir": string,
   "browser": bool,
+  "defaultResolver": "function(request, options)",
   "extensions": [string],
   "moduleDirectory": [string],
   "paths": [string],
@@ -659,6 +658,8 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 
 The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
 
+Note: the defaultResolver passed as options is the jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. (request, options).
+
 ### `restoreMocks` [boolean]
 
 Default: `false`
@@ -667,7 +668,7 @@ Automatically restore mock state between every test. Equivalent to calling `jest
 
 ### `rootDir` [string]
 
-Default: The root of the directory containing your jest's [config file](#) _or_ the `package.json` _or_ the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
+Default: The root of the directory containing your Jest [config file](#) _or_ the `package.json` _or_ the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
 
 The root directory that Jest should scan for tests and modules within. If you put your Jest config inside your `package.json` and want the root directory to be the root of your repo, the value for this config param will default to the directory of the `package.json`.
 
@@ -734,6 +735,20 @@ If you want a path to be [relative to the root directory of your project](#rootd
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in these modules.
 
 _Note: `setupTestFrameworkScriptFile` is deprecated in favor of `setupFilesAfterEnv`._
+
+Example `setupFilesAfterEnv` array in a jest.config.js:
+
+```js
+module.exports = {
+  setupFilesAfterEnv: ['./jest.setup.js'],
+};
+```
+
+Example `jest.setup.js` file
+
+```js
+jest.setTimeout(10000); // in milliseconds
+```
 
 ### `snapshotResolver` [string]
 
@@ -902,7 +917,7 @@ The glob patterns Jest uses to detect test files. By default it looks for `.js`,
 
 See the [micromatch](https://github.com/jonschlinkert/micromatch) package for details of the patterns you can specify.
 
-See also [`testRegex` [string | Array<string>]](#testregex-string), but note that you cannot specify both options.
+See also [`testRegex` [string | array<string>]](#testregex-string-array-string), but note that you cannot specify both options.
 
 ### `testPathIgnorePatterns` [array<string>]
 
@@ -912,7 +927,7 @@ An array of regexp pattern strings that are matched against all test paths befor
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
-### `testRegex` [string | Array<string>]
+### `testRegex` [string | array<string>]
 
 Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$`
 

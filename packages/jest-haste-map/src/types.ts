@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
+import * as fs from 'fs';
 import {Config} from '@jest/types';
 import ModuleMap from './ModuleMap';
 import HasteFS from './HasteFS';
@@ -52,7 +52,7 @@ export type FileMetaData = [
   /* size */ number,
   /* visited */ 0 | 1,
   /* dependencies */ string,
-  /* sha1 */ string | null | undefined
+  /* sha1 */ string | null | undefined,
 ];
 
 export type MockData = Map<string, Config.Path>;

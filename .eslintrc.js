@@ -9,6 +9,7 @@ module.exports = {
   extends: [
     './packages/eslint-config-fb-strict/index.js',
     'plugin:import/errors',
+    'plugin:import/typescript',
     'prettier',
     'prettier/flowtype',
   ],
@@ -18,12 +19,14 @@ module.exports = {
       parser: '@typescript-eslint/parser',
       plugins: ['@typescript-eslint/eslint-plugin'],
       rules: {
-        '@typescript-eslint/array-type': ['error', 'generic'],
+        '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
           {argsIgnorePattern: '^_'},
         ],
+        // Since we do `export =`. Remove for Jest 25
+        'import/default': 'off',
         'import/order': 'error',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
@@ -102,16 +105,13 @@ module.exports = {
         ],
       },
     ],
+    'import/no-unresolved': [2, {ignore: ['fsevents']}],
     // This has to be disabled until all type and module imports are combined
     // https://github.com/benmosher/eslint-plugin-import/issues/645
     'import/order': 0,
     'no-console': 0,
     'no-unused-vars': 2,
     'prettier/prettier': 2,
-  },
-  settings: {
-    'import/resolver': {
-      'eslint-import-resolver-typescript': true,
-    },
+    'sort-imports': [2, {ignoreDeclarationSort: true}],
   },
 };

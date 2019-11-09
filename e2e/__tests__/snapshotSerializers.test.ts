@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {cleanup} from '../Utils';
 import {json as runWithJson} from '../runJest';
 
@@ -14,17 +14,16 @@ const snapshotsDir = path.resolve(testDir, '__tests__/__snapshots__');
 const snapshotPath = path.resolve(snapshotsDir, 'snapshot.test.js.snap');
 
 const runAndAssert = () => {
-  const result = runWithJson('snapshot-serializers', [
+  const {exitCode, json} = runWithJson('snapshot-serializers', [
     '-w=1',
     '--ci=false',
     '--no-cache',
   ]);
-  const json = result.json;
   expect(json.numTotalTests).toBe(9);
   expect(json.numPassedTests).toBe(9);
   expect(json.numFailedTests).toBe(0);
   expect(json.numPendingTests).toBe(0);
-  expect(result.status).toBe(0);
+  expect(exitCode).toBe(0);
 };
 
 describe('Snapshot serializers', () => {
@@ -33,7 +32,6 @@ describe('Snapshot serializers', () => {
 
   it('renders snapshot', () => {
     runAndAssert();
-    // $FlowFixMe dynamic require
     const snapshot = require(snapshotPath);
     expect(snapshot).toMatchSnapshot();
   });

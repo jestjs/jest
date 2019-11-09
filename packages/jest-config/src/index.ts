@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import {Config} from '@jest/types';
 import chalk from 'chalk';
 import {isJSONString, replaceRootDirInPath} from './utils';
@@ -149,6 +149,7 @@ const groupOptions = (
     testPathPattern: options.testPathPattern,
     testResultsProcessor: options.testResultsProcessor,
     testSequencer: options.testSequencer,
+    testTimeout: options.testTimeout,
     updateSnapshot: options.updateSnapshot,
     useStderr: options.useStderr,
     verbose: options.verbose,

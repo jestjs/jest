@@ -10,7 +10,7 @@ import chalk from 'chalk';
 import camelcase from 'camelcase';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {Options} from 'yargs';
-import {createDidYouMeanMessage, format, ValidationError} from './utils';
+import {ValidationError, createDidYouMeanMessage, format} from './utils';
 import {deprecationWarning} from './deprecated';
 import defaultConfig from './defaultConfig';
 import {DeprecatedOptions} from './types';

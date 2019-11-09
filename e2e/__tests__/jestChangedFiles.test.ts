@@ -5,17 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {skipSuiteOnWindows} from '@jest/test-utils';
+import which = require('which');
 import {cleanup, run, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 skipSuiteOnWindows();
 
-const DIR = path.resolve(os.tmpdir(), 'jest-changed-files-test-dir');
+const DIR = path.resolve(tmpdir(), 'jest-changed-files-test-dir');
 
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
@@ -23,7 +24,15 @@ const HG = 'hg --config ui.username=jest_test';
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
-test('gets hg SCM roots and dedups them', async () => {
+// Certain environments (like CITGM and GH Actions) do not come with mercurial installed
+const hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
+const testIfHg = hgIsInstalled ? test : test.skip;
+
+if (!hgIsInstalled) {
+  console.warn('Mercurial (hg) is not installed - skipping some tests');
+}
+
+testIfHg('gets hg SCM roots and dedups them', async () => {
   writeFiles(DIR, {
     'first-repo/file1.txt': 'file1',
     'first-repo/nested-dir/file2.txt': 'file2',
@@ -92,7 +101,7 @@ test('gets git SCM roots and dedups them', async () => {
   expect(gitRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
 });
 
-test('gets mixed git and hg SCM roots and dedups them', async () => {
+testIfHg('gets mixed git and hg SCM roots and dedups them', async () => {
   writeFiles(DIR, {
     'first-repo/file1.txt': 'file1',
     'first-repo/nested-dir/file2.txt': 'file2',
@@ -134,9 +143,11 @@ test('gets changed files for git', async () => {
 
   run(`${GIT} init`, DIR);
 
-  const roots = ['', 'nested-dir', 'nested-dir/second-nested-dir'].map(
-    filename => path.resolve(DIR, filename),
-  );
+  const roots = [
+    '',
+    'nested-dir',
+    'nested-dir/second-nested-dir',
+  ].map(filename => path.resolve(DIR, filename));
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
@@ -254,13 +265,13 @@ test('handles a bad revision for "changedSince", for git', async () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
-  const {status, stderr} = runJest(DIR, ['--changedSince=blablabla']);
+  const {exitCode, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
   expect(wrap(stderr)).toMatchSnapshot();
 });
 
-test('gets changed files for hg', async () => {
+testIfHg('gets changed files for hg', async () => {
   if (process.env.CI) {
     // Circle and Travis have very old version of hg (v2, and current
     // version is v4.2) and its API changed since then and not compatible
@@ -281,9 +292,11 @@ test('gets changed files for hg', async () => {
 
   run(`${HG} init`, DIR);
 
-  const roots = ['', 'nested-dir', 'nested-dir/second-nested-dir'].map(
-    filename => path.resolve(DIR, filename),
-  );
+  const roots = [
+    '',
+    'nested-dir',
+    'nested-dir/second-nested-dir',
+  ].map(filename => path.resolve(DIR, filename));
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
@@ -368,7 +381,7 @@ test('gets changed files for hg', async () => {
   ).toEqual(['file5.txt']);
 });
 
-test('monitors only root paths for hg', async () => {
+testIfHg('monitors only root paths for hg', async () => {
   if (process.env.CI) {
     // Circle and Travis have very old version of hg (v2, and current
     // version is v4.2) and its API changed since then and not compatible
@@ -394,7 +407,7 @@ test('monitors only root paths for hg', async () => {
   ).toEqual(['file2.txt', 'file3.txt']);
 });
 
-test('handles a bad revision for "changedSince", for hg', async () => {
+testIfHg('handles a bad revision for "changedSince", for hg', async () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
     '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,
@@ -406,8 +419,8 @@ test('handles a bad revision for "changedSince", for hg', async () => {
   run(`${HG} add .`, DIR);
   run(`${HG} commit -m "first"`, DIR);
 
-  const {status, stderr} = runJest(DIR, ['--changedSince=blablabla']);
+  const {exitCode, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
   expect(wrap(stderr)).toMatchSnapshot();
 });

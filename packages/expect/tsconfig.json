@@ -9,6 +9,7 @@
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
     {"path": "../jest-regex-util"},
-    {"path": "../jest-types"}
+    {"path": "../jest-types"},
+    {"path": "../test-utils"}
   ]
 }

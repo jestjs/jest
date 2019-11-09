@@ -5,20 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// ESLint doesn't know about this experimental module
-// eslint-disable-next-line import/no-unresolved
-import {parentPort, isMainThread} from 'worker_threads';
+import {isMainThread, parentPort} from 'worker_threads';
 
 import {
-  ChildMessageInitialize,
-  ChildMessageCall,
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
   CHILD_MESSAGE_INITIALIZE,
+  ChildMessageCall,
+  ChildMessageInitialize,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
-  PARENT_MESSAGE_SETUP_ERROR,
   PARENT_MESSAGE_OK,
+  PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
 
 let file: string | null = null;
@@ -38,7 +36,7 @@ let initialized = false;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-parentPort!.on('message', (request: any) => {
+const messageListener = (request: any) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;
@@ -60,7 +58,8 @@ parentPort!.on('message', (request: any) => {
         'Unexpected request from parent process: ' + request[0],
       );
   }
-});
+};
+parentPort!.on('message', messageListener);
 
 function reportSuccess(result: any) {
   if (isMainThread) {
@@ -109,7 +108,8 @@ function end(): void {
 }
 
 function exitProcess(): void {
-  process.exit(0);
+  // Clean up open handles so the worker ideally exits gracefully
+  parentPort!.removeListener('message', messageListener);
 }
 
 function execMethod(method: string, args: Array<any>): void {

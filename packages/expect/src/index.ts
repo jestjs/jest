@@ -9,15 +9,15 @@
 import * as matcherUtils from 'jest-matcher-utils';
 import {
   AsyncExpectationResult,
-  SyncExpectationResult,
-  ExpectationResult,
-  Matchers as MatcherInterface,
-  MatcherState as JestMatcherState,
-  MatchersObject,
-  RawMatcherFn,
-  ThrowingMatcherFn,
-  PromiseMatcherFn,
   Expect,
+  ExpectationResult,
+  MatcherState as JestMatcherState,
+  Matchers as MatcherInterface,
+  MatchersObject,
+  PromiseMatcherFn,
+  RawMatcherFn,
+  SyncExpectationResult,
+  ThrowingMatcherFn,
 } from './types';
 
 import {iterableEquality, subsetEquality} from './utils';
@@ -35,16 +35,16 @@ import {
   objectContaining,
   objectNotContaining,
   stringContaining,
-  stringNotContaining,
   stringMatching,
+  stringNotContaining,
   stringNotMatching,
 } from './asymmetricMatchers';
 import {
   INTERNAL_MATCHER_FLAG,
-  getState,
-  setState,
   getMatchers,
+  getState,
   setMatchers,
+  setState,
 } from './jestMatchersObject';
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 
@@ -359,8 +359,8 @@ const _validateResult = (result: any) => {
     typeof result !== 'object' ||
     typeof result.pass !== 'boolean' ||
     (result.message &&
-      (typeof result.message !== 'string' &&
-        typeof result.message !== 'function'))
+      typeof result.message !== 'string' &&
+      typeof result.message !== 'function')
   ) {
     throw new Error(
       'Unexpected return from a matcher function.\n' +

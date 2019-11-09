@@ -129,7 +129,7 @@ These helper functions and properties can be found on `this` inside a custom mat
 
 #### `this.isNot`
 
-A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion and display a clear and correct matcher hint (see example code).
+A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to display a clear and correct matcher hint (see example code).
 
 #### `this.promise`
 
@@ -169,16 +169,16 @@ expect.extend({
       ? () =>
           this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
-          `Expected: ${this.utils.printExpected(expected)}\n` +
+          `Expected: not ${this.utils.printExpected(expected)}\n` +
           `Received: ${this.utils.printReceived(received)}`
       : () => {
-          const difference = diff(expected, received, {
+          const diffString = diff(expected, received, {
             expand: this.expand,
           });
           return (
             this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
-            (difference && difference.includes('- Expect')
+            (diffString && diffString.includes('- Expect')
               ? `Difference:\n\n${diffString}`
               : `Expected: ${this.utils.printExpected(expected)}\n` +
                 `Received: ${this.utils.printReceived(received)}`)
@@ -207,7 +207,7 @@ When an assertion fails, the error message should give as much signal as necessa
 
 To use snapshot testing inside of your custom matcher you can import `jest-snapshot` and use it from within your matcher.
 
-Here's a simple snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
+Here's a snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
 
 ```js
 const {toMatchSnapshot} = require('jest-snapshot');
@@ -763,31 +763,101 @@ test('drink returns expected nth calls', () => {
 
 Note: the nth argument must be positive integer starting from 1.
 
-### `.toBeCloseTo(number, numDigits?)`
+### `.toHaveLength(number)`
 
-Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
+Use `.toHaveLength` to check that an object has a `.length` property and it is set to a certain numeric value.
+
+This is especially useful for checking arrays or strings size.
 
 ```js
-test('adding works sanely with simple decimals', () => {
+expect([1, 2, 3]).toHaveLength(3);
+expect('abc').toHaveLength(3);
+expect('').not.toHaveLength(5);
+```
+
+### `.toHaveProperty(keyPath, value?)`
+
+Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object. For checking deeply nested properties in an object you may use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) or an array containing the keyPath for deep references.
+
+You can provide an optional `value` argument to compare the received property value (recursively for all properties of object instances, also known as deep equality, like the `toEqual` matcher).
+
+The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty` to check for the existence and values of various properties in the object.
+
+```js
+// Object containing house features to be tested
+const houseForSale = {
+  bath: true,
+  bedrooms: 4,
+  kitchen: {
+    amenities: ['oven', 'stove', 'washer'],
+    area: 20,
+    wallColor: 'white',
+    'nice.oven': true,
+  },
+  'ceiling.height': 2,
+};
+
+test('this house has my desired features', () => {
+  // Example Referencing
+  expect(houseForSale).toHaveProperty('bath');
+  expect(houseForSale).toHaveProperty('bedrooms', 4);
+
+  expect(houseForSale).not.toHaveProperty('pool');
+
+  // Deep referencing using dot notation
+  expect(houseForSale).toHaveProperty('kitchen.area', 20);
+  expect(houseForSale).toHaveProperty('kitchen.amenities', [
+    'oven',
+    'stove',
+    'washer',
+  ]);
+
+  expect(houseForSale).not.toHaveProperty('kitchen.open');
+
+  // Deep referencing using an array containing the keyPath
+  expect(houseForSale).toHaveProperty(['kitchen', 'area'], 20);
+  expect(houseForSale).toHaveProperty(
+    ['kitchen', 'amenities'],
+    ['oven', 'stove', 'washer'],
+  );
+  expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
+  expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
+  expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
+
+  // Referencing keys with dot in the key itself
+  expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
+});
+```
+
+### `.toBeCloseTo(number, numDigits?)`
+
+Use `toBeCloseTo` to compare floating point numbers for approximate equality.
+
+The optional `numDigits` argument limits the number of digits to check **after** the decimal point. For the default value `2`, the test criterion is `Math.abs(expected - received) < 0.005` (that is, `10 ** -2 / 2`).
+
+Intuitive equality comparisons often fail, because arithmetic on decimal (base 10) values often have rounding errors in limited precision binary (base 2) representation. For example, this test fails:
+
+```js
+test('adding works sanely with decimals', () => {
   expect(0.2 + 0.1).toBe(0.3); // Fails!
 });
 ```
 
-It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`. Sorry.
+It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`.
 
-Instead, use `.toBeCloseTo`. Use `numDigits` to control how many digits after the decimal point to check. For example, if you want to be sure that `0.2 + 0.1` is equal to `0.3` with a precision of 5 decimal digits, you can use this test:
+For example, this test passes with a precision of 5 digits:
 
 ```js
-test('adding works sanely with simple decimals', () => {
+test('adding works sanely with decimals', () => {
   expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
 });
 ```
 
-The optional `numDigits` argument has default value `2` which means the criterion is `Math.abs(expected - received) < 0.005` (that is, `10 ** -2 / 2`).
+Because floating point errors are the problem that `toBeCloseTo` solves, it does not support big integer values.
 
 ### `.toBeDefined()`
 
-Use `.toBeDefined` to check that a variable is not undefined. For example, if you just want to check that a function `fetchNewFlavorIdea()` returns _something_, you can write:
+Use `.toBeDefined` to check that a variable is not undefined. For example, if you want to check that a function `fetchNewFlavorIdea()` returns _something_, you can write:
 
 ```js
 test('there is a new flavor idea', () => {
@@ -799,7 +869,7 @@ You could write `expect(fetchNewFlavorIdea()).not.toBe(undefined)`, but it's bet
 
 ### `.toBeFalsy()`
 
-Use `.toBeFalsy` when you don't care what a value is, you just want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:
+Use `.toBeFalsy` when you don't care what a value is and you want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:
 
 ```js
 drinkSomeLaCroix();
@@ -819,9 +889,9 @@ test('drinking La Croix does not lead to errors', () => {
 
 In JavaScript, there are six falsy values: `false`, `0`, `''`, `null`, `undefined`, and `NaN`. Everything else is truthy.
 
-### `.toBeGreaterThan(number)`
+### `.toBeGreaterThan(number | bigint)`
 
-To compare floating point numbers, you can use `toBeGreaterThan`. For example, if you want to test that `ouncesPerCan()` returns a value of more than 10 ounces, write:
+Use `toBeGreaterThan` to compare `received > expected` for number or big integer values. For example, test that `ouncesPerCan()` returns a value of more than 10 ounces:
 
 ```js
 test('ounces per can is more than 10', () => {
@@ -829,9 +899,9 @@ test('ounces per can is more than 10', () => {
 });
 ```
 
-### `.toBeGreaterThanOrEqual(number)`
+### `.toBeGreaterThanOrEqual(number | bigint)`
 
-To compare floating point numbers, you can use `toBeGreaterThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at least 12 ounces, write:
+Use `toBeGreaterThanOrEqual` to compare `received >= expected` for number or big integer values. For example, test that `ouncesPerCan()` returns a value of at least 12 ounces:
 
 ```js
 test('ounces per can is at least 12', () => {
@@ -839,9 +909,9 @@ test('ounces per can is at least 12', () => {
 });
 ```
 
-### `.toBeLessThan(number)`
+### `.toBeLessThan(number | bigint)`
 
-To compare floating point numbers, you can use `toBeLessThan`. For example, if you want to test that `ouncesPerCan()` returns a value of less than 20 ounces, write:
+Use `toBeLessThan` to compare `received < expected` for number or big integer values. For example, test that `ouncesPerCan()` returns a value of less than 20 ounces:
 
 ```js
 test('ounces per can is less than 20', () => {
@@ -849,9 +919,9 @@ test('ounces per can is less than 20', () => {
 });
 ```
 
-### `.toBeLessThanOrEqual(number)`
+### `.toBeLessThanOrEqual(number | bigint)`
 
-To compare floating point numbers, you can use `toBeLessThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at most 12 ounces, write:
+Use `toBeLessThanOrEqual` to compare `received <= expected` for number or big integer values. For example, test that `ouncesPerCan()` returns a value of at most 12 ounces:
 
 ```js
 test('ounces per can is at most 12', () => {
@@ -887,7 +957,7 @@ test('bloop returns null', () => {
 
 ### `.toBeTruthy()`
 
-Use `.toBeTruthy` when you don't care what a value is, you just want to ensure a value is true in a boolean context. For example, let's say you have some application code that looks like:
+Use `.toBeTruthy` when you don't care what a value is and you want to ensure a value is true in a boolean context. For example, let's say you have some application code that looks like:
 
 ```js
 drinkSomeLaCroix();
@@ -896,7 +966,7 @@ if (thirstInfo()) {
 }
 ```
 
-You may not care what `thirstInfo` returns, specifically - it might return `true` or a complex object, and your code would still work. So if you just want to test that `thirstInfo` will be truthy after drinking some La Croix, you could write:
+You may not care what `thirstInfo` returns, specifically - it might return `true` or a complex object, and your code would still work. So if you want to test that `thirstInfo` will be truthy after drinking some La Croix, you could write:
 
 ```js
 test('drinking La Croix leads to having thirst info', () => {
@@ -988,18 +1058,6 @@ If differences between properties do not help you to understand why a test fails
 - rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
 - rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
 
-### `.toHaveLength(number)`
-
-Use `.toHaveLength` to check that an object has a `.length` property and it is set to a certain numeric value.
-
-This is especially useful for checking arrays or strings size.
-
-```js
-expect([1, 2, 3]).toHaveLength(3);
-expect('abc').toHaveLength(3);
-expect('').not.toHaveLength(5);
-```
-
 ### `.toMatch(regexpOrString)`
 
 Use `.toMatch` to check that a string matches a regular expression.
@@ -1068,60 +1126,6 @@ describe('toMatchObject applied to arrays', () => {
       {baz: 1},
     ]);
   });
-});
-```
-
-### `.toHaveProperty(keyPath, value?)`
-
-Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object. For checking deeply nested properties in an object you may use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) or an array containing the keyPath for deep references.
-
-You can provide an optional `value` argument to compare the received property value (recursively for all properties of object instances, also known as deep equality, like the `toEqual` matcher).
-
-The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty` to check for the existence and values of various properties in the object.
-
-```js
-// Object containing house features to be tested
-const houseForSale = {
-  bath: true,
-  bedrooms: 4,
-  kitchen: {
-    amenities: ['oven', 'stove', 'washer'],
-    area: 20,
-    wallColor: 'white',
-    'nice.oven': true,
-  },
-  'ceiling.height': 2,
-};
-
-test('this house has my desired features', () => {
-  // Simple Referencing
-  expect(houseForSale).toHaveProperty('bath');
-  expect(houseForSale).toHaveProperty('bedrooms', 4);
-
-  expect(houseForSale).not.toHaveProperty('pool');
-
-  // Deep referencing using dot notation
-  expect(houseForSale).toHaveProperty('kitchen.area', 20);
-  expect(houseForSale).toHaveProperty('kitchen.amenities', [
-    'oven',
-    'stove',
-    'washer',
-  ]);
-
-  expect(houseForSale).not.toHaveProperty('kitchen.open');
-
-  // Deep referencing using an array containing the keyPath
-  expect(houseForSale).toHaveProperty(['kitchen', 'area'], 20);
-  expect(houseForSale).toHaveProperty(
-    ['kitchen', 'amenities'],
-    ['oven', 'stove', 'washer'],
-  );
-  expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
-  expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
-  expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
-
-  // Referencing keys with dot in the key itself
-  expect(houseForSale).toHaveProperty(['ceiling.height'], 'tall');
 });
 ```
 

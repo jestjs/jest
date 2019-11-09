@@ -24,8 +24,10 @@ let expectedPathFooQux;
 let expectedPathAbs;
 let expectedPathAbsAnother;
 
+let virtualModuleRegexes;
+beforeEach(() => (virtualModuleRegexes = [/jest-jasmine2/, /babel-jest/]));
 const findNodeModule = jest.fn(name => {
-  if (name.match(/jest-jasmine2|babel-jest/)) {
+  if (virtualModuleRegexes.some(regex => regex.test(name))) {
     return name;
   }
   return null;
@@ -328,6 +330,24 @@ describe('transform', () => {
     expect(options.transform).toEqual([
       [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
       [DEFAULT_JS_PATTERN, require.resolve('babel-jest')],
+      ['abs-path', '/qux/quux'],
+    ]);
+  });
+  it("pulls in config if it's passed as an array", () => {
+    const {options} = normalize(
+      {
+        rootDir: '/root/',
+        transform: {
+          [DEFAULT_CSS_PATTERN]: '<rootDir>/node_modules/jest-regex-util',
+          [DEFAULT_JS_PATTERN]: ['babel-jest', {rootMode: 'upward'}],
+          'abs-path': '/qux/quux',
+        },
+      },
+      {},
+    );
+    expect(options.transform).toEqual([
+      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
+      [DEFAULT_JS_PATTERN, require.resolve('babel-jest'), {rootMode: 'upward'}],
       ['abs-path', '/qux/quux'],
     ]);
   });
@@ -1021,6 +1041,29 @@ describe('preset', () => {
     }).toThrowErrorMatchingSnapshot();
   });
 
+  test('throws when a dependency is missing in the preset', () => {
+    jest.doMock(
+      '/node_modules/react-native-js-preset/jest-preset.js',
+      () => {
+        require('library-that-is-not-installed');
+        return {
+          transform: {},
+        };
+      },
+      {virtual: true},
+    );
+
+    expect(() => {
+      normalize(
+        {
+          preset: 'react-native-js-preset',
+          rootDir: '/root/path/foo',
+        },
+        {},
+      );
+    }).toThrowError(/Cannot find module 'library-that-is-not-installed'/);
+  });
+
   test('throws when preset is invalid', () => {
     jest.doMock('/node_modules/react-native/jest-preset.json', () =>
       jest.requireActual('./jest-preset.json'),
@@ -1099,7 +1142,10 @@ describe('preset', () => {
       {},
     );
 
-    expect(options.moduleNameMapper).toEqual([['a', 'a'], ['b', 'b']]);
+    expect(options.moduleNameMapper).toEqual([
+      ['a', 'a'],
+      ['b', 'b'],
+    ]);
     expect(options.modulePathIgnorePatterns).toEqual(['b', 'a']);
     expect(options.setupFiles.sort()).toEqual([
       '/node_modules/a',
@@ -1173,6 +1219,62 @@ describe('preset', () => {
     );
 
     expect(options.setupFilesAfterEnv).toEqual(['/node_modules/b']);
+  });
+});
+
+describe('preset with globals', () => {
+  beforeEach(() => {
+    const Resolver = require('jest-resolve');
+    Resolver.findNodeModule = jest.fn(name => {
+      if (name === 'global-foo/jest-preset') {
+        return '/node_modules/global-foo/jest-preset.json';
+      }
+
+      return '/node_modules/' + name;
+    });
+    jest.doMock(
+      '/node_modules/global-foo/jest-preset.json',
+      () => ({
+        globals: {
+          config: {
+            hereToStay: 'This should stay here',
+          },
+        },
+      }),
+      {virtual: true},
+    );
+  });
+
+  afterEach(() => {
+    jest.dontMock('/node_modules/global-foo/jest-preset.json');
+  });
+
+  test('should merge the globals preset correctly', () => {
+    const {options} = normalize(
+      {
+        preset: 'global-foo',
+        rootDir: '/root/path/foo',
+        globals: {
+          textValue: 'This is just text',
+          config: {
+            sideBySide: 'This should also live another day',
+          },
+        },
+      },
+      {},
+    );
+
+    expect(options).toEqual(
+      expect.objectContaining({
+        globals: {
+          textValue: 'This is just text',
+          config: {
+            hereToStay: 'This should stay here',
+            sideBySide: 'This should also live another day',
+          },
+        },
+      }),
+    );
   });
 });
 
@@ -1561,4 +1663,42 @@ describe('displayName', () => {
       }).toThrowErrorMatchingSnapshot();
     },
   );
+
+  it.each([
+    undefined,
+    'jest-runner',
+    'jest-runner-eslint',
+    'jest-runner-tslint',
+    'jest-runner-tsc',
+  ])('generates a default color for the runner %s', runner => {
+    virtualModuleRegexes.push(/jest-runner-.+/);
+    const {
+      options: {displayName},
+    } = normalize(
+      {
+        rootDir: '/root/',
+        displayName: 'project',
+        runner,
+      },
+      {},
+    );
+    expect(displayName.name).toBe('project');
+    expect(displayName.color).toMatchSnapshot();
+  });
+});
+
+describe('testTimeout', () => {
+  it('should return timeout value if defined', () => {
+    console.warn.mockImplementation(() => {});
+    const {options} = normalize({rootDir: '/root/', testTimeout: 1000}, {});
+
+    expect(options.testTimeout).toBe(1000);
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
+  it('should throw an error if timeout is a negative number', () => {
+    expect(() =>
+      normalize({rootDir: '/root/', testTimeout: -1}, {}),
+    ).toThrowErrorMatchingSnapshot();
+  });
 });

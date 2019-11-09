@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, Printer, NewPlugin, Refs} from '../types';
+import {Config, NewPlugin, Printer, Refs} from '../types';
 
 export type ReactTestObject = {
   $$typeof: symbol;
@@ -24,7 +24,10 @@ import {
   printProps,
 } from './lib/markup';
 
-const testSymbol = Symbol.for('react.test.json');
+const testSymbol =
+  typeof Symbol === 'function' && Symbol.for
+    ? Symbol.for('react.test.json')
+    : 0xea71357;
 
 const getPropKeys = (object: ReactTestObject) => {
   const {props} = object;

@@ -6,7 +6,8 @@
  */
 
 import {ModuleMocker} from 'jest-mock';
-import {formatStackTrace, StackTraceConfig} from 'jest-message-util';
+import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
+import {setGlobal} from 'jest-util';
 
 type Callback = (...args: Array<unknown>) => void;
 
@@ -42,18 +43,7 @@ type TimerConfig<Ref> = {
 
 const MS_IN_A_YEAR = 31536000000;
 
-// TODO: Copied from `jest-util` to avoid cyclic dependency. Import from `jest-util` in the next major
-const setGlobal = (
-  globalToMutate: NodeJS.Global | Window,
-  key: string,
-  value: unknown,
-) => {
-  // @ts-ignore: no index
-  globalToMutate[key] = value;
-};
-
 export default class FakeTimers<TimerRef> {
-  private _cancelledImmediates!: Record<string, boolean>;
   private _cancelledTicks!: Record<string, boolean>;
   private _config: StackTraceConfig;
   private _disposed?: boolean;
@@ -105,9 +95,7 @@ export default class FakeTimers<TimerRef> {
   }
 
   clearAllTimers() {
-    this._immediates.forEach(immediate =>
-      this._fakeClearImmediate(immediate.uuid),
-    );
+    this._immediates = [];
     this._timers.clear();
   }
 
@@ -118,7 +106,6 @@ export default class FakeTimers<TimerRef> {
 
   reset() {
     this._cancelledTicks = {};
-    this._cancelledImmediates = {};
     this._now = 0;
     this._ticks = [];
     this._immediates = [];
@@ -177,10 +164,10 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _runImmediate(immediate: Tick) {
-    if (!this._cancelledImmediates.hasOwnProperty(immediate.uuid)) {
-      // Callback may throw, so update the map prior calling.
-      this._cancelledImmediates[immediate.uuid] = true;
+    try {
       immediate.callback();
+    } finally {
+      this._fakeClearImmediate(immediate.uuid);
     }
   }
 
@@ -235,6 +222,23 @@ export default class FakeTimers<TimerRef> {
     timerEntries
       .sort(([, left], [, right]) => left.expiry - right.expiry)
       .forEach(([timerHandle]) => this._runTimerHandle(timerHandle));
+  }
+
+  advanceTimersToNextTimer(steps = 1) {
+    if (steps < 1) {
+      return;
+    }
+    const nextExpiry = Array.from(this._timers.values()).reduce(
+      (minExpiry: number | null, timer: Timer): number => {
+        if (minExpiry === null || timer.expiry < minExpiry) return timer.expiry;
+        return minExpiry;
+      },
+      null,
+    );
+    if (nextExpiry !== null) {
+      this.advanceTimersByTime(nextExpiry - this._now);
+      this.advanceTimersToNextTimer(steps - 1);
+    }
   }
 
   advanceTimersByTime(msToRun: number) {
@@ -385,7 +389,9 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _fakeClearImmediate(uuid: TimerID) {
-    this._cancelledImmediates[uuid] = true;
+    this._immediates = this._immediates.filter(
+      immediate => immediate.uuid !== uuid,
+    );
   }
 
   private _fakeNextTick(callback: Callback, ...args: Array<any>) {
@@ -415,19 +421,20 @@ export default class FakeTimers<TimerRef> {
       return null;
     }
 
-    const uuid = this._uuidCounter++;
+    const uuid = String(this._uuidCounter++);
 
     this._immediates.push({
       callback: () => callback.apply(null, args),
-      uuid: String(uuid),
+      uuid,
     });
 
-    const cancelledImmediates = this._cancelledImmediates;
     this._timerAPIs.setImmediate(() => {
-      if (!cancelledImmediates.hasOwnProperty(uuid)) {
-        // Callback may throw, so update the map prior calling.
-        cancelledImmediates[String(uuid)] = true;
-        callback.apply(null, args);
+      if (this._immediates.find(x => x.uuid === uuid)) {
+        try {
+          callback.apply(null, args);
+        } finally {
+          this._fakeClearImmediate(uuid);
+        }
       }
     });
 

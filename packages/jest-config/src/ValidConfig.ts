@@ -39,9 +39,9 @@ const initialOptions: Config.InitialOptions = {
   },
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: multipleValidOptions('test-config', {
-    color: 'blue' as 'blue',
+    color: 'blue',
     name: 'test-config',
-  }),
+  } as const),
   errorOnDeprecated: false,
   expand: false,
   extraGlobals: [],
@@ -63,6 +63,7 @@ const initialOptions: Config.InitialOptions = {
   lastCommit: false,
   logHeapUsage: true,
   maxConcurrency: 5,
+  maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleLoader: '<rootDir>',
@@ -113,6 +114,7 @@ const initialOptions: Config.InitialOptions = {
   testResultsProcessor: 'processor-node-module',
   testRunner: 'jasmine2',
   testSequencer: '@jest/test-sequencer',
+  testTimeout: 5000,
   testURL: 'http://localhost',
   timers: 'real',
   transform: {

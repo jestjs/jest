@@ -4,7 +4,7 @@ title: Mock Functions
 original_id: mock-function-api
 ---
 
-Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than just testing the output. You can create a mock function with `jest.fn()`. If no implementation is given, the mock function will return `undefined` when invoked.
+Mock functions are also known as "spies", because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. You can create a mock function with `jest.fn()`. If no implementation is given, the mock function will return `undefined` when invoked.
 
 ## Methods
 
@@ -25,7 +25,10 @@ An array that represents all calls that have been made into this mock function. 
 For example: A mock function `f` that has been called twice, with the arguments `f('arg1', 'arg2')`, and then with the arguments `f('arg3', 'arg4')` would have a `mock.calls` array that looks like this:
 
 ```js
-[['arg1', 'arg2'], ['arg3', 'arg4']];
+[
+  ['arg1', 'arg2'],
+  ['arg3', 'arg4'],
+];
 ```
 
 ### `mockFn.mock.instances`
@@ -157,9 +160,9 @@ expect(mockFn).toHaveBeenCalled();
 Will result in this error:
 
 ```
-    expect(mockedFunction).toHaveBeenCalled()
+expect(mockedFunction).toHaveBeenCalled()
 
-    Expected mock function to have been called.
+Expected mock function "mockedFunction" to have been called, but it was not called.
 ```
 
 ### `mockFn.mockReturnThis()`

@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "24.8.0",
+  "version": "24.9.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -13,13 +13,12 @@
   "browser": "build-es5/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/types": "^24.8.0",
-    "ansi-regex": "^4.0.0",
-    "ansi-styles": "^3.2.0",
+    "@jest/types": "^24.9.0",
+    "ansi-regex": "^5.0.0",
+    "ansi-styles": "^4.0.0",
     "react-is": "^16.8.4"
   },
   "devDependencies": {
-    "@types/ansi-regex": "^4.0.0",
     "@types/ansi-styles": "^3.2.1",
     "@types/react": "*",
     "@types/react-is": "^16.7.1",
@@ -30,10 +29,10 @@
     "react-test-renderer": "*"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "845728f24b3ef41e450595c384e9b5c9fdf248a4"
+  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
 }
