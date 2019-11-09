@@ -11,7 +11,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/source-map": "^24.9.0",
-    "chalk": "^2.0.1",
+    "chalk": "^3.0.0",
     "jest-util": "^24.9.0",
     "slash": "^3.0.0"
   },

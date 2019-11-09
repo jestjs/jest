@@ -12,7 +12,7 @@ import {clearLine} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
 import {getVersion, runCLI} from '@jest/core';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import exit = require('exit');
 import yargs = require('yargs');
 import {sync as realpath} from 'realpath-native';

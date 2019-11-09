@@ -9,7 +9,7 @@ import * as path from 'path';
 import {Config} from '@jest/types';
 import {ValidationError} from 'jest-validate';
 import Resolver = require('jest-resolve');
-import chalk from 'chalk';
+import chalk = require('chalk');
 
 type ResolveOptions = {
   rootDir: Config.Path;

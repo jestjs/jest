@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import prettyFormat = require('pretty-format');
 
 const format = (value: unknown) => prettyFormat(value, {min: true});

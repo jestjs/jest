@@ -15,7 +15,7 @@
     "@jest/source-map": "^24.9.0",
     "@jest/test-result": "^24.9.0",
     "@jest/types": "^24.9.0",
-    "chalk": "^2.0.1",
+    "chalk": "^3.0.0",
     "co": "^4.6.0",
     "expect": "^24.9.0",
     "is-generator-fn": "^2.0.0",

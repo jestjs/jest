@@ -16,7 +16,7 @@ import {
   transformSync as babelTransform,
   loadPartialConfig,
 } from '@babel/core';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import slash = require('slash');
 
 const THIS_FILE = fs.readFileSync(__filename);
