@@ -10,16 +10,16 @@ import * as path from 'path';
 import semver = require('semver');
 import {loadPartialConfig} from '@babel/core';
 import generate from '@babel/generator';
-import {parse, ParserOptions} from '@babel/parser';
+import {ParserOptions, parse} from '@babel/parser';
 import traverse from '@babel/traverse';
 import {
-  templateElement,
-  templateLiteral,
   CallExpression,
-  file,
   Expression,
   File,
   Program,
+  file,
+  templateElement,
+  templateLiteral,
 } from '@babel/types';
 import {Frame} from 'jest-message-util';
 
