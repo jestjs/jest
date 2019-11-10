@@ -11,7 +11,7 @@ import * as fs from 'fs';
 import {Writable} from 'stream';
 import execa = require('execa');
 import {FormattedTestResults} from '@jest/test-result';
-import stripAnsi from 'strip-ansi';
+import stripAnsi = require('strip-ansi');
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
