@@ -16,7 +16,7 @@
     "pretty-format": "^24.9.0"
   },
   "devDependencies": {
-    "strip-ansi": "^5.0.0"
+    "strip-ansi": "^6.0.0"
   },
   "engines": {
     "node": ">= 8"
