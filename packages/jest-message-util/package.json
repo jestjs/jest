@@ -17,7 +17,7 @@
     "@jest/test-result": "^24.9.0",
     "@jest/types": "^24.9.0",
     "@types/stack-utils": "^1.0.1",
-    "chalk": "^2.0.1",
+    "chalk": "^3.0.0",
     "micromatch": "^4.0.2",
     "slash": "^3.0.0",
     "stack-utils": "^1.0.1"

@@ -53,6 +53,10 @@ class NodeEnvironment implements JestEnvironment {
       global.TextEncoder = TextEncoder;
       global.TextDecoder = TextDecoder;
     }
+    // queueMicrotask is global in Node >= 11
+    if (typeof queueMicrotask !== 'undefined') {
+      global.queueMicrotask = queueMicrotask;
+    }
     installCommonGlobals(global, config.globals);
     this.moduleMocker = new ModuleMocker(global);
 

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {formatExecError} from 'jest-message-util';
 import {Config} from '@jest/types';
 import snapshot = require('jest-snapshot');

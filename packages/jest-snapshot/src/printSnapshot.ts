@@ -15,7 +15,6 @@ import {
   diffLinesUnified,
   diffStringsRaw,
   diffStringsUnified,
-  splitLines0,
 } from 'jest-diff';
 import getType = require('jest-get-type');
 import {
@@ -186,8 +185,8 @@ export const printPropertiesAndReceived = (
 
   if (isLineDiffable(properties) && isLineDiffable(received)) {
     return diffLinesUnified(
-      splitLines0(serialize(properties)),
-      splitLines0(serialize(received)),
+      serialize(properties).split('\n'),
+      serialize(received).split('\n'),
       {
         aAnnotation,
         aColor: EXPECTED_COLOR,
@@ -282,12 +281,12 @@ export const printSnapshotAndReceived = (
     return a.length <= MAX_DIFF_STRING_LENGTH &&
       b.length <= MAX_DIFF_STRING_LENGTH
       ? diffStringsUnified(a, b, options)
-      : diffLinesUnified(splitLines0(a), splitLines0(b), options);
+      : diffLinesUnified(a.split('\n'), b.split('\n'), options);
   }
 
   if (isLineDiffable(received)) {
     // TODO future PR will replace with diffLinesUnified2 to ignore indentation
-    return diffLinesUnified(splitLines0(a), splitLines0(b), options);
+    return diffLinesUnified(a.split('\n'), b.split('\n'), options);
   }
 
   const printLabel = getLabelPrinter(aAnnotation, bAnnotation);

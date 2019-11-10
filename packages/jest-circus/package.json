@@ -14,7 +14,7 @@
     "@jest/environment": "^24.9.0",
     "@jest/test-result": "^24.9.0",
     "@jest/types": "^24.9.0",
-    "chalk": "^2.0.1",
+    "chalk": "^3.0.0",
     "co": "^4.6.0",
     "expect": "^24.9.0",
     "is-generator-fn": "^2.0.0",
@@ -32,7 +32,7 @@
     "@types/babel__traverse": "^7.0.4",
     "@types/co": "^4.6.0",
     "@types/stack-utils": "^1.0.1",
-    "execa": "^2.0.4",
+    "execa": "^3.2.0",
     "jest-runtime": "^24.9.0"
   },
   "engines": {

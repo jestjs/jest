@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`fails for multiple unknown options 1`] = `
-"<red><bold><bold>●<bold> Unrecognized CLI Parameters</>:</>
+"<red><bold><bold>●</><bold> Unrecognized CLI Parameters</>:</>
 <red></>
 <red>  Following options were not recognized:</>
 <red>  <bold>[\\"jest\\", \\"test\\"]</></>
@@ -12,7 +12,7 @@ exports[`fails for multiple unknown options 1`] = `
 `;
 
 exports[`fails for unknown option 1`] = `
-"<red><bold><bold>●<bold> Unrecognized CLI Parameter</>:</>
+"<red><bold><bold>●</><bold> Unrecognized CLI Parameter</>:</>
 <red></>
 <red>  Unrecognized option <bold>\\"unknown\\"</>.</>
 <red></>

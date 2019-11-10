@@ -359,8 +359,8 @@ const _validateResult = (result: any) => {
     typeof result !== 'object' ||
     typeof result.pass !== 'boolean' ||
     (result.message &&
-      (typeof result.message !== 'string' &&
-        typeof result.message !== 'function'))
+      typeof result.message !== 'string' &&
+      typeof result.message !== 'function')
   ) {
     throw new Error(
       'Unexpected return from a matcher function.\n' +

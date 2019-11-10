@@ -6,7 +6,7 @@
  */
 
 import {createHash} from 'crypto';
-import chalk from 'chalk';
+import chalk = require('chalk');
 
 const colors: Array<keyof typeof chalk> = [
   'red',

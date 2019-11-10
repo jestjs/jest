@@ -42,7 +42,7 @@ jest.mock(
     },
 );
 
-jest.doMock('chalk', () => new chalk.constructor({enabled: false}));
+jest.doMock('chalk', () => new chalk.Instance({level: 0}));
 jest.doMock(
   '../runJest',
   () =>

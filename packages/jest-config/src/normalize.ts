@@ -11,7 +11,7 @@ import {sync as glob} from 'glob';
 import {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
@@ -707,19 +707,14 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce(
-            (projects, project) => {
-              // Project can be specified as globs. If a glob matches any files,
-              // We expand it to these paths. If not, we keep the original path
-              // for the future resolution.
-              const globMatches =
-                typeof project === 'string' ? glob(project) : [];
-              return projects.concat(
-                globMatches.length ? globMatches : project,
-              );
-            },
-            [] as Array<string>,
-          );
+          .reduce((projects, project) => {
+            // Project can be specified as globs. If a glob matches any files,
+            // We expand it to these paths. If not, we keep the original path
+            // for the future resolution.
+            const globMatches =
+              typeof project === 'string' ? glob(project) : [];
+            return projects.concat(globMatches.length ? globMatches : project);
+          }, [] as Array<string>);
         break;
       case 'moduleDirectories':
       case 'testMatch':

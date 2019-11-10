@@ -161,7 +161,11 @@ it('sends the task to the child process', () => {
 
   const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
 
-  worker.send(request, () => {}, () => {});
+  worker.send(
+    request,
+    () => {},
+    () => {},
+  );
 
   // Skipping call "0" because it corresponds to the "initialize" one.
   expect(forkInterface.send.mock.calls[1][0]).toEqual(request);
@@ -176,7 +180,11 @@ it('resends the task to the child process after a retry', () => {
 
   const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
 
-  worker.send(request, () => {}, () => {});
+  worker.send(
+    request,
+    () => {},
+    () => {},
+  );
 
   // Skipping call "0" because it corresponds to the "initialize" one.
   expect(forkInterface.send.mock.calls[1][0]).toEqual(request);
@@ -281,7 +289,11 @@ it('throws when the child process returns a strange message', () => {
     workerPath: '/tmp/foo',
   });
 
-  worker.send([CHILD_MESSAGE_CALL, false, 'method', []], () => {}, () => {});
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'method', []],
+    () => {},
+    () => {},
+  );
 
   // Type 27 does not exist.
   expect(() => {

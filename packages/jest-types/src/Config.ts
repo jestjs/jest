@@ -7,6 +7,7 @@
 
 import {Arguments} from 'yargs';
 import {ReportOptions} from 'istanbul-reports';
+import chalk = require('chalk');
 
 export type Path = string;
 
@@ -112,7 +113,7 @@ export type DisplayName =
   | string
   | {
       name: string;
-      color: DisplayNameColor;
+      color: typeof chalk.Color;
     };
 
 export type InitialOptionsWithRootDir = InitialOptions &
@@ -239,47 +240,6 @@ type NotifyMode =
   | 'change'
   | 'success-change'
   | 'failure-change';
-
-/**
- * Hard coding this until
- * https://github.com/chalk/chalk/pull/336
- * gets merged
- */
-type DisplayNameColor =
-  | 'black'
-  | 'red'
-  | 'green'
-  | 'yellow'
-  | 'blue'
-  | 'magenta'
-  | 'cyan'
-  | 'white'
-  | 'gray'
-  | 'grey'
-  | 'blackBright'
-  | 'redBright'
-  | 'greenBright'
-  | 'yellowBright'
-  | 'blueBright'
-  | 'magentaBright'
-  | 'cyanBright'
-  | 'whiteBright'
-  | 'bgBlack'
-  | 'bgRed'
-  | 'bgGreen'
-  | 'bgYellow'
-  | 'bgBlue'
-  | 'bgMagenta'
-  | 'bgCyan'
-  | 'bgWhite'
-  | 'bgBlackBright'
-  | 'bgRedBright'
-  | 'bgGreenBright'
-  | 'bgYellowBright'
-  | 'bgBlueBright'
-  | 'bgMagentaBright'
-  | 'bgCyanBright'
-  | 'bgWhiteBright';
 
 export type CoverageThresholdValue = {
   branches?: number;

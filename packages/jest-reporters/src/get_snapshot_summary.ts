@@ -7,7 +7,7 @@
 
 import {Config} from '@jest/types';
 import {SnapshotSummary} from '@jest/test-result';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {pluralize} from 'jest-util';
 import {formatTestPath} from './utils';
 
